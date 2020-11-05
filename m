@@ -2,74 +2,85 @@ Return-Path: <SRS0=j4zi=EL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1F9EC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 03:18:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2B9FC00A89
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 03:34:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A301420867
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 03:18:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E8C9120A8B
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 03:33:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pf86sRsN"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A301420867
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PdT733ml";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XOxtkBzE"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E8C9120A8B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9DBC1664;
-	Thu,  5 Nov 2020 04:17:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9DBC1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 678E41664;
+	Thu,  5 Nov 2020 04:33:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 678E41664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604546311;
-	bh=pz9H0VNJCOJr8M1Zfj53UcWuQYfMfPQwLud0zd30pO4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pf86sRsNYkilaqAedeG+IihUvfA2z7xHV8fY0eA2yHanFmmFLRoUr7KLcmDUbiRqb
-	 wic17wac1EwbH3baecoqSNL/w529EHR8DVz/o60ud/L+yKxeUemUFiYc8M1OngvGgz
-	 N1R5ejI9WYShGJ9GqEfah6AMQK6l21ip1yhzHrKI=
+	s=default; t=1604547236;
+	bh=6nds5KCJylQ/cnzJDTiOWmMtO3021Y3W1zTUGuQAaAg=;
+	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PdT733mlY524TlEbKaDQBDmY6rjD0k+gnF+ncrr7lrMkU9HBpUkYMDf0d1uu4cwrN
+	 8AcOPUhgCkPDCQB8iaVa8HZQAYUOVW6TMb0rjlpKmPWLP+T+QG0or7eBQND8Mdke7y
+	 TpSrxXGaPzvJh6YvIeE6Lvi/1l1w+coNV6QcoZT4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31AF1F80162;
-	Thu,  5 Nov 2020 04:17:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEBF8F80162;
+	Thu,  5 Nov 2020 04:33:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4140EF80171; Thu,  5 Nov 2020 04:17:39 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 8F5B3F80171; Thu,  5 Nov 2020 04:33:04 +0100 (CET)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DCD7CF80150
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 04:17:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCD7CF80150
-IronPort-SDR: yflllAmv1vEflS25vlol5wtjYDqewUxhbpVOS2DtZIfTDMUdCOUEQCcJEdPwDGGIKJ2HbkmAlG
- CBKcZF+4CkcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9795"; a="149174759"
-X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; d="scan'208";a="149174759"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Nov 2020 19:17:29 -0800
-IronPort-SDR: vs+tsekgqge/n4nblXHSEk8dv6N3b/3MFe5j3GzPiAJA3dhwwq4Mgu00J62mRCMqb1sv7iiBjx
- jIvzFCb1MlqA==
-X-IronPort-AV: E=Sophos;i="5.77,452,1596524400"; d="scan'208";a="539192540"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Nov 2020 19:17:26 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH] soundwire: SDCA: detect sdca_cascade interrupt
-Date: Wed,  4 Nov 2020 23:23:58 +0800
-Message-Id: <20201104152358.9518-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- hui.wang@canonical.com, srinivas.kandagatla@linaro.org, jank@cadence.com,
- mengdong.lin@intel.com, sanyog.r.kale@intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80DA6F80150
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 04:32:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80DA6F80150
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="XOxtkBzE"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+ :Reply-To:Content-ID:Content-Description;
+ bh=L3zOV15Bgjs3dnrs7SWT24aj9bdUSoUf03dVFP7rC+4=; b=XOxtkBzEqqYW150pcncGSvuHXS
+ AZyPuH+5NwACs7WgWDKJp+HnLDPPS/CWqwL/cxRUOGLBoFpYwpqXJeCUwg4BzK4jrBw3KGgtOaq/4
+ /cf7XDvV05NYAKkh7F9X+9JbiBJH864zOgKyn5tgzH07c4gugCo2rMjb3Mrmu++9oXhR7sXo3Ggte
+ Jt/39g3UobuFppScyctrkENIVne8YVpApB+FQF1rEFJ5r98DFazPPQUWCYhnI/PCnkRB3yHMq4XZx
+ 5JAQpmVJOYS+WEi8XYjMrlqne5XCm5SX5HG+rcIqMK8v4lzgyCwDthGfytmYrHUPAzgtsdzoYlekA
+ YnzYAdZw==;
+Received: from [2601:1c0:6280:3f0::60d5]
+ by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1kaW10-0005wQ-Kb; Thu, 05 Nov 2020 03:32:48 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: drivers/soundwire/qcom.c:767: undefined reference to `slimbus_bus'
+To: kernel test robot <lkp@intel.com>, Jonathan Marek <jonathan@marek.ca>
+References: <202011030351.iq9CBMO3-lkp@intel.com>
+Message-ID: <e0d74391-18ae-0493-b8a1-cbeb6f00bde8@infradead.org>
+Date: Wed, 4 Nov 2020 19:32:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <202011030351.iq9CBMO3-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>,
+ kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,145 +96,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 11/2/20 11:47 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3cea11cd5e3b00d91caf0b4730194039b45c5891
+> commit: 09309093d5e8f8774e4a3a0d42b73cf47e9421cf soundwire: qcom: fix SLIBMUS/SLIMBUS typo
+> date:   8 weeks ago
+> config: openrisc-randconfig-r005-20201102 (attached as .config)
+> compiler: or1k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=09309093d5e8f8774e4a3a0d42b73cf47e9421cf
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 09309093d5e8f8774e4a3a0d42b73cf47e9421cf
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    or1k-linux-ld: drivers/soundwire/qcom.o: in function `qcom_swrm_probe':
+>>> drivers/soundwire/qcom.c:767: undefined reference to `slimbus_bus'
+>>> or1k-linux-ld: drivers/soundwire/qcom.c:771: undefined reference to `slimbus_bus'
+> 
+> vim +767 drivers/soundwire/qcom.c
+> 
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  756  
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  757  static int qcom_swrm_probe(struct platform_device *pdev)
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  758  {
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  759  	struct device *dev = &pdev->dev;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  760  	struct sdw_master_prop *prop;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  761  	struct sdw_bus_params *params;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  762  	struct qcom_swrm_ctrl *ctrl;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  763  	int ret;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  764  	u32 val;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  765  
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  766  	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @767  	if (!ctrl)
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  768  		return -ENOMEM;
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13  769  
+> 09309093d5e8f87 Jonathan Marek       2020-09-08  770  #if IS_ENABLED(CONFIG_SLIMBUS)
+> 02efb49aa805cee Srinivas Kandagatla  2020-01-13 @771  	if (dev->parent->bus == &slimbus_bus) {
+> 5bd773242f75da3 Jonathan Marek       2020-09-05  772  #else
+> 5bd773242f75da3 Jonathan Marek       2020-09-05  773  	if (false) {
+> 5bd773242f75da3 Jonathan Marek       2020-09-05  774  #endif
 
-The SoundWire 1.2 specification defines an "SDCA cascade" bit which
-handles a logical OR of all SDCA interrupt sources (up to 30 defined).
+> :::::: The code at line 767 was first introduced by commit
+> :::::: 02efb49aa805cee643a643ab61a1118c2fd08b80 soundwire: qcom: add support for SoundWire controller
+> 
+> :::::: TO: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> :::::: CC: Vinod Koul <vkoul@kernel.org>
 
-Due to limitations of the addressing space, this bit is located in the
-SDW_DP0_INT register when DP0 is used, or alternatively in the
-DP0_SDCA_Support_INTSTAT register when DP0 is not used.
 
-To allow for both cases to be handled, this bit will be checked in the
-main device-level interrupt handling code. This will result in the
-register being read twice if DP0 is enabled, but it's not clear how to
-optimize this case. It's also more logical to deal with this interrupt
-at the device than the port level, this bit is really not DP0 specific
-and its location in the DP0_INTSTAT bit is only due to the lack of
-free space in SCP_INTSTAT_1.
+config SOUNDWIRE_QCOM
+	tristate "Qualcomm SoundWire Master driver"
+	imply SLIMBUS
+	depends on SND_SOC
 
-The SDCA_Cascade bit cannot be masked or cleared, so the interrupt
-handling only forwards the detection to the Slave driver, which will
-deal with reading the relevant SDCA status bits and clearing them. The
-bus driver only signals the detection.
+The kernel config that was attached has:
+CONFIG_SOUNDWIRE_QCOM=y
+CONFIG_SLIMBUS=m
 
-The communication with the Slave driver is based on the same interrupt
-callback, with only an extension to provide the status of the
-sdca_cascade bit.
+I expected that "imply" would make SLIMBUS=y since SOUNDWIRE_QCOM=y,
+but I guess that's not the case. :(
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c       | 28 +++++++++++++++++++++++++++-
- include/linux/soundwire/sdw.h |  4 ++++
- 2 files changed, 31 insertions(+), 1 deletion(-)
+Any ideas about what to do here?
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 8eaf31e76677..ffe4600fd95b 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1424,6 +1424,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 	int port_num, stat, ret, count = 0;
- 	unsigned long port;
- 	bool slave_notify = false;
-+	u8 sdca_cascade = 0;
- 	u8 buf, buf2[2], _buf, _buf2[2];
- 	bool parity_check;
- 	bool parity_quirk;
-@@ -1453,6 +1454,16 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		goto io_err;
- 	}
- 
-+	if (slave->prop.is_sdca) {
-+		ret = sdw_read(slave, SDW_DP0_INT);
-+		if (ret < 0) {
-+			dev_err(slave->bus->dev,
-+				"SDW_DP0_INT read failed:%d\n", ret);
-+			goto io_err;
-+		}
-+		sdca_cascade = ret & SDW_DP0_SDCA_CASCADE;
-+	}
-+
- 	do {
- 		/*
- 		 * Check parity, bus clash and Slave (impl defined)
-@@ -1489,6 +1500,10 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 			clear |= SDW_SCP_INT1_IMPL_DEF;
- 		}
- 
-+		/* the SDCA interrupts are cleared in the codec driver .interrupt_callback() */
-+		if (sdca_cascade)
-+			slave_notify = true;
-+
- 		/* Check port 0 - 3 interrupts */
- 		port = buf & SDW_SCP_INT1_PORT0_3;
- 
-@@ -1526,6 +1541,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		/* Update the Slave driver */
- 		if (slave_notify && slave->ops &&
- 		    slave->ops->interrupt_callback) {
-+			slave_intr.sdca_cascade = sdca_cascade;
- 			slave_intr.control_port = clear;
- 			memcpy(slave_intr.port, &port_status,
- 			       sizeof(slave_intr.port));
-@@ -1563,11 +1579,21 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 			goto io_err;
- 		}
- 
-+		if (slave->prop.is_sdca) {
-+			ret = sdw_read(slave, SDW_DP0_INT);
-+			if (ret < 0) {
-+				dev_err(slave->bus->dev,
-+					"SDW_DP0_INT read failed:%d\n", ret);
-+				goto io_err;
-+			}
-+			sdca_cascade = ret & SDW_DP0_SDCA_CASCADE;
-+		}
-+
- 		/* Make sure no interrupts are pending */
- 		buf &= _buf;
- 		buf2[0] &= _buf2[0];
- 		buf2[1] &= _buf2[1];
--		stat = buf || buf2[0] || buf2[1];
-+		stat = buf || buf2[0] || buf2[1] || sdca_cascade;
- 
- 		/*
- 		 * Exit loop if Slave is continuously in ALERT state even
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 41cc1192f9aa..f0b01b728640 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -359,6 +359,7 @@ struct sdw_dpn_prop {
-  * @sink_dpn_prop: Sink Data Port N properties
-  * @scp_int1_mask: SCP_INT1_MASK desired settings
-  * @quirks: bitmask identifying deltas from the MIPI specification
-+ * @is_sdca: the Slave supports the SDCA specification
-  */
- struct sdw_slave_prop {
- 	u32 mipi_revision;
-@@ -382,6 +383,7 @@ struct sdw_slave_prop {
- 	struct sdw_dpn_prop *sink_dpn_prop;
- 	u8 scp_int1_mask;
- 	u32 quirks;
-+	bool is_sdca;
- };
- 
- #define SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY	BIT(0)
-@@ -479,10 +481,12 @@ struct sdw_slave_id {
- 
- /**
-  * struct sdw_slave_intr_status - Slave interrupt status
-+ * @sdca_cascade: set if the Slave device reports an SDCA interrupt
-  * @control_port: control port status
-  * @port: data port status
-  */
- struct sdw_slave_intr_status {
-+	bool sdca_cascade;
- 	u8 control_port;
- 	u8 port[15];
- };
 -- 
-2.17.1
+~Randy
 
