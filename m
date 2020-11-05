@@ -6,72 +6,72 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B4FC4741F
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 16:48:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71795C4741F
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 16:48:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AC272073A
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 16:48:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7737B20759
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 16:48:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FCpYGM/+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="M5bcnQ27"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AC272073A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sdkkb75w";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jdSTbykM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7737B20759
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D94F216AE;
-	Thu,  5 Nov 2020 17:47:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D94F216AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE2F7169D;
+	Thu,  5 Nov 2020 17:48:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE2F7169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604594893;
-	bh=jjAsr0+ZIP+PdEVNsUQ8ujyXuXzfv/mf8ecvEu/AAJs=;
-	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
+	s=default; t=1604594933;
+	bh=j9FHyAv+xNEEldf9CJ3rqWwa6WWbWLo2tOG5ZLBmics=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FCpYGM/+F97rrj4JN8zQFXPeDtRWAgKrMBPXF4RW3KhXVoIgH8mVRBzfvZHg+Al4p
-	 TIMySwVTw2NafZmB050FH0vP2Qz7jZc+qyb/rIP7QDwXB8mjlzdgtByhC8NwJ7UCMv
-	 mzNBcpySqxuPHeQjLuH/vvtFQ8FxqlZav230IoQ0=
+	b=sdkkb75we6xtslxZOksdt/VibkA9M9DJpGFw61rHf5L/pf6Bf1KFcu5tA5xjU7ki5
+	 4RiprHkZvr5/h4/I0WchIS5YCkotAHQAZn5kwmqv41QSAMNQEecMumWSKLyRi+tdwp
+	 k1DWhcQ51Le4nLCC/7fsxXm2C3K39NKa+A60qyyM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C85D0F804CA;
-	Thu,  5 Nov 2020 17:46:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FFB9F804D8;
+	Thu,  5 Nov 2020 17:46:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC9A1F804CC; Thu,  5 Nov 2020 17:46:00 +0100 (CET)
+ id 4F733F804CB; Thu,  5 Nov 2020 17:46:02 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9382CF804BD
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 17:45:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9382CF804BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id A45F1F804C3
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 17:45:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A45F1F804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="M5bcnQ27"
+ header.b="jdSTbykM"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CC69E221F8;
- Thu,  5 Nov 2020 16:45:50 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 01FB022201;
+ Thu,  5 Nov 2020 16:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604594751;
- bh=jjAsr0+ZIP+PdEVNsUQ8ujyXuXzfv/mf8ecvEu/AAJs=;
+ s=default; t=1604594757;
+ bh=j9FHyAv+xNEEldf9CJ3rqWwa6WWbWLo2tOG5ZLBmics=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=M5bcnQ27OtYsL+MkDMcTIZUEdibPRdnprM9xeY3zMaDdLilntClzFjGISgqgSGV2b
- 1dMWnbTNhZbad//mR9XDxe22DoR3GV53rLhbF8ru1ZZ9aQCOBIc2HLnL1WLzjAEfbz
- FkjCWzSP/BX3Icn3W54bF4JvD7ZHF1jEPOEKViFM=
-Date: Thu, 05 Nov 2020 16:45:39 +0000
+ b=jdSTbykM1rIMtCgBVH5LUPTLAGOeqeD7XEGdeYhkcSeLrD2nxKOh/0zO++FNd3rze
+ Gws7IrWPd+UYA9vlQoORck2NyrFWWLGJpyx515liQpM08YfBcDsnOWb4yEW3xuJgnu
+ GcheAy+uU40Et2y2EjpfVdq2Ts/zAsvA33XrcZTg=
+Date: Thu, 05 Nov 2020 16:45:46 +0000
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20201026100129.8216-1-cezary.rojewski@intel.com>
-References: <20201026100129.8216-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH] ASoC: pcm: DRAIN support reactivation
-Message-Id: <160459472199.54851.4449416811424744361.b4-ty@kernel.org>
+To: perex@perex.cz, Xu Wang <vulab@iscas.ac.cn>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, s.nawrocki@samsung.com, lgirdwood@gmail.com
+In-Reply-To: <20201029084137.28771-1-vulab@iscas.ac.cn>
+References: <20201029084137.28771-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: samsung: i2s: Remove redundant null check before
+ clk_disable_unprepare
+Message-Id: <160459472200.54851.15787192690355908693.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com, ranjani.sridharan@intel.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,15 +87,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Oct 2020 11:01:29 +0100, Cezary Rojewski wrote:
-> soc-pcm's dpcm_fe_dai_do_trigger() supported DRAIN commnad up to kernel
-> v5.4 where explicit switch(cmd) has been introduced which takes into
-> account all SNDRV_PCM_TRIGGER_xxx but SNDRV_PCM_TRIGGER_DRAIN. Update
-> switch statement to reactive support for it.
-> 
-> As DRAIN is somewhat unique by lacking negative/stop counterpart, bring
-> behaviour of dpcm_fe_dai_do_trigger() for said command back to its
-> pre-v5.4 state by adding it to START/RESUME/PAUSE_RELEASE group.
+On Thu, 29 Oct 2020 08:41:37 +0000, Xu Wang wrote:
+> Because clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
 
 Applied to
 
@@ -103,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: pcm: DRAIN support reactivation
-      commit: 4c22b80f61540ea99d9b4af0127315338755f05b
+[1/1] ASoC: samsung: i2s: Remove redundant null check before clk_disable_unprepare
+      commit: ec4177c83456b9e84d796ed0bc7656fd922937cb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
