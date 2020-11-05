@@ -7,56 +7,55 @@ X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E2E5C00A89
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 08:52:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33479C00A89
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 08:53:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 561D62087D
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 08:52:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 319212083B
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Nov 2020 08:53:18 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qed7rNm7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 561D62087D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HCtBJ6iU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 319212083B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 956361658;
-	Thu,  5 Nov 2020 09:51:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 956361658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CE5A167E;
+	Thu,  5 Nov 2020 09:52:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CE5A167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604566345;
-	bh=u9xfG0x180IELDEJe8oLXuepcVHambYWQyBjTffa8Ds=;
+	s=default; t=1604566396;
+	bh=VconMCZcj0CdrcpO8CWmluGaNaiRnHzwE/ugypZ2Nsg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qed7rNm7NMHgeZA0Vhhrv0blIegdRRNwE89sj0N/tmG38WqOp1BKiLnMfzEmIfVdP
-	 dlcq8u7ZHCWrePZwylHRQWajLUcCqtTXUsKOkrqGcFfFjqcK5lektlrL/PvyaxWjco
-	 MrN4WNxO7OevepjAp64khzwNW4FNe2s/GId6iLZQ=
+	b=HCtBJ6iUfPICFcgXB9DlysvjfAFOHkbcGg8yqnuuCvv3B/+v8YeMd+ZDpLLAvd/sO
+	 hryOIQ5Ne43JES18IHG+EnLveIQFg5B9s1nnGAFkDmPaQmrOE2VXdG+wgdqqLzAEM7
+	 5qsbYTPeYUn8tu3EBuvwB77TvOSoFYfaW1sSe0bI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1899AF80162;
-	Thu,  5 Nov 2020 09:51:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 355B1F80272;
+	Thu,  5 Nov 2020 09:51:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF57DF80171; Thu,  5 Nov 2020 09:51:33 +0100 (CET)
+ id 4509AF80279; Thu,  5 Nov 2020 09:51:50 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F69AF800EC
- for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 09:51:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F69AF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 716D9F800EC
+ for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2020 09:51:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 716D9F800EC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 51CFCAAF1;
- Thu,  5 Nov 2020 08:51:25 +0000 (UTC)
-Date: Thu, 05 Nov 2020 09:51:24 +0100
-Message-ID: <s5h361ojier.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2617AAB95;
+ Thu,  5 Nov 2020 08:51:44 +0000 (UTC)
+Date: Thu, 05 Nov 2020 09:51:44 +0100
+Message-ID: <s5h1rh8jie7.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: "Geoffrey D. Bennett" <g@b4.vu>
-Subject: Re: [PATCH] ALSA: usb-audio: Add implicit feedback quirk for MODX
-In-Reply-To: <20201105021248.GA21537@b4.vu>
-References: <20201104120705.GA19126@b4.vu> <s5hlffhjk6w.wl-tiwai@suse.de>
- <20201105021248.GA21537@b4.vu>
+Subject: Re: [PATCH] ALSA: usb-audio: Add implicit feedback quirk for Qu-16
+In-Reply-To: <20201104115717.GA19046@b4.vu>
+References: <20201104115717.GA19046@b4.vu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,24 +77,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 05 Nov 2020 03:12:48 +0100,
+On Wed, 04 Nov 2020 12:57:17 +0100,
 Geoffrey D. Bennett wrote:
 > 
-> On Wed, Nov 04, 2020 at 03:00:39PM +0100, Takashi Iwai wrote:
-> > On Wed, 04 Nov 2020 13:07:05 +0100,
-> > Geoffrey D. Bennett wrote:
-> > > 
-> > > This patch fixes audio distortion on playback for the Yamaha MODX.
-> > > 
-> > > Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
-> > > Tested-by: Frank Slotta <frank.slotta@posteo.de>
-> > 
-> > Thanks, applied now.
+> This patch fixes audio distortion on playback for the Allen&Heath
+> Qu-16.
 > 
-> Thanks. Did you see my similar patch that I sent in a few minutes
-> before that one for the A&H Qu-16?
+> Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
 
-Thanks for reminder.  I overlooked it as if it were the same post.
+Applied now.  Thanks.
 
 
 Takashi
