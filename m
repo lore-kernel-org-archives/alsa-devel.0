@@ -2,72 +2,102 @@ Return-Path: <SRS0=3oRA=EQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B02C55ABD
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD945C55ABD
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:15:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6253B20797
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:10:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ED373207D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:15:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gGFdYjN6"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6253B20797
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nuvoton.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SmtksB6g";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQZsJJ9x"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED373207D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C065C16E8;
-	Tue, 10 Nov 2020 11:09:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C065C16E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D64D716EB;
+	Tue, 10 Nov 2020 11:14:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D64D716EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605003042;
-	bh=ZRA5ar5oRc9KhH4sv/bc040jD4W2h07i50b8bs/x4TE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gGFdYjN6E3TBBoju0MIkaMzYdIYf9REnLDpqiKVcq1Pu11N0FVCo0v1x8OHkmL0+4
-	 JOe49mCLK2Gf/W/iF4UYKAu+Qmwg8ykSFYpZgDy4ut++LsBD2f7lKdL8wWn8yLVWVs
-	 D8Ij3fOEzXiZptGmpkaoIFFHV4eAlOPR9fC2IQYc=
+	s=default; t=1605003348;
+	bh=mKSFXTxCnWLFFuOmKbDKYfRViQvEyhKDvj07tMwcF98=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SmtksB6gb3XlFKGTR92AB4JfGmD5QKe7PPQf+3lPQaK1GBnMuVFTYG0E7t4mdQeFn
+	 vwPh2ivDb/Oqx0Rn6qMK3ndx8InOQxdoXuVhrcebemsVKPg5Odp5/ZZr9MBKdf+44f
+	 Y147+IbgkAdIISNjgdqlk9PYs5CkZHo5z6jaOOq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36BF7F80161;
-	Tue, 10 Nov 2020 11:09:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F339F80161;
+	Tue, 10 Nov 2020 11:14:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5789F801D5; Tue, 10 Nov 2020 11:09:50 +0100 (CET)
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 7C2E1F80059
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 11:09:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C2E1F80059
-Received: from NTHCCAS04.nuvoton.com (nthccas04.nuvoton.com [10.1.8.29])
- by maillog.nuvoton.com (Postfix) with ESMTP id 08E961C80F3D;
- Tue, 10 Nov 2020 18:09:39 +0800 (CST)
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS04.nuvoton.com
- (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 10
- Nov 2020 18:09:38 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
- (10.1.12.25) with Microsoft SMTP Server id 15.1.1847.3 via Frontend
- Transport; Tue, 10 Nov 2020 18:09:38 +0800
-From: David Lin <CTLIN0@nuvoton.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: nau8315: revise the power event of EN_PIN dapm
- widget for symmetry
-Date: Tue, 10 Nov 2020 17:58:25 +0800
-Message-ID: <20201110095823.3512447-1-CTLIN0@nuvoton.com>
+ id D120AF80232; Fri,  6 Nov 2020 15:59:33 +0100 (CET)
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com
+ [IPv6:2607:f8b0:4864:20::f44])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDF5AF80150
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2020 15:59:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDF5AF80150
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jQZsJJ9x"
+Received: by mail-qv1-xf44.google.com with SMTP id dj6so556280qvb.3
+ for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2020 06:59:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=mRkSU/5vHT/IEZQvr5gZLhftMTatdc/swDYJz0CwbE8=;
+ b=jQZsJJ9xSf5mSgSPrA0f8RWdADoPxIUsWhWrYCCtBoek351fk2mZgm1tZyj+d2AyF1
+ JW2bvSMlpTjbbsCL/R53eg77FnIBfYQJubAId5NIq1FVtIQfDCmGzpvzcxRhdtwn0lUa
+ kWyhFEr8le9Cy3coZMOQpWbBzYn6p9zRejmVpz6+oPSoub4GhONJS5LdEHjpwxFv1vdM
+ Ww/1oA+ImlaLkp69LonTbFCwm1FKGshzXQ4v3ARRja36FN/lWO8iryweHiQsXIGrcRmh
+ lknPDJYsqRfNx2KqLheKY8Y71w9wJNdQQ7b7I2A/Vi9nc0rNWT4UybKlooi1Z/2mc07k
+ dWEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=mRkSU/5vHT/IEZQvr5gZLhftMTatdc/swDYJz0CwbE8=;
+ b=q0AtguMty8e+hZOGIsjo4bS54hkC+xco9NJgPj3aSthLrcQ6vAcl8MWAI+DmG0IR9C
+ 5TB9nlFoCIqtWbaDOjugarnI3FnuKtiIwlZHkbfSapdcINKqVqlhu38W+3gX19Vvvq5J
+ K6jgRwEmdvow9b9Zlhe6BhPA5vFAm9C7J/oOCnNoieprhJYQjdilDHQ9Azuvo91iftP1
+ o7n93CzpVzqET0RBWC66JS/EUVb/RfjqR3AA7AhsoMS+2iDyWIdv74elNT3AIUe/CTVs
+ z9EH9GVoGMHgNLQUGjxkmxHnxV4NJm/bghCmmFFNm3T7T5CKEzVSmnkRKGj3LP69nEJY
+ x1iw==
+X-Gm-Message-State: AOAM532h3Y5bjXI7lOrYDWtPXpr1zbGkEaYvmTdpUxLDYSqVsSOmm/8z
+ b9Sp7ueo9VlBsTPCe6H+Vuk=
+X-Google-Smtp-Source: ABdhPJx3nmPKPdNUBaeU5q/r/ErzLGZ5/SkaV/YV/a/Qh0Ga7Xxlzf+SPCb93T7MX+NuDmzxPs1AYQ==
+X-Received: by 2002:a05:6214:841:: with SMTP id
+ dg1mr2016186qvb.18.1604674766923; 
+ Fri, 06 Nov 2020 06:59:26 -0800 (PST)
+Received: from poirot.caas.local ([2605:a000:160c:8556:38d4:503f:b7a:d871])
+ by smtp.gmail.com with ESMTPSA id m15sm662872qtc.90.2020.11.06.06.59.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 06 Nov 2020 06:59:26 -0800 (PST)
+From: Kyle Russell <bkylerussell@gmail.com>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: mmp-sspa: clear transmit phase bit for non-stereo
+ formats
+Date: Fri,  6 Nov 2020 09:59:05 -0500
+Message-Id: <20201106145905.365903-1-bkylerussell@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201102023212.594137-1-CTLIN0@nuvoton.com>
-References: <20201102023212.594137-1-CTLIN0@nuvoton.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NotRedirectTo-PP: TRUE
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, KCHSU0@nuvoton.com,
- lgirdwood@gmail.com, YHCHuang@nuvoton.com, David Lin <CTLIN0@nuvoton.com>
+X-Mailman-Approved-At: Tue, 10 Nov 2020 11:14:56 +0100
+Cc: Kyle Russell <bkylerussell@gmail.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ lkundrak@v3.sk, linux-arm-kernel@lists.infradead.org,
+ Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,35 +113,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch is to revise the power event of EN_PIN dapm widget for symmetry.
+The transmit phase register value is never cleared during hw params.
+So once hw params sets this bit to handle a two channel format, it
+remains configured for dual-phase, which is not desirable for mono
+playback.
 
-Signed-off-by: David Lin <CTLIN0@nuvoton.com>
+Signed-off-by: Kyle Russell <bkylerussell@gmail.com>
 ---
- sound/soc/codecs/nau8315.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/pxa/mmp-sspa.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/nau8315.c b/sound/soc/codecs/nau8315.c
-index e6bc5c0a5036..2b66e3f7a8b7 100644
---- a/sound/soc/codecs/nau8315.c
-+++ b/sound/soc/codecs/nau8315.c
-@@ -65,7 +65,7 @@ static int nau8315_enpin_event(struct snd_soc_dapm_widget *w,
- 	struct nau8315_priv *nau8315 =
- 		snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index 4255851c71c1..52d4d8ace1c3 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -239,6 +239,7 @@ static int mmp_sspa_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
--	if (event & SND_SOC_DAPM_POST_PMU)
-+	if (event & SND_SOC_DAPM_PRE_PMU)
- 		nau8315->enpin_switch = 1;
- 	else if (event & SND_SOC_DAPM_POST_PMD)
- 		nau8315->enpin_switch = 0;
-@@ -77,7 +77,7 @@ static const struct snd_soc_dapm_widget nau8315_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("Speaker"),
- 	SND_SOC_DAPM_OUT_DRV_E("EN_Pin", SND_SOC_NOPM, 0, 0, NULL, 0,
- 			nau8315_enpin_event,
--			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
++	sspa_ctrl &= ~SSPA_CTL_XPH;
+ 	if (dev->of_node || params_channels(params) == 2)
+ 		sspa_ctrl |= SSPA_CTL_XPH;
  
- static const struct snd_soc_dapm_route nau8315_dapm_routes[] = {
 -- 
 2.25.1
 
