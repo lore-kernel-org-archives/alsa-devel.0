@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7D39C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 07:27:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61427C388F2
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 07:27:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7EA32204EA
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 07:27:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 63C80208FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 07:27:09 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IVlJtWzO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LIYIs/3x"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EA32204EA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KyhK3EZ3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jTy5jcOb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63C80208FE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57B131673;
-	Fri,  6 Nov 2020 08:26:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57B131673
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7F2B1670;
+	Fri,  6 Nov 2020 08:26:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7F2B1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604647622;
-	bh=wOM38mMsJPPuSlrdu5/bfaSYTHkjZRMJiVaS5t4fo6s=;
+	s=default; t=1604647627;
+	bh=aRUGIph0YXi4UygsMpt/2q4qan/PSku/b/cmikDsL1s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IVlJtWzOYK8p1XW/2udDhUhAto8TIAinrYnLVqwTYozSZ3T5Xb43Dg/pzc79TWQVS
-	 ZL+5zIXYMRU3sqyXJQ9PxwwShpekyczOeLVBtKvEnSQYMEekX3CMXnk4oilqFp6xV6
-	 VEOtLt1VgnidmvD0gNAFU+CMPOUCxt1SZFiH/BIs=
+	b=KyhK3EZ3GloJ/inFvHGx1s6pVBCxdad59KnAp1mZwOrEJqE/KcfYNu7KFEUQYzyUk
+	 clBcI1uJJ/u87MtS5AgZL1yohIWXnWINxU3ZDWr8mbA9+PB3MEYUviPmTiUXd38Ree
+	 FS+I8INDaIZC0n1LBzlXWJhYkdeFMBY/h+MhXBdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5D24F80276;
-	Fri,  6 Nov 2020 08:25:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 253CEF804BC;
+	Fri,  6 Nov 2020 08:25:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF032F8023E; Fri,  6 Nov 2020 08:25:18 +0100 (CET)
+ id 84B3AF80127; Fri,  6 Nov 2020 08:25:20 +0100 (CET)
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 005ADF80234
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2020 08:25:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 005ADF80234
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0FD6F80127
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2020 08:25:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0FD6F80127
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="LIYIs/3x"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A67PEgP114009;
- Fri, 6 Nov 2020 01:25:14 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1604647514;
- bh=nZGpdeErZ/Fnrtnyt8YoiWMnSoc5EUa5TDtXCuJ0jFU=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=LIYIs/3xYdspuhVVT5zF2qbbdyHCdpvEkc0neWHLV7texcY6kr5DIrfyCfnSQooJT
- NU+kI8VT5Dg3BF/6i5yVCNyeTcYQllonavPq1wkwnfTThsVSNv5qW1mr8Vk+8HufcM
- mPU0W7R2HFNYFwzkNotb+5yKC+JcGr8+nf1/FkRY=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A67PEj2055934
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 6 Nov 2020 01:25:14 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
- 2020 01:25:14 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 6 Nov 2020 01:25:14 -0600
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A67P8Sv113537;
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jTy5jcOb"
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0A67PCIo113999;
  Fri, 6 Nov 2020 01:25:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1604647512;
+ bh=hLwB0yvkAbuu0K6BFv8KsojiE7ulcNHaTe6oYEqmcH0=;
+ h=From:To:CC:Subject:Date:In-Reply-To:References;
+ b=jTy5jcObWR3qtm0B2UZeYMVT2EfpbuL68z0h693r/Jc6nazRwaNNTadk/63GCNVFJ
+ Qi8r8WhYZzVohtN1gdr7OdePlmeaHEfb+OoktbSmcaZByUitISQ7oVhXOKq8/IVnbs
+ FdAdguVzCL40n7BMsto1RZUvzk/iW+dpyOgLhYkg=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+ by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0A67PC3s087850
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Fri, 6 Nov 2020 01:25:12 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 6 Nov
+ 2020 01:25:12 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 6 Nov 2020 01:25:12 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0A67P8Su113537;
+ Fri, 6 Nov 2020 01:25:10 -0600
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 2/4] ASoC: ti: davinci-mcasp: Remove legacy dma_request parsing
-Date: Fri, 6 Nov 2020 09:25:49 +0200
-Message-ID: <20201106072551.689-3-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/4] ASoC: ti: davinci-mcasp: Use
+ platform_get_irq_byname_optional
+Date: Fri, 6 Nov 2020 09:25:48 +0200
+Message-ID: <20201106072551.689-2-peter.ujfalusi@ti.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201106072551.689-1-peter.ujfalusi@ti.com>
 References: <20201106072551.689-1-peter.ujfalusi@ti.com>
@@ -102,131 +103,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The legacy dma_request (which was holding the DMA request number) is no
-longer in use for a long time.
-All legacy platforms has been converted to dma_slave_map.
+Depending on the integration of McASP either the 'common' or the
+'rx' and 'tx' or only the 'tx' interrupt number is valid, provided.
 
-Remove it along with the DT parsing to get tx_dma_channel and
-rx_dma_channel.
+By switching to platform_get_irq_byname_optional() we can clean up the
+bootlog from messages like:
+
+davinci-mcasp 2ba0000.mcasp: IRQ common not found
+
+The irq number == 0 is not valid, fix the check at the same time.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/ti/davinci-mcasp.c | 57 ++----------------------------------
- 1 file changed, 3 insertions(+), 54 deletions(-)
+ sound/soc/ti/davinci-mcasp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index 91238fe92edb..19120bdf747a 100644
+index 31488593c4f1..91238fe92edb 100644
 --- a/sound/soc/ti/davinci-mcasp.c
 +++ b/sound/soc/ti/davinci-mcasp.c
-@@ -94,7 +94,6 @@ struct davinci_mcasp {
- 	u8	bclk_div;
- 	int	streams;
- 	u32	irq_request[2];
--	int	dma_request[2];
+@@ -2202,8 +2202,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  
- 	int	sysclk_freq;
- 	bool	bclk_master;
-@@ -1755,7 +1754,6 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
- 	struct davinci_mcasp_pdata *pdata = NULL;
- 	const struct of_device_id *match =
- 			of_match_device(mcasp_dt_ids, &pdev->dev);
--	struct of_phandle_args dma_spec;
+ 	mcasp->dev = &pdev->dev;
  
- 	const u32 *of_serial_dir32;
- 	u32 val;
-@@ -1810,31 +1808,6 @@ static struct davinci_mcasp_pdata *davinci_mcasp_set_pdata_from_of(
- 		pdata->serial_dir = of_serial_dir;
+-	irq = platform_get_irq_byname(pdev, "common");
+-	if (irq >= 0) {
++	irq = platform_get_irq_byname_optional(pdev, "common");
++	if (irq > 0) {
+ 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_common",
+ 					  dev_name(&pdev->dev));
+ 		if (!irq_name) {
+@@ -2223,8 +2223,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		mcasp->irq_request[SNDRV_PCM_STREAM_CAPTURE] = ROVRN;
  	}
  
--	ret = of_property_match_string(np, "dma-names", "tx");
--	if (ret < 0)
--		goto nodata;
--
--	ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", ret,
--					 &dma_spec);
--	if (ret < 0)
--		goto nodata;
--
--	pdata->tx_dma_channel = dma_spec.args[0];
--
--	/* RX is not valid in DIT mode */
--	if (pdata->op_mode != DAVINCI_MCASP_DIT_MODE) {
--		ret = of_property_match_string(np, "dma-names", "rx");
--		if (ret < 0)
--			goto nodata;
--
--		ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells", ret,
--						 &dma_spec);
--		if (ret < 0)
--			goto nodata;
--
--		pdata->rx_dma_channel = dma_spec.args[0];
--	}
--
- 	ret = of_property_read_u32(np, "tx-num-evt", &val);
- 	if (ret >= 0)
- 		pdata->txnumevt = val;
-@@ -2127,11 +2100,10 @@ static void davinci_mcasp_get_dt_params(struct davinci_mcasp *mcasp)
- static int davinci_mcasp_probe(struct platform_device *pdev)
- {
- 	struct snd_dmaengine_dai_dma_data *dma_data;
--	struct resource *mem, *res, *dat;
-+	struct resource *mem, *dat;
- 	struct davinci_mcasp_pdata *pdata;
- 	struct davinci_mcasp *mcasp;
- 	char *irq_name;
--	int *dma;
- 	int irq;
- 	int ret;
- 
-@@ -2266,45 +2238,22 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 		mcasp->dat_port = true;
- 
- 	dma_data = &mcasp->dma_data[SNDRV_PCM_STREAM_PLAYBACK];
-+	dma_data->filter_data = "tx";
- 	if (dat)
- 		dma_data->addr = dat->start;
- 	else
- 		dma_data->addr = mem->start + davinci_mcasp_txdma_offset(pdata);
- 
--	dma = &mcasp->dma_request[SNDRV_PCM_STREAM_PLAYBACK];
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (res)
--		*dma = res->start;
--	else
--		*dma = pdata->tx_dma_channel;
--
--	/* dmaengine filter data for DT and non-DT boot */
--	if (pdev->dev.of_node)
--		dma_data->filter_data = "tx";
--	else
--		dma_data->filter_data = dma;
- 
- 	/* RX is not valid in DIT mode */
- 	if (mcasp->op_mode != DAVINCI_MCASP_DIT_MODE) {
- 		dma_data = &mcasp->dma_data[SNDRV_PCM_STREAM_CAPTURE];
-+		dma_data->filter_data = "rx";
- 		if (dat)
- 			dma_data->addr = dat->start;
- 		else
- 			dma_data->addr =
- 				mem->start + davinci_mcasp_rxdma_offset(pdata);
--
--		dma = &mcasp->dma_request[SNDRV_PCM_STREAM_CAPTURE];
--		res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--		if (res)
--			*dma = res->start;
--		else
--			*dma = pdata->rx_dma_channel;
--
--		/* dmaengine filter data for DT and non-DT boot */
--		if (pdev->dev.of_node)
--			dma_data->filter_data = "rx";
--		else
--			dma_data->filter_data = dma;
+-	irq = platform_get_irq_byname(pdev, "rx");
+-	if (irq >= 0) {
++	irq = platform_get_irq_byname_optional(pdev, "rx");
++	if (irq > 0) {
+ 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_rx",
+ 					  dev_name(&pdev->dev));
+ 		if (!irq_name) {
+@@ -2242,8 +2242,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 		mcasp->irq_request[SNDRV_PCM_STREAM_CAPTURE] = ROVRN;
  	}
  
- 	if (mcasp->version < MCASP_VERSION_3) {
+-	irq = platform_get_irq_byname(pdev, "tx");
+-	if (irq >= 0) {
++	irq = platform_get_irq_byname_optional(pdev, "tx");
++	if (irq > 0) {
+ 		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s_tx",
+ 					  dev_name(&pdev->dev));
+ 		if (!irq_name) {
 -- 
 Peter
 
