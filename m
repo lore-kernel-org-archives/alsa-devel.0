@@ -2,88 +2,107 @@ Return-Path: <SRS0=gYtK=EM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA398C55178
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 20:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19323C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 113F220B1F
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 20:54:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A105208C7
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 21:40:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ii5dyeIF"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 113F220B1F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L7t5kGGh";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="r6p4t2hB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A105208C7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29A861682;
-	Fri,  6 Nov 2020 21:53:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29A861682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FE371681;
+	Fri,  6 Nov 2020 22:39:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FE371681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604696081;
-	bh=1yO/CVv9b0QAujvyIxVqVvhR2ndhoj53ZUJfuwtrlvs=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1604698822;
+	bh=M1AwKDny4A3PlX2wFptrokIe7ZJvgPiQfOaokX6Ssfw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ii5dyeIFl5RkyJkOmmVk2e8FZArm4J+/AXLMgYtDVuBDXzBlzueNOBQcHhFRPGv7P
-	 KF9bFlnD9taoK1qmE6nUwecWEMWDgE39Zx9bbuHOKGs9Qm5tmQ7OjCwmXPZJHJ1Xnj
-	 kk8neLfZj2rSwYQPkhH9Ja0xFZEZYwtGHwYeoTd0=
+	b=L7t5kGGhtkJbX1+2+HcSTNKgNo/2Ep5ok9Uw+/0RQ7wNZwvPYS/+iILq4+jzV5Eyg
+	 UwN1CqtmrSGOqAO/29d9gHBvql1iN6qEt7QRtjb/JtX7VkO7WEODOKo6erxXQvlrop
+	 fWXlXsh09KhUPzGB1I4KH3cFob0c4MLQccfces+k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADDC1F80232;
-	Fri,  6 Nov 2020 21:53:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA4AFF800BA;
+	Fri,  6 Nov 2020 22:39:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63E55F80234; Fri,  6 Nov 2020 21:53:49 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B60C3F80234; Fri,  6 Nov 2020 22:39:29 +0100 (CET)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF8D4F80150;
- Fri,  6 Nov 2020 21:53:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF8D4F80150
-IronPort-SDR: OKCc6H2cp+892B2IsoY6h0lc/TVZaK9tGveHjPiz7BZp1K4MAPRkl7Z5kCjkXpZLhqcVIGTGAM
- R1QMdCjUXTNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9797"; a="166090146"
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; d="scan'208";a="166090146"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2020 12:53:40 -0800
-IronPort-SDR: cTbL18lfulNcLJmvQWPDsKkw80vKqGvrKJ1War0IGT0MISwf2SezEohYDHuRWS1BQz2bSnTo+z
- ut12zaw/g3Jg==
-X-IronPort-AV: E=Sophos;i="5.77,457,1596524400"; d="scan'208";a="353483936"
-Received: from sfkampme-mobl1.amr.corp.intel.com (HELO [10.212.181.142])
- ([10.212.181.142])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Nov 2020 12:53:39 -0800
-Subject: Re: [Sound-open-firmware] linux-next: Tree for Nov 6
- (sound/soc/sof/sof-pci-dev.o)
-To: Randy Dunlap <rdunlap@infradead.org>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201106171834.64e4d6d5@canb.auug.org.au>
- <0a66a2b1-85b6-3515-47f4-2e861b991386@infradead.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7505ed68-f12b-d1d9-12e5-f8ae34a74ebd@linux.intel.com>
-Date: Fri, 6 Nov 2020 14:53:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF421F800BA
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2020 22:39:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF421F800BA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="r6p4t2hB"
+Received: by mail-pf1-x443.google.com with SMTP id 13so2590493pfy.4
+ for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2020 13:39:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=7aTWPGVFVbBWyajMT43VMslcFxXhz4VtDG2Makyw31Y=;
+ b=r6p4t2hBK6TaeQb58ushb4iE+SAEpBwSj1UGF6u7fYvIqBs1cEHVzdSxjnk/UvBUhQ
+ W8cQNHQveNpdu6qA1gOQgeBjly7CjVn0ieNdMmJ4AE1PhT0tBGdqAE2ATyQXtl53Rdac
+ ZSEHU6hmqv482cXm79+gjmSgYiVcLHmHBSB9ASlPgGe12tTIZ7BslHv0PrUoTc6QNCzB
+ Y4D1M3FoogsQTPU2TEZ8iGOdBXFfpwexcOJliySVCXgf/GT2xq991kkYGm2s66q1CwTr
+ P9yJmfhZKmDkC/LbEoObcnYCPuhL8uq3lxzJN/aUEe2Rfj/NIp1IosQuoV/x4T5dC36U
+ Xlvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=7aTWPGVFVbBWyajMT43VMslcFxXhz4VtDG2Makyw31Y=;
+ b=lSyM1rLS9ZC4bxDfN8h5cqLvLNJ/5WbW5fS0vYvnYnrY5vntpO4fcvOFToq+cKkZjG
+ qaCmOlZO7KQ6qe5TDWiZUyY13tFFLBSXo6YEOGstmRNFb4VzY65XBup8QNaEfbQe3px5
+ Qupt77O3UK29udBbzxu3foId9zUlozQo6TraaWxvt5/iRDe/QdzJHwuyi8h0ngLA2wPq
+ 5MzuyPwgsrKNCCQmRpHu2ppILfPbZC1d5r+56nK7JDIa5QhN0HvMAvekcnCt08+Ljq7X
+ 8S3DEU1rk9w/qNH2e3nh1WK268DxYXGyX+u4DBKCH18La7MgrgNeOP3uWCRFpaDVOAZ6
+ YgMQ==
+X-Gm-Message-State: AOAM533c790JCnUxCN6HDY0nFfuqHv8dxmOweNYmiNh4b9Ql346KeIma
+ DO9+LI9aygVKaAFRaNdkOg8=
+X-Google-Smtp-Source: ABdhPJwpIojmp9b1+/us6ZoC1XobJl4twTivXTCrNIPeHZ3z7HJtN7EZ21TixK2ffUkYFiMgVC+9xw==
+X-Received: by 2002:a17:90a:1f0b:: with SMTP id
+ u11mr1596531pja.105.1604698761088; 
+ Fri, 06 Nov 2020 13:39:21 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+ by smtp.gmail.com with ESMTPSA id u22sm2689423pgf.24.2020.11.06.13.39.19
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Fri, 06 Nov 2020 13:39:20 -0800 (PST)
+Date: Fri, 6 Nov 2020 13:27:08 -0800
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: fsl_aud2htx: Add binding doc
+ for aud2htx module
+Message-ID: <20201106212707.GA3927@Asurada-Nvidia>
+References: <1604281947-26874-1-git-send-email-shengjiu.wang@nxp.com>
+ <160466365499.22812.9217467877032314221.b4-ty@kernel.org>
+ <20201106122013.GB49612@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <0a66a2b1-85b6-3515-47f4-2e861b991386@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106122013.GB49612@sirena.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
+ Xiubo.Lee@gmail.com, lgirdwood@gmail.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, linuxppc-dev@lists.ozlabs.org,
+ tiwai@suse.com, robh+dt@kernel.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,42 +118,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-> on x86_64:
+On Fri, Nov 06, 2020 at 12:20:13PM +0000, Mark Brown wrote:
+> On Fri, Nov 06, 2020 at 11:54:23AM +0000, Mark Brown wrote:
+> > On Mon, 2 Nov 2020 09:52:26 +0800, Shengjiu Wang wrote:
+> > > AUD2HTX (Audio Subsystem TO HDMI TX Subsystem) is a new
+> > > IP module found on i.MX8MP.
+> > 
+> > Applied to
+> > 
+> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 > 
-> ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-> sof-pci-dev.c:(.text+0x5c): undefined reference to `snd_intel_dsp_driver_probe'
-> 
-> 
-> Full randconfig file is attached.
+> Sorry, looks like me queueing this raced with the review comments coming
+> in.  I think the review commments are small enough that it'll be OK to
+> fix incrementally?
 
-Nice catch, thanks Randy! Looks like we put the select 
-SND_INTEL_DSP_CONFIG in the wrong place, it's not dependent on the 
-HDaudio link being selected. Clearly a bug we've had for a while.
+Yes. I am okay if we move forward with this version.
 
-The diff below makes the error go away but I have to run it past folks 
-who are already enjoying their week-end. Will follow-up next week with a 
-proper fix.
-
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index a066e08860cb..5bfc2f8b13b9 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -271,6 +271,7 @@ config SND_SOC_SOF_JASPERLAKE
-
-  config SND_SOC_SOF_HDA_COMMON
-         tristate
-+       select SND_INTEL_DSP_CONFIG
-         select SND_SOC_SOF_INTEL_COMMON
-         select SND_SOC_SOF_HDA_LINK_BASELINE
-         help
-@@ -330,7 +331,6 @@ config SND_SOC_SOF_HDA
-         tristate
-         select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
-         select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
--       select SND_INTEL_DSP_CONFIG
-         help
-           This option is not user-selectable but automagically handled by
-           'select' statements at a higher level
-
-
+Thanks
