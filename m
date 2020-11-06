@@ -5,82 +5,82 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53562C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 04:17:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EC0FC388F2
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 04:18:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B59F820637
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 04:17:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6D8BB2075A
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Nov 2020 04:18:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aKsI8g8N";
-	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="e2SH2GrM";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UYbbbBWk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B59F820637
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="aTqcMXIX";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="L4PBzOvY";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OJ85DmjV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D8BB2075A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8084C82B;
-	Fri,  6 Nov 2020 05:16:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8084C82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76887165D;
+	Fri,  6 Nov 2020 05:17:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76887165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604636231;
-	bh=lHjGPPGG9TJBtG1X7qtjmzA7IKG2KCtiiig8rnAoqRg=;
+	s=default; t=1604636282;
+	bh=hMI7nCsO1CjUmED01YOLl8DhxLW7hOsp/mVSpFNZn2w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aKsI8g8NcHWP6LfYvyx7JnAq3DHrcXmpKttMk6YNty1++3K+Vc4T3p2LKWhYWWDGJ
-	 zhxGbTNDgkcSdUIImcwN9xY4mL4FBSZd9GfJ9PWFgYSx1NOL4q6N86oMIrI3KhOVFw
-	 iSkLFoF4GCe3lcio1yA2hdLI95wO0JfsRgPUCz7s=
+	b=aTqcMXIXqCpEi5E4nGok6YqvwqqAgg72aQuae4k1EsfuHPU1ilQX+8LqSk9QSYQ7p
+	 VsWC13p72Kw5tcXPUC5iRVwbsIAVZo20oADHCzaS6vZ7/F4fIBOLc69ZcXZqqUDrue
+	 zOalcrAKIQk8o3n0tx0C24lihMPfX3TOPDKemdSM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33DD5F80247;
-	Fri,  6 Nov 2020 05:15:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8EB46F804CC;
+	Fri,  6 Nov 2020 05:15:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74660F804B3; Fri,  6 Nov 2020 05:15:25 +0100 (CET)
+ id 709C1F80150; Fri,  6 Nov 2020 05:15:28 +0100 (CET)
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
  [66.111.4.229])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80E33F80150
- for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2020 05:15:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80E33F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C022F80234
+ for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2020 05:15:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C022F80234
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="e2SH2GrM"; 
+ header.b="L4PBzOvY"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="UYbbbBWk"
+ header.i=@messagingengine.com header.b="OJ85DmjV"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id DD721580518;
- Thu,  5 Nov 2020 23:15:15 -0500 (EST)
+ by mailnew.nyi.internal (Postfix) with ESMTP id 6474258054D;
+ Thu,  5 Nov 2020 23:15:16 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Thu, 05 Nov 2020 23:15:15 -0500
+ by compute5.internal (MEProxy); Thu, 05 Nov 2020 23:15:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=HjPRAtmWDHpsB
- ofnlqe6mFYpt2u4m3UE5sd2bFJ0WRM=; b=e2SH2GrMmX2wf3rPvikRLJ52mcVo1
- XmIYCIfbR3VluFuOOb4IR4gD7dXTAMdz3A9iaSrU+NVwYmjp9ZDh4gCnumnqjGNZ
- AVE4Pt0kJQuZnKs4iX42j2MClXhzimIpRoVcWOsTVLaJjr33hmn8cZdaAZihq9Db
- xKGs6yPkWw2a1hnEE5mEsY0l2VhNFlGuAGt/unmvMLdVEoHQOubYFJjXDy645c3Q
- lfIA4+rKJlRhSHw5QywGybQggyxEfw80vBUMHaeJ2AclviSmQ2pLk2bFNBCxtFZG
- u2Ile7bPPBfOda5/IgytA/bOrItLl1FM/4wXEH5JXpTcvWlJxxQ3rlFcg==
+ :mime-version:content-transfer-encoding; s=fm1; bh=LPrGREj8LnC7H
+ 4kT27R+89/vsU1CuTFnKI4ITrAeHRM=; b=L4PBzOvYizZM8pY68bEa7Mb+pVhy6
+ WGH8jt33WtBDSU1lOCf6pTGzXml2Xz9VZaouoe1vX9kvW4NM8U5ZufMQ5UubdYya
+ gvyFsbzMsZJajlr24frzHvFJqLh9j+N2m9VrdwXuWx0LZsBmzo0wqZUspIsEr0L2
+ VibWp8RJN3FY3LKMcww3HyetlEPpGrxzncWZniPFzamfbAid6NwLSHNqnA8+p47g
+ qL5k4D3v9f8SWKCrX8JcAaP57coqxGFLe2Of6G4bbL2Z2OwTQOqV0fs1r7sTpfBf
+ 5GxeIsaD/17NbJ4lUmPuxgTT8Jx54fccEuBW2Uxpewu8fFNtrQxS8/ryQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm1; bh=HjPRAtmWDHpsBofnlqe6mFYpt2u4m3UE5sd2bFJ0WRM=; b=UYbbbBWk
- cd0XnNAR3UdUR7aW7NfzI7JUuxvArRX+QsSgYDml9b02oq7+/SpZeSG5h7ZvbTJw
- xdCOqxxzxz/j9q4HToLNJAU/575ZpaT9gnAT01u/97HZdHlVdmaEl9S42rxmfm1J
- oAhz3HXGDvM104xo9uwnTexD3yU1aFwnlb6uHgcjJzsdE+qsgtpLm80wLQVPLlVW
- xZ/Zloo2oHTSawgSecWYIogSjGWtZ3CZy6XeOW8A7G5avQs2XsAx93U3210BPgi5
- +KjTi24TRl+iS4Zmhs39QEN59DQnEPGG8WTbuzWzL+upouO6AN8AKvpHs3Hmq1jB
- s0axFguMuDXPPA==
-X-ME-Sender: <xms:082kX49-UKwZc8QvAmRNhtJz4bvp9pqP0KwoaMmBoOqQ7Pw1lWshOw>
- <xme:082kXwt5xKWHhqR2Kv4gS7lU8gKGoUrPCuxEJdvflUUbPOcZfqcbk6lZCyZYLH30f
- x5Auia31d3QjxtSmA>
+ fm1; bh=LPrGREj8LnC7H4kT27R+89/vsU1CuTFnKI4ITrAeHRM=; b=OJ85DmjV
+ zN8KKXU3KomZCxapK1LKs304mkkFGfblyjBFt3cxHNSXNpcUn+i9oJykm5IIOge5
+ dxOqyAwENCvgipHKwTfbQWAhK0ghbNDZsPxb6o/wT0KMvMDqTwWZ3BhcLxXMxQU0
+ MC1nn0VPlrzGtncWUzhRIPTSpWPMXBoWTcvPyPA1nFCScGIqBVcIg2F10J4Tq7Hp
+ c2IVMHb9XrFID5wguKEOTuzxCb+ov35VlXRbie7Px2GPZ4k6eOLz4Eg5fRYQZnvX
+ fT9/wQNMPePSlVmoxlkcP95FncpEyIwBhU9aLQeCwx3bCcNRVoGtGFE0d7FEd9e1
+ 3QAHsS6AVRuQqA==
+X-ME-Sender: <xms:1M2kX4Zcwgm42ZGuw8pqfLg_GytHF8Q0jTemh_HJRWQ6Rfk8zpDUNA>
+ <xme:1M2kXzblX44RBnKio72B1HEm3zkNYmTcLh0h5-mMS0EW18CsEgrTmNDEXT_eq3yFU
+ lwGSoRCifvlP5x1Zg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgjedtucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -90,23 +90,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgjedtucetufdoteggod
  gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
  iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
  ugdrohhrgh
-X-ME-Proxy: <xmx:082kX-DD6zBd2x4E8aKr-LeO_paPnD9fjvUhum6hFzfYm2rYBHWsZw>
- <xmx:082kX4cSwb257mhJxFF2nS7bq91jJXl9vNUkiBlv3R1PkGIc_zYGoA>
- <xmx:082kX9PxkaTdGqVzakvMGbpvFtlHO5Eu_Bx0lSN_faeNezclk6WICw>
- <xmx:082kXwrja9JmCygt17FK8RoykY1Vh1RMaYKl5fcgNVVx0xLQ3esNWg>
+X-ME-Proxy: <xmx:1M2kXy9069_7WN3DkcOkqTG-5JteHVeQk685WrWMr9w2Np4FkNN-Nw>
+ <xmx:1M2kXyoe2gOUBOlxLXULMQzQvi-B4nIsPijrkzhjg_0WTZoYDk33og>
+ <xmx:1M2kXzpY9BFGV4KPJAVASa7o4_E0nHLdhJaXVKpOQ327q4uNKiirEw>
+ <xmx:1M2kX20duzaBUtR9zT6fl94OVq5c5fItlzotqzSTgjMYKZCE2ZdYfA>
 Received: from titanium.stl.sholland.net
  (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA id 22E3E3060064;
+ by mail.messagingengine.com (Postfix) with ESMTPA id 9CBC03060057;
  Thu,  5 Nov 2020 23:15:15 -0500 (EST)
 From: Samuel Holland <samuel@sholland.org>
 To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
  Jernej Skrabec <jernej.skrabec@siol.net>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH 3/7] arm64: dts: allwinner: a64: Allow using multiple codec
- DAIs
-Date: Thu,  5 Nov 2020 22:15:09 -0600
-Message-Id: <20201106041513.38481-4-samuel@sholland.org>
+Subject: [PATCH 4/7] arm64: dts: allwinner: a64: Add pinmux nodes for AIF2/AIF3
+Date: Thu,  5 Nov 2020 22:15:10 -0600
+Message-Id: <20201106041513.38481-5-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201106041513.38481-1-samuel@sholland.org>
 References: <20201106041513.38481-1-samuel@sholland.org>
@@ -130,36 +129,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Increase #sound-dai-cells on the digital codec to allow using the other
-DAIs provided by the codec for AIF2 and AIF3.
+Now that the sun8i-codec driver supports AIF2 and AIF3, boards can use
+them in DAI links. Add the necessary pinmux nodes.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index dc238814013c..b70596c06c4f 100644
+index b70596c06c4f..97334e25ddd3 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -150,7 +150,7 @@ cpudai: simple-audio-card,cpu {
- 		};
+@@ -654,6 +654,18 @@ pio: pinctrl@1c20800 {
+ 			interrupt-controller;
+ 			#interrupt-cells = <3>;
  
- 		link_codec: simple-audio-card,codec {
--			sound-dai = <&codec>;
-+			sound-dai = <&codec 0>;
- 		};
- 	};
- 
-@@ -860,7 +860,7 @@ dai: dai@1c22c00 {
- 		};
- 
- 		codec: codec@1c22e00 {
--			#sound-dai-cells = <0>;
-+			#sound-dai-cells = <1>;
- 			compatible = "allwinner,sun50i-a64-codec",
- 				     "allwinner,sun8i-a33-codec";
- 			reg = <0x01c22e00 0x600>;
++			/omit-if-no-ref/
++			aif2_pins: aif2-pins {
++				pins = "PB4", "PB5", "PB6", "PB7";
++				function = "aif2";
++			};
++
++			/omit-if-no-ref/
++			aif3_pins: aif3-pins {
++				pins = "PG10", "PG11", "PG12", "PG13";
++				function = "aif3";
++			};
++
+ 			csi_pins: csi-pins {
+ 				pins = "PE0", "PE2", "PE3", "PE4", "PE5", "PE6",
+ 				       "PE7", "PE8", "PE9", "PE10", "PE11";
 -- 
 2.26.2
 
