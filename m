@@ -2,102 +2,65 @@ Return-Path: <SRS0=Ma8t=EN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACC7FC2D0A3
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Nov 2020 02:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A478C388F7
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Nov 2020 09:48:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B542420719
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Nov 2020 02:41:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 28F9E20872
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Nov 2020 09:48:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ordGjzSm";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UwI9OV4X"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B542420719
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xkg+q5Cb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28F9E20872
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9146F167C;
-	Sat,  7 Nov 2020 03:40:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9146F167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAA38167C;
+	Sat,  7 Nov 2020 10:47:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAA38167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604716898;
-	bh=9EgexDvO5XuTQwI+XMErr26+rbq3Np0yEoarUJfBSXs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1604742501;
+	bh=LCKccvmE/NpVB2M9A08V2DZJJA0S3GqOBs6u0gZ0wrY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ordGjzSmVeI8xuSyrOR3ITpPKTkZ7/kNEKmMygv0q7B7hpai+PTzaqEuy/C7nQfcL
-	 P1++z/9KBkgJnXL6XP7XvpZHUq8Y+UfzGJrCumFaukRS0h1LFXBjxrv6y5yNw2/j6s
-	 Yr1WEDd/xJBHbsVQrsVkGs/qS9+lCanrza4LZ/fI=
+	b=Xkg+q5CbeL6qzwrBGa43wx9ZRgkurbOavu8OVG+SeaDrdlUTHD1N9e2ygbc75EnO+
+	 3sFNei1CbK4z/NJuHJD0MYwf5qVZ+ZxqP+oUD0bmKcFwyJs08X4HP2Hp6ezgL0YmTa
+	 /cdQKHkUBPjEF94FAz/rNB1a86Ov5PFvkB6kx9Ag=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B9A6F80114;
-	Sat,  7 Nov 2020 03:40:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3160BF80162;
+	Sat,  7 Nov 2020 10:47:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72242F80171; Sat,  7 Nov 2020 03:40:46 +0100 (CET)
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com
- [IPv6:2607:f8b0:4864:20::441])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AE41AF80171; Sat,  7 Nov 2020 10:47:29 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24F14F80114
- for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2020 03:40:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24F14F80114
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="UwI9OV4X"
-Received: by mail-pf1-x441.google.com with SMTP id y7so3294592pfq.11
- for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2020 18:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=uIZQwyu3heVWOuZiTU19D+Rn7MoOiKM8zu84y+cy574=;
- b=UwI9OV4XjHg/GOytA2RlHLo2M6JLlW7M5230uqzFpBC2M9Mtkw30LzLDYQ69j0W7Iz
- KJvGsPiCipMbg8JMEm9fW8u1REnbRLHe+lh4W8Ssz++RgLG2DKQnJQJhMqMeE9hFwOEb
- fG+8RdA6cyA8TWfJ8nPCA+d6OL81wPnp0j3mENUpIzfW4GoLgQ9sM5D3bkuzQI+y4alf
- bTay6lXpq+gBveRpOK94h8DQF+ZDYHBJmCfvdbJ09U3Lp/MNQ67qO6P4Pov8neD6GJ6M
- hJX5AQ90xKKCRRFM641cHKHqagg+mKQ5HyM3XIHcmryL782zL1wcEBGQEEFKKVYr7vj2
- My9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=uIZQwyu3heVWOuZiTU19D+Rn7MoOiKM8zu84y+cy574=;
- b=srtNkHFAhvYw2Usnp1GgmenECMvMbEcjwDqW14BMYgGmldKFck+hjNN7jehLEBASK/
- FxD/XVDQyNcP8yl1ji3HsqpPZvW3xIjJvSa+Y/5zdVKYWffOxm9LWTIKegBmGn2Th8G1
- 5QeHC55Go6koDjkRJyh0pTJvwVtQLeGIDWEhyKQTy1UmGTgJtJL3vCR1r2ey9vwuNAHq
- DMf+0qRb+3Eb1WCw5WQnaqeCJ2wOksl1oeFDF+zM6XlKsUChnh2HQDocqYz0V72SpzH7
- 3lcxGX5Oq0xx4cDZNpEyft4k6pok0O4y2BmSVv9XpHkoM31PCEqMa2U37IYlCirBJawS
- XP+g==
-X-Gm-Message-State: AOAM532mBa30W+TfSgn0ZDNjutlCA2UKxA5YYB10Ml8sjrKwapeAkYdf
- HNm9h6+MMs6qGTWExosa0Ss=
-X-Google-Smtp-Source: ABdhPJwppyyTWHSp5pmK5h5/8Fa9jyRxfiLX2TJyLtAO4il12N3D8xn3qiRuq1mH+2JebQBByBlSqw==
-X-Received: by 2002:aa7:815a:0:b029:164:cc2e:2c56 with SMTP id
- d26-20020aa7815a0000b0290164cc2e2c56mr4532319pfn.21.1604716836081; 
- Fri, 06 Nov 2020 18:40:36 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id d68sm3670126pfc.135.2020.11.06.18.40.35
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Fri, 06 Nov 2020 18:40:35 -0800 (PST)
-Date: Fri, 6 Nov 2020 18:28:22 -0800
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_aud2htx: Remove dev_err() usage after
- platform_get_irq()
-Message-ID: <20201107022822.GA5163@Asurada-Nvidia>
-References: <1604715643-29507-1-git-send-email-shengjiu.wang@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1604715643-29507-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, timur@kernel.org, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, broonie@kernel.org,
- festevam@gmail.com, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A953F80114
+ for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2020 10:47:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A953F80114
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 575C9ABA2;
+ Sat,  7 Nov 2020 09:47:15 +0000 (UTC)
+Date: Sat, 07 Nov 2020 10:47:14 +0100
+Message-ID: <s5hv9eho5wd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kailang <kailang@realtek.com>
+Subject: Re: ThinkPad support headset button
+In-Reply-To: <f39b11d00340408ca2ed2df9b4fc2a09@realtek.com>
+References: <f39b11d00340408ca2ed2df9b4fc2a09@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,10 +76,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Nov 07, 2020 at 10:20:43AM +0800, Shengjiu Wang wrote:
-> platform_get_irq() would print error message internally, so dev_err()
-> after platform_get_irq() is not needed
+On Fri, 06 Nov 2020 08:53:55 +0100,
+Kailang wrote:
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Hi Takashi,
+> 
+> Two ThinkPad want to support headset button.
+> Attach was support patch.
+> 
+> Many Thanks.
+> 
+> BR,
+> Kailang
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Applied now.  Thanks.
+
+
+Takashi
