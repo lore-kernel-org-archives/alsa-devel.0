@@ -7,83 +7,83 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BA17C4741F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FEC4C4741F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:19:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 670ED207BB
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:18:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E6EE520639
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:19:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l+UG28yZ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="lrGFiV0J"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 670ED207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cLmSMysQ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="aox5vh8y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6EE520639
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFA881714;
-	Tue, 10 Nov 2020 11:17:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFA881714
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0631D170D;
+	Tue, 10 Nov 2020 11:18:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0631D170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605003502;
-	bh=IYQ/Pp/p1dFqFCI3HMJkUendY8kf2XAtCSzfes8v6VQ=;
+	s=default; t=1605003539;
+	bh=lVaTk+Wa6L7uydk3tQ2l1XRZa70PK1xead8PeXhvC40=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l+UG28yZKH3mYPRBkLBMktvfmklFC7BQxWTeUW8xWKMESyfMteLkMVbmAt80AsojM
-	 YP6rnI+4S1ZouwsWPGOMgC/VeEqpneCkIhN8Gkj08qgO40V1YifqbF8O2B51JkHHF4
-	 F/wPF5WmW75BksWtWN4LkfYqjcgEAOiv1DtO9LrE=
+	b=cLmSMysQIU42uYM6e7azo3T5zU2888QYSe/H5cEjzwo6N7HGcX8/8e1aOOGGTdleT
+	 CMxx7CUaq0igCpN5HHtmPgnTWlLqcXUqWbVhgzkddD1p+6aVAx1fQJoi3ylANIqzPQ
+	 dxPBeJaf/9INrlN7Cz9sxC83RyxMMErGz+DDUoFs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 226ECF804E2;
-	Tue, 10 Nov 2020 11:15:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02E49F804E3;
+	Tue, 10 Nov 2020 11:15:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE393F8025E; Mon,  9 Nov 2020 12:07:13 +0100 (CET)
+ id 3418AF800BA; Mon,  9 Nov 2020 12:07:14 +0100 (CET)
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
  [IPv6:2a00:1450:4864:20::442])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12A36F8022B
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0765F8020C
  for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2020 12:07:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12A36F8022B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0765F8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
- header.i=@bgdev-pl.20150623.gappssmtp.com header.b="lrGFiV0J"
-Received: by mail-wr1-x442.google.com with SMTP id 23so8214193wrc.8
+ header.i=@bgdev-pl.20150623.gappssmtp.com header.b="aox5vh8y"
+Received: by mail-wr1-x442.google.com with SMTP id c17so8204049wrc.11
  for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2020 03:07:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=m2ikj+dhQ1Zeha09QctzFr3Pm7l2AwdyE1EcOPpxBQc=;
- b=lrGFiV0JEwMQZrmMw1exEx6p70DOim7QTqsGe9oOJfscxaaDbqtNd51mDY2gLrVO6e
- AJaVU6gEvJ5Rqj0pmzF+RQrIAx3UUypf5ocQh5+MxoPZ8v5DbPYgi+LUXOO0xXncPOxJ
- vazruXakD7raTY00eG7zaplUuhpuFOzAXeDC0+Go3Z91tS4RB4jYmtz+tumRzgHuHKVW
- Q3APL+KmLaN9niAGudHytA7iWz6ha072HjPWCU0qqHVWmvaciARBx8JEUQUEjIamSyMq
- CKw7PL+YgCXUcrNMDTeAPsCWzL8tuPTeq/pLQmlfpQnNOHY3qjMybpVo+6SdERNaMi03
- sDgw==
+ bh=X2Rt2FzEDhfwvo5anIXOq/hUQeEl4/lxGNeKa+o6J0w=;
+ b=aox5vh8ytYutbWVc26/liVn7Z8hEPu2nlIMQId7oA48asO+6m3jeTPz78Xi5tKvZ5M
+ bwqHNNDNK70TD0NuDOZApqzQQQIxd7lpVAV+s12r5UTEgNsP0LLtTP/8WwzPWY/N5W3F
+ Npda/QnMuuCjfODUnOM6c1KUKnZ4sERDBgsxwJiNxobq6BnhL/yQBZO223GeqTICPw9m
+ vPcqcg/xsiMtQw2qzDEvFh+x8itNf6+A8g+1ljb0/aVhzJkxBCaUC9gPqB0T/1iCSeAD
+ Up5ueADAnhN5fgjIVO2va7mHiOxvK3gevDqJSukErF5i8yrzIC+ShGo5F2g2sSe+Tv4s
+ iVVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=m2ikj+dhQ1Zeha09QctzFr3Pm7l2AwdyE1EcOPpxBQc=;
- b=puK1G+stJh0xfpdjI54alN8vZP0cLo0x+k6/2BJJRArGV8GOtpMPbUsCO8ikFojaSH
- aeLaS8NMf3+oLNtKXKIokt+XKcnL421/PxORZAu+hVSa/m92uJMTYGcJf3nF3Hs9NjiG
- QCzeQZt7axLAZ5BQzJIxEq7AVzKbwgF622lnjyFJ+fknBkL7Jj/hgziij5hwFZ15mWze
- HWodb4TKRwRuLNoatu7WkrZRS9aeJes6EjdYec6woRiWh10IMYkrsL63zPSF7zaGYdBd
- lASRBHD6N6ZSGxvVqy66jOAiXW3gi+H44twi5H29DbuoLwOfVqiCB+/on63GUKmbR6ox
- 4Ftw==
-X-Gm-Message-State: AOAM532K8y3anPBd9c5fbpIjjLSFRkHDx5y+8OiaVVGKpuwzgzxsjT6L
- gCv0uz53nvm6F0c2xWDyb2cWwA==
-X-Google-Smtp-Source: ABdhPJyDQDC3mJ8XBzXRPLr9tujc8yB1EaUC1zlVXx3gghE7oqzt7WatCScZ7dhRaCoAETe4X60pOw==
-X-Received: by 2002:a5d:54c5:: with SMTP id x5mr3869675wrv.297.1604920026445; 
- Mon, 09 Nov 2020 03:07:06 -0800 (PST)
+ bh=X2Rt2FzEDhfwvo5anIXOq/hUQeEl4/lxGNeKa+o6J0w=;
+ b=kkReOD5fm1QYp64gYQsi4QnYK+utBE21zi2K2tYJeReoVYKHFa4Jqag5FNtVG4qny/
+ wKBnHhCn0ZDA0ilIz7ccbNmeEmbhLsPHr4Rja0af+TYX9WGMXm67BDdwup99jfYoraJk
+ 9xp/WCztPvSgfBQSPlpxLZ3DQRDjH2v6FIbizW7i+mXi343k5SSvXhixD5F3ElxdRKIt
+ pmtwkM43O677Tq1lSUu6peaLuGzk6nzLWP5k2fR+S/KVsKV+FHu5bTqTZb4vfVshEdc9
+ jK8iwZ8bMkIoIOi5h0BkewAVew6UVpGiiM3NGe8weF8tCC+VdPMgrHT1ogm/vlVP9kcm
+ DalQ==
+X-Gm-Message-State: AOAM533xAyI9WmMIsbr8hHirVXkim6LJo36OSwNg6/xOD+NantZROmwi
+ T2QzyXdgQCKylUbM020tmIYDHQ==
+X-Google-Smtp-Source: ABdhPJz9QUvKGU969idAKC9U5b3ocmwgTjZ8J0vtC/TaPYMbRMpLHkJeyp4aCBCLAgcQ+m/LRxWMMA==
+X-Received: by 2002:adf:9066:: with SMTP id h93mr18252530wrh.166.1604920022928; 
+ Mon, 09 Nov 2020 03:07:02 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr.
  [2.15.39.206])
- by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.04
+ by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.01
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Nov 2020 03:07:05 -0800 (PST)
+ Mon, 09 Nov 2020 03:07:02 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Sumit Semwal <sumit.semwal@linaro.org>,
@@ -103,9 +103,9 @@ To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
  Andrew Morton <akpm@linux-foundation.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 4/9] vhost: vringh: use krealloc_array()
-Date: Mon,  9 Nov 2020 12:06:49 +0100
-Message-Id: <20201109110654.12547-5-brgl@bgdev.pl>
+Subject: [PATCH v3 2/9] mm: slab: provide krealloc_array()
+Date: Mon,  9 Nov 2020 12:06:47 +0100
+Message-Id: <20201109110654.12547-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201109110654.12547-1-brgl@bgdev.pl>
 References: <20201109110654.12547-1-brgl@bgdev.pl>
@@ -117,7 +117,7 @@ Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-mm@kvack.org,
  dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
  linaro-mm-sig@lists.linaro.org, linux-gpio@vger.kernel.org,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-media@vger.kernel.org,
- linux-edac@vger.kernel.org
+ Vlastimil Babka <vbabka@suse.cz>, linux-edac@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -135,29 +135,67 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Use the helper that checks for overflows internally instead of manually
-calculating the size of the new array.
+When allocating an array of elements, users should check for
+multiplication overflow or preferably use one of the provided helpers
+like: kmalloc_array().
+
+There's no krealloc_array() counterpart but there are many users who use
+regular krealloc() to reallocate arrays. Let's provide an actual
+krealloc_array() implementation.
+
+While at it: add some documentation regarding krealloc.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- drivers/vhost/vringh.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/core-api/memory-allocation.rst |  4 ++++
+ include/linux/slab.h                         | 18 ++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-index 8bd8b403f087..08a0e1c842df 100644
---- a/drivers/vhost/vringh.c
-+++ b/drivers/vhost/vringh.c
-@@ -198,7 +198,8 @@ static int resize_iovec(struct vringh_kiov *iov, gfp_t gfp)
+diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
+index 4446a1ac36cc..5954ddf6ee13 100644
+--- a/Documentation/core-api/memory-allocation.rst
++++ b/Documentation/core-api/memory-allocation.rst
+@@ -147,6 +147,10 @@ The address of a chunk allocated with `kmalloc` is aligned to at least
+ ARCH_KMALLOC_MINALIGN bytes.  For sizes which are a power of two, the
+ alignment is also guaranteed to be at least the respective size.
  
- 	flag = (iov->max_num & VRINGH_IOV_ALLOCATED);
- 	if (flag)
--		new = krealloc(iov->iov, new_num * sizeof(struct iovec), gfp);
-+		new = krealloc_array(iov->iov, new_num,
-+				     sizeof(struct iovec), gfp);
- 	else {
- 		new = kmalloc_array(new_num, sizeof(struct iovec), gfp);
- 		if (new) {
++Chunks allocated with kmalloc() can be resized with krealloc(). Similarly
++to kmalloc_array(): a helper for resizing arrays is provided in the form of
++krealloc_array().
++
+ For large allocations you can use vmalloc() and vzalloc(), or directly
+ request pages from the page allocator. The memory allocated by `vmalloc`
+ and related functions is not physically contiguous.
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index dd6897f62010..be4ba5867ac5 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -592,6 +592,24 @@ static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
+ 	return __kmalloc(bytes, flags);
+ }
+ 
++/**
++ * krealloc_array - reallocate memory for an array.
++ * @p: pointer to the memory chunk to reallocate
++ * @new_n: new number of elements to alloc
++ * @new_size: new size of a single member of the array
++ * @flags: the type of memory to allocate (see kmalloc)
++ */
++static __must_check inline void *
++krealloc_array(void *p, size_t new_n, size_t new_size, gfp_t flags)
++{
++	size_t bytes;
++
++	if (unlikely(check_mul_overflow(new_n, new_size, &bytes)))
++		return NULL;
++
++	return krealloc(p, bytes, flags);
++}
++
+ /**
+  * kcalloc - allocate memory for an array. The memory is set to zero.
+  * @n: number of elements.
 -- 
 2.29.1
 
