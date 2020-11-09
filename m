@@ -1,69 +1,75 @@
-Return-Path: <SRS0=odsy=EP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=3oRA=EQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E779C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2020 23:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D47B5C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 01:49:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 73FE52065D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2020 23:20:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EE8ED2078D
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 01:49:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Vv8nETRe"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73FE52065D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VZU8lZG3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE8ED2078D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEEAC16A6;
-	Tue, 10 Nov 2020 00:19:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEEAC16A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31677169A;
+	Tue, 10 Nov 2020 02:48:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31677169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604964039;
-	bh=sbl9Qt5A3dLkwbgyaMCTVRqkUvhrmheer2v2M7kSchI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Vv8nETReAIkcskxD6xtPK+82irBKoVNCBUlPu9b/5w90KwiCd4jQb/gZJqPGJzpwZ
-	 LmwrtnwDRVZ89XpLlD9s7nV3cL2aCHn2SoZeF9k2gG0XppsqVeO+Bg2MsjoFwpfpbg
-	 3Qlq78KB11Eg9JhnCWjMsHxuYkXPlW8+L6JiKaMg=
+	s=default; t=1604972976;
+	bh=mbJC1xOKY6HsJLO8WTJyVbSMRpj6qzKiVSL0gJt1wts=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VZU8lZG3X72veJ05uInny3pPFIR8XZE/ebYt8Jc2aSHkySB2kPhfO0njMhxOwN7Bf
+	 AP7qHpLKci82prUsN1wAgoYFgf1TUZQZc6JYOLK98yy2vlWmkYDCraDB8UzWs6ZjsJ
+	 cmdE6tSK88RgAUqMlg04kjZzKJDQ1OCDfIipzP4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F8C3F801F5;
-	Tue, 10 Nov 2020 00:19:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6CA7F801F5;
+	Tue, 10 Nov 2020 02:48:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F20BF8020C; Tue, 10 Nov 2020 00:19:47 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 42DAAF80059
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 00:19:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42DAAF80059
-Date: 10 Nov 2020 08:19:35 +0900
-X-IronPort-AV: E=Sophos;i="5.77,464,1596466800"; d="scan'208";a="62155006"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 10 Nov 2020 08:19:35 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 653C14006DE6;
- Tue, 10 Nov 2020 08:19:35 +0900 (JST)
-Message-ID: <87wnyu86n2.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 0/7] Audio Graph Updates
-In-Reply-To: <20201109203055.GN6380@sirena.org.uk>
-References: <1604329814-24779-1-git-send-email-spujar@nvidia.com>
- <20201109203055.GN6380@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- Sameer Pujar <spujar@nvidia.com>, tiwai@suse.com, sharadg@nvidia.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, jonathanh@nvidia.com
+ id 5A656F8020C; Tue, 10 Nov 2020 02:48:43 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21BCDF80059
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 02:48:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21BCDF80059
+IronPort-SDR: uX5XlL2PSQG15dKqaRwa48fOWmg+tm8EUWr3TeP/0R7WgQHHNqH+efqP+B8lOsPqxkDxkf91YB
+ YVFP8WNYRN+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234067604"
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="234067604"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Nov 2020 17:48:30 -0800
+IronPort-SDR: Ko2VTPYSBasM+sotCHtedRYAZwYPgrPgJ/nuHYcE7IOA5ZCLr7bVPc+wcUw6rUHuhGbakrOIpz
+ 7DgUGWtk5yLg==
+X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="541125879"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Nov 2020 17:48:27 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.de
+Subject: [RFC] ASoC: max98373: don't access volatile registers in bias level
+ off
+Date: Mon,  9 Nov 2020 21:55:43 +0800
+Message-Id: <20201109135543.7862-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: alsa-devel@alsa-project.org, ryans.lee@maximintegrated.com,
+ kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ vkoul@kernel.org, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,23 +85,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+We will set regcache_cache_only true in suspend. As a result, regmap_read
+will return error when we try to read volatile registers in suspend.
+Besides, it doesn't make sense to read feedback data when codec is not
+active. To avoid the regmap_read error, this patch try to return a fake
+value when kcontrol _get is called in suspend.
+However, the question is what is the "correct" behavior when we try to
+read a volatile register when cache only is set.
+1. return an error code to signal codec is not available as what we have
+now.
+2. return a fake value like what this patch do.
+3. wake-up the codec and always return a valid value.
 
-Hi Mark
-
-> > This series is a prepraration for using generic graph driver for Tegra210
-> > audio. Tegra audio graph series will be sent in a separate series because
-> > it has some dependency over other series for documentation work. This
-> > series can focus on the generic ASoC driver updates. Below are the summary
-> > of changes done.
-> 
-> Morimoto-san, are you OK with these?
-
-Yes. For audio-graph part
-
-	Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-Thank you for your help !!
-
-Best regards
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
-Kuninori Morimoto
+ sound/soc/codecs/max98373.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 929bb1798c43..07494e40c296 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -168,6 +168,23 @@ static SOC_ENUM_SINGLE_DECL(max98373_adc_samplerate_enum,
+ 			    MAX98373_R2051_MEAS_ADC_SAMPLING_RATE, 0,
+ 			    max98373_ADC_samplerate_text);
+ 
++static int max98373_feedback_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++
++	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
++		/*
++		 * We can't get the feedback data when codec is off, set
++		 * value = 0 and return 0 to avoid error.
++		 */
++		ucontrol->value.integer.value[0] = 0;
++		return 0;
++	}
++
++	return snd_soc_put_volsw(kcontrol, ucontrol);
++}
++
+ static const struct snd_kcontrol_new max98373_snd_controls[] = {
+ SOC_SINGLE("Digital Vol Sel Switch", MAX98373_R203F_AMP_DSP_CFG,
+ 	MAX98373_AMP_VOL_SEL_SHIFT, 1, 0),
+@@ -209,8 +226,10 @@ SOC_SINGLE("ADC PVDD FLT Switch", MAX98373_R2052_MEAS_ADC_PVDD_FLT_CFG,
+ 	MAX98373_FLT_EN_SHIFT, 1, 0),
+ SOC_SINGLE("ADC TEMP FLT Switch", MAX98373_R2053_MEAS_ADC_THERM_FLT_CFG,
+ 	MAX98373_FLT_EN_SHIFT, 1, 0),
+-SOC_SINGLE("ADC PVDD", MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK, 0, 0xFF, 0),
+-SOC_SINGLE("ADC TEMP", MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK, 0, 0xFF, 0),
++SOC_SINGLE_EXT("ADC PVDD", MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK, 0, 0xFF, 0,
++	max98373_feedback_get, NULL),
++SOC_SINGLE_EXT("ADC TEMP", MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK, 0, 0xFF, 0,
++	max98373_feedback_get, NULL),
+ SOC_SINGLE("ADC PVDD FLT Coeff", MAX98373_R2052_MEAS_ADC_PVDD_FLT_CFG,
+ 	0, 0x3, 0),
+ SOC_SINGLE("ADC TEMP FLT Coeff", MAX98373_R2053_MEAS_ADC_THERM_FLT_CFG,
+@@ -226,7 +245,8 @@ SOC_SINGLE("BDE LVL1 Thresh", MAX98373_R2097_BDE_L1_THRESH, 0, 0xFF, 0),
+ SOC_SINGLE("BDE LVL2 Thresh", MAX98373_R2098_BDE_L2_THRESH, 0, 0xFF, 0),
+ SOC_SINGLE("BDE LVL3 Thresh", MAX98373_R2099_BDE_L3_THRESH, 0, 0xFF, 0),
+ SOC_SINGLE("BDE LVL4 Thresh", MAX98373_R209A_BDE_L4_THRESH, 0, 0xFF, 0),
+-SOC_SINGLE("BDE Active Level", MAX98373_R20B6_BDE_CUR_STATE_READBACK, 0, 8, 0),
++SOC_SINGLE_EXT("BDE Active Level", MAX98373_R20B6_BDE_CUR_STATE_READBACK, 0, 8, 0,
++	max98373_feedback_get, NULL),
+ SOC_SINGLE("BDE Clip Mode Switch", MAX98373_R2092_BDE_CLIPPER_MODE, 0, 1, 0),
+ SOC_SINGLE("BDE Thresh Hysteresis", MAX98373_R209B_BDE_THRESH_HYST, 0, 0xFF, 0),
+ SOC_SINGLE("BDE Hold Time", MAX98373_R2090_BDE_LVL_HOLD, 0, 0xFF, 0),
+-- 
+2.17.1
+
