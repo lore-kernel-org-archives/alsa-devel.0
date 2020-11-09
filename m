@@ -2,76 +2,57 @@ Return-Path: <SRS0=odsy=EP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E600C5517A
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2020 21:11:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F461C5517A
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2020 21:13:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD94B206CB
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2020 21:11:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AB9BA206CB
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Nov 2020 21:13:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kq9GLbCV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD94B206CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nAiF1MG8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB9BA206CB
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A36D844;
-	Mon,  9 Nov 2020 22:10:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A36D844
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF31D16A6;
+	Mon,  9 Nov 2020 22:12:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF31D16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604956268;
-	bh=2PFQhqRqq3zp9ZjhDYc6iEnDWLtbHTD/+WUlvCBjCZs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kq9GLbCV+78Fksgx+GAuMlYzYSbrVSj8oJN5XlorQed7xGoB6GYg0MoLfWYn4trMM
-	 W9d338UYDVBw27DVqwpvlqEkt2GMRjrR+GiDdMLkYTXVvXFtAo54tXsiWp5yR4Bcfz
-	 F9qvjd5qvVRB+v5Y0fxOq+EqBdG5PsZoUE+z4pTQ=
+	s=default; t=1604956422;
+	bh=CfmGiBnB5sfcnJc64rfZJMCbvbdhlIksInZYU6idngg=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nAiF1MG8XJhG2NKh6sgRBV+N3xNlAqpmjgXl1r3vgEPfcBJt05JsGhI6AE2BNI+ol
+	 9sIckHsqP+gXaqT24U8EnvqbXKUMWeYE2PEtSVFZQviDKL/XSzQlgJssusw6EmHeyv
+	 LoY3nBH1tHubdhbBaDfgKEnWyYLMvY/F8ch6SJgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98DDBF800BA;
-	Mon,  9 Nov 2020 22:10:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E7C3F801F5;
+	Mon,  9 Nov 2020 22:12:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA431F8020C; Mon,  9 Nov 2020 22:10:16 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72DB1F800BA
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2020 22:10:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72DB1F800BA
-IronPort-SDR: aXy2ojnpr3shLb0SoeCz1PVF3DKadrKpXpOi1ljbYl+Bs9DQUsK9cl2QqRC5c7S6HPswj3LKTB
- 6EM6mYtl6JsA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="169087538"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="169087538"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2020 13:10:04 -0800
-IronPort-SDR: iv4hMx76HayE5tM/GIO3TmS1v4jqz150h1MMVV55Abt/e+DmlTIAfoJsPBHL7jYsGTxuA4GDXy
- tg4hzapcWTDw==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="322585237"
-Received: from xvera-mobl.amr.corp.intel.com (HELO rsridh-mobl1.localdomain)
- ([10.209.52.116])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2020 13:10:03 -0800
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: Boards: tgl_max98373: add dpcm_capture flag for
- speaker_smart_amp
-Date: Mon,  9 Nov 2020 13:09:58 -0800
-Message-Id: <20201109210958.84198-1-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+ id 03844F8020C; Mon,  9 Nov 2020 22:12:50 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id D08F5F800BA
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2020 22:12:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D08F5F800BA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Dharageswari R <dharageswari.r@intel.com>, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1604956361740870953-webhooks-bot@alsa-project.org>
+References: <1604956361740870953-webhooks-bot@alsa-project.org>
+Subject: USB Audio device: Shure MV7 not recognized
+Message-Id: <20201109211250.03844F8020C@alsa1.perex.cz>
+Date: Mon,  9 Nov 2020 22:12:50 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,34 +68,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Dharageswari R <dharageswari.r@intel.com>
+alsa-project/alsa-lib issue #98 was edited from vchuravy:
 
-Smart_amp_speaker device has the playback stream and capture stream
-associated to it. Hence add the dpcm_capture = 1 flag while dailink
-creation.
-This patches fixes:
-ERR kernel [timestamp] SSP1-Codec: ASoC: no backend capture stream
+Hello! i hope this is the right venue for reporting not working audio devices.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 2 ++
- 1 file changed, 2 insertions(+)
+```
+> alsa-capabilities
+9: `USB Audio' Digital USB Audio Class audio output on device Shure MV7
+    -hardware address:               hw:3,0  (or hw:MV7,0)
+    -device label:                   Shure MV7
+    -formats:                        (n/a)
+    -usb audio class:                UAC2 (isochronous asynchronous)
+    -streamfile:                     /proc/asound/card3/stream0
+    -character device:               /dev/snd/pcmC3D0p
+    -monitor file:                   /proc/asound/card3/pcm0p/sub0/hw_params
+```
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index e7d9a82ca70d..891f908659f5 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -734,6 +734,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			links[id].num_codecs = ARRAY_SIZE(max_98373_components);
- 			links[id].init = max98373_spk_codec_init;
- 			links[id].ops = &max_98373_ops;
-+			/* feedback stream */
-+			links[id].dpcm_capture = 1;
- 		} else if (sof_rt5682_quirk &
- 				SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
- 			links[id].codecs = max98360a_component;
--- 
-2.25.1
+`alsa-info.sh`: http://alsa-project.org/db/?f=7bfa1d9ac09aac53a52834e95b833d299dfe3896
+`pulseaudio -vvv` https://gist.github.com/vchuravy/f5f8ee972d5e2179387c8c53423379f6
 
+During the pulseaudio session I plugged the device in and then unplugged it. I am happy to dig in, but I would need some guidance on where to start. As a side-note the microphone seems to work on Android so I am wondering if they are using a different driver.
+
+The device has a head-phone jack with feedback from the mic, and without pulseaudio running I hear the microphone inputs.
+So I was wondering if this was in particular a pulseaudio issue.
+
+```
+> arecord -l
+**** List of CAPTURE Hardware Devices ****
+card 1: Generic [HD-Audio Generic], device 0: ALCS1200A Analog [ALCS1200A Analog]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 1: Generic [HD-Audio Generic], device 2: ALCS1200A Alt Analog [ALCS1200A Alt Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 2: C925e [Logitech Webcam C925e], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 3: MV7 [Shure MV7], device 0: USB Audio [USB Audio]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+> arecord -d 3  -f U8 sample.mp3
+ALSA lib pcm_dsnoop.c:638:(snd_pcm_dsnoop_open) unable to open slave
+arecord: main:830: audio open error: No such file or directory
+```
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/98
+Repository URL: https://github.com/alsa-project/alsa-lib
