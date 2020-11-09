@@ -2,100 +2,122 @@ Return-Path: <SRS0=3oRA=EQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44294C4741F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0485CC4741F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:17:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C4C0207E8
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:17:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C683C207D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:17:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IiprN8C3";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eAi7Beyc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C4C0207E8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JrxaohHm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="SLmwWdYm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C683C207D3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC6A41706;
-	Tue, 10 Nov 2020 11:16:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC6A41706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FC6B170F;
+	Tue, 10 Nov 2020 11:16:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FC6B170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605003445;
-	bh=SGGqaVhedazS4Fn29Dd8LaJPMNYrrxaL5+RNG0z041o=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1605003452;
+	bh=xJtX0XM2AgsY8wxOUI6WvVEyPvZVf07JVOWqbnTjp1U=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IiprN8C3YWTuqpbU55YRLDK2lekxf/7QXEK6T37NqKFdB35Fnr7/CGRJyrHXFcovu
-	 XuNxryggEX+x1nZ98hez1ZGBpsgoNEMdvZY945Wfc3L0n0TmBUb/9DjcpI+wKvmUBp
-	 IUitmRoOx1wWeaWSgcEjXiLWbjbVcQS8OVe2Dg3c=
+	b=JrxaohHm9QnqehSHr/6aUPrtOHnMg4x9+VmPzYzFpjW1uLf1zj+MWQ2A8S8+RbGWg
+	 3iassm44AdPCK79uMdXMs9qPkhC8pqCYc6uF36lJI5vgRc2REX4Ccouye1Trlh9+2o
+	 0bYJRJT+/ZdheIuIuguEIcBj7jCJsQRe7a1wGwp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16A88F804C1;
+	by alsa1.perex.cz (Postfix) with ESMTP id F2A88F804CB;
 	Tue, 10 Nov 2020 11:15:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E9FAF801D5; Sun,  8 Nov 2020 12:20:02 +0100 (CET)
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com
- [IPv6:2607:f8b0:4864:20::542])
+ id 5AB4EF80257; Mon,  9 Nov 2020 12:07:08 +0100 (CET)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com
+ [IPv6:2a00:1450:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03942F800D2
- for <alsa-devel@alsa-project.org>; Sun,  8 Nov 2020 12:19:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03942F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D2DDF801F5
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2020 12:07:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D2DDF801F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eAi7Beyc"
-Received: by mail-pg1-x542.google.com with SMTP id e21so4459941pgr.11
- for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2020 03:19:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=6ypFqyizBtI+bG9+f2gee6r9YBqN51Gv1uLtChfql90=;
- b=eAi7BeycYrQsdFpDuCS8MgBXcaQfRzpLQ3B+R03IC/8zq8gHlsRqIwAeJYRBghZqHG
- lTvLL+YRLj4ktbvJ6LjEZUdHSigvJpGe1LiM8tWEB0Tcc0XdRWwm6uKoju8WcqRVpIiA
- o7zQAuLjVvaCWetAk58lho+mbivsHEzodjHE8fKddi57lodBY4Wc3hbRYB3QteKEiuuz
- mS7RDy7V/asDkjNCJmy3u/rN7zzeGQOv1AsqdH9ZJq10O16E2sS2+RDiY/W64hfN+GYP
- jY/aB2Heob82kX/7vO4hQMlLwFRS8wwS/WpGMtZLluTmsh5clyVW9bcblH664+JMtvOj
- PGLA==
+ dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
+ header.i=@bgdev-pl.20150623.gappssmtp.com header.b="SLmwWdYm"
+Received: by mail-wr1-x443.google.com with SMTP id b8so8231843wrn.0
+ for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2020 03:07:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=2uLK4LNo7fJGEwA0NXfYaAQzvkTW8/WkGHuVu61FcZ4=;
+ b=SLmwWdYmA2Su0OyL+219YDZzeVXOkzpy5gortE6aVnwng+6cHrJzhAQJzNByqcPbPZ
+ isbE6V3Lb9JgstbUlm/PZvCpNxelIDnwHLTINtWIzMAUAJP+6YLk/AWf+cW33RVJOvLq
+ 4EQlOOLu8zd+gVrxvr0w9485FxLsZ4uiV1jlwgDMS4E7kDkszYjvid4w0z806pFvA1dO
+ U+nHioEgRrLmfLyR8tH/H/Ge3+qH76H09ubPywZEg/u4KcGzZ6YzgnyKXZKxxyWIo1cW
+ FT3Tuwvxb43JhyG0QmKnG/8uRrjp2S/bO4jEisldpzuA8EOA5eJuEswwYg/l6KV0K70j
+ EAjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=6ypFqyizBtI+bG9+f2gee6r9YBqN51Gv1uLtChfql90=;
- b=g+0BIsx1LeS8LOuHqpubJ39yVxWf2L371EifzF3Bft4rHZ9kqoh7lsVeAVVfnJOsSk
- T23uZKfXZosxtxaICwMOHKQb9xbro0CTTtHtrNoa/AE2342+iNd2Qkqvp4WDa7gtjG4u
- sIAWSzpSWazXUikxNkEqU1S45+o+ZMCOEF315zAugAG2yDwmW/2Qq6GpfuahjJ8LzZRW
- 7WqjXvI2skT0/jK1MkP5kLjoFTA+Cn11o9581iA+kH7PfrnQEcW5e7PLB37naVBXCJhH
- cH5jvD5I+QNfvgLHEkMFK/UeyFUGvEoP6j5nv6W2AaAtcYtL5fNzod8X5/15Zo4AB2Ue
- yBzg==
-X-Gm-Message-State: AOAM531For+qLzZc9REsh8HrB1cr461rtabfIZu4/kc6XV2zwaAK+25W
- SsFhGkDCld0UW2UOkawdSM4=
-X-Google-Smtp-Source: ABdhPJwOYydXZpBfJT1LjKbjX7KMWb98jpiO0iRJS7UUuINPRXEOFa+g0Ur/ZmpUUKJ+I1s+MUWE9g==
-X-Received: by 2002:aa7:942a:0:b029:164:a853:f0fc with SMTP id
- y10-20020aa7942a0000b0290164a853f0fcmr9250990pfo.40.1604834392880; 
- Sun, 08 Nov 2020 03:19:52 -0800 (PST)
-Received: from atulu-nitro ([122.164.210.133])
- by smtp.gmail.com with ESMTPSA id i17sm8069407pfa.183.2020.11.08.03.19.50
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=2uLK4LNo7fJGEwA0NXfYaAQzvkTW8/WkGHuVu61FcZ4=;
+ b=uIsvbdbkASGA1mhoWj+lCtQ46H+6kt86VZnscJBrz6USPI/WdEHi43WlehsJnhVYK/
+ wDjZ7ke1GF+fNLty7AZ1+hOOimXQ2V/n+bXuUP3YrrPBHYOVYzmhrF8oD9D9B6uSmlvK
+ nIwvYVYK+4Rxn9jCKlvg/y+ORqCNgNIy5RXof1zra6Lcean7oVbWFzehj1Ue03dt+jSX
+ hLeKNW/x0c3eoOjYTbpjilKEaDb5qFZG0Luv7Vz2H8FwYBEmSjKimk9bF0HIKtht2ez4
+ zeTo4LXrUbPsPKl6Z1/Uitc9waYC2b9hynTKzXGFb/Ey8/RQialy21SOB3xECvjad/md
+ K/GQ==
+X-Gm-Message-State: AOAM533Dn8pzCnm+ABply1BIxYSYV1wny+NIa0DRXEERhZb/CVW9vBR9
+ i0EfoPAtoDJJMEUFuj9NHkbgUg==
+X-Google-Smtp-Source: ABdhPJwC1VmwvlzIaWje0LLMyGfNJlg7DPW07nQhl2YWyOW+KS6oIpzkSUqvI/A14QOWWdg2F+P+tA==
+X-Received: by 2002:adf:9b98:: with SMTP id d24mr16961027wrc.17.1604920021208; 
+ Mon, 09 Nov 2020 03:07:01 -0800 (PST)
+Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr.
+ [2.15.39.206])
+ by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.06.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 08 Nov 2020 03:19:52 -0800 (PST)
-Date: Sun, 8 Nov 2020 16:49:46 +0530
-From: Atul Gopinathan <leoatul12@gmail.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix coding style problems
-Message-ID: <20201108111946.GB10284@atulu-nitro>
-References: <20201108083515.5256-1-leoatul12@gmail.com>
- <20201108091136.GA44749@kroah.com>
+ Mon, 09 Nov 2020 03:07:00 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ Gustavo Padovan <gustavo@padovan.org>,
+ =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Tony Luck <tony.luck@intel.com>, James Morse <james.morse@arm.com>,
+ Robert Richter <rric@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v3 1/9] mm: slab: clarify krealloc()'s behavior with __GFP_ZERO
+Date: Mon,  9 Nov 2020 12:06:46 +0100
+Message-Id: <20201109110654.12547-2-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
+In-Reply-To: <20201109110654.12547-1-brgl@bgdev.pl>
+References: <20201109110654.12547-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108091136.GA44749@kroah.com>
-X-Mailman-Approved-At: Tue, 10 Nov 2020 11:14:55 +0100
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 10 Nov 2020 11:14:56 +0100
+Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
+ linaro-mm-sig@lists.linaro.org, linux-gpio@vger.kernel.org,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-media@vger.kernel.org,
+ linux-edac@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,66 +133,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Nov 08, 2020 at 10:11:36AM +0100, Greg KH wrote:
-> On Sun, Nov 08, 2020 at 02:05:16PM +0530, Atul wrote:
-> > From: Atul Gopinathan <leoatul12@gmail.com>
-> > 
-> > Hi,
-> 
-> No need for this to be in the changelog.
-> 
-> > 
-> > This patch fixes some coding style warnings and errors that were
-> > generated using scripts/checkpatch.pl.
-> 
-> You should be explicit about _what_ warnings and errors.  And probably
-> break them out into individual patches, one per warning/error type.
-> 
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Got it, I'll keep the above points in mind.
+__GFP_ZERO is ignored by krealloc() (unless we fall-back to kmalloc()
+path, in which case it's honored). Point that out in the kerneldoc.
 
-> But more importantly, always run your patch through checkpatch.pl when
-> you are done, as you just _ADDED_ warnings to the kernel with this
-> change:
-> 
-> > @@ -895,9 +896,10 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
-> >  	usb_reset_device(dev);
-> >  
-> >  	/* return -EAGAIN, so the creation of an audio interface for this
-> > -	 * temporary device is aborted. The device will reconnect with a
-> > -	 * new product ID */
-> > -	return -EAGAIN;
-> > +     * temporary device is aborted. The device will reconnect with a
-> > +     * new product ID
-> > +     */
-> > +    return -EAGAIN;
-> >  }
-> >  
-> >  static void mbox2_setup_48_24_magic(struct usb_device *dev)
-> 
-> You turned tabs into spaces, not allowed, sorry.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ mm/slab_common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I truly apologize for this blunder. That was a really silly mistake from
-my side inspite of having seen your FOSDEM talk on 'Submitting Your First
-Kernel Patch' and using indentations as they were intended to be a
-hundred times.
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index f9ccd5dc13f3..d6df73f79204 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1091,9 +1091,9 @@ static __always_inline void *__do_krealloc(const void *p, size_t new_size,
+  * @flags: the type of memory to allocate.
+  *
+  * The contents of the object pointed to are preserved up to the
+- * lesser of the new and old sizes.  If @p is %NULL, krealloc()
+- * behaves exactly like kmalloc().  If @new_size is 0 and @p is not a
+- * %NULL pointer, the object pointed to is freed.
++ * lesser of the new and old sizes (__GFP_ZERO flag is effectively ignored).
++ * If @p is %NULL, krealloc() behaves exactly like kmalloc().  If @new_size
++ * is 0 and @p is not a %NULL pointer, the object pointed to is freed.
+  *
+  * Return: pointer to the allocated memory or %NULL in case of error
+  */
+-- 
+2.29.1
 
-> 
-> If you want to do basic checkpatch cleanups, try starting in the
-> drivers/staging/ area of the kernel, which is much more forgiving and
-> set up just for this type of thing, instead of trying to do this in the
-> "core" kernel portions, where you have to deal with other real code
-> changing happening at the same time.
-> 
-
-I guess I'll start with this instead of messing with the "core" code.
-I'm still in my learning phase, so checkpatch cleanups are the only
-contributions I can make for now. :D
-
-> good luck!
-> 
-> greg k-h
-
-Thanks a lot for your patience!
-
-Atul
