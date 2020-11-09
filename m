@@ -7,83 +7,83 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88FBBC55ABD
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42803C55ABD
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:19:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7FB3207BB
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:19:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 76E46207BB
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 10:19:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hRX49wPT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="bV0WOhcj"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7FB3207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZzbNwgTi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com header.i=@bgdev-pl.20150623.gappssmtp.com header.b="tjfVVqU7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76E46207BB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2138A16F5;
-	Tue, 10 Nov 2020 11:18:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2138A16F5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1FA31614;
+	Tue, 10 Nov 2020 11:18:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1FA31614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605003551;
-	bh=XvdE3pWpPWmf/vwEEtXCmsvkhoiH487iTsB/krT5ouU=;
+	s=default; t=1605003563;
+	bh=5R/l6xMNAmD9ia5C0SOM8rWxVPhJrekNME3vFbMG/PI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hRX49wPTioBqVcDWvlSEbVFA7Iodtyoh+RQQUKU0SGsQMjLpxUba6CSseFWBh3coD
-	 matWF3TcoGy0hBidheJaau41V5x6DjZHjEBrq0+DAbDHaqWyIFU6DRJVFtmsOAYh78
-	 hK+Th/+Ixknm6/EuEolLQphEnkJFTLkj5zofaimY=
+	b=ZzbNwgTijtpbJbb427TIb5vb0bHGkD4XabRPxQWdfq7vzK0XnCnbXp198InAjhc8+
+	 BFzxq9AYjWwz/NkNuxAOeWBDO8jAOe9krRX1stEUiE9Fuiv2BUg25bsxH2G+LNvsMz
+	 ron5Svso7KMOg8Px0OqaP6kAlFb99KIfzi29Vibk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6EC6F804EB;
-	Tue, 10 Nov 2020 11:15:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12C3EF804FA;
+	Tue, 10 Nov 2020 11:15:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C997F800BA; Mon,  9 Nov 2020 12:07:15 +0100 (CET)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 73E26F80271; Mon,  9 Nov 2020 12:07:19 +0100 (CET)
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
+ [IPv6:2a00:1450:4864:20::341])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9CA9F80059
- for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2020 12:07:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9CA9F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE6AAF80257
+ for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2020 12:07:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE6AAF80257
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=bgdev-pl.20150623.gappssmtp.com
- header.i=@bgdev-pl.20150623.gappssmtp.com header.b="bV0WOhcj"
-Received: by mail-wr1-x442.google.com with SMTP id w1so8229538wrm.4
- for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2020 03:07:08 -0800 (PST)
+ header.i=@bgdev-pl.20150623.gappssmtp.com header.b="tjfVVqU7"
+Received: by mail-wm1-x341.google.com with SMTP id c16so7534085wmd.2
+ for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2020 03:07:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=1txfIvaUE40Ou/j75EYKcgw6u17F5C6+DdlKPQ0ay3M=;
- b=bV0WOhcjc6Y2rIR+7HT+QGO/LnwlTLaGqiH/bueGYgN1eqaiyqgBu630Wi1/Fe4Izr
- My6WbzMB2G0+0Jww/tXr7Bv9T9tCSh7nAf3FDc9HnmXqm0/SZK/yuCq88k07niiSIbdE
- Kni1bJikZg3lnovvS5+pSl6sF1scmJC1eailBHWvAIqLxr8aFY7ZvU8r5E11qXi2Th71
- zhnarT2xZ1wCpMgNr9yCr/3M5lq5u3cCkFTpjL9pfSKNowIMNdFSn0mY3iQlibP5Tto4
- Lgmzc95ZSUUq1X+Al8zvn1+ubttScKkHoe5x6HV2U03u2h9rIhdyiJw4IDWSPdJhmDMn
- +W6A==
+ bh=/Z+wwi/tFfEYyTBQIvrIHI75+eOD/rtT/HKhEUnLNfQ=;
+ b=tjfVVqU7R8IyKW2OW0hqxniG20DAxuXL1U31YiQAfRN+BbUoTlDF20ez4aqC9/5uW0
+ 00hwc/b1caGHmtDgwFtcQTeA95vSaxFPG5Dn4I4WT//9X1vHXDHfVZSv7b68b2Gk+Ggo
+ GuV/WPBhQvweB/8nzh+JOIGU28BaLQQxoW0Qew8uhVen2qKctk4tkH6Xe9kG6J+foPfc
+ erqT54DF3qf5z2lmzDigmhC40Lmu2CCaR3SODiQR0zsXHTxRNzgzEn46xeTAsbTqzkbP
+ 1FKBEQcVgIDxKxzGBxNluYDKXrOoCH+3ipKaqLWCZx68VW0e53YAPO8nIb1YuhtZ+35J
+ 7AYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=1txfIvaUE40Ou/j75EYKcgw6u17F5C6+DdlKPQ0ay3M=;
- b=mbtmCQh33jmPq8+pVZTaw5RKECTg39xASUHLQwa4RbY7FMYWLKIjRqgKIdt2reQxpa
- Y94PWSHSVq/xb/YapRhggS06aH4TjbwBiwA61RXv9dNaU5uMlkSPkWkvvOhYsKUGRMBO
- kTBEnCcNcuMJDcVzAnWWrmPzupy0FQA9cDQPAKFuXLtHDR4sV7d6n3JMCE4DOqdNTDZ1
- BFwUbbtvl69lbKXTNZaCCkHREwOWA2clCianQpQJtj5tn/Ejtyzf5Z+Co1j1g5VbG97U
- LzYihcze/VTgcRpoqWlOgsik8tlAy0h27R30O7RSZI0rxJbAxfHBS5q3rqJIqtnskApx
- yWMQ==
-X-Gm-Message-State: AOAM532awHgR6F/ukXD6lZe6dgFpqamvBia9zQfH5z48jKOz9GdImei9
- EX6OLf7HzVLfsE59cBIBGozYwQ==
-X-Google-Smtp-Source: ABdhPJzHXOuOWGraTd+tlh1Rh/Cikbums2QDN+ELEwiirpKRCwDTD+P/KjLkxHpoeG3VOPOYn45WFQ==
-X-Received: by 2002:adf:fd03:: with SMTP id e3mr11725240wrr.303.1604920024684; 
- Mon, 09 Nov 2020 03:07:04 -0800 (PST)
+ bh=/Z+wwi/tFfEYyTBQIvrIHI75+eOD/rtT/HKhEUnLNfQ=;
+ b=s87buRInhgceL7dFVmwgZxs8eXKyOIHBFz9+SoL/N/DllGs7IqYzTupm7xByP8eIrw
+ aVlYwcRvtVAFbYWQvGQSosuBMiHt7aeyrptB90YAmBpc5Umz0jEhlO6SF739Eys1U3No
+ 9gpXIYC0QzzbY8fIWH+UPr3+O249TWUkOlCTAEypw6fxjOOBeOE0YneuE7fU/SU2dwNQ
+ sA2DfAK5A2bjEm0CHCqz1Y8JQmgiaXSpYJXGKE39HQsKDbnUUn6GjW8rRGQiDs19o+mf
+ 78ve8mNZnhOVoEcJHq88FSWSFAxG6OKH82ilgSdru/0VJT7lVtccpA+fP+l6ByAhbjsD
+ pX1Q==
+X-Gm-Message-State: AOAM533DGfPgyL5zvU7oSaUIbjKy8M1pXAuGGdyKTznt9loVuDJ9R6L6
+ /0qCEq4UL7uGaSBNvqT3FmlmgA==
+X-Google-Smtp-Source: ABdhPJwkOvrpUKfB7tFd6Uj/97bXlddiGlW4tIGfcvqVJ2uUup2j5kk7Nqp7LIVYpPQ8tPEEkocJmw==
+X-Received: by 2002:a1c:5f45:: with SMTP id t66mr7223842wmb.132.1604920031725; 
+ Mon, 09 Nov 2020 03:07:11 -0800 (PST)
 Received: from localhost.localdomain (lfbn-nic-1-190-206.w2-15.abo.wanadoo.fr.
  [2.15.39.206])
- by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.02
+ by smtp.gmail.com with ESMTPSA id d3sm12815582wre.91.2020.11.09.03.07.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 09 Nov 2020 03:07:04 -0800 (PST)
+ Mon, 09 Nov 2020 03:07:11 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Sumit Semwal <sumit.semwal@linaro.org>,
@@ -103,9 +103,9 @@ To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
  Andrew Morton <akpm@linux-foundation.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 3/9] ALSA: pcm: use krealloc_array()
-Date: Mon,  9 Nov 2020 12:06:48 +0100
-Message-Id: <20201109110654.12547-4-brgl@bgdev.pl>
+Subject: [PATCH v3 7/9] drm: atomic: use krealloc_array()
+Date: Mon,  9 Nov 2020 12:06:52 +0100
+Message-Id: <20201109110654.12547-8-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.29.1
 In-Reply-To: <20201109110654.12547-1-brgl@bgdev.pl>
 References: <20201109110654.12547-1-brgl@bgdev.pl>
@@ -113,11 +113,12 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 10 Nov 2020 11:14:56 +0100
 Cc: alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- Takashi Iwai <tiwai@suse.de>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- virtualization@lists.linux-foundation.org, linaro-mm-sig@lists.linaro.org,
- linux-gpio@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- linux-media@vger.kernel.org, linux-edac@vger.kernel.org
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
+ linaro-mm-sig@lists.linaro.org, linux-gpio@vger.kernel.org,
+ Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-media@vger.kernel.org,
+ linux-edac@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -139,26 +140,25 @@ Use the helper that checks for overflows internally instead of manually
 calculating the size of the new array.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 ---
- sound/core/pcm_lib.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_atomic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index bda3514c7b2d..b7e3d8f44511 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1129,8 +1129,8 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 	if (constrs->rules_num >= constrs->rules_all) {
- 		struct snd_pcm_hw_rule *new;
- 		unsigned int new_rules = constrs->rules_all + 16;
--		new = krealloc(constrs->rules, new_rules * sizeof(*c),
--			       GFP_KERNEL);
-+		new = krealloc_array(constrs->rules, new_rules,
-+				     sizeof(*c), GFP_KERNEL);
- 		if (!new) {
- 			va_end(args);
- 			return -ENOMEM;
+diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
+index 58527f151984..09ad6a2ec17b 100644
+--- a/drivers/gpu/drm/drm_atomic.c
++++ b/drivers/gpu/drm/drm_atomic.c
+@@ -960,7 +960,8 @@ drm_atomic_get_connector_state(struct drm_atomic_state *state,
+ 		struct __drm_connnectors_state *c;
+ 		int alloc = max(index + 1, config->num_connector);
+ 
+-		c = krealloc(state->connectors, alloc * sizeof(*state->connectors), GFP_KERNEL);
++		c = krealloc_array(state->connectors, alloc,
++				   sizeof(*state->connectors), GFP_KERNEL);
+ 		if (!c)
+ 			return ERR_PTR(-ENOMEM);
+ 
 -- 
 2.29.1
 
