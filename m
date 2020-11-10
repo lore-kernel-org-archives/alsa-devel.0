@@ -4,77 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDD79C388F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:54:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EA67C388F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:55:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F5B521527
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:54:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C0994216C4
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:55:15 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="m3dlrVLd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="oNVLxxvO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F5B521527
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IGztmW18";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BCez7dC9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0994216C4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B36501692;
-	Tue, 10 Nov 2020 04:53:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B36501692
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0DA316B6;
+	Tue, 10 Nov 2020 04:54:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0DA316B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604980462;
-	bh=l2Jw2CD3tgByn9HdhbfrTBIjqlt2hug4S+cpuWnQWY4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=m3dlrVLdHIXrNns2TXuIBYCIZDi7R5GJI6PZ/QLvsv3HR5HSXnmd1/C6DHi4tbhY+
-	 x0A/hhVJAPByejO9rL3lWxDRB4xMVWEbNRYMglTsTbJv2pdjdmyc4pTlmlHZqiEGwb
-	 PY+cyoLTKhLc36ORAxbu9qt5yuwGneyTNApCeQI4=
+	s=default; t=1604980513;
+	bh=Xk6afGxOhEefhhDTu11Tv5CbmYxiIZBgfet1Akd/Mbs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IGztmW18U8PA/q5/J2Nm732Wl4nK0LAzHEi+ms1zWd7toR6Te8tf1iju8MqGR0Sa3
+	 qzknLBlU6wdpYimYwfa9DDaItrmM742o4tyqtnZUjQawdJpRNhao0ZmQpy+XmKXVVC
+	 LLK8ug30hZgVsnuFgg+uL7FH/zidJlnFTs0YWRgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23C0DF801EC;
-	Tue, 10 Nov 2020 04:53:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFC57F80059;
+	Tue, 10 Nov 2020 04:53:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11EBDF801D5; Tue, 10 Nov 2020 04:53:29 +0100 (CET)
+ id DBA9AF80249; Tue, 10 Nov 2020 04:53:32 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EFB8F801D5
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 04:53:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EFB8F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B197F80059
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 04:53:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B197F80059
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oNVLxxvO"
+ header.b="BCez7dC9"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C930820721;
- Tue, 10 Nov 2020 03:53:19 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 85ED120829;
+ Tue, 10 Nov 2020 03:53:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604980400;
- bh=l2Jw2CD3tgByn9HdhbfrTBIjqlt2hug4S+cpuWnQWY4=;
- h=From:To:Cc:Subject:Date:From;
- b=oNVLxxvOLFF15IPriSG19FFGsvMsX/1R5oD4xRTQ/Lj+uicQP5xDr/O96YsSZwc0f
- AzbQfxOxoqdlv/F0ZWHALiESbwxFLqoPevskplkhR8KzB9VMxVgqLD9l4IHfWjIrAB
- WfZG0icvRSXIPFmNanS+ImsUIYnfw6Xwd7/8Vepk=
+ s=default; t=1604980403;
+ bh=Xk6afGxOhEefhhDTu11Tv5CbmYxiIZBgfet1Akd/Mbs=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=BCez7dC9T70bYOZrgqgMUIjXyp6Fb4Tig9+uz7pYXsnML4w5CPSts2ScMTX5k7X5S
+ 19ynHKo6uEbiEivhs8oW3MR9JXg/Y3NgiuUg7mJK4ROjkDTfpHQnQe4YsB8O6ks8Jf
+ hetvtlzu9zuQPWi5+rWbSacw64az56s4kgzIXlIM=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 01/55] ASoC: mediatek: mt8183-da7219: fix DAPM
- paths for rt1015
-Date: Mon,  9 Nov 2020 22:52:24 -0500
-Message-Id: <20201110035318.423757-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 03/55] ASoC: cs42l51: manage mclk shutdown delay
+Date: Mon,  9 Nov 2020 22:52:26 -0500
+Message-Id: <20201110035318.423757-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
+References: <20201110035318.423757-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Sasha Levin <sashal@kernel.org>, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Olivier Moysan <olivier.moysan@st.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,66 +93,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Tzung-Bi Shih <tzungbi@google.com>
+From: Olivier Moysan <olivier.moysan@st.com>
 
-[ Upstream commit eb5a558705c7f63d06b4ddd072898b1ca894e053 ]
+[ Upstream commit 20afe581c9b980848ad097c4d54dde9bec7593ef ]
 
-RT1015's output widget name is "SPO" instead of "Speaker".  Fixes it to
-use the correct names.
+A delay must be introduced before the shutdown down of the mclk,
+as stated in CS42L51 datasheet. Otherwise the codec may
+produce some noise after the end of DAPM power down sequence.
+The delay between DAC and CLOCK_SUPPLY widgets is too short.
+Add a delay in mclk shutdown request to manage the shutdown delay
+explicitly. From experiments, at least 10ms delay is necessary.
+Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
+when using msleep().
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-Link: https://lore.kernel.org/r/20201019044724.1601476-1-tzungbi@google.com
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Link: https://lore.kernel.org/r/20201020150109.482-1-olivier.moysan@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../mediatek/mt8183/mt8183-da7219-max98357.c  | 31 +++++++++++++++----
- 1 file changed, 25 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs42l51.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index a6c690c5308d3..58b76e985f7f3 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -624,15 +624,34 @@ static struct snd_soc_codec_conf mt8183_da7219_rt1015_codec_conf[] = {
- 	},
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 764f2ef8f59df..2b617993b0adb 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -245,8 +245,28 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
+ 		&cs42l51_adcr_mux_controls),
  };
  
-+static const struct snd_kcontrol_new mt8183_da7219_rt1015_snd_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Left Spk"),
-+	SOC_DAPM_PIN_SWITCH("Right Spk"),
-+};
++static int mclk_event(struct snd_soc_dapm_widget *w,
++		      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
++	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
 +
-+static const
-+struct snd_soc_dapm_widget mt8183_da7219_rt1015_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Left Spk", NULL),
-+	SND_SOC_DAPM_SPK("Right Spk", NULL),
-+	SND_SOC_DAPM_PINCTRL("TDM_OUT_PINCTRL",
-+			     "aud_tdm_out_on", "aud_tdm_out_off"),
-+};
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		return clk_prepare_enable(cs42l51->mclk_handle);
++	case SND_SOC_DAPM_POST_PMD:
++		/* Delay mclk shutdown to fulfill power-down sequence requirements */
++		msleep(20);
++		clk_disable_unprepare(cs42l51->mclk_handle);
++		break;
++	}
 +
-+static const struct snd_soc_dapm_route mt8183_da7219_rt1015_dapm_routes[] = {
-+	{"Left Spk", NULL, "Left SPO"},
-+	{"Right Spk", NULL, "Right SPO"},
-+	{"I2S Playback", NULL, "TDM_OUT_PINCTRL"},
-+};
++	return 0;
++}
 +
- static struct snd_soc_card mt8183_da7219_rt1015_card = {
- 	.name = "mt8183_da7219_rt1015",
- 	.owner = THIS_MODULE,
--	.controls = mt8183_da7219_max98357_snd_controls,
--	.num_controls = ARRAY_SIZE(mt8183_da7219_max98357_snd_controls),
--	.dapm_widgets = mt8183_da7219_max98357_dapm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(mt8183_da7219_max98357_dapm_widgets),
--	.dapm_routes = mt8183_da7219_max98357_dapm_routes,
--	.num_dapm_routes = ARRAY_SIZE(mt8183_da7219_max98357_dapm_routes),
-+	.controls = mt8183_da7219_rt1015_snd_controls,
-+	.num_controls = ARRAY_SIZE(mt8183_da7219_rt1015_snd_controls),
-+	.dapm_widgets = mt8183_da7219_rt1015_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(mt8183_da7219_rt1015_dapm_widgets),
-+	.dapm_routes = mt8183_da7219_rt1015_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(mt8183_da7219_rt1015_dapm_routes),
- 	.dai_link = mt8183_da7219_dai_links,
- 	.num_links = ARRAY_SIZE(mt8183_da7219_dai_links),
- 	.aux_dev = &mt8183_da7219_max98357_headset_dev,
+ static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
+-	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
++	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+ };
+ 
+ static const struct snd_soc_dapm_route cs42l51_routes[] = {
 -- 
 2.27.0
 
