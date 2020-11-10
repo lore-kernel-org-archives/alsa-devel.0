@@ -3,75 +3,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0936C55ABD
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 16:03:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 759AEC388F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 16:04:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4259207D3
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 16:03:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 82F8C2076E
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 16:04:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TAfdhd+a";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="t5UIDUn7"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4259207D3
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W9U8qDlq";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1k015Roh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82F8C2076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BEFF171B;
-	Tue, 10 Nov 2020 17:02:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BEFF171B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD132173D;
+	Tue, 10 Nov 2020 17:03:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD132173D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605024212;
-	bh=iADrLn2HoxkSAWgvmWuMUnpsZB/Nm9suSBYYixtnh+E=;
+	s=default; t=1605024264;
+	bh=ie3J/2MS7vjiEfSv1p0lPveL076A6s9sdaz+Gma5P0I=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TAfdhd+a6IMv0sHplfGEXoNJA5sRbpq8kcRJ8wvXQxGtXiYizH0ktjLCpJGFC6ehO
-	 ZeXVronkveWplRz6V6R6j/n7F9+SMYtL6A/0XME8xRIg1yRIZHAEsrY5A6th1JG+P6
-	 IKw0uTCbUl+kpSP8v/H4M3hXbFTvWFzNXvhS4E1Y=
+	b=W9U8qDlqggYZ/5Y/9e+evxpYICDffOAUHIZXgPjU+38do1QGbs92d6zGNFKo8vaBK
+	 I3yLvlQhtBT6BgPgbeHHZLfjktW8NK0DqGQbbXFVtKGQqR9b/g0HxN/b3dMDY2PDC5
+	 VsHfjubNAj13Uqn9rWDJMKdeg47Fr1JJUvdHeKmY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DC3EF80161;
-	Tue, 10 Nov 2020 17:02:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33688F804BD;
+	Tue, 10 Nov 2020 17:02:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3B06F801D5; Tue, 10 Nov 2020 17:02:39 +0100 (CET)
+ id 61D09F804BD; Tue, 10 Nov 2020 17:02:48 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11444F80059
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 17:02:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11444F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B9EFF801D5
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 17:02:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B9EFF801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t5UIDUn7"
+ header.b="1k015Roh"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 55487207D3;
- Tue, 10 Nov 2020 16:02:34 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9ACB3206E3;
+ Tue, 10 Nov 2020 16:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605024154;
- bh=iADrLn2HoxkSAWgvmWuMUnpsZB/Nm9suSBYYixtnh+E=;
+ s=default; t=1605024160;
+ bh=ie3J/2MS7vjiEfSv1p0lPveL076A6s9sdaz+Gma5P0I=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=t5UIDUn7jEsSTtYBucVie6qmVB93TT5AJbE5NbkH8H3ssL21QLi7qn6DpxiKYXOc1
- c0z8fk13IFgYWH38y7/0GGFe/UDJ1pCWA5q3+38khq+5a0fzZufrHY+u/TqoisHXva
- VD4taPadol7mmH8xSdgL9XDAJSga8Mjjkhu1eppU=
-Date: Tue, 10 Nov 2020 16:02:20 +0000
+ b=1k015RohfC/Wu6QB7nZOjPM+lM2kV/rT9j6zbS0aDS5FqRmbbsxkxF+Bs0NZEZVrl
+ vw9pKdZFgog48gHWXb+kUXXmdnswWO6E2S/afEmfkPywjmchiikFaYmO6CciHNK1AH
+ qXfBaNaMZyJu9tLYvxCeOwyzUlYYqGPH4FI6e6z0=
+Date: Tue, 10 Nov 2020 16:02:26 +0000
 From: Mark Brown <broonie@kernel.org>
-To: David Lin <CTLIN0@nuvoton.com>
-In-Reply-To: <20201102023212.594137-1-CTLIN0@nuvoton.com>
-References: <20201102023212.594137-1-CTLIN0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8315: add codec driver
-Message-Id: <160502414080.45830.17448982167604918792.b4-ty@kernel.org>
+To: linux-kernel@vger.kernel.org, Ajye Huang <ajye.huang@gmail.com>
+In-Reply-To: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
+References: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v6 0/2] Modify documentation and machine driver for SC7180
+ sound card
+Message-Id: <160502414080.45830.11882063016977646088.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org,
- KCHSU0@nuvoton.com, lgirdwood@gmail.com
+Cc: dianders@chromium.org, robh@kernel.org, alsa-devel@alsa-project.org,
+ tzungbi@chromium.org, Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Andy Gross <agross@kernel.org>, srinivas.kandagatla@linaro.org,
+ Rohit kumar <rohitkr@codeaurora.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,8 +96,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 2 Nov 2020 10:32:13 +0800, David Lin wrote:
-> Add codec driver for Nuvoton NAU8315.
+On Fri, 6 Nov 2020 14:14:31 +0800, Ajye Huang wrote:
+> Note:
+> - The patch is made by the collaboration of
+>  Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+>  Cheng-Yi Chiang <cychiang@chromium.org>
+> 
+> v6:
+> - Documentation: Addressed suggestions from Rob Herring.
+>   - Define "maxItems: 1" in dmic-gpios property.
+>   - Only keep one example and add dmic-gpios property in.
+> v5:
+> - Machine driver:
+>   - Fix a format string warning (Reported-by: kernel test robot <lkp@intel.com>).
+>     detailed info at https://lore.kernel.org/patchwork/patch/1331087/
+> 
+> [...]
 
 Applied to
 
@@ -96,10 +119,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: nau8315: add codec driver
-      commit: 4d1a9952dda649284413e6ff12b81db3a2bc4115
-[2/2] ASoC: nau8315: revise the power event of EN_PIN dapm widget for symmetry
-      commit: 9352d45a6e4588b8c7ddded871e08d89e0e6b79f
+[1/2] ASoC: google: dt-bindings: modify machine bindings for two MICs case
+      commit: 0e38d93493c7b11bc250113dd5b7b9d17ba8c54d
+[2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic
+      commit: 3cfbf07c6d2779d24a6f5b999a91f400256b1d4e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
