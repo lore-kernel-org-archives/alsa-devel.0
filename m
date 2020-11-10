@@ -2,74 +2,83 @@ Return-Path: <SRS0=3oRA=EQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D47B5C2D0A3
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 01:49:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DA28C2D0A3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 02:53:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE8ED2078D
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 01:49:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CDA04207D3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 02:53:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VZU8lZG3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE8ED2078D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nsyaz47t"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDA04207D3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31677169A;
-	Tue, 10 Nov 2020 02:48:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31677169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 255F8852;
+	Tue, 10 Nov 2020 03:52:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 255F8852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604972976;
-	bh=mbJC1xOKY6HsJLO8WTJyVbSMRpj6qzKiVSL0gJt1wts=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VZU8lZG3X72veJ05uInny3pPFIR8XZE/ebYt8Jc2aSHkySB2kPhfO0njMhxOwN7Bf
-	 AP7qHpLKci82prUsN1wAgoYFgf1TUZQZc6JYOLK98yy2vlWmkYDCraDB8UzWs6ZjsJ
-	 cmdE6tSK88RgAUqMlg04kjZzKJDQ1OCDfIipzP4k=
+	s=default; t=1604976792;
+	bh=vFOusr1hJLpH35pWwzUEkL8zQzz3cD29HNAGi/uNRpU=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Nsyaz47tpz09mNElacGBM7FCPTz8e33vvAaMdW/HOkalQr+X2GNvkOUOX9IUwhcpS
+	 omacrV2CIpi6Qosi2+BWVmxsRIP/mPCd5yHfKkwdP1WYcjLdLpxhgpWE5RXFkWGe/I
+	 jEAxF8mpFNuYVE9YDQ0zMXvDXn+s4IxxZSKk7cyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6CA7F801F5;
-	Tue, 10 Nov 2020 02:48:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94357F80161;
+	Tue, 10 Nov 2020 03:52:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A656F8020C; Tue, 10 Nov 2020 02:48:43 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D01C0F801D5; Tue, 10 Nov 2020 03:52:19 +0100 (CET)
+Received: from smtprelay.hostedemail.com (smtprelay0025.hostedemail.com
+ [216.40.44.25])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21BCDF80059
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 02:48:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21BCDF80059
-IronPort-SDR: uX5XlL2PSQG15dKqaRwa48fOWmg+tm8EUWr3TeP/0R7WgQHHNqH+efqP+B8lOsPqxkDxkf91YB
- YVFP8WNYRN+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9800"; a="234067604"
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="234067604"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2020 17:48:30 -0800
-IronPort-SDR: Ko2VTPYSBasM+sotCHtedRYAZwYPgrPgJ/nuHYcE7IOA5ZCLr7bVPc+wcUw6rUHuhGbakrOIpz
- 7DgUGWtk5yLg==
-X-IronPort-AV: E=Sophos;i="5.77,464,1596524400"; d="scan'208";a="541125879"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2020 17:48:27 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.de
-Subject: [RFC] ASoC: max98373: don't access volatile registers in bias level
- off
-Date: Mon,  9 Nov 2020 21:55:43 +0800
-Message-Id: <20201109135543.7862-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: alsa-devel@alsa-project.org, ryans.lee@maximintegrated.com,
- kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- vkoul@kernel.org, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id C08EDF800EB
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 03:52:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C08EDF800EB
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
+ [216.40.38.60])
+ by smtprelay02.hostedemail.com (Postfix) with ESMTP id F008012CB;
+ Tue, 10 Nov 2020 02:52:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-HE-Tag: ink22_1714ef1272f1
+X-Filterd-Recvd-Size: 2439
+Received: from [192.168.0.160] (cpe-72-134-80-165.natsow.res.rr.com
+ [72.134.80.165]) (Authenticated sender: joe@perches.com)
+ by omf07.hostedemail.com (Postfix) with ESMTPA;
+ Tue, 10 Nov 2020 02:52:09 +0000 (UTC)
+Message-ID: <3c39c363690d0b46069afddc3ad09213011e5cd4.camel@perches.com>
+Subject: Re: Subject: [RFC] clang tooling cleanups
+From: Joe Perches <joe@perches.com>
+To: trix@redhat.com, linux-kernel@vger.kernel.org, 
+ clang-built-linux@googlegroups.com, cocci <cocci@systeme.lip6.fr>
+Date: Mon, 09 Nov 2020 18:52:08 -0800
+In-Reply-To: <20201027164255.1573301-1-trix@redhat.com>
+References: <20201027164255.1573301-1-trix@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
+ linux-iio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rtc@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-rdma@vger.kernel.org, qat-linux@intel.com, amd-gfx@lists.freedesktop.org,
+ linux-pm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+ linux-amlogic@lists.infradead.org, linux-nfs@vger.kernel.org,
+ netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, linux-crypto@vger.kernel.org,
+ linux-btrfs@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,74 +94,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We will set regcache_cache_only true in suspend. As a result, regmap_read
-will return error when we try to read volatile registers in suspend.
-Besides, it doesn't make sense to read feedback data when codec is not
-active. To avoid the regmap_read error, this patch try to return a fake
-value when kcontrol _get is called in suspend.
-However, the question is what is the "correct" behavior when we try to
-read a volatile register when cache only is set.
-1. return an error code to signal codec is not available as what we have
-now.
-2. return a fake value like what this patch do.
-3. wake-up the codec and always return a valid value.
+On Tue, 2020-10-27 at 09:42 -0700, trix@redhat.com wrote:
+> This rfc will describe
+> An upcoming treewide cleanup.
+> How clang tooling was used to programatically do the clean up.
+> Solicit opinions on how to generally use clang tooling.
+> 
+> The clang warning -Wextra-semi-stmt produces about 10k warnings.
+> Reviewing these, a subset of semicolon after a switch looks safe to
+> fix all the time.  An example problem
+> 
+> void foo(int a) {
+>      switch(a) {
+>      	       case 1:
+> 	       ...
+>      }; <--- extra semicolon
+> }
+> 
+> Treewide, there are about 100 problems in 50 files for x86_64 allyesconfig.
+> These fixes will be the upcoming cleanup.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/codecs/max98373.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+coccinelle already does some of these.
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index 929bb1798c43..07494e40c296 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -168,6 +168,23 @@ static SOC_ENUM_SINGLE_DECL(max98373_adc_samplerate_enum,
- 			    MAX98373_R2051_MEAS_ADC_SAMPLING_RATE, 0,
- 			    max98373_ADC_samplerate_text);
- 
-+static int max98373_feedback_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+
-+	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
-+		/*
-+		 * We can't get the feedback data when codec is off, set
-+		 * value = 0 and return 0 to avoid error.
-+		 */
-+		ucontrol->value.integer.value[0] = 0;
-+		return 0;
-+	}
-+
-+	return snd_soc_put_volsw(kcontrol, ucontrol);
-+}
-+
- static const struct snd_kcontrol_new max98373_snd_controls[] = {
- SOC_SINGLE("Digital Vol Sel Switch", MAX98373_R203F_AMP_DSP_CFG,
- 	MAX98373_AMP_VOL_SEL_SHIFT, 1, 0),
-@@ -209,8 +226,10 @@ SOC_SINGLE("ADC PVDD FLT Switch", MAX98373_R2052_MEAS_ADC_PVDD_FLT_CFG,
- 	MAX98373_FLT_EN_SHIFT, 1, 0),
- SOC_SINGLE("ADC TEMP FLT Switch", MAX98373_R2053_MEAS_ADC_THERM_FLT_CFG,
- 	MAX98373_FLT_EN_SHIFT, 1, 0),
--SOC_SINGLE("ADC PVDD", MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK, 0, 0xFF, 0),
--SOC_SINGLE("ADC TEMP", MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK, 0, 0xFF, 0),
-+SOC_SINGLE_EXT("ADC PVDD", MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK, 0, 0xFF, 0,
-+	max98373_feedback_get, NULL),
-+SOC_SINGLE_EXT("ADC TEMP", MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK, 0, 0xFF, 0,
-+	max98373_feedback_get, NULL),
- SOC_SINGLE("ADC PVDD FLT Coeff", MAX98373_R2052_MEAS_ADC_PVDD_FLT_CFG,
- 	0, 0x3, 0),
- SOC_SINGLE("ADC TEMP FLT Coeff", MAX98373_R2053_MEAS_ADC_THERM_FLT_CFG,
-@@ -226,7 +245,8 @@ SOC_SINGLE("BDE LVL1 Thresh", MAX98373_R2097_BDE_L1_THRESH, 0, 0xFF, 0),
- SOC_SINGLE("BDE LVL2 Thresh", MAX98373_R2098_BDE_L2_THRESH, 0, 0xFF, 0),
- SOC_SINGLE("BDE LVL3 Thresh", MAX98373_R2099_BDE_L3_THRESH, 0, 0xFF, 0),
- SOC_SINGLE("BDE LVL4 Thresh", MAX98373_R209A_BDE_L4_THRESH, 0, 0xFF, 0),
--SOC_SINGLE("BDE Active Level", MAX98373_R20B6_BDE_CUR_STATE_READBACK, 0, 8, 0),
-+SOC_SINGLE_EXT("BDE Active Level", MAX98373_R20B6_BDE_CUR_STATE_READBACK, 0, 8, 0,
-+	max98373_feedback_get, NULL),
- SOC_SINGLE("BDE Clip Mode Switch", MAX98373_R2092_BDE_CLIPPER_MODE, 0, 1, 0),
- SOC_SINGLE("BDE Thresh Hysteresis", MAX98373_R209B_BDE_THRESH_HYST, 0, 0xFF, 0),
- SOC_SINGLE("BDE Hold Time", MAX98373_R2090_BDE_LVL_HOLD, 0, 0xFF, 0),
--- 
-2.17.1
+For instance: scripts/coccinelle/misc/semicolon.cocci
+
+Perhaps some tool coordination can be done here as
+coccinelle/checkpatch/clang/Lindent call all be used
+to do some facet or another of these cleanup issues.
+
+
 
