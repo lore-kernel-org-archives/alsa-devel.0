@@ -2,83 +2,67 @@ Return-Path: <SRS0=3oRA=EQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_SANE_2 autolearn=unavailable autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D965FC388F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 08:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DFCDC388F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 08:25:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36F772080A
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 08:18:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8E6F620870
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 08:25:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MsNnjcuz";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="TTX30iUD"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36F772080A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pAx58SQN"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E6F620870
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3653B16C7;
-	Tue, 10 Nov 2020 09:18:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3653B16C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3001D16CF;
+	Tue, 10 Nov 2020 09:24:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3001D16CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604996332;
-	bh=TKBOSDs5SG5iZh6CckK8QZc6kQZOfaoRrMqk9Jg2YQY=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1604996718;
+	bh=NxJv5TSLdDNWHZ2kq7x41YhCdm3DqIa5oRH7yybagK0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MsNnjcuz1S8Y8jDzfwmHKFLUhg1922MU2srJ4gjvEA+KAg3AF5UXMCYpndIge4xzm
-	 7CYiuE7Cu1FZv8ccwfH//XpQgnwKw+Isos8t5Ne2f6C9eHQ+oRMyNlBp8XyFoVbrCg
-	 KcCm+coOxVjXqIO7SN4jxYU3eqtzpVG/7jH/671Y=
+	b=pAx58SQNeNKJaRHeVCvrwMNFWciOZJiPWHaejFjhIuaTCcOXwy1Ce10mObRNS6nn9
+	 ld1tcGg0J6bCIeudKEqluXVzGePqpEQ1mD6K/e3zzWUPIF1jPWdxf4mSBI0J3iacAF
+	 yBEA3hTo+DZefZuDuazNMYxLTOZF6Xqp3sTB8ZaM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC90CF80161;
-	Tue, 10 Nov 2020 09:18:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6E30F80161;
+	Tue, 10 Nov 2020 09:24:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31EDBF801D5; Tue, 10 Nov 2020 09:17:59 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa1.perex.cz (Postfix) with ESMTP id B1B70F80059
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 09:17:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1B70F80059
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="TTX30iUD"
-X-UUID: 5d54318515aa4cab9a44b62fe30a18ca-20201110
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
- bh=TKBOSDs5SG5iZh6CckK8QZc6kQZOfaoRrMqk9Jg2YQY=; 
- b=TTX30iUD7UaD4Y7EwJahVXuwmLfxY/7qoVflQIevBV/QLbGUUdh8HF1EEfZPv04FmlPvSLpLv4lQm+pVaY8el/swO/ziFntCv7ka24hnNYo0APIV5Xu251k6GG8/xfnptZ8Oi0Rd3fRzQN3uahikA3WI6fH5+e31NmiMTZRe7dk=;
-X-UUID: 5d54318515aa4cab9a44b62fe30a18ca-20201110
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
- (envelope-from <macpaul.lin@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
- ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1701661434; Tue, 10 Nov 2020 16:17:48 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Nov 2020 16:17:46 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 10 Nov 2020 16:17:47 +0800
-Message-ID: <1604996266.2817.1.camel@mtkswgap22>
+ id C50A2F801D5; Tue, 10 Nov 2020 09:24:26 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6322F80059
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 09:24:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6322F80059
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 4D23FAB95;
+ Tue, 10 Nov 2020 08:24:20 +0000 (UTC)
+Date: Tue, 10 Nov 2020 09:24:20 +0100
+Message-ID: <s5hy2j9k4az.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Macpaul Lin <macpaul.lin@mediatek.com>
 Subject: Re: [PATCH] ALSA: usb-audio: disable 96khz support for HUAWEI USB-C
  HEADSET
-From: Macpaul Lin <macpaul.lin@mediatek.com>
-To: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 10 Nov 2020 16:17:46 +0800
-In-Reply-To: <s5h5z6dljf7.wl-tiwai@suse.de>
+In-Reply-To: <1604996266.2817.1.camel@mtkswgap22>
 References: <1604995443-30453-1-git-send-email-macpaul.lin@mediatek.com>
- <s5h5z6dljf7.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-MTK: N
-Content-Transfer-Encoding: base64
+ <s5h5z6dljf7.wl-tiwai@suse.de> <1604996266.2817.1.camel@mtkswgap22>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
  Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
  Christopher Swenson <swenson@swenson.io>, linux-kernel@vger.kernel.org,
@@ -103,30 +87,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gVHVlLCAyMDIwLTExLTEwIGF0IDA5OjEyICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+
-IE9uIFR1ZSwgMTAgTm92IDIwMjAgMDk6MDQ6MDMgKzAxMDAsDQo+IE1hY3BhdWwgTGluIHdyb3Rl
-Og0KPiA+IA0KPiA+IFRoZSBIVUFXRUkgVVNCLUMgaGVhZHNldCAoVklEOjB4MTJkMSwgUElEOjB4
-M2EwNykgcmVwb3J0ZWQgaXQgc3VwcG9ydHMNCj4gPiA5Nmtoei4gSG93ZXZlciB0aGVyZSB3aWxs
-IGJlIHNvbWUgcmFuZG9tIGlzc3VlIHVuZGVyIDk2a2h6Lg0KPiA+IE5vdCBzdXJlIGlmIHRoZXJl
-IGlzIGFueSBhbHRlcm5hdGUgc2V0dGluZyBjb3VsZCBiZSBhcHBsaWVkLg0KPiA+IEhlbmNlIDQ4
-a2h6IGlzIHN1Z2dlc3RlZCB0byBiZSBhcHBsaWVkIGF0IHRoaXMgbW9tZW50Lg0KPiA+IA0KPiA+
-IFNpZ25lZC1vZmYtYnk6IE1hY3BhdWwgTGluIDxtYWNwYXVsLmxpbkBtZWRpYXRlay5jb20+DQo+
-ID4gU2lnbmVkLW9mZi1ieTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRpYXRlay5jb20+DQo+
-ID4gLS0tDQo+ID4gIHNvdW5kL3VzYi9mb3JtYXQuYyB8ICAgIDUgKysrKysNCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9zb3VuZC91
-c2IvZm9ybWF0LmMgYi9zb3VuZC91c2IvZm9ybWF0LmMNCj4gPiBpbmRleCAxYjI4ZDAxLi42ZjZl
-NzliIDEwMDY0NA0KPiA+IC0tLSBhL3NvdW5kL3VzYi9mb3JtYXQuYw0KPiA+ICsrKyBiL3NvdW5k
-L3VzYi9mb3JtYXQuYw0KPiA+IEBAIC0yMTcsNiArMjE3LDExIEBAIHN0YXRpYyBpbnQgcGFyc2Vf
-YXVkaW9fZm9ybWF0X3JhdGVzX3YxKHN0cnVjdCBzbmRfdXNiX2F1ZGlvICpjaGlwLCBzdHJ1Y3Qg
-YXVkaW9mDQo+ID4gIAkJCSAgICAoY2hpcC0+dXNiX2lkID09IFVTQl9JRCgweDA0MWUsIDB4NDA2
-NCkgfHwNCj4gPiAgCQkJICAgICBjaGlwLT51c2JfaWQgPT0gVVNCX0lEKDB4MDQxZSwgMHg0MDY4
-KSkpDQo+ID4gIAkJCQlyYXRlID0gODAwMDsNCj4gPiArCQkJLyogSHVhd2VpIGhlYWRzZXQgY2Fu
-J3Qgc3VwcG9ydCA5NmtIeiBmdWxseSAqLw0KPiA+ICsJCQlpZiAocmF0ZSA9PSA5NjAwMCAmJg0K
-PiA+ICsJCQkgICAgY2hpcC0+dXNiX2lkID09IFVTQl9JRCgweDEyZDEsIDB4M2EwNykgJiYNCj4g
-PiArCQkJICAgIGxlMTZfdG9fY3B1KHVkZXYtPmRlc2NyaXB0b3IuYmNkRGV2aWNlKSA9PSAweDQ5
-KQ0KPiANCj4gVGhpcyBjYXVzZXMgdGhlIGNvbXBpbGUgZXJyb3IgZHVlIHRvIHRoZSB1bmtub3du
-IHVkZXYuDQo+IElzIHRoaXMgYmNkRGV2aWNlIGNoZWNrIG1hbmRhdG9yeT8NCg0KVGhpcyBtZWFu
-cyBmaXJtd2FyZSB2ZXJzaW9uIG9mIHRoZSBoZWFkc2V0IGFzIGZhciBhcyBJIGtub3cuLg0KU29y
-cnkgSSdsbCBjaGVjayB0aGUgY29tcGlsZSBlcnJvciBhbmQgcmVzZW5kIGxhdGVyLg0KDQo+IA0K
-PiB0aGFua3MsDQo+IA0KPiBUYWthc2hpDQoNClRoYW5rcw0KTWFjcGF1bCBMaW4NCg0K
+On Tue, 10 Nov 2020 09:17:46 +0100,
+Macpaul Lin wrote:
+> 
+> On Tue, 2020-11-10 at 09:12 +0100, Takashi Iwai wrote:
+> > On Tue, 10 Nov 2020 09:04:03 +0100,
+> > Macpaul Lin wrote:
+> > > 
+> > > The HUAWEI USB-C headset (VID:0x12d1, PID:0x3a07) reported it supports
+> > > 96khz. However there will be some random issue under 96khz.
+> > > Not sure if there is any alternate setting could be applied.
+> > > Hence 48khz is suggested to be applied at this moment.
+> > > 
+> > > Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> > > Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
+> > > ---
+> > >  sound/usb/format.c |    5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/sound/usb/format.c b/sound/usb/format.c
+> > > index 1b28d01..6f6e79b 100644
+> > > --- a/sound/usb/format.c
+> > > +++ b/sound/usb/format.c
+> > > @@ -217,6 +217,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+> > >  			    (chip->usb_id == USB_ID(0x041e, 0x4064) ||
+> > >  			     chip->usb_id == USB_ID(0x041e, 0x4068)))
+> > >  				rate = 8000;
+> > > +			/* Huawei headset can't support 96kHz fully */
+> > > +			if (rate == 96000 &&
+> > > +			    chip->usb_id == USB_ID(0x12d1, 0x3a07) &&
+> > > +			    le16_to_cpu(udev->descriptor.bcdDevice) == 0x49)
+> > 
+> > This causes the compile error due to the unknown udev.
+> > Is this bcdDevice check mandatory?
+> 
+> This means firmware version of the headset as far as I know..
 
+OK, then it's useful.
+
+> Sorry I'll check the compile error and resend later.
+
+I guess the only needed change is to replace udev with chip->dev.
+
+
+thanks,
+
+Takashi
+
+> 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> 
+> Thanks
+> Macpaul Lin
+> 
