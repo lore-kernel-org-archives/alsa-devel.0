@@ -7,67 +7,68 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A319C5517A
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:57:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2F73C388F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:57:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A6732063A
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:57:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EC6EB20663
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:57:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RlAP0mpU";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="STXd2HFX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A6732063A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jYsnT1e0";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uwVNu2cR"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC6EB20663
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A5BC16D8;
-	Tue, 10 Nov 2020 04:56:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A5BC16D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FB6E16C0;
+	Tue, 10 Nov 2020 04:56:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FB6E16C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604980661;
-	bh=lCSQVerc+jJ4Piycr3n5lNXAN1aByZZN2bWhfq7Vax4=;
+	s=default; t=1604980669;
+	bh=TFrJW6a9UUjUwImt42Mg5iBf6opdqu0VUOvPnYS+uic=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RlAP0mpU9tPAfj3gwgdtL7LQxWeG6/1CMIrdD1r0tYbUGJxCGR7X6pJTvUSHPNZ99
-	 0pQNM8aEHuNXewqn48QocY+PeD1YSvqoxjiRRLJgbYltPZW76aqVqhgFU8gUix8qzE
-	 3EY22fNGDXQM+D38ah6jrDGWpZzSZNnts9WESarc=
+	b=jYsnT1e0VtRCpAAHr2QvlYinUTSVW698oNbkE1aEjosZaFFbOOVBSwS1qKmoHWI7f
+	 pPOiM9OVv4kgQv8qlsTlOV7wkKjrFG6zLGDLOXyzI3EoFFCSCmaUjcDOnrevdcdM/9
+	 n8GYb478o3+3ETD8JWajMRTKAhtMRuTmjBBXOAxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0A58F804F2;
-	Tue, 10 Nov 2020 04:54:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B24FFF804FB;
+	Tue, 10 Nov 2020 04:55:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BE9BF804EC; Tue, 10 Nov 2020 04:54:51 +0100 (CET)
+ id 43B42F804FE; Tue, 10 Nov 2020 04:55:00 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 975F2F801EC
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 04:54:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 975F2F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7333AF804FA
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 04:54:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7333AF804FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="STXd2HFX"
+ header.b="uwVNu2cR"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4D30E207BC;
- Tue, 10 Nov 2020 03:54:43 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1BE0D207BC;
+ Tue, 10 Nov 2020 03:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604980484;
- bh=lCSQVerc+jJ4Piycr3n5lNXAN1aByZZN2bWhfq7Vax4=;
+ s=default; t=1604980492;
+ bh=TFrJW6a9UUjUwImt42Mg5iBf6opdqu0VUOvPnYS+uic=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=STXd2HFXNsagC0dTIZLsntmHKeaYMbj5m78gbGSOrBhvQj9BV9XnZNJQCy3n0EKMp
- +pUkKC5BNMxbd7dBCMin2Tl1w151Zw3+v+pEsK3P1ng0YIAzom+fc5BlT0D8XNMeHQ
- /2zX1rITEayGc4rl4Lrgu1CS/zkslzRVLwN4L1Hw=
+ b=uwVNu2cRj5HOgOmQ9r0RwcHVXiumr5BWb3S6q4Pyq4AL3BYxXfkb7KxhK9tK9v2mm
+ tykQFtLP53gWqnwwUMmB9h9UxOOAnHRsred/kMn51Hqv/fhbTGVie64ojv2VRL54cA
+ FpJwikKIs4VXE4pejjZAEfGzcBV+Lq1Hn2IiSmrE=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 02/42] ASoC: cs42l51: manage mclk shutdown delay
-Date: Mon,  9 Nov 2020 22:54:00 -0500
-Message-Id: <20201110035440.424258-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 08/42] ALSA: hda: Separate runtime and system
+ suspend
+Date: Mon,  9 Nov 2020 22:54:06 -0500
+Message-Id: <20201110035440.424258-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035440.424258-1-sashal@kernel.org>
 References: <20201110035440.424258-1-sashal@kernel.org>
@@ -75,9 +76,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Olivier Moysan <olivier.moysan@st.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,61 +93,192 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Olivier Moysan <olivier.moysan@st.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 20afe581c9b980848ad097c4d54dde9bec7593ef ]
+[ Upstream commit f5dac54d9d93826a776dffc848df76746f7135bb ]
 
-A delay must be introduced before the shutdown down of the mclk,
-as stated in CS42L51 datasheet. Otherwise the codec may
-produce some noise after the end of DAPM power down sequence.
-The delay between DAC and CLOCK_SUPPLY widgets is too short.
-Add a delay in mclk shutdown request to manage the shutdown delay
-explicitly. From experiments, at least 10ms delay is necessary.
-Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
-when using msleep().
+Both pm_runtime_force_suspend() and pm_runtime_force_resume() have
+some implicit checks, so it can make code flow more straightforward if
+we separate runtime and system suspend callbacks.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20201020150109.482-1-olivier.moysan@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+High Definition Audio Specification, 4.5.9.3 Codec Wake From System S3
+states that codec can wake the system up from S3 if WAKEEN is toggled.
+Since HDA controller has different wakeup settings for runtime and
+system susend, we also need to explicitly disable direct-complete which
+can be enabled automatically by PCI core. In addition to that, avoid
+waking up codec if runtime resume is for system suspend, to not break
+direct-complete for codecs.
+
+While at it, also remove AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP, as the
+original bug commit a6630529aecb ("ALSA: hda: Workaround for spurious
+wakeups on some Intel platforms") solves doesn't happen with this
+patch.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20201027130038.16463-3-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l51.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_controller.h |  3 +-
+ sound/pci/hda/hda_intel.c      | 62 +++++++++++++++++++---------------
+ 2 files changed, 36 insertions(+), 29 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 55408c8fcb4e3..cdd7ae90c2b59 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -247,8 +247,28 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
- 		&cs42l51_adcr_mux_controls),
- };
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index a356fb0e57738..9da7a06d024f1 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -41,7 +41,7 @@
+ /* 24 unused */
+ #define AZX_DCAPS_COUNT_LPIB_DELAY  (1 << 25)	/* Take LPIB as delay */
+ #define AZX_DCAPS_PM_RUNTIME	(1 << 26)	/* runtime PM support */
+-#define AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP (1 << 27) /* Workaround for spurious wakeups after suspend */
++/* 27 unused */
+ #define AZX_DCAPS_CORBRP_SELF_CLEAR (1 << 28)	/* CORBRP clears itself after reset */
+ #define AZX_DCAPS_NO_MSI64      (1 << 29)	/* Stick to 32-bit MSIs */
+ #define AZX_DCAPS_SEPARATE_STREAM_TAG	(1 << 30) /* capture and playback use separate stream tag */
+@@ -143,6 +143,7 @@ struct azx {
+ 	unsigned int align_buffer_size:1;
+ 	unsigned int region_requested:1;
+ 	unsigned int disabled:1; /* disabled by vga_switcheroo */
++	unsigned int pm_prepared:1;
  
-+static int mclk_event(struct snd_soc_dapm_widget *w,
-+		      struct snd_kcontrol *kcontrol, int event)
+ 	/* GTS present */
+ 	unsigned int gts_present:1;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 9a1968932b783..ab32d4811c9ef 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -295,8 +295,7 @@ enum {
+ /* PCH for HSW/BDW; with runtime PM */
+ /* no i915 binding for this as HSW/BDW has another controller for HDMI */
+ #define AZX_DCAPS_INTEL_PCH \
+-	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
+-	 AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
+ 
+ /* HSW HDMI */
+ #define AZX_DCAPS_INTEL_HASWELL \
+@@ -984,7 +983,7 @@ static void __azx_runtime_suspend(struct azx *chip)
+ 	display_power(chip, false);
+ }
+ 
+-static void __azx_runtime_resume(struct azx *chip, bool from_rt)
++static void __azx_runtime_resume(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct hdac_bus *bus = azx_bus(chip);
+@@ -1001,7 +1000,8 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+ 	azx_init_pci(chip);
+ 	hda_intel_init_chip(chip, true);
+ 
+-	if (from_rt) {
++	/* Avoid codec resume if runtime resume is for system suspend */
++	if (!chip->pm_prepared) {
+ 		list_for_each_codec(codec, &chip->bus) {
+ 			if (codec->relaxed_resume)
+ 				continue;
+@@ -1017,6 +1017,29 @@ static void __azx_runtime_resume(struct azx *chip, bool from_rt)
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
++static int azx_prepare(struct device *dev)
 +{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
++	struct snd_card *card = dev_get_drvdata(dev);
++	struct azx *chip;
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return clk_prepare_enable(cs42l51->mclk_handle);
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Delay mclk shutdown to fulfill power-down sequence requirements */
-+		msleep(20);
-+		clk_disable_unprepare(cs42l51->mclk_handle);
-+		break;
-+	}
++	chip = card->private_data;
++	chip->pm_prepared = 1;
 +
++	/* HDA controller always requires different WAKEEN for runtime suspend
++	 * and system suspend, so don't use direct-complete here.
++	 */
 +	return 0;
 +}
 +
- static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
--	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
-+	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
++static void azx_complete(struct device *dev)
++{
++	struct snd_card *card = dev_get_drvdata(dev);
++	struct azx *chip;
++
++	chip = card->private_data;
++	chip->pm_prepared = 0;
++}
++
+ static int azx_suspend(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+@@ -1028,15 +1051,7 @@ static int azx_suspend(struct device *dev)
  
- static const struct snd_soc_dapm_route cs42l51_routes[] = {
+ 	chip = card->private_data;
+ 	bus = azx_bus(chip);
+-	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+-	/* An ugly workaround: direct call of __azx_runtime_suspend() and
+-	 * __azx_runtime_resume() for old Intel platforms that suffer from
+-	 * spurious wakeups after S3 suspend
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
+-		__azx_runtime_suspend(chip);
+-	else
+-		pm_runtime_force_suspend(dev);
++	__azx_runtime_suspend(chip);
+ 	if (bus->irq >= 0) {
+ 		free_irq(bus->irq, chip);
+ 		bus->irq = -1;
+@@ -1064,11 +1079,7 @@ static int azx_resume(struct device *dev)
+ 	if (azx_acquire_irq(chip, 1) < 0)
+ 		return -EIO;
+ 
+-	if (chip->driver_caps & AZX_DCAPS_SUSPEND_SPURIOUS_WAKEUP)
+-		__azx_runtime_resume(chip, false);
+-	else
+-		pm_runtime_force_resume(dev);
+-	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	__azx_runtime_resume(chip);
+ 
+ 	trace_azx_resume(chip);
+ 	return 0;
+@@ -1116,10 +1127,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	chip = card->private_data;
+ 
+ 	/* enable controller wake up event */
+-	if (snd_power_get_state(card) == SNDRV_CTL_POWER_D0) {
+-		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) |
+-			   STATESTS_INT_MASK);
+-	}
++	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) | STATESTS_INT_MASK);
+ 
+ 	__azx_runtime_suspend(chip);
+ 	trace_azx_runtime_suspend(chip);
+@@ -1130,18 +1138,14 @@ static int azx_runtime_resume(struct device *dev)
+ {
+ 	struct snd_card *card = dev_get_drvdata(dev);
+ 	struct azx *chip;
+-	bool from_rt = snd_power_get_state(card) == SNDRV_CTL_POWER_D0;
+ 
+ 	if (!azx_is_pm_ready(card))
+ 		return 0;
+ 	chip = card->private_data;
+-	__azx_runtime_resume(chip, from_rt);
++	__azx_runtime_resume(chip);
+ 
+ 	/* disable controller Wake Up event*/
+-	if (from_rt) {
+-		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
+-			   ~STATESTS_INT_MASK);
+-	}
++	azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) & ~STATESTS_INT_MASK);
+ 
+ 	trace_azx_runtime_resume(chip);
+ 	return 0;
+@@ -1175,6 +1179,8 @@ static int azx_runtime_idle(struct device *dev)
+ static const struct dev_pm_ops azx_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(azx_suspend, azx_resume)
+ #ifdef CONFIG_PM_SLEEP
++	.prepare = azx_prepare,
++	.complete = azx_complete,
+ 	.freeze_noirq = azx_freeze_noirq,
+ 	.thaw_noirq = azx_thaw_noirq,
+ #endif
 -- 
 2.27.0
 
