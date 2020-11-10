@@ -2,84 +2,107 @@ Return-Path: <SRS0=3oRA=EQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E92A1C388F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 09:05:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CE8DC4741F
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 09:41:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04E9F20780
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 09:05:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3870F20797
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 09:41:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hIk8u4w0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04E9F20780
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TjkiPlC0";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="qO5mwF1J"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3870F20797
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=compal.corp-partner.google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E24616D0;
-	Tue, 10 Nov 2020 10:04:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E24616D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id A19AE16E1;
+	Tue, 10 Nov 2020 10:41:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A19AE16E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604999123;
-	bh=k13gWvPLof8EweUAT/HNyBS5+PQvXElKMhJ1Mt/CXOg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1605001313;
+	bh=tl5uo5wqeDQ09H5JMlBq0du5tMhgUZVt4o9ZH2GfrrI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hIk8u4w0CPI9pywpB9rOHl0gS9Stjlzzvw4AvZMvLI88kvw2RL6aEFt065f/0VsI4
-	 NuBvX3Sz2+oa3LIRRwm8lhV5fbEuSYylf4QZj8OTxxOvr7aGLXzxGTxsgItCLgyE/V
-	 MB4AD43PUUTKIc1efutPxQNIJtb0vPFASNLSWsPU=
+	b=TjkiPlC0FNUmhYTWQmU1YLKUJTMPFwVVBF/+aewvneuO7GSahWSH6v2PR0o1XPoHi
+	 jUXQciE+QkLr2DhokRg5xYR9O+jgP42J8UvkkDCa4CTiCQ//rOoR7o4wONM/FdXTX7
+	 HN8ah4S1lsou8h94ucm08vXMAwA53IRwRrgwWOhc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 211D7F80161;
-	Tue, 10 Nov 2020 10:04:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26261F80161;
+	Tue, 10 Nov 2020 10:41:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89422F801D5; Tue, 10 Nov 2020 10:04:31 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa1.perex.cz (Postfix) with ESMTP id DFCE0F800EB
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 10:04:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFCE0F800EB
-X-UUID: 0d8bb3a431fb404e9bb9c1b01b7e6eb6-20201110
-X-UUID: 0d8bb3a431fb404e9bb9c1b01b7e6eb6-20201110
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <macpaul.lin@mediatek.com>)
- (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
- ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1250319375; Tue, 10 Nov 2020 17:04:17 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 10 Nov 2020 17:04:14 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Tue, 10 Nov 2020 17:04:15 +0800
-From: Macpaul Lin <macpaul.lin@mediatek.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, Alexander Tsoy <alexander@tsoy.me>,
- Nicola
- Lunghi <nick83ola@gmail.com>, Christopher Swenson <swenson@swenson.io>, Nick
- Kossifidis <mickflemm@gmail.com>, <alsa-devel@alsa-project.org>
-Subject: [PATCH v3] ALSA: usb-audio: disable 96khz support for HUAWEI USB-C
- HEADSET
-Date: Tue, 10 Nov 2020 17:04:08 +0800
-Message-ID: <1604999048-20294-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1604996266.2817.1.camel@mtkswgap22>
-References: <1604996266.2817.1.camel@mtkswgap22>
+ id 3D290F801D5; Tue, 10 Nov 2020 10:41:01 +0100 (CET)
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com
+ [IPv6:2a00:1450:4864:20::244])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 462D4F800EB
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 10:40:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 462D4F800EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="qO5mwF1J"
+Received: by mail-lj1-x244.google.com with SMTP id o24so7219692ljj.6
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 01:40:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=AXdt4/GVN4Y6ww6W0kBy4YLHXliyiP6kmKj8D1Wdz+s=;
+ b=qO5mwF1JeGYhP/NW4uBHRxJwCTdGjTfHfchqISCSp2glgneKh+N0XQ6qPPIvY5RAc2
+ oI0Qjx3dssYp2HnKfVuRxH+R9cmy5asjDX34qDK+PIVEG3npGguBzRWX3gNhCYdV3P3D
+ nDAqGXR9CUQInuueX63CMmJNIk9QZLbY35+STE1FVcwdMXgb1AqMkm5GYy8MHz9atmyI
+ N+AKEA1BC9N2eNYipwv3fQpRCHtdURnd5qnqF2oE60RosuX8WdvlPRJgTAKaQ0l2iZ7Q
+ xR+ku5X7GnBhUJL+E4QYAQJrbPRQIyCVN5xMZ/XBoI2fLk75iI7GRVyk1g1vHeJOLFrH
+ ddhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=AXdt4/GVN4Y6ww6W0kBy4YLHXliyiP6kmKj8D1Wdz+s=;
+ b=CGpRkngl3Z5z6o0wthl5sZY8DwTgLUW/kQKZ3HGZgN5BA6SKr9BXdCn1bgkWEKjXjx
+ 5fp0QahLoNmXb+OJw7srp56JkvBJuj65D2vfYDiDTrClAU7OlCvrzUd1W+LZ5nhPRPhX
+ Ma9yoFw5qLP26R9ZzGcyBH2njsavJB93bzpm+DJbZP5j9cmdCeliOkcMRzisTqPmwWD8
+ tPoOjqwSzc1/fB+PIn8OzMwFT0PsMXzap9IiaRK3B0SMQgA3lRRirBtFfsd2C6Ydx8Co
+ VIiBXPjNYmTGgEUeSfV+MGQjCL7Vzb9f0arjkYewrl0om7hIfAR9YdH4cgdS1fZZRnM7
+ VneQ==
+X-Gm-Message-State: AOAM531doHqdGRaBr7qFTt3WIgN8RFQs6oY2l0lEf+3vy6KINo7FxHBY
+ yg2hy8QcC3w9qH+cxpPcJCbq9I5/3nzheqML3n+6SQ==
+X-Google-Smtp-Source: ABdhPJyxnYp8OqaXR3MO5Oeb6TIQXCDHSw6iz4a1K8EfahuJjytShDCZTNTXKb/a7OkIAAffzLbSLY5LhBt3p4R/yAc=
+X-Received: by 2002:a2e:b54a:: with SMTP id a10mr7500764ljn.139.1605001251219; 
+ Tue, 10 Nov 2020 01:40:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 3B1BA5211D1AEA1F9D389FD0B8F95556B1905E286E655FC53C5BEFF736FBB5782000:8
-X-MTK: N
-Cc: linux-usb@vger.kernel.org,
- Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
- Eddie Hung <eddie.hung@mediatek.com>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, linux-mediatek@lists.infradead.org,
- Macpaul Lin <macpaul@gmail.com>, Chunfeng Yun <chunfeng.yun@mediatek.com>,
- Macpaul Lin <macpaul.lin@mediatek.com>, linux-arm-kernel@lists.infradead.org,
- Ainge Hsu <ainge.hsu@mediatek.com>
+References: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20201106061433.1483129-1-ajye_huang@compal.corp-partner.google.com>
+From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date: Tue, 10 Nov 2020 17:40:40 +0800
+Message-ID: <CALprXBZCthdkxGbJBZZ+ESJRDBHY879FZMpB_4Mgpq1YAJun2g@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Modify documentation and machine driver for SC7180
+ sound card
+To: Ajye Huang <ajye.huang@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Douglas Anderson <dianders@chromium.org>, Rob Herring <robh@kernel.org>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ Patrick Lai <plai@codeaurora.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+ Rohit kumar <rohitkr@codeaurora.org>, Andy Gross <agross@kernel.org>,
+ Tzung-Bi Shih <tzungbi@chromium.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>,
+ Cheng-yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,40 +118,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The HUAWEI USB-C headset (VID:0x12d1, PID:0x3a07) reported it supports
-96khz. However there will be some random issue under 96khz.
-Not sure if there is any alternate setting could be applied.
-Hence 48khz is suggested to be applied at this moment.
+Hi, Mark
 
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
-Cc: stable@vger.kernel.org
----
-Changes for v2:
-  - Fix build error.
-  - Add Cc: stable@vger.kernel.org
-Changes for v3:
-  - Replace "udev" with "chip->dev" according to Takashi's suggestion. Thanks.
+Could you please kindly review the series patch v6? And may I get your
+approval if the review is done.
 
- sound/usb/format.c |    5 +++++
- 1 file changed, 5 insertions(+)
+thanks
+Ajye
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 1b28d01..0aff774 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -217,6 +217,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 			    (chip->usb_id == USB_ID(0x041e, 0x4064) ||
- 			     chip->usb_id == USB_ID(0x041e, 0x4068)))
- 				rate = 8000;
-+			/* Huawei headset can't support 96kHz fully */
-+			if (rate == 96000 &&
-+			    chip->usb_id == USB_ID(0x12d1, 0x3a07) &&
-+			    le16_to_cpu(chip->dev->descriptor.bcdDevice) == 0x49)
-+				continue;
- 
- 			fp->rate_table[fp->nr_rates] = rate;
- 			if (!fp->rate_min || rate < fp->rate_min)
--- 
-1.7.9.5
-
+On Fri, Nov 6, 2020 at 2:14 PM Ajye Huang <ajye.huang@gmail.com> wrote:
+>
+> Note:
+> - The patch is made by the collaboration of
+>  Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+>  Cheng-Yi Chiang <cychiang@chromium.org>
+>
+> v6:
+> - Documentation: Addressed suggestions from Rob Herring.
+>   - Define "maxItems: 1" in dmic-gpios property.
+>   - Only keep one example and add dmic-gpios property in.
+> v5:
+> - Machine driver:
+>   - Fix a format string warning (Reported-by: kernel test robot <lkp@intel.com>).
+>     detailed info at https://lore.kernel.org/patchwork/patch/1331087/
+>
+> v4:
+> - Machine driver: Addressed suggestions from Tzung-Bi.
+>   - Remove redundant judgments in dmic_set() and dmic_get().
+>   - Remove 1 level indent of judgment of IS_ERR(data->dmic_sel).
+>
+> v3:
+> - Machine driver: Addressed suggestions from Tzung-Bi.
+>   - Move variables "dmic_switch" and "dmic_sel" into struct sc7180_snd_data.
+>   - Remove redundant judgments in dmic_set().
+>
+> v2:
+> - Documentation: Modify the dimc-gpios property description and examples.
+> - Machine driver:
+>   - Remove "qcom,sc7180-sndcard-rt5682-m98357-2mic" compatible
+>   - See gpio property and use anadditional control.
+>
+> Thanks for the review!
+>
+> Ajye Huang (2):
+>   ASoC: google: dt-bindings: modify machine bindings for two MICs case
+>   ASoC: qcom: sc7180: Modify machine driver for 2mic
+>
+>  .../bindings/sound/google,sc7180-trogdor.yaml |  8 ++-
+>  sound/soc/qcom/sc7180.c                       | 61 +++++++++++++++++++
+>  2 files changed, 68 insertions(+), 1 deletion(-)
+>
+> --
+> 2.25.1
+>
