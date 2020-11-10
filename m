@@ -7,67 +7,68 @@ X-Spam-Status: No, score=-13.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EA67C388F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:55:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD2C7C388F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:55:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0994216C4
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:55:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA663221E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Nov 2020 03:55:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="IGztmW18";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="BCez7dC9"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0994216C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CMl5xUKj";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="WpkfTSuU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA663221E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0DA316B6;
-	Tue, 10 Nov 2020 04:54:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0DA316B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2882216B1;
+	Tue, 10 Nov 2020 04:54:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2882216B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1604980513;
-	bh=Xk6afGxOhEefhhDTu11Tv5CbmYxiIZBgfet1Akd/Mbs=;
+	s=default; t=1604980519;
+	bh=Au+MdApOodfV7Qahbj4kNojkYoQIS9jepWa5HMULrSQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IGztmW18U8PA/q5/J2Nm732Wl4nK0LAzHEi+ms1zWd7toR6Te8tf1iju8MqGR0Sa3
-	 qzknLBlU6wdpYimYwfa9DDaItrmM742o4tyqtnZUjQawdJpRNhao0ZmQpy+XmKXVVC
-	 LLK8ug30hZgVsnuFgg+uL7FH/zidJlnFTs0YWRgM=
+	b=CMl5xUKj9yiDXWy6THFJKfRaogW/c7naPkSyQvFG2Wb3towf6HB3AHVhiCmURHZDJ
+	 o8W56GU8MKjm2KKoUAKQ+M811Q9ALJQIXbeklZ5rKd3WovnIulAtew5Jv0wZQpqFiU
+	 7UKl0p19nuLXSmgZf+iBxVHKQatI+Ymgm7HFmkOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFC57F80059;
-	Tue, 10 Nov 2020 04:53:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B409AF801EB;
+	Tue, 10 Nov 2020 04:53:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBA9AF80249; Tue, 10 Nov 2020 04:53:32 +0100 (CET)
+ id 8DD23F8021C; Tue, 10 Nov 2020 04:53:34 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B197F80059
- for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 04:53:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B197F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76D37F800AE
+ for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2020 04:53:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76D37F800AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BCez7dC9"
+ header.b="WpkfTSuU"
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net
  [73.47.72.35])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 85ED120829;
- Tue, 10 Nov 2020 03:53:22 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2BAC6207BC;
+ Tue, 10 Nov 2020 03:53:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1604980403;
- bh=Xk6afGxOhEefhhDTu11Tv5CbmYxiIZBgfet1Akd/Mbs=;
+ s=default; t=1604980401;
+ bh=Au+MdApOodfV7Qahbj4kNojkYoQIS9jepWa5HMULrSQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BCez7dC9T70bYOZrgqgMUIjXyp6Fb4Tig9+uz7pYXsnML4w5CPSts2ScMTX5k7X5S
- 19ynHKo6uEbiEivhs8oW3MR9JXg/Y3NgiuUg7mJK4ROjkDTfpHQnQe4YsB8O6ks8Jf
- hetvtlzu9zuQPWi5+rWbSacw64az56s4kgzIXlIM=
+ b=WpkfTSuUG00kdXMID0Ud3aRvr6tvBy7WWrbsrQ47rhuIeFOYuj4WKB4zrajhxwyzE
+ +FNYsANSBqtDReFs6iL0BzbLIZCYrWgV2Ixlp8neJXwQKF7ih6u5wWlFu36Bek39aW
+ pLYoCAvU0FQUC3unyN9NpS/Dv0FsleNrMxA+dc4M=
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 03/55] ASoC: cs42l51: manage mclk shutdown delay
-Date: Mon,  9 Nov 2020 22:52:26 -0500
-Message-Id: <20201110035318.423757-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 02/55] ASoC: qcom: sdm845: set driver name
+ correctly
+Date: Mon,  9 Nov 2020 22:52:25 -0500
+Message-Id: <20201110035318.423757-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201110035318.423757-1-sashal@kernel.org>
 References: <20201110035318.423757-1-sashal@kernel.org>
@@ -75,9 +76,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Olivier Moysan <olivier.moysan@st.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,61 +94,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Olivier Moysan <olivier.moysan@st.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 20afe581c9b980848ad097c4d54dde9bec7593ef ]
+[ Upstream commit 3f48b6eba15ea342ef4cb420b580f5ed6605669f ]
 
-A delay must be introduced before the shutdown down of the mclk,
-as stated in CS42L51 datasheet. Otherwise the codec may
-produce some noise after the end of DAPM power down sequence.
-The delay between DAC and CLOCK_SUPPLY widgets is too short.
-Add a delay in mclk shutdown request to manage the shutdown delay
-explicitly. From experiments, at least 10ms delay is necessary.
-Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
-when using msleep().
+With the current state of code, we would endup with something like
+below in /proc/asound/cards for 2 machines based on this driver.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20201020150109.482-1-olivier.moysan@st.com
+Machine 1:
+ 0 [DB845c            ]: DB845c - DB845c
+                       DB845c
+Machine 2:
+ 0 [LenovoYOGAC6301]: Lenovo-YOGA-C63 - Lenovo-YOGA-C630-13Q50
+                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
+
+This is not very UCM friendly both w.r.t to common up configs and
+card identification, and UCM2 became totally not usefull with just
+one ucm sdm845.conf for two machines which have different setups
+w.r.t HDMI and other dais.
+
+Reasons for such thing is partly because Qualcomm machine drivers never
+cared to set driver_name.
+
+This patch sets up driver name for the this driver to sort out the
+UCM integration issues!
+
+after this patch contents of /proc/asound/cards:
+
+Machine 1:
+ 0 [DB845c         ]: sdm845 - DB845c
+                      DB845c
+Machine 2:
+ 0 [LenovoYOGAC6301]: sdm845 - Lenovo-YOGA-C630-13Q50
+                     LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
+
+with this its possible to align with what UCM2 expects and we can have
+sdm845/DB845.conf
+sdm845/LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216.conf
+... for board variants. This should scale much better!
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20201023095849.22894-1-srinivas.kandagatla@linaro.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l51.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ sound/soc/qcom/sdm845.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 764f2ef8f59df..2b617993b0adb 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -245,8 +245,28 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
- 		&cs42l51_adcr_mux_controls),
- };
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index ab1bf23c21a68..6c2760e27ea6f 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -17,6 +17,7 @@
+ #include "qdsp6/q6afe.h"
+ #include "../codecs/rt5663.h"
  
-+static int mclk_event(struct snd_soc_dapm_widget *w,
-+		      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *comp = snd_soc_dapm_to_component(w->dapm);
-+	struct cs42l51_private *cs42l51 = snd_soc_component_get_drvdata(comp);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		return clk_prepare_enable(cs42l51->mclk_handle);
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Delay mclk shutdown to fulfill power-down sequence requirements */
-+		msleep(20);
-+		clk_disable_unprepare(cs42l51->mclk_handle);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
--	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
-+	SND_SOC_DAPM_SUPPLY("MCLK", SND_SOC_NOPM, 0, 0, mclk_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
++#define DRIVER_NAME	"sdm845"
+ #define DEFAULT_SAMPLE_RATE_48K		48000
+ #define DEFAULT_MCLK_RATE		24576000
+ #define TDM_BCLK_RATE		6144000
+@@ -552,6 +553,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+ 	if (!data)
+ 		return -ENOMEM;
  
- static const struct snd_soc_dapm_route cs42l51_routes[] = {
++	card->driver_name = DRIVER_NAME;
+ 	card->dapm_widgets = sdm845_snd_widgets;
+ 	card->num_dapm_widgets = ARRAY_SIZE(sdm845_snd_widgets);
+ 	card->dev = dev;
 -- 
 2.27.0
 
