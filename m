@@ -2,73 +2,79 @@ Return-Path: <SRS0=kIe0=ER=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A748C388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:44:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CB95C5517A
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:44:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3F7C2087D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:44:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 272D0208CA
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:44:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VBhl8YA+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3F7C2087D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OaGIfMec"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 272D0208CA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6EC317A2;
-	Wed, 11 Nov 2020 22:43:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6EC317A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E08C17B2;
+	Wed, 11 Nov 2020 22:43:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E08C17B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605131073;
-	bh=KV21TnYlrA3NizRlQF8Mv5FgCgW6LN489ZWRdSfN15Y=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VBhl8YA+pR+Cuf718EC4DlhF5F/zOgCnkCiFxSXrbO21OaD0ykQtEcC73SPZiQhnz
-	 ax3Qhyl4ZzyHYdqboCIB9TjIdM39gdEBOjErjdWHOmEt15uUR4CxxVj5FErkvw2uDm
-	 v5nAjdFmgsWAGtB2mfVL3v66D6TZgqLLNCCfNFrg=
+	s=default; t=1605131079;
+	bh=JVE9W23Iex3PjPYG3kj3OjrHa9qE6XxBygs/SBYG578=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OaGIfMecIBRjV2lbGIcVaIDyC4gaupY9DvyT5taat9MhyxobIcGlq1m3Jzrsg46/t
+	 v3u4qU/6Z6ffatvS9zPqjx6lHpKb/jLqa0F4NTWNw+982cYyvwUBVpkQFqQ/dcCkeX
+	 bLtHHHHgZtX3LRQclnOJla+o++qPdNZTuqsV9pSs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 846D5F8027C;
-	Wed, 11 Nov 2020 22:43:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B3DCF8022B;
+	Wed, 11 Nov 2020 22:43:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51A53F8027C; Wed, 11 Nov 2020 22:43:41 +0100 (CET)
+ id 40B1BF802C4; Wed, 11 Nov 2020 22:43:46 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E78D0F801F5
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 22:43:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E78D0F801F5
-IronPort-SDR: g7C3wLx5F9u7XoF4U9hPIba+Gq+P4OY5BVh9I0I7JfnNrDcVsIBW4I3EaSRUqaeKwPaQAdyNU/
- yW2L6sMvrEfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="149495722"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="149495722"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14235F8025E
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 22:43:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14235F8025E
+IronPort-SDR: /J041NIClu7mqErUbT1cddy/jr4Bc7YhceFuYd6uQMkd7EBq8IT/h7OoXR3lYmmNBImDYwV62Q
+ y1PO7mEtc0nA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="149495731"
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="149495731"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2020 13:43:32 -0800
-IronPort-SDR: vrQ+vC8KuGXBY/TyGigl7pqKkw/R3cLE307nnf4W7QNzKmwYC7XIUYQXDCKVuAA+oOhrwojb2d
- vZvnw+Ee6IsA==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="356808069"
+ 11 Nov 2020 13:43:34 -0800
+IronPort-SDR: m74Aa6Vo0GjJghJONWbEuYZjFEM5ELiKmpuJ3zMUZ05Li822ovT/N78dxnK/eUvSJcZNosQKcU
+ mt1M0s8fJvdw==
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="356808080"
 Received: from cmurill1-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.130.147])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2020 13:43:32 -0800
+ 11 Nov 2020 13:43:33 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/4] ASoC: soundwire: SDCA device quirk and cleanups
-Date: Wed, 11 Nov 2020 15:43:14 -0600
-Message-Id: <20201111214318.150529-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: rt711: remove warnings
+Date: Wed, 11 Nov 2020 15:43:17 -0600
+Message-Id: <20201111214318.150529-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201111214318.150529-1-pierre-louis.bossart@linux.intel.com>
+References: <20201111214318.150529-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,24 +90,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add one quirk to handle new TigerLake-SDCA device and cleanup code.
+cppcheck complains, use separate loop variable for sink and source ports
 
-Pierre-Louis Bossart (4):
-  ASoC: Intel: sof_sdw: add quirk for new TigerLake-SDCA device
-  ASoC: codecs: rt*.c: remove useless pointer cast
-  ASoC: rt711: remove warnings
-  ASoC: codecs: max98373-sdw: align regmap use with other codecs
+sound/soc/codecs/rt711-sdw.c:382:4: style: Variable 'i' is reassigned
+a value before the old one has been used. [redundantAssignment]
+ i = 0;
+   ^
+sound/soc/codecs/rt711-sdw.c:371:4: note: i is assigned
+  i++;
+   ^
+sound/soc/codecs/rt711-sdw.c:382:4: note: i is overwritten
+ i = 0;
+   ^
 
- sound/soc/codecs/max98373-sdw.c  |  2 +-
- sound/soc/codecs/rt1308-sdw.c    |  2 +-
- sound/soc/codecs/rt5682-sdw.c    |  2 +-
- sound/soc/codecs/rt700.c         |  2 +-
- sound/soc/codecs/rt711-sdw.c     | 15 ++++++++-------
- sound/soc/codecs/rt711.c         |  2 +-
- sound/soc/codecs/rt715.c         |  2 +-
- sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
- 8 files changed, 24 insertions(+), 13 deletions(-)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+---
+ sound/soc/codecs/rt711-sdw.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index f0a0691bd31c..fc7df79c3b91 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -338,7 +338,8 @@ static int rt711_update_status(struct sdw_slave *slave,
+ static int rt711_read_prop(struct sdw_slave *slave)
+ {
+ 	struct sdw_slave_prop *prop = &slave->prop;
+-	int nval, i;
++	int nval;
++	int i, j;
+ 	u32 bit;
+ 	unsigned long addr;
+ 	struct sdw_dpn_prop *dpn;
+@@ -379,15 +380,15 @@ static int rt711_read_prop(struct sdw_slave *slave)
+ 	if (!prop->sink_dpn_prop)
+ 		return -ENOMEM;
+ 
+-	i = 0;
++	j = 0;
+ 	dpn = prop->sink_dpn_prop;
+ 	addr = prop->sink_ports;
+ 	for_each_set_bit(bit, &addr, 32) {
+-		dpn[i].num = bit;
+-		dpn[i].type = SDW_DPN_FULL;
+-		dpn[i].simple_ch_prep_sm = true;
+-		dpn[i].ch_prep_timeout = 10;
+-		i++;
++		dpn[j].num = bit;
++		dpn[j].type = SDW_DPN_FULL;
++		dpn[j].simple_ch_prep_sm = true;
++		dpn[j].ch_prep_timeout = 10;
++		j++;
+ 	}
+ 
+ 	/* set the timeout values */
 -- 
 2.25.1
 
