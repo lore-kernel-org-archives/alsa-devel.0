@@ -7,75 +7,74 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB551C388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E4A6C5517A
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:38:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F0792087D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:38:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1556320825
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:38:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N4e8GqhJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F0792087D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="omvbbwsU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1556320825
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4645179E;
-	Wed, 11 Nov 2020 22:37:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4645179E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E28A617A5;
+	Wed, 11 Nov 2020 22:37:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E28A617A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605130704;
-	bh=lV1Ciee+TQLt10DBGG+WWJAxjIryMdw98slI9ZlZ39s=;
+	s=default; t=1605130711;
+	bh=TD/UVp6vdEfLW1A4DYS1Ojq76Zbi876FizWANtFAJrc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N4e8GqhJwBItC/K7DPFXt2GGeAs1A4HEM1JRCFM7x2OclURF8t4fxi6/eWluPePXt
-	 iR5lJUVtXIHlDr37OPSMt/TbMD5Vf15xfh9w8SgmccdGqu21PqEHiYGe5QvXWzPTHY
-	 O7jvhYPs1wI0WdTrTrRR2n6O2XAxjUjwHjKCsIfA=
+	b=omvbbwsUpTNCAitH+UxxG36gGW3YjVjiXo2v9P/UO61FaX+XkoKaGUXVY0EdGNWRU
+	 XH9pBLAyeBs7oaEYHS65Qqf4TkPHsRFmIYTffKFtQ1xqAYjnythQKqyUBN52dItFyq
+	 L1eQKX7h2yETaCJOrHQ505ix2eW7kDxZOOlh3ExQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF6E4F80271;
-	Wed, 11 Nov 2020 22:36:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7840F804CB;
+	Wed, 11 Nov 2020 22:36:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDB09F804CA; Wed, 11 Nov 2020 22:36:07 +0100 (CET)
+ id C4AC6F8007E; Wed, 11 Nov 2020 22:36:07 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B045EF8007E
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 22:35:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B045EF8007E
-IronPort-SDR: uVH6FIC/HXLsu3HfUoirTeTGl+/hl7VapeB2fNMGuUI+xsNAfVRdsjX9iWTZ23fAgpdX7uGwW5
- fG1p3wtah/dg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="157237665"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="157237665"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B8F0F80271
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 22:35:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B8F0F80271
+IronPort-SDR: IkM6p3k+rTp7lD435HH58CLiiAkjh1yrMMl3JfJADsNPOqXPpx53Y0wmahwv3j06+Gda4EjthG
+ pG0zDzkPKhig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="157237680"
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="157237680"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2020 13:35:47 -0800
-IronPort-SDR: 4albLXzaVWtgJSW5amkQcATj7HIgBLxUxmQJYfr5WQEAIHyQxO0fPAnRhaJFfFPTDRv1C/qNeb
- WwaaRDHBpA5w==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="328266633"
+ 11 Nov 2020 13:35:48 -0800
+IronPort-SDR: uEzXAjUzqP4e2w0xNiiJMfii7hLWBY4ynmcMwE5KWo3obe5/qQpeeuiNfsNA4PPiudrbtmckTC
+ tC3Q5KApA7gg==
+X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="328266640"
 Received: from cmurill1-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.130.147])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2020 13:35:46 -0800
+ 11 Nov 2020 13:35:48 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ASoC: SOF: Kconfig: fix Kconfig punctuation and wording
-Date: Wed, 11 Nov 2020 15:35:31 -0600
-Message-Id: <20201111213533.149963-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: SOF: Intel: fix Kconfig dependency for
+ SND_INTEL_DSP_CONFIG
+Date: Wed, 11 Nov 2020 15:35:33 -0600
+Message-Id: <20201111213533.149963-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201111213533.149963-1-pierre-louis.bossart@linux.intel.com>
 References: <20201111213533.149963-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- tiwai@suse.de, Randy Dunlap <rdunlap@infradead.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Rander Wang <rander.wang@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,155 +90,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+SND_INTEL_DSP_CONFIG is selected by the HDaudio, Skylake and SOF
+drivers. When the HDaudio link is not selected as a option, this
+Kconfig option is not touched and will default to whatever other
+drivers selected. In the case e.g. where HDaudio is compiled as
+built-in, the linker will complain:
 
-Add periods at the end of sentences in help text.
-Drop "a" in one place where it is not needed.
-Fix a verb.
-Add some capitalization.
+ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
+sof-pci-dev.c:(.text+0x5c): undefined reference to
+`snd_intel_dsp_driver_probe'
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Adding the select for all HDaudio platforms, regardless of whether
+they rely on the HDaudio link or not, solves the problem.
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 82d9d54a6c0ee ('ALSA: hda: add Intel DSP configuration / probe code')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/sof/Kconfig | 42 +++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ sound/soc/sof/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 8c1f0829de40..031dad5fc4c7 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -2,7 +2,7 @@
- config SND_SOC_SOF_TOPLEVEL
- 	bool "Sound Open Firmware Support"
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 720dce5d7d1e..b607dba5fb2a 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -287,6 +287,7 @@ config SND_SOC_SOF_ALDERLAKE
+ 
+ config SND_SOC_SOF_HDA_COMMON
+ 	tristate
++	select SND_INTEL_DSP_CONFIG
+ 	select SND_SOC_SOF_INTEL_COMMON
+ 	select SND_SOC_SOF_HDA_LINK_BASELINE
  	help
--	  This adds support for Sound Open Firmware (SOF). SOF is a free and
-+	  This adds support for Sound Open Firmware (SOF). SOF is free and
- 	  generic open source audio DSP firmware for multiple devices.
- 	  Say Y if you have such a device that is supported by SOF.
- 	  If unsure select "N".
-@@ -16,8 +16,8 @@ config SND_SOC_SOF_PCI
- 	select SND_SOC_ACPI if ACPI
- 	help
- 	  This adds support for PCI enumeration. This option is
--	  required to enable Intel Skylake+ devices
--	  Say Y if you need this option
-+	  required to enable Intel Skylake+ devices.
-+	  Say Y if you need this option.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_ACPI
-@@ -28,8 +28,8 @@ config SND_SOC_SOF_ACPI
- 	select IOSF_MBI if X86 && PCI
- 	help
- 	  This adds support for ACPI enumeration. This option is required
--	  to enable Intel Broadwell/Baytrail/Cherrytrail devices
--	  Say Y if you need this option
-+	  to enable Intel Broadwell/Baytrail/Cherrytrail devices.
-+	  Say Y if you need this option.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_OF
-@@ -54,12 +54,12 @@ config SND_SOC_SOF_DEVELOPER_SUPPORT
- 	bool "SOF developer options support"
- 	depends on EXPERT
- 	help
--	  This option unlock SOF developer options for debug/performance/
-+	  This option unlocks SOF developer options for debug/performance/
- 	  code hardening.
- 	  Distributions should not select this option, only SOF development
- 	  teams should select it.
--	  Say Y if you are involved in SOF development and need this option
--	  If not, select N
-+	  Say Y if you are involved in SOF development and need this option.
-+	  If not, select N.
- 
- if SND_SOC_SOF_DEVELOPER_SUPPORT
- 
-@@ -72,13 +72,13 @@ config SND_SOC_SOF_NOCODEC_SUPPORT
- 	  This adds support for a dummy/nocodec machine driver fallback
- 	  option if no known codec is detected. This is typically only
- 	  enabled for developers or devices where the sound card is
--	  controlled externally
--	  This option is mutually exclusive with the Intel HDAudio support,
--	  selecting it may have negative impacts and prevent e.g. microphone
-+	  controlled externally.
-+	  This option is mutually exclusive with the Intel HDAudio support.
-+	  Selecting it may have negative impacts and prevent e.g. microphone
- 	  functionality from being enabled on Intel CoffeeLake and later
- 	  platforms.
- 	  Distributions should not select this option!
--	  Say Y if you need this nocodec fallback option
-+	  Say Y if you need this nocodec fallback option.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_STRICT_ABI_CHECKS
-@@ -92,8 +92,8 @@ config SND_SOC_SOF_STRICT_ABI_CHECKS
- 	  is invoked.
- 	  This option will stop topology creation and firmware load upfront.
- 	  It is intended for SOF CI/releases and not for users or distros.
--	  Say Y if you want strict ABI checks for an SOF release
--	  If you are not involved in SOF releases and CI development
-+	  Say Y if you want strict ABI checks for an SOF release.
-+	  If you are not involved in SOF releases and CI development,
- 	  select "N".
- 
- config SND_SOC_SOF_DEBUG
-@@ -114,8 +114,8 @@ config SND_SOC_SOF_FORCE_NOCODEC_MODE
- 	  though there is a codec detected on the real platform. This is
- 	  typically only enabled for developers for debug purposes, before
- 	  codec/machine driver is ready, or to exclude the impact of those
--	  drivers
--	  Say Y if you need this force nocodec mode option
-+	  drivers.
-+	  Say Y if you need this force nocodec mode option.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_DEBUG_XRUN_STOP
-@@ -137,12 +137,12 @@ config SND_SOC_SOF_DEBUG_VERBOSE_IPC
- config SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION
- 	bool "SOF force to use IPC for position update on SKL+"
- 	help
--	  This option force to handle stream position update IPCs and run pcm
-+	  This option forces to handle stream position update IPCs and run PCM
- 	  elapse to inform ALSA about that, on platforms (e.g. Intel SKL+) that
- 	  with other approach (e.g. HDAC DPIB/posbuf) to elapse PCM.
- 	  On platforms (e.g. Intel SKL-) where position update IPC is the only
- 	  one choice, this setting won't impact anything.
--	  if you are trying to debug pointer update with position IPCs or where
-+	  If you are trying to debug pointer update with position IPCs or where
- 	  DPIB/posbuf is not ready, select "Y".
- 	  If unsure select "N".
- 
-@@ -161,7 +161,7 @@ config SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE
- 	help
- 	  The firmware trace can be enabled either at build-time with
- 	  this option, or dynamically by setting flags in the SOF core
--	  module parameter (similar to dynamic debug)
-+	  module parameter (similar to dynamic debug).
- 	  If unsure, select "N".
- 
- config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
-@@ -190,7 +190,7 @@ config SND_SOC_SOF
- 	select SND_SOC_SOF_NOCODEC if SND_SOC_SOF_NOCODEC_SUPPORT
+@@ -346,7 +347,6 @@ config SND_SOC_SOF_HDA
+ 	tristate
+ 	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
+ 	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
+-	select SND_INTEL_DSP_CONFIG
  	help
  	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 	  The selection is made at the top level and does not exactly follow
- 	  module dependencies but since the module or built-in type is decided
- 	  at the top level it doesn't matter.
-@@ -199,7 +199,7 @@ config SND_SOC_SOF_PROBE_WORK_QUEUE
- 	bool
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 	  When selected, the probe is handled in two steps, for example to
- 	  avoid lockdeps if request_module is used in the probe.
- 
+ 	  'select' statements at a higher level.
 -- 
 2.25.1
 
