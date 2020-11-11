@@ -5,76 +5,94 @@ X-Spam-Level:
 X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E4A6C5517A
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:38:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2CD8C388F9
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:43:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1556320825
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:38:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA0C520825
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 21:43:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="omvbbwsU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1556320825
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fWoaHanZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=birdec.com header.i=@birdec.com header.b="AAvQh4nh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA0C520825
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=birdec.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E28A617A5;
-	Wed, 11 Nov 2020 22:37:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E28A617A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25275178F;
+	Wed, 11 Nov 2020 22:42:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25275178F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605130711;
-	bh=TD/UVp6vdEfLW1A4DYS1Ojq76Zbi876FizWANtFAJrc=;
+	s=default; t=1605130987;
+	bh=B/EC/SW4GXpzYjKHFLZWTE7a6sGiybO6MtEBiqxWx/0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=omvbbwsUpTNCAitH+UxxG36gGW3YjVjiXo2v9P/UO61FaX+XkoKaGUXVY0EdGNWRU
-	 XH9pBLAyeBs7oaEYHS65Qqf4TkPHsRFmIYTffKFtQ1xqAYjnythQKqyUBN52dItFyq
-	 L1eQKX7h2yETaCJOrHQ505ix2eW7kDxZOOlh3ExQ=
+	b=fWoaHanZK2LV/flTg6E0wQ+wdh92MA8nprDusPlsxZoVjeH5QngwwofMTdboGeM0x
+	 GR5Qnjpzjn89dzqfNLRNTYK0YAFbM1HWf9g0RY7NnstclCtIJsHvGtvTdlDiW+gZje
+	 XjBL8rT+hvHqv6TcZQcOK+9BmhyaJRxIXP/SwTvo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7840F804CB;
-	Wed, 11 Nov 2020 22:36:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97C13F801F5;
+	Wed, 11 Nov 2020 22:42:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4AC6F8007E; Wed, 11 Nov 2020 22:36:07 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 68D7FF8020C; Wed, 11 Nov 2020 22:42:15 +0100 (CET)
+Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B8F0F80271
- for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 22:35:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B8F0F80271
-IronPort-SDR: IkM6p3k+rTp7lD435HH58CLiiAkjh1yrMMl3JfJADsNPOqXPpx53Y0wmahwv3j06+Gda4EjthG
- pG0zDzkPKhig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="157237680"
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="157237680"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2020 13:35:48 -0800
-IronPort-SDR: uEzXAjUzqP4e2w0xNiiJMfii7hLWBY4ynmcMwE5KWo3obe5/qQpeeuiNfsNA4PPiudrbtmckTC
- tC3Q5KApA7gg==
-X-IronPort-AV: E=Sophos;i="5.77,470,1596524400"; d="scan'208";a="328266640"
-Received: from cmurill1-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.209.130.147])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Nov 2020 13:35:48 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: SOF: Intel: fix Kconfig dependency for
- SND_INTEL_DSP_CONFIG
-Date: Wed, 11 Nov 2020 15:35:33 -0600
-Message-Id: <20201111213533.149963-5-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201111213533.149963-1-pierre-louis.bossart@linux.intel.com>
-References: <20201111213533.149963-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, Randy Dunlap <rdunlap@infradead.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84A8DF800AE
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 22:42:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84A8DF800AE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=birdec.com header.i=@birdec.com
+ header.b="AAvQh4nh"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com; 
+ s=default;
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+ Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+ List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=c0v6F6riTiMwK0+lQUA1qG9pskhNM22jO/yrK0zcXoA=; b=AAvQh4nhK5y9ZaSiRygevsE3tG
+ CIB8uFkZ9K/g9OZm3a9rqHKKUqAjVu5qZV8K/aAjF+x2boX9S28nTwy6LMwew5ENEIz1HdyGQ5Hti
+ yX9nznoPY6FiUXLILAcF/ZBBI/YCMUtu0S9kXtEBvLmatw3HffHAq1v2z2ICDrkviq1NsiSqC4xce
+ EOMf/cQBVTXCD+NZ3tS2TDBj8CvhLmNF+NMgzE63GKKUIvNLDVIV6tM2gzkNlsFpZ/CQxJEklFaHL
+ 8FSe1PFV0rDw1Ro4rW0HaiijSIE6XH5myt9XcbVL3xPwlLKnsRp803zTKnmlI+zC4KrVrV4RJse+T
+ wYwA92Gg==;
+Received: from dynamic-078-055-099-142.78.55.pool.telefonica.de
+ ([78.55.99.142]:59892 helo=gentoo0.localdomain)
+ by host.euro-space.net with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
+ (envelope-from <kmarinushkin@birdec.com>)
+ id 1kcxsS-00074F-D7; Wed, 11 Nov 2020 21:42:04 +0000
+From: Kirill Marinushkin <kmarinushkin@birdec.com>
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2] ASoC: pcm512x: Add support for more data formats
+Date: Wed, 11 Nov 2020 22:43:15 +0100
+Message-Id: <20201111214315.26687-1-kmarinushkin@birdec.com>
+X-Mailer: git-send-email 2.13.6
+In-Reply-To: <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
+References: <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - host.euro-space.net
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - birdec.com
+X-Get-Message-Sender-Via: host.euro-space.net: authenticated_id:
+ kmarinushkin@birdec.com
+X-Authenticated-Sender: host.euro-space.net: kmarinushkin@birdec.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+Cc: Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kirill Marinushkin <kmarinushkin@birdec.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,48 +108,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SND_INTEL_DSP_CONFIG is selected by the HDaudio, Skylake and SOF
-drivers. When the HDaudio link is not selected as a option, this
-Kconfig option is not touched and will default to whatever other
-drivers selected. In the case e.g. where HDaudio is compiled as
-built-in, the linker will complain:
+Currently, pcm512x driver supports only I2S data format.
+This commit adds RJ, LJ, DSP_A and DSP_B as well.
 
-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-sof-pci-dev.c:(.text+0x5c): undefined reference to
-`snd_intel_dsp_driver_probe'
+I don't expect regression WRT existing sound cards, because:
 
-Adding the select for all HDaudio platforms, regardless of whether
-they rely on the HDaudio link or not, solves the problem.
+* default value in corresponding register of pcm512x codec is 0 ==  I2S
+* existing in-tree sound cards with pcm512x codec are configured for I2S
+* i don't see how existing off-tree sound cards with pcm512x codec could be
+  configured differently - it would not work
+* tested explicitly, that there is no regression with Raspberry Pi +
+  sound card `sound/soc/bcm/hifiberry_dacplus.c`
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Fixes: 82d9d54a6c0ee ('ALSA: hda: add Intel DSP configuration / probe code')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Matthias Reichl <hias@horus.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 ---
- sound/soc/sof/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/pcm512x.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 720dce5d7d1e..b607dba5fb2a 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -287,6 +287,7 @@ config SND_SOC_SOF_ALDERLAKE
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index 8153d3d01654..e309227649e7 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -1167,6 +1167,8 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	int alen;
++	int afmt;
++	int offset = 0;
+ 	int gpio;
+ 	int clock_output;
+ 	int master_mode;
+@@ -1195,6 +1197,28 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
- config SND_SOC_SOF_HDA_COMMON
- 	tristate
-+	select SND_INTEL_DSP_CONFIG
- 	select SND_SOC_SOF_INTEL_COMMON
- 	select SND_SOC_SOF_HDA_LINK_BASELINE
- 	help
-@@ -346,7 +347,6 @@ config SND_SOC_SOF_HDA
- 	tristate
- 	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
- 	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
--	select SND_INTEL_DSP_CONFIG
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level.
++	switch (pcm512x->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		afmt = PCM512x_AFMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_RIGHT_J:
++		afmt = PCM512x_AFMT_RTJ;
++		break;
++	case SND_SOC_DAIFMT_LEFT_J:
++		afmt = PCM512x_AFMT_LTJ;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		offset = 1;
++		fallthrough;
++	case SND_SOC_DAIFMT_DSP_B:
++		afmt = PCM512x_AFMT_DSP;
++		break;
++	default:
++		dev_err(component->dev, "unsupported DAI format: 0x%x\n",
++			pcm512x->fmt);
++		return -EINVAL;
++	}
++
+ 	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		ret = regmap_update_bits(pcm512x->regmap,
+@@ -1236,6 +1260,20 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
++	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
++				 PCM512x_AFMT, afmt);
++	if (ret != 0) {
++		dev_err(component->dev, "Failed to set data format: %d\n", ret);
++		return ret;
++	}
++
++	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_2,
++				 0xFF, offset);
++	if (ret != 0) {
++		dev_err(component->dev, "Failed to set data offset: %d\n", ret);
++		return ret;
++	}
++
+ 	if (pcm512x->pll_out) {
+ 		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
+ 		if (ret != 0) {
 -- 
-2.25.1
+2.13.6
 
