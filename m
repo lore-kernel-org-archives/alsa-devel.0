@@ -1,66 +1,109 @@
-Return-Path: <SRS0=kIe0=ER=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCB5C388F9
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 23:25:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0148C388F9
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 01:44:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A58120735
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Nov 2020 23:25:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CF6782067D
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 01:44:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RjX30VvV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A58120735
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NgwaoFHl";
+	dkim=temperror (0-bit key) header.d=huaqin-corp-partner-google-com.20150623.gappssmtp.com header.i=@huaqin-corp-partner-google-com.20150623.gappssmtp.com header.b="TZVudu4E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF6782067D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=huaqin.corp-partner.google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E15BB17A1;
-	Thu, 12 Nov 2020 00:24:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E15BB17A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 358331787;
+	Thu, 12 Nov 2020 02:43:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 358331787
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605137110;
-	bh=tlBHrS4RCi27mjV2KKdkbjolyB9RfFLc1PQKuf2BiAc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RjX30VvVib4Z8PO84WAlMbIv7UnPFQ33SuRxbRVyjIHWfnWKNdM+7Jm/0TqWqbbOx
-	 61Dz0gHeBMT/Zzv+yGaKdS5zU1+dFR0z0ricTTrOUezIP7655hXuzgsZPUMsrbs5sx
-	 GWHV4R2F9IPpm0Wj+NB4NvKTYsUXq4bOnnL1abPw=
+	s=default; t=1605145477;
+	bh=Bazb0BOH8QSEa4wXLXKTKz1/idBwx8frmhMHZuov7C4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NgwaoFHlRUvS1xU1KPWB/g34wCvhOosiKo/psxVHJGIfPaLjk2hUlzQJRPUsWV2pB
+	 JVbSkPaKNGMfx1k7qEy+tYZVjBIgSSEDnd0iHRVgQnBGBBDYP/DnWIemUaHo3ScDZu
+	 Lpkn1n1r9RibfSlJnuISQ+A7PO0GdV1np9itvQWk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 672AEF801F5;
-	Thu, 12 Nov 2020 00:24:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F12FF801F5;
+	Thu, 12 Nov 2020 02:43:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2513F8020C; Thu, 12 Nov 2020 00:24:17 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 04047F80059
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 00:24:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04047F80059
-Date: 12 Nov 2020 08:24:01 +0900
-X-IronPort-AV: E=Sophos;i="5.77,470,1596466800"; d="scan'208";a="62399008"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 12 Nov 2020 08:24:01 +0900
-Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 8E6414121519;
- Thu, 12 Nov 2020 08:24:01 +0900 (JST)
-Message-ID: <87k0ur8ot0.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [PATCH 0/2] Refactor Audio Graph schema
-In-Reply-To: <1605097613-25301-1-git-send-email-spujar@nvidia.com>
-References: <1605097613-25301-1-git-send-email-spujar@nvidia.com>
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: devicetree@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ id 56D36F8020C; Thu, 12 Nov 2020 02:43:45 +0100 (CET)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com
+ [IPv6:2607:f8b0:4864:20::532])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0F02F80059
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 02:43:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0F02F80059
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key)
+ header.d=huaqin-corp-partner-google-com.20150623.gappssmtp.com
+ header.i=@huaqin-corp-partner-google-com.20150623.gappssmtp.com
+ header.b="TZVudu4E"
+Received: by mail-pg1-x532.google.com with SMTP id w4so2752726pgg.13
+ for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2020 17:43:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7r8yua/nKCeK3vM5yetSQdGOYQSdaEZxJ+KcAFNDCGM=;
+ b=TZVudu4Eom6x7eViMfrgwIEDTOwxuk2NwbzESK1osvd187h+LbGTwrmhIRjbga3l22
+ KAR8+AStRi2/Tibs30YN0GLi7Pf862pd5ccdeLlUpB3Bp4BWCQPrlkdeMOUYOzn8oQdB
+ Dgyky7EOJIFle0oRSOqIb9B0amhdlbHBFn9bpicdT/qN85/N2Gqx457Bxwip+etlgSNz
+ 32zuFh2WpV0C3UXX6SBQ+PReEDdctVNuOSgylG3X2iiHy3Y3rojlk0WUCOaJoLL22VxL
+ lKxMn4BcJHF36botuq55UTLxM6JAJTfnp5klsBs4ATdtT47u/tKhX+M5DoG/UhBNr+S+
+ oS5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7r8yua/nKCeK3vM5yetSQdGOYQSdaEZxJ+KcAFNDCGM=;
+ b=UGDByT3bnXcj2g4rzVpPJZaKNIpXWRmsZE1e0kEal4q+il5lmjOhm3YtazJQIN2e0z
+ CApXBVaKURz/Hg+XsvD/tTcEwO0+8BnHQjJtz3W5ks2s/RbSSmocjc8YyKEJDAOgwG/w
+ JWaTXiE0VrX6o4dTCjuskNf3+d6jJf0U0PrLrHLU1+N2IiZO9WfZPj7150wL/tXHmQLn
+ lqwumdYJ/eBECaqHTd7U3MWVIcTcp5bwe6Ply4YeXTd50qn+UFs9/HgsuDuB1xZK3paB
+ NI0gvd+R3sMwtKMl4tEq4z47odKHl1P0o3xBAa35WwxVe3IRMRKjum8+dj47jmSJBq6s
+ T17A==
+X-Gm-Message-State: AOAM532vvzV1V6PKCFxXUYUhogF2o3pPeZZMNxSdcSa6guEYY07AaE9S
+ GRP2Y5GkTAJ5da/t3q4SI4Az
+X-Google-Smtp-Source: ABdhPJy0uKYvQY8jkl612KCh1Ww+d03+vAxg6dCvii/4V/9/OB17X7zWDzjpThierTZKqDWSxvuwCQ==
+X-Received: by 2002:a17:90a:ca91:: with SMTP id
+ y17mr6205555pjt.205.1605145419473; 
+ Wed, 11 Nov 2020 17:43:39 -0800 (PST)
+Received: from xuyuqing-ZenBook-UX425JA-UX425JA.huaqin.com ([101.78.151.194])
+ by smtp.gmail.com with ESMTPSA id
+ m6sm4062413pfa.61.2020.11.11.17.43.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 11 Nov 2020 17:43:38 -0800 (PST)
+From: xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Support SC7180 sound card variation without headset
+Date: Thu, 12 Nov 2020 09:43:26 +0800
+Message-Id: <20201112014328.695232-1-xuyuqing@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, cychiang@chromium.org,
+ Patrick Lai <plai@codeaurora.org>, Andy Gross <agross@kernel.org>,
+ dgreid@chromium.org, zhouguohui@huaqin.corp-partner.google.com,
+ devicetree@vger.kernel.org, tzungbi@chromium.org,
+ Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
+ Takashi Iwai <tiwai@suse.com>, xuyuqing@huaqin.corp-partner.google.com,
+ Mark Brown <broonie@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>, judyhsiao@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,25 +119,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Use compatible string to let machine driver handle the case
+where ALC5682 headset codec is replaced with ADAU7002 dmic codec
 
-Hi Sameer
+xuyuqing (2):
+  ASoC: google: dt-bindings: add new compatible for sc7180-coachz
+  ASoC: qcom: sc7180: Add machine driver for sound card
 
-> There can be custom sound cards reusing most of the audio-graph
-> implementation. To allow this refactor the audio-graph-card schema into
-> following files.
->  * audio-graph.yaml       : defines all common bindings
->  * audio-graph-card.yaml  : define compatible property
-> 
-> Custom sound cards can just reference 'audio-graph.yaml' and define its
-> own compatible and specific properties.
+ .../bindings/sound/google,sc7180-trogdor.yaml |  4 +-
+ sound/soc/qcom/Kconfig                        |  1 +
+ sound/soc/qcom/sc7180.c                       | 86 ++++++++++++++++---
+ 3 files changed, 77 insertions(+), 14 deletions(-)
 
-Thank you for your patches.
-I'm not expert of Json-schema, but for audio-graph-card Doc customizing
+-- 
+2.25.1
 
-	Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
