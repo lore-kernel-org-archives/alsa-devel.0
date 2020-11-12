@@ -7,65 +7,66 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5DDEC56201
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D7CAC5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:33:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 106B92100A
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:32:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8A73120B80
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:33:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EhX+HIor"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 106B92100A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="D+mOtfnz"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A73120B80
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D02E1826;
-	Thu, 12 Nov 2020 17:32:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D02E1826
+	by alsa0.perex.cz (Postfix) with ESMTPS id E268B1813;
+	Thu, 12 Nov 2020 17:32:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E268B1813
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605198773;
-	bh=PLiZ1Y8Ywf4XqZrbm0RA0wjQAORQv5MA9INbbgicHhA=;
+	s=default; t=1605198812;
+	bh=Pv0UOA5L6YJIvIHmz6UmpJNFkQ6W+jkVejo0cHIR1vU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EhX+HIorfFNLFKKLBs1Pn+c3W7nFhNt3ZRxT7OIRMrkZvwrrYbB6qyoNsJZHZ0x/2
-	 JB4YReGBWGBN7QO7wdP4hCSWGca3Yvcm/hEdTJ+ULnvt+tSo579qC/1W4J3VBlhpc5
-	 el0+OylLGqqmSnZSNCv81P4anrQ2ulil0CZnLIq0=
+	b=D+mOtfnze6dJtl4WOEddY9bJLX0441C2FLes99UsX/7DLJjfP43PGUMUDhmodFEWz
+	 PIlUWmzaoYBzf6kbuApVYnNBCsecHKa52Um6XBOtgguU40ZGEZDFet7x++jFi3bF1s
+	 gbPt3GVTsjBHwssoEGBskw8wRbz0JJTnt07YSaTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E55F9F80161;
-	Thu, 12 Nov 2020 17:31:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A8CCF804BD;
+	Thu, 12 Nov 2020 17:31:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F25F2F804BD; Thu, 12 Nov 2020 17:31:22 +0100 (CET)
+ id DFB56F804BD; Thu, 12 Nov 2020 17:31:24 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB18FF80161
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:31:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB18FF80161
-IronPort-SDR: aZqj5+gjx+8u9VdxhsUxJo869m9aWEfCLNQAj74TtQTwYR6RS7j/YOoF79zfP+iwwDy+CSAZnw
- 4Iuik0unbyFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="231956986"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="231956986"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92D34F801EB
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:31:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92D34F801EB
+IronPort-SDR: i+xDs/fiM/IRYCRteCiK+Aa2jtWr6az9mBtRBaaAmTHuKc1DH7sabU4yuPY8nnHcZUDIWdZhPA
+ QOxdj6p5ZPCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="231956988"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="231956988"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:31:13 -0800
-IronPort-SDR: s+NGXjghxbo758VVFxHEzqLkctEFzRa/lAnMbEsezpZdlaBfo8DhUDVZoNgvx706t2+CWZdNe2
- wC2kVhAzMXJg==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="532228317"
+ 12 Nov 2020 08:31:14 -0800
+IronPort-SDR: YvE1yjy+zp0H6SUZziCl5U70Um2MT2IiprGH/ucdyI1sum0yjk7fHrvC9cgT1Gf8dw86/Ifx4R
+ X1a657jbOuaA==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="532228321"
 Received: from nsalmulx-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.36.117])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:31:11 -0800
+ 12 Nov 2020 08:31:12 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ASoC: SOF: use inclusive language for bclk and fsync
-Date: Thu, 12 Nov 2020 10:30:58 -0600
-Message-Id: <20201112163100.5081-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: Intel: keembay: use inclusive language for bclk and
+ fsync
+Date: Thu, 12 Nov 2020 10:31:00 -0600
+Message-Id: <20201112163100.5081-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
 References: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
@@ -88,78 +89,121 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mirror alsa-lib definitions w/ codec_provider (CP) and
-codec_consumer (CC).
+Use 'clock provider' and 'clock consumer' terms.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/sof/dai.h  | 16 +++++++++++-----
- sound/soc/sof/topology.c | 18 +++++++++---------
- 2 files changed, 20 insertions(+), 14 deletions(-)
+ sound/soc/intel/keembay/kmb_platform.c | 22 +++++++++++-----------
+ sound/soc/intel/keembay/kmb_platform.h |  8 ++++----
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/include/sound/sof/dai.h b/include/sound/sof/dai.h
-index 34f135adf8ec..6bb403e8c5ee 100644
---- a/include/sound/sof/dai.h
-+++ b/include/sound/sof/dai.h
-@@ -34,15 +34,21 @@
- #define SOF_DAI_FMT_IB_NF	(3 << 8) /**< invert BCLK + nor FRM */
- #define SOF_DAI_FMT_IB_IF	(4 << 8) /**< invert BCLK + FRM */
+diff --git a/sound/soc/intel/keembay/kmb_platform.c b/sound/soc/intel/keembay/kmb_platform.c
+index f54b710ee1c2..3441e69ced04 100644
+--- a/sound/soc/intel/keembay/kmb_platform.c
++++ b/sound/soc/intel/keembay/kmb_platform.c
+@@ -358,7 +358,7 @@ static void kmb_i2s_start(struct kmb_i2s_info *kmb_i2s,
  
--#define SOF_DAI_FMT_CBM_CFM	(0 << 12) /**< codec clk & FRM master */
--#define SOF_DAI_FMT_CBS_CFM	(2 << 12) /**< codec clk slave & FRM master */
--#define SOF_DAI_FMT_CBM_CFS	(3 << 12) /**< codec clk master & frame slave */
--#define SOF_DAI_FMT_CBS_CFS	(4 << 12) /**< codec clk & FRM slave */
-+#define SOF_DAI_FMT_CBP_CFP	(0 << 12) /**< codec bclk provider & frame provider */
-+#define SOF_DAI_FMT_CBC_CFP	(2 << 12) /**< codec bclk consumer & frame provider */
-+#define SOF_DAI_FMT_CBP_CFC	(3 << 12) /**< codec bclk provider & frame consumer */
-+#define SOF_DAI_FMT_CBC_CFC	(4 << 12) /**< codec bclk consumer & frame consumer */
-+
-+/* keep old definitions for backwards compatibility */
-+#define SOF_DAI_FMT_CBM_CFM	SOF_DAI_FMT_CBP_CFP
-+#define SOF_DAI_FMT_CBS_CFM	SOF_DAI_FMT_CBC_CFP
-+#define SOF_DAI_FMT_CBM_CFS	SOF_DAI_FMT_CBP_CFC
-+#define SOF_DAI_FMT_CBS_CFS	SOF_DAI_FMT_CBC_CFC
+ 	kmb_i2s_irq_trigger(kmb_i2s, substream->stream, config->chan_nr, true);
  
- #define SOF_DAI_FMT_FORMAT_MASK		0x000f
- #define SOF_DAI_FMT_CLOCK_MASK		0x00f0
- #define SOF_DAI_FMT_INV_MASK		0x0f00
--#define SOF_DAI_FMT_MASTER_MASK		0xf000
-+#define SOF_DAI_FMT_CLOCK_PROVIDER_MASK	0xf000
+-	if (kmb_i2s->master)
++	if (kmb_i2s->clock_provider)
+ 		writel(1, kmb_i2s->i2s_base + CER);
+ 	else
+ 		writel(0, kmb_i2s->i2s_base + CER);
+@@ -393,13 +393,13 @@ static int kmb_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	struct kmb_i2s_info *kmb_i2s = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int ret;
  
- /** \brief Types of DAI */
- enum sof_ipc_dai_type {
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 28f101aaf5cd..b6b32a7a91f8 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2786,18 +2786,18 @@ static void sof_dai_set_format(struct snd_soc_tplg_hw_config *hw_config,
- 			       struct sof_ipc_dai_config *config)
- {
- 	/* clock directions wrt codec */
--	if (hw_config->bclk_provider == SND_SOC_TPLG_BCLK_CM) {
--		/* codec is bclk master */
--		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CM)
--			config->format |= SOF_DAI_FMT_CBM_CFM;
-+	if (hw_config->bclk_provider == SND_SOC_TPLG_BCLK_CP) {
-+		/* codec is bclk provider */
-+		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CP)
-+			config->format |= SOF_DAI_FMT_CBP_CFP;
- 		else
--			config->format |= SOF_DAI_FMT_CBM_CFS;
-+			config->format |= SOF_DAI_FMT_CBP_CFC;
- 	} else {
--		/* codec is bclk slave */
--		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CM)
--			config->format |= SOF_DAI_FMT_CBS_CFM;
-+		/* codec is bclk consumer */
-+		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CP)
-+			config->format |= SOF_DAI_FMT_CBC_CFP;
- 		else
--			config->format |= SOF_DAI_FMT_CBS_CFS;
-+			config->format |= SOF_DAI_FMT_CBC_CFC;
- 	}
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		kmb_i2s->master = false;
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBP_CFP:
++		kmb_i2s->clock_provider = false;
+ 		ret = 0;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		writel(MASTER_MODE, kmb_i2s->pss_base + I2S_GEN_CFG_0);
++	case SND_SOC_DAIFMT_CBC_CFC:
++		writel(CLOCK_PROVIDER_MODE, kmb_i2s->pss_base + I2S_GEN_CFG_0);
  
- 	/* inverted clocks ? */
+ 		ret = clk_prepare_enable(kmb_i2s->clk_i2s);
+ 		if (ret < 0)
+@@ -410,7 +410,7 @@ static int kmb_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 		if (ret)
+ 			return ret;
+ 
+-		kmb_i2s->master = true;
++		kmb_i2s->clock_provider = true;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -510,7 +510,7 @@ static int kmb_dai_hw_params(struct snd_pcm_substream *substream,
+ 		 * Platform is not capable of providing clocks for
+ 		 * multi channel audio
+ 		 */
+-		if (kmb_i2s->master)
++		if (kmb_i2s->clock_provider)
+ 			return -EINVAL;
+ 
+ 		write_val = ((config->chan_nr / 2) << TDM_CHANNEL_CONFIG_BIT) |
+@@ -524,12 +524,12 @@ static int kmb_dai_hw_params(struct snd_pcm_substream *substream,
+ 		 * Platform is only capable of providing clocks need for
+ 		 * 2 channel master mode
+ 		 */
+-		if (!(kmb_i2s->master))
++		if (!(kmb_i2s->clock_provider))
+ 			return -EINVAL;
+ 
+ 		write_val = ((config->chan_nr / 2) << TDM_CHANNEL_CONFIG_BIT) |
+ 				(config->data_width << DATA_WIDTH_CONFIG_BIT) |
+-				MASTER_MODE | I2S_OPERATION;
++				CLOCK_PROVIDER_MODE | I2S_OPERATION;
+ 
+ 		writel(write_val, kmb_i2s->pss_base + I2S_GEN_CFG_0);
+ 		break;
+@@ -544,7 +544,7 @@ static int kmb_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	config->sample_rate = params_rate(hw_params);
+ 
+-	if (kmb_i2s->master) {
++	if (kmb_i2s->clock_provider) {
+ 		/* Only 2 ch supported in Master mode */
+ 		u32 bitclk = config->sample_rate * config->data_width * 2;
+ 
+diff --git a/sound/soc/intel/keembay/kmb_platform.h b/sound/soc/intel/keembay/kmb_platform.h
+index 9756b132c12f..0c393e5916b6 100644
+--- a/sound/soc/intel/keembay/kmb_platform.h
++++ b/sound/soc/intel/keembay/kmb_platform.h
+@@ -58,7 +58,7 @@
+ #define PSS_CPR_CLK_CLR		0x000
+ #define PSS_CPR_AUX_RST_EN	0x070
+ 
+-#define MASTER_MODE		BIT(13)
++#define CLOCK_PROVIDER_MODE	BIT(13)
+ 
+ /* Interrupt Flag */
+ #define TX_INT_FLAG		GENMASK(5, 4)
+@@ -99,8 +99,8 @@
+ 
+ #define DWC_I2S_PLAY	BIT(0)
+ #define DWC_I2S_RECORD	BIT(1)
+-#define DW_I2S_SLAVE	BIT(2)
+-#define DW_I2S_MASTER	BIT(3)
++#define DW_I2S_CONSUMER	BIT(2)
++#define DW_I2S_PROVIDER	BIT(3)
+ 
+ #define I2S_RXDMA	0x01C0
+ #define I2S_TXDMA	0x01C8
+@@ -130,7 +130,7 @@ struct kmb_i2s_info {
+ 	u32 ccr;
+ 	u32 xfer_resolution;
+ 	u32 fifo_th;
+-	bool master;
++	bool clock_provider;
+ 
+ 	struct i2s_clk_config_data config;
+ 	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
 -- 
 2.25.1
 
