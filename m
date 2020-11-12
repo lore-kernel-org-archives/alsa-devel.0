@@ -2,100 +2,70 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 633D4C55ABD
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 08:59:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0184EC56201
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 12:39:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C177D206FB
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 08:59:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3139421D91
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 12:39:00 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dzBHft7W";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="msUEzors"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C177D206FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lMZjwIkq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3139421D91
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1553A17DB;
-	Thu, 12 Nov 2020 09:58:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1553A17DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86E2A1705;
+	Thu, 12 Nov 2020 13:38:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86E2A1705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605171559;
-	bh=L/QOdeQzUICTY8JO4AjibXrK2xQrOFsa5chFCQIrOm4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1605184738;
+	bh=8wi1WNl+EPQo+TBW6DnItPQZpFg0h0s7c/CD0ovBl6o=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dzBHft7WlaoziFWVWgeKpY4UuzBqgmqcqMsYt7wtdvipDM+DU6aCVo4r6wwgzL9ZZ
-	 hHQNnSUH5DejRwpjwfyBTBBbK/DN99FWvLWRdVrenosC+hina8uNVg3hgAWU/m0Kh6
-	 mvCW81ECnupZCwkuce9RQwsqtQ3aThGnnZG1vyIY=
+	b=lMZjwIkqqKL4MqZBmXpTJj3+dWZ2BIVfs8/NvaPJVM8bfcTe15/Weg+L00hNsy1h4
+	 6ydvLHjJ78y05qD3wau27iPqHzRCQgL9slAwEU0UlWm+k9UUMkYApDoT/2B/plqN9r
+	 InlP6IUZ398gXR7WnRlmRnUAxP6iumxH4Al4u3EU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A354BF80161;
-	Thu, 12 Nov 2020 09:58:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02B2EF80059;
+	Thu, 12 Nov 2020 13:38:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA752F801D5; Thu, 12 Nov 2020 09:58:26 +0100 (CET)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B9311F801EC; Thu, 12 Nov 2020 13:38:05 +0100 (CET)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A8F5F8007E
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 09:58:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A8F5F8007E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="msUEzors"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AC8wLtO120801;
- Thu, 12 Nov 2020 02:58:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1605171501;
- bh=UmSY0edIf57Yap12ihdDOUqAqI05HX2cAZc82RxQrXk=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=msUEzorsyk84ZK/LOeX29FtcG5Xk9UIHfWWUpKlVqM8GumH10EMxUNv/E1TYh70Dr
- aOll4/ApPVGZiVIlCu6kBuVm139LOesTK/z+zWom/zuyY6eJNPuz0/5IeaAx14cDo3
- UJeg2SjBSg/vn2F1jryUC6OeV/RX0us8fdx/hFXw=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AC8wL1U090221
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 12 Nov 2020 02:58:21 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 12
- Nov 2020 02:58:21 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 12 Nov 2020 02:58:20 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AC8wIj8011893;
- Thu, 12 Nov 2020 02:58:19 -0600
-Subject: Re: [PATCH] ASoC: pcm512x: Add support for data formats RJ and LJ
-To: Kirill Marinushkin <kmarinushkin@birdec.com>
-References: <20201109212133.25869-1-kmarinushkin@birdec.com>
- <690508c7-7029-6781-a1a2-0609e37cb9e6@ti.com>
- <a3df4fb0-35cd-4757-2037-d4ff80e9f74c@birdec.com>
- <d0f76607-c3a5-9b87-dc0e-eddbce585558@ti.com>
- <6e14cdc3-2d45-d7bc-14eb-30c6ea568078@birdec.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <43973577-f719-b414-395c-91a4e1a3b460@ti.com>
-Date: Thu, 12 Nov 2020 10:59:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B20A4F80059
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 13:38:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B20A4F80059
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CX1Ms0WsrzkcGL;
+ Thu, 12 Nov 2020 20:37:45 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 12 Nov 2020
+ 20:37:56 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <rf@opensource.cirrus.com>
+Subject: [PATCH v2 2/2] ASoC: arizona: Fix PM disable depth imbalance on error
+Date: Thu, 12 Nov 2020 20:41:40 +0800
+Message-ID: <20201112124140.1730493-3-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201112124140.1730493-1-zhangqilong3@huawei.com>
+References: <20201112124140.1730493-1-zhangqilong3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <6e14cdc3-2d45-d7bc-14eb-30c6ea568078@birdec.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>,
- Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,44 +81,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Kirill,
+The pm_runtime_enable will increase power disable depth. Thus
+a pairing decrement is needed on the error handling path to
+keep it balanced according to context.
 
-On 12/11/2020 9.57, Kirill Marinushkin wrote:
->> The set_fmt callback is there to set the bus format, it has nothing to
->> do (in most cases) with the sample format (hw_params). Bus coding, clock
->> source has nothing to do with hw_params.
->>
->> When you bind a link you will use set_fmt for the two sides to see if
->> they can agree, that both can support what has been asked.
->>
->> The pcm512x driver just saves the fmt and say back to that card:
->> whatever, I'm fine with it. But runtime during hw_params it can fail due
->> to unsupported bus format, which it actually acked to be ok.
->>
->> This is the difference.
->>
->> Sure, some device have constraint based on the fmt towards the hw_params
->> and it is perfectly OK to do such a checks and rejections or build
->> rules/constraints based on fmt, but failing hw_params just because
->> set_fmt did not checked that the bus format is not even supported is not
->> a nice thing to do.
-> 
-> Those are good arguments
-> 
->>> Would you agree?
->>
->> I don't have a device to test, I'm just trying to point out what is the
->> right thing to do.
-> 
-> I have a device to test. I will move format checks into `pcm512x_set_fmt()`,
-> ensure that it works properly, and submit as patch v3.
+Fixes: 85e7dd3f871b9 ("ASoC: arizona: Add support for setting the output volume limits")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+---
+ sound/soc/codecs/wm8997.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thank you. I know it is slightly more work.
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 229f2986cd96..014328162262 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1163,10 +1163,10 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ 	ret = arizona_init_vol_limit(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_pm_disable;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_pm_disable;
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &soc_component_dev_wm8997,
+@@ -1181,6 +1181,8 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ err_spk_irqs:
+ 	arizona_free_spk_irqs(arizona);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
+ 
+ 	return ret;
+ }
+-- 
+2.25.4
 
-When you send v3 please do not use --in-reply-to, let it be itself.
-
-Regards,
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
