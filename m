@@ -2,95 +2,68 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D821C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 23:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EA91C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 23:56:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E917420797
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 23:05:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C42C220825
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 23:56:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ysk/D0zK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E917420797
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YG9EgxiH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C42C220825
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9223617E9;
-	Fri, 13 Nov 2020 00:04:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9223617E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14B2F1859;
+	Fri, 13 Nov 2020 00:55:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14B2F1859
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605222337;
-	bh=2CSKIsXb3eGTQcW5cKkpGlp2Xp8pojoNSByyQq+gtmg=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1605225398;
+	bh=7JSZrT0BdoKxzNTcqhsfDfEsPpF96GfkRDUuFYs2Teo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ysk/D0zKzSwMQ3arATOztCsPEf9I2CtAaCxAgw/aBh9c3HJCxn0jHnvJhJA8bo8M/
-	 x5DQ5wqxKcx6jNEIf4MCyWezlVm7rMDUttjTM7AqClUqaSNgeDLdjmpBnMDBI8rF5p
-	 nlenAQaKZEdVKnd6ePCaCoppxUUkrPLw2P+MNEUw=
+	b=YG9EgxiHv/ntIlok4H8MXiIpat4uMRxjjbg0/q0kAB/FGtmdbInGt1ruLI3ZQkkmm
+	 ZM59OS+YDhMfMDRC03F5rNzqRGH9V/HK5tnQzwtov0NLhLj3n609w+4IT+w8dSQyjO
+	 D4QdWlTHP7EPuKwg72sFlYLdGvRulcPjfchUkJp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB2B9F800D1;
-	Fri, 13 Nov 2020 00:04:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82FC8F80059;
+	Fri, 13 Nov 2020 00:55:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 20055F80161; Fri, 13 Nov 2020 00:04:37 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AFEDF80059
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 00:04:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AFEDF80059
-IronPort-SDR: RFe35mpgK84BIQvE6K8pU2tQ+EzhPl5bGw7rQ/3tYoqS2Fv5bzwA3+V0x9U2C3Cw7z/MamTjn7
- h4v5Llbb2hSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="169611800"
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; d="scan'208";a="169611800"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 15:04:16 -0800
-IronPort-SDR: ufM/Yhew4yCzbVNjk3ShJG581sUTBKku+PuG4BU0ZmEKVv8fQ8YXKfpxLYVVJ7JKkHixaZVdm/
- SaEjC1p6FcUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,473,1596524400"; d="scan'208";a="355358550"
-Received: from irsmsx603.ger.corp.intel.com ([163.33.146.9])
- by orsmga008.jf.intel.com with ESMTP; 12 Nov 2020 15:04:14 -0800
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- irsmsx603.ger.corp.intel.com (163.33.146.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Nov 2020 23:04:14 +0000
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Thu, 12 Nov 2020 23:04:14 +0000
-From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: RE: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
- to ACPI devices
-Thread-Topic: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
- to ACPI devices
-Thread-Index: AQHWuUTISKj33SVxVku5O7g0f1ygmanFHW9Q
-Date: Thu, 12 Nov 2020 23:04:14 +0000
-Message-ID: <ef6524c2753a407aba1d4fa98438f54b@intel.com>
-References: <20201112223825.39765-1-pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20201112223825.39765-1-pierre-louis.bossart@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "tiwai@suse.de" <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
- "broonie@kernel.org" <broonie@kernel.org>
+ id 69752F801D5; Fri, 13 Nov 2020 00:55:44 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id C4BC4F80059
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 00:55:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4BC4F80059
+Date: 13 Nov 2020 08:55:32 +0900
+X-IronPort-AV: E=Sophos;i="5.77,473,1596466800"; d="scan'208";a="62526569"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 13 Nov 2020 08:55:32 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 94C1A40116A7;
+ Fri, 13 Nov 2020 08:55:32 +0900 (JST)
+Message-ID: <87k0uq6soh.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH 06/12] ASoC: soc-component: add
+ snd_soc_component_compr_get_caps()
+In-Reply-To: <e548e12d1fcaeeee2d549ecb33bd0c0d14473e15.camel@linux.intel.com>
+References: <878sb78ac4.wl-kuninori.morimoto.gx@renesas.com>
+ <87zh3n6vq7.wl-kuninori.morimoto.gx@renesas.com>
+ <e548e12d1fcaeeee2d549ecb33bd0c0d14473e15.camel@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,36 +79,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2020-11-12 11:38 PM, Pierre-Louis Bossart wrote:
-> The module snd-intel-dspcfg, suggested by Jaroslav last year,
-> currently provide the means to select a PCI driver at run-time, based
-> on quirks, recommendations or user selection via a kernel
-> parameter. This capability removed a lot of confusions in
-> distributions and removed the need for recompilations to select legacy
-> HDaudio, SST or SOF drivers.
->=20
-> This patchset extends the concept to ACPI devices. This was driven by
-> the desire to at some point deprecate the Atom/SST driver for Baytrail
-> and Cherrytrail, which is no longer maintained by Intel. By having the
-> SOF driver enabled by distributions for Baytrail/Cherrytrail, we can
-> enable more end-user tests and make the transition easier for
-> distributions (likely in 2021 at this point).
->=20
-> This patchset provides the same solution for Broadwell, mainly to have
-> a single build for all Intel platforms. SOF on Broadwell remains an
-> option not recommended for distributions, as long as the 'catpt'
-> driver is maintained there is no burning desire to make SOF the
-> default on the three Broadwell-based platforms with the DSP
-> enabled.
->=20
 
-Hello,
+Hi Ranjani
 
-Don't understand why I was omitted in CC for catpt-related patches.
+Thank you for your feedback
 
-I'll try to do proper review tomorrow as it's late here but for
-starters: why do we need any intel-dsp-config changes for non-HDA
-platforms, what's the technical reason behind these?
+> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > 
+> > component related function should be implemented at
+> > soc-component.c.
+> > This patch adds snd_soc_component_compr_get_caps().
+> > 
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+> Do you think it makes sense to remove soc_compr_get_caps() altogether
+> after adding snd_soc_component_cpmpr_get_caps() and calling it directly
+> instead?
 
-Czarek
+Yes indeed !
+Thanks. I will do it in v2.
+Same comment for [07/12], too.
 
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
