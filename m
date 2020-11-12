@@ -2,80 +2,78 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BDC2C5519F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ACDCC5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:48:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5432821D7F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:48:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 68D88216FD
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:48:13 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DkQoMeoo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5432821D7F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jel+X88c";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DB3Mxvo+"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68D88216FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8BC31844;
-	Thu, 12 Nov 2020 17:47:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8BC31844
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA7AE1853;
+	Thu, 12 Nov 2020 17:47:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA7AE1853
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605199684;
-	bh=Vxmw4NfLxpxQ8aUAue3Bo/jZ6Yig/oMaQeR7oTApznA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1605199691;
+	bh=zCu1KkUnZaIjySKcsiWb5OyBsIvN+qEbRFuUY9ZZBe0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DkQoMeooq11gRLSDiKqCUa179S8ehYqZ5gpsN4bcH9GgLssO1QIu/mWv4dnz88e0Y
-	 f8IX8j+Nq0UUcdkLcGEsmAHkP/iSN9a2+Syv+FYmoCDDpqgJ26Pjp4BEkYwNa+cDrZ
-	 lQk+4unbW1uddiOIBZZ7sKQgeBjcuXkCjhL2R28s=
+	b=jel+X88cHn2jrEEz4daA0hrWNxv+I77qk4C2FDZnZ9WF7V0khQ3aE3kqZAPE466FW
+	 QkBSXBNEhuqCG+21M5lXnETUvKWn9kKv/qZ2SeJ/edW08VFI4oiv7TEtlG74/IAyWa
+	 iO1TbZ6rBaKLp0ijL+DE/s3tK3FtTAvVus+LUaNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20D76F804DF;
-	Thu, 12 Nov 2020 17:45:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30DE5F80161;
+	Thu, 12 Nov 2020 17:47:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F819F804E5; Thu, 12 Nov 2020 17:45:12 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 08089F801D5; Thu, 12 Nov 2020 17:47:01 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11747F8007E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:46:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11747F8007E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="DB3Mxvo+"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CEF2CF804DF
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:45:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEF2CF804DF
-IronPort-SDR: lOTFdwCwy3lHxbVY9sIEwEWXa84YlstkJxYMKUubWOb0bMMctN+y6BiMw5Ow1MDvrIwcs/gaQ4
- 2BgQnCYxGipA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="170508866"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="170508866"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:44:40 -0800
-IronPort-SDR: eU7+8Igsp02NOzAtORq/AyxktJNKHnGQeqS4eUwwCA9HDZPtIJ4m3KsMFR1aH+OrNTV2Yi4xio
- /7+waracZUpA==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="355251426"
-Received: from uikram-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
- ([10.213.181.67])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:44:39 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 3/4] ASoC: SOF: Intel: fix Kconfig punctuation and wording
-Date: Thu, 12 Nov 2020 10:44:24 -0600
-Message-Id: <20201112164425.25603-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
+ by mail.kernel.org (Postfix) with ESMTPSA id 0D018216FD;
+ Thu, 12 Nov 2020 16:46:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1605199615;
+ bh=zCu1KkUnZaIjySKcsiWb5OyBsIvN+qEbRFuUY9ZZBe0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=DB3Mxvo+RgPOn9VuNm+kVlKjkWjw7mLrV4ULihbOLsO7sUwq+V3kkskFZl42qirOI
+ iEXDR6Fj8e9vyocXHBktQdexLLci10735TavEIFPnfxQYzW1tojlCwFkMBEx+6bCAh
+ 4cLF5DjD67T82NJWzk/bX0+ceGcU1CN4zUfIE7qQ=
+Date: Thu, 12 Nov 2020 16:46:39 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 0/4] ASoC: SOF: Kconfig corrections
+Message-ID: <20201112164639.GC4742@sirena.org.uk>
 References: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- tiwai@suse.de, Randy Dunlap <rdunlap@infradead.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Rander Wang <rander.wang@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="aT9PWwzfKXlsBJM1"
+Content-Disposition: inline
+In-Reply-To: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Danger: do not shake.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,290 +89,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-Add periods at the end of sentences in help text.
-Insert a "not" in one place.
-Fix help text indentation.
-Remove a duplicate "Intel(R)" in one place.
+--aT9PWwzfKXlsBJM1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
----
- sound/soc/sof/intel/Kconfig | 62 ++++++++++++++++++-------------------
- 1 file changed, 31 insertions(+), 31 deletions(-)
+On Thu, Nov 12, 2020 at 10:44:21AM -0600, Pierre-Louis Bossart wrote:
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index a066e08860cb..75018e61fdda 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -15,7 +15,7 @@ config SND_SOC_SOF_INTEL_ACPI
- 	select SND_SOC_SOF_BROADWELL if SND_SOC_SOF_BROADWELL_SUPPORT
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_INTEL_PCI
- 	def_tristate SND_SOC_SOF_PCI
-@@ -31,13 +31,13 @@ config SND_SOC_SOF_INTEL_PCI
- 	select SND_SOC_SOF_JASPERLAKE  if SND_SOC_SOF_JASPERLAKE_SUPPORT
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_INTEL_HIFI_EP_IPC
- 	tristate
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_INTEL_ATOM_HIFI_EP
- 	tristate
-@@ -45,7 +45,7 @@ config SND_SOC_SOF_INTEL_ATOM_HIFI_EP
- 	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_INTEL_COMMON
- 	tristate
-@@ -55,7 +55,7 @@ config SND_SOC_SOF_INTEL_COMMON
- 	select SND_SOC_ACPI if ACPI
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- if SND_SOC_SOF_INTEL_ACPI
- 
-@@ -72,7 +72,7 @@ config SND_SOC_SOF_BAYTRAIL_SUPPORT
- 	  recommended for distros. At some point all legacy drivers will be
- 	  deprecated but not before all userspace firmware/topology/UCM files
- 	  are made available to downstream distros.
--	  Say Y if you want to enable SOF on Baytrail/Cherrytrail
-+	  Say Y if you want to enable SOF on Baytrail/Cherrytrail.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_BAYTRAIL
-@@ -80,7 +80,7 @@ config SND_SOC_SOF_BAYTRAIL
- 	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_BROADWELL_SUPPORT
- 	bool "SOF support for Broadwell"
-@@ -91,11 +91,11 @@ config SND_SOC_SOF_BROADWELL_SUPPORT
- 	  This option is mutually exclusive with the Haswell/Broadwell legacy
- 	  driver. If you want to enable SOF on Broadwell you need to deselect
- 	  the legacy driver first.
--	  SOF does fully support Broadwell yet, so this option is not
-+	  SOF does not fully support Broadwell yet, so this option is not
- 	  recommended for distros. At some point all legacy drivers will be
- 	  deprecated but not before all userspace firmware/topology/UCM files
- 	  are made available to downstream distros.
--	  Say Y if you want to enable SOF on Broadwell
-+	  Say Y if you want to enable SOF on Broadwell.
- 	  If unsure select "N".
- 
- config SND_SOC_SOF_BROADWELL
-@@ -104,7 +104,7 @@ config SND_SOC_SOF_BROADWELL
- 	select SND_SOC_SOF_INTEL_HIFI_EP_IPC
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- endif ## SND_SOC_SOF_INTEL_ACPI
- 
-@@ -123,7 +123,7 @@ config SND_SOC_SOF_MERRIFIELD
- 	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_APOLLOLAKE_SUPPORT
- 	bool "SOF support for Apollolake"
-@@ -138,7 +138,7 @@ config SND_SOC_SOF_APOLLOLAKE
- 	select SND_SOC_SOF_HDA_COMMON
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_GEMINILAKE_SUPPORT
- 	bool "SOF support for GeminiLake"
-@@ -153,7 +153,7 @@ config SND_SOC_SOF_GEMINILAKE
- 	select SND_SOC_SOF_HDA_COMMON
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_CANNONLAKE_SUPPORT
- 	bool "SOF support for Cannonlake"
-@@ -169,7 +169,7 @@ config SND_SOC_SOF_CANNONLAKE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_COFFEELAKE_SUPPORT
- 	bool "SOF support for CoffeeLake"
-@@ -185,7 +185,7 @@ config SND_SOC_SOF_COFFEELAKE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_ICELAKE_SUPPORT
- 	bool "SOF support for Icelake"
-@@ -201,7 +201,7 @@ config SND_SOC_SOF_ICELAKE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_COMETLAKE
- 	tristate
-@@ -209,7 +209,7 @@ config SND_SOC_SOF_COMETLAKE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_COMETLAKE_SUPPORT
- 	bool
-@@ -236,7 +236,7 @@ config SND_SOC_SOF_TIGERLAKE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_ELKHARTLAKE_SUPPORT
- 	bool "SOF support for ElkhartLake"
-@@ -252,7 +252,7 @@ config SND_SOC_SOF_ELKHARTLAKE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_JASPERLAKE_SUPPORT
- 	bool "SOF support for JasperLake"
-@@ -267,7 +267,7 @@ config SND_SOC_SOF_JASPERLAKE
- 	select SND_SOC_SOF_HDA_COMMON
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_HDA_COMMON
- 	tristate
-@@ -275,7 +275,7 @@ config SND_SOC_SOF_HDA_COMMON
- 	select SND_SOC_SOF_HDA_LINK_BASELINE
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- if SND_SOC_SOF_HDA_COMMON
- 
-@@ -285,7 +285,7 @@ config SND_SOC_SOF_HDA_LINK
- 	select SND_SOC_SOF_PROBE_WORK_QUEUE
- 	help
- 	  This adds support for HDA links(HDA/HDMI) with Sound Open Firmware
--		  for Intel(R) platforms.
-+	  for Intel(R) platforms.
- 	  Say Y if you want to enable HDA links with SOF.
- 	  If unsure select "N".
- 
-@@ -294,7 +294,7 @@ config SND_SOC_SOF_HDA_AUDIO_CODEC
- 	depends on SND_SOC_SOF_HDA_LINK
- 	help
- 	  This adds support for HDAudio codecs with Sound Open Firmware
--		  for Intel(R) platforms.
-+	  for Intel(R) platforms.
- 	  Say Y if you want to enable HDAudio codecs with SOF.
- 	  If unsure select "N".
- 
-@@ -302,8 +302,8 @@ config SND_SOC_SOF_HDA_PROBES
- 	bool "SOF enable probes over HDA"
- 	depends on SND_SOC_SOF_DEBUG_PROBES
- 	help
--	  This option enables the data probing for Intel(R).
--		  Intel(R) Skylake and newer platforms.
-+	  This option enables the data probing for Intel(R)
-+	  Skylake and newer platforms.
- 	  Say Y if you want to enable probes.
- 	  If unsure, select "N".
- 
-@@ -314,7 +314,7 @@ config SND_SOC_SOF_HDA_ALWAYS_ENABLE_DMI_L1
- 	  and disables known workarounds for specific HDAudio platforms.
- 	  Only use to look into power optimizations on platforms not
- 	  affected by DMI L1 issues. This option is not recommended.
--	  Say Y if you want to enable DMI Link L1
-+	  Say Y if you want to enable DMI Link L1.
- 	  If unsure, select "N".
- 
- endif ## SND_SOC_SOF_HDA_COMMON
-@@ -324,7 +324,7 @@ config SND_SOC_SOF_HDA_LINK_BASELINE
- 	select SND_SOC_SOF_HDA if SND_SOC_SOF_HDA_LINK
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_HDA
- 	tristate
-@@ -333,14 +333,14 @@ config SND_SOC_SOF_HDA
- 	select SND_INTEL_DSP_CONFIG
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
- 	bool "SOF support for SoundWire"
- 	depends on SOUNDWIRE && ACPI
- 	help
- 	  This adds support for SoundWire with Sound Open Firmware
--		  for Intel(R) platforms.
-+	  for Intel(R) platforms.
- 	  Say Y if you want to enable SoundWire links with SOF.
- 	  If unsure select "N".
- 
-@@ -349,14 +349,14 @@ config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	select SND_SOC_SOF_INTEL_SOUNDWIRE if SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_INTEL_SOUNDWIRE
- 	tristate
- 	select SOUNDWIRE_INTEL
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- endif ## SND_SOC_SOF_INTEL_PCI
- 
--- 
-2.25.1
+> v2: rebase to remove git am issue (worked with --3way before)
 
+That only works if I have the blobs you were patching against in my git
+object store, if they're out of tree chances are my git repository will
+never have seen them.
+
+--aT9PWwzfKXlsBJM1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+tZu4ACgkQJNaLcl1U
+h9Ad0Af+O0EDkNo7n/RxHehDYSUqtff+kI9BY6RTAfA8VGZJFDCucdJz2Vbuw6JB
+C3vVIVe1v9FLVCfbvRb9jERhu2z49ocAJIYCOwt3i1Stse38kJYS3JJbX/t2oMrR
+ccisGqLojnGyPKq8dw0Mo29Vcs9dOT13IGTW0y+NGDEfvk2dCABgMHAWvDZPOpp4
+O7mSuE5P85zwadqdTDYo/cgkUF8pCkIP7jWuKUdhHP9k9/JqsCGu4tJmcslL6yjG
+NrvmMcuDqqziCMgLCkdvzd0jgq/kQInez9Gk6jD03vOIcWKAxeCKChBJ/27hBH5t
+sRtMmMPdvjMCLKuddeTEyCJL/sSKjA==
+=yCG/
+-----END PGP SIGNATURE-----
+
+--aT9PWwzfKXlsBJM1--
