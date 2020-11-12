@@ -7,66 +7,65 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85E44C5519F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:34:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2478BC5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:34:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3FF52100A
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:34:27 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59DE322201
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:34:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="oepXpEd+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3FF52100A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FCbwqL7w"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59DE322201
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D17E8181F;
-	Thu, 12 Nov 2020 17:33:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D17E8181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 637781834;
+	Thu, 12 Nov 2020 17:33:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 637781834
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605198865;
-	bh=Jq9yep9SjtQ6NsP9eT3sZ+o0MSOP+zUSFeFaoLF6DfI=;
+	s=default; t=1605198874;
+	bh=BVnxiL5ELJwHBqz8/TninkkX9Xaw/0yBXoNB95kZ3uA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oepXpEd+OgA9KQYqL7vv8uWHLyDO0mTa/fvNsFZkGQpan9KIg8LLiJ1q0aeoC5DoI
-	 Q0ldehQMOujVtfveuJiBihFvHusxVq9w4AaNt0zH2kCzcGv0DAVk9XiQF0bqLF8cjr
-	 qEu6R/k3yFsRWj4uvDYo4gLz40jPyR5Fe3H3Ux/E=
+	b=FCbwqL7wrPB+IpPrE6NHs9y/dL3G9m3cC91sQRR0jt4lvM3owGH1ZHd2N6SRCXX/A
+	 lMmRCL5WRw/mXCCzDvCW6UNlUZs62AGYwCKMrmsV2O7k+PjswrrYTmeN6fN1+BrDbm
+	 f1oloovfwCb8iJqs+F3TtKd/07c/WNYBK+Yb4a54=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 186A7F80290;
+	by alsa1.perex.cz (Postfix) with ESMTP id E3CB2F804FA;
 	Thu, 12 Nov 2020 17:31:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04E12F804F3; Thu, 12 Nov 2020 17:31:30 +0100 (CET)
+ id 0E833F80290; Thu, 12 Nov 2020 17:31:30 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86960F80290
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:31:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86960F80290
-IronPort-SDR: pbS2O/0IJMOOew1iMGVaaQxWQKL+vWrt1SABlTFVy091VJpUi3zD6gGvU45FqId404/qCMLMvz
- l0u/UQvdRs2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="231956990"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="231956990"
+ by alsa1.perex.cz (Postfix) with ESMTPS id CDA6AF802C4
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:31:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDA6AF802C4
+IronPort-SDR: OZbqSVj+cIS0bOGQoSF+YO5+vmpIVdl66772yu+YuY4uXeToPeypJ5NhddQAi/aOz25b8z12uY
+ sLmwMgnTukkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="231956991"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="231956991"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  12 Nov 2020 08:31:14 -0800
-IronPort-SDR: /KzILCccjLA3MQF/ZMnhhfyjzJBfCYLMilvBB/R5kvTrMkjBNURyomm7qzDMQNSua1Hs9NzUQD
- CwQUe+VGYqAQ==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="532228320"
+IronPort-SDR: YYTBl41ix6PlSdOf2AO50KktDRPmSroMiHT0eAwtRmmeu70op6Q4lKD1zNes5PKCiGR1aq2SSK
+ lip5L4ndv4iw==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="532228312"
 Received: from nsalmulx-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.36.117])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:31:12 -0800
+ 12 Nov 2020 08:31:11 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ASoC: Intel: atom: use inclusive language for SSP
- bclk/fsync
-Date: Thu, 12 Nov 2020 10:30:59 -0600
-Message-Id: <20201112163100.5081-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/4] ASoC: topology: use inclusive language for bclk and fsync
+Date: Thu, 12 Nov 2020 10:30:57 -0600
+Message-Id: <20201112163100.5081-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
 References: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
@@ -89,62 +88,172 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use 'provider' and 'consumer' terms.
+Mirror suggested changes in alsa-lib.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/atom/sst-atom-controls.c | 12 ++++++------
- sound/soc/intel/atom/sst-atom-controls.h |  4 ++--
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ include/sound/soc-dai.h   | 32 ++++++++++++++++++++------------
+ include/uapi/sound/asoc.h | 22 ++++++++++++++--------
+ sound/soc/soc-topology.c  | 24 ++++++++++++------------
+ sound/soc/sof/topology.c  |  6 +++---
+ 4 files changed, 49 insertions(+), 35 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index 6b5a34a15acb..335c32732994 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -827,14 +827,14 @@ static int sst_get_ssp_mode(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 7a85a6f83ca8..4bf759f025d2 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -72,21 +72,29 @@ struct snd_compr_stream;
+ #define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
+ 
+ /*
+- * DAI hardware clock masters.
++ * DAI hardware clock providers/consumers
+  *
+  * This is wrt the codec, the inverse is true for the interface
+- * i.e. if the codec is clk and FRM master then the interface is
+- * clk and frame secondary.
++ * i.e. if the codec is clk and FRM provider then the interface is
++ * clk and frame consumer.
+  */
+-#define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
+-#define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk secondary & FRM master */
+-#define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame secondary */
+-#define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM secondary */
+-
+-#define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
+-#define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
+-#define SND_SOC_DAIFMT_INV_MASK		0x0f00
+-#define SND_SOC_DAIFMT_MASTER_MASK	0xf000
++#define SND_SOC_DAIFMT_CBP_CFP		(1 << 12) /* codec clk provider & frame provider */
++#define SND_SOC_DAIFMT_CBC_CFP		(2 << 12) /* codec clk consumer & frame provider */
++#define SND_SOC_DAIFMT_CBP_CFC		(3 << 12) /* codec clk provider & frame consumer */
++#define SND_SOC_DAIFMT_CBC_CFC		(4 << 12) /* codec clk consumer & frame follower */
++
++/* previous definitions kept for backwards-compatibility, do not use in new contributions */
++#define SND_SOC_DAIFMT_CBM_CFM		SND_SOC_DAIFMT_CBP_CFP
++#define SND_SOC_DAIFMT_CBS_CFM		SND_SOC_DAIFMT_CBC_CFP
++#define SND_SOC_DAIFMT_CBM_CFS		SND_SOC_DAIFMT_CBP_CFC
++#define SND_SOC_DAIFMT_CBS_CFS		SND_SOC_DAIFMT_CBC_CFC
++
++#define SND_SOC_DAIFMT_FORMAT_MASK		0x000f
++#define SND_SOC_DAIFMT_CLOCK_MASK		0x00f0
++#define SND_SOC_DAIFMT_INV_MASK			0x0f00
++#define SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK	0xf000
++
++#define SND_SOC_DAIFMT_MASTER_MASK	SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK
+ 
+ /*
+  * Master Clock Directions
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index a74ca232f1fc..da61398b1f8f 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -170,16 +170,22 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
+ 
+ /* DAI topology BCLK parameter
+- * For the backwards capability, by default codec is bclk master
++ * For the backwards capability, by default codec is bclk provider
+  */
+-#define SND_SOC_TPLG_BCLK_CM         0 /* codec is bclk master */
+-#define SND_SOC_TPLG_BCLK_CS         1 /* codec is bclk slave */
++#define SND_SOC_TPLG_BCLK_CP         0 /* codec is bclk provider */
++#define SND_SOC_TPLG_BCLK_CC         1 /* codec is bclk consumer */
++/* keep previous definitions for compatibility */
++#define SND_SOC_TPLG_BCLK_CM         SND_SOC_TPLG_BCLK_CP
++#define SND_SOC_TPLG_BCLK_CS         SND_SOC_TPLG_BCLK_CC
+ 
+ /* DAI topology FSYNC parameter
+- * For the backwards capability, by default codec is fsync master
++ * For the backwards capability, by default codec is fsync provider
+  */
+-#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
+-#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
++#define SND_SOC_TPLG_FSYNC_CP         0 /* codec is fsync provider */
++#define SND_SOC_TPLG_FSYNC_CC         1 /* codec is fsync consumer */
++/* keep previous definitions for compatibility */
++#define SND_SOC_TPLG_FSYNC_CM         SND_SOC_TPLG_FSYNC_CP
++#define SND_SOC_TPLG_FSYNC_CS         SND_SOC_TPLG_FSYNC_CC
+ 
+ /*
+  * Block Header.
+@@ -336,8 +342,8 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+-	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
+-	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
++	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
++	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
+ 	__le16 reserved;	/* for 32bit alignment */
+ 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 07c60187e9ea..eb2633dd6454 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2017,7 +2017,7 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 			struct snd_soc_tplg_link_config *cfg)
  {
- 	int format;
+ 	struct snd_soc_tplg_hw_config *hw_config;
+-	unsigned char bclk_master, fsync_master;
++	unsigned char bclk_provider, fsync_provider;
+ 	unsigned char invert_bclk, invert_fsync;
+ 	int i;
  
--	format = (fmt & SND_SOC_DAIFMT_MASTER_MASK);
-+	format = (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK);
- 	dev_dbg(dai->dev, "Enter:%s, format=%x\n", __func__, format);
+@@ -2057,18 +2057,18 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
+ 			link->dai_fmt |= SND_SOC_DAIFMT_IB_IF;
  
- 	switch (format) {
--	case SND_SOC_DAIFMT_CBS_CFS:
--		return SSP_MODE_MASTER;
--	case SND_SOC_DAIFMT_CBM_CFM:
--		return SSP_MODE_SLAVE;
-+	case SND_SOC_DAIFMT_CBC_CFC:
-+		return SSP_MODE_PROVIDER;
-+	case SND_SOC_DAIFMT_CBP_CFP:
-+		return SSP_MODE_CONSUMER;
- 	default:
- 		dev_err(dai->dev, "Invalid ssp protocol: %d\n", format);
+ 		/* clock masters */
+-		bclk_master = (hw_config->bclk_master ==
+-			       SND_SOC_TPLG_BCLK_CM);
+-		fsync_master = (hw_config->fsync_master ==
+-				SND_SOC_TPLG_FSYNC_CM);
+-		if (bclk_master && fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		else if (!bclk_master && fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
+-		else if (bclk_master && !fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
++		bclk_provider = (hw_config->bclk_provider ==
++			       SND_SOC_TPLG_BCLK_CP);
++		fsync_provider = (hw_config->fsync_provider ==
++				SND_SOC_TPLG_FSYNC_CP);
++		if (bclk_provider && fsync_provider)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
++		else if (!bclk_provider && fsync_provider)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBC_CFP;
++		else if (bclk_provider && !fsync_provider)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBP_CFC;
+ 		else
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
++			link->dai_fmt |= SND_SOC_DAIFMT_CBC_CFC;
  	}
-@@ -905,7 +905,7 @@ static const struct sst_ssp_config sst_ssp_configs = {
- 	.ssp_id = SSP_CODEC,
- 	.bits_per_slot = 24,
- 	.slots = 4,
--	.ssp_mode = SSP_MODE_MASTER,
-+	.ssp_mode = SSP_MODE_PROVIDER,
- 	.pcm_mode = SSP_PCM_MODE_NETWORK,
- 	.duplex = SSP_DUPLEX,
- 	.ssp_protocol = SSP_MODE_PCM,
-diff --git a/sound/soc/intel/atom/sst-atom-controls.h b/sound/soc/intel/atom/sst-atom-controls.h
-index 620b48d2a064..23bf37544a8d 100644
---- a/sound/soc/intel/atom/sst-atom-controls.h
-+++ b/sound/soc/intel/atom/sst-atom-controls.h
-@@ -439,8 +439,8 @@ struct sst_cmd_tone_stop {
- } __packed;
+ }
  
- enum sst_ssp_mode {
--	SSP_MODE_MASTER = 0,
--	SSP_MODE_SLAVE = 1,
-+	SSP_MODE_PROVIDER = 0,
-+	SSP_MODE_CONSUMER = 1,
- };
- 
- enum sst_ssp_pcm_mode {
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index b0132fa56fe2..28f101aaf5cd 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -2786,15 +2786,15 @@ static void sof_dai_set_format(struct snd_soc_tplg_hw_config *hw_config,
+ 			       struct sof_ipc_dai_config *config)
+ {
+ 	/* clock directions wrt codec */
+-	if (hw_config->bclk_master == SND_SOC_TPLG_BCLK_CM) {
++	if (hw_config->bclk_provider == SND_SOC_TPLG_BCLK_CM) {
+ 		/* codec is bclk master */
+-		if (hw_config->fsync_master == SND_SOC_TPLG_FSYNC_CM)
++		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CM)
+ 			config->format |= SOF_DAI_FMT_CBM_CFM;
+ 		else
+ 			config->format |= SOF_DAI_FMT_CBM_CFS;
+ 	} else {
+ 		/* codec is bclk slave */
+-		if (hw_config->fsync_master == SND_SOC_TPLG_FSYNC_CM)
++		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CM)
+ 			config->format |= SOF_DAI_FMT_CBS_CFM;
+ 		else
+ 			config->format |= SOF_DAI_FMT_CBS_CFS;
 -- 
 2.25.1
 
