@@ -2,80 +2,79 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95C2BC56201
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:46:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D49EC56201
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:47:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 966E9216FD
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:46:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3FC11216FD
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:47:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wh4THspM"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 966E9216FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bYoeAF//"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FC11216FD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7C511836;
-	Thu, 12 Nov 2020 17:45:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7C511836
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8F4C1846;
+	Thu, 12 Nov 2020 17:46:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8F4C1846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605199601;
-	bh=78qWbjqQ3Dmo9fhPQk1zwa5IHaavEEAMB7lxa2Kpmes=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1605199638;
+	bh=+OD1H+PQL0+julAcOmqfl0YvGeLkkGqI5h5kzpkWBq4=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wh4THspMqNwI2kz2EsRpzzG1LzlMfQpGSPlHtmf1TswT00DSCYSYPhn108NplQvKF
-	 hxiL3odk5CwzXCZXRtZgFt4o3c9O9VlNosEOgNuC9uioe5clM1gofOPpscGItI2/9n
-	 piYyNjjclV467axhoYBTpxVEFs6L8SwKc6KqUjNg=
+	b=bYoeAF//HmBwSP+zpqkjIZcQfOcpgWNPTnPmS7bAgN/+I8EuX0+cadoWfcFnb5QJ+
+	 m7XRNxrkTVQwc1o96z6zNc5NrVkjCductDlR4JOMLt0ARYTyHo3xoemVFSj9EVZZVu
+	 +kdMv0M9BbZ6rpgE6Lm0cXoIgVjCdSFk6zwx8Rlw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44E8AF801D5;
-	Thu, 12 Nov 2020 17:44:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31A3DF804D2;
+	Thu, 12 Nov 2020 17:45:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09B59F801D5; Thu, 12 Nov 2020 17:44:54 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 3213AF804D6; Thu, 12 Nov 2020 17:45:04 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46E58F801D5
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:44:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46E58F801D5
-IronPort-SDR: VgHKKMFUtOaR6+Zrt+gzGidLwlkm1TRsk4PGgJCA7TirZPc7x2v+0dsg6Qr3r3rMBjLSxO+LI5
- 57Bc6UKoCxgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="170508855"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="170508855"
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1954F804C3
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:44:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1954F804C3
+IronPort-SDR: BRc0Ir94r8mE/y2gDYZEOugSBgf++bV5L5naBbsPiXQJLR2Z08IO128wl1APQBKq8VfNUHfKq5
+ U1DiEjjPu66w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="255048497"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="255048497"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:44:38 -0800
-IronPort-SDR: G+JRcNykfb788qPC2T33dLBL4/BqpSFZtjeFfzM8YkNQ5cAFFzZ/OqjVNUEhriNouvKRo7fgX+
- +ypxYRrrs2hQ==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="355251422"
-Received: from uikram-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
- ([10.213.181.67])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:44:37 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/4] ASoC: SOF: imx: fix Kconfig punctuation
-Date: Thu, 12 Nov 2020 10:44:22 -0600
-Message-Id: <20201112164425.25603-2-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
-References: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Nov 2020 08:44:21 -0800
+IronPort-SDR: Aja4qnK+Ky7te7O1hSqpqRH+mgOdOHtxm/zx9ijqIydsn1M1aIU3DR85u+Luvt3+6sOCJ+YBX1
+ aVQoWcVeGEUQ==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="532232049"
+Received: from rtrevino-mobl2.amr.corp.intel.com ([10.212.195.40])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Nov 2020 08:44:20 -0800
+Message-ID: <ea26b6dfe07cf5faefa21fde0b90698aaa5506fb.camel@linux.intel.com>
+Subject: Re: [PATCH 07/12] ASoC: soc-component: add
+ snd_soc_component_compr_get_codec_caps()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Date: Thu, 12 Nov 2020 08:44:19 -0800
+In-Reply-To: <87y2j76vq3.wl-kuninori.morimoto.gx@renesas.com>
+References: <878sb78ac4.wl-kuninori.morimoto.gx@renesas.com>
+ <87y2j76vq3.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- tiwai@suse.de, Randy Dunlap <rdunlap@infradead.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Rander Wang <rander.wang@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,65 +90,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Thu, 2020-11-12 at 13:37 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> component related function should be implemented at
+> soc-component.c.
+> This patch adds snd_soc_component_compr_get_codec_caps().
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/sound/soc-component.h |  2 ++
+>  sound/soc/soc-component.c     | 21 +++++++++++++++++++++
+>  sound/soc/soc-compress.c      | 13 ++-----------
+>  3 files changed, 25 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/sound/soc-component.h b/include/sound/soc-
+> component.h
+> index 7fd45462963e..d91e0eb1546d 100644
+> --- a/include/sound/soc-component.h
+> +++ b/include/sound/soc-component.h
+> @@ -455,6 +455,8 @@ int snd_soc_component_compr_get_params(struct
+> snd_compr_stream *cstream,
+>  				       struct snd_codec *params);
+>  int snd_soc_component_compr_get_caps(struct snd_compr_stream
+> *cstream,
+>  				     struct snd_compr_caps *caps);
+> +int snd_soc_component_compr_get_codec_caps(struct snd_compr_stream
+> *cstream,
+> +					   struct snd_compr_codec_caps
+> *codec);
+>  
+>  int snd_soc_pcm_component_pointer(struct snd_pcm_substream
+> *substream);
+>  int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
+> diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+> index 6f560238e2f9..2f1628100208 100644
+> --- a/sound/soc/soc-component.c
+> +++ b/sound/soc/soc-component.c
+> @@ -545,6 +545,27 @@ int snd_soc_component_compr_get_caps(struct
+> snd_compr_stream *cstream,
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_component_compr_get_caps);
+>  
+> +int snd_soc_component_compr_get_codec_caps(struct snd_compr_stream
+> *cstream,
+> +					   struct snd_compr_codec_caps
+> *codec)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+> +	struct snd_soc_component *component;
+> +	int i, ret;
+> +
+> +	for_each_rtd_components(rtd, i, component) {
+> +		if (component->driver->compress_ops &&
+> +		    component->driver->compress_ops->get_codec_caps) {
+> +			ret = component->driver->compress_ops-
+> >get_codec_caps(
+> +				component, cstream, codec);
+> +			if (ret < 0)
+> +				return soc_component_ret(component,
+> ret);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_component_compr_get_codec_caps);
+same comment for get_codec_caps() as well. We can maybe use this
+directly instead of soc_compr_get_codec_caps()?
 
-Add periods at the end of sentences in help text.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
----
- sound/soc/sof/imx/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
-index 48f998a19ddb..49d605cb09a5 100644
---- a/sound/soc/sof/imx/Kconfig
-+++ b/sound/soc/sof/imx/Kconfig
-@@ -17,7 +17,7 @@ config SND_SOC_SOF_IMX_OF
- 	select SND_SOC_SOF_IMX8M if SND_SOC_SOF_IMX8M_SUPPORT
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_IMX_COMMON
- 	tristate
-@@ -30,7 +30,7 @@ config SND_SOC_SOF_IMX8_SUPPORT
- 	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
- 	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
- 	help
--	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
-+	  This adds support for Sound Open Firmware for NXP i.MX8 platforms.
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-@@ -40,13 +40,13 @@ config SND_SOC_SOF_IMX8
- 	select SND_SOC_SOF_XTENSA
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_IMX8M_SUPPORT
- 	bool "SOF support for i.MX8M"
- 	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
- 	help
--	  This adds support for Sound Open Firmware for NXP i.MX8M platforms
-+	  This adds support for Sound Open Firmware for NXP i.MX8M platforms.
- 	  Say Y if you have such a device.
- 	  If unsure select "N".
- 
-@@ -56,6 +56,6 @@ config SND_SOC_SOF_IMX8M
- 	select SND_SOC_SOF_XTENSA
- 	help
- 	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level
-+	  'select' statements at a higher level.
- 
- endif ## SND_SOC_SOF_IMX_IMX_TOPLEVEL
--- 
-2.25.1
+Thanks,Ranjani
 
