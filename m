@@ -2,89 +2,77 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8EE5C5519F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:16:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DD57C5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:31:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 28BFF20936
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:16:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 7A5FD20B80
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:31:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xvq9GFC6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="llGhNUuH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28BFF20936
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kT8rWRJX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A5FD20B80
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB2AA17A6;
-	Thu, 12 Nov 2020 17:15:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB2AA17A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C31F817E4;
+	Thu, 12 Nov 2020 17:30:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C31F817E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605197796;
-	bh=F+gcoIj4yektFMcpbgXVAAJo3evAy3thhHuS6cGiWGY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1605198665;
+	bh=J2RrIBmE/5E40OTST4AzLdvLWGtS+l+TKfqXIf92RE4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xvq9GFC6uQz/ZNsOiJOJHuvt5Z9RlKObK7qeh2HQGgtEszDL36plN0z3KTC4CiYNr
-	 rrNnMiY3CKZA4drznnw/FJhK5BmW6+pq1TQ5JzFVlIQEAHGw6IYDcI6OuNw23Xx9Tt
-	 R7vRUdWwtUkuA0omd3NRUhBFzdI/pxRF15noenRo=
+	b=kT8rWRJXO9NtssF2KC9FGtPR9p29zKwxt1z8GZG+OawEoDanSNtUwjr1Ms2DyDE/B
+	 RHbLwZ8Xmpq/U6aa825rW8SDy7ysMXjy0UU+guH0I8CJFhfdhKnR13nOwAs1kNk+qG
+	 yIbZHzXYOTsQchMUSRvLgmCxJS7+DZwz1EjJVIJA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DE6AF8007E;
-	Thu, 12 Nov 2020 17:15:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D033F801EB;
+	Thu, 12 Nov 2020 17:30:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5FF3F801D5; Thu, 12 Nov 2020 17:15:43 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BCC87F8007E; Thu, 12 Nov 2020 17:30:13 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50841F8007E
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:15:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50841F8007E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="llGhNUuH"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com
- [209.85.222.180])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 52E4D22248
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 16:15:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605197734;
- bh=F+gcoIj4yektFMcpbgXVAAJo3evAy3thhHuS6cGiWGY=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=llGhNUuHHJ1cZOa93pHbFGlgET5Ako9FEYpIcAzFW+F9QTfGi0WmzaCT7cifUA8yg
- X1XRdWCILClCkpSVjW6OAPBDYVHQyXOUtrecIei265zKYFLIhPtQ8iaeQeCEg6kifF
- ogwOlEMR6WmwBofpo2ZDcONw7O0+/aAt+spdtjOQ=
-Received: by mail-qk1-f180.google.com with SMTP id y197so5724590qkb.7
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 08:15:34 -0800 (PST)
-X-Gm-Message-State: AOAM532huS2avqOknZHKMuV7j8GxW0plZUW/fpOfN+TktO870+LAQbeu
- pNUTW0BY7Rbk+xpLgogU1JyxiYxTixdGRhKfAg==
-X-Google-Smtp-Source: ABdhPJwc5ZhfLhx4nInnP6kIhq5fTs3ZM0G91SsTL6q6TAA4lRZBtLIPN8apKhz/mQugOLAjRcEybAs2pzvOty+1fTA=
-X-Received: by 2002:a05:620a:148c:: with SMTP id
- w12mr455546qkj.311.1605197733415; 
- Thu, 12 Nov 2020 08:15:33 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF133F8007E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF133F8007E
+IronPort-SDR: /qAr9U4t4cK1VQ3xQznLSdS4wOUEbfFQIT3izSZVuE81pWuQDZ0XTmSB41W3j865Ne4UolHqFO
+ swH/jpGfn3Lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="157355217"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="157355217"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Nov 2020 08:30:04 -0800
+IronPort-SDR: xzrr0vRg3zU6/W2katBS14BSYuwir42vAVhw+gBpFtb917I/hPRpIoGAIBk2Ee8okMJqEzDoTX
+ HUC1L1Z9Dz4Q==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="357147665"
+Received: from nsalmulx-mobl2.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.36.117])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Nov 2020 08:30:03 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH RESEND 1/3] topology: use inclusive language for bclk
+Date: Thu, 12 Nov 2020 10:29:38 -0600
+Message-Id: <20201112162940.4970-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201112162940.4970-1-pierre-louis.bossart@linux.intel.com>
+References: <20201112162940.4970-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-References: <1605097613-25301-1-git-send-email-spujar@nvidia.com>
- <1605097613-25301-3-git-send-email-spujar@nvidia.com>
- <20201112160746.GA3681609@bogus>
-In-Reply-To: <20201112160746.GA3681609@bogus>
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 12 Nov 2020 10:15:22 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJOqXvHhazzZ9qFAOcdG5UrFrvThbX2D64Tk+c6f=Leqg@mail.gmail.com>
-Message-ID: <CAL_JsqJOqXvHhazzZ9qFAOcdG5UrFrvThbX2D64Tk+c6f=Leqg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: renesas,rsnd: Update audio graph references
-To: Sameer Pujar <spujar@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,40 +88,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 12, 2020 at 10:07 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Nov 11, 2020 at 05:56:53PM +0530, Sameer Pujar wrote:
-> > Since audio graph schema is refactored now update the related
-> > references here.
-> >
-> > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> > Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-> >  Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> This should be part of the first patch. Things break in between.
->
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> > index 51f4dca..fc2ae22 100644
-> > --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> > +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> > @@ -112,12 +112,10 @@ properties:
-> >          - pattern: '^clk_(a|b|c|i)$'
-> >
-> >    port:
-> > -    description: OF-Graph subnode
-> > -    $ref: "audio-graph-card.yaml#/properties/port"
-> > +    $ref: /schemas/sound/audio-graph.yaml#/properties/port
-> >
-> >    ports:
-> > -    description: multi OF-Graph subnode
-> > -    $ref: "audio-graph-card.yaml#/properties/ports"
-> > +    $ref: /schemas/graph.yaml#/properties/ports
+use bclk_provider for structure fields, 'codec_provider' and
+'codec_consumer' for options and modify #defines to use CP and CC
+suffixes.
 
-Actually, with the graph.yaml dependency that doesn't work either. I
-think this probably needs to be a ref to just audio-graph.yaml at the
-top level and that should pick up port and ports schemas.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/uapi/asoc.h | 11 +++++++----
+ include/topology.h        |  2 +-
+ src/topology/pcm.c        | 36 ++++++++++++++++++++++++++----------
+ 3 files changed, 34 insertions(+), 15 deletions(-)
 
-Rob
+diff --git a/include/sound/uapi/asoc.h b/include/sound/uapi/asoc.h
+index 4efb4ec4..ceafb1a9 100644
+--- a/include/sound/uapi/asoc.h
++++ b/include/sound/uapi/asoc.h
+@@ -169,10 +169,13 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
+ 
+ /* DAI topology BCLK parameter
+- * For the backwards capability, by default codec is bclk master
++ * For the backwards capability, by default codec is bclk provider
+  */
+-#define SND_SOC_TPLG_BCLK_CM         0 /* codec is bclk master */
+-#define SND_SOC_TPLG_BCLK_CS         1 /* codec is bclk slave */
++#define SND_SOC_TPLG_BCLK_CP         0 /* codec is bclk provider */
++#define SND_SOC_TPLG_BCLK_CC         1 /* codec is bclk consumer */
++/* keep previous definitions for compatibility */
++#define SND_SOC_TPLG_BCLK_CM         SND_SOC_TPLG_BCLK_CP
++#define SND_SOC_TPLG_BCLK_CS         SND_SOC_TPLG_BCLK_CC
+ 
+ /* DAI topology FSYNC parameter
+  * For the backwards capability, by default codec is fsync master
+@@ -335,7 +338,7 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+-	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
++	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
+ 	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
+ 	__le16 reserved;	/* for 32bit alignment */
+diff --git a/include/topology.h b/include/topology.h
+index 1f52e66e..6c970649 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -1028,7 +1028,7 @@ struct snd_tplg_hw_config_template {
+ 	unsigned char clock_gated;      /* SND_SOC_TPLG_DAI_CLK_GATE_ value */
+ 	unsigned char  invert_bclk;     /* 1 for inverted BCLK, 0 for normal */
+ 	unsigned char  invert_fsync;    /* 1 for inverted frame clock, 0 for normal */
+-	unsigned char  bclk_master;     /* SND_SOC_TPLG_BCLK_ value */
++	unsigned char  bclk_provider;   /* SND_SOC_TPLG_BCLK_ value */
+ 	unsigned char  fsync_master;    /* SND_SOC_TPLG_FSYNC_ value */
+ 	unsigned char  mclk_direction;  /* SND_SOC_TPLG_MCLK_ value */
+ 	unsigned short reserved;        /* for 32bit alignment */
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 191b7a0a..f05df348 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -1411,6 +1411,7 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	snd_config_t *n;
+ 	const char *id, *val = NULL;
+ 	int ret, ival;
++	bool provider_legacy;
+ 
+ 	elem = tplg_elem_new_common(tplg, cfg, NULL, SND_TPLG_TYPE_HW_CONFIG);
+ 	if (!elem)
+@@ -1451,8 +1452,15 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
+ 			continue;
+ 		}
+ 
+-		if (strcmp(id, "bclk") == 0 ||
+-		    strcmp(id, "bclk_master") == 0) {
++		provider_legacy = false;
++		if (strcmp(id, "bclk_master") == 0) {
++			SNDERR("deprecated option %s, please use 'bclk'\n", id);
++			provider_legacy = true;
++		}
++
++		if (provider_legacy ||
++		    strcmp(id, "bclk") == 0) {
++
+ 			if (snd_config_get_string(n, &val) < 0)
+ 				return -EINVAL;
+ 
+@@ -1462,11 +1470,19 @@ int tplg_parse_hw_config(snd_tplg_t *tplg, snd_config_t *cfg,
+ 				 */
+ 				SNDERR("deprecated bclk value '%s'", val);
+ 
+-				hw_cfg->bclk_master = SND_SOC_TPLG_BCLK_CS;
++				hw_cfg->bclk_provider = SND_SOC_TPLG_BCLK_CC;
+ 			} else if (!strcmp(val, "codec_slave")) {
+-				hw_cfg->bclk_master = SND_SOC_TPLG_BCLK_CS;
++				SNDERR("deprecated bclk value '%s', use 'codec_consumer'", val);
++
++				hw_cfg->bclk_provider = SND_SOC_TPLG_BCLK_CC;
++			} else if (!strcmp(val, "codec_consumer")) {
++				hw_cfg->bclk_provider = SND_SOC_TPLG_BCLK_CC;
+ 			} else if (!strcmp(val, "codec_master")) {
+-				hw_cfg->bclk_master = SND_SOC_TPLG_BCLK_CM;
++				SNDERR("deprecated bclk value '%s', use 'codec_provider", val);
++
++				hw_cfg->bclk_provider = SND_SOC_TPLG_BCLK_CP;
++			} else if (!strcmp(val, "codec_provider")) {
++				hw_cfg->bclk_provider = SND_SOC_TPLG_BCLK_CP;
+ 			}
+ 			continue;
+ 		}
+@@ -1623,10 +1639,10 @@ int tplg_save_hw_config(snd_tplg_t *tplg ATTRIBUTE_UNUSED,
+ 	if (err >= 0 && hc->fmt)
+ 		err = tplg_save_printf(dst, pfx, "\tformat '%s'\n",
+ 				       get_audio_hw_format_name(hc->fmt));
+-	if (err >= 0 && hc->bclk_master)
++	if (err >= 0 && hc->bclk_provider)
+ 		err = tplg_save_printf(dst, pfx, "\tbclk '%s'\n",
+-				       hc->bclk_master == SND_SOC_TPLG_BCLK_CS ?
+-						"codec_slave" : "codec_master");
++				       hc->bclk_provider == SND_SOC_TPLG_BCLK_CC ?
++						"codec_consumer" : "codec_provider");
+ 	if (err >= 0 && hc->bclk_rate)
+ 		err = tplg_save_printf(dst, pfx, "\tbclk_freq %u\n",
+ 				       hc->bclk_rate);
+@@ -1791,7 +1807,7 @@ static int set_link_hw_config(struct snd_soc_tplg_hw_config *cfg,
+ 	cfg->clock_gated = tpl->clock_gated;
+ 	cfg->invert_bclk = tpl->invert_bclk;
+ 	cfg->invert_fsync = tpl->invert_fsync;
+-	cfg->bclk_master = tpl->bclk_master;
++	cfg->bclk_provider = tpl->bclk_provider;
+ 	cfg->fsync_master = tpl->fsync_master;
+ 	cfg->mclk_direction = tpl->mclk_direction;
+ 	cfg->reserved = tpl->reserved;
+@@ -2174,7 +2190,7 @@ next:
+ 		hw->clock_gated = link->hw_config[i].clock_gated;
+ 		hw->invert_bclk = link->hw_config[i].invert_bclk;
+ 		hw->invert_fsync = link->hw_config[i].invert_fsync;
+-		hw->bclk_master = link->hw_config[i].bclk_master;
++		hw->bclk_provider = link->hw_config[i].bclk_provider;
+ 		hw->fsync_master = link->hw_config[i].fsync_master;
+ 		hw->mclk_direction = link->hw_config[i].mclk_direction;
+ 		hw->mclk_rate = link->hw_config[i].mclk_rate;
+-- 
+2.25.1
+
