@@ -2,73 +2,71 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C2ABC56202
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2551AC5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:32:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC14C20B80
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:32:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4635E22201
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:32:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jdTFvtB+"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC14C20B80
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jZfUXbsj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4635E22201
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D306B1816;
-	Thu, 12 Nov 2020 17:31:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D306B1816
+	by alsa0.perex.cz (Postfix) with ESMTPS id A49CD17E4;
+	Thu, 12 Nov 2020 17:31:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A49CD17E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605198718;
-	bh=1PG/WpIggRVr4vN8KWaI8pgYooHNQsrRlk7bFccbzeY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jdTFvtB+G4lEq/Wuh6cmHSl6XlNx6FTXwlknVFHvLmaN8Hayrs/ekhnb4/1L7qGIp
-	 afaz0mm3gEd6wLPeeIVdb2zPuxO5RN09meIlV7G1ak9/36DEqO6TcZeFHjjMTIKLxj
-	 3A/lFJO8k6eMMT/WrMZP4jQzIB+gV5+/CDJb1vUE=
+	s=default; t=1605198726;
+	bh=2/zkGvsUjsO41G8RfGBNlfkmQxUYII8roOJSATpFdTk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jZfUXbsjaXu6ew00cqhPNKxR4alGHfLLuDhGXzDOnbjRTw6LFyq7PdJSdVHkA+H3D
+	 K8G2fJa1kHVEGsRrHqmptTqhZBcs3QLN9X/Njg2urG/7gPHMz2IxboK58SZ5JeULX3
+	 AXSCiGr62ooPJ2zsTQi+YZcEwZlLIyngkoHZLwCo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E37ABF8007E;
-	Thu, 12 Nov 2020 17:30:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9193EF804C3;
+	Thu, 12 Nov 2020 17:30:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 587FAF804B1; Thu, 12 Nov 2020 17:30:17 +0100 (CET)
+ id 8E318F804C1; Thu, 12 Nov 2020 17:30:18 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 045F4F800D1
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:30:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 045F4F800D1
-IronPort-SDR: 6pXbbkx483EApIm4jDyfTDHDWFnfaE74Gy2qdSxjcYf7I9QEVQgGCD4JUHAIi9UvJkAYR4YdCN
- KAlVcHvj44EQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="157355229"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="157355229"
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC211F80161
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:30:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC211F80161
+IronPort-SDR: Rm/sXEcpGHZOkkOwXEYHjKCdZ4gNi5WKw5uyBiDnfWUPz4R+TLceHNH0sbGjiKJD+nuQNhoeed
+ HBgz33SRAuFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="157355216"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="157355216"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:30:05 -0800
-IronPort-SDR: QCKGs5igTVf56T+PITM4cV0307387jFOQ23YDP2FOONWVFzziVko9YTYoDk12KNA1ugqBVkaRr
- fsKzF+5Dl4/A==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="357147686"
+ 12 Nov 2020 08:30:03 -0800
+IronPort-SDR: PfevpJ+ROe/q6vYLS614n9L5Nk+kpFK8bbZCFyawdxWnN46/oUJzp9SSFTJkQPg/mmkVsGEo9k
+ OfoGopOX/zLw==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="357147657"
 Received: from nsalmulx-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.36.117])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:30:04 -0800
+ 12 Nov 2020 08:30:03 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH RESEND 3/3] topology: use inclusive language in documentation
-Date: Thu, 12 Nov 2020 10:29:40 -0600
-Message-Id: <20201112162940.4970-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH RESEND 0/3] alsa-lib/ASoC: use inclusive language for
+ bclk/fsync/topology
+Date: Thu, 12 Nov 2020 10:29:37 -0600
+Message-Id: <20201112162940.4970-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112162940.4970-1-pierre-louis.bossart@linux.intel.com>
-References: <20201112162940.4970-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, gregkh@linuxfoundation.org, broonie@kernel.org,
@@ -88,28 +86,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use codec_provider and codec_consumer for bclk and fsync
+This patchset is just a rebase of the code suggested in September [1],
+resent for convenience for comparison with kernel patches.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/topology.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The SOF (Sound Open Firmware) tree contains a lot of references in
+topology files to 'codec_slave'/'codec_master' terms, which in turn
+come from alsa-lib and ALSA/ASoC topology support at the kernel
+level. These terms are no longer compatible with the guidelines
+adopted by the kernel community [2], standard organizations, and need
+to change in backwards-compatible ways.
 
-diff --git a/include/topology.h b/include/topology.h
-index 4ade20df..d1feee4d 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -658,8 +658,8 @@ extern "C" {
-  *
-  *	id "1"				# used for binding to the config
-  *	format "I2S"			# physical audio format.
-- *	bclk   "master"			# Platform is master of bit clock
-- *	fsync  "slave"			# Platform is slave of fsync
-+ *	bclk   "codec_provider"		# Codec provides the bit clock
-+ *	fsync  "codec_consumer"		# Codec follows the fsync
-  * }
-  * </pre>
-  *
+The main/secondary terms typically suggested in guidelines don't mean
+anything for clocks, this patchset suggests instead the use of
+'provider' and 'consumer' terms, with the 'codec' prefix kept to make
+it clear that the codec is the reference. The CM/CS suffixes are also
+replaced by CP/CC.
+
+It can be argued that the change of suffix is invasive, but finding a
+replacement that keeps the M and S shortcuts has proven difficult in
+quite a few contexts.
+
+The previous definitions are kept for backwards-compatibility so this
+change should not have any functional impact. It is suggested that new
+contributions only use the new terms but there is no requirement to
+transition immediately to the new definitions for existing code. Intel
+will however update all its past contributions related to bit
+clock/frame sync configurations immediately.
+
+This patchset contains the alsa-lib changes only, the kernel changes
+will be shared in a different patchset. The SOF firmware changes are
+already applied, only topology-related changes will be modified after
+alsa-lib changes.
+
+Feedback welcome
+~Pierre
+
+[1] https://mailman.alsa-project.org/pipermail/alsa-devel/2020-September/174387.html
+[2] https://lkml.org/lkml/2020/7/4/229
+
+Changes since RFC:
+replaced 'follower' by 'consumer' as suggested by Jaroslav and Marc
+minor cleanups
+
+Pierre-Louis Bossart (3):
+  topology: use inclusive language for bclk
+  topology: use inclusive language for fsync
+  topology: use inclusive language in documentation
+
+ include/sound/uapi/asoc.h | 22 +++++++-----
+ include/topology.h        |  8 ++---
+ src/topology/pcm.c        | 75 +++++++++++++++++++++++++++------------
+ 3 files changed, 71 insertions(+), 34 deletions(-)
+
 -- 
 2.25.1
 
