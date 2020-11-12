@@ -2,77 +2,79 @@ Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2478BC5519F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:34:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B66BC5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:43:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59DE322201
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:34:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B718421D7F
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 16:43:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FCbwqL7w"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59DE322201
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fLfWRMVM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B718421D7F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 637781834;
-	Thu, 12 Nov 2020 17:33:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 637781834
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF93517B9;
+	Thu, 12 Nov 2020 17:42:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF93517B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605198874;
-	bh=BVnxiL5ELJwHBqz8/TninkkX9Xaw/0yBXoNB95kZ3uA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1605199418;
+	bh=uZsCJV2SLQSVDU0BPYf6erpZGzl9HMUkbJvzl3Lrcbc=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FCbwqL7wrPB+IpPrE6NHs9y/dL3G9m3cC91sQRR0jt4lvM3owGH1ZHd2N6SRCXX/A
-	 lMmRCL5WRw/mXCCzDvCW6UNlUZs62AGYwCKMrmsV2O7k+PjswrrYTmeN6fN1+BrDbm
-	 f1oloovfwCb8iJqs+F3TtKd/07c/WNYBK+Yb4a54=
+	b=fLfWRMVMmMHrxXMNFKK8v5n6ZezUaLw+YWwiul6ClpwkXk6jhrO2q/Etz34o2BFth
+	 LHAksqv2JqDsLuW/w7eibfc1QZAnPf+0sv/MzpMABD0ZCkrLMQBH+OMCv3rpKsVNSW
+	 p18suouF44KLLNX1d7yszw+vfewz0bp6buESopJw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3CB2F804FA;
-	Thu, 12 Nov 2020 17:31:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78B3DF8007E;
+	Thu, 12 Nov 2020 17:42:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E833F80290; Thu, 12 Nov 2020 17:31:30 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id BEA34F801D5; Thu, 12 Nov 2020 17:42:45 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDA6AF802C4
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:31:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDA6AF802C4
-IronPort-SDR: OZbqSVj+cIS0bOGQoSF+YO5+vmpIVdl66772yu+YuY4uXeToPeypJ5NhddQAi/aOz25b8z12uY
- sLmwMgnTukkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="231956991"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="231956991"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4ABE9F800D1
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 17:42:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ABE9F800D1
+IronPort-SDR: DdwxzFSnNNGXIyF5gQxJxCgbPx723kpcMFyw8JL2WVBRNJGCq8nOJe1JfiIgDv8pR6XiULSTLL
+ 8bahSUrC/UEw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9803"; a="150190031"
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="150190031"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:31:14 -0800
-IronPort-SDR: YYTBl41ix6PlSdOf2AO50KktDRPmSroMiHT0eAwtRmmeu70op6Q4lKD1zNes5PKCiGR1aq2SSK
- lip5L4ndv4iw==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="532228312"
-Received: from nsalmulx-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.36.117])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Nov 2020 08:31:11 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: topology: use inclusive language for bclk and fsync
-Date: Thu, 12 Nov 2020 10:30:57 -0600
-Message-Id: <20201112163100.5081-2-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
-References: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Nov 2020 08:42:31 -0800
+IronPort-SDR: XDBggv/lhRhOTabUP8A7mYCwouCxFCqrYI7WSt+5lseoOkdLpmQrAhcmZJx3XMT8/vNSyjLpjI
+ s4gEbiCvnSCA==
+X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; d="scan'208";a="357151746"
+Received: from rtrevino-mobl2.amr.corp.intel.com ([10.212.195.40])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Nov 2020 08:42:31 -0800
+Message-ID: <e548e12d1fcaeeee2d549ecb33bd0c0d14473e15.camel@linux.intel.com>
+Subject: Re: [PATCH 06/12] ASoC: soc-component: add
+ snd_soc_component_compr_get_caps()
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Date: Thu, 12 Nov 2020 08:42:23 -0800
+In-Reply-To: <87zh3n6vq7.wl-kuninori.morimoto.gx@renesas.com>
+References: <878sb78ac4.wl-kuninori.morimoto.gx@renesas.com>
+ <87zh3n6vq7.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,172 +90,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mirror suggested changes in alsa-lib.
+On Thu, 2020-11-12 at 13:37 +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> component related function should be implemented at
+> soc-component.c.
+> This patch adds snd_soc_component_compr_get_caps().
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/sound/soc-component.h |  2 ++
+>  sound/soc/soc-component.c     | 21 +++++++++++++++++++++
+>  sound/soc/soc-compress.c      | 13 ++-----------
+>  3 files changed, 25 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/sound/soc-component.h b/include/sound/soc-
+> component.h
+> index 6841c3037548..7fd45462963e 100644
+> --- a/include/sound/soc-component.h
+> +++ b/include/sound/soc-component.h
+> @@ -453,6 +453,8 @@ int snd_soc_component_compr_set_params(struct
+> snd_compr_stream *cstream,
+>  				       struct snd_compr_params
+> *params);
+>  int snd_soc_component_compr_get_params(struct snd_compr_stream
+> *cstream,
+>  				       struct snd_codec *params);
+> +int snd_soc_component_compr_get_caps(struct snd_compr_stream
+> *cstream,
+> +				     struct snd_compr_caps *caps);
+>  
+>  int snd_soc_pcm_component_pointer(struct snd_pcm_substream
+> *substream);
+>  int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
+> diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+> index 7d2b31948854..6f560238e2f9 100644
+> --- a/sound/soc/soc-component.c
+> +++ b/sound/soc/soc-component.c
+> @@ -524,6 +524,27 @@ int snd_soc_component_compr_get_params(struct
+> snd_compr_stream *cstream,
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_component_compr_get_params);
+>  
+> +int snd_soc_component_compr_get_caps(struct snd_compr_stream
+> *cstream,
+> +				     struct snd_compr_caps *caps)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+> +	struct snd_soc_component *component;
+> +	int i, ret;
+> +
+> +	for_each_rtd_components(rtd, i, component) {
+> +		if (component->driver->compress_ops &&
+> +		    component->driver->compress_ops->get_caps) {
+> +			ret = component->driver->compress_ops-
+> >get_caps(
+> +				component, cstream, caps);
+> +			if (ret < 0)
+> +				return soc_component_ret(component,
+> ret);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(snd_soc_component_compr_get_caps);
+> +
+>  static unsigned int soc_component_read_no_lock(
+>  	struct snd_soc_component *component,
+>  	unsigned int reg)
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index a98defdecad7..c62aa1a52c28 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -413,20 +413,11 @@ static int soc_compr_get_caps(struct
+> snd_compr_stream *cstream,
+>  			      struct snd_compr_caps *caps)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+> -	struct snd_soc_component *component;
+> -	int i, ret = 0;
+> +	int ret;
+>  
+>  	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card-
+> >pcm_subclass);
+>  
+> -	for_each_rtd_components(rtd, i, component) {
+> -		if (!component->driver->compress_ops ||
+> -		    !component->driver->compress_ops->get_caps)
+> -			continue;
+> -
+> -		ret = component->driver->compress_ops->get_caps(
+> -			component, cstream, caps);
+> -		break;
+> -	}
+> +	ret = snd_soc_component_compr_get_caps(cstream, caps);
+Morimoto-san,
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- include/sound/soc-dai.h   | 32 ++++++++++++++++++++------------
- include/uapi/sound/asoc.h | 22 ++++++++++++++--------
- sound/soc/soc-topology.c  | 24 ++++++++++++------------
- sound/soc/sof/topology.c  |  6 +++---
- 4 files changed, 49 insertions(+), 35 deletions(-)
+Do you think it makes sense to remove soc_compr_get_caps() altogether
+after adding snd_soc_component_cpmpr_get_caps() and calling it directly
+instead?
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 7a85a6f83ca8..4bf759f025d2 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -72,21 +72,29 @@ struct snd_compr_stream;
- #define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
- 
- /*
-- * DAI hardware clock masters.
-+ * DAI hardware clock providers/consumers
-  *
-  * This is wrt the codec, the inverse is true for the interface
-- * i.e. if the codec is clk and FRM master then the interface is
-- * clk and frame secondary.
-+ * i.e. if the codec is clk and FRM provider then the interface is
-+ * clk and frame consumer.
-  */
--#define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
--#define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk secondary & FRM master */
--#define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame secondary */
--#define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM secondary */
--
--#define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
--#define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
--#define SND_SOC_DAIFMT_INV_MASK		0x0f00
--#define SND_SOC_DAIFMT_MASTER_MASK	0xf000
-+#define SND_SOC_DAIFMT_CBP_CFP		(1 << 12) /* codec clk provider & frame provider */
-+#define SND_SOC_DAIFMT_CBC_CFP		(2 << 12) /* codec clk consumer & frame provider */
-+#define SND_SOC_DAIFMT_CBP_CFC		(3 << 12) /* codec clk provider & frame consumer */
-+#define SND_SOC_DAIFMT_CBC_CFC		(4 << 12) /* codec clk consumer & frame follower */
-+
-+/* previous definitions kept for backwards-compatibility, do not use in new contributions */
-+#define SND_SOC_DAIFMT_CBM_CFM		SND_SOC_DAIFMT_CBP_CFP
-+#define SND_SOC_DAIFMT_CBS_CFM		SND_SOC_DAIFMT_CBC_CFP
-+#define SND_SOC_DAIFMT_CBM_CFS		SND_SOC_DAIFMT_CBP_CFC
-+#define SND_SOC_DAIFMT_CBS_CFS		SND_SOC_DAIFMT_CBC_CFC
-+
-+#define SND_SOC_DAIFMT_FORMAT_MASK		0x000f
-+#define SND_SOC_DAIFMT_CLOCK_MASK		0x00f0
-+#define SND_SOC_DAIFMT_INV_MASK			0x0f00
-+#define SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK	0xf000
-+
-+#define SND_SOC_DAIFMT_MASTER_MASK	SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK
- 
- /*
-  * Master Clock Directions
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index a74ca232f1fc..da61398b1f8f 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -170,16 +170,22 @@
- #define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
- 
- /* DAI topology BCLK parameter
-- * For the backwards capability, by default codec is bclk master
-+ * For the backwards capability, by default codec is bclk provider
-  */
--#define SND_SOC_TPLG_BCLK_CM         0 /* codec is bclk master */
--#define SND_SOC_TPLG_BCLK_CS         1 /* codec is bclk slave */
-+#define SND_SOC_TPLG_BCLK_CP         0 /* codec is bclk provider */
-+#define SND_SOC_TPLG_BCLK_CC         1 /* codec is bclk consumer */
-+/* keep previous definitions for compatibility */
-+#define SND_SOC_TPLG_BCLK_CM         SND_SOC_TPLG_BCLK_CP
-+#define SND_SOC_TPLG_BCLK_CS         SND_SOC_TPLG_BCLK_CC
- 
- /* DAI topology FSYNC parameter
-- * For the backwards capability, by default codec is fsync master
-+ * For the backwards capability, by default codec is fsync provider
-  */
--#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
--#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
-+#define SND_SOC_TPLG_FSYNC_CP         0 /* codec is fsync provider */
-+#define SND_SOC_TPLG_FSYNC_CC         1 /* codec is fsync consumer */
-+/* keep previous definitions for compatibility */
-+#define SND_SOC_TPLG_FSYNC_CM         SND_SOC_TPLG_FSYNC_CP
-+#define SND_SOC_TPLG_FSYNC_CS         SND_SOC_TPLG_FSYNC_CC
- 
- /*
-  * Block Header.
-@@ -336,8 +342,8 @@ struct snd_soc_tplg_hw_config {
- 	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
--	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
--	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
-+	__u8 bclk_provider;	/* SND_SOC_TPLG_BCLK_ value */
-+	__u8 fsync_provider;	/* SND_SOC_TPLG_FSYNC_ value */
- 	__u8 mclk_direction;    /* SND_SOC_TPLG_MCLK_ value */
- 	__le16 reserved;	/* for 32bit alignment */
- 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 07c60187e9ea..eb2633dd6454 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2017,7 +2017,7 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
- 			struct snd_soc_tplg_link_config *cfg)
- {
- 	struct snd_soc_tplg_hw_config *hw_config;
--	unsigned char bclk_master, fsync_master;
-+	unsigned char bclk_provider, fsync_provider;
- 	unsigned char invert_bclk, invert_fsync;
- 	int i;
- 
-@@ -2057,18 +2057,18 @@ static void set_link_hw_format(struct snd_soc_dai_link *link,
- 			link->dai_fmt |= SND_SOC_DAIFMT_IB_IF;
- 
- 		/* clock masters */
--		bclk_master = (hw_config->bclk_master ==
--			       SND_SOC_TPLG_BCLK_CM);
--		fsync_master = (hw_config->fsync_master ==
--				SND_SOC_TPLG_FSYNC_CM);
--		if (bclk_master && fsync_master)
--			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
--		else if (!bclk_master && fsync_master)
--			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
--		else if (bclk_master && !fsync_master)
--			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
-+		bclk_provider = (hw_config->bclk_provider ==
-+			       SND_SOC_TPLG_BCLK_CP);
-+		fsync_provider = (hw_config->fsync_provider ==
-+				SND_SOC_TPLG_FSYNC_CP);
-+		if (bclk_provider && fsync_provider)
-+			link->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
-+		else if (!bclk_provider && fsync_provider)
-+			link->dai_fmt |= SND_SOC_DAIFMT_CBC_CFP;
-+		else if (bclk_provider && !fsync_provider)
-+			link->dai_fmt |= SND_SOC_DAIFMT_CBP_CFC;
- 		else
--			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+			link->dai_fmt |= SND_SOC_DAIFMT_CBC_CFC;
- 	}
- }
- 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index b0132fa56fe2..28f101aaf5cd 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -2786,15 +2786,15 @@ static void sof_dai_set_format(struct snd_soc_tplg_hw_config *hw_config,
- 			       struct sof_ipc_dai_config *config)
- {
- 	/* clock directions wrt codec */
--	if (hw_config->bclk_master == SND_SOC_TPLG_BCLK_CM) {
-+	if (hw_config->bclk_provider == SND_SOC_TPLG_BCLK_CM) {
- 		/* codec is bclk master */
--		if (hw_config->fsync_master == SND_SOC_TPLG_FSYNC_CM)
-+		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CM)
- 			config->format |= SOF_DAI_FMT_CBM_CFM;
- 		else
- 			config->format |= SOF_DAI_FMT_CBM_CFS;
- 	} else {
- 		/* codec is bclk slave */
--		if (hw_config->fsync_master == SND_SOC_TPLG_FSYNC_CM)
-+		if (hw_config->fsync_provider == SND_SOC_TPLG_FSYNC_CM)
- 			config->format |= SOF_DAI_FMT_CBS_CFM;
- 		else
- 			config->format |= SOF_DAI_FMT_CBS_CFS;
--- 
-2.25.1
+Thanks,
+Ranjani
 
