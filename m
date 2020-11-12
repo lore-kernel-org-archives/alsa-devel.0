@@ -6,68 +6,68 @@ X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BD99C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 19:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47542C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 19:42:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 758F620759
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 19:42:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6486B20825
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 19:42:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MfG0qYqR";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="R2QFoAHm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 758F620759
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="cn46OpMz";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vkjg5XYL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6486B20825
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7E62181B;
-	Thu, 12 Nov 2020 20:41:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7E62181B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1255167C;
+	Thu, 12 Nov 2020 20:42:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1255167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605210137;
-	bh=kh3nAQV22I+QzfsKJUiPjiXFj5pv+uKvrht35jK83iA=;
+	s=default; t=1605210175;
+	bh=mBtyvXKqsm4D6tlspL1SxCvx769qD8Yfr1GKWcinipU=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MfG0qYqRvAnvaf3Ut3tqwwmMHT0mRmsX7QHfL8WKbl7+S1LapEgjsDRrgjCqSO0XF
-	 dN77SjEbFJzmsweSiJ2wbKW6yLfywC9Fl0ea3EBj/KnOcuL3hUN+Vx0OgL7RWATB40
-	 G5ibWn3ZdA1RASIvolIiylN8/yezR0gVL3hUBw24=
+	b=cn46OpMzMF129ZUi8S52SmITKHaY1DJdMiF1M/dCsd3GDsnNOn2/P1NkxBithBabi
+	 bBlIquylQAZDRvcL8ueOBOp0X/lxEL93FwKsN+OrLWM7hMIBiw0kfD5uGvQOPd+oN3
+	 UjJQXEwB3aCjJj0lDFoPbF8TmLDyHyBQswtcEWFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E6A7F804EB;
-	Thu, 12 Nov 2020 20:39:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CF1DF804EC;
+	Thu, 12 Nov 2020 20:39:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 422BBF804EC; Thu, 12 Nov 2020 20:39:17 +0100 (CET)
+ id D2D24F804F3; Thu, 12 Nov 2020 20:39:22 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF4F5F804E7
- for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 20:39:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF4F5F804E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AA50F804EC
+ for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2020 20:39:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AA50F804EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="R2QFoAHm"
+ header.b="Vkjg5XYL"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 99AEA2223F;
- Thu, 12 Nov 2020 19:39:12 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2DC6B20B80;
+ Thu, 12 Nov 2020 19:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605209953;
- bh=kh3nAQV22I+QzfsKJUiPjiXFj5pv+uKvrht35jK83iA=;
+ s=default; t=1605209958;
+ bh=mBtyvXKqsm4D6tlspL1SxCvx769qD8Yfr1GKWcinipU=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=R2QFoAHmthBNXEp0MlUGDrH13a3hRmGztpv4DCS53GxRxR/uQDdoph6OllJYZx3Yw
- cWjaJ9FifSY5b3jynPjLvolqX3utC9rVvia64CGyiaeBkw4iy582BWkiPjN6rkV7zj
- Lv76e/BL0GsZzwFrqXkEDUWU+OrMj3XjQgPw/J8M=
-Date: Thu, 12 Nov 2020 19:38:57 +0000
+ b=Vkjg5XYLr3VUYU8WN15b1AhMObkJdNvBarQRtViHnpxQopx4zRj5y8lZXn8Ir2xJC
+ oXUr4RZ5VtXuz+6LZvJXTUqHCbndYEAkEKzqlaP58CHXTujQ7xQ+k10FIwU5DSURlD
+ NYCXnNgflolYxNqb0yUkc1kZd9nLJbJ8S4WoWSEU=
+Date: Thu, 12 Nov 2020 19:39:03 +0000
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
-References: <20201112164425.25603-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/4] ASoC: SOF: Kconfig corrections
-Message-Id: <160520990389.38586.7655538641803522711.b4-ty@kernel.org>
+In-Reply-To: <20201111213533.149963-1-pierre-louis.bossart@linux.intel.com>
+References: <20201111213533.149963-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: SOF: Kconfig corrections
+Message-Id: <160520990387.38586.6844355482478051084.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -87,13 +87,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 12 Nov 2020 10:44:21 -0600, Pierre-Louis Bossart wrote:
+On Wed, 11 Nov 2020 15:35:29 -0600, Pierre-Louis Bossart wrote:
 > Three cosmetic patches and a fix for a randconfig issue.
-> 
-> v2: rebase to remove git am issue (worked with --3way before)
 > 
 > Pierre-Louis Bossart (1):
 >   ASoC: SOF: Intel: fix Kconfig dependency for SND_INTEL_DSP_CONFIG
+> 
+> Randy Dunlap (3):
+>   ASoC: SOF: imx: fix Kconfig punctuation
+>   ASoC: SOF: Kconfig: fix Kconfig punctuation and wording
+>   ASoC: SOF: Intel: fix Kconfig punctuation and wording
 > 
 > [...]
 
