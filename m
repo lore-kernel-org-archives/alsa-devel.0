@@ -2,67 +2,93 @@ Return-Path: <SRS0=KFnC=ET=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E1C2C388F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 17:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E83D4C55ABD
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 18:40:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 398A922226
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 17:39:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BF456206FB
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 18:40:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PYWL/E0n"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 398A922226
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O7GtCvuR";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="WPjG9+iL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF456206FB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAC8D18A6;
-	Fri, 13 Nov 2020 18:38:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAC8D18A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33DBC18A7;
+	Fri, 13 Nov 2020 19:39:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33DBC18A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605289152;
-	bh=YGOcZ421acsUAOer8YdnoR7vo6eI9q++62l6nMEmMdo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PYWL/E0n0BAeP+3IDRAa5Akf3ATerR9Ca1Xye05EAD0vzwhgK60hhCtBdnf2YwjZw
-	 FSIECJszWxHjoR+BnW6p9x6nxarMnZaZW+NGeMRmuGWGa1mQDMSW87VIRz7ywuTth4
-	 5s7TKAIaPQRt0UbLiqHIaWKvNQaVdhEygQ0v0wrY=
+	s=default; t=1605292829;
+	bh=ehunYTddlmf8fZwQLkum5BVuugYwAXf9fzlSWHo445I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=O7GtCvuRVe31S8nQ6TSNdK7DAtcuAlOi2c6XTae4/9oLKriOpLrQGKbXXJJ8GD0Ho
+	 752IxhMIiaP2IVbNNzAa18wxOSAK0vDOoFlzYmzTPGpEMq4PWdivHcXdiFfMcmH2aW
+	 +BqqYpgcgnMCZUP8MIBd2MQDi6fLMGkv8VxOQkE4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BCA9F801F5;
-	Fri, 13 Nov 2020 18:38:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A930DF801F5;
+	Fri, 13 Nov 2020 19:39:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8716BF8020C; Fri, 13 Nov 2020 18:38:20 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C5EB9F8020C; Fri, 13 Nov 2020 19:39:36 +0100 (CET)
+Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6ECFF800D1
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 18:38:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6ECFF800D1
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 50BADAEB6;
- Fri, 13 Nov 2020 17:38:12 +0000 (UTC)
-Date: Fri, 13 Nov 2020 18:38:12 +0100
-Message-ID: <s5hv9e9dunv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] ALSA: firewire: Clean up a locking issue in
- copy_resp_to_buf()
-In-Reply-To: <20201113101241.GB168908@mwanda>
-References: <20201113101241.GB168908@mwanda>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77718F800E9
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 19:39:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77718F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="WPjG9+iL"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1605292771; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=bNE4U6NO9Qnui5qzRXhH3mUphBMnNuk7wBLDCqEHGzQ=;
+ b=WPjG9+iLkzlM4/oqzJq9YlOkNyiLViVrT+gG9Fr284ma2HNrD+rsjmePOc3l4CGH40AFn3D1
+ Qmyo4ytjYlRN/iX7USbUNEAFeu/Xujbh5A9xCxDW45c4qK54TsOuLD1QR3rMNIDEj/QTt+gx
+ 3Dl2Z4mDXBvTCxOV9AFBXo2vUc8=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
+ 5faed2b0d3e05bb6db0188a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 13 Nov 2020 18:38:40
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id CFB80C433C8; Fri, 13 Nov 2020 18:38:39 +0000 (UTC)
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 21977C433C6;
+ Fri, 13 Nov 2020 18:38:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 21977C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+ bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+ srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Asoc: qcom: sc7180: Register shutdown handler for lpass
+ platform
+Date: Sat, 14 Nov 2020 00:08:22 +0530
+Message-Id: <1605292702-25046-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,23 +104,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 13 Nov 2020 11:12:41 +0100,
-Dan Carpenter wrote:
-> 
-> The spin_lock/unlock_irq() functions cannot be nested.  The problem is
-> that presumably we would want the IRQs to be re-enabled on the second
-> call the spin_unlock_irq() but instead it will be enabled at the first
-> call so IRQs will be enabled earlier than expected.
-> 
-> In this situation the copy_resp_to_buf() function is only called from
-> one function and it is called with IRQs disabled.  We can just use
-> the regular spin_lock/unlock() functions.
-> 
-> Fixes: 555e8a8f7f14 ("ALSA: fireworks: Add command/response functionality into hwdep interface")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
+From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
-Thanks, applied now with Cc to stable.
+Register shutdown handler to stop sc7180 lpass platform driver
+and to disable audio clocks.
 
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-cpu.c    | 10 ++++++++++
+ sound/soc/qcom/lpass-sc7180.c |  1 +
+ sound/soc/qcom/lpass.h        |  1 +
+ 3 files changed, 12 insertions(+)
 
-Takashi
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 1fd862e..d33eae6 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -914,5 +914,15 @@ int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev)
+ }
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_remove);
+ 
++void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev)
++{
++	struct lpass_data *drvdata = platform_get_drvdata(pdev);
++
++	if (drvdata->variant->exit)
++		drvdata->variant->exit(pdev);
++
++}
++EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_platform_shutdown);
++
+ MODULE_DESCRIPTION("QTi LPASS CPU Driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index f619590..61b51b5 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -297,6 +297,7 @@ static struct platform_driver sc7180_lpass_cpu_platform_driver = {
+ 	},
+ 	.probe = asoc_qcom_lpass_cpu_platform_probe,
+ 	.remove = asoc_qcom_lpass_cpu_platform_remove,
++	.shutdown = asoc_qcom_lpass_cpu_platform_shutdown,
+ };
+ 
+ module_platform_driver(sc7180_lpass_cpu_platform_driver);
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index b4830f3..32a68c4 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -255,6 +255,7 @@ struct lpass_variant {
+ /* register the platform driver from the CPU DAI driver */
+ int asoc_qcom_lpass_platform_register(struct platform_device *);
+ int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
++void asoc_qcom_lpass_cpu_platform_shutdown(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev);
+ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai);
+ extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
