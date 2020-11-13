@@ -2,83 +2,78 @@ Return-Path: <SRS0=KFnC=ET=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0E2EC388F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 15:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBD62C55ABD
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:07:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA1AF208D5
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 15:51:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 24A432076E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:07:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N54X15zX";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xcj3LLMl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA1AF208D5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rrQlRWe1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MvCLxQ06"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24A432076E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFF501884;
-	Fri, 13 Nov 2020 16:50:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFF501884
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C5381875;
+	Fri, 13 Nov 2020 17:06:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C5381875
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605282667;
-	bh=OUwhf42qpFcM/lBJ/hTBqW+PXMEvyYGYP0TAhunP7Ko=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1605283646;
+	bh=xazOJCGu3dNwBPq2iap9k2AOyfFmgVfLpwqC2DoyDsU=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N54X15zX+V8qU4PBVK2zFO70Pa37oMCLZvln/eFFJs2lN5RY30gnbdJLm8gRw+VPu
-	 3xlHTlgGAvVchfkWAUrrhGTWjEzDDrcYO32WVK72Os3ypQuNhPor3jb5AwIey2RdI8
-	 bbeMVvaeVFdy4FdgcHCs4/ncqAwGGLahYSU+YkeI=
+	b=rrQlRWe1hAT9mZiJRfOupecwUAmMF/GOPvzEbRZFIGOB8/YfxMq+5zveQ3uSozTnl
+	 DoVopo8g034vogXb2rqQH0a+mjDCR8HreV9xjOuxnDhoenpUgNFw+YVvfABk5i6iZR
+	 PjuMqoUoZ4bi0wFlximoIIEQ5m9ovJPvJF1jGGt4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6329AF80086;
-	Fri, 13 Nov 2020 16:49:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 343F3F80086;
+	Fri, 13 Nov 2020 17:06:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6B40F8022D; Fri, 13 Nov 2020 16:49:27 +0100 (CET)
+ id D8B9CF801F5; Fri, 13 Nov 2020 17:06:34 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D35D6F80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 16:49:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D35D6F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21860F80086
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:06:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21860F80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Xcj3LLMl"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 67DBE208D5;
- Fri, 13 Nov 2020 15:49:13 +0000 (UTC)
+ header.b="MvCLxQ06"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id C0EEF2076E;
+ Fri, 13 Nov 2020 16:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605282554;
- bh=OUwhf42qpFcM/lBJ/hTBqW+PXMEvyYGYP0TAhunP7Ko=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Xcj3LLMlUrmTP+AsKN9QMNiDNCE3tAf9Y8iiu3mBwCgfEHnofYnEr90y3p9cvHAhT
- owXylYxt6Ka1m5upfse3XgyZwCwf0EtG9O3GCPtz6uuS6bN3qrHWJA3gO52tZkjxBW
- IEn3JWdHmzZykXDA9yN5nfz5dIMMDKBhgShB9EgU=
-Date: Fri, 13 Nov 2020 16:50:10 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Dave Ertman <david.m.ertman@intel.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-Message-ID: <X66rMg1lNJq+W/cp@kroah.com>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
+ s=default; t=1605283583;
+ bh=xazOJCGu3dNwBPq2iap9k2AOyfFmgVfLpwqC2DoyDsU=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=MvCLxQ069yYZ85Nt/ThLa1iNfIj/cyyXlEBCktyPPRHz4tezBKcRGWvb/+TahRrax
+ r4h336YutEWArWO9rs5uQKNeH0wPf/uOZhq4W0MSic678nH9zF6HTe1LsW5uT/cRwl
+ pDK+mGzRp1GhabJlOUABTWwibrTctsgDS6XXouBE=
+Date: Fri, 13 Nov 2020 16:06:07 +0000
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
+In-Reply-To: <20201113055400.11242-1-oder_chiou@realtek.com>
+References: <20201113055400.11242-1-oder_chiou@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5682: Add a new property for the DMIC clock
+ driving
+Message-Id: <160528356700.2641.7979531877422138830.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023003338.1285642-2-david.m.ertman@intel.com>
-Cc: alsa-devel@alsa-project.org, parav@mellanox.com, tiwai@suse.de,
- netdev@vger.kernel.org, leonro@nvidia.com, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
- linux-rdma@vger.kernel.org, dledford@redhat.com, broonie@kernel.org,
- jgg@nvidia.com, kuba@kernel.org, dan.j.williams@intel.com,
- shiraz.saleem@intel.com, davem@davemloft.net, linux-kernel@vger.kernel.org,
- kiran.patil@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, cychiang@google.com,
+ albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,36 +89,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Oct 22, 2020 at 05:33:29PM -0700, Dave Ertman wrote:
-> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> It enables drivers to create an auxiliary_device and bind an
-> auxiliary_driver to it.
-> 
-> The bus supports probe/remove shutdown and suspend/resume callbacks.
-> Each auxiliary_device has a unique string based id; driver binds to
-> an auxiliary_device based on this id through the bus.
-> 
-> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> Reviewed-by: Parav Pandit <parav@mellanox.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> ---
+On Fri, 13 Nov 2020 13:53:59 +0800, Oder Chiou wrote:
+> The patch adds a new property to set the DMIC clock driving.
 
-Is this really the "latest" version of this patch submission?
+Applied to
 
-I see a number of comments on it already, have you sent out a newer one,
-or is this the same one that the mlx5 driver conversion was done on top
-of?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-thanks,
+Thanks!
 
-greg k-h
+[1/2] ASoC: rt5682: Add a new property for the DMIC clock driving
+      commit: 7416f6bc5fcb1fe6700391c94b59ac1c744ad9d1
+[2/2] ASoC: rt5682: Add a new property to the device tree.
+      commit: 33ee67b47ba09fc30840668c9ccec5ad18c94de0
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
