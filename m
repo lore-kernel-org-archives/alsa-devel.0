@@ -6,55 +6,55 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B242C388F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 10:34:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 230C1C388F7
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 10:35:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA98F22245
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 10:34:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4311F22245
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 10:35:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kCB50KKi"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA98F22245
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZySAQkp6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4311F22245
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E576B16DA;
-	Fri, 13 Nov 2020 11:33:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E576B16DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC9D7188D;
+	Fri, 13 Nov 2020 11:34:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC9D7188D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605263667;
-	bh=pjYSE/FRBb2aQINiYtwkEVHzszKCPCMfz6/RHu0worQ=;
+	s=default; t=1605263717;
+	bh=0IC0TDw5dhsEkjTd+0keJ8Zbp5USCNSxQHOb/WnpvBg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kCB50KKif8fn5qdwdhgqkwUMddg630Ye8p4cyhNjY3TGf0QNT8zTcJCd1K0qu7pcF
-	 /OU/CZSUXbgXBfX8KhldQMnM5cCQGK+myNzK/KxlmBaNxOnQzIlb/S+T+1ue5QYZYO
-	 qGH6F9+Bzz2txoNbUbCpnS8OJMWIDAPPRFdkkl/g=
+	b=ZySAQkp6jl1mQeJTueyKN2m9WTBnBOD28K102uDdpFtYkpvrvEwxk+DFAGSZkqV+J
+	 gQ0UzIuhAk1KHZd4TC02wECcHT7gz6yOmqYui6s8mPwUfUOdVKkm0Vs3rQRuMpEK2O
+	 MUBf4vaTUtkrmHk4JjaaGgTzUHNK54cNreKbEv6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60302F801F5;
-	Fri, 13 Nov 2020 11:33:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55B5AF8022D;
+	Fri, 13 Nov 2020 11:33:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10D59F8020C; Fri, 13 Nov 2020 11:33:34 +0100 (CET)
+ id 817C1F8025E; Fri, 13 Nov 2020 11:33:41 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D125DF800D1
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 11:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D125DF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBBC7F80086
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 11:33:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBBC7F80086
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2023FAED6;
- Fri, 13 Nov 2020 10:33:29 +0000 (UTC)
-Date: Fri, 13 Nov 2020 11:33:28 +0100
-Message-ID: <s5hh7ptfsw7.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7C7E1AE42;
+ Fri, 13 Nov 2020 10:33:38 +0000 (UTC)
+Date: Fri, 13 Nov 2020 11:33:38 +0100
+Message-ID: <s5hft5dfsvx.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kailang <kailang@realtek.com>
-Subject: Re: HP mute led support
-In-Reply-To: <086c865222fb4ebf8bb8fd697ae8974c@realtek.com>
-References: <086c865222fb4ebf8bb8fd697ae8974c@realtek.com>
+Subject: Re: HP headset Mic detect issue
+In-Reply-To: <1ae4d98e92c147b780ace3911c4e1d73@realtek.com>
+References: <1ae4d98e92c147b780ace3911c4e1d73@realtek.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,13 +76,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 13 Nov 2020 08:11:46 +0100,
+On Fri, 13 Nov 2020 08:31:26 +0100,
 Kailang wrote:
 > 
 > Hi Takashi,
 > 
-> HP machine have mute led support.
-> Attach patch will enable it.
+> If it turn on power save mode, Headset Mic will lose after boot.
+> Attach patch will solve it.
 > 
 > Many Thanks.
 > 
