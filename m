@@ -1,69 +1,62 @@
-Return-Path: <SRS0=f4/q=ES=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=KFnC=ET=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EA91C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 23:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF6C8C388F9
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 04:15:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C42C220825
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Nov 2020 23:56:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6804020738
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 04:15:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YG9EgxiH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C42C220825
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iRjt5PWF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6804020738
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14B2F1859;
-	Fri, 13 Nov 2020 00:55:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14B2F1859
+	by alsa0.perex.cz (Postfix) with ESMTPS id B56401837;
+	Fri, 13 Nov 2020 05:14:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B56401837
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605225398;
-	bh=7JSZrT0BdoKxzNTcqhsfDfEsPpF96GfkRDUuFYs2Teo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YG9EgxiHv/ntIlok4H8MXiIpat4uMRxjjbg0/q0kAB/FGtmdbInGt1ruLI3ZQkkmm
-	 ZM59OS+YDhMfMDRC03F5rNzqRGH9V/HK5tnQzwtov0NLhLj3n609w+4IT+w8dSQyjO
-	 D4QdWlTHP7EPuKwg72sFlYLdGvRulcPjfchUkJp4=
+	s=default; t=1605240945;
+	bh=KdKX2SIl88LNlLkFuP1p0tULQ98JKC0OeH0ar7A4JkM=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=iRjt5PWFh/lFBcQ8CPt3OIzY2fMQnPPDguXsK7GfFY8vzSEHnUTn+EDuhCQPm1KbM
+	 1B0qTtqph2IrQIMQDi7yjxKQfv8wMztE8UAd+KDYnxBzJxtfmO4nxDyQvHvFc+0q14
+	 3AY7V0mNWOR3ST0GyvMotf5QT3s7qV61j3SULxas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82FC8F80059;
-	Fri, 13 Nov 2020 00:55:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26F4FF801F5;
+	Fri, 13 Nov 2020 05:14:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69752F801D5; Fri, 13 Nov 2020 00:55:44 +0100 (CET)
+ id 699B7F8020C; Fri, 13 Nov 2020 05:14:52 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id C4BC4F80059
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 00:55:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4BC4F80059
-Date: 13 Nov 2020 08:55:32 +0900
-X-IronPort-AV: E=Sophos;i="5.77,473,1596466800"; d="scan'208";a="62526569"
+ by alsa1.perex.cz (Postfix) with ESMTP id 4642CF800D1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 05:14:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4642CF800D1
+Date: 13 Nov 2020 13:14:38 +0900
+X-IronPort-AV: E=Sophos;i="5.77,474,1596466800"; d="scan'208";a="62557759"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 13 Nov 2020 08:55:32 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 13 Nov 2020 13:14:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 94C1A40116A7;
- Fri, 13 Nov 2020 08:55:32 +0900 (JST)
-Message-ID: <87k0uq6soh.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6173340134F4;
+ Fri, 13 Nov 2020 13:14:38 +0900 (JST)
+Message-ID: <87h7pt7v93.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 06/12] ASoC: soc-component: add
- snd_soc_component_compr_get_caps()
-In-Reply-To: <e548e12d1fcaeeee2d549ecb33bd0c0d14473e15.camel@linux.intel.com>
-References: <878sb78ac4.wl-kuninori.morimoto.gx@renesas.com>
- <87zh3n6vq7.wl-kuninori.morimoto.gx@renesas.com>
- <e548e12d1fcaeeee2d549ecb33bd0c0d14473e15.camel@linux.intel.com>
+Subject: [PATCH v2 00/12] ASoC: soc-component: add snd_soc_component_xxx()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+To: Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,28 +73,44 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Ranjani
+Hi Mark
 
-Thank you for your feedback
+These are v2 of snd_soc_component_compr_xxx() function patches.
+I think component related function should be implemented at
+soc-component.c, otherwise it is confusable to read.
+These are for it.
 
-> > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > 
-> > component related function should be implemented at
-> > soc-component.c.
-> > This patch adds snd_soc_component_compr_get_caps().
-> > 
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> > ---
-> Do you think it makes sense to remove soc_compr_get_caps() altogether
-> after adding snd_soc_component_cpmpr_get_caps() and calling it directly
-> instead?
+v1 -> v2
+	- fixup function return timing on
+		snd_soc_component_compr_get_params()
+		snd_soc_component_compr_get_metadata()
 
-Yes indeed !
-Thanks. I will do it in v2.
-Same comment for [07/12], too.
+	- use mutex at compr side on
+		snd_soc_component_compr_get_caps()
+		snd_soc_component_compr_get_codec_caps()
+		snd_soc_component_compr_copy()
 
-Thank you for your help !!
+Link: https://lore.kernel.org/r/878sb78ac4.wl-kuninori.morimoto.gx@renesas.com
 
-Best regards
----
-Kuninori Morimoto
+Kuninori Morimoto (12):
+  ASoC: soc-component: add snd_soc_component_compr_open()
+  ASoC: soc-component: add snd_soc_component_compr_free()
+  ASoC: soc-component: add snd_soc_component_compr_trigger()
+  ASoC: soc-component: add snd_soc_component_compr_set_params()
+  ASoC: soc-component: add snd_soc_component_compr_get_params()
+  ASoC: soc-component: add snd_soc_component_compr_get_caps()
+  ASoC: soc-component: add snd_soc_component_compr_get_codec_caps()
+  ASoC: soc-component: add snd_soc_component_compr_ack()
+  ASoC: soc-component: add snd_soc_component_compr_pointer()
+  ASoC: soc-component: add snd_soc_component_compr_copy()
+  ASoC: soc-component: add snd_soc_component_compr_set_metadata()
+  ASoC: soc-component: add snd_soc_component_compr_get_metadata()
+
+ include/sound/soc-component.h |  22 +++
+ sound/soc/soc-component.c     | 255 ++++++++++++++++++++++++++++++++
+ sound/soc/soc-compress.c      | 263 ++++------------------------------
+ 3 files changed, 303 insertions(+), 237 deletions(-)
+
+-- 
+2.25.1
+
