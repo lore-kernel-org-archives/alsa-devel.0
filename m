@@ -7,64 +7,65 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B658C55ABD
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE31FC55ABD
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:26:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 735C020797
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:26:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DD0FF217A0
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:26:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="l7qqzIqY"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 735C020797
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bxoJWM55"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DD0FF217A0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E97651768;
-	Fri, 13 Nov 2020 17:25:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E97651768
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62E4318B9;
+	Fri, 13 Nov 2020 17:26:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62E4318B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605284803;
-	bh=S9f9z05h/SWf3fythVs9BIIf/V6mZBGSFYwBeVcooYk=;
+	s=default; t=1605284817;
+	bh=P1xTBOS764nKqmDBPxArUv1iQYfxcMsQ4ZttDq5qOmk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l7qqzIqYRo7/sqwCQV+0ytjjD8X19udJq8UdIIQ0i1bzPQk8LWHgYm9avCSfCFwBX
-	 BAFbxGI6jrxQfYcEdGvJ2z59/KQJbHlgebaNjh1w9VShtqJusgE0SreAdtxkN6UrG6
-	 DvdA+Ot76kZ1HRJW00N16PCAe91g177FeukAxE0c=
+	b=bxoJWM55VkV7PQzWPfUxkMGADAwkQXHs80LSOiXXG2ypGknerfH/2LZAJGpF1ZF/e
+	 Y94tjEYWo6jvLli7I1+ltvCfToD1aZkmgdd7qb3nn7ud6D7fsM/KBpi2pny+fzXUNf
+	 UrOvcgwsrRSEC4W7Hw5wF91i5mlp7i2rh82S4Ts8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19037F80517;
+	by alsa1.perex.cz (Postfix) with ESMTP id A7D6DF80518;
 	Fri, 13 Nov 2020 17:22:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6172EF804BC; Fri, 13 Nov 2020 17:22:07 +0100 (CET)
+ id E47A6F804E6; Fri, 13 Nov 2020 17:22:07 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EB93F804BC
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:21:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EB93F804BC
-IronPort-SDR: fO2bcIoACloMeEcIdcufft4YpIFvP5cPsAhZXtNXI+DnDUEb18fllsmNQyZF1Z/jVgpOfwQDWs
- ChjtDZ5ih2aQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="150344717"
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="150344717"
+ by alsa1.perex.cz (Postfix) with ESMTPS id E942AF8020C
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:21:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E942AF8020C
+IronPort-SDR: xgPevPL1Y0k+Bkg2ULXDCOrIQ1evxoizDkudf+3vMtVHR9+dOHz5KAdzKOAyT6ZbaSPDMeIRuE
+ cPg7LTC8LocQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="150344706"
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="150344706"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Nov 2020 08:21:47 -0800
-IronPort-SDR: VoJIdrVOahzLn09Hlos2+YZXTi9c7IJbWuSU7SpysP/0TkLwyi3q9ylxnhhdSa2vm+dnX+gLal
- 7896ip1n9FTQ==
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="366767263"
+ 13 Nov 2020 08:21:45 -0800
+IronPort-SDR: 4RHrIKzeTtC9smTY4rikHb9IM8vl9ZrJ0o9dnyfOq1CvKGq9tglypgPw8MaA7MiWq0SKoketWU
+ ZgONovKtoS2Q==
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="366767251"
 Received: from dmert-dev.jf.intel.com ([10.166.241.5])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Nov 2020 08:21:47 -0800
+ 13 Nov 2020 08:21:45 -0800
 From: Dave Ertman <david.m.ertman@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 10/10] ASoC: SOF: Intel: CNL: register probes client
-Date: Fri, 13 Nov 2020 08:18:59 -0800
-Message-Id: <20201113161859.1775473-11-david.m.ertman@intel.com>
+Subject: [PATCH v4 07/10] ASoC: SOF: sof-client: Add client APIs to access
+ probes ops
+Date: Fri, 13 Nov 2020 08:18:56 -0800
+Message-Id: <20201113161859.1775473-8-david.m.ertman@intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201113161859.1775473-1-david.m.ertman@intel.com>
 References: <20201113161859.1775473-1-david.m.ertman@intel.com>
@@ -94,67 +95,133 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Register the client device for probes support on the
-CNL platform. Creating this client device alleviates the
-need for modifying the sound card definitions in the existing
-machine drivers to add support for the new probes feature in
-the FW. This will result in the creation of a separate sound
-card that can be used for audio data extraction from user
-specified points in the audio pipeline.
+Add client APIs to invoke the platform-specific DSP probes
+ops. Also, add a new API to get the SOF core device pointer
+which will be used for DMA buffer allocation.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Tested-by: Fred Oh <fred.oh@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
 ---
- sound/soc/sof/intel/cnl.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ sound/soc/sof/sof-client.c | 55 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-client.h | 25 +++++++++++++++++
+ 2 files changed, 80 insertions(+)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 20afb622c315..6d15b871dc17 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -19,6 +19,7 @@
- #include "hda.h"
- #include "hda-ipc.h"
- #include "../sof-audio.h"
-+#include "../sof-client.h"
- #include "intel-client.h"
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+index dd75a0ba4c28..838aaa5ea179 100644
+--- a/sound/soc/sof/sof-client.c
++++ b/sound/soc/sof/sof-client.c
+@@ -11,6 +11,7 @@
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
++#include "ops.h"
+ #include "sof-client.h"
+ #include "sof-priv.h"
  
- static const struct snd_sof_debugfs_map cnl_dsp_debugfs[] = {
-@@ -233,12 +234,26 @@ void cnl_ipc_dump(struct snd_sof_dev *sdev)
+@@ -112,4 +113,58 @@ struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev)
+ }
+ EXPORT_SYMBOL_NS_GPL(sof_client_get_debugfs_root, SND_SOC_SOF_CLIENT);
  
- static int cnl_register_clients(struct snd_sof_dev *sdev)
- {
--	return intel_register_ipc_test_clients(sdev);
-+	int ret;
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES_CLIENT)
++int sof_client_probe_compr_assign(struct sof_client_dev *cdev,
++				  struct snd_compr_stream *cstream,
++				  struct snd_soc_dai *dai)
++{
++	return snd_sof_probe_compr_assign(cdev->sdev, cstream, dai);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_probe_compr_assign, SND_SOC_SOF_CLIENT);
 +
-+	ret = intel_register_ipc_test_clients(sdev);
-+	if (ret < 0)
-+		return ret;
++int sof_client_probe_compr_free(struct sof_client_dev *cdev,
++				struct snd_compr_stream *cstream,
++				struct snd_soc_dai *dai)
++{
++	return snd_sof_probe_compr_free(cdev->sdev, cstream, dai);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_probe_compr_free, SND_SOC_SOF_CLIENT);
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	return sof_client_dev_register(sdev, "probes", 0);
++int sof_client_probe_compr_set_params(struct sof_client_dev *cdev,
++				      struct snd_compr_stream *cstream,
++				      struct snd_compr_params *params,
++				      struct snd_soc_dai *dai)
++{
++	return snd_sof_probe_compr_set_params(cdev->sdev, cstream, params, dai);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_probe_compr_set_params, SND_SOC_SOF_CLIENT);
++
++int sof_client_probe_compr_trigger(struct sof_client_dev *cdev,
++				   struct snd_compr_stream *cstream, int cmd,
++				   struct snd_soc_dai *dai)
++{
++	return snd_sof_probe_compr_trigger(cdev->sdev, cstream, cmd, dai);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_probe_compr_trigger, SND_SOC_SOF_CLIENT);
++
++int sof_client_probe_compr_pointer(struct sof_client_dev *cdev,
++				   struct snd_compr_stream *cstream,
++				   struct snd_compr_tstamp *tstamp,
++				   struct snd_soc_dai *dai)
++{
++	return snd_sof_probe_compr_pointer(cdev->sdev, cstream, tstamp, dai);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_probe_compr_pointer, SND_SOC_SOF_CLIENT);
 +#endif
 +
-+	return 0;
- }
- 
- static void cnl_unregister_clients(struct snd_sof_dev *sdev)
- {
- 	intel_unregister_ipc_test_clients(sdev);
++/*
++ * DMA buffer alloc fails when using the client device. Use the SOF core device instead.
++ * This will be needed for clients other than the probes client device as well.
++ */
++struct device *sof_client_get_dma_dev(struct sof_client_dev *cdev)
++{
++	return cdev->sdev->dev;
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_get_dma_dev, SND_SOC_SOF_CLIENT);
 +
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
-+	sof_client_dev_unregister(sdev, "probes", 0);
-+#endif
- }
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/sof/sof-client.h b/sound/soc/sof/sof-client.h
+index 429282df9f65..be80053068c9 100644
+--- a/sound/soc/sof/sof-client.h
++++ b/sound/soc/sof/sof-client.h
+@@ -7,6 +7,10 @@
+ #include <linux/device.h>
+ #include <linux/idr.h>
+ #include <linux/list.h>
++#include <sound/compress_offload.h>
++#include <sound/compress_driver.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
  
- /* cannonlake ops */
-@@ -409,3 +424,4 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
- };
- EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
- MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_CLIENT);
-+MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
+ #define SOF_CLIENT_PROBE_TIMEOUT_MS 2000
+ 
+@@ -50,6 +54,27 @@ int sof_client_ipc_tx_message(struct sof_client_dev *cdev, u32 header, void *msg
+ 			      size_t msg_bytes, void *reply_data, size_t reply_bytes);
+ 
+ struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev);
++struct device *sof_client_get_dma_dev(struct sof_client_dev *cdev);
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_PROBES_CLIENT)
++int sof_client_probe_compr_assign(struct sof_client_dev *cdev,
++				  struct snd_compr_stream *cstream,
++				  struct snd_soc_dai *dai);
++int sof_client_probe_compr_free(struct sof_client_dev *cdev,
++				struct snd_compr_stream *cstream,
++				struct snd_soc_dai *dai);
++int sof_client_probe_compr_set_params(struct sof_client_dev *cdev,
++				      struct snd_compr_stream *cstream,
++				      struct snd_compr_params *params,
++				      struct snd_soc_dai *dai);
++int sof_client_probe_compr_trigger(struct sof_client_dev *cdev,
++				   struct snd_compr_stream *cstream, int cmd,
++				   struct snd_soc_dai *dai);
++int sof_client_probe_compr_pointer(struct sof_client_dev *cdev,
++				   struct snd_compr_stream *cstream,
++				   struct snd_compr_tstamp *tstamp,
++				   struct snd_soc_dai *dai);
++#endif
+ 
+ /**
+  * module_sof_client_driver() - Helper macro for registering an SOF Client
 -- 
 2.26.2
 
