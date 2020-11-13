@@ -2,173 +2,81 @@ Return-Path: <SRS0=KFnC=ET=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DE2AC388F7
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:09:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98313C63699
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:22:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 851DB2076E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:09:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C93EA20791
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:22:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fAmCYef2";
-	dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com header.i=@intel.onmicrosoft.com header.b="hqD670aT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 851DB2076E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ecv9TrOM"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C93EA20791
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 021A7175C;
-	Fri, 13 Nov 2020 17:08:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 021A7175C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6116A16D4;
+	Fri, 13 Nov 2020 17:21:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6116A16D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605283753;
-	bh=BTiAAgkDq8Q3V/TX95vYeQ6xDjP5aHabZh0u+uREDKU=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1605284566;
+	bh=+C6yNbpNyvez+QqXZGAx7QekTH4XTYftHqARq8bAvoo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fAmCYef27YGB85NMSPlmAcr+uTrL8uQtXE2a+gXRUW/uByIfuxg4vImlmUb1yYTqc
-	 8ddSYdH7JUIgEcmOs9QjM21Hpd234WYVLlBIaLwWAeUekIkNr/KNadlrO/kY8oOGnu
-	 lR2pvKpisfWtNJrqY83hjtseVwcmBo6tmCCFAKiE=
+	b=Ecv9TrOM0I/dEqDvhHy7wiNUSBFRM3S0LPjz1jUYkoVAue4a+OEPedCfhcrnzx2/q
+	 VZu6BVMA/mjMdPOK6eB+qnL5lgMmnNd+eX8OgIJBrXDq68kHhq45Js8Pu1oDTvY+LI
+	 x3v5knB6w9QFcHodPA0UJ1pQ2f/a1w5OKDB/QrgU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88C12F801F5;
-	Fri, 13 Nov 2020 17:08:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A633F80271;
+	Fri, 13 Nov 2020 17:21:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93BE5F801F5; Fri, 13 Nov 2020 17:08:20 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 9CBCAF802C4; Fri, 13 Nov 2020 17:21:53 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E694F80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:08:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E694F80086
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
- header.i=@intel.onmicrosoft.com header.b="hqD670aT"
-IronPort-SDR: pNWuaqSUi8NIACUID+uqBozdfOC2WLCXen6awDv+aYhZaQce/sfCjo0qymQt97LhK7qHvCmM4d
- VmyU3Xf7VhbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="234650345"
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="234650345"
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBFECF800D1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:21:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBFECF800D1
+IronPort-SDR: nRp+vKLGEjRU+hfwXtnX1mCBfENu6RpIgc9La/u51r0FL3wi6pQO9XklxrAwc9dzgfF90IhTuy
+ KZL+88ithUNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9804"; a="157515239"
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="157515239"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Nov 2020 08:08:07 -0800
-IronPort-SDR: 6OejzJeKk6s2goVnmR/9yr4iKZQqFi7Wzm+goejrMVGzjkeJIiqOM3uUGqKkWApcPxU2IZ/v2U
- VgJ12ILGiWgQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="328913308"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
- by orsmga006.jf.intel.com with ESMTP; 13 Nov 2020 08:08:06 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 13 Nov 2020 08:08:05 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 13 Nov 2020 08:08:05 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 13 Nov 2020 08:08:05 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Fri, 13 Nov 2020 08:08:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CLZewTeHWLHtMbmkS9zdninNWpgjij0ABjAmIYf/wcz+z1sCJ2mEwoxlQkA7fqRjzr0r+lDC9DF4oTEdbBuYJJlma16vbKVkFalYaKMfAL428rlWHg2YmNNCtnxQxDLyYosSIA6/HC/wU82B+6K1xrB/SegXsxtGRptw/71l4QlNeY7Sronkgi3ul/fseQ18241AxSgYtJPcMunT0dY8TzbhNZEEytaBgjq8BuYHToUxCEI58wrH5Q1c2PGzqGH5KdJCkZ/ktPLRfdc3Q66HbPe0LJEneF0mwEfDRLyXqh2kjAZnlSK3dmqVktzAkl+K1rgqwfHqzLekqfGtbRmzxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nBmRsXVN1ggjWL74zFyqZ8B9egYdOhn+E+KcNDPqIe0=;
- b=Yw4FUYLYo/G/cWcOGHSKDtASIMNQ4GORvusQnhcibnDuSWUVH++azgUmcluPhDq+gxgaJakWeMnAAVUnaUUapDxqkfHfcaxgR6Zg8/7cw+xLUGBIWROpx0O9/d2dLenHmgQqFUMcmzaQF8FkjF6mCjHL/58QOn+vzUtfyS+4vCM9ARSjh57GxlibsYEtYrJgyyimBFzj9YGF6fkT9F2GMkOfaE20FR+4h+f3rBjljmk+Wj6jX5r6xq8jNctE4nOWu2j7sWq7JR9iYzfiTAwIhVTYatUG9lmSFJEktDsLiIE6Q6c5oEL1/paPVz1XMymy6T1ThULOUfGLrr04OGbZvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nBmRsXVN1ggjWL74zFyqZ8B9egYdOhn+E+KcNDPqIe0=;
- b=hqD670aTnWS8qzf//zOtFDj1YMC5jmCxylyN7h8Ru+ybwPDyb3JpkPeFhIs53dpVL+npwvCNRbW2VmJW5U7xPiYC25J61yx4Yx1DtCeoBSrHXEmLHEPdpWfrd6rOewJTQqvgpyz6f98VmkgjyQs1ESmFkDGlWr8u7iITphfXxzM=
-Received: from DM6PR11MB2841.namprd11.prod.outlook.com (2603:10b6:5:c8::32) by
- DM5PR1101MB2283.namprd11.prod.outlook.com (2603:10b6:4:50::21) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3541.21; Fri, 13 Nov 2020 16:07:57 +0000
-Received: from DM6PR11MB2841.namprd11.prod.outlook.com
- ([fe80::6d8e:9b06:ef72:2a]) by DM6PR11MB2841.namprd11.prod.outlook.com
- ([fe80::6d8e:9b06:ef72:2a%5]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 16:07:57 +0000
-From: "Ertman, David M" <david.m.ertman@intel.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH v3 01/10] Add auxiliary bus support
-Thread-Topic: [PATCH v3 01/10] Add auxiliary bus support
-Thread-Index: AQHWqNRxbABQ//8l1UOfD+CnDPwsEKnGV6wAgAAEB9A=
-Date: Fri, 13 Nov 2020 16:07:57 +0000
-Message-ID: <DM6PR11MB284160D4E69D9C7801A6B1C2DDE60@DM6PR11MB2841.namprd11.prod.outlook.com>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <X66rMg1lNJq+W/cp@kroah.com>
-In-Reply-To: <X66rMg1lNJq+W/cp@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=intel.com;
-x-originating-ip: [50.38.47.144]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4b69a0aa-eca0-4ed1-f185-08d887ee4942
-x-ms-traffictypediagnostic: DM5PR1101MB2283:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB22838A8ACD3D7F687AF5A058DDE60@DM5PR1101MB2283.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0DzdE0fBbnLG0cQ/KDiIM6IkPXtfn27Yh3c5CPWHlkIA+WcGskm9D4RjfbgXm830kd2GFkLT+koMZG4E9PUfNGXutevVD+WKGHtKZWkitanyfxd/gSJMYN0tMkfJU3DYnZMbPVS/aRIO9w9MX3d5RqmwoD8mOcuGuTAAn3SYl7Ghg3bHgHLzQZTt/mzqW3h9qR+A19aCnyDJVpKITI2I8mEpAr/4rmAl7El7mQ5FqEvAe/e5DEBVbSyBMh2FGixw5if5QnfnB5GvXv4qI4mUfYcnCgRwT87ogM76mHxI/xWEB664oEDjphG83aM4pMrK
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:DM6PR11MB2841.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(346002)(366004)(396003)(376002)(39860400002)(136003)(186003)(2906002)(7416002)(71200400001)(86362001)(8676002)(54906003)(6916009)(9686003)(52536014)(8936002)(66946007)(316002)(33656002)(7696005)(6506007)(66446008)(478600001)(83380400001)(55016002)(66476007)(64756008)(76116006)(5660300002)(26005)(4326008)(66556008)(53546011);
- DIR:OUT; SFP:1102; 
-x-ms-exchange-antispam-messagedata: sXab5IRFE0uiY8VbN1XG6YtTFVOB7MtCTleN8z7bcXwPfAD0SMI8REzyj5kECxm+2lrIAYQ6Gi2OMRBCJaKhpsdu6NnH6eczDduQCMtRZ71jvJAXptyzXafLdnZWMIcD+6dz/6EXN9L9l0pVi3Vqe6vf9ydMFGUUmlwJfupaCxl5fj92VD3EjyNpSaBfR4x8EWlaGvFpMJU5xI4/3pbGmGfRb5FoLY2woGbCCMVVL/exVWnV8stq5JlfVsF3hzwniDM+qebrw93P1jyuv4nxKPp7lBcUgWrP2/IpdUFr1r0Rc1+1RZc0K8Ofm5/CmdeN6fBOUoJWZ7uI8dE1/lhR+gGd/wV6TjA/iynzy7T0j/WsnsHFE4YO1ulTGXNTC/iLlkGYuroAEa7plcls0tu/IOGPKQ6LUFxLawTvyBSqB+O3kveHZpmXHF52n1oHJ7oYI2tML7iADWA0LKsaZVX8i+32MCwS7VTAsST4bRDhgZPAmfK0qXdvvS0KZSXLa+rEKAmMMc+Yyn6o5NPdI8E4R3ST2K5BDkt58AX2qUthtmY0x0Ag2jYDVQgIdO/LW//0pz4i1x/WQiTJWGTYuQ1Wmpg/GV3HF/NyrECzNooPmyIZ93cGH9+2hMobyhWTzMRVyg4dzjprwF4QsizkvnwUwzLBolVZsxKO6pcsEG49BXtbBPWm1ij6LZKa/E9GccMRKrO3sk6bu+RfxnQrkASmLkLeSVEpEQ+B/f+aUkHoOorQlcKaVHIGpI5MKT86reSuCfW82d+D+KuiHnRFm3ZHbirkxte+wVD39gOjygglRUTJd7f5dSn6zWT8fx3cfMRfgb5eGpdBZfgtFdntHX1CIU480AhPLoMz5IFH3QjiADlj9HIIudlwOQ6Egnrdf/a56784soChQgrP2J8eHEUvrw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Nov 2020 08:21:42 -0800
+IronPort-SDR: 4YohpS2jwIGygbLHtc4777j4s/neDLKZv/OwZZyz0aPsdsqamxUjI5jKGFtmLP3KjVSoeLRWKo
+ 8yFAf9METsCw==
+X-IronPort-AV: E=Sophos;i="5.77,475,1596524400"; d="scan'208";a="366767227"
+Received: from dmert-dev.jf.intel.com ([10.166.241.5])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Nov 2020 08:21:41 -0800
+From: Dave Ertman <david.m.ertman@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v4 02/10] ASoC: SOF: Introduce descriptors for SOF client
+Date: Fri, 13 Nov 2020 08:18:51 -0800
+Message-Id: <20201113161859.1775473-3-david.m.ertman@intel.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201113161859.1775473-1-david.m.ertman@intel.com>
+References: <20201113161859.1775473-1-david.m.ertman@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2841.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b69a0aa-eca0-4ed1-f185-08d887ee4942
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2020 16:07:57.2386 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qsParG7YjwMjWm43s4xoTCXnH8tlRNULA9mkNJfPSMBs2MH6ZlXu7jXnHj2wwK3suH7r+kns/kpuSirVsCXQNRRRfrLFDcN4vSul9OrlyOg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2283
-X-OriginatorOrg: intel.com
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "parav@mellanox.com" <parav@mellanox.com>, "tiwai@suse.de" <tiwai@suse.de>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "leonro@nvidia.com" <leonro@nvidia.com>,
- "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
- "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "dledford@redhat.com" <dledford@redhat.com>,
- "broonie@kernel.org" <broonie@kernel.org>, "jgg@nvidia.com" <jgg@nvidia.com>,
- "kuba@kernel.org" <kuba@kernel.org>, "Williams,
- Dan J" <dan.j.williams@intel.com>, "Saleem, Shiraz" <shiraz.saleem@intel.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Patil,
- Kiran" <kiran.patil@intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: parav@mellanox.com, tiwai@suse.de, netdev@vger.kernel.org,
+ leonro@nvidia.com, ranjani.sridharan@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+ linux-rdma@vger.kernel.org, dledford@redhat.com, broonie@kernel.org,
+ jgg@nvidia.com, gregkh@linuxfoundation.org, kuba@kernel.org,
+ dan.j.williams@intel.com, shiraz.saleem@intel.com, davem@davemloft.net,
+ linux-kernel@vger.kernel.org, kiran.patil@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -184,64 +92,330 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Friday, November 13, 2020 7:50 AM
-> To: Ertman, David M <david.m.ertman@intel.com>
-> Cc: alsa-devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org; linux=
--
-> rdma@vger.kernel.org; jgg@nvidia.com; dledford@redhat.com;
-> netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
-> ranjani.sridharan@linux.intel.com; pierre-louis.bossart@linux.intel.com;
-> fred.oh@linux.intel.com; parav@mellanox.com; Saleem, Shiraz
-> <shiraz.saleem@intel.com>; Williams, Dan J <dan.j.williams@intel.com>;
-> Patil, Kiran <kiran.patil@intel.com>; linux-kernel@vger.kernel.org;
-> leonro@nvidia.com
-> Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
->=20
-> On Thu, Oct 22, 2020 at 05:33:29PM -0700, Dave Ertman wrote:
-> > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_drive=
-r.
-> > It enables drivers to create an auxiliary_device and bind an
-> > auxiliary_driver to it.
-> >
-> > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > Each auxiliary_device has a unique string based id; driver binds to
-> > an auxiliary_device based on this id through the bus.
-> >
-> > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
->
-> > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > ---
->=20
-> Is this really the "latest" version of this patch submission?
->=20
-> I see a number of comments on it already, have you sent out a newer one,
-> or is this the same one that the mlx5 driver conversion was done on top
-> of?
->=20
-> thanks,
->=20
-> greg k-h
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-V3 is the latest sent so far.  There was a suggestion that v3 might be merg=
-ed and
-the documentation changes could be in a follow up patch.  I have those chan=
-ges done
-and ready though, so no reason not to merge them in and do a resend.
+A client in the SOF (Sound Open Firmware) context is a
+device that needs to communicate with the DSP via IPC
+messages. The SOF core is responsible for serializing the
+IPC messages to the DSP from the different clients. One
+example of an SOF client would be an IPC test client that
+floods the DSP with test IPC messages to validate if the
+serialization works as expected. Multi-client support will
+also add the ability to split the existing audio cards
+into multiple ones, so as to e.g. to deal with HDMI with a
+dedicated client instead of adding HDMI to all cards.
 
-Please expect v4 in just a little while.
+This patch introduces descriptors for SOF client driver
+and SOF client device along with APIs for registering
+and unregistering a SOF client driver, sending IPCs from
+a client device and accessing the SOF core debugfs root entry.
 
-Thanks,
--DaveE
+Along with this, add a couple of new members to struct
+snd_sof_dev that will be used for maintaining the list of
+clients.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+---
+ sound/soc/sof/Kconfig      |  19 ++++++
+ sound/soc/sof/Makefile     |   3 +
+ sound/soc/sof/core.c       |   2 +
+ sound/soc/sof/sof-client.c | 115 +++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-client.h |  66 +++++++++++++++++++++
+ sound/soc/sof/sof-priv.h   |   9 +++
+ 6 files changed, 214 insertions(+)
+ create mode 100644 sound/soc/sof/sof-client.c
+ create mode 100644 sound/soc/sof/sof-client.h
+
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 8c1f0829de40..31e9911098fc 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -50,6 +50,24 @@ config SND_SOC_SOF_DEBUG_PROBES
+ 	  Say Y if you want to enable probes.
+ 	  If unsure, select "N".
+ 
++config SND_SOC_SOF_CLIENT
++	tristate
++	select AUXILIARY_BUS
++	help
++	  This option is not user-selectable but automagically handled by
++	  'select' statements at a higher level.
++
++config SND_SOC_SOF_CLIENT_SUPPORT
++	bool "SOF enable clients"
++	depends on SND_SOC_SOF
++	help
++	  This adds support for auxiliary client devices to separate out the debug
++	  functionality for IPC tests, probes etc. into separate devices. This
++	  option would also allow adding client devices based on DSP firmware
++	  capabilities and ACPI/OF device information.
++	  Say Y if you want to enable clients with SOF.
++	  If unsure select "N".
++
+ config SND_SOC_SOF_DEVELOPER_SUPPORT
+ 	bool "SOF developer options support"
+ 	depends on EXPERT
+@@ -186,6 +204,7 @@ endif ## SND_SOC_SOF_DEVELOPER_SUPPORT
+ 
+ config SND_SOC_SOF
+ 	tristate
++	select SND_SOC_SOF_CLIENT if SND_SOC_SOF_CLIENT_SUPPORT
+ 	select SND_SOC_TOPOLOGY
+ 	select SND_SOC_SOF_NOCODEC if SND_SOC_SOF_NOCODEC_SUPPORT
+ 	help
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index 05718dfe6cd2..5e46f25a3851 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -2,6 +2,7 @@
+ 
+ snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o pm.o debug.o topology.o\
+ 		control.o trace.o utils.o sof-audio.o
++snd-sof-client-objs := sof-client.o
+ snd-sof-$(CONFIG_SND_SOC_SOF_DEBUG_PROBES) += probe.o compress.o
+ 
+ snd-sof-pci-objs := sof-pci-dev.o
+@@ -18,6 +19,8 @@ obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi.o
+ obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
+ obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci.o
+ 
++obj-$(CONFIG_SND_SOC_SOF_CLIENT) += snd-sof-client.o
++
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+ obj-$(CONFIG_SND_SOC_SOF_IMX_TOPLEVEL) += imx/
+ obj-$(CONFIG_SND_SOC_SOF_XTENSA) += xtensa/
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index adc7c37145d6..72a97219395f 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -314,8 +314,10 @@ int snd_sof_device_probe(struct device *dev, struct snd_sof_pdata *plat_data)
+ 	INIT_LIST_HEAD(&sdev->widget_list);
+ 	INIT_LIST_HEAD(&sdev->dai_list);
+ 	INIT_LIST_HEAD(&sdev->route_list);
++	INIT_LIST_HEAD(&sdev->client_list);
+ 	spin_lock_init(&sdev->ipc_lock);
+ 	spin_lock_init(&sdev->hw_lock);
++	mutex_init(&sdev->client_mutex);
+ 
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
+ 		INIT_WORK(&sdev->probe_work, sof_probe_work);
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+new file mode 100644
+index 000000000000..dd75a0ba4c28
+--- /dev/null
++++ b/sound/soc/sof/sof-client.c
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2020 Intel Corporation. All rights reserved.
++//
++// Author: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
++//
++
++#include <linux/debugfs.h>
++#include <linux/errno.h>
++#include <linux/list.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++#include "sof-client.h"
++#include "sof-priv.h"
++
++static void sof_client_auxdev_release(struct device *dev)
++{
++	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
++	struct sof_client_dev *cdev = auxiliary_dev_to_sof_client_dev(auxdev);
++
++	kfree(cdev);
++}
++
++static struct sof_client_dev *sof_client_dev_alloc(struct snd_sof_dev *sdev, const char *name,
++						   u32 id)
++{
++	struct sof_client_dev *cdev;
++	struct auxiliary_device *auxdev;
++	int ret;
++
++	cdev = kzalloc(sizeof(*cdev), GFP_KERNEL);
++	if (!cdev)
++		return ERR_PTR(-ENOMEM);
++
++	cdev->sdev = sdev;
++	auxdev = &cdev->auxdev;
++	auxdev->name = name;
++	auxdev->dev.parent = sdev->dev;
++	auxdev->dev.release = sof_client_auxdev_release;
++	auxdev->id = id;
++
++	ret = auxiliary_device_init(auxdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to initialize client dev %s\n", name);
++		goto err_free;
++	}
++
++	return cdev;
++
++err_free:
++	kfree(cdev);
++	return NULL;
++}
++
++int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name, u32 id)
++{
++	struct sof_client_dev *cdev;
++	int ret;
++
++	cdev = sof_client_dev_alloc(sdev, name, id);
++	if (IS_ERR_OR_NULL(cdev))
++		return PTR_ERR(cdev);
++
++	ret = auxiliary_device_add(&cdev->auxdev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "error: failed to add client dev %s\n", name);
++		/* cdev will be freed when the release callback is invoked through put_device() */
++		auxiliary_device_uninit(&cdev->auxdev);
++		return ret;
++	}
++
++	/* add to list of SOF client devices */
++	mutex_lock(&sdev->client_mutex);
++	list_add(&cdev->list, &sdev->client_list);
++	mutex_unlock(&sdev->client_mutex);
++
++	return 0;
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_dev_register, SND_SOC_SOF_CLIENT);
++
++void sof_client_dev_unregister(struct snd_sof_dev *sdev, const char *name, u32 id)
++{
++	struct sof_client_dev *cdev, *_cdev;
++
++	mutex_lock(&sdev->client_mutex);
++
++	/* cdev will be freed when the release callback for the auxiliary device is invoked */
++	list_for_each_entry_safe(cdev, _cdev, &sdev->client_list, list) {
++		if (!strcmp(cdev->auxdev.name, name) && cdev->auxdev.id == id) {
++			auxiliary_device_delete(&cdev->auxdev);
++			auxiliary_device_uninit(&cdev->auxdev);
++			break;
++		}
++	}
++
++	mutex_unlock(&sdev->client_mutex);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_dev_unregister, SND_SOC_SOF_CLIENT);
++
++int sof_client_ipc_tx_message(struct sof_client_dev *cdev, u32 header, void *msg_data,
++			      size_t msg_bytes, void *reply_data, size_t reply_bytes)
++{
++	return sof_ipc_tx_message(cdev->sdev->ipc, header, msg_data, msg_bytes,
++				  reply_data, reply_bytes);
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_ipc_tx_message, SND_SOC_SOF_CLIENT);
++
++struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev)
++{
++	return cdev->sdev->debugfs_root;
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_get_debugfs_root, SND_SOC_SOF_CLIENT);
++
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/sof/sof-client.h b/sound/soc/sof/sof-client.h
+new file mode 100644
+index 000000000000..429282df9f65
+--- /dev/null
++++ b/sound/soc/sof/sof-client.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __SOUND_SOC_SOF_CLIENT_H
++#define __SOUND_SOC_SOF_CLIENT_H
++
++#include <linux/auxiliary_bus.h>
++#include <linux/device.h>
++#include <linux/idr.h>
++#include <linux/list.h>
++
++#define SOF_CLIENT_PROBE_TIMEOUT_MS 2000
++
++struct snd_sof_dev;
++
++/* SOF client device */
++struct sof_client_dev {
++	struct auxiliary_device auxdev;
++	struct snd_sof_dev *sdev;
++	struct list_head list;	/* item in SOF core client dev list */
++	void *data;
++};
++
++/* client-specific ops, all optional */
++struct sof_client_ops {
++	int (*client_ipc_rx)(struct sof_client_dev *cdev, u32 msg_cmd);
++};
++
++struct sof_client_drv {
++	const struct sof_client_ops ops;
++	struct auxiliary_driver auxiliary_drv;
++};
++
++#define auxiliary_dev_to_sof_client_dev(auxiliary_dev) \
++	container_of(auxiliary_dev, struct sof_client_dev, auxdev)
++
++static inline int sof_client_drv_register(struct sof_client_drv *drv)
++{
++	return auxiliary_driver_register(&drv->auxiliary_drv);
++}
++
++static inline void sof_client_drv_unregister(struct sof_client_drv *drv)
++{
++	auxiliary_driver_unregister(&drv->auxiliary_drv);
++}
++
++int sof_client_dev_register(struct snd_sof_dev *sdev, const char *name, u32 id);
++void sof_client_dev_unregister(struct snd_sof_dev *sdev, const char *name, u32 id);
++
++int sof_client_ipc_tx_message(struct sof_client_dev *cdev, u32 header, void *msg_data,
++			      size_t msg_bytes, void *reply_data, size_t reply_bytes);
++
++struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev);
++
++/**
++ * module_sof_client_driver() - Helper macro for registering an SOF Client
++ * driver
++ * @__sof_client_driver: SOF client driver struct
++ *
++ * Helper macro for SOF client drivers which do not do anything special in
++ * module init/exit. This eliminates a lot of boilerplate. Each module may only
++ * use this macro once, and calling it replaces module_init() and module_exit()
++ */
++#define module_sof_client_driver(__sof_client_driver) \
++	module_driver(__sof_client_driver, sof_client_drv_register, sof_client_drv_unregister)
++
++#endif
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 0aed2a7ab858..dceac73b858f 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -442,6 +442,15 @@ struct snd_sof_dev {
+ 
+ 	bool msi_enabled;
+ 
++	/*
++	 * Used to keep track of registered client devices so that they can be removed when the
++	 * parent SOF module is removed.
++	 */
++	struct list_head client_list;
++
++	/* mutex to protect client list */
++	struct mutex client_mutex;
++
+ 	void *private;			/* core does not touch this */
+ };
+ 
+-- 
+2.26.2
+
