@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11C90C388F9
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 04:19:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F350DC388F9
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 04:19:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 391CB2076B
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 04:19:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 06A4B2076B
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 04:19:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VB1+D57c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 391CB2076B
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YBBdRnHW"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06A4B2076B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A24AB1864;
-	Fri, 13 Nov 2020 05:18:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A24AB1864
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64B441861;
+	Fri, 13 Nov 2020 05:19:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64B441861
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605241159;
-	bh=OOQfd2WaI3yXflSDm2bBlz95MLqOtSI0FJHAT7FS0Cw=;
+	s=default; t=1605241194;
+	bh=KKloEcHXqq8hy81+Ljnv2vLuOSMUXurr8Ymv1oTw7gU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VB1+D57cT2VhrB8c6kbLP+7yLecYPhStrhPSmZ1jfnrOetvJx9wtx1znPWbCu8v77
-	 5HM8spEGENqfOP2BZ4tNv+KQMriFv3gb6vtI9kTt3UMC3xLMJ8f+s6s4sHBdKBFcKe
-	 uYWO6k67XbYFWr9/OpYbvYFVHAK+3TlGgq45q1bg=
+	b=YBBdRnHWCequtC2Q/9ae83AgkXrQPK12RL3tyEoSBoZqcrQYl1Ec18//DRZsyUVRO
+	 /hfkwNsq+2CnfodY4/PLoNoS9GYipgvufWkyC2232lajqa3Ph4WajfZ4t2HjyyPYDE
+	 mGOKKX1WrTZKCV0/CwRlxcjfNwvbzNVYZBJDWOYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B1B8F804FF;
-	Fri, 13 Nov 2020 05:16:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DEDAF804BC;
+	Fri, 13 Nov 2020 05:16:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3AF31F80506; Fri, 13 Nov 2020 05:16:21 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 4FED5F804EB
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 05:16:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FED5F804EB
-Date: 13 Nov 2020 13:16:17 +0900
-X-IronPort-AV: E=Sophos;i="5.77,474,1596466800"; d="scan'208";a="62557909"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 13 Nov 2020 13:16:17 +0900
+ id 98368F804BC; Fri, 13 Nov 2020 05:16:34 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 10314F80506
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 05:16:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10314F80506
+Date: 13 Nov 2020 13:16:24 +0900
+X-IronPort-AV: E=Sophos;i="5.77,474,1596466800"; d="scan'208";a="62341549"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 13 Nov 2020 13:16:24 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E486041A78B9;
- Fri, 13 Nov 2020 13:16:17 +0900 (JST)
-Message-ID: <875z697v6c.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DC7F340134F0;
+ Fri, 13 Nov 2020 13:16:24 +0900 (JST)
+Message-ID: <874klt7v65.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 08/12] ASoC: soc-component: add
- snd_soc_component_compr_ack()
+Subject: [PATCH v2 09/12] ASoC: soc-component: add
+ snd_soc_component_compr_pointer()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87h7pt7v93.wl-kuninori.morimoto.gx@renesas.com>
@@ -81,36 +81,38 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 component related function should be implemented at
 soc-component.c.
-This patch adds snd_soc_component_compr_ack().
+This patch adds snd_soc_component_compr_pointer().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-component.h |  1 +
+ include/sound/soc-component.h |  2 ++
  sound/soc/soc-component.c     | 20 ++++++++++++++++++++
- sound/soc/soc-compress.c      | 15 ++-------------
- 3 files changed, 23 insertions(+), 13 deletions(-)
+ sound/soc/soc-compress.c      | 13 ++-----------
+ 3 files changed, 24 insertions(+), 11 deletions(-)
 
 diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index d91e0eb1546d..ba0eb49f8885 100644
+index ba0eb49f8885..d4e396cc75c2 100644
 --- a/include/sound/soc-component.h
 +++ b/include/sound/soc-component.h
-@@ -457,6 +457,7 @@ int snd_soc_component_compr_get_caps(struct snd_compr_stream *cstream,
- 				     struct snd_compr_caps *caps);
+@@ -458,6 +458,8 @@ int snd_soc_component_compr_get_caps(struct snd_compr_stream *cstream,
  int snd_soc_component_compr_get_codec_caps(struct snd_compr_stream *cstream,
  					   struct snd_compr_codec_caps *codec);
-+int snd_soc_component_compr_ack(struct snd_compr_stream *cstream, size_t bytes);
+ int snd_soc_component_compr_ack(struct snd_compr_stream *cstream, size_t bytes);
++int snd_soc_component_compr_pointer(struct snd_compr_stream *cstream,
++				    struct snd_compr_tstamp *tstamp);
  
  int snd_soc_pcm_component_pointer(struct snd_pcm_substream *substream);
  int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
 diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 8fba1a395f1e..832177e5094e 100644
+index 832177e5094e..3ff2f227b99e 100644
 --- a/sound/soc/soc-component.c
 +++ b/sound/soc/soc-component.c
-@@ -571,6 +571,26 @@ int snd_soc_component_compr_get_codec_caps(struct snd_compr_stream *cstream,
+@@ -591,6 +591,26 @@ int snd_soc_component_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
  }
- EXPORT_SYMBOL_GPL(snd_soc_component_compr_get_codec_caps);
+ EXPORT_SYMBOL_GPL(snd_soc_component_compr_ack);
  
-+int snd_soc_component_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
++int snd_soc_component_compr_pointer(struct snd_compr_stream *cstream,
++				    struct snd_compr_tstamp *tstamp)
 +{
 +	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
 +	struct snd_soc_component *component;
@@ -118,53 +120,49 @@ index 8fba1a395f1e..832177e5094e 100644
 +
 +	for_each_rtd_components(rtd, i, component) {
 +		if (component->driver->compress_ops &&
-+		    component->driver->compress_ops->ack) {
-+			ret = component->driver->compress_ops->ack(
-+				component, cstream, bytes);
-+			if (ret < 0)
-+				return soc_component_ret(component, ret);
++		    component->driver->compress_ops->pointer) {
++			ret = component->driver->compress_ops->pointer(
++				component, cstream, tstamp);
++			return soc_component_ret(component, ret);
 +		}
 +	}
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_component_compr_ack);
++EXPORT_SYMBOL_GPL(snd_soc_component_compr_pointer);
 +
  static unsigned int soc_component_read_no_lock(
  	struct snd_soc_component *component,
  	unsigned int reg)
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index a82bd02d5519..234e1506ed43 100644
+index 234e1506ed43..eb5cb2f1823e 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -412,9 +412,8 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
- static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+@@ -431,8 +431,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 			     struct snd_compr_tstamp *tstamp)
  {
  	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
 -	struct snd_soc_component *component;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
 -	int i, ret = 0;
 +	int ret;
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
  
  	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
- 
-@@ -422,17 +421,7 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+@@ -441,15 +440,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
  	if (ret < 0)
- 		goto err;
+ 		goto out;
  
 -	for_each_rtd_components(rtd, i, component) {
 -		if (!component->driver->compress_ops ||
--		    !component->driver->compress_ops->ack)
+-		    !component->driver->compress_ops->pointer)
 -			continue;
 -
--		ret = component->driver->compress_ops->ack(
--			component, cstream, bytes);
--		if (ret < 0)
--			goto err;
+-		ret = component->driver->compress_ops->pointer(
+-			component, cstream, tstamp);
+-		break;
 -	}
--
-+	ret = snd_soc_component_compr_ack(cstream, bytes);
- err:
++	ret = snd_soc_component_compr_pointer(cstream, tstamp);
+ out:
  	mutex_unlock(&rtd->card->pcm_mutex);
  	return ret;
 -- 
