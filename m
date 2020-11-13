@@ -2,78 +2,76 @@ Return-Path: <SRS0=KFnC=ET=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CBD62C55ABD
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE55C55ABD
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:08:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 24A432076E
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:07:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 423F82076E
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 16:08:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rrQlRWe1";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="MvCLxQ06"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24A432076E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WUILlBbB";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="uq2tPMtb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 423F82076E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C5381875;
-	Fri, 13 Nov 2020 17:06:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C5381875
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59C0C188C;
+	Fri, 13 Nov 2020 17:07:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59C0C188C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605283646;
-	bh=xazOJCGu3dNwBPq2iap9k2AOyfFmgVfLpwqC2DoyDsU=;
+	s=default; t=1605283697;
+	bh=hh0PhRS5eherMkaY5zf5Q544lC3meiQjctJvI3oZJ7g=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rrQlRWe1hAT9mZiJRfOupecwUAmMF/GOPvzEbRZFIGOB8/YfxMq+5zveQ3uSozTnl
-	 DoVopo8g034vogXb2rqQH0a+mjDCR8HreV9xjOuxnDhoenpUgNFw+YVvfABk5i6iZR
-	 PjuMqoUoZ4bi0wFlximoIIEQ5m9ovJPvJF1jGGt4=
+	b=WUILlBbBRXAcVbBcFPvDjLNx71+730BIcmvBSrDvh6EI0Xz5eXFfxbdoQmrZzIsjg
+	 qkmvePDxanGaUsgxAABqy+T4Fp9gOwpTKmFx0D8Q1r0+cE3vndHEsPzsDsb6vbGx6o
+	 ZjYzcBCv5R88l8zwB0YFR+NrE1yj1Hi6kGTysP3Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 343F3F80086;
-	Fri, 13 Nov 2020 17:06:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAA86F800D1;
+	Fri, 13 Nov 2020 17:06:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8B9CF801F5; Fri, 13 Nov 2020 17:06:34 +0100 (CET)
+ id BC80FF8025E; Fri, 13 Nov 2020 17:06:40 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21860F80086
- for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:06:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21860F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A6BDF8022D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2020 17:06:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A6BDF8022D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MvCLxQ06"
+ header.b="uq2tPMtb"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id C0EEF2076E;
- Fri, 13 Nov 2020 16:06:22 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9177F2076E;
+ Fri, 13 Nov 2020 16:06:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605283583;
- bh=xazOJCGu3dNwBPq2iap9k2AOyfFmgVfLpwqC2DoyDsU=;
+ s=default; t=1605283595;
+ bh=hh0PhRS5eherMkaY5zf5Q544lC3meiQjctJvI3oZJ7g=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=MvCLxQ069yYZ85Nt/ThLa1iNfIj/cyyXlEBCktyPPRHz4tezBKcRGWvb/+TahRrax
- r4h336YutEWArWO9rs5uQKNeH0wPf/uOZhq4W0MSic678nH9zF6HTe1LsW5uT/cRwl
- pDK+mGzRp1GhabJlOUABTWwibrTctsgDS6XXouBE=
-Date: Fri, 13 Nov 2020 16:06:07 +0000
+ b=uq2tPMtbPqchjNHdGMvPArei9VJmDur6J2IQnfxEU7Zk1URZke2wmPemSKHPWHZUr
+ xEEIrUpcBvAjajhXDcMeJxqSaBDYFuqMbZmda/hJ/tSplXy31CQLf3n5lzH0m4LW7I
+ ObyNiU2Af9AXAiiR00s1SLA5bOJWEiHFzsIxyoyA=
+Date: Fri, 13 Nov 2020 16:06:19 +0000
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Oder Chiou <oder_chiou@realtek.com>
-In-Reply-To: <20201113055400.11242-1-oder_chiou@realtek.com>
-References: <20201113055400.11242-1-oder_chiou@realtek.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5682: Add a new property for the DMIC clock
- driving
-Message-Id: <160528356700.2641.7979531877422138830.b4-ty@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
+References: <20201112163100.5081-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: use inclusive language for bclk/fsync/topology
+Message-Id: <160528356701.2641.14750729735896901993.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, cychiang@google.com,
- albertchen@realtek.com, derek.fang@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,8 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 13 Nov 2020 13:53:59 +0800, Oder Chiou wrote:
-> The patch adds a new property to set the DMIC clock driving.
+On Thu, 12 Nov 2020 10:30:56 -0600, Pierre-Louis Bossart wrote:
+> The SOF (Sound Open Firmware) tree contains a lot of references in
+> topology files to 'codec_slave'/'codec_master' terms, which in turn
+> come from alsa-lib and ALSA/ASoC topology support at the kernel
+> level. These terms are no longer compatible with the guidelines
+> adopted by the kernel community [1], standard organizations, and need
+> to change in backwards-compatible ways.
+> 
+> [...]
 
 Applied to
 
@@ -98,10 +103,14 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt5682: Add a new property for the DMIC clock driving
-      commit: 7416f6bc5fcb1fe6700391c94b59ac1c744ad9d1
-[2/2] ASoC: rt5682: Add a new property to the device tree.
-      commit: 33ee67b47ba09fc30840668c9ccec5ad18c94de0
+[1/4] ASoC: topology: use inclusive language for bclk and fsync
+      commit: f026c123001bcc15b78311495cec79a8b73c3cf2
+[2/4] ASoC: SOF: use inclusive language for bclk and fsync
+      commit: df132fa9daf4828598dbba553e1b2bb5cf36a715
+[3/4] ASoC: Intel: atom: use inclusive language for SSP bclk/fsync
+      commit: 84b53a366ebc45027e64f2e37001e4e602a93464
+[4/4] ASoC: Intel: keembay: use inclusive language for bclk and fsync
+      commit: a6e9717a71fd825b6d18a532954d1f9daadcd875
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
