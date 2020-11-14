@@ -1,94 +1,58 @@
-Return-Path: <SRS0=KFnC=ET=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=VUDG=EU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4E74C4742C
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 23:21:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AFB0C4742C
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Nov 2020 02:01:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45B7322256
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Nov 2020 23:21:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2C73C2224F
+	for <alsa-devel@archiver.kernel.org>; Sat, 14 Nov 2020 02:01:03 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KkDX0ZUD";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNYHa1YT"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45B7322256
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rod5jDEy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C73C2224F
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDA6218BE;
-	Sat, 14 Nov 2020 00:20:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDA6218BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9411418C3;
+	Sat, 14 Nov 2020 03:00:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9411418C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605309707;
-	bh=NuhkiV2bk+P2nm9RmCwzXiSURYvAzkorSkZlQdsyIyI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1605319261;
+	bh=awtJk2yN29GtGxjdWt64UNFlOwSbelDvdddBaYAMUao=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KkDX0ZUDW/zlg1VuxuO+Ht0mRJyREDGP/R8ymYwbcM4dwsmj/TkGfWfDm0KrA5OBs
-	 muP1gXxMT+o35Y/Wd1kWnZ3XityNR9AKfLkDt2MDohGn2yT6IvcdJdYrKABjYKlmlK
-	 sCuBqQMwkgnDwSFOGmYdszBXM+swaCNE8tJA9w5w=
+	b=rod5jDEy8Z34twCQ8cBA2vANMq9zp74ieesYJgwXFUQJVrD4P3IDEQYgxG+AygObd
+	 VDaAVY4uS7xTJGagJlldu122Zo6nsvkMlG/6S+EVblUGghTRkOOuZNSyT+qU/R4deb
+	 HC8xzaF1ZrUXTQ4p+aDJjRcb6fpCZYG3vmLZGNkI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DA08F800D1;
-	Sat, 14 Nov 2020 00:20:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02BB1F800D1;
+	Sat, 14 Nov 2020 03:00:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B743AF8020C; Sat, 14 Nov 2020 00:20:55 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3DC7F800E9
- for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2020 00:20:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3DC7F800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HNYHa1YT"
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5905322256;
- Fri, 13 Nov 2020 23:20:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605309643;
- bh=NuhkiV2bk+P2nm9RmCwzXiSURYvAzkorSkZlQdsyIyI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HNYHa1YTSWRM2Nq4Lj/6KwBuYRXmoOm3ylGPkVHoS34gXThqVVPWjmsVbQzYPDVGe
- Ev+dOOC5dlHp2f3V2hGbgMKgYfcwzn600L4peMVNsguIXxtCxuuKLybuZfpcstEV3b
- /izANNTZJa3cloFxirC+Vr31LhhTxVOvY2D9LtRE=
-Date: Sat, 14 Nov 2020 00:21:39 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: "Ertman, David M" <david.m.ertman@intel.com>
-Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-Message-ID: <X68VA6uw5nz51dll@kroah.com>
-References: <20201023003338.1285642-1-david.m.ertman@intel.com>
- <20201023003338.1285642-2-david.m.ertman@intel.com>
- <X66rMg1lNJq+W/cp@kroah.com>
- <DM6PR11MB284160D4E69D9C7801A6B1C2DDE60@DM6PR11MB2841.namprd11.prod.outlook.com>
+ id 11FF1F8020C; Sat, 14 Nov 2020 03:00:08 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id B25C9F80086
+ for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2020 03:00:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B25C9F80086
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB284160D4E69D9C7801A6B1C2DDE60@DM6PR11MB2841.namprd11.prod.outlook.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "parav@mellanox.com" <parav@mellanox.com>, "tiwai@suse.de" <tiwai@suse.de>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "leonro@nvidia.com" <leonro@nvidia.com>,
- "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
- "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
- "fred.oh@linux.intel.com" <fred.oh@linux.intel.com>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "dledford@redhat.com" <dledford@redhat.com>,
- "broonie@kernel.org" <broonie@kernel.org>, "jgg@nvidia.com" <jgg@nvidia.com>,
- "kuba@kernel.org" <kuba@kernel.org>, "Williams,
- Dan J" <dan.j.williams@intel.com>, "Saleem, Shiraz" <shiraz.saleem@intel.com>,
- "davem@davemloft.net" <davem@davemloft.net>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Patil,
- Kiran" <kiran.patil@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1605319200597511053-webhooks-bot@alsa-project.org>
+References: <1605319200597511053-webhooks-bot@alsa-project.org>
+Subject: [PATCH 00/16] alsa-gobject: timer: enhancement for error reporting
+Message-Id: <20201114020008.11FF1F8020C@alsa1.perex.cz>
+Date: Sat, 14 Nov 2020 03:00:08 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,59 +68,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Nov 13, 2020 at 04:07:57PM +0000, Ertman, David M wrote:
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Friday, November 13, 2020 7:50 AM
-> > To: Ertman, David M <david.m.ertman@intel.com>
-> > Cc: alsa-devel@alsa-project.org; tiwai@suse.de; broonie@kernel.org; linux-
-> > rdma@vger.kernel.org; jgg@nvidia.com; dledford@redhat.com;
-> > netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
-> > ranjani.sridharan@linux.intel.com; pierre-louis.bossart@linux.intel.com;
-> > fred.oh@linux.intel.com; parav@mellanox.com; Saleem, Shiraz
-> > <shiraz.saleem@intel.com>; Williams, Dan J <dan.j.williams@intel.com>;
-> > Patil, Kiran <kiran.patil@intel.com>; linux-kernel@vger.kernel.org;
-> > leonro@nvidia.com
-> > Subject: Re: [PATCH v3 01/10] Add auxiliary bus support
-> > 
-> > On Thu, Oct 22, 2020 at 05:33:29PM -0700, Dave Ertman wrote:
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each auxiliary_device has a unique string based id; driver binds to
-> > > an auxiliary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> > 
-> > Is this really the "latest" version of this patch submission?
-> > 
-> > I see a number of comments on it already, have you sent out a newer one,
-> > or is this the same one that the mlx5 driver conversion was done on top
-> > of?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> V3 is the latest sent so far.  There was a suggestion that v3 might be merged and
-> the documentation changes could be in a follow up patch.  I have those changes done
-> and ready though, so no reason not to merge them in and do a resend.
-> 
-> Please expect v4 in just a little while.
+alsa-project/alsa-gobject pull request #49 was opened from takaswie:
 
-Thank you, follow-up patches aren't usually a good idea :)
+The patchset is a part of work about #47.
+
+Current implementation uses library-wide error domain to report error. this
+is partly against rule of GError usage. Furthermore, the error delivers
+information just about errno and hard to know the cause of error.
+
+This patchset enhances error reporting. The library-wide error domain is
+obsoleted. A new error domain is added just for ALSATimer.UserInstance.
+The error domain delivers information about the cause of error.
+
+```
+Takashi Sakamoto (16):
+  timer: user_instance: fix function comment
+  timer: skip check of return value from g_malloc()
+  timer: check whether method argument for GError is available
+  timer: add checks for method arguments
+  timer: instance-params: add checks for method arguments
+  timer: user_instance: just return when character device is not opened
+  timer: add GLib enumeration to report type of error for ALSATimer.UserInstance
+  timer: user_instance: add GQuark to report error for ALSATimer.UserInstance
+  timer: user_instance: report error due to ioctl failure
+  timer: user_instance: report error due to open system call
+  timer: user_instance: report error for timer instance not found
+  timer: user_instance: report error for unattached timer instance
+  timer: user_instance: report error for timer already attached
+  timer: query: use GFileError to report error
+  timer: query: code refactoring to unify open function
+  timer: obsolete library-wide GQuark for error reporting
+
+ src/timer/alsatimer-enum-types.h |  18 ++++
+ src/timer/alsatimer.map          |   5 +
+ src/timer/instance-params.c      |  20 ++--
+ src/timer/instance-status.c      |   3 +-
+ src/timer/privates.h             |   6 --
+ src/timer/query.c                | 127 ++++++++++++------------
+ src/timer/user-instance.c        | 165 +++++++++++++++++++++++--------
+ src/timer/user-instance.h        |   4 +
+ tests/alsatimer-enums            |   8 ++
+ 9 files changed, 231 insertions(+), 125 deletions(-)
+```
+
+Request URL   : https://github.com/alsa-project/alsa-gobject/pull/49
+Patch URL     : https://github.com/alsa-project/alsa-gobject/pull/49.patch
+Repository URL: https://github.com/alsa-project/alsa-gobject
