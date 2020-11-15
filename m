@@ -7,48 +7,48 @@ X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D652C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 12:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8116CC55ABD
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 12:22:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 745AA223BF
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 12:22:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3A42D223BF
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 12:22:53 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qrREihCx";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=birdec.com header.i=@birdec.com header.b="FafAszm2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 745AA223BF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kjw2LVHH";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=birdec.com header.i=@birdec.com header.b="YRz0lGti"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A42D223BF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=birdec.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B41D16E4;
-	Sun, 15 Nov 2020 13:21:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B41D16E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A4931689;
+	Sun, 15 Nov 2020 13:22:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A4931689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605442965;
-	bh=eieDwfifQyapgY87/LV4pAv6cvMw3lpnQp8OVJ2w+Ug=;
+	s=default; t=1605442971;
+	bh=A/LKYMT78kI6ssWNW1Rn2ISW4LY0Z5B598/DbAXTPEA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qrREihCxyMYkv59vJHrdqwBo+HjudvoBoiMwumpmJzBNJIj0B1KxFJOggPGGhzX5Y
-	 E79AajwoxmLU8n2JJzDolFKCJl/OQPpzih898mRjjvukEkjy7n9KMCvnE1D7f8K/ri
-	 wcY+T3BJNuie+kwda3bUFpNT5Gbp+/z3RdwGlxEY=
+	b=kjw2LVHHMjO21d1st3IC4rfWr32vCAHIJs0x2YcRIqFmLq1SMvRHOez89j7/qu5he
+	 AvRxh4UK62RAA5usE0O6jgSXBd9MrtB0iLixuDU79lxTNLsOlfEJzReSsH+2mP95UL
+	 B8uybRHBIvGjw3JG57V+6ihBQrU/8NhWQtDfkC98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 288C0F8025E;
-	Sun, 15 Nov 2020 13:21:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4FA4F804B1;
+	Sun, 15 Nov 2020 13:21:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FF4BF8025E; Sun, 15 Nov 2020 13:21:11 +0100 (CET)
+ id 9F701F804BC; Sun, 15 Nov 2020 13:21:14 +0100 (CET)
 Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB6B6F801F9
- for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2020 13:21:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB6B6F801F9
+ by alsa1.perex.cz (Postfix) with ESMTPS id C37DFF8020B
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2020 13:21:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C37DFF8020B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=birdec.com header.i=@birdec.com
- header.b="FafAszm2"
+ header.b="YRz0lGti"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com; 
  s=default;
  h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
@@ -56,25 +56,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=birdec.com;
  Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
  Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
  List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=gHA57QLWRniebV0IVxN5zC7NkxqPuhNOMypv2sGN2S0=; b=FafAszm2y2xPMHGLoUXWHmjWNU
- q+JxowlSj/D2b91bnOiFi8AqDNjhxLuDwHN3hSH/nIr41AbN+tvFtzNHwtg4S4Ltcf1uIkwrkBrTb
- JNtIK72rk59nOXnB0R3eJL2lvEN+VrgaeITIWhlDHu7b4MsvEZqAfrtTFO6CopNDI1hAMc6xwZfH1
- h4g5cenWNeB9hDDnKkCYDSn7qNdRqex+DdvGDMjulqB9TiRB9byCpW8/mdEtuMT0GvBvwWcQEZdci
- DrEFNltseH4Wr59AC6fSRGGhV7jWhEoiPqXuuCpBYJY14NYXB8redD6LpKhCN1Apa0qiSIubg5sm7
- 5eKOl7Tw==;
+ bh=lSKGQVXPSHX0skNYBLYzXitfSJXzhSyFEZz78vGIj8M=; b=YRz0lGti8eka6i7JgfTMSIYkKe
+ 9+yixpkRZyF4M/h+MoYLz5//t0dElTrYoO/M6mLO+ufl4A3CqZQCO8gxvRhheLSXZ3ZiSsU0rh9Nq
+ oAftNz5cv/umAOk0rup651Ix79iZkoTttO2KcRFuM2O4NFtLpqNwuav9OLBqRCjoAoj4ZX1cf0oPv
+ WuSDpiddyNz5G1sYBcLky9wJTvJeIFhRyjpsAiUt+7iv31Td0Ju8gZ3uu/RMXkv4cX4H+LTNaPVaQ
+ fftCYiI2GqHLUHEwZyHgeKO+1fs282BHEFI5c+ij5H0ceM3fv0N9o6CiDkDKaZPNHxCcobCp7R2xy
+ xBTnw+ZQ==;
 Received: from dynamic-078-054-118-130.78.54.pool.telefonica.de
  ([78.54.118.130]:55232 helo=gentoo0.localdomain)
  by host.euro-space.net with esmtpsa (TLS1.2) tls
  TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
  (envelope-from <kmarinushkin@birdec.com>)
- id 1keH1j-000338-1T; Sun, 15 Nov 2020 12:21:03 +0000
+ id 1keH1m-000338-72; Sun, 15 Nov 2020 12:21:06 +0000
 From: Kirill Marinushkin <kmarinushkin@birdec.com>
 To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v3 1/4] ASoC: pcm512x: Fix not setting word length if
- DAIFMT_CBS_CFS
-Date: Sun, 15 Nov 2020 13:23:03 +0100
-Message-Id: <20201115122306.18164-2-kmarinushkin@birdec.com>
+Subject: [PATCH v3 3/4] ASoC: pcm512x: Move format check into `set_fmt()`
+Date: Sun, 15 Nov 2020 13:23:05 +0100
+Message-Id: <20201115122306.18164-4-kmarinushkin@birdec.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20201115122306.18164-1-kmarinushkin@birdec.com>
 References: <20201115122306.18164-1-kmarinushkin@birdec.com>
@@ -109,19 +108,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In `pcm512x_hw_params()`, the following switch-case:
+I would like to describe the reasoning by quoting Peter Ujfalusi
+<peter.ujfalusi@ti.com> from his review of this patch series v1 [1]:
 
-~~~~
-	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-	case SND_SOC_DAIFMT_CBS_CFS:
-~~~~
+> When you bind a link you will use set_fmt for the two sides to see if
+> they can agree, that both can support what has been asked.
+>
+> The pcm512x driver just saves the fmt and say back to that card:
+> whatever, I'm fine with it. But runtime during hw_params it can fail due
+> to unsupported bus format, which it actually acked to be ok.
+>
+> This is the difference.
+>
+> Sure, some device have constraint based on the fmt towards the hw_params
+> and it is perfectly OK to do such a checks and rejections or build
+> rules/constraints based on fmt, but failing hw_params just because
+> set_fmt did not checked that the bus format is not even supported is not
+> a nice thing to do.
 
-returns 0, which was preventing word length from being written into codecs
-register.
-
-Fixed by writing it into register before checking
-`SND_SOC_DAIFMT_MASTER_MASK`.
-Tested with Raspberry Pi + sound card `hifiberry_dacplus` in CBS_CFS format
+[1] https://patchwork.kernel.org/project/alsa-devel/patch/
+    20201109212133.25869-1-kmarinushkin@birdec.com/
 
 Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.com>
 Cc: Mark Brown <broonie@kernel.org>
@@ -133,41 +139,103 @@ Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 ---
- sound/soc/codecs/pcm512x.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/pcm512x.c | 55 +++++++++++++++++++++++++---------------------
+ 1 file changed, 30 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 8153d3d01654..db3dc6a40feb 100644
+index aa55a477a28f..22ef77955a28 100644
 --- a/sound/soc/codecs/pcm512x.c
 +++ b/sound/soc/codecs/pcm512x.c
-@@ -1195,6 +1195,13 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
+@@ -1168,8 +1168,6 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+ 	int alen;
+ 	int gpio;
+-	int clock_output;
+-	int master_mode;
+ 	int ret;
+ 
+ 	dev_dbg(component->dev, "hw_params %u Hz, %u channels\n",
+@@ -1202,11 +1200,8 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
  	}
  
-+	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
-+				 PCM512x_ALEN, alen);
-+	if (ret != 0) {
-+		dev_err(component->dev, "Failed to set frame size: %d\n", ret);
-+		return ret;
+-	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
+-		clock_output = 0;
+-		master_mode = 0;
+-
++	if ((pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
++	    SND_SOC_DAIFMT_CBS_CFS) {
+ 		ret = regmap_update_bits(pcm512x->regmap, PCM512x_ERROR_DETECT,
+ 					 PCM512x_DCAS, 0);
+ 		if (ret != 0) {
+@@ -1216,16 +1211,6 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 			return ret;
+ 		}
+ 		goto skip_pll;
+-	case SND_SOC_DAIFMT_CBM_CFM:
+-		clock_output = PCM512x_BCKO | PCM512x_LRKO;
+-		master_mode = PCM512x_RLRK | PCM512x_RBCK;
+-		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
+-		clock_output = PCM512x_BCKO;
+-		master_mode = PCM512x_RBCK;
+-		break;
+-	default:
+-		return -EINVAL;
+ 	}
+ 
+ 	if (pcm512x->pll_out) {
+@@ -1343,6 +1328,34 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ skip_pll:
++	return 0;
++}
++
++static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
++	int clock_output;
++	int master_mode;
++	int ret;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		clock_output = 0;
++		master_mode = 0;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		clock_output = PCM512x_BCKO | PCM512x_LRKO;
++		master_mode = PCM512x_RLRK | PCM512x_RBCK;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		clock_output = PCM512x_BCKO;
++		master_mode = PCM512x_RBCK;
++		break;
++	default:
++		return -EINVAL;
 +	}
 +
- 	switch (pcm512x->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		ret = regmap_update_bits(pcm512x->regmap,
-@@ -1229,13 +1236,6 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
+ 	ret = regmap_update_bits(pcm512x->regmap, PCM512x_BCLK_LRCLK_CFG,
+ 				 PCM512x_BCKP | PCM512x_BCKO | PCM512x_LRKO,
+ 				 clock_output);
+@@ -1359,14 +1372,6 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
  	}
  
--	ret = regmap_update_bits(pcm512x->regmap, PCM512x_I2S_1,
--				 PCM512x_ALEN, alen);
--	if (ret != 0) {
--		dev_err(component->dev, "Failed to set frame size: %d\n", ret);
--		return ret;
--	}
+-	return 0;
+-}
 -
- 	if (pcm512x->pll_out) {
- 		ret = regmap_write(pcm512x->regmap, PCM512x_FLEX_A, 0x11);
- 		if (ret != 0) {
+-static int pcm512x_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+-{
+-	struct snd_soc_component *component = dai->component;
+-	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
+-
+ 	pcm512x->fmt = fmt;
+ 
+ 	return 0;
 -- 
 2.13.6
 
