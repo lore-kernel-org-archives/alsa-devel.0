@@ -2,88 +2,56 @@ Return-Path: <SRS0=iGAb=EV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BF67C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 17:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ED8CC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 18:05:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 91666238E6
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 17:12:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B4650222D5
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Nov 2020 18:04:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Nk9kqOdw";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V3qmWys4"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 91666238E6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ERG7o0Yq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4650222D5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sleepmap.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1266B17CD;
-	Sun, 15 Nov 2020 18:11:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1266B17CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26ED683A;
+	Sun, 15 Nov 2020 19:04:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26ED683A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605460357;
-	bh=aEUp0B6gKWhexMWTFrPQ6syXXhv4DwFr18aY9X2Sbr4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Nk9kqOdw43t31Uw4BGWjrgn1ZdbChanTL/ZhYqI0ECVIAlaSGv046weINyry6o0pt
-	 7Filf5eYvDyC66Ub+lgqAuRGGdIBgOCPNhVaEqHlvfHwXFyQZ975Cgl7V/yxJ2bZaT
-	 DV6OZ1hygm0IKvdjuTsOgUViflm0P4yKLiasiros=
+	s=default; t=1605463496;
+	bh=nGlS8GolxHFuqK9hpJANmRmkipvpNYC5y3qvWcsnAKw=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ERG7o0Yqt0xeX+X9LkibMmoCtQjG2uAi0DLt5PUd+S/n4cmMGfdc3SyJITm1rbkMq
+	 0zqlR4FheC4SeoWII1mGVe1lfWeYD1wc/echzCXppB+iuWGZoo/sKY9ctq5QFPS+KA
+	 +gnj/K08vUtQcVv3dFcImlNrEZvDLqTyqh7HUUoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8898BF804C1;
-	Sun, 15 Nov 2020 18:10:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD45EF800D8;
+	Sun, 15 Nov 2020 19:04:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A80B0F801F5; Sun, 15 Nov 2020 18:10:13 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5A57AF801F5; Sun, 15 Nov 2020 19:04:04 +0100 (CET)
+Received: from mail.sleepmap.de (sleepmap.de [85.10.206.218])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6066F80247
- for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2020 18:10:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6066F80247
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V3qmWys4"
-Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch
- [84.226.167.205])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 002F9241A3;
- Sun, 15 Nov 2020 17:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605460209;
- bh=aEUp0B6gKWhexMWTFrPQ6syXXhv4DwFr18aY9X2Sbr4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=V3qmWys4GJ+55sDezEl4qwyS2jtjIpQxwkjiulc5KFvkI+vJCfm4rOLTN9AT5rm0A
- JEbL/6hsbV5Rrd/6V9E5W4GCWcH05U1/mPxqBpjyu7Z4AaaGQdcFhlqtd4pdo+gZcR
- 5Q7MEWczSaK2Z4Rh4Qha8JOyb67INOYvrXzJIX/U=
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
- devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-Subject: [RFC 3/3] media: atomisp: do not select COMMON_CLK to fix builds
-Date: Sun, 15 Nov 2020 18:09:50 +0100
-Message-Id: <20201115170950.304460-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201115170950.304460-1-krzk@kernel.org>
-References: <20201115170950.304460-1-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBD4FF800E9
+ for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2020 19:03:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBD4FF800E9
+Date: Sun, 15 Nov 2020 19:03:53 +0100
+From: David Runge <dave@sleepmap.de>
+To: alsa-devel@alsa-project.org
+Subject: fireface: FF800 periodic burst of Xruns
+Message-ID: <X7FtiSRt9vSPGNLD@hmbx>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="OQtj1M7d191nGPEu"
+Content-Disposition: inline
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,31 +67,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-COMMON_CLK is a user-selectable option with its own dependencies.  The
-most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
-should not select COMMON_CLK because they will create a dependency cycle
-and build failures.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/staging/media/atomisp/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--OQtj1M7d191nGPEu
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 15 Nov 2020 19:03:53 +0100
+From: David Runge <dave@sleepmap.de>
+To: alsa-devel@alsa-project.org
+Subject: fireface: FF800 periodic burst of Xruns
 
-diff --git a/drivers/staging/media/atomisp/Kconfig b/drivers/staging/media/atomisp/Kconfig
-index 37577bb72998..742edb261d85 100644
---- a/drivers/staging/media/atomisp/Kconfig
-+++ b/drivers/staging/media/atomisp/Kconfig
-@@ -2,9 +2,9 @@
- menuconfig INTEL_ATOMISP
- 	bool "Enable support to Intel Atom ISP camera drivers"
- 	depends on X86 && EFI && PCI && ACPI
-+	depends on COMMON_CLK
- 	select IOSF_MBI
- 	select MEDIA_CONTROLLER
--	select COMMON_CLK
- 	help
- 	  Enable support for the Intel ISP2 camera interfaces and MIPI
- 	  sensor drivers.
--- 
-2.25.1
+Hi!
 
+I'm currently testing the snd-fireface module on kernel > 5.9 with the
+RME Fireface 800 (FF800).
+
+Unfortunately, when running jackd using that device it generates large
+bursts of Xruns (~10000) quite periodically.
+
+  /usr/bin/jackd -P80 -p 512 -d alsa -d hw:Fireface800 -n 3 -p 256 -r
+  48000
+
+The issues do not seem to correlate with any load events on the system
+(and in between the Xrun events there are no Xruns even under load).
+I am not entirely sure how to further debug this. Any hints and
+suggestions would be very much welcome!
+
+Note:
+While using libffado for the device works it is not at all stable since
+kernel > 5.9 (sporadic rediscovery events of firewire-ohci, requiring
+the unplugging/replugging of the device's firewire cable and of course
+the restart of jackd).
+This is why I tried the snd-fireface module again, but it seems to
+suffer from a different set of issues ;-)
+
+Best,
+David
+
+--=20
+https://sleepmap.de
+
+--OQtj1M7d191nGPEu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEkb2IFf4AQPp/9daHVMKPT/WhqUkFAl+xbYkACgkQVMKPT/Wh
+qUki9xAAsOXZn0oZMaS3iOa2d0TyZzug8WQ1c0FkpOF+S1cnJ4a6oHo1R2yly9/6
+9aAFNIIVWmoYXMR4sa5F9p8ZhLobN4ClKEsGsNwTD/l8QE9MkP7hP4J/dBB2Z9d+
+tevsZQgfhyNs6PykaQCuwH46HSHQXMQw8e3rzpgaGRbVUVtlDajYnm2tnYNF+eGv
+pFt8ngqJEinyouvHfkGKZULHACWrIfgd7Q3QszxwV8C3TiHMMWeAa578viexoJIP
+y2uyJs7Hz7KFJrvutyvJp0E3Fux7gCiuPOt0pjZgQhQ8ELxOOzD0iGtabjr0bK8f
+5rcZCjqgiHZh/lgvHgI9qL96gibAGAK3gXLWyiTs7orEOa/zltvnXPGIsaKdM76P
+CV5FQ3d4CNR2FQEsAe6paeClThOXWtwzH6h7KUhDBXduGIvp/rNojDBnA3NvftJj
+4ny7FyNqrCI3E2DZf9fnznAl7Eh5NiTvdQirDYj/SRIla7JPpAAMengRl8x5bvVd
+fuqwzCB3kMJhDHYa4+9Y1HC+mkwD2FYCCciGpCf3axvjG5AMbLUpRT1hpF/TcNKf
+I75uKrti8QaOAEcybAgu7qmAldBo+1AVfzUdS1VO1M1SALMjRTbJZ9LW5NeqJnEb
+pL0XdXQg2pew8Fv0nGtGY1VOKkFa47jo8ieKyfAogU8vp+1rAu0=
+=wuCA
+-----END PGP SIGNATURE-----
+
+--OQtj1M7d191nGPEu--
