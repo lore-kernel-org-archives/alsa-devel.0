@@ -2,73 +2,67 @@ Return-Path: <SRS0=lYVm=EW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA0D0C55ABD
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 08:47:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D02ADC4742C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 12:18:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A006A221F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 08:47:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DB7712224B
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 12:18:30 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wim+Zp4T"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A006A221F9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="SwcjmDDf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB7712224B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0286A1799;
-	Mon, 16 Nov 2020 09:46:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0286A1799
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52ADB175A;
+	Mon, 16 Nov 2020 13:17:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52ADB175A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605516423;
-	bh=nGnoPMdEShXNy2cWQTMjT4M6qQtMGM1KDHQ22VCfPg8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Wim+Zp4TE2FLY7GdvC3D5HWPgha/BsD4gKUaviJpI9HHcRNCJzbeQggv563i3u+9p
-	 z0h3pzgdz35L0xcb7GtO/wYzqYRFjIqwQaHcRitP8whQo1xakGkSZIHDQfKsqBuPzX
-	 y5eKdF/oy/n7IkVlBBOOZueb+aP+/GCyxXN3nsEA=
+	s=default; t=1605529108;
+	bh=CRLM+wbjQXWX76L8MvYH8U/6eWU3g9ovy6WxuIe89yg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SwcjmDDfCUvTXCE5aFdNTl1NGS6w872rWdva4BpA4Ek3mNwmU+v/FwEc/iM3pM/w1
+	 ATpX/nTCCYRTLiniytOPPpbZK02B/RnUPyYVUmsO+X6nnr2Ukt9P5U1uujlcGBfB5d
+	 ULeM5gv35MDVtzNRM4H1eXA/K/FGGypl0+yQOQpk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63E55F8010A;
-	Mon, 16 Nov 2020 09:46:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D774EF800D8;
+	Mon, 16 Nov 2020 13:17:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6B9BF80168; Mon, 16 Nov 2020 09:45:56 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 40D7AF80168; Mon, 16 Nov 2020 13:17:36 +0100 (CET)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92572F800D8
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 09:45:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92572F800D8
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3AD57AFAA;
- Mon, 16 Nov 2020 08:45:46 +0000 (UTC)
-Date: Mon, 16 Nov 2020 09:45:45 +0100
-Message-ID: <s5h1rgtd70m.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Use ALC1220-VB-DT mapping for ASUS ROG
- Strix TRX40 mobo
-In-Reply-To: <20201115153843.1109200-1-kai.heng.feng@canonical.com>
-References: <20201115153843.1109200-1-kai.heng.feng@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Andrew Oakley <andrew@adoakley.name>, open list <linux-kernel@vger.kernel.org>,
- Chris Boyle <chris@boyle.name>, Chris Wulff <crwulff@gmail.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, tiwai@suse.com,
- Alexander Tsoy <alexander@tsoy.me>,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>,
- Dan Carpenter <dan.carpenter@oracle.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59BA1F800D8
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 13:17:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59BA1F800D8
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4CZSk83v03zkZ12;
+ Mon, 16 Nov 2020 20:17:04 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 16 Nov 2020 20:17:13 +0800
+From: Zou Wei <zou_wei@huawei.com>
+To: <krzk@kernel.org>, <s.nawrocki@samsung.com>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>
+Subject: [PATCH -next] ASoC: samsung: fix platform_no_drv_owner.cocci warnings
+Date: Mon, 16 Nov 2020 20:29:00 +0800
+Message-ID: <1605529740-68757-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Zou Wei <zou_wei@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +78,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 15 Nov 2020 16:38:42 +0100,
-Kai-Heng Feng wrote:
-> 
-> ASUS ROG Strix also uses ALC1220-VB-DT, so adjust the mapping and add
-> profile name to let userspace pick correct UCM profile.
-> 
-> BugLink: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/issues/1031
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+./sound/soc/samsung/midas_wm1811.c:534:3-8: No need to set .owner here. The core will do it.
 
-Thanks, applied now.
+ Remove .owner field if calls are used which set it automatically
 
+Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
 
-Takashi
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ sound/soc/samsung/midas_wm1811.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/samsung/midas_wm1811.c b/sound/soc/samsung/midas_wm1811.c
+index d03340c..1f9a553 100644
+--- a/sound/soc/samsung/midas_wm1811.c
++++ b/sound/soc/samsung/midas_wm1811.c
+@@ -531,7 +531,6 @@ static struct platform_driver midas_driver = {
+ 	.driver = {
+ 		.name = "midas-audio",
+ 		.of_match_table = midas_of_match,
+-		.owner = THIS_MODULE,
+ 		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = midas_probe,
+-- 
+2.6.2
+
