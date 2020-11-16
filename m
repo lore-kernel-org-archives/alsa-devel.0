@@ -2,97 +2,108 @@ Return-Path: <SRS0=lYVm=EW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E49F3C4742C
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 12:19:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74E4AC4742C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 13:01:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0FF022263
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 12:19:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9E72122240
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 13:01:08 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="N5aHs+/h";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="e5Ab2GKk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0FF022263
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qOGy/ONI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="mlmTDdRk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E72122240
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17B41176B;
-	Mon, 16 Nov 2020 13:18:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17B41176B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 002CC170A;
+	Mon, 16 Nov 2020 14:00:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 002CC170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605529159;
-	bh=UfyV4VaXHNprsRLV2193xm9H7pjN60E2gIwkjs9lRuM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N5aHs+/hBffpOEdUcBoSsE+XsIRGLnNVHcJSBi/4vdAiCVtJLj8b1P7QDDMe3F31s
-	 OvDTolvBbYNO3V7ppQLcX0lkzF2ovKCfA0Kn7cd7hj9h/xOaAn8LEQrvLWQp+bJobt
-	 D3C/yZJM+lW6XLToWozuAuyOb4NwnXQdNsI8e58U=
+	s=default; t=1605531666;
+	bh=nA36sr3ml3N9XV+/TozAJrRYE+bkBD5g9M4GVtSU6HQ=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qOGy/ONIxRaRZllhhhMQcqwLHTYpyAAqKjQJthvFWJey5jaKSUCTFEOL9uPn8H2rB
+	 FGmVrAGxdBecbkUbe3LeU371emSHNFcRqTIlv2B5jZpL6S62YrqyxqfREAIy1A9gql
+	 H9uhXLHdjybbYpigvD2+1zMWwIfov/qOiVaq6xGw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A87E2F8016D;
-	Mon, 16 Nov 2020 13:17:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56983F80167;
+	Mon, 16 Nov 2020 14:00:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93316F8016E; Mon, 16 Nov 2020 13:17:46 +0100 (CET)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ id 2EFCDF80168; Mon, 16 Nov 2020 14:00:14 +0100 (CET)
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2E46F8014A
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 13:17:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2E46F8014A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0524DF8014A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 14:00:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0524DF8014A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="e5Ab2GKk"
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AGCHaep060296;
- Mon, 16 Nov 2020 06:17:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1605529056;
- bh=DIzdKScpm9h/Phr262Uk9Tdbqx0xp32Mf9AFx75nzB0=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=e5Ab2GKkOznRhDYPpDG57S+gkzD4pdj45CZ6bqBVPveXPeiQzus51pS6ieO5XYrb9
- RzMQbgMj/CBGKq8St2GXCH8+YYR57EdsMCBa95eUzQ1fUJj/cCOpsOXpdJGpKQSzzN
- 1Rm5B1lkLWms0Fv6aEablWKAakqj3xdp3pT3/uew=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AGCHZmf116773
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 16 Nov 2020 06:17:35 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 16
- Nov 2020 06:17:35 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 16 Nov 2020 06:17:35 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AGCHXCN051472;
- Mon, 16 Nov 2020 06:17:33 -0600
-Subject: Re: [PATCH v3 0/4] ASoC: pcm512x: Patch series to set fmt from
- `set_fmt()`
-To: Kirill Marinushkin <kmarinushkin@birdec.com>, Mark Brown
- <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood
- <lgirdwood@gmail.com>
-References: <20201115122306.18164-1-kmarinushkin@birdec.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <adecfa94-7907-a0e0-1ad2-fb32cf7a0db8@ti.com>
-Date: Mon, 16 Nov 2020 14:18:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="mlmTDdRk"
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+ by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGD00AJ053317;
+ Mon, 16 Nov 2020 13:00:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=bN1JOGDwmqyy+KHv+zxQrD8gAc0Gh6sp/wEQJplAPXk=;
+ b=mlmTDdRkhp6zpryf6Vn+fxTa8g+SyUvRmgRVjYsY5bsdV7iICZbM5fk3BaOzTsEdH1jj
+ bCXH4aaU1jWBd2jCdWjGEH0y+YgV65copq2+OvdvGhfmn4fJEz66431yOPIdHX+e1cf0
+ SAOMDN+6md409CPXsAcYkbeayDEMY6BOGV8lviDLcjDGyFi3uKsJ7vgOMlmisXZRx/eg
+ LEujLp3OGsaLi43tiM3Y/04u6GjOZ7IbepgQxlYFfbLADxNwKPy+Ndg+J4a1TzyS5nyb
+ Sn6nqqiVOw/fVtArJ1cmNkIVtVbwD3o/4o8rWRZ7e2QnPz4qYGZtd9nRapIpMFzHVaNV 0w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+ by userp2120.oracle.com with ESMTP id 34t7vmvu1x-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Mon, 16 Nov 2020 13:00:02 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+ by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGCoiFl079689;
+ Mon, 16 Nov 2020 13:00:02 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+ by userp3030.oracle.com with ESMTP id 34ts5unfdb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Mon, 16 Nov 2020 13:00:02 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+ by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGCxvQH023727;
+ Mon, 16 Nov 2020 12:59:57 GMT
+Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Mon, 16 Nov 2020 04:59:57 -0800
+Date: Mon, 16 Nov 2020 15:59:50 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Patrick Lai <plai@codeaurora.org>,
+ xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
+Subject: [PATCH] ASoC: qcom: sc7180: initialize the "no_headphone" variable
+Message-ID: <20201116125950.GA44063@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <20201115122306.18164-1-kmarinushkin@birdec.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: Matthias Reichl <hias@horus.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ spamscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011160076
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806
+ signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
+ suspectscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011160077
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,27 +119,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Kirill,
+The "no_headphone" variable is never set to "false" so it could be
+uninitialized.
 
-On 15/11/2020 14.23, Kirill Marinushkin wrote:
-> Set format from `set_fmt()` func instead of `hw_params()`, plus supportive
-> commits
+Fixes: e936619b7ce7 ("ASoC: qcom: sc7180: Modify machine driver for sound card")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Apparently we recently turned off uninitialized variable warnings by
+default in commit 78a5255ffb6a ("Stop the ad-hoc games with
+-Wno-maybe-initialized")
 
-Thank you for the clean series!
+ sound/soc/qcom/sc7180.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+index e2e6567566af..de70fa792aea 100644
+--- a/sound/soc/qcom/sc7180.c
++++ b/sound/soc/qcom/sc7180.c
+@@ -316,7 +316,7 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
+ 	struct snd_soc_dai_link *link;
+ 	int ret;
+ 	int i;
+-	bool no_headphone;
++	bool no_headphone = false;
+ 
+ 	/* Allocate the private data */
+ 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+-- 
+2.29.2
 
-> Kirill Marinushkin (4):
->   ASoC: pcm512x: Fix not setting word length if DAIFMT_CBS_CFS
->   ASoC: pcm512x: Rearrange operations in `hw_params()`
->   ASoC: pcm512x: Move format check into `set_fmt()`
->   ASoC: pcm512x: Add support for more data formats
-> 
->  sound/soc/codecs/pcm512x.c | 134 ++++++++++++++++++++++++++++-----------------
->  1 file changed, 84 insertions(+), 50 deletions(-)
-> 
-
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
