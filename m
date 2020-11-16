@@ -2,79 +2,81 @@ Return-Path: <SRS0=lYVm=EW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A59C388F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:36:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A98FC388F9
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:36:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D22532223C
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:36:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2DAEA22314
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:36:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vE6QALZd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cL1Oa9Ix"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D22532223C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ckUr1JXL";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xQmF8unb"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DAEA22314
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 172B7170F;
-	Tue, 17 Nov 2020 00:35:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 172B7170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B47201784;
+	Tue, 17 Nov 2020 00:35:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B47201784
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605569795;
-	bh=t4gH+xslHGEpbSUE9Eg3+imKJ2LMXsAoQ97uWxZ0ZtQ=;
+	s=default; t=1605569802;
+	bh=b5ELcT0j1+gXK/DBMCkE0hOgfeoQgXNezWmZaFt2BhQ=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vE6QALZd74TDuGvneCBtQ/X+NqyfdI6QrcH3n2hDS5xnuYvR/SEZ8KLhRNOkyTxW3
-	 oob1ZYIZsTn7rap0MoFUbnI7L0umOw3Id5DEHEBF7eHWQA6coGZUMe3f08hq0edlm+
-	 hwjKdajNqwASMKVb5MEe1yOihYCxw7QXrdtS7LFQ=
+	b=ckUr1JXLeGkpeDXOxvzNMWhJDFKHlkW+RpHZ7NtOoIlF5S0E1cPGCge03YrDAC2PX
+	 zBJrQoKf9aGQgJWIzZ8B8Nn6THHy/bu0tFsOzFYosH9670H9ugvjBKl3IMYsVtPDYN
+	 QkEXDNEXCW5y8G5Hx8i9abaqixIuNnvHx/yJcr2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 868B2F804E4;
-	Tue, 17 Nov 2020 00:33:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CAE1F804EB;
+	Tue, 17 Nov 2020 00:33:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B5A8F804E5; Tue, 17 Nov 2020 00:33:38 +0100 (CET)
+ id 50052F804EC; Tue, 17 Nov 2020 00:33:43 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DEF20F804DF
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEF20F804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12D2FF804E3
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12D2FF804E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cL1Oa9Ix"
+ header.b="xQmF8unb"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6B2F122280;
- Mon, 16 Nov 2020 23:33:33 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id DBD95222E9;
+ Mon, 16 Nov 2020 23:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605569614;
- bh=t4gH+xslHGEpbSUE9Eg3+imKJ2LMXsAoQ97uWxZ0ZtQ=;
+ s=default; t=1605569619;
+ bh=b5ELcT0j1+gXK/DBMCkE0hOgfeoQgXNezWmZaFt2BhQ=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=cL1Oa9Ix9Q75bJYgoFopJvlyodkHC/YzxNqOaedkRH7A3vssk9BPOcD/UqKhXYuLe
- 7OXmOD6z33ZkJyo0TUn5NEknCcu5r3DHR2eT5NvEDBJv2nBBWhq4QClZxfIv1v1yNR
- 5sCUzu0dRNh7Azwic4TcIXBdC34qlDaCoALiTFWA=
-Date: Mon, 16 Nov 2020 23:33:15 +0000
+ b=xQmF8unbBa604qPLYUQyT5DXD+nMaV8le+rEqJ2IR+RMK+uzA8n/7zPRe+EUYNddG
+ 6kpHyZoi6SHJ6pKvzuDdH0EbvkU7h3XPaLefc8dRfhI6fuuY+uJfd+5I6bZkUMQrL6
+ 9tEoxbuCPvZpWl532zBzmXdx6ogf+hya2Hd+RrWk=
+Date: Mon, 16 Nov 2020 23:33:20 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Patrick Lai <plai@codeaurora.org>,
- xuyuqing <xuyuqing@huaqin.corp-partner.google.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
-In-Reply-To: <20201116125950.GA44063@mwanda>
-References: <20201116125950.GA44063@mwanda>
-Subject: Re: [PATCH] ASoC: qcom: sc7180: initialize the "no_headphone" variable
-Message-Id: <160556956526.29683.11951945809418219234.b4-ty@kernel.org>
+To: agross@kernel.org, devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ srinivas.kandagatla@linaro.org, lgirdwood@gmail.com, bgoswami@codeaurora.org,
+ rohitkr@codeaurora.org, robh+dt@kernel.org, tiwai@suse.com, perex@perex.cz,
+ plai@codeaurora.org, Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <1605292702-25046-1-git-send-email-srivasam@codeaurora.org>
+References: <1605292702-25046-1-git-send-email-srivasam@codeaurora.org>
+Subject: Re: [PATCH] Asoc: qcom: sc7180: Register shutdown handler for lpass
+ platform
+Message-Id: <160556956527.29683.12943309254001939669.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,9 +92,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Nov 2020 15:59:50 +0300, Dan Carpenter wrote:
-> The "no_headphone" variable is never set to "false" so it could be
-> uninitialized.
+On Sat, 14 Nov 2020 00:08:22 +0530, Srinivasa Rao Mandadapu wrote:
+> Register shutdown handler to stop sc7180 lpass platform driver
+> and to disable audio clocks.
 
 Applied to
 
@@ -100,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: sc7180: initialize the "no_headphone" variable
-      commit: 7141f25f14e03a0b049ffb2010b12abf652a10f3
+[1/1] ASoC: qcom: sc7180: Register shutdown handler for lpass platform
+      commit: 60a973862f3c41bc8d4b7a74bd45eda220e248e8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
