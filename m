@@ -6,73 +6,73 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18440C388F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11A5BC388F9
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:35:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5505B2223C
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:35:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 47F0F2223C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:35:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eHpOS7En";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+Z2ROLP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5505B2223C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RJotzAxW";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8yFUMfV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47F0F2223C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 968A01755;
-	Tue, 17 Nov 2020 00:34:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 968A01755
+	by alsa0.perex.cz (Postfix) with ESMTPS id C022D1766;
+	Tue, 17 Nov 2020 00:35:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C022D1766
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605569748;
-	bh=rWLCAH/AOib/MOZQSJ5hNZCF+t2YoYpawutUu0T/X5g=;
+	s=default; t=1605569755;
+	bh=lyoKCUK5GBo4jX6z1o9/DI6WEOJZmeTFKiyC4OYL3lc=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eHpOS7EnSHQ7nQAJZEkiwKzkyg0VRM5B0iUglrG/OQjs+YOJjcYAgJtERejKXNnZt
-	 1T/7vpzeF1V6BFl03r7KWwFaU3OwnsWFxovlpPWN93Ovyw07ohcnSmiaxKa9J7B6o/
-	 t4d2GLh8a3quKEg97N5jcXQfC+Hm8t/LFhRET6Qk=
+	b=RJotzAxWNfwj1JcadpZFfpVsv7h8p2HULuiwf1wXLsmKeLUcpLZXCpbWW9Mlaorsa
+	 jMX1rhQ3kVEzNDKDTEgEn6nrrybfpzHIpft9JR+E0DwUwdc0FchoprXZfBBwq0t0TT
+	 PPeWUtRlDRryQ7ndxFKubf3hZFv6PYoPopR5qezo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0D89F804CA;
-	Tue, 17 Nov 2020 00:33:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1F9BF804E0;
+	Tue, 17 Nov 2020 00:33:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E834F804D6; Tue, 17 Nov 2020 00:33:26 +0100 (CET)
+ id 9B2CEF804E1; Tue, 17 Nov 2020 00:33:32 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7444F804CA
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7444F804CA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BFF1F804D2
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BFF1F804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="W+Z2ROLP"
+ header.b="o8yFUMfV"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4411B2223C;
- Mon, 16 Nov 2020 23:33:21 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id BC63B22280;
+ Mon, 16 Nov 2020 23:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605569601;
- bh=rWLCAH/AOib/MOZQSJ5hNZCF+t2YoYpawutUu0T/X5g=;
+ s=default; t=1605569608;
+ bh=lyoKCUK5GBo4jX6z1o9/DI6WEOJZmeTFKiyC4OYL3lc=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=W+Z2ROLPyw49m3EbZSpvtiHrAgFYu2GVM/7j7JGpt/Cfm//U7tdyxCJrzWVqFJaNo
- ChkcFbk6aLnH+tJ5z6mru4PpwMRYQAYpstkzABgRGKoTIVZdjuU60+feURAhN9nxrX
- eqGLrX5tnox2Z3Xsir1UgmKhQDiSGWga/CL/9nt8=
-Date: Mon, 16 Nov 2020 23:33:02 +0000
+ b=o8yFUMfVyACRUfL33u0fFAUm3cMcZy8rEEEZFesQhgeWP82ocMPib5yNYvnfAUos+
+ N89GKf0/ahsh5D74kLcOlE1sB2ruBJAL6NnLVyBFckq2wZCWckLP4en0LgIpQawWRD
+ WAB64/EyU8JKgn6/xBdNFSu33qCeQPw9HnfjhkUs=
+Date: Mon, 16 Nov 2020 23:33:09 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20201116133332.8530-1-cezary.rojewski@intel.com>
-References: <20201116133332.8530-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/5] ASoC: Intel: catpt: Offload fixes and code
- optimization
-Message-Id: <160556956526.29683.7053619645686677199.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20201116142642.2106067-1-kai.vehmanen@linux.intel.com>
+References: <20201116142642.2106067-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: initial support for Alderlake-S
+Message-Id: <160556956525.29683.14669733251679245845.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: hdegoede@redhat.com, tiwai@suse.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,17 +88,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Nov 2020 14:33:27 +0100, Cezary Rojewski wrote:
-> First two of the series address bugs connected mainly to offload streams:
-> - scenarios with very low buffer sizes: RESET_STREAM IPC timeouts
-> - fix lp clock selection when switching between PAUSE <-> RESUME states:
->   glitches on first offload when no additional stream is opened
->   simultaneously
-> 
-> Follow ups are: code reduction and optimization oriented patches.
-> This has been foretold in:
-> 
-> [...]
+On Mon, 16 Nov 2020 16:26:42 +0200, Kai Vehmanen wrote:
+> Add Kconfig entries, PCI ID and chip info for Alderlake-S product.
 
 Applied to
 
@@ -106,16 +97,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: Intel: catpt: Skip position update for unprepared streams
-      commit: aa9e3fa4992d83acb7311fc86d11d0d53e7ffb8e
-[2/5] ASoC: Intel: catpt: Correct clock selection for dai trigger
-      commit: 1072460a1aabacf6ececda98acd3b5ecaad23fd2
-[3/5] ASoC: Intel: catpt: Optimize applying user settings
-      commit: 768a3a3b327da88c2fa6856806d32852a90e75d5
-[4/5] ASoC: Intel: catpt: Streamline power routines across LPT and WPT
-      commit: c440c72474e12fcf79bbe716d4796d16b7201031
-[5/5] ASoC: Intel: catpt: Cleanup after power routines streamlining
-      commit: 3d32489838bbf3119bb1ea59cdbed0077d7dbf3c
+[1/1] ASoC: SOF: Intel: initial support for Alderlake-S
+      commit: 6c2b6bb0d34319ea8390dc8b46465332b1dae025
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
