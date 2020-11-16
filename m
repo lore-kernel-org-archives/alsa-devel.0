@@ -2,108 +2,72 @@ Return-Path: <SRS0=lYVm=EW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74E4AC4742C
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 13:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CF1BC4742C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 13:35:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E72122240
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 13:01:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id ED49222245
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 13:34:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qOGy/ONI";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="mlmTDdRk"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E72122240
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tQDqQJwB"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED49222245
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 002CC170A;
-	Mon, 16 Nov 2020 14:00:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 002CC170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD0051748;
+	Mon, 16 Nov 2020 14:34:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD0051748
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605531666;
-	bh=nA36sr3ml3N9XV+/TozAJrRYE+bkBD5g9M4GVtSU6HQ=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1605533696;
+	bh=di+zvBY/aJVEm2OUiJto16qf9Ybs/NWFy+R0g/mG2BY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qOGy/ONIxRaRZllhhhMQcqwLHTYpyAAqKjQJthvFWJey5jaKSUCTFEOL9uPn8H2rB
-	 FGmVrAGxdBecbkUbe3LeU371emSHNFcRqTIlv2B5jZpL6S62YrqyxqfREAIy1A9gql
-	 H9uhXLHdjybbYpigvD2+1zMWwIfov/qOiVaq6xGw=
+	b=tQDqQJwBqkQC8nrDxQSJTBSguRpqhHPNarC/1TQvE3c8dWr5RlI3H90ujRn+5kfJf
+	 MR5/RLZNBcP9fOuWCZrs0AX7QFVFUIGN1TVslKWu5zV4vR4nOak8z0raH3SPixSAzG
+	 LN0G27uAPsNIuoPA511iSQ0nJDnSB2timTsWGwpE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56983F80167;
-	Mon, 16 Nov 2020 14:00:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 253B3F8010A;
+	Mon, 16 Nov 2020 14:34:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2EFCDF80168; Mon, 16 Nov 2020 14:00:14 +0100 (CET)
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ id 11D72F802A9; Mon, 16 Nov 2020 14:34:04 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0524DF8014A
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 14:00:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0524DF8014A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="mlmTDdRk"
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
- by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGD00AJ053317;
- Mon, 16 Nov 2020 13:00:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=bN1JOGDwmqyy+KHv+zxQrD8gAc0Gh6sp/wEQJplAPXk=;
- b=mlmTDdRkhp6zpryf6Vn+fxTa8g+SyUvRmgRVjYsY5bsdV7iICZbM5fk3BaOzTsEdH1jj
- bCXH4aaU1jWBd2jCdWjGEH0y+YgV65copq2+OvdvGhfmn4fJEz66431yOPIdHX+e1cf0
- SAOMDN+6md409CPXsAcYkbeayDEMY6BOGV8lviDLcjDGyFi3uKsJ7vgOMlmisXZRx/eg
- LEujLp3OGsaLi43tiM3Y/04u6GjOZ7IbepgQxlYFfbLADxNwKPy+Ndg+J4a1TzyS5nyb
- Sn6nqqiVOw/fVtArJ1cmNkIVtVbwD3o/4o8rWRZ7e2QnPz4qYGZtd9nRapIpMFzHVaNV 0w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
- by userp2120.oracle.com with ESMTP id 34t7vmvu1x-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Mon, 16 Nov 2020 13:00:02 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
- by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AGCoiFl079689;
- Mon, 16 Nov 2020 13:00:02 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
- by userp3030.oracle.com with ESMTP id 34ts5unfdb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Mon, 16 Nov 2020 13:00:02 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
- by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AGCxvQH023727;
- Mon, 16 Nov 2020 12:59:57 GMT
-Received: from mwanda (/41.57.98.10) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Mon, 16 Nov 2020 04:59:57 -0800
-Date: Mon, 16 Nov 2020 15:59:50 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Patrick Lai <plai@codeaurora.org>,
- xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
-Subject: [PATCH] ASoC: qcom: sc7180: initialize the "no_headphone" variable
-Message-ID: <20201116125950.GA44063@mwanda>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- spamscore=0 phishscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160076
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9806
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
- suspectscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 phishscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011160077
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01068F8014A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 14:33:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01068F8014A
+IronPort-SDR: a3AMN5vz37o40UfpzoqDdVbVv8Cf3IXjdUeCF7oMg8Pr6F3uLKo5jMyiIu5cZ8almsaq0tPv+8
+ qFFgRmq4rg9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="158520534"
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; d="scan'208";a="158520534"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Nov 2020 05:33:47 -0800
+IronPort-SDR: tsTnBPMsutux7fRe9Z1uIFa2PUs5zT70+Nwt8XgCgILeGpj7K2q5rQSbMCnH9U73fRtfyc8mTU
+ wbElhZ5VVhsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; d="scan'208";a="475525009"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga004.jf.intel.com with ESMTP; 16 Nov 2020 05:33:44 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/5] ASoC: Intel: catpt: Offload fixes and code optimization
+Date: Mon, 16 Nov 2020 14:33:27 +0100
+Message-Id: <20201116133332.8530-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com,
+ Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
+ lgirdwood@gmail.com, hdegoede@redhat.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,32 +83,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The "no_headphone" variable is never set to "false" so it could be
-uninitialized.
+First two of the series address bugs connected mainly to offload streams:
+- scenarios with very low buffer sizes: RESET_STREAM IPC timeouts
+- fix lp clock selection when switching between PAUSE <-> RESUME states:
+  glitches on first offload when no additional stream is opened
+  simultaneously
 
-Fixes: e936619b7ce7 ("ASoC: qcom: sc7180: Modify machine driver for sound card")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Apparently we recently turned off uninitialized variable warnings by
-default in commit 78a5255ffb6a ("Stop the ad-hoc games with
--Wno-maybe-initialized")
+Follow ups are: code reduction and optimization oriented patches.
+This has been foretold in:
 
- sound/soc/qcom/sc7180.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[PATCH v10 00/14] ASoC: Intel: Catpt - Lynx and Wildcat point
+https://www.spinics.net/lists/alsa-devel/msg116440.html
+  Note: LPT power up/down sequences might get aligned with WPT once
+  enough testing is done as capabilities are shared for both DSPs.
 
-diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-index e2e6567566af..de70fa792aea 100644
---- a/sound/soc/qcom/sc7180.c
-+++ b/sound/soc/qcom/sc7180.c
-@@ -316,7 +316,7 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
- 	struct snd_soc_dai_link *link;
- 	int ret;
- 	int i;
--	bool no_headphone;
-+	bool no_headphone = false;
- 
- 	/* Allocate the private data */
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+First, optimize applying of user settings - prevent redundand calls from
+happening - and then as mentioned above, streamline power on/off sequence
+for LPT and WPT.
+
+Cezary Rojewski (5):
+  ASoC: Intel: catpt: Skip position update for unprepared streams
+  ASoC: Intel: catpt: Correct clock selection for dai trigger
+  ASoC: Intel: catpt: Optimize applying user settings
+  ASoC: Intel: catpt: Streamline power routines across LPT and WPT
+  ASoC: Intel: catpt: Cleanup after power routines streamlining
+
+ sound/soc/intel/catpt/core.h   |  10 ++-
+ sound/soc/intel/catpt/device.c |  18 +++---
+ sound/soc/intel/catpt/dsp.c    |  56 ++--------------
+ sound/soc/intel/catpt/pcm.c    | 113 ++++++++++++++++-----------------
+ 4 files changed, 74 insertions(+), 123 deletions(-)
+
 -- 
-2.29.2
+2.17.1
 
