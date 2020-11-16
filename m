@@ -2,80 +2,77 @@ Return-Path: <SRS0=lYVm=EW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFA10C388F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58E7CC5519F
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:37:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E356824655
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:37:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A7AC222E9
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:37:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XxzMe/lZ";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="ryoK4Lwc"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E356824655
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="t46Bj1dU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JlvKzOhl"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A7AC222E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F9A61712;
-	Tue, 17 Nov 2020 00:36:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F9A61712
+	by alsa0.perex.cz (Postfix) with ESMTPS id B63A716A9;
+	Tue, 17 Nov 2020 00:36:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B63A716A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605569839;
-	bh=xq62QE7/u63IXnVdwILr5LgN6HXfl7A05MOWRxR9rQM=;
+	s=default; t=1605569849;
+	bh=lG8vjtafSwJlzpTe4ZWzO3xTe2KC9KSe1kymL1F6xJo=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XxzMe/lZePucvUyYPya3BHqy6+ldF/NrtiT221qnRNm9Vj6HyAk5T+tuRmhxzPhZi
-	 4mb5Fd3lOnPc2NAKGN+R5mbWaGsgmv4YfY2RpL7CrWfSUeikSE7R3+Yp3uSmaphYNP
-	 eAuz2ec/CancE5338rIF5Oov0nlR/nDDv/E5KvBQ=
+	b=t46Bj1dUIIze08An9DSQm2maC0B3grmTRYY6HobD5FPD4+qTgu4Ff/NwDfFl3Oaof
+	 tmzi/o/ASx2YOna9+zHKlRpFoeGKu6X5OOXTdtIIwjBYU04kUlipQ8b9KKxe0SJJV5
+	 eTWOxAwElZ9tq/xheVUci3Wbe4hmm5/ti9MTVdVE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC4EEF804E3;
-	Tue, 17 Nov 2020 00:33:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6712DF804FC;
+	Tue, 17 Nov 2020 00:33:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E852CF804F3; Tue, 17 Nov 2020 00:33:48 +0100 (CET)
+ id CC2FDF804FD; Tue, 17 Nov 2020 00:33:53 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1805F804E3
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1805F804E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BE3CF804F2
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BE3CF804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ryoK4Lwc"
+ header.b="JlvKzOhl"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 0D008221F8;
- Mon, 16 Nov 2020 23:33:44 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7491822280;
+ Mon, 16 Nov 2020 23:33:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605569624;
- bh=xq62QE7/u63IXnVdwILr5LgN6HXfl7A05MOWRxR9rQM=;
+ s=default; t=1605569630;
+ bh=lG8vjtafSwJlzpTe4ZWzO3xTe2KC9KSe1kymL1F6xJo=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=ryoK4Lwc59YFEyyt3FAm+7RwQG1ifZTE2mCd5UeCHc/FFGCNsJZA12xS8yUPG80vf
- yHgNh1KWRxg1x7ImzybvPfzH8fV0H2Mlh7ZetMEE8OkyMUdgPg5aGAMf96XfMCGgQx
- QCBOElpU7MScukLx7NG95ocbJdav4f4iVYfU48Xw=
-Date: Mon, 16 Nov 2020 23:33:25 +0000
+ b=JlvKzOhlcrAT+uQ0LdSTp/rSUQoUXnPxaf0cJ3Bqu40UHuJVjP8qQpoMkmuwF3Q4f
+ sla8xzK9k705EWOb6rMqXtHlYAwVmFXSFv1kGdT0WuVJWxoOQRn2EoA00j6E3QZy05
+ SQSalKDIKfH3CXMc85AXKBnZBwByPKw7jXvo2YGU=
+Date: Mon, 16 Nov 2020 23:33:31 +0000
 From: Mark Brown <broonie@kernel.org>
-To: agross@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
- lgirdwood@gmail.com, bgoswami@codeaurora.org, rohitkr@codeaurora.org,
- robh+dt@kernel.org, perex@perex.cz, plai@codeaurora.org,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, tiwai@suse.com
-In-Reply-To: <1605416210-14530-1-git-send-email-srivasam@codeaurora.org>
-References: <1605416210-14530-1-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH] Asoc: qcom: lpass-platform: Fix memory leak
-Message-Id: <160556956526.29683.2121148120940564064.b4-ty@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20201116172423.546855-1-jbrunet@baylibre.com>
+References: <20201116172423.546855-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: fix COMPILE_TEST error
+Message-Id: <160556956525.29683.11005029623520003708.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>, Pavel Machek <pavel@ucw.cz>
+Cc: linux-amlogic@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,11 +88,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 15 Nov 2020 10:26:50 +0530, Srinivasa Rao Mandadapu wrote:
-> lpass_pcm_data is not freed in error paths. Free it in
-> error paths to avoid memory leak.
+On Mon, 16 Nov 2020 18:24:23 +0100, Jerome Brunet wrote:
+> When compiled with CONFIG_HAVE_CLK, the kernel need to get provider for the
+> clock API. This is usually selected by the platform and the sound drivers
+> should not really care about this. However COMPILE_TEST is special and the
+> platform required may not have been selected, leading to this type of
+> error:
 > 
-> Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+> > aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
+> 
+> [...]
 
 Applied to
 
@@ -103,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: lpass-platform: Fix memory leak
-      commit: bd6327fda2f3ded85b69b3c3125c99aaa51c7881
+[1/1] ASoC: meson: fix COMPILE_TEST error
+      commit: 299fe9937dbd1a4d9a1da6a2b6f222298534ca57
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
