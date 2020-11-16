@@ -2,81 +2,79 @@ Return-Path: <SRS0=lYVm=EW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBAF6C388F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69007C388F9
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:34:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A9BD22280
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:34:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 778D12223C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 23:34:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sqDfsenH";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xj/UEouX"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A9BD22280
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HHn8efgU";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bcBB7JRD"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 778D12223C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2ACB61680;
-	Tue, 17 Nov 2020 00:33:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ACB61680
+	by alsa0.perex.cz (Postfix) with ESMTPS id E295D1761;
+	Tue, 17 Nov 2020 00:34:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E295D1761
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605569645;
-	bh=IydiCbo8tDV2y2wade3NokSL+pzfPQAOkBc2FrMvzb4=;
+	s=default; t=1605569696;
+	bh=BIB5JmlbDvxYU2OoTcabQi3cnHOyHNktLHYmpMgnF7U=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sqDfsenHHxfJiDjyFeBoF7lU6QUjgedR1XXVBU+dL+TLtDYOCsceHHJmFdarYSvWb
-	 2ZJ3HlUOl23r3tdhzYcYLFUaOnR9YqDebOiY/J1mO9LOQD2djFpER7SSvphM8JsQ5H
-	 GpyaRmaKnR6Gf0iq8DAMeFv/4myFvlbfu0XOJpEg=
+	b=HHn8efgUVsy2tZhOdlrtAbQW5JDP+8zJFoXeUeXKTbLHAd4B3N6rq94hPpZN5n2jr
+	 pFEn+3LKYxExCLNlIbSd/j+pxPfiMNaJlHc5VE5aCXPw52TU9vUWEcGUDtbzcx8jZl
+	 8/Ze7DUJZkdq/ZiI/ACW9TqEygXV8TRBcnGC3FuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F649F80167;
-	Tue, 17 Nov 2020 00:33:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89221F8010A;
+	Tue, 17 Nov 2020 00:33:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D757AF8010A; Tue, 17 Nov 2020 00:33:11 +0100 (CET)
+ id 1BEDFF80168; Tue, 17 Nov 2020 00:33:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39AA4F800D8
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39AA4F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13168F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 00:33:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13168F800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Xj/UEouX"
+ header.b="bcBB7JRD"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A8492221F8;
- Mon, 16 Nov 2020 23:33:03 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1552C2223C;
+ Mon, 16 Nov 2020 23:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605569584;
- bh=IydiCbo8tDV2y2wade3NokSL+pzfPQAOkBc2FrMvzb4=;
+ s=default; t=1605569589;
+ bh=BIB5JmlbDvxYU2OoTcabQi3cnHOyHNktLHYmpMgnF7U=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=Xj/UEouX9p5sOji8xwirF6rTa/3aEKnFVRg41Hb8L+qDTNeNLANGOq7JttrzWgPiz
- qkFUbhRSe+TpwARJi9r7jx1++Zsd38juqSk8+Zgaua6jrhphLoh8/qaUytMiG7Aj0f
- XeibkFxX3vpUSZb3dlaGygzbElxZQrn7qTorVhFw=
-Date: Mon, 16 Nov 2020 23:32:45 +0000
+ b=bcBB7JRDYo06mIjlQ1QMbwGKta7Vk6QeJ0K622fJotwOsaRjmWwzf5xEh65B8GDtd
+ e/lilWxLtfy6vDhaQOdL3/2QnrVV8FWJS0UX5Z6pYJfUlWELvTYiiJz1kfr3vszOu0
+ rfhUFqUWznwHAZXjWaNo9pjrIvneqh3nyL0ojmKw=
+Date: Mon, 16 Nov 2020 23:32:50 +0000
 From: Mark Brown <broonie@kernel.org>
-To: agross@kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
- lgirdwood@gmail.com, bgoswami@codeaurora.org, rohitkr@codeaurora.org,
- robh+dt@kernel.org, perex@perex.cz, plai@codeaurora.org,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, tiwai@suse.com
-In-Reply-To: <1605512955-7017-1-git-send-email-srivasam@codeaurora.org>
-References: <1605512955-7017-1-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH] Asoc: qcom: lpass-sc7180: Add 32 bit format support for
- capture
-Message-Id: <160556956527.29683.2982806188163092654.b4-ty@kernel.org>
+To: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20201116061905.32431-1-michael.wei.hong.sit@intel.com>
+References: <20201116061905.32431-1-michael.wei.hong.sit@intel.com>
+Subject: Re: [PATCH 0/5] This patch series enables DMA mode on Intel Keem Bay
+ platform
+Message-Id: <160556956526.29683.813243246363467870.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Cc: cezary.rojewski@intel.com, lars@metafoo.de, andriy.shevchenko@intel.com,
+ tiwai@suse.com, vinod.koul@linux.intel.com, jee.heng.sia@intel.com,
+ pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,10 +90,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Nov 2020 13:19:15 +0530, Srinivasa Rao Mandadapu wrote:
-> Add 32 bit format support for capture in lpass-sc7180
-> snd_soc_dai_driver capabilities. Need to add contstraints
-> in machine driver so that only specific format allowed.
+On Mon, 16 Nov 2020 14:19:00 +0800, Michael Sit Wei Hong wrote:
+> v1: Initial patch version, which contains fix for S24_LE format and also enable
+>     DMA mode on Intel Keembay platform
+> 
+> Michael Sit Wei Hong (5):
+>   ASoC: Intel: KMB: Fix S24_LE configuration
+>   dt-bindings: sound: intel, keembay-i2s: Add info for device to use DMA
+>   ASoC: soc-generic-dmaengine-pcm: Add custom prepare and submit
+>     function
+>   ASoC: dmaengine_pcm: expose functions to header file for custom
+>     functions
+>   ASoC: Intel: KMB: Enable DMA transfer mode
+> 
+> [...]
 
 Applied to
 
@@ -103,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: lpass-sc7180: Add 32 bit format support for capture
-      commit: 313ebec48dedcac351557b5a84b8b2239951c238
+[1/1] ASoC: Intel: KMB: Fix S24_LE configuration
+      commit: 1bd7b0fc0165694897b7d2fb39751a07b98f6bf1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
