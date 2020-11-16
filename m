@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-12.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D21D3C4742C
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 06:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7D58C4742C
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 06:24:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D17922222E
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 06:24:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id C35E0222B9
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Nov 2020 06:24:43 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GmqBmpyb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D17922222E
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vAfWXCHi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C35E0222B9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F2711784;
-	Mon, 16 Nov 2020 07:23:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F2711784
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C05717B4;
+	Mon, 16 Nov 2020 07:23:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C05717B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605507841;
-	bh=3tSDbfVBt6kmwJIhc6jP5G91e1Zak81ckSNzcDVpuOs=;
+	s=default; t=1605507882;
+	bh=xwOzgDW2GNUf3oC4oIia44eh26JeE08ggxMkjqxXjQo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GmqBmpyb69GZdn11KL0YBB3ywFqWmwngLdDeV1n8wonOzsgeDPe81iePjI1tpCL/B
-	 eLmt8K0/+taogwt9lXlV1VXd86bOfgnLBvHvZQd3EWf/1ElXOi9x/wiad/Vr8zU07h
-	 0E5oXSIAlgPa4vkgYtIFooKTw+udyZxR5zvnxb1k=
+	b=vAfWXCHiT0RqbDj9v7r0q3ZINnugPZssgnrRmPmTxoL8fXK/5QaUATlBiGxu77ANb
+	 xm3+rj39Ki2gTsZ056KalBCsfeodSBPBW5OMo410jsRpry0NjOXJ+dhKAjD+obOyxC
+	 OkcRU1nHUpAqa3KlmHwGuPLLgL1AXg2lWYaHeH4o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF58CF804BC;
-	Mon, 16 Nov 2020 07:22:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96BA5F804C1;
+	Mon, 16 Nov 2020 07:22:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A81B9F80229; Mon, 16 Nov 2020 07:22:17 +0100 (CET)
+ id 26EC7F804BD; Mon, 16 Nov 2020 07:22:21 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4EBCF8014A
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 07:22:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4EBCF8014A
-IronPort-SDR: 4CZCViDnUZW6zXI3hxMLrUj5JEuromXvgy0v3FYaKYoJsFl2zSty3jlLwQXbzy0sToo+svEIQX
- PH/kJ7+fqaUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="158482327"
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="158482327"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41B4CF8010A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 07:22:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41B4CF8010A
+IronPort-SDR: AMBLVvCcNi1PqLS88NTobEsvHaBxgstp5svcyAL3JvmComIXtTEg68UwcqoZCA6Rr5uA66yaOI
+ oLs0HGwPKa4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="158482335"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="158482335"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Nov 2020 22:22:04 -0800
-IronPort-SDR: CouGil1FT4FyUgCabnkXK65GF0nll+KR0J1jjpE0ntGjPje6m/Sy41nFiuxg+tVECq2M9jAGAC
- z2P7eI/XzEyw==
+ 15 Nov 2020 22:22:10 -0800
+IronPort-SDR: ZGKAufCm9xWz4GXtsw4hGCl/sNxIGWdiXXfbMCTLUq/Sx7a4wCEo2sEoWkQzu0XgFKtG3eRtSo
+ EJ5Aw0A/2zjQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="362020313"
+X-IronPort-AV: E=Sophos;i="5.77,481,1596524400"; d="scan'208";a="362020332"
 Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
- by fmsmga002.fm.intel.com with ESMTP; 15 Nov 2020 22:22:02 -0800
+ by fmsmga002.fm.intel.com with ESMTP; 15 Nov 2020 22:22:07 -0800
 From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/5] dt-bindings: sound: intel,
- keembay-i2s: Add info for device to use DMA
-Date: Mon, 16 Nov 2020 14:14:49 +0800
-Message-Id: <20201116061452.32347-3-michael.wei.hong.sit@intel.com>
+Subject: [PATCH 4/5] ASoC: dmaengine_pcm: expose functions to header file for
+ custom functions
+Date: Mon, 16 Nov 2020 14:14:51 +0800
+Message-Id: <20201116061452.32347-5-michael.wei.hong.sit@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201116061452.32347-1-michael.wei.hong.sit@intel.com>
 References: <20201116061452.32347-1-michael.wei.hong.sit@intel.com>
@@ -88,45 +88,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add descriptions for entries needed for audio device to use DMA
-channels for audio playback and capture.
+Moving some functions to the header file to be used by custom prepare and
+submit function.
+
+In the Intel KeemBay solution, there is a DMA limitation which requires
+a custom prepare and submit function to modify the number of blocks per
+linked link.
+
+This patch exposes some of the functions used in the pcm_dmaengine.c to
+be used by the custom function.
 
 Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../bindings/sound/intel,keembay-i2s.yaml          | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/sound/dmaengine_pcm.h | 15 +++++++++++++++
+ sound/core/pcm_dmaengine.c    | 16 ++--------------
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml b/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
-index d346e61ab708..e0658f122cbb 100644
---- a/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/intel,keembay-i2s.yaml
-@@ -45,6 +45,18 @@ properties:
-       - const: osc
-       - const: apb_clk
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 9fae56d39ae2..d45652a27f73 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -174,8 +174,23 @@ struct dmaengine_pcm {
+ 	unsigned int flags;
+ };
  
-+  dmas:
-+    items:
-+      - description: DMA controller phandle and DMA channel
-+                     for TX and RX
++struct dmaengine_pcm_runtime_data {
++	struct dma_chan *dma_chan;
++	dma_cookie_t cookie;
 +
-+  dma-names:
-+    items:
-+      - description: "tx" for the transmit channel
-+                     "rx" for the receive channel
-+      - const: tx
-+      - const: rx
++	unsigned int pos;
++};
 +
- required:
-   - compatible
-   - "#sound-dai-cells"
-@@ -70,4 +82,6 @@ examples:
-          interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-          clock-names = "osc", "apb_clk";
-          clocks = <&scmi_clk KEEM_BAY_PSS_AUX_I2S3>, <&scmi_clk KEEM_BAY_PSS_I2S3>;
-+         dmas = <&axi_dma0 29 &axi_dma0 33>;
-+         dma-names = "tx", "rx";
-      };
++static inline struct dmaengine_pcm_runtime_data *substream_to_prtd(
++	const struct snd_pcm_substream *substream)
++{
++	return substream->runtime->private_data;
++}
++
+ static inline struct dmaengine_pcm *soc_component_to_pcm(struct snd_soc_component *p)
+ {
+ 	return container_of(p, struct dmaengine_pcm, component);
+ }
++
++void dmaengine_pcm_dma_complete(void *arg);
+ #endif
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index cbd1429de509..0f99c63964ec 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -19,19 +19,6 @@
+ 
+ #include <sound/dmaengine_pcm.h>
+ 
+-struct dmaengine_pcm_runtime_data {
+-	struct dma_chan *dma_chan;
+-	dma_cookie_t cookie;
+-
+-	unsigned int pos;
+-};
+-
+-static inline struct dmaengine_pcm_runtime_data *substream_to_prtd(
+-	const struct snd_pcm_substream *substream)
+-{
+-	return substream->runtime->private_data;
+-}
+-
+ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
+ {
+ 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+@@ -128,7 +115,7 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
+ 
+-static void dmaengine_pcm_dma_complete(void *arg)
++void dmaengine_pcm_dma_complete(void *arg)
+ {
+ 	struct snd_pcm_substream *substream = arg;
+ 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
+@@ -139,6 +126,7 @@ static void dmaengine_pcm_dma_complete(void *arg)
+ 
+ 	snd_pcm_period_elapsed(substream);
+ }
++EXPORT_SYMBOL_GPL(dmaengine_pcm_dma_complete);
+ 
+ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+ {
 -- 
 2.17.1
 
