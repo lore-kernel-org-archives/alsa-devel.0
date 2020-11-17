@@ -2,83 +2,129 @@ Return-Path: <SRS0=TkwG=EX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SIGNED_OFF_BY,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 620CDC388F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 01:36:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75881C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 04:37:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47B282463C
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 01:36:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5F97C24695
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 04:37:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kRMiyz6r"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47B282463C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bsNBM95v";
+	dkim=temperror (0-bit key) header.d=sholland.org header.i=@sholland.org header.b="faQ040BY";
+	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mEqfsoGr"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F97C24695
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41EE917B1;
-	Tue, 17 Nov 2020 02:35:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41EE917B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C64B3174B;
+	Tue, 17 Nov 2020 05:36:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C64B3174B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605576997;
-	bh=yWQS2baKMDYITvSpskrYEXeTFoCe+XswzoL9Lry1AeY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kRMiyz6rUXuLStZnR5CufqGJNiTGJ1cyCOmM6POVcc56/GR47kM0Sf4JIb4l7ZDI+
-	 TWhkrk9FWkJJEw69pF4NMJxJ0/8c640XAnHGiiGwCAJkJIK/lfRRPw7GPRXpMZAicW
-	 rL+QbOnSgnFFW1W6vbHOt/R9S5KKcqaOnZWJ+BhA=
+	s=default; t=1605587851;
+	bh=z4NAYjYC1lfRnW1bEgtAdG9xEE69t5pHqOVJKTY5Fvc=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bsNBM95vzqHOVFkRUbyj6GrLsArJhaAMEPXFgR/ymVK+cY/aIRliToASC6Sb/QHhQ
+	 40WF/3FV/WUjyWWjmhDBzE69zH97951T/jY9rkky+Nd0ZaiKx+OtY7y4bbUZhpaXHN
+	 ysGPoD2BG8XFn4WL6cY1Z6MyQIE1YxW1+J07eABg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1193AF804D6;
-	Tue, 17 Nov 2020 02:34:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36432F801ED;
+	Tue, 17 Nov 2020 05:36:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C084F802A9; Tue, 17 Nov 2020 02:34:06 +0100 (CET)
-Received: from mail-oo1-f67.google.com (mail-oo1-f67.google.com
- [209.85.161.67])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BBB07F801F5; Tue, 17 Nov 2020 05:36:38 +0100 (CET)
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com
+ [64.147.123.18])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3ABF4F8010A
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 02:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ABF4F8010A
-Received: by mail-oo1-f67.google.com with SMTP id z13so4371837ooa.5
- for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 17:33:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=PIVuRHuQpPLtHXGEDoAwUODOVnqOwSMNScZjMJ33YwE=;
- b=nVV4rPAG0RikG/83l56DmJqi848SEYrHD4aqnDKexkrAPJ6CH909MiA0t5AXvIsv/5
- 0oemqTZ4Xo0ASS/Ad7tpIsh6G/10taz+m3yiljec0B+UeTvKbKJfvBbSVxVbiFgIJ4kR
- kJKVIQtq3xHKdsdV0ERwG9dlBOb9iwLwnE8XPvIQj7JiVI8u0KCMZ3oMf7SUlFU8N2W6
- vYUOFd3QebwZPWCuI45qEhHjKhaojUb+iqDSzz89q2HAA3KloqPXkGm6L/2e9UbGQJ6u
- LpDtLp1QYoRABfwDC8ge+FjLio5nydSEjAak/2RGXyg9tcJPldmm7rC/Z+dGN8CaMijV
- W1hA==
-X-Gm-Message-State: AOAM532IW5L3TnEuivOVoTprgq05NNV+/bEg1Gyvh7cbhgxE2LzBRiqu
- 7IIAgTyn3yZhFfbjBZoC8A==
-X-Google-Smtp-Source: ABdhPJyh7k15dAFdbxkEOsVwyoHF5mvXPEsj3sCoz0n4Vx6Avi75UW55OWe8b49iffOzcTA3D2l6nQ==
-X-Received: by 2002:a4a:c018:: with SMTP id v24mr1515621oop.2.1605576830587;
- Mon, 16 Nov 2020 17:33:50 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.googlemail.com with ESMTPSA id j9sm3861325oij.44.2020.11.16.17.33.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 16 Nov 2020 17:33:49 -0800 (PST)
-From: Rob Herring <robh@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/4] ASoC: graph card schema rework
-Date: Mon, 16 Nov 2020 19:33:45 -0600
-Message-Id: <20201117013349.2458416-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7FB4F800FE
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 05:36:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7FB4F800FE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="faQ040BY"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="mEqfsoGr"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.west.internal (Postfix) with ESMTP id 13E9C12DF;
+ Mon, 16 Nov 2020 23:36:16 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Mon, 16 Nov 2020 23:36:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ subject:to:references:from:message-id:date:mime-version
+ :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=p
+ kszPB7jeuJ2s0wgF4vEobMXp32NtsKINiE+dXw3VWA=; b=faQ040BYeumwKBqS6
+ VAgIb8XEx/yt88bgcSSTyuSgg1Q5pyEZmTnJEbTiC4s4pePmK1u+vJH3bKt5aZxf
+ XW3VZ9Pb64FCp5XALSrSSy64yoR3ZJoi8/e3ZFmnBawHo6fSIKeki5mAud8PKC/w
+ Ii+6Sky1WOR9vNl3CcZjrX/gcd3g6Zv/DSMcxYwzDZPYRqq13lo0yuH4Ly7db1Vd
+ bkqjPkR2/Qq0uMk/zQktEidmdrJ8bNf8SQqlHcQdkSVoVHe5p5tVYGaVpJtGGwV8
+ H8e9QWoWiLC+647XqQo/FMGZuh9TPoWZpqBdFarSKUH+MgQ0WisQIsZNi/7rE9xN
+ /LQcw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=content-transfer-encoding:content-type
+ :date:from:in-reply-to:message-id:mime-version:references
+ :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm1; bh=pkszPB7jeuJ2s0wgF4vEobMXp32NtsKINiE+dXw3V
+ WA=; b=mEqfsoGrOXn64UpvVznr0IwaETGuAhL2+cFv1OI8DwzMW77ixhdVGpdMN
+ vbbjCqXHZI3ftX7YRTEXh4j9tdX6C2d3qBB1zMZcD+4stis12XSzEK+oa9jTReMM
+ rObIAu9/GoMkhtlplDQ3gKrQoKHvBbAOTBm1ab5RFY5z5lOSCHBxRuhasVcflOZt
+ USPLpZHetF27YtYyyqVLoxcIJdRPioe09ZHdFK+XaYf5liRbwES3Xvik6OPsfVWu
+ EAUS8qwBnOsI4OtnPnaIBj9N4xH0Br5cMpME7Jyge/JWsJQMZfhczsVXnKibxoyX
+ UCfxT/7H5dcnMZSEvmMvLaCgPwkMQ==
+X-ME-Sender: <xms:PVOzXz6kXgyWcKgQjxAevdVgKQpWBF6dhptuhu2_khtd-9N8T8jUPg>
+ <xme:PVOzX46--cBuRWjUkte98zmS-9qkfNnEabFIoXDk2U_SX_NmSxLTsxU0a-pJoWhU4
+ XkzGqvpATX-3Vj_kg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudefvddgiedvucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepufgrmhhu
+ vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+ ftrfgrthhtvghrnhepgfevffetleehffejueekvdekvdeitdehveegfeekheeuieeiueet
+ uefgtedtgeegnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
+ hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
+ nhgurdhorhhg
+X-ME-Proxy: <xmx:PVOzX6cO0lFlBJXntTv3tGcR9iQZWWG7530idRXzM3N7fUF8-acCLA>
+ <xmx:PVOzX0KzcSio2QdVCCWApNH4gdajMeu7Z_TXHSOdkGDVJICDxBAJ7Q>
+ <xmx:PVOzX3Jjkhi5yiNbY5W4mRVc8Mq5jjB2y49yIGB24iXBZSUvduwC3A>
+ <xmx:P1OzXw6oI-JF_KyUNvkPBU0U7NPkZyzfoH3N--HMfZKlzYlSRjYYUg9gSSc>
+Received: from [192.168.50.169]
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id D73E13280060;
+ Mon, 16 Nov 2020 23:36:12 -0500 (EST)
+Subject: Re: [RFC 2/3] ARM: sunxi: do not select COMMON_CLK to fix builds
+To: Krzysztof Kozlowski <krzk@kernel.org>, Maxime Ripard
+ <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@siol.net>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
+ devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+References: <20201115170950.304460-1-krzk@kernel.org>
+ <20201115170950.304460-3-krzk@kernel.org>
+From: Samuel Holland <samuel@sholland.org>
+Message-ID: <f637762e-0b02-1705-ea6b-24ac338fcd69@sholland.org>
+Date: Mon, 16 Nov 2020 22:36:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Sameer Pujar <spujar@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Lubomir Rintel <lkundrak@v3.sk>
+In-Reply-To: <20201115170950.304460-3-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,41 +140,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series updates Sameer's patch to repartition the graph card binding 
-schema and incorporate the OF graph schema. The schema was also mixing 
-card node and DAI node properties, so I've split the DAI part (the 
-'port' node) into a separate schema.
+On 11/15/20 11:09 AM, Krzysztof Kozlowski wrote:
+> COMMON_CLK is a user-selectable option with its own dependencies.  The
+> most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
+> should not select COMMON_CLK because they will create a dependency cycle
+> and build failures.  For example on MIPS a configuration with COMMON_CLK
+> (selected by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (selected by
+> SOC_RT305X) is possible:
 
-There's another problem that 'frame-master' and 'bitclock-master' have 
-inconsistent types of boolean and phandle. Having the properties just 
-point to the local or remote endpoint within an endpoint node is kind of 
-pointless. We should have gone with just boolean, but looks like we 
-already have several users. MMP OLPC is the one platform using boolean, 
-but it happens to work because the properties are effectively ignored 
-and CPU DAI as the master is the default.
+Ah, that makes sense.
 
-Rob
+> 
+>   WARNING: unmet direct dependencies detected for COMMON_CLK
+>     Depends on [n]: !HAVE_LEGACY_CLK [=y]
+>     Selected by [y]:
+>     - SND_SUN8I_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+>       (ARCH_SUNXI || COMPILE_TEST [=y]) && OF [=y] && (MACH_SUN8I || ARM64 && ARCH_SUNXI || COMPILE_TEST [=y])
+> 
+>     /usr/bin/mips-linux-gnu-ld: drivers/clk/clk.o: in function `clk_set_rate':
+>     (.text+0xaeb4): multiple definition of `clk_set_rate'; arch/mips/ralink/clk.o:(.text+0x88): first defined here
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/arm/mach-sunxi/Kconfig | 1 +
+>  sound/soc/sunxi/Kconfig     | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-sunxi/Kconfig b/arch/arm/mach-sunxi/Kconfig
+> index eeadb1a4dcfe..4d9f9b6d329d 100644
+> --- a/arch/arm/mach-sunxi/Kconfig
+> +++ b/arch/arm/mach-sunxi/Kconfig
+> @@ -4,6 +4,7 @@ menuconfig ARCH_SUNXI
+>  	depends on ARCH_MULTI_V5 || ARCH_MULTI_V7
+>  	select ARCH_HAS_RESET_CONTROLLER
+>  	select CLKSRC_MMIO
+> +	select COMMON_CLK
 
-Rob Herring (3):
-  ASoC: dt-bindings: Use OF graph schema
-  ASoC: dt-bindings: marvell,mmp-sspa: Use audio-graph-port schema
-  ASoC: dt-bindings: Refine 'frame-master' and 'bitclock-master' type
+This is not necessary, since ARCH_SUNXI depends (through ARCH_MULTI_V{5,7}) on
+ARCH_MULTIPLATFORM, which selects COMMON_CLK already.
 
-Sameer Pujar (1):
-  ASoC: audio-graph-card: Refactor schema
+>  	select GENERIC_IRQ_CHIP
+>  	select GPIOLIB
+>  	select PINCTRL
+> diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+> index 69b9d8515335..ddcaaa98d3cb 100644
+> --- a/sound/soc/sunxi/Kconfig
+> +++ b/sound/soc/sunxi/Kconfig
+> @@ -14,7 +14,7 @@ config SND_SUN8I_CODEC
+>  	tristate "Allwinner SUN8I audio codec"
+>  	depends on OF
+>  	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+> -	select COMMON_CLK
+> +	depends on COMMON_CLK
+>  	select REGMAP_MMIO
+>  	help
+>  	  This option enables the digital part of the internal audio codec for
+> 
 
- .../bindings/sound/audio-graph-card.yaml      | 106 +-----------------
- .../bindings/sound/audio-graph-port.yaml      |  72 ++++++++++++
- .../bindings/sound/audio-graph.yaml           |  45 ++++++++
- .../bindings/sound/marvell,mmp-sspa.yaml      |  25 +----
- .../bindings/sound/renesas,rsnd.yaml          |  12 +-
- .../bindings/sound/simple-card.yaml           |   6 +-
- 6 files changed, 132 insertions(+), 134 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-port.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/audio-graph.yaml
+For this file:
+Reviewed-by: Samuel Holland <samuel@sholland.org>
 
-
-base-commit: e2e99930ec006c6fe1d62af339a765ade71a0d9a
--- 
-2.25.1
-
+Thanks,
+Samuel
