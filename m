@@ -2,73 +2,93 @@ Return-Path: <SRS0=TkwG=EX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SIGNED_OFF_BY,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SIGNED_OFF_BY,SPF_HELO_NONE,
+	SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 627E7C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A413C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:38:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C75A246BE
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:18:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A031724656
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Nov 2020 07:38:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rUP/cDxd"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C75A246BE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MNQfqLQn"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A031724656
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D37ED1742;
-	Tue, 17 Nov 2020 08:17:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D37ED1742
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10C4A1742;
+	Tue, 17 Nov 2020 08:38:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10C4A1742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605597478;
-	bh=UdxH+HtZ3JhgnzkEgHEvKvsvTwa2VMJVg+xpoNk6kBU=;
+	s=default; t=1605598735;
+	bh=4lIS54VdGuqsiQB1gaz1o21sUiH6v8Utz8nnKKLAbCo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rUP/cDxdKc/FciNjaXdBybMba0X0TyYl1KxFHO9xS0DoAPkXvbNP+z5uov4Jme0Vp
-	 UVC/O1DcOlB+VkeOINy2OMx4Dft61ZtE4eb3Bcp+48bqHebl2b6QSH8f0VeZRNdOHg
-	 MDuJ16kXVGn0WMZ7C267vMfH3dhom2siA7by8Zt4=
+	b=MNQfqLQntAWqRR6VVFtYjnbmAiyYrUEtrDxBQct159sSGAl1fhvixqWS8VBmQqLOc
+	 S1oknqzx5nm/Z/SzCxdWv7DTilUWpeizyz7FZrOAnOV6rejNqWojsAAvaG0xCHxTXL
+	 aEJRr8uPAp9AV9V/6qtzLKlC8628dJVj7M26Bs8k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B18AF800E2;
-	Tue, 17 Nov 2020 08:17:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 824AEF801ED;
+	Tue, 17 Nov 2020 08:38:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03858F801F5; Tue, 17 Nov 2020 08:17:05 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 05801F801F5; Tue, 17 Nov 2020 08:38:02 +0100 (CET)
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com
+ [209.85.128.67])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 108ABF800E2
- for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 08:16:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 108ABF800E2
-Received: from localhost (thunderhill.nvidia.com [216.228.112.22])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 668112463B;
- Tue, 17 Nov 2020 07:16:45 +0000 (UTC)
-Date: Tue, 17 Nov 2020 09:16:41 +0200
-From: Leon Romanovsky <leonro@nvidia.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v4 01/10] Add auxiliary bus support
-Message-ID: <20201117071641.GN47002@unreal>
-References: <20201113161859.1775473-1-david.m.ertman@intel.com>
- <20201113161859.1775473-2-david.m.ertman@intel.com>
- <20201117053000.GM47002@unreal> <X7N1naYOXodPsP/I@kroah.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6B96F800FE
+ for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2020 08:37:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B96F800FE
+Received: by mail-wm1-f67.google.com with SMTP id 19so2276164wmf.1
+ for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2020 23:37:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=18xGlNNpDhvVYVdS8rF0z2fNATOQumPp5b7l5cZcXvw=;
+ b=K1kin1o9dk45aq/uxQU+DD6vI4VZJnJCXduK9CR2tatPbjGRjiGtnJWhlbboUK7kKK
+ sMAEmdtagAMu25G6Di1ujW3iTj6DwolULXKmF5UrABbNzhqBywrs6B2OfdygYfAzSxlH
+ WBnThWV4J+JF29zWAjaw1gn3aguaTVkQo83O5ttfR3H0Qwjgi5k+rVLas5Gz+9wlreb8
+ ZS3zGghN3nhZhXI/X2auZl9Tw7bUTup2JOV2aamfwvqiO5pxEraSBcWc5JNIxuSVIcjN
+ /GDRx2pIgmlEMlkb6WPeRp4HMO3zE4v/HnuBPmE+Nm7s6w1rZuNi0iKKlTVmAmOqllZl
+ KQ4A==
+X-Gm-Message-State: AOAM530eyLgsmFN3jb2yPndmAN5Xv401X7Eq77F6zxVgywvg++4hM4oV
+ iuWAQnOpAZ6o+24fWghG7q4=
+X-Google-Smtp-Source: ABdhPJyHbqmcdYgBsSt4If51dziBJ4uOp+0GJRgB5sF5O5WZ7vgFMBLSfMpTds+fFwooZbU/Vhir4w==
+X-Received: by 2002:a1c:7704:: with SMTP id t4mr2234501wmi.48.1605598666215;
+ Mon, 16 Nov 2020 23:37:46 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+ by smtp.googlemail.com with ESMTPSA id t23sm2151117wmn.4.2020.11.16.23.37.44
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 16 Nov 2020 23:37:44 -0800 (PST)
+Date: Tue, 17 Nov 2020 08:37:43 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Samuel Holland <samuel@sholland.org>
+Subject: Re: [RFC 2/3] ARM: sunxi: do not select COMMON_CLK to fix builds
+Message-ID: <20201117073743.GB3436@kozik-lap>
+References: <20201115170950.304460-1-krzk@kernel.org>
+ <20201115170950.304460-3-krzk@kernel.org>
+ <f637762e-0b02-1705-ea6b-24ac338fcd69@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <X7N1naYOXodPsP/I@kroah.com>
-Cc: alsa-devel@alsa-project.org, parav@mellanox.com, tiwai@suse.de,
- netdev@vger.kernel.org, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
- linux-rdma@vger.kernel.org, dledford@redhat.com, broonie@kernel.org,
- jgg@nvidia.com, kuba@kernel.org, Dave Ertman <david.m.ertman@intel.com>,
- dan.j.williams@intel.com, shiraz.saleem@intel.com, davem@davemloft.net,
- linux-kernel@vger.kernel.org, kiran.patil@intel.com
+In-Reply-To: <f637762e-0b02-1705-ea6b-24ac338fcd69@sholland.org>
+Cc: devel@driverdev.osuosl.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Stephen Boyd <sboyd@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Maxime Ripard <mripard@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,66 +104,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Nov 17, 2020 at 08:02:53AM +0100, Greg KH wrote:
-> On Tue, Nov 17, 2020 at 07:30:00AM +0200, Leon Romanovsky wrote:
-> > On Fri, Nov 13, 2020 at 08:18:50AM -0800, Dave Ertman wrote:
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each auxiliary_device has a unique string based id; driver binds to
-> > > an auxiliary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > ---
-> >
-> > Greg,
-> >
-> > This horse was beaten to death, can we please progress with this patch?
-> > Create special topic branch or ack so I'll prepare this branch.
-> >
-> > We are in -rc4 now and we (Mellanox) can't hold our submissions anymore.
-> > My mlx5_core probe patches [1] were too intrusive and they are ready to
-> > be merged, Parav's patches got positive review as well [2] and will be
-> > taken next.
-> >
-> > We delayed and have in our internal queues the patches for VDPA, eswitch
-> > and followup for mlx5_core probe rework, but trapped due to this AUX bus
-> > patch.
->
-> There are no deadlines for kernel patches here, sorry.  Give me some
-> time to properly review this, core kernel changes should not be rushed.
+On Mon, Nov 16, 2020 at 10:36:12PM -0600, Samuel Holland wrote:
+> On 11/15/20 11:09 AM, Krzysztof Kozlowski wrote:
+> > COMMON_CLK is a user-selectable option with its own dependencies.  The
+> > most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
+> > should not select COMMON_CLK because they will create a dependency cycle
+> > and build failures.  For example on MIPS a configuration with COMMON_CLK
+> > (selected by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (selected by
+> > SOC_RT305X) is possible:
+> 
+> Ah, that makes sense.
+> 
+> > 
+> >   WARNING: unmet direct dependencies detected for COMMON_CLK
+> >     Depends on [n]: !HAVE_LEGACY_CLK [=y]
+> >     Selected by [y]:
+> >     - SND_SUN8I_CODEC [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+> >       (ARCH_SUNXI || COMPILE_TEST [=y]) && OF [=y] && (MACH_SUN8I || ARM64 && ARCH_SUNXI || COMPILE_TEST [=y])
+> > 
+> >     /usr/bin/mips-linux-gnu-ld: drivers/clk/clk.o: in function `clk_set_rate':
+> >     (.text+0xaeb4): multiple definition of `clk_set_rate'; arch/mips/ralink/clk.o:(.text+0x88): first defined here
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  arch/arm/mach-sunxi/Kconfig | 1 +
+> >  sound/soc/sunxi/Kconfig     | 2 +-
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/mach-sunxi/Kconfig b/arch/arm/mach-sunxi/Kconfig
+> > index eeadb1a4dcfe..4d9f9b6d329d 100644
+> > --- a/arch/arm/mach-sunxi/Kconfig
+> > +++ b/arch/arm/mach-sunxi/Kconfig
+> > @@ -4,6 +4,7 @@ menuconfig ARCH_SUNXI
+> >  	depends on ARCH_MULTI_V5 || ARCH_MULTI_V7
+> >  	select ARCH_HAS_RESET_CONTROLLER
+> >  	select CLKSRC_MMIO
+> > +	select COMMON_CLK
+> 
+> This is not necessary, since ARCH_SUNXI depends (through ARCH_MULTI_V{5,7}) on
+> ARCH_MULTIPLATFORM, which selects COMMON_CLK already.
 
-And here comes the difference between our views, from my POV it is not
-core kernel change that must to be done perfectly from the beginning,
-but change that will need to be improved/extended over time once more
-users will come.
+Thanks. I'll send a v2 with changes and your review.
 
->
-> Also, if you really want to blame someone for the delay, look at the
-> patch submitters, not the reviewers, as they are the ones that took a
-> very long time with this over the lifecycle of this patchset, not me.  I
-> have provided many "instant" reviews of this patchset, and then months
-> went by between updates from them.
-
-I'm not blaming anyone and especially you. It is just unfair that I
-found myself in the middle of this disaster while care enough to remind
-about the series.
-
-Thanks
-
->
-> greg k-h
+Best regards,
+Krzysztof
