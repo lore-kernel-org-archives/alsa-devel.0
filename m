@@ -2,57 +2,88 @@ Return-Path: <SRS0=NmsS=EY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0817AC56202
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 10:12:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC949C5519F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 11:56:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78E9C22210
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 10:12:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA61B241A5
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 11:56:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ciP4ghch"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78E9C22210
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T48OjA9v";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xwgJeEmy"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA61B241A5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA6AD172D;
-	Wed, 18 Nov 2020 11:11:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA6AD172D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8BEF16E7;
+	Wed, 18 Nov 2020 12:55:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8BEF16E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605694338;
-	bh=BgcAqdo7MYdwsSMHKZqz/3q3vSyuLzpwVg4tONTlAUs=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1605700589;
+	bh=8DteGFEDHExLDuA2v7dru1yYiDWrXBvYbEkB7IOOx9M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ciP4ghchpylYN78ExAvA+rexsDOCsAUKFvIfaRAynJWKJ8UYClPs1bI/FFxjksfNM
-	 BKZR+hjY+orTCEHi8fIpYiHY4aLyGThUT3DvbkO0QUBujR0eJzWJAfS3xFKwOdRp43
-	 snO1QQrOdEY/zndJR+TJfNjppmsbe/uQ43MFWBa8=
+	b=T48OjA9vYIuyfmyjCD2URSHO98PkroKj1wqNQhiMfvxDqLaFtWRsRS2VRw1/pve9N
+	 pfiEeSRhyCxG4WWgSiwAEMJ5CNnfbG277CntH60csExVjMPjI30FqZmLmcZGJWFmEZ
+	 5c82wwE0LrlqJ8ihJdwNJByA/x8hpBgxo+1h0l5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35047F80168;
-	Wed, 18 Nov 2020 11:11:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 735BCF80168;
+	Wed, 18 Nov 2020 12:55:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E966BF80168; Wed, 18 Nov 2020 11:11:26 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2241DF8010A
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 11:11:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2241DF8010A
+ id CC8D8F8016C; Wed, 18 Nov 2020 12:55:36 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0EE7F8010A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 12:55:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0EE7F8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="xwgJeEmy"
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9E6AD241A5;
+ Wed, 18 Nov 2020 11:55:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1605700521;
+ bh=8DteGFEDHExLDuA2v7dru1yYiDWrXBvYbEkB7IOOx9M=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=xwgJeEmynziAthU9g53yekIIrUgIiH1bzwT5ku+fxYAdOC0VUSZ43YFiHKPSTxLt8
+ aiu93QGtGgxup7uDjot+smpTAaYzfmYVWErfrzB6utEY7ZZgIxcEH7E17aVVC80QtA
+ Ex8ONgua+/RD2B8RxpEQUpxp5Onxui+iiK9lQLnM=
+Date: Wed, 18 Nov 2020 11:55:00 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Viorel Suman <viorel.suman@nxp.com>
+Subject: Re: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
+Message-ID: <20201118115500.GB4827@sirena.org.uk>
+References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
+ <20201117173901.GH5142@sirena.org.uk>
+ <VI1PR0401MB2272061C958E91FCAA239EB892E20@VI1PR0401MB2272.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1605694272096045017-webhooks-bot@alsa-project.org>
-References: <1605694272096045017-webhooks-bot@alsa-project.org>
-Subject: snd_pcm_hw_params_set_period_size_near() bug???
-Message-Id: <20201118101126.E966BF80168@alsa1.perex.cz>
-Date: Wed, 18 Nov 2020 11:11:26 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
+Content-Disposition: inline
+In-Reply-To: <VI1PR0401MB2272061C958E91FCAA239EB892E20@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+X-Cookie: A nuclear war can ruin your whole day.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "S.j. Wang" <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ "Viorel Suman \(OSS\)" <viorel.suman@oss.nxp.com>,
+ Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,9 +99,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #99 was edited from YangangCao:
 
-it's my fault, no big deal
+--U+BazGySraz5kW0T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/99
-Repository URL: https://github.com/alsa-project/alsa-lib
+On Tue, Nov 17, 2020 at 06:17:36PM +0000, Viorel Suman wrote:
+> > On Tue, Nov 17, 2020 at 12:20:36AM +0200, Viorel Suman (OSS) wrote:
+
+> > One thing I'm not clear on is if there's some way to ensure that we don=
+'t have
+> > different instances of the device resetting each other without them not=
+icing?
+> > Shouldn't be an issue in practice for the use here.
+
+> The way to ensure that we don't have different instances of the device re=
+setting each
+> other is to rely on the way the "shared" reset is handled by reset API:=
+=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +	ak4458->reset =3D devm_reset_control_get_optional_shared(ak4458->dev, N=
+ULL);
+> +	if (IS_ERR(ak4458->reset))
+> +		return PTR_ERR(ak4458->reset);
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Flip side of that then, how do we know when a reset has actually
+happened?
+
+--U+BazGySraz5kW0T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+1C5QACgkQJNaLcl1U
+h9BTlwf/VhlrRagEG7wN6OlxHYPd9OiV954EhacCfzyEMonXn3zC5VRRohOBUsQb
+RTRkVI3IDqwU9hgyexr2FvTl0zEmAUi01oqn8GiYGZ3xafVfswktws12UOx2zs9b
+bj76W6qVi8Ufv9A0HMuIiF/PmsLt7JgvPI4EooIpBYDr/GfLsWyA+GHizzspHHbZ
+wdTpt1/9+R3wwpVI9yyGMdkr2NOLw6v5AmRg9gKx+dhPkcfT9Fz24DS6/I96fyKS
+bKhdhYs/92fKvYewx9JBP8903r0guzgKtcasrXw91Y8Nd0PMhjrI1ey37vFD8gnR
+5OqW54VyBThSlYDN3p9iwZYif8hHAA==
+=W4/r
+-----END PGP SIGNATURE-----
+
+--U+BazGySraz5kW0T--
