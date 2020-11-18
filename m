@@ -8,86 +8,87 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5A1C5519F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:01:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2720AC63697
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:01:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 888E52080A
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:01:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2CA3420B80
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 14:01:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FZQVu0Lw";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzfS5ftW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 888E52080A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i8XLG3E3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItuNwInc"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CA3420B80
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 770A61743;
-	Wed, 18 Nov 2020 15:00:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 770A61743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73D7117BA;
+	Wed, 18 Nov 2020 15:00:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73D7117BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605708079;
-	bh=e1CdGycGD6LX6+DJfyJDdmzXiXHPLIi8pyzGeSRKKJ4=;
+	s=default; t=1605708084;
+	bh=s8FuYgKJ78wSn3OGugmA8kez5JuseWvs+rnANyhbNJo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FZQVu0LwfcyhiT5wv40Z/r6x1MYl2Sptstp2cAb5OFFwdj15bKJgzF8Rd3E9xGKQs
-	 HffWfJXLw+Z7qMBEMqZkZOFSR/pWBVglbRqfrX6YN8egph1xSqYm/ndndTemgFX992
-	 er+92K0fzHBIFfZ5j14LnYC+OhkwVkAZD5TVzIpE=
+	b=i8XLG3E3XY6LUd/oOBZIzne26rzT/RP3APbWOJMyYPXuITvcn86n8GscsMWcbfmHO
+	 RNns52hb7jzabHz7uGmRVH0OMixpMP2ztSnTlCcpLj0QDVE0wBioJrlkyHn+yq5nVd
+	 +ZVAVfuIcM+fBOpYLn07qy8gSiNmlQnGI+Nj1dfA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 240FFF804D6;
-	Wed, 18 Nov 2020 14:58:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E16CF804E1;
+	Wed, 18 Nov 2020 14:58:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4D2AF804E1; Wed, 18 Nov 2020 14:58:50 +0100 (CET)
+ id 336B0F804E0; Wed, 18 Nov 2020 14:58:51 +0100 (CET)
 Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com
  [IPv6:2a00:1450:4864:20::641])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB760F8010A
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 14:58:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB760F8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2B5FF800EE
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 14:58:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2B5FF800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="WzfS5ftW"
-Received: by mail-ej1-x641.google.com with SMTP id o9so2920368ejg.1
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 05:58:37 -0800 (PST)
+ header.b="ItuNwInc"
+Received: by mail-ej1-x641.google.com with SMTP id gj5so2868975ejb.8
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 05:58:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=/M45YtMWBHvWX7HJgiaCX3duzycDxACgeh25TxK15Eg=;
- b=WzfS5ftWkRMUzolpSh5HCyN4cmp70soK14s87h+2M08gwqkRfSM1li/SeATS7MA8CA
- n/sY36cmWUjV1SvmUdcnwVr88B4NjXCBd+xogRlmqDnN7DqOLXdQuISdhL57o6jwPxee
- IawguAG9hPu0NW7aAXvvmQ1fW4WTfO8oOP7dScEJdK0PnNfDMu27k9qRigi+sJu4VF3b
- Bxoik+iaaYnm1yT8K2F4x8HHZKjjlkbPX0lbLt7LpEQvd0TKi3Me4dyadjHW11Onb46M
- xYjT0zw3/9G6+6KLQJwPFviF+W9Sf6NNTpaw0SBLiN2PLCWcq6h5hvUlWV8NfZRGOh+h
- YOPQ==
+ bh=XzfD+8x/gl2vij+zxF0vgPJlMvOnmt8qPR/mutEO1AU=;
+ b=ItuNwInc2MBwj4FPc/vi8+RT3PaxeSvrL0xAoc2Um/9NAI/K/r5esaAf8vYLZvfi2N
+ Gn5FdFm8AcWSkuEj0mecew0gSpzUcKx2bY5Ys2T/SRcbCzEslZloWfRO9hpVGkfPdAUN
+ e4812uni4BzgCCh4xGpbNRXbyq9JcguzIWoNBt+64GLcVPlTtcMixYIZyjl4x64n2LhW
+ t5ygd/OxZWeGUFR8o+rwptKuSqP+1/EAkhuhHNw0Jz3yVtNr1I78EelRvf4MTthuMFaU
+ Susaq2zd7AYwogwUmtCBT0TwDkRMqBHNpGjG58LoW+PDY4Nf9gt7ECy3xXxAXeb4KMEw
+ DRkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=/M45YtMWBHvWX7HJgiaCX3duzycDxACgeh25TxK15Eg=;
- b=UqxBUKvgTFOjMzA1UlKCrubFOczPomI5G0biao1SCTkQch1wQ8y1sKrV7vUr9+bSjo
- v1e3GREXblNDeqqWQZsR0ARxnb2uQVGpvniDz4Jj7WOkWH3YcljbLEoe+Oc+otPr1v4x
- 48Xu/aGEN4zcfxKn40ABypSLM32vTOQS0YHJ1TMVi+3Fer4lWROcwPBPEYlVddDADAH0
- Cc4SWEBWsQXKMWGbgpOt+h0xHCMEauTIH8Y2QqpqQhQTEfx3zyH9NqV/n7AInb8KD+Bz
- PTpUTaYsrdgNxG2esYETXFWBCskUxYDPbTNmvACwIbbO3IoiWpnA+yjhn3das60LXtur
- F9YA==
-X-Gm-Message-State: AOAM5334IbCwGrJy2kRgOIwl8nt38qdkuJhKGgmWLtL202CXO/S3mcSv
- rkFRL+QzavV6LmXbUuR3oIU=
-X-Google-Smtp-Source: ABdhPJzjtTA6aSJDvhbh3mZRYc7KQzylCh451tX0U9bpOnGQQ2ddCN9W+I66OX1Z3ial8hqeM8QM/w==
-X-Received: by 2002:a17:907:4335:: with SMTP id
- ni5mr20187759ejb.459.1605707917128; 
- Wed, 18 Nov 2020 05:58:37 -0800 (PST)
+ bh=XzfD+8x/gl2vij+zxF0vgPJlMvOnmt8qPR/mutEO1AU=;
+ b=ug+39a6oQr0L0a4wWt58J9PAg66EjXOo7KTGyjlvumEciopuGHOCxdp9JNsTWHOiBB
+ TV3nqld0y8rweoTeo67R6zx/RmAAw+/qq4qoFzn2Ex9UTKSzZz+neyIkXACW8aMo1N6W
+ axehOawIqsyX/2uo6Nr/xgTuqbAhMTGJ6AoHAOBzzD6b/8rmN1ltF8PuCsq1m/82AY4H
+ Q8znqsTXJBpBe0HJMEyYAfBN4KwbUZYXk1KgLDXPUhXYiqdl4wrgcGCzTeEgvTq3Rhxd
+ 6KUJounghhrBCODGTzAIU7MtfAmx+95xex/QbPVDKjkk/1C1uRzhN3lcr2SbHhzSaTHb
+ Bp4g==
+X-Gm-Message-State: AOAM533vCl1zeIy5pblR/khzZ5oIatvGTVeEHkJaoU6CbEYmZOBMbfVl
+ iAqLTaiWh5MCbWcy/ZLnQi65/RLNt4TNCw==
+X-Google-Smtp-Source: ABdhPJy6FxHe0EbiFMLb69ag6/AE/2uHZ1fKsTWtsbK6CS3f8YZgjTZfbNAGLYo8ILiVxlTQhXgfRQ==
+X-Received: by 2002:a17:906:6b86:: with SMTP id
+ l6mr24155838ejr.524.1605707915976; 
+ Wed, 18 Nov 2020 05:58:35 -0800 (PST)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id cx6sm13721384edb.61.2020.11.18.05.58.36
+ by smtp.gmail.com with ESMTPSA id cx6sm13721384edb.61.2020.11.18.05.58.34
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 18 Nov 2020 05:58:36 -0800 (PST)
+ Wed, 18 Nov 2020 05:58:35 -0800 (PST)
 From: Johan Jonker <jbx6244@gmail.com>
 To: heiko@sntech.de
-Subject: [PATCH v5 6/7] ARM: dts: rockchip: add hdmi-sound node to rk3066a.dtsi
-Date: Wed, 18 Nov 2020 14:58:21 +0100
-Message-Id: <20201118135822.9582-7-jbx6244@gmail.com>
+Subject: [PATCH v5 5/7] ARM: dts: rockchip: rk3066a: add #sound-dai-cells to
+ hdmi node
+Date: Wed, 18 Nov 2020 14:58:20 +0100
+Message-Id: <20201118135822.9582-6-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20201118135822.9582-1-jbx6244@gmail.com>
 References: <20201118135822.9582-1-jbx6244@gmail.com>
@@ -111,41 +112,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add hdmi-sound node to rk3066a.dtsi, so that it
-can be reused by boards with HDMI support.
+'#sound-dai-cells' is required to properly interpret
+the list of DAI specified in the 'sound-dai' property,
+so add them to the 'hdmi' node for 'rk3066a.dtsi'.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- arch/arm/boot/dts/rk3066a.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm/boot/dts/rk3066a.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
-index 67fcb0dc9..f91ce3054 100644
+index 252750c97..67fcb0dc9 100644
 --- a/arch/arm/boot/dts/rk3066a.dtsi
 +++ b/arch/arm/boot/dts/rk3066a.dtsi
-@@ -49,6 +49,22 @@
- 		ports = <&vop0_out>, <&vop1_out>;
- 	};
+@@ -124,6 +124,7 @@
+ 		pinctrl-0 = <&hdmii2c_xfer>, <&hdmi_hpd>;
+ 		power-domains = <&power RK3066_PD_VIO>;
+ 		rockchip,grf = <&grf>;
++		#sound-dai-cells = <0>;
+ 		status = "disabled";
  
-+	hdmi_sound: hdmi-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "HDMI";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,mclk-fs = <256>;
-+		status = "disabled";
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s0>;
-+		};
-+	};
-+
- 	sram: sram@10080000 {
- 		compatible = "mmio-sram";
- 		reg = <0x10080000 0x10000>;
+ 		ports {
 -- 
 2.11.0
 
