@@ -7,76 +7,79 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1734DC5519F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 06:39:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72F10C5519F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 07:35:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE60624655
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 06:39:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A60C224656
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 07:35:36 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A51J8Jhf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE60624655
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=v3.sk
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="j5xPpLTi"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A60C224656
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BEC11674;
-	Wed, 18 Nov 2020 07:38:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BEC11674
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB9D61718;
+	Wed, 18 Nov 2020 08:34:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB9D61718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605681583;
-	bh=lBuS2tDIdGTb/fQxn6fB/oCb7deDJq2ZwxTMYlGmMLM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1605684934;
+	bh=4Ot/GLEYpwpIUt+eg5I50IrRDpdg9KK+mVzz+222Jh0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A51J8JhfALJEgba1GOpQa05iR04EnkzVNwhOEtEGmOKXV0vZbBtsTwX2+DzNnWwOI
-	 pfgtNwGux7tVs+brGNFL47Q+8Lwjr/Qdw1wsVp9QMIg3zFbmNKzkCqXG2D2/ejy2+j
-	 bJIyGLIO9sQfI98CK1ISu8SKISmG50nq8LWF3WQ0=
+	b=j5xPpLTirRXDtG4A/Md5d9g9YKceYM0mqfaIpSa5duZyviNFjTc9YD0VcuLYB8eMs
+	 EnoEKKQvmKc7eR+Nxb7X2zAvuiffRMVG9kgr1RODqZf9gE7kyqwVnEYC9UIu2ed7h7
+	 I7l5LgRv+XQYNmtLot2YhnHjWi/SoTdAYtRHlM4c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 091FFF80168;
-	Wed, 18 Nov 2020 07:38:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 689F0F80168;
+	Wed, 18 Nov 2020 08:34:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DB10F8016C; Wed, 18 Nov 2020 07:38:51 +0100 (CET)
-Received: from shell.v3.sk (mail.v3.sk [167.172.186.51])
+ id C9E18F8016C; Wed, 18 Nov 2020 08:34:40 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6B9CF800EE
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 07:38:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6B9CF800EE
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by zimbra.v3.sk (Postfix) with ESMTP id 38C32DF8A5;
- Wed, 18 Nov 2020 06:35:58 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
- by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
- with ESMTP id NqEWOd0Kgx6T; Wed, 18 Nov 2020 06:35:57 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by zimbra.v3.sk (Postfix) with ESMTP id 079A0E0190;
- Wed, 18 Nov 2020 06:35:57 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
- by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
- with ESMTP id 2RffOTGIp8l2; Wed, 18 Nov 2020 06:35:56 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
- by zimbra.v3.sk (Postfix) with ESMTPSA id B17DDDF8A5;
- Wed, 18 Nov 2020 06:35:56 +0000 (UTC)
-Date: Wed, 18 Nov 2020 07:38:36 +0100
-From: Lubomir Rintel <lkundrak@v3.sk>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: dt-bindings: marvell,mmp-sspa: Use
- audio-graph-port schema
-Message-ID: <20201118063836.GA5540@demiurge.local>
-References: <20201117013349.2458416-1-robh@kernel.org>
- <20201117013349.2458416-4-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201117013349.2458416-4-robh@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Sameer Pujar <spujar@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BAE9AF80158
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 08:34:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAE9AF80158
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 5041EABDE;
+ Wed, 18 Nov 2020 07:34:26 +0000 (UTC)
+Date: Wed, 18 Nov 2020 08:34:25 +0100
+Message-ID: <s5h5z63ruda.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: Re: [PATCH v3] ALSA: usb-audio: disable 96khz support for HUAWEI
+ USB-C HEADSET
+In-Reply-To: <1605677166.23663.4.camel@mtkswgap22>
+References: <1604996266.2817.1.camel@mtkswgap22>
+ <1604999048-20294-1-git-send-email-macpaul.lin@mediatek.com>
+ <1605677166.23663.4.camel@mtkswgap22>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ wsd_upstream <wsd_upstream@mediatek.com>,
+ Christopher Swenson <swenson@swenson.io>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Macpaul Lin <macpaul@gmail.com>,
+ "Eddie Hung \(=?UTF-8?B?5rSq5q2j6ZGr?=\)" <Eddie.Hung@mediatek.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "Chunfeng Yun \(=?UTF-8?B?5LqR5pil5bOw?=\)" <Chunfeng.Yun@mediatek.com>,
+ Alexander Tsoy <alexander@tsoy.me>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ Nick Kossifidis <mickflemm@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Nicola Lunghi <nick83ola@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "Ainge Hsu \(=?UTF-8?B?5b6Q5ben5a6c?=\)" <ainge.hsu@mediatek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,74 +95,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 16, 2020 at 07:33:48PM -0600, Rob Herring wrote:
-> Now that we have a graph schema, reference it from the marvell,mmp-sspa
-> schema.
+On Wed, 18 Nov 2020 06:26:06 +0100,
+Macpaul Lin wrote:
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-Acked-by: Lubomir Rintel <lkundrak@v3.sk>
-
-Thank you
-Lubo
-
-> ---
->  .../bindings/sound/marvell,mmp-sspa.yaml      | 25 +++----------------
->  1 file changed, 3 insertions(+), 22 deletions(-)
+> On Tue, 2020-11-10 at 17:04 +0800, Macpaul Lin wrote:
+> > The HUAWEI USB-C headset (VID:0x12d1, PID:0x3a07) reported it supports
+> > 96khz. However there will be some random issue under 96khz.
+> > Not sure if there is any alternate setting could be applied.
+> > Hence 48khz is suggested to be applied at this moment.
+> > 
+> > Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> > Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> > Changes for v2:
+> >   - Fix build error.
+> >   - Add Cc: stable@vger.kernel.org
+> > Changes for v3:
+> >   - Replace "udev" with "chip->dev" according to Takashi's suggestion. Thanks.
+> > 
+> >  sound/usb/format.c |    5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/sound/usb/format.c b/sound/usb/format.c
+> > index 1b28d01..0aff774 100644
+> > --- a/sound/usb/format.c
+> > +++ b/sound/usb/format.c
+> > @@ -217,6 +217,11 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+> >  			    (chip->usb_id == USB_ID(0x041e, 0x4064) ||
+> >  			     chip->usb_id == USB_ID(0x041e, 0x4068)))
+> >  				rate = 8000;
+> > +			/* Huawei headset can't support 96kHz fully */
+> > +			if (rate == 96000 &&
+> > +			    chip->usb_id == USB_ID(0x12d1, 0x3a07) &&
+> > +			    le16_to_cpu(chip->dev->descriptor.bcdDevice) == 0x49)
+> > +				continue;
+> >  
+> >  			fp->rate_table[fp->nr_rates] = rate;
+> >  			if (!fp->rate_min || rate < fp->rate_min)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/marvell,mmp-sspa.yaml b/Documentation/devicetree/bindings/sound/marvell,mmp-sspa.yaml
-> index 6d20a24a2ae9..234f64a32184 100644
-> --- a/Documentation/devicetree/bindings/sound/marvell,mmp-sspa.yaml
-> +++ b/Documentation/devicetree/bindings/sound/marvell,mmp-sspa.yaml
-> @@ -9,6 +9,9 @@ title: Marvel SSPA Digital Audio Interface Bindings
->  maintainers:
->    - Lubomir Rintel <lkundrak@v3.sk>
->  
-> +allOf:
-> +  - $ref: audio-graph-port.yaml#
-> +
->  properties:
->    $nodename:
->      pattern: "^audio-controller(@.*)?$"
-> @@ -58,29 +61,9 @@ properties:
->          type: object
->  
->          properties:
-> -          remote-endpoint: true
-> -
-> -          frame-master:
-> -            type: boolean
-> -            description: SoC generates the frame clock
-> -
-> -          bitclock-master:
-> -            type: boolean
-> -            description: SoC generates the bit clock
-> -
->            dai-format:
-> -            $ref: /schemas/types.yaml#/definitions/string
-> -            description: The digital audio format
->              const: i2s
->  
-> -        required:
-> -          - remote-endpoint
-> -
-> -    required:
-> -      - endpoint
-> -
-> -    additionalProperties: false
-> -
->  required:
->    - "#sound-dai-cells"
->    - compatible
-> @@ -112,8 +95,6 @@ examples:
->        port {
->          endpoint {
->            remote-endpoint = <&rt5631_0>;
-> -          frame-master;
-> -          bitclock-master;
->            dai-format = "i2s";
->          };
->        };
-> -- 
-> 2.25.1
-> 
+> Sorry for bothering again, please hold-on this patch.
+> I'm still trying to clarify if there is another approach for this
+> interoperability issue.
+> I'll update this thread once the result has came out.
+
+OK, thanks for information.
+
+
+Takashi
