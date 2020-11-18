@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 519C4C5519F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:51:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EFBEC5519F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:51:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7391246BC
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:51:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 3BA65246BC
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:51:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vSAdUWqV"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7391246BC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="LmQaxLaV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BA65246BC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 659401715;
-	Thu, 19 Nov 2020 00:50:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 659401715
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E06F16DD;
+	Thu, 19 Nov 2020 00:50:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E06F16DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605743490;
-	bh=DMWgSMQk/idsV/jpmjZe7EtS2c9vBAEpZ7nAJ1txRHU=;
+	s=default; t=1605743502;
+	bh=Dok3LrmoxM0QMnU3pPkkq3a9pV/kMpSJUmVwyHjtPLs=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vSAdUWqV4abHb+soWiTSNoNCLLVBQuwUVnodoRpLUERDdjKGx9RYp7S8k53wH5+zS
-	 oJwCVOLZRHFkugdlkyBBxDYnr80WWsmuY15BV2Q2gdaaKXETLwMvQ8Y4dRISNQei3d
-	 RpesQ4Xydm4bRkS+1ijc2ZIsd9kThOoTaDOxhPGQ=
+	b=LmQaxLaV7g3A4y7lx0TZNU2fKCeEt/CGHfQcyC0aSWzsujhbt1zma+wjP280AQVHg
+	 mJmVvDO0IxQZqPRN9BixnGjAZ5xT/4Jj4b6o7gxQWqk9IjyF47BIrjoolCEJFnzbv+
+	 mgEGAaHBS8IagdWgb0ejAi74giZavBiM9Y1PTtzs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49ABFF8019D;
-	Thu, 19 Nov 2020 00:50:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20A2FF804C3;
+	Thu, 19 Nov 2020 00:50:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2AA5F80276; Thu, 19 Nov 2020 00:50:07 +0100 (CET)
+ id 6FF07F804CA; Thu, 19 Nov 2020 00:50:11 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 004A8F8016C
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 00:49:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 004A8F8016C
-Date: 19 Nov 2020 08:49:57 +0900
-X-IronPort-AV: E=Sophos;i="5.77,488,1596466800"; d="scan'208";a="62947498"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 Nov 2020 08:49:57 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 66150F800EE
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 00:50:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66150F800EE
+Date: 19 Nov 2020 08:50:04 +0900
+X-IronPort-AV: E=Sophos;i="5.77,488,1596466800"; d="scan'208";a="62947520"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 19 Nov 2020 08:50:04 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id DB17D400940B;
- Thu, 19 Nov 2020 08:49:57 +0900 (JST)
-Message-ID: <87o8ju5iwv.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id EF4B04147291;
+ Thu, 19 Nov 2020 08:50:03 +0900 (JST)
+Message-ID: <87mtze5iwp.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/5] ASoC: soc-compress: move soc_compr_free() next to
- soc_compr_open()
+Subject: [PATCH 2/5] ASoC: soc-dai: add mark for
+ snd_soc_dai_compr_startup/shutdown()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87pn4a5ixl.wl-kuninori.morimoto.gx@renesas.com>
@@ -79,100 +79,148 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch moves soc_compr_free() next to soc_compr_open().
-This is prepare for soc_compr_open() cleanup.
+soc_compr_open() does rollback when failed (A),
+but, it is almost same as soc_compr_free().
+
+	static int soc_compr_open(xxx)
+	{
+		...
+		if (ret < 0)
+			goto xxx_err;
+		...
+		return 0;
+
+ ^	machine_err:
+ |		...
+ |	out:
+(A)		...
+ |	pm_err:
+ |		...
+ v		return ret;
+	}
+
+The difference is
+soc_compr_free()  is for all dai/component/substream,
+rollback          is for succeeded part only.
+
+This kind of duplicated code can be a hotbed of bugs,
+thus, we want to share soc_compr_free() and rollback.
+=>	1) snd_soc_dai_compr_startup/shutdown()
+	2) snd_soc_component_compr_open/free()
+	3) snd_soc_link_compr_startup/shutdown()
+
+This patch is for 1) snd_soc_dai_compr_startup/shutdown(),
+and adds new cstream mark.
+It will mark cstream when startup() was suceeded.
+If rollback happen *after* that, it will check rollback flag
+and marked cstream.
+
+It cares *previous* startup() only now,
+but we might want to check *whole* marked cstream in the future.
+This patch is using macro so that it can be easily adjust to it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-compress.c | 68 ++++++++++++++++++++--------------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
+ include/sound/soc-dai.h  |  4 +++-
+ sound/soc/soc-compress.c |  8 ++++----
+ sound/soc/soc-dai.c      | 13 ++++++++++++-
+ 3 files changed, 19 insertions(+), 6 deletions(-)
 
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 4bf759f025d2..6f54401d3de9 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -196,7 +196,8 @@ int snd_soc_pcm_dai_bespoke_trigger(struct snd_pcm_substream *substream,
+ int snd_soc_dai_compr_startup(struct snd_soc_dai *dai,
+ 			      struct snd_compr_stream *cstream);
+ void snd_soc_dai_compr_shutdown(struct snd_soc_dai *dai,
+-				struct snd_compr_stream *cstream);
++				struct snd_compr_stream *cstream,
++				int rollback);
+ int snd_soc_dai_compr_trigger(struct snd_soc_dai *dai,
+ 			      struct snd_compr_stream *cstream, int cmd);
+ int snd_soc_dai_compr_set_params(struct snd_soc_dai *dai,
+@@ -400,6 +401,7 @@ struct snd_soc_dai {
+ 	/* function mark */
+ 	struct snd_pcm_substream *mark_startup;
+ 	struct snd_pcm_substream *mark_hw_params;
++	struct snd_compr_stream  *mark_compr_startup;
+ 
+ 	/* bit field */
+ 	unsigned int probed:1;
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 5a751d5d3847..792c2aa1a3c0 100644
+index 792c2aa1a3c0..d85b6b174006 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -22,6 +22,40 @@
- #include <sound/soc-link.h>
- #include <linux/pm_runtime.h>
+@@ -45,7 +45,7 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
  
-+static int soc_compr_free(struct snd_compr_stream *cstream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	int stream = cstream->direction; /* SND_COMPRESS_xxx is same as SNDRV_PCM_STREAM_xxx */
-+
-+	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
-+
-+	snd_soc_runtime_deactivate(rtd, stream);
-+
-+	snd_soc_dai_digital_mute(codec_dai, 1, stream);
-+
-+	if (!snd_soc_dai_active(cpu_dai))
-+		cpu_dai->rate = 0;
-+
-+	if (!snd_soc_dai_active(codec_dai))
-+		codec_dai->rate = 0;
-+
-+	snd_soc_link_compr_shutdown(cstream);
-+
-+	snd_soc_component_compr_free(cstream, NULL);
-+
-+	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
-+
-+	snd_soc_dapm_stream_stop(rtd, stream);
-+
-+	mutex_unlock(&rtd->card->pcm_mutex);
-+
-+	snd_soc_pcm_component_pm_runtime_put(rtd, cstream, 0);
-+
-+	return 0;
-+}
-+
- static int soc_compr_open(struct snd_compr_stream *cstream)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-@@ -140,40 +174,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	return ret;
- }
+ 	snd_soc_component_compr_free(cstream, NULL);
  
--static int soc_compr_free(struct snd_compr_stream *cstream)
--{
--	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	int stream = cstream->direction; /* SND_COMPRESS_xxx is same as SNDRV_PCM_STREAM_xxx */
--
--	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
--
--	snd_soc_runtime_deactivate(rtd, stream);
--
--	snd_soc_dai_digital_mute(codec_dai, 1, stream);
--
--	if (!snd_soc_dai_active(cpu_dai))
--		cpu_dai->rate = 0;
--
--	if (!snd_soc_dai_active(codec_dai))
--		codec_dai->rate = 0;
--
--	snd_soc_link_compr_shutdown(cstream);
--
--	snd_soc_component_compr_free(cstream, NULL);
--
 -	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
--
--	snd_soc_dapm_stream_stop(rtd, stream);
--
--	mutex_unlock(&rtd->card->pcm_mutex);
--
--	snd_soc_pcm_component_pm_runtime_put(rtd, cstream, 0);
--
--	return 0;
--}
--
- static int soc_compr_free_fe(struct snd_compr_stream *cstream)
++	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 0);
+ 
+ 	snd_soc_dapm_stream_stop(rtd, stream);
+ 
+@@ -91,7 +91,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ machine_err:
+ 	snd_soc_component_compr_free(cstream, component);
+ 
+-	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
++	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 1);
+ out:
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ pm_err:
+@@ -165,7 +165,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ machine_err:
+ 	snd_soc_component_compr_free(cstream, component);
+ open_err:
+-	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
++	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 1);
+ out:
+ 	dpcm_path_put(&list);
+ be_err:
+@@ -211,7 +211,7 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+ 
+ 	snd_soc_component_compr_free(cstream, NULL);
+ 
+-	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
++	snd_soc_dai_compr_shutdown(cpu_dai, cstream, 0);
+ 
+ 	mutex_unlock(&fe->card->mutex);
+ 	return 0;
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index 2686a566649b..9afc6e8c3f9f 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -612,16 +612,27 @@ int snd_soc_dai_compr_startup(struct snd_soc_dai *dai,
+ 	    dai->driver->cops->startup)
+ 		ret = dai->driver->cops->startup(cstream, dai);
+ 
++	/* mark cstream if succeeded */
++	if (ret == 0)
++		soc_dai_mark_push(dai, cstream, compr_startup);
++
+ 	return soc_dai_ret(dai, ret);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_compr_startup);
+ 
+ void snd_soc_dai_compr_shutdown(struct snd_soc_dai *dai,
+-				struct snd_compr_stream *cstream)
++				struct snd_compr_stream *cstream,
++				int rollback)
  {
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
++	if (rollback && !soc_dai_mark_match(dai, cstream, compr_startup))
++		return;
++
+ 	if (dai->driver->cops &&
+ 	    dai->driver->cops->shutdown)
+ 		dai->driver->cops->shutdown(cstream, dai);
++
++	/* remove marked cstream */
++	soc_dai_mark_pop(dai, cstream, compr_startup);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_compr_shutdown);
+ 
 -- 
 2.25.1
 
