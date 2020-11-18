@@ -2,93 +2,98 @@ Return-Path: <SRS0=NmsS=EY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 716D2C5519F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 17:05:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E0F8C6369E
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 17:05:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3367624888
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 17:05:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4CB1E2488A
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 17:05:21 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f+5bEHEC";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DcCauwZO"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3367624888
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wr8H8+xu";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Cwomn+wx"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CB1E2488A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 946AF1739;
-	Wed, 18 Nov 2020 18:04:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 946AF1739
+	by alsa0.perex.cz (Postfix) with ESMTPS id 803B8178B;
+	Wed, 18 Nov 2020 18:04:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 803B8178B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605719114;
-	bh=cktfywudPxgITyrb6gx5I8LknwnbS88DCbQ9IJllerw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=f+5bEHECj4RiWEdakZk+T0k6a23gA8GtQzb7HLWth/u1H5D+VVcucw/zIVr5IBZw4
-	 B+L0cMlqngjAR1v2CRc8f2CyEssbd77thgZXsld3sdCTRbRIOtjxMFoYPpC/rt5bFP
-	 pzR0VGnJ92jpQsCdTmmnzGVUqJI0aWqPu8E9/rlE=
+	s=default; t=1605719119;
+	bh=F69Xyt/TSqS62YVM3A/8ledP27iyXRS61kITEKYaPe4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Wr8H8+xuR6PDmdBoN5tAjg+n8Tx9fk1aaSlGslLpDzWuqxROFfW+Qo+aJ0rwjhVMv
+	 GJv9DlgYaP1NPnBkQTbei1Kq4+HAmWqRI55yvndpHstD0H9a7XK2mqrtN/yTiIJmv/
+	 JYBTxar/vFRuI6No7ug3qfjvoS5+EALvgwuJoywk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0373EF800EE;
-	Wed, 18 Nov 2020 18:03:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE638F804B1;
+	Wed, 18 Nov 2020 18:03:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90EA8F80168; Wed, 18 Nov 2020 18:03:29 +0100 (CET)
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com
- [IPv6:2a00:1450:4864:20::442])
+ id 87B6AF8019D; Wed, 18 Nov 2020 18:03:33 +0100 (CET)
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com
+ [IPv6:2a00:1450:4864:20::343])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F784F8010A
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 18:03:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F784F8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFCF9F800EE
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 18:03:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFCF9F800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="DcCauwZO"
-Received: by mail-wr1-x442.google.com with SMTP id k2so2963670wrx.2
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 09:03:16 -0800 (PST)
+ header.b="Cwomn+wx"
+Received: by mail-wm1-x343.google.com with SMTP id w24so3397643wmi.0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 09:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=+YU4/VDfrF6SXnta/ZtzFGixkNuFm7oEQTxiBQ1MOvE=;
- b=DcCauwZODG9C9KDCCHwf5zbBDn8+ph91my9YgOYBkYeuOJUURcKUXo2Q92GxqVrnT4
- 6ESMO8UR63avWUk7hm5ljw5V4CLAzDaIqrMxuq3+NzNO5PvXxTDnFJubeqFAIb3QlTLw
- dFPCUU0hS0EipKsUFkmSV3YqEQ40L/K3O4bh91C2/adgPG+l2rwEECe1ry08I11rEfxV
- Hje9quBPbQIAsbe2KyS8hTv7qsyB26U+eJm+unm7TFLJ/0V8HYwudBUuBBMGTCYBL0rI
- 70pnC1hGniV2kPvtYV36xscNR4X9B3gVWO7GrFpGbK83/mUmU+FnvihTcIf2jG13HdGj
- GEEg==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=/woKeC5KGNH7T/xAX1AxjALkVqvprR8gaAK4xA3oo5s=;
+ b=Cwomn+wxk4TpP9Q1CovJ8LXgrq/XaZVqHwkTs9e7Z2XG4LL1ZV0Kg96ssuPfZh3SqJ
+ 8hObLgj8AAoBhJ4FEC4GOsShwySqBDt74C2VOoZ/QjgpJAjZejaCAbk7U1AXU7ma4kQH
+ Rsfi+e855GEX30rE0v73w1djExqiYkNukF9x7s0+yg2CG7l2KXAOuM0rFhkOP0ZRrHng
+ v3YVM2X96ucTKh57Za3qXcvbnRTg+IVPw6oGmkPA2P5Jx5fDMppED3eRR3DIS6G06xaY
+ MaR2b+Ylcsz9WgIthC8vwt2I6CbTeupO3lZ3bwKtlldOHE01e4u1bnSXy9mwYhqXwqVu
+ VVdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=+YU4/VDfrF6SXnta/ZtzFGixkNuFm7oEQTxiBQ1MOvE=;
- b=iCsS3fVNQNoG2ihqlsvuwq1gMURU1bV0y69rSnHFLfzIjtN9aoZ0rvBQbYr7lNTX/+
- AYb2RwuGo0bpcoB9YtnZx6zF2r1avBDqJveftViy0kOO4LdOh22geYiJp6PbcaTB+tHr
- tITPjr0h/2YGVJbvJCMbn4UgUcFQHyBCJKjb46VBQ9IZD171V3ICT3QyM4EzZA5wWPt9
- d9cWS7ONyKwF7+YEMwkLJSitoUerWkjoM/7hoBrgNc/XAfNTDp8pgCPigpSKk+HNlYRH
- iJp28VmqTY63mN0tVthf1OTdzQF5NNj4P11jup7bXirUGCIFS0ick5NZ3o3f9MPFkGxI
- UDLw==
-X-Gm-Message-State: AOAM533Iswse2JaJ34831mDe1yrSuwUGkLBCoAhL2vsIZZXNHkZQus/5
- 6IMW5cmGHY7avBDWu6ttkeZZMQ==
-X-Google-Smtp-Source: ABdhPJwyafVZ5A61NzcRtYd9kIdiWBDwYv7z0pyImojRPLzHk57fiuxR7JwVCGidvBGKaDcufEoR8w==
-X-Received: by 2002:adf:8284:: with SMTP id 4mr5950124wrc.386.1605718995969;
- Wed, 18 Nov 2020 09:03:15 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=/woKeC5KGNH7T/xAX1AxjALkVqvprR8gaAK4xA3oo5s=;
+ b=uEkjVBAZChq7XYIPU5GrgPR6bVQtusYWZ55aC+7VsZqTxPOsoClUos7HUZJHfnzGgR
+ c7Hr8St6J23aw1JepcSTDrFPBJqRvT1die+QksURws5Q5AVwXO7890C3IQZ4NPhTs5Ab
+ 7KwDXLdNpAs/r8wHqepbQ00HOE7fNC9MGetdI7FGJ7/vo4WKS6zofw0GMRaSVijJDfZl
+ UuREkWE8SIct6JL10LtITz3c/EsRjLYIL1psootPaOkmlOgo/vMunxCnzmFdHE8RW9Ku
+ /zj3LpbuIKXoRrlBkxS01Bn6PgWpzxulNfFZOMml00GUIbCdsEDbDUJlS1gB+GsxYxC8
+ 6pkg==
+X-Gm-Message-State: AOAM532MBUpqFSKI3BSLYSB8p19agy2Y7B6wx4FaVibIZrggsTa2jdvV
+ J/luIgv4OkAFLaLTPN4J52KbHQ==
+X-Google-Smtp-Source: ABdhPJxpYksQa3n/Yd7hzS4PjipFts8SYkUlPiPMNc5G3xr8yEGbze95pQFeIwLcQmIPZBYri1H/ow==
+X-Received: by 2002:a05:600c:290a:: with SMTP id
+ i10mr1035685wmd.187.1605718999252; 
+ Wed, 18 Nov 2020 09:03:19 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id x13sm44233wmi.20.2020.11.18.09.03.14
+ by smtp.gmail.com with ESMTPSA id x13sm44233wmi.20.2020.11.18.09.03.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 18 Nov 2020 09:03:15 -0800 (PST)
+ Wed, 18 Nov 2020 09:03:17 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: srinivas.kandagatla@linaro.org,
 	srini@kernel.org
-Subject: [PATCH 0/2] slimbus: qcom-ngd: Add SSR and PDR support
-Date: Wed, 18 Nov 2020 17:02:44 +0000
-Message-Id: <20201118170246.16588-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] slimbus: qcom-ngd-ctrl: add Protection Domain Restart
+ Support
+Date: Wed, 18 Nov 2020 17:02:46 +0000
+Message-Id: <20201118170246.16588-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201118170246.16588-1-srinivas.kandagatla@linaro.org>
+References: <20201118170246.16588-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -108,23 +113,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Qualcomm DSPs support SSR(Subsystem Restart) and PDR(Protection Domain Restart)
-which usually restart the associated services!
-Current code does only relies on QMI channel notifications, but there could be
-race conditions between QMI notifcations and actual PDR/SSR events.
+Add support to protection domain restart. Protection domain restart
+would also restart the service just like SSR.
 
-This patchset adds support to these two events to address those race conditions.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/slimbus/Kconfig         |  1 +
+ drivers/slimbus/qcom-ngd-ctrl.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-Tested it on Dragon Board DB845c.
-
-Srinivas Kandagatla (2):
-  slimbus: qcom-ngd-ctrl: add Sub System Restart support
-  slimbus: qcom-ngd-ctrl: add Protection Domain Restart Support
-
- drivers/slimbus/Kconfig         |   2 +
- drivers/slimbus/qcom-ngd-ctrl.c | 121 ++++++++++++++++++++++++++++++--
- 2 files changed, 119 insertions(+), 4 deletions(-)
-
+diff --git a/drivers/slimbus/Kconfig b/drivers/slimbus/Kconfig
+index 7c950948a9ec..060a2c65978a 100644
+--- a/drivers/slimbus/Kconfig
++++ b/drivers/slimbus/Kconfig
+@@ -26,6 +26,7 @@ config SLIM_QCOM_NGD_CTRL
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	select QCOM_QMI_HELPERS
+ 	select QCOM_RPROC_COMMON
++	select QCOM_PDR_HELPERS
+ 	help
+ 	  Select driver if Qualcomm's SLIMbus Satellite Non-Generic Device
+ 	  Component is programmed using Linux kernel.
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index f62693653d2b..d8decb345e9d 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -19,6 +19,7 @@
+ #include <linux/of.h>
+ #include <linux/io.h>
+ #include <linux/soc/qcom/qmi.h>
++#include <linux/soc/qcom/pdr.h>
+ #include <net/sock.h>
+ #include "slimbus.h"
+ 
+@@ -166,6 +167,7 @@ struct qcom_slim_ngd_ctrl {
+ 	struct mutex ssr_lock;
+ 	struct notifier_block nb;
+ 	void *notifier;
++	struct pdr_handle *pdr;
+ 	enum qcom_slim_ngd_state state;
+ 	dma_addr_t rx_phys_base;
+ 	dma_addr_t tx_phys_base;
+@@ -1382,6 +1384,7 @@ static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
+ {
+ 	switch (action) {
+         case QCOM_SSR_BEFORE_SHUTDOWN:
++	case SERVREG_SERVICE_STATE_DOWN:
+ 		/* Make sure the last dma xfer is finished */
+ 		mutex_lock(&ctrl->tx_lock);
+ 		if (ctrl->state != QCOM_SLIM_NGD_CTRL_DOWN) {
+@@ -1393,6 +1396,7 @@ static int qcom_slim_ngd_ssr_pdr_notify(struct qcom_slim_ngd_ctrl *ctrl,
+ 		mutex_unlock(&ctrl->tx_lock);
+                 break;
+         case QCOM_SSR_AFTER_POWERUP:
++	case SERVREG_SERVICE_STATE_UP:
+ 		schedule_work(&ctrl->ngd_up_work);
+ 		break;
+         default:
+@@ -1412,6 +1416,12 @@ static int qcom_slim_ngd_ssr_notify(struct notifier_block *nb,
+ 	return qcom_slim_ngd_ssr_pdr_notify(ctrl, action);
+ }
+ 
++static void slim_pd_status(int state, char *svc_path, void *priv)
++{
++	struct qcom_slim_ngd_ctrl *ctrl = (struct qcom_slim_ngd_ctrl *)priv;
++
++	qcom_slim_ngd_ssr_pdr_notify(ctrl, state);
++}
+ static int of_qcom_slim_ngd_register(struct device *parent,
+ 				     struct qcom_slim_ngd_ctrl *ctrl)
+ {
+@@ -1499,6 +1509,7 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
+ 	struct qcom_slim_ngd_ctrl *ctrl;
+ 	struct resource *res;
+ 	int ret;
++	struct pdr_service *pds;
+ 
+ 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
+ 	if (!ctrl)
+@@ -1549,6 +1560,18 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
+ 	init_completion(&ctrl->qmi.qmi_comp);
+ 	init_completion(&ctrl->qmi_up);
+ 
++	ctrl->pdr = pdr_handle_alloc(slim_pd_status, ctrl);
++	if (IS_ERR(ctrl->pdr)) {
++		dev_err(dev, "Failed to init PDR handle\n");
++		return PTR_ERR(ctrl->pdr);
++	}
++
++	pds = pdr_add_lookup(ctrl->pdr, "avs/audio", "msm/adsp/audio_pd");
++	if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
++		dev_err(dev, "pdr add lookup failed: %d\n", ret);
++		return PTR_ERR(pds);
++	}
++
+ 	platform_driver_register(&qcom_slim_ngd_driver);
+ 	return of_qcom_slim_ngd_register(dev, ctrl);
+ }
+@@ -1565,6 +1588,7 @@ static int qcom_slim_ngd_remove(struct platform_device *pdev)
+ 	struct qcom_slim_ngd_ctrl *ctrl = platform_get_drvdata(pdev);
+ 
+ 	pm_runtime_disable(&pdev->dev);
++	pdr_handle_release(ctrl->pdr);
+ 	qcom_unregister_ssr_notifier(ctrl->notifier, &ctrl->nb);
+ 	qcom_slim_ngd_enable(ctrl, false);
+ 	qcom_slim_ngd_exit_dma(ctrl);
 -- 
 2.21.0
 
