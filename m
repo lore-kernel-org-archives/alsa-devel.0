@@ -2,58 +2,63 @@ Return-Path: <SRS0=NmsS=EY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A24AC6379D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:50:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 519C4C5519F
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:51:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 82F52246BB
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:50:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A7391246BC
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 23:51:32 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kQmf+8qs"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 82F52246BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vSAdUWqV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7391246BC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D58021700;
-	Thu, 19 Nov 2020 00:49:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D58021700
+	by alsa0.perex.cz (Postfix) with ESMTPS id 659401715;
+	Thu, 19 Nov 2020 00:50:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 659401715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605743439;
-	bh=cTkHR21D4tMOpN1oR+7W65TuuKdOxCovw2rzsI6Q0ng=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kQmf+8qsuztFI38xKwYtQRt8MtI12V0iIA+LexpXq75QNKtOSv5dcMflCjgU1GpT7
-	 VBj3oOCo9LOhlqGtKucIbAeLgEnjh6hgM+6CGYzC+D3StM19QK8TcSlLC/YE0PDVb1
-	 yzbgjm5Y4W4Z91sWpJ43V995Ufmrr6Tlo+bMz7GI=
+	s=default; t=1605743490;
+	bh=DMWgSMQk/idsV/jpmjZe7EtS2c9vBAEpZ7nAJ1txRHU=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=vSAdUWqV4abHb+soWiTSNoNCLLVBQuwUVnodoRpLUERDdjKGx9RYp7S8k53wH5+zS
+	 oJwCVOLZRHFkugdlkyBBxDYnr80WWsmuY15BV2Q2gdaaKXETLwMvQ8Y4dRISNQei3d
+	 RpesQ4Xydm4bRkS+1ijc2ZIsd9kThOoTaDOxhPGQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 207B8F80168;
-	Thu, 19 Nov 2020 00:49:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49ABFF8019D;
+	Thu, 19 Nov 2020 00:50:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A8FEF8016C; Thu, 19 Nov 2020 00:49:43 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A16B1F800EE
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 00:49:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A16B1F800EE
-Date: 19 Nov 2020 08:49:32 +0900
-X-IronPort-AV: E=Sophos;i="5.77,488,1596466800"; d="scan'208";a="63163772"
+ id F2AA5F80276; Thu, 19 Nov 2020 00:50:07 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 004A8F8016C
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 00:49:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 004A8F8016C
+Date: 19 Nov 2020 08:49:57 +0900
+X-IronPort-AV: E=Sophos;i="5.77,488,1596466800"; d="scan'208";a="62947498"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 19 Nov 2020 08:49:32 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 19 Nov 2020 08:49:57 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 89046400C4D2;
- Thu, 19 Nov 2020 08:49:32 +0900 (JST)
-Message-ID: <87pn4a5ixl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id DB17D400940B;
+ Thu, 19 Nov 2020 08:49:57 +0900 (JST)
+Message-ID: <87o8ju5iwv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/5] ASoC: merge soc_compr_open() rollback and soc_compr_free()
+Subject: [PATCH 1/5] ASoC: soc-compress: move soc_compr_free() next to
+ soc_compr_open()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87pn4a5ixl.wl-kuninori.morimoto.gx@renesas.com>
+References: <87pn4a5ixl.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -72,49 +77,102 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+This patch moves soc_compr_free() next to soc_compr_open().
+This is prepare for soc_compr_open() cleanup.
 
-soc_compr_open() does rollback when failed (A),
-but, it is almost same as soc_compr_free().
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-compress.c | 68 ++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-	static int soc_compr_open(xxx)
-	{
-		...
-		if (ret < 0)
-			goto xxx_err;
-		...
-		return 0;
-
- ^	machine_err:
- |		...
- |	out:
-(A)		...
- |	pm_err:
- |		...
- v		return ret;
-	}
-
-This kind of duplicated code can be a hotbed of bugs,
-thus, this patch-set share soc_compr_free() and rollback.
-
-Kuninori Morimoto (5):
-  ASoC: soc-compress: move soc_compr_free() next to soc_compr_open()
-  ASoC: soc-dai: add mark for snd_soc_dai_compr_startup/shutdown()
-  ASoC: soc-component: add mark for snd_soc_component_compr_open/free()
-  ASoC: soc-component: add mark for snd_soc_link_compr_startup/shutdown()
-  ASoC: soc-compress: add soc_compr_clean() and call it from soc_compr_open/free()
-
- include/sound/soc-component.h |   6 +-
- include/sound/soc-dai.h       |   4 +-
- include/sound/soc-link.h      |   3 +-
- include/sound/soc.h           |   1 +
- sound/soc/soc-component.c     |  17 +++--
- sound/soc/soc-compress.c      | 115 +++++++++++++++++-----------------
- sound/soc/soc-dai.c           |  13 +++-
- sound/soc/soc-link.c          |  11 +++-
- 8 files changed, 95 insertions(+), 75 deletions(-)
-
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 5a751d5d3847..792c2aa1a3c0 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -22,6 +22,40 @@
+ #include <sound/soc-link.h>
+ #include <linux/pm_runtime.h>
+ 
++static int soc_compr_free(struct snd_compr_stream *cstream)
++{
++	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	int stream = cstream->direction; /* SND_COMPRESS_xxx is same as SNDRV_PCM_STREAM_xxx */
++
++	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
++
++	snd_soc_runtime_deactivate(rtd, stream);
++
++	snd_soc_dai_digital_mute(codec_dai, 1, stream);
++
++	if (!snd_soc_dai_active(cpu_dai))
++		cpu_dai->rate = 0;
++
++	if (!snd_soc_dai_active(codec_dai))
++		codec_dai->rate = 0;
++
++	snd_soc_link_compr_shutdown(cstream);
++
++	snd_soc_component_compr_free(cstream, NULL);
++
++	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
++
++	snd_soc_dapm_stream_stop(rtd, stream);
++
++	mutex_unlock(&rtd->card->pcm_mutex);
++
++	snd_soc_pcm_component_pm_runtime_put(rtd, cstream, 0);
++
++	return 0;
++}
++
+ static int soc_compr_open(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+@@ -140,40 +174,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 	return ret;
+ }
+ 
+-static int soc_compr_free(struct snd_compr_stream *cstream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+-	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+-	int stream = cstream->direction; /* SND_COMPRESS_xxx is same as SNDRV_PCM_STREAM_xxx */
+-
+-	mutex_lock_nested(&rtd->card->pcm_mutex, rtd->card->pcm_subclass);
+-
+-	snd_soc_runtime_deactivate(rtd, stream);
+-
+-	snd_soc_dai_digital_mute(codec_dai, 1, stream);
+-
+-	if (!snd_soc_dai_active(cpu_dai))
+-		cpu_dai->rate = 0;
+-
+-	if (!snd_soc_dai_active(codec_dai))
+-		codec_dai->rate = 0;
+-
+-	snd_soc_link_compr_shutdown(cstream);
+-
+-	snd_soc_component_compr_free(cstream, NULL);
+-
+-	snd_soc_dai_compr_shutdown(cpu_dai, cstream);
+-
+-	snd_soc_dapm_stream_stop(rtd, stream);
+-
+-	mutex_unlock(&rtd->card->pcm_mutex);
+-
+-	snd_soc_pcm_component_pm_runtime_put(rtd, cstream, 0);
+-
+-	return 0;
+-}
+-
+ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
 -- 
 2.25.1
 
