@@ -2,91 +2,103 @@ Return-Path: <SRS0=NmsS=EY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45ED0C5519F
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 20:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A363C63798
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 21:00:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C1A052145D
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 20:26:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CCE19246CA
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Nov 2020 21:00:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="O4uzq6dA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1A052145D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EMSLIsoY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCE19246CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA8CA1710;
-	Wed, 18 Nov 2020 21:25:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA8CA1710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23F2B1709;
+	Wed, 18 Nov 2020 21:59:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23F2B1709
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605731205;
-	bh=89HJvYlqRKUiIthTxD53iVkEAkYEDE6FKvl+JEbZdJg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1605733224;
+	bh=FsnfQHzl5f07Ax8JF33wUFUnd8Ay93hr/Q1W7Erry/U=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O4uzq6dAll/lP42BB9rjSJmM2UzRnbagJ1yiUr8VOyA7f5RjdSfJK49eFdil2GUJf
-	 wrM6I/niKC/T0CDCJOJCaVSsazO8Cyl3n+PaG3SyY+Z3n+T2v2iDQVoFX2r6iDPj/c
-	 Ht5r5Nl37KaqAETI5Yvrs9NH0wv8jeAiBR9jdEu8=
+	b=EMSLIsoY9NdySwfuwuBhjh8R8bjsSNG3FcspM5dHF55pTlIeGzW8q36ZNZfkfcvFI
+	 qErMeEk1XQdXCoyj2JINo6zfxJkttyw1NtLowyu6IFY3CDJBaof51KZqRK7kj42tMN
+	 svkNRYb9CxSjsim9rOKcLeYTEXCk0k087R+ve37E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43F97F80168;
-	Wed, 18 Nov 2020 21:25:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEE03F80168;
+	Wed, 18 Nov 2020 21:59:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E59B7F8016C; Wed, 18 Nov 2020 21:25:52 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id A5990F8016C; Wed, 18 Nov 2020 21:59:32 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75DD4F8010A
- for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 21:25:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75DD4F8010A
-IronPort-SDR: gOWNjwhRKxwRtpF94afWwXUOBdFlgToMgaSTdqjbdtb9AFLeKnllIqMWGdxh3jVhRF3TXu2jCJ
- jy56cZ2NeKAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="170399314"
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; d="scan'208";a="170399314"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39E87F8010A
+ for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2020 21:59:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39E87F8010A
+IronPort-SDR: kQB6N7VL9V33fgZ4WNLfbV7q0nNHkRmfF6I3S3IyN+POC9gV6uUx5cHJ1pEetoV52oGo9G9Rzd
+ JvbETt6+8BVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9809"; a="151030812"
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; d="scan'208";a="151030812"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Nov 2020 12:25:41 -0800
-IronPort-SDR: nN+GntVSPZKDDuUozuO4HqA+RAe34zGu0qTMTiig5miumtGlOBeclFqv4Co9Jk3Z+3vRBeedqa
- cD9rz2a7JY9A==
-X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; d="scan'208";a="534473410"
-Received: from sowmyave-mobl.amr.corp.intel.com (HELO [10.212.131.189])
- ([10.212.131.189])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Nov 2020 12:25:40 -0800
-Subject: Re: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Nov 2020 12:59:18 -0800
+IronPort-SDR: 7/QasdqJrB35iuWCnN8Aj1HmhKEzdeO44wLqlRJ9kjGGbpR8B9y7Wcm1R9vAFTc3p/kS+ZABrc
+ VOgymQDlhULg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,488,1596524400"; d="scan'208";a="534482331"
+Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
+ by fmsmga005.fm.intel.com with ESMTP; 18 Nov 2020 12:59:16 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 18 Nov 2020 20:59:15 +0000
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Wed, 18 Nov 2020 20:59:15 +0000
+From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: RE: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
  to ACPI devices
-To: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- Takashi Iwai <tiwai@suse.de>
+Thread-Topic: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
+ to ACPI devices
+Thread-Index: AQHWuUTISKj33SVxVku5O7g0f1ygmanF+0XggABMLQCAAASUgIAEnFAQgAAmMgCAAVQSgIAAh8aQgACh2YCAANvXEA==
+Date: Wed, 18 Nov 2020 20:59:15 +0000
+Message-ID: <598648a32e024f30b555112f03ff1768@intel.com>
 References: <20201112223825.39765-1-pierre-louis.bossart@linux.intel.com>
  <0a0854d1ddaf4f9b81ef5569a7d501a5@intel.com>
  <20201113164946.GD4828@sirena.org.uk>
  <2cf7075b-bd51-21a5-2058-3a98e6c488a7@redhat.com>
  <d462c890495e4dda8698b5ba5eb50066@intel.com>
  <f62abcd8-b67f-774b-61b5-e08cfc3d2cc7@linux.intel.com>
- <s5h1rgst6z4.wl-tiwai@suse.de> <0286c6975f24432082f609d45adaa14c@intel.com>
- <0badb36f-3089-dc34-f7b0-75a73b856f0d@linux.intel.com>
- <d57fa3716a974eb9ba585ddd85dbe14c@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cd8e5c2f-e1c2-7fbb-bee1-cc76ec14a801@linux.intel.com>
-Date: Wed, 18 Nov 2020 14:25:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <d57fa3716a974eb9ba585ddd85dbe14c@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <s5h1rgst6z4.wl-tiwai@suse.de>	<0286c6975f24432082f609d45adaa14c@intel.com>
+ <s5h3617rtnq.wl-tiwai@suse.de>
+In-Reply-To: <s5h3617rtnq.wl-tiwai@suse.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Cc: Hans de Goede <hdegoede@redhat.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -103,46 +115,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 2020-11-18 8:49 AM, Takashi Iwai wrote:
+> On Tue, 17 Nov 2020 23:13:13 +0100, Rojewski, Cezary wrote:
 
+...
 
->>>> I guess Cezary mean the modprobe blacklist?  This was used in the
->>>> early stage of ASoC Skylake driver development, but in the end, it's
->>>> more cumbersome because user needs to change multiple places.  The
->>>> single module parameter was easier to handle.
->>>>
->>>
->>> Thanks for joining the discussion, Takashi.
->>>
->>> If the switch of solution for atom-based products is imminent, why add
->>> code which becomes redundant soon after?
 >>
->> To be clear: there is *no plan* to *remove* the Atom/sst code any time
->> 'soon', only to *deprecate* it.
+>> Thanks for joining the discussion, Takashi.
 >>
->> In the best case distributions would transition in 2021. Some distros
->> are faster than others, neither you nor I have any control over this.
+>> If the switch of solution for atom-based products is imminent, why add
+>> code which becomes redundant soon after?
 >>
->> Removing code from the kernel is not something we can do unless there is
->> demonstrated evidence that the number of impacted users is close to zero
->> and distributions no longer support that code. The case of Baytrail
->> legacy is telling, you removed it earlier this Fall but after a
->> recommended alternative was provided for more than 3 years.
->>
->> Again, there is no planned 'switch' but a gradual transition, and that
->> patchset helps with the transition.
-> 
-> Hmm, then maybe I misunderstood Hans. Given his feedback it seemed like
-> Fedora is about to switch to SOF right now.
-> 
-> Indeed, before I've sent patches removing Baytrail, basically every
-> support-team had been asked about its usage and the answers were
-> negative. /atom/ was covering basically every case anyway like you
-> pointed out so /baytrail/ solution felt more like a duplication.
-> 
-> As SOF is the desired solution for atom-based products, I can see the
-> need for some sort of selection mechanism. The same cannot be said for
-> hsw/bdw though. Let's leave catpt out this, shall we?
+>> Yes, indeed I meant the modprobe blacklisting as it solves the problem
+>> without addition of any code. Doubt alsa-driver entries are scattered in
+>> /etc/modprobe.d/ so switching between one solution to another via
+>> blacklist becomes as easy as changing 'options intel-dsp-config
+>> <param>=3D=3D<value>' entry.
+>=20
+> Ideally blacklist would work well, but practically it can be more
+> problematic.  When you *switch* between multiple drivers via
+> blacklist, you'll have to mask one of them while keeping another
+> untouched, so either:
+>    blacklist A
+> or
+>    blacklist B
+>=20
+> Now, imagine that distro sets "blacklist A" to choose B as the
+> default.  What user has to do?  They have to modify "blacklist A"
+> line with "blacklist B".  But it can't be done with an additional
+> modprobe.d/*.config file; otherwise this blacklist remains.  It means
+> they have to scratch the system configuration file itself -- which
+> might be again overridden by a package update or whatever.
+>=20
+> This will be more complex if there are more than three choices, of
+> course.
+>=20
+> Admittedly, the situation with the system config file be same for
+> module option if distro sets the option in modprobe.d/*, too.  But,
+> there is another difference: the default option value can be set in
+> the kernel code, while the blacklist approach is to let all open and
+> choose via blacklist.  IOW, devs have some control for choosing the
+> default value for the module option but for blacklist they are all
+> done by user-space side.
+>=20
 
-It helps everyone to have a single build, e.g. 'make allmodconfig' or 
-'make allyesconfig' would select all possible drivers and bots can run wild.
+I agree, module param is ultimately easier to handle than denylist. The
+reason I had mentioned that is: if user is capable of changing value for
+module param, then we might as well assume he or she is the experienced
+one and playing with denylist isn't a problem either.
+
+And hopefully we don't reach a point in time where again 3 flavours for
+atom-based products are available : )
+
+>> In regard to catpt, solution is even simpler: just remove
+>> sound/soc/sof/intel/bdw.c as that code is not valid & recommended
+>> anyway and linux kernel is not place for such. There shouldn't be really
+>> any options for not recommended stuff. Leave the selection explicit.
+>>
+
+...
+
+>> Well, if non-Intel guys see the localization of code counter-intuitive
+>> then how about those who play with it daily..
+>=20
+> I play it and maintain it daily, that's why I find unintuitive :)
+> I guess most users don't notice the file path, as the module loading
+> or option is done only by the module name.
+>=20
+
+Perhaps I misworded my previous statement. What I meant is: you don't
+have access to all the stuff we - Intel employees - have like specs,
+firmware documentation, hardware specifics and yet you see the problem.
+And this tells me there's still a lot to be done.
+
+>> The new "sof-parent" checks won't make maintaining any easier and I
+>> believe there are easier solutions as written above.
+>=20
+> If you find a good way to overcome the disadvantage, that's great.
+> Let's see.
+
+Well, the disadvantage is: weight of maintenance of newly added code.
+All in all, as mentioned in other reply, we could settle with selection
+mechanism for atom while leaving hsw/bdw out of it.
+
+Czarek
 
