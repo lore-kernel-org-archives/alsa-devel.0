@@ -2,106 +2,57 @@ Return-Path: <SRS0=WcGQ=EZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1B09C6369E
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 14:46:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEA83C6369E
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 15:05:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9897922261
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 14:46:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CCAD724654
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 15:05:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GYY3GsmS";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z7aZA1OA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9897922261
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PkUuuOJm"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCAD724654
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF69416F1;
-	Thu, 19 Nov 2020 15:45:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF69416F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20BC316F1;
+	Thu, 19 Nov 2020 16:04:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BC316F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605797180;
-	bh=2o/aCuKaUDQJCxjw9zmaMjArPWIuow8RAI3PAiTmDEU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1605798327;
+	bh=sI88vgo0DPOp7XgE2iSxQpIYQMXpp5pyvceSCSE6gRA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GYY3GsmSFHHqyoK00yV5Wds0eu1wCDsazlvFmv8jbxKIYm1u2xqz2qVoUghnoIB0g
-	 Fw/f/hzue8R8C2nFCQvQ/Mu87L9OgM+FBcljWot9M+1Q05QwgquWbbjt7F4XOmfwE+
-	 ywvT5Na1lHI8KwNSio7OkS+Eo6Zbhc/lt7ezhnv0=
+	b=PkUuuOJmihTvJyYFJ+OWJX2OXQ3f39Qets7mEIW63KVNI6FcyGW3aAZ0dBIiMC646
+	 YfvAs/L1uuV+sDAO/5gAhzjgMUA70+WoBWzv+FefNrZVlij6KWQEew7+o6ncjwnFTp
+	 R388k7SrICHTB7UoLigf02PtZCf8O1xg/TOjL53s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B5CF800EE;
-	Thu, 19 Nov 2020 15:45:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9D6BF80169;
+	Thu, 19 Nov 2020 16:04:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28AC3F801ED; Thu, 19 Nov 2020 15:45:27 +0100 (CET)
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com
- [IPv6:2a00:1450:4864:20::341])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BA7EF800EE
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 15:45:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BA7EF800EE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Z7aZA1OA"
-Received: by mail-wm1-x341.google.com with SMTP id a186so4641833wme.1
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 06:45:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=jFYDkK+9+9rtp4yicJead5iuEA75yIxa6yds7cG1Fi8=;
- b=Z7aZA1OAXc4Ng4OopJU87r9TmN7qyRblJJ6G1fuHBmlPvP0xHar7CSA8UyY3XqtKO9
- LKaeEnDw7O1f5uxm1qdWTBdgMEmLLAjVV1GTvgPqBUjQmC6Afu+tIOi0G/h+WOeiPeHV
- Ywpqho3n1vR7KF1mhLlAxRL2xaOHIw0dj7uL1U5L9UjTrCOoLMdGW+zpQgS4bxMhNOSM
- mOskM+Yv2e0MlI69XyUFA6nGicbLd1K8Ix1QLIZqPQO20HIzqK6aNi8vdUjXOEVwTzP2
- EcaVxOcNycpkiI7I76X0wnLUy5j155TiftWF1JxmHjveNukbYuiBFoYlX98EpJBiLUuo
- tQYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=jFYDkK+9+9rtp4yicJead5iuEA75yIxa6yds7cG1Fi8=;
- b=FEy/+T4q0mVeCbrlfqBFBUY0iDfCbQPS+kSU5VsIisOX6UYPKRoPQQ+CiclXJcsrr4
- A+Qe5W4IfFHKJhMsaKSmlnjWPFlR5GLi2GZVDuA7B7za/d+XaojCoxtSO5bgdVTway2n
- A2nSxroqaflqMTVNmbJCjHsEaP3w2sJmpzKnITw3JwuHpwgOl5kBNlwll0G3qVIHf6Mh
- qVWUeIQ5qHmfPjB9X23hju8pAAexvQNZXuM7mQraUa1nlY/PJldogUwJIXpnq2LMtljA
- R7SeLky5U2mOWdSuUzqs0eZafLQHRGPHer83MgTq68HqAc1PJuxPGlStycamuYxsn72Q
- sOdw==
-X-Gm-Message-State: AOAM533gFjkyc1C3PYqnvEAzGMaMoFmVXQy+uDLMl3dnCNwWLXgoyRk7
- eebYThBlBoLCLJnMTXg9k6jAhg==
-X-Google-Smtp-Source: ABdhPJzit2MRl9F+dgB+mIICFCBRyTGiTGsg97qsv99NEkJnLL2IVy7VbD37fNSiLgsMKUccG7uriQ==
-X-Received: by 2002:a1c:7418:: with SMTP id p24mr4866098wmc.36.1605797114545; 
- Thu, 19 Nov 2020 06:45:14 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id n123sm73946wmn.38.2020.11.19.06.45.13
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 19 Nov 2020 06:45:13 -0800 (PST)
-Subject: Re: [PATCH] ASoC: qcom: sm8250: fix HDMI audio playback
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Patrick Lai <plai@codeaurora.org>, Banajit Goswami
- <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-References: <20201119123145.709891-1-dmitry.baryshkov@linaro.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <72b89b80-d548-4f4d-2da6-a83fd723366e@linaro.org>
-Date: Thu, 19 Nov 2020 14:45:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ id 5E58CF801ED; Thu, 19 Nov 2020 16:04:23 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 368C4F8015A
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 16:04:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 368C4F8015A
 MIME-Version: 1.0
-In-Reply-To: <20201119123145.709891-1-dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1605798256206105947-webhooks-bot@alsa-project.org>
+References: <1605798256206105947-webhooks-bot@alsa-project.org>
+Subject: Better documentation with the examples
+Message-Id: <20201119150425.5E58CF801ED@alsa1.perex.cz>
+Date: Thu, 19 Nov 2020 16:04:23 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,50 +68,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/tinycompress issue #8 was opened from Andres6936:
 
+I have compiled the program and when I run the `cplay` script I get an error:
 
-On 19/11/2020 12:31, Dmitry Baryshkov wrote:
-> Current code does not setup CPU dai (causing -EIO errors on playback)
-> and does not pass SND_SOC_DAIFMT_I2S to codec fmt (causing i2s-hifi
-> errors). Fix both errors to enable HDMI audio playback on SM8250. Tested
-> on RB5 platform.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Fixes: aa2e2785545a ("ASoC: qcom: sm8250: add sound card qrb5165-rb5 support")
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+```shellsession
+andres6936@Tierra ~/CLionProjects/tinycompress-master/src/utils $ cplay TestAudio.mp3 
+Error: Can't find sync word
+```
 
+I have already checked out different mp3 files and I keep getting the same error.
+I have also tried different options, but it is always the same error.
 
-Thanks for the Patch, Looks good to me!
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-> ---
->   sound/soc/qcom/sm8250.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-> index 35c9ad11edff..314e3e566d6d 100644
-> --- a/sound/soc/qcom/sm8250.c
-> +++ b/sound/soc/qcom/sm8250.c
-> @@ -36,6 +36,7 @@ static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
->   
->   static int sm8250_snd_startup(struct snd_pcm_substream *substream)
->   {
-> +	unsigned int fmt = SND_SOC_DAIFMT_CBS_CFS;
->   	unsigned int codec_dai_fmt = SND_SOC_DAIFMT_CBS_CFS;
->   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->   	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> @@ -43,10 +44,11 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
->   
->   	switch (cpu_dai->id) {
->   	case TERTIARY_MI2S_RX:
-> -		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF;
-> +		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_I2S;
->   		snd_soc_dai_set_sysclk(cpu_dai,
->   			Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT,
->   			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
-> +		snd_soc_dai_set_fmt(cpu_dai, fmt);
->   		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
->   		break;
->   	default:
-> 
+Issue URL     : https://github.com/alsa-project/tinycompress/issues/8
+Repository URL: https://github.com/alsa-project/tinycompress
