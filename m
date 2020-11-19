@@ -2,77 +2,80 @@ Return-Path: <SRS0=WcGQ=EZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F57AC63697
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE849C56201
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51828241A6
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 27B672064C
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BW49XJI+";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DwCt8Ho3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51828241A6
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jkeXx74b";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="QP2lsv28"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27B672064C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F067171D;
-	Thu, 19 Nov 2020 18:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F067171D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95C461769;
+	Thu, 19 Nov 2020 18:12:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95C461769
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605805969;
-	bh=86qfnDFMTT9hP0o0zpA6D9vleLa5k1tewm96PFX3roU=;
+	s=default; t=1605805977;
+	bh=bbvVP5Thth5iWtRIinqyQpsTr9AGxqaQRAxJZoMgoB4=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BW49XJI+zHgGAnoS1yWIPVkkd9hTM7Py+vhBBiY1ytx8xJiBn6ilRxISPgUV6NUP2
-	 PamUEM0zLbJlqTnE+4QIEX3nCLiiYCHJpsOCba4pwbF0IjO6zlobjCWDmQeO+xODFh
-	 MJKWPlFoMPt2GBqSpBTZGPVXzksPH6mE5lHL1Y4w=
+	b=jkeXx74bCovntWKde/PlixzdYvUxj20X9+LYOTyfIcnte9hMDi/EExRLqj/Ev7y/J
+	 Fw6zh2eJUJoXAOlyJ7IAxe7G9jNG+6l+grlEOZxKOBtN+PUAwzaBXODozQTEs+9nYG
+	 MikFfYs6W8v1OTdu2kDHOFYJGzr1HRAr6W3bMzjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2ACEDF804E5;
-	Thu, 19 Nov 2020 18:09:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 251CAF804EC;
+	Thu, 19 Nov 2020 18:09:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55588F804E6; Thu, 19 Nov 2020 18:09:47 +0100 (CET)
+ id BD813F804ED; Thu, 19 Nov 2020 18:09:52 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8A82F804E2
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 18:09:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8A82F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E4BBF804E6
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 18:09:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E4BBF804E6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DwCt8Ho3"
+ header.b="QP2lsv28"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 809292469D;
- Thu, 19 Nov 2020 17:09:42 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 07D54241A6;
+ Thu, 19 Nov 2020 17:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605805783;
- bh=86qfnDFMTT9hP0o0zpA6D9vleLa5k1tewm96PFX3roU=;
+ s=default; t=1605805788;
+ bh=bbvVP5Thth5iWtRIinqyQpsTr9AGxqaQRAxJZoMgoB4=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=DwCt8Ho34QLads+1GICwsNsO6200j5HHVQDU8yfZc3oQVzKREnR4D+r8MU8vRhO4H
- yRChOxvbm8okFVPsRb5dNLxLgnS0bUNDKqLaW8JB0+qc7NdN5qG3D/OhS6paY4kzT1
- QjnRcMOuTbrM90aGqOIcp+zqgZff44yWbwQyhC1o=
-Date: Thu, 19 Nov 2020 17:09:22 +0000
+ b=QP2lsv28a5scGg+XFQwufEDjV86KMpmY6Rvbrog4rCD+pe/WXng+4/O8dvSpvrBaY
+ ECjPq5azJcUMKBACl7gWsINzWbLfeoYbv31sC6jxoMlujiNwSBUC/OzwJtDA25PqyC
+ J3spm4S4RZ5T6bvKSNSLUMkJ4HvTrZssrmXib3g4=
+Date: Thu, 19 Nov 2020 17:09:28 +0000
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20201118140545.2138895-1-kai.vehmanen@linux.intel.com>
-References: <20201118140545.2138895-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: SOF: relax PCM period and buffer size
- constraints
-Message-Id: <160580573379.54454.332087937530881299.b4-ty@kernel.org>
+To: Jie Yang <yang.jie@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20201118121515.11441-1-hdegoede@redhat.com>
+References: <20201118121515.11441-1-hdegoede@redhat.com>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Fix HP Pavilion x2 Detachable
+ quirks
+Message-Id: <160580573379.54454.8539903854917617417.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,16 +91,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Nov 2020 16:05:44 +0200, Kai Vehmanen wrote:
-> Current SOF implementation limits period and buffer sizes to multiples
-> of period_min. Period_min is defined in topology, but is in practise set
-> to align with the SOF DSP timer tick (typically 1ms).
+On Wed, 18 Nov 2020 13:15:15 +0100, Hans de Goede wrote:
+> The HP Pavilion x2 Detachable line comes in many variants:
 > 
-> While this approach helps user-space to avoid period sizes, which are
-> not aligned to the DSP timer tick, it causes problems to applications
-> which want to align data processing size to that of ALSA period size.
-> One example is JACK audio server, which limits period sizes to power of
-> two values.
+> 1. Bay Trail SoC + AXP288 PMIC, Micro-USB charging (10-k010nz, ...)
+>    DMI_SYS_VENDOR: "Hewlett-Packard"
+>    DMI_PRODUCT_NAME: "HP Pavilion x2 Detachable PC 10"
+>    DMI_BOARD_NAME: "8021"
 > 
 > [...]
 
@@ -107,10 +107,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: relax PCM period and buffer size constraints
-      commit: 9983ac49b7db34258facf47439463e96522e1d5a
-[2/2] ASoC: SOF: Intel: add hw specific PCM constraints
-      commit: caebea04b9125c677e6e747793fbc7fab077727b
+[1/1] ASoC: Intel: bytcr_rt5640: Fix HP Pavilion x2 Detachable quirks
+      commit: fbdae7d6d04d2db36c687723920f612e93b2cbda
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
