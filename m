@@ -2,63 +2,70 @@ Return-Path: <SRS0=WcGQ=EZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C94CEC5519F
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 00:55:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C8EFC5519F
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 02:37:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 84003246A7
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 00:55:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D3DC3246B8
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 02:37:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="c2iPD/oo"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84003246A7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=flatmax.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q+kr8cuJ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3DC3246B8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA46516C6;
-	Thu, 19 Nov 2020 01:54:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA46516C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 346B216D7;
+	Thu, 19 Nov 2020 03:36:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 346B216D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605747301;
-	bh=hYUFkBN0JkissVoiRF141eTj7U9JPThcVdS1mH9nP4Y=;
-	h=From:Subject:To:Date:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1605753435;
+	bh=Z2ZJXVC80KQB87QlPYsIL+O345hoBgvvoTO1dEB6vPE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=c2iPD/oomvpYQOLGz2Lq82VkvO6FxgtXQKWSN11w/k0jCIUB+bqW/9X36A03m+Hjk
-	 nbk63LMflRos3GvfYcCVDK0BCCcFhcfhXaDbH/+iIg7eICnD+eELxdDkujEJOLIrrt
-	 +GvL1oGDjZ+K41sxTNdy85HIwtQf+lEu504oJRM0=
+	b=q+kr8cuJbMobOqbZVHc89uJ0HnvX11draJiXsbgQnNQy3sSFyQzkRseRLnXjTIinc
+	 2LqYJlpWbiafJccBKH9m/euI4fJ0cStsuRn0emwFcGLRLgCq9ydItOV85dtzjZlFye
+	 tJqBn5vSE4I3nw+rFJ1Guc5pgL52iLMq3Jtv6Ieo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D65AF80168;
-	Thu, 19 Nov 2020 01:54:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6440F80169;
+	Thu, 19 Nov 2020 03:36:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8BA83F8016C; Thu, 19 Nov 2020 01:54:02 +0100 (CET)
-Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
+ id 1E9D6F801ED; Thu, 19 Nov 2020 03:36:23 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D7E2F800EE
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 01:53:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D7E2F800EE
-Received: from [203.23.175.70] (helo=[192.168.10.75])
- by mx.flatmax.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
- (Exim 4.89) (envelope-from <flatmax@flatmax.org>) id 1kfYCu-00029K-Jp
- for alsa-devel@alsa-project.org; Thu, 19 Nov 2020 11:53:52 +1100
-From: Matt Flax <flatmax@flatmax.org>
-Subject: ESS Sabre DAC ES901x Codec drivers
-To: Linux-ALSA <alsa-devel@alsa-project.org>
-Message-ID: <715ab610-54fe-3255-e64d-db62cae9ff18@flatmax.org>
-Date: Thu, 19 Nov 2020 11:53:52 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-AU
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14A67F800C5
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 03:36:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14A67F800C5
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B5FD21A04EF;
+ Thu, 19 Nov 2020 03:36:03 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A58311A0526;
+ Thu, 19 Nov 2020 03:35:59 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 5694C4031E;
+ Thu, 19 Nov 2020 03:35:54 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: fsl_sai: Correct the clock source for mclk0
+Date: Thu, 19 Nov 2020 10:29:16 +0800
+Message-Id: <1605752956-17397-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,12 +81,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Are there any ESS DAC codec drivers out there ?
+On VF610, mclk0 = bus_clk;
+On i.MX6SX/6UL/6ULL/7D, mclk0 = mclk1;
+On i.MX7ULP, mclk0 = bus_clk;
+On i.MX8QM/8QXP, mclk0 = bus_clk;
+On i.MX8MQ/8MN/8MM/8MP, mclk0 = bus_clk;
 
-For example ES9012, ES9018 DACs.
+So add variable mclk0_mclk1_match in fsl_sai_soc_data to
+distinguish these platforms.
 
-http://www.esstech.com/files/2816/0453/7571/ES9018S_Datasheet_v2.2.pdf
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 11 ++++++++++-
+ sound/soc/fsl/fsl_sai.h |  1 +
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-Matt
-
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 3e5c1eaccd5e..479fd27ace35 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1040,7 +1040,6 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		sai->bus_clk = NULL;
+ 	}
+ 
+-	sai->mclk_clk[0] = sai->bus_clk;
+ 	for (i = 1; i < FSL_SAI_MCLK_MAX; i++) {
+ 		sprintf(tmp, "mclk%d", i);
+ 		sai->mclk_clk[i] = devm_clk_get(&pdev->dev, tmp);
+@@ -1051,6 +1050,11 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	if (sai->soc_data->mclk0_mclk1_match)
++		sai->mclk_clk[0] = sai->mclk_clk[1];
++	else
++		sai->mclk_clk[0] = sai->bus_clk;
++
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+ 		return irq;
+@@ -1165,6 +1169,7 @@ static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
+ 	.use_edma = false,
+ 	.fifo_depth = 32,
+ 	.reg_offset = 0,
++	.mclk0_mclk1_match = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
+@@ -1172,6 +1177,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
+ 	.use_edma = false,
+ 	.fifo_depth = 32,
+ 	.reg_offset = 0,
++	.mclk0_mclk1_match = true,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
+@@ -1179,6 +1185,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
+ 	.use_edma = false,
+ 	.fifo_depth = 16,
+ 	.reg_offset = 8,
++	.mclk0_mclk1_match = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
+@@ -1186,6 +1193,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
+ 	.use_edma = false,
+ 	.fifo_depth = 128,
+ 	.reg_offset = 8,
++	.mclk0_mclk1_match = false,
+ };
+ 
+ static const struct fsl_sai_soc_data fsl_sai_imx8qm_data = {
+@@ -1193,6 +1201,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx8qm_data = {
+ 	.use_edma = true,
+ 	.fifo_depth = 64,
+ 	.reg_offset = 0,
++	.mclk0_mclk1_match = false,
+ };
+ 
+ static const struct of_device_id fsl_sai_ids[] = {
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 4bbcd0dbe8f1..390a9ca3b531 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -219,6 +219,7 @@
+ struct fsl_sai_soc_data {
+ 	bool use_imx_pcm;
+ 	bool use_edma;
++	bool mclk0_mclk1_match;
+ 	unsigned int fifo_depth;
+ 	unsigned int reg_offset;
+ };
+-- 
+2.27.0
 
