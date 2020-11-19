@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AFD6C56201
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F57AC63697
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7EC822467A
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 51828241A6
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 17:12:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YPs1CkYE";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="x8+uAopb"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7EC822467A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BW49XJI+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="DwCt8Ho3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51828241A6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2CF616FD;
-	Thu, 19 Nov 2020 18:11:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2CF616FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F067171D;
+	Thu, 19 Nov 2020 18:11:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F067171D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605805929;
-	bh=70tCoEq9/FYcYDMF8Mq56bnaLykaoi8Dcb4Ao5hv/jo=;
+	s=default; t=1605805969;
+	bh=86qfnDFMTT9hP0o0zpA6D9vleLa5k1tewm96PFX3roU=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YPs1CkYEsECBDy7wqlKg0YNwHPgT1WFYZID8FHRwEsmkhKDrEshSmvvnZWL6aR+xg
-	 9fiRQ3c3N570oqSrB0YYd455HaXi+xoSWxAmlYqyb0lszQm3MsMBz2s59b1Pz+ZdBG
-	 M6aW7mFPjWfZHicgPVEbUdOS3mPPoPdt/zcUHQXI=
+	b=BW49XJI+zHgGAnoS1yWIPVkkd9hTM7Py+vhBBiY1ytx8xJiBn6ilRxISPgUV6NUP2
+	 PamUEM0zLbJlqTnE+4QIEX3nCLiiYCHJpsOCba4pwbF0IjO6zlobjCWDmQeO+xODFh
+	 MJKWPlFoMPt2GBqSpBTZGPVXzksPH6mE5lHL1Y4w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDD6DF804E1;
-	Thu, 19 Nov 2020 18:09:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ACEDF804E5;
+	Thu, 19 Nov 2020 18:09:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 194FDF804E2; Thu, 19 Nov 2020 18:09:42 +0100 (CET)
+ id 55588F804E6; Thu, 19 Nov 2020 18:09:47 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E9C1F804D6
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 18:09:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E9C1F804D6
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8A82F804E2
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 18:09:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8A82F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="x8+uAopb"
+ header.b="DwCt8Ho3"
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 008222469D;
- Thu, 19 Nov 2020 17:09:36 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 809292469D;
+ Thu, 19 Nov 2020 17:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605805777;
- bh=70tCoEq9/FYcYDMF8Mq56bnaLykaoi8Dcb4Ao5hv/jo=;
+ s=default; t=1605805783;
+ bh=86qfnDFMTT9hP0o0zpA6D9vleLa5k1tewm96PFX3roU=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=x8+uAopbQoGBBj12OHyOQ4Ywx5KDw9pvIMKeoSNzkGffSpk+L0CpuA4OoV9j3WFdS
- DNT56KmYclVkEPfx254FJd1KEo++IMYL/ZjVSYEIQevxtgo9yxEdxcn9NfuskeoxZe
- Ewaa+2dsGlyWdsHjgFzf4L8oVSUWy5YtnBtZM+Vk=
-Date: Thu, 19 Nov 2020 17:09:17 +0000
+ b=DwCt8Ho34QLads+1GICwsNsO6200j5HHVQDU8yfZc3oQVzKREnR4D+r8MU8vRhO4H
+ yRChOxvbm8okFVPsRb5dNLxLgnS0bUNDKqLaW8JB0+qc7NdN5qG3D/OhS6paY4kzT1
+ QjnRcMOuTbrM90aGqOIcp+zqgZff44yWbwQyhC1o=
+Date: Thu, 19 Nov 2020 17:09:22 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20201105113458.12360-1-srinivas.kandagatla@linaro.org>
-References: <20201105113458.12360-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 0/6] ASoC: codecs: add support for LPASS Codec macros
-Message-Id: <160580573378.54454.13024216102656641940.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20201118140545.2138895-1-kai.vehmanen@linux.intel.com>
+References: <20201118140545.2138895-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: relax PCM period and buffer size
+ constraints
+Message-Id: <160580573379.54454.332087937530881299.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Cc: lgirdwood@gmail.com, daniel.baluta@nxp.com,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,15 +88,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 5 Nov 2020 11:34:52 +0000, Srinivas Kandagatla wrote:
-> This patchset adds support for two Codec Macro blocks( WSA and VA) available in
-> Qualcomm LPASS (Low Power Audio SubSystem).
+On Wed, 18 Nov 2020 16:05:44 +0200, Kai Vehmanen wrote:
+> Current SOF implementation limits period and buffer sizes to multiples
+> of period_min. Period_min is defined in topology, but is in practise set
+> to align with the SOF DSP timer tick (typically 1ms).
 > 
-> There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
-> has specific connectivity like WSA Macros are intended to connect
-> to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
-> and TX/RX for Analog codecs via SoundWire like other WCD Codecs to provide
-> headphone/ear/lineout etc ..
+> While this approach helps user-space to avoid period sizes, which are
+> not aligned to the DSP timer tick, it causes problems to applications
+> which want to align data processing size to that of ALSA period size.
+> One example is JACK audio server, which limits period sizes to power of
+> two values.
 > 
 > [...]
 
@@ -105,18 +107,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: qcom: dt-bindings: add bindings for lpass wsa macro codec
-      commit: ccbd847f15b0f08f8c6ed3ab5384e5f7055b08e5
-[2/6] ASoC: codecs: lpass-wsa-macro: Add support to WSA Macro
-      commit: 809bcbcecebff86003e13f07444d21b9d6652a64
-[3/6] ASoC: codecs: lpass-wsa-macro: add dapm widgets and route
-      commit: 2c4066e5d428d47a28f87407b3d73ebe40c06fd4
-[4/6] ASoC: qcom: dt-bindings: add bindings for lpass va macro codec
-      commit: 67d99b23c881b1411fc6907bc844d63565b536d6
-[5/6] ASoC: codecs: lpass-va-macro: Add support to VA Macro
-      commit: 908e6b1df26efc9d2df70c9a7bf4f5eae5c5702f
-[6/6] ASoC: codecs: lpass-va-macro: add dapm widgets and routes
-      commit: 58aad93015b9dc7cb8966c1dc775ec69f0280b79
+[1/2] ASoC: SOF: relax PCM period and buffer size constraints
+      commit: 9983ac49b7db34258facf47439463e96522e1d5a
+[2/2] ASoC: SOF: Intel: add hw specific PCM constraints
+      commit: caebea04b9125c677e6e747793fbc7fab077727b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
