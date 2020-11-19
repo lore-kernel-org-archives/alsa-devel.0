@@ -2,84 +2,132 @@ Return-Path: <SRS0=WcGQ=EZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB355C56201
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33F0BC56201
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:23:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C6E424698
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:19:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 014852223F
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 16:23:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="klQoXaeB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C6E424698
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fx0r/fPC";
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="cQydBVBV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 014852223F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2316A170A;
-	Thu, 19 Nov 2020 17:19:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2316A170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC790170A;
+	Thu, 19 Nov 2020 17:22:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC790170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605802795;
-	bh=cTvErOiM7LjyY/taW0aQ0rYMas1sv3ZjkHzDZf1S3I0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=klQoXaeB+L9DzByWedfoTJawriat4OnMqJX8wZm99OKKDI35sJ3ovyC3xCVo58KCU
-	 jIDmg3UrG/XsDLDngOBKDoz+u+IoO450iYbx5JNizZ3Ig/qX3dB7EBGtLYb6OxL10k
-	 Bh2x5Dpwpgo1/tIN/uzZQ/VJs52X4u0LYCr/DFEw=
+	s=default; t=1605803026;
+	bh=o8eTcZlXx0c15oPuwCfVaEXuxT0FCsQ39Cq62uTaLrI=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fx0r/fPCyManYXevK+04PdGEqL344aE5LsfOg8XUFz/0H0Dyhl/FUzJj6jxRw19G/
+	 B4I/TfQYUvlA13fxiN0kC83LnLEu1I1zh0t0q12EtwGQSAATIlm9UfzQvAV1eexK17
+	 b+N9nhId6WWN+8xkGzFTvEau4/6qRN/WHCKEiI8g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C254F800C5;
-	Thu, 19 Nov 2020 17:19:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B74BF800C5;
+	Thu, 19 Nov 2020 17:22:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33F05F801ED; Thu, 19 Nov 2020 17:19:02 +0100 (CET)
-Received: from mail-oo1-f65.google.com (mail-oo1-f65.google.com
- [209.85.161.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7C7D7F80169; Thu, 19 Nov 2020 17:22:52 +0100 (CET)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr70051.outbound.protection.outlook.com [40.107.7.51])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C2D5F800EE
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 17:18:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C2D5F800EE
-Received: by mail-oo1-f65.google.com with SMTP id h10so1473498ooi.10
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 08:18:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=Vd3H42jUoSvZxFn/Q1zt8vw781tXojM7bC5Q50c1Fl8=;
- b=ZeKshhhYqhCp/5kDIpgpv4ZyByhDP+TgvieItgA0S6jQaxiTgbqjcqq3lxJSqm6lah
- HKcdcUNLuM2ZeTsMLOAxV99kpJ1wYapd0sq2jjhf0z94TqzSVelTENp1lGXFC7Hpegdi
- ivA5xCC/sxb1tGZXu4uReJSVch2W3RC6PAMOBz1hEaA8eERMiwad2bpZ72M4V+2HNIRr
- 6HDQ/e0NhYaEAWjT1wozBvSqCCfjyQB5spC65/sq4bLzF+OKpwp4ZWAsGs0HICJO2r4m
- hvQ/FIUbc1rPzvp9ENK1chmdksVYZZ3qoNKyky82U4pJuO4j1sSNCrpyir3skrM9I+YJ
- axsg==
-X-Gm-Message-State: AOAM530hjWckwbD7kMsMhFxHwNz2WLfQXnIXXEWq6Slvszh5fH28Xa+9
- ahTFU1CL7Asv9Pc/vxhTOA==
-X-Google-Smtp-Source: ABdhPJy+z6J4cPV6dH7vCvJ98HwBWHFs+6+z4hY/aKmDzuMeNHNL4aMXBGrfY+PwB1Tl7wRWJWYLdQ==
-X-Received: by 2002:a4a:96c2:: with SMTP id t2mr10893667ooi.25.1605802729708; 
- Thu, 19 Nov 2020 08:18:49 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.googlemail.com with ESMTPSA id c6sm139820oif.48.2020.11.19.08.18.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 19 Nov 2020 08:18:49 -0800 (PST)
-From: Rob Herring <robh@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43380F800EE
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 17:22:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43380F800EE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="cQydBVBV"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yv+XQKzwa1xCA2yd6r2Q2T8XZFk+GfH4uSlwU0e9y1W+BmdazRMhC8AkZWCyzfw/Oe+VFdhFkU2f2klHNDgjHfdRft3FAWJcfp5Pwfn7JvR7KamnFf1PemOPmBMNsGRPV6Q/4gp4zn+GErHluFOZRGDNjT2zBgqrctg3eKFqZJ0d/2O/3XL0ItChHWp0Q/WPEsM2E8hlXrRgvvPsnDo7wL8UIUE5dHILb4aJvCL0rfXceoiFo1unVmx290MKmNum/dr8gH5LYZTLFmebTbw1MrosR5TmWejidICTHyZnlhS6SP4SvkIJlAQ6713Q7kwyvJmsmBGqxZQfNvqNWq//jQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xk8PqfV29i4MMVarWkzfSNBN2Se8XqxJqn1s4iSK1ZI=;
+ b=DiySKbotiX2elSvbbB7aB/ZFRKRkd/iMs/B2nAdZyPYqGm04gH+r5uJX+8EMfdLgB0nfJK1D0cjkx/uTxG/xZk5ICl0t1nUT3LVg2268q44HZ3gQAvj+u7z7vQzeCdhgn3mE3cwRVWfzK2aMztJkDdb95itvL0+j907G1BILaQWwHN0JVqcZlhCOK4EHAkkNd2ES9WeN3ZLEcaFVvn2kg1vGuETtHFMiM7aIzelH+9qcHwihLBQ/B/pVklqWgEiSDWImi7IKR1oM5g3ckwQUt8Lhir9x779GCGj3Kezxg3PbrBDVSUV3pR/C/HjiS/CzegQPJrRVezPxmothv9s8JQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xk8PqfV29i4MMVarWkzfSNBN2Se8XqxJqn1s4iSK1ZI=;
+ b=cQydBVBVjGSmF4mjQP5LJNjZ7eX63KuP30HVkTYoKYak50HEPbxemQDFaPJ6Yq8LN5a5lqE4FLAdCEg/LiEEMscgHF24zEHoi82ndrRHMhjf4XaztN6y8s6D6fy+sZJ7HteerGDpnO2Z5/HCcYiwDzQE7gDZ+BI4ZooxRDx9K2U=
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR0402MB3488.eurprd04.prod.outlook.com
+ (2603:10a6:803:10::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Thu, 19 Nov
+ 2020 16:22:42 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::91f8:d96b:f238:7962]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::91f8:d96b:f238:7962%8]) with mapi id 15.20.3564.028; Thu, 19 Nov 2020
+ 16:22:42 +0000
+From: Viorel Suman <viorel.suman@nxp.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: dt-bindings: renesas,
- rsnd: Fix duplicate 'allOf' entries
-Date: Thu, 19 Nov 2020 10:18:48 -0600
-Message-Id: <20201119161848.3379929-1-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
+Subject: RE: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
+Thread-Topic: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
+Thread-Index: AQHWvGa/ULTQkQTG3EuXXoMLDy7cbKnMmESAgAAFAkCAAS01AIAB0Nww
+Date: Thu, 19 Nov 2020 16:22:42 +0000
+Message-ID: <VI1PR0401MB22726479D60E9B603A6848BC92E00@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
+ <20201117173901.GH5142@sirena.org.uk>
+ <VI1PR0401MB2272061C958E91FCAA239EB892E20@VI1PR0401MB2272.eurprd04.prod.outlook.com>
+ <20201118115500.GB4827@sirena.org.uk>
+In-Reply-To: <20201118115500.GB4827@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.106.221]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: cbcbb8a8-0449-43b9-ddb0-08d88ca7574e
+x-ms-traffictypediagnostic: VI1PR0402MB3488:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0402MB3488D8FABD80725CD1C757E592E00@VI1PR0402MB3488.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pc0Jeef4/GH8fHcFK5TJJOTm8dgTXXee6uSpv+0Yxk1/N5fAURwnlqhaDOpFl5yS8vmPzUWRdmT/OJTGRn46hGiVblFtRtYduEzAme10kD8Mp7u4Cdv5ekoOHLfMUuXYqGN1YuMmfsvFHD63myKfLrLU5Q+ODISl4pPRg0KAfug0utN+84xX2doPBOYiElDXWMI+HeSqHIXNP2zeGNYEEhFtZGFs5uL6GwKcjOTN2gaaWIprRIilGltYIvpmH4MgmnrIAUrC63iemrzkf3kpNfaw9qqZ8gEOoqE2pW75RxRxK2OzVaNwXU/JUe6HjyUQ7bfjLB8eQ9ioElRa/mUo0Q==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VI1PR0401MB2272.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(396003)(346002)(376002)(136003)(366004)(39860400002)(52536014)(186003)(6916009)(5660300002)(316002)(7696005)(66476007)(66556008)(6506007)(54906003)(8936002)(66446008)(76116006)(8676002)(64756008)(66946007)(33656002)(71200400001)(7416002)(478600001)(86362001)(4326008)(44832011)(9686003)(83380400001)(26005)(2906002)(55016002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: ajCQr1+QtKyGwfATxXxSYUbDDew2BWqqFT7NufKBMA0NRUBAzys8AXlHv8MXcSQL8g5Pphq436UweVJ5pY5F1Uar4aeMWKzxgWn86wQBdcv+I5XTPlAZ4MvfxuKaufT8kFhiYPn0xvbsgWJv7E2pNRDDRyCHdNMpP6DOphjUiGfA8LXYejEMrwFrb+AXuDlI82sXrEKP9wFpaFXB7raJGNgU6AZKjWjY6B4k7gKev/Dq0WTyhkFTCR3vT0zdhVv8qeaWInVGuEHWcxmBYDabcDOI9wOYVFK+w3ys5df57vMgdgIzjRRd3+dvM5Oo04A29znfZLkbhQrfcCnt4RgPsyF7i4I1HrQ7H2LK+hz+xNHHEFncKf0Du+lYA2TxAvHFAfLxFu5XJgjhKH2uvWh+/B+xpLIR+hMJTttTOVTxo7GnxTb81B7KFciUvsm5Vgu4/sT5n/4R1hE8FjwscevCP6SQEazPo4hX+HUwKNXaMl9f6GrzKGF34Lsc3Gd79+sor1rz2DKn3olwm4jewRXq18L/WK8fcksg9aGMKfAf4cdSxqeCZWknYXxuuOxKNJcpiWaGSiLv6wfd/LYdrJuwR3gOQCH6KOFirIgAPbMF9NVxNyFAhweI6BpwlCeQYToj1gFu2biIixhEqB30Fu2fwg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
- alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbcbb8a8-0449-43b9-ddb0-08d88ca7574e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2020 16:22:42.3159 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QkwHbC6JzOGw7zTdaFXnPb6ra//b1w33aLgwd1KlIfxr/hcY+inoR6y7hXozcRSg7+4tB8pWbPfzkUiAxBd5mw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3488
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "S.j. Wang" <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ "Viorel Suman \(OSS\)" <viorel.suman@oss.nxp.com>,
+ Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,50 +143,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit e52f3f291152 ("ASoC: audio-graph-card: Refactor schema") added an
-'allOf' entry, but one is already present in the schema. Multiple keys
-is not valid and results in an error:
+> On Tue, Nov 17, 2020 at 06:17:36PM +0000, Viorel Suman wrote:
+> > > On Tue, Nov 17, 2020 at 12:20:36AM +0200, Viorel Suman (OSS) wrote:
+>=20
+> > > One thing I'm not clear on is if there's some way to ensure that we
+> > > don't have different instances of the device resetting each other wit=
+hout
+> them noticing?
+> > > Shouldn't be an issue in practice for the use here.
+>=20
+> > The way to ensure that we don't have different instances of the device
+> > resetting each other is to rely on the way the "shared" reset is handle=
+d by
+> reset API:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +	ak4458->reset =3D devm_reset_control_get_optional_shared(ak4458-
+> >dev, NULL);
+> > +	if (IS_ERR(ak4458->reset))
+> > +		return PTR_ERR(ak4458->reset);
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Flip side of that then, how do we know when a reset has actually happened=
+?
 
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 4, column 1
-found duplicate key "allOf" with value "[]" (original value: "[]")
-  in "<unicode string>", line 262, column 1
+I don't see how this can be achieved - I'd imagine some "shared" reset
+framework notification mechanism calling back all "listeners" in the moment
+the assert/deassert actually happened, there is no such mechanism currently
+implemented.
 
-Fixes: e52f3f291152 ("ASoC: audio-graph-card: Refactor schema")
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Sameer Pujar <spujar@nvidia.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+In this specific case the GPIO purpose is to just to power on/off all codec=
+s.
+In my view with this approach it's enough to know that all codecs will be
+powered on the first _deassert_ call and will be powered off on the last
+_assert_ call.
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-index cbfd5914b432..0fd37aa84947 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-@@ -9,10 +9,6 @@ title: Renesas R-Car Sound Driver Device Tree Bindings
- maintainers:
-   - Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
- 
--allOf:
--  - $ref: audio-graph.yaml#
--  - $ref: audio-graph-port.yaml#
--
- properties:
- 
-   compatible:
-@@ -260,6 +256,8 @@ required:
-   - "#sound-dai-cells"
- 
- allOf:
-+  - $ref: audio-graph.yaml#
-+  - $ref: audio-graph-port.yaml#
-   - if:
-       properties:
-         compatible:
--- 
-2.25.1
-
+/Viorel=20
