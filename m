@@ -2,57 +2,71 @@ Return-Path: <SRS0=WcGQ=EZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEA83C6369E
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 15:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E00E7C6369E
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 15:45:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCAD724654
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 15:05:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AA3AF22256
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Nov 2020 15:45:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="PkUuuOJm"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCAD724654
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UIb2KFhX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA3AF22256
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20BC316F1;
-	Thu, 19 Nov 2020 16:04:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20BC316F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFD291703;
+	Thu, 19 Nov 2020 16:44:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFD291703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605798327;
-	bh=sI88vgo0DPOp7XgE2iSxQpIYQMXpp5pyvceSCSE6gRA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1605800731;
+	bh=xMqUuh6etfAtRWioN/8FmTr1Hyp8Vls2OcsMtF8OIXY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PkUuuOJmihTvJyYFJ+OWJX2OXQ3f39Qets7mEIW63KVNI6FcyGW3aAZ0dBIiMC646
-	 YfvAs/L1uuV+sDAO/5gAhzjgMUA70+WoBWzv+FefNrZVlij6KWQEew7+o6ncjwnFTp
-	 R388k7SrICHTB7UoLigf02PtZCf8O1xg/TOjL53s=
+	b=UIb2KFhXVY1IIecE4fgR5OyIyZZNhdW5O3MA7VLyyQKLmXwa+uVpV6sQe1wloT+hi
+	 uJAQ/6Y/8Ld8dys4+Z8pCfZBgqhJdjfAo/MMqEPHfBFhJalhxF/g9+n9Q/iph0E3Wi
+	 snNDWiSvKiGq5pYQXOQcFIDyiKoOHR7Z28B8L7No=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9D6BF80169;
-	Thu, 19 Nov 2020 16:04:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 250B2F80169;
+	Thu, 19 Nov 2020 16:44:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E58CF801ED; Thu, 19 Nov 2020 16:04:23 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 368C4F8015A
- for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 16:04:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 368C4F8015A
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1605798256206105947-webhooks-bot@alsa-project.org>
-References: <1605798256206105947-webhooks-bot@alsa-project.org>
-Subject: Better documentation with the examples
-Message-Id: <20201119150425.5E58CF801ED@alsa1.perex.cz>
-Date: Thu, 19 Nov 2020 16:04:23 +0100 (CET)
+ id 76453F801ED; Thu, 19 Nov 2020 16:44:30 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7502AF800EE
+ for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2020 16:44:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7502AF800EE
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id D6F3BAD60;
+ Thu, 19 Nov 2020 15:44:08 +0000 (UTC)
+Date: Thu, 19 Nov 2020 16:44:08 +0100
+Message-ID: <s5heekpjqrb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Daniel <dmanlfc@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio : Add support for the Pioneer DJ DDJ-RR
+ controller.
+In-Reply-To: <20201110061742.78033-1-dmanlfc@gmail.com>
+References: <20201110061742.78033-1-dmanlfc@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Hector Martin <marcan@marcan.st>, Takashi Iwai <tiwai@suse.com>,
+ Alexander Tsoy <alexander@tsoy.me>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <franta-linux@frantovo.cz>,
+ Gregor Pintar <grpintar@gmail.com>, Dmitry Panchenko <dmitry@d-systems.ee>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,17 +82,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/tinycompress issue #8 was opened from Andres6936:
+On Tue, 10 Nov 2020 07:17:40 +0100,
+Daniel wrote:
+> 
+> ---
+>  sound/usb/quirks-table.h | 56 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 55 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+> index 3c1697f6b60c..a39233cb4d72 100644
+> --- a/sound/usb/quirks-table.h
+> +++ b/sound/usb/quirks-table.h
+> @@ -3530,7 +3530,61 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+>  		}
+>  	}
+>  },
+> -
+> +{
+> +	/*
+> +	 * PIONEER DJ DDJ-RR
+> +     * PCM is 6 channels out & 4 channels in @ 44.1 fixed
+> +	 */
+> +	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x000d),
+> +	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+> +		.ifnum = QUIRK_ANY_INTERFACE,
+> +		.type = QUIRK_COMPOSITE,
+> +		.data = (const struct snd_usb_audio_quirk[]) {
+> +			{
+> +				.ifnum = 0,
+> +				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+> +				.data = &(const struct audioformat) {
+> +					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
+> +					.channels = 6, //Master, Headphones & Booth
+> +					.iface = 0,
+> +					.altsetting = 1,
+> +					.altset_idx = 1,
+> +					.endpoint = 0x01,
+> +					.ep_attr = USB_ENDPOINT_XFER_ISOC|
+> +						   USB_ENDPOINT_SYNC_ASYNC,
+> +					.rates = SNDRV_PCM_RATE_44100,
+> +					.rate_min = 44100,
+> +					.rate_max = 44100,
+> +					.nr_rates = 1,
+> +					.rate_table = (unsigned int[]) { 44100 }
+> +				}
+> +			},
+> +			{
+> +				.ifnum = 0,
+> +				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+> +				.data = &(const struct audioformat) {
+> +					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
+> +					.channels = 4, //2x RCA inputs (CH1 & CH2)
+> +					.iface = 0,
+> +					.altsetting = 1,
+> +					.altset_idx = 1,
+> +					.endpoint = 0x82,
+> +					.ep_attr = USB_ENDPOINT_XFER_ISOC|
+> +						 USB_ENDPOINT_SYNC_ASYNC|
+> +						 USB_ENDPOINT_USAGE_IMPLICIT_FB,
+> +					.rates = SNDRV_PCM_RATE_44100,
+> +					.rate_min = 44100,
+> +					.rate_max = 44100,
+> +					.nr_rates = 1,
+> +					.rate_table = (unsigned int[]) { 44100 }
+> +				}
+> +			},
+> +			{
+> +				.ifnum = -1
+> +			}
+> +		}
+> +	}
+> +},
 
-I have compiled the program and when I run the `cplay` script I get an error:
+The code change itself looks reasonable, but the patch misses the
+description completely.  Could you give the patch description?
+Also, a signed-off-by line is mandatory from the legal reason, so
+please add this together and resubmit the patch.
 
-```shellsession
-andres6936@Tierra ~/CLionProjects/tinycompress-master/src/utils $ cplay TestAudio.mp3 
-Error: Can't find sync word
-```
 
-I have already checked out different mp3 files and I keep getting the same error.
-I have also tried different options, but it is always the same error.
+Thanks!
 
-Issue URL     : https://github.com/alsa-project/tinycompress/issues/8
-Repository URL: https://github.com/alsa-project/tinycompress
+Takashi
