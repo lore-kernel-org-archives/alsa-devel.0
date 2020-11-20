@@ -2,97 +2,92 @@ Return-Path: <SRS0=4V3b=E2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F57CC56201
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:33:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2A5FC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:37:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6CC92225B
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:33:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6AF6A223B0
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:37:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="rvd69Z9S";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DE8YPTTA"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6CC92225B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pdpWm2jY"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AF6A223B0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DEA11826;
-	Fri, 20 Nov 2020 17:33:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DEA11826
+	by alsa0.perex.cz (Postfix) with ESMTPS id F370E17F3;
+	Fri, 20 Nov 2020 17:37:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F370E17F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605890032;
-	bh=Y6vkKTfYIQzNWhogQPJAuBk5Mfxc7zpqf31kYefZmvI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1605890274;
+	bh=FP5RA1gLDtTuJogOhwdjudEg+bmSs2UKeSCRh36mqZI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rvd69Z9SG0EezxhfxpHVm7BDVpqSZRi7jdwpm5BeprkHQ8kTT+mou7EJ7RoXfOduo
-	 NuXRIF7RyEmK3d0pZYDNRuF+mVA/yofMEyV23zIgN9arW1hwxXW+Xyr9F3K8XYMzDY
-	 L6SUjH7JtOEr6ly70tcrB39g82PWFxgLWfyJeY98=
+	b=pdpWm2jYxMXriR5YedFW0KRCVYwukDmsc0MPEiGeBGh6XGXcxsqbWX7vtpx7R64k7
+	 TdobuXZS8w88GgwBNxcM1Y+2KPr+FNeAJ6J6QbD6+1bzA3o5QOcsExS8NCQNMY7yC0
+	 mS3pQERkwI9PpAgkN12r++M2x7iQ6IcaIgRymUDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0964F804D2;
-	Fri, 20 Nov 2020 17:22:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C2E4F80168;
+	Fri, 20 Nov 2020 17:37:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 459F9F804D2; Fri, 20 Nov 2020 17:22:06 +0100 (CET)
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4EA1FF8016C; Fri, 20 Nov 2020 17:37:02 +0100 (CET)
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com
+ [209.85.218.67])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94983F80276
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:22:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94983F80276
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DE8YPTTA"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
- by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AKGLxI3099103;
- Fri, 20 Nov 2020 10:21:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1605889319;
- bh=SED0EgoaZJAwVnlKBinfvNnqRxNjjlAXaMmJe99UIAw=;
- h=Subject:To:CC:References:From:Date:In-Reply-To;
- b=DE8YPTTAqhBUxvvFp81BwkV/Z2TnqYh79N0FeO3YBANRU0GpHiagJpzegDSNJfZJ+
- pnn/BU/4VipYGDeQyFVQ+lS7OlwqZiNE82uleRq1pxxRnlkVOAwLmx1HvtHpeI0ax7
- r47NnnQQLJWIixPdoArkCisEaQGNZHHFEyRn9oPQ=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
- by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AKGLxvG111484
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 20 Nov 2020 10:21:59 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 10:21:59 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 20 Nov 2020 10:21:58 -0600
-Received: from [10.250.70.26] (ileax41-snat.itg.ti.com [10.172.224.153])
- by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AKGLu7C011150;
- Fri, 20 Nov 2020 10:21:57 -0600
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBFB9F80166
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:36:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBFB9F80166
+Received: by mail-ej1-f67.google.com with SMTP id oq3so13718712ejb.7
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 08:36:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=S1+8z3yNNlDYJv6/l1QyHGY+01X4guwfwj1g0QgjnEc=;
+ b=rvFGQZrN5J9u6cbEzNMjfqyqI5+xFLD9bi8WbAP4Q257dCQUSbczxsMTT1iTylJziW
+ 2+5rbfCCpwTTlujD5R5QhCo1QqLQXYi4T6zdAmQzFUSaeHaXDVgx6AfuEMX32NxXXh/n
+ 1TKQtdnZ+xX66Sm9E7l1iwwx1dWX2NEwIx5OMA9ciWSb7DsTRpBUGuhuydlfOglZO1KP
+ agBqmIHj/YxhpAlfRAvnrywesIaZZeRR2ZJigpls3N0LRY1cl/r+ttRt3w85OV7Sv0o3
+ pTOUnE/ZBCNDYR09CWTcOBdm6OPquoOl/rKyEHBolGAj6aLIelm2wg+8fBKKYULfJmn+
+ lWZw==
+X-Gm-Message-State: AOAM532VaZdAstiWcNYdS+pwRVXoLDwdl7yaj5ELhs2QOOR7grovgFFJ
+ JwKilfrvrJWmfwR5pJfxf6w=
+X-Google-Smtp-Source: ABdhPJxqdMGoZzc6qF5UhhTkPZlu8GkMGDOe+DAxPYzUUAb8Icw7z+1lPxeUche0n6jibG3V8kdEzg==
+X-Received: by 2002:a17:906:71d3:: with SMTP id
+ i19mr6287685ejk.187.1605890218153; 
+ Fri, 20 Nov 2020 08:36:58 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+ by smtp.googlemail.com with ESMTPSA id p20sm1318352ejd.78.2020.11.20.08.36.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 20 Nov 2020 08:36:57 -0800 (PST)
+Date: Fri, 20 Nov 2020 17:36:55 +0100
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Dan Murphy <dmurphy@ti.com>
 Subject: Re: [PATCH 29/38] ASoC: tas2562: skip of_device_id table when
  !CONFIG_OF
-To: Krzysztof Kozlowski <krzk@kernel.org>, <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- <alsa-devel@alsa-project.org>
+Message-ID: <20201120163655.GA519670@kozik-lap>
 References: <20201120161653.445521-1-krzk@kernel.org>
  <20201120161653.445521-29-krzk@kernel.org>
-From: Dan Murphy <dmurphy@ti.com>
-Message-ID: <cacd0acf-708d-0b56-8229-b76690b2d289@ti.com>
-Date: Fri, 20 Nov 2020 10:21:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <cacd0acf-708d-0b56-8229-b76690b2d289@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20201120161653.445521-29-krzk@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Cc: Jonghwan Choi <charlie.jh@kakaocorp.com>, Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <cacd0acf-708d-0b56-8229-b76690b2d289@ti.com>
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Jonghwan Choi <charlie.jh@kakaocorp.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,30 +103,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello
+On Fri, Nov 20, 2020 at 10:21:56AM -0600, Dan Murphy wrote:
+> Hello
+>=20
+> On 11/20/20 10:16 AM, Krzysztof Kozlowski wrote:
+> > The driver can match by multiple methods.  Its of_device_id table is
+> > referenced via of_match_ptr() so it will be unused for !CONFIG_OF
+> > builds:
+> >=20
+> >    sound/soc/codecs/tas2562.c:805:34: warning: =E2=80=98tas2562_of_matc=
+h=E2=80=99 defined but not used [-Wunused-const-variable=3D]
+> >=20
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >   sound/soc/codecs/tas2562.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+> > index f1ff204e3ad0..19965fabe949 100644
+> > --- a/sound/soc/codecs/tas2562.c
+> > +++ b/sound/soc/codecs/tas2562.c
+> > @@ -802,6 +802,7 @@ static const struct i2c_device_id tas2562_id[] =3D {
+> >   };
+> >   MODULE_DEVICE_TABLE(i2c, tas2562_id);
+> > +#ifdef CONFIG_OF
+>=20
+> Should we use #if IS_ENABLED(CONFIG_OF) ?
 
-On 11/20/20 10:16 AM, Krzysztof Kozlowski wrote:
-> The driver can match by multiple methods.  Its of_device_id table is
-> referenced via of_match_ptr() so it will be unused for !CONFIG_OF
-> builds:
->
->    sound/soc/codecs/tas2562.c:805:34: warning: ‘tas2562_of_match’ defined but not used [-Wunused-const-variable=]
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->   sound/soc/codecs/tas2562.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-> index f1ff204e3ad0..19965fabe949 100644
-> --- a/sound/soc/codecs/tas2562.c
-> +++ b/sound/soc/codecs/tas2562.c
-> @@ -802,6 +802,7 @@ static const struct i2c_device_id tas2562_id[] = {
->   };
->   MODULE_DEVICE_TABLE(i2c, tas2562_id);
->   
-> +#ifdef CONFIG_OF
+I think it does not matter:
+1. OF is only bool,
+2. This is the existing pattern in many driver (for OF and ACPI),
+   see also: Documentation/firmware-guide/acpi/enumeration.rst
+3. ifdef should be faster for preprocessor (less macros to unwind),
 
-Should we use #if IS_ENABLED(CONFIG_OF) ?
+It would matter if OF became a module option. In such case anyway a lot
+of existing ifdef CONFIG_OF would have to be corrected.
 
-Dan
+Best regards,
+Krzysztof
