@@ -2,101 +2,67 @@ Return-Path: <SRS0=4V3b=E2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEBF5C5519F
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 13:40:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 823F4C56201
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 14:06:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8218F222BA
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 13:40:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 578FE208B6
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 14:06:23 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DaYTsS/0";
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jhDNejlS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8218F222BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BLamj33I"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 578FE208B6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDEED16E3;
-	Fri, 20 Nov 2020 14:39:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDEED16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6D2016F2;
+	Fri, 20 Nov 2020 15:05:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6D2016F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605879638;
-	bh=pCg/VOj2Q7ky74LkilysZyaA1x5QCrhbcwiskw2qYS4=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1605881181;
+	bh=w5jhoq+pCjyL3RMwwDJ35af2qLq+UIJrSWNF/G19fZk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DaYTsS/0xdPk6JOHwCmmJdfKCZvyNO/hDGjrlsKBy/F1rftR45rbgFOi9NZdEATEu
-	 qQuIHDCf9xn9ddD00vgQ8GfZEtiDxOP/h+t0MrkRs/O/Bmjgm6NOgWb5mMg6YZLMAH
-	 Gl4Q6yENUj/QbyUw5Zycikl/V1t0bcbRj5CHyStE=
+	b=BLamj33IiApVa6zUJIMr0Scd7cohH1a1H7mIgW+tIOPmthqX5n/kvFw/VetGXl5gv
+	 kID5aiJV8c1xIrBOlGp4oGTrcr/7NarlWByfWfC5kbRbQnOstusIKFMSILnPfXKQhV
+	 BZHL6ALatpzRhun84N/7DgOyuW570L79Tms2DLDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63B43F80166;
-	Fri, 20 Nov 2020 14:39:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DA4EF80168;
+	Fri, 20 Nov 2020 15:05:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2BF8F8016C; Fri, 20 Nov 2020 14:39:46 +0100 (CET)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9A410F8016C; Fri, 20 Nov 2020 15:05:29 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CBB3F80166
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 14:39:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CBB3F80166
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="jhDNejlS"
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0AKDdZqW076615;
- Fri, 20 Nov 2020 07:39:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1605879575;
- bh=wZhG8MmEO6RWkp9NIebIOaU7ygmPrS92fsTYsm1LD+0=;
- h=Subject:To:References:From:Date:In-Reply-To;
- b=jhDNejlS8XfYODAl093xJ/wsewtgoQoMkvL+8QYCvq7CfqyY/oGY6IENM/4AQ79Tm
- /TR1MFx1ibliPTI+02iSb8JEqfut1FBIFYmE/VkVgOcaQD9nLjszFM34jdGZUXxzTC
- DgyhPwsE7P1rII1kzpeJlHO5evzN2i0Fal+pJyWs=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
- by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0AKDdZ8v113455
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Fri, 20 Nov 2020 07:39:35 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 20
- Nov 2020 07:39:35 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 20 Nov 2020 07:39:35 -0600
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
- by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0AKDdWCQ085567;
- Fri, 20 Nov 2020 07:39:32 -0600
-Subject: Re: [RFC PATCH] ASoC: ak4458: use reset control instead of reset gpio
-To: Viorel Suman <viorel.suman@nxp.com>, "Viorel Suman (OSS)"
- <viorel.suman@oss.nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>, Philipp Zabel <p.zabel@pengutronix.de>, Kuninori Morimoto
- <kuninori.morimoto.gx@renesas.com>, "S.j. Wang" <shengjiu.wang@nxp.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Lee Jones
- <lee.jones@linaro.org>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-References: <20201116222036.343635-1-viorel.suman@oss.nxp.com>
- <cee287f3-29c1-771f-ca20-812de1ae8044@ti.com>
- <VI1PR0401MB22729D51912D66FDB2973A7792E00@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <c6e7ff22-f421-d05e-621f-738740b30482@ti.com>
-Date: Fri, 20 Nov 2020 15:40:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <VI1PR0401MB22729D51912D66FDB2973A7792E00@VI1PR0401MB2272.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ by alsa1.perex.cz (Postfix) with ESMTPS id B34F2F80166
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 15:05:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B34F2F80166
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 4D080AA4F;
+ Fri, 20 Nov 2020 14:05:21 +0000 (UTC)
+Date: Fri, 20 Nov 2020 15:05:20 +0100
+Message-ID: <s5hblfsgm3j.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kailang <kailang@realtek.com>
+Subject: Re: Dell AIO wrong sound tone
+In-Reply-To: <593c777dcfef4546aa050e105b8e53b5@realtek.com>
+References: <582be5538aca4c5e86e436854e06036b@realtek.com>
+ <s5h3615lgm9.wl-tiwai@suse.de>
+ <593c777dcfef4546aa050e105b8e53b5@realtek.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,67 +78,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-Hi Viorel,
-
-On 19/11/2020 18.24, Viorel Suman wrote:
-> Hi Peter,
+On Fri, 20 Nov 2020 03:45:58 +0100,
+Kailang wrote:
 > 
->> DTS is supposed to look as follows:
->>>
->>> / {
->>>     ak4458_reset: gpio-reset {
->>>        compatible = "gpio-reset";
->>>        reset-gpios = <&pca6416 4 GPIO_ACTIVE_LOW>;
->>>        #reset-cells = <0>;
->>>        initially-in-reset;
->>
->> I can not find anything resembling to this in next-20201119.
->> Where is the implementation and documentation for this gpio-reset?
 > 
-> The board schematics is not publicly available; some info may be seen in DTS files below:
-> https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8mm-evk.dts?h=imx_5.4.24_2.1.0
-> https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8mm-ab2.dts?h=imx_5.4.24_2.1.0
-> https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8mp-ab2.dts?h=imx_5.4.24_2.1.0
 > 
-> In examples above the GPIO is handled by machine driver - wrong approach given that
-> it requires machine driver being probed before codec driver.
+> > -----Original Message-----
+> > From: Takashi Iwai <tiwai@suse.de>
+> > Sent: Thursday, November 19, 2020 7:40 PM
+> > To: Kailang <kailang@realtek.com>
+> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > Subject: Re: Dell AIO wrong sound tone
+> > 
+> > On Thu, 19 Nov 2020 10:26:58 +0100,
+> > Kailang wrote:
+> > >
+> > > Hi Takashi,
+> > >
+> > > Dell AIO only had one audio jack.
+> > > It will get wrong sound tone with replug speaker or HP or headset.
+> > > This patch will solve it.
+> > 
+> > Could you give a brief comment what actually this COEF change does?
+> > 
+> It was combo jack control. It changed for Mic RING and SLEEVE swap.
+> This issue also headset Mic can't record.
 
-Right, so this gpio-reset driver is not in mainline. You are adding
-support for something which does not exists ;)
+OK, now I applied the patch now with an additional comment.
+Thanks.
 
-> 
->>> -	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev,
->> "reset",
->>> -						      GPIOD_OUT_LOW);
->>> -	if (IS_ERR(ak4458->reset_gpiod))
->>> -		return PTR_ERR(ak4458->reset_gpiod);
->>> +	ak4458->reset = devm_reset_control_get_optional_shared(ak4458-
->>> dev, NULL);
->>> +	if (IS_ERR(ak4458->reset))
->>> +		return PTR_ERR(ak4458->reset);
->>
->> The binding documentation must be updated and you must support the gpio
->> way as well.
-> 
-> Sure, make sense.
-> 
->> When I had this discussion around using the reset framework for shared
->> enable and/or reset pins it was suggested that _if_ such a driver makes
->> sense then it should internally handle (by using magic strings) the fallback
->> and work with pre-reset binding.
-> 
-> Thanks, would appreciate if you point me to the discussion you had.
 
-There were few iterations of it when I finally given up, I can quickly
-find rfc v2:
-https://lkml.org/lkml/2019/10/30/311
-
-Probably in earlier or later series the reset framework was also discussed.
-
-I ended up using GPIOD_FLAGS_BIT_NONEXCLUSIVE in the pcm3168a driver.
-https://lkml.org/lkml/2019/11/13/411
-- Péter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Takashi
