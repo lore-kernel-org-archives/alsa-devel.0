@@ -2,76 +2,106 @@ Return-Path: <SRS0=4V3b=E2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1AD5C5519F
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 14:43:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10A0AC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 15:41:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E1002236F
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 14:43:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E773C22269
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 15:41:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Wev7wCd5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E1002236F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uNvuvrHH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E773C22269
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D88F61672;
-	Fri, 20 Nov 2020 15:43:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D88F61672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B10116EC;
+	Fri, 20 Nov 2020 16:40:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B10116EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605883432;
-	bh=PW2N7jY4D8esa1JrQ5DFXxIIS1/zyFegRhDM1DjTb3g=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Wev7wCd5Fdbp2KlEcnDl9I+EvexxMTr6s0ASKT8000Mz4ZIyjq5rGi57EL4gn9jMH
-	 hdPSOEuLd4bhM/Z9PTex2AhgQBbEgeQWXd8WZjBXDvpcp7rK8ULgn+ORkYIQV64DOq
-	 Fe4B1b0pKYEslVJjZmOn7p5tYORBVilZBnNTLyzc=
+	s=default; t=1605886886;
+	bh=LuA7zB7wbxVwRHmQ7PMH5fKJUjyrCK0nq4A0yJ40T5A=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uNvuvrHHfpuSUrn7ZDR4yPCS1ID45LIxsO6zqP4rHKpocewBMGyoPjpSkx5OMXJx/
+	 vD6MWFFfod+vre7E1RxRKM8eBUwR8nyHD2eEGdrj65yNAM+9KAqaloaj2CCDiYatnk
+	 83fu3YSGJ+G9hoVFVJre12fFnEe0qmsQmSgqqi8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39EE9F80168;
-	Fri, 20 Nov 2020 15:43:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B60A0F80168;
+	Fri, 20 Nov 2020 16:40:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFC97F8016C; Fri, 20 Nov 2020 15:42:59 +0100 (CET)
+ id 19BF1F8016C; Fri, 20 Nov 2020 16:40:34 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C066F800C5
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 15:42:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C066F800C5
-IronPort-SDR: 3FJp2ntf9AX4efE72nN8VN9Czg2/QXLh7uFhGZhsRWrTerWNxn44gBfaIQhtjDp0sEQqV8QBPF
- WDzbGfYk+AZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="151327821"
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; d="scan'208";a="151327821"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A4D8F80166
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 16:40:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A4D8F80166
+IronPort-SDR: x0ivU7K/2EmqhSYiwWULSr6Fd0WP7bftU4HQf1bKFfki/5wNw7yRDTNjebtsdclSvJQ+0pRVvd
+ EWkLLM+fpO0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="151337221"
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; d="scan'208";a="151337221"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Nov 2020 06:42:47 -0800
-IronPort-SDR: p5y1hDTC+T5PSyFOsMz4q9Zl4YZ4ZLa7sdNjhnGwRKDNLXjBNTBus1wGT6ePRM9eKedHp12QDl
- rDPs+IlxUIAQ==
+ 20 Nov 2020 07:40:23 -0800
+IronPort-SDR: kmqlJSRXq+UqX2RnZYUxYBPrnvXfwt3zf1CSx46/OLH22BO9NTbclONy1JXKmuV/3yem3qNSSM
+ HQUoLZAWqnrA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; d="scan'208";a="360467535"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2020 06:42:45 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH] ASoC: SOF: IPC: fix implicit type overflow
-Date: Fri, 20 Nov 2020 16:40:25 +0200
-Message-Id: <20201120144025.2166023-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
+X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; d="scan'208";a="342071290"
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137])
+ by orsmga002.jf.intel.com with ESMTP; 20 Nov 2020 07:40:22 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX604.ger.corp.intel.com (163.33.146.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Nov 2020 15:40:21 +0000
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Fri, 20 Nov 2020 15:40:21 +0000
+From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai
+ <tiwai@suse.de>
+Subject: RE: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
+ to ACPI devices
+Thread-Topic: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
+ to ACPI devices
+Thread-Index: AQHWuUTISKj33SVxVku5O7g0f1ygmanF+0XggABMLQCAAASUgIAEnFAQgAAmMgCAAVQSgIAAh8aQgAAL6wCAAWXZUIAAA0eAgALUmaA=
+Date: Fri, 20 Nov 2020 15:40:21 +0000
+Message-ID: <d94ccf9a3c61460db88f256df1fa3240@intel.com>
+References: <20201112223825.39765-1-pierre-louis.bossart@linux.intel.com>
+ <0a0854d1ddaf4f9b81ef5569a7d501a5@intel.com>
+ <20201113164946.GD4828@sirena.org.uk>
+ <2cf7075b-bd51-21a5-2058-3a98e6c488a7@redhat.com>
+ <d462c890495e4dda8698b5ba5eb50066@intel.com>
+ <f62abcd8-b67f-774b-61b5-e08cfc3d2cc7@linux.intel.com>
+ <s5h1rgst6z4.wl-tiwai@suse.de> <0286c6975f24432082f609d45adaa14c@intel.com>
+ <0badb36f-3089-dc34-f7b0-75a73b856f0d@linux.intel.com>
+ <d57fa3716a974eb9ba585ddd85dbe14c@intel.com>
+ <cd8e5c2f-e1c2-7fbb-bee1-cc76ec14a801@linux.intel.com>
+In-Reply-To: <cd8e5c2f-e1c2-7fbb-bee1-cc76ec14a801@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
- Curtis Malainey <cujomalainey@chromium.org>, daniel.baluta@nxp.com
+Cc: Hans de Goede <hdegoede@redhat.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>,
+ "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +117,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
-
-Implicit values may have a length of 15bits (s16) so we need to declare
-the proper size so we don't get undefined behaviour. This appears to be
-arch and compiler dependent. This commit is to keep the headers aligned
-between the firmware and kernel. UBSan discovered this bug in the
-firmware.
-
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/sound/sof/header.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-index 2d35997ace40..571e1dd54b89 100644
---- a/include/sound/sof/header.h
-+++ b/include/sound/sof/header.h
-@@ -31,12 +31,12 @@
- 
- /* Global Message - Generic */
- #define SOF_GLB_TYPE_SHIFT			28
--#define SOF_GLB_TYPE_MASK			(0xf << SOF_GLB_TYPE_SHIFT)
-+#define SOF_GLB_TYPE_MASK			(0xfL << SOF_GLB_TYPE_SHIFT)
- #define SOF_GLB_TYPE(x)				((x) << SOF_GLB_TYPE_SHIFT)
- 
- /* Command Message - Generic */
- #define SOF_CMD_TYPE_SHIFT			16
--#define SOF_CMD_TYPE_MASK			(0xfff << SOF_CMD_TYPE_SHIFT)
-+#define SOF_CMD_TYPE_MASK			(0xfffL << SOF_CMD_TYPE_SHIFT)
- #define SOF_CMD_TYPE(x)				((x) << SOF_CMD_TYPE_SHIFT)
- 
- /* Global Message Types */
--- 
-2.28.0
-
+T24gMjAyMC0xMS0xOCA5OjI1IFBNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToNCg0KLi4u
+DQoNCj4+DQo+PiBIbW0sIHRoZW4gbWF5YmUgSSBtaXN1bmRlcnN0b29kIEhhbnMuIEdpdmVuIGhp
+cyBmZWVkYmFjayBpdCBzZWVtZWQgbGlrZQ0KPj4gRmVkb3JhIGlzIGFib3V0IHRvIHN3aXRjaCB0
+byBTT0YgcmlnaHQgbm93Lg0KPj4NCj4+IEluZGVlZCwgYmVmb3JlIEkndmUgc2VudCBwYXRjaGVz
+IHJlbW92aW5nIEJheXRyYWlsLCBiYXNpY2FsbHkgZXZlcnkNCj4+IHN1cHBvcnQtdGVhbSBoYWQg
+YmVlbiBhc2tlZCBhYm91dCBpdHMgdXNhZ2UgYW5kIHRoZSBhbnN3ZXJzIHdlcmUNCj4+IG5lZ2F0
+aXZlLiAvYXRvbS8gd2FzIGNvdmVyaW5nIGJhc2ljYWxseSBldmVyeSBjYXNlIGFueXdheSBsaWtl
+IHlvdQ0KPj4gcG9pbnRlZCBvdXQgc28gL2JheXRyYWlsLyBzb2x1dGlvbiBmZWx0IG1vcmUgbGlr
+ZSBhIGR1cGxpY2F0aW9uLg0KPj4NCj4+IEFzIFNPRiBpcyB0aGUgZGVzaXJlZCBzb2x1dGlvbiBm
+b3IgYXRvbS1iYXNlZCBwcm9kdWN0cywgSSBjYW4gc2VlIHRoZQ0KPj4gbmVlZCBmb3Igc29tZSBz
+b3J0IG9mIHNlbGVjdGlvbiBtZWNoYW5pc20uIFRoZSBzYW1lIGNhbm5vdCBiZSBzYWlkIGZvcg0K
+Pj4gaHN3L2JkdyB0aG91Z2guIExldCdzIGxlYXZlIGNhdHB0IG91dCB0aGlzLCBzaGFsbCB3ZT8N
+Cj4gDQo+IEl0IGhlbHBzIGV2ZXJ5b25lIHRvIGhhdmUgYSBzaW5nbGUgYnVpbGQsIGUuZy4gJ21h
+a2UgYWxsbW9kY29uZmlnJyBvciANCj4gJ21ha2UgYWxseWVzY29uZmlnJyB3b3VsZCBzZWxlY3Qg
+YWxsIHBvc3NpYmxlIGRyaXZlcnMgYW5kIGJvdHMgY2FuIHJ1biANCj4gd2lsZC4NCj4gDQoNCldo
+eSBzaG91bGQgYm90cyBjYXJlIGFib3V0IG5vdCByZWNvbW1lbmRlZCBjb2RlPw0KSSdtIGFnYWlu
+c3QgYWRkaW5nIGV4dGVybmFsIGRlcGVuZGVuY3kgKGludGVsLWRzcC1jb25maWcpIGZvcg0KY2F0
+cHQgZm9yIHJlYXNvbnMgSSdkIG1lbnRpb25lZCBzZXZlcmFsIHRpbWVzIGFscmVhZHkuDQoNCkN6
+YXJlaw0KDQo=
