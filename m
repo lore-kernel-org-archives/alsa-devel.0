@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-20.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19136C63777
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 18:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE7A1C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 18:35:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 587D424124
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 18:35:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F36E924124
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 18:35:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i4SeD4TN";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CEARSIgf"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 587D424124
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="nigfzL9b";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+GSDdce"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F36E924124
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1DD91735;
-	Fri, 20 Nov 2020 19:34:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1DD91735
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48DC71733;
+	Fri, 20 Nov 2020 19:34:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48DC71733
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605897334;
-	bh=0BBA8F5T1JuTzlfzhd4NKZyNXiGcL+Fk/BtARfUyBmY=;
+	s=default; t=1605897339;
+	bh=j3HUa+fnGHNDQulbJXTCYVUqAPDa46eOQU6quqLLw58=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i4SeD4TNsbb1CLPionBuy1AOxHamg7TnEWnWg5Zb29LBRBV8kVLHMYVLKLDdjSQHw
-	 f0U+FwULWCIvAJvr2Hfa7O2mZzwFqN/d2Fzpr5SUzviHy/5eQon0BdWZ0ilgoLyJsl
-	 wSN6S+uCwFFkfOsMXzE2OHswrxbFwntFpujoOlz8=
+	b=nigfzL9bV8NUTwThqAzkJMWS+l8MqTN3Dt5f9fjnNXKUXKZayoiqZy3RBHawh4cxj
+	 yjh58lH6RsDlS0a+TL2ZwwqLoJovd2X7tvPCkuDAB3cigcaWKKaKYX2Tgmtko++Wah
+	 YdpISRBp2Oh4sjhFIzJQQOJ8vp9UUvqwl3c7XELs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27ACCF8016E;
-	Fri, 20 Nov 2020 19:34:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86543F80258;
+	Fri, 20 Nov 2020 19:34:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7D04F80258; Fri, 20 Nov 2020 19:33:59 +0100 (CET)
+ id 9B2B0F804B4; Fri, 20 Nov 2020 19:34:11 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 559F0F80166
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 19:33:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 559F0F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id A84B1F80258
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 19:34:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A84B1F80258
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CEARSIgf"
+ header.b="g+GSDdce"
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CDB4A22D0A;
- Fri, 20 Nov 2020 18:33:54 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 63A212408E;
+ Fri, 20 Nov 2020 18:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605897235;
- bh=0BBA8F5T1JuTzlfzhd4NKZyNXiGcL+Fk/BtARfUyBmY=;
+ s=default; t=1605897247;
+ bh=j3HUa+fnGHNDQulbJXTCYVUqAPDa46eOQU6quqLLw58=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=CEARSIgfnx6AQwqa71gspyLv01BNCsPibqOfyrJ7m3eXRm1goILq9oQjYyjIVvosb
- 6FyVJ8+AcXoEKzkYXuFnWLCKbbE/8gHvGGKtShtZOKEDYLnQvl8vc4S6aVfQAZzLYA
- eSTYLeHmg3cLGUlWSreWSVzyKO+Pm7oAzQcE3axg=
-Date: Fri, 20 Nov 2020 12:34:01 -0600
+ b=g+GSDdceKqdEuI5kBb/K2Ns/xhwihJJnV0cWEIUHhkKXKFjz/WUVZ0EVPhhyg/XbN
+ X7LV6AM/4spe9voqSRn8CZYvbrkJoeon0V8AoRpLSJ52qLOP4hztg8Jye8a/Y7iKSM
+ y0M2KhugiVgURcLekTfbwBlAFrmpICeVpoTWXB3c=
+Date: Fri, 20 Nov 2020 12:34:12 -0600
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 067/141] ALSA: pcsp: Fix fall-through warnings for Clang
-Message-ID: <9705120ac2310bb20035e375862410413359611d.1605896059.git.gustavoars@kernel.org>
+Subject: [PATCH 068/141] ALSA: sb: Fix fall-through warnings for Clang
+Message-ID: <0f6d5b94f1890be2b8f88d6f930fc75779e26345.1605896059.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -96,21 +96,21 @@ through to the next case.
 Link: https://github.com/KSPP/linux/issues/115
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- sound/drivers/pcsp/pcsp_input.c | 1 +
+ sound/isa/sb/sb8_main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/drivers/pcsp/pcsp_input.c b/sound/drivers/pcsp/pcsp_input.c
-index 52b475b310c3..e79603fe743d 100644
---- a/sound/drivers/pcsp/pcsp_input.c
-+++ b/sound/drivers/pcsp/pcsp_input.c
-@@ -54,6 +54,7 @@ static int pcspkr_input_event(struct input_dev *dev, unsigned int type,
- 		case SND_BELL:
- 			if (value)
- 				value = 1000;
-+			break;
- 		case SND_TONE:
- 			break;
- 		default:
+diff --git a/sound/isa/sb/sb8_main.c b/sound/isa/sb/sb8_main.c
+index 86d0d2fdf48a..8d01692c4f2a 100644
+--- a/sound/isa/sb/sb8_main.c
++++ b/sound/isa/sb/sb8_main.c
+@@ -506,6 +506,7 @@ static int snd_sb8_open(struct snd_pcm_substream *substream)
+ 		} else {
+ 			runtime->hw.rate_max = 15000;
+ 		}
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
 2.27.0
 
