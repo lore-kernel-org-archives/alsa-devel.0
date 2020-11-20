@@ -7,77 +7,74 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 240D6C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:23:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D524EC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:23:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E2BA22269
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:23:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1FDFE24171
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:23:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="AvIELhZv";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="xuKRxDVH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E2BA22269
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OaRHQHS+";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4WsHIiq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FDFE24171
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C02151715;
-	Fri, 20 Nov 2020 17:22:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C02151715
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EFBD172D;
+	Fri, 20 Nov 2020 17:22:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EFBD172D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605889413;
-	bh=vBYEDxeWGr2WVDsaU9JoHxXG3Ni9B9eteSqn4Twg9jo=;
+	s=default; t=1605889425;
+	bh=0HugLJZa8zS4Le6aM6WdEG5ldLVgwL6aMNqW9XESAyY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AvIELhZvPyQSGm1pbQC6WObWTB/PaI21mmCDpGsaBzwhpB9vUlsNrn1bLysOU61Zs
-	 PvnIxZDUyoc63f9NM2VMCwGrGDTcHOUXLIUiXzgniL4ZRnqykCM2aFI2Fr/mw9ZITL
-	 Mi6LU/MD5uCHN08O0eKN7eXOb7dxwP8QksVNaWo8=
+	b=OaRHQHS+v7oeSK1h+OXLxZvKwDPNpLPlu0MOToens2cR+o5rPQ7iUbvf7kBCtny16
+	 Gu2+pM1eqLjtU4GyU7vyKveYG1fmswphbF+JzmfVA+NgnGOsvrNumPi13s0CtQA3/u
+	 UwFzx2PSM2VpMtGRDsbF+q5VyBBuLjFD0b+ppZFs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B71FF8051E;
-	Fri, 20 Nov 2020 17:18:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30642F80520;
+	Fri, 20 Nov 2020 17:18:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7C3EF8051F; Fri, 20 Nov 2020 17:18:32 +0100 (CET)
+ id F12C2F80526; Fri, 20 Nov 2020 17:18:35 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DDEBF8051D
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:18:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DDEBF8051D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 619B6F80520
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:18:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 619B6F80520
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="xuKRxDVH"
+ header.b="V4WsHIiq"
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch
  [84.226.167.205])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9E096223BE;
- Fri, 20 Nov 2020 16:18:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 66315223FD;
+ Fri, 20 Nov 2020 16:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605889108;
- bh=vBYEDxeWGr2WVDsaU9JoHxXG3Ni9B9eteSqn4Twg9jo=;
+ s=default; t=1605889111;
+ bh=0HugLJZa8zS4Le6aM6WdEG5ldLVgwL6aMNqW9XESAyY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=xuKRxDVHHqiDSgK3K+Q8DYu5DLZ23VYVwsKqijAZV4F0MQPBYnPWMKLvy/qbQxSWb
- MhwdfJAmbIh0wj5AraHRC0GcSEVUC68KnzKd+m2/9S2rWQDion/q/Y1jvDelQW7hqT
- UvzffEYzltPZ4R64ly17nm/PIMP2nPh5tw1WNJtw=
+ b=V4WsHIiqUTGnjcpfkaCLf2SIVQPqJCkTuJcVG9dBcikacJujLkakkWoWFU8LKB0YJ
+ kCiZFWoSSlT34pjSDM2iENswJzkt+hZuegWwUHREkcbqYKpBd7E6OY3qNhRoK7LXmL
+ WiSxJklRnv+aTiMxJnmMtnVFonJDqm6G2dIF+NwI=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH 12/38] ASoC: uniphier: drop of_match_ptr from of_device_id
- table
-Date: Fri, 20 Nov 2020 17:16:26 +0100
-Message-Id: <20201120161653.445521-12-krzk@kernel.org>
+Subject: [PATCH 13/38] ASoC: ak4118: skip of_device_id table when !CONFIG_OF
+Date: Fri, 20 Nov 2020 17:16:27 +0100
+Message-Id: <20201120161653.445521-13-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201120161653.445521-1-krzk@kernel.org>
 References: <20201120161653.445521-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: linux-arm-kernel@lists.infradead.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,60 +90,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver can match only via the DT table so the table should be always
-used and the of_match_ptr does not have any sense (this also allows ACPI
-matching via PRP0001, even though it is not relevant here).  This fixes
-compile warning (!CONFIG_OF on x86_64):
+The driver can match by multiple methods.  Its of_device_id table is
+referenced via of_match_ptr() so it will be unused for !CONFIG_OF
+builds:
 
-  sound/soc/uniphier/aio-ld11.c:375:34: warning: ‘uniphier_aio_of_match’ defined but not used [-Wunused-const-variable=]
-  sound/soc/uniphier/evea.c:554:34: warning: ‘evea_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/codecs/ak4118.c:407:34: warning: ‘ak4118_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/uniphier/aio-ld11.c | 2 +-
- sound/soc/uniphier/aio-pxs2.c | 2 +-
- sound/soc/uniphier/evea.c     | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/ak4118.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/uniphier/aio-ld11.c b/sound/soc/uniphier/aio-ld11.c
-index 8b44f8dc4970..107dd8c15a0a 100644
---- a/sound/soc/uniphier/aio-ld11.c
-+++ b/sound/soc/uniphier/aio-ld11.c
-@@ -388,7 +388,7 @@ MODULE_DEVICE_TABLE(of, uniphier_aio_of_match);
- static struct platform_driver uniphier_aio_driver = {
- 	.driver = {
- 		.name = "snd-uniphier-aio-ld11",
--		.of_match_table = of_match_ptr(uniphier_aio_of_match),
-+		.of_match_table = uniphier_aio_of_match,
- 	},
- 	.probe    = uniphier_aio_probe,
- 	.remove   = uniphier_aio_remove,
-diff --git a/sound/soc/uniphier/aio-pxs2.c b/sound/soc/uniphier/aio-pxs2.c
-index a1d05fe9d3c2..66e983d80c5e 100644
---- a/sound/soc/uniphier/aio-pxs2.c
-+++ b/sound/soc/uniphier/aio-pxs2.c
-@@ -294,7 +294,7 @@ MODULE_DEVICE_TABLE(of, uniphier_aio_of_match);
- static struct platform_driver uniphier_aio_driver = {
- 	.driver = {
- 		.name = "snd-uniphier-aio-pxs2",
--		.of_match_table = of_match_ptr(uniphier_aio_of_match),
-+		.of_match_table = uniphier_aio_of_match,
- 	},
- 	.probe    = uniphier_aio_probe,
- 	.remove   = uniphier_aio_remove,
-diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-index d27e9ca07856..b14d52052439 100644
---- a/sound/soc/uniphier/evea.c
-+++ b/sound/soc/uniphier/evea.c
-@@ -560,7 +560,7 @@ MODULE_DEVICE_TABLE(of, evea_of_match);
- static struct platform_driver evea_codec_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
--		.of_match_table = of_match_ptr(evea_of_match),
-+		.of_match_table = evea_of_match,
- 	},
- 	.probe  = evea_probe,
- 	.remove = evea_remove,
+diff --git a/sound/soc/codecs/ak4118.c b/sound/soc/codecs/ak4118.c
+index f44d9a4a8507..5d46ae85566c 100644
+--- a/sound/soc/codecs/ak4118.c
++++ b/sound/soc/codecs/ak4118.c
+@@ -404,11 +404,13 @@ static int ak4118_i2c_probe(struct i2c_client *i2c,
+ 				&soc_component_drv_ak4118, &ak4118_dai, 1);
+ }
+ 
++#ifdef CONFIG_OF
+ static const struct of_device_id ak4118_of_match[] = {
+ 	{ .compatible = "asahi-kasei,ak4118", },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, ak4118_of_match);
++#endif
+ 
+ static const struct i2c_device_id ak4118_id_table[] = {
+ 	{ "ak4118", 0 },
 -- 
 2.25.1
 
