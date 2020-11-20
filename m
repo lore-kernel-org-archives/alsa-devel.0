@@ -7,76 +7,75 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97948C56201
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5755C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:22:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0B3A22470
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:21:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id EB97D2240B
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:22:06 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="f1ZMIebG";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jtH9RgMS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0B3A22470
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iO3qTeVc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="nY2He0xq"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB97D2240B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA90A170F;
-	Fri, 20 Nov 2020 17:21:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA90A170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D3A61727;
+	Fri, 20 Nov 2020 17:21:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D3A61727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605889315;
-	bh=SVTkXer6++N+JN1kO+v1cmoeZbcg8CF407Fu94SDoCI=;
+	s=default; t=1605889325;
+	bh=/DycQ1hb3XETKxcgJtqoZZmUGffDzYpw1TgYfDhw+Fc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f1ZMIebG8eAsbJjIcCscAK2WIID9yH01nQW9Kb5oar2rXByxQ+50f1eEAurpV+D5D
-	 Hj0u3BRA4hSnvPDZUlfXoTbiP3/86MiCGyuoD46V3Ukvq5hmPHFX4k2C+eQomosvEJ
-	 e9FO87KVwpG36/OhQYPDR8AiyPoZe3TJShvOkuPg=
+	b=iO3qTeVc+lzlP++EApQu9b8E8EHHrqRrzvG51hcBPQahLFZP9lSUDaM4VOQmquK5d
+	 DCfe57D8Q35ltyfdk+aeJPCoCooQ43/e7YHe2y7ERiDb/AUoCKLLKQRFTP0qfMKdio
+	 jxZnnrApGm/dyQBs5DBqgwC9RJ6PZhvMizS6KIXE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79552F804F2;
-	Fri, 20 Nov 2020 17:18:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E753F804FC;
+	Fri, 20 Nov 2020 17:18:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0809F804EB; Fri, 20 Nov 2020 17:18:18 +0100 (CET)
+ id EE2CFF804F2; Fri, 20 Nov 2020 17:18:20 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D560F804DF
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:18:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D560F804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01FDBF804DF
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:18:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01FDBF804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jtH9RgMS"
+ header.b="nY2He0xq"
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch
  [84.226.167.205])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6FD7F22269;
- Fri, 20 Nov 2020 16:18:12 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id E0E0122470;
+ Fri, 20 Nov 2020 16:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605889094;
- bh=SVTkXer6++N+JN1kO+v1cmoeZbcg8CF407Fu94SDoCI=;
+ s=default; t=1605889096;
+ bh=/DycQ1hb3XETKxcgJtqoZZmUGffDzYpw1TgYfDhw+Fc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jtH9RgMSF8NZ2dMy7kFcUemuXYl/0T5wMAN/eg7zn/CdCzMm1pET2dPDiJCx5dqBa
- SbJbT1H2G+I+kzk70Dv/mcBdQeyWSVAQ729HPXuGc73SF5kLcjH6+bzj8fDyPa+iA4
- DDbQFjvpkhoA0yT76SgMC6Ebb4Q6iqFZEH7DBt2w=
+ b=nY2He0xqB6LFhFYyPcS/lCdJ7Gs5C/ZsLZcQ7YZDAWcZA0pnLFldy0K38izU6tUaB
+ +DFPOLMDCabAhy6KlnmE6T5+1EodBP3+38ktnvltT3JuIbkuYuNyPu1gcbOvjBnA7P
+ yzf3B3LBriY2xJev3kA2K+6Oehsl7DdKJx1Q0Khc=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH 08/38] ASoC: qcom: drop of_match_ptr from of_device_id table
-Date: Fri, 20 Nov 2020 17:16:22 +0100
-Message-Id: <20201120161653.445521-8-krzk@kernel.org>
+Subject: [PATCH 09/38] ASoC: samsung: smdk_wm8994: drop of_match_ptr from
+ of_device_id table
+Date: Fri, 20 Nov 2020 17:16:23 +0100
+Message-Id: <20201120161653.445521-9-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201120161653.445521-1-krzk@kernel.org>
 References: <20201120161653.445521-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Patrick Lai <plai@codeaurora.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.com>, Krzysztof Kozlowski <krzk@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,68 +96,26 @@ used and the of_match_ptr does not have any sense (this also allows ACPI
 matching via PRP0001, even though it is not relevant here).  This fixes
 compile warning (!CONFIG_OF on x86_64):
 
-  sound/soc/qcom/lpass-apq8016.c:294:34: warning: ‘apq8016_lpass_cpu_device_id’ defined but not used [-Wunused-const-variable=]
+  sound/soc/samsung/smdk_wm8994.c:139:34: warning: ‘samsung_wm8994_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/qcom/apq8016_sbc.c   | 2 +-
- sound/soc/qcom/lpass-apq8016.c | 2 +-
- sound/soc/qcom/lpass-ipq806x.c | 2 +-
- sound/soc/qcom/lpass-sc7180.c  | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/samsung/smdk_wm8994.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index 575e2aefefe3..cc8c3f929683 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -176,7 +176,7 @@ MODULE_DEVICE_TABLE(of, apq8016_sbc_device_id);
- static struct platform_driver apq8016_sbc_platform_driver = {
- 	.driver = {
- 		.name = "qcom-apq8016-sbc",
--		.of_match_table = of_match_ptr(apq8016_sbc_device_id),
-+		.of_match_table = apq8016_sbc_device_id,
+diff --git a/sound/soc/samsung/smdk_wm8994.c b/sound/soc/samsung/smdk_wm8994.c
+index 64a1a64656ab..696ab6abd1f6 100644
+--- a/sound/soc/samsung/smdk_wm8994.c
++++ b/sound/soc/samsung/smdk_wm8994.c
+@@ -187,7 +187,7 @@ static int smdk_audio_probe(struct platform_device *pdev)
+ static struct platform_driver smdk_audio_driver = {
+ 	.driver		= {
+ 		.name	= "smdk-audio-wm8994",
+-		.of_match_table = of_match_ptr(samsung_wm8994_of_match),
++		.of_match_table = samsung_wm8994_of_match,
+ 		.pm	= &snd_soc_pm_ops,
  	},
- 	.probe = apq8016_sbc_platform_probe,
- };
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 0aedb3a0a798..4ee1de6588bb 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -300,7 +300,7 @@ MODULE_DEVICE_TABLE(of, apq8016_lpass_cpu_device_id);
- static struct platform_driver apq8016_lpass_cpu_platform_driver = {
- 	.driver	= {
- 		.name		= "apq8016-lpass-cpu",
--		.of_match_table	= of_match_ptr(apq8016_lpass_cpu_device_id),
-+		.of_match_table	= apq8016_lpass_cpu_device_id,
- 	},
- 	.probe	= asoc_qcom_lpass_cpu_platform_probe,
- 	.remove	= asoc_qcom_lpass_cpu_platform_remove,
-diff --git a/sound/soc/qcom/lpass-ipq806x.c b/sound/soc/qcom/lpass-ipq806x.c
-index 832a9161484e..421d65a546f3 100644
---- a/sound/soc/qcom/lpass-ipq806x.c
-+++ b/sound/soc/qcom/lpass-ipq806x.c
-@@ -170,7 +170,7 @@ MODULE_DEVICE_TABLE(of, ipq806x_lpass_cpu_device_id);
- static struct platform_driver ipq806x_lpass_cpu_platform_driver = {
- 	.driver	= {
- 		.name		= "lpass-cpu",
--		.of_match_table	= of_match_ptr(ipq806x_lpass_cpu_device_id),
-+		.of_match_table	= ipq806x_lpass_cpu_device_id,
- 	},
- 	.probe	= asoc_qcom_lpass_cpu_platform_probe,
- 	.remove	= asoc_qcom_lpass_cpu_platform_remove,
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index bc998d501600..3f4efd050a29 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -293,7 +293,7 @@ MODULE_DEVICE_TABLE(of, sc7180_lpass_cpu_device_id);
- static struct platform_driver sc7180_lpass_cpu_platform_driver = {
- 	.driver = {
- 		.name = "sc7180-lpass-cpu",
--		.of_match_table = of_match_ptr(sc7180_lpass_cpu_device_id),
-+		.of_match_table = sc7180_lpass_cpu_device_id,
- 	},
- 	.probe = asoc_qcom_lpass_cpu_platform_probe,
- 	.remove = asoc_qcom_lpass_cpu_platform_remove,
+ 	.probe		= smdk_audio_probe,
 -- 
 2.25.1
 
