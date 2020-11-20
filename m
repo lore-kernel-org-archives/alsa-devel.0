@@ -7,75 +7,76 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79106C56201
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:29:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C37AC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:30:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C47D6223FD
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:29:39 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 59317223FD
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Nov 2020 16:30:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="DrQphFHT";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="bQbjYQRW"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C47D6223FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="jLQ0kBZr";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="1D9t9V3D"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59317223FD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D3E217FD;
-	Fri, 20 Nov 2020 17:28:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D3E217FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A0AD1802;
+	Fri, 20 Nov 2020 17:29:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A0AD1802
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605889778;
-	bh=4TwJDhvLUQ9SarMg0Cg8dwFxEwAJn3ntoVUmPHve+a8=;
+	s=default; t=1605889808;
+	bh=Qndidju4iqoGNSvs1izHnQ1sh03cOOHXUD8yp7FDt+M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DrQphFHTxjnLq756Kz6V040Ldhp9XqZfIarcDOD/Qq1RcLEpyUwzQLkfXFguWT5NN
-	 OVT1ZqJee+E7JRIoMLX/k1fVDlUxku03fU/joZullmQO1kXNkhqDuXsIKHQq3PVJc/
-	 ZV2HAO7b2DXOV4tXebqVMgKI5MWRJBkmkzBmnVv4=
+	b=jLQ0kBZrl6yF7AcLxRnxr7j+Rk1inTNL71N/V01K78py+4VeAeef5f5YSSdl8gUjT
+	 J2FDKtRmdhF7Kr39TwTa4vxk8C94RJv22wDPjxi2rDUB9D7OL6MvvOjgVc6ZdE8Hd6
+	 S8I69z/Mk2hDDcpT3FkobNUVZkEXGVwxWKhbStCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2088F805C6;
-	Fri, 20 Nov 2020 17:19:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AB6BF80168;
+	Fri, 20 Nov 2020 17:19:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 719F2F805C6; Fri, 20 Nov 2020 17:19:26 +0100 (CET)
+ id 6BC46F805C9; Fri, 20 Nov 2020 17:19:31 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC414F805C1
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:19:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC414F805C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A6DEF804C3
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 17:19:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A6DEF804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bQbjYQRW"
+ header.b="1D9t9V3D"
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch
  [84.226.167.205])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DD7C42240B;
- Fri, 20 Nov 2020 16:19:20 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 7F48222470;
+ Fri, 20 Nov 2020 16:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1605889162;
- bh=4TwJDhvLUQ9SarMg0Cg8dwFxEwAJn3ntoVUmPHve+a8=;
+ s=default; t=1605889166;
+ bh=Qndidju4iqoGNSvs1izHnQ1sh03cOOHXUD8yp7FDt+M=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bQbjYQRWXtkm2LqPEMITYBQqC8mE7SnZGwJpgscBOVLO9OrboHAHN/HBTnINhd8Z/
- lXKVsw2rnxTClNSsqNs2VwPlXc1J/nE91Xi1glAoDtibCKLuBIfhnOBkE9hRe+7azk
- WbC/jguJyig9x4xWfUBBPGFWWjTg1g3aFY5yX9Gc=
+ b=1D9t9V3DBrMGyMiXQU3R3v/lY4f6xyNxyzJy4Hwffs6GjvZbWabQ2SEzNBxNFGLaK
+ tPDypw1QTeld/0tObG4i4A1U+HiZyWQ2xgFrPDP9pMpcgrPTvdO7oVBWTVqp1DDs62
+ POaA8HtpEmo0iQrtAmf5YKZPthkkJagniEch9CHA=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH 28/38] ASoC: rt5660: skip of_device_id table when !CONFIG_OF
-Date: Fri, 20 Nov 2020 17:16:42 +0100
-Message-Id: <20201120161653.445521-28-krzk@kernel.org>
+Subject: [PATCH 29/38] ASoC: tas2562: skip of_device_id table when !CONFIG_OF
+Date: Fri, 20 Nov 2020 17:16:43 +0100
+Message-Id: <20201120161653.445521-29-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201120161653.445521-1-krzk@kernel.org>
 References: <20201120161653.445521-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>,
- Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Jonghwan Choi <charlie.jh@kakaocorp.com>, Takashi Iwai <tiwai@suse.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Dan Murphy <dmurphy@ti.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,31 +96,33 @@ The driver can match by multiple methods.  Its of_device_id table is
 referenced via of_match_ptr() so it will be unused for !CONFIG_OF
 builds:
 
-  sound/soc/codecs/rt5660.c:1238:34: warning: ‘rt5660_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/codecs/tas2562.c:805:34: warning: ‘tas2562_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/codecs/rt5660.c | 2 ++
+ sound/soc/codecs/tas2562.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-index 9e3813f7583d..0edf09d3a499 100644
---- a/sound/soc/codecs/rt5660.c
-+++ b/sound/soc/codecs/rt5660.c
-@@ -1235,11 +1235,13 @@ static const struct i2c_device_id rt5660_i2c_id[] = {
+diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+index f1ff204e3ad0..19965fabe949 100644
+--- a/sound/soc/codecs/tas2562.c
++++ b/sound/soc/codecs/tas2562.c
+@@ -802,6 +802,7 @@ static const struct i2c_device_id tas2562_id[] = {
  };
- MODULE_DEVICE_TABLE(i2c, rt5660_i2c_id);
+ MODULE_DEVICE_TABLE(i2c, tas2562_id);
  
 +#ifdef CONFIG_OF
- static const struct of_device_id rt5660_of_match[] = {
- 	{ .compatible = "realtek,rt5660", },
- 	{},
+ static const struct of_device_id tas2562_of_match[] = {
+ 	{ .compatible = "ti,tas2562", },
+ 	{ .compatible = "ti,tas2563", },
+@@ -810,6 +811,7 @@ static const struct of_device_id tas2562_of_match[] = {
+ 	{ },
  };
- MODULE_DEVICE_TABLE(of, rt5660_of_match);
+ MODULE_DEVICE_TABLE(of, tas2562_of_match);
 +#endif
  
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5660_acpi_match[] = {
+ static struct i2c_driver tas2562_i2c_driver = {
+ 	.driver = {
 -- 
 2.25.1
 
