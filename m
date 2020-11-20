@@ -2,73 +2,76 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2D98C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD6F3C63777
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:59:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8724A206F9
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:59:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 0DF7A206D9
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 16:59:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CgPoJlEl"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8724A206F9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NwYPzX/k";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="y6BwGzsU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DF7A206D9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59DF816D2;
-	Tue, 24 Nov 2020 17:59:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59DF816D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 623F216BF;
+	Tue, 24 Nov 2020 17:59:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 623F216BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606237192;
-	bh=KCSFDj2NZ1MVveSx1zHJBqZ0TnExEB/tnn0+nJ6CFiY=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1606237197;
+	bh=RlEnelajx5E1UvOiu4TwGuYZq41CYqRzy+OE2vpEZwM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CgPoJlEl52hPXNpnO4fPmAs1EhEy6BQ/L4Ko8DOBW/jjfYvDs5U3zBNJVhT5Tg/Gl
-	 SPPjTgC9AuNYcsbh1mwg+h8vAvWJg9v8hcuw76eAiwIuzDAjCYVBvZHmaGMxSwyKmM
-	 kT6OekDuQpd92Cd0bqrSkzzE1Pdu/6HrzHTHAZhI=
+	b=NwYPzX/kpoVM+Ku0iuZ3RT5GsJofRYASfz0Eq04/6kI9RHJHtzUxv/sza/xh7Mda8
+	 DOsLmyH0qycrxdhkK5HpGs0OAEh4HZMlh3gztn2aC5t78MCOXExEFfb4l1Fv68wijI
+	 FqE37/NZ08QSaO23g0FDQUMLUFBbe+hDKORP8Zis=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5EEEF8026C;
-	Tue, 24 Nov 2020 17:58:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81AD0F804B4;
+	Tue, 24 Nov 2020 17:58:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AFF4F8016C; Fri, 20 Nov 2020 19:29:10 +0100 (CET)
-Received: from smtprelay.hostedemail.com (smtprelay0161.hostedemail.com
- [216.40.44.161])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 003FFF8016C; Fri, 20 Nov 2020 19:53:55 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F26BF800F3
- for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 19:29:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F26BF800F3
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net
- [216.40.38.60])
- by smtprelay04.hostedemail.com (Postfix) with ESMTP id 2DC80180A7FF1;
- Fri, 20 Nov 2020 18:29:00 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-HE-Tag: woman67_620d0012734d
-X-Filterd-Recvd-Size: 3843
-Received: from XPS-9350.home (unknown [47.151.133.149])
- (Authenticated sender: joe@perches.com)
- by omf05.hostedemail.com (Postfix) with ESMTPA;
- Fri, 20 Nov 2020 18:28:49 +0000 (UTC)
-Message-ID: <3e0bbb1644fe53d79322c2feb28ccaf3e20c0e94.camel@perches.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80225F800C5
+ for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2020 19:53:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80225F800C5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="y6BwGzsU"
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown
+ [163.114.132.6])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D19712242B;
+ Fri, 20 Nov 2020 18:53:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1605898429;
+ bh=RlEnelajx5E1UvOiu4TwGuYZq41CYqRzy+OE2vpEZwM=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=y6BwGzsUDu1zr4tV0nGpfLuqNb1AQVwTl3HIlZXKXQmalkVaXzcKTw6PaiYzn6cs4
+ cCrQcjpmBltf5qc0pbll6lEfWSr4jv5MMDA/VHBdadKQQtZqXFk9pYOspqu5FdKf1A
+ HiIo+vycYYhwL3jW0KIV5eL5D/2xlLalPiHVxUuA=
+Date: Fri, 20 Nov 2020 10:53:44 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-From: Joe Perches <joe@perches.com>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
- linux-kernel@vger.kernel.org
-Date: Fri, 20 Nov 2020 10:28:48 -0800
+Message-ID: <20201120105344.4345c14e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 In-Reply-To: <cover.1605896059.git.gustavoars@kernel.org>
 References: <cover.1605896059.git.gustavoars@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Tue, 24 Nov 2020 17:58:08 +0100
+X-Mailman-Approved-At: Tue, 24 Nov 2020 17:58:07 +0100
 Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
  reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
  linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
@@ -83,8 +86,9 @@ Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
  rds-devel@oss.oracle.com, Nick Desaulniers <ndesaulniers@google.com>,
  linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
  oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
- amd-gfx@lists.freedesktop.org, linux-stm32@st-md-mailman.stormreply.com,
- cluster-devel@redhat.com, linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+ linux-security-module@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
+ linux-acpi@vger.kernel.org, coreteam@netfilter.org,
  intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
  Miguel Ojeda <ojeda@kernel.org>, tipc-discussion@lists.sourceforge.net,
  linux-ext4@vger.kernel.org, linux-media@vger.kernel.org,
@@ -99,11 +103,12 @@ Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
  x86@kernel.org, linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
  Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, netdev@vger.kernel.org,
  linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
- linux-sctp@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
  netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
- patches@opensource.cirrus.com, linux-integrity@vger.kernel.org,
- target-devel@vger.kernel.org, linux-hardening@vger.kernel.org
+ patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
+ linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,9 +124,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2020-11-20 at 12:21 -0600, Gustavo A. R. Silva wrote:
-> Hi all,
-> 
+On Fri, 20 Nov 2020 12:21:39 -0600 Gustavo A. R. Silva wrote:
 > This series aims to fix almost all remaining fall-through warnings in
 > order to enable -Wimplicit-fallthrough for Clang.
 > 
@@ -132,11 +135,16 @@ On Fri, 2020-11-20 at 12:21 -0600, Gustavo A. R. Silva wrote:
 > Notice that in order to enable -Wimplicit-fallthrough for Clang, this
 > change[1] is meant to be reverted at some point. So, this patch helps
 > to move in that direction.
+> 
+> Something important to mention is that there is currently a discrepancy
+> between GCC and Clang when dealing with switch fall-through to empty case
+> statements or to cases that only contain a break/continue/return
+> statement[2][3][4].
 
-This was a bit hard to parse for a second or three.
+Are we sure we want to make this change? Was it discussed before?
 
-Thanks Gustavo.
+Are there any bugs Clangs puritanical definition of fallthrough helped
+find?
 
-How was this change done?
-
-
+IMVHO compiler warnings are supposed to warn about issues that could
+be bugs. Falling through to default: break; can hardly be a bug?!
