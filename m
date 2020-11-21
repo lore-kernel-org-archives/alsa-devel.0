@@ -2,67 +2,68 @@ Return-Path: <SRS0=zJPj=E3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 212ECC388F9
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:27:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3843C388F9
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:30:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54B7622240
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:27:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 55E8A2224A
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:30:49 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T+9HeLQ5"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54B7622240
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ezVZbPjX"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55E8A2224A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EF5F16C9;
-	Sat, 21 Nov 2020 09:26:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EF5F16C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6806E16D2;
+	Sat, 21 Nov 2020 09:29:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6806E16D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605947269;
-	bh=2CwIXl94OZmYZo2tom9bXiXBlVi/1or7I4pWG/hcRS4=;
+	s=default; t=1605947447;
+	bh=RMjM6FoiaoDORxgaA4JhY9D3NgP3CoglBwtHLzAfbpc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T+9HeLQ5kyhvpHzUC4Yni2c/txy9i9Vv4oiW6jQOjJwbs3cb3mdxO6g5j5Qi1b9k3
-	 oCWLZ9ZN40L1CbBibcTvQ88HFGOZLxNzzi4l4/EcFYb8VbFozv1M+zOYUjAhuEv2au
-	 PDNz+0USTbVqPyanljSqXM9djgPb1K1SwX2fzLao=
+	b=ezVZbPjXuydr1IjUR9pNQAQNy87G5mQgBfuSUpWiSbEAdiI1JVoYi5PB6hAnbkP81
+	 Jqyi8CLR6h529qobz494bueJJ7g49xd4+UWirEIV+AqKZA/lnx/3pGlgen1M3u3WnY
+	 tquyAKPRR2HBHJnWmeFqGZBTs8kunGJ9Nmp20sUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9AE1F80169;
-	Sat, 21 Nov 2020 09:26:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F4EDF80157;
+	Sat, 21 Nov 2020 09:29:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77520F801ED; Sat, 21 Nov 2020 09:26:57 +0100 (CET)
+ id 486D7F801ED; Sat, 21 Nov 2020 09:29:55 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2674F80166
- for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2020 09:26:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2674F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97886F80166
+ for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2020 09:29:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97886F80166
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 46297ABE4;
- Sat, 21 Nov 2020 08:26:51 +0000 (UTC)
-Date: Sat, 21 Nov 2020 09:26:51 +0100
-Message-ID: <s5htutjdsj8.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 3A2F1AD63;
+ Sat, 21 Nov 2020 08:29:48 +0000 (UTC)
+Date: Sat, 21 Nov 2020 09:29:48 +0100
+Message-ID: <s5hsg93dseb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ALSA: emu10k1: Use dma_set_mask_and_coherent to simplify
- code
-In-Reply-To: <20201121081632.1330159-1-christophe.jaillet@wanadoo.fr>
-References: <20201121081632.1330159-1-christophe.jaillet@wanadoo.fr>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH 068/141] ALSA: sb: Fix fall-through warnings for Clang
+In-Reply-To: <0f6d5b94f1890be2b8f88d6f930fc75779e26345.1605896059.git.gustavoars@kernel.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <0f6d5b94f1890be2b8f88d6f930fc75779e26345.1605896059.git.gustavoars@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, tiwai@suse.com, dan.carpenter@oracle.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-hardening@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,23 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 21 Nov 2020 09:16:32 +0100,
-Christophe JAILLET wrote:
+On Fri, 20 Nov 2020 19:34:12 +0100,
+Gustavo A. R. Silva wrote:
 > 
-> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a break statement instead of letting the code fall
+> through to the next case.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-It's a good cleanup, but ...
+Thanks, applied.
 
-> With at it replace the 'card->dev' parameter passed to a 'dev_err()' call
-> by an equivalent '&pci->dev' which is more consistent with the test just
-> one line above.
-
-... this will make it inconsistent with other error message lines in
-the same function, OTOH.  So I don't think this part necessary to be
-changed.
-
-
-thanks,
 
 Takashi
