@@ -2,115 +2,94 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD03C6379D
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E39CC63777
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC8FB20857
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5D62F206F9
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gGk/1Td6";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BtEofZ03"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC8FB20857
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OiYzqGCg";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="Lvt0xf0A";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="qZT/78tS"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D62F206F9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=HansenPartnership.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C0641721;
-	Tue, 24 Nov 2020 18:03:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C0641721
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF156172C;
+	Tue, 24 Nov 2020 18:04:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF156172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606237484;
-	bh=IqR309OHHtYrDAWFZnEdK7+YS0vMSytKKZwTAx0Dgvw=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1606237495;
+	bh=oKjwoQQYqAGHYIcGa87tH3kfRh6eNDZ11DRWs/5n6Nc=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gGk/1Td6Hrue2IaHHW1Cquo4Fvkvu12k/OTTczZTvEM92HHdrz3aJQM2OiNXXsfsL
-	 S5lyvS2ooQWJgCT4HwnImOq3jiAiS3Y86M1nCoQM9cyVqTlxLXkJ5iCI5PBEpzBj0Y
-	 ++yAde4A2sJ1bSo2Jni+6mIWtY6oOgtdm84/1yak=
+	b=OiYzqGCg4WqZyWtZw+0dygRS48IOuOJBxO/KojJK4SIlxpgxG9W7PRmdf6qv8UsxR
+	 yr7DwWPGNT3DBj+CIinQXUmhPDu2fa+2R3wx8F68qFKmtmmN9BSbI4y5Ow/DIzCZVw
+	 myqXUW9d6zTrXfYClPmgqngW9HhZqfKXdqcNX23A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73721F8051E;
-	Tue, 24 Nov 2020 17:58:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 541FFF80525;
+	Tue, 24 Nov 2020 17:58:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7491DF80255; Mon, 23 Nov 2020 18:06:20 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 2D7CBF801ED; Sat, 21 Nov 2020 18:19:10 +0100 (CET)
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com
+ [IPv6:2607:fcd0:100:8a00::2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AB69F80113
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 18:06:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AB69F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BF42F800C5
+ for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2020 18:19:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BF42F800C5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="BtEofZ03"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1606151171;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ETdBmUCF01QVQJOZ+sQu9TUGQeVKu9xOEmE1E5gBvfU=;
- b=BtEofZ03By1sp6OyH8lSI6IT4Bb/Q48OsWV2XnBXmdgQcceGh9rKSaQV86czSHO4W4CJHn
- vUaUaH4n0l1WmtKl1NY4JjZQEtZdHR6F0okj/kLdyZp+LnqjvTzaYPmjipu9+IS6RcbTNg
- lanzsvwsZXvmVS2IMlU/0SstZMlkjqs=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-tZJFUtqYOYqXFAU14tnNWA-1; Mon, 23 Nov 2020 12:06:09 -0500
-X-MC-Unique: tZJFUtqYOYqXFAU14tnNWA-1
-Received: by mail-qv1-f71.google.com with SMTP id t14so13427581qvc.13
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:06:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=ETdBmUCF01QVQJOZ+sQu9TUGQeVKu9xOEmE1E5gBvfU=;
- b=mD/EkzcYZQigrwj92y7WCt5wcYhqNariP77q57OWKJpKI2GkXLbKM8YGJq+9BEY/c8
- 2jiIb+BFibA7vGErI0BLBmjawzWVSbXPjWdzzachzczBEI2h6dWf2SslWg3d/KFNrqD7
- AooiYxoAxUsxy/k5l5p+7Dh6/2CVqXeSxa+X7MWuMqUnsUIG1m/uZuF1LuZxaX4rpN0p
- ANwujRwY4oYk+eRQw1Au+MeAbw0uH3oh/PWpmNxKzboEUhVZBtAb3lPZ4d61lMfy+dMk
- eQv7iAhCedlhYMAvjCbBRKq0rKYspAYQ8XF+9/81kuZfRQJZRlcEEuZtm5w3adtH7nh0
- ZW5w==
-X-Gm-Message-State: AOAM5312W//0gMhnPrcwPXZfUYqFlyZolx91+dtadH9mtPqgLgUXzEMM
- cj+kozSNxB4672fHNHGs7Vx1ThYsSBZpQCE/eunXNqSE/5yMfJ4UKI1eF7DfvZtWJ3b0RE2W17J
- orBO1XszZ5XWyeMb4pEjuvfQ=
-X-Received: by 2002:ac8:5d53:: with SMTP id g19mr70924qtx.354.1606151169097;
- Mon, 23 Nov 2020 09:06:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwHR8oVpP3xv7xpCkK6lH4mawBfXgRI3GL2dEiLGp13/vfLrDKV7SBtsWnvpv2iFDtHltekRw==
-X-Received: by 2002:ac8:5d53:: with SMTP id g19mr70839qtx.354.1606151168572;
- Mon, 23 Nov 2020 09:06:08 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
- [75.142.250.213])
- by smtp.gmail.com with ESMTPSA id o187sm10226153qkb.120.2020.11.23.09.06.04
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 23 Nov 2020 09:06:07 -0800 (PST)
+ dkim=pass (1024-bit key) header.d=hansenpartnership.com
+ header.i=@hansenpartnership.com header.b="Lvt0xf0A"; 
+ dkim=pass (1024-bit key) header.d=hansenpartnership.com
+ header.i=@hansenpartnership.com header.b="qZT/78tS"
+Received: from localhost (localhost [127.0.0.1])
+ by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2C7E2128048D;
+ Sat, 21 Nov 2020 09:19:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=hansenpartnership.com; s=20151216; t=1605979140;
+ bh=oKjwoQQYqAGHYIcGa87tH3kfRh6eNDZ11DRWs/5n6Nc=;
+ h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+ b=Lvt0xf0A2UjzBqGR2epCNoE7DN6YV9pUrVXD+f22BVAeiOW2KxZsGCImkMcXBrgh/
+ zD0zBdigF+USoIPaRfSUxU4T/o3yBTwQz1ZuRUKYioWvma2ORezv7XJ+/UVZk14HDg
+ znn3A0Y1A4QkkRvYDhfOKnhgBoH92sfIP7bAjSz4=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new,
+ port 10024)
+ with ESMTP id dA_Y3gfv-HlR; Sat, 21 Nov 2020 09:19:00 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown
+ [IPv6:2601:600:8280:66d1::527])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 584A71280481;
+ Sat, 21 Nov 2020 09:18:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=hansenpartnership.com; s=20151216; t=1605979139;
+ bh=oKjwoQQYqAGHYIcGa87tH3kfRh6eNDZ11DRWs/5n6Nc=;
+ h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+ b=qZT/78tSZnguNV1yoYzSSmvqmDGgzNIuIpg2PbOws0zqwE5yu2CoK/DoUP3fxAE7/
+ cwr3zThASX8R91ADl4Ew6X2dNx0rQAVJjUjWHCFXFVZg8s5iaP8BFiZuwsxl12vuws
+ rCw1QQ3k1zT/j95+Y6p1vgihiOvqC5dVUCKPWDl0=
+Message-ID: <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
 Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-To: Joe Perches <joe@perches.com>, clang-built-linux@googlegroups.com
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: trix@redhat.com, joe@perches.com, clang-built-linux@googlegroups.com
+Date: Sat, 21 Nov 2020 09:18:57 -0800
+In-Reply-To: <20201121165058.1644182-1-trix@redhat.com>
 References: <20201121165058.1644182-1-trix@redhat.com>
- <2105f0c05e9eae8bee8e17dcc5314474b3c0bc73.camel@perches.com>
- <6e8c1926-4209-8f10-d0f9-72c875a85a88@redhat.com>
- <859bae8ddae3238116824192f6ddf1c91a381913.camel@perches.com>
-From: Tom Rix <trix@redhat.com>
-Message-ID: <88eeba27-ee36-df63-8cd9-3cccbe5e0850@redhat.com>
-Date: Mon, 23 Nov 2020 09:06:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <859bae8ddae3238116824192f6ddf1c91a381913.camel@perches.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 X-Mailman-Approved-At: Tue, 24 Nov 2020 17:58:06 +0100
 Cc: linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
  linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
@@ -143,63 +122,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
+> A difficult part of automating commits is composing the subsystem
+> preamble in the commit log.  For the ongoing effort of a fixer
+> producing
+> one or two fixes a release the use of 'treewide:' does not seem
+> appropriate.
+> 
+> It would be better if the normal prefix was used.  Unfortunately
+> normal is
+> not consistent across the tree.
+> 
+> 
+> 	D: Commit subsystem prefix
+> 
+> ex/ for FPGA DFL DRIVERS
+> 
+> 	D: fpga: dfl:
+> 
 
-On 11/22/20 10:22 AM, Joe Perches wrote:
-> On Sun, 2020-11-22 at 08:33 -0800, Tom Rix wrote:
->> On 11/21/20 9:10 AM, Joe Perches wrote:
->>> On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
->>>> A difficult part of automating commits is composing the subsystem
->>>> preamble in the commit log.  For the ongoing effort of a fixer producing
->>>> one or two fixes a release the use of 'treewide:' does not seem appropriate.
->>>>
->>>> It would be better if the normal prefix was used.  Unfortunately normal is
->>>> not consistent across the tree.
->>>>
->>>> So I am looking for comments for adding a new tag to the MAINTAINERS file
->>>>
->>>> 	D: Commit subsystem prefix
->>>>
->>>> ex/ for FPGA DFL DRIVERS
->>>>
->>>> 	D: fpga: dfl:
->>> I'm all for it.  Good luck with the effort.  It's not completely trivial.
->>>
->>> From a decade ago:
->>>
->>> https://lore.kernel.org/lkml/1289919077.28741.50.camel@Joe-Laptop/
->>>
->>> (and that thread started with extra semicolon patches too)
->> Reading the history, how about this.
->>
->> get_maintainer.pl outputs a single prefix, if multiple files have the
->> same prefix it works, if they don't its an error.
->>
->> Another script 'commit_one_file.sh' does the call to get_mainainter.pl
->> to get the prefix and be called by run-clang-tools.py to get the fixer
->> specific message.
-> It's not whether the script used is get_maintainer or any other script,
-> the question is really if the MAINTAINERS file is the appropriate place
-> to store per-subsystem patch specific prefixes.
->
-> It is.
->
-> Then the question should be how are the forms described and what is the
-> inheritance priority.  My preference would be to have a default of
-> inherit the parent base and add basename(subsystem dirname).
->
-> Commit history seems to have standardized on using colons as the separator
-> between the commit prefix and the subject.
->
-> A good mechanism to explore how various subsystems have uses prefixes in
-> the past might be something like:
->
-> $ git log --no-merges --pretty='%s' -<commit_count> <subsystem_path> | \
->   perl -n -e 'print substr($_, 0, rindex($_, ":") + 1) . "\n";' | \
->   sort | uniq -c | sort -rn
+I've got to bet this is going to cause more issues than it solves. 
+SCSI uses scsi: <driver>: for drivers but not every driver has a
+MAINTAINERS entry.  We use either scsi: or scsi: core: for mid layer
+things, but we're not consistent.  Block uses blk-<something>: for all
+of it's stuff but almost no <somtehing>s have a MAINTAINERS entry.  So
+the next thing you're going to cause is an explosion of suggested
+MAINTAINERs entries.
 
-Thanks, I have shamelessly stolen this line and limited the commits to the maintainer.
+Has anyone actually complained about treewide:?
 
-I will post something once the generation of the prefixes is done.
+James
 
-Tom
 
