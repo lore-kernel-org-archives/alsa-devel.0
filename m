@@ -2,68 +2,67 @@ Return-Path: <SRS0=zJPj=E3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57610C388F9
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 212ECC388F9
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:27:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 002C32168B
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:17:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 54B7622240
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 Nov 2020 08:27:51 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="eSXJWqGn"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 002C32168B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=wanadoo.fr
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="T+9HeLQ5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54B7622240
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F03916CC;
-	Sat, 21 Nov 2020 09:17:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F03916CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EF5F16C9;
+	Sat, 21 Nov 2020 09:26:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EF5F16C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1605946677;
-	bh=7oZgV1V8QvtNNs1hT5Sg2EoL+hYdVaDhCVp2FmBiFSQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eSXJWqGnissX/JO2vpQ2mGNr/aNwWxFhWmdAfAyT3bR0DwXA3bLtlSJv6oksAGC0D
-	 TKkpaSJRyDfT4k+XWy6kD1aT89yG+NNnCCy/4RkEyCci84RVOgL3JYhV0iz9wLIwzT
-	 bvcdKOlt78h5H4h5HMNk5U7zRiNHsPE5lCRIv0X0=
+	s=default; t=1605947269;
+	bh=2CwIXl94OZmYZo2tom9bXiXBlVi/1or7I4pWG/hcRS4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=T+9HeLQ5kyhvpHzUC4Yni2c/txy9i9Vv4oiW6jQOjJwbs3cb3mdxO6g5j5Qi1b9k3
+	 oCWLZ9ZN40L1CbBibcTvQ88HFGOZLxNzzi4l4/EcFYb8VbFozv1M+zOYUjAhuEv2au
+	 PDNz+0USTbVqPyanljSqXM9djgPb1K1SwX2fzLao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30EDEF80166;
-	Sat, 21 Nov 2020 09:17:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9AE1F80169;
+	Sat, 21 Nov 2020 09:26:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51D65F80157; Sat, 21 Nov 2020 09:17:05 +0100 (CET)
-Received: from smtp.smtpout.orange.fr (smtp05.smtpout.orange.fr
- [80.12.242.127])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ id 77520F801ED; Sat, 21 Nov 2020 09:26:57 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D5B2F80166
- for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2020 09:16:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D5B2F80166
-Received: from localhost.localdomain ([81.185.161.242]) by mwinf5d61 with ME
- id uwGk2300J5E5lq903wGkm7; Sat, 21 Nov 2020 09:16:46 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Nov 2020 09:16:46 +0100
-X-ME-IP: 81.185.161.242
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: perex@perex.cz,
-	tiwai@suse.com,
-	dan.carpenter@oracle.com
-Subject: [PATCH] ALSA: emu10k1: Use dma_set_mask_and_coherent to simplify code
-Date: Sat, 21 Nov 2020 09:16:32 +0100
-Message-Id: <20201121081632.1330159-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2674F80166
+ for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2020 09:26:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2674F80166
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 46297ABE4;
+ Sat, 21 Nov 2020 08:26:51 +0000 (UTC)
+Date: Sat, 21 Nov 2020 09:26:51 +0100
+Message-ID: <s5htutjdsj8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ALSA: emu10k1: Use dma_set_mask_and_coherent to simplify
+ code
+In-Reply-To: <20201121081632.1330159-1-christophe.jaillet@wanadoo.fr>
+References: <20201121081632.1330159-1-christophe.jaillet@wanadoo.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,35 +78,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
-an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+On Sat, 21 Nov 2020 09:16:32 +0100,
+Christophe JAILLET wrote:
+> 
+> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
 
-With at it replace the 'card->dev' parameter passed to a 'dev_err()' call
-by an equivalent '&pci->dev' which is more consistent with the test just
-one line above.
+It's a good cleanup, but ...
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- sound/pci/emu10k1/emu10k1x.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> With at it replace the 'card->dev' parameter passed to a 'dev_err()' call
+> by an equivalent '&pci->dev' which is more consistent with the test just
+> one line above.
 
-diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
-index def8161cde4c..f2b6fd434474 100644
---- a/sound/pci/emu10k1/emu10k1x.c
-+++ b/sound/pci/emu10k1/emu10k1x.c
-@@ -894,9 +894,9 @@ static int snd_emu10k1x_create(struct snd_card *card,
- 
- 	if ((err = pci_enable_device(pci)) < 0)
- 		return err;
--	if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) < 0 ||
--	    pci_set_consistent_dma_mask(pci, DMA_BIT_MASK(28)) < 0) {
--		dev_err(card->dev, "error to set 28bit mask DMA\n");
-+
-+	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(28)) < 0) {
-+		dev_err(&pci->dev, "error to set 28bit mask DMA\n");
- 		pci_disable_device(pci);
- 		return -ENXIO;
- 	}
--- 
-2.27.0
+... this will make it inconsistent with other error message lines in
+the same function, OTOH.  So I don't think this part necessary to be
+changed.
 
+
+thanks,
+
+Takashi
