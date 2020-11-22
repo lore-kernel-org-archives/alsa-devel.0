@@ -6,71 +6,73 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE735C63777
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A5C3C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:06:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9423D20857
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:05:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 5479120857
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:06:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TTo/gwHb";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BCb+FFzp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9423D20857
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BdYWtsl2";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IHdP9cS5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5479120857
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8147173A;
-	Tue, 24 Nov 2020 18:04:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8147173A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A66F716BD;
+	Tue, 24 Nov 2020 18:05:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A66F716BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606237542;
-	bh=19jzeGKt+qcfiFLOyXk+zd/6rTmwUFKLG+9blP5XmYY=;
+	s=default; t=1606237572;
+	bh=QETuuehT+DroFwV3JxIUuI1uEy4E63rOg4S2tp2RPfg=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TTo/gwHbPt3xf6JjpHOPrRIze4yvw1RnaDC2Ec1c6RKISo5V4PrkuLd6Ek4l3L0kJ
-	 DTXRkM7dh72ROHhKcSQ5T+8toNpG4nQYYzswMxU9JbjY8m5dbIu/7kXBtTPsTgGx2v
-	 i2EuFvIPLJCfUZ5VKBmLD2VBFpSft9pJexo5Awww=
+	b=BdYWtsl2RuZERRDJAe+0ZRZoqh1ZbYRD2HWIvgVdL9UHBVqNbz/8Y4y49Bj5PBUyn
+	 zL5sMS5KWoA9Ir7iFKlQ97s6w9xSRQbbxmtGN9Z9toBb86DLDib0D44IwJ0AZ0dYkl
+	 6gPRGoKha469KV8w/auHjWqNfnQjY9t7I3ayJY+8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83B3CF80536;
-	Tue, 24 Nov 2020 17:58:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94867F8053A;
+	Tue, 24 Nov 2020 17:58:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27AF2F80165; Sun, 22 Nov 2020 04:24:08 +0100 (CET)
+ id 4AAFCF8015B; Sun, 22 Nov 2020 15:57:07 +0100 (CET)
 Received: from casper.infradead.org (casper.infradead.org
  [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27318F8015B
- for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2020 04:23:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27318F8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59919F8015B
+ for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2020 15:57:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59919F8015B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="BCb+FFzp"
+ header.b="IHdP9cS5"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
  References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=t7P1qjxLtvKyLv5lupmc5Zc5j0L3lqaoBXMlGIL9vWk=; b=BCb+FFzpwYCsAL5/GuZs0qQqU7
- 2wigu715rAloO1MXfHFDjsI/DCCkjrJ0RLz4Myz+wD98+zNWw6243kPWNzvqzMn6Tn8JVpmOuQv+x
- 7EKe3xartwVOhq4ran1ZhW92oaIukRN20h1OI3pPMusUrtae1AY4TqDUCPUPtiDgxz6eQOoVcrvcz
- Ara6lCihfF7KrYMxKPcv522GOw1XE7kmR9pLBWd69WCJIf1380JdPIessAMMrwuE8sqCmQUL7YEHL
- BXN0W+EBw/mKx6JrVL7roopk6K2PnHDj+T1EiV35semdke1klNMJQXZf1Gvzraa/TLsC310jvDxAq
- zJ5cWKdw==;
+ bh=wxlelFGFCxCiVSAw6KoblZyEK+s/RwoBRdtshdQHcTA=; b=IHdP9cS5+aim9K2c8XsejJHGrM
+ +S6gdmtkdU0PTIkPZFY+qbqZ8sMUEbhQL8b8Qdm+o2+njoM1Cm2cM6mbD/iY0TNSwZxJRLByIjVzg
+ eNcrVpKlWHjnQQvQ1Go6iFjsUh68sqz8dumIdI2qfrFsd2XrVO5w3MRgBBmvjmOvnFaYJLzopUIl7
+ R6ZVO/KTc63YeijcPbeFNlRWdMYtVgUZuoprtKEH7yjNmV1uGOzQEbR4NJQpt6J1Nu3N9hq7ljiYQ
+ UIsENsOUDnACtwno8Bc2xaczmaEz8q4+sGKzgwN4pxETWG486xJZxN2UeB5LYfIlImw9WtEFIo9GQ
+ DSwauRxg==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red
- Hat Linux)) id 1kgfxw-0001fc-2G; Sun, 22 Nov 2020 03:23:04 +0000
-Date: Sun, 22 Nov 2020 03:23:04 +0000
+ Hat Linux)) id 1kgqn5-0000Ms-Pt; Sun, 22 Nov 2020 14:56:36 +0000
+Date: Sun, 22 Nov 2020 14:56:35 +0000
 From: Matthew Wilcox <willy@infradead.org>
-To: trix@redhat.com
+To: Tom Rix <trix@redhat.com>
 Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-Message-ID: <20201122032304.GE4327@casper.infradead.org>
+Message-ID: <20201122145635.GG4327@casper.infradead.org>
 References: <20201121165058.1644182-1-trix@redhat.com>
+ <20201122032304.GE4327@casper.infradead.org>
+ <ddb08a27-3ca1-fb2e-d51f-4b471f1a56a3@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201121165058.1644182-1-trix@redhat.com>
+In-Reply-To: <ddb08a27-3ca1-fb2e-d51f-4b471f1a56a3@redhat.com>
 X-Mailman-Approved-At: Tue, 24 Nov 2020 17:58:07 +0100
 Cc: linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
  linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
@@ -104,16 +106,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Nov 21, 2020 at 08:50:58AM -0800, trix@redhat.com wrote:
-> The fixer review is
-> https://reviews.llvm.org/D91789
+On Sun, Nov 22, 2020 at 06:46:46AM -0800, Tom Rix wrote:
 > 
-> A run over allyesconfig for x86_64 finds 62 issues, 5 are false positives.
-> The false positives are caused by macros passed to other macros and by
-> some macro expansions that did not have an extra semicolon.
+> On 11/21/20 7:23 PM, Matthew Wilcox wrote:
+> > On Sat, Nov 21, 2020 at 08:50:58AM -0800, trix@redhat.com wrote:
+> >> The fixer review is
+> >> https://reviews.llvm.org/D91789
+> >>
+> >> A run over allyesconfig for x86_64 finds 62 issues, 5 are false positives.
+> >> The false positives are caused by macros passed to other macros and by
+> >> some macro expansions that did not have an extra semicolon.
+> >>
+> >> This cleans up about 1,000 of the current 10,000 -Wextra-semi-stmt
+> >> warnings in linux-next.
+> > Are any of them not false-positives?  It's all very well to enable
+> > stricter warnings, but if they don't fix any bugs, they're just churn.
+> >
+> While enabling additional warnings may be a side effect of this effort
 > 
-> This cleans up about 1,000 of the current 10,000 -Wextra-semi-stmt
-> warnings in linux-next.
+> the primary goal is to set up a cleaning robot. After that a refactoring robot.
 
-Are any of them not false-positives?  It's all very well to enable
-stricter warnings, but if they don't fix any bugs, they're just churn.
+Why do we need such a thing?  Again, it sounds like more churn.
+It's really annoying when I'm working on something important that gets
+derailed by pointless churn.  Churn also makes it harder to backport
+patches to earlier kernels.
