@@ -2,112 +2,114 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8972C63798
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ACD03C6379D
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B4B8206E5
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC8FB20857
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:04:45 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RVZauIGQ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="StCMHC/H"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B4B8206E5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gGk/1Td6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BtEofZ03"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC8FB20857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 600BF171C;
-	Tue, 24 Nov 2020 18:03:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 600BF171C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C0641721;
+	Tue, 24 Nov 2020 18:03:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C0641721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606237447;
-	bh=b/YNgdTDwDOaOBUCXVP6CLeRCtnVcrPDtxVVNkyhld0=;
+	s=default; t=1606237484;
+	bh=IqR309OHHtYrDAWFZnEdK7+YS0vMSytKKZwTAx0Dgvw=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RVZauIGQPgmVhPz2JA3IWX19QJ2CK65o2m7j86RP2hTaAdBZFtXIqSnb4gR/N1sgr
-	 PVs52EUZStNrNJnqj37IgfuZ0TV2c2mTekjj9SVUU/zxC9I7XPwyEx44/5IQy9kCPN
-	 3qjtby4dOIfsAlHt33U98U6GnxcWcp6K1MzmXykc=
+	b=gGk/1Td6Hrue2IaHHW1Cquo4Fvkvu12k/OTTczZTvEM92HHdrz3aJQM2OiNXXsfsL
+	 S5lyvS2ooQWJgCT4HwnImOq3jiAiS3Y86M1nCoQM9cyVqTlxLXkJ5iCI5PBEpzBj0Y
+	 ++yAde4A2sJ1bSo2Jni+6mIWtY6oOgtdm84/1yak=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4215BF80519;
-	Tue, 24 Nov 2020 17:58:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73721F8051E;
+	Tue, 24 Nov 2020 17:58:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD192F80165; Sun, 22 Nov 2020 17:33:33 +0100 (CET)
+ id 7491DF80255; Mon, 23 Nov 2020 18:06:20 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7DF2F80107
- for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2020 17:33:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7DF2F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AB69F80113
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 18:06:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AB69F80113
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="StCMHC/H"
+ header.b="BtEofZ03"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1606062804;
+ s=mimecast20190719; t=1606151171;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=eSFXaX0DZkpNbOwM/RCeF/BEd3n14fz/kurtk7pTmoY=;
- b=StCMHC/HyCDcHG808p/9thQCbNHLB97ek1T9oforhFojh55MW9LfrBZih5vkd7qgZ43dSF
- OZ3JOWRoVWjL7zUSFlP0LDpmoWD2sc3F8Zm34Dd/PaZ0RswUInINC4teeaarn0nRRR/QOI
- +dDEJjm8SJb3l7vs6UWTL1dZHykwyjY=
+ bh=ETdBmUCF01QVQJOZ+sQu9TUGQeVKu9xOEmE1E5gBvfU=;
+ b=BtEofZ03By1sp6OyH8lSI6IT4Bb/Q48OsWV2XnBXmdgQcceGh9rKSaQV86czSHO4W4CJHn
+ vUaUaH4n0l1WmtKl1NY4JjZQEtZdHR6F0okj/kLdyZp+LnqjvTzaYPmjipu9+IS6RcbTNg
+ lanzsvwsZXvmVS2IMlU/0SstZMlkjqs=
 Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
  [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-JVL8-7_cPwKqI4cR9OBatA-1; Sun, 22 Nov 2020 11:33:22 -0500
-X-MC-Unique: JVL8-7_cPwKqI4cR9OBatA-1
-Received: by mail-qv1-f71.google.com with SMTP id a1so11199661qvv.18
- for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2020 08:33:21 -0800 (PST)
+ us-mta-258-tZJFUtqYOYqXFAU14tnNWA-1; Mon, 23 Nov 2020 12:06:09 -0500
+X-MC-Unique: tZJFUtqYOYqXFAU14tnNWA-1
+Received: by mail-qv1-f71.google.com with SMTP id t14so13427581qvc.13
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:06:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-transfer-encoding
  :content-language;
- bh=eSFXaX0DZkpNbOwM/RCeF/BEd3n14fz/kurtk7pTmoY=;
- b=mrqALF78+5I4CRaCOfz8wI2wsMxv1y6vFCX0cx+TEpj12zyJ8XyRlYVByG6p4/CK/L
- cq4BpCupP55N+AqQdnKCa/PL9qqZQPkt/OAgTShVsnU3fcvAtVT732nQ3oLOC3KOI7QK
- QYYO5Au+uPEAtZQWj4+mgPjU3l9ec8vA04M+WttufhSBiGOHFTaHHErKoC7AfqxEUZLz
- rHZlkpLRC5Qkejf8m2CajiqwU6AmsnbBuOJPCs073iIJeqs1oa/Bd1stAB9WyNTXh6W3
- V9A3JEFE/5htz8DzvXCOF3PfrW9F/V05h1WJth1l3iMPEIe0q+B9H/VGVZ1oh5QS2giP
- vMWg==
-X-Gm-Message-State: AOAM532RdaD4pxXHZQg/qS0QKluI3lWTHpJTMOgEjE1dnO6TdKMQ2p48
- rnBkGz0uFwsnOD9X6zdrcZPkR2ZC+BSFhdc+cvGTlSG663qIuusd2Hv0VY+3MxCftPSPOaTpJyq
- vX1c1OAanYel3tHb4DCnUuns=
-X-Received: by 2002:a37:a783:: with SMTP id q125mr25815208qke.10.1606062801575; 
- Sun, 22 Nov 2020 08:33:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx2n++9V878KrbbQS+4X3uFT/lj12S/EG8yAhFKA6vFd9PzTR06otQkDsZPYmv5N+Hbwviu/A==
-X-Received: by 2002:a37:a783:: with SMTP id q125mr25815168qke.10.1606062801138; 
- Sun, 22 Nov 2020 08:33:21 -0800 (PST)
+ bh=ETdBmUCF01QVQJOZ+sQu9TUGQeVKu9xOEmE1E5gBvfU=;
+ b=mD/EkzcYZQigrwj92y7WCt5wcYhqNariP77q57OWKJpKI2GkXLbKM8YGJq+9BEY/c8
+ 2jiIb+BFibA7vGErI0BLBmjawzWVSbXPjWdzzachzczBEI2h6dWf2SslWg3d/KFNrqD7
+ AooiYxoAxUsxy/k5l5p+7Dh6/2CVqXeSxa+X7MWuMqUnsUIG1m/uZuF1LuZxaX4rpN0p
+ ANwujRwY4oYk+eRQw1Au+MeAbw0uH3oh/PWpmNxKzboEUhVZBtAb3lPZ4d61lMfy+dMk
+ eQv7iAhCedlhYMAvjCbBRKq0rKYspAYQ8XF+9/81kuZfRQJZRlcEEuZtm5w3adtH7nh0
+ ZW5w==
+X-Gm-Message-State: AOAM5312W//0gMhnPrcwPXZfUYqFlyZolx91+dtadH9mtPqgLgUXzEMM
+ cj+kozSNxB4672fHNHGs7Vx1ThYsSBZpQCE/eunXNqSE/5yMfJ4UKI1eF7DfvZtWJ3b0RE2W17J
+ orBO1XszZ5XWyeMb4pEjuvfQ=
+X-Received: by 2002:ac8:5d53:: with SMTP id g19mr70924qtx.354.1606151169097;
+ Mon, 23 Nov 2020 09:06:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwHR8oVpP3xv7xpCkK6lH4mawBfXgRI3GL2dEiLGp13/vfLrDKV7SBtsWnvpv2iFDtHltekRw==
+X-Received: by 2002:ac8:5d53:: with SMTP id g19mr70839qtx.354.1606151168572;
+ Mon, 23 Nov 2020 09:06:08 -0800 (PST)
 Received: from trix.remote.csb (075-142-250-213.res.spectrum.com.
  [75.142.250.213])
- by smtp.gmail.com with ESMTPSA id 9sm7113466qke.6.2020.11.22.08.33.17
+ by smtp.gmail.com with ESMTPSA id o187sm10226153qkb.120.2020.11.23.09.06.04
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 22 Nov 2020 08:33:20 -0800 (PST)
+ Mon, 23 Nov 2020 09:06:07 -0800 (PST)
 Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
 To: Joe Perches <joe@perches.com>, clang-built-linux@googlegroups.com
 References: <20201121165058.1644182-1-trix@redhat.com>
  <2105f0c05e9eae8bee8e17dcc5314474b3c0bc73.camel@perches.com>
+ <6e8c1926-4209-8f10-d0f9-72c875a85a88@redhat.com>
+ <859bae8ddae3238116824192f6ddf1c91a381913.camel@perches.com>
 From: Tom Rix <trix@redhat.com>
-Message-ID: <6e8c1926-4209-8f10-d0f9-72c875a85a88@redhat.com>
-Date: Sun, 22 Nov 2020 08:33:16 -0800
+Message-ID: <88eeba27-ee36-df63-8cd9-3cccbe5e0850@redhat.com>
+Date: Mon, 23 Nov 2020 09:06:03 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <2105f0c05e9eae8bee8e17dcc5314474b3c0bc73.camel@perches.com>
+In-Reply-To: <859bae8ddae3238116824192f6ddf1c91a381913.camel@perches.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=trix@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Mailman-Approved-At: Tue, 24 Nov 2020 17:58:06 +0100
 Cc: linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
@@ -142,61 +144,62 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On 11/21/20 9:10 AM, Joe Perches wrote:
-> On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
->> A difficult part of automating commits is composing the subsystem
->> preamble in the commit log.  For the ongoing effort of a fixer producing
->> one or two fixes a release the use of 'treewide:' does not seem appropriate.
+On 11/22/20 10:22 AM, Joe Perches wrote:
+> On Sun, 2020-11-22 at 08:33 -0800, Tom Rix wrote:
+>> On 11/21/20 9:10 AM, Joe Perches wrote:
+>>> On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
+>>>> A difficult part of automating commits is composing the subsystem
+>>>> preamble in the commit log.  For the ongoing effort of a fixer producing
+>>>> one or two fixes a release the use of 'treewide:' does not seem appropriate.
+>>>>
+>>>> It would be better if the normal prefix was used.  Unfortunately normal is
+>>>> not consistent across the tree.
+>>>>
+>>>> So I am looking for comments for adding a new tag to the MAINTAINERS file
+>>>>
+>>>> 	D: Commit subsystem prefix
+>>>>
+>>>> ex/ for FPGA DFL DRIVERS
+>>>>
+>>>> 	D: fpga: dfl:
+>>> I'm all for it.  Good luck with the effort.  It's not completely trivial.
+>>>
+>>> From a decade ago:
+>>>
+>>> https://lore.kernel.org/lkml/1289919077.28741.50.camel@Joe-Laptop/
+>>>
+>>> (and that thread started with extra semicolon patches too)
+>> Reading the history, how about this.
 >>
->> It would be better if the normal prefix was used.  Unfortunately normal is
->> not consistent across the tree.
+>> get_maintainer.pl outputs a single prefix, if multiple files have the
+>> same prefix it works, if they don't its an error.
 >>
->> So I am looking for comments for adding a new tag to the MAINTAINERS file
->>
->> 	D: Commit subsystem prefix
->>
->> ex/ for FPGA DFL DRIVERS
->>
->> 	D: fpga: dfl:
-> I'm all for it.  Good luck with the effort.  It's not completely trivial.
+>> Another script 'commit_one_file.sh' does the call to get_mainainter.pl
+>> to get the prefix and be called by run-clang-tools.py to get the fixer
+>> specific message.
+> It's not whether the script used is get_maintainer or any other script,
+> the question is really if the MAINTAINERS file is the appropriate place
+> to store per-subsystem patch specific prefixes.
 >
-> From a decade ago:
+> It is.
 >
-> https://lore.kernel.org/lkml/1289919077.28741.50.camel@Joe-Laptop/
+> Then the question should be how are the forms described and what is the
+> inheritance priority.  My preference would be to have a default of
+> inherit the parent base and add basename(subsystem dirname).
 >
-> (and that thread started with extra semicolon patches too)
-
-Reading the history, how about this.
-
-get_mataintainer.pl outputs a single prefix, if multiple files have the same prefix it works, if they don't its an error.
-
-Another script 'commit_one_file.sh' does the call to get_mainainter.pl to get the prefix and be called by run-clang-tools.py to get the fixer specific message.
-
-Defer minimizing the commits by combining similar subsystems till later.
-
-In a steady state case, this should be uncommon.
-
-
+> Commit history seems to have standardized on using colons as the separator
+> between the commit prefix and the subject.
 >
->> Continuing with cleaning up clang's -Wextra-semi-stmt
->> diff --git a/Makefile b/Makefile
-> []
->> @@ -1567,20 +1567,21 @@ help:
->>  	 echo  ''
->>  	@echo  'Static analysers:'
->>  	@echo  '  checkstack      - Generate a list of stack hogs'
->>  	@echo  '  versioncheck    - Sanity check on version.h usage'
->>  	@echo  '  includecheck    - Check for duplicate included header files'
->>  	@echo  '  export_report   - List the usages of all exported symbols'
->>  	@echo  '  headerdep       - Detect inclusion cycles in headers'
->>  	@echo  '  coccicheck      - Check with Coccinelle'
->>  	@echo  '  clang-analyzer  - Check with clang static analyzer'
->>  	@echo  '  clang-tidy      - Check with clang-tidy'
->> +	@echo  '  clang-tidy-fix  - Check and fix with clang-tidy'
-> A pity the ordering of the code below isn't the same as the above.
+> A good mechanism to explore how various subsystems have uses prefixes in
+> the past might be something like:
+>
+> $ git log --no-merges --pretty='%s' -<commit_count> <subsystem_path> | \
+>   perl -n -e 'print substr($_, 0, rindex($_, ":") + 1) . "\n";' | \
+>   sort | uniq -c | sort -rn
 
-Taken care thanks!
+Thanks, I have shamelessly stolen this line and limited the commits to the maintainer.
+
+I will post something once the generation of the prefixes is done.
 
 Tom
-
 
