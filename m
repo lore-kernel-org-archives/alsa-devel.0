@@ -7,54 +7,53 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ADD1C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:05:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0826EC56202
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:06:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4340220732
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:05:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1D4CC20738
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:06:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="llnaNfDS"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4340220732
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VU17yvHT"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D4CC20738
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBD3C16EC;
-	Mon, 23 Nov 2020 10:04:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBD3C16EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E58116DD;
+	Mon, 23 Nov 2020 10:05:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E58116DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606122346;
-	bh=ow11qwAEDOvF+My8FsPAkgX2Uc4U9EBQiqLgHiKrygU=;
+	s=default; t=1606122362;
+	bh=6EbO6fe3QhnZMlw1/OCWHRhmoxzMAPYIgftOrYO+ETk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=llnaNfDS5bZsClhlEdSiyWSPb61kL2mxoDJTYPYYomSxleU3m6oBa5SRkvUo7eiyp
-	 OXoBKBIagjA1y2dENPrt5kMvIE6uHWMKIZfs75w2rhngaPriKbXf6hNPkGKr18DCx/
-	 gv5Eoi+XNKtHeWOcrkkZRGxqj92hJcMhOKQuQZwA=
+	b=VU17yvHT4oPVhHs1iRt8O9oYXOh5MDDsX93P9fs90T6NlXhrXz2u5ZUMEHipwmlE4
+	 vpoJ+iHNU4jmxkyKWryuse8Po98BK43k4Z5fMzmhEOkFwvwhCKV+YovCJCbKP7exRI
+	 w16AF/MTaYt1p7Uxhzeo9MRNdtd1HrDI7eO8hx0A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 837B5F805CA;
-	Mon, 23 Nov 2020 09:55:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F202F805D6;
+	Mon, 23 Nov 2020 09:55:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B144F8053A; Mon, 23 Nov 2020 09:54:36 +0100 (CET)
+ id D2AB3F80542; Mon, 23 Nov 2020 09:54:39 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E9D3F804E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CECCF804E1
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E9D3F804E5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CECCF804E1
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A6D06AFD8;
+ by mx2.suse.de (Postfix) with ESMTP id 82626AFCF;
  Mon, 23 Nov 2020 08:53:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 31/41] ALSA: usb-audio: Unify the code for the next packet
- size calculation
-Date: Mon, 23 Nov 2020 09:53:37 +0100
-Message-Id: <20201123085347.19667-32-tiwai@suse.de>
+Subject: [PATCH 28/41] ALSA: usb-audio: Use atomic_t for endpoint use_count
+Date: Mon, 23 Nov 2020 09:53:34 +0100
+Message-Id: <20201123085347.19667-29-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -76,127 +75,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are two places calculating the next packet size for the playback
-stream in the exactly same way.  Provide the single helper for this
-purpose and use it from both places gracefully.
+The endpoint objects may be started/stopped concurrently by different
+substreams in the case of implicit feedback mode, while the current
+code handles the reference counter without any protection.
+
+This patch changes the refcount to atomic_t for avoiding the
+inconsistency.  We need no reference_t here as the refcount goes only
+up to 2.
+
+Also the name "use_count" is renamed to "running" since this is about
+actually the running status, not the open refcount.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c | 40 ++++++++++++++++++++++++----------------
- sound/usb/endpoint.h |  4 ++--
- sound/usb/pcm.c      |  8 +-------
- 3 files changed, 27 insertions(+), 25 deletions(-)
+ sound/usb/card.h     |  2 +-
+ sound/usb/endpoint.c | 26 ++++++++++++++------------
+ 2 files changed, 15 insertions(+), 13 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 53f0ce61f858..f58c3769b058 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -60,7 +60,7 @@ struct snd_usb_endpoint {
+ 	struct snd_usb_audio *chip;
+ 
+ 	int opened;		/* open refcount; protect with chip->mutex */
+-	int use_count;
++	atomic_t running;	/* running status */
+ 	int ep_num;		/* the referenced endpoint number */
+ 	int type;		/* SND_USB_ENDPOINT_TYPE_* */
+ 	unsigned long flags;
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 35c84c2264e1..5d618724bd75 100644
+index 49fb934ee432..4d733b2d8287 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -121,13 +121,13 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep)
- }
- 
- /*
-- * For streaming based on information derived from sync endpoints,
-- * prepare_outbound_urb_sizes() will call slave_next_packet_size() to
-- * determine the number of samples to be sent in the next packet.
-+ * Return the number of samples to be sent in the next packet
-+ * for streaming based on information derived from sync endpoints
+@@ -1234,7 +1234,7 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
   *
-- * For implicit feedback, slave_next_packet_size() is unused.
-+ * This won't be used for implicit feedback which takes the packet size
-+ * returned from the sync source
-  */
--int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep)
-+static int slave_next_packet_size(struct snd_usb_endpoint *ep)
- {
- 	unsigned long flags;
- 	int ret;
-@@ -145,11 +145,10 @@ int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep)
+  * @ep: the endpoint to start
+  *
+- * A call to this function will increment the use count of the endpoint.
++ * A call to this function will increment the running count of the endpoint.
+  * In case it is not already running, the URBs for this endpoint will be
+  * submitted. Otherwise, this function does nothing.
+  *
+@@ -1253,11 +1253,12 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+ 	if (ep->sync_master)
+ 		WRITE_ONCE(ep->sync_master->sync_slave, ep);
+ 
+-	usb_audio_dbg(ep->chip, "Starting %s EP 0x%x (count %d)\n",
+-		      ep_type_name(ep->type), ep->ep_num, ep->use_count);
++	usb_audio_dbg(ep->chip, "Starting %s EP 0x%x (running %d)\n",
++		      ep_type_name(ep->type), ep->ep_num,
++		      atomic_read(&ep->running));
+ 
+ 	/* already running? */
+-	if (++ep->use_count != 1)
++	if (atomic_inc_return(&ep->running) != 1)
+ 		return 0;
+ 
+ 	/* just to be sure */
+@@ -1319,7 +1320,7 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+ 	if (ep->sync_master)
+ 		WRITE_ONCE(ep->sync_master->sync_slave, NULL);
+ 	clear_bit(EP_FLAG_RUNNING, &ep->flags);
+-	ep->use_count--;
++	atomic_dec(&ep->running);
+ 	deactivate_urbs(ep, false);
+ 	return -EPIPE;
  }
+@@ -1329,7 +1330,7 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+  *
+  * @ep: the endpoint to stop (may be NULL)
+  *
+- * A call to this function will decrement the use count of the endpoint.
++ * A call to this function will decrement the running count of the endpoint.
+  * In case the last user has requested the endpoint stop, the URBs will
+  * actually be deactivated.
+  *
+@@ -1343,16 +1344,17 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+ 	if (!ep)
+ 		return;
  
- /*
-- * For adaptive and synchronous endpoints, prepare_outbound_urb_sizes()
-- * will call next_packet_size() to determine the number of samples to be
-- * sent in the next packet.
-+ * Return the number of samples to be sent in the next packet
-+ * for adaptive and synchronous endpoints
+-	usb_audio_dbg(ep->chip, "Stopping %s EP 0x%x (count %d)\n",
+-		      ep_type_name(ep->type), ep->ep_num, ep->use_count);
++	usb_audio_dbg(ep->chip, "Stopping %s EP 0x%x (running %d)\n",
++		      ep_type_name(ep->type), ep->ep_num,
++		      atomic_read(&ep->running));
+ 
+-	if (snd_BUG_ON(ep->use_count == 0))
++	if (snd_BUG_ON(!atomic_read(&ep->running)))
+ 		return;
+ 
+ 	if (ep->sync_master)
+ 		WRITE_ONCE(ep->sync_master->sync_slave, NULL);
+ 
+-	if (--ep->use_count == 0) {
++	if (!atomic_dec_return(&ep->running)) {
+ 		deactivate_urbs(ep, false);
+ 		set_bit(EP_FLAG_STOPPING, &ep->flags);
+ 	}
+@@ -1363,7 +1365,7 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+  *
+  * @ep: the endpoint to release
+  *
+- * This function does not care for the endpoint's use count but will tear
++ * This function does not care for the endpoint's running count but will tear
+  * down all the streaming URBs immediately.
   */
--int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
-+static int next_packet_size(struct snd_usb_endpoint *ep)
- {
- 	int ret;
+ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep)
+@@ -1410,7 +1412,7 @@ static void snd_usb_handle_sync_urb(struct snd_usb_endpoint *ep,
+ 	 * will take care of them later.
+ 	 */
+ 	if (snd_usb_endpoint_implicit_feedback_sink(ep) &&
+-	    ep->use_count != 0) {
++	    atomic_read(&ep->running)) {
  
-@@ -167,6 +166,21 @@ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
- 	return ret;
- }
- 
-+/*
-+ * snd_usb_endpoint_next_packet_size: Return the number of samples to be sent
-+ * in the next packet
-+ */
-+int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
-+				      struct snd_urb_ctx *ctx, int idx)
-+{
-+	if (ctx->packet_size[idx])
-+		return ctx->packet_size[idx];
-+	else if (ep->sync_master)
-+		return slave_next_packet_size(ep);
-+	else
-+		return next_packet_size(ep);
-+}
-+
- static void call_retire_callback(struct snd_usb_endpoint *ep,
- 				 struct urb *urb)
- {
-@@ -223,13 +237,7 @@ static void prepare_silent_urb(struct snd_usb_endpoint *ep,
- 		unsigned int length;
- 		int counts;
- 
--		if (ctx->packet_size[i])
--			counts = ctx->packet_size[i];
--		else if (ep->sync_master)
--			counts = snd_usb_endpoint_slave_next_packet_size(ep);
--		else
--			counts = snd_usb_endpoint_next_packet_size(ep);
--
-+		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
- 		length = counts * ep->stride; /* number of silent bytes */
- 		offset = offs * ep->stride + extra * i;
- 		urb->iso_frame_desc[i].offset = offset;
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index 201011d89659..11e3bb839fd7 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -45,7 +45,7 @@ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep);
- void snd_usb_endpoint_free(struct snd_usb_endpoint *ep);
- 
- int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
--int snd_usb_endpoint_slave_next_packet_size(struct snd_usb_endpoint *ep);
--int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep);
-+int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
-+				      struct snd_urb_ctx *ctx, int idx);
- 
- #endif /* __USBAUDIO_ENDPOINT_H */
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 95a6a854dc55..5953e22a72c5 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1512,13 +1512,7 @@ static void prepare_playback_urb(struct snd_usb_substream *subs,
- 	spin_lock_irqsave(&subs->lock, flags);
- 	subs->frame_limit += ep->max_urb_frames;
- 	for (i = 0; i < ctx->packets; i++) {
--		if (ctx->packet_size[i])
--			counts = ctx->packet_size[i];
--		else if (ep->sync_master)
--			counts = snd_usb_endpoint_slave_next_packet_size(ep);
--		else
--			counts = snd_usb_endpoint_next_packet_size(ep);
--
-+		counts = snd_usb_endpoint_next_packet_size(ep, ctx, i);
- 		/* set up descriptor */
- 		urb->iso_frame_desc[i].offset = frames * ep->stride;
- 		urb->iso_frame_desc[i].length = counts * ep->stride;
+ 		/* implicit feedback case */
+ 		int i, bytes = 0;
 -- 
 2.16.4
 
