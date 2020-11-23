@@ -7,53 +7,54 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75E2EC2D0E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:57:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DD083C56202
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:57:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 53F4220738
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:57:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2001720731
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:57:35 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sUAGIAdq"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53F4220738
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Lb3Jd7N3"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2001720731
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D92E1616;
-	Mon, 23 Nov 2020 09:56:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D92E1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98CAB167B;
+	Mon, 23 Nov 2020 09:56:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98CAB167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606121846;
-	bh=/80Wxo3ZBHitJnvwBpweaPaqAkVaQ0AlbHTjkacSdjU=;
+	s=default; t=1606121853;
+	bh=Ei9PJR33WmTGRPoT9agN5vomPEHjcazjnlMJl/TIQqY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sUAGIAdqjEZsRQceLPSrN4dZS5fvmeYU2bcocEMKd832P7f7hhxjLb+OL5xzl5s8D
-	 3esf9AUjGs3sVv2cfW5KyF1y5hWHSOpUP+v11+SwJcumtt4z1BY/VrnPE1VY3z6WPD
-	 ZJklJHB7ehgXOXhVBrtClsocN3oNRDp/L9iJ+DnU=
+	b=Lb3Jd7N3X7fDNTBuTTPcPLfMk6fm257dd6gbrBHSBjAW54sQ4ANCpZYbwqV8PDY6e
+	 1Jr4Nnwufkf152dM2NbPjpXOCNSFebUpETysR3OHzFhpsD+KYi1GTwx5f1I8uHvR15
+	 dUqDEgoOvQMRSpBvt3JZM2OVqu3h08vCT2VvQAmo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F4C9F80520;
-	Mon, 23 Nov 2020 09:54:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE957F8051F;
+	Mon, 23 Nov 2020 09:54:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3030FF8051B; Mon, 23 Nov 2020 09:54:12 +0100 (CET)
+ id F2B3AF8051C; Mon, 23 Nov 2020 09:54:11 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0819CF8027C
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:53:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0819CF8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9EE52F80113
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:53:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EE52F80113
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1F634AF90;
- Mon, 23 Nov 2020 08:53:57 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id D7255AF72;
+ Mon, 23 Nov 2020 08:53:56 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/41] ALSA: usb-audio: Add snd_usb_get_endpoint() helper
-Date: Mon, 23 Nov 2020 09:53:11 +0100
-Message-Id: <20201123085347.19667-6-tiwai@suse.de>
+Subject: [PATCH 01/41] ALSA: usb-audio: Handle discrete rates properly in hw
+ constraints
+Date: Mon, 23 Nov 2020 09:53:07 +0100
+Message-Id: <20201123085347.19667-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -75,89 +76,165 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Factor out the code to obtain snd_usb_endpoint object matching with
-the given endpoint.  It'll be used in the later patch to add the
-implicit feedback hw-constraint.
+In the current code, when the device provides the discrete sample rate
+tables with unusual sample rates, the driver tries to gather the whole
+values from the audioformat entries and create a hw-constraint rule to
+restrict with this single rate list.  This is rather inefficient and
+may overlook the rates that are associated only with the certain
+audioformat entries.
 
-No functional change by this patch itself.
+This patch improves the hw constraint setup by rewriting the existing
+hw_rule_rate().  The discrete sample rates (identified by rate_table
+and nr_rates of format entry) are checked in the existing
+hw_rule_rate() instead of extra rules; in the case of discrete rates,
+the function compares with each rate table entry and calculates the
+min/max values from there.  For the contiguous rates, the behavior
+doesn't change.
+
+Along with it, snd_usb_pcm_check_knot() and snb_usb_substream
+rate_list field become superfluous, thus those are dropped.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c | 36 +++++++++++++++++++++++++++---------
- sound/usb/endpoint.h |  4 ++++
- 2 files changed, 31 insertions(+), 9 deletions(-)
+ sound/usb/card.h   |  1 -
+ sound/usb/pcm.c    | 73 +++++++++++-------------------------------------------
+ sound/usb/stream.c |  1 -
+ 3 files changed, 15 insertions(+), 60 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index e2f9ce2f5b8b..cf00871fd278 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -439,6 +439,26 @@ static void snd_complete_urb(struct urb *urb)
- 	clear_bit(ctx->index, &ep->active_mask);
- }
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 5351d7183b1b..3cc668f98f43 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -157,7 +157,6 @@ struct snd_usb_substream {
+ 	u64 formats;			/* format bitmasks (all or'ed) */
+ 	unsigned int num_formats;		/* number of supported audio formats (list) */
+ 	struct list_head fmt_list;	/* format list */
+-	struct snd_pcm_hw_constraint_list rate_list;	/* limited rates */
+ 	spinlock_t lock;
  
-+/*
-+ * Get the existing endpoint object corresponding EP, iface and alt numbers
-+ * Returns NULL if not present.
-+ * Call inside chip->mutex locking for avoiding the race.
-+ */
-+struct snd_usb_endpoint *
-+snd_usb_get_endpoint(struct snd_usb_audio *chip,
-+		     int ep_num, int iface, int altsetting)
-+{
-+	struct snd_usb_endpoint *ep;
-+
-+	list_for_each_entry(ep, &chip->ep_list, list) {
-+		if (ep->ep_num == ep_num &&
-+		    ep->iface == iface &&
-+		    ep->altsetting == altsetting)
-+			return ep;
-+	}
-+	return NULL;
-+}
-+
- /**
-  * snd_usb_add_endpoint: Add an endpoint to an USB audio chip
-  *
-@@ -470,15 +490,13 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
+ 	int last_frame_number;          /* stored frame number */
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index a860303cc522..3265155df1b5 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1039,27 +1039,31 @@ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	struct snd_usb_substream *subs = rule->private;
+ 	struct audioformat *fp;
+ 	struct snd_interval *it = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	unsigned int rmin, rmax;
++	unsigned int rmin, rmax, r;
+ 	int changed;
++	int i;
  
- 	mutex_lock(&chip->mutex);
- 
--	list_for_each_entry(ep, &chip->ep_list, list) {
--		if (ep->ep_num == ep_num &&
--		    ep->iface == alts->desc.bInterfaceNumber &&
--		    ep->altsetting == alts->desc.bAlternateSetting) {
--			usb_audio_dbg(ep->chip,
--				      "Re-using EP %x in iface %d,%d @%p\n",
--					ep_num, ep->iface, ep->altsetting, ep);
--			goto __exit_unlock;
--		}
-+	ep = snd_usb_get_endpoint(chip, ep_num,
-+				  alts->desc.bInterfaceNumber,
-+				  alts->desc.bAlternateSetting);
-+	if (ep) {
-+		usb_audio_dbg(ep->chip, "Re-using EP %x in iface %d,%d @%p\n",
-+			      ep_num, ep->iface, ep->altsetting, ep);
-+		goto __exit_unlock;
+ 	hwc_debug("hw_rule_rate: (%d,%d)\n", it->min, it->max);
+-	changed = 0;
+-	rmin = rmax = 0;
++	rmin = UINT_MAX;
++	rmax = 0;
+ 	list_for_each_entry(fp, &subs->fmt_list, list) {
+ 		if (!hw_check_valid_format(subs, params, fp))
+ 			continue;
+-		if (changed++) {
+-			if (rmin > fp->rate_min)
+-				rmin = fp->rate_min;
+-			if (rmax < fp->rate_max)
+-				rmax = fp->rate_max;
++		if (fp->rate_table && fp->nr_rates) {
++			for (i = 0; i < fp->nr_rates; i++) {
++				r = fp->rate_table[i];
++				if (!snd_interval_test(it, r))
++					continue;
++				rmin = min(rmin, r);
++				rmax = max(rmax, r);
++			}
+ 		} else {
+-			rmin = fp->rate_min;
+-			rmax = fp->rate_max;
++			rmin = min(rmin, fp->rate_min);
++			rmax = max(rmax, fp->rate_max);
+ 		}
  	}
  
- 	usb_audio_dbg(chip, "Creating new %s %s endpoint #%x\n",
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index d23fa0a8c11b..61487095a766 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -5,6 +5,10 @@
- #define SND_USB_ENDPOINT_TYPE_DATA     0
- #define SND_USB_ENDPOINT_TYPE_SYNC     1
+-	if (!changed) {
++	if (rmin > rmax) {
+ 		hwc_debug("  --> get empty\n");
+ 		it->empty = 1;
+ 		return -EINVAL;
+@@ -1205,50 +1209,6 @@ static int hw_rule_period_time(struct snd_pcm_hw_params *params,
+ 	return changed;
+ }
  
-+struct snd_usb_endpoint *snd_usb_get_endpoint(struct snd_usb_audio *chip,
-+					      int ep_num, int iface,
-+					      int altsetting);
-+
- struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
- 					      struct usb_host_interface *alts,
- 					      int ep_num, int direction, int type);
+-/*
+- *  If the device supports unusual bit rates, does the request meet these?
+- */
+-static int snd_usb_pcm_check_knot(struct snd_pcm_runtime *runtime,
+-				  struct snd_usb_substream *subs)
+-{
+-	struct audioformat *fp;
+-	int *rate_list;
+-	int count = 0, needs_knot = 0;
+-	int err;
+-
+-	kfree(subs->rate_list.list);
+-	subs->rate_list.list = NULL;
+-
+-	list_for_each_entry(fp, &subs->fmt_list, list) {
+-		if (fp->rates & SNDRV_PCM_RATE_CONTINUOUS)
+-			return 0;
+-		count += fp->nr_rates;
+-		if (fp->rates & SNDRV_PCM_RATE_KNOT)
+-			needs_knot = 1;
+-	}
+-	if (!needs_knot)
+-		return 0;
+-
+-	subs->rate_list.list = rate_list =
+-		kmalloc_array(count, sizeof(int), GFP_KERNEL);
+-	if (!subs->rate_list.list)
+-		return -ENOMEM;
+-	subs->rate_list.count = count;
+-	subs->rate_list.mask = 0;
+-	count = 0;
+-	list_for_each_entry(fp, &subs->fmt_list, list) {
+-		int i;
+-		for (i = 0; i < fp->nr_rates; i++)
+-			rate_list[count++] = fp->rate_table[i];
+-	}
+-	err = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-					 &subs->rate_list);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+ 
+ /*
+  * set up the runtime hardware information.
+@@ -1338,9 +1298,6 @@ static int setup_hw_info(struct snd_pcm_runtime *runtime, struct snd_usb_substre
+ 		if (err < 0)
+ 			return err;
+ 	}
+-	err = snd_usb_pcm_check_knot(runtime, subs);
+-	if (err < 0)
+-		return err;
+ 
+ 	return snd_usb_autoresume(subs->stream->chip);
+ }
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index ca76ba5b5c0b..f17913e0b5b4 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -47,7 +47,6 @@ static void free_substream(struct snd_usb_substream *subs)
+ 		return; /* not initialized */
+ 	list_for_each_entry_safe(fp, n, &subs->fmt_list, list)
+ 		audioformat_free(fp);
+-	kfree(subs->rate_list.list);
+ 	kfree(subs->str_pd);
+ 	snd_media_stream_delete(subs);
+ }
 -- 
 2.16.4
 
