@@ -2,90 +2,91 @@ Return-Path: <SRS0=WmXX=E5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BAD8C56202
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 13:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CFE6C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 13:51:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D4686206F1
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 13:46:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6B36A206F1
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 13:51:28 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ftn+N+cZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="G2adCKst"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D4686206F1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=amarulasolutions.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EvW4F4ga";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="KidfIMQV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B36A206F1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 084801684;
-	Mon, 23 Nov 2020 14:45:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084801684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96EF21667;
+	Mon, 23 Nov 2020 14:50:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96EF21667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606139196;
-	bh=sXRAp3+n/aEkUuCrebbXBgAlP736YDjaLEN5PmXWdZ0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1606139486;
+	bh=0/IHxMdwzZirfFUEDtxYhKAxBqnvOfBcXnmhGHLZwE8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ftn+N+cZBtXuVkdXmGimWJ+erP2tEpshhBna4kJY2cA137CLvEOVUJw5+1z9KU3Jj
-	 14jrbxyZugk/gt4JIjXRTAmjIyZLuPcvbOFzgvHKIxRiC0FjLKVk7xEckdVD0zheGL
-	 1WvQ0Is9TGEoGI77jNhQPj+OgftLgqTtHOlUGk+c=
+	b=EvW4F4ga+hNycc0SHIFCpyxlo/vEy4F+ox7fmPecgE6sjJArYVO+2cI5y5Lyq7LLm
+	 dDLfMpNRfci/R+CZHOBflCzZsSwFzS1nD1VUFiS6BjrA8u2iUhlpwqE4CRxbss2/Kz
+	 7z2UOZq01VwGt+omfSE3PPZiiggwUO5NNepGPWYA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28386F804BC;
-	Mon, 23 Nov 2020 14:45:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2833BF80128;
+	Mon, 23 Nov 2020 14:50:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9C6DF804BD; Mon, 23 Nov 2020 14:45:11 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4C2F9F80255; Mon, 23 Nov 2020 14:50:35 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E684F804B4
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 14:45:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E684F804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id F18CDF80128
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 14:50:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F18CDF80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amarulasolutions.com
- header.i=@amarulasolutions.com header.b="G2adCKst"
-Received: by mail-wr1-x433.google.com with SMTP id m6so18633554wrg.7
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 05:45:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amarulasolutions.com; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=gTaCi7vMIfdyM/uQi5WQ85T6NBgBa2CqVeO7W8hC73w=;
- b=G2adCKsto988SEp6QcjvaMqME9dsEwjMjYVbdwnwfrJ+2h4puLkREBFB/R9mR4JaNd
- 7lq41vPpI/oAKoulwAi9xE/V4C2VAK4Ez5sSyCgpB1xDk+t2NvOQDSKD4AcJqf7itrcH
- iV/DuL0KfPU349f/koxbISthm7EADcc7BGqSE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=gTaCi7vMIfdyM/uQi5WQ85T6NBgBa2CqVeO7W8hC73w=;
- b=ht7KfmguqIH54KmmCKqzgBAP3cAcIcW8EYnxT2GSw8xF0RKcu3NoxrMBhTP+Y/3PIi
- 2CAkTVJKxz/XAULHKbhrHe9/Gkj1qZEpHWq/1a3J1/bPj/p/Ja0uRj+P5AJ0/QlinrmI
- 0SSBdLKl+oiHstrzFSCufPrD3f3c9V2Xu8mHIqVXGpb3672kEGQKjG+lbxv9B+6AdB15
- LBtYXPqxUz7go8rS37E9Z3gdWQ2rRe0dbGznvk0vVc4dOuXBDQq703po8DSJrHyBERiv
- crKL6BVIuvpGSraViufB0Xqk85bBftJ8+gHU6yMW1LNJ/0VDoERSrF2l0Kj780TmhXU7
- YDiw==
-X-Gm-Message-State: AOAM530oFroxMeqPjLXNKNwOeP29EVhf/c2OPXd6p/TnVfo1L0yNBbKd
- gISNWAF58jTKURyYOaMKcS3B1PsbS8HRGYpqs5DYbg==
-X-Google-Smtp-Source: ABdhPJybOFsz7Ig21ZUjwqRhZ3zGAqPBUt2n7NUeXY3YH17nQ2zZWNaZOxFhoZmBh/X1Xt0Da5PXcVG32arqfPYN7tI=
-X-Received: by 2002:adf:d082:: with SMTP id y2mr8397859wrh.301.1606139104197; 
- Mon, 23 Nov 2020 05:45:04 -0800 (PST)
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="KidfIMQV"
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
+ [92.233.91.117])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 84CC520729;
+ Mon, 23 Nov 2020 13:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1606139430;
+ bh=0/IHxMdwzZirfFUEDtxYhKAxBqnvOfBcXnmhGHLZwE8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=KidfIMQVoIvcZVCdv8NPn4bJAaldX8rRH154qtqRm8yuUbNji3PZla9WdPLrOlm3h
+ F1mDMPCM5axhytJBPc4EjO1N/K8MQxJargxBN2Wv+1d+7ngs9BrQjj6UdHBebEuxSb
+ 5Ysex+lthxVAeCqAhX7FXksR4WsNPBDOw4BZZyF8=
+Date: Mon, 23 Nov 2020 13:50:06 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH 01/38] ASoC: ak5558: drop of_match_ptr from of_device_id
+ table
+Message-ID: <20201123135006.GE6322@sirena.org.uk>
+References: <20201120161653.445521-1-krzk@kernel.org>
+ <20201120165202.GG6751@sirena.org.uk>
+ <20201120194245.GA2925@kozik-lap>
+ <20201120200429.GJ6751@sirena.org.uk>
+ <20201122105813.GA3780@kozik-lap>
+ <20201123104832.GY4077@smile.fi.intel.com>
+ <20201123123731.GA6322@sirena.org.uk>
+ <20201123124129.GA170000@kozik-lap>
 MIME-Version: 1.0
-References: <CAOf5uwmtixmz+RgimC_2Z31+NwRF03RJ-u0mN3NKpzhks1dzEw@mail.gmail.com>
- <s5hzh388awp.wl-tiwai@suse.de>
-In-Reply-To: <s5hzh388awp.wl-tiwai@suse.de>
-From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Date: Mon, 23 Nov 2020 14:44:52 +0100
-Message-ID: <CAOf5uwmkuQDBH5gQFA4XfkiTipYKEZ8micyEkd_Xd8KFqSDZSA@mail.gmail.com>
-Subject: Re: Poor performace on mmap reading arm64 on audio device
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="FN+gV9K+162wdwwF"
+Content-Disposition: inline
+In-Reply-To: <20201123124129.GA170000@kozik-lap>
+X-Cookie: Dry clean only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,95 +102,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi
 
-On Mon, Nov 23, 2020 at 2:23 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Sat, 21 Nov 2020 10:40:04 +0100,
-> Michael Nazzareno Trimarchi wrote:
-> >
-> > Hi all
-> >
-> > I'm trying to figure out how to increase performance on audio reading
-> > using the mmap interface. Right now what I understand it's that
-> > allocation comes from core/memalloc.c ops that allocate the memory for
-> > dma under driver/dma.
-> > The reference platform I have is an imx8mm and the allocation in arm64 is:
-> >
-> > 0xffff800011ff5000-0xffff800012005000          64K PTE       RW NX SHD
-> > AF            UXN MEM/NORMAL-NC
-> >
-> > This is the reason that is allocated for dma interface.
-> >
-> > Now access linear on the multichannel interface the performance is bad
-> > but worse if I try to access a channel a time on read.
-> > So it looks like it is better to copy the block using memcpy on a
-> > cached area and then operate on a single channel sample. If it's
-> > correct what I'm saying the mmap_begin and mmap_commit
-> > basically they don't do anything on cache level so the page mapping
-> > and way is used is always the same. Can the interface be modified to
-> > allow cache the area during read and restore in the commit
-> > phase?
->
-> The current API of the mmap for the sound ring-buffer is designed to
-> allow concurrent accesses at any time in the minimalistic kernel-user
-> context switching.  So the whole buffer is allocated as coherent and
-> mmapped in a shot.  It's pretty efficient for architectures like x86,
-> but has disadvantages on ARM, indeed.
+--FN+gV9K+162wdwwF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Each platform e/o architecture can specialize the mmap and declare the
-area that is consistent in dma to me mapped
-as no cache one
+On Mon, Nov 23, 2020 at 01:41:29PM +0100, Krzysztof Kozlowski wrote:
+> On Mon, Nov 23, 2020 at 12:37:31PM +0000, Mark Brown wrote:
 
-vma->vm_page_prot = pgprot_cached(vma->vm_page_prot);
-                return remap_pfn_range(vma, vma->vm_start,
-                                vma->vm_end - vma->vm_start, vma->vm_page_prot);
+> > That feels like something that should be done with Kconfig dependencies
+> > like a direct OF dependency (possibly a !PRP0001 dependency?) for the
+> > driver or possibly with having a variant of_match_ptr() for things that
+> > really don't want to support PRP0001.  Just removing all the use of
+> > of_match_ptr() is both noisy and confusing in that it looks like it's
+> > creating issues to fix, it makes it hard to understand when and why one
+> > should use the macro.
 
-I have done it for testing purposes. This give an idea
+> For the OF-only drivers (without other ID table), there is no point to
+> use the macro. Driver can bind only with DT, so what is the point of
+> of_match_ptr? To skip the OF table when building without OF? Driver
+> won't be usable at all in such case. So maybe for compile testing?
+> There is no need to remove OF table for simple build tests.
 
-- read multi channel not sequentially took around 12% of the cpu with
-mmap interface
-- read multi channel use after a memcpy took around 6%
-- read on a cached area took around 3%. I'm trying to figure out how
-and when invalidate the area
+If nothing else it means you don't have to check if the driver is OF
+only or not.  I can see not bothering to add it but actively going round
+removing some instances of it doesn't seem great, and it seems like
+people will constantly be adding new uses on the basis that it's just
+such an obviously correct thing to do.
 
-I have two use cases:
-- write on the channels (no performance issue)
-- read on channels
+--FN+gV9K+162wdwwF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Before reading I should only say that the cached area is not in sync
-with memory. I think that supporting write use cases
-makes little sense here.
+-----BEGIN PGP SIGNATURE-----
 
->
-> The mmap_begin and mmap_commit are the concepts in the alsa-lib side
-> for supporting the plugins better, and they doesn't represent kernel
-> ABI.  So, this extension would be needed at first, and the memory
-> allocation mechanism has to be changed as well.  Last but not least,
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+7vg0ACgkQJNaLcl1U
+h9Cg2AgAgW1CZvFTYqc5Dxt0wi6xknuc2q+AJ8IrulpzeW3y6wYvug/gq0UKnGe0
+RhSfcXLgfzBLImnU7WdT72POVxtH3NahdaxVuRUy8yLpaEjq9HJMfw4FH+gTvQAP
+qfb/mcZMdXxAG8iXe6RuxOFXAd/CvMSnVvsSNPIX/wZxKDls6jK37ZbhAAJ/GQfT
+swW+LkfyQoT+f2ydE9CPZmZJyBrNsfVPNaWPbWS+Ifa+abSI8gyuj6yvy+6Fwire
+/dMRJ1mjJ3ge0TZ++pDKRIi4VOLH6xays9NNMdJh1ioJwmGvR8JkBcJEvmmxk1V5
+5ZCPCtoZpqkr8kw4+tevTm0Xz849KA==
+=1/dD
+-----END PGP SIGNATURE-----
 
-Are you sure about memory allocation, or just memory mapping?
-
-> the concurrency has to be reconsidered if this approach is taken.
->
-
-Yes I know that is a big problem anyway. I don't have a big idea how solve it
-
-Michael
-
-> That said, it's possible in theory, but practically no trivial task.
->
->
-> thanks,
->
-> Takashi
-
-
-
--- 
-Michael Nazzareno Trimarchi
-Amarula Solutions BV
-COO Co-Founder
-Cruquiuskade 47 Amsterdam 1018 AM NL
-T. +31(0)851119172
-M. +39(0)3479132170
-[`as] https://www.amarulasolutions.com
+--FN+gV9K+162wdwwF--
