@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B4FCC56202
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80177C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:56:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5431520731
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:56:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id B23EC2078E
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 08:56:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="mtmJbzo0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5431520731
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tImuiqr4"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B23EC2078E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3C361688;
-	Mon, 23 Nov 2020 09:55:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C361688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0923085D;
+	Mon, 23 Nov 2020 09:55:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0923085D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606121799;
-	bh=bM4jYkikz7Y+RT2LwD0nC/BvG51BN4zANxI85oTXYk4=;
+	s=default; t=1606121806;
+	bh=3G+gs1B9J3zSMze+zPyR6fDqiHVdOC9Snzva+H2kqYA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mtmJbzo0Apjloog7XpkfmNDV0nHC/J9oV9dnTdKWby9d+gROY6kEp0ckxk52fFLWR
-	 saJ/inKX3vbQjUdYarUdSlcR3uYAhrBUyuDpfZsGkxte5nZ0LxmgtwrwGNT8bciepF
-	 vtGsb8MOYsXFNOo+/0IbPzVToydhGxicdTWdyFj8=
+	b=tImuiqr4bH7YafZkXFg13y2KfxGBKqMOKCHTfrBzIorz0MyGQwoS2b4097HgAym8y
+	 XOVnBhJezJV+6IW7R0rKofV+gltnPxqEm5sInLYJl9YxbryMg+9U8rYqm4nk4P3QtD
+	 CgknNEpYgcmtCorvOB+HASBidoRQScQqwjJ2PxkA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 498A5F80517;
-	Mon, 23 Nov 2020 09:54:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 973F5F80290;
+	Mon, 23 Nov 2020 09:54:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 012D0F8050F; Mon, 23 Nov 2020 09:54:09 +0100 (CET)
+ id 9DE30F80517; Mon, 23 Nov 2020 09:54:11 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7A8FF80268
+ by alsa1.perex.cz (Postfix) with ESMTPS id A16ADF8015B
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:53:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7A8FF80268
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A16ADF8015B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1118AAF8D;
+ by mx2.suse.de (Postfix) with ESMTP id 00DF5AF86;
  Mon, 23 Nov 2020 08:53:57 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/41] ALSA: usb-audio: Check implicit feedback EP generically
- for UAC2
-Date: Mon, 23 Nov 2020 09:53:10 +0100
-Message-Id: <20201123085347.19667-5-tiwai@suse.de>
+Subject: [PATCH 03/41] ALSA: usb-audio: Check valid altsetting at parsing
+ rates for UAC2/3
+Date: Mon, 23 Nov 2020 09:53:09 +0100
+Message-Id: <20201123085347.19667-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -76,148 +76,291 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It seems that many UAC2 devices are with the implicit feedback, but
-they couldn't be probed properly because the assumption the driver
-takes currently isn't applied: they have the single endpoint for both
-data and implicit-fb streams, while we checked only the classical sync
-endpoints assigned to the next altsetting in the same interface.
+The current driver code assumes blindly that all found sample rates for
+the same endpoint from the UAC2 and UAC3 descriptors can be used no
+matter which altsetting, but actually this was wrong: some devices
+accept only limited sample rates in each altsetting.  For determining
+which altsetting supports which rate, we need to verify each sample rate
+and check the validity via UAC2_AS_VAL_ALT_SETTINGS.  This control
+reports back the available altsettings as a bitmap.
 
-This patch extends the search to match with those typical cases where
-the implicit fb stream is found in the next interface number.
+This patch implements the missing piece above, the verification and
+reconstructs the sample rate tables based on the result.
 
-While we're at it, slightly refactor the code, not returning 0/-ERROR
-but use the standard bool to success/failur, which is more intuitive
-in this particular case.
+An open question is how to deal with the altsettings that ended up
+with no valid sample rates after verification.  At least, there is a
+device that showed this problem although the sample rates did work in
+the later usage (see bug link).  For now, we accept such an altset as
+is, assuming that it's a firmware bug.
 
 Reported-by: Dylan Robinson <dylan_robinson@motu.com>
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1178203
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/pcm.c | 83 +++++++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 66 insertions(+), 17 deletions(-)
+ sound/usb/clock.c  | 106 ++++++++++++++++++++++++++++++-----------------------
+ sound/usb/clock.h  |   4 ++
+ sound/usb/format.c |  93 ++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 158 insertions(+), 45 deletions(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 380d7275d187..2b11c2c837bf 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -272,33 +272,70 @@ static int snd_usb_pcm_sync_stop(struct snd_pcm_substream *substream)
- 	return 0;
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index f3ca59005d91..f174230d07d5 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -560,16 +560,60 @@ static int get_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+ 	return le32_to_cpu(data);
  }
  
--static int search_roland_implicit_fb(struct usb_device *dev, int ifnum,
--				     unsigned int altsetting,
--				     struct usb_host_interface **alts,
--				     unsigned int *ep)
-+/* Check whether the given iface:altsetting points to an implicit fb source */
-+static bool search_generic_implicit_fb(struct usb_device *dev, int ifnum,
-+				       unsigned int altsetting,
-+				       struct usb_host_interface **altsp,
-+				       unsigned int *ep)
- {
- 	struct usb_interface *iface;
-+	struct usb_host_interface *alts;
-+	struct usb_interface_descriptor *altsd;
-+	struct usb_endpoint_descriptor *epd;
-+
-+	iface = usb_ifnum_to_if(dev, ifnum);
-+	if (!iface)
-+		return false;
-+	alts = usb_altnum_to_altsetting(iface, altsetting);
-+	if (!alts)
-+		return false;
-+	altsd = get_iface_desc(alts);
-+	if (altsd->bInterfaceClass != USB_CLASS_AUDIO ||
-+	    altsd->bInterfaceSubClass != USB_SUBCLASS_AUDIOSTREAMING ||
-+	    altsd->bInterfaceProtocol != UAC_VERSION_2 ||
-+	    altsd->bNumEndpoints < 1)
-+		return false;
-+	epd = get_endpoint(alts, 0);
-+	if (!usb_endpoint_is_isoc_in(epd) ||
-+	    (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
-+					USB_ENDPOINT_USAGE_IMPLICIT_FB)
-+		return false;
-+	*ep = epd->bEndpointAddress;
-+	*altsp = alts;
-+	return true;
-+}
-+
-+/* Like the function above, but specific to Roland with vendor class and hack */
-+static bool search_roland_implicit_fb(struct usb_device *dev, int ifnum,
-+				      unsigned int altsetting,
-+				      struct usb_host_interface **altsp,
-+				      unsigned int *ep)
++/*
++ * Try to set the given sample rate:
++ *
++ * Return 0 if the clock source is read-only, the actual rate on success,
++ * or a negative error code.
++ *
++ * This function gets called from format.c to validate each sample rate, too.
++ * Hence no message is shown upon error
++ */
++int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio *chip,
++				 const struct audioformat *fmt,
++				 int clock, int rate)
 +{
-+	struct usb_interface *iface;
-+	struct usb_host_interface *alts;
- 	struct usb_interface_descriptor *altsd;
- 	struct usb_endpoint_descriptor *epd;
- 
- 	iface = usb_ifnum_to_if(dev, ifnum);
--	if (!iface || iface->num_altsetting < altsetting + 1)
--		return -ENOENT;
--	*alts = &iface->altsetting[altsetting];
--	altsd = get_iface_desc(*alts);
--	if (altsd->bAlternateSetting != altsetting ||
--	    altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC ||
-+	if (!iface)
-+		return false;
-+	alts = usb_altnum_to_altsetting(iface, altsetting);
-+	if (!alts)
-+		return false;
-+	altsd = get_iface_desc(alts);
-+	if (altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC ||
- 	    (altsd->bInterfaceSubClass != 2 &&
--	     altsd->bInterfaceProtocol != 2   ) ||
-+	     altsd->bInterfaceProtocol != 2) ||
- 	    altsd->bNumEndpoints < 1)
--		return -ENOENT;
--	epd = get_endpoint(*alts, 0);
-+		return false;
-+	epd = get_endpoint(alts, 0);
- 	if (!usb_endpoint_is_isoc_in(epd) ||
- 	    (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
- 					USB_ENDPOINT_USAGE_IMPLICIT_FB)
--		return -ENOENT;
-+		return false;
- 	*ep = epd->bEndpointAddress;
--	return 0;
-+	*altsp = alts;
-+	return true;
- }
- 
- /* Setup an implicit feedback endpoint from a quirk. Returns 0 if no quirk
-@@ -375,6 +412,19 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
- 		return 0;
- 	}
- 
-+	/* Generic UAC2 implicit feedback */
-+	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
-+	    altsd->bInterfaceClass == USB_CLASS_AUDIO &&
-+	    altsd->bInterfaceProtocol == UAC_VERSION_2 &&
-+	    altsd->bNumEndpoints == 1) {
-+		ifnum = altsd->bInterfaceNumber + 1;
-+		if (search_generic_implicit_fb(dev, ifnum,
-+					       altsd->bAlternateSetting,
-+					       &alts, &ep))
-+			goto add_sync_ep;
++	bool writeable;
++	u32 bmControls;
++	__le32 data;
++	int err;
++
++	if (fmt->protocol == UAC_VERSION_3) {
++		struct uac3_clock_source_descriptor *cs_desc;
++
++		cs_desc = snd_usb_find_clock_source_v3(chip->ctrl_intf, clock);
++		bmControls = le32_to_cpu(cs_desc->bmControls);
++	} else {
++		struct uac_clock_source_descriptor *cs_desc;
++
++		cs_desc = snd_usb_find_clock_source(chip->ctrl_intf, clock);
++		bmControls = cs_desc->bmControls;
 +	}
 +
-+	/* Roland/BOSS implicit feedback with vendor spec class */
- 	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
- 	    altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
- 	    altsd->bInterfaceProtocol == 2 &&
-@@ -382,9 +432,8 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
- 	    USB_ID_VENDOR(subs->stream->chip->usb_id) == 0x0582 /* Roland */ &&
- 	    search_roland_implicit_fb(dev, altsd->bInterfaceNumber + 1,
- 				      altsd->bAlternateSetting,
--				      &alts, &ep) >= 0) {
-+				      &alts, &ep))
- 		goto add_sync_ep;
++	writeable = uac_v2v3_control_is_writeable(bmControls,
++						  UAC2_CS_CONTROL_SAM_FREQ);
++	if (!writeable)
++		return 0;
++
++	data = cpu_to_le32(rate);
++	err = snd_usb_ctl_msg(chip->dev, usb_sndctrlpipe(chip->dev, 0), UAC2_CS_CUR,
++			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
++			      UAC2_CS_CONTROL_SAM_FREQ << 8,
++			      snd_usb_ctrl_intf(chip) | (clock << 8),
++			      &data, sizeof(data));
++	if (err < 0)
++		return err;
++
++	return get_sample_rate_v2v3(chip, fmt->iface, fmt->altsetting, clock);
++}
++
+ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+-			      struct usb_host_interface *alts,
+-			      struct audioformat *fmt, int rate)
++				struct usb_host_interface *alts,
++				struct audioformat *fmt, int rate)
+ {
+ 	struct usb_device *dev = chip->dev;
+-	__le32 data;
+-	int err, cur_rate, prev_rate;
++	int cur_rate, prev_rate;
+ 	int clock;
+-	bool writeable;
+-	u32 bmControls;
+ 
+ 	/* First, try to find a valid clock. This may trigger
+ 	 * automatic clock selection if the current clock is not
+@@ -592,50 +636,22 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+ 	if (prev_rate == rate)
+ 		goto validation;
+ 
+-	if (fmt->protocol == UAC_VERSION_3) {
+-		struct uac3_clock_source_descriptor *cs_desc;
+-
+-		cs_desc = snd_usb_find_clock_source_v3(chip->ctrl_intf, clock);
+-		bmControls = le32_to_cpu(cs_desc->bmControls);
+-	} else {
+-		struct uac_clock_source_descriptor *cs_desc;
+-
+-		cs_desc = snd_usb_find_clock_source(chip->ctrl_intf, clock);
+-		bmControls = cs_desc->bmControls;
++	cur_rate = snd_usb_set_sample_rate_v2v3(chip, fmt, clock, rate);
++	if (cur_rate < 0) {
++		usb_audio_err(chip,
++			      "%d:%d: cannot set freq %d (v2/v3): err %d\n",
++			      iface, fmt->altsetting, rate, cur_rate);
++		return cur_rate;
+ 	}
+ 
+-	writeable = uac_v2v3_control_is_writeable(bmControls,
+-						  UAC2_CS_CONTROL_SAM_FREQ);
+-	if (writeable) {
+-		data = cpu_to_le32(rate);
+-		err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
+-				      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
+-				      UAC2_CS_CONTROL_SAM_FREQ << 8,
+-				      snd_usb_ctrl_intf(chip) | (clock << 8),
+-				      &data, sizeof(data));
+-		if (err < 0) {
+-			usb_audio_err(chip,
+-				"%d:%d: cannot set freq %d (v2/v3): err %d\n",
+-				iface, fmt->altsetting, rate, err);
+-			return err;
+-		}
+-
+-		cur_rate = get_sample_rate_v2v3(chip, iface,
+-						fmt->altsetting, clock);
+-	} else {
++	if (!cur_rate)
+ 		cur_rate = prev_rate;
 -	}
  
- 	/* No quirk */
- 	return 0;
+ 	if (cur_rate != rate) {
+-		if (!writeable) {
+-			usb_audio_warn(chip,
+-				 "%d:%d: freq mismatch (RO clock): req %d, clock runs @%d\n",
+-				 iface, fmt->altsetting, rate, cur_rate);
+-			return -ENXIO;
+-		}
+-		usb_audio_dbg(chip,
+-			"current rate %d is different from the runtime rate %d\n",
+-			cur_rate, rate);
++		usb_audio_warn(chip,
++			       "%d:%d: freq mismatch (RO clock): req %d, clock runs @%d\n",
++			       fmt->iface, fmt->altsetting, rate, cur_rate);
++		return -ENXIO;
+ 	}
+ 
+ 	/* Some devices doesn't respond to sample rate changes while the
+diff --git a/sound/usb/clock.h b/sound/usb/clock.h
+index 68df0fbe09d0..97597f5a3c18 100644
+--- a/sound/usb/clock.h
++++ b/sound/usb/clock.h
+@@ -9,4 +9,8 @@ int snd_usb_init_sample_rate(struct snd_usb_audio *chip, int iface,
+ int snd_usb_clock_find_source(struct snd_usb_audio *chip,
+ 			      struct audioformat *fmt, bool validate);
+ 
++int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio *chip,
++				 const struct audioformat *fmt,
++				 int clock, int rate);
++
+ #endif /* __USBAUDIO_CLOCK_H */
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 3bfead393aa3..3348032daa16 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -417,6 +417,97 @@ static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
+ 	return -ENODEV;
+ }
+ 
++/* check whether the given altsetting is supported for the already set rate */
++static bool check_valid_altsetting_v2v3(struct snd_usb_audio *chip, int iface,
++					int altsetting)
++{
++	struct usb_device *dev = chip->dev;
++	__le64 raw_data = 0;
++	u64 data;
++	int err;
++
++	/* we assume 64bit is enough for any altsettings */
++	if (snd_BUG_ON(altsetting >= 64 - 8))
++		return false;
++
++	err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
++			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
++			      UAC2_AS_VAL_ALT_SETTINGS << 8,
++			      iface, &raw_data, sizeof(raw_data));
++	if (err < 0)
++		return false;
++
++	data = le64_to_cpu(raw_data);
++	/* first byte contains the bitmap size */
++	if ((data & 0xff) * 8 < altsetting)
++		return false;
++	if (data & (1ULL << (altsetting + 8)))
++		return true;
++
++	return false;
++}
++
++/*
++ * Validate each sample rate with the altsetting
++ * Rebuild the rate table if only partial values are valid
++ */
++static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
++					   struct audioformat *fp,
++					   int clock)
++{
++	struct usb_device *dev = chip->dev;
++	unsigned int *table;
++	unsigned int nr_rates;
++	unsigned int rate_min = 0x7fffffff;
++	unsigned int rate_max = 0;
++	unsigned int rates = 0;
++	int i, err;
++
++	table = kcalloc(fp->nr_rates, sizeof(*table), GFP_KERNEL);
++	if (!table)
++		return -ENOMEM;
++
++	/* clear the interface altsetting at first */
++	usb_set_interface(dev, fp->iface, 0);
++
++	nr_rates = 0;
++	for (i = 0; i < fp->nr_rates; i++) {
++		err = snd_usb_set_sample_rate_v2v3(chip, fp, clock,
++						   fp->rate_table[i]);
++		if (err < 0)
++			continue;
++
++		if (check_valid_altsetting_v2v3(chip, fp->iface, fp->altsetting)) {
++			table[nr_rates++] = fp->rate_table[i];
++			if (rate_min > fp->rate_table[i])
++				rate_min = fp->rate_table[i];
++			if (rate_max < fp->rate_table[i])
++				rate_max = fp->rate_table[i];
++			rates |= snd_pcm_rate_to_rate_bit(fp->rate_table[i]);
++		}
++	}
++
++	if (!nr_rates) {
++		usb_audio_dbg(chip,
++			      "No valid sample rate available for %d:%d, assuming a firmware bug\n",
++			      fp->iface, fp->altsetting);
++		nr_rates = fp->nr_rates; /* continue as is */
++	}
++
++	if (fp->nr_rates == nr_rates) {
++		kfree(table);
++		return 0;
++	}
++
++	kfree(fp->rate_table);
++	fp->rate_table = table;
++	fp->nr_rates = nr_rates;
++	fp->rate_min = rate_min;
++	fp->rate_max = rate_max;
++	fp->rates = rates;
++	return 0;
++}
++
+ /*
+  * parse the format descriptor and stores the possible sample rates
+  * on the audioformat table (audio class v2 and v3).
+@@ -509,6 +600,8 @@ static int parse_audio_format_rates_v2v3(struct snd_usb_audio *chip,
+ 	 * allocated, so the rates will be stored */
+ 	parse_uac2_sample_rate_range(chip, fp, nr_triplets, data);
+ 
++	ret = validate_sample_rate_table_v2v3(chip, fp, clock);
++
+ err_free:
+ 	kfree(data);
+ err:
 -- 
 2.16.4
 
