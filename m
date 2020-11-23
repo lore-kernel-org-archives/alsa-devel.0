@@ -2,89 +2,85 @@ Return-Path: <SRS0=WmXX=E5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E4CC388F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 20:41:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 237D5C388F9
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 21:47:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08BF0204FD
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 20:41:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 90F98205F4
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 21:47:42 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OmoHfTN5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="dI6Y/FEB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08BF0204FD
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KPWuI7+N";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="hOY17cav"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90F98205F4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D447142;
-	Mon, 23 Nov 2020 21:41:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D447142
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2286486E;
+	Mon, 23 Nov 2020 22:46:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2286486E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606164110;
-	bh=l4oI3EJf9twL417qKLDDDLHkuxNIhLOKXfN3lkF6Kxg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1606168060;
+	bh=h1WrtCqHFEifntLejOukfoRyk+72OOTTFpb+0uydT44=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OmoHfTN5Sk1lGcziEWI8WYAoGihvdfKpnTxdWaufaO22+/+6sIkm7AcPc3Sb4vXCI
-	 BPiKjYO0MpouCxkKxXOFDsqZH8J9QOSKWHC+GbSEFztsXoWiR+t3ViHCj+TeVIgphX
-	 KE6DjVrYTSfAGryt+w3UvBjc5cRLG4bJG9tH3HNM=
+	b=KPWuI7+NfQ/GjMLWX9IzN3V+O4WYwATQhOr2SZW81G9hFndFkY+WQ7BIP6HZfeou/
+	 eqy/Py1SLQrLafuNhnpeW7xbv5cblk6b2syfbjDs4Q6CNN9lYO9iw0f3hEDqv9bzNR
+	 GKaPC+fMqK7KiINENbxo1dkAUBAOETjnRKxxP9F8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67783F8015F;
-	Mon, 23 Nov 2020 21:41:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 715F7F8015F;
+	Mon, 23 Nov 2020 22:46:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80774F80268; Mon, 23 Nov 2020 21:40:58 +0100 (CET)
+ id CD509F80255; Mon, 23 Nov 2020 22:46:46 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 984C8F8015F
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 21:40:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 984C8F8015F
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA939F80128
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 22:46:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA939F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dI6Y/FEB"
+ header.b="hOY17cav"
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
  [92.233.91.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id BC74E204FD;
- Mon, 23 Nov 2020 20:40:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 47C43205F4;
+ Mon, 23 Nov 2020 21:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606164053;
- bh=l4oI3EJf9twL417qKLDDDLHkuxNIhLOKXfN3lkF6Kxg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dI6Y/FEBhMomP9yXJDZL18c5N1fJUnSufmLsfsEErCEx1I73uujBVn+VmR2nTBil2
- 7st2qM1JoV+aEr2XQJCNbg/JTowpnkJOkAAUW5m9jaxq8C/w1ZUMTqrjWm7inA4kgh
- US9uOR3tP2rC+WdSErFnKjZ9+DgugTP0ToQkJ/y8=
-Date: Mon, 23 Nov 2020 20:40:30 +0000
+ s=default; t=1606167999;
+ bh=h1WrtCqHFEifntLejOukfoRyk+72OOTTFpb+0uydT44=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=hOY17cav9OLxzc4q5+yNWYMZC3qBgOxIfojY1YOrnf4XOvN5GnRqe2qoqBUGAZHBA
+ ae4HOcBIcnqe12QMccsN8KNeGUyjqf7hrRyVVB3mMpwje/pQkISelRy2G91TIW7Vjv
+ pu9FWfoprlxHwl7um2xKEdveD59KlqDgZhpU0KzY=
+Date: Mon, 23 Nov 2020 21:46:16 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH 1/4] ASoC: meson: depend on COMMON_CLK to fix compile tests
-Message-ID: <20201123204030.GA21709@sirena.org.uk>
-References: <20201116175133.402553-1-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="OXfL5xGRrasGEqWY"
-Content-Disposition: inline
-In-Reply-To: <20201116175133.402553-1-krzk@kernel.org>
-X-Cookie: Will stain.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Olivier Moysan <olivier.moysan@st.com>,
- Alexandre Torgue <alexandre.torgue@st.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
+To: linux-kernel@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
+ Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, alsa-devel@alsa-project.org,
+ Jaroslav Kysela <perex@perex.cz>, Alexandre Torgue <alexandre.torgue@st.com>,
+ Olivier Moysan <olivier.moysan@st.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Kevin Hilman <khilman@baylibre.com>, linux-arm-kernel@lists.infradead.org,
+ Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-amlogic@lists.infradead.org,
  Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>,
- Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>, kernel test robot <lkp@intel.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-amlogic@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+ Jerome Brunet <jbrunet@baylibre.com>, linux-stm32@st-md-mailman.stormreply.com
+In-Reply-To: <20201116175133.402553-1-krzk@kernel.org>
+References: <20201116175133.402553-1-krzk@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: meson: depend on COMMON_CLK to fix compile tests
+Message-Id: <160616797659.26421.3555642178452735947.b4-ty@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,31 +96,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Nov 16, 2020 at 06:51:30PM +0100, Krzysztof Kozlowski wrote:
+On Mon, 16 Nov 2020 18:51:30 +0100, Krzysztof Kozlowski wrote:
 > The Meson SoC sound drivers use Common Clock Framework thus they cannot
 > be built on platforms without it (e.g. compile test on MIPS with RALINK
 > and SOC_RT305X):
+> 
+>     /usr/bin/mips-linux-gnu-ld: sound/soc/meson/aiu-encoder-spdif.o: in function `aiu_encoder_spdif_startup':
+>     aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
+>     /usr/bin/mips-linux-gnu-ld: sound/soc/meson/axg-tdm-formatter.o: in function `axg_tdm_formatter_event':
+>     (.text+0x7ec): undefined reference to `clk_set_parent'
 
-This doesn't apply against current code, please check and resend.
+Applied to
 
---OXfL5xGRrasGEqWY
-Content-Type: application/pgp-signature; name="signature.asc"
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
------BEGIN PGP SIGNATURE-----
+Thanks!
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+8Hj0ACgkQJNaLcl1U
-h9BQUQf/Zb+qnudCOxcpsy60ses8As7w+FYZS80ubduXvGWgILbXemT1oMzbNgmK
-OBkiqTnFNc6tff+PV8KL223IYl0NE87wbj+TZtPLS2kwcmLzGYN5Nk6tOJ/BqNaL
-NZGwQweuvCXNOZgVaqRuCp2am79NZzjniDlGELtbcdX1bnrbKQqrpfl+OQYOXBxs
-u/xwWXzpd63eM4B4tN8a4S3TsUzJvuypdWshYHELUV5vsxSCXp1NWiire0N1SPO7
-bnkqkZUg10ymAq75x5OE6laeMbsDfwWnS9tRnOJxnN4H8oTMcmzxTQiFD0922P0s
-w0Jrqx6xOb9ZoR7U22kR1FHwhkpH8Q==
-=Zs8x
------END PGP SIGNATURE-----
+[1/4] ASoC: meson: depend on COMMON_CLK to fix compile tests
+      (no commit info)
+[2/4] ASoC: sh: depend on COMMON_CLK to fix compile tests
+      commit: c3d900dc905b78788c94f3a063b769bdbad16a98
+[3/4] ASoC: stm: depend on COMMON_CLK to fix compile tests
+      commit: 82ceffce96336ee9863f3dfde63aef5748ca4ab1
+[4/4] ASoC: ti: depend on COMMON_CLK to fix compile tests
+      commit: b3cf78e0dacb7fba50d0c1eb9dfa6f92d31529e2
 
---OXfL5xGRrasGEqWY--
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
