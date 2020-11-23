@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B626C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36682C56202
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:09:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9D8E20756
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:08:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6A19920731
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:09:10 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lMnOVcta"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9D8E20756
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sSBHyBUG"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A19920731
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 293DB170B;
-	Mon, 23 Nov 2020 10:07:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 293DB170B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D80631714;
+	Mon, 23 Nov 2020 10:08:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D80631714
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606122528;
-	bh=8sCfA94mkjOS7BBakfGh/h1rueuRz+DxkxwxuCt1iBE=;
+	s=default; t=1606122548;
+	bh=D7ijhhHSOVoVhU9VWeACkUO8RbzrByXwrB2+Kb/V0hQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lMnOVctag2N6rBpOBEaq4lGWIq60X6uCK1bgmIkWVmeSJKK5s2qDe9hieN2J6yuEk
-	 Y7t+bEb1NoxIlQMwT66NVLwiT1hAEt8ZTiVB6sVLvWmdJAV8R4IDSlxprFG9Ym/NQ9
-	 Rfseyef6Cpxk7OgYlcyFUXQ2U7PcQBvnya52nyeg=
+	b=sSBHyBUGle8Hd1aUWRaWm2l1teqjVtIg2gq88Zp88s4JOPd1FOOlZt17XMWteEcrf
+	 rGwaNx6CPCEEoi5TdkkzXKSjCmHgrwEcFf2r8rYx4RxYO98N0OibuGlGmW2dTDmoRJ
+	 YFNgsQ5fUb0jPlQAVfkANwRF1eOUolzlzQmb+iao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A66ADF80604;
-	Mon, 23 Nov 2020 09:55:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E830F8060E;
+	Mon, 23 Nov 2020 09:55:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 357D8F8055C; Mon, 23 Nov 2020 09:54:49 +0100 (CET)
+ id DA560F80563; Mon, 23 Nov 2020 09:54:50 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8FE6F804F1
- for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8FE6F804F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id A502AF804EB
+ for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A502AF804EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B6B79AFDB;
- Mon, 23 Nov 2020 08:53:58 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 00C9AAF8D;
+ Mon, 23 Nov 2020 08:53:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 32/41] ALSA: usb-audio: Simplify rate_min/max and rates set up
-Date: Mon, 23 Nov 2020 09:53:38 +0100
-Message-Id: <20201123085347.19667-33-tiwai@suse.de>
+Subject: [PATCH 38/41] ALSA: usb-audio: Add generic implicit fb parsing
+Date: Mon, 23 Nov 2020 09:53:44 +0100
+Message-Id: <20201123085347.19667-39-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -75,148 +75,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are multiple places in format.c performing the similar code for
-setting the rate_min, rate_max and rates fields.  This patch unifies
-those in a helper function and calls it at the end of the parser phase
-so that all rate_table entries have been already determined.
+This patch extends the implicit feedback mode parser code to check the
+description more generically, so that the quirk entries can be added
+without the explicit EP and interface numbers.  The search is done for
+the next and the previous interface of the given altset, and if both
+entries are ASYNC mode and the direction matches, it just takes as the
+sync endpoint.  The generic parser is applicable only for the playback
+stream.
 
-No functional changes, just a minor code refactoring.
+As of now, only a few M-Audio devices have been converted to use this
+mode.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/format.c | 53 ++++++++++++++++++++++++-----------------------------
- 1 file changed, 24 insertions(+), 29 deletions(-)
+ sound/usb/implicit.c | 59 +++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 54 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 7641716f0c6c..93459ba228d3 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -164,6 +164,23 @@ static int set_fixed_rate(struct audioformat *fp, int rate, int rate_bits)
- 	return 0;
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index bc7edecff946..16b1fb55b7b9 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -19,6 +19,7 @@
+ 
+ enum {
+ 	IMPLICIT_FB_NONE,
++	IMPLICIT_FB_GENERIC,
+ 	IMPLICIT_FB_FIXED,
+ };
+ 
+@@ -30,6 +31,8 @@ struct snd_usb_implicit_fb_match {
+ 	int type;
+ };
+ 
++#define IMPLICIT_FB_GENERIC_DEV(vend, prod) \
++	{ .id = USB_ID(vend, prod), .type = IMPLICIT_FB_GENERIC }
+ #define IMPLICIT_FB_FIXED_DEV(vend, prod, ep, ifnum) \
+ 	{ .id = USB_ID(vend, prod), .type = IMPLICIT_FB_FIXED, .ep_num = (ep),\
+ 	    .iface = (ifnum) }
+@@ -38,19 +41,22 @@ struct snd_usb_implicit_fb_match {
+ 
+ /* Implicit feedback quirk table for playback */
+ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
++	/* Generic matching */
++	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2080), /* M-Audio FastTrack Ultra */
++	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2081), /* M-Audio FastTrack Ultra */
++	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2030), /* M-Audio Fast Track C400 */
++	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2031), /* M-Audio Fast Track C600 */
++
+ 	/* Fixed EP */
++	/* FIXME: check the availability of generic matching */
+ 	IMPLICIT_FB_FIXED_DEV(0x1397, 0x0001, 0x81, 1), /* Behringer UFX1604 */
+ 	IMPLICIT_FB_FIXED_DEV(0x1397, 0x0002, 0x81, 1), /* Behringer UFX1204 */
+-	IMPLICIT_FB_FIXED_DEV(0x0763, 0x2080, 0x81, 2), /* M-Audio FastTrack Ultra */
+-	IMPLICIT_FB_FIXED_DEV(0x0763, 0x2081, 0x81, 2), /* M-Audio FastTrack Ultra */
+ 	IMPLICIT_FB_FIXED_DEV(0x2466, 0x8010, 0x81, 2), /* Fractal Audio Axe-Fx III */
+ 	IMPLICIT_FB_FIXED_DEV(0x07fd, 0x0008, 0x81, 2), /* MOTU M Series */
+ 	IMPLICIT_FB_FIXED_DEV(0x31e9, 0x0001, 0x81, 2), /* Solid State Logic SSL2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x31e9, 0x0002, 0x81, 2), /* Solid State Logic SSL2+ */
+ 	IMPLICIT_FB_FIXED_DEV(0x0499, 0x172f, 0x81, 2), /* Steinberg UR22C */
+ 	IMPLICIT_FB_FIXED_DEV(0x0d9a, 0x00df, 0x81, 2), /* RTX6001 */
+-	IMPLICIT_FB_FIXED_DEV(0x0763, 0x2030, 0x81, 3), /* M-Audio Fast Track C400 */
+-	IMPLICIT_FB_FIXED_DEV(0x0763, 0x2031, 0x81, 3), /* M-Audio Fast Track C600 */
+ 	IMPLICIT_FB_FIXED_DEV(0x22f0, 0x0006, 0x81, 3), /* Allen&Heath Qu-16 */
+ 	IMPLICIT_FB_FIXED_DEV(0x2b73, 0x000a, 0x82, 0), /* Pioneer DJ DJM-900NXS2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x2b73, 0x0017, 0x82, 0), /* Pioneer DJ DJM-250MK2 */
+@@ -75,7 +81,7 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
+ 	{} /* terminator */
+ };
+ 
+-/* Implicit feedback quirk table for capture */
++/* Implicit feedback quirk table for capture: only FIXED type */
+ static const struct snd_usb_implicit_fb_match capture_implicit_fb_quirks[] = {
+ 	IMPLICIT_FB_FIXED_DEV(0x0582, 0x01e5, 0x0d, 0x01), /* BOSS GT-001 */
+ 
+@@ -162,6 +168,47 @@ static int add_roland_implicit_fb(struct snd_usb_audio *chip,
+ 				       ifnum, alts);
  }
  
-+/* set up rate_min, rate_max and rates from the rate table */
-+static void set_rate_table_min_max(struct audioformat *fp)
-+{
-+	unsigned int rate;
-+	int i;
 +
-+	fp->rate_min = INT_MAX;
-+	fp->rate_max = 0;
-+	fp->rates = 0;
-+	for (i = 0; i < fp->nr_rates; i++) {
-+		rate = fp->rate_table[i];
-+		fp->rate_min = min(fp->rate_min, rate);
-+		fp->rate_max = max(fp->rate_max, rate);
-+		fp->rates |= snd_pcm_rate_to_rate_bit(rate);
-+	}
++static int __add_generic_implicit_fb(struct snd_usb_audio *chip,
++				     struct audioformat *fmt,
++				     int iface, int altset)
++{
++	struct usb_host_interface *alts;
++	struct usb_endpoint_descriptor *epd;
++
++	alts = snd_usb_get_host_interface(chip, iface, altset);
++	if (!alts)
++		return 0;
++
++	if ((alts->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC &&
++	     alts->desc.bInterfaceClass != USB_CLASS_AUDIO) ||
++	    alts->desc.bNumEndpoints < 1)
++		return 0;
++	epd = get_endpoint(alts, 0);
++	if (!usb_endpoint_is_isoc_in(epd) ||
++	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
++		return 0;
++	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress,
++				       iface, alts);
 +}
 +
- /*
-  * parse the format descriptor and stores the possible sample rates
-  * on the audioformat table (audio class v1).
-@@ -198,7 +215,6 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 			return -ENOMEM;
- 
- 		fp->nr_rates = 0;
--		fp->rate_min = fp->rate_max = 0;
- 		for (r = 0, idx = offset + 1; r < nr_rates; r++, idx += 3) {
- 			unsigned int rate = combine_triple(&fmt[idx]);
- 			if (!rate)
-@@ -217,13 +233,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 			     chip->usb_id == USB_ID(0x041e, 0x4068)))
- 				rate = 8000;
- 
--			fp->rate_table[fp->nr_rates] = rate;
--			if (!fp->rate_min || rate < fp->rate_min)
--				fp->rate_min = rate;
--			if (!fp->rate_max || rate > fp->rate_max)
--				fp->rate_max = rate;
--			fp->rates |= snd_pcm_rate_to_rate_bit(rate);
--			fp->nr_rates++;
-+			fp->rate_table[fp->nr_rates++] = rate;
- 		}
- 		if (!fp->nr_rates) {
- 			usb_audio_info(chip,
-@@ -231,6 +241,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- 				       fp->iface, fp->altsetting);
- 			return -EINVAL;
- 		}
-+		set_rate_table_min_max(fp);
- 	} else {
- 		/* continuous rates */
- 		fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
-@@ -336,8 +347,6 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
- {
- 	int i, nr_rates = 0;
- 
--	fp->rates = fp->rate_min = fp->rate_max = 0;
--
- 	for (i = 0; i < nr_triplets; i++) {
- 		int min = combine_quad(&data[2 + 12 * i]);
- 		int max = combine_quad(&data[6 + 12 * i]);
-@@ -373,12 +382,6 @@ static int parse_uac2_sample_rate_range(struct snd_usb_audio *chip,
- 
- 			if (fp->rate_table)
- 				fp->rate_table[nr_rates] = rate;
--			if (!fp->rate_min || rate < fp->rate_min)
--				fp->rate_min = rate;
--			if (!fp->rate_max || rate > fp->rate_max)
--				fp->rate_max = rate;
--			fp->rates |= snd_pcm_rate_to_rate_bit(rate);
--
- 			nr_rates++;
- 			if (nr_rates >= MAX_NR_RATES) {
- 				usb_audio_err(chip, "invalid uac2 rates\n");
-@@ -459,9 +462,6 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
- 	struct usb_device *dev = chip->dev;
- 	unsigned int *table;
- 	unsigned int nr_rates;
--	unsigned int rate_min = 0x7fffffff;
--	unsigned int rate_max = 0;
--	unsigned int rates = 0;
- 	int i, err;
- 
- 	table = kcalloc(fp->nr_rates, sizeof(*table), GFP_KERNEL);
-@@ -478,14 +478,8 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
- 		if (err < 0)
- 			continue;
- 
--		if (check_valid_altsetting_v2v3(chip, fp->iface, fp->altsetting)) {
-+		if (check_valid_altsetting_v2v3(chip, fp->iface, fp->altsetting))
- 			table[nr_rates++] = fp->rate_table[i];
--			if (rate_min > fp->rate_table[i])
--				rate_min = fp->rate_table[i];
--			if (rate_max < fp->rate_table[i])
--				rate_max = fp->rate_table[i];
--			rates |= snd_pcm_rate_to_rate_bit(fp->rate_table[i]);
--		}
- 	}
- 
- 	if (!nr_rates) {
-@@ -503,9 +497,6 @@ static int validate_sample_rate_table_v2v3(struct snd_usb_audio *chip,
- 	kfree(fp->rate_table);
- 	fp->rate_table = table;
- 	fp->nr_rates = nr_rates;
--	fp->rate_min = rate_min;
--	fp->rate_max = rate_max;
--	fp->rates = rates;
- 	return 0;
- }
- 
-@@ -602,6 +593,10 @@ static int parse_audio_format_rates_v2v3(struct snd_usb_audio *chip,
- 	parse_uac2_sample_rate_range(chip, fp, nr_triplets, data);
- 
- 	ret = validate_sample_rate_table_v2v3(chip, fp, clock);
-+	if (ret < 0)
-+		goto err_free;
++/* More generic quirk: look for the sync EP next to the data EP */
++static int add_generic_implicit_fb(struct snd_usb_audio *chip,
++				   struct audioformat *fmt,
++				   struct usb_host_interface *alts)
++{
++	if ((fmt->ep_attr & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
++		return 0;
 +
-+	set_rate_table_min_max(fp);
- 
- err_free:
- 	kfree(data);
++	if (__add_generic_implicit_fb(chip, fmt,
++				      alts->desc.bInterfaceNumber + 1,
++				      alts->desc.bAlternateSetting))
++		return 1;
++	return __add_generic_implicit_fb(chip, fmt,
++					 alts->desc.bInterfaceNumber - 1,
++					 alts->desc.bAlternateSetting);
++}
++
+ static const struct snd_usb_implicit_fb_match *
+ find_implicit_fb_entry(struct snd_usb_audio *chip,
+ 		       const struct snd_usb_implicit_fb_match *match,
+@@ -189,6 +236,8 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
+ 	p = find_implicit_fb_entry(chip, playback_implicit_fb_quirks, alts);
+ 	if (p) {
+ 		switch (p->type) {
++		case IMPLICIT_FB_GENERIC:
++			return add_generic_implicit_fb(chip, fmt, alts);
+ 		case IMPLICIT_FB_NONE:
+ 			return 0; /* No quirk */
+ 		case IMPLICIT_FB_FIXED:
 -- 
 2.16.4
 
