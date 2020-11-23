@@ -2,59 +2,58 @@ Return-Path: <SRS0=WmXX=E5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B33D5C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C50FDC56202
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:06:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA7EE20731
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:06:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC21820732
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:06:50 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="KFkZ+w8P"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA7EE20731
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="gDA9bFba"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC21820732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E7D9168E;
-	Mon, 23 Nov 2020 10:05:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E7D9168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A3BE16DF;
+	Mon, 23 Nov 2020 10:05:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A3BE16DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606122391;
-	bh=8V6FC/5DRb0UCefESLlSf8eHWCxqNU0NBT44qqbPXHI=;
+	s=default; t=1606122409;
+	bh=40nJEb7yfS9f8sthbYJwLF76MLrc+stn+FYt5bQSexw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KFkZ+w8P65IvgyY7SnUSNvDpkSs8ufxuLiSJNN2x2Rv8XItmSS/XXtg/cnyB8BLVU
-	 LhicsvmaXGK1iMR34eQlPSswY1KQCGOuQ3RAKOFeG/pASk22zEcB325LjONlxzqa5+
-	 DdUUWXWGBB9ia2aNwtxOVjad+1bWeTXLWMWngEnM=
+	b=gDA9bFbaPEF2Jfu2yyjBsIbtVT1K6/ENqeVXJLZAnVksK6MqYJJlg5ljd1g3lFosb
+	 65FG1ERgvbqRpDXIqhjPdD6pvefqjs9yXTRreHC91/u2HC2Qg6rbkWqy+2OktWUvN5
+	 2HAcmBsQLAYyDbOS6zl2HLNJNiwL3IxbTcAN2/5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14CCFF805DA;
+	by alsa1.perex.cz (Postfix) with ESMTP id BF2C3F805E2;
 	Mon, 23 Nov 2020 09:55:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC6F5F8053C; Mon, 23 Nov 2020 09:54:39 +0100 (CET)
+ id 2C888F80543; Mon, 23 Nov 2020 09:54:41 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9CFC8F804E6
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6DDAF804EC
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CFC8F804E6
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6DDAF804EC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 28CDDAFC9;
+ by mx2.suse.de (Postfix) with ESMTP id C5B32AD75;
  Mon, 23 Nov 2020 08:53:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 22/41] ALSA: usb-audio: Set callbacks via
- snd_usb_endpoint_set_callback()
-Date: Mon, 23 Nov 2020 09:53:28 +0100
-Message-Id: <20201123085347.19667-23-tiwai@suse.de>
+Subject: [PATCH 33/41] ALSA: usb-audio: Replace slave/master terms
+Date: Mon, 23 Nov 2020 09:53:39 +0100
+Message-Id: <20201123085347.19667-34-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -76,254 +75,128 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The prepare_data_urb and retire_data_urb fields of the endpoint object
-are set dynamically at PCM trigger start/stop.  Those are evaluated in
-the endpoint handler, but there can be a race, especially if two
-different PCM substreams are handling the same endpoint for the
-implicit feedback case.  Also, the data_subs field of the endpoint is
-set and accessed dynamically, too, which has the same risk.
-
-As a slight improvement for the concurrency, this patch introduces the
-function to set the callbacks and the data in a shot with the memory
-barrier.  In the reader side, it's also fetched with the memory
-barrier.
-
-There is still a room of race if prepare and retire callbacks are set
-during executing the URB completion.  But such an inconsistency may
-happen only for the implicit fb source, i.e. it's only about the
-capture stream.  And luckily, the capture stream never sets the
-prepare callback, hence the problem doesn't happen practically.
+Follow the inclusive terminology, just replace sync_master/sync_slave
+with sync_source/sync_sink.  It's also a bit clearer from its meaning,
+too.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c | 60 +++++++++++++++++++++++++++++++++++-----------------
- sound/usb/endpoint.h |  7 ++++++
- sound/usb/pcm.c      | 33 ++++++++++++++++-------------
- 3 files changed, 66 insertions(+), 34 deletions(-)
+ sound/usb/card.h     |  4 ++--
+ sound/usb/endpoint.c | 28 ++++++++++++++--------------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 1dd7a514d1d5..3e16b9288693 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -71,8 +71,8 @@ struct snd_usb_endpoint {
+ 				 struct urb *urb);
+ 
+ 	struct snd_usb_substream *data_subs;
+-	struct snd_usb_endpoint *sync_master;
+-	struct snd_usb_endpoint *sync_slave;
++	struct snd_usb_endpoint *sync_source;
++	struct snd_usb_endpoint *sync_sink;
+ 
+ 	struct snd_urb_ctx urb[MAX_URBS];
+ 
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 0cc7e9c01263..7012fdafc3d8 100644
+index 5d618724bd75..5f1d5f1ed8db 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -169,11 +169,20 @@ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep)
- 	return ret;
- }
- 
-+static void call_retire_callback(struct snd_usb_endpoint *ep,
-+				 struct urb *urb)
-+{
-+	struct snd_usb_substream *data_subs;
-+
-+	data_subs = READ_ONCE(ep->data_subs);
-+	if (data_subs && ep->retire_data_urb)
-+		ep->retire_data_urb(data_subs, urb);
-+}
-+
- static void retire_outbound_urb(struct snd_usb_endpoint *ep,
- 				struct snd_urb_ctx *urb_ctx)
+@@ -175,7 +175,7 @@ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
  {
--	if (ep->retire_data_urb)
--		ep->retire_data_urb(ep->data_subs, urb_ctx->urb);
-+	call_retire_callback(ep, urb_ctx->urb);
- }
- 
- static void retire_inbound_urb(struct snd_usb_endpoint *ep,
-@@ -189,8 +198,7 @@ static void retire_inbound_urb(struct snd_usb_endpoint *ep,
- 	if (ep->sync_slave)
- 		snd_usb_handle_sync_urb(ep->sync_slave, ep, urb);
- 
--	if (ep->retire_data_urb)
--		ep->retire_data_urb(ep->data_subs, urb);
-+	call_retire_callback(ep, urb);
- }
- 
- static void prepare_silent_urb(struct snd_usb_endpoint *ep,
-@@ -244,17 +252,17 @@ static void prepare_outbound_urb(struct snd_usb_endpoint *ep,
+ 	if (ctx->packet_size[idx])
+ 		return ctx->packet_size[idx];
+-	else if (ep->sync_master)
++	else if (ep->sync_source)
+ 		return slave_next_packet_size(ep);
+ 	else
+ 		return next_packet_size(ep);
+@@ -205,16 +205,16 @@ static void retire_inbound_urb(struct snd_usb_endpoint *ep,
+ 			       struct snd_urb_ctx *urb_ctx)
  {
- 	struct urb *urb = ctx->urb;
- 	unsigned char *cp = urb->transfer_buffer;
-+	struct snd_usb_substream *data_subs;
+ 	struct urb *urb = urb_ctx->urb;
+-	struct snd_usb_endpoint *sync_slave;
++	struct snd_usb_endpoint *sync_sink;
  
- 	urb->dev = ep->chip->dev; /* we need to set this at each time */
- 
- 	switch (ep->type) {
- 	case SND_USB_ENDPOINT_TYPE_DATA:
--		if (ep->prepare_data_urb) {
--			ep->prepare_data_urb(ep->data_subs, urb);
--		} else {
--			/* no data provider, so send silence */
-+		data_subs = READ_ONCE(ep->data_subs);
-+		if (data_subs && ep->prepare_data_urb)
-+			ep->prepare_data_urb(data_subs, urb);
-+		else /* no data provider, so send silence */
- 			prepare_silent_urb(ep, ctx);
--		}
- 		break;
- 
- 	case SND_USB_ENDPOINT_TYPE_SYNC:
-@@ -381,7 +389,7 @@ static void snd_complete_urb(struct urb *urb)
- {
- 	struct snd_urb_ctx *ctx = urb->context;
- 	struct snd_usb_endpoint *ep = ctx->ep;
--	struct snd_pcm_substream *substream;
-+	struct snd_usb_substream *data_subs;
- 	unsigned long flags;
- 	int err;
- 
-@@ -430,10 +438,9 @@ static void snd_complete_urb(struct urb *urb)
+ 	if (unlikely(ep->skip_packets > 0)) {
+ 		ep->skip_packets--;
  		return;
- 
- 	usb_audio_err(ep->chip, "cannot submit urb (err = %d)\n", err);
--	if (ep->data_subs && ep->data_subs->pcm_substream) {
--		substream = ep->data_subs->pcm_substream;
--		snd_pcm_stop_xrun(substream);
--	}
-+	data_subs = READ_ONCE(ep->data_subs);
-+	if (data_subs && data_subs->pcm_substream)
-+		snd_pcm_stop_xrun(data_subs->pcm_substream);
- 
- exit_clear:
- 	clear_bit(ctx->index, &ep->active_mask);
-@@ -532,6 +539,24 @@ void snd_usb_endpoint_set_syncinterval(struct snd_usb_audio *chip,
  	}
+ 
+-	sync_slave = READ_ONCE(ep->sync_slave);
+-	if (sync_slave)
+-		snd_usb_handle_sync_urb(sync_slave, ep, urb);
++	sync_sink = READ_ONCE(ep->sync_sink);
++	if (sync_sink)
++		snd_usb_handle_sync_urb(sync_sink, ep, urb);
+ 
+ 	call_retire_callback(ep, urb);
+ }
+@@ -708,7 +708,7 @@ void snd_usb_endpoint_set_sync(struct snd_usb_audio *chip,
+ 			       struct snd_usb_endpoint *data_ep,
+ 			       struct snd_usb_endpoint *sync_ep)
+ {
+-	data_ep->sync_master = sync_ep;
++	data_ep->sync_source = sync_ep;
  }
  
-+/*
-+ * Set data endpoint callbacks and the assigned data stream
-+ *
-+ * Called at PCM trigger and cleanups.
-+ * Pass NULL to deactivate each callback.
-+ */
-+void snd_usb_endpoint_set_callback(struct snd_usb_endpoint *ep,
-+				   void (*prepare)(struct snd_usb_substream *subs,
-+						   struct urb *urb),
-+				   void (*retire)(struct snd_usb_substream *subs,
-+						  struct urb *urb),
-+				   struct snd_usb_substream *data_subs)
-+{
-+	ep->prepare_data_urb = prepare;
-+	ep->retire_data_urb = retire;
-+	WRITE_ONCE(ep->data_subs, data_subs);
-+}
-+
  /*
-  *  wait until all urbs are processed.
-  */
-@@ -554,10 +579,8 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
+@@ -802,7 +802,7 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
  			alive, ep->ep_num);
  	clear_bit(EP_FLAG_STOPPING, &ep->flags);
  
--	ep->data_subs = NULL;
- 	ep->sync_slave = NULL;
--	ep->retire_data_urb = NULL;
--	ep->prepare_data_urb = NULL;
-+	snd_usb_endpoint_set_callback(ep, NULL, NULL, NULL);
+-	ep->sync_slave = NULL;
++	ep->sync_sink = NULL;
+ 	snd_usb_endpoint_set_callback(ep, NULL, NULL, NULL);
  
  	return 0;
- }
-@@ -607,8 +630,7 @@ static void release_urbs(struct snd_usb_endpoint *ep, int force)
- 	int i;
+@@ -969,9 +969,9 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
+ 		packs_per_ms = 1;
+ 		max_packs_per_urb = MAX_PACKS;
+ 	}
+-	if (ep->sync_master && !ep->implicit_fb_sync)
++	if (ep->sync_source && !ep->implicit_fb_sync)
+ 		max_packs_per_urb = min(max_packs_per_urb,
+-					1U << ep->sync_master->syncinterval);
++					1U << ep->sync_source->syncinterval);
+ 	max_packs_per_urb = max(1u, max_packs_per_urb >> ep->datainterval);
  
- 	/* route incoming urbs to nirvana */
--	ep->retire_data_urb = NULL;
--	ep->prepare_data_urb = NULL;
-+	snd_usb_endpoint_set_callback(ep, NULL, NULL, NULL);
+ 	/*
+@@ -1015,7 +1015,7 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
+ 		minsize = (ep->freqn >> (16 - ep->datainterval)) *
+ 				(frame_bits >> 3);
+ 		/* with sync from device, assume it can be 12% lower */
+-		if (ep->sync_master)
++		if (ep->sync_source)
+ 			minsize -= minsize >> 3;
+ 		minsize = max(minsize, 1u);
  
- 	/* stop urbs */
- 	deactivate_urbs(ep, force);
-diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-index 76b6de7de991..e2fddb3dcf7a 100644
---- a/sound/usb/endpoint.h
-+++ b/sound/usb/endpoint.h
-@@ -20,6 +20,13 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 				struct audioformat *fmt,
- 				struct snd_usb_endpoint *sync_ep);
+@@ -1272,8 +1272,8 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+ 	if (atomic_read(&ep->chip->shutdown))
+ 		return -EBADFD;
  
-+void snd_usb_endpoint_set_callback(struct snd_usb_endpoint *ep,
-+				   void (*prepare)(struct snd_usb_substream *subs,
-+						   struct urb *urb),
-+				   void (*retire)(struct snd_usb_substream *subs,
-+						  struct urb *urb),
-+				   struct snd_usb_substream *data_subs);
-+
- int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep);
- void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep);
- void snd_usb_endpoint_sync_pending_stop(struct snd_usb_endpoint *ep);
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index c4e39aa92a84..32237623de96 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -232,7 +232,6 @@ static int start_endpoints(struct snd_usb_substream *subs)
- 	if (!test_and_set_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags)) {
- 		struct snd_usb_endpoint *ep = subs->data_endpoint;
+-	if (ep->sync_master)
+-		WRITE_ONCE(ep->sync_master->sync_slave, ep);
++	if (ep->sync_source)
++		WRITE_ONCE(ep->sync_source->sync_sink, ep);
  
--		ep->data_subs = subs;
- 		err = snd_usb_endpoint_start(ep);
- 		if (err < 0) {
- 			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
-@@ -1830,18 +1829,24 @@ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substrea
- 		subs->trigger_tstamp_pending_update = true;
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		subs->data_endpoint->prepare_data_urb = prepare_playback_urb;
--		subs->data_endpoint->retire_data_urb = retire_playback_urb;
-+		snd_usb_endpoint_set_callback(subs->data_endpoint,
-+					      prepare_playback_urb,
-+					      retire_playback_urb,
-+					      subs);
- 		subs->running = 1;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		stop_endpoints(subs);
-+		snd_usb_endpoint_set_callback(subs->data_endpoint,
-+					      NULL, NULL, NULL);
- 		subs->running = 0;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		subs->data_endpoint->prepare_data_urb = NULL;
- 		/* keep retire_data_urb for delay calculation */
--		subs->data_endpoint->retire_data_urb = retire_playback_urb;
-+		snd_usb_endpoint_set_callback(subs->data_endpoint,
-+					      NULL,
-+					      retire_playback_urb,
-+					      subs);
- 		subs->running = 0;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-@@ -1867,23 +1872,21 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
- 		err = start_endpoints(subs);
- 		if (err < 0)
- 			return err;
--
--		subs->data_endpoint->retire_data_urb = retire_capture_urb;
-+		fallthrough;
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		snd_usb_endpoint_set_callback(subs->data_endpoint,
-+					      NULL, retire_capture_urb,
-+					      subs);
- 		subs->running = 1;
- 		return 0;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		stop_endpoints(subs);
--		subs->data_endpoint->retire_data_urb = NULL;
--		subs->running = 0;
--		return 0;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		subs->data_endpoint->retire_data_urb = NULL;
-+		snd_usb_endpoint_set_callback(subs->data_endpoint,
-+					      NULL, NULL, NULL);
- 		subs->running = 0;
- 		return 0;
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		subs->data_endpoint->retire_data_urb = retire_capture_urb;
--		subs->running = 1;
--		return 0;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 		if (subs->stream->chip->setup_fmt_after_resume_quirk) {
- 			stop_endpoints(subs);
+ 	usb_audio_dbg(ep->chip, "Starting %s EP 0x%x (running %d)\n",
+ 		      ep_type_name(ep->type), ep->ep_num,
+@@ -1366,8 +1366,8 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+ 	if (snd_BUG_ON(!atomic_read(&ep->running)))
+ 		return;
+ 
+-	if (ep->sync_master)
+-		WRITE_ONCE(ep->sync_master->sync_slave, NULL);
++	if (ep->sync_source)
++		WRITE_ONCE(ep->sync_source->sync_sink, NULL);
+ 
+ 	if (!atomic_dec_return(&ep->running))
+ 		stop_and_unlink_urbs(ep, false, false);
 -- 
 2.16.4
 
