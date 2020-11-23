@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46FA9C56202
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 207D7C56202
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6E0FF20732
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4D8EF20732
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:37 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="S5eXuN1c"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E0FF20732
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QsudsO3j"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D8EF20732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D76B1166C;
-	Mon, 23 Nov 2020 10:00:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76B1166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9F7F16A9;
+	Mon, 23 Nov 2020 10:00:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9F7F16A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606122074;
-	bh=AYkLz8/u5opVFSLg2jqoGIWkV7gM7GFqTHIOJYbEyLA=;
+	s=default; t=1606122095;
+	bh=pgyAev7qeTgsJ3w4rbRF0vZN/m5SslFBpvms0e0nvao=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S5eXuN1cOQuKUsvQAbw0hAMBV+pytIo7OjaKpJUBAKoQzaTsOIKM9Afp7HfWsZWGy
-	 PoPWKalA+DlJO8hZBaLYKwvkQsA4oRVh7nVU1d649+XBwHvsGPCcUOIKcDudmAD/cI
-	 zFLWK8NNG5svu+BjlO3rkW1/pVHJNND37lFkOfdg=
+	b=QsudsO3juEYPmyv+vyOr8NfjaYHzQ36MM8vyT5YxfIH8Ni1TXS3QhujpnBGsIz32K
+	 HRwTtI2vY3FmJfGoWj2ZURzR3Q0NGx5VapeX2MGQCtsgDTQYaH4xtaC7kXxEwQE+Aw
+	 TSRnJZpAvASHtiLfPtlqbYVExgyLFGBTrHzqax5E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2729F80553;
-	Mon, 23 Nov 2020 09:54:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73120F8055A;
+	Mon, 23 Nov 2020 09:54:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3E53F80528; Mon, 23 Nov 2020 09:54:20 +0100 (CET)
+ id C7A03F80529; Mon, 23 Nov 2020 09:54:21 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E7DCF804CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DB44F804C2
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E7DCF804CB
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DB44F804C2
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id AF8D2AFB4;
- Mon, 23 Nov 2020 08:53:57 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 16DFBAFC8;
+ Mon, 23 Nov 2020 08:53:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/41] ALSA: usb-audio: Drop keep_interface flag again
-Date: Mon, 23 Nov 2020 09:53:21 +0100
-Message-Id: <20201123085347.19667-16-tiwai@suse.de>
+Subject: [PATCH 21/41] ALSA: usb-audio: Stop both endpoints properly at error
+Date: Mon, 23 Nov 2020 09:53:27 +0100
+Message-Id: <20201123085347.19667-22-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -75,133 +75,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This behavior turned out to be invalid from the USB spec POV and
-shouldn't be applied.  As it's an optional flag that is set only via
-an card control element that must be hardly used, let's drop it
-again.
+start_endpoints() may leave the data endpoint running if an error
+happens at starting the sync endpoint.  We should stop both streams
+properly, instead.
+
+While we're at it, move the debug prints into the endpoint.c that is a
+more suitable place.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/mixer.c    | 46 ----------------------------------------------
- sound/usb/pcm.c      | 17 +++++++----------
- sound/usb/usbaudio.h |  3 ---
- 3 files changed, 7 insertions(+), 59 deletions(-)
+ sound/usb/endpoint.c |  6 ++++++
+ sound/usb/pcm.c      | 39 +++++++++++++++++----------------------
+ 2 files changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 81e987eaf063..12b15ed59eaa 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -3454,48 +3454,6 @@ static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
- 	return 0;
- }
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index eb459db511f8..0cc7e9c01263 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1172,6 +1172,9 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+ 	if (atomic_read(&ep->chip->shutdown))
+ 		return -EBADFD;
  
--static int keep_iface_ctl_get(struct snd_kcontrol *kcontrol,
--			      struct snd_ctl_elem_value *ucontrol)
--{
--	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.integer.value[0] = mixer->chip->keep_iface;
--	return 0;
--}
--
--static int keep_iface_ctl_put(struct snd_kcontrol *kcontrol,
--			      struct snd_ctl_elem_value *ucontrol)
--{
--	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
--	bool keep_iface = !!ucontrol->value.integer.value[0];
--
--	if (mixer->chip->keep_iface == keep_iface)
--		return 0;
--	mixer->chip->keep_iface = keep_iface;
--	return 1;
--}
--
--static const struct snd_kcontrol_new keep_iface_ctl = {
--	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
--	.name = "Keep Interface",
--	.info = snd_ctl_boolean_mono_info,
--	.get = keep_iface_ctl_get,
--	.put = keep_iface_ctl_put,
--};
--
--static int create_keep_iface_ctl(struct usb_mixer_interface *mixer)
--{
--	struct snd_kcontrol *kctl = snd_ctl_new1(&keep_iface_ctl, mixer);
--
--	/* need only one control per card */
--	if (snd_ctl_find_id(mixer->chip->card, &kctl->id)) {
--		snd_ctl_free_one(kctl);
--		return 0;
--	}
--
--	return snd_ctl_add(mixer->chip->card, kctl);
--}
--
- int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 			 int ignore_error)
- {
-@@ -3548,10 +3506,6 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 	if (err < 0)
- 		goto _error;
++	usb_audio_dbg(ep->chip, "Starting %s EP 0x%x (count %d)\n",
++		      ep_type_name(ep->type), ep->ep_num, ep->use_count);
++
+ 	/* already running? */
+ 	if (++ep->use_count != 1)
+ 		return 0;
+@@ -1254,6 +1257,9 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+ 	if (!ep)
+ 		return;
  
--	err = create_keep_iface_ctl(mixer);
--	if (err < 0)
--		goto _error;
--
- 	err = snd_usb_mixer_apply_create_quirk(mixer);
- 	if (err < 0)
- 		goto _error;
++	usb_audio_dbg(ep->chip, "Stopping %s EP 0x%x (count %d)\n",
++		      ep_type_name(ep->type), ep->ep_num, ep->use_count);
++
+ 	if (snd_BUG_ON(ep->use_count == 0))
+ 		return;
+ 
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 03b1a02bcff4..392aa1cba61c 100644
+index 0998be109af3..c4e39aa92a84 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -648,14 +648,12 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+@@ -211,6 +211,17 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip,
+ 	}
+ }
  
- 	/* close the old interface */
- 	if (subs->interface >= 0 && (subs->interface != fmt->iface || subs->need_setup_fmt)) {
--		if (!subs->stream->chip->keep_iface) {
--			err = usb_set_interface(subs->dev, subs->interface, 0);
--			if (err < 0) {
--				dev_err(&dev->dev,
--					"%d:%d: return to setting 0 failed (%d)\n",
--					fmt->iface, fmt->altsetting, err);
--				return -EIO;
--			}
-+		err = usb_set_interface(subs->dev, subs->interface, 0);
-+		if (err < 0) {
-+			dev_err(&dev->dev,
-+				"%d:%d: return to setting 0 failed (%d)\n",
-+				fmt->iface, fmt->altsetting, err);
-+			return -EIO;
++static void stop_endpoints(struct snd_usb_substream *subs)
++{
++	if (test_and_clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
++		snd_usb_endpoint_stop(subs->sync_endpoint);
++		subs->sync_endpoint->sync_slave = NULL;
++	}
++
++	if (test_and_clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags))
++		snd_usb_endpoint_stop(subs->data_endpoint);
++}
++
+ static int start_endpoints(struct snd_usb_substream *subs)
+ {
+ 	int err;
+@@ -221,13 +232,11 @@ static int start_endpoints(struct snd_usb_substream *subs)
+ 	if (!test_and_set_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags)) {
+ 		struct snd_usb_endpoint *ep = subs->data_endpoint;
+ 
+-		dev_dbg(&subs->dev->dev, "Starting data EP 0x%x\n", ep->ep_num);
+-
+ 		ep->data_subs = subs;
+ 		err = snd_usb_endpoint_start(ep);
+ 		if (err < 0) {
+ 			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
+-			return err;
++			goto error;
  		}
- 		subs->interface = -1;
- 		subs->altset_idx = 0;
-@@ -1483,8 +1481,7 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+ 	}
  
- 	snd_media_stop_pipeline(subs);
+@@ -235,18 +244,20 @@ static int start_endpoints(struct snd_usb_substream *subs)
+ 	    !test_and_set_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
+ 		struct snd_usb_endpoint *ep = subs->sync_endpoint;
  
--	if (!as->chip->keep_iface &&
--	    subs->interface >= 0 &&
-+	if (subs->interface >= 0 &&
- 	    !snd_usb_lock_shutdown(subs->stream->chip)) {
- 		usb_set_interface(subs->dev, subs->interface, 0);
- 		subs->interface = -1;
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 0805b7f21272..aa017a93f7bd 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -53,9 +53,6 @@ struct snd_usb_audio {
+-		dev_dbg(&subs->dev->dev, "Starting sync EP 0x%x\n", ep->ep_num);
+-
+ 		ep->sync_slave = subs->data_endpoint;
+ 		err = snd_usb_endpoint_start(ep);
+ 		if (err < 0) {
+ 			clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
+ 			ep->sync_slave = NULL;
+-			return err;
++			goto error;
+ 		}
+ 	}
  
- 	int setup;			/* from the 'device_setup' module param */
- 	bool autoclock;			/* from the 'autoclock' module param */
--	bool keep_iface;		/* keep interface/altset after closing
--					 * or parameter change
--					 */
+ 	return 0;
++
++ error:
++	stop_endpoints(subs);
++	return err;
+ }
  
- 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
- 	struct media_device *media_dev;
+ static void sync_pending_stops(struct snd_usb_substream *subs)
+@@ -255,22 +266,6 @@ static void sync_pending_stops(struct snd_usb_substream *subs)
+ 	snd_usb_endpoint_sync_pending_stop(subs->data_endpoint);
+ }
+ 
+-static void stop_endpoints(struct snd_usb_substream *subs)
+-{
+-	if (test_and_clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
+-		dev_dbg(&subs->dev->dev, "Stopping sync EP 0x%x\n",
+-			subs->sync_endpoint->ep_num);
+-		snd_usb_endpoint_stop(subs->sync_endpoint);
+-		subs->sync_endpoint->sync_slave = NULL;
+-	}
+-
+-	if (test_and_clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags)) {
+-		dev_dbg(&subs->dev->dev, "Stopping data EP 0x%x\n",
+-			subs->data_endpoint->ep_num);
+-		snd_usb_endpoint_stop(subs->data_endpoint);
+-	}
+-}
+-
+ /* PCM sync_stop callback */
+ static int snd_usb_pcm_sync_stop(struct snd_pcm_substream *substream)
+ {
 -- 
 2.16.4
 
