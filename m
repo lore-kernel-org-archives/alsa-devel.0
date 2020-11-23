@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 240ECC63777
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5398C56202
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:02:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1033120732
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 116AA20732
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:02:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OdWCvrad"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1033120732
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="CcoyBH5n"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 116AA20732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 846AA16AE;
-	Mon, 23 Nov 2020 10:01:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 846AA16AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45AEC16B5;
+	Mon, 23 Nov 2020 10:01:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45AEC16B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606122112;
-	bh=2JnhS3A0gWQW42YqMTutkjvnnfot3fbv0pGV2IFFLW4=;
+	s=default; t=1606122142;
+	bh=1Ai5AFhp2hzBie3IWe/urEZ6u9o+eqG1bVGZ9cwqm8s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OdWCvradE8mWo6dIuI9jVZTqLkA8VdG+ilMFKnYtsHp0kpDYF57N9bhsH0a+B4saY
-	 +8+ngQm5LrF/SQ1yE6dETtuOZjmtpupmAQ96VSMaI3NYnPN7rNWd0I11stZ9ZRbRIn
-	 ic/8AhkW9YU4fZFNM5ZXgZlJZzqshv9aJv8zEtcQ=
+	b=CcoyBH5nFTETcIxYvBXKV83JVC97BX/8HiyCkjO/yRGZgOZTF/Jclrlfh6xpU0mC2
+	 Wy3m021KpQFYvN58LE5oCto5FI66ZoDmsoXg+oRaZJul33zAJcaIDaWjmqT4SIpGq1
+	 JshAfZ2pEV/nZmTjNyX/TxumnlzTDekY3wX3YVK0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 247D7F8055B;
-	Mon, 23 Nov 2020 09:54:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29377F804E7;
+	Mon, 23 Nov 2020 09:54:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06579F80534; Mon, 23 Nov 2020 09:54:26 +0100 (CET)
+ id 497FAF80533; Mon, 23 Nov 2020 09:54:26 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F369F804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DA08F804DF
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F369F804CC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA08F804DF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 07826AFC6;
+ by mx2.suse.de (Postfix) with ESMTP id 73BE5AFCE;
  Mon, 23 Nov 2020 08:53:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 20/41] ALSA: usb-audio: Simplify snd_usb_init_pitch() arguments
-Date: Mon, 23 Nov 2020 09:53:26 +0100
-Message-Id: <20201123085347.19667-21-tiwai@suse.de>
+Subject: [PATCH 27/41] ALSA: usb-audio: Constify audioformat pointer references
+Date: Mon, 23 Nov 2020 09:53:33 +0100
+Message-Id: <20201123085347.19667-28-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -75,144 +75,377 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A preliminary change for the later big changes.  This is a minor code
-refactoring to drop the unnecessary arguments that can be retrieved in
-a different way.
+The audioformat is referred in many places but most of usages are
+read-only.  Let's add const prefix in the possible places.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/pcm.c    | 23 +++++++++--------------
- sound/usb/pcm.h    |  3 +--
- sound/usb/quirks.c |  2 +-
- sound/usb/stream.c |  2 +-
- 4 files changed, 12 insertions(+), 18 deletions(-)
+ sound/usb/card.h     |  4 ++--
+ sound/usb/clock.c    | 16 ++++++++--------
+ sound/usb/clock.h    |  4 ++--
+ sound/usb/endpoint.c |  2 +-
+ sound/usb/endpoint.h |  2 +-
+ sound/usb/pcm.c      | 32 ++++++++++++++++----------------
+ sound/usb/pcm.h      |  2 +-
+ sound/usb/quirks.c   |  9 +++++----
+ sound/usb/quirks.h   |  6 +++---
+ 9 files changed, 39 insertions(+), 38 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index cde492e9581a..53f0ce61f858 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -120,7 +120,7 @@ struct snd_usb_endpoint {
+ 	bool need_setup;		/* (re-)need for configure? */
+ 
+ 	/* for hw constraints */
+-	struct audioformat *cur_audiofmt;
++	const struct audioformat *cur_audiofmt;
+ 	unsigned int cur_rate;
+ 	snd_pcm_format_t cur_format;
+ 	unsigned int cur_channels;
+@@ -142,7 +142,7 @@ struct snd_usb_substream {
+ 	int direction;	/* playback or capture */
+ 	int interface;	/* current interface */
+ 	int endpoint;	/* assigned endpoint */
+-	struct audioformat *cur_audiofmt;	/* current audioformat pointer (for hw_params callback) */
++	const struct audioformat *cur_audiofmt;	/* current audioformat pointer (for hw_params callback) */
+ 	struct snd_usb_power_domain *str_pd;	/* UAC3 Power Domain for streaming path */
+ 	snd_pcm_format_t pcm_format;	/* current audio format (for hw_params callback) */
+ 	unsigned int channels;		/* current number of channels (for hw_params callback) */
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index b869a711afbf..e940dcee792b 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -152,7 +152,7 @@ static int uac_clock_selector_set_val(struct snd_usb_audio *chip, int selector_i
+ }
+ 
+ static bool uac_clock_source_is_valid_quirk(struct snd_usb_audio *chip,
+-					    struct audioformat *fmt,
++					    const struct audioformat *fmt,
+ 					    int source_id)
+ {
+ 	bool ret = false;
+@@ -215,7 +215,7 @@ static bool uac_clock_source_is_valid_quirk(struct snd_usb_audio *chip,
+ }
+ 
+ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip,
+-				      struct audioformat *fmt,
++				      const struct audioformat *fmt,
+ 				      int source_id)
+ {
+ 	int err;
+@@ -264,7 +264,7 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip,
+ }
+ 
+ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+-				   struct audioformat *fmt, int entity_id,
++				   const struct audioformat *fmt, int entity_id,
+ 				   unsigned long *visited, bool validate)
+ {
+ 	struct uac_clock_source_descriptor *source;
+@@ -358,7 +358,7 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ }
+ 
+ static int __uac3_clock_find_source(struct snd_usb_audio *chip,
+-				    struct audioformat *fmt, int entity_id,
++				    const struct audioformat *fmt, int entity_id,
+ 				    unsigned long *visited, bool validate)
+ {
+ 	struct uac3_clock_source_descriptor *source;
+@@ -464,7 +464,7 @@ static int __uac3_clock_find_source(struct snd_usb_audio *chip,
+  * Returns the clock source UnitID (>=0) on success, or an error.
+  */
+ int snd_usb_clock_find_source(struct snd_usb_audio *chip,
+-			      struct audioformat *fmt, bool validate)
++			      const struct audioformat *fmt, bool validate)
+ {
+ 	DECLARE_BITMAP(visited, 256);
+ 	memset(visited, 0, sizeof(visited));
+@@ -482,7 +482,7 @@ int snd_usb_clock_find_source(struct snd_usb_audio *chip,
+ }
+ 
+ static int set_sample_rate_v1(struct snd_usb_audio *chip,
+-			      struct audioformat *fmt, int rate)
++			      const struct audioformat *fmt, int rate)
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	struct usb_host_interface *alts;
+@@ -611,7 +611,7 @@ int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio *chip,
+ }
+ 
+ static int set_sample_rate_v2v3(struct snd_usb_audio *chip,
+-				struct audioformat *fmt, int rate)
++				const struct audioformat *fmt, int rate)
+ {
+ 	int cur_rate, prev_rate;
+ 	int clock;
+@@ -663,7 +663,7 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip,
+ }
+ 
+ int snd_usb_init_sample_rate(struct snd_usb_audio *chip,
+-			     struct audioformat *fmt, int rate)
++			     const struct audioformat *fmt, int rate)
+ {
+ 	usb_audio_dbg(chip, "%d:%d Set sample rate %d, clock %d\n",
+ 		      fmt->iface, fmt->altsetting, rate, fmt->clock);
+diff --git a/sound/usb/clock.h b/sound/usb/clock.h
+index 8d406ed294d6..ed9fc2dc0510 100644
+--- a/sound/usb/clock.h
++++ b/sound/usb/clock.h
+@@ -3,10 +3,10 @@
+ #define __USBAUDIO_CLOCK_H
+ 
+ int snd_usb_init_sample_rate(struct snd_usb_audio *chip,
+-			     struct audioformat *fmt, int rate);
++			     const struct audioformat *fmt, int rate);
+ 
+ int snd_usb_clock_find_source(struct snd_usb_audio *chip,
+-			      struct audioformat *fmt, bool validate);
++			      const struct audioformat *fmt, bool validate);
+ 
+ int snd_usb_set_sample_rate_v2v3(struct snd_usb_audio *chip,
+ 				 const struct audioformat *fmt,
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index b8f06a75fc2a..49fb934ee432 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -623,7 +623,7 @@ bool snd_usb_endpoint_compatible(struct snd_usb_audio *chip,
+  */
+ struct snd_usb_endpoint *
+ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+-		      struct audioformat *fp,
++		      const struct audioformat *fp,
+ 		      const struct snd_pcm_hw_params *params,
+ 		      bool is_sync_ep)
+ {
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index 2bfa6d3e029c..201011d89659 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -12,7 +12,7 @@ int snd_usb_add_endpoint(struct snd_usb_audio *chip, int ep_num, int type);
+ 
+ struct snd_usb_endpoint *
+ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+-		      struct audioformat *fp,
++		      const struct audioformat *fp,
+ 		      const struct snd_pcm_hw_params *params,
+ 		      bool is_sync_ep);
+ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 38b461bdca86..0998be109af3 100644
+index e80e8cf1e863..fc028492dd1a 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -146,8 +146,7 @@ static struct audioformat *find_substream_format(struct snd_usb_substream *subs)
- 			   subs->channels, subs);
- }
- 
--static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
--			 struct usb_host_interface *alts,
-+static int init_pitch_v1(struct snd_usb_audio *chip,
- 			 struct audioformat *fmt)
- {
- 	struct usb_device *dev = chip->dev;
-@@ -155,9 +154,7 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
- 	unsigned char data[1];
- 	int err;
- 
--	if (get_iface_desc(alts)->bNumEndpoints < 1)
--		return -EINVAL;
--	ep = get_endpoint(alts, 0)->bEndpointAddress;
-+	ep = fmt->endpoint;
- 
- 	data[0] = 1;
- 	err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_SET_CUR,
-@@ -166,15 +163,14 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
- 			      data, sizeof(data));
- 	if (err < 0) {
- 		usb_audio_err(chip, "%d:%d: cannot set enable PITCH\n",
--			      iface, ep);
-+			      fmt->iface, ep);
- 		return err;
- 	}
- 
- 	return 0;
- }
- 
--static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
--			 struct usb_host_interface *alts,
-+static int init_pitch_v2(struct snd_usb_audio *chip,
- 			 struct audioformat *fmt)
- {
- 	struct usb_device *dev = chip->dev;
-@@ -188,7 +184,7 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
- 			      data, sizeof(data));
- 	if (err < 0) {
- 		usb_audio_err(chip, "%d:%d: cannot set enable PITCH (v2)\n",
--			      iface, fmt->altsetting);
-+			      fmt->iface, fmt->altsetting);
- 		return err;
- 	}
- 
-@@ -198,8 +194,7 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
+@@ -80,13 +80,13 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
  /*
+  * find a matching audio format
+  */
+-static struct audioformat *
++static const struct audioformat *
+ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	    unsigned int rate, unsigned int channels, bool strict_match,
+ 	    struct snd_usb_substream *subs)
+ {
+-	struct audioformat *fp;
+-	struct audioformat *found = NULL;
++	const struct audioformat *fp;
++	const struct audioformat *found = NULL;
+ 	int cur_attr = 0, attr;
+ 
+ 	list_for_each_entry(fp, fmt_list_head, list) {
+@@ -141,7 +141,7 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	return found;
+ }
+ 
+-static struct audioformat *
++static const struct audioformat *
+ find_substream_format(struct snd_usb_substream *subs,
+ 		      const struct snd_pcm_hw_params *params)
+ {
+@@ -182,7 +182,7 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int ep)
   * initialize the pitch control and sample rate
   */
--int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
--		       struct usb_host_interface *alts,
-+int snd_usb_init_pitch(struct snd_usb_audio *chip,
- 		       struct audioformat *fmt)
+ int snd_usb_init_pitch(struct snd_usb_audio *chip,
+-		       struct audioformat *fmt)
++		       const struct audioformat *fmt)
  {
- 	/* if endpoint doesn't have pitch control, bail out */
-@@ -209,10 +204,10 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
- 	switch (fmt->protocol) {
- 	case UAC_VERSION_1:
- 	default:
--		return init_pitch_v1(chip, iface, alts, fmt);
-+		return init_pitch_v1(chip, fmt);
+ 	int err;
  
- 	case UAC_VERSION_2:
--		return init_pitch_v2(chip, iface, alts, fmt);
-+		return init_pitch_v2(chip, fmt);
- 	}
+@@ -641,14 +641,14 @@ find_matching_substream(struct snd_usb_audio *chip, int stream, int ep_num,
+ 	return NULL;
  }
  
-@@ -682,7 +677,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 		return err;
+-static struct audioformat *
++static const struct audioformat *
+ find_implicit_fb_sync_format(struct snd_usb_audio *chip,
+ 			     const struct audioformat *target,
+ 			     const struct snd_pcm_hw_params *params,
+ 			     int stream)
+ {
+ 	struct snd_usb_substream *subs;
+-	struct audioformat *fp, *sync_fmt;
++	const struct audioformat *fp, *sync_fmt;
+ 	int score, high_score;
  
- 	if (subs->need_setup_ep) {
--		err = snd_usb_init_pitch(chip, fmt->iface, alts, fmt);
-+		err = snd_usb_init_pitch(chip, fmt);
- 		if (err < 0)
- 			return err;
- 	}
+ 	subs = find_matching_substream(chip, stream, target->sync_ep,
+@@ -726,8 +726,8 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+-	struct audioformat *fmt;
+-	struct audioformat *sync_fmt;
++	const struct audioformat *fmt;
++	const struct audioformat *sync_fmt;
+ 	int ret;
+ 
+ 	ret = snd_media_start_pipeline(subs);
+@@ -918,7 +918,7 @@ static const struct snd_pcm_hardware snd_usb_hardware =
+ 
+ static int hw_check_valid_format(struct snd_usb_substream *subs,
+ 				 struct snd_pcm_hw_params *params,
+-				 struct audioformat *fp)
++				 const struct audioformat *fp)
+ {
+ 	struct snd_interval *it = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *ct = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+@@ -995,7 +995,7 @@ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 			struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_usb_substream *subs = rule->private;
+-	struct audioformat *fp;
++	const struct audioformat *fp;
+ 	struct snd_interval *it = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+ 	unsigned int rmin, rmax, r;
+ 	int i;
+@@ -1028,7 +1028,7 @@ static int hw_rule_channels(struct snd_pcm_hw_params *params,
+ 			    struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_usb_substream *subs = rule->private;
+-	struct audioformat *fp;
++	const struct audioformat *fp;
+ 	struct snd_interval *it = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	unsigned int rmin, rmax;
+ 
+@@ -1049,7 +1049,7 @@ static int hw_rule_format(struct snd_pcm_hw_params *params,
+ 			  struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_usb_substream *subs = rule->private;
+-	struct audioformat *fp;
++	const struct audioformat *fp;
+ 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	u64 fbits;
+ 	u32 oldbits[2];
+@@ -1080,7 +1080,7 @@ static int hw_rule_period_time(struct snd_pcm_hw_params *params,
+ 			       struct snd_pcm_hw_rule *rule)
+ {
+ 	struct snd_usb_substream *subs = rule->private;
+-	struct audioformat *fp;
++	const struct audioformat *fp;
+ 	struct snd_interval *it;
+ 	unsigned char min_datainterval;
+ 	unsigned int pmin;
+@@ -1109,7 +1109,7 @@ static int apply_hw_constraint_from_sync(struct snd_pcm_runtime *runtime,
+ {
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+ 	struct snd_usb_endpoint *ep;
+-	struct audioformat *fp;
++	const struct audioformat *fp;
+ 	int err;
+ 
+ 	list_for_each_entry(fp, &subs->fmt_list, list) {
+@@ -1170,7 +1170,7 @@ static int apply_hw_constraint_from_sync(struct snd_pcm_runtime *runtime,
+ static int setup_hw_info(struct snd_pcm_runtime *runtime, struct snd_usb_substream *subs)
+ {
+ 	struct snd_usb_audio *chip = subs->stream->chip;
+-	struct audioformat *fp;
++	const struct audioformat *fp;
+ 	unsigned int pt, ptmin;
+ 	int param_period_time_if_needed = -1;
+ 	int err;
 diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
-index 362782c2df5c..a4f784225abc 100644
+index a4f784225abc..06c586467d3f 100644
 --- a/sound/usb/pcm.h
 +++ b/sound/usb/pcm.h
-@@ -9,8 +9,7 @@ void snd_usb_set_pcm_ops(struct snd_pcm *pcm, int stream);
- int snd_usb_pcm_suspend(struct snd_usb_stream *as);
+@@ -10,7 +10,7 @@ int snd_usb_pcm_suspend(struct snd_usb_stream *as);
  int snd_usb_pcm_resume(struct snd_usb_stream *as);
  
--int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
--		       struct usb_host_interface *alts,
-+int snd_usb_init_pitch(struct snd_usb_audio *chip,
- 		       struct audioformat *fmt);
+ int snd_usb_init_pitch(struct snd_usb_audio *chip,
+-		       struct audioformat *fmt);
++		       const struct audioformat *fmt);
  void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
  
+ int snd_usb_audioformat_set_sync_ep(struct snd_usb_audio *chip,
 diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 018c6f241ffb..013ab93fb640 100644
+index 7e7f258011ff..5510c8a98447 100644
 --- a/sound/usb/quirks.c
 +++ b/sound/usb/quirks.c
-@@ -177,7 +177,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 	if (fp->maxpacksize == 0)
- 		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
- 	usb_set_interface(chip->dev, fp->iface, 0);
--	snd_usb_init_pitch(chip, fp->iface, alts, fp);
-+	snd_usb_init_pitch(chip, fp);
- 	snd_usb_init_sample_rate(chip, fp, fp->rate_max);
- 	return 0;
+@@ -1375,7 +1375,8 @@ int snd_usb_apply_boot_quirk_once(struct usb_device *dev,
+ /*
+  * check if the device uses big-endian samples
+  */
+-int snd_usb_is_big_endian_format(struct snd_usb_audio *chip, struct audioformat *fp)
++int snd_usb_is_big_endian_format(struct snd_usb_audio *chip,
++				 const struct audioformat *fp)
+ {
+ 	/* it depends on altsetting whether the device is big-endian or not */
+ 	switch (chip->usb_id) {
+@@ -1414,7 +1415,7 @@ enum {
+ };
  
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 23e881985123..7f58c7625cd4 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -1224,7 +1224,7 @@ static int __snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
+ static void set_format_emu_quirk(struct snd_usb_substream *subs,
+-				 struct audioformat *fmt)
++				 const struct audioformat *fmt)
+ {
+ 	unsigned char emu_samplerate_id = 0;
  
- 		/* try to set the interface... */
- 		usb_set_interface(chip->dev, iface_no, 0);
--		snd_usb_init_pitch(chip, iface_no, alts, fp);
-+		snd_usb_init_pitch(chip, fp);
- 		snd_usb_init_sample_rate(chip, fp, fp->rate_max);
- 		usb_set_interface(chip->dev, iface_no, altno);
- 	}
+@@ -1476,7 +1477,7 @@ static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs)
+ }
+ 
+ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+-			      struct audioformat *fmt)
++			      const struct audioformat *fmt)
+ {
+ 	switch (subs->stream->chip->usb_id) {
+ 	case USB_ID(0x041e, 0x3f02): /* E-Mu 0202 USB */
+@@ -1543,7 +1544,7 @@ static bool is_itf_usb_dsd_dac(unsigned int id)
+ }
+ 
+ int snd_usb_select_mode_quirk(struct snd_usb_audio *chip,
+-			      struct audioformat *fmt)
++			      const struct audioformat *fmt)
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	int err;
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index 011f22cf2bf6..67a02303c820 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -26,12 +26,12 @@ int snd_usb_apply_boot_quirk_once(struct usb_device *dev,
+ 				  unsigned int usb_id);
+ 
+ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+-			      struct audioformat *fmt);
++			      const struct audioformat *fmt);
+ 
+ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip);
+ 
+ int snd_usb_is_big_endian_format(struct snd_usb_audio *chip,
+-				 struct audioformat *fp);
++				 const struct audioformat *fp);
+ 
+ void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep);
+ 
+@@ -41,7 +41,7 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+ 			   __u16 index, void *data, __u16 size);
+ 
+ int snd_usb_select_mode_quirk(struct snd_usb_audio *chip,
+-			      struct audioformat *fmt);
++			      const struct audioformat *fmt);
+ 
+ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 					struct audioformat *fp,
 -- 
 2.16.4
 
