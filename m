@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 207D7C56202
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 240ECC63777
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D8EF20732
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1033120732
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Nov 2020 09:01:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="QsudsO3j"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D8EF20732
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OdWCvrad"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1033120732
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9F7F16A9;
-	Mon, 23 Nov 2020 10:00:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9F7F16A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 846AA16AE;
+	Mon, 23 Nov 2020 10:01:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 846AA16AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606122095;
-	bh=pgyAev7qeTgsJ3w4rbRF0vZN/m5SslFBpvms0e0nvao=;
+	s=default; t=1606122112;
+	bh=2JnhS3A0gWQW42YqMTutkjvnnfot3fbv0pGV2IFFLW4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QsudsO3juEYPmyv+vyOr8NfjaYHzQ36MM8vyT5YxfIH8Ni1TXS3QhujpnBGsIz32K
-	 HRwTtI2vY3FmJfGoWj2ZURzR3Q0NGx5VapeX2MGQCtsgDTQYaH4xtaC7kXxEwQE+Aw
-	 TSRnJZpAvASHtiLfPtlqbYVExgyLFGBTrHzqax5E=
+	b=OdWCvradE8mWo6dIuI9jVZTqLkA8VdG+ilMFKnYtsHp0kpDYF57N9bhsH0a+B4saY
+	 +8+ngQm5LrF/SQ1yE6dETtuOZjmtpupmAQ96VSMaI3NYnPN7rNWd0I11stZ9ZRbRIn
+	 ic/8AhkW9YU4fZFNM5ZXgZlJZzqshv9aJv8zEtcQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73120F8055A;
-	Mon, 23 Nov 2020 09:54:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 247D7F8055B;
+	Mon, 23 Nov 2020 09:54:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7A03F80529; Mon, 23 Nov 2020 09:54:21 +0100 (CET)
+ id 06579F80534; Mon, 23 Nov 2020 09:54:26 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DB44F804C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F369F804CC
  for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2020 09:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DB44F804C2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F369F804CC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 16DFBAFC8;
+ by mx2.suse.de (Postfix) with ESMTP id 07826AFC6;
  Mon, 23 Nov 2020 08:53:58 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 21/41] ALSA: usb-audio: Stop both endpoints properly at error
-Date: Mon, 23 Nov 2020 09:53:27 +0100
-Message-Id: <20201123085347.19667-22-tiwai@suse.de>
+Subject: [PATCH 20/41] ALSA: usb-audio: Simplify snd_usb_init_pitch() arguments
+Date: Mon, 23 Nov 2020 09:53:26 +0100
+Message-Id: <20201123085347.19667-21-tiwai@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20201123085347.19667-1-tiwai@suse.de>
 References: <20201123085347.19667-1-tiwai@suse.de>
@@ -75,129 +75,144 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-start_endpoints() may leave the data endpoint running if an error
-happens at starting the sync endpoint.  We should stop both streams
-properly, instead.
-
-While we're at it, move the debug prints into the endpoint.c that is a
-more suitable place.
+A preliminary change for the later big changes.  This is a minor code
+refactoring to drop the unnecessary arguments that can be retrieved in
+a different way.
 
 Tested-by: Keith Milner <kamilner@superlative.org>
 Tested-by: Dylan Robinson <dylan_robinson@motu.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c |  6 ++++++
- sound/usb/pcm.c      | 39 +++++++++++++++++----------------------
- 2 files changed, 23 insertions(+), 22 deletions(-)
+ sound/usb/pcm.c    | 23 +++++++++--------------
+ sound/usb/pcm.h    |  3 +--
+ sound/usb/quirks.c |  2 +-
+ sound/usb/stream.c |  2 +-
+ 4 files changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index eb459db511f8..0cc7e9c01263 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1172,6 +1172,9 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
- 	if (atomic_read(&ep->chip->shutdown))
- 		return -EBADFD;
- 
-+	usb_audio_dbg(ep->chip, "Starting %s EP 0x%x (count %d)\n",
-+		      ep_type_name(ep->type), ep->ep_num, ep->use_count);
-+
- 	/* already running? */
- 	if (++ep->use_count != 1)
- 		return 0;
-@@ -1254,6 +1257,9 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
- 	if (!ep)
- 		return;
- 
-+	usb_audio_dbg(ep->chip, "Stopping %s EP 0x%x (count %d)\n",
-+		      ep_type_name(ep->type), ep->ep_num, ep->use_count);
-+
- 	if (snd_BUG_ON(ep->use_count == 0))
- 		return;
- 
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 0998be109af3..c4e39aa92a84 100644
+index 38b461bdca86..0998be109af3 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -211,6 +211,17 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip,
- 	}
+@@ -146,8 +146,7 @@ static struct audioformat *find_substream_format(struct snd_usb_substream *subs)
+ 			   subs->channels, subs);
  }
  
-+static void stop_endpoints(struct snd_usb_substream *subs)
-+{
-+	if (test_and_clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
-+		snd_usb_endpoint_stop(subs->sync_endpoint);
-+		subs->sync_endpoint->sync_slave = NULL;
-+	}
-+
-+	if (test_and_clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags))
-+		snd_usb_endpoint_stop(subs->data_endpoint);
-+}
-+
- static int start_endpoints(struct snd_usb_substream *subs)
+-static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
+-			 struct usb_host_interface *alts,
++static int init_pitch_v1(struct snd_usb_audio *chip,
+ 			 struct audioformat *fmt)
  {
+ 	struct usb_device *dev = chip->dev;
+@@ -155,9 +154,7 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
+ 	unsigned char data[1];
  	int err;
-@@ -221,13 +232,11 @@ static int start_endpoints(struct snd_usb_substream *subs)
- 	if (!test_and_set_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags)) {
- 		struct snd_usb_endpoint *ep = subs->data_endpoint;
  
--		dev_dbg(&subs->dev->dev, "Starting data EP 0x%x\n", ep->ep_num);
--
- 		ep->data_subs = subs;
- 		err = snd_usb_endpoint_start(ep);
- 		if (err < 0) {
- 			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
--			return err;
-+			goto error;
- 		}
- 	}
+-	if (get_iface_desc(alts)->bNumEndpoints < 1)
+-		return -EINVAL;
+-	ep = get_endpoint(alts, 0)->bEndpointAddress;
++	ep = fmt->endpoint;
  
-@@ -235,18 +244,20 @@ static int start_endpoints(struct snd_usb_substream *subs)
- 	    !test_and_set_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
- 		struct snd_usb_endpoint *ep = subs->sync_endpoint;
- 
--		dev_dbg(&subs->dev->dev, "Starting sync EP 0x%x\n", ep->ep_num);
--
- 		ep->sync_slave = subs->data_endpoint;
- 		err = snd_usb_endpoint_start(ep);
- 		if (err < 0) {
- 			clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
- 			ep->sync_slave = NULL;
--			return err;
-+			goto error;
- 		}
+ 	data[0] = 1;
+ 	err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_SET_CUR,
+@@ -166,15 +163,14 @@ static int init_pitch_v1(struct snd_usb_audio *chip, int iface,
+ 			      data, sizeof(data));
+ 	if (err < 0) {
+ 		usb_audio_err(chip, "%d:%d: cannot set enable PITCH\n",
+-			      iface, ep);
++			      fmt->iface, ep);
+ 		return err;
  	}
  
  	return 0;
-+
-+ error:
-+	stop_endpoints(subs);
-+	return err;
  }
  
- static void sync_pending_stops(struct snd_usb_substream *subs)
-@@ -255,22 +266,6 @@ static void sync_pending_stops(struct snd_usb_substream *subs)
- 	snd_usb_endpoint_sync_pending_stop(subs->data_endpoint);
- }
- 
--static void stop_endpoints(struct snd_usb_substream *subs)
--{
--	if (test_and_clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
--		dev_dbg(&subs->dev->dev, "Stopping sync EP 0x%x\n",
--			subs->sync_endpoint->ep_num);
--		snd_usb_endpoint_stop(subs->sync_endpoint);
--		subs->sync_endpoint->sync_slave = NULL;
--	}
--
--	if (test_and_clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags)) {
--		dev_dbg(&subs->dev->dev, "Stopping data EP 0x%x\n",
--			subs->data_endpoint->ep_num);
--		snd_usb_endpoint_stop(subs->data_endpoint);
--	}
--}
--
- /* PCM sync_stop callback */
- static int snd_usb_pcm_sync_stop(struct snd_pcm_substream *substream)
+-static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
+-			 struct usb_host_interface *alts,
++static int init_pitch_v2(struct snd_usb_audio *chip,
+ 			 struct audioformat *fmt)
  {
+ 	struct usb_device *dev = chip->dev;
+@@ -188,7 +184,7 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
+ 			      data, sizeof(data));
+ 	if (err < 0) {
+ 		usb_audio_err(chip, "%d:%d: cannot set enable PITCH (v2)\n",
+-			      iface, fmt->altsetting);
++			      fmt->iface, fmt->altsetting);
+ 		return err;
+ 	}
+ 
+@@ -198,8 +194,7 @@ static int init_pitch_v2(struct snd_usb_audio *chip, int iface,
+ /*
+  * initialize the pitch control and sample rate
+  */
+-int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+-		       struct usb_host_interface *alts,
++int snd_usb_init_pitch(struct snd_usb_audio *chip,
+ 		       struct audioformat *fmt)
+ {
+ 	/* if endpoint doesn't have pitch control, bail out */
+@@ -209,10 +204,10 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+ 	switch (fmt->protocol) {
+ 	case UAC_VERSION_1:
+ 	default:
+-		return init_pitch_v1(chip, iface, alts, fmt);
++		return init_pitch_v1(chip, fmt);
+ 
+ 	case UAC_VERSION_2:
+-		return init_pitch_v2(chip, iface, alts, fmt);
++		return init_pitch_v2(chip, fmt);
+ 	}
+ }
+ 
+@@ -682,7 +677,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 		return err;
+ 
+ 	if (subs->need_setup_ep) {
+-		err = snd_usb_init_pitch(chip, fmt->iface, alts, fmt);
++		err = snd_usb_init_pitch(chip, fmt);
+ 		if (err < 0)
+ 			return err;
+ 	}
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index 362782c2df5c..a4f784225abc 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -9,8 +9,7 @@ void snd_usb_set_pcm_ops(struct snd_pcm *pcm, int stream);
+ int snd_usb_pcm_suspend(struct snd_usb_stream *as);
+ int snd_usb_pcm_resume(struct snd_usb_stream *as);
+ 
+-int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+-		       struct usb_host_interface *alts,
++int snd_usb_init_pitch(struct snd_usb_audio *chip,
+ 		       struct audioformat *fmt);
+ void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
+ 
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 018c6f241ffb..013ab93fb640 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -177,7 +177,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 	if (fp->maxpacksize == 0)
+ 		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
+ 	usb_set_interface(chip->dev, fp->iface, 0);
+-	snd_usb_init_pitch(chip, fp->iface, alts, fp);
++	snd_usb_init_pitch(chip, fp);
+ 	snd_usb_init_sample_rate(chip, fp, fp->rate_max);
+ 	return 0;
+ 
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 23e881985123..7f58c7625cd4 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -1224,7 +1224,7 @@ static int __snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
+ 
+ 		/* try to set the interface... */
+ 		usb_set_interface(chip->dev, iface_no, 0);
+-		snd_usb_init_pitch(chip, iface_no, alts, fp);
++		snd_usb_init_pitch(chip, fp);
+ 		snd_usb_init_sample_rate(chip, fp, fp->rate_max);
+ 		usb_set_interface(chip->dev, iface_no, altno);
+ 	}
 -- 
 2.16.4
 
