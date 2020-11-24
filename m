@@ -2,114 +2,114 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 844D2C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:20:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB964C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:20:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF04D205CA
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:20:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 027E420637
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 17:20:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ld0XdKyl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nf940VeI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF04D205CA
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sst4+WO1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="tWoPDQgv"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 027E420637
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22B8F1815;
-	Tue, 24 Nov 2020 18:19:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22B8F1815
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65DC11854;
+	Tue, 24 Nov 2020 18:19:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65DC11854
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606238418;
-	bh=3zQtrTTCw8twqJtP/1a4NB1MKrz6/NphiIiwgRncCiQ=;
+	s=default; t=1606238439;
+	bh=KHWIOvsVxIgxzJ3ANvrXr+IcifXvCH3d9eC+5p4MJwo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ld0XdKylammuQ69yIRhwE51wWNpG7y8UDrFCBk9p0wcdkah1p7BdlNP8ZLPHXaVmA
-	 bT8BTE8JX3DnVtaDAys+CJgJyRtPltwk6z1RYjmlWQtMXtUjvYINVvhcelGh2i3wKp
-	 9Z3/jN+Yw1B8pNOa7j+2yDKp+XQDdV8P7Xdk8XEA=
+	b=sst4+WO1rn+6lloJ2407t1l4INxsTSCR9dX3qMf4ZgPof6DaI3gNhXdiAVw+YESv1
+	 uedGqajqMSYqla5L4eOQVlqr2opeQCbKp5Wq/8cvseGDC9Gi32D5nWotx1R4nGxw3q
+	 5SeEC53zSHYZMgMqZiNlGUtsTZ+LDoK11D5Pj4Tg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C3B5F80649;
-	Tue, 24 Nov 2020 17:59:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 633FEF8065B;
+	Tue, 24 Nov 2020 17:59:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33526F80165; Tue, 24 Nov 2020 15:47:06 +0100 (CET)
+ id 08DA4F80128; Tue, 24 Nov 2020 15:47:56 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CBF7F80128
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 15:46:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CBF7F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC84CF80128
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 15:47:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC84CF80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Nf940VeI"
+ header.b="tWoPDQgv"
 Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 296CF206F9;
- Tue, 24 Nov 2020 14:46:49 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id A5073206F9;
+ Tue, 24 Nov 2020 14:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606229216;
- bh=3zQtrTTCw8twqJtP/1a4NB1MKrz6/NphiIiwgRncCiQ=;
+ s=default; t=1606229266;
+ bh=KHWIOvsVxIgxzJ3ANvrXr+IcifXvCH3d9eC+5p4MJwo=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Nf940VeIUgpffOGETTY1L3G0QcIjfozBFvnFoqG8O328ZSxeeaAXcr0hOe3zQgRlG
- fbix380mdFR2g9eZBg8DhbUZBvf1w7UYgoM6pwiYDzTHildmv27dPl4/uYYBPb4fgA
- 1gCiZGhi+wbnwk7bOx0yc8Qq/SRuVl9DTTdMTQVI=
-Date: Tue, 24 Nov 2020 08:47:05 -0600
+ b=tWoPDQgvsKVPCfxibPNl9c0zBQ9NfBrnsDyv8UIAtPJxHLfF4o1CuP3vwUt19y/P8
+ Y66kkjj2Cim4kMyRQiiYzb1whNr+v/N+nMKfcHqv3RaX8mBnUDrFmNddDbw9/dIVnH
+ xirANyC4hb8bYXXRvxw8qG9eYp8JWf8UX9D38PQM=
+Date: Tue, 24 Nov 2020 08:47:54 -0600
 From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 000/141] Fix fall-through warnings for Clang
-Message-ID: <20201124144705.GK16084@embeddedor>
+Message-ID: <20201124144754.GL16084@embeddedor>
 References: <cover.1605896059.git.gustavoars@kernel.org>
- <20201123200345.GA38546@nvidia.com>
+ <160616392671.21180.16517492185091399884.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123200345.GA38546@nvidia.com>
+In-Reply-To: <160616392671.21180.16517492185091399884.b4-ty@kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Mailman-Approved-At: Tue, 24 Nov 2020 17:58:08 +0100
 Cc: alsa-devel@alsa-project.org, linux-atm-general@lists.sourceforge.net,
- reiserfs-devel@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ dm-devel@redhat.com, usb-storage@lists.one-eyed-alien.net,
+ Nick Desaulniers <ndesaulniers@google.com>, x86@kernel.org,
  dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
- Nathan Chancellor <natechancellor@gmail.com>, linux-ide@vger.kernel.org,
- dm-devel@redhat.com, keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
- GR-everest-linux-l2@marvell.com, wcn36xx@lists.infradead.org,
- samba-technical@lists.samba.org, linux-i3c@lists.infradead.org,
+ linux-mm@kvack.org, linux-sctp@vger.kernel.org, target-devel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-hardening@vger.kernel.org,
+ wcn36xx@lists.infradead.org, linux-i3c@lists.infradead.org,
  linux1394-devel@lists.sourceforge.net, linux-afs@lists.infradead.org,
- usb-storage@lists.one-eyed-alien.net, drbd-dev@lists.linbit.com,
- devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
- rds-devel@oss.oracle.com, Nick Desaulniers <ndesaulniers@google.com>,
- linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org,
- oss-drivers@netronome.com, bridge@lists.linux-foundation.org,
- linux-security-module@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+ drbd-dev@lists.linbit.com, devel@driverdev.osuosl.org,
+ linux-cifs@vger.kernel.org, rds-devel@oss.oracle.com,
+ linux-scsi@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-rdma@vger.kernel.org, bridge@lists.linux-foundation.org,
+ ceph-devel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
  linux-stm32@st-md-mailman.stormreply.com, cluster-devel@redhat.com,
- linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+ oss-drivers@netronome.com, linux-mmc@vger.kernel.org, coreteam@netfilter.org,
  intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
  Miguel Ojeda <ojeda@kernel.org>, tipc-discussion@lists.sourceforge.net,
  linux-ext4@vger.kernel.org, linux-media@vger.kernel.org,
- linux-watchdog@vger.kernel.org, selinux@vger.kernel.org,
+ Kees Cook <keescook@chromium.org>, selinux@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- linux-geode@lists.infradead.org, linux-can@vger.kernel.org,
+ reiserfs-devel@vger.kernel.org, linux-geode@lists.infradead.org,
  linux-block@vger.kernel.org, linux-gpio@vger.kernel.org,
  op-tee@lists.trustedfirmware.org, linux-mediatek@lists.infradead.org,
+ samba-technical@lists.samba.org, linux-fbdev@vger.kernel.org,
  xen-devel@lists.xenproject.org, nouveau@lists.freedesktop.org,
- linux-hams@vger.kernel.org, ceph-devel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- x86@kernel.org, linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
- Kees Cook <keescook@chromium.org>, linux-mm@kvack.org, netdev@vger.kernel.org,
- linux-decnet-user@lists.sourceforge.net, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-sctp@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-hams@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+ linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hwmon@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux-nfs@vger.kernel.org, GR-Linux-NIC-Dev@marvell.com,
+ linux-ide@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
+ patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
  netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
- patches@opensource.cirrus.com, Joe Perches <joe@perches.com>,
- linux-integrity@vger.kernel.org, target-devel@vger.kernel.org,
- linux-hardening@vger.kernel.org
+ netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
+ linux-integrity@vger.kernel.org, GR-everest-linux-l2@marvell.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,18 +125,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Nov 23, 2020 at 04:03:45PM -0400, Jason Gunthorpe wrote:
-> On Fri, Nov 20, 2020 at 12:21:39PM -0600, Gustavo A. R. Silva wrote:
+On Mon, Nov 23, 2020 at 08:38:46PM +0000, Mark Brown wrote:
+> On Fri, 20 Nov 2020 12:21:39 -0600, Gustavo A. R. Silva wrote:
+> > This series aims to fix almost all remaining fall-through warnings in
+> > order to enable -Wimplicit-fallthrough for Clang.
+> > 
+> > In preparation to enable -Wimplicit-fallthrough for Clang, explicitly
+> > add multiple break/goto/return/fallthrough statements instead of just
+> > letting the code fall through to the next case.
+> > 
+> > [...]
 > 
-> >   IB/hfi1: Fix fall-through warnings for Clang
-> >   IB/mlx4: Fix fall-through warnings for Clang
-> >   IB/qedr: Fix fall-through warnings for Clang
-> >   RDMA/mlx5: Fix fall-through warnings for Clang
+> Applied to
 > 
-> I picked these four to the rdma tree, thanks
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+> 
+> Thanks!
+> 
+> [1/1] regulator: as3722: Fix fall-through warnings for Clang
+>       commit: b52b417ccac4fae5b1f2ec4f1d46eb91e4493dc5
 
-Awesome. :)
-
-Thank you, Jason.
+Thank you, Mark.
 --
 Gustavo
