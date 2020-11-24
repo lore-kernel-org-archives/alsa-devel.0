@@ -2,71 +2,59 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2C1EC2D0E4
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31DCFC56201
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:16:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF8BB2076E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:02:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 8A5DE2063A
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 14:16:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="A/3oopNK";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJdoed5B"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF8BB2076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="g5CviG03"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A5DE2063A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F0C716A4;
-	Tue, 24 Nov 2020 15:01:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F0C716A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E97E16A6;
+	Tue, 24 Nov 2020 15:15:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E97E16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606226567;
-	bh=3XVmqXezRylLVvONJZOVKW6n3iizMVnTFozrfjn7H7E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1606227377;
+	bh=ed3IVGzF/7dlDy+FOJ2UUoEr2YvxPFjU+AWP2uHVtW4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A/3oopNK9jTWYHdNg05cIbhHZbBNY0uFEEhp4XTwqIBQJzN/OTMWUv7Q1UXln9f0/
-	 yLNfN4nX7akt2y3465bAlpe02JBq94dGJuRpCHdaDDseektAUGJMFR3q0zkb71SBhH
-	 eny4n2m8v35Zk704YMfBtqtRUTWTggaEO1bNmw+8=
+	b=g5CviG03Zdp/M5gbMKvq+RnSAtjpWwcvb6h7qCEXERyQTB+PumM4KvXVBhlM7x4b7
+	 jad1uLZ7kXaHW7SH+hxoaSJuheKhLG+qx6+s8GKiZqoAbPeeQA1GYCjOfhQUKw/bll
+	 xRNHLLzp2B6Po5f/4IbfufWispvjd1mNEVbkUWTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBEF4F80161;
-	Tue, 24 Nov 2020 15:01:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8CF5F80161;
+	Tue, 24 Nov 2020 15:15:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1599F80165; Tue, 24 Nov 2020 15:01:55 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 86333F80165; Tue, 24 Nov 2020 15:15:25 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 867A9F8015A
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 15:01:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 867A9F8015A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YJdoed5B"
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
- [92.233.91.117])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 28AF6206FB;
- Tue, 24 Nov 2020 14:01:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606226503;
- bh=3XVmqXezRylLVvONJZOVKW6n3iizMVnTFozrfjn7H7E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=YJdoed5BGNuW1VANSptKZejazK5oQJBgVHsDx+nKkTMM1mB89IK7tsmLE+r/nJW79
- 6lVwPzI3whvyTyJH9llsog8fnJyIyAWnwahA5Z63R1cmgqRbwA5u6zOjvNzTCCGWKb
- UEsuNfFTuORf1dpX6cNp6rXwXrxw8ErvPR3Tmd9Y=
-Date: Tue, 24 Nov 2020 14:01:19 +0000
-From: Mark Brown <broonie@kernel.org>
-To: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7346BF800C1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 15:15:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7346BF800C1
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id A6B9CAC2D;
+ Tue, 24 Nov 2020 14:15:18 +0000 (UTC)
+Date: Tue, 24 Nov 2020 15:15:18 +0100
+Message-ID: <s5hsg8yrgcp.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 00/14] ASoC: Intel/SOF: extend run-time driver selection
  to ACPI devices
-Message-ID: <20201124140119.GC4933@sirena.org.uk>
+In-Reply-To: <20201124140119.GC4933@sirena.org.uk>
 References: <0badb36f-3089-dc34-f7b0-75a73b856f0d@linux.intel.com>
  <d57fa3716a974eb9ba585ddd85dbe14c@intel.com>
  <cd8e5c2f-e1c2-7fbb-bee1-cc76ec14a801@linux.intel.com>
@@ -77,17 +65,17 @@ References: <0badb36f-3089-dc34-f7b0-75a73b856f0d@linux.intel.com>
  <c8cd5f98e7c941c1b87aaabb850ece4e@intel.com>
  <20201123173533.GL6322@sirena.org.uk>
  <41fbc38fa46f41f49b4ff846f9f7b5b2@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="bAmEntskrkuBymla"
-Content-Disposition: inline
-In-Reply-To: <41fbc38fa46f41f49b4ff846f9f7b5b2@intel.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ <20201124140119.GC4933@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Hans de Goede <hdegoede@redhat.com>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>,
  "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,47 +91,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 24 Nov 2020 15:01:19 +0100,
+Mark Brown wrote:
+> 
+> On Tue, Nov 24, 2020 at 11:56:36AM +0000, Rojewski, Cezary wrote:
+> 
+> > What the patchset presents catpt vs SOF. /sof/ runs through SOF firmware
+> > so it cannot be account as old-implementation. It's a mix of not
+> > recommended fw + incorrect sw flow. As old /haswell/ is no more, there
+> > is no worrying about catpt deployment - it's your only option. As there
+> > is no userspace involved (lack of topology files), base firmware binary
+> > remains the same and amixer kcontrols behave 1:1 when compared to its
+> > predecessor, compatibility is left intact.
+> 
+> > That's exactly why we should be explicit in driver selection. Pretty
+> > sure hsw/bdw case is still mistakenly addressed to as if it was
+> > atom-based platform.
+> 
+> It's not just the userspace interface that worries people, it's also any
+> board specific quirks that might turn up.  A good chunk of the work with
+> x86 sound support is quirking around platform specifics - look at all
+> the patches Hans sends for example.  In an ideal world this would just
+> be people worrying too much but the general history with getting generic
+> code working well on a wide range of x86 hardware it's hard to blame
+> anyone for being conservative about substantial changes in the software
+> stack.
 
---bAmEntskrkuBymla
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I guess Cezary's point is that CATPT is the only driver for Haswell,
+hence the intel-dsp-config is useless for it.
 
-On Tue, Nov 24, 2020 at 11:56:36AM +0000, Rojewski, Cezary wrote:
+But I thought CATPT also covers Broadwell, and Broadwell can be
+supported by both CATPT and SOF?  If so, the dynamic switching makes
+sense.
 
-> What the patchset presents catpt vs SOF. /sof/ runs through SOF firmware
-> so it cannot be account as old-implementation. It's a mix of not
-> recommended fw + incorrect sw flow. As old /haswell/ is no more, there
-> is no worrying about catpt deployment - it's your only option. As there
-> is no userspace involved (lack of topology files), base firmware binary
-> remains the same and amixer kcontrols behave 1:1 when compared to its
-> predecessor, compatibility is left intact.
 
-> That's exactly why we should be explicit in driver selection. Pretty
-> sure hsw/bdw case is still mistakenly addressed to as if it was
-> atom-based platform.
-
-It's not just the userspace interface that worries people, it's also any
-board specific quirks that might turn up.  A good chunk of the work with
-x86 sound support is quirking around platform specifics - look at all
-the patches Hans sends for example.  In an ideal world this would just
-be people worrying too much but the general history with getting generic
-code working well on a wide range of x86 hardware it's hard to blame
-anyone for being conservative about substantial changes in the software
-stack.
-
---bAmEntskrkuBymla
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+9Ei8ACgkQJNaLcl1U
-h9DGjwf9GD3g7/dZi4d8qTW5J38BKaIkzN/b7ueu7b+CfE4AaprYQJkgO9IMjE2+
-lxLwyFBpDX8Kl8WbXAlNK3BSuRe2kGFazkDuRbsvhaytlWuksp7TNA/uP8MW2lG0
-X1VsebgwIDL5/Jsq1p/QgTEA5bsQ7tL/kgOJ9+HV9wYwyFJEx7Gka8owOMYLVOwa
-TI0gBLGcZNInYvIMcee95k4sWeHYlLNM3D1Y7ZFjf7GNC6vUaw1FScL9MYXWbpFF
-9oc+NkOENsmzu16jtdQQgaboa0S0J9txFrFlUIxeTb/PUhGHXuOlLwR5sh/tw0e7
-Dxo9bUv01kjCOBbRc1awp98wJPJtVQ==
-=PP2c
------END PGP SIGNATURE-----
-
---bAmEntskrkuBymla--
+Takashi
