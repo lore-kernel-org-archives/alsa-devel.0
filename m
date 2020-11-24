@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 114B7C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 18:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6AC9C56202
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 18:04:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97F602087C
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 18:04:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DBB18206D5
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 18:04:41 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="OFDoDJY0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97F602087C
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TND6XzJA"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBB18206D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B0981776;
-	Tue, 24 Nov 2020 19:03:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B0981776
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E5661773;
+	Tue, 24 Nov 2020 19:03:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E5661773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606241075;
-	bh=KbafvyFM18Nb9Lvhu4PNteY++CY4lsmRM7YNtcm8TT8=;
+	s=default; t=1606241080;
+	bh=xwM3Flh7bSo8l8sbdnQVzPStIQ9OOnvetxWcGC5+gsI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OFDoDJY0TpV5nRAM22CqcE6NR8wcUNAFLHRcz3Pq4IfGUGTxSJBl/lW2tHHasqd+5
-	 pEti9o8G0yrsCmkQ/8x+VWOXYP2VVriF/N0xFuQOVa8v8MajU3zEB4eai71o21kOQD
-	 wTvDUGL/6DtXvB8CY6kqtp2DtFx2Kj9QaUyaizRo=
+	b=TND6XzJAsEz/3s+SzkGf9WaCc4obK9DNfDD3aXJSDK+okq/UKYTvfvtOID0XdraxO
+	 d8LLKW+0fzCmOmpekWOMSA5CQHT9+B7ay9Ri1UuY9hn9vrWK44HksswJyDO3RxX7xw
+	 tfnRKr3oqEcFWwM6eKVGyiUJn4UYaQQPU/Pg8s+A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF1BEF8026C;
-	Tue, 24 Nov 2020 19:02:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA5CEF80290;
+	Tue, 24 Nov 2020 19:03:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6212F8027C; Tue, 24 Nov 2020 19:02:57 +0100 (CET)
+ id A5A70F80165; Tue, 24 Nov 2020 19:03:01 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BA14F800C1
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 19:02:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BA14F800C1
-IronPort-SDR: sg3UO6hprVwX63xyUn8evb+Y1Ic8nSPj7EumRD/JdA3oAHrK5McMgmAMUXeIuWm8ta5oE0Gog/
- cEXNHlq8pGIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151830588"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="151830588"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47D05F80165
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 19:02:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47D05F80165
+IronPort-SDR: DKKiw5JkPp1fGHa3R3RPTN4mM50KZesttUHxjpb+lRsEWg7yJ0fO0Q9SV6m25ioAsDeJLS62lI
+ jlhd/+8RI/4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151830605"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="151830605"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Nov 2020 10:02:49 -0800
-IronPort-SDR: STMan9pSlAiWB/9FbEGnv54IUSNEgo+w4y132aSYvID6kEPZH7dM6uQeNnMrFOGTQvVcgxIDY8
- UFsmcLAGm8Bg==
+ 24 Nov 2020 10:02:53 -0800
+IronPort-SDR: 80iEofN5IGndJSSwRNUhMuUn/nD5Mb+PkjcUXTC8OxjnsxRfv/69lsVRdFTaie2rhOonCTstSX
+ ESThvbyrF55g==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="478585014"
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="478585024"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga004.jf.intel.com with ESMTP; 24 Nov 2020 10:02:47 -0800
+ by orsmga004.jf.intel.com with ESMTP; 24 Nov 2020 10:02:50 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 1/4] ASoC: SOF: ext_manifest: Parse firmware config dictionary
-Date: Tue, 24 Nov 2020 20:00:14 +0200
-Message-Id: <20201124180017.2232128-2-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 2/4] ASoC: SOF: Improve code alignment in header.h
+Date: Tue, 24 Nov 2020 20:00:15 +0200
+Message-Id: <20201124180017.2232128-3-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201124180017.2232128-1-kai.vehmanen@linux.intel.com>
 References: <20201124180017.2232128-1-kai.vehmanen@linux.intel.com>
@@ -91,111 +91,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
 
-Values given in this dictionary describes used firmware configuration,
-like feature availability, buffer size limits and similar properties.
+Each define value in series should be aligned and tabs should
+be used instead of spaces to follow code-style.
 
 Signed-off-by: Karol Trzcinski <karolx.trzcinski@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/sof/ext_manifest.h | 19 +++++++++++++++
- sound/soc/sof/loader.c           | 41 ++++++++++++++++++++++++++++++++
- 2 files changed, 60 insertions(+)
+ include/sound/sof/header.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/sof/ext_manifest.h b/include/sound/sof/ext_manifest.h
-index 342e86e54db5..31da6e611c6e 100644
---- a/include/sound/sof/ext_manifest.h
-+++ b/include/sound/sof/ext_manifest.h
-@@ -61,6 +61,7 @@ enum sof_ext_man_elem_type {
- 	SOF_EXT_MAN_ELEM_WINDOW			= SOF_IPC_EXT_WINDOW,
- 	SOF_EXT_MAN_ELEM_CC_VERSION		= SOF_IPC_EXT_CC_INFO,
- 	SOF_EXT_MAN_ELEM_DBG_ABI		= SOF_IPC_EXT_USER_ABI_INFO,
-+	SOF_EXT_MAN_ELEM_CONFIG_DATA		= 5, /**< ABI3.17 */
- };
+diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
+index 571e1dd54b89..ece6d48dd007 100644
+--- a/include/sound/sof/header.h
++++ b/include/sound/sof/header.h
+@@ -49,7 +49,7 @@
+ #define SOF_IPC_FW_READY			SOF_GLB_TYPE(0x7U)
+ #define SOF_IPC_GLB_DAI_MSG			SOF_GLB_TYPE(0x8U)
+ #define SOF_IPC_GLB_TRACE_MSG			SOF_GLB_TYPE(0x9U)
+-#define SOF_IPC_GLB_GDB_DEBUG                   SOF_GLB_TYPE(0xAU)
++#define SOF_IPC_GLB_GDB_DEBUG			SOF_GLB_TYPE(0xAU)
+ #define SOF_IPC_GLB_TEST_MSG			SOF_GLB_TYPE(0xBU)
+ #define SOF_IPC_GLB_PROBE			SOF_GLB_TYPE(0xCU)
  
- /* extended manifest element header */
-@@ -99,4 +100,22 @@ struct ext_man_dbg_abi {
- 	struct sof_ipc_user_abi_version dbg_abi;
- } __packed;
+@@ -109,7 +109,7 @@
+ #define SOF_IPC_PROBE_DMA_ADD			SOF_CMD_TYPE(0x003)
+ #define SOF_IPC_PROBE_DMA_INFO			SOF_CMD_TYPE(0x004)
+ #define SOF_IPC_PROBE_DMA_REMOVE		SOF_CMD_TYPE(0x005)
+-#define SOF_IPC_PROBE_POINT_ADD		SOF_CMD_TYPE(0x006)
++#define SOF_IPC_PROBE_POINT_ADD			SOF_CMD_TYPE(0x006)
+ #define SOF_IPC_PROBE_POINT_INFO		SOF_CMD_TYPE(0x007)
+ #define SOF_IPC_PROBE_POINT_REMOVE		SOF_CMD_TYPE(0x008)
  
-+/* EXT_MAN_ELEM_CONFIG_DATA elements identificators, ABI3.17 */
-+enum config_elem_type {
-+	SOF_EXT_MAN_CONFIG_EMPTY		= 0,
-+	SOF_EXT_MAN_CONFIG_IPC_MSG_SIZE		= 1,
-+};
-+
-+struct sof_config_elem {
-+	uint32_t token;
-+	uint32_t value;
-+} __packed;
-+
-+/* firmware configuration information */
-+struct sof_ext_man_config_data {
-+	struct sof_ext_man_elem_header hdr;
-+
-+	struct sof_config_elem elems[];
-+} __packed;
-+
- #endif /* __SOF_FIRMWARE_EXT_MANIFEST_H__ */
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index ce68d708fc6f..33d3be774380 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -197,6 +197,44 @@ static int ext_man_get_dbg_abi_info(struct snd_sof_dev *sdev,
- 	return 0;
- }
+@@ -119,7 +119,7 @@
+ #define SOF_IPC_TRACE_DMA_PARAMS_EXT		SOF_CMD_TYPE(0x003)
  
-+static int ext_man_get_config_data(struct snd_sof_dev *sdev,
-+				   const struct sof_ext_man_elem_header *hdr)
-+{
-+	const struct sof_ext_man_config_data *config =
-+		container_of(hdr, struct sof_ext_man_config_data, hdr);
-+	const struct sof_config_elem *elem;
-+	int elems_counter;
-+	int elems_size;
-+	int i;
-+
-+	/* calculate elements counter */
-+	elems_size = config->hdr.size - sizeof(struct sof_ext_man_elem_header);
-+	elems_counter = elems_size / sizeof(struct sof_config_elem);
-+
-+	dev_dbg(sdev->dev, "%s can hold up to %d config elements\n",
-+		__func__, elems_counter);
-+
-+	for (i = 0; i < elems_counter; ++i) {
-+		elem = &config->elems[i];
-+		dev_dbg(sdev->dev, "%s get index %d token %d val %d\n",
-+			__func__, i, elem->token, elem->value);
-+		switch (elem->token) {
-+		case SOF_EXT_MAN_CONFIG_EMPTY:
-+			/* unused memory space is zero filled - mapped to EMPTY elements */
-+			break;
-+		case SOF_EXT_MAN_CONFIG_IPC_MSG_SIZE:
-+			/* TODO: use ipc msg size from config data */
-+			break;
-+		default:
-+			dev_info(sdev->dev, "Unknown firmware configuration token %d value %d",
-+				 elem->token, elem->value);
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static ssize_t snd_sof_ext_man_size(const struct firmware *fw)
- {
- 	const struct sof_ext_man_header *head;
-@@ -279,6 +317,9 @@ static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
- 		case SOF_EXT_MAN_ELEM_DBG_ABI:
- 			ret = ext_man_get_dbg_abi_info(sdev, elem_hdr);
- 			break;
-+		case SOF_EXT_MAN_ELEM_CONFIG_DATA:
-+			ret = ext_man_get_config_data(sdev, elem_hdr);
-+			break;
- 		default:
- 			dev_info(sdev->dev, "unknown sof_ext_man header type %d size 0x%X\n",
- 				 elem_hdr->type, elem_hdr->size);
+ /* debug */
+-#define SOF_IPC_TEST_IPC_FLOOD                  SOF_CMD_TYPE(0x001)
++#define SOF_IPC_TEST_IPC_FLOOD			SOF_CMD_TYPE(0x001)
+ 
+ /* Get message component id */
+ #define SOF_IPC_MESSAGE_ID(x)			((x) & 0xffff)
 -- 
 2.28.0
 
