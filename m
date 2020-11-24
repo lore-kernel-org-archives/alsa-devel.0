@@ -2,87 +2,75 @@ Return-Path: <SRS0=zi5T=E7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67A35C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 00:15:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B966C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 01:01:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D0A4B206E5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 00:15:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2310920BED
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 01:01:29 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iQ77F7E5";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="eLU5QbBu"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0A4B206E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XiAyrDmC"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2310920BED
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DB281739;
-	Wed, 25 Nov 2020 01:14:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DB281739
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9ED8116AA;
+	Wed, 25 Nov 2020 02:00:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9ED8116AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606263340;
-	bh=yiZ84YEeFL0wWYezky6vF3yhpPWjHZ52uDhLhbMfJQM=;
-	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iQ77F7E5BJ00q0TgPtEjgQhnZ24akZDhGO0sTC5SDyWE38d0qe52Fh92tOl1R5aMV
-	 yXQe+QXA/UQ48qFCsp1ynfSN7qpLqu7jiTOU7Pbh9Jk6DHYfQ6C+NTip+JQDVfRpDS
-	 LR+j4atx15weXq8AEMjH6Q+lZ5fGwiFsoP8y3CRM=
+	s=default; t=1606266087;
+	bh=jzARBhXnkn64q6Nimj0Hrunqu5xb/kFNre+u1+aQXww=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XiAyrDmCdn5eMzs2ZVXCidf19/mx2udyLaoRPY3Sxa1m69q3XlbZdDkRflgVcGKpu
+	 sHQfvRnKGGo52t137XuCbDuXE1Q08H0YztqhQ3KdGEpdMFrrIKVTMT2ZE49GvmAVtK
+	 Vkwi73Tqqmhd9XmF98kbh/mLSkgF8ESQ+0bBe+kU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1B28F80161;
-	Wed, 25 Nov 2020 01:14:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28BF6F80161;
+	Wed, 25 Nov 2020 02:00:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B5A8F80165; Wed, 25 Nov 2020 01:14:48 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35347F8015A
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 01:14:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35347F8015A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eLU5QbBu"
-Received: from kernel.org (unknown [104.132.1.79])
+ id C3E4AF80165; Wed, 25 Nov 2020 02:00:35 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id DBB86206E5;
- Wed, 25 Nov 2020 00:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606263283;
- bh=yiZ84YEeFL0wWYezky6vF3yhpPWjHZ52uDhLhbMfJQM=;
- h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
- b=eLU5QbBunDunzGLbn35O61lp48dnCiQcXoMj6ntVLrpCl3D2hSb7EzYMD9E7xCufo
- faLinbGoGYFCtqY3HR9mXHNu5faGJskKKN4nMkiF9Z0YrPcdbgRghR/v20re2SmSD7
- rf5xyq57yHsYQeoFrG1CdVXncecGIlRjpGaTHnF4=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201115170950.304460-4-krzk@kernel.org>
-References: <20201115170950.304460-1-krzk@kernel.org>
- <20201115170950.304460-4-krzk@kernel.org>
-Subject: Re: [RFC 3/3] media: atomisp: do not select COMMON_CLK to fix builds
-From: Stephen Boyd <sboyd@kernel.org>
-To: Chen-Yu Tsai <wens@csie.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jaroslav Kysela <perex@perex.cz>, Jernej Skrabec <jernej.skrabec@siol.net>,
- Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Maxime Ripard <mripard@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, devel@driverdev.osuosl.org,
- linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Date: Tue, 24 Nov 2020 16:14:41 -0800
-Message-ID: <160626328163.2717324.18098835445527872342@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 326F7F8015A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 02:00:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 326F7F8015A
+IronPort-SDR: FDP/jsXLpA6rgIE3Y/rzcpX1+t3xxCGXPHTpxoQNnMayCKJdDGqXS0/QhV6ODg3hxcqaDpNZR9
+ LztFCwdPAYog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9815"; a="151882358"
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; d="scan'208";a="151882358"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Nov 2020 17:00:22 -0800
+IronPort-SDR: wqtsynaXEuKC8omiAFywZvNW6esy3Q8b5g946HV+w66hUJYtyQCudyYuJAyJUiIiukUNBW5c17
+ LshZzceMJ2rg==
+X-IronPort-AV: E=Sophos;i="5.78,367,1599548400"; d="scan'208";a="478717652"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Nov 2020 17:00:18 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH] soundwire: master: use pm_runtime_set_active() on add
+Date: Tue, 24 Nov 2020 21:07:42 +0800
+Message-Id: <20201124130742.10986-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
+ sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,18 +86,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Krzysztof Kozlowski (2020-11-15 09:09:50)
-> COMMON_CLK is a user-selectable option with its own dependencies.  The
-> most important dependency is !HAVE_LEGACY_CLK.  User-selectable drivers
-> should not select COMMON_CLK because they will create a dependency cycle
-> and build failures.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This is fallout from making the COMMON_CLK symbol selectable in commit
-bbd7ffdbef68 ("clk: Allow the common clk framework to be selectable").
-Before then we needed drivers to select the COMMON_CLK config so that
-the framework was enabled. Now that isn't necessary and any
-user-selectable options should be moved to depends syntax.
+The 'master' device acts as a glue layer used during bus
+initialization only, and it needs to be 'transparent' for pm_runtime
+management. Its behavior should be that it becomes active when one of
+its children becomes active, and suspends when all of its children are
+suspended.
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+In our tests on Intel platforms, we routinely see these sort of
+warnings on the initial boot:
+
+[ 21.447345] rt715 sdw:3:25d:715:0: runtime PM trying to activate
+child device sdw:3:25d:715:0 but parent (sdw-master-3) is not active
+
+This is root-caused to a missing setup to make the device 'active' on
+probe. Since we don't want the device to remain active forever after
+the probe, the autosuspend configuration is also enabled at the end of
+the probe - the device will actually autosuspend only in the case
+where there are no devices physically attached. In practice, the
+master device will suspend when all its children are no longer active.
+
+Fixes: bd84256e86ecf ('soundwire: master: enable pm runtime')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/master.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
+index 3488bb824e84..9b05c9e25ebe 100644
+--- a/drivers/soundwire/master.c
++++ b/drivers/soundwire/master.c
+@@ -8,6 +8,15 @@
+ #include <linux/soundwire/sdw_type.h>
+ #include "bus.h"
+ 
++/*
++ * The 3s value for autosuspend will only be used if there are no
++ * devices physically attached on a bus segment. In practice enabling
++ * the bus operation will result in children devices become active and
++ * the master device will only suspend when all its children are no
++ * longer active.
++ */
++#define SDW_MASTER_SUSPEND_DELAY_MS 3000
++
+ /*
+  * The sysfs for properties reflects the MIPI description as given
+  * in the MIPI DisCo spec
+@@ -154,7 +163,12 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
+ 	bus->dev = &md->dev;
+ 	bus->md = md;
+ 
++	pm_runtime_set_autosuspend_delay(&bus->md->dev, SDW_MASTER_SUSPEND_DELAY_MS);
++	pm_runtime_use_autosuspend(&bus->md->dev);
++	pm_runtime_mark_last_busy(&bus->md->dev);
++	pm_runtime_set_active(&bus->md->dev);
+ 	pm_runtime_enable(&bus->md->dev);
++	pm_runtime_idle(&bus->md->dev);
+ device_register_err:
+ 	return ret;
+ }
+-- 
+2.17.1
+
