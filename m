@@ -2,78 +2,69 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F94DC82593
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4554AC56201
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 13:44:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BA18204EC
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 13:29:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6C69720782
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 13:44:44 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="uQlbsuk0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BA18204EC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q1aJAcnw"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C69720782
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02FB616B4;
-	Tue, 24 Nov 2020 14:28:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02FB616B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14A50169E;
+	Tue, 24 Nov 2020 14:43:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14A50169E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606224575;
-	bh=IRSExc5EPqBMtx9nXBUcg9vmiw/rXkwU0En6NUOJHr0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1606225482;
+	bh=Da6TuDXT9B0YYWtzl3tJzFHZXpchnn7zithluUqWSoI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uQlbsuk0MMO0MuaJPW+Sz7Vt/rjIFySVhuPT19/6scnGDe2Wn3xBQm/TBc687ZRAp
-	 0yqj/26LLXRAJhC9OCOj2A6eXge3ljETT3sOh0YGyedSAK/lnQcw8GQbSAlFyRbUa9
-	 7iu0tIezegEIt6YXYJQa5OP8CAQO0IPdpsBMAiBY=
+	b=q1aJAcnwLge8+/yc7CnO1D9OGNhqtazFfkV1PJHoQSgGyPY4Gr2lHikJB2wg3ZNFP
+	 aTjQK8oHdHPkyhNZ1/miSn+UX4SruP3zeh9ZiFsE64mAhUmjkByc61adD5ty3EYPXy
+	 XG9dwZwsf4AqF/GRaz/o0ZuhVmlDmYu5Z9/OJmFQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F156FF804E1;
-	Tue, 24 Nov 2020 14:26:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98312F800C1;
+	Tue, 24 Nov 2020 14:43:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA714F804CC; Tue, 24 Nov 2020 14:26:20 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D182EF80165; Tue, 24 Nov 2020 14:43:49 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2275DF80166
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 14:26:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2275DF80166
-IronPort-SDR: 55i1ejQrj+SHlbX8SVFUTOZ/MdPTRbJW6spDGupl0cZLIwiDioKaV08/4AUSSaBmcWxxTRTRb2
- BxTfXQz5CxUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="172039574"
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="172039574"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Nov 2020 05:26:17 -0800
-IronPort-SDR: O/T+2ymNcpD6lR9K7QuPFLdxhLVUivm/bSYnoehkIrziTbwPG1MHuwboS+7hmuhEI5GdYYcgbu
- q+G0QbvD5hPw==
-X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="546830661"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Nov 2020 05:26:13 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 5/5] soundwire: bus: only clear valid DPN interrupts
-Date: Tue, 24 Nov 2020 09:33:18 +0800
-Message-Id: <20201124013318.8963-6-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201124013318.8963-1-yung-chuan.liao@linux.intel.com>
-References: <20201124013318.8963-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
- srinivas.kandagatla@linaro.org, jank@cadence.com, mengdong.lin@intel.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC5A3F800C1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 14:43:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC5A3F800C1
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id ECD95AC66;
+ Tue, 24 Nov 2020 13:43:40 +0000 (UTC)
+Date: Tue, 24 Nov 2020 14:43:40 +0100
+Message-ID: <s5hwnyarhtf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jian-Hong Pan <jhp@endlessos.org>
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable headset of ASUS UX482EG &
+ B9400CEA with ALC294
+In-Reply-To: <20201124092024.179540-1-jhp@endlessos.org>
+References: <20201124092024.179540-1-jhp@endlessos.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Takashi Iwai <tiwai@suse.com>, linux@endlessos.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,57 +80,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Tue, 24 Nov 2020 10:20:25 +0100,
+Jian-Hong Pan wrote:
+> 
+> Some laptops like ASUS UX482EG & B9400CEA's headset audio does not work
+> until the quirk ALC294_FIXUP_ASUS_HPE is applied.
+> 
+> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
 
-Mirror the changes made for DP0 and don't modify reserved fields.
+Thanks, applied now.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index f66a804f9b74..d1e8c3a54976 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1353,7 +1353,7 @@ static int sdw_handle_dp0_interrupt(struct sdw_slave *slave, u8 *slave_status)
- static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 				     int port, u8 *slave_status)
- {
--	u8 clear = 0, impl_int_mask;
-+	u8 clear, impl_int_mask;
- 	int status, status2, ret, count = 0;
- 	u32 addr;
- 
-@@ -1370,6 +1370,8 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 	}
- 
- 	do {
-+		clear = status & ~SDW_DPN_INTERRUPTS;
-+
- 		if (status & SDW_DPN_INT_TEST_FAIL) {
- 			dev_err(&slave->dev, "Test fail for port:%d\n", port);
- 			clear |= SDW_DPN_INT_TEST_FAIL;
-@@ -1392,7 +1394,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 			*slave_status = clear;
- 		}
- 
--		/* clear the interrupt */
-+		/* clear the interrupt but don't touch reserved fields */
- 		ret = sdw_write(slave, addr, clear);
- 		if (ret < 0) {
- 			dev_err(slave->bus->dev,
-@@ -1413,7 +1415,7 @@ static int sdw_handle_port_interrupt(struct sdw_slave *slave,
- 		count++;
- 
- 		/* we can get alerts while processing so keep retrying */
--	} while (status != 0 && count < SDW_READ_INTR_CLEAR_RETRY);
-+	} while ((status & SDW_DPN_INTERRUPTS) && (count < SDW_READ_INTR_CLEAR_RETRY));
- 
- 	if (count == SDW_READ_INTR_CLEAR_RETRY)
- 		dev_warn(slave->bus->dev, "Reached MAX_RETRY on port read");
--- 
-2.17.1
-
+Takashi
