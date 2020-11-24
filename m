@@ -2,106 +2,80 @@ Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BF67C56201
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 09:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20AEDC56201
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 09:57:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E74782076B
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 09:42:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D0A2E2075A
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 09:57:48 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tqXyKRQr";
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="UcPqNQTw"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E74782076B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="dx1hZgCQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D0A2E2075A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 289F91673;
-	Tue, 24 Nov 2020 10:41:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 289F91673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BB0D1681;
+	Tue, 24 Nov 2020 10:56:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BB0D1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606210933;
-	bh=ZyQhaeC1f3y590E9PLSJVZD9uosWJi51mVy5r0mmyWE=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tqXyKRQrw7w6Z4mw4e9AWBBAx+/PL/5A4a5CU3jxaht+ylffT7oa/o+bt7nKkodY2
-	 Mz3kj/YAdiT2zMIw0+onYUmk6RBQFVPAjPpvhAcImvAwYS5Mb/17G6k0A9/SrGzg/M
-	 QceLB99dXsRKtb8V2S64YV3AXvAraZ3LZ5Wk5A5c=
+	s=default; t=1606211866;
+	bh=+XRisdyUc7S7ECeAFTnxtH3gBzTtcWt0QGEctoFNHws=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dx1hZgCQGyZb+MQVbaV8MXJwKf0aSWzXb5meVINfDQ0tshRNM6PUreRVeFwQlKUAg
+	 9Re4iv8oYrcPIhdUXd9Xiz/tr4Y1gSY4RV1wEJlDjWLdX+8yyXhA23Ly2zPysZ8ExH
+	 D5UMYMAY/LvnAbHD3Ci6tJbhzFXtWmiPLctYsRnQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1CA0F80161;
-	Tue, 24 Nov 2020 10:41:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7ED8F80161;
+	Tue, 24 Nov 2020 10:56:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53429F80165; Tue, 24 Nov 2020 10:41:20 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 627E2F80165; Tue, 24 Nov 2020 10:56:54 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92650F800C1
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 10:41:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92650F800C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="UcPqNQTw"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 0AO9V7rO007990; Tue, 24 Nov 2020 03:41:09 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=ew8YBX9M/HtMep1XlSldekdQRv2oEtl4nGiX+DInckY=;
- b=UcPqNQTwz12SqBY3avB5PH7GsRRekvtZjEN1M3CTvkmb3kdMc5qhn72oOi+6ypXbpXcZ
- aRn0oetUF7mD/wLOc7dVR6NXFNDeHaXBYkZ5jAMr18IPoC04piSN65D0LbdCZsFMTzmL
- QXpilyWlTbpPEcJfUX1azH1QXr6maTrnjRM2EqKRzpDNMWyrHRuY80+pfig/p0KxlN1k
- A6Ppzus40+6VFDxhFFg0RICyPEZ7HFyTwQgpkXVTDfj0x5utwD5SmCgq+wgs4/KrFON6
- BB/Y8I24S1l0UYKcId02agk2p+Wqe4qXpAAMXZ81HNqXS7hDDvr2m//MjEqUNSeI3XBL Jw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 34y06tmfq2-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 24 Nov 2020 03:41:09 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 24 Nov
- 2020 09:41:07 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 24 Nov 2020 09:41:07 +0000
-Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.198])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 44BF92A1;
- Tue, 24 Nov 2020 09:41:07 +0000 (UTC)
-Subject: Re: [PATCH] ASoC: wm_adsp: fix error return code in wm_adsp_load()
-To: Luo Meng <luomeng12@huawei.com>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <ckeepax@opensource.cirrus.com>, <kuninori.morimoto.gx@renesas.com>,
- <Vlad.Karpovich@cirrus.com>, <ranjani.sridharan@linux.intel.com>,
- <Adam.Brickman@cirrus.com>, <james.schulman@cirrus.com>,
- <piotrs@opensource.cirrus.com>, <wenshi@opensource.cirrus.com>,
- <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>
-References: <20201123133839.4073787-1-luomeng12@huawei.com>
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <32f1ee2a-6134-cf15-da58-0f1aad45ca29@opensource.cirrus.com>
-Date: Tue, 24 Nov 2020 09:41:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C74DF8015A
+ for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 10:56:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C74DF8015A
+IronPort-SDR: V8qR2wxDu+Jfrbnerpe3pewmFjzyae+XO+LJZl7rZnhIF1N0Jcw1j63A81gJ9SQdYqXod4GFAI
+ WuMMwtjwoK3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9814"; a="159686946"
+X-IronPort-AV: E=Sophos;i="5.78,365,1599548400"; d="scan'208";a="159686946"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Nov 2020 01:56:43 -0800
+IronPort-SDR: 5jd8yRAizv3BSsVWv7oyy6W6Jpg58Nv7gkOtYzcelj/HiH/RC+y3+AuVcVtzuzLqsXwHlgX5+o
+ 7qyyatCQkdOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,366,1599548400"; d="scan'208";a="358764289"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga008.jf.intel.com with ESMTP; 24 Nov 2020 01:56:40 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 0A4FEFC; Tue, 24 Nov 2020 11:56:39 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-acpi@vger.kernel.org,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: [PATCH v1] ASoC: Intel: catpt: Replace open coded variant of
+ resource_intersection()
+Date: Tue, 24 Nov 2020 11:56:28 +0200
+Message-Id: <20201124095628.54373-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20201123133839.4073787-1-luomeng12@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- bulkscore=0
- clxscore=1011 phishscore=0 spamscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240058
+Content-Transfer-Encoding: 8bit
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,30 +91,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23/11/2020 13:38, Luo Meng wrote:
-> Fix to return a negative error code from the error handling case
-> instead of 0 in function wm_adsp_load(), as done elsewhere in this
-> function.
-> 
-> Fixes: 170b1e123f38 ("ASoC: wm_adsp: Add support for new Halo core DSPs")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Luo Meng <luomeng12@huawei.com>
-> ---
->   sound/soc/codecs/wm_adsp.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-> index bcf18bf15a02..e61d00486c65 100644
-> --- a/sound/soc/codecs/wm_adsp.c
-> +++ b/sound/soc/codecs/wm_adsp.c
-> @@ -1937,6 +1937,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
->   			mem = wm_adsp_find_region(dsp, type);
->   			if (!mem) {
->   				adsp_err(dsp, "No region of type: %x\n", type);
-> +				ret = -EINVAL;
->   				goto out_fw;
->   			}
->   
-> 
+Since we have resource_intersection() helper, let's utilize it here.
 
-Acked-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+
+Promised clean up for recently introduced helper.
+
+This has dependency to the patches currently in linux-pm tree. Other than that
+everything else is already in upstream. Hence, logically it's better to push
+thru Rafael's tree than wait one more cycle.
+
+ sound/soc/intel/catpt/core.h   | 11 -----------
+ sound/soc/intel/catpt/loader.c |  2 +-
+ 2 files changed, 1 insertion(+), 12 deletions(-)
+
+diff --git a/sound/soc/intel/catpt/core.h b/sound/soc/intel/catpt/core.h
+index 0f53a0d43254..a64a0a77dcb7 100644
+--- a/sound/soc/intel/catpt/core.h
++++ b/sound/soc/intel/catpt/core.h
+@@ -22,17 +22,6 @@ void catpt_sram_free(struct resource *sram);
+ struct resource *
+ catpt_request_region(struct resource *root, resource_size_t size);
+ 
+-static inline bool catpt_resource_overlapping(struct resource *r1,
+-					      struct resource *r2,
+-					      struct resource *ret)
+-{
+-	if (!resource_overlaps(r1, r2))
+-		return false;
+-	ret->start = max(r1->start, r2->start);
+-	ret->end = min(r1->end, r2->end);
+-	return true;
+-}
+-
+ struct catpt_ipc_msg {
+ 	union {
+ 		u32 header;
+diff --git a/sound/soc/intel/catpt/loader.c b/sound/soc/intel/catpt/loader.c
+index 40c22e4bb263..ff7b8f0d34ac 100644
+--- a/sound/soc/intel/catpt/loader.c
++++ b/sound/soc/intel/catpt/loader.c
+@@ -267,7 +267,7 @@ static int catpt_restore_fwimage(struct catpt_dev *cdev,
+ 		r2.start = off;
+ 		r2.end = r2.start + info->size - 1;
+ 
+-		if (!catpt_resource_overlapping(&r2, &r1, &common))
++		if (!resource_intersection(&r2, &r1, &common))
+ 			continue;
+ 		/* calculate start offset of common data area */
+ 		off = common.start - r1.start;
+-- 
+2.29.2
+
