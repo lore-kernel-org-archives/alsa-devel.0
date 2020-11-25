@@ -2,89 +2,81 @@ Return-Path: <SRS0=zi5T=E7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AC84C5519F
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 12:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F46C56202
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 13:59:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 435D7206E5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 12:51:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D24272067C
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 13:59:33 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Xu7hMf9z";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qA6Yjnk0"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 435D7206E5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="UKZJIwT/";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="W6gauMvU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D24272067C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA1FF1725;
-	Wed, 25 Nov 2020 13:50:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA1FF1725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23489171B;
+	Wed, 25 Nov 2020 14:58:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23489171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606308658;
-	bh=TG3UpeiHbWC57NXnHtKT6Q7HjbmbKGepoMAsuPbYhgg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1606312771;
+	bh=LNmu/IGbF7cIUWaCF12AenqQVuPL2EefReLbG5xe9Bw=;
+	h=Date:From:To:In-Reply-To:References:Subject:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xu7hMf9zWwgZG0IqeAwCMcedHXl9rk43PqtmYZ+qEgJiatohVRJLocB6YbSMs396s
-	 xw6WBXmin8NGfGBpR26VnNH50LYxSH6yXX9tXma0YNhhSoTf95IfQ1gZeZd+DEDi/i
-	 wNnvRu+IWrm2FYvyMeeVa0rKryTFcNVEWM3DA2vY=
+	b=UKZJIwT/0mJZicIzhLRLPPj7tYhnE+D4hd5jNpJDUgT9kX14Zf1Q10qTRVthKV3NI
+	 IlMAeFGqG6SY8wJScJ6GItoB4Ksry22q1R9kra11rrdbOjbwOP2DeVNPk5Ucd3U8KP
+	 phePEi1sOT6gTu4oDDlcLQtxrstWPy0pqkPzeeUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6350FF8015A;
-	Wed, 25 Nov 2020 13:50:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97AD7F8015F;
+	Wed, 25 Nov 2020 14:58:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DDF1F8019D; Wed, 25 Nov 2020 13:50:05 +0100 (CET)
+ id C4A0AF80218; Wed, 25 Nov 2020 14:58:38 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AEDAF8015A
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 13:49:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AEDAF8015A
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA4DAF800D2
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 14:58:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA4DAF800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qA6Yjnk0"
+ header.b="W6gauMvU"
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
  [92.233.91.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 2B894206E5;
- Wed, 25 Nov 2020 12:49:53 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id ED8912067C;
+ Wed, 25 Nov 2020 13:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606308593;
- bh=TG3UpeiHbWC57NXnHtKT6Q7HjbmbKGepoMAsuPbYhgg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qA6Yjnk0W6zCUTsY9ibqshuDQiyuMajOgBuOizLAck5E9ZE5L+x+V2bYY6fA0yzhP
- xrJyA9k5kSg27ql/IPPknP/v+4uxJ4vosi4p2FhH49/Imm/qZUyNXz/o2apsCdUSEv
- 3nynnNaoFfMST3otOGu54i2pO5tWIalKvxy47vR8=
-Date: Wed, 25 Nov 2020 12:49:28 +0000
+ s=default; t=1606312706;
+ bh=LNmu/IGbF7cIUWaCF12AenqQVuPL2EefReLbG5xe9Bw=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=W6gauMvUvzk1jHztuRFsaHcM7qv3mI4ygMrdvTxcmfjjPpj6HGAxy4lVztcpEWMvT
+ xc2eczXK5/G8pBMZv1S+9u5kwt5l8KbvqfFMe6z5rIU//BYRe5FE0lpmIvrCnHQkzl
+ ZNXHJnSM0xWA1KwuxR6RA9SJCFZ2AMXi5DNL1DPE=
+Date: Wed, 25 Nov 2020 13:58:01 +0000
 From: Mark Brown <broonie@kernel.org>
-To: xuyuqing <xuyuqing@huaqin.corp-partner.google.com>
-Subject: Re: [PATCH v1 0/1] Fix 32 bit format for adau7002
-Message-ID: <20201125124928.GA4489@sirena.org.uk>
-References: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
+To: Adam.Brickman@cirrus.com, piotrs@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kuninori.morimoto.gx@renesas.com, Vlad.Karpovich@cirrus.com,
+ rf@opensource.cirrus.com, perex@perex.cz, wenshi@opensource.cirrus.com,
+ patches@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
+ james.schulman@cirrus.com, lgirdwood@gmail.com, tiwai@suse.com,
+ Luo Meng <luomeng12@huawei.com>
+In-Reply-To: <20201123133839.4073787-1-luomeng12@huawei.com>
+References: <20201123133839.4073787-1-luomeng12@huawei.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: fix error return code in wm_adsp_load()
+Message-Id: <160631268107.29388.4656840004300163625.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
-Content-Disposition: inline
-In-Reply-To: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
-X-Cookie: No foreign coins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Taniya Das <tdas@codeaurora.org>, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
- Rohit kumar <rohitkr@codeaurora.org>, cychiang@chromium.org,
- Patrick Lai <plai@codeaurora.org>, Andy Gross <agross@kernel.org>,
- dgreid@chromium.org, zhouguohui@huaqin.corp-partner.google.com,
- devicetree@vger.kernel.org, tzungbi@chromium.org,
- Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>,
- linux-arm-kernel@lists.infradead.org, dianders@chromium.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>, judyhsiao@chromium.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,38 +92,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 23 Nov 2020 21:38:39 +0800, Luo Meng wrote:
+> Fix to return a negative error code from the error handling case
+> instead of 0 in function wm_adsp_load(), as done elsewhere in this
+> function.
 
---gKMricLos+KVdGMg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Wed, Nov 18, 2020 at 08:58:57AM +0800, xuyuqing wrote:
-> the microphone is attached to external codec(adau7002)
-> instead of rt5682.We need to always use 32 bit format on sc7180
-> to meet the clock requirement of adau7002:
-> The ADAU7002 requires a BCLK rate=20
-> that is a minimum of 64=D7 the LRCLK sample rate
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please don't send cover letters for single patches, if there is anything
-that needs saying put it in the changelog of the patch or after the ---
-if it's administrative stuff.  This reduces mail volume and ensures that=20
-any important information is recorded in the changelog rather than being
-lost.=20
+Thanks!
 
---gKMricLos+KVdGMg
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: wm_adsp: fix error return code in wm_adsp_load()
+      commit: 3fba05a2832f93b4d0cd4204f771fdae0d823114
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl++UtcACgkQJNaLcl1U
-h9BXsAf+JbAuQvpTNdjb5/LUqRdyuTd2UQmI4XFbgJUpmVe1dh0IbCc5pqQg/DXU
-/Wl7kSPW1BB1dgiEpbf54AcEQedhpzJggccsH9tWbLyLvC6yVksQc+PU3dxf8FbC
-d+O/GzA4WlIomYE7szH8rvTLcBG8FE37F5qT7zADGhDFA4yjXNhmEOBFQQQsIzRR
-gemWP64PSv4ekoI7Kc9k8VXFutE67I7cPaL0uHEnaDzUcbgkompnweXA8AApxTTq
-PkxAlknTOCQQlkUQH+TgFi00oJlyriAJ9y1ua9le7GoFNRva07aIo9cehika7qTT
-CxonbnDUtgpR5DZnZ5cUXTBJkby3EA==
-=3C6x
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---gKMricLos+KVdGMg--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
