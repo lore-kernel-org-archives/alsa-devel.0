@@ -1,72 +1,89 @@
-Return-Path: <SRS0=dVJd=E6=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=zi5T=E7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FA2CC2D0E4
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 22:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9E5CC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 00:12:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFDD82076E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Nov 2020 22:21:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 6968E206E5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 00:12:34 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="fmQ3iGyi";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mailoo.org header.i=@mailoo.org header.b="HuMTfxeR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFDD82076E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mailoo.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="TAQMNh5O";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="CosENmDf"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6968E206E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4375A1742;
-	Tue, 24 Nov 2020 23:20:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4375A1742
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAEBF1714;
+	Wed, 25 Nov 2020 01:11:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAEBF1714
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606256508;
-	bh=Zv2iqi/lZFLtCiEbQyPJtG2tEUhBLriaZTvWYj1OZOs=;
-	h=Subject:From:To:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fmQ3iGyiaGJk2FiamrWrnzSKeX8UmKgNm+q3Go6mjZ48IEu64qqmVvI3tADKDs8Hl
-	 i8ejjOLHT7OUPsGI7uOva2rD2gHYlY32akLiqs+N/WIVw8WEV+moWJG1GeqGG6tfOn
-	 8z5a+ZRR0YJyLKNU1TBHEklS6VGQAsPo6UH4rfKc=
+	s=default; t=1606263153;
+	bh=a+Rxij4TwnjUBiotOv+s4sSAjtCT1yAbFvk3KFgRQwk=;
+	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TAQMNh5OUYoTjFVNvHByx6MjlvHV1VwujRVeghvXbsrj70fHKX2NYTBo+5r1NxH8w
+	 qkhMwc7MhuLVGHohz00t6/RrWQ512rY4XhUaAFqfllOhrY450RFx1G3VgnohWC2zdl
+	 lT87gp4JyAyPh8xUxoFBoTdBPI3QWtfIjeuR3H30=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2FCFF800C1;
-	Tue, 24 Nov 2020 23:20:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87D9DF80161;
+	Wed, 25 Nov 2020 01:11:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A334EF80165; Tue, 24 Nov 2020 23:20:56 +0100 (CET)
-Received: from msg-1.mailo.com (msg-1.mailo.com [213.182.54.11])
+ id 8D939F80165; Wed, 25 Nov 2020 01:11:40 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8C8FF8015A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 01:11:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8C8FF8015A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="CosENmDf"
+Received: from kernel.org (unknown [104.132.1.79])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00001F800C1
- for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2020 23:20:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00001F800C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mailoo.org header.i=@mailoo.org
- header.b="HuMTfxeR"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
- t=1606256447; bh=Zv2iqi/lZFLtCiEbQyPJtG2tEUhBLriaZTvWYj1OZOs=;
- h=X-EA-Auth:Message-ID:Subject:From:To:Date:Content-Type:
- MIME-Version:Content-Transfer-Encoding;
- b=HuMTfxeR3DtAV3bEG2fk4QVhxcVIKrGQs9EJuqWuD97r5n5vmw3RvbXqLDUtzvt2B
- GEqcYPMql1yn9YPRyaIFvTZt7YNhK4oUfVGXarksvWR+jaP2KlNipormrR2I8o4Dxr
- qPUi6oByZSPQtEkaDWrXvnOz9cVVqKlg2s6ETcvc=
-Received: by b-2.in.mailobj.net [192.168.90.12] with ESMTP
- via proxy.mailoo.org [213.182.55.207]
- Tue, 24 Nov 2020 23:20:47 +0100 (CET)
-X-EA-Auth: lq+GW3UJ0XCFf9RTVO9KI3bEQmzJTpp9FgiYnLkYgSv8rKyaRinCxZXJmQ32+kg/BtKUr6sHWTDYjJ20Jz+r2M8lALw33BLvp7xiBdFks5A=
-Message-ID: <f963978e5684ffd933d252d11d8cf7b14b2e00fb.camel@mailoo.org>
-Subject: Dear akm.com, please publish/share AK4375[A] DAC datasheet
-From: Vincent Knecht <vincent.knecht@mailoo.org>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Date: Tue, 24 Nov 2020 23:20:46 +0100
-Content-Type: text/plain
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+ by mail.kernel.org (Postfix) with ESMTPSA id BEB98206E5;
+ Wed, 25 Nov 2020 00:11:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1606263092;
+ bh=a+Rxij4TwnjUBiotOv+s4sSAjtCT1yAbFvk3KFgRQwk=;
+ h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+ b=CosENmDfkL+cgj7WPvYKqODfrjuLGx+KPZj+0j8+V7h280NLtz0dsqvjUjlqRfisC
+ CtpwmD0iFNR5eb13g7D2wt38jkTBeDEH9o1PWdzcShDtfiwIPVqeLN3ax7sAKCHCJR
+ eywKE8709HAMCLI7VcABX1ifaSVPNXJtCGRa/nAE=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201118074812.GA5803@kozik-lap>
+References: <20201115170950.304460-1-krzk@kernel.org>
+ <20201115170950.304460-2-krzk@kernel.org>
+ <160568531746.60232.15496517544781609246@swboyd.mtv.corp.google.com>
+ <20201118074812.GA5803@kozik-lap>
+Subject: Re: [PATCH 1/3] clk: fix redefinition of clk_prepare on MIPS with
+ HAVE_LEGACY_CLK
+From: Stephen Boyd <sboyd@kernel.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Tue, 24 Nov 2020 16:11:31 -0800
+Message-ID: <160626309137.2717324.9318376048083763040@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
+Cc: devel@driverdev.osuosl.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Maxime Ripard <mripard@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,7 +99,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks in advance
+Quoting Krzysztof Kozlowski (2020-11-17 23:48:12)
+> On Tue, Nov 17, 2020 at 11:41:57PM -0800, Stephen Boyd wrote:
+> > Quoting Krzysztof Kozlowski (2020-11-15 09:09:48)
+> > > COMMON_CLK even though is a user-selectable symbol, is still selected=
+ by
+> > > multiple other config options.  COMMON_CLK should not be used when
+> > > legacy clocks are provided by architecture, so it correctly depends on
+> > > !HAVE_LEGACY_CLK.
+> > >=20
+> > > However it is possible to create a config which selects both COMMON_C=
+LK
+> > > (by SND_SUN8I_CODEC) and HAVE_LEGACY_CLK (by SOC_RT305X) which leads =
+to
+> >=20
+> > Why is SND_SUN8I_CODEC selecting COMMON_CLK? Or really, why is
+> > SOC_RT305X selecting HAVE_LEGACY_CLK?
+>=20
+> The SND_SUN8I_CODEC I fixed in following patch (I sent separately v2 of
+> it).
+>=20
+> The SOC_RT305X select HAVE_LEGACY_CLK? because it is an old, Ralink
+> platform, not converted to Common clock frm. Few clock operations are
+> defined in: arch/mips/ralink/clk.c
+>=20
 
-
-
+Ok so this patch isn't necessary then? It seems OK to select
+HAVE_LEGACY_CLK but not to select COMMON_CLK unless it's architecture
+code that can't be enabled when the other architecture code is selecting
+HAVE_LEGACY_CLK.
