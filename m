@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C2B3C56202
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 16:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77696C56201
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 16:59:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7920206D8
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 16:58:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id AAAE32083E
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Nov 2020 16:59:14 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ojwUTOi2";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="chhnwZ13"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7920206D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="hArTeh96";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="g2ApKwcg"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAAE32083E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EE391858;
-	Wed, 25 Nov 2020 17:57:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EE391858
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3262D17F5;
+	Wed, 25 Nov 2020 17:58:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3262D17F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606323528;
-	bh=WHszfzaet9THpQ07YzL3T8dCwt/v5KzLv3SE9+AV0Kc=;
+	s=default; t=1606323553;
+	bh=evb6wjGRVMwrWJRqEySL6t4LzK9d/Rg6xYP1e4Vt620=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ojwUTOi2+DjbCg0tCK3SCBQvzay+J50LXkBAXnrXfjLpLqzOR+vF/VDGIOBK6emTu
-	 NCTVuOBv71870pHvWs7RUEq+KJwDYtPC4eX3OtrMY/jCQ6JGTCplCAL9qpO2DT7Cmk
-	 BWE3jmhmt5fTZylzF52vijFOZxJuOz8AaJNXa7L0=
+	b=hArTeh96Ady10yqgTgz+Ke75bJDNyBVHst1M185Khq/Aqx5K1JUmTffMruFGXoDgf
+	 MIdkpU9WDm+PX1/hwzKTUCPWnhwPupq+KFHnRlFZv00PZ2K1MS9VpBWUBFPKRuN+dd
+	 4rViFUrB/68CfxKLxWZB6PXsIdOUiCctBtn+p+6w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1A1BF805D9;
-	Wed, 25 Nov 2020 17:47:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D163F805E2;
+	Wed, 25 Nov 2020 17:47:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE015F805DA; Wed, 25 Nov 2020 17:47:30 +0100 (CET)
+ id D2852F805E3; Wed, 25 Nov 2020 17:47:34 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6816BF805D8
- for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 17:47:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6816BF805D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A37CF805E0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2020 17:47:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A37CF805E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="chhnwZ13"
+ header.b="g2ApKwcg"
 Received: from localhost.localdomain (adsl-84-226-167-205.adslplus.ch
  [84.226.167.205])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CE4F52173E;
- Wed, 25 Nov 2020 16:47:22 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 2EF602083E;
+ Wed, 25 Nov 2020 16:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606322846;
- bh=WHszfzaet9THpQ07YzL3T8dCwt/v5KzLv3SE9+AV0Kc=;
+ s=default; t=1606322851;
+ bh=evb6wjGRVMwrWJRqEySL6t4LzK9d/Rg6xYP1e4Vt620=;
  h=From:To:Subject:Date:In-Reply-To:References:From;
- b=chhnwZ13LmhWF8rezbDeVIf/5F8dK/D/VCTGuEeNy2Ged+P/6IhYEoBJekx1EYGWN
- MfxNP0qMdBOz00S3GbuxrSBs/Tbsg84wO4hM/do8IJUWWMBzZxZmZ4vxNFgLkpV2wL
- /FsAkptCZeSktYPmDQcNNfKPXDsHfxxDza77HLVA=
+ b=g2ApKwcg2y22ZSIZ61QYf9Kz15eGW631ZhoA7hgpHvNJjG5zBUugFdnbCBTukAsdH
+ 9mLAyDdWDy0EAVfPkSpK7D8pdoiXk7ycCWaVMaMJMDqz43iHyaR+rSx6JUlLr8wGh+
+ 94VTPIFmmap5FCtXdULzLJN6KbopAx5MpBsxtMzY=
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
@@ -78,9 +78,10 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org
-Subject: [PATCH v2 31/39] ASoC: tlv320: skip of_device_id table when !CONFIG_OF
-Date: Wed, 25 Nov 2020 17:44:44 +0100
-Message-Id: <20201125164452.89239-32-krzk@kernel.org>
+Subject: [PATCH v2 32/39] ASoC: ts3a227e: skip of_device_id table when
+ !CONFIG_OF
+Date: Wed, 25 Nov 2020 17:44:45 +0100
+Message-Id: <20201125164452.89239-33-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201125164452.89239-1-krzk@kernel.org>
 References: <20201125164452.89239-1-krzk@kernel.org>
@@ -106,53 +107,31 @@ The driver can match by multiple methods.  Its of_device_id table is
 referenced via of_match_ptr() so it will be unused for !CONFIG_OF
 builds:
 
-  sound/soc/codecs/tlv320aic23-i2c.c:38:34: warning: ‘tlv320aic23_of_match’ defined but not used [-Wunused-const-variable=]
-  sound/soc/codecs/tlv320adcx140.c:1076:34: warning: ‘tlv320adcx140_of_match’ defined but not used [-Wunused-const-variable=]
+  sound/soc/codecs/ts3a227e.c:369:34: warning: ‘ts3a227e_of_match’ defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- sound/soc/codecs/tlv320adcx140.c   | 2 ++
- sound/soc/codecs/tlv320aic23-i2c.c | 2 ++
- 2 files changed, 4 insertions(+)
+ sound/soc/codecs/ts3a227e.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index 53a80246aee1..3f027c8234a6 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -1073,6 +1073,7 @@ static struct snd_soc_dai_driver adcx140_dai_driver[] = {
- 	}
+diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+index 3ed3b45fa7ba..962f5d48378a 100644
+--- a/sound/soc/codecs/ts3a227e.c
++++ b/sound/soc/codecs/ts3a227e.c
+@@ -366,11 +366,13 @@ static const struct i2c_device_id ts3a227e_i2c_ids[] = {
  };
+ MODULE_DEVICE_TABLE(i2c, ts3a227e_i2c_ids);
  
 +#ifdef CONFIG_OF
- static const struct of_device_id tlv320adcx140_of_match[] = {
- 	{ .compatible = "ti,tlv320adc3140" },
- 	{ .compatible = "ti,tlv320adc5140" },
-@@ -1080,6 +1081,7 @@ static const struct of_device_id tlv320adcx140_of_match[] = {
- 	{},
- };
- MODULE_DEVICE_TABLE(of, tlv320adcx140_of_match);
-+#endif
- 
- static int adcx140_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
-diff --git a/sound/soc/codecs/tlv320aic23-i2c.c b/sound/soc/codecs/tlv320aic23-i2c.c
-index 5025e5c43783..dbb8f969274c 100644
---- a/sound/soc/codecs/tlv320aic23-i2c.c
-+++ b/sound/soc/codecs/tlv320aic23-i2c.c
-@@ -35,11 +35,13 @@ static const struct i2c_device_id tlv320aic23_id[] = {
- 
- MODULE_DEVICE_TABLE(i2c, tlv320aic23_id);
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id tlv320aic23_of_match[] = {
- 	{ .compatible = "ti,tlv320aic23", },
+ static const struct of_device_id ts3a227e_of_match[] = {
+ 	{ .compatible = "ti,ts3a227e", },
  	{ }
  };
- MODULE_DEVICE_TABLE(of, tlv320aic23_of_match);
+ MODULE_DEVICE_TABLE(of, ts3a227e_of_match);
 +#endif
  
- static struct i2c_driver tlv320aic23_i2c_driver = {
- 	.driver = {
+ #ifdef CONFIG_ACPI
+ static struct acpi_device_id ts3a227e_acpi_match[] = {
 -- 
 2.25.1
 
