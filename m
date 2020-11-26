@@ -2,78 +2,78 @@ Return-Path: <SRS0=TxyJ=FA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 656CCC63777
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 20:08:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1637BC63798
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 20:08:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9D3420678
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 20:08:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 49EB921D91
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 20:08:40 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="knZm8FGV";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIYP54KJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9D3420678
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pHy7zuEJ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="TN1iWHrk"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49EB921D91
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22B23180D;
-	Thu, 26 Nov 2020 21:07:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22B23180D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 886941823;
+	Thu, 26 Nov 2020 21:07:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 886941823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606421313;
-	bh=Wqwm9STBFzNnMy/CB+5wRkk6aIx+t9Lpuhu2scKh5Xc=;
+	s=default; t=1606421318;
+	bh=UklVA1LH/Kbt7UtCaRn39x9hXxYPjhMvm7//ZgnTsJ4=;
 	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=knZm8FGVk4+v7jacLQuOcJIW7+VsDaCVLEw52VUP+Zz+IBncxW5UaRHLMYzNq3dud
-	 HAN6xabOsmEkOmtHlmRW2Nup3z/FWJypq1LgEbsc5r3r5FJ7zFThHeCIadJJcm1VAI
-	 BiC1RzfBXdXazkSuIRGxpd7gjiTeffh72XMXq/3I=
+	b=pHy7zuEJud8P+qqPSX25KB7ZicCdBhi/QxnFGjiCPjI9jaaQpD2kJyv/Te8LrRYJb
+	 0ZaWklLoF5uELNUGpILppNTfJwi/bWevOsw5atUnstTxYPetY5Fl4joJNf46VgeHNO
+	 6Q+3n8vffZgiv1JCyZtVPbG14ATjOkSksPO/ybkQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6A1BF804C3;
-	Thu, 26 Nov 2020 21:06:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A700CF804E1;
+	Thu, 26 Nov 2020 21:06:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9617F804D6; Thu, 26 Nov 2020 21:06:09 +0100 (CET)
+ id D06DCF804E1; Thu, 26 Nov 2020 21:06:17 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C9A8F804C3
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 21:06:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C9A8F804C3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04139F804D2
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 21:06:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04139F804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JIYP54KJ"
+ header.b="TN1iWHrk"
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
  [92.233.91.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 27F3A221E9;
- Thu, 26 Nov 2020 20:06:04 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 0C98A221F7;
+ Thu, 26 Nov 2020 20:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606421165;
- bh=Wqwm9STBFzNnMy/CB+5wRkk6aIx+t9Lpuhu2scKh5Xc=;
+ s=default; t=1606421170;
+ bh=UklVA1LH/Kbt7UtCaRn39x9hXxYPjhMvm7//ZgnTsJ4=;
  h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
- b=JIYP54KJCgcohFyO3pbrXUtpoy7JWFsw5+woTe/i7R8N0T79xefqqEe2hKC2O5syu
- ZpigwylXfdT3FyYhD471R1anAqwKpRj73RRM4urQDjmfR99pHwnMHeDd2FgB2Gs8+g
- ETQxD9YPjOCeu3FM48yBD2bzL0ZgZEkbSrzxDgb0=
-Date: Thu, 26 Nov 2020 20:05:40 +0000
+ b=TN1iWHrk6XnR5ZEC6uubc2A4YImQvUpQ9jE6tvCBv8MfJ8HfubHXBRsOZWa+p3ElQ
+ D5yM76MZFfVJj6Ry9yeZ0jCrUl8L2qVb+zpe3sP7lqH27mGRgtPwCNzbNlEjwus51N
+ 8T5t9Hfh5vfPvWaFDhayzjdZcVFebs3Dvc5oTlHA=
+Date: Thu, 26 Nov 2020 20:05:45 +0000
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, timur@kernel.org, perex@perex.cz, festevam@gmail.com,
- Xiubo.Lee@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
- alsa-devel@alsa-project.org, nicoleotsuka@gmail.com
-In-Reply-To: <1606371293-29099-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1606371293-29099-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl: Fix config name of CONFIG_ARCH_MXC
-Message-Id: <160642112480.9090.10420790643480941582.b4-ty@kernel.org>
+To: "shumingf@realtek.com" <shumingf@realtek.com>, lgirdwood@gmail.com
+In-Reply-To: <20201126092759.9427-1-shumingf@realtek.com>
+References: <20201126092759.9427-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5682: change SAR voltage threshold
+Message-Id: <160642112479.9090.10011334176435039154.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,8 +89,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Nov 2020 14:14:53 +0800, Shengjiu Wang wrote:
-> CONFIG_ARCH_MXC should be ARCH_MXC
+On Thu, 26 Nov 2020 17:27:59 +0800, shumingf@realtek.com wrote:
+> To fix errors in some 4 poles headset detection cases,
+> this patch adjusts the voltage threshold for mic detection.
 
 Applied to
 
@@ -98,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: Fix config name of CONFIG_ARCH_MXC
-      commit: c61d1142cfd45f58b63bf9d2d59523f91096e873
+[1/1] ASoC: rt5682: change SAR voltage threshold
+      commit: aa4cb898b80a28a610e26d1513e6dd42d995c225
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
