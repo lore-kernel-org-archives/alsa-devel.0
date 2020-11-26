@@ -2,89 +2,84 @@ Return-Path: <SRS0=TxyJ=FA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFEE9C64E7A
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 04:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3438C56202
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 04:27:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FFEF21741
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 04:23:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4683121741
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 04:27:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="a+9w12I0";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="yjiLoMq8"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FFEF21741
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WgSLa+RN";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="fLtI8KH5"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4683121741
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 949F917BD;
-	Thu, 26 Nov 2020 05:22:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 949F917BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7407317C4;
+	Thu, 26 Nov 2020 05:27:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7407317C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606364616;
-	bh=lPPiTGMeU8PpU5mX6yzjCp594S3qDNomjgsxTVj3DMc=;
+	s=default; t=1606364874;
+	bh=9Ab23uvA6gXoRUJ95dH3UVCAG+CifoKA/aDKNyM0a8A=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a+9w12I0LFJ069RCvcWMzvTSXCPmgN9kS6hwSTz7vPGOWllua5D03BF3yvTmwSEOQ
-	 gXmZtpaettMBLG4a/6HYymSK0M00R5tYJ+pxi4gcILuHjV6EmcK8AvAazUoDSCzaO8
-	 sijdCWEEYCVb0r+nzqrZY3iPX17KLN/eUPVPvnO8=
+	b=WgSLa+RNPcXy3w8wjy6BgAeSHFlnpME6BagM6sr8uFDjWwG99uzBy3a+DMgPBtbRn
+	 8kY2RcDMJwgqrZE+Od7flyYtJ+ut4bEbU/P2Z2xcwkdpr8YP4PpzrlEqfLkaiZ36b9
+	 R+OjXjT2ExXROQGb0bYw8F5gNgmwBtVhC/GemD1A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 109B3F80128;
-	Thu, 26 Nov 2020 05:22:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D25A4F80164;
+	Thu, 26 Nov 2020 05:27:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6DCCEF80165; Thu, 26 Nov 2020 05:22:43 +0100 (CET)
+ id E305AF80165; Thu, 26 Nov 2020 05:27:02 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67C95F80159
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 05:22:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67C95F80159
+ by alsa1.perex.cz (Postfix) with ESMTPS id D88E7F80128
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 05:26:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D88E7F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="yjiLoMq8"
+ header.b="fLtI8KH5"
 Received: from localhost (unknown [122.179.79.180])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 6FE46206B7;
- Thu, 26 Nov 2020 04:22:26 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3C51521741;
+ Thu, 26 Nov 2020 04:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606364547;
- bh=lPPiTGMeU8PpU5mX6yzjCp594S3qDNomjgsxTVj3DMc=;
+ s=default; t=1606364811;
+ bh=9Ab23uvA6gXoRUJ95dH3UVCAG+CifoKA/aDKNyM0a8A=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=yjiLoMq8FjTpL1Qf8n5/xSWCYAhU98rLyyh6jPTL8jCx+EfjcNxYxLGdvir2CVMl5
- BvimTMbxfi55nSDDAkUnZgfzxxBbTOOVWvHSuC+ZifX6xrHWEFEByX6nqI1NphZx61
- lHMZ6ltA0iROGuysgVk8DA3xngKQpLfZ1zf5HFho=
-Date: Thu, 26 Nov 2020 09:52:22 +0530
+ b=fLtI8KH5wUOVTxE+nyeGSuezEqsK9cAE8jeOLXlbIz2kEvhFGmE/9CSTPV059Kh9E
+ vJB0YPH/jG+5eOGo8oa6nwmq+pkzRp13wRnULW4s46O7X0NKgIBWUdsJ5osuvf4Ekt
+ FWEaez9fYQuTMifCzBS7flTgh7GbkYad1jMg4bys=
+Date: Thu, 26 Nov 2020 09:56:46 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: "Liao, Bard" <bard.liao@intel.com>
-Subject: Re: [PATCH] soundwire: master: use pm_runtime_set_active() on add
-Message-ID: <20201126042222.GG8403@vkoul-mobl>
-References: <20201124130742.10986-1-yung-chuan.liao@linux.intel.com>
- <20201125050528.GC8403@vkoul-mobl>
- <DM6PR11MB4074BC35644527BA45C1CB3CFFF90@DM6PR11MB4074.namprd11.prod.outlook.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: drivers/soundwire/qcom.c:767: undefined reference to `slimbus_bus'
+Message-ID: <20201126042646.GH8403@vkoul-mobl>
+References: <202011030351.iq9CBMO3-lkp@intel.com>
+ <e0d74391-18ae-0493-b8a1-cbeb6f00bde8@infradead.org>
+ <20201125055155.GD8403@vkoul-mobl>
+ <6e298ed8-dc23-7a1f-1bb1-44ba2f43ee07@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR11MB4074BC35644527BA45C1CB3CFFF90@DM6PR11MB4074.namprd11.prod.outlook.com>
-Cc: "pierre-louis.bossart@linux.intel.com"
- <pierre-louis.bossart@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
- "hui.wang@canonical.com" <hui.wang@canonical.com>,
- "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
- "jank@cadence.com" <jank@cadence.com>, "Lin,
- Mengdong" <mengdong.lin@intel.com>, "Kale, Sanyog R" <sanyog.r.kale@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
+In-Reply-To: <6e298ed8-dc23-7a1f-1bb1-44ba2f43ee07@infradead.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ moderated for non-subscribers <alsa-devel@alsa-project.org>,
+ kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>,
+ Jonathan Marek <jonathan@marek.ca>, linux-kernel@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,98 +95,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 26-11-20, 03:11, Liao, Bard wrote:
-> > -----Original Message-----
-> > From: Vinod Koul <vkoul@kernel.org>
-> > Sent: Wednesday, November 25, 2020 1:05 PM
-> > To: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > Cc: alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org;
-> > gregkh@linuxfoundation.org; jank@cadence.com;
-> > srinivas.kandagatla@linaro.org; rander.wang@linux.intel.com;
-> > ranjani.sridharan@linux.intel.com; hui.wang@canonical.com; pierre-
-> > louis.bossart@linux.intel.com; Kale, Sanyog R <sanyog.r.kale@intel.com>; Lin,
-> > Mengdong <mengdong.lin@intel.com>; Liao, Bard <bard.liao@intel.com>
-> > Subject: Re: [PATCH] soundwire: master: use pm_runtime_set_active() on
-> > add
-> > 
-> > On 24-11-20, 21:07, Bard Liao wrote:
-> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > >
-> > > The 'master' device acts as a glue layer used during bus
-> > > initialization only, and it needs to be 'transparent' for pm_runtime
-> > > management. Its behavior should be that it becomes active when one of
-> > > its children becomes active, and suspends when all of its children are
-> > > suspended.
-> > >
-> > > In our tests on Intel platforms, we routinely see these sort of
-> > > warnings on the initial boot:
-> > >
-> > > [ 21.447345] rt715 sdw:3:25d:715:0: runtime PM trying to activate
-> > > child device sdw:3:25d:715:0 but parent (sdw-master-3) is not active
-> > >
-> > > This is root-caused to a missing setup to make the device 'active' on
-> > > probe. Since we don't want the device to remain active forever after
-> > > the probe, the autosuspend configuration is also enabled at the end of
-> > > the probe - the device will actually autosuspend only in the case
-> > > where there are no devices physically attached. In practice, the
-> > > master device will suspend when all its children are no longer active.
-> > >
-> > > Fixes: bd84256e86ecf ('soundwire: master: enable pm runtime')
-> > > Signed-off-by: Pierre-Louis Bossart
-> > > <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> > > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> > > ---
-> > >  drivers/soundwire/master.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
-> > > index 3488bb824e84..9b05c9e25ebe 100644
-> > > --- a/drivers/soundwire/master.c
-> > > +++ b/drivers/soundwire/master.c
-> > > @@ -8,6 +8,15 @@
-> > >  #include <linux/soundwire/sdw_type.h>  #include "bus.h"
-> > >
-> > > +/*
-> > > + * The 3s value for autosuspend will only be used if there are no
-> > > + * devices physically attached on a bus segment. In practice enabling
-> > > + * the bus operation will result in children devices become active
-> > > +and
-> > > + * the master device will only suspend when all its children are no
-> > > + * longer active.
-> > > + */
-> > > +#define SDW_MASTER_SUSPEND_DELAY_MS 3000
-> > > +
-> > >  /*
-> > >   * The sysfs for properties reflects the MIPI description as given
-> > >   * in the MIPI DisCo spec
-> > > @@ -154,7 +163,12 @@ int sdw_master_device_add(struct sdw_bus *bus,
-> > struct device *parent,
-> > >  	bus->dev = &md->dev;
-> > >  	bus->md = md;
-> > >
-> > > +	pm_runtime_set_autosuspend_delay(&bus->md->dev,
-> > SDW_MASTER_SUSPEND_DELAY_MS);
-> > > +	pm_runtime_use_autosuspend(&bus->md->dev);
-> > > +	pm_runtime_mark_last_busy(&bus->md->dev);
-> > > +	pm_runtime_set_active(&bus->md->dev);
-> > >  	pm_runtime_enable(&bus->md->dev);
-> > > +	pm_runtime_idle(&bus->md->dev);
-> > 
-> > I understand that this needs to be done somewhere but is the core the right
-> > place. In intel case it maybe a dummy device but other controllers are real
-> > devices and may not support pm.
-> > 
-> > I think better idea would be to do this in respective driver.. that way it
-> > would be an opt-in for device supporting pm.
-> 
-> Should it be put in the same place as pm_runtime_enable?
-> IMHO, pm_runtime_enable is in the core already and it seems to be harmless
-> for devices which don't support pm. And pm can still be optional on md's
-> parent device.
+On 25-11-20, 09:31, Randy Dunlap wrote:
+> On 11/24/20 9:51 PM, Vinod Koul wrote:
 
-For intel case yes, but world is not only intel, there are md which do
-not have a parent like sof. they are real sdw controller devices
+> > From: Vinod Koul <vkoul@kernel.org>
+> > Date: Wed, 25 Nov 2020 11:15:22 +0530
+> > Subject: [PATCH] soundwire: qcom: Fix build failure when slimbus is module
+> > 
+> > Commit 5bd773242f75 ("soundwire: qcom: avoid dependency on
+> > CONFIG_SLIMBUS") removed hard dependency on Slimbus for qcom driver but
+> > it results in build failure when:
+> > CONFIG_SOUNDWIRE_QCOM=y
+> > CONFIG_SLIMBUS=m
+> > 
+> > drivers/soundwire/qcom.o: In function `qcom_swrm_probe':
+> > qcom.c:(.text+0xf44): undefined reference to `slimbus_bus'
+> > 
+> > Fix this by using IS_REACHABLE() in driver which is recommended to be
+> > sued with imply.
+> 
+>   used
+
+right
+
+> 
+> > 
+> > Fixes: 5bd773242f75 ("soundwire: qcom: avoid dependency on CONFIG_SLIMBUS")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks I have added this and Srini's and pushed out now.
 
 -- 
 ~Vinod
