@@ -2,80 +2,69 @@ Return-Path: <SRS0=TxyJ=FA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3544C56202
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 05:36:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B438CC56202
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 06:23:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C3D0D207BC
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 05:36:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id E277620DD4
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 06:23:07 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="vKdD03Qo";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="kGO0lGep"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C3D0D207BC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="JNGE/TNh"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E277620DD4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B02516D9;
-	Thu, 26 Nov 2020 06:35:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B02516D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A9FC17BA;
+	Thu, 26 Nov 2020 07:22:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A9FC17BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606368970;
-	bh=SQ9EM5DKO0FDPcLkKrOAzp0Hp/ce+DVQ/7l3J/t9VW0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vKdD03QoYfhLtJ7gk/nlXOUul7TIw7uuUk8RRHYqsYLTDEjTiEb7KkAJtyudOIRvu
-	 nCoLrqKJ8l1OtnmDpUWo62AIUmnKaRUoFQQZQExBPzaIKVWLgQifhyo74p2hcaY5E4
-	 IShktQAfAM2huewhOojAm3JCwVldTQN1CLAKTZbg=
+	s=default; t=1606371785;
+	bh=SMT4IPaOsdYulNvGovrFlIuisih6t7XDOp1qUQWwDXY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JNGE/TNhsq/FIFGZq33sN6stq9vE/1T1tmoaoCceTuy6xeJkZI7rbQstIf/tqufnl
+	 /AhG3QR8uDmLwxCFkD+Yu23UE50bW3bJzAM6tTz1KRPsZ4KuPVZAaRJm23T4MqRDDU
+	 LC3XKTWmOKCwNpCoLbThAucxscixoBbVWb4Aqz2Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FEFBF80164;
-	Thu, 26 Nov 2020 06:35:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91B30F80164;
+	Thu, 26 Nov 2020 07:22:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7A3FF80165; Thu, 26 Nov 2020 06:35:17 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 118C2F80159
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 06:35:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 118C2F80159
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="kGO0lGep"
-Received: from localhost (82-217-20-185.cable.dynamic.v4.ziggo.nl
- [82.217.20.185])
+ id A7CFFF80128; Thu, 26 Nov 2020 07:22:12 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id A4735206F4;
- Thu, 26 Nov 2020 05:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1606368907;
- bh=SQ9EM5DKO0FDPcLkKrOAzp0Hp/ce+DVQ/7l3J/t9VW0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=kGO0lGepBUjnAlHlzQN4Jlh4CXkMW1fymbSXk+6d15tvpFg3wHnRD4iO2LEhoIQh5
- VSSwmroq4BFfe+OQUvkxwztb50N6mLqusiFQ2p/4+CX8UtuvDgiJqQwgY2q9X8rDE4
- r9Uyj/JvQW6+kfH4chIFlYTlKwMXnTAhO0v/fBjg=
-Date: Thu, 26 Nov 2020 06:35:02 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] regmap: sdw: add required header files
-Message-ID: <X78+hlJTgA3FdmxY@kroah.com>
-References: <20201125130128.15952-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201125130128.15952-1-yung-chuan.liao@linux.intel.com>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- vinod.koul@linaro.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org, jank@cadence.com,
- sanyog.r.kale@intel.com, rander.wang@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F47DF80128
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 07:22:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F47DF80128
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E18571A0A4C;
+ Thu, 26 Nov 2020 07:22:04 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D25B61A010B;
+ Thu, 26 Nov 2020 07:22:00 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1C49F402A6;
+ Thu, 26 Nov 2020 07:21:54 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: fsl: Fix config name of CONFIG_ARCH_MXC
+Date: Thu, 26 Nov 2020 14:14:53 +0800
+Message-Id: <1606371293-29099-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,13 +80,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 25, 2020 at 09:01:28PM +0800, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Explicitly add header files used by regmap SoundWire support.
+CONFIG_ARCH_MXC should be ARCH_MXC
 
-What is failing to build without this?
+Fixes: 674226db62ec ("ASoC: fsl: SND_SOC_FSL_AUD2HTX should depend on ARCH_MXC")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 7d48f4f98e8b..835a14821360 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -107,7 +107,7 @@ config SND_SOC_FSL_XCVR
+ 
+ config SND_SOC_FSL_AUD2HTX
+ 	tristate "AUDIO TO HDMI TX module support"
+-	depends on CONFIG_ARCH_MXC || COMPILE_TEST
++	depends on ARCH_MXC || COMPILE_TEST
+ 	help
+ 	  Say Y if you want to add AUDIO TO HDMI TX support for NXP.
+ 
+-- 
+2.27.0
 
-greg k-h
