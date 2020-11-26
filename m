@@ -7,79 +7,78 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47C6BC56202
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 18:05:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61688C56202
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 18:05:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48EB0207BC
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 18:05:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 58C91207BC
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Nov 2020 18:05:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="P3HIXjE8";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="ImuczdrR"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48EB0207BC
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lMufGkt1";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=nvidia.com header.i=@nvidia.com header.b="If6Pscyj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58C91207BC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C30E17E2;
-	Thu, 26 Nov 2020 19:04:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C30E17E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2288017DC;
+	Thu, 26 Nov 2020 19:05:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2288017DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606413945;
-	bh=UPteC1pgCoXv4rhH8Fh2wYMrsGgQ6L7dAsGHDiRblM0=;
+	s=default; t=1606413950;
+	bh=+G9XETU/j4vL/5mke9Aw0BxZajxjOo+L4ASpSoK0R+8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P3HIXjE8qcAPZjsTR8FUG9GFuKW81ZQ+XF78QqlOskp77HXAhzQ9CYeXnvqf5KfPq
-	 KRjhqX3voojVAW2F4b+ionN2lhY9BKAN61Ydo492qK4GZQb2H+ueWbbubxEHkL+pSX
-	 MpTHvvaVr9xDqyzuFZKlu088whUqAZcYsOPrkX7k=
+	b=lMufGkt1csDPTKqqecjqPKqZz5Tk1BB1t6gHx/W3DUWIBOQusi4rDNNGg2ybZCFcX
+	 NdGhve72NqZR3n+uwqy15LpmDREFDD0timtGTMFV8DRT0sCGO59RXcBOGH9CjlgR0D
+	 1C4dFHaO1KX5xNf2RQwMFdDcLupQNhlmAF1eMZvw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D5C7F80164;
+	by alsa1.perex.cz (Postfix) with ESMTP id CD04CF804B4;
 	Thu, 26 Nov 2020 19:04:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7536F802C4; Thu, 26 Nov 2020 19:04:05 +0100 (CET)
-Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
- [216.228.121.65])
+ id 69337F8027C; Thu, 26 Nov 2020 19:04:06 +0100 (CET)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF667F80164
- for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 19:03:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF667F80164
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45C3AF80165
+ for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2020 19:03:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45C3AF80165
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="ImuczdrR"
+ header.b="If6Pscyj"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
  id <B5fbfee100000>; Thu, 26 Nov 2020 10:04:00 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
- 2020 18:03:57 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 26 Nov
+ 2020 18:03:53 +0000
 Received: from audio.nvidia.com (172.20.13.39) by mail.nvidia.com
  (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 26 Nov 2020 18:03:53 +0000
+ Transport; Thu, 26 Nov 2020 18:03:50 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>, <thierry.reding@gmail.com>
-Subject: [PATCH v6 2/6] ASoC: dt-bindings: tegra: Add json-schema for Tegra
- audio graph card
-Date: Thu, 26 Nov 2020 23:33:39 +0530
-Message-ID: <1606413823-19885-3-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v6 1/6] ASoC: dt-bindings: tegra: Add graph bindings
+Date: Thu, 26 Nov 2020 23:33:38 +0530
+Message-ID: <1606413823-19885-2-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
 References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1606413840; bh=yj6PiAVqxhNZ/wClBAXh8IgIUW3+3I9GHb8QAg2m2BM=;
+ t=1606413840; bh=wSbiZL/NM0UtDU3bPzfMihVkMzdLJDTXJ2ICU4gUlTc=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=ImuczdrRwUhLuEeXe9GPg81w8LmzMlCJQymUevy6IqB2XBGhRI9IjbE4qZowjgMoP
- m5N3wEUmUBsYnQ5rO4A8q70DWREPNnoCdQXpmWBZECeaCbgq12uSM1s9Ifx+hkx1hk
- jQ9u+TcOnIELlKddI7oy0eb4C+k86ec6zVR3Q+pim2l00VdLk77YfKGeiyAg7uaT/P
- 2RfNonTmlbbJTC2jgamZGWyXXpNsl/xJi5A9Q5r7ZTWDjdg66HDugUUH2bDTvfJ8Up
- /Tp64njBh/aAwG0UjtnUwzS0TNfO0av3wmfNTJPvFlQQ8RP+89pRV9aGXnFlxZ8+d1
- tM0q0SNcrEZJQ==
+ b=If6PscyjV8P40Q01MyFyDGvUZZ53XHXkQQsV7++q5B05QRKKIZI20QyNgUCUzN+UK
+ byv99X4V4s99jQ6R19+I/nHWvc6u8dyPn7rx2oAYi6i4SJvK41qoRfBgp7lGeItjKo
+ XP1YIklUwcrb6Pg/uE6HAn+yKUfXKC0iPU8rAt5k2RinTvxSrWxDvcze75nau2M/B7
+ eq2j0oG83rDflXZqiQH101urP0i9WnS+3beq475I5x0MEcWmjJfKpg9l0CcaVLKlS1
+ hws+h7fm67m5gFRu+TUSkEf1rV8ZrSh3kgWJBGo0os3Pw1xjiKcF5Y/GTcNfse+rxl
+ TnChc+Wxc02Vg==
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
@@ -99,211 +98,225 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add YAML schema for Tegra audio graph sound card DT bindings. It uses the
-same DT bindings provided by generic audio graph driver. Along with this
-few standard clock DT bindings are added which are specifically required
-for Tegra audio.
+Add device tree binding properties of generic graph to ASoC component
+devices. This allows to define audio ports out of these components or
+DAIs and audio graph based sound card can be realised with this.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 ---
- .../sound/nvidia,tegra-audio-graph-card.yaml       | 187 +++++++++++++++++++++
- 1 file changed, 187 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
+ .../bindings/sound/nvidia,tegra186-dspk.yaml           | 18 +++++++++++++++++-
+ .../bindings/sound/nvidia,tegra210-admaif.yaml         | 13 ++++++++++++-
+ .../bindings/sound/nvidia,tegra210-ahub.yaml           | 13 +++++++++++--
+ .../bindings/sound/nvidia,tegra210-dmic.yaml           | 18 +++++++++++++++++-
+ .../devicetree/bindings/sound/nvidia,tegra210-i2s.yaml | 18 +++++++++++++++++-
+ 5 files changed, 74 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-new file mode 100644
-index 0000000..fc271f6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-@@ -0,0 +1,187 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-graph-card.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Audio Graph based Tegra sound card driver
-+
-+description: |
-+  This is based on generic audio graph card driver along with additional
-+  customizations for Tegra platforms. It uses the same bindings with
-+  additional standard clock DT bindings required for Tegra.
-+
-+maintainers:
-+  - Jon Hunter <jonathanh@nvidia.com>
-+  - Sameer Pujar <spujar@nvidia.com>
-+
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
+index ed2fb32..b8645d9 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra186-dspk.yaml
+@@ -17,6 +17,9 @@ maintainers:
+   - Jon Hunter <jonathanh@nvidia.com>
+   - Sameer Pujar <spujar@nvidia.com>
+ 
 +allOf:
-+  - $ref: audio-graph.yaml#
++  - $ref: audio-graph-port.yaml#
 +
-+properties:
-+  compatible:
-+    enum:
-+      - nvidia,tegra210-audio-graph-card
-+      - nvidia,tegra186-audio-graph-card
+ properties:
+   $nodename:
+     pattern: "^dspk@[0-9a-f]*$"
+@@ -55,6 +58,19 @@ properties:
+       The name can be "DSPK1" or "DSPKx", where x depends on the maximum
+       available instances on a Tegra SoC.
+ 
++  ports:
++    type: object
++    properties:
++      port@0:
++        description: |
++          DSPK ACIF (Audio Client Interface) port connected to the
++          corresponding AHUB (Audio Hub) ACIF port.
 +
-+  clocks:
-+    minItems: 2
++      port@1:
++        description: |
++          DSPK DAP (Digital Audio Port) interface which can be connected
++          to external audio codec for playback.
 +
-+  clock-names:
-+    minItems: 2
-+    items:
-+      - const: pll_a
-+      - const: plla_out0
-+
-+  assigned-clocks:
-+    minItems: 1
-+    maxItems: 3
-+
-+  assigned-clock-parents:
-+    minItems: 1
-+    maxItems: 3
-+
-+  assigned-clock-rates:
-+    minItems: 1
-+    maxItems: 3
-+
-+required:
-+  - clocks
-+  - clock-names
-+  - assigned-clocks
-+  - assigned-clock-parents
-+
+ required:
+   - compatible
+   - reg
+@@ -64,7 +80,7 @@ required:
+   - assigned-clock-parents
+   - sound-name-prefix
+ 
+-additionalProperties: false
 +unevaluatedProperties: false
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
+index c028b25..7cee772 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-admaif.yaml
+@@ -17,6 +17,9 @@ maintainers:
+   - Jon Hunter <jonathanh@nvidia.com>
+   - Sameer Pujar <spujar@nvidia.com>
+ 
++allOf:
++  - $ref: audio-graph-port.yaml#
 +
-+examples:
-+  - |
-+    #include<dt-bindings/clock/tegra210-car.h>
+ properties:
+   $nodename:
+     pattern: "^admaif@[0-9a-f]*$"
+@@ -37,6 +40,14 @@ properties:
+ 
+   dma-names: true
+ 
++  ports:
++    description: |
++      Contains list of ACIF (Audio CIF) port nodes for ADMAIF channels.
++      The number of port nodes depends on the number of ADMAIF channels
++      that SoC may have. These are interfaced with respective ACIF ports
++      in AHUB (Audio Hub). Each port is capable of data transfers in
++      both directions.
 +
-+    tegra_sound {
-+        compatible = "nvidia,tegra210-audio-graph-card";
+ if:
+   properties:
+     compatible:
+@@ -81,7 +92,7 @@ required:
+   - dmas
+   - dma-names
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+index d772197..31f3e51 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+@@ -17,6 +17,9 @@ maintainers:
+   - Jon Hunter <jonathanh@nvidia.com>
+   - Sameer Pujar <spujar@nvidia.com>
+ 
++allOf:
++  - $ref: audio-graph-port.yaml#
 +
-+        clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-+                 <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+        clock-names = "pll_a", "plla_out0";
+ properties:
+   $nodename:
+     pattern: "^ahub@[0-9a-f]*$"
+@@ -56,6 +59,13 @@ properties:
+ 
+   ranges: true
+ 
++  ports:
++    description: |
++      Contains list of ACIF (Audio CIF) port nodes for AHUB (Audio Hub).
++      These are connected to ACIF interfaces of AHUB clients. Thus the
++      number of port nodes depend on the number of clients that AHUB may
++      have depending on the SoC revision.
 +
-+        assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-+                          <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-+                          <&tegra_car TEGRA210_CLK_EXTERN1>;
-+        assigned-clock-parents = <0>, <0>, <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+        assigned-clock-rates = <368640000>, <49152000>, <12288000>;
+ required:
+   - compatible
+   - reg
+@@ -67,8 +77,7 @@ required:
+   - "#size-cells"
+   - ranges
+ 
+-additionalProperties:
+-  type: object
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
+index 2a3207b..89f4f47 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-dmic.yaml
+@@ -16,6 +16,9 @@ maintainers:
+   - Jon Hunter <jonathanh@nvidia.com>
+   - Sameer Pujar <spujar@nvidia.com>
+ 
++allOf:
++  - $ref: audio-graph-port.yaml#
 +
-+        dais = /* FE */
-+               <&admaif1_port>,
-+               /* Router */
-+               <&xbar_i2s1_port>,
-+               /* I/O DAP Ports */
-+               <&i2s1_port>;
+ properties:
+   $nodename:
+     pattern: "^dmic@[0-9a-f]*$"
+@@ -56,6 +59,19 @@ properties:
+       The name can be "DMIC1" or "DMIC2" ... "DMICx", where x depends
+       on the maximum available instances on a Tegra SoC.
+ 
++  ports:
++    type: object
++    properties:
++      port@0:
++        description: |
++          DMIC ACIF (Audio Client Interface) port connected to the
++          corresponding AHUB (Audio Hub) ACIF port.
 +
-+        label = "jetson-tx1-ape";
-+    };
++      port@1:
++        description: |
++          DMIC DAP (Digital Audio Port) interface which can be connected
++          to external audio codec for capture.
 +
-+    // The ports are defined for AHUB and its child devices.
-+    ahub@702d0800 {
-+        compatible = "nvidia,tegra210-ahub";
-+        reg = <0x702d0800 0x800>;
-+        clocks = <&tegra_car TEGRA210_CLK_D_AUDIO>;
-+        clock-names = "ahub";
-+        assigned-clocks = <&tegra_car TEGRA210_CLK_D_AUDIO>;
-+        assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges = <0x702d0000 0x702d0000 0x0000e400>;
+ required:
+   - compatible
+   - reg
+@@ -64,7 +80,7 @@ required:
+   - assigned-clocks
+   - assigned-clock-parents
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
+index dfc1bf7..5564603 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml
+@@ -16,6 +16,9 @@ maintainers:
+   - Jon Hunter <jonathanh@nvidia.com>
+   - Sameer Pujar <spujar@nvidia.com>
+ 
++allOf:
++  - $ref: audio-graph-port.yaml#
 +
-+        ports {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
+ properties:
+   $nodename:
+     pattern: "^i2s@[0-9a-f]*$"
+@@ -74,6 +77,19 @@ properties:
+       The name can be "I2S1" or "I2S2" ... "I2Sx", where x depends
+       on the maximum available instances on a Tegra SoC.
+ 
++  ports:
++    type: object
++    properties:
++      port@0:
++        description: |
++          I2S ACIF (Audio Client Interface) port connected to the
++          corresponding AHUB (Audio Hub) ACIF port.
 +
-+            port@0 {
-+                reg = <0x0>;
-+                xbar_admaif1_ep: endpoint {
-+                    remote-endpoint = <&admaif1_ep>;
-+                };
-+            };
++      port@1:
++        description: |
++          I2S DAP (Digital Audio Port) interface which can be connected
++          to external audio codec for playback or capture.
 +
-+            // ...
-+
-+            xbar_i2s1_port: port@a {
-+                reg = <0xa>;
-+                xbar_i2s1_ep: endpoint {
-+                    remote-endpoint = <&i2s1_cif_ep>;
-+                };
-+            };
-+        };
-+
-+        admaif@702d0000 {
-+            compatible = "nvidia,tegra210-admaif";
-+            reg = <0x702d0000 0x800>;
-+            dmas = <&adma 1>,  <&adma 1>,
-+                   <&adma 2>,  <&adma 2>,
-+                   <&adma 3>,  <&adma 3>,
-+                   <&adma 4>,  <&adma 4>,
-+                   <&adma 5>,  <&adma 5>,
-+                   <&adma 6>,  <&adma 6>,
-+                   <&adma 7>,  <&adma 7>,
-+                   <&adma 8>,  <&adma 8>,
-+                   <&adma 9>,  <&adma 9>,
-+                   <&adma 10>, <&adma 10>;
-+            dma-names = "rx1",  "tx1",
-+                        "rx2",  "tx2",
-+                        "rx3",  "tx3",
-+                        "rx4",  "tx4",
-+                        "rx5",  "tx5",
-+                        "rx6",  "tx6",
-+                        "rx7",  "tx7",
-+                        "rx8",  "tx8",
-+                        "rx9",  "tx9",
-+                        "rx10", "tx10";
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                admaif1_port: port@0 {
-+                    reg = <0x0>;
-+                    admaif1_ep: endpoint {
-+                        remote-endpoint = <&xbar_admaif1_ep>;
-+                    };
-+                };
-+
-+                // More ADMAIF ports to follow
-+            };
-+        };
-+
-+        i2s@702d1000 {
-+            compatible = "nvidia,tegra210-i2s";
-+            clocks = <&tegra_car TEGRA210_CLK_I2S0>;
-+            clock-names = "i2s";
-+            assigned-clocks = <&tegra_car TEGRA210_CLK_I2S0>;
-+            assigned-clock-parents = <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+            assigned-clock-rates = <1536000>;
-+            reg = <0x702d1000 0x100>;
-+
-+            ports {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+
-+                port@0 {
-+                    reg = <0x0>;
-+
-+                    i2s1_cif_ep: endpoint {
-+                        remote-endpoint = <&xbar_i2s1_ep>;
-+                    };
-+                };
-+
-+                i2s1_port: port@1 {
-+                    reg = <0x1>;
-+
-+                    i2s1_dap: endpoint {
-+                        dai-format = "i2s";
-+                    };
-+                };
-+            };
-+        };
-+    };
-+
-+...
+ required:
+   - compatible
+   - reg
+@@ -82,7 +98,7 @@ required:
+   - assigned-clocks
+   - assigned-clock-parents
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
 -- 
 2.7.4
 
