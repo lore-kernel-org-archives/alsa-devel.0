@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A19D6C3E8C5
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E72DC3E8C5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:45:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B3DB2206D8
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:45:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 44C90206D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:45:38 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="GjU0PR61"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3DB2206D8
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="i92ynfS7"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44C90206D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEB99186A;
-	Fri, 27 Nov 2020 17:44:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEB99186A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FBFF1874;
+	Fri, 27 Nov 2020 17:44:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FBFF1874
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606495529;
-	bh=u9ZjlnkqKT3UHITb2SCKm7K5gywJ32vECXPLti9hjXE=;
+	s=default; t=1606495536;
+	bh=+bXIAUU6GpUwQ0nUjWOb9tA+9MKb7SCmGq9+mJHDPwA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GjU0PR61G+pd0k/hOKbgqcI32QVjDmgw3IN3pbCRvguOkMNyalhuXqRG3pYl8AUEC
-	 c0q643+1OclkHeRV6bW+A8OoMMKlKOBwsO0a0TeC5VXeJQYd+iCMowEw+KwGT9GJdz
-	 Lk6FjhL8t7E1I9ewbdmA107bnUwwBAwXj2ye1Fi4=
+	b=i92ynfS7dr6w63K2VP3kQNpooNx/8Cff7O6g25D/E3Y73roHh8lF9to83KLLyNrxO
+	 ygGF+LIHVVHqJfetwlbtOJAFaECnoTcIftSqKI8in+YD9394mziLhNjU0cgOU0hNP0
+	 L7tMKqkRJpNT6r8q3u/OVOCC/V9KKtx4jWWjnP24=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D12E7F804C3;
-	Fri, 27 Nov 2020 17:43:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B83CF804CC;
+	Fri, 27 Nov 2020 17:43:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A4A4F804BC; Fri, 27 Nov 2020 17:43:06 +0100 (CET)
+ id 022AEF804D2; Fri, 27 Nov 2020 17:43:10 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66A4FF800E0
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 17:42:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66A4FF800E0
-IronPort-SDR: feiC79HHGHDW/4g0uB/Be0XRsXT6bIGvJScCmCD+ebjH33st6TqQRv8QoTivmLl6aS2WoPblyw
- EQCHd3Xkkbeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="234020284"
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; d="scan'208";a="234020284"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46F71F8029B
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 17:43:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46F71F8029B
+IronPort-SDR: Hlzw/t/l9N2fTkrmNsy0nmPKVNJ9u0YPCq0gDXf9B1WLKBmKPoB6HB70CRDs/GWpYrLGr6QucR
+ mbxtiFG2aewA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="234020294"
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; d="scan'208";a="234020294"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2020 08:42:58 -0800
-IronPort-SDR: e7CgmP1uKkUNQxiK/vZHApVC9+tVFotgl8iE6Inphhl0DI5CeTrtH61s5HqMWRBNg+3y2KZjo3
- Y2zqJwrPX+1Q==
+ 27 Nov 2020 08:43:05 -0800
+IronPort-SDR: vGhm7+AAJxvVdAq0C8pm3ALf62kzrxGqcnis51Mx/QkidK90hJzYArZnNMZ69pimps/n3qPShV
+ AtfrAr/NMwvA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; d="scan'208";a="403933353"
+X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; d="scan'208";a="403933367"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga001.jf.intel.com with ESMTP; 27 Nov 2020 08:42:56 -0800
+ by orsmga001.jf.intel.com with ESMTP; 27 Nov 2020 08:43:02 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 3/5] ASoC: SOF: ext_manifest: parse cavs extra config data elem
-Date: Fri, 27 Nov 2020 18:40:20 +0200
-Message-Id: <20201127164022.2498406-4-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: SOF: Intel: hda: add sof_icl_ops for ICL platforms
+Date: Fri, 27 Nov 2020 18:40:22 +0200
+Message-Id: <20201127164022.2498406-6-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201127164022.2498406-1-kai.vehmanen@linux.intel.com>
 References: <20201127164022.2498406-1-kai.vehmanen@linux.intel.com>
@@ -91,48 +91,331 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Fred Oh <fred.oh@linux.intel.com>
 
-OUTBOX_SIZE, INBOX_SIZE are defined but not being used yet. Handle
-these elements to avoid warning about unknown token type.
+Separate the dsp ops for ICL ops to specify the use of ICCMAX
+FW boot sequence in the run op. All other ops are identical with TGL
+except post_fw_run. The recommended HW programming sequence for ICL
+is to power up core 3 and keep it in stall if HPRO is enabled.
 
 Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/ext_manifest.h | 2 ++
- sound/soc/sof/intel/hda-loader.c   | 6 +++++-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/Makefile     |   2 +-
+ sound/soc/sof/intel/cnl.c        |  16 ----
+ sound/soc/sof/intel/hda-loader.c |  61 +++++++++++++
+ sound/soc/sof/intel/hda.h        |   4 +
+ sound/soc/sof/intel/icl.c        | 145 +++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-pci-dev.c      |   2 +-
+ 6 files changed, 212 insertions(+), 18 deletions(-)
+ create mode 100644 sound/soc/sof/intel/icl.c
 
-diff --git a/sound/soc/sof/intel/ext_manifest.h b/sound/soc/sof/intel/ext_manifest.h
-index a30e25b4e655..2dfae9285d3c 100644
---- a/sound/soc/sof/intel/ext_manifest.h
-+++ b/sound/soc/sof/intel/ext_manifest.h
-@@ -21,6 +21,8 @@
- enum sof_cavs_config_elem_type {
- 	SOF_EXT_MAN_CAVS_CONFIG_EMPTY		= 0,
- 	SOF_EXT_MAN_CAVS_CONFIG_CAVS_LPRO	= 1,
-+	SOF_EXT_MAN_CAVS_CONFIG_OUTBOX_SIZE	= 2,
-+	SOF_EXT_MAN_CAVS_CONFIG_INBOX_SIZE	= 3,
- };
+diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
+index 72d85b25df7d..2589111c2fae 100644
+--- a/sound/soc/sof/intel/Makefile
++++ b/sound/soc/sof/intel/Makefile
+@@ -8,7 +8,7 @@ snd-sof-intel-ipc-objs := intel-ipc.o
+ snd-sof-intel-hda-common-objs := hda.o hda-loader.o hda-stream.o hda-trace.o \
+ 				 hda-dsp.o hda-ipc.o hda-ctrl.o hda-pcm.o \
+ 				 hda-dai.o hda-bus.o \
+-				 apl.o cnl.o tgl.o
++				 apl.o cnl.o tgl.o icl.o
+ snd-sof-intel-hda-common-$(CONFIG_SND_SOC_SOF_HDA_PROBES) += hda-compress.o
  
- /* EXT_MAN_ELEM_PLATFORM_CONFIG_DATA elements */
+ snd-sof-intel-hda-objs := hda-codec.o
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 158c38743731..e38db519f38d 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -349,22 +349,6 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
+ };
+ EXPORT_SYMBOL_NS(cnl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+-const struct sof_intel_dsp_desc icl_chip_info = {
+-	/* Icelake */
+-	.cores_num = 4,
+-	.init_core_mask = 1,
+-	.host_managed_cores_mask = GENMASK(3, 0),
+-	.ipc_req = CNL_DSP_REG_HIPCIDR,
+-	.ipc_req_mask = CNL_DSP_REG_HIPCIDR_BUSY,
+-	.ipc_ack = CNL_DSP_REG_HIPCIDA,
+-	.ipc_ack_mask = CNL_DSP_REG_HIPCIDA_DONE,
+-	.ipc_ctl = CNL_DSP_REG_HIPCCTL,
+-	.rom_init_timeout	= 300,
+-	.ssp_count = ICL_SSP_COUNT,
+-	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
+-};
+-EXPORT_SYMBOL_NS(icl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+-
+ const struct sof_intel_dsp_desc ehl_chip_info = {
+ 	/* Elkhartlake */
+ 	.cores_num = 4,
 diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 73806223abd1..52101b1a3dac 100644
+index 52101b1a3dac..02c3ff897274 100644
 --- a/sound/soc/sof/intel/hda-loader.c
 +++ b/sound/soc/sof/intel/hda-loader.c
-@@ -498,8 +498,12 @@ int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
- 			dev_dbg(sdev->dev, "FW clock config: %s\n",
- 				hda->clk_config_lpro ? "LPRO" : "HPRO");
- 			break;
-+		case SOF_EXT_MAN_CAVS_CONFIG_OUTBOX_SIZE:
-+		case SOF_EXT_MAN_CAVS_CONFIG_INBOX_SIZE:
-+			/* These elements are defined but not being used yet. No warn is required */
-+			break;
- 		default:
--			dev_warn(sdev->dev, "unsupported token type: %d\n",
-+			dev_info(sdev->dev, "unsupported token type: %d\n",
- 				 config_data->elems[i].token);
- 		}
+@@ -472,6 +472,46 @@ int hda_dsp_post_fw_run(struct snd_sof_dev *sdev)
+ 	return hda_dsp_ctrl_clock_power_gating(sdev, true);
+ }
+ 
++/*
++ * post fw run operations for ICL,
++ * Core 3 will be powered up and in stall when HPRO is enabled
++ */
++int hda_dsp_post_fw_run_icl(struct snd_sof_dev *sdev)
++{
++	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
++	int ret;
++
++	if (sdev->first_boot) {
++		ret = hda_sdw_startup(sdev);
++		if (ret < 0) {
++			dev_err(sdev->dev,
++				"error: could not startup SoundWire links\n");
++			return ret;
++		}
++	}
++
++	hda_sdw_int_enable(sdev, true);
++
++	/*
++	 * The recommended HW programming sequence for ICL is to
++	 * power up core 3 and keep it in stall if HPRO is enabled.
++	 * Major difference between ICL and TGL, on ICL core 3 is managed by
++	 * the host whereas on TGL it is handled by the firmware.
++	 */
++	if (!hda->clk_config_lpro) {
++		ret = snd_sof_dsp_core_power_up(sdev, BIT(3));
++		if (ret < 0) {
++			dev_err(sdev->dev, "error: dsp core power up failed on core 3\n");
++			return ret;
++		}
++
++		snd_sof_dsp_stall(sdev, BIT(3));
++	}
++
++	/* re-enable clock gating and power gating */
++	return hda_dsp_ctrl_clock_power_gating(sdev, true);
++}
++
+ int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
+ 					 const struct sof_ext_man_elem_header *hdr)
+ {
+@@ -509,3 +549,24 @@ int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
+ 
+ 	return 0;
+ }
++
++int hda_dsp_core_stall_icl(struct snd_sof_dev *sdev, unsigned int core_mask)
++{
++	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
++	const struct sof_intel_dsp_desc *chip = hda->desc;
++
++	/* make sure core_mask in host managed cores */
++	core_mask &= chip->host_managed_cores_mask;
++	if (!core_mask) {
++		dev_err(sdev->dev, "error: core_mask is not in host managed cores\n");
++		return -EINVAL;
++	}
++
++	/* stall core */
++	snd_sof_dsp_update_bits_unlocked(sdev, HDA_DSP_BAR,
++					 HDA_DSP_REG_ADSPCS,
++					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask),
++					 HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
++
++	return 0;
++}
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index d1df579e52aa..9ec8ae0fd649 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -615,11 +615,14 @@ int hda_dsp_ipc_cmd_done(struct snd_sof_dev *sdev, int dir);
+  */
+ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev);
+ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev);
++int hda_dsp_cl_boot_firmware_iccmax_icl(struct snd_sof_dev *sdev);
+ int hda_dsp_cl_boot_firmware_skl(struct snd_sof_dev *sdev);
+ 
+ /* pre and post fw run ops */
+ int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev);
+ int hda_dsp_post_fw_run(struct snd_sof_dev *sdev);
++int hda_dsp_post_fw_run_icl(struct snd_sof_dev *sdev);
++int hda_dsp_core_stall_icl(struct snd_sof_dev *sdev, unsigned int core_mask);
+ 
+ /* parse platform specific ext manifest ops */
+ int hda_dsp_ext_man_get_cavs_config_data(struct snd_sof_dev *sdev,
+@@ -740,6 +743,7 @@ extern struct snd_soc_dai_driver skl_dai[];
+ extern const struct snd_sof_dsp_ops sof_apl_ops;
+ extern const struct snd_sof_dsp_ops sof_cnl_ops;
+ extern const struct snd_sof_dsp_ops sof_tgl_ops;
++extern const struct snd_sof_dsp_ops sof_icl_ops;
+ 
+ extern const struct sof_intel_dsp_desc apl_chip_info;
+ extern const struct sof_intel_dsp_desc cnl_chip_info;
+diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
+new file mode 100644
+index 000000000000..e9d5a0a58504
+--- /dev/null
++++ b/sound/soc/sof/intel/icl.c
+@@ -0,0 +1,145 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// Copyright(c) 2020 Intel Corporation. All rights reserved.
++//
++// Author: Fred Oh <fred.oh@linux.intel.com>
++//
++
++/*
++ * Hardware interface for audio DSP on IceLake.
++ */
++
++#include <linux/kernel.h>
++#include <linux/kconfig.h>
++#include <linux/export.h>
++#include <linux/bits.h>
++#include "../ops.h"
++#include "hda.h"
++#include "hda-ipc.h"
++#include "../sof-audio.h"
++
++static const struct snd_sof_debugfs_map icl_dsp_debugfs[] = {
++	{"hda", HDA_DSP_HDA_BAR, 0, 0x4000, SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"pp", HDA_DSP_PP_BAR,  0, 0x1000, SOF_DEBUGFS_ACCESS_ALWAYS},
++	{"dsp", HDA_DSP_BAR,  0, 0x10000, SOF_DEBUGFS_ACCESS_ALWAYS},
++};
++
++/* Icelake ops */
++const struct snd_sof_dsp_ops sof_icl_ops = {
++	/* probe and remove */
++	.probe		= hda_dsp_probe,
++	.remove		= hda_dsp_remove,
++
++	/* Register IO */
++	.write		= sof_io_write,
++	.read		= sof_io_read,
++	.write64	= sof_io_write64,
++	.read64		= sof_io_read64,
++
++	/* Block IO */
++	.block_read	= sof_block_read,
++	.block_write	= sof_block_write,
++
++	/* doorbell */
++	.irq_thread	= cnl_ipc_irq_thread,
++
++	/* ipc */
++	.send_msg	= cnl_ipc_send_msg,
++	.fw_ready	= sof_fw_ready,
++	.get_mailbox_offset = hda_dsp_ipc_get_mailbox_offset,
++	.get_window_offset = hda_dsp_ipc_get_window_offset,
++
++	.ipc_msg_data	= hda_ipc_msg_data,
++	.ipc_pcm_params	= hda_ipc_pcm_params,
++
++	/* machine driver */
++	.machine_select = hda_machine_select,
++	.machine_register = sof_machine_register,
++	.machine_unregister = sof_machine_unregister,
++	.set_mach_params = hda_set_mach_params,
++
++	/* debug */
++	.debug_map	= icl_dsp_debugfs,
++	.debug_map_count	= ARRAY_SIZE(icl_dsp_debugfs),
++	.dbg_dump	= hda_dsp_dump,
++	.ipc_dump	= cnl_ipc_dump,
++
++	/* stream callbacks */
++	.pcm_open	= hda_dsp_pcm_open,
++	.pcm_close	= hda_dsp_pcm_close,
++	.pcm_hw_params	= hda_dsp_pcm_hw_params,
++	.pcm_hw_free	= hda_dsp_stream_hw_free,
++	.pcm_trigger	= hda_dsp_pcm_trigger,
++	.pcm_pointer	= hda_dsp_pcm_pointer,
++
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_PROBES)
++	/* probe callbacks */
++	.probe_assign	= hda_probe_compr_assign,
++	.probe_free	= hda_probe_compr_free,
++	.probe_set_params	= hda_probe_compr_set_params,
++	.probe_trigger	= hda_probe_compr_trigger,
++	.probe_pointer	= hda_probe_compr_pointer,
++#endif
++
++	/* firmware loading */
++	.load_firmware = snd_sof_load_firmware_raw,
++
++	/* pre/post fw run */
++	.pre_fw_run = hda_dsp_pre_fw_run,
++	.post_fw_run = hda_dsp_post_fw_run_icl,
++
++	/* parse platform specific extended manifest */
++	.parse_platform_ext_manifest = hda_dsp_ext_man_get_cavs_config_data,
++
++	/* dsp core power up/down */
++	.core_power_up = hda_dsp_enable_core,
++	.core_power_down = hda_dsp_core_reset_power_down,
++
++	/* firmware run */
++	.run = hda_dsp_cl_boot_firmware_iccmax,
++	.stall = hda_dsp_core_stall_icl,
++
++	/* trace callback */
++	.trace_init = hda_dsp_trace_init,
++	.trace_release = hda_dsp_trace_release,
++	.trace_trigger = hda_dsp_trace_trigger,
++
++	/* DAI drivers */
++	.drv		= skl_dai,
++	.num_drv	= SOF_SKL_NUM_DAIS,
++
++	/* PM */
++	.suspend		= hda_dsp_suspend,
++	.resume			= hda_dsp_resume,
++	.runtime_suspend	= hda_dsp_runtime_suspend,
++	.runtime_resume		= hda_dsp_runtime_resume,
++	.runtime_idle		= hda_dsp_runtime_idle,
++	.set_hw_params_upon_resume = hda_dsp_set_hw_params_upon_resume,
++	.set_power_state	= hda_dsp_set_power_state,
++
++	/* ALSA HW info flags */
++	.hw_info =	SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++
++	.arch_ops = &sof_xtensa_arch_ops,
++};
++EXPORT_SYMBOL_NS(sof_icl_ops, SND_SOC_SOF_INTEL_HDA_COMMON);
++
++const struct sof_intel_dsp_desc icl_chip_info = {
++	/* Icelake */
++	.cores_num = 4,
++	.init_core_mask = 1,
++	.host_managed_cores_mask = GENMASK(3, 0),
++	.ipc_req = CNL_DSP_REG_HIPCIDR,
++	.ipc_req_mask = CNL_DSP_REG_HIPCIDR_BUSY,
++	.ipc_ack = CNL_DSP_REG_HIPCIDA,
++	.ipc_ack_mask = CNL_DSP_REG_HIPCIDA_DONE,
++	.ipc_ctl = CNL_DSP_REG_HIPCCTL,
++	.rom_init_timeout	= 300,
++	.ssp_count = ICL_SSP_COUNT,
++	.ssp_base_offset = CNL_SSP_BASE_OFFSET,
++};
++EXPORT_SYMBOL_NS(icl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index f2a107481336..153d66d5c948 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -209,7 +209,7 @@ static const struct sof_dev_desc icl_desc = {
+ 	.default_tplg_path = "intel/sof-tplg",
+ 	.default_fw_filename = "sof-icl.ri",
+ 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
+-	.ops = &sof_cnl_ops,
++	.ops = &sof_icl_ops,
+ };
+ #endif
  
 -- 
 2.28.0
