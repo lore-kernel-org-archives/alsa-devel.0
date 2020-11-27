@@ -2,65 +2,95 @@ Return-Path: <SRS0=aYR+=FB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9C5CC2D0E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 07:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41D1DC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 08:36:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 100282222F
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 07:59:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 549952224F
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 08:36:54 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ePqlCnEB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 100282222F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="qCWZ0PrF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 549952224F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40A49180E;
-	Fri, 27 Nov 2020 08:58:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40A49180E
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA38180F;
+	Fri, 27 Nov 2020 09:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA38180F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606463962;
-	bh=6gtJdK8prvfvzibqoS91O26l1JkO1hpO01HtA3bOqZ4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1606466212;
+	bh=wYeMDUhvMk2Wmx29RUqBMi9r/Khl2wtz8d1sESmrRuc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ePqlCnEBPhCXD43ZB6JrctpgkttrCyj+pOlgRgzQaUvqTC3njrs5hGBl6DLg5+Qoc
-	 Kr5bRRcE0qheJK3oEuIpl+UL+1cSqSqyH6U9fyZ7TpiYYFS8DHoZf2f7HzRF/Nn5vh
-	 t9Ml40WUtrriO+oQDiCVCzRojUGme9O4J625EGY4=
+	b=qCWZ0PrFDrcMCjKfjS32InlDHbaTqL4Sg/FVAN2uDAIiIGej2NH5s4lPGMDYjHO1+
+	 E3o4KwU0PR3Gs4Q9H2RbmTEo14lrApn3MXZjsev6Z11XR19dlTi5T4Gwq/tgfSJ/8v
+	 6n+MI3NpppgGJDuWhRmk+5JWraGrm6vQvZVUQGUQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98E6AF8015F;
-	Fri, 27 Nov 2020 08:58:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37C85F8015F;
+	Fri, 27 Nov 2020 09:36:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58FCAF8019D; Fri, 27 Nov 2020 08:58:29 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CE842F8019D; Fri, 27 Nov 2020 09:36:00 +0100 (CET)
+Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
+ [209.85.210.66])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 568C1F800E0
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 08:58:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 568C1F800E0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3D4E7AC2D;
- Fri, 27 Nov 2020 07:58:25 +0000 (UTC)
-Date: Fri, 27 Nov 2020 08:58:24 +0100
-Message-ID: <s5hlfenjknz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Subject: Re: new codec support of ALC897
-In-Reply-To: <3b00520f304842aab8291eb8d9191bd8@realtek.com>
-References: <3b00520f304842aab8291eb8d9191bd8@realtek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5184EF800EA
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 09:35:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5184EF800EA
+Received: by mail-ot1-f66.google.com with SMTP id 79so4020258otc.7
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 00:35:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=xh1hHzZVurhLLa9A5bjYyJ5OP5iFGRKbQx8AzvX3xN4=;
+ b=dNtmREMkH20LaNJWK5goN3xYaKdjMM6GxMifvmAVdSvZ/fSUgtildJJouqFnp0HUzj
+ vLFrkt8rUkiYAXisZeUBFaAx1Bv3h3hFQ40Pk6/D4U/5joVnEM6lP2r1jkPEwefQAeN/
+ vN54H+RU0lkhcIudLJyKPCRd5k4KXqtMfBN0TaF8jMKhZ2yAHaX6HoBoaWFrisLt3GV5
+ 8xHFV23D81Crj78HLTuxyZWVwkCAy6p8Gz5fN3FXfrGQ22LnmMgXm6uI18m0dWzG0MXo
+ Zxe7zadBAkWZGhIHSSPQku2HzLHK6A4DTychid6Qa8itk3in0BK/C06TM6MBOh3d95xB
+ wGBg==
+X-Gm-Message-State: AOAM531el2oNtrQgkBowpB1linDfnIt0QQe8j1YdGuOKXmd6TUKwM+nE
+ MAFqCZqN3eRaNlTWSuQDeAL/9wf4lRIzmnlmDfA=
+X-Google-Smtp-Source: ABdhPJxi+ycxEsm5KsGHfXpYVjf0qoqXVdSm5mG1czf/VSu3Ar1g/6kPH+lbgaSp8/Ea4xlpW0yThv8dOVha3z28GvM=
+X-Received: by 2002:a05:6830:210a:: with SMTP id
+ i10mr4949297otc.145.1606466150802; 
+ Fri, 27 Nov 2020 00:35:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20201126165950.2554997-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20201126165950.2554997-1-u.kleine-koenig@pengutronix.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 27 Nov 2020 09:35:39 +0100
+Message-ID: <CAMuHMdUbfT7ax4BhjMT_DBweab8TDm5e=xMv5f61t9QpQJt1mw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ALSA: ppc: drop if block with always false condition
+To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ DRI Development <dri-devel@lists.freedesktop.org>,
+ Paul Mackerras <paulus@samba.org>, scsi <linux-scsi@vger.kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>, Alan Stern <stern@rowland.harvard.edu>,
+ Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, linux-block@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Geoff Levand <geoff@infradead.org>, netdev <netdev@vger.kernel.org>,
+ USB list <linux-usb@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Jim Paris <jim@jtan.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,17 +106,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Nov 2020 07:45:49 +0100,
-Kailang wrote:
-> 
-> Hi Takashi,
-> 
-> Attach was the enable patch for ALC897.
-> 
-> BR,
-> Kailang
+Hi Uwe,
 
-Applied, thanks.
+On Thu, Nov 26, 2020 at 6:03 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+> The remove callback is only called for devices that were probed
+> successfully before. As the matching probe function cannot complete
+> without error if dev->match_id !=3D PS3_MATCH_ID_SOUND, we don't have to
+> check this here.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
+Thanks for your patch!
 
-Takashi
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Note that there are similar checks in snd_ps3_driver_probe(), which
+can be removed, too:
+
+        if (WARN_ON(!firmware_has_feature(FW_FEATURE_PS3_LV1)))
+                return -ENODEV;
+        if (WARN_ON(dev->match_id !=3D PS3_MATCH_ID_SOUND))
+                return -ENODEV;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
