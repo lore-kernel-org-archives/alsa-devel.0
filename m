@@ -2,67 +2,66 @@ Return-Path: <SRS0=aYR+=FB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69939C64E75
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 13:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3486C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 14:06:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A02842224D
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 13:58:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4201120679
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 14:06:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="VW0g/fyZ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A02842224D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="lz28K09E"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4201120679
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BA77181A;
-	Fri, 27 Nov 2020 14:57:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BA77181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE66C182B;
+	Fri, 27 Nov 2020 15:06:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE66C182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606485514;
-	bh=S5cXslDzYEdBk+PcdVoKOKVYNJ3lzihavA5akRbHmtc=;
+	s=default; t=1606486014;
+	bh=hnMxbMVOB/fX6e/xDLyv2GH+khlQNwu2KK55Kc2id90=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VW0g/fyZ74RtHxp5zHDjULt2aCpy/t1KYzZtPRCtcKFOEf30dqLikGSYUquylGetk
-	 20cKSDc1EM1vAe1VWbHr1ZT+acA87FZmVlMwn/YlQdlIcPdxz20FDtr0Tmz2zb3Ir4
-	 2gYXgDPiw1ELEDz2QlMdLR3+AboMekSUwjiM1/Tg=
+	b=lz28K09EE7hRo3z98ERkbGdMXci5PUONPjGGB7IDJ2wFHreyu0FFWvJc0dvutfdqq
+	 dh/3PYBvPzu4GOW4zTbGUp1GphqXVHfkjSP+/M+7YSO5OpwBO7Dv8nd9qE/9Qs0hee
+	 bk8L5xCPZ9oN9NJP21E8jyOLrist5ttl1Ci/9WMg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 112E7F8015F;
-	Fri, 27 Nov 2020 14:57:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65AD9F8015F;
+	Fri, 27 Nov 2020 15:06:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15150F8019D; Fri, 27 Nov 2020 14:57:42 +0100 (CET)
+ id 7C69FF8019D; Fri, 27 Nov 2020 15:06:01 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41AA3F800E0
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 14:57:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41AA3F800E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01B39F800EA
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 15:05:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01B39F800EA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5D7CDAC23;
- Fri, 27 Nov 2020 13:57:34 +0000 (UTC)
-Date: Fri, 27 Nov 2020 14:57:34 +0100
-Message-ID: <s5hy2imj41d.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id F1C8CAC23;
+ Fri, 27 Nov 2020 14:05:55 +0000 (UTC)
+Date: Fri, 27 Nov 2020 15:05:55 +0100
+Message-ID: <s5hwny6j3ng.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH] ALSA: usb-audio: US16x08: fix value count for level meters
-In-Reply-To: <20201127132635.18947-1-marcan@marcan.st>
-References: <20201127132635.18947-1-marcan@marcan.st>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.10-rc5
+In-Reply-To: <20201127134844.09EBC20B1F@mail.kernel.org>
+References: <20201127134844.09EBC20B1F@mail.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Detlef Urban <onkel@paraair.de>,
- stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,17 +77,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Nov 2020 14:26:35 +0100,
-Hector Martin wrote:
+On Fri, 27 Nov 2020 14:48:05 +0100,
+Mark Brown wrote:
 > 
-> The level meter control returns 34 integers of info. This fixes:
+> The following changes since commit 879ee8b6f2bae0cc4a25536f8841db1dbc969523:
 > 
-> snd-usb-audio 3-1:1.0: control 2:0:0:Level Meter:0: access overflow
+>   ASOC: Intel: kbl_rt5663_rt5514_max98927: Do not try to disable disabled clock (2020-11-18 17:59:23 +0000)
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Hector Martin <marcan@marcan.st>
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.10-rc5
+> 
+> for you to fetch changes up to aa4cb898b80a28a610e26d1513e6dd42d995c225:
+> 
+>   ASoC: rt5682: change SAR voltage threshold (2020-11-26 13:06:18 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.10
+> 
+> A small set of driver specific fixes, plus a new platform quirk from
+> Hans.
 
-Thanks, applied now.
+Pulled now.  Thanks.
 
 
 Takashi
