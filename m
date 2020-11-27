@@ -7,87 +7,66 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D06DC2D0E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 04:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F129C2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 05:38:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7CCE207D8
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 04:13:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41842206D8
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 05:38:46 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="u62BpxTZ";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="fQPLnJtG"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7CCE207D8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="W7i8+gxj"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41842206D8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B00A11800;
-	Fri, 27 Nov 2020 05:12:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B00A11800
+	by alsa0.perex.cz (Postfix) with ESMTPS id 855DE1808;
+	Fri, 27 Nov 2020 06:37:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 855DE1808
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606450406;
-	bh=V9wLR6T18cFB2WgwHRLt7iv1j/l+rzU7oxe1nSc5YW4=;
+	s=default; t=1606455524;
+	bh=NkLrOK6ZthwEfDQOU/erhXrkUlrk+zVpXF9wdu5Ru4U=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=u62BpxTZLGV9Ioc3YGiof8+HufOpkKrObtk9LYm1LEUas7vkYKXT30WmABFsPWwiF
-	 ghCMpwzeWla6tSH6W2GI93AkySUJ/C8h/UNmPvumTsmydhJLRYFGsUo7W1YGIue//5
-	 lRFywTpu4g5xsb62fMzOqNDYxNVqRtayvJhA7whU=
+	b=W7i8+gxjiIX/IFf2HlJvhyvJ/LkYss9LleYYyO5ITFP2xttq+TLgd+EOmUgjnqm6R
+	 I1mlBGY/737iCpPB+ocXT4MQngXikZ36iVtdT9GvALrlq0ukw3ARd3hb0U/MAzcDUj
+	 ZkfNMuMKm1M1MwCO6c3zfIAtVBFPAN6zJkvU93Bw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FB1BF8015F;
-	Fri, 27 Nov 2020 05:12:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E94AF8015F;
+	Fri, 27 Nov 2020 06:37:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 242CFF8019D; Fri, 27 Nov 2020 05:12:35 +0100 (CET)
-Received: from z5.mailgun.us (z5.mailgun.us [104.130.96.5])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0D1E9F80218; Fri, 27 Nov 2020 06:37:52 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56A1EF8015A
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 05:12:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56A1EF8015A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="fQPLnJtG"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1606450347; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=X7Qb679WxuRp4Difwrjsn0t8m9dWVYkJod5nmfHLyEo=;
- b=fQPLnJtGwHhXrNJ9PcO1Gl3m71WT4N2TY5Qg5J46S9/qeRUhIYasYuzK6TSfklp43KVPYie/
- /fBeroHG5Y7Ele/3sjyNkHOGpEBMuZYYvsm0oi/wONefOMLcjMI3ZZr5Yk9CmeN+wwF6NfSZ
- h2LNj3v0lvOohhac7ZqZkNz20eU=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fc07ca9eb04c001603a7a0a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 04:12:25
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 459C7C433ED; Fri, 27 Nov 2020 04:12:25 +0000 (UTC)
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id CADB8C433C6;
- Fri, 27 Nov 2020 04:12:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CADB8C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Asoc: qcom: Fix for problem in resume with CRAS
-Date: Fri, 27 Nov 2020 09:42:03 +0530
-Message-Id: <1606450323-21641-1-git-send-email-srivasam@codeaurora.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA212F800E0
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 06:37:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA212F800E0
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F6D71A0E73;
+ Fri, 27 Nov 2020 06:37:42 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 31B091A0793;
+ Fri, 27 Nov 2020 06:37:37 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EF3A14029B;
+ Fri, 27 Nov 2020 06:37:29 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+ devicetree@vger.kernel.org
+Subject: [PATCH 1/2] ASoC: dt-bindings: imx-hdmi: Add binding doc for hdmi
+ machine driver
+Date: Fri, 27 Nov 2020 13:30:20 +0800
+Message-Id: <1606455021-18882-1-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
-Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,70 +82,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To support playback continuation after resume problem in chrome
-audio server:
-Prepare device in  platform trigger callback.
-Make I2s and DMA control registers as non volatile.
+Imx-hdmi is a new added machine driver for supporting hdmi devices
+on i.MX platforms. There is HDMI IP or external HDMI modules connect
+with SAI or AUD2HTX interface.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/qcom/lpass-cpu.c      | 8 ++------
- sound/soc/qcom/lpass-platform.c | 5 +++--
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ .../bindings/sound/imx-audio-hdmi.yaml        | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index af684fd..c99be03 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 	struct lpass_variant *v = drvdata->variant;
- 	int i;
- 
--	for (i = 0; i < v->i2s_ports; ++i)
--		if (reg == LPAIF_I2SCTL_REG(v, i))
--			return true;
- 	for (i = 0; i < v->irq_ports; ++i)
- 		if (reg == LPAIF_IRQSTAT_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->rdma_channels; ++i)
--		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
-+		if (reg == LPAIF_RDMACURR_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->wrdma_channels; ++i)
--		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
--			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-+		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
- 			return true;
- 
- 	return false;
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 80b09de..2b0a7c1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		return -ENOTRECOVERABLE;
- 	}
- 	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		lpass_platform_pcmops_prepare(component, substream);
-+	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		ret = regmap_fields_write(dmactl->enable, id,
- 						 LPAIF_DMACTL_ENABLE_ON);
-@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+new file mode 100644
+index 000000000000..d5474f83ac2c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/imx-audio-hdmi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX audio complex with HDMI
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx-audio-hdmi
++      - fsl,imx-audio-sii902x
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  audio-cpu:
++    description: The phandle of an CPU DAI controller
++
++  hdmi-out:
++    description: |
++      This is a boolean property. If present, the transmitting function
++      of HDMI will be enabled, indicating there's a physical HDMI out
++      connector or jack on the board or it's connecting to some other IP
++      block, such as an HDMI encoder or display-controller.
++
++  hdmi-in:
++    description: |
++      This is a boolean property. If present, the receiving function of
++      HDMI will be enabled, indicating there is a physical HDMI in
++      connector/jack on the board.
++
++required:
++  - compatible
++  - model
++  - audio-cpu
++
++additionalProperties: false
++
++examples:
++  - |
++    sound-hdmi {
++        compatible = "fsl,imx-audio-hdmi";
++        model = "audio-hdmi";
++        audio-cpu = <&aud2htx>;
++        hdmi-out;
++    };
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.27.0
 
