@@ -2,78 +2,79 @@ Return-Path: <SRS0=aYR+=FB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A7C0C5519F
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:46:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86BDCC3E8C5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 17:36:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1A6420674
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:46:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 4A23D21527
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 17:35:58 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ag+e+oNK"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1A6420674
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="q/QMheWU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A23D21527
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D9CC1859;
-	Fri, 27 Nov 2020 17:45:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D9CC1859
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCF9B1815;
+	Fri, 27 Nov 2020 18:35:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCF9B1815
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606495583;
-	bh=Gcc+h/PtJBPn1aR5hGhmV4YIr/bJPSf/B1eyl6+8eMY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1606498556;
+	bh=GXrNEq+mpKTb8Ynu2BrRfzQt0flqEwQ86s85M6Hlzns=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ag+e+oNKWiBpj59G4cKx8lw9w/vzjBNurAhilKEndvV1RxqoWS9VwS3dZmhYc6bkV
-	 AfxzOuSpWoYuBnFmf2/EgxVMjs7qAOimcjwBTpPLw//mAuIC5jOvbbA5+RXH97WLad
-	 ZT2lfZK1rdPMDHkAMj3Z7rrumDInS873e0pxRDaE=
+	b=q/QMheWUuWy1+yDBNHYbhNGGmAsIuHumYUqk/LvD2f6qgxPpPkWTQtfHskfklPNkM
+	 0n6vhnlzEtX8PfOgPezUuI1gj0diw+PTt0+j/q+9xT3791/UNhYpM7cy61RvLCgjN2
+	 MD13ZtwzpAAIEKNFiTxTueNQGAzCxpKkolSG5/8Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4561F804E4;
-	Fri, 27 Nov 2020 17:43:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58DC7F8015F;
+	Fri, 27 Nov 2020 18:35:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3D29F804DF; Fri, 27 Nov 2020 17:43:12 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 70787F8019D; Fri, 27 Nov 2020 18:35:04 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D539BF80268
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 17:43:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D539BF80268
-IronPort-SDR: tLzc3SJeprF3LIh9HQqY2OqAbMVyGp75bM/xAG8Nv3h3U+8yz6MMyC4ZBVF6FBrGb6QCn4CLhN
- ci5xzjvpbF9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9818"; a="234020286"
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; d="scan'208";a="234020286"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Nov 2020 08:43:01 -0800
-IronPort-SDR: ylgl4DIZjdTZfX6PBqco5ZGFjcBnhxyMEeQ8/uJCjYZnSIXAW08sDxubE3Rn8BSub7de15va4v
- xJD/OkJEFfYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,375,1599548400"; d="scan'208";a="403933358"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga001.jf.intel.com with ESMTP; 27 Nov 2020 08:42:59 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 4/5] ASoC: SOF: ops: modify the signature of stall op
-Date: Fri, 27 Nov 2020 18:40:21 +0200
-Message-Id: <20201127164022.2498406-5-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201127164022.2498406-1-kai.vehmanen@linux.intel.com>
-References: <20201127164022.2498406-1-kai.vehmanen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBBD0F800EA
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 18:34:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBBD0F800EA
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1kihdj-0007Oz-Uy; Fri, 27 Nov 2020 18:34:35 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1kihdg-00033s-JD; Fri, 27 Nov 2020 18:34:32 +0100
+Date: Fri, 27 Nov 2020 18:34:30 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Leonard Goehrs <l.goehrs@pengutronix.de>
+Subject: Re: [PATCH] ALSA: ppc: remove redundant checks in PS3 driver probe
+Message-ID: <20201127173430.cdfufayj3cbytdx7@pengutronix.de>
+References: <20201127094547.4zcyeycfrriitkqx@pengutronix.de>
+ <20201127152259.1470079-1-l.goehrs@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, Fred Oh <fred.oh@linux.intel.com>,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="x2xoi2yg7vw2oj4d"
+Content-Disposition: inline
+In-Reply-To: <20201127152259.1470079-1-l.goehrs@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, geoff@infradead.org, mpe@ellerman.id.au,
+ tiwai@suse.com, paulus@samba.org, kernel@pengutronix.de,
+ benh@kernel.crashing.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,49 +90,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Fred Oh <fred.oh@linux.intel.com>
 
-Modify the signature of stall op to specify core_mask to stall cores.
+--x2xoi2yg7vw2oj4d
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- sound/soc/sof/ops.h      | 4 ++--
- sound/soc/sof/sof-priv.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Hallo Leonard,
 
-diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
-index 77a6ac157d37..95e748b36903 100644
---- a/sound/soc/sof/ops.h
-+++ b/sound/soc/sof/ops.h
-@@ -48,10 +48,10 @@ static inline int snd_sof_dsp_run(struct snd_sof_dev *sdev)
- 	return sof_ops(sdev)->run(sdev);
- }
- 
--static inline int snd_sof_dsp_stall(struct snd_sof_dev *sdev)
-+static inline int snd_sof_dsp_stall(struct snd_sof_dev *sdev, unsigned int core_mask)
- {
- 	if (sof_ops(sdev)->stall)
--		return sof_ops(sdev)->stall(sdev);
-+		return sof_ops(sdev)->stall(sdev, core_mask);
- 
- 	return 0;
- }
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 32d6ceb41fdd..9ba3e3ceed01 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -101,7 +101,7 @@ struct snd_sof_dsp_ops {
- 
- 	/* DSP core boot / reset */
- 	int (*run)(struct snd_sof_dev *sof_dev); /* mandatory */
--	int (*stall)(struct snd_sof_dev *sof_dev); /* optional */
-+	int (*stall)(struct snd_sof_dev *sof_dev, unsigned int core_mask); /* optional */
- 	int (*reset)(struct snd_sof_dev *sof_dev); /* optional */
- 	int (*core_power_up)(struct snd_sof_dev *sof_dev,
- 			     unsigned int core_mask); /* optional */
--- 
-2.28.0
+On Fri, Nov 27, 2020 at 04:22:59PM +0100, Leonard Goehrs wrote:
+> The check for the FW_FEATURE_PS3_LV1 firmware feature is already performed
+> in ps3_system_bus_init() before registering the driver. So if the probe
+> function is actually used, this feature is already known to be available.
+>=20
+> The check for the match id is also superfluous; the condition is always
+> true because the bus' match function (ps3_system_bus_match()) only
+> considers this driver for devices having:
+> dev->match_id =3D=3D snd_ps3_bus_driver_info.match_id.
+>=20
+> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Leonard Goehrs <l.goehrs@pengutronix.de>
 
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Thanks for picking this up.
+
+Best regards and have a nice week-end,
+Uwe Kleine-K=F6nig
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--x2xoi2yg7vw2oj4d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/BOKMACgkQwfwUeK3K
+7AmJhwf+OJGfgynfv6pDuxi0y6ZDfmonepwmPvArhPNxed/UewGad/XtUkRxuh+S
+axBDPcdEC8mxvW+ZyO+DMQY0zzQql63e+Ao1/g5SnP1MxuxWIndeMC/94SQy0IaJ
+URI1y9N7cabNRalVvc6WMf7mNl8yfWU5SJBQt8DRh7VB+YlbywCWMfSc/bXC1nV6
+GkgVRpAEeMs6tX8/9U1zvwzjMzXdm78Hy3Ptcz6E+PtcAXjs1QIXgsjWrKlBXr7b
+kjc8Z6uIRjvIKOrDAQuiP4Zplq359Zy0FDPUoM0U6e2llQ5GT1EEW7nKwvcd9/Ri
+1bhMMe4KNa+o8mDqBWVq0V9OQvDAlA==
+=/9Ch
+-----END PGP SIGNATURE-----
+
+--x2xoi2yg7vw2oj4d--
