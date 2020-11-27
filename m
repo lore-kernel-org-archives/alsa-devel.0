@@ -2,92 +2,57 @@ Return-Path: <SRS0=aYR+=FB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D1AFC2D0E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 09:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0ACFCC2D0E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 11:24:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A833C21D91
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 09:57:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id F381821534
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 11:24:52 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="HNGUBP11";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=mg.codeaurora.org header.i=@mg.codeaurora.org header.b="XuPw0WjB"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A833C21D91
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="kQuA0e74"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F381821534
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 185FB1837;
-	Fri, 27 Nov 2020 10:56:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 185FB1837
+	by alsa0.perex.cz (Postfix) with ESMTPS id 658C3183B;
+	Fri, 27 Nov 2020 12:24:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 658C3183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606471066;
-	bh=dD2dFxT1bHFi1JYa3JIxITE0CpwvM22h/WW6Olftr4k=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HNGUBP11bwvsRPYKvDrJtOtgO1PB01p5/yIg3IWfGQovIlsuui+2xHnbsYePiyLDK
-	 9tvKwsRAhb56jmIHk5TA/YT8j5Bphjl71RcZLxDPH80srloP5Y3eHdD7HHblnbHl2c
-	 OGIjI3PymbA7MHvedItEqhMmkxdRLcApIPCh4iFc=
+	s=default; t=1606476290;
+	bh=WKFRcVd9QTRp/UhRJVJFQRMniBHxqZeBtIzbSwgDmhY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kQuA0e74Ho+u3y0jtHKaOpu+YhCZ9G4cp5z4RhY93nd0wNAV9z1UGEL9v7N5vYzbM
+	 jkDMI9NfF9KBXeV3LVjrdhbS8aJv20DsZke1PDzBuNKFqq8L3A6NxRPr1023kUrXcS
+	 6V7hjWr0ffIToDdF4xhpzIn4pTAejgOgi/m05u6o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1721F8015F;
-	Fri, 27 Nov 2020 10:56:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F17ABF800EA;
+	Fri, 27 Nov 2020 12:23:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0B48F8019D; Fri, 27 Nov 2020 10:56:53 +0100 (CET)
-Received: from m42-4.mailgun.net (m42-4.mailgun.net [69.72.42.4])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44439F800EA
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 10:56:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44439F800EA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="XuPw0WjB"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1606471008; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=uh97Z0sQ4kcYvO9iLWdWG4UvbvTzslMqDnQZy4L6frI=;
- b=XuPw0WjBYE7rKB6ClQ77vZcQZW/0yMt6M2nNVC6lwJax1SyIcC7LO61hKw7ID5Qlvwi6D3ud
- AxhIP7A33xLIzbLOMP+Bv3qrGI5DganNnvUnjhH//eaoQT6CEqTQWLudG3zSmwo7eI6PqfN7
- RJFKMYjHbBXvEFBNHJlxDUJ92KM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5fc0cd5ea5c560669c7e659b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 27 Nov 2020 09:56:46
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 6899FC43469; Fri, 27 Nov 2020 09:56:45 +0000 (UTC)
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 860B9C4346A;
- Fri, 27 Nov 2020 09:56:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 860B9C4346A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: qcom: Fix playback recover problem in suspend resume
-Date: Fri, 27 Nov 2020 15:26:28 +0530
-Message-Id: <1606470988-26965-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ id 00F66F8019D; Fri, 27 Nov 2020 12:23:57 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 28127F800EA
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 12:23:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28127F800EA
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1606476231002583981-webhooks-bot@alsa-project.org>
+References: <1606476231002583981-webhooks-bot@alsa-project.org>
+Subject: pcm: ioplug: Limit transfer size to buffer boundary
+Message-Id: <20201127112358.00F66F8019D@alsa1.perex.cz>
+Date: Fri, 27 Nov 2020 12:23:57 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,73 +68,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To support playback continuation after hard suspend(bypass powerd)
- and resume:
-Prepare device in  platform trigger callback.
-Make I2s and DMA control registers as non volatile.
+alsa-project/alsa-lib pull request #103 was opened from aditpape:
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes Since v1 and v2:
-  -- Subject lines changed
+Commit 1714332719fc91507ca24dd3567e50d7094b3001 introduced 2nd transfer()
+call to transfer all remaining available frames.
+If the prior calculated avail value exceeds the buffer size a too large size value
+is passed to the underlaying plugin and results in memory corruption if not blocked by plugin internally.
+Avail values > buffer size can happen if e.g. xrun detection is disabled,
+as avail is calculated by pure difference between hw and app position.
+This patch limits 2nd transfer call to remaining rest of a buffer size.
 
- sound/soc/qcom/lpass-cpu.c      | 8 ++------
- sound/soc/qcom/lpass-platform.c | 5 +++--
- 2 files changed, 5 insertions(+), 8 deletions(-)
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index af684fd..c99be03 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -454,20 +454,16 @@ static bool lpass_cpu_regmap_volatile(struct device *dev, unsigned int reg)
- 	struct lpass_variant *v = drvdata->variant;
- 	int i;
- 
--	for (i = 0; i < v->i2s_ports; ++i)
--		if (reg == LPAIF_I2SCTL_REG(v, i))
--			return true;
- 	for (i = 0; i < v->irq_ports; ++i)
- 		if (reg == LPAIF_IRQSTAT_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->rdma_channels; ++i)
--		if (reg == LPAIF_RDMACURR_REG(v, i) || reg == LPAIF_RDMACTL_REG(v, i))
-+		if (reg == LPAIF_RDMACURR_REG(v, i))
- 			return true;
- 
- 	for (i = 0; i < v->wrdma_channels; ++i)
--		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start) ||
--			reg == LPAIF_WRDMACTL_REG(v, i + v->wrdma_channel_start))
-+		if (reg == LPAIF_WRDMACURR_REG(v, i + v->wrdma_channel_start))
- 			return true;
- 
- 	return false;
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 80b09de..2b0a7c1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -481,8 +481,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		return -ENOTRECOVERABLE;
- 	}
- 	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		lpass_platform_pcmops_prepare(component, substream);
-+	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		ret = regmap_fields_write(dmactl->enable, id,
- 						 LPAIF_DMACTL_ENABLE_ON);
-@@ -592,7 +593,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 		break;
- 	}
- 
--	return 0;
-+	return ret;
- }
- 
- static snd_pcm_uframes_t lpass_platform_pcmops_pointer(
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/103
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/103.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
