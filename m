@@ -2,65 +2,87 @@ Return-Path: <SRS0=aYR+=FB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC7A3C2D0E4
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 14:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D1EAC3E8C5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:21:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2984920B1F
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 14:33:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D8D2D21D7A
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Nov 2020 16:21:39 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="BzBk6dSH"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2984920B1F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="I3dFv62Z";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="maormRB/"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8D2D21D7A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F177184E;
-	Fri, 27 Nov 2020 15:33:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F177184E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B6D21849;
+	Fri, 27 Nov 2020 17:20:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B6D21849
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606487636;
-	bh=iY+fS0KlEYPhvSiNadg+TsiOgXDmX4r04qS0uT0I8oA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1606494097;
+	bh=zddLxlCzjvQCUIKJPRApQIgwKgr/yV43vpmOZuV1TM8=;
+	h=Date:From:To:In-Reply-To:References:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BzBk6dSHImEdEeWEiKZ1ft48sX4lDJiLKsKH52JK2I3OiMSgddkB92x+xGwpb4Ep/
-	 pajN/vaZE/BkBmnDw1Y7eEN3nZmGjuzW8KcexjJFDr6DOfkdbf1VZy//Y7VC7rC8Yn
-	 7i5DnbnauT6+wc1v5JgRqeo1JKbgV6S6ImbkXGOE=
+	b=I3dFv62Z+tkWvEIbrLoBWGiKUcfkBHJu89TRPc9afk12s+kOypfuqck+tCL9GbPjo
+	 bjfgy2S9GAfe4wa4O0h2lcygsTpiw3yMuk2/r9ee3bN11PPMs6EsR4J4R/yV3J8sLx
+	 kbzX1Bx0ZAZ2lXWQx+ACDoN1XTVrrJcs7BJbINSI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A774F80269;
-	Fri, 27 Nov 2020 15:32:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA57DF8015F;
+	Fri, 27 Nov 2020 17:20:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 255BBF802C4; Fri, 27 Nov 2020 15:32:13 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 9A348F8019D; Fri, 27 Nov 2020 17:20:44 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 975A8F8019D
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 15:32:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 975A8F8019D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3794DAE42;
- Fri, 27 Nov 2020 14:32:02 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: amd: Return -ENODEV for non-existing ACPI call
-Date: Fri, 27 Nov 2020 15:31:59 +0100
-Message-Id: <20201127143200.16272-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201127143200.16272-1-tiwai@suse.de>
-References: <20201127143200.16272-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C45C1F8015A
+ for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 17:20:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C45C1F8015A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="maormRB/"
+Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
+ [92.233.91.117])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9E2C221534;
+ Fri, 27 Nov 2020 16:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=default; t=1606494037;
+ bh=zddLxlCzjvQCUIKJPRApQIgwKgr/yV43vpmOZuV1TM8=;
+ h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+ b=maormRB/zuu98AI/ktz2A2ccUFQq7PSAMdadNz+5tYYOcWbyJT++1WbTnFmN+V9iU
+ VLeDGgE2VspenC0bPNpvnp9ZPmazSKJ/WN3428Dvs0af/OAriFSlEejhQtXB2sGQMs
+ 3oayn/WXqLNqtQFO/0s1zOImbpeyh/MPj637m2cg=
+Date: Fri, 27 Nov 2020 16:20:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: xuyuqing <xuyuqing@huaqin.corp-partner.google.com>,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
+References: <20201118005858.123013-1-xuyuqing@huaqin.corp-partner.google.com>
+Subject: Re: [PATCH v1 0/1] Fix 32 bit format for adau7002
+Message-Id: <160649401225.51911.879572172271559224.b4-ty@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
- alsa-devel@alsa-project.org, Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, dianders@chromium.org,
+ Stephan Gerhold <stephan@gerhold.net>, Taniya Das <tdas@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
+ Takashi Iwai <tiwai@suse.com>, tzungbi@chromium.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Andy Gross <agross@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rohit kumar <rohitkr@codeaurora.org>, dgreid@chromium.org,
+ zhouguohui@huaqin.corp-partner.google.com, judyhsiao@chromium.org,
+ linux-arm-kernel@lists.infradead.org, cychiang@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,35 +98,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-AMD Renoir driver tries to identify the presence of DMIC by evaluating
-ACPI _WOV entry, and it returns -EINVAL when the ACPI call failed.
-This ended up an error message like
-  snd_rn_pci_acp3x: probe of 0000:04:00.5 failed with error -22
-although the system is correctly set up.
+On Wed, 18 Nov 2020 08:58:57 +0800, xuyuqing wrote:
+> the microphone is attached to external codec(adau7002)
+> instead of rt5682.We need to always use 32 bit format on sc7180
+> to meet the clock requirement of adau7002:
+> The ADAU7002 requires a BCLK rate
+> that is a minimum of 64× the LRCLK sample rate
+> 
+> xuyuqing (1):
+>   ASoC: qcom: sc7180: fix 32 bit format for adau7002
+> 
+> [...]
 
-For avoiding such a superfluous error message, change the return value
-to -ENODEV.  Then the driver core just skips to the next one without
-complaining.
+Applied to
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210359
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/amd/renoir/rn-pci-acp3x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
-index b943e59fc302..877350f38a68 100644
---- a/sound/soc/amd/renoir/rn-pci-acp3x.c
-+++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
-@@ -224,7 +224,7 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
- 		handle = ACPI_HANDLE(&pci->dev);
- 		ret = acpi_evaluate_integer(handle, "_WOV", NULL, &dmic_status);
- 		if (ACPI_FAILURE(ret)) {
--			ret = -EINVAL;
-+			ret = -ENODEV;
- 			goto de_init;
- 		}
- 		if (!dmic_status) {
--- 
-2.26.2
+Thanks!
 
+[1/1] ASoC: qcom: sc7180: fix 32 bit format for adau7002
+      commit: 7f2c63d6ae0754e5389c5942cb3bd670ea6cff40
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
