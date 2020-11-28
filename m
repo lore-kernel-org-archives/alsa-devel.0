@@ -2,81 +2,61 @@ Return-Path: <SRS0=8kjR=FC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_2 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3D2AC63697
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 13:27:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9C0DC63798
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 20:32:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E60C22465A
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 13:27:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 31AC02222C
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 20:32:20 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZNXqWDa3";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="qyXpF6Sp"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E60C22465A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pFNHByT8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31AC02222C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC72F1858;
-	Sat, 28 Nov 2020 14:26:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC72F1858
+	by alsa0.perex.cz (Postfix) with ESMTPS id B11B01865;
+	Sat, 28 Nov 2020 21:31:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B11B01865
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606570019;
-	bh=wlRpR5k7tSed5+Y/LjhaD1wUPthFRlO6ecBs7oG5hHE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZNXqWDa3Mlf8XIzUsxIvWxBQw/Uqk+s22/4GOVUGMbgQ1gP1lu4KB/ypvyFFkRC6t
-	 qijMClM0aIciMTZV3uGRi0uZV8Yyn1XIbBe0CSwCRCaSupzDhZv6QdQ9wPGcApN6YG
-	 o83k/e89v0U4LS+p2HijupUaHauH62YDu4dYE25E=
+	s=default; t=1606595538;
+	bh=pSc4TVNwLrhg4OosZd5k1Gn2qh8LrkGQb//ejaC+qhI=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pFNHByT8mQIAVvN3q0Bc8/KdCuU9cjsEAbGX9CAd6ZBWDZp+8O5KNvz8nNZSfVft+
+	 1uEAS3eX3U/xT4rJ+bTu83EGX0iVHqSrYtbQad7jFuzCA1xxSOXRzuQpfXkJMQWEXo
+	 DdXUnuES+iblqP7+g9tGpfLu9a4vi4Y0zq7iZdAY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43BE1F800D0;
-	Sat, 28 Nov 2020 14:26:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E60AF80165;
+	Sat, 28 Nov 2020 21:31:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 703BCF80166; Sat, 28 Nov 2020 14:26:08 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id BA41DF800EA; Sat, 28 Nov 2020 21:31:14 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A6E5F800D0
- for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 14:26:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A6E5F800D0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qyXpF6Sp"
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net
- [81.101.6.87])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3A0B02466D;
- Sat, 28 Nov 2020 13:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606569957;
- bh=wlRpR5k7tSed5+Y/LjhaD1wUPthFRlO6ecBs7oG5hHE=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=qyXpF6SpgPF8iY8EUePUJsiv1JNSdeUpCyxkFYYJaSNq+1jgC97oDUbtarg61kpV9
- pn9uaMgHeCKBgaBuW3oMi2acFODI2OPwuTtLsDYatF0Mfi2sIhHkyXvvI09HamRxO0
- 85mMqV3o+xmJNp46PoYgcIwQ6zLmj61RUOz0I1pU=
-Date: Sat, 28 Nov 2020 13:25:51 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>
-Subject: Re: [PATCH 0/2] Make cb a required parameter of buffer-cb
-Message-ID: <20201128132551.4006f293@archlinux>
-In-Reply-To: <20201121161457.957-1-nuno.sa@analog.com>
-References: <20201121161457.957-1-nuno.sa@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 084FDF800EA
+ for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 21:31:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 084FDF800EA
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 2A01EAC17
+ for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 20:31:06 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH alsa-utils] alsactl: Make sure the kernel driver loaded before
+ alsa-restore.service
+Date: Sat, 28 Nov 2020 21:31:01 +0100
+Message-Id: <20201128203101.7333-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Olivier Moysan <olivier.moysan@st.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-iio@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,34 +72,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 21 Nov 2020 17:14:55 +0100
-Nuno S=C3=A1 <nuno.sa@analog.com> wrote:
+alsa-restore.service requires the sound devices having been set up
+beforehand.  However, systemd tends to start this service too early
+before the driver setup, which leads to the unsuccessful state
+restore.
 
-> When going through the code of the buffer-cb interface and all it's
-> users, I realized that the stm32_adfsdm driver is calling
-> `iio_channel_get_all_cb()` with NULL for the cb. After going a bit
-> trough the stm drivers, it looks like this is actually intentional.
-> However, it is clear that we have a clear/direct route here for a NULL
-> pointer dereference. This change makes cb a required parameter of the
-> API.
->=20
-> The first patch makes the necessary changes to the stm32_adfsdm driver
-> so that it does not break.
->=20
-> Nuno S=C3=A1 (1):
->   iio: buffer: Return error if no callback is given
->=20
-> Olivier Moysan (1):
->   ASoC: stm32: dfsdm: add stm32_adfsdm_dummy_cb() callback
->=20
->  drivers/iio/buffer/industrialio-buffer-cb.c |  5 +++++
->  sound/soc/stm/stm32_adfsdm.c                | 12 +++++++++++-
->  2 files changed, 16 insertions(+), 1 deletion(-)
->=20
+For assuring the kernel driver setup before this service, add the
+dependency on sound.target.
 
-Applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to do their magic.
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1179363
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ alsactl/alsa-restore.service.in | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks,
+diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service.in
+index a84c2e842444..104b97a6ef68 100644
+--- a/alsactl/alsa-restore.service.in
++++ b/alsactl/alsa-restore.service.in
+@@ -8,6 +8,8 @@ Description=Save/Restore Sound Card State
+ ConditionPathExists=!@daemonswitch@
+ ConditionPathExistsGlob=/dev/snd/control*
+ ConditionPathExists=@asoundrcfile@
++Requires=sound.target
++After=sound.target
+ 
+ [Service]
+ Type=oneshot
+-- 
+2.26.2
 
-Jonathan
