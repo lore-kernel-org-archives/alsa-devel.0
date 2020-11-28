@@ -2,60 +2,80 @@ Return-Path: <SRS0=8kjR=FC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CD81C63697
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D711C63697
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:49:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 831CB20679
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:41:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 077AE22269
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:49:11 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ot7ae0nI"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 831CB20679
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="bF3SeIX8"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 077AE22269
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F09C2186C;
-	Sat, 28 Nov 2020 09:40:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F09C2186C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F1381874;
+	Sat, 28 Nov 2020 09:48:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F1381874
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606552907;
-	bh=qnxhb/EJHOGgTsckRxn88ZKtNsa4tXG/NU4kfLXI5QQ=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ot7ae0nINS0sCTH2CXorgslr6aG4Ym8EJ1Tpq919k+IqYQabwpcK2DfLZT6bGW6CF
-	 kQO19Fzr/WYCfogMt+mdO//03DGacRfuIqdv9jkKhP9raOqnaufUkpiF4p6G+dUCoG
-	 /KjWOf+9D5fw4HT8pYOD2cICSu64/bAPlHsLtCFk=
+	s=default; t=1606553349;
+	bh=dzNUVra5lpJXIe/Ka4iEt+621IwMH018MuNSutTIQgk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bF3SeIX8kF9rRJd43dtzjnosEvQjgQfTFaI+ljSVOxG2TOfBAVoM6Hg+eoZ48BDoG
+	 e/z4ovUw7ST8W2byvrlXc14briHOawEdaSGCTtB4+EDjUMz36EyUg6duEXwZuWtzm/
+	 CqhebBz5V51a9ze5J/JK30fSrxWSzoB+3CxGVBf8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 731FCF800EA;
-	Sat, 28 Nov 2020 09:40:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1228F80165;
+	Sat, 28 Nov 2020 09:48:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE6C8F80166; Sat, 28 Nov 2020 09:40:53 +0100 (CET)
+ id BC598F80166; Sat, 28 Nov 2020 09:48:16 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5737F800EA
- for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 09:40:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5737F800EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19269F800EA
+ for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 09:48:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19269F800EA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 36AC6ABD7
- for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 08:40:40 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 9D80DABD7;
+ Sat, 28 Nov 2020 08:48:09 +0000 (UTC)
+Date: Sat, 28 Nov 2020 09:48:07 +0100
+Message-ID: <s5hwny5hnp4.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Add support for Pioneer DJ DDJ-RR controller
-Date: Sat, 28 Nov 2020 09:40:35 +0100
-Message-Id: <20201128084035.2958-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 1/2] ALSA: ppc: drop if block with always false condition
+In-Reply-To: <20201126165950.2554997-1-u.kleine-koenig@pengutronix.de>
+References: <20201126165950.2554997-1-u.kleine-koenig@pengutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
+ linux-scsi@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+ Alan Stern <stern@rowland.harvard.edu>, Jakub Kicinski <kuba@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, linux-block@vger.kernel.org,
+ Jens Axboe <axboe@kernel.dk>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Geoff Levand <geoff@infradead.org>, netdev@vger.kernel.org,
+ linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jim Paris <jim@jtan.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,88 +91,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Daniel Martin <dmanlfc@gmail.com>
+On Thu, 26 Nov 2020 17:59:49 +0100,
+Uwe Kleine-König wrote:
+> 
+> The remove callback is only called for devices that were probed
+> successfully before. As the matching probe function cannot complete
+> without error if dev->match_id != PS3_MATCH_ID_SOUND, we don't have to
+> check this here.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-This patch allows the Pioneer DJ DDJ-RR to be seen as a USB audio
-device under Linux and therefore usable in such applications as
-Mixxx.
+Applied this one now.  Thanks.
 
-Tested Master Audio out, headphones (both output jacks) and microphone
-input. All work perfectly.
 
-Signed-off-by: Daniel Martin <dmanlfc@gmail.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks-table.h | 56 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
-
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 85b99c6d3c61..7454011f6006 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3523,6 +3523,62 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 	}
- },
- 
-+{
-+	/*
-+	 * PIONEER DJ DDJ-RR
-+	 * PCM is 6 channels out & 4 channels in @ 44.1 fixed
-+	 */
-+	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x000d),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 6, //Master, Headphones & Booth
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x01,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC|
-+						   USB_ENDPOINT_SYNC_ASYNC,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 4, //2x RCA inputs (CH1 & CH2)
-+					.iface = 0,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x82,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC|
-+						 USB_ENDPOINT_SYNC_ASYNC|
-+						 USB_ENDPOINT_USAGE_IMPLICIT_FB,
-+					.rates = SNDRV_PCM_RATE_44100,
-+					.rate_min = 44100,
-+					.rate_max = 44100,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) { 44100 }
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
-+
- {
- 	/*
- 	 * Pioneer DJ DJM-900NXS2
--- 
-2.26.2
-
+Takashi
