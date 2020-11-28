@@ -2,70 +2,66 @@ Return-Path: <SRS0=8kjR=FC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42A12C63697
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B4FAC63697
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:51:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5E1722268
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:50:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id BA51722256
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Nov 2020 08:51:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RMFyK3G2"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5E1722268
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="L34sTi86"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA51722256
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 834221880;
-	Sat, 28 Nov 2020 09:49:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 834221880
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A6A91871;
+	Sat, 28 Nov 2020 09:50:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A6A91871
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606553431;
-	bh=WGA0pG6WUJSC8dtBx5llrUOYBU/rc/H9og2moOd1IN8=;
+	s=default; t=1606553485;
+	bh=IlcfQHQgxfZ9XszBUBimLXXJnJxV8NzX05uAgTE8Vm4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RMFyK3G2bhUM7xN9wAkhL9qRnosxdMI6eVvMb7k6XJS68m/abIUbI9FpmbVu/Yfa+
-	 h/p1C2X89LhVFJKzQVufuxlSP4zkbKL3ctB9iY9dLCwfr+fHJz31sBG9yg+cp3eM3o
-	 JPoIbtEAghhWHq39AfxWmUFZTgXdI04xoAuBaMag=
+	b=L34sTi864iD4L7BSwY8lilQIoa3UzGP7tqfcQEAmid9TbZV5pqIgeCYPI7t8E7imi
+	 hQ03k6X7f/adf4EUN1gn+QCWM5DL41G9t+IA17KdcwHqSx/TG4ZkCTCj2LiFlpQeA1
+	 HR1SfDKysvWvn6f3kFq0BOLOE17oS4V6ROvtu7q0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28C2FF8025E;
-	Sat, 28 Nov 2020 09:49:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBCE8F80166;
+	Sat, 28 Nov 2020 09:50:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2576EF8029B; Sat, 28 Nov 2020 09:49:40 +0100 (CET)
+ id EE432F80167; Sat, 28 Nov 2020 09:50:33 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B434AF800EA
- for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 09:49:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B434AF800EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id D55E6F800EA
+ for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2020 09:50:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D55E6F800EA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 58475AC65;
- Sat, 28 Nov 2020 08:49:34 +0000 (UTC)
-Date: Sat, 28 Nov 2020 09:49:34 +0100
-Message-ID: <s5htut9hnmp.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6A2E6AC6A;
+ Sat, 28 Nov 2020 08:50:31 +0000 (UTC)
+Date: Sat, 28 Nov 2020 09:50:31 +0100
+Message-ID: <s5hr1odhnl4.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Leonard Goehrs <l.goehrs@pengutronix.de>
-Subject: Re: [PATCH] ALSA: ppc: remove redundant checks in PS3 driver probe
-In-Reply-To: <20201127152259.1470079-1-l.goehrs@pengutronix.de>
-References: <20201127094547.4zcyeycfrriitkqx@pengutronix.de>
- <20201127152259.1470079-1-l.goehrs@pengutronix.de>
+To: trix@redhat.com
+Subject: Re: [PATCH] ALSA: remove trailing semicolon in macro definition
+In-Reply-To: <20201127192312.2861127-1-trix@redhat.com>
+References: <20201127192312.2861127-1-trix@redhat.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, geoff@infradead.org, mpe@ellerman.id.au,
- u.kleine-koenig@pengutronix.de, tiwai@suse.com, paulus@samba.org,
- kernel@pengutronix.de, benh@kernel.crashing.org,
- Geert Uytterhoeven <geert@linux-m68k.org>, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,22 +77,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Nov 2020 16:22:59 +0100,
-Leonard Goehrs wrote:
+On Fri, 27 Nov 2020 20:23:12 +0100,
+trix@redhat.com wrote:
 > 
-> The check for the FW_FEATURE_PS3_LV1 firmware feature is already performed
-> in ps3_system_bus_init() before registering the driver. So if the probe
-> function is actually used, this feature is already known to be available.
+> From: Tom Rix <trix@redhat.com>
 > 
-> The check for the match id is also superfluous; the condition is always
-> true because the bus' match function (ps3_system_bus_match()) only
-> considers this driver for devices having:
-> dev->match_id == snd_ps3_bus_driver_info.match_id.
+> The macro use will already have a semicolon.
 > 
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Leonard Goehrs <l.goehrs@pengutronix.de>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Applied now.  Thanks.
+Thanks, applied now.
 
 
 Takashi
