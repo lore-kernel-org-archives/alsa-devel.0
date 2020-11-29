@@ -2,76 +2,114 @@ Return-Path: <SRS0=XhTq=FD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CF00C5519F
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 11:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00C23C5519F
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 12:25:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85A35206F1
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 11:47:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 693E8207CD
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 12:25:25 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Du/Ctaab"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85A35206F1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="WkJjU8ng";
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cP/JyePF"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 693E8207CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20D5D188C;
-	Sun, 29 Nov 2020 12:46:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20D5D188C
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDD9F183C;
+	Sun, 29 Nov 2020 13:24:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDD9F183C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606650450;
-	bh=L20P6XEhc0WjwttmV+kaLLNz/RMXBbJAvfGL5yO9Xvo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Du/CtaabS1sFrP1OwMwP+UOjsucXYT2Eh9S0WisB9s/gSRy1zp8nZvE5M4prAetIY
-	 W5ldI8pgS5uzg7zCepaxyOPtOCo4IlqRTOAquukIIhFm5gXwJmVl7oZYD5KU8puIQP
-	 5vQ+HO2XuvBDD/BXS8gv2H5XlFZjR1uFod48rHMs=
+	s=default; t=1606652723;
+	bh=343BsRWhjH0YMRTWTN2KWvwobv+IvV8XYusheLMYG3k=;
+	h=To:From:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WkJjU8ngLShMblowx77dkAo5xC+7TPmWBvGr5z6JAxL1Ib8kXWtHvCUIBEdUW5wXT
+	 cbCtRTIwQEcd9FNJF8TXK620LhrnhtYZJ1uSQohAum+lczDo7aBouHq2FwB0zTbhD+
+	 nqmibLEGjIpuustFVRcH57I7pZS4t4ExxHKR+Ux8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83091F804ED;
-	Sun, 29 Nov 2020 12:43:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56B66F80148;
+	Sun, 29 Nov 2020 13:24:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE017F8016D; Sun, 29 Nov 2020 12:43:27 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 56301F80168; Sun, 29 Nov 2020 13:24:32 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 367E2F8016E
- for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2020 12:43:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 367E2F8016E
-IronPort-SDR: pSg7ShuAxTT/n3PpLBTaB/+XTNHWLc2sfZXJqYyFxqTTwZ1IQv6Agd0h7DTHth9ECxSkqBzRX7
- QDfWm9ig6bUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9819"; a="151779977"
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; d="scan'208";a="151779977"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Nov 2020 03:43:14 -0800
-IronPort-SDR: y+h36jCuOb3LQ75mQ4kkcuGpJEMWwob8XsN74kQi30UhvBWEMtXJ5jpwNUGxb6M/w1TOJa+A/z
- FOfOBMYB/0hA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,379,1599548400"; d="scan'208";a="480261657"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga004.jf.intel.com with ESMTP; 29 Nov 2020 03:43:12 -0800
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 5/8] ASoC: Intel: Allow for ROM init retry on CNL platforms
-Date: Sun, 29 Nov 2020 12:41:45 +0100
-Message-Id: <20201129114148.13772-6-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201129114148.13772-1-cezary.rojewski@intel.com>
-References: <20201129114148.13772-1-cezary.rojewski@intel.com>
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- tiwai@suse.com, broonie@kernel.org, mateusz.gorski@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAD78F800D0
+ for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2020 13:24:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAD78F800D0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="cP/JyePF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1606652666;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=0e0g5vUDVH8Rmyrs90GT0KJ6kl188LCKOV+l3ewhel8=;
+ b=cP/JyePFkmoSrO6mad1i40pLdwrn8lBatdfAKjYqrx5HiAxYa9DWWRCEEZCk8o96pXhH01
+ PJWMzkB0bfrZT2hPEwm0+cqn452rjKGFw4HHHL0GNsokv9OVh2qwR1ezsg4sN5lHvNWWtm
+ 3/vMlZsTLnnw8rGGzVRZPXj2CriCM4A=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-ewSg2ZKpNcqb82Gio0_SEA-1; Sun, 29 Nov 2020 07:24:22 -0500
+X-MC-Unique: ewSg2ZKpNcqb82Gio0_SEA-1
+Received: by mail-ed1-f72.google.com with SMTP id g8so5077102edm.7
+ for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2020 04:24:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+ :mime-version:content-language:content-transfer-encoding;
+ bh=0e0g5vUDVH8Rmyrs90GT0KJ6kl188LCKOV+l3ewhel8=;
+ b=P496EYXL9UIMcqzVGmGxjQMkzjWI8GlXHnPpE0/X3QFkbDs6LashVWqXgRVxet/DLw
+ 0xcGr0Z1e5BHi5WJWoRDrVKnLxTpxiTfnFct1oIvyclmkvj/AuqmqEDZ793qol4EB2Lq
+ 32NrV9Zc1kQlOtznDWhStj9/4ZkMi9Jh8X15ah1d5GEzRpjrk5C+zDg4Ld/X741OsZqV
+ QhuqUauzFfqiNvJuLj6/+wNzoiMI1wW3TWYT+zQeOUOU8KTbKR1/f4WdPa1xmTQWzBFm
+ GrjTRgPb9coYQ0/84Ts8UDUK1X0OBAefGrl7+HlKADN/tlnt4UEczZj/lme7Xiz/dPk0
+ n+uA==
+X-Gm-Message-State: AOAM532iHv60UgtOmsYghDpxbDfVit81pSJU3IJt0CP0ts/Mu73p9HSq
+ 05t9NEuAcR0+hT9IIRwkYIvMA7tcySuSqzE3VS0RIQIyVkVhHe4kUYpdii2tNIKwytmihy2EZgH
+ InRcxQ4V9S6jfDQ3z+YCqLlNT/OVPEYrwgdETmbGfDCtacgaFWy1Nuz0PFNF1RJtqBcGo6KD7an
+ Y=
+X-Received: by 2002:a17:906:60c8:: with SMTP id
+ f8mr15802326ejk.14.1606652661200; 
+ Sun, 29 Nov 2020 04:24:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxtb1JqPxrKGO7XxtmknWgIZgyjSv4GbmV3bEg8Kf0mm49bPHvnBOXPQDvxCSAHGXCtNy76Mw==
+X-Received: by 2002:a17:906:60c8:: with SMTP id
+ f8mr15802312ejk.14.1606652660963; 
+ Sun, 29 Nov 2020 04:24:20 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id y17sm1977295ejq.88.2020.11.29.04.24.20
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 29 Nov 2020 04:24:20 -0800 (PST)
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Asoc: Intel: SST (CHT) regression in asoc/for-5.11
+Message-ID: <93cc93a1-82bd-f5a3-4e19-4cfc65c868e7@redhat.com>
+Date: Sun, 29 Nov 2020 13:24:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,92 +125,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-commit 024aa45f55ccd40704cfdef61b2a8b6d0de9cdd1 upstream.
+Hi All,
 
-Due to unconditional initial timeouts, firmware may fail to load during
-its initialization. This issue cannot be resolved on driver side as it
-is caused by external sources such as CSME but has to be accounted for
-nonetheless.
+To test the code to dynamically switch between SST/SOF support on BYT/CHT
+from the kernel commandline I merged:
 
-Fixes: cb6a55284629 ("ASoC: Intel: cnl: Add sst library functions for cnl platform")
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200305145314.32579-7-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.4.x
----
- sound/soc/intel/skylake/bxt-sst.c     |  2 --
- sound/soc/intel/skylake/cnl-sst.c     | 15 ++++++++++-----
- sound/soc/intel/skylake/skl-sst-dsp.h |  1 +
- 3 files changed, 11 insertions(+), 7 deletions(-)
+https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=for-5.11
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 92a82e6b5fe6..cdafade8abd6 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -38,8 +38,6 @@
- /* Delay before scheduling D0i3 entry */
- #define BXT_D0I3_DELAY 5000
- 
--#define BXT_FW_ROM_INIT_RETRY 3
--
- static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
- {
- 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
-diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/cnl-sst.c
-index 4f64f097e9ae..060e47ae3391 100644
---- a/sound/soc/intel/skylake/cnl-sst.c
-+++ b/sound/soc/intel/skylake/cnl-sst.c
-@@ -109,7 +109,7 @@ static int cnl_load_base_firmware(struct sst_dsp *ctx)
- {
- 	struct firmware stripped_fw;
- 	struct skl_dev *cnl = ctx->thread_context;
--	int ret;
-+	int ret, i;
- 
- 	if (!ctx->fw) {
- 		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
-@@ -131,12 +131,16 @@ static int cnl_load_base_firmware(struct sst_dsp *ctx)
- 	stripped_fw.size = ctx->fw->size;
- 	skl_dsp_strip_extended_manifest(&stripped_fw);
- 
--	ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
--	if (ret < 0) {
--		dev_err(ctx->dev, "prepare firmware failed: %d\n", ret);
--		goto cnl_load_base_firmware_failed;
-+	for (i = 0; i < BXT_FW_ROM_INIT_RETRY; i++) {
-+		ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
-+		if (!ret)
-+			break;
-+		dev_dbg(ctx->dev, "prepare firmware failed: %d\n", ret);
- 	}
- 
-+	if (ret < 0)
-+		goto cnl_load_base_firmware_failed;
-+
- 	ret = sst_transfer_fw_host_dma(ctx);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "transfer firmware failed: %d\n", ret);
-@@ -158,6 +162,7 @@ static int cnl_load_base_firmware(struct sst_dsp *ctx)
- 	return 0;
- 
- cnl_load_base_firmware_failed:
-+	dev_err(ctx->dev, "firmware load failed: %d\n", ret);
- 	release_firmware(ctx->fw);
- 	ctx->fw = NULL;
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index cdfec0fca577..067d1ea11cde 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -67,6 +67,7 @@ struct skl_dev;
- 
- #define SKL_FW_INIT			0x1
- #define SKL_FW_RFW_START		0xf
-+#define BXT_FW_ROM_INIT_RETRY		3
- 
- #define SKL_ADSPIC_IPC			1
- #define SKL_ADSPIS_IPC			1
--- 
-2.17.1
+Into my personal tree (mostly Linus' master + some pending patches from
+myself).
+
+After this I was getting the following errors in dmesg when using sound on
+a Medion E2228T laptop with a CHT SoC + NAU8824 codec:
+
+[   53.805205] intel_sst_acpi 808622A8:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0
+[   53.805479] intel_sst_acpi 808622A8:00: fw returned err -16
+[   53.806281] sst-mfld-platform sst-mfld-platform: ASoC: PRE_PMD: pcm0_in event failed: -16
+[   54.829548] intel_sst_acpi 808622A8:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0
+[   54.829596] intel_sst_acpi 808622A8:00: fw returned err -16
+[   54.829668] sst-mfld-platform sst-mfld-platform: ASoC: POST_PMD: media0_out event failed: -
+[   55.853230] intel_sst_acpi 808622A8:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0
+[   55.853244] intel_sst_acpi 808622A8:00: fw returned err -16
+[   55.853269] sst-mfld-platform sst-mfld-platform: ASoC: POST_PMD: codec_out0 mix 0 event fai
+[   56.876435] intel_sst_acpi 808622A8:00: Wait timed-out condition:0x0, msg_id:0x1 fw_state 0
+[   56.876481] intel_sst_acpi 808622A8:00: fw returned err -16
+[   56.876563] sst-mfld-platform sst-mfld-platform: ASoC: POST_PMD: media0_out mix 0 event fai
+[   61.847455] intel_sst_acpi 808622A8:00: FW sent error response 0x40015
+[   61.847564] intel_sst_acpi 808622A8:00: fw returned err -1
+[   61.847659] sst-mfld-platform sst-mfld-platform: ASoC: error at snd_soc_dai_startup on ssp2
+[   61.847722]  SSP2-Codec: ASoC: BE open failed -1
+[   61.847754]  Audio Port: ASoC: failed to start some BEs -1
+[   61.847786] intel_sst_acpi 808622A8:00: FW sent error response 0x40006
+[   64.301284] intel_sst_acpi 808622A8:00: FW sent error response 0x90001
+[   64.301545] intel_sst_acpi 808622A8:00: not suspending FW!!, Err: -2
+
+Dropping the asoc/for-5.11 merge and just cherry-picking Pierre-Louis' changes
+for the dynamic switching makes these go away. So this seems to be caused by
+other changes in asoc/for-5.11.
+
+So any clues where to start looking for this, or should I just bisect this?
+
+Regards,
+
+Hans
 
