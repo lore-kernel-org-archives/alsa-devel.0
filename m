@@ -2,58 +2,62 @@ Return-Path: <SRS0=XhTq=FD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E1F2C3E8C5
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 23:46:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC705C3E8C5
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 23:46:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6B272067D
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 23:46:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D1498206DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Nov 2020 23:46:55 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Ogk8r6di"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6B272067D
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="XZ/O5I2y"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1498206DF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03A9B173F;
-	Mon, 30 Nov 2020 00:45:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03A9B173F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C57F8175D;
+	Mon, 30 Nov 2020 00:46:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C57F8175D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606693561;
-	bh=SqC6igcTf8l1c9snpNWXff3xty7OYIPqddjweOD1oEo=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ogk8r6di1Fr5TvbVubS41Hhy2sCtGjO/vEQ6Qih2dEJTWD7VK7kA58atIPa06ztIO
-	 PPn0g4qNOHOtd8KlE93rNKsoIKNA5hPkZWrhZeHkSmk3h/T6c/bHRkYp3jgD9UfpC5
-	 gxpez7xXOO+dGt7veEPFYSt/PYBKsdTWzxQdCqlQ=
+	s=default; t=1606693613;
+	bh=+NJpzrqYSEPsfNwOX2GCaAJb65rBSmPd/lHf8cQXofc=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XZ/O5I2ysEoMaYHE7chbW6GtME/so22tHHqzYmodEAmIz/pXEUYQl7asmtuZutHSX
+	 KaoH1HMSnj5RO/WZwBJPuT+9LIo04RQKIv2cRe9nBYkED7gJgQVtBTnkCQNL1MmBsO
+	 2AnnU0zSQ8ot4gnF8aNt+BU3120bnnIeOYkgmQUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82C3CF80148;
-	Mon, 30 Nov 2020 00:45:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 115AAF804BD;
+	Mon, 30 Nov 2020 00:45:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FD11F80168; Mon, 30 Nov 2020 00:45:07 +0100 (CET)
+ id 0F1D9F8026D; Mon, 30 Nov 2020 00:45:30 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id CB4CFF800D0
- for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2020 00:44:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB4CFF800D0
-Date: 30 Nov 2020 08:44:56 +0900
-X-IronPort-AV: E=Sophos;i="5.78,379,1599490800"; d="scan'208";a="64059800"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 30 Nov 2020 08:44:56 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id A56B1F8026D
+ for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2020 00:45:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A56B1F8026D
+Date: 30 Nov 2020 08:45:19 +0900
+X-IronPort-AV: E=Sophos;i="5.78,379,1599490800"; d="scan'208";a="64059853"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 30 Nov 2020 08:45:19 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 42C13412A936;
- Mon, 30 Nov 2020 08:44:56 +0900 (JST)
-Message-ID: <87zh2zu40a.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B95F04007F38;
+ Mon, 30 Nov 2020 08:45:19 +0900 (JST)
+Message-ID: <87y2iju3zm.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/2] ASoC: tidyup for jack.h
+Subject: [PATCH 1/2] ASoC: soc-core: tidyup jack.h
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87zh2zu40a.wl-kuninori.morimoto.gx@renesas.com>
+References: <87zh2zu40a.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,21 +77,41 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are jack.h related tidyup.
+soc-core.c don't need sound/jack.h anymore, but asoc.h needs it.
+This patch fixup header magic.
 
-Kuninori Morimoto (2):
-  ASoC: soc-core: tidyup jack.h
-  ASoC: add soc-jack.h
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/trace/events/asoc.h | 1 +
+ sound/soc/soc-core.c        | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
- include/sound/soc-jack.h    | 132 ++++++++++++++++++++++++++++++++++++
- include/sound/soc.h         | 122 +--------------------------------
- include/trace/events/asoc.h |   1 +
- sound/soc/soc-core.c        |   1 -
- 4 files changed, 134 insertions(+), 122 deletions(-)
- create mode 100644 include/sound/soc-jack.h
-
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index 40c300fe704d..4d8ef71090af 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/ktime.h>
+ #include <linux/tracepoint.h>
++#include <sound/jack.h>
+ 
+ #define DAPM_DIRECT "(direct)"
+ #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 50b4ce6374a0..4a86e987dcf0 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -32,7 +32,6 @@
+ #include <linux/of_graph.h>
+ #include <linux/dmi.h>
+ #include <sound/core.h>
+-#include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
 -- 
 2.25.1
 
