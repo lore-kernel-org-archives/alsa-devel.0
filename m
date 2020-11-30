@@ -2,67 +2,61 @@ Return-Path: <SRS0=21/e=FE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9021C63777
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 21:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB2A6C64E90
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 23:52:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 873E22085B
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 21:58:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 9F117207BB
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 23:51:57 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="sVKw7P4Z"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 873E22085B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MoGqETLL"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F117207BB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70E1F172F;
-	Mon, 30 Nov 2020 22:57:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70E1F172F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2A1B1717;
+	Tue,  1 Dec 2020 00:51:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2A1B1717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606773502;
-	bh=s1+gRngT2Qnhudj2pwKnK2vU96kTX5EFFAzdQBKob+w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sVKw7P4ZwaI4D9pNbwLwsxeQNT0ZEFo/3jsuPEXPGBSndfYWUVF5xO2NBFyz1Xmip
-	 tvOqnPmcV5ntlnoS6oTfgdUQ1w4XPjntCXV/lmEDU4NiqdS0bXqk6JxKaynE3mqMu4
-	 cisVM9dC4+zTKzd8ZAJ+yoNYoCcDZF+v15sNOhgk=
+	s=default; t=1606780315;
+	bh=UlvWDUxdWmQYmA4ZaCQElEea5Utzsi21ccLeS8lP3+s=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MoGqETLLz3vx2lM0C+gcVHhCL3yhemTzuFqNkBDYZr+kzCkLHKw3HcddKr/kfetTC
+	 2j2KrlS4t1i77XY7xI2vGTXXiwf0KzbcfCH7PFfXauUfe0RPsedxV5DrmskI64THMc
+	 /xGLWx/LdR5HSLFUoZaBAQ2Jbj1cPz5wstKbs8G4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FE22F804A9;
-	Mon, 30 Nov 2020 22:57:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70F24F800D0;
+	Tue,  1 Dec 2020 00:51:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A28FF804AA; Mon, 30 Nov 2020 22:57:18 +0100 (CET)
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4084CF8049C
- for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2020 22:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4084CF8049C
-X-Originating-IP: 86.194.74.19
-Received: from localhost (lfbn-lyo-1-997-19.w86-194.abo.wanadoo.fr
- [86.194.74.19]) (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B5ACD40002;
- Mon, 30 Nov 2020 21:57:10 +0000 (UTC)
-Date: Mon, 30 Nov 2020 22:57:10 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+ id A55FFF8025F; Tue,  1 Dec 2020 00:51:02 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 923E4F80247
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 00:50:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 923E4F80247
+Date: 01 Dec 2020 08:50:53 +0900
+X-IronPort-AV: E=Sophos;i="5.78,382,1599490800"; d="scan'208";a="64186282"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 01 Dec 2020 08:50:53 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 17C12400C4D9;
+ Tue,  1 Dec 2020 08:50:53 +0900 (JST)
+Message-ID: <87czzucsth.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/2] ASoC: soc-pcm: trigger cleanup
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: adau1372: add missing dependencies
-Message-ID: <20201130215710.GV1296649@piout.net>
-References: <20201130215626.2400999-1-alexandre.belloni@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201130215626.2400999-1-alexandre.belloni@bootlin.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,43 +72,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 30/11/2020 22:56:26+0100, Alexandre Belloni wrote:
-> SND_SOC_ADAU1372_I2C and SND_SOC_ADAU1372_SPI prpoerly select the REGMAP
-> config they need but forget to depend on the underlying bus.
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-I forgot:
+Hi Mark
 
-Reported-by: kernel test robot <lkp@intel.com>
+These are focusing to trigger function,
+which can be cleanup, tidyup.
 
-> ---
->  sound/soc/codecs/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index a457300f95da..625f762903ea 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -371,11 +371,13 @@ config SND_SOC_ADAU1372
->  
->  config SND_SOC_ADAU1372_I2C
->  	tristate "Analog Devices ADAU1372 CODEC (I2C)"
-> +	depends on I2C
->  	select SND_SOC_ADAU1372
->  	select REGMAP_I2C
->  
->  config SND_SOC_ADAU1372_SPI
->  	tristate "Analog Devices ADAU1372 CODEC (SPI)"
-> +	depends on SPI
->  	select SND_SOC_ADAU1372
->  	select REGMAP_SPI
->  
-> -- 
-> 2.28.0
-> 
+Kuninori Morimoto (2):
+  ASoC: soc-pcm: remove dpcm_do_trigger()
+  ASoC: soc-pcm: care trigger rollback
+
+ include/sound/soc-component.h |  3 +-
+ include/sound/soc-dai.h       |  4 +-
+ include/sound/soc-link.h      |  3 +-
+ include/sound/soc.h           |  1 +
+ sound/soc/soc-component.c     | 45 ++++++++++++++++++----
+ sound/soc/soc-dai.c           | 44 +++++++++++++++++----
+ sound/soc/soc-link.c          | 30 ++++++++++++++-
+ sound/soc/soc-pcm.c           | 72 ++++++++++++++++++++---------------
+ 8 files changed, 152 insertions(+), 50 deletions(-)
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.25.1
+
