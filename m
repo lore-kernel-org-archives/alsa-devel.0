@@ -4,76 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9AA3C64E7B
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 16:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ACABC63777
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 16:06:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CC9D20665
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 16:05:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2550C207F7
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 16:06:04 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="RcNw1I3d"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CC9D20665
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MwI0mekH"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2550C207F7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 217601761;
-	Mon, 30 Nov 2020 17:04:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 217601761
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D2321730;
+	Mon, 30 Nov 2020 17:05:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D2321730
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606752320;
-	bh=cSl4KqfrhlKBFWpxHerD+K77kz72auzAlYprqUcH3mU=;
-	h=From:To:Date:In-Reply-To:References:Subject:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RcNw1I3dpNELEUgZfEVnJ4HMRJfCtb7CFToNq6AcKLjJ9MW7Q6sCG93OWGbwrt3Sn
-	 4nmcDizAPjreZsQFTTimW4JlPCm2GAt7SpL5w+wTJ3yIRzVapOLdQn7M+PNLddoj9C
-	 M6WVmyHCFpvBV7N5QoBwbrKbbWE1VVaDP2Prtv2s=
+	s=default; t=1606752362;
+	bh=rpAMDBkoeFo8W0cy6bid/o7y+EWjx5Ig87Rqy/uMEQU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MwI0mekHFUX9MkeNf1n7yXCO7KKblzGQq9LBx5qYp/gO3OrldYwMq7F8gfhktU+Pa
+	 MJbARH9MKey/pw+U+/y54Oi/jWZAgSm8cxZA+LGChgxQ3FCY2upFBOxM4rkhgoIEhf
+	 80jRc9AH+X/t95qKWH/ESIaftKY4bPuzO8FVCc6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8281F804CB;
-	Mon, 30 Nov 2020 17:03:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 801C1F804D2;
+	Mon, 30 Nov 2020 17:03:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4469F8019D; Fri, 27 Nov 2020 16:24:42 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF781F8015A
- for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2020 16:24:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF781F8015A
-Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <lgo@pengutronix.de>)
- id 1kifb3-0002Iv-2c; Fri, 27 Nov 2020 16:23:41 +0100
-Received: from lgo by dude03.red.stw.pengutronix.de with local (Exim 4.92)
- (envelope-from <lgo@dude03.red.stw.pengutronix.de>)
- id 1kifax-006ATZ-FC; Fri, 27 Nov 2020 16:23:35 +0100
-From: Leonard Goehrs <l.goehrs@pengutronix.de>
-To: u.kleine-koenig@pengutronix.de, geoff@infradead.org, perex@perex.cz,
- tiwai@suse.com, mpe@ellerman.id.au
-Date: Fri, 27 Nov 2020 16:22:59 +0100
-Message-Id: <20201127152259.1470079-1-l.goehrs@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201127094547.4zcyeycfrriitkqx@pengutronix.de>
-References: <20201127094547.4zcyeycfrriitkqx@pengutronix.de>
+ id A40A9F8025F; Mon, 30 Nov 2020 04:11:51 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa1.perex.cz (Postfix) with ESMTP id 348A5F80247
+ for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2020 04:11:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 348A5F80247
+X-UUID: 6c9316236f4c4bcbaddb16bff1161f5a-20201130
+X-UUID: 6c9316236f4c4bcbaddb16bff1161f5a-20201130
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+ (envelope-from <lumi.lee@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
+ ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1355198473; Mon, 30 Nov 2020 11:11:32 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 30 Nov 2020 11:11:31 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Mon, 30 Nov 2020 11:11:30 +0800
+From: Lumi Lee <Lumi.Lee@mediatek.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: mediatek: btcvsd fix tx stream assign
+Date: Mon, 30 Nov 2020 11:11:15 +0800
+Message-ID: <1606705875-1940-1-git-send-email-Lumi.Lee@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::39
-X-SA-Exim-Mail-From: lgo@pengutronix.de
-Subject: [PATCH] ALSA: ppc: remove redundant checks in PS3 driver probe
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Content-Type: text/plain
+X-MTK: N
 X-Mailman-Approved-At: Mon, 30 Nov 2020 17:02:42 +0100
-Cc: alsa-devel@alsa-project.org, benh@kernel.crashing.org, paulus@samba.org,
- kernel@pengutronix.de, Geert Uytterhoeven <geert@linux-m68k.org>,
- Leonard Goehrs <l.goehrs@pengutronix.de>, linuxppc-dev@lists.ozlabs.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ wsd_upstream@mediatek.com, linux-kernel@vger.kernel.org,
+ jiaxin.yu@mediatek.com, Lumi Lee <lumi.lee@mediatek.com>,
+ Shane.Chien@mediatek.com, linux-mediatek@lists.infradead.org,
+ eason.yen@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,37 +85,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The check for the FW_FEATURE_PS3_LV1 firmware feature is already performed
-in ps3_system_bus_init() before registering the driver. So if the probe
-function is actually used, this feature is already known to be available.
+From: Lumi Lee <lumi.lee@mediatek.com>
 
-The check for the match id is also superfluous; the condition is always
-true because the bus' match function (ps3_system_bus_match()) only
-considers this driver for devices having:
-dev->match_id == snd_ps3_bus_driver_info.match_id.
+Fix tx/rx stream assign in write.
+Write should use tx instead of rx.
 
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Leonard Goehrs <l.goehrs@pengutronix.de>
+Signed-off-by: Lumi Lee <lumi.lee@mediatek.com>
 ---
- sound/ppc/snd_ps3.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/mediatek/common/mtk-btcvsd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
-index 58bb49fff184..b6e4aa3df870 100644
---- a/sound/ppc/snd_ps3.c
-+++ b/sound/ppc/snd_ps3.c
-@@ -896,11 +896,6 @@ static int snd_ps3_driver_probe(struct ps3_system_bus_device *dev)
- 	u64 lpar_addr, lpar_size;
- 	static u64 dummy_mask;
+diff --git a/sound/soc/mediatek/common/mtk-btcvsd.c b/sound/soc/mediatek/common/mtk-btcvsd.c
+index 668fef3..a554c57 100644
+--- a/sound/soc/mediatek/common/mtk-btcvsd.c
++++ b/sound/soc/mediatek/common/mtk-btcvsd.c
+@@ -808,7 +808,7 @@ static ssize_t mtk_btcvsd_snd_write(struct mtk_btcvsd_snd *bt,
+ 		spin_unlock_irqrestore(&bt->tx_lock, flags);
  
--	if (WARN_ON(!firmware_has_feature(FW_FEATURE_PS3_LV1)))
--		return -ENODEV;
--	if (WARN_ON(dev->match_id != PS3_MATCH_ID_SOUND))
--		return -ENODEV;
--
- 	the_card.ps3_dev = dev;
+ 		if (!avail) {
+-			int ret = wait_for_bt_irq(bt, bt->rx);
++			int ret = wait_for_bt_irq(bt, bt->tx);
  
- 	ret = ps3_open_hv_device(dev);
+ 			if (ret)
+ 				return written_size;
 -- 
-2.20.1
+1.7.9.5
 
