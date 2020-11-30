@@ -2,71 +2,74 @@ Return-Path: <SRS0=21/e=FE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E66CAC64E8A
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 01:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7E84C71156
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 04:06:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AB30E20757
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 01:53:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id DF35120756
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 04:06:19 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B06iPhGE"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB30E20757
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sntech.de
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="B8crikf6"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF35120756
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FD5116D0;
-	Mon, 30 Nov 2020 02:52:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FD5116D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6701F16CE;
+	Mon, 30 Nov 2020 05:05:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6701F16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606701189;
-	bh=MY+LW17GSXVBizLZira9jUeS58ZgUnulaWts5neqjpY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1606709177;
+	bh=mCjhWEhSH79zhPhqdwOtemKySYq54nE6Wz5pnf3NK3g=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B06iPhGE9+TF1feEW9G39Gf5nAtHv3LpYJSAqrTxXEBCNCDVFq3DzSuUi3+F5iDvM
-	 j9oN4C80QQoEc0zz9DD+jSre1CRQAygw7dpJujhqHpQ6+Hxfx8rrgg27PXif6PvVhk
-	 Nn49y31Ssl6WdRGVql3E11ss3QsmUdNB3l87P4Xw=
+	b=B8crikf6eWyfcmsHIwn9M+ybrpqa/KcyOCaIKMWZMz0O6K7hbcsQVCWCK65GVroVa
+	 GwxrkUwjFLQS7/uhqsqSq5YWLAr0oStI5QKXpobE14W8ZgEuWCPMBRtmrFak5sjgtp
+	 3DvNDkemCoXDsQ01piVi8bKBns58Qum+EtA+6/Gg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B851EF80148;
-	Mon, 30 Nov 2020 02:52:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5807F80254;
+	Mon, 30 Nov 2020 05:05:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14A5EF80168; Mon, 30 Nov 2020 02:52:17 +0100 (CET)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+ id ECB7BF8049C; Mon, 30 Nov 2020 05:05:24 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E90CBF80087
- for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2020 02:52:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E90CBF80087
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74]
- helo=phil.lan)
- by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <heiko@sntech.de>)
- id 1kjYME-0007OY-Vw; Mon, 30 Nov 2020 02:52:03 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: Johan Jonker <jbx6244@gmail.com>
-Subject: Re: (subset) [PATCH v5 0/7] Enable rk3066a HDMI sound
-Date: Mon, 30 Nov 2020 02:51:58 +0100
-Message-Id: <160670107988.1055391.2625216014157320355.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201118135822.9582-1-jbx6244@gmail.com>
-References: <20201118135822.9582-1-jbx6244@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
- linux-rockchip@lists.infradead.org, airlied@linux.ie, lgirdwood@gmail.com,
- mturquette@baylibre.com, hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org,
- daniel@ffwll.ch, sboyd@kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 698A4F800D0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2020 05:05:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 698A4F800D0
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5D5481A08B8;
+ Mon, 30 Nov 2020 05:05:17 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 40D911A0889;
+ Mon, 30 Nov 2020 05:05:12 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 05B1C402C4;
+ Mon, 30 Nov 2020 05:05:05 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 2/2] ASoC: bindings: fsl-asoc-card: add compatible string for
+ si476x codec
+Date: Mon, 30 Nov 2020 11:57:48 +0800
+Message-Id: <1606708668-28786-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1606708668-28786-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1606708668-28786-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,24 +85,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Nov 2020 14:58:15 +0100, Johan Jonker wrote:
-> First fix some legacy things in clk-rk3188.c that was never updated,
-> because probably nobody used rk3066a I2S before in the mainline kernel.
-> Update the rk3066a HDMI documents with a #sound-dai-cells property.
-> Include the code for sound in the HDMI driver.
-> Add a simple-sound-card compatible node to rk3066a.dtsi,
-> because I2S0 and HDMI TX are connected internally.
-> And as last enable rk3066a HDMI sound in the rk3066a-mk808.dts file.
-> 
-> [...]
+The si476x codec is used for FM radio function on i.MX6
+auto board.
 
-Applied, thanks!
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/fsl-asoc-card.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[1/7] clk: rockchip: add CLK_SET_RATE_PARENT to sclk for rk3066a i2s and uart clocks
-      commit: 5868491e1257786628fdd2457dfb77609f49f91d
-[2/7] clk: rockchip: fix i2s gate bits on rk3066 and rk3188
-      commit: caa2fd752ecb80faf7a2e1cdadc737187934675e
-
-Best regards,
+diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+index f339be62e7e4..90d9e9d81624 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
+@@ -40,6 +40,8 @@ The compatible list for this generic sound card currently:
+ 
+  "fsl,imx-audio-tlv320aic32x4"
+ 
++ "fsl,imx-audio-si476x"
++
+ Required properties:
+ 
+   - compatible		: Contains one of entries in the compatible list.
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.27.0
+
