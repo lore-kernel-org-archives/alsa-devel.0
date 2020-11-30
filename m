@@ -2,58 +2,62 @@ Return-Path: <SRS0=21/e=FE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB2A6C64E90
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 23:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FEBCC63777
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 23:52:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F117207BB
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 23:51:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 1E847207FF
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Nov 2020 23:52:47 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MoGqETLL"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F117207BB
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="NNYcp4E0"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E847207FF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2A1B1717;
-	Tue,  1 Dec 2020 00:51:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2A1B1717
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B363172F;
+	Tue,  1 Dec 2020 00:51:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B363172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606780315;
-	bh=UlvWDUxdWmQYmA4ZaCQElEea5Utzsi21ccLeS8lP3+s=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MoGqETLLz3vx2lM0C+gcVHhCL3yhemTzuFqNkBDYZr+kzCkLHKw3HcddKr/kfetTC
-	 2j2KrlS4t1i77XY7xI2vGTXXiwf0KzbcfCH7PFfXauUfe0RPsedxV5DrmskI64THMc
-	 /xGLWx/LdR5HSLFUoZaBAQ2Jbj1cPz5wstKbs8G4=
+	s=default; t=1606780365;
+	bh=+0W54dsoq0ynFCbFuuDiPpCSuxdkS9qQWg4FgLGKa/Q=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NNYcp4E0pO7MbPuzmZrOy1m80kZNw5j3RJxCVyrBhTKS6n/fhTHDSbrjhq5iBLIvS
+	 jUGNTzh0vU9QcvJty/2eMCds3v59XQ4fDngPKrGwsNsURHB+51hRiPv/F4XvuUp/0F
+	 anIygidXTrgkN2Yw6fyPbs8KDJHgpKsr9SjKm4zA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70F24F800D0;
-	Tue,  1 Dec 2020 00:51:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31DD3F8025F;
+	Tue,  1 Dec 2020 00:51:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A55FFF8025F; Tue,  1 Dec 2020 00:51:02 +0100 (CET)
+ id 16E82F804AB; Tue,  1 Dec 2020 00:51:34 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 923E4F80247
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 00:50:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 923E4F80247
-Date: 01 Dec 2020 08:50:53 +0900
-X-IronPort-AV: E=Sophos;i="5.78,382,1599490800"; d="scan'208";a="64186282"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 01 Dec 2020 08:50:53 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 7FC2CF8025F
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 00:51:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FC2CF8025F
+Date: 01 Dec 2020 08:51:25 +0900
+X-IronPort-AV: E=Sophos;i="5.78,382,1599490800"; d="scan'208";a="64186340"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 01 Dec 2020 08:51:25 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 17C12400C4D9;
- Tue,  1 Dec 2020 08:50:53 +0900 (JST)
-Message-ID: <87czzucsth.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9DB81412FA26;
+ Tue,  1 Dec 2020 08:51:25 +0900 (JST)
+Message-ID: <87blfecssk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/2] ASoC: soc-pcm: trigger cleanup
+Subject: [PATCH 1/2] ASoC: soc-pcm: remove dpcm_do_trigger()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87czzucsth.wl-kuninori.morimoto.gx@renesas.com>
+References: <87czzucsth.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,25 +77,159 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are focusing to trigger function,
-which can be cleanup, tidyup.
+dpcm_be_dai_trigger() is calling dpcm_do_trigger()
+at each SNDRV_PCM_TRIGGER_xxx (1).
 
-Kuninori Morimoto (2):
-  ASoC: soc-pcm: remove dpcm_do_trigger()
-  ASoC: soc-pcm: care trigger rollback
+	int dpcm_be_dai_trigger(...)
+	{
+		for_each_dpcm_be(fe, stream, dpcm) {
+(B)			...
+			switch (cmd) {
+			case SNDRV_PCM_TRIGGER_START:
+				...
+(1)				ret = dpcm_do_trigger(...);
+				...
+			case SNDRV_PCM_TRIGGER_RESUME:
+				...
+(1)				ret = dpcm_do_trigger(...);
+				...
+			case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+				...
+(1)				ret = dpcm_do_trigger(...);
+				...
+			case SNDRV_PCM_TRIGGER_STOP:
+				...
+(1)				ret = dpcm_do_trigger(...);
+				...
+			case SNDRV_PCM_TRIGGER_SUSPEND:
+				...
+(1)				ret = dpcm_do_trigger(...);
+				...
+			case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+				...
+(1)				ret = dpcm_do_trigger(...);
+				...
+			}
+		}
+	}
 
- include/sound/soc-component.h |  3 +-
- include/sound/soc-dai.h       |  4 +-
- include/sound/soc-link.h      |  3 +-
- include/sound/soc.h           |  1 +
- sound/soc/soc-component.c     | 45 ++++++++++++++++++----
- sound/soc/soc-dai.c           | 44 +++++++++++++++++----
- sound/soc/soc-link.c          | 30 ++++++++++++++-
- sound/soc/soc-pcm.c           | 72 ++++++++++++++++++++---------------
- 8 files changed, 152 insertions(+), 50 deletions(-)
+But it is just very verbose and duplicated function.
+Because We can indicate dev_dbg() (A) at dpcm_be_dai_trigger() (B).
+And dev_err() (C) is not needed because soc_pcm_trigger() itself
+indicates error message when error.
 
+	static int dpcm_do_trigger(...)
+	{
+		int ret;
+
+(A)		dev_dbg(...);
+
+		ret = soc_pcm_trigger(substream, cmd);
+		if (ret < 0)
+(C)			dev_err(...);
+
+		return ret;
+	}
+
+This patch replace dpcm_do_trigger() to soc_pcm_trigger().
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 30 +++++++++---------------------
+ 1 file changed, 9 insertions(+), 21 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 5250124dc8f5..4aaffa4ed382 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2047,21 +2047,6 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static int dpcm_do_trigger(struct snd_soc_dpcm *dpcm,
+-		struct snd_pcm_substream *substream, int cmd)
+-{
+-	int ret;
+-
+-	dev_dbg(dpcm->be->dev, "ASoC: trigger BE %s cmd %d\n",
+-			dpcm->be->dai_link->name, cmd);
+-
+-	ret = soc_pcm_trigger(substream, cmd);
+-	if (ret < 0)
+-		dev_err(dpcm->be->dev,"ASoC: trigger BE failed %d\n", ret);
+-
+-	return ret;
+-}
+-
+ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			       int cmd)
+ {
+@@ -2078,6 +2063,9 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
+ 			continue;
+ 
++		dev_dbg(be->dev, "ASoC: trigger BE %s cmd %d\n",
++			be->dai_link->name, cmd);
++
+ 		switch (cmd) {
+ 		case SNDRV_PCM_TRIGGER_START:
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PREPARE) &&
+@@ -2085,7 +2073,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+-			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
++			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2095,7 +2083,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_SUSPEND))
+ 				continue;
+ 
+-			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
++			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2105,7 +2093,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+-			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
++			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2119,7 +2107,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+-			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
++			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2132,7 +2120,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+-			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
++			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+ 				return ret;
+ 
+@@ -2145,7 +2133,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+-			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
++			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+ 				return ret;
+ 
 -- 
 2.25.1
 
