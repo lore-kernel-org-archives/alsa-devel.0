@@ -6,76 +6,78 @@ X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 342ABC64E7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 14:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4473C64E7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 14:02:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65840206A5
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 14:01:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id A8AEF20857
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 14:01:59 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="tbV0sDuI";
-	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="cWVHbkd3"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65840206A5
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FebslPk0";
+	dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7kryru9"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8AEF20857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA67917DB;
-	Tue,  1 Dec 2020 15:00:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA67917DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2DC017CF;
+	Tue,  1 Dec 2020 15:01:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2DC017CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606831276;
-	bh=EWyVZ1R7HsT27442RKZA5Etb/yqhcmh1LoGbxLfyGJQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1606831317;
+	bh=jbJA4PPu8cTtkIjIyFrCElyBbE/n6qgOGGszsOTDGbM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tbV0sDuIBWeJhs45vy6r1PvzzYVN2e2wcIYGjwmYWRlp5FkqvH2bMe3b1l7tefLoR
-	 u8qIOgzlIX/QeYUnzhle5xaopAknzpvS3cyUaicqVPfE781cfafr9NSP04NAn/hx3Q
-	 prv/BNMK3naVUNuN9BV9ht9pcGE8rZwDGTONVeF8=
+	b=FebslPk0i1e1i9td7fHZPFBIsFhjhzDLFSF42b83b1BrlKbZSkn0OQlQvPHDiSf4t
+	 Fv/jS5i+2lvgRXQhnlqLozW4g6dQguDqiAoFbnu+TC4U7/C8uhSc9VSxYDu0zNv13N
+	 vp1/dB3ZY1kdhPHykjoiccQwO4OjYQGraKoKXWkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04268F804D2;
-	Tue,  1 Dec 2020 14:59:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ABE57F804CC;
+	Tue,  1 Dec 2020 14:59:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F7E2F804D6; Tue,  1 Dec 2020 14:59:30 +0100 (CET)
+ id BC6CFF804CC; Tue,  1 Dec 2020 14:59:40 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2DFFF804CC
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:59:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2DFFF804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A703F804B2
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:59:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A703F804B2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cWVHbkd3"
+ header.b="L7kryru9"
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
  [92.233.91.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 769692086A;
- Tue,  1 Dec 2020 13:59:25 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id C1EA32220B;
+ Tue,  1 Dec 2020 13:59:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606831166;
- bh=EWyVZ1R7HsT27442RKZA5Etb/yqhcmh1LoGbxLfyGJQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cWVHbkd32O6lMTdMEIKFY55gH8HBi9eDqB/xVBxbITF096wuDiS2LBX41HhT7av31
- bl4CdHwppx0/sih/w85LkFbIgnikKs1GJcVlhAxYZCQlRQ0yF2dv7hL5CCaE8jWcX4
- 1qV4LelHelwdK6ty075Mh6avKQXoyj28C2o/mtEw=
+ s=default; t=1606831176;
+ bh=jbJA4PPu8cTtkIjIyFrCElyBbE/n6qgOGGszsOTDGbM=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=L7kryru9I2WHmXO6Ag+CJ/POwl3d7w2rsdp9F4A5+Dt3Awi8KlUB0zmUt8gllXtgp
+ 60qYJrbteS4K6n4nb3iRGII2bRgMICd/de60/3h2d4b2WQa3qR2kq8A49PYkzE8Wfx
+ F9FFaGQNFSNR+uLmZrcku13bvbxmqtVBvbnyralg=
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20201119125318.4066097-1-geert+renesas@glider.be>
-References: <20201119125318.4066097-1-geert+renesas@glider.be>
-Subject: Re: [PATCH] ASoC: fsi: Stop using __raw_*() I/O accessors
-Message-Id: <160683107676.35139.8906151580229078441.b4-ty@kernel.org>
+To: Jie Yang <yang.jie@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org,
+ linux-acpi@vger.kernel.org
+In-Reply-To: <20201124095628.54373-1-andriy.shevchenko@linux.intel.com>
+References: <20201124095628.54373-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1] ASoC: Intel: catpt: Replace open coded variant of
+ resource_intersection()
+Message-Id: <160683107676.35139.9521964646147921378.b4-ty@kernel.org>
 Date: Tue, 01 Dec 2020 13:57:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-renesas-soc@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
- alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,11 +93,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Nov 2020 13:53:18 +0100, Geert Uytterhoeven wrote:
-> There is no reason to keep on using the __raw_{read,write}l() I/O
-> accessors in Renesas ARM or SuperH driver code.  Switch to using the
-> plain {read,write}l() I/O accessors, to have a chance that this works on
-> big-endian.
+On Tue, 24 Nov 2020 11:56:28 +0200, Andy Shevchenko wrote:
+> Since we have resource_intersection() helper, let's utilize it here.
 
 Applied to
 
@@ -103,7 +102,7 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsi: Stop using __raw_*() I/O accessors
+[1/1] ASoC: Intel: catpt: Replace open coded variant of resource_intersection()
       (no commit info)
 
 All being well this means that it will be integrated into the linux-next
