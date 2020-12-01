@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EC97C64E7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:59:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5467AC64E7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 14:00:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C705F21D7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:59:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 2704920857
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 14:00:24 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="pcSphEnd";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6dIZxMU"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C705F21D7A
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="iHEAD0tS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+hGtYCU"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2704920857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD09317AC;
-	Tue,  1 Dec 2020 14:58:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD09317AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1E4017C5;
+	Tue,  1 Dec 2020 14:59:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1E4017C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606831172;
-	bh=ZciRQ0clP47O2viwbKF2X3XIXX0D+EsIIPHiUJWV+yQ=;
+	s=default; t=1606831222;
+	bh=9spJdPsaWRsuEQTtX75tfih8iQl2lDNEKtlnATfa8Lg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pcSphEndWJ58Ee1ZNKIcpSifjHmGY16c8o/GmHKEDz71KXpbLYETmYB51IUyJAyYC
-	 xc2UIEeMkW++Vz9dSfPeQoLcLxTaZXfZq0PAquKJEhGbzd84ml5BFTi7mFLIA+TtgV
-	 7KxxPjbwkP1tt0xEwO+a4u32Kg4WKsXWJmgHf2a4=
+	b=iHEAD0tSGptydDkJJoBj5pgsso9mJ7OESgYeIF6OobjcBHaqsO3ZmZcJf8m/2C5uj
+	 0mfyPfGABAIdFZ3pWG4zzCxzN2KymPyHE5HZy7LctmQP0cwcbJmT0cSUI+3YxsJh7g
+	 nbfnBun1/fYaDsvaWbPCQLl/9QEb4TNom1OTlZm0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6146EF8016D;
-	Tue,  1 Dec 2020 14:58:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E0E4F80254;
+	Tue,  1 Dec 2020 14:58:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81883F80254; Tue,  1 Dec 2020 14:58:40 +0100 (CET)
+ id 3925AF80276; Tue,  1 Dec 2020 14:58:45 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DF1FF80158
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:58:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DF1FF80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id B815EF8016C
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:58:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B815EF8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="I6dIZxMU"
+ header.b="E+hGtYCU"
 Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
  [92.233.91.117])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 4AB47206A5;
- Tue,  1 Dec 2020 13:58:25 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 9384E2086A;
+ Tue,  1 Dec 2020 13:58:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606831105;
- bh=ZciRQ0clP47O2viwbKF2X3XIXX0D+EsIIPHiUJWV+yQ=;
+ s=default; t=1606831116;
+ bh=9spJdPsaWRsuEQTtX75tfih8iQl2lDNEKtlnATfa8Lg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=I6dIZxMUSZw5LJ3shd89RuTmtg360kVOOA2fGx4s5axpSNRlbHmBC5a3eKkZHYxmI
- MPFffHppvt8NQevpinVzBgb+PspgvKNYeYwlacpuXQ7QjEfjUq2tdx12drh+qIzCJ7
- QL6emIYViGizSLXptkGIqN/S81VItMlCGYboYyKU=
+ b=E+hGtYCUDKwgMxd0PJds+It9B87EmMqYuXSoq63m4ItpQwJWbWMEPnWAcMk/+zucW
+ wlDK+ZyZHNbFDOF8xFOw3OrARjld8LUTUR/KNJfgNf3eE36vZ1Rima7+RDgupeE6xM
+ Rs1Uy2Dw1c+XD4flSJ/rzygom85DY26QQvNkC6AU=
 From: Mark Brown <broonie@kernel.org>
-To: robh@kernel.org, lgirdwood@gmail.com, grandmaster@al2klimov.de,
- perex@perex.cz, dmurphy@ti.com,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, tiwai@suse.com
-In-Reply-To: <20201002192801.639743-1-christophe.jaillet@wanadoo.fr>
-References: <20201002192801.639743-1-christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix a typo in a comment
-Message-Id: <160683107674.35139.8370464905366539450.b4-ty@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de
+In-Reply-To: <20201109135543.7862-1-yung-chuan.liao@linux.intel.com>
+References: <20201109135543.7862-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [RFC] ASoC: max98373: don't access volatile registers in bias
+ level off
+Message-Id: <160683107675.35139.2203434126118347345.b4-ty@kernel.org>
 Date: Tue, 01 Dec 2020 13:57:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, ryans.lee@maximintegrated.com,
+ kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ vkoul@kernel.org, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,10 +90,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2 Oct 2020 21:28:01 +0200, Christophe JAILLET wrote:
-> It is likely that this header file is about the TLV320ADCX140. (0 and 4
-> swapped)
-> While at it fix a missing "H" in a comment related to the include guard.
+On Mon, 9 Nov 2020 21:55:43 +0800, Bard Liao wrote:
+> We will set regcache_cache_only true in suspend. As a result, regmap_read
+> will return error when we try to read volatile registers in suspend.
+> Besides, it doesn't make sense to read feedback data when codec is not
+> active. To avoid the regmap_read error, this patch try to return a fake
+> value when kcontrol _get is called in suspend.
+> However, the question is what is the "correct" behavior when we try to
+> read a volatile register when cache only is set.
+> 1. return an error code to signal codec is not available as what we have
+> now.
+> 2. return a fake value like what this patch do.
+> 3. wake-up the codec and always return a valid value.
 
 Applied to
 
@@ -101,7 +109,7 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Fix a typo in a comment
+[1/1] ASoC: max98373: don't access volatile registers in bias level off
       (no commit info)
 
 All being well this means that it will be integrated into the linux-next
