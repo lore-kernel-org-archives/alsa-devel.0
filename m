@@ -2,83 +2,122 @@ Return-Path: <SRS0=HhIj=FF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF3BCC64E7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 15:18:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70B7DC64E7B
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 15:38:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A49F72084C
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 15:18:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 75C2020857
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 15:38:31 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="YDdIl+V/";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=kernel.org header.i=@kernel.org header.b="jm01DLEJ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A49F72084C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="Y8TSLjo1";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HlAu5V+K"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75C2020857
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0108F17B9;
-	Tue,  1 Dec 2020 16:17:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0108F17B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFB1817C1;
+	Tue,  1 Dec 2020 16:37:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFB1817C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606835903;
-	bh=dGfNSOBgGRBJkk/Dgt6x48Q5cXIZYVgrqNOCHjMDkls=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1606837108;
+	bh=6zVbxA+lVoKZxeARmXIa2LB4LCQkemB6U5f96SjZayA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YDdIl+V/wHrDREmfv2Fu1CEeZay20WigFx7/bMdis4TIhO2lEIGi7X1/0aRWtbkYC
-	 GBGAQlYIRorYgJ8224qobKau685Y4MohGMAdsi/mMKFtICk07J/giDet4l6yaoHNic
-	 oF6FALewlDHrTsQ+U/X5Dt93s9lm21E5rNhkR4XQ=
+	b=Y8TSLjo1skvolWh4vWGHyf7HDD+yIW8U7Z7vsCAtgdkl5T0rUL/ltDOzirV4vVb0i
+	 JEIOAjLdeHz54C3BnX3URuMPOrXpTIkMCjnpj8YAJldMtIyFVOh7ETkMEUaSez0Slf
+	 bfyBruZWtt6QAJ9AerbpwxTAiFsNGdcMHmWR6+jk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 604F6F80168;
-	Tue,  1 Dec 2020 16:17:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23122F80168;
+	Tue,  1 Dec 2020 16:37:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 493F8F8016C; Tue,  1 Dec 2020 16:17:30 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 56939F8016C; Tue,  1 Dec 2020 16:37:36 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E603F80139
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 16:17:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E603F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37A64F80158
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 16:37:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37A64F80158
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jm01DLEJ"
-Received: from localhost (cpc102334-sgyl38-2-0-cust884.18-2.cable.virginm.net
- [92.233.91.117])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 835362084C;
- Tue,  1 Dec 2020 15:17:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=default; t=1606835835;
- bh=dGfNSOBgGRBJkk/Dgt6x48Q5cXIZYVgrqNOCHjMDkls=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jm01DLEJUVd9ljYXUFOFnvDXYouaD7xBo/EfaVWKNbXZaKWnA8Enq2kgNj3Dzr65D
- 9+v/oLboL5EjgttiJnoat4rw1L/ku95iNEl3J7Dtn4AlshxKZvoGi4tm95B8LEE38b
- 6KKT/FCY/dFGKul8AkDWrjXE1u12QzCJedmi23XQ=
-Date: Tue, 1 Dec 2020 15:16:45 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Shane Chien <shane.chien@mediatek.com>
-Subject: Re: [RFC] ASoC: Add compatible for mt6359-sound device
-Message-ID: <20201201151645.GI5239@sirena.org.uk>
-References: <1606801293-19472-1-git-send-email-shane.chien@mediatek.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="HlAu5V+K"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1606837047;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BwZaIUwQe/3t//DTUOdD5UwvJ1BdHVdv+07t5o/FhBk=;
+ b=HlAu5V+KxLkjHsgg5+5XA/Hdm2buW0dVAACTZfduwyoiCv0KxDGlitaT68vsGG5RORTbtI
+ Zz9scGPeJc8e+eXCgsWpLyxAXadOwutA0sBil5b7/TO314anSpvVS222UocdsXGtDzawlk
+ w72GBitRGV1UuR1cuVYcvgbEu8QfxPw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-19-X6Yf9yiKOy6IZOfjX4jP7Q-1; Tue, 01 Dec 2020 10:37:24 -0500
+X-MC-Unique: X6Yf9yiKOy6IZOfjX4jP7Q-1
+Received: by mail-ej1-f72.google.com with SMTP id n17so1426181eja.23
+ for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2020 07:37:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=BwZaIUwQe/3t//DTUOdD5UwvJ1BdHVdv+07t5o/FhBk=;
+ b=DdIASsobXR5RxItBOWN+cYPD/E3N1T5tW4W0U02MkE+siPzuyfIbT9SB2CpeWNjmwU
+ qtwK/INup3lwncYp7Q/XYb1N1fktulTroU2HVp9EHr+O03qqYuexZYvb9ZsMWh30CMr7
+ zJdfjlIaO7hp6Pmrb8zRh4MvmXRVFfKaYlEq/wjQIqvuO6jVdeO7HLTKb8WeaxP51HyQ
+ UZT/wFhbJeunSQDCoGBYwGhzt5aryyzg+rKMFAYzDuXSpbY0vA/V10jRehf5/WHqbB25
+ yhznRhYuTVT/6FuVqRPg/MgxYglsFWNRSuI13iWUOMJjwqbu2guBaZ7XS1NFH0vTRNjb
+ uPbg==
+X-Gm-Message-State: AOAM533eKWlbmT59eCBJQSrjBakex84FgcN5PryVp8gQR5tFsbSMogFe
+ FFs81/ApAk2RRODXM5+F8+S8wFfYAd5rTKINFBZRJWUjyZanh/usvMfRcl8MT9CfyON9P0ncTWu
+ 4NvtHTc9KW8LfM9OXHDh+qvU=
+X-Received: by 2002:a50:9ee6:: with SMTP id a93mr3669230edf.174.1606837043228; 
+ Tue, 01 Dec 2020 07:37:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx2G/mYgN3DRNRi9iNpKwnu8DQx9FVHVw2IXl1JnjOsoFbRb/9nu7m/1cA96dOcetp1aD7B0A==
+X-Received: by 2002:a50:9ee6:: with SMTP id a93mr3669201edf.174.1606837042933; 
+ Tue, 01 Dec 2020 07:37:22 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id mc25sm58855ejb.58.2020.12.01.07.37.21
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 01 Dec 2020 07:37:21 -0800 (PST)
+Subject: Re: Asoc: Intel: SST (CHT) regression in asoc/for-5.11
+To: Takashi Iwai <tiwai@suse.de>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <93cc93a1-82bd-f5a3-4e19-4cfc65c868e7@redhat.com>
+ <2d9d0d43-8239-01e2-3787-98dfd305e369@linux.intel.com>
+ <7b50862a-d7e3-6a72-833d-5c8283c8deab@linux.intel.com>
+ <s5h5z5ld1ox.wl-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <34a9096c-75a4-90ff-3bb0-4f32ecda4cee@redhat.com>
+Date: Tue, 1 Dec 2020 16:37:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="xQR6quUbZ63TTuTU"
-Content-Disposition: inline
-In-Reply-To: <1606801293-19472-1-git-send-email-shane.chien@mediatek.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- chipeng.chang@mediatek.com, wsd_upstream@mediatek.com, fan.chen@mediatek.com,
- linux-kernel@vger.kernel.org, jiaxin.yu@mediatek.com, jeter.chen@mediatek.com,
- tzungbi@google.com, linux-mediatek@lists.infradead.org,
- Matthias Brugger <matthias.bgg@gmail.com>, Hsin-Hsiung.Wang@mediatek.com
+In-Reply-To: <s5h5z5ld1ox.wl-tiwai@suse.de>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,40 +133,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---xQR6quUbZ63TTuTU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 12/1/20 3:46 PM, Takashi Iwai wrote:
+> On Tue, 01 Dec 2020 04:24:58 +0100,
+> Pierre-Louis Bossart wrote:
+>>
+>>
+>>
+>>
+>>> On 11/29/20 6:24 AM, Hans de Goede wrote:
+>>>> Hi All,
+>>>>
+>>>> To test the code to dynamically switch between SST/SOF support on BYT/CHT
+>>>> from the kernel commandline I merged:
+>>>>
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=for-5.11 
+>>>>
+>>>>
+>>>> Into my personal tree (mostly Linus' master + some pending patches from
+>>>> myself).
+>>>>
+>>>> After this I was getting the following errors in dmesg when using
+>>>> sound on
+>>>> a Medion E2228T laptop with a CHT SoC + NAU8824 codec:
+>>>>
+>>>> [   53.805205] intel_sst_acpi 808622A8:00: Wait timed-out
+>>>> condition:0x0, msg_id:0x1 fw_state 0
+>>>> [   53.805479] intel_sst_acpi 808622A8:00: fw returned err -16
+>>>> [   53.806281] sst-mfld-platform sst-mfld-platform: ASoC: PRE_PMD:
+>>>> pcm0_in event failed: -16
+>>>> [   54.829548] intel_sst_acpi 808622A8:00: Wait timed-out
+>>>> condition:0x0, msg_id:0x1 fw_state 0
+>>>> [   54.829596] intel_sst_acpi 808622A8:00: fw returned err -16
+>>>> [   54.829668] sst-mfld-platform sst-mfld-platform: ASoC: POST_PMD:
+>>>> media0_out event failed: -
+>>>> [   55.853230] intel_sst_acpi 808622A8:00: Wait timed-out
+>>>> condition:0x0, msg_id:0x1 fw_state 0
+>>>> [   55.853244] intel_sst_acpi 808622A8:00: fw returned err -16
+>>>> [   55.853269] sst-mfld-platform sst-mfld-platform: ASoC: POST_PMD:
+>>>> codec_out0 mix 0 event fai
+>>>> [   56.876435] intel_sst_acpi 808622A8:00: Wait timed-out
+>>>> condition:0x0, msg_id:0x1 fw_state 0
+>>>> [   56.876481] intel_sst_acpi 808622A8:00: fw returned err -16
+>>>> [   56.876563] sst-mfld-platform sst-mfld-platform: ASoC: POST_PMD:
+>>>> media0_out mix 0 event fai
+>>>> [   61.847455] intel_sst_acpi 808622A8:00: FW sent error response 0x40015
+>>>> [   61.847564] intel_sst_acpi 808622A8:00: fw returned err -1
+>>>> [   61.847659] sst-mfld-platform sst-mfld-platform: ASoC: error at
+>>>> snd_soc_dai_startup on ssp2
+>>>> [   61.847722]  SSP2-Codec: ASoC: BE open failed -1
+>>>> [   61.847754]  Audio Port: ASoC: failed to start some BEs -1
+>>>> [   61.847786] intel_sst_acpi 808622A8:00: FW sent error response 0x40006
+>>>> [   64.301284] intel_sst_acpi 808622A8:00: FW sent error response 0x90001
+>>>> [   64.301545] intel_sst_acpi 808622A8:00: not suspending FW!!, Err: -2
+>>>>
+>>>> Dropping the asoc/for-5.11 merge and just cherry-picking
+>>>> Pierre-Louis' changes
+>>>> for the dynamic switching makes these go away. So this seems to be
+>>>> caused by
+>>>> other changes in asoc/for-5.11.
+>>>>
+>>>> So any clues where to start looking for this, or should I just
+>>>> bisect this?
+>>>
+>>> Thanks for reporting this Hans.
+>>>
+>>> The only thing that comes to my mind is Morimoto-san's series which
+>>> modified snd_soc_dai_startup, but that was back in September and
+>>> should be in 5.10-rcX
+>>>
+>>> Will give it a try on my side as well.
+>>
+>> I was able to reproduce this error with Mark's for-next branch on a
+>> CHT device w/ rt5640, and git bisect points to this commit:
+>>
+>> a27b421f1d04b201c474a15ee1591919c81fb413 is the first bad commit
+>> commit a27b421f1d04b201c474a15ee1591919c81fb413
+>> Author: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+>> Date:   Tue Nov 17 13:50:01 2020 -0800
+>>
+>>     ASoC: pcm: call snd_soc_dapm_stream_stop() in soc_pcm_hw_clean
+>>
+>>     Currently, the SND_SOC_DAPM_STREAM_START event is sent during
+>>     pcm_prepare() but the SND_SOC_DAPM_STREAM_STOP event is
+>>     sent only in dpcm_fe_dai_shutdown() after soc_pcm_close().
+>>     This results in an imbalance between when the DAPM widgets
+>>     receive the PRE/POST_PMU/PMD events. So call
+>>     snd_soc_dapm_stream_stop() in soc_pcm_hw_clean() before the
+>>     snd_soc_pcm_component_hw_free() to keep the stream_stop DAPM
+>>     event balanced with the stream_start event in soc_pm_prepare().
+>>
+>>     Also, in order to prevent duplicate DAPM stream events,
+>>     remove the call for DAPM STREAM_START event in dpcm_fe_dai_prepare()
+>>     and the call for DAPM STREAM_STOP event in dpcm_fe_dai_shutdown().
+>>
+>>     Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>>     Reviewed-by: Pierre-Louis Bossart
+>> <pierre-louis.bossart@linux.intel.com>
+>>     Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+>>     Link:
+>> https://lore.kernel.org/r/20201117215001.163107-1-ranjani.sridharan@linux.intel.com
+>>     Signed-off-by: Mark Brown <broonie@kernel.org>
+>>
+>>  sound/soc/soc-pcm.c | 10 +++-------
+>>  1 file changed, 3 insertions(+), 7 deletions(-)
+>>
+>>
+>> I am not sure why this break the Atom/SST driver, this was reviewed
+>> and seemed legit - even required IIRC to deal with topology pipelines
+>> initialized on-demand. Reverting this patch restores functionality. I
+>> would guess it's the DAPM_STREAM_START that's now missing (or in the
+>> 'wrong' location) and causing issues?
 
-On Tue, Dec 01, 2020 at 01:41:33PM +0800, Shane Chien wrote:
+Pierre-Louis, thank you for bisecting this.
 
-> However, if the device is not given a comaptible,
-> of_node of struct device is null. I cannot use
-> devm_iio_channel_get such iio interface to get
-> auxadc value from iio channel. Because during
-> using devm_iio_channel_get, of_node of mt6359-sound is a
-> input parameter of of_iio_channel_get_by_name.
-> If the of_node is null, devm_iio_channel_get will
-> eventually return ENODEV error.
+> 
+> Indeed the DAPM_START_STREAM call completely disappeared after the
+> patch, which looks very wrong.
 
-I would expect the IIO channel to be requestable using the top level
-device for the MFD - part of the deal here is that the function drivers
-for the MFD know they're part of the MFD so can look at their parent
-device for some things (eg, this is how regmaps are normally obtained).
+Yes that probably explains this issue.
 
---xQR6quUbZ63TTuTU
-Content-Type: application/pgp-signature; name="signature.asc"
+>> Hans, can you confirm if indeed this is the same issue on your devices?
 
------BEGIN PGP SIGNATURE-----
+I've tried reverting the commit and I can confirm that asoc/for-5.11
+works fine with the commit reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/GXlwACgkQJNaLcl1U
-h9BAOwf/YpwGU5QaZRcMFXBXVD7bkQtu2EutCs5svrbEIbr3lA1niZuznQAxi+6a
-EJCmeJQMOhfM1eWqoPsMR8Ys1EKuWKLwG6YQWS08MaQnTYWfxbrUOVojFD58OzaL
-hQo4Yi/3k08L2Hne44kqKBRtlKsOUinIUZi3Bfd+kApSW1EpnKsSr91qfyTJRFrx
-7qBCTxt2qNnd47lDqIrDEm72iyFR9SyCAttQJCGBnqm6ByFEhZgGQh92GOZfWG/w
-Ubq9Y3f3nY08xj3kCQD+H8HAjTPh8zdtXk5oJe8X80j9FyZDbQ01GlFkcnWeL7+p
-cc8ntzCYuiapNx0EQQhYBOrTDUkX8Q==
-=4ZF0
------END PGP SIGNATURE-----
+Regards,
 
---xQR6quUbZ63TTuTU--
+Hans
+
