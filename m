@@ -2,114 +2,105 @@ Return-Path: <SRS0=HhIj=FF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 787DAC64E7B
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CA2FC64E7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:50:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C5252087D
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:46:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 02AFC21D7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:50:17 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="EKMHviJX";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="11InS3IX";
-	dkim=temperror (0-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZNtE5X9k"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C5252087D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kroah.com
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="R3wUqDyJ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=metafoo.de header.i=@metafoo.de header.b="jDaECR9A"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02AFC21D7A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7575166D;
-	Tue,  1 Dec 2020 09:45:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7575166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6CE16F9;
+	Tue,  1 Dec 2020 09:49:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6CE16F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606812379;
-	bh=ziCPo7oItnSC4a021+bORkV2XqysqISFvgpMU93k1eA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1606812616;
+	bh=vITJA6tY1SsPIiEoBsmgLT2GTcIniX6Yrqu8I/GOESI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EKMHviJXtXI/QzrL7F3+viVtQSnlQmw+o+ZQSDfwbEg5SyMguKNHGVm8LHpvSNlt1
-	 0BmEjYvop+/CAYTkGJMlITtCG5lQ/WbnRR4UMYPjZFrZ3BeilCXjzlCibg8u/i322D
-	 /Q2mT7LFWhuEogJrgyRBAvJRjkQX7Oii2h9X8PcY=
+	b=R3wUqDyJisbwr/BNx/lxy8+LupNmIy0BGKvmrEtZwyH/qrjSXf/ESbIeLnvcVhSL6
+	 49hUJ6wxIffzACJOlI++mR8NXTjp58HkNDz9YGI7szLhgS7aqN0e48dSeGMc0cwxUM
+	 fVP3/hub0ZNI+ZbN2L8bA3mROLtyuxrZZYibHLFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 557FAF80510;
-	Tue,  1 Dec 2020 09:42:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99E34F80158;
+	Tue,  1 Dec 2020 09:49:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56887F80511; Tue,  1 Dec 2020 09:42:18 +0100 (CET)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D6EA6F8016D; Tue,  1 Dec 2020 09:49:24 +0100 (CET)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67BE1F8050F
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 09:42:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67BE1F8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id ACD8EF80158
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 09:49:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACD8EF80158
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com
- header.b="11InS3IX"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ZNtE5X9k"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.nyi.internal (Postfix) with ESMTP id E67EA5C0191;
- Tue,  1 Dec 2020 03:42:10 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Tue, 01 Dec 2020 03:42:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
- date:from:to:cc:subject:message-id:references:mime-version
- :content-type:in-reply-to; s=fm2; bh=G5iYvQJ/IEHDDv47uDKzi67A92D
- +rXCZFinCidCd03M=; b=11InS3IX42AAAeeCRj+oZsOtlVM5IZFdzJ1vNsFrlUt
- KPc9FwfOG6e7/CRrhwFWV6AazmqRNeyCNJ8Wm2w+W1KSltoEQ40uhPxwlXb+N75Z
- vdyQsuXkLHO24rHwzsSiNYlOmB6UCnIXMihc9y0pMzj/GYhwa3ZwX3NFes9BjSFZ
- mBO/hc5Ojsd2Nubfwd1KAisFVcf6Q09mWTm//kcuwwCe/rKInWe0FLRSJMghY0qH
- genR+6/Xpz1utJTR6xjlJdqRGJIruj3q0q8IvtcOQ3KLWXA/SuNZPtU+w/TwLFTZ
- faE6Ljg3udAXg7PH3OCN1ua30y38TnFE0cLe95dFN9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-type:date:from:in-reply-to
- :message-id:mime-version:references:subject:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=G5iYvQ
- J/IEHDDv47uDKzi67A92D+rXCZFinCidCd03M=; b=ZNtE5X9k6TAVuX5D5PPxzI
- l1aPMwyqkmsILeoaHLH6FTPFkM17103VB16PaV9osOqTuaZmNchBrGC08PgWFx8A
- ywDVpFrW3LVUlsnJO1uEjX6ul2DhuayJqmt1eZdGvn0hPhxZuN4KLA+oD/ZRsvMy
- 5rVRKcbCQpZDspQYwtOkNorEhg3sbJYy3dPggnUQe3FuCoh8vVo26kJITnQjETg1
- m3V3St+jKMJlpty1U217INtQgXpvEdrtL580m6YbBLBsgXc2fTL2gSOEbaEgifcq
- FT8v03l6r0Gz1W9r/c5lqYL9e3X/d5tSvY40g+J7lWavSP8YtQD8r87LR35UHOtA
- ==
-X-ME-Sender: <xms:4QHGXxro317dbOD_lMTCTIQa2kYbCm7TCJwTP7ihxx5lP4cFanxMFg>
- <xme:4QHGXzpLy1u4srOb9bONX2B7XuaxyQ7ttD_G3WlOhGyCqFDHyUWeC8D8wXJXKQTV8
- P1sCemez-zl0A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeiuddguddvudcutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
- necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
- enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
- ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepueelle
- dtheekleethfeludduvdfhffeuvdffudevgeehkeegieffveehgeeftefgnecuffhomhgr
- ihhnpehkvghrnhgvlhdrohhrghenucfkphepkeefrdekiedrjeegrdeigeenucevlhhush
- htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgr
- hhdrtghomh
-X-ME-Proxy: <xmx:4QHGX-N7_VdZnuYAhcwxQ4X9CLbfdqIc1aX2Pon23MwvrwtWE9g7gA>
- <xmx:4QHGX84dY4gnXM4L0deaSr4ctc1Qm5FGXASzOLEZRdZqSVV59g_uJw>
- <xmx:4QHGXw6JJnnvPhdkEb5DzByLDrRhlEGz4ZtL1fjiyuK-wBlu-FhHeg>
- <xmx:4gHGX6SF1zFNXhdNzFQ1PXtgaLhXv1HypYGkWwkR00Ja1fmc5lr7tw>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
- by mail.messagingengine.com (Postfix) with ESMTPA id 4F8233280063;
- Tue,  1 Dec 2020 03:42:09 -0500 (EST)
-Date: Tue, 1 Dec 2020 09:43:22 +0100
-From: Greg KH <greg@kroah.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/8] ASoC: Intel: Skylake: Fix HDAudio and DMIC for v5.4
-Message-ID: <X8YCKiV8/MWKMAUd@kroah.com>
-References: <20201129114148.13772-1-cezary.rojewski@intel.com>
+ dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
+ header.b="jDaECR9A"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
+ s=default2002;
+ h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+ MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID;
+ bh=wlhTi2vRc8OQsX48Xuggh9y4u/DbRIrhubCVEYrXTzk=; b=jDaECR9A3yzBEeJFpqQ99yVnm/
+ n+21ZEWpCfS3Q0GL0ib0ICjWIh8GWspMrvZ6HCzKfjKukKEfgV19PM6i/Csm/JB7Wc6yfrC2vY76d
+ CmnGqAYFgX6hfvFHylzO8gcTqJhELovVEO/ID7L0RA/0tNC1n6okn+MG3bZhYqEx7+vTKwdoCERQh
+ V9RNCqZzyzwt3EiFHSupGEWSN2hcsvoy+bAmesBl9peK81Fw1Ef/VPz9FjZh8mMIgSgQxUJsrqv2Z
+ 9yumd3demQTyzzM1mLtlS/JWLWICedHAsKv7DTDXvkHHRvYlGtWMYiJIOrluCTwwhZWVjuobfv7oV
+ klhP3BLQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+ by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
+ id 1kk0vX-0004BZ-1D; Tue, 01 Dec 2020 09:22:23 +0100
+Received: from [62.216.202.54] (helo=[192.168.178.20])
+ by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92) (envelope-from <lars@metafoo.de>)
+ id 1kk0vW-000TKz-Qz; Tue, 01 Dec 2020 09:22:22 +0100
+Subject: Re: [RFC PATCH 2/4] ASoC: soc-generic-dmaengine-pcm: Add custom
+ prepare and submit function
+To: "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
+References: <20201117080354.4309-1-michael.wei.hong.sit@intel.com>
+ <20201117080354.4309-4-michael.wei.hong.sit@intel.com>
+ <20201117155038.GO4077@smile.fi.intel.com>
+ <CO1PR11MB50269CF832CD14BA2D2A883CDAE10@CO1PR11MB5026.namprd11.prod.outlook.com>
+ <20201118145055.GW4077@smile.fi.intel.com>
+ <CO1PR11MB5026A81C4294BEF4EE5EF923DAFB0@CO1PR11MB5026.namprd11.prod.outlook.com>
+ <BYAPR11MB30465A81744EA686D2502DB69DF50@BYAPR11MB3046.namprd11.prod.outlook.com>
+ <e9bae9eb-6b8b-5a8c-eba0-d7f5da955987@metafoo.de>
+ <20201130110915.GI4077@smile.fi.intel.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <74ed61e1-67d9-d7b7-0619-fbe61ad7a583@metafoo.de>
+Date: Tue, 1 Dec 2020 09:22:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201129114148.13772-1-cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, broonie@kernel.org,
- mateusz.gorski@linux.intel.com
+In-Reply-To: <20201130110915.GI4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26004/Mon Nov 30 15:29:06 2020)
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
+ "Sia, Jee Heng" <jee.heng.sia@intel.com>, "tiwai@suse.com" <tiwai@suse.com>,
+ "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>,
+ "vkoul@kernel.org" <vkoul@kernel.org>,
+ "broonie@kernel.org" <broonie@kernel.org>, "Sit,
+ Michael Wei Hong" <michael.wei.hong.sit@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,27 +116,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Nov 29, 2020 at 12:41:40PM +0100, Cezary Rojewski wrote:
-> First six of the backport address numerous problems troubling HDAudio
-> configuration users for Skylake driver. Upstream series:
-> "ASoC: Intel: Skylake: Fix HDaudio and Dmic" [1] provides the
-> explanation and reasoning behind it. These have been initialy pushed
-> into v5.7-rc1 via: "sound updates for 5.7-rc1" [2] by Takashi.
-> 
-> Last two patches are from: "Add support for different DMIC
-> configurations" [3] which focuses on HDAudio with DMIC configuration.
-> Patch: "ASoC: Intel: Skylake: Add alternative topology binary name"
-> of the mentioned series has already been merged to v5.4.y -stable and
-> thus it's not included here.
-> 
-> Fixes target mainly Skylake and Kabylake based platforms, released
-> in 2015-2016 period.
-> 
-> [1]: https://lore.kernel.org/alsa-devel/20200305145314.32579-1-cezary.rojewski@intel.com/
-> [2]: https://lore.kernel.org/lkml/s5htv22uso8.wl-tiwai@suse.de/
-> [3]: https://lore.kernel.org/alsa-devel/20200427132727.24942-1-mateusz.gorski@linux.intel.com/
+On 11/30/20 12:09 PM, Shevchenko, Andriy wrote:
+> On Mon, Nov 30, 2020 at 11:45:17AM +0100, Lars-Peter Clausen wrote:
+>> On 11/30/20 10:57 AM, Sit, Michael Wei Hong wrote:
+>>> Is there anymore comment on this RFC?
+>>> We will be using the ASoC framework to split the linked-list, since resplitting the linked-list in DMA is a no go.
+>>> If there isn't any more comments, we will push these patches for review and merging.
+>> Why is splitting the list in the DMAengine framework a no go?
+>>
+>> The whole idea of the DMAengine framework is to hide hardware specifics. It
+>> offers an API with certain semantics and it is up to the driver to provide
+>> an implementation that implements these semantics. There does not
+>> necessarily have to be a 1-to-1 mapping to hardware primitives in such an
+>> implementation.
+> I would say it's not desirable.
+>
+> Why should we split than resplit if we may do it in one go?
+> Why then we have DMA capabilities returned to the consumers.
+>
+> So, I have that we need to optimize DMA SG list preparation in a way that
+> consumer gets SG list cooked in accordance with DMA limitations / requirements.
 
-Thanks for these, it was very easy to pick them up in this format, much
-appreciated.
+The API that the audio drivers use request a period DMA transfer for 
+length N split into M segments with the callback being called after each 
+segment.
 
-greg k-h
+How that is implemented internally in the DMA does not matter as long as 
+it matches those semantics. E.g. if the segment is longer than what the 
+DMA can handle it can split it into two segments internally and call the 
+callback every second segment.
+
+The way this API works there isn't even really a possibility for the 
+client side to split periodic transfers.
+
+Btw. 1024 beats per segment seems excessively small, I don't understand 
+how somebody would design such an DMA. Was the assumption that the DMA 
+will never transfer more than PAGE_SIZE of contiguous memory? Or do we 
+not understand the documentation correctly?
+
+- Lars
+
