@@ -7,87 +7,86 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA33FC64E7B
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A76FEC64E7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D820F20770
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:16 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id CC81B20857
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:56 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="casrxe8L";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gawY4KvQ"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D820F20770
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="FObjzSYf";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="sYku0+yI"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC81B20857
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 443C817D1;
-	Tue,  1 Dec 2020 14:28:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 443C817D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4320517D2;
+	Tue,  1 Dec 2020 14:29:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4320517D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606829355;
-	bh=05IqQkYYtx7yVBkhV1sKnCol6I3wx97VPaj9k9sz9HQ=;
+	s=default; t=1606829395;
+	bh=a45LvJEi5yUW32woI20swc9c1EFIK39Wx3AULm3q9Eg=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=casrxe8LoQPKNX8pK1385uvNqlW7S3O6Uui4nhykId6TqodM8KVplc66HCp1lLVcZ
-	 cbgcqz7fCxWGhhOi5sonInaJqikHlOWJ8ikpwhPw4YDPjxXYWKbZXYY7+Q8riqGuuI
-	 bCnzPkMJ3cqpUHg7eVyu3CHX09TIgaZdRY4IgKCc=
+	b=FObjzSYfqOdMpwW1cKnrwx5Lca9PIH74saeN4S82rZQ85QDvXevRSIieUK1CtOHg6
+	 I+lT/RT3QmdX58n3SdIsHs1DIImiA/0X+AsWkcamJ009tD0FSQMIb0kPwaxshfbIh2
+	 uxXnidTH9G7FGOhagAJYCZrjIrXlwMrIkTMhNuAY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F041F804E0;
-	Tue,  1 Dec 2020 14:26:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF1DFF804E6;
+	Tue,  1 Dec 2020 14:26:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64C40F804E4; Tue,  1 Dec 2020 14:26:50 +0100 (CET)
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
- [IPv6:2607:f8b0:4864:20::b4a])
+ id E6268F804E3; Tue,  1 Dec 2020 14:26:51 +0100 (CET)
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com
+ [IPv6:2607:f8b0:4864:20::84a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5501F804E1
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:26:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5501F804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91C17F804E0
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:26:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91C17F804E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="gawY4KvQ"
-Received: by mail-yb1-xb4a.google.com with SMTP id z83so2392258ybz.2
- for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2020 05:26:47 -0800 (PST)
+ header.b="sYku0+yI"
+Received: by mail-qt1-x84a.google.com with SMTP id t1so933304qtr.19
+ for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2020 05:26:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=sender:date:in-reply-to:message-id:mime-version:references:subject
- :from:to:cc; bh=JYH8VKIBKyMDH0Ua+cEyxJiCIfU2UCkNUgqzQ0+FSHQ=;
- b=gawY4KvQYxLnXVich4sbLw4qZ9XnWAQ4QG9MRpYRMH0NA364UkmMfMAXOyqTnz4HMB
- MRRtqt6Ca9aEuvg70c59TRXpiUL4Egt60CUyC6VrhSI07ZTSQ2eVNxUg2MxQkNITa2vf
- BvvVQ03fRcdoHp9v9Zk9zsTF9Teg1Ag1ysXQykRkrASYX6l+dHutNRUR5rS3wm2Ekgy0
- BVLtI0YI1+tIT2kcj72wExA4Hr28x5EIk8K1TQyWPPKxCq9C7jZcl351gk0jQ6HZqwS+
- jZSHcm76s7ONapIcKwWzAsiQcNKmKYhLufxermjPGeFuu8w1fH9+vFIb/vQYnU+laqQy
- HMcw==
+ :from:to:cc; bh=YyZbO8wYD/ijX6J9aI2QPdV/RaONINl7Yn5VzMFPwgs=;
+ b=sYku0+yIV+TpbWJs23S2nPniHCKLiIqZbltuaDx0QiZwXcTkCn4I3lEwMP64DZcTYE
+ vKkE56FOjRuPVAIxPhZhSdsRVYMhWRU6S0AI474h68Tji0/RvTc8IapXx4IhZPlleZ5F
+ OH+R9cWBXn/YXPniJubnJX4XQdqHeG/WIk6Os9yx9+0P9gH3sr/WJLJMwr50ZPvGH3x1
+ PHhBnpJhoajXVbmY6ma7RYgf/eT/9sS4EhcO8CBKmyGh0qzBjvNmHqstppQK252Rf6gb
+ o17zo98nGp/25YnbNyJI9GAnUfPV1Ah/oHH5KD1q6rh0jEkoCLBPedf7UPrz9/3XwMKl
+ P6Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=JYH8VKIBKyMDH0Ua+cEyxJiCIfU2UCkNUgqzQ0+FSHQ=;
- b=HvNlDNEK5xzsSEn7Mo/cglQmDVwZZ8yYAz4cA/HZYoLnlgpKCjAjkdV4LX1G19xmU3
- JEK/S1uTAC9wZdw+Pt3BjLXRmB8f+BnjIf9MmJ+tBkk+Duz/KNeDdWrkeIEw6nQMyPb2
- YcMccEuIcW3t29ZenjUdWeRsQSJDyGT4MUJnk10mjDqtkvgZWeDRHHVZVSy35YvSqlbk
- r8RtyeuPRYCAH4kgVbPyOAPWSWzXWacXt1Mip68xMR4RRr+1YYDlJquixCQ/cxzL163E
- 15k3x13e6+LiyvivX5x6Sz5o+Xjysbxz0EClHj9AUCEF2tDftQoAy9cJqt3/4drLTpm5
- jeMA==
-X-Gm-Message-State: AOAM532JGFo9EGyiIWFe/ssKQsqt4EvrG3qXi2MrRvssakmvGUsLvRvJ
- O2LI7l7rk2MiiCeVFuRhACGWoqdiqCNn
-X-Google-Smtp-Source: ABdhPJz2mgI11dnyDE96PGO73oIHHV1Zfer/vm0OidGuO2eh2yboOBrF6DVQOJRJR//vJyspsAv1lfxx3jbs
+ bh=YyZbO8wYD/ijX6J9aI2QPdV/RaONINl7Yn5VzMFPwgs=;
+ b=hBjAjmLqx/AJCC5bcEWN8YmbxaHf3N81EcLHlg0t1CutPT3V1z3WeVwpFm3yxdz8Wo
+ VUnuSX3E/rlam1cMVSvdKBRqC6hCp5li7wvAh8XEMfVvriCGzPhir4W1fLc1/7RzhSvi
+ vxBB0330ODq1pmaHVEt4pMOkCZiZj78dDkjC9sXTq76nI+WzKyP4T6EX+dmoN67OptUY
+ 4m/tCb/E+WQc20wn7MyFH7uQ883bovImTC6O/FO/UT4b85IzQApePOmu8G7volrzFBKm
+ amYVzLY58Bkou2ptaJVL1rDd4f/oLeMDpivq+3ti5Edg+DNEVj9fQ3Zld7OfOK45ysg+
+ goFg==
+X-Gm-Message-State: AOAM530+XMn/P2z+ARyIL9qyuImYojbTlnZqiEQK/IPc2SfTc2CqSijE
+ PDUARDy3fUlRb9UGS6zfzdwx8XIFbde/
+X-Google-Smtp-Source: ABdhPJzbKgwauq201Rit1w4qEPd73jwpCpDpUdjUQsesLo5XUsbzwVoULzf/ttBPz6/cxR1bTNFkm7IAoABy
 X-Received: from tzungbi-z840.tpe.corp.google.com
  ([2401:fa00:1:b:725a:fff:fe41:c6a5])
- (user=tzungbi job=sendgmr) by 2002:a25:5ce:: with SMTP id
- 197mr3913927ybf.53.1606829206732; 
- Tue, 01 Dec 2020 05:26:46 -0800 (PST)
-Date: Tue,  1 Dec 2020 21:26:13 +0800
+ (user=tzungbi job=sendgmr) by 2002:a0c:916d:: with SMTP id
+ q100mr2847720qvq.29.1606829203011; Tue, 01 Dec 2020 05:26:43 -0800 (PST)
+Date: Tue,  1 Dec 2020 21:26:12 +0800
 In-Reply-To: <20201201132614.1691352-1-tzungbi@google.com>
-Message-Id: <20201201132614.1691352-6-tzungbi@google.com>
+Message-Id: <20201201132614.1691352-5-tzungbi@google.com>
 Mime-Version: 1.0
 References: <20201201132614.1691352-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [RESEND PATCH 5/6] ASoC: dt-bindings: mt8192-mt6359: add new
- compatible for using rt1015p
+Subject: [RESEND PATCH 4/6] ASoC: dt-bindings: mt8192-mt6359: fix typo in the
+ example
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org, robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -107,29 +106,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adds new compatible string "mt8192_mt6359_rt1015p_rt5682" for machines
-with rt1015p and rt5682.
+Both driver "sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c"
+and DT binding property use underscore version compatible string.
+
+Fixes the typo in the example.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- .../bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml           | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-index b336a42bbb16..bf8c8ba25009 100644
+index 342232a61cfb..b336a42bbb16 100644
 --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
 +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-@@ -15,7 +15,9 @@ description:
+@@ -31,7 +31,7 @@ examples:
+   - |
  
- properties:
-   compatible:
--      const: mediatek,mt8192_mt6359_rt1015_rt5682
-+    enum:
-+      - mediatek,mt8192_mt6359_rt1015_rt5682
-+      - mediatek,mt8192_mt6359_rt1015p_rt5682
- 
-   mediatek,platform:
-     $ref: "/schemas/types.yaml#/definitions/phandle"
+     sound: mt8192-sound {
+-        compatible = "mediatek,mt8192-mt6359-rt1015-rt5682";
++        compatible = "mediatek,mt8192_mt6359_rt1015_rt5682";
+         mediatek,platform = <&afe>;
+         pinctrl-names = "aud_clk_mosi_off",
+                         "aud_clk_mosi_on";
 -- 
 2.29.2.454.gaff20da3a2-goog
 
