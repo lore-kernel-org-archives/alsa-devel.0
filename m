@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EE7FC64E7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BA33FC64E7B
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 06BA8207FF
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id D820F20770
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 13:29:16 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="ZrUKuSKn";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="b8SIL1ah"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06BA8207FF
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="casrxe8L";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="gawY4KvQ"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D820F20770
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EFBD17A0;
-	Tue,  1 Dec 2020 14:28:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EFBD17A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 443C817D1;
+	Tue,  1 Dec 2020 14:28:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 443C817D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606829348;
-	bh=qoqYo6GF9T2jOKtn4cIJjlat/DQdgNLsXAPIDDPnY90=;
+	s=default; t=1606829355;
+	bh=05IqQkYYtx7yVBkhV1sKnCol6I3wx97VPaj9k9sz9HQ=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZrUKuSKntDl+8qzylEtXlK0GfcgLrSnZbjdKhEff1Kfk/MtbHlS5TifbHa8NQkS4I
-	 gRHK1rao8SvgZU82n9j/Sd496Yynx9k/tSXA5eHnIPhRUkwKbehBhdB6QsQiMps0Cj
-	 CvEIx/hPzlKiZ8Puk63pw2fheFpLApBYNvkfeobc=
+	b=casrxe8LoQPKNX8pK1385uvNqlW7S3O6Uui4nhykId6TqodM8KVplc66HCp1lLVcZ
+	 cbgcqz7fCxWGhhOi5sonInaJqikHlOWJ8ikpwhPw4YDPjxXYWKbZXYY7+Q8riqGuuI
+	 bCnzPkMJ3cqpUHg7eVyu3CHX09TIgaZdRY4IgKCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93522F804D8;
-	Tue,  1 Dec 2020 14:26:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F041F804E0;
+	Tue,  1 Dec 2020 14:26:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33041F804D8; Tue,  1 Dec 2020 14:26:47 +0100 (CET)
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com
- [IPv6:2607:f8b0:4864:20::649])
+ id 64C40F804E4; Tue,  1 Dec 2020 14:26:50 +0100 (CET)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com
+ [IPv6:2607:f8b0:4864:20::b4a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78F41F80168
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:26:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78F41F80168
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5501F804E1
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 14:26:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5501F804E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="b8SIL1ah"
-Received: by mail-pl1-x649.google.com with SMTP id 9so1185293plj.10
- for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2020 05:26:41 -0800 (PST)
+ header.b="gawY4KvQ"
+Received: by mail-yb1-xb4a.google.com with SMTP id z83so2392258ybz.2
+ for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2020 05:26:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=sender:date:in-reply-to:message-id:mime-version:references:subject
- :from:to:cc; bh=Y0+xH3UGiixm7l2bnHVG2So+xIAjdFpqflSxFA1Eik0=;
- b=b8SIL1ahSDDGUQ+5ZihBBJeGgWjEpbPbg2yISAfdYMgJPH3MlaXrLwwL/dLSRncgu1
- r6F+B+ECCIzwnUvwa2WBdzeTMNgyoNQKyDiII5/O8qh89JCrE8nM1dAn7WvznQjAdLvH
- QheAb4gUwhEJyWpkbPU8zdUzfm9BhLijxDDB2EbJL9gDs21ip1tM5BsGM8EAPJlUNnuN
- pz36CUbHf6EoZ+Nyhfk/7Ye8RQgCQ11D88Qo1RPCEAsNy0B42IAFCTXlothueNaMAWmG
- ykprODVCJ/rKfKmKdr7qA0jxtv2Ef64kWxlLHi+lIFdjNOs5/3J16p8InkZwgrAkxq6I
- CH6A==
+ :from:to:cc; bh=JYH8VKIBKyMDH0Ua+cEyxJiCIfU2UCkNUgqzQ0+FSHQ=;
+ b=gawY4KvQYxLnXVich4sbLw4qZ9XnWAQ4QG9MRpYRMH0NA364UkmMfMAXOyqTnz4HMB
+ MRRtqt6Ca9aEuvg70c59TRXpiUL4Egt60CUyC6VrhSI07ZTSQ2eVNxUg2MxQkNITa2vf
+ BvvVQ03fRcdoHp9v9Zk9zsTF9Teg1Ag1ysXQykRkrASYX6l+dHutNRUR5rS3wm2Ekgy0
+ BVLtI0YI1+tIT2kcj72wExA4Hr28x5EIk8K1TQyWPPKxCq9C7jZcl351gk0jQ6HZqwS+
+ jZSHcm76s7ONapIcKwWzAsiQcNKmKYhLufxermjPGeFuu8w1fH9+vFIb/vQYnU+laqQy
+ HMcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=Y0+xH3UGiixm7l2bnHVG2So+xIAjdFpqflSxFA1Eik0=;
- b=bpwazk3DWfMx+sBDFeS9iApKqVHYfACyVlzkEx+FWUXBKa88Kl8vEQftpTR/pdyoil
- GFhoUqxZWXaj0VnKwerc11UwxeWCLwv4SSLbJ2s4niNded5tKJQeQZNhpfVvFFfUGBhZ
- 2nRzimAH/XAs+q5fVeV9/9xou5lLPwFK7Zb+0wQkLay1ysUEoTA5HeSkHon7JM0yl16I
- ielfiaGBtccxUrOQlZSzXtX2EhUArcRJN6WAJtZqarB0FRa190Kno0zKbYiAJV9PHPhE
- bQ2ec6zQPLRXJAfRDKyTKS0cBbjjkf+xBmg0Uvh+pSBcV1KnoIj9G7Tp07GWSBG49sRN
- jmrw==
-X-Gm-Message-State: AOAM530eKIOtCoguUC3CE7lYvMLZZgtdCV7TNu/sA2GGc9VCPqCf4G9B
- zUbAlqDRcdUPztFhArRIc3J4meg0epmL
-X-Google-Smtp-Source: ABdhPJxtqbPJs83UWd/SREUWwdihnnM1qCVhKWtIhJAJTyQJf5ajt+m6NRpMyEfnIXMm4P2hXs2Nv0n/cyxm
+ bh=JYH8VKIBKyMDH0Ua+cEyxJiCIfU2UCkNUgqzQ0+FSHQ=;
+ b=HvNlDNEK5xzsSEn7Mo/cglQmDVwZZ8yYAz4cA/HZYoLnlgpKCjAjkdV4LX1G19xmU3
+ JEK/S1uTAC9wZdw+Pt3BjLXRmB8f+BnjIf9MmJ+tBkk+Duz/KNeDdWrkeIEw6nQMyPb2
+ YcMccEuIcW3t29ZenjUdWeRsQSJDyGT4MUJnk10mjDqtkvgZWeDRHHVZVSy35YvSqlbk
+ r8RtyeuPRYCAH4kgVbPyOAPWSWzXWacXt1Mip68xMR4RRr+1YYDlJquixCQ/cxzL163E
+ 15k3x13e6+LiyvivX5x6Sz5o+Xjysbxz0EClHj9AUCEF2tDftQoAy9cJqt3/4drLTpm5
+ jeMA==
+X-Gm-Message-State: AOAM532JGFo9EGyiIWFe/ssKQsqt4EvrG3qXi2MrRvssakmvGUsLvRvJ
+ O2LI7l7rk2MiiCeVFuRhACGWoqdiqCNn
+X-Google-Smtp-Source: ABdhPJz2mgI11dnyDE96PGO73oIHHV1Zfer/vm0OidGuO2eh2yboOBrF6DVQOJRJR//vJyspsAv1lfxx3jbs
 X-Received: from tzungbi-z840.tpe.corp.google.com
  ([2401:fa00:1:b:725a:fff:fe41:c6a5])
- (user=tzungbi job=sendgmr) by 2002:aa7:8a90:0:b029:19b:1166:2a22 with SMTP id
- a16-20020aa78a900000b029019b11662a22mr2400107pfc.31.1606829199180; Tue, 01
- Dec 2020 05:26:39 -0800 (PST)
-Date: Tue,  1 Dec 2020 21:26:11 +0800
+ (user=tzungbi job=sendgmr) by 2002:a25:5ce:: with SMTP id
+ 197mr3913927ybf.53.1606829206732; 
+ Tue, 01 Dec 2020 05:26:46 -0800 (PST)
+Date: Tue,  1 Dec 2020 21:26:13 +0800
 In-Reply-To: <20201201132614.1691352-1-tzungbi@google.com>
-Message-Id: <20201201132614.1691352-4-tzungbi@google.com>
+Message-Id: <20201201132614.1691352-6-tzungbi@google.com>
 Mime-Version: 1.0
 References: <20201201132614.1691352-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [RESEND PATCH 3/6] ASoC: mediatek: mt8192: move rt1015_rt5682
- specific data
+Subject: [RESEND PATCH 5/6] ASoC: dt-bindings: mt8192-mt6359: add new
+ compatible for using rt1015p
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org, robh+dt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -107,82 +107,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Moves rt1015_rt5682 specific data right before the snd_soc_card
-definition for neat purpose.
+Adds new compatible string "mt8192_mt6359_rt1015p_rt5682" for machines
+with rt1015p and rt5682.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 50 +++++++++----------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ .../bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml           | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index e841fd32e8cc..0d2cc6800f08 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -33,31 +33,6 @@
+diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+index b336a42bbb16..bf8c8ba25009 100644
+--- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
++++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+@@ -15,7 +15,9 @@ description:
  
- static struct snd_soc_jack headset_jack;
+ properties:
+   compatible:
+-      const: mediatek,mt8192_mt6359_rt1015_rt5682
++    enum:
++      - mediatek,mt8192_mt6359_rt1015_rt5682
++      - mediatek,mt8192_mt6359_rt1015p_rt5682
  
--static const struct snd_soc_dapm_widget
--mt8192_mt6359_rt1015_rt5682_widgets[] = {
--	SND_SOC_DAPM_SPK("Left Spk", NULL),
--	SND_SOC_DAPM_SPK("Right Spk", NULL),
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--};
--
--static const struct snd_soc_dapm_route mt8192_mt6359_rt1015_rt5682_routes[] = {
--	/* speaker */
--	{ "Left Spk", NULL, "Left SPO" },
--	{ "Right Spk", NULL, "Right SPO" },
--	/* headset */
--	{ "Headphone Jack", NULL, "HPOL" },
--	{ "Headphone Jack", NULL, "HPOR" },
--	{ "IN1P", NULL, "Headset Mic" },
--};
--
--static const struct snd_kcontrol_new mt8192_mt6359_rt1015_rt5682_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Left Spk"),
--	SOC_DAPM_PIN_SWITCH("Right Spk"),
--	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
--	SOC_DAPM_PIN_SWITCH("Headset Mic"),
--};
--
- static int mt8192_rt1015_i2s_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
- {
-@@ -971,6 +946,31 @@ static struct snd_soc_dai_link mt8192_mt6359_dai_links[] = {
- 	},
- };
- 
-+static const struct snd_soc_dapm_widget
-+mt8192_mt6359_rt1015_rt5682_widgets[] = {
-+	SND_SOC_DAPM_SPK("Left Spk", NULL),
-+	SND_SOC_DAPM_SPK("Right Spk", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route mt8192_mt6359_rt1015_rt5682_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Left SPO" },
-+	{ "Right Spk", NULL, "Right SPO" },
-+	/* headset */
-+	{ "Headphone Jack", NULL, "HPOL" },
-+	{ "Headphone Jack", NULL, "HPOR" },
-+	{ "IN1P", NULL, "Headset Mic" },
-+};
-+
-+static const struct snd_kcontrol_new mt8192_mt6359_rt1015_rt5682_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Left Spk"),
-+	SOC_DAPM_PIN_SWITCH("Right Spk"),
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+};
-+
- static struct snd_soc_codec_conf rt1015_amp_conf[] = {
- 	{
- 		.dlc = COMP_CODEC_CONF(RT1015_DEV0_NAME),
+   mediatek,platform:
+     $ref: "/schemas/types.yaml#/definitions/phandle"
 -- 
 2.29.2.454.gaff20da3a2-goog
 
