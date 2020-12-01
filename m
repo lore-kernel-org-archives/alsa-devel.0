@@ -7,68 +7,68 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 836DCC64E7A
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25422C64E7A
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:44:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4EA33216C4
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:43:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTPS id 41307206D8
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Dec 2020 08:44:26 +0000 (UTC)
 Authentication-Results: mail.kernel.org;
-	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="J5cX/0vj";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Hd3Lg2RP"
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4EA33216C4
+	dkim=pass (1024-bit key) header.d=alsa-project.org header.i=@alsa-project.org header.b="MAtVioTt";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ztbO0aAV"
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41307206D8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC8D17A4;
-	Tue,  1 Dec 2020 09:42:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC8D17A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CFE31786;
+	Tue,  1 Dec 2020 09:43:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CFE31786
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606812222;
-	bh=RULwP8ATw1F/OvaLHjSzChb2K6P1Kgx2O7bhX97IpT8=;
+	s=default; t=1606812264;
+	bh=CdaD+oddHx4/hyHba8egomuQUXT5Rqpxg1jVrIOWzg8=;
 	h=Subject:To:From:Date:In-Reply-To:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=J5cX/0vjfy2DSUZsSevuuewCc14OHKDx7p4oEmeYRPDqZofK87wK7GySktBUjLB7b
-	 rA3nDFn+l3G2yPwuqnnAnM9OMTdZ07EAX0lALCxFZLuhrHCtRMT+914pK6HgtC2GVk
-	 LeuRp6J6g5n4/YG2ism1jUkM2P+RNHipv+wDxLjE=
+	b=MAtVioTtoPHGQlntoWVtegvTK1rh13L1ZOOtH5wvUZZ/Lo1vrLp5JMlSnmNgeM42+
+	 FINoXgtJrKXNh8R4TkLqkIOKkt0W423R26cwdTNNHzYIYWUb1A3X40LnRH3jcH1H2g
+	 JGoNbYT76ROIUfZTPPYt3TxOo6NUUSvGmwO4g46U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37BFEF804BC;
+	by alsa1.perex.cz (Postfix) with ESMTP id DF988F804C3;
 	Tue,  1 Dec 2020 09:42:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EE14F80277; Tue,  1 Dec 2020 09:41:59 +0100 (CET)
+ id 9D20FF804BC; Tue,  1 Dec 2020 09:42:00 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0B30F80254
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 09:41:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B30F80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id A745CF80139
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 09:41:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A745CF80139
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="Hd3Lg2RP"
+ header.i=@linuxfoundation.org header.b="ztbO0aAV"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 55C11216C4;
- Tue,  1 Dec 2020 08:41:52 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 1C551206E3;
+ Tue,  1 Dec 2020 08:41:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1606812112;
- bh=RULwP8ATw1F/OvaLHjSzChb2K6P1Kgx2O7bhX97IpT8=;
+ s=korg; t=1606812115;
+ bh=CdaD+oddHx4/hyHba8egomuQUXT5Rqpxg1jVrIOWzg8=;
  h=Subject:To:Cc:From:Date:In-Reply-To:From;
- b=Hd3Lg2RPghKzMNUo45K1Lv9BMEIBG6VQQ0X2JYEDb0F7hzHEdDPLraSgAxhoo1DsX
- goLCuXtedzCUQdNo+XecVXn3HnkFF07zdReUEw2u8dCwjZbrw9zY+PhpTVLXrmKT1u
- 4AQBgUXI9iodDLzp4N3KPpBj/1GjvHHp4hsxrW58=
-Subject: Patch "ASoC: Intel: Skylake: Automatic DMIC format configuration
- according to information from NHLT" has been added to the 5.4-stable tree
+ b=ztbO0aAVZVVGDYSiv+TMQ8UaAlJxnMgKOcJig6wiSF8qcHcBCyj7Q1Xs0CWUpPKkr
+ 2Dw4Z/KCSUWkpMotDyEtfXYQ6sGVlLKzW/EWb92Z55KxBcWvoZU7r+lZ0K6D78SzPr
+ QgdBQi3PCSd09T3/T8Q+Vx6iUMsi72BgwH4kByrc=
+Subject: Patch "ASoC: Intel: Skylake: Await purge request ack on CNL" has been
+ added to the 5.4-stable tree
 To: alsa-devel@alsa-project.org, broonie@kernel.org, cezary.rojewski@intel.com,
  gregkh@linuxfoundation.org, mateusz.gorski@linux.intel.com,
  pierre-louis.bossart@linux.intel.com, tiwai@suse.com
 From: <gregkh@linuxfoundation.org>
 Date: Tue, 01 Dec 2020 09:42:54 +0100
-In-Reply-To: <20201129114148.13772-9-cezary.rojewski@intel.com>
-Message-ID: <1606812174145176@kroah.com>
+In-Reply-To: <20201129114148.13772-7-cezary.rojewski@intel.com>
+Message-ID: <160681217413115@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -93,13 +93,13 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 This is a note to let you know that I've just added the patch titled
 
-    ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHLT
+    ASoC: Intel: Skylake: Await purge request ack on CNL
 
 to the 5.4-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
-     asoc-intel-skylake-automatic-dmic-format-configuration-according-to-information-from-nhlt.patch
+     asoc-intel-skylake-await-purge-request-ack-on-cnl.patch
 and it can be found in the queue-5.4 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
@@ -108,147 +108,94 @@ please let <stable@vger.kernel.org> know about it.
 
 From foo@baz Tue Dec  1 09:41:56 AM CET 2020
 From: Cezary Rojewski <cezary.rojewski@intel.com>
-Date: Sun, 29 Nov 2020 12:41:48 +0100
-Subject: ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHLT
+Date: Sun, 29 Nov 2020 12:41:46 +0100
+Subject: ASoC: Intel: Skylake: Await purge request ack on CNL
 To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com, mateusz.gorski@linux.intel.com
-Message-ID: <20201129114148.13772-9-cezary.rojewski@intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.com, pierre-louis.bossart@linux.intel.com, mateusz.gorski@linux.intel.com, Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <20201129114148.13772-7-cezary.rojewski@intel.com>
 
-From: Mateusz Gorski <mateusz.gorski@linux.intel.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-commit 2d744ecf2b98405723a2138a547e5c75009bc4e5 upstream.
+commit 7693cadac86548b30389a6e11d78c38db654f393 upstream.
 
-Automatically choose DMIC pipeline format configuration depending on
-information included in NHLT.
-Change the access rights of appropriate kcontrols to read-only in order
-to prevent user interference.
+Each purge request is sent by driver after master core is powered up and
+unresetted but before it is unstalled. On unstall, ROM begins processing
+the request and initializing environment for FW load. Host should await
+ROM's ack before moving forward. Without doing so, ROM init poll may
+start too early and false timeouts can occur.
 
-Signed-off-by: Mateusz Gorski <mateusz.gorski@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Fixes: cb6a55284629 ("ASoC: Intel: cnl: Add sst library functions for cnl platform")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200427132727.24942-4-mateusz.gorski@linux.intel.com
+Link: https://lore.kernel.org/r/20200305145314.32579-8-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: <stable@vger.kernel.org> # 5.4.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/uapi/sound/skl-tplg-interface.h |    1 
- sound/soc/intel/skylake/skl-topology.c  |   64 ++++++++++++++++++++++++++++++--
- 2 files changed, 62 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     |    1 -
+ sound/soc/intel/skylake/cnl-sst.c     |   20 ++++++++++++++++++--
+ sound/soc/intel/skylake/skl-sst-dsp.h |    1 +
+ 3 files changed, 19 insertions(+), 3 deletions(-)
 
---- a/include/uapi/sound/skl-tplg-interface.h
-+++ b/include/uapi/sound/skl-tplg-interface.h
-@@ -19,6 +19,7 @@
- #define SKL_CONTROL_TYPE_BYTE_TLV	0x100
- #define SKL_CONTROL_TYPE_MIC_SELECT	0x102
- #define SKL_CONTROL_TYPE_MULTI_IO_SELECT	0x103
-+#define SKL_CONTROL_TYPE_MULTI_IO_SELECT_DMIC	0x104
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -17,7 +17,6 @@
+ #include "skl.h"
  
- #define HDA_SST_CFG_MAX	900 /* size of copier cfg*/
- #define MAX_IN_QUEUE 8
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1405,6 +1405,18 @@ static int skl_tplg_multi_config_set(str
- 	return skl_tplg_multi_config_set_get(kcontrol, ucontrol, true);
- }
+ #define BXT_BASEFW_TIMEOUT	3000
+-#define BXT_INIT_TIMEOUT	300
+ #define BXT_ROM_INIT_TIMEOUT	70
+ #define BXT_IPC_PURGE_FW	0x01004000
  
-+static int skl_tplg_multi_config_get_dmic(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	return skl_tplg_multi_config_set_get(kcontrol, ucontrol, false);
-+}
-+
-+static int skl_tplg_multi_config_set_dmic(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	return skl_tplg_multi_config_set_get(kcontrol, ucontrol, true);
-+}
-+
- static int skl_tplg_tlv_control_get(struct snd_kcontrol *kcontrol,
- 			unsigned int __user *data, unsigned int size)
- {
-@@ -1949,6 +1961,11 @@ static const struct snd_soc_tplg_kcontro
- 		.get = skl_tplg_multi_config_get,
- 		.put = skl_tplg_multi_config_set,
- 	},
-+	{
-+		.id = SKL_CONTROL_TYPE_MULTI_IO_SELECT_DMIC,
-+		.get = skl_tplg_multi_config_get_dmic,
-+		.put = skl_tplg_multi_config_set_dmic,
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -57,18 +57,34 @@ static int cnl_prepare_fw(struct sst_dsp
+ 	ctx->dsp_ops.stream_tag = stream_tag;
+ 	memcpy(ctx->dmab.area, fwdata, fwsize);
+ 
++	ret = skl_dsp_core_power_up(ctx, SKL_DSP_CORE0_MASK);
++	if (ret < 0) {
++		dev_err(ctx->dev, "dsp core0 power up failed\n");
++		ret = -EIO;
++		goto base_fw_load_failed;
 +	}
- };
++
+ 	/* purge FW request */
+ 	sst_dsp_shim_write(ctx, CNL_ADSP_REG_HIPCIDR,
+ 			   CNL_ADSP_REG_HIPCIDR_BUSY | (CNL_IPC_PURGE |
+ 			   ((stream_tag - 1) << CNL_ROM_CTRL_DMA_ID)));
  
- static int skl_tplg_fill_pipe_cfg(struct device *dev,
-@@ -3109,12 +3126,21 @@ static int skl_tplg_control_load(struct
- 	case SND_SOC_TPLG_CTL_ENUM:
- 		tplg_ec = container_of(hdr,
- 				struct snd_soc_tplg_enum_control, hdr);
--		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READWRITE) {
-+		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READ) {
- 			se = (struct soc_enum *)kctl->private_value;
- 			if (tplg_ec->priv.size)
--				return skl_init_enum_data(bus->dev, se,
--						tplg_ec);
-+				skl_init_enum_data(bus->dev, se, tplg_ec);
- 		}
-+
-+		/*
-+		 * now that the control initializations are done, remove
-+		 * write permission for the DMIC configuration enums to
-+		 * avoid conflicts between NHLT settings and user interaction
-+		 */
-+
-+		if (hdr->ops.get == SKL_CONTROL_TYPE_MULTI_IO_SELECT_DMIC)
-+			kctl->access = SNDRV_CTL_ELEM_ACCESS_READ;
-+
- 		break;
+-	ret = cnl_dsp_enable_core(ctx, SKL_DSP_CORE0_MASK);
++	ret = skl_dsp_start_core(ctx, SKL_DSP_CORE0_MASK);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "dsp boot core failed ret: %d\n", ret);
++		dev_err(ctx->dev, "Start dsp core failed ret: %d\n", ret);
+ 		ret = -EIO;
+ 		goto base_fw_load_failed;
+ 	}
  
- 	default:
-@@ -3584,6 +3610,37 @@ static int skl_manifest_load(struct snd_
- 	return 0;
- }
- 
-+static void skl_tplg_complete(struct snd_soc_component *component)
-+{
-+	struct snd_soc_dobj *dobj;
-+	struct snd_soc_acpi_mach *mach =
-+		dev_get_platdata(component->card->dev);
-+	int i;
-+
-+	list_for_each_entry(dobj, &component->dobj_list, list) {
-+		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
-+		struct soc_enum *se =
-+			(struct soc_enum *)kcontrol->private_value;
-+		char **texts = dobj->control.dtexts;
-+		char chan_text[4];
-+
-+		if (dobj->type != SND_SOC_DOBJ_ENUM ||
-+		    dobj->control.kcontrol->put !=
-+		    skl_tplg_multi_config_set_dmic)
-+			continue;
-+		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
-+
-+		for (i = 0; i < se->items; i++) {
-+			struct snd_ctl_elem_value val;
-+
-+			if (strstr(texts[i], chan_text)) {
-+				val.value.enumerated.item[0] = i;
-+				kcontrol->put(kcontrol, &val);
-+			}
-+		}
++	ret = sst_dsp_register_poll(ctx, CNL_ADSP_REG_HIPCIDA,
++				    CNL_ADSP_REG_HIPCIDA_DONE,
++				    CNL_ADSP_REG_HIPCIDA_DONE,
++				    BXT_INIT_TIMEOUT, "HIPCIDA Done");
++	if (ret < 0) {
++		dev_err(ctx->dev, "timeout for purge request: %d\n", ret);
++		goto base_fw_load_failed;
 +	}
-+}
 +
- static struct snd_soc_tplg_ops skl_tplg_ops  = {
- 	.widget_load = skl_tplg_widget_load,
- 	.control_load = skl_tplg_control_load,
-@@ -3593,6 +3650,7 @@ static struct snd_soc_tplg_ops skl_tplg_
- 	.io_ops_count = ARRAY_SIZE(skl_tplg_kcontrol_ops),
- 	.manifest = skl_manifest_load,
- 	.dai_load = skl_dai_load,
-+	.complete = skl_tplg_complete,
- };
+ 	/* enable interrupt */
+ 	cnl_ipc_int_enable(ctx);
+ 	cnl_ipc_op_int_enable(ctx);
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -68,6 +68,7 @@ struct skl_dev;
+ #define SKL_FW_INIT			0x1
+ #define SKL_FW_RFW_START		0xf
+ #define BXT_FW_ROM_INIT_RETRY		3
++#define BXT_INIT_TIMEOUT		300
  
- /*
+ #define SKL_ADSPIC_IPC			1
+ #define SKL_ADSPIS_IPC			1
 
 
 Patches currently in stable-queue which might be from cezary.rojewski@intel.com are
