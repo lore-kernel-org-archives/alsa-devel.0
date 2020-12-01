@@ -2,68 +2,69 @@ Return-Path: <SRS0=jDen=FJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45BF4C4361A
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 08:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2191C4361A
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 08:08:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4F4722D0B
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 08:07:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4F4722D0B
+	by mail.kernel.org (Postfix) with ESMTPS id 394B122DBF
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 08:08:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 394B122DBF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7BE318EC;
-	Sat,  5 Dec 2020 09:06:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7BE318EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEA881901;
+	Sat,  5 Dec 2020 09:07:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEA881901
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607155667;
-	bh=S2DkrXiMs50rzeOWr8r3U1Ajd0op23TcWMczb1ZsiwE=;
+	s=default; t=1607155698;
+	bh=BbU6Hr7e+pRq9nrVXXo1dwEeD1dgrs25CEtb8rFAtv0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FHoVxmPlo+qL+BvqPkj8xrBS0vrRlYD0KMiflYj+tcTfD+lBuEcrjYFdpUak/jFpe
-	 8pQO0aBqIRS00o/zEeRH1GOiH7X7sxlpZy4fBhu2lCAoSlYCD/S72O+Ygof92I59a1
-	 8FpRDIEngDzP6HbKHoymL3LDhk5UFbpOCIlSV66A=
+	b=LmB1oHjUKe1Sk5stKGR1IEO/NX55Pkifg0cvqclvoYytEkiA303fu4/zYA2rBt1RJ
+	 pDKuqlAtlOFWqUhojQdAr6HxgdACgABgArwoGt0ub2kuslf9C8vvvtO86S//VFsUF9
+	 1f6BO06A5gW2N9kxHu0mZceKN2FOspm0Pzk+R3rM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1284DF804F3;
-	Sat,  5 Dec 2020 09:03:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CC58F80506;
+	Sat,  5 Dec 2020 09:03:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34CF6F8026D; Tue,  1 Dec 2020 10:07:08 +0100 (CET)
+ id 694D0F804B2; Tue,  1 Dec 2020 10:07:11 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08903F80139
- for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 10:07:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08903F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4FE5F80168
+ for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2020 10:07:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4FE5F80168
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="TLJJ9D8q"
+ header.i=@linuxfoundation.org header.b="X60VwPzB"
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 5C76620656;
- Tue,  1 Dec 2020 09:06:59 +0000 (UTC)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3C47421D7A;
+ Tue,  1 Dec 2020 09:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1606813620;
- bh=S2DkrXiMs50rzeOWr8r3U1Ajd0op23TcWMczb1ZsiwE=;
+ s=korg; t=1606813622;
+ bh=BbU6Hr7e+pRq9nrVXXo1dwEeD1dgrs25CEtb8rFAtv0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TLJJ9D8qC+vHLrDNa++pUrLJqhNd4ZThIo0czIJkhMN5zbdO6bgTZ1xTbOV1N8HO+
- 8WGCW5qhYmwccPgz1GzdNjm2MPsbrFnIS2ValwSQLK5Dx+k7jPuTq9lElj/LpvOTcg
- pi14vMByUS5raLQ+ouqQi7mzNiX2wJ2Bc0YD0EV4=
+ b=X60VwPzBHglZVuWdOoPb6YFdRs21PHCRHPFHvH0J9iD8ORLXG2uslz7tuxLFui0DF
+ apg+LjyegVVYo3aaJOEauXjrHwwhsNZCOCSdNEdAzsuGuRB+rWObU+DkSSQZebPze/
+ S2QSwucKbcL+yx3sIIMt/ARvaVgGLrXlRuIc7TjY=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5.4 94/98] ASoC: Intel: Skylake: Shield against no-NHLT
- configurations
-Date: Tue,  1 Dec 2020 09:54:11 +0100
-Message-Id: <20201201084659.669425413@linuxfoundation.org>
+Subject: [PATCH 5.4 95/98] ASoC: Intel: Allow for ROM init retry on CNL
+ platforms
+Date: Tue,  1 Dec 2020 09:54:12 +0100
+Message-Id: <20201201084659.719019674@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201201084652.827177826@linuxfoundation.org>
 References: <20201201084652.827177826@linuxfoundation.org>
@@ -93,67 +94,86 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-commit 9e6c382f5a6161eb55115fb56614b9827f2e7da3 upstream.
+commit 024aa45f55ccd40704cfdef61b2a8b6d0de9cdd1 upstream.
 
-Some configurations expose no NHLT table at all within their
-/sys/firmware/acpi/tables. To prevent NULL-dereference errors from
-occurring, adjust probe flow and append additional safety checks in
-functions involved in NHLT lifecycle.
+Due to unconditional initial timeouts, firmware may fail to load during
+its initialization. This issue cannot be resolved on driver side as it
+is caused by external sources such as CSME but has to be accounted for
+nonetheless.
 
+Fixes: cb6a55284629 ("ASoC: Intel: cnl: Add sst library functions for cnl platform")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200305145314.32579-5-cezary.rojewski@intel.com
+Link: https://lore.kernel.org/r/20200305145314.32579-7-cezary.rojewski@intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: <stable@vger.kernel.org> # 5.4.x
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/intel/skylake/skl-nhlt.c |    3 ++-
- sound/soc/intel/skylake/skl.c      |    9 +++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     |    2 --
+ sound/soc/intel/skylake/cnl-sst.c     |   15 ++++++++++-----
+ sound/soc/intel/skylake/skl-sst-dsp.h |    1 +
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
---- a/sound/soc/intel/skylake/skl-nhlt.c
-+++ b/sound/soc/intel/skylake/skl-nhlt.c
-@@ -182,7 +182,8 @@ void skl_nhlt_remove_sysfs(struct skl_de
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -38,8 +38,6 @@
+ /* Delay before scheduling D0i3 entry */
+ #define BXT_D0I3_DELAY 5000
+ 
+-#define BXT_FW_ROM_INIT_RETRY 3
+-
+ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
  {
- 	struct device *dev = &skl->pci->dev;
+ 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
+--- a/sound/soc/intel/skylake/cnl-sst.c
++++ b/sound/soc/intel/skylake/cnl-sst.c
+@@ -109,7 +109,7 @@ static int cnl_load_base_firmware(struct
+ {
+ 	struct firmware stripped_fw;
+ 	struct skl_dev *cnl = ctx->thread_context;
+-	int ret;
++	int ret, i;
  
--	sysfs_remove_file(&dev->kobj, &dev_attr_platform_id.attr);
-+	if (skl->nhlt)
-+		sysfs_remove_file(&dev->kobj, &dev_attr_platform_id.attr);
- }
+ 	if (!ctx->fw) {
+ 		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
+@@ -131,12 +131,16 @@ static int cnl_load_base_firmware(struct
+ 	stripped_fw.size = ctx->fw->size;
+ 	skl_dsp_strip_extended_manifest(&stripped_fw);
  
- /*
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -632,6 +632,9 @@ static int skl_clock_device_register(str
- 	struct platform_device_info pdevinfo = {NULL};
- 	struct skl_clk_pdata *clk_pdata;
+-	ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
+-	if (ret < 0) {
+-		dev_err(ctx->dev, "prepare firmware failed: %d\n", ret);
+-		goto cnl_load_base_firmware_failed;
++	for (i = 0; i < BXT_FW_ROM_INIT_RETRY; i++) {
++		ret = cnl_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
++		if (!ret)
++			break;
++		dev_dbg(ctx->dev, "prepare firmware failed: %d\n", ret);
+ 	}
  
-+	if (!skl->nhlt)
-+		return 0;
++	if (ret < 0)
++		goto cnl_load_base_firmware_failed;
 +
- 	clk_pdata = devm_kzalloc(&skl->pci->dev, sizeof(*clk_pdata),
- 							GFP_KERNEL);
- 	if (!clk_pdata)
-@@ -1090,7 +1093,8 @@ out_dsp_free:
- out_clk_free:
- 	skl_clock_device_unregister(skl);
- out_nhlt_free:
--	intel_nhlt_free(skl->nhlt);
-+	if (skl->nhlt)
-+		intel_nhlt_free(skl->nhlt);
- out_free:
- 	skl_free(bus);
+ 	ret = sst_transfer_fw_host_dma(ctx);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "transfer firmware failed: %d\n", ret);
+@@ -158,6 +162,7 @@ static int cnl_load_base_firmware(struct
+ 	return 0;
  
-@@ -1139,7 +1143,8 @@ static void skl_remove(struct pci_dev *p
- 	skl_dmic_device_unregister(skl);
- 	skl_clock_device_unregister(skl);
- 	skl_nhlt_remove_sysfs(skl);
--	intel_nhlt_free(skl->nhlt);
-+	if (skl->nhlt)
-+		intel_nhlt_free(skl->nhlt);
- 	skl_free(bus);
- 	dev_set_drvdata(&pci->dev, NULL);
- }
+ cnl_load_base_firmware_failed:
++	dev_err(ctx->dev, "firmware load failed: %d\n", ret);
+ 	release_firmware(ctx->fw);
+ 	ctx->fw = NULL;
+ 
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -67,6 +67,7 @@ struct skl_dev;
+ 
+ #define SKL_FW_INIT			0x1
+ #define SKL_FW_RFW_START		0xf
++#define BXT_FW_ROM_INIT_RETRY		3
+ 
+ #define SKL_ADSPIC_IPC			1
+ #define SKL_ADSPIS_IPC			1
 
 
