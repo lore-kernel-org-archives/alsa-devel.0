@@ -2,72 +2,74 @@ Return-Path: <SRS0=YmRK=FG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3D9FC64E7B
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCB81C64E7C
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:24:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D99821D42
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:23:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D99821D42
+	by mail.kernel.org (Postfix) with ESMTPS id 0F6A921D81
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:24:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F6A921D81
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBEBB17E3;
-	Wed,  2 Dec 2020 18:22:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBEBB17E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6936517F3;
+	Wed,  2 Dec 2020 18:23:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6936517F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606929828;
-	bh=+Tn7sxY0qtSV69rlrnf0/Eumfqgx793Uc/lnR9gwviw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hDENf6RY1lvU4I99EI1hOkcM4a209BYXryEEVXyU3ttqEAQV4+GrDuLkgbdZFg1fK
-	 ZqtgBJenbm5z2Xz3tI/0rBo6tJ9gjbVZIW/XtAWwbGfZtE3AbtfrdK+YwXcVZeDDj8
-	 M9CBL4LhMRMcp11cV1sLO4WPWmPqOpnsl3Q2KjwQ=
+	s=default; t=1606929840;
+	bh=WAWyOD9YIMptjKtlzubzfb1udaYH/t6EIYDlQqqc3DE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AQ6dJuJfWKF5A7DIbzf7ne8t+lrS9tz8q0zcOKjGmXtHMTVzSvi/yG6On6vrfv95m
+	 KiHPQv89czIF5fnWchjtQQU7C04BriV+PIZyG/kW42O86sQjwaXxLYWM3bpor/6mqK
+	 Ry2D/wML7hLtVusitwjL6OHqfJ41adok41HeQGDQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56554F8025F;
-	Wed,  2 Dec 2020 18:22:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E46CEF804A9;
+	Wed,  2 Dec 2020 18:23:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D14D3F8026B; Wed,  2 Dec 2020 18:22:56 +0100 (CET)
-Received: from a2.mail.mailgun.net (a2.mail.mailgun.net [198.61.254.61])
+ id D7835F804AB; Wed,  2 Dec 2020 18:23:07 +0100 (CET)
+Received: from m42-5.mailgun.net (m42-5.mailgun.net [69.72.42.5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BAD00F80168
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 18:22:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAD00F80168
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8CC7F8026B
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 18:22:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8CC7F8026B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="LlPu3Wsz"
+ header.i=@mg.codeaurora.org header.b="FREz+6W0"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1606929775; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=du06zc/jHcGsUafhmo+6BZJPLrel+MajZ6mJGJKue0w=;
- b=LlPu3WszT3RXL8gNWlgc5QQzMR9UzoR6W0n/1zmS0Kz/iFfW2IKMfCOA+I+TUXCeKG3t67aB
- sAympL4amTHoS2lWuCBXWtDcNNag21pPE00VDHQDSa946RlwA8wVZyfB925S/itnZoUfGVHs
- DCONq077hGTjacPq8vM13ONUq9o=
-X-Mailgun-Sending-Ip: 198.61.254.61
+ s=smtp; t=1606929779; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=XCbGtFpkxfX04IDxYSYPabTaVb2FLbxMGt+XuP7RsZE=;
+ b=FREz+6W0tyGvL+83EgnxUE8gLACwwbed4KbHIMYbAo+kBmiPd5bekp5J+QX0vcmrJvW8x0cR
+ l85yKRdhUGI9OWjqxaJKAQnnmN88Uldr6QgfVVx31/LKk0vgZYlNwX6GSB8YBgI3aT3+dkcm
+ WUGMXcb6Fnd8LgPOVniul63RHPs=
+X-Mailgun-Sending-Ip: 69.72.42.5
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5fc7cd66e8c9bf49adc745ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 17:22:46
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5fc7cd720f9adc18c75aae06 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Dec 2020 17:22:58
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id D5723C43463; Wed,  2 Dec 2020 17:22:45 +0000 (UTC)
+ id 78F57C43467; Wed,  2 Dec 2020 17:22:57 +0000 (UTC)
 Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id C30DDC43460;
- Wed,  2 Dec 2020 17:22:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C30DDC43460
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 379CFC43461;
+ Wed,  2 Dec 2020 17:22:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 379CFC43461
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
@@ -79,12 +81,15 @@ To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
  srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
  linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 0/2] Platform driver update to support playback recover
- after resume
-Date: Wed,  2 Dec 2020 22:52:26 +0530
-Message-Id: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+Subject: [PATCH v5 2/2] ASoC: qcom: Add support for playback recover after
+ resume
+Date: Wed,  2 Dec 2020 22:52:28 +0530
+Message-Id: <1606929748-16828-3-git-send-email-srivasam@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
-Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+In-Reply-To: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+References: <1606929748-16828-1-git-send-email-srivasam@codeaurora.org>
+Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,26 +105,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set is to add support for playback recover after hard suspend and resume.
-It includes:
-1. Reverting part of previous commit, which is for handling registers invalid state
-after hard suspend.
-2. Adding pm ops in component driver and do regcache sync.
-Changes Since v1 and v2:
-  -- Subject lines changed
-Changes Since v3:
-  -- Patch is splitted into 2 patches
-Changes Since v4:
-  -- Subject lines changed
+To support playback continuation after hard suspend(bypass powerd)
+and resume do regcache sync with component driver pm ops.
 
-Srinivasa Rao Mandadapu (2):
-  ASoC: qcom: Fix incorrect volatile registers
-  ASoC: qcom: Add support for playback recover after resume
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Tested-by: Steev Klimaszewski <steev@kali.org>
+---
+ sound/soc/qcom/lpass-platform.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
- sound/soc/qcom/lpass-cpu.c      | 20 ++----------------
- sound/soc/qcom/lpass-platform.c | 46 +++++++++++++++++++++++++++++++----------
- 2 files changed, 37 insertions(+), 29 deletions(-)
-
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 0e71899..12764a8 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -827,6 +827,39 @@ static void lpass_platform_pcm_free(struct snd_soc_component *component,
+ 	}
+ }
+ 
++static int lpass_platform_pcmops_suspend(struct snd_soc_component *component)
++{
++	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
++	struct regmap *map;
++	unsigned int dai_id = component->id;
++
++	if (dai_id == LPASS_DP_RX)
++		map = drvdata->hdmiif_map;
++	else
++		map = drvdata->lpaif_map;
++
++	regcache_cache_only(map, true);
++	regcache_mark_dirty(map);
++
++	return 0;
++}
++
++static int lpass_platform_pcmops_resume(struct snd_soc_component *component)
++{
++	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
++	struct regmap *map;
++	unsigned int dai_id = component->id;
++
++	if (dai_id == LPASS_DP_RX)
++		map = drvdata->hdmiif_map;
++	else
++		map = drvdata->lpaif_map;
++
++	regcache_cache_only(map, false);
++	return regcache_sync(map);
++}
++
++
+ static const struct snd_soc_component_driver lpass_component_driver = {
+ 	.name		= DRV_NAME,
+ 	.open		= lpass_platform_pcmops_open,
+@@ -839,6 +872,8 @@ static const struct snd_soc_component_driver lpass_component_driver = {
+ 	.mmap		= lpass_platform_pcmops_mmap,
+ 	.pcm_construct	= lpass_platform_pcm_new,
+ 	.pcm_destruct	= lpass_platform_pcm_free,
++	.suspend		= lpass_platform_pcmops_suspend,
++	.resume			= lpass_platform_pcmops_resume,
+ 
+ };
+ 
 -- 
 Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
 is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
