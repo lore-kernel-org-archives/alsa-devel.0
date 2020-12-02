@@ -6,59 +6,57 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 241F0C64E7B
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 620F1C64E7C
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:21:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25F66221E9
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:21:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25F66221E9
+	by mail.kernel.org (Postfix) with ESMTPS id 955A7221E9
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:21:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 955A7221E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13B8217DB;
-	Wed,  2 Dec 2020 18:20:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B8217DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08DEC17B6;
+	Wed,  2 Dec 2020 18:20:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08DEC17B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606929703;
-	bh=gBEIekP90p0hcGbN9o99riVWEWPfhUEj3ZSXm10r/cs=;
+	s=default; t=1606929709;
+	bh=Z96jA5IF2CkEi7wKy3c0iCcJbMRyGf6e7fJVMLCi9QI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kjLiOnOSduvtpoGExfQwEtE2q0NZZ4UcML/Z8VC2Mo/Cr02LaUHECStKpE43tztkH
-	 xYX9/n0c01G4y6FyA2QUvNlfDZt+rXZy+Mrvl65bi2h9hvqA6ctE1PAOe12qrFwOgk
-	 SJLm7/jod6NxX+E+gPG5+F6VCVzL+Xyio4GHEZfc=
+	b=uouKHAr9qwRlPM2URK8wUPASLsgkfboQqI0HvoC2Jd85CcQ0kx67ZvCEx49nYdn53
+	 c5aydZehMNVVUVzUWssKKwDOpgzZfJTyDDJlmJlmA5d6rKc9Wwi7WYM2yvBcIfLLzW
+	 x6QiFPhUhAptT2YVXaI2mqh8mRlHHp6cpm29Nm0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 660CFF804A9;
-	Wed,  2 Dec 2020 18:20:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 271C8F804BD;
+	Wed,  2 Dec 2020 18:20:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 684B0F804AA; Wed,  2 Dec 2020 18:20:05 +0100 (CET)
+ id 3FF45F804BD; Wed,  2 Dec 2020 18:20:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6E35F8049C
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 18:20:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6E35F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13648F804AB
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 18:20:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13648F804AB
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <X8c5gjZO7YN/CFsq@mwanda>
-References: <X8c5gjZO7YN/CFsq@mwanda>
-Subject: Re: [PATCH] ASoC: codecs: lpass-va-macro: remove some dead code
-Message-Id: <160692956495.33960.17489548804315513103.b4-ty@kernel.org>
+To: lgirdwood@gmail.com, "jack.yu@realtek.com" <jack.yu@realtek.com>
+In-Reply-To: <20201202021336.3591-1-jack.yu@realtek.com>
+References: <20201202021336.3591-1-jack.yu@realtek.com>
+Subject: Re: [PATCH] ASoC: rt715: remove unused parameter
+Message-Id: <160692956495.33960.2996787930692043481.b4-ty@kernel.org>
 Date: Wed, 02 Dec 2020 17:19:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de,
+ derek.fang@realtek.com, flove@realtek.com, shumingf@realtek.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,9 +72,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2 Dec 2020 09:51:46 +0300, Dan Carpenter wrote:
-> The "decimator" variable is in the 0-7 range and it's unsigned so there
-> is no need to check for negative values.
+On Wed, 2 Dec 2020 10:13:36 +0800, jack.yu@realtek.com wrote:
+> Remove unused parameter in rt715.h.
 
 Applied to
 
@@ -84,8 +81,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-va-macro: remove some dead code
-      commit: 4d638b9cc79eff11bad13fb3715c0ef38a9edaec
+[1/1] ASoC: rt715: remove unused parameter
+      commit: 569c167ce3bb145662cbdd37924017f5a3071024
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
