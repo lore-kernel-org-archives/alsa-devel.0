@@ -2,69 +2,63 @@ Return-Path: <SRS0=YmRK=FG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59D52C6369E
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 22:34:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B971AC64E7B
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 22:58:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52A9E221FD
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 22:34:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52A9E221FD
+	by mail.kernel.org (Postfix) with ESMTPS id CD18F22201
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 22:58:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD18F22201
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7957817F0;
-	Wed,  2 Dec 2020 23:33:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7957817F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A34017F1;
+	Wed,  2 Dec 2020 23:57:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A34017F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606948452;
-	bh=DWNYjXN+FF1RijqEQ0xnfnQqt6kKxMfE63rPhwMAtdE=;
+	s=default; t=1606949886;
+	bh=aP7n4LWktXGo5jGo0WTtoGwfuvvL7pDZC1TBiX72cIU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k957r0ZLV1ixYXt3R3uitC6JSv6Bd99RZCNL6OJ39vyNK/suGAYKz+MvoCgIAfBjP
-	 D27OlVIESNX2+uEVqqOpjyRJUIkVI9CgvWURPzje/48IfbmprRgxnQPUKXQzJmOiGz
-	 BRN4F2iUYFECPYAAr6xrBrSDJNznrQ/p0qA0B494=
+	b=YbmmVWTG4SPhCR5a/DFjhs3JJJMl5Ij05zcKxyJIq2XpDvkixpJQcGJ4hjRFEPAMj
+	 BFf+BmW5M8ZJRHK9yxXtwh9QQ7cBWLUgY19lHQltk89tlKEwez/7iMI2huE8q4mH2W
+	 X2UtGQ+rzsGu//bwIddxfzf1vjlBKyfGbRLZVyag=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0E5BF80158;
-	Wed,  2 Dec 2020 23:33:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D5ACF8025F;
+	Wed,  2 Dec 2020 23:57:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94493F8026B; Wed,  2 Dec 2020 23:33:20 +0100 (CET)
+ id 42077F8026B; Wed,  2 Dec 2020 23:57:13 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id DA531F80158
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 23:33:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA531F80158
-Date: 03 Dec 2020 07:33:03 +0900
-X-IronPort-AV: E=Sophos;i="5.78,387,1599490800"; d="scan'208";a="64659091"
+ by alsa1.perex.cz (Postfix) with ESMTP id C6FD6F80158
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 23:57:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6FD6F80158
+Date: 03 Dec 2020 07:57:04 +0900
+X-IronPort-AV: E=Sophos;i="5.78,387,1599490800"; d="scan'208";a="64660895"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 03 Dec 2020 07:33:03 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 03 Dec 2020 07:57:04 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E11B54012277;
- Thu,  3 Dec 2020 07:33:02 +0900 (JST)
-Message-ID: <87tut3c08p.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 79E704004CEE;
+ Thu,  3 Dec 2020 07:57:04 +0900 (JST)
+Message-ID: <87sg8nbz4o.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: "Gyeongtaek Lee" <gt82.lee@samsung.com>
-Subject: Re: [PATCH] ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
-In-Reply-To: <2038148563.21606894682167.JavaMail.epsvc@epcpadp4>
-References: <CGME20201202072607epcas2p43171cd23ab1752db8d71b2ed5f581aa8@epcas2p4.samsung.com>
- <2038148563.21606894682167.JavaMail.epsvc@epcpadp4>
+To: mdurnev@gmail.com
+Subject: Re: [PATCH v0] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
+In-Reply-To: <1606907286-32104-1-git-send-email-mikhail_durnev@mentor.com>
+References: <1606907286-32104-1-git-send-email-mikhail_durnev@mentor.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com,
- 'Takashi Iwai' <tiwai@suse.de>, 'Pierre-Louis
- Bossart' <pierre-louis.bossart@linux.intel.com>, lgirdwood@gmail.com,
- kimty@samsung.com, donggyun.ko@samsung.com, hmseo@samsung.com,
- cpgs@samsung.com, s47.kang@samsung.com, pilsun.jang@samsung.com,
- tkjung@samsung.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ mikhail_durnev@mentor.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,35 +75,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Gyeongtaek
+Hi Mikhail
 
 Thank you for your patch
 
-> If stop by underrun and DPCM BE disconnection is run simultaneously,
-> data abort can be occurred by the sequence below.
-> 
-> /* In core X, running dpcm_be_dai_trigger() */
-> for_each_dpcm_be(fe, stream, dpcm) {
-> /* In core Y, running dpcm_be_disconnect() */
-> spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> list_del(&dpcm->list_be);
-> list_del(&dpcm->list_fe);
-> spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-> kfree(dpcm);
-> /* In core X, running dpcm_be_dai_trigger() */
-> struct snd_soc_pcm_runtime *be = dpcm->be;   <== Accessing freed memory
+> +			switch (rsnd_mod_id(src_mod)) {
+> +			/*
+> +			 * SRC0 can downsample 4, 6 and 8 channel audio up to 4 times.
+> +			 * SRC1, SRC3 and SRC4 can downsample 4 channel audio
+> +			 * up to 4 times.
+> +			 * SRC1, SRC3 and SRC4 can downsample 6 and 8 channel audio
+> +			 * no more than twice.
+> +			 */
+> +			case 1:
+> +			case 3:
+> +			case 4:
+> +				if (channel > 4) {
+> +					k_down = 2;
+> +					break;
+> +				}
+> +			case 0:
+> +				if (channel > 2)
+> +					k_down = 4;
+> +				break;
+> +
+> +			/* Other SRC units do not support more than 2 channels */
+> +			default:
+> +				if (channel > 2)
+> +					return -EINVAL;
+> +			}
 
-It is easy to read/understand if this code has alignment.
-
-> To prevent this situation, dpcm_lock should be acquired during
-> iteration of dpcm list in dpcm_do_trigger().
-> 
-> Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-> Cc: stable@vger.kernel.org
-> ---
-
-Is this bugfix patch for some recent commit ?
-If so, having Fixes: tag is helpful.
+I think you want to add "fallthrough" between case 1/3/4 and case 0 ?
 
 Thank you for your help !!
 
