@@ -6,56 +6,58 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4522C64E7C
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 241F0C64E7B
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:21:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A04321D42
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:20:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A04321D42
+	by mail.kernel.org (Postfix) with ESMTPS id 25F66221E9
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Dec 2020 17:21:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25F66221E9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31EE7178F;
-	Wed,  2 Dec 2020 18:20:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31EE7178F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13B8217DB;
+	Wed,  2 Dec 2020 18:20:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B8217DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606929652;
-	bh=LN8JsVr8xfkCSHAtJt40KEro5mWD1yQq9wDL1JE/psc=;
+	s=default; t=1606929703;
+	bh=gBEIekP90p0hcGbN9o99riVWEWPfhUEj3ZSXm10r/cs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e2ZaZ0EahUj3vURU2bhQyW4AqVcXJRkaL4BtRQAkK7Zfpq0EXyoL1eGvoDOXQ0IiP
-	 pm/9Ezjbo8x/Kk48g0bA5lf9QJ7Z4j/I7dSOucwEBpTpTh1iq0b6Fa8mWxxglm9Leb
-	 3wG8pxImhs7SOl4pkaWxFCCbjEcLz7Z2msvi9eeM=
+	b=kjLiOnOSduvtpoGExfQwEtE2q0NZZ4UcML/Z8VC2Mo/Cr02LaUHECStKpE43tztkH
+	 xYX9/n0c01G4y6FyA2QUvNlfDZt+rXZy+Mrvl65bi2h9hvqA6ctE1PAOe12qrFwOgk
+	 SJLm7/jod6NxX+E+gPG5+F6VCVzL+Xyio4GHEZfc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 973CFF8025F;
-	Wed,  2 Dec 2020 18:20:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 660CFF804A9;
+	Wed,  2 Dec 2020 18:20:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D559BF8026B; Wed,  2 Dec 2020 18:20:00 +0100 (CET)
+ id 684B0F804AA; Wed,  2 Dec 2020 18:20:05 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51A8FF80168
- for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 18:19:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51A8FF80168
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6E35F8049C
+ for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2020 18:20:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6E35F8049C
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20201201211150.433472-1-ranjani.sridharan@linux.intel.com>
-References: <20201201211150.433472-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Boards: tgl_max98373: update TDM slot_width
-Message-Id: <160692956495.33960.8249694735993878352.b4-ty@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <X8c5gjZO7YN/CFsq@mwanda>
+References: <X8c5gjZO7YN/CFsq@mwanda>
+Subject: Re: [PATCH] ASoC: codecs: lpass-va-macro: remove some dead code
+Message-Id: <160692956495.33960.17489548804315513103.b4-ty@kernel.org>
 Date: Wed, 02 Dec 2020 17:19:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -72,14 +74,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 1 Dec 2020 13:11:50 -0800, Ranjani Sridharan wrote:
-> Speaker amp's SSP bclk configuration was changed in the topology file to be
-> based on 12.288MHz and dai_ops->hw_params is based on s32le format.
-> But, the TDM slot size remained set to 24 bits.
-> This inconsistency created audible noises and needs to be corrected.
-> This patch updates TDM slot width to 32.
-> 
-> Fixes: bc7477fc2ab4 ("ASoC: Intel: Boards: tgl_max98373: Update TDM configuration in hw_params")
+On Wed, 2 Dec 2020 09:51:46 +0300, Dan Carpenter wrote:
+> The "decimator" variable is in the 0-7 range and it's unsigned so there
+> is no need to check for negative values.
 
 Applied to
 
@@ -87,8 +84,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: Boards: tgl_max98373: update TDM slot_width
-      commit: 0d7f2459ae926a964ab211aac413d72074131727
+[1/1] ASoC: codecs: lpass-va-macro: remove some dead code
+      commit: 4d638b9cc79eff11bad13fb3715c0ef38a9edaec
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
