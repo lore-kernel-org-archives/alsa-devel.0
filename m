@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B4E9C64E7B
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 08:42:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC208C64E7B
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 08:42:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3F1621D1A
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 08:42:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3F1621D1A
+	by mail.kernel.org (Postfix) with ESMTPS id 8CEC421D1A
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 08:42:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CEC421D1A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D5271819;
-	Thu,  3 Dec 2020 09:41:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D5271819
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0436D1841;
+	Thu,  3 Dec 2020 09:42:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0436D1841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606984964;
-	bh=Xz11wUahcIwMDr0yHeTPvTBaBLsrL0E+yTEzLp8Y2NQ=;
+	s=default; t=1606984976;
+	bh=RLs5HoLaBnYcmU4gtZt/AAjaXoc1s6aj+u0iiz+XHk4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jW2pcWm+BJ2mqJvO/SOzUWkukmJdBvxDUEoUtDzWCA3ewmrxk34gbKS8nJEv+TzLY
-	 FGkrtcdC4ISJPpY395ap8DOY34XTaZTF0JV6rlOyBGhX5CmswdnFSrnj0tGhWym90C
-	 79szGIH8D8ZdoW5Hzbzm5jozbwz1FiQShE+etgow=
+	b=gvwoPVIY3a7QM3mq07j9e8KgbQqnyYjkeiepNkLafxMtcCQZEdmGU77DGCto1XLvR
+	 hhsDxUytayKJEhgk5pemOSM+Lp+gFqSAErxaY/gbWjFr7EjXhoVsshj9Ob8FDlC/GX
+	 pdP+KOz47MzROzLnOhI+KaIzvbUnXXa3uc2W6Sn4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A0ADF804E1;
-	Thu,  3 Dec 2020 09:39:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5283AF804F1;
+	Thu,  3 Dec 2020 09:39:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11B19F804D6; Thu,  3 Dec 2020 09:39:41 +0100 (CET)
+ id C8155F804E6; Thu,  3 Dec 2020 09:39:49 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4519AF804CC
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 09:39:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4519AF804CC
-IronPort-SDR: i4gcxwS8ogk1ZxZDHG3i3rNZqS4AzXR7UPZtYRenhG7Y/Re07vm5qgq5+jVDNXND7j6fMSU+wi
- 0JkeKObnzOIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="237276595"
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; d="scan'208";a="237276595"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C88AF804C3
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 09:39:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C88AF804C3
+IronPort-SDR: PrSIylbGe/dHg77IijVEC/L8PA6J9OR6gAdYUU6kjc7rXdG/F2e6zzEkg8hNmyK5Ma6kQf/kiF
+ m0hqWIENtmNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="237276611"
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; d="scan'208";a="237276611"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Dec 2020 00:39:37 -0800
-IronPort-SDR: bMduurmPYmWjKvgm7Uv90IrVC2Jvpti1d2fqq0OcjX8nx3Mp5c4FZleAXRXUYODQYYnv8jucgO
- xxteTOm3iyMg==
-X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; d="scan'208";a="481881026"
+ 03 Dec 2020 00:39:43 -0800
+IronPort-SDR: S0VIBd9R4Kpo3OreuSuygMeMjD3Et1wCV+xJ3KX/yisHxx+spA4ystlH6KdvNkWTQtRtBPl7uY
+ x3yla5B3fk/g==
+X-IronPort-AV: E=Sophos;i="5.78,389,1599548400"; d="scan'208";a="481881040"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Dec 2020 00:39:33 -0800
+ 03 Dec 2020 00:39:38 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 5/7] regmap: sdw: use no_pm routines for SoundWire 1.2 MBQ
-Date: Thu,  3 Dec 2020 04:46:43 +0800
-Message-Id: <20201202204645.23891-6-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 6/7] soundwire: bus: fix confusion on device used by pm_runtime
+Date: Thu,  3 Dec 2020 04:46:44 +0800
+Message-Id: <20201202204645.23891-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
 References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
@@ -87,53 +87,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use no_pm versions for write and read.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Intel stress-tests routinely report IO timeouts and invalid power
+management transitions. Upon further analysis, we seem to be using the
+wrong devices in pm_runtime calls.
+
+Before reading and writing registers, we first need to make sure the
+Slave is fully resumed. The existing code attempts to do such that,
+however because of a confusion dating from 2017 and copy/paste, we
+end-up resuming the parent only instead of resuming the codec device.
+
+This can lead to accesses to the Slave registers while the bus is
+still being configured and the Slave not enumerated, and as a result
+IO errors occur.
+
+This is a classic problem, similar confusions happened for HDaudio
+between bus and codec device, leading to power management issues.
+
+Fix by using the relevant device for all uses of pm_runtime functions.
+
+Fixes: 60ee9be255712 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+Fixes: aa79293517b39 ('soundwire: bus: fix io error when processing alert event')
+Fixes: 9d715fa005ebc ('soundwire: Add IO transfer')
+Reported-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/base/regmap/regmap-sdw-mbq.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/soundwire/bus.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap-sdw-mbq.c b/drivers/base/regmap/regmap-sdw-mbq.c
-index 8ce30650b97c..fe3ac26b66ad 100644
---- a/drivers/base/regmap/regmap-sdw-mbq.c
-+++ b/drivers/base/regmap/regmap-sdw-mbq.c
-@@ -15,11 +15,11 @@ static int regmap_sdw_mbq_write(void *context, unsigned int reg, unsigned int va
- 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index c5ea59673dee..c317f41eba4e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -514,16 +514,16 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ {
  	int ret;
  
--	ret = sdw_write(slave, SDW_SDCA_MBQ_CTL(reg), (val >> 8) & 0xff);
-+	ret = sdw_write_no_pm(slave, SDW_SDCA_MBQ_CTL(reg), (val >> 8) & 0xff);
- 	if (ret < 0)
+-	ret = pm_runtime_get_sync(slave->bus->dev);
++	ret = pm_runtime_get_sync(&slave->dev);
+ 	if (ret < 0 && ret != -EACCES) {
+-		pm_runtime_put_noidle(slave->bus->dev);
++		pm_runtime_put_noidle(&slave->dev);
  		return ret;
+ 	}
  
--	return sdw_write(slave, reg, val & 0xff);
-+	return sdw_write_no_pm(slave, reg, val & 0xff);
+ 	ret = sdw_nread_no_pm(slave, addr, count, val);
+ 
+-	pm_runtime_mark_last_busy(slave->bus->dev);
+-	pm_runtime_put(slave->bus->dev);
++	pm_runtime_mark_last_busy(&slave->dev);
++	pm_runtime_put(&slave->dev);
+ 
+ 	return ret;
  }
+@@ -540,16 +540,16 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ {
+ 	int ret;
  
- static int regmap_sdw_mbq_read(void *context, unsigned int reg, unsigned int *val)
-@@ -29,11 +29,11 @@ static int regmap_sdw_mbq_read(void *context, unsigned int reg, unsigned int *va
- 	int read0;
- 	int read1;
+-	ret = pm_runtime_get_sync(slave->bus->dev);
++	ret = pm_runtime_get_sync(&slave->dev);
+ 	if (ret < 0 && ret != -EACCES) {
+-		pm_runtime_put_noidle(slave->bus->dev);
++		pm_runtime_put_noidle(&slave->dev);
+ 		return ret;
+ 	}
  
--	read0 = sdw_read(slave, reg);
-+	read0 = sdw_read_no_pm(slave, reg);
- 	if (read0 < 0)
- 		return read0;
+ 	ret = sdw_nwrite_no_pm(slave, addr, count, val);
  
--	read1 = sdw_read(slave, SDW_SDCA_MBQ_CTL(reg));
-+	read1 = sdw_read_no_pm(slave, SDW_SDCA_MBQ_CTL(reg));
- 	if (read1 < 0)
- 		return read1;
+-	pm_runtime_mark_last_busy(slave->bus->dev);
+-	pm_runtime_put(slave->bus->dev);
++	pm_runtime_mark_last_busy(&slave->dev);
++	pm_runtime_put(&slave->dev);
  
-@@ -98,4 +98,4 @@ struct regmap *__devm_regmap_init_sdw_mbq(struct sdw_slave *sdw,
- EXPORT_SYMBOL_GPL(__devm_regmap_init_sdw_mbq);
+ 	return ret;
+ }
+@@ -1454,7 +1454,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 	ret = pm_runtime_get_sync(&slave->dev);
+ 	if (ret < 0 && ret != -EACCES) {
+ 		dev_err(&slave->dev, "Failed to resume device: %d\n", ret);
+-		pm_runtime_put_noidle(slave->bus->dev);
++		pm_runtime_put_noidle(&slave->dev);
+ 		return ret;
+ 	}
  
- MODULE_DESCRIPTION("Regmap SoundWire MBQ Module");
--MODULE_LICENSE("GPL v2");
-+MODULE_LICENSE("GPL");
 -- 
 2.17.1
 
