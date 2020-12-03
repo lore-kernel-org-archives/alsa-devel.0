@@ -2,129 +2,186 @@ Return-Path: <SRS0=z1YM=FH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36FEAC64E7C
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 02:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4BF95C6369E
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 02:30:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9428D22201
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 02:06:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9428D22201
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
+	by mail.kernel.org (Postfix) with ESMTPS id AA8D722206
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 02:30:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA8D722206
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8960A17F4;
-	Thu,  3 Dec 2020 03:05:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8960A17F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC2ED17FB;
+	Thu,  3 Dec 2020 03:29:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC2ED17FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606961171;
-	bh=h8INZgDOZnfJVIA2Y4POVZbJpgCRebNE7wKATDtP004=;
-	h=From:To:In-Reply-To:Subject:Date:References:Cc:List-Id:
+	s=default; t=1606962630;
+	bh=bD0cVfG2LSpPzGAPxgotaVvJQzRExThjSv7/rUYIJNU=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pXjgmWvSh+p4IYIKJqtixF4KmoBT3kfFBYfkTnSua2KCRmJ3PHt/58brPrQPATsmy
-	 fQYjB2X7Ek4WUOGJj6Kxg2T3lP7RXtpDE6QLtTuHf+3QRYeosVM3vAmUyN2mmrqBPb
-	 F+xl2DTE7B4YRduItgMQtnmovPHIEj+ZDXe/Kkag=
+	b=Ca/kfGQ6MyWX9I++YV5KYh4rRndqRCQHeYwQYI/gTs78P4S0hpze+ui2Cabj0I3qu
+	 184k6kenJzP1pVHaR9RZ1pw003+zzRcRPVidsszuw8U6/t+jT2IxWyQv0XpBHySs5k
+	 vrtMkd2D05immCjr+uqYpXJclD+F9MIsOswIybxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D8C8F8025F;
-	Thu,  3 Dec 2020 03:05:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06DB6F8025F;
+	Thu,  3 Dec 2020 03:29:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FCCFF80168; Thu,  3 Dec 2020 03:05:19 +0100 (CET)
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 55B7AF8026B; Thu,  3 Dec 2020 03:29:38 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03528F80168
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 03:05:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03528F80168
+ by alsa1.perex.cz (Postfix) with ESMTPS id 415DDF80168
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 03:29:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 415DDF80168
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="VRbRj1wW"
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
- by mailout3.samsung.com (KnoxPortal) with ESMTP id
- 20201203020502epoutp03bcf16ceaa3fe3ed71be7af6714957c5f~NEpvJoStp0752207522epoutp03U
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 02:05:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
- 20201203020502epoutp03bcf16ceaa3fe3ed71be7af6714957c5f~NEpvJoStp0752207522epoutp03U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1606961102;
- bh=3aiqXLobVTY6k6E74GSknOrtj48sO+04S24dTe8sErw=;
- h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
- b=VRbRj1wWCB9ySW320P73HnBS3VEU1Q8FCCqHAhitSwSktJtCXq46pQUFJjt/ABDSP
- 9PVeCruK5GO0tqr34jk99ysELG0OY08k+EucsXElnuey2OfQ3e1AxZP34qpAELo7TM
- EquOnGw+8Jw/IgbLrISvj9D3nYimklc+kBnfztcU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
- epcas3p2.samsung.com (KnoxPortal) with ESMTP id
- 20201203020502epcas3p20a0f7c733c3f20c9e257e1508b58546f~NEpu2j65c0725107251epcas3p2F;
- Thu,  3 Dec 2020 02:05:02 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
- (Postfix) with ESMTP id 4CmfL574m8zMqYkV; Thu,  3 Dec 2020 02:05:01 +0000
- (GMT)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
- epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
- 20201203010628epcas2p21a18eab524fc52e61f051185b169d75a~ND2mTl81k0331003310epcas2p2N;
- Thu,  3 Dec 2020 01:06:28 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
- epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20201203010628epsmtrp2e46fd5ae44407bb8bb5672adcafd7c4a~ND2mSxR2f2773327733epsmtrp2u;
- Thu,  3 Dec 2020 01:06:28 +0000 (GMT)
-X-AuditID: b6c32a2a-755ff70000002229-29-5fc83a14cf12
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
- epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
- DF.BB.08745.41A38CF5; Thu,  3 Dec 2020 10:06:28 +0900 (KST)
-Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip1.samsung.com
- (KnoxPortal) with ESMTPA id
- 20201203010627epsmtip18872d35b4d68b052b3f21cd80f17a19f~ND2mFYG3t2235022350epsmtip1H;
- Thu,  3 Dec 2020 01:06:27 +0000 (GMT)
-From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
-To: "'Kuninori Morimoto'" <kuninori.morimoto.gx@renesas.com>,
- <cpgs@samsung.com>
-In-Reply-To: <87tut3c08p.wl-kuninori.morimoto.gx@renesas.com>
-Subject: RE: [PATCH] ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
-Date: Thu, 3 Dec 2020 10:06:27 +0900
-Message-ID: <1891546521.01606961101988.JavaMail.epsvc@epcpadp3>
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="j7kvJxJz"
+IronPort-SDR: QS747zz+ZhN3o32oqnbxg4y/aMoYpL7Diq6jyuZFqq9W0B7f+J2Br7TRtHIBxmqYAfLQL2s8gm
+ Y59kSXY5SgLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9823"; a="152949234"
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; d="scan'208";a="152949234"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Dec 2020 18:29:19 -0800
+IronPort-SDR: yjiSzqQXpJA4nZYessrQE9wQ/GU1lsNReMeKLs6Ywj9FcDSjCt6QPY7NJmMUKAy14f5WC3TT4S
+ D7h8evq2eMVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,388,1599548400"; d="scan'208";a="365562099"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+ by fmsmga004.fm.intel.com with ESMTP; 02 Dec 2020 18:29:17 -0800
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 2 Dec 2020 18:29:17 -0800
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 2 Dec 2020 18:29:16 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 2 Dec 2020 18:29:16 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Wed, 2 Dec 2020 18:29:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KvxPF+NxX8NvcPQssnJlg1B3kqrCZy4dXFndDI8ccN45bTLQw/EkOi3SOjr3hlNDVXObS1HRRmjFrf5Bq1/1tZf5UUXA34FxfEfzjw3/NYu8KjTxCB0MTQx+qLsnDhhe0D0bfJOlrWnnUOtLvQnmR5AuKlyVRHLsFwnHpnzzACf1jOwA2mabUktgUjq/eXaWlWp7r1DEaFdQHZPTdIpteWuVswZC3AxPkURUoznWtPzLJ6L7YFkulXza0+JymUNVqldHc98r913RcyfvN6sE6or6RoK+M19l95pIwNCQdSjDwz5LYicqPXtSSxFz26FbbsZF6Ded3ox3/WaVACQqPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bD0cVfG2LSpPzGAPxgotaVvJQzRExThjSv7/rUYIJNU=;
+ b=efK2vXNHFYqj37OOEIGOTanmgHz+R1EZLzPj8eFHOfE8WxbIoEmuO2bFzcvcolO+wX3qChiqEYTHmdD0/CnHAySx5MqO5bZaFoCIHvR0ddqwpVi6odb50/p1/yRotqGkdPBabx/WD8KmwT6UgfdcOUBXU4b8Vyep4CWgaYF/a02MqPVQdqxyfSE+bIlDDPIDuh9vjc6ZY3/NKOnDZFcN2BQ7meXUQEbUwYvNFTa+RoTXJi43No5MnMGF0AFM4enl4pBDEnHapiW6/CyHYFyKklaJgtE86KdkTsAV5c25nIBN8/btlhh99rsYcZ9bhT9dwhz3IlaVeiU/aE4El/2EPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bD0cVfG2LSpPzGAPxgotaVvJQzRExThjSv7/rUYIJNU=;
+ b=j7kvJxJzxnnGhA8bL8w004aGE6NDawoRuGjb5jjsgqQUTUS2BEMOkLf9WpUv9HKe5h/QK8kpYizouK5xDyuW3BsnubDhSiWg8Uslbb92eMEJsh2uYLzjkCq5z5VwoPoJmtb/xDWEoqncrUJ/N98SCqARHhkWAcN7R5IYe50jH9U=
+Received: from DM6PR11MB4074.namprd11.prod.outlook.com (2603:10b6:5:5::11) by
+ DM6PR11MB3595.namprd11.prod.outlook.com (2603:10b6:5:142::16) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3611.25; Thu, 3 Dec 2020 02:29:14 +0000
+Received: from DM6PR11MB4074.namprd11.prod.outlook.com
+ ([fe80::8941:7045:2dc8:707e]) by DM6PR11MB4074.namprd11.prod.outlook.com
+ ([fe80::8941:7045:2dc8:707e%7]) with mapi id 15.20.3611.032; Thu, 3 Dec 2020
+ 02:29:14 +0000
+From: "Liao, Bard" <bard.liao@intel.com>
+To: Mark Brown <broonie@kernel.org>, Bard Liao
+ <yung-chuan.liao@linux.intel.com>
+Subject: RE: [PATCH v2 3/5] ASoC/SoundWire: rt715-sdca: First version of rt715
+ sdw sdca codec driver
+Thread-Topic: [PATCH v2 3/5] ASoC/SoundWire: rt715-sdca: First version of
+ rt715 sdw sdca codec driver
+Thread-Index: AQHWx4pYRUwoCWEb2EWVJIUffE01Tanj+28AgACsq1A=
+Date: Thu, 3 Dec 2020 02:29:14 +0000
+Message-ID: <DM6PR11MB40747A2F2AAC0A4D87F3EA87FFF20@DM6PR11MB4074.namprd11.prod.outlook.com>
+References: <20201130144020.19757-1-yung-chuan.liao@linux.intel.com>
+ <20201130144020.19757-4-yung-chuan.liao@linux.intel.com>
+ <20201202160740.GG5560@sirena.org.uk>
+In-Reply-To: <20201202160740.GG5560@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+dlp-product: dlpe-windows
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [220.133.4.96]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d717cc83-1614-4e95-175d-08d8973339fd
+x-ms-traffictypediagnostic: DM6PR11MB3595:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB3595AF5579E281D0D82120F5FFF20@DM6PR11MB3595.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:773;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i/jxY5pnDoSkfvwlaacUQB33jclaEUHPnMXNf9ShAjgEn9k5beAeciL6/ix0epBMU/f16lPm3kyvCB3ZDZm2+6YW6zZWrd5zTfEPXdPZF0VM1iheWVlPQLhAv6tO+L4w4ASoTL5rPsNpQNBdEQ3tQt5ESPJ66IWoHSXQ4pCJhdUJfLnq30Q36ZmmUnHiFqn41rWDmNYfSUg7bac+mMvAbSuvjmgASUqozxrMjkNVUKDQPH0/yX1QxI5rEaB3JO3JgLJkzdwZjQsj4Fvs7AIswMyKoNXRRwiQ8j5gku1AQb5jmLmioHZbZxT1e5xNYcTQjUn+d7QV5SSdGwcGYtDtiw==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR11MB4074.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(71200400001)(83380400001)(55016002)(8676002)(64756008)(86362001)(76116006)(54906003)(66556008)(5660300002)(53546011)(7696005)(316002)(6506007)(66946007)(66476007)(8936002)(66446008)(9686003)(110136005)(7416002)(478600001)(52536014)(2906002)(4744005)(26005)(4326008)(33656002)(186003);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9mBxO6ILD/b1tH1YJ77V3llMApnE4aNIY0e5pZDD3iLpshmAuuSGgxmhtHyQ?=
+ =?us-ascii?Q?9sjVw3Kcv759jS9JY7hyGWPjwfSFht1ucivTy0AHtb65n3HgaVGBl1ye9XX/?=
+ =?us-ascii?Q?Ta2XrmFXqzU4+7PzDY2RmZ+DxzR9hz3HXKBQrQLR51Yzw1eLRqQXeyHHA5yE?=
+ =?us-ascii?Q?g4EJd6GbQWxDvA0d3tT3gWXOvpJeE5AW2OLB94ERbUSd7DR1ZoQLH0I1r7GN?=
+ =?us-ascii?Q?tn69dTXJ5+n4dO6SGbXI/Hp2WStkT4kthkdZRE5Lz7pskigrmJtKUHPChQF4?=
+ =?us-ascii?Q?DvuxWgraT1vuX5/KRUXyuhsUNkJZwbEM43L4wsw8l0FCWgxuz4MrQnNjetWW?=
+ =?us-ascii?Q?Vl2EtWcFVXA/IPqXEO7QulPhMwjsqYwUepo0rQg4FY/hiWc0/cKA4aPyVDiu?=
+ =?us-ascii?Q?P1QHtcw1fpNDRVg7YhenVfhIwrDZdWLAWALjjzO/YmyqTRFifz1iysKQZHFe?=
+ =?us-ascii?Q?9PMwY/jUMsK1TgSvmfikpKhIVJMbcqHcAnleeZEpfiCxtAcdNgZyhtRz8AJB?=
+ =?us-ascii?Q?QMA2hnNuhxqny3P6ZLUaKbeq49omAvdcMH3htY4eqsEvwNYRPTKi6mIDisoz?=
+ =?us-ascii?Q?6dMXGQ0N07JtHHnu96n09A6k4JU5/sRAIGr5XEsOaQ0Y5slW/N1VOWoGnQyc?=
+ =?us-ascii?Q?0yF3PKOqhTg+E9anNvhUzu01vh57NMuCYpByKBPqWRUIc4a+zWP7xllbrA9q?=
+ =?us-ascii?Q?DwhC7htsMoMey735f5I3Ea5Kqzgwj//UwSolBLery4zVkyhXzGVzhPp+4d4/?=
+ =?us-ascii?Q?cZSCihcmIgjTyLyZo7VtRUsu7FuF/b9c55HSMiAwWWtRrhzBg8CFgzClZfXY?=
+ =?us-ascii?Q?8JwqUnOGi41Bl+7YkU+bSxu1/3/e1fNWZkWouWIYr+ZUWaQvdWNAuCOmc4Xq?=
+ =?us-ascii?Q?cNXaJqkPr919lLOt4cXCIVgYj76PO5V9ApbCMfgRw9IPr20n9Z0RkSgBglu4?=
+ =?us-ascii?Q?DpzPj+YInq0V9yRybOlM8HnKd+PrIOfmCB/dMCdoLOY=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFbMrnWt5vU62WFOJaPsklg18y2CgIP5R6AAigCCu6qufu1kA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIIsWRmVeSWpSXmKPExsWy7bCSnK6I1Yl4g8sXWSyuXDzEZPHykKbF
- 3R/mFjO2dbNYNN6bwGax+uoWJotXh3cxWny70sFk8ev/MyaLoxcXM1k03G1mt3i5+Q2TxZHG
- KUwOvB4bPjexeeycdZfdY97JQI9vZyayePRtWcXosfl0dQBbFJdNSmpOZllqkb5dAlfGtJsd
- 7AXNXBXr/mxnbGCcztHFyMkhIWAiceXARsYuRi4OIYEdjBLTX29lgUhISHyYf4YdwhaWuN9y
- hBWi6DmjxONzzxhBEmwCuhJf7t1hBrFFBIIkFiz9C1bELPCOSWLimo8sEB2HGCXWLLwJNpZT
- wFZi8825rCC2sIC7xKLXV4BWcHCwCKhIrJqvCGLyClhK9FxxAangFRCUODnzCQtImFlAT6Jt
- I9haZgF5ie1v5zBD3KYg8fPpMlaIE5wknq45yQJRIyIxu7ONeQKj8Cwkk2YhTJqFZNIsJB0L
- GFlWMUqmFhTnpucWGxYY5aWW6xUn5haX5qXrJefnbmIEx6KW1g7GPas+6B1iZOJgBHqQg1lJ
- hJfl35F4Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxfZy2MExJITyxJzU5NLUgtgskycXBKNTCp
- vtwpc8Cgmn+2PB/L9p0rnXbrS1uWThayrNtyPGvf5o0brLomql+bkfYtyXHV8R2Vc6zdIlKb
- U3KMrlfZf5j/LDM+9WxG56ay+VOM7vKe3nx1O8P5h2L2y29Vngv0YmS92pB7+OTMj7EzHVm+
- 6fcvin60ml0nNqT13H/BaXolYhIv/x6YtkC7xzz8z/YJcQeCgqxkjvgJXC9eyBekcerySa/c
- TfPf+8ivnnaaJ/rE3hUXzpmE7Mpl6pv0+euEzZvPZ8XZbnHfXCw7aWuW7tsypoo56Z6ynSun
- hmxUPMa+m6XyqEDPlcyTUjuORTM/2+fRLRTItLZFdNukLJabErs+bZOZn2KwzlD962mfKW3m
- SizFGYmGWsxFxYkAQjcnUzQDAAA=
-X-CMS-MailID: 20201203010628epcas2p21a18eab524fc52e61f051185b169d75a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20201202072607epcas2p43171cd23ab1752db8d71b2ed5f581aa8
-References: <CGME20201202072607epcas2p43171cd23ab1752db8d71b2ed5f581aa8@epcas2p4.samsung.com>
- <2038148563.21606894682167.JavaMail.epsvc@epcpadp4>
- <87tut3c08p.wl-kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, 'Takashi
- Iwai' <tiwai@suse.de>, lgirdwood@gmail.com,
- 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
- kimty@samsung.com, donggyun.ko@samsung.com, hmseo@samsung.com,
- cpgs@samsung.com, s47.kang@samsung.com, pilsun.jang@samsung.com,
- tkjung@samsung.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4074.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d717cc83-1614-4e95-175d-08d8973339fd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 02:29:14.1321 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZQbp9Rbm+w25ImrDgGJZvBZSQackuVEpRwryfwDsEtD2w2+o9jdubQPgQj/f/u4uFys7vgLZLHBu0BTZuwi/jQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3595
+X-OriginatorOrg: intel.com
+Cc: "pierre-louis.bossart@linux.intel.com"
+ <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "vinod.koul@linaro.org" <vinod.koul@linaro.org>,
+ "tiwai@suse.de" <tiwai@suse.de>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "ranjani.sridharan@linux.intel.com" <ranjani.sridharan@linux.intel.com>,
+ "hui.wang@canonical.com" <hui.wang@canonical.com>,
+ "vkoul@kernel.org" <vkoul@kernel.org>,
+ "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+ "jank@cadence.com" <jank@cadence.com>, "Kale,
+ Sanyog R" <sanyog.r.kale@intel.com>,
+ "rander.wang@linux.intel.com" <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -140,48 +197,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 03 Dec 2020 07:33:03 +0900, Kuninori Morimoto wrote:
->Hi Gyeongtaek
->
->Thank you for your patch
->
->> If stop by underrun and DPCM BE disconnection is run simultaneously,
->> data abort can be occurred by the sequence below.
->> 
->> /* In core X, running dpcm_be_dai_trigger() */
->> for_each_dpcm_be(fe, stream, dpcm) {
->> /* In core Y, running dpcm_be_disconnect() */
->> spin_lock_irqsave(&fe->card->dpcm_lock, flags);
->> list_del(&dpcm->list_be);
->> list_del(&dpcm->list_fe);
->> spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
->> kfree(dpcm);
->> /* In core X, running dpcm_be_dai_trigger() */
->> struct snd_soc_pcm_runtime *be = dpcm->be;   <== Accessing freed memory
->
->It is easy to read/understand if this code has alignment.
->
->> To prevent this situation, dpcm_lock should be acquired during
->> iteration of dpcm list in dpcm_do_trigger().
->> 
->> Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
->> Cc: stable@vger.kernel.org
->> ---
->
->Is this bugfix patch for some recent commit ?
->If so, having Fixes: tag is helpful.
->
->Thank you for your help !!
-Thank you for your review.
-I'll resend the patch v2 after fixing the patch as 
-your review comment.
 
-Thanks again.
-Gyeongtaek Lee
->
->Best regards
->---
->Kuninori Morimoto
->
 
+> -----Original Message-----
+> From: Mark Brown <broonie@kernel.org>
+> Sent: Thursday, December 3, 2020 12:08 AM
+> To: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Cc: alsa-devel@alsa-project.org; vkoul@kernel.org; vinod.koul@linaro.org;
+> linux-kernel@vger.kernel.org; tiwai@suse.de; gregkh@linuxfoundation.org;
+> jank@cadence.com; srinivas.kandagatla@linaro.org;
+> rander.wang@linux.intel.com; ranjani.sridharan@linux.intel.com;
+> hui.wang@canonical.com; pierre-louis.bossart@linux.intel.com; Kale, Sanyo=
+g
+> R <sanyog.r.kale@intel.com>; Liao, Bard <bard.liao@intel.com>
+> Subject: Re: [PATCH v2 3/5] ASoC/SoundWire: rt715-sdca: First version of
+> rt715 sdw sdca codec driver
+>=20
+> On Mon, Nov 30, 2020 at 10:40:18PM +0800, Bard Liao wrote:
+> > From: Jack Yu <jack.yu@realtek.com>
+> >
+> > First version of rt715 sdw sdca codec driver.
+>=20
+> This doesn't apply against the ASoC tree, please check and resend.
+
+
+Looks like the previous version is already in ASoC tree. I will resend the
+remaining patches on top of it.
 
