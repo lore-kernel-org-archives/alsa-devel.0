@@ -2,97 +2,124 @@ Return-Path: <SRS0=z1YM=FH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CCAEC71155
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 03:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44773C64E7A
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 05:36:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC595221FB
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 03:52:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC595221FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5F7C720B80
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 05:36:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F7C720B80
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33A251819;
-	Thu,  3 Dec 2020 04:51:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33A251819
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9041E1823;
+	Thu,  3 Dec 2020 06:35:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9041E1823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1606967567;
-	bh=cN/Ln1IbYnnQ6RzNTgSIMqfGgOIPvosUwWrAfpyQTzk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WtmfLNF8THJuqnsCOIcqAoFRlGh5oZafJQS9dYpuj+pkxVN+oNpLLphXKoP4Ji0z0
-	 TosRWyqEAg+kmBuRZ9pfDLnkhA19O3x6eZ+KZAhFYtOhM3YS+3YAdDfatZK8osI5Vf
-	 DJCNwPI/cgxFgnuJLg6AgDuuy4rtRTM3zA+SrvQs=
+	s=default; t=1606973768;
+	bh=Eg2XVanWfpVAwiiRmz4ltmIQb/NogP5zrdVWIhPrWbA=;
+	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=qHPihBCUe/I2+XCHQWmW7XW3ewHOSLsSdUHtFzWJJye32S0HLKDc53onv7gHR34Nl
+	 T57kv7txJ0ucrwAELRhZWaoSrgPbAPu9x4cKXYi+hK+FX9OESA8ct4V+0krokgK4sf
+	 vpNbXkoyA8BcX36cVD2IrY16+u+pjvw5U5gMac34=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 916BAF800E8;
-	Thu,  3 Dec 2020 04:51:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEE42F80158;
+	Thu,  3 Dec 2020 06:35:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE182F8016D; Thu,  3 Dec 2020 04:51:54 +0100 (CET)
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com
- [IPv6:2607:f8b0:4864:20::743])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 76184F8012A; Thu,  3 Dec 2020 06:35:16 +0100 (CET)
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 659BEF800E8
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 04:51:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 659BEF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D40D3F80158
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 06:35:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D40D3F80158
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Mhea7zKS"
-Received: by mail-qk1-x743.google.com with SMTP id n132so1016055qke.1
- for <alsa-devel@alsa-project.org>; Wed, 02 Dec 2020 19:51:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=SUzQs/+SoVYKqbh24yWO/KQhjnAXrlDusJdUSTJS5A8=;
- b=Mhea7zKSrwE8kuWuWy+h9M4qWmkuaGN4aIb747Gar6/nB54tO2IxYzyAY5JGJIBgFD
- 4lNXCYHb96+jK8BAabG5UbTB6v+QvEBfjJ4Bu3NKUQepLKB3saaoGPMzgBSAvvAF2dGK
- DOTSmr7c4mjAX+j/vsXoRVSKJCKOW3ZsKIdPhkqZ9xqynSGNxavwDYgdOKFnNcxCDIUB
- Fhr24MF6tv758ybaKhhDZ17K3qDhsPb/0glb7vdNKf0Ihw9JAepVuoGN9K7CJGcgoj/h
- z1oJa4ibzH3I4wFno7uS5j/qBUnMpq7ogbpp+jR2XJewTmeN2Y9rGeebn7KHR7/ov8Yi
- hSWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=SUzQs/+SoVYKqbh24yWO/KQhjnAXrlDusJdUSTJS5A8=;
- b=FYnaooK0Dm9eNfSg2Y5PtXCojMoj7+bh+CLjajR2TlJYuHUHT54fZ8mgzeFfB1ScWQ
- QCktib7a2MaE+kzCnp1+8UmH/MhlH2CTkhfhC8urrIpBXXsoK0/VMjBq4YtSLnN2Q1tP
- 8RObHpsyzTnCEC3PaQBMZCNSM4gBTi4x9LELPCg9GwMmJDltrY53Y0wHVEiC90vsCGQy
- C7Iv3L3ZlhMbRceyEC5Amb8K0aW8zfOPhPnwxQjT1cvhP6K+lchhhFvqOwBDUm06+JEF
- uxzJsIfUcLgmLrhrosjd9OG57jmi0krjn9uuPTXsV7+CGkpeavNdEYZ0Q+oqAon2C6kx
- iCjw==
-X-Gm-Message-State: AOAM5309kQWIdvd3rHn7InFj7EozvYLWTu4vh3UfdSljZTfpoXfoENs0
- 5JxnnBliAOdsMgTs7MBkH4BW7mgFiOh8vxTiK04=
-X-Google-Smtp-Source: ABdhPJy7VJpgVDqrl8VrmWdiRB1M2O74ruT8AdiwDLEn+Mf13W/ZStOpINVSqcBacLORp6qnYaI9VhZZGC1MC4qMtf8=
-X-Received: by 2002:a37:ad17:: with SMTP id f23mr1146570qkm.121.1606967502905; 
- Wed, 02 Dec 2020 19:51:42 -0800 (PST)
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="dRdabTxm"
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+ by mailout4.samsung.com (KnoxPortal) with ESMTP id
+ 20201203053502epoutp04dfd46cd89d069b834f2aabfef528e328~NHhFrGsdW2209722097epoutp04J
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 05:35:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com
+ 20201203053502epoutp04dfd46cd89d069b834f2aabfef528e328~NHhFrGsdW2209722097epoutp04J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1606973702;
+ bh=Uku8ZK0H2CLbNlDFU/hau7C5vRI2vEgiJeveeYtAX+M=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=dRdabTxmnADl0hLBcyBcsw8ZJZ90J3BxTNVWiFVSyTedu9JFYMSw9UhLncCWm9tJD
+ /HzPllul41rGX23DMR6iJ6r4jultntW7+zN8hkmRfBNyA3AEZR9zlXuyYUwzgO+qvH
+ 5sj66jjAyMJ7lojgr6d0dUxA8Gde/RMrbwjeSohI=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+ epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+ 20201203053501epcas3p49019d69f888bf86bd2dc3a995eba4076~NHhFbmyld0926709267epcas3p4t;
+ Thu,  3 Dec 2020 05:35:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
+ (Postfix) with ESMTP id 4Cml0P6SHFzMqYkW; Thu,  3 Dec 2020 05:35:01 +0000
+ (GMT)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20201203053226epcas2p23199d15a27c5a9996ba5d26085453523~NHe08fjMO0521205212epcas2p2H;
+ Thu,  3 Dec 2020 05:32:26 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20201203053226epsmtrp167c4836a0856d106bc00d82c97359ce5~NHe05oknK3147231472epsmtrp1k;
+ Thu,  3 Dec 2020 05:32:26 +0000 (GMT)
+X-AuditID: b6c32a2a-755ff70000002229-a5-5fc8786a5903
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+ epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 34.6A.08745.A6878CF5; Thu,  3 Dec 2020 14:32:26 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip2.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20201203053226epsmtip27181adab237b2e1fafe8cf3a6ce50d09~NHe0nMqzA2160921609epsmtip2i;
+ Thu,  3 Dec 2020 05:32:26 +0000 (GMT)
+From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+To: "'Kuninori Morimoto'" <kuninori.morimoto.gx@renesas.com>,
+ <cpgs@samsung.com>
+Subject: [PATCH v2 1/1] ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
+Date: Thu, 3 Dec 2020 14:32:26 +0900
+Message-ID: <1935972447.41606973701904.JavaMail.epsvc@epcpadp3>
 MIME-Version: 1.0
-References: <1606455021-18882-1-git-send-email-shengjiu.wang@nxp.com>
- <1606455021-18882-2-git-send-email-shengjiu.wang@nxp.com>
- <20201202201955.GB1498@Asurada-Nvidia>
-In-Reply-To: <20201202201955.GB1498@Asurada-Nvidia>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Thu, 3 Dec 2020 11:51:32 +0800
-Message-ID: <CAA+D8AOAMV4jyD0uBwER+0KkrBjJcrNPcT4zeYU8Y1WRDRXziQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: fsl: Add imx-hdmi machine driver
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
- linuxppc-dev@lists.ozlabs.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdbJNHXbWlM7tNX0SPKQFEQn0dNfaQ==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmkeLIzCtJLcpLzFFi42LZdlhJXjer4kS8was7yhZXLh5isnh5SNPi
+ 7g9zixnbulksGu9NYLNYfXULk8Wrw7sYLb5d6WCy+PX/GZPF0YuLmSwa7jazW7zc/IbJ4kjj
+ FCYHXo8Nn5vYPHbOusvuMe9koMe3MxNZPPq2rGL02Hy6OoAtissmJTUnsyy1SN8ugSujpXc6
+ W8Fk44r+/w+ZGxgPa3YxcnJICJhILN/1krWLkYtDSGAHo8TDbY+YIRISEh/mn2GHsIUl7rcc
+ YQWxhQSeM0qsO54BYrMJ6Ep8uXcHrF5EIEhiwdK/YIOYBd4xSVz9tYIJJCEs4CWx+ed2MJtF
+ QEVi8sxZLCA2r4ClxNPfP9khbEGJkzOfgMWZBbQleh+2MkLY8hLb386BOkhB4ufTZawQy/Qk
+ Pl05xQZRIyIxu7ONeQKj4Cwko2YhGTULyahZSFoWMLKsYpRMLSjOTc8tNiwwykst1ytOzC0u
+ zUvXS87P3cQIji8trR2Me1Z90DvEyMTBeIhRgoNZSYSX5d+ReCHelMTKqtSi/Pii0pzU4kOM
+ 0hwsSuK8X2ctjBMSSE8sSc1OTS1ILYLJMnFwSjUwae9Qyl/OdK68ejJbZf4J1bZ/DIfkHp7V
+ /rFxoSqPqN1Ot0Wr1wjIzHnzcvmEi3VHLVzZP06KOdssbePW2n3aY93Ks4tSt19vUefccKi3
+ W61rorNdMcOSSY/XzXi6p+bWrV9rCvrOW3/gfqm9o1P6xq00D/FZ95oYlynXMmg8ef7k62dt
+ GcX8X6KZEV8Ontv18McUpf+H85Zc+XLO58ZDB8mC6OP71U0ezP1q5JR4Ru7/gRCmlAfru6/q
+ qT9rNmGM/KT5NixxzVuVB9dmSgbsPt/mLmPVq8XG4f56A8fWcwuko98VxAYLVP5/fCpqk5ek
+ UmHiJfvdT7Kuu7ZND7uiN8si8vtRJvY2zr4FZQ6t05VYijMSDbWYi4oTAVF33woeAwAA
+X-CMS-MailID: 20201203053226epcas2p23199d15a27c5a9996ba5d26085453523
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20201203053226epcas2p23199d15a27c5a9996ba5d26085453523
+References: <CGME20201203053226epcas2p23199d15a27c5a9996ba5d26085453523@epcas2p2.samsung.com>
+Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, 'Takashi
+ Iwai' <tiwai@suse.de>,
+ 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
+ lgirdwood@gmail.com, kimty@samsung.com, donggyun.ko@samsung.com,
+ hmseo@samsung.com, cpgs@samsung.com, s47.kang@samsung.com,
+ pilsun.jang@samsung.com, tkjung@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,131 +135,213 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Dec 3, 2020 at 4:23 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Fri, Nov 27, 2020 at 01:30:21PM +0800, Shengjiu Wang wrote:
-> > The driver is initially designed for sound card using HDMI
-> > interface on i.MX platform. There is internal HDMI IP or
-> > external HDMI modules connect with SAI or AUD2HTX interface.
-> > It supports both transmitter and receiver devices.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  sound/soc/fsl/Kconfig    |  12 ++
-> >  sound/soc/fsl/Makefile   |   2 +
-> >  sound/soc/fsl/imx-hdmi.c | 235 +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 249 insertions(+)
-> >  create mode 100644 sound/soc/fsl/imx-hdmi.c
->
-> > diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-> > new file mode 100644
-> > index 000000000000..ac164514b1b2
-> > --- /dev/null
-> > +++ b/sound/soc/fsl/imx-hdmi.c
->
-> > +static int imx_hdmi_hw_params(struct snd_pcm_substream *substream,
-> > +                           struct snd_pcm_hw_params *params)
-> > +{
-> > +     struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > +     struct imx_hdmi_data *data = snd_soc_card_get_drvdata(rtd->card);
-> > +     bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-> > +     struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-> > +     struct snd_soc_card *card = rtd->card;
-> > +     struct device *dev = card->dev;
-> > +     int ret;
-> > +
-> > +     /* set cpu DAI configuration */
-> > +     ret = snd_soc_dai_set_sysclk(cpu_dai, data->cpu_priv.sysclk_id[tx],
-> > +                                  8 * data->cpu_priv.slot_width * params_rate(params),
->
-> Looks like fixed 2 slots being used, judging by the set_tdm_slot
-> call below. Then...why "8 *"? Probably need a line of comments?
+If stop by underrun and DPCM BE disconnection is run simultaneously,
+data abort can be occurred by the sequence below.
 
-The master clock always 256 * rate, when slot_width=32.  so use
-the 8 * slot_width.  will add comments.
+/* In core X, running dpcm_be_dai_trigger() */
+for_each_dpcm_be(fe, stream, dpcm) {
+/* In core Y, running dpcm_be_disconnect() */
+spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+list_del(&dpcm->list_be);
+list_del(&dpcm->list_fe);
+spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+kfree(dpcm);
+/* In core X, running dpcm_be_dai_trigger() */
+struct snd_soc_pcm_runtime *be = dpcm->be;   <== Accessing freed memory
 
->
-> > +                                  tx ? SND_SOC_CLOCK_OUT : SND_SOC_CLOCK_IN);
-> > +     if (ret && ret != -ENOTSUPP) {
-> > +             dev_err(dev, "failed to set cpu sysclk: %d\n", ret);
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = snd_soc_dai_set_tdm_slot(cpu_dai, 0, 0, 2, data->cpu_priv.slot_width);
->
-> May have a local variable to cache slot_width.
+To prevent this situation, dpcm_lock should be acquired during
+iteration of dpcm list in dpcm_be_dai_trigger().
 
-ok.
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/soc-pcm.c | 62 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 18 deletions(-)
 
->
-> > +static int imx_hdmi_probe(struct platform_device *pdev)
->
-> > +     data->dai.name = "i.MX HDMI";
-> > +     data->dai.stream_name = "i.MX HDMI";
-> > +     data->dai.cpus->dai_name = dev_name(&cpu_pdev->dev);
-> > +     data->dai.platforms->of_node = cpu_np;
-> > +     data->dai.ops = &imx_hdmi_ops;
-> > +     data->dai.playback_only = true;
-> > +     data->dai.capture_only = false;
-> > +     data->dai.init = imx_hdmi_init;
-> > +
-> > +
-> > +     if (of_property_read_bool(np, "hdmi-out")) {
-> > +             data->dai.playback_only = true;
-> > +             data->dai.capture_only = false;
-> > +             data->dai.codecs->dai_name = "i2s-hifi";
-> > +             data->dai.codecs->name = "hdmi-audio-codec.1";
-> > +             data->dai.dai_fmt = data->dai_fmt |
-> > +                                 SND_SOC_DAIFMT_NB_NF |
-> > +                                 SND_SOC_DAIFMT_CBS_CFS;
-> > +     }
-> > +
-> > +     if (of_property_read_bool(np, "hdmi-in")) {
-> > +             data->dai.playback_only = false;
-> > +             data->dai.capture_only = true;
-> > +             data->dai.codecs->dai_name = "i2s-hifi";
-> > +             data->dai.codecs->name = "hdmi-audio-codec.2";
-> > +             data->dai.dai_fmt = data->dai_fmt |
-> > +                                 SND_SOC_DAIFMT_NB_NF |
-> > +                                 SND_SOC_DAIFMT_CBM_CFM;
-> > +     }
-> > +
-> > +     if ((data->dai.playback_only && data->dai.capture_only) ||
-> > +         (!data->dai.playback_only && !data->dai.capture_only)) {
-> > +             dev_err(&pdev->dev, "Wrongly enable HDMI DAI link\n");
-> > +             goto fail;
-> > +     }
->
-> Seems that this condition check can never be true, given that:
-> 1. By default: playback_only=true && capture_only=false
-> 2. Conditionally overwritten: playback_only=true && capture_only=false
-> 3. Conditionally overwritten: playback_only=false && capture_only=true
->
-> If I understand it correctly, probably should be something like:
->         bool hdmi_out = of_property_read_bool(np, "hdmi-out");
->         bool hdmi_in = of_property_read_bool(np, "hdmi-in");
->
->         if ((hdmi_out && hdmi_in) || (!hdmi_out || !hdmi_in))
->                 // "Invalid HDMI DAI link"; goto fail;
->
->         if (hdmi_out) {
->                 // ...
->         } else if (hdmi_in) {
->                 // ...
->         } else // No need of this line if two properties are exclusive
->
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index dcab9527ba3d..7c5d950a8628 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2073,6 +2073,9 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++		struct snd_soc_pcm_runtime *be, int stream);
++
+ static int dpcm_do_trigger(struct snd_soc_dpcm *dpcm,
+ 		struct snd_pcm_substream *substream, int cmd)
+ {
+@@ -2092,8 +2095,10 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			       int cmd)
+ {
+ 	struct snd_soc_dpcm *dpcm;
++	unsigned long flags;
+ 	int ret = 0;
+ 
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+@@ -2113,7 +2118,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2123,7 +2128,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2133,7 +2138,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2142,12 +2147,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (!dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 			break;
+@@ -2155,12 +2160,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (!dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
+ 			break;
+@@ -2168,17 +2173,20 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (!dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+ 			ret = dpcm_do_trigger(dpcm, be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
+ 			break;
+ 		}
++		if (ret)
++			break;
+ 	}
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -2916,10 +2924,9 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+ 	struct snd_soc_dpcm *dpcm;
+ 	int state;
+ 	int ret = 1;
+-	unsigned long flags;
+ 	int i;
+ 
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	lockdep_assert_held(&fe->card->dpcm_lock);
+ 	for_each_dpcm_fe(be, stream, dpcm) {
+ 
+ 		if (dpcm->fe == fe)
+@@ -2933,17 +2940,12 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+ 			}
+ 		}
+ 	}
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	/* it's safe to do this BE DAI */
+ 	return ret;
+ }
+ 
+-/*
+- * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
+- * are not running, paused or suspended for the specified stream direction.
+- */
+-int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++static int dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	const enum snd_soc_dpcm_state state[] = {
+@@ -2954,6 +2956,23 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 
+ 	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+ }
++
++/*
++ * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
++ * are not running, paused or suspended for the specified stream direction.
++ */
++int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++		struct snd_soc_pcm_runtime *be, int stream)
++{
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	ret =  dpcm_can_be_free_stop(fe, be, stream);
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ 
+ /*
+@@ -2963,6 +2982,9 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
++	unsigned long flags;
++	int ret;
++
+ 	const enum snd_soc_dpcm_state state[] = {
+ 		SND_SOC_DPCM_STATE_START,
+ 		SND_SOC_DPCM_STATE_PAUSED,
+@@ -2970,6 +2992,10 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		SND_SOC_DPCM_STATE_PREPARE,
+ 	};
+ 
+-	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	ret = snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
+-- 
+2.21.0
 
-Good catch, will update it.
 
-> > +     data->card.num_links = 1;
-> > +     data->card.dai_link = &data->dai;
-> > +
-> > +     platform_set_drvdata(pdev, &data->card);
->
-> Why pass card pointer?
 
-Seems it duplicates with dev_set_drvdata(card->dev, card);
-in snd_soc_register_card.  will remove it.
-
-best regards
-wang shengjiu
