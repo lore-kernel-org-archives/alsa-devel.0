@@ -2,101 +2,63 @@ Return-Path: <SRS0=z1YM=FH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2AA6C4361A
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF75DC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:56:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A88B7222F9
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:40:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A88B7222F9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id D46822247F
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:56:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D46822247F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 680B81849;
-	Thu,  3 Dec 2020 23:40:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 680B81849
+	by alsa0.perex.cz (Postfix) with ESMTPS id 613DB1849;
+	Thu,  3 Dec 2020 23:55:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 613DB1849
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607035254;
-	bh=A15gPCmUyOTaRxTE49bjRcDY3dJuwz6rCBKcye7tCZo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=PgVukaMDK6yk28rlG0kHXEc4ZHIda5575eoqdI0eLvqVl8XD4qjPgjAtZeuGGJrd+
-	 CKkUQVxBq6b/WGxWocpvfIM9nxYDe5/XolQfT2gB6vz0IpRFPujo3Lf+KCDI+QbKAK
-	 hbJNi6Fnt+H48FJxJA2wVhpYPW+Fj54zvhMQ5K4I=
+	s=default; t=1607036166;
+	bh=URV65CG+N2q0i+BQnHcEgOxT/lqRzKzs3xx0w5c7VkY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TSKOyL8vwOnpY6OKLYi7jxFclhTlAiqDpyar8D0iNHcjyz3ZhvexU5UX/ZHtDJUnr
+	 FAhjfP9kCpfNWkBQTCMOpR+ML+uNkkWMN7U6jfqfFNcr1qBHwLRnn2aVIUsGN1UgD7
+	 9sKUiuwRcwOP6pDZGgdvJAbdu3b0rQO+e4EpCmko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1709F8016D;
-	Thu,  3 Dec 2020 23:40:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E00C1F800E8;
+	Thu,  3 Dec 2020 23:55:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB756F80158; Thu,  3 Dec 2020 23:40:02 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7DCE0F8016D; Thu,  3 Dec 2020 23:55:14 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE050F80158
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 23:39:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE050F80158
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="p1gwki3o"
-Received: by mail-pg1-x541.google.com with SMTP id o4so2321595pgj.0
- for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2020 14:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=Qtj77dS9cHDPtLOQV8kRZMJrnqowkKFbs0Ao69ze8yo=;
- b=p1gwki3oOUo+P7PEOXQvu0gEWvu282wplUNpim3bRudNhLVadPVjh3Nx0CBqu2B2si
- 2tH9peMetiV8ZLFoBtSCyttjOzm46Xp/iC8USe1djX4MQr7Dnb5fAKiuRvzC829CKSYf
- vZvcGqDgtR4MeHvDKqhfVjCsRNSHd33LVwpqdNceX/miA/4I/MPUDdCxbDWoRMBSfCiv
- ZLxzMWwOunAjPVyEudrVou3xwAcj4ypDZFOVMqQ/pSaLUmyYH3L5ej5MKHVreGIMiRNy
- LE6PYmlZKKud/KnvpcHekr/20xf9NQshmEvEL8ZJuip+Xhm6YHgc1hnkv1AjVnHBpOoq
- 8qAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=Qtj77dS9cHDPtLOQV8kRZMJrnqowkKFbs0Ao69ze8yo=;
- b=ONFqT6vVwJukoDAjDv4BG830O/6ElI/kmfzK5s59K93a6XEn5RTd3Rf6C/IUHo+c84
- GJHnkI8qdq7a93ob40qUb0yF+zRyVpYFObXbTLdWVWrfw8N03oWHeV9Y4kGiYIs6Io2P
- nVFYv7UAxjUv8yZOzYFNGMV2i5yMg6bVPtHt67z5oVy785/LlBGbmSHiBMjTtuhu2w5f
- sXh9gJ52YGUkpOrWdwyoLuL17zgN6fuKTIftdkaeMkOEBp8pnfwrAq1dGro2sGPdnIej
- 5dXuHCJvFdXwGbzoceOi+QhcJ4NQOuT1u3Ps7+olUDAzAC/5ecmJYFXYqgsCQ27anAKr
- Ypyw==
-X-Gm-Message-State: AOAM531aPtKkVGJNvdX6iUrqChm4lIBWz74Mv4/y2mVUx0jw3b4dRaJF
- WkCkse2iS2hub8P4Ckbc//4=
-X-Google-Smtp-Source: ABdhPJyRSHJAid1qLYHP9zDmtf4HjETwpYJVHYSQGmjoPkUfJgaFvmQ4jNjlnjBiGOtzRniTkZ8HUA==
-X-Received: by 2002:a63:4623:: with SMTP id t35mr4888350pga.270.1607035188896; 
- Thu, 03 Dec 2020 14:39:48 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
- by smtp.gmail.com with ESMTPSA id u3sm2817244pfu.47.2020.12.03.14.39.47
- (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
- Thu, 03 Dec 2020 14:39:48 -0800 (PST)
-Date: Thu, 3 Dec 2020 14:36:55 -0800
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: fsl_aud2htx: mark PM functions as __maybe_unused
-Message-ID: <20201203223654.GA10130@Asurada-Nvidia>
-References: <20201203222900.1042578-1-arnd@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E40BF800E8
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 23:55:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E40BF800E8
+From: Arnd Bergmann <arnd@kernel.org>
+Authentication-Results: mail.kernel.org;
+ dkim=permerror (bad message/signature format)
+To: Cheng-Yi Chiang <cychiang@chromium.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Benson Leung <bleung@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
+Date: Thu,  3 Dec 2020 23:54:41 +0100
+Message-Id: <20201203225458.1477830-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203222900.1042578-1-arnd@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- Arnd Bergmann <arnd@arndb.de>, Timur Tabi <timur@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: Guenter Roeck <groeck@chromium.org>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,20 +74,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Dec 03, 2020 at 11:28:47PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_PM is disabled, we get a warning for unused functions:
-> 
-> sound/soc/fsl/fsl_aud2htx.c:261:12: error: unused function 'fsl_aud2htx_runtime_suspend' [-Werror,-Wunused-function]
-> static int fsl_aud2htx_runtime_suspend(struct device *dev)
-> sound/soc/fsl/fsl_aud2htx.c:271:12: error: unused function 'fsl_aud2htx_runtime_resume' [-Werror,-Wunused-function]
-> static int fsl_aud2htx_runtime_resume(struct device *dev)
-> 
-> Mark these as __maybe_unused to avoid the warning without adding
-> an #ifdef.
-> 
-> Fixes: 8a24c834c053 ("ASoC: fsl_aud2htx: Add aud2htx module driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+gcc points out a memory area that is copied to a device
+but not initialized:
+
+sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
+arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+   83 |   *((int *)to + 1) = *((int *)from + 1);
+
+Initialize all the unused fields to zero.
+
+Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/codecs/cros_ec_codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index 58894bf47514..f33a2a9654e7 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -332,7 +332,7 @@ static int i2s_rx_event(struct snd_soc_dapm_widget *w,
+ 		snd_soc_dapm_to_component(w->dapm);
+ 	struct cros_ec_codec_priv *priv =
+ 		snd_soc_component_get_drvdata(component);
+-	struct ec_param_ec_codec_i2s_rx p;
++	struct ec_param_ec_codec_i2s_rx p = {};
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-- 
+2.27.0
+
