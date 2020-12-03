@@ -7,58 +7,55 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF75DC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28C80C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 23:06:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D46822247F
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:56:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D46822247F
+	by mail.kernel.org (Postfix) with ESMTPS id 8A2E52245C
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 23:06:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A2E52245C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 613DB1849;
-	Thu,  3 Dec 2020 23:55:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 613DB1849
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E6AA184C;
+	Fri,  4 Dec 2020 00:05:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E6AA184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607036166;
-	bh=URV65CG+N2q0i+BQnHcEgOxT/lqRzKzs3xx0w5c7VkY=;
+	s=default; t=1607036768;
+	bh=60yiaDnFrHTxLAZy8CfS32ZXqjeWEVqrv5TqUx60QKg=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=TSKOyL8vwOnpY6OKLYi7jxFclhTlAiqDpyar8D0iNHcjyz3ZhvexU5UX/ZHtDJUnr
-	 FAhjfP9kCpfNWkBQTCMOpR+ML+uNkkWMN7U6jfqfFNcr1qBHwLRnn2aVIUsGN1UgD7
-	 9sKUiuwRcwOP6pDZGgdvJAbdu3b0rQO+e4EpCmko=
+	b=X3MKds+d9Evh+7BAZOv99ralZgUvCM6VGLqvCzOZNIR5lN4ghHmQg1I/Wh579qa7z
+	 OPWyOmeruYAjfUIAyshM3l8MEypdb6i78sOoPDUxMDsFzSNRoJPIs6GEEuxOj/zuuh
+	 hWj4sTrIsVRTMLuTvhsVJQd51XHRvGam77Kf4Hvc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E00C1F800E8;
-	Thu,  3 Dec 2020 23:55:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CEDAF80158;
+	Fri,  4 Dec 2020 00:05:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DCE0F8016D; Thu,  3 Dec 2020 23:55:14 +0100 (CET)
+ id F018DF8012A; Fri,  4 Dec 2020 00:05:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E40BF800E8
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 23:55:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E40BF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18F7BF8012A
+ for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2020 00:05:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18F7BF8012A
 From: Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Cheng-Yi Chiang <cychiang@chromium.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Benson Leung <bleung@chromium.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-Date: Thu,  3 Dec 2020 23:54:41 +0100
-Message-Id: <20201203225458.1477830-1-arnd@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] soundwire: intel: fix another unused-function warning
+Date: Fri,  4 Dec 2020 00:04:56 +0100
+Message-Id: <20201203230502.1480063-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Guenter Roeck <groeck@chromium.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, Sanyog Kale <sanyog.r.kale@intel.com>,
+ alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Rander Wang <rander.wang@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,34 +73,62 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc points out a memory area that is copied to a device
-but not initialized:
+Without CONFIG_PM, there is another warning about an unused function:
 
-sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-   83 |   *((int *)to + 1) = *((int *)from + 1);
+drivers/soundwire/intel.c:530:12: error: 'intel_link_power_down' defined but not used [-Werror=unused-function]
 
-Initialize all the unused fields to zero.
+After a previous fix, the driver already uses both an #ifdef and
+a __maybe_unused annotation but still gets it wrong. Remove the
+ifdef and instead use __maybe_unused consistently to avoid the
+problem for good.
 
-Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
+Fixes: f046b2334083 ("soundwire: intel: fix intel_suspend/resume defined but not used warning")
+Fixes: ebf878eddbb4 ("soundwire: intel: add pm_runtime support")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/codecs/cros_ec_codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soundwire/intel.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index 58894bf47514..f33a2a9654e7 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -332,7 +332,7 @@ static int i2s_rx_event(struct snd_soc_dapm_widget *w,
- 		snd_soc_dapm_to_component(w->dapm);
- 	struct cros_ec_codec_priv *priv =
- 		snd_soc_component_get_drvdata(component);
--	struct ec_param_ec_codec_i2s_rx p;
-+	struct ec_param_ec_codec_i2s_rx p = {};
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 6a1e862b16c3..66adb258a425 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1585,8 +1585,6 @@ int intel_master_process_wakeen_event(struct platform_device *pdev)
+  * PM calls
+  */
  
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
+-#ifdef CONFIG_PM
+-
+ static int __maybe_unused intel_suspend(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+@@ -1641,7 +1639,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int intel_suspend_runtime(struct device *dev)
++static int __maybe_unused intel_suspend_runtime(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1796,7 +1794,7 @@ static int __maybe_unused intel_resume(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int intel_resume_runtime(struct device *dev)
++static int __maybe_unused intel_resume_runtime(struct device *dev)
+ {
+ 	struct sdw_cdns *cdns = dev_get_drvdata(dev);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
+@@ -1969,8 +1967,6 @@ static int intel_resume_runtime(struct device *dev)
+ 	return ret;
+ }
+ 
+-#endif
+-
+ static const struct dev_pm_ops intel_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(intel_suspend, intel_resume)
+ 	SET_RUNTIME_PM_OPS(intel_suspend_runtime, intel_resume_runtime, NULL)
 -- 
 2.27.0
 
