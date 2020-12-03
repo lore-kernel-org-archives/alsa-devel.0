@@ -2,62 +2,96 @@ Return-Path: <SRS0=z1YM=FH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A964C433C1
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:20:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C10C9C001B0
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:44:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61BE220798
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:20:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61BE220798
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B971022CB8
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:43:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B971022CB8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72E0B1819;
-	Thu,  3 Dec 2020 15:19:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72E0B1819
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2F951816;
+	Thu,  3 Dec 2020 15:42:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2F951816
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607005237;
-	bh=UGXI/PWxHamoJW1r5FzJR33V/RIy/77lneQFYlAoCmU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JCkxxEZ2FYpZVbAkVQj2gUHDvoCu4ULkKIW8WGgMOu5IpFW6f9PsIBTh0K886P6qb
-	 u6V6AveOPhRrKcFUSEQ/kM9rqevf8ZY6leKCwhbC1a5DonvtOaITCnohtp1lV5S7/Z
-	 tibG4g1ghSaukM8CXJsGfbnivopPDZjKdCiNOr7Q=
+	s=default; t=1607006628;
+	bh=pr8u4v1L17lZmDmkKunrZiR8bd4aGYSZbRk51XB6i2c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eM1BEj49DCB0C1R34BJxlEnYlp4YFE7JPRjkEcr/9khccIRBbwrY4Q9/g4vdBykNc
+	 55h2uK0KHrj+5aryEKfjZdNkv1WXOLPWoSY35IzoXOwPZB0YV0y7zEs3VEmZONOPEG
+	 Sc5PEKMNcawWuuFg8/AF52gMnHBpULTKx1lIv3U8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0CE5F8025F;
-	Thu,  3 Dec 2020 15:18:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AA51F80082;
+	Thu,  3 Dec 2020 15:42:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6F4DF8016D; Thu,  3 Dec 2020 15:18:54 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9F64EF8016D; Thu,  3 Dec 2020 15:42:44 +0100 (CET)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57B59F8012A
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 15:18:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57B59F8012A
-From: Mark Brown <broonie@kernel.org>
-Authentication-Results: mail.kernel.org;
- dkim=permerror (bad message/signature format)
-To: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, perex@perex.cz,
- Shengjiu Wang <shengjiu.wang@nxp.com>, linuxppc-dev@lists.ozlabs.org,
- timur@kernel.org, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
- tiwai@suse.com, festevam@gmail.com
-In-Reply-To: <1606708668-28786-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1606708668-28786-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl-asoc-card: Add support for si476x codec
-Message-Id: <160700512198.44361.18384133171951697931.b4-ty@kernel.org>
-Date: Thu, 03 Dec 2020 14:18:41 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B837F80082
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 15:42:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B837F80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="cu6WnOcz"
+Received: by mail-pl1-x643.google.com with SMTP id t18so1268902plo.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2020 06:42:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=X1uEb0a/fmwKssKVnSrBR+CZio6TfcFmqrf9Oztpt7Q=;
+ b=cu6WnOczavFxEWRHaoPN6CUs+gLeJUD2zGzQ3oh9c5iR2hkaIo6eCLeAyCHQ9qVdX0
+ +6SqEnDvIX/LnqDjW0+zKMgXHeqMrj2YmqvtaJ3HE60MqEt76xPz3BSyGBfWOJej6DhW
+ UPjXJFKQyZMgNe39xyHKjMeRh+VZvK31FGCF3X85utpQgNj9/vp1DriMUOgLiWhNJsjo
+ OacopigFvwkfVyVw4+I1Ma4/tlsJROvjRth0fPCx2wZgEvHmDiGMl48jSeL2cUqztsaA
+ +hESuv1xIEks0908Xa58SvcYZu+xwvfcqAoZaHIGF53ISWQrW2Q65kfJMaOpVOi+CRGg
+ ECnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=X1uEb0a/fmwKssKVnSrBR+CZio6TfcFmqrf9Oztpt7Q=;
+ b=DYtDP99m4/uvl7lMt3EvP4TN0Xd6Bw9UHvcI1ssJq6O2Ep8NGJn3EpwV3XmkWhKLiI
+ D1gUoJLSOKvH0ulyEduKHS5i+3fsflqp2GHbMcrOvtpYF3JUKhNfU9ELbRQg/gqHswgx
+ zVUGiGOX2sdCc9GleiRv1AgQen3u8OCKkBhfbHo7Frq5N48s3y8EYT+WkTqpoLZlwqiB
+ ToOe2dxHM+7XoRYcc/LaEVfriq7DkiIr5rtQLwiUDLHyEOUWSAZ1eoN+JMxUm04y9Ofv
+ e3z6UYMAg+DToN7SCACllsyrLRzDeIV2jPJT6rycsR42Fk/hLrh7PeN9n0SmFVO3zkEq
+ DSqw==
+X-Gm-Message-State: AOAM531wdIZFzEHv9QMxQc4JUp2K6RuHf9gojT3DD9KUNu7bqFziYmc5
+ 4ny2e/fi2L4PtNFONe/44F4=
+X-Google-Smtp-Source: ABdhPJxdHH4SAMRmQgv5v1Pp3rTzUgxcXuJOi/Qz3P0KNxhymGiQgf33YHqxGp+RmfcgepouNJlSXQ==
+X-Received: by 2002:a17:902:860c:b029:da:1ba0:3979 with SMTP id
+ f12-20020a170902860cb02900da1ba03979mr3490630plo.8.1607006558805; 
+ Thu, 03 Dec 2020 06:42:38 -0800 (PST)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+ by smtp.gmail.com with ESMTPSA id d2sm1689322pji.7.2020.12.03.06.42.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 03 Dec 2020 06:42:38 -0800 (PST)
+From: Chuhong Yuan <hslester96@gmail.com>
+To: 
+Subject: [PATCH] ASoC: jz4740-i2s: add missed checks for clk_get()
+Date: Thu,  3 Dec 2020 22:42:27 +0800
+Message-Id: <20201203144227.418194-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
+ linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Paul Cercueil <paul@crapouillou.net>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,36 +107,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 30 Nov 2020 11:57:47 +0800, Shengjiu Wang wrote:
-> The si476x codec is used for FM radio function on i.MX6
-> auto board, it only supports recording function.
+jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
+while the file dereferences the pointers in clk_put().
+Add the missed checks to fix it.
 
-Applied to
+Fixes: 11bd3dd1b7c2 ("ASoC: Add JZ4740 ASoC support")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+---
+ sound/soc/jz4740/jz4740-i2s.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index c7bd20104b20..0793e284d0e7 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -312,10 +312,14 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	switch (clk_id) {
+ 	case JZ4740_I2S_CLKSRC_EXT:
+ 		parent = clk_get(NULL, "ext");
++		if (IS_ERR(parent))
++			return PTR_ERR(parent);
+ 		clk_set_parent(i2s->clk_i2s, parent);
+ 		break;
+ 	case JZ4740_I2S_CLKSRC_PLL:
+ 		parent = clk_get(NULL, "pll half");
++		if (IS_ERR(parent))
++			return PTR_ERR(parent);
+ 		clk_set_parent(i2s->clk_i2s, parent);
+ 		ret = clk_set_rate(i2s->clk_i2s, freq);
+ 		break;
+-- 
+2.26.2
 
-Thanks!
-
-[1/2] ASoC: fsl-asoc-card: Add support for si476x codec
-      commit: 77f1ff751037fcd39c8fc37b3c3796fb139fb388
-[2/2] ASoC: bindings: fsl-asoc-card: add compatible string for si476x codec
-      commit: 0b3355b070434f9901f641aac9000df93e2c96ad
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
