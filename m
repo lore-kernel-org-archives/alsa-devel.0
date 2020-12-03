@@ -2,101 +2,77 @@ Return-Path: <SRS0=z1YM=FH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95C0BC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 15:01:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 125D0C4361A
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 15:06:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4F2D2065C
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 15:01:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4F2D2065C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 95993207AB
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 15:06:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95993207AB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E08D71827;
-	Thu,  3 Dec 2020 16:00:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E08D71827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C7D017D5;
+	Thu,  3 Dec 2020 16:05:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C7D017D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607007706;
-	bh=5bjB6PQ8PRj0q39g55bb3rSaZsRqM/s7Wnh/DY9boPo=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hp6F1nYY2Kd0Al+XymsSglEMgCpq77tSQsZjc5/VnBqkOFM7GAstFQADw15MIiZMw
-	 J7mX7orY3wXHZK8Ej2at3dya8Nq6iznQitUFTYhUD4fqZ8tJLPHDmW8xImUlBdR2cJ
-	 FXctGEkxpLa9i/op8Tfei7kOM/4b6VaxuG2EgJL4=
+	s=default; t=1607007983;
+	bh=/J7gpUERaDM9moTEEEztSBOYPXPY+1XBfrGQKejOuvY=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kD0zUANxlNvtLQHGJjkhv1tZdZ9ytPUiyqSKzjwZ8DN4Ywc8ikdsSpQQhOL6CR2ZC
+	 2nOVCAKdwA1Z5XaYhqq5dWJZtjW5/HdONb19I6/UiSdoYdSvn9cKCxtxC7o+FOfdts
+	 jHo44mzctu40mkVVRrRDf3E1kItQcQ/KnYNREn8U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51FD7F80158;
-	Thu,  3 Dec 2020 16:00:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D4CAF8012A;
+	Thu,  3 Dec 2020 16:05:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61C04F8016D; Thu,  3 Dec 2020 16:00:54 +0100 (CET)
-Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 104A8F8016D; Thu,  3 Dec 2020 16:05:31 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F30FAF8012A
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 16:00:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F30FAF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 805A8F8012A
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 16:05:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 805A8F8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="Mk4xS5FF"
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Extcs163614;
- Thu, 3 Dec 2020 15:00:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=rNLRXiNThiGHAf6b3uWN9SDwMshmlc+M2pXjau3jS/A=;
- b=Mk4xS5FFUwBe0wlr0qJwTvPhmiYS1A92lZPVTXh5qoI0IQ5hV1T1jKNJi84NTjGT6AXY
- dfi4uiEgiMOLZ+Tp6uQU7jyYlsUUjriJQCs9v0XcRY2vpT6Dcjyovuxw5wQecupDysuD
- C8IFl9j7W+5/ztvDPhHx1GwPMlMTGNzqX1Kk+SZPcM8EHyS65v3AjRnwqbzOdp9/lwim
- 9U99fpKSpzRDymNDIOcTuo9Zigx8sva87MbayPaejAcbkUMEDpQcNXLEfG6f9rW8VTI/
- FQEh0r7Kf29n04gzfjkZrADrxQITp2DQdogciTt1uSV2CinwhAEm1K1BCxLQsvaCqjRn FA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2130.oracle.com with ESMTP id 353dyqxe6r-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Thu, 03 Dec 2020 15:00:44 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B3EuDJK106550;
- Thu, 3 Dec 2020 14:58:44 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by aserp3020.oracle.com with ESMTP id 3540f1y3qy-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Thu, 03 Dec 2020 14:58:44 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B3EwfNr029861;
- Thu, 3 Dec 2020 14:58:43 GMT
-Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Thu, 03 Dec 2020 14:58:41 +0000
-Date: Thu, 3 Dec 2020 17:58:36 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: codrin.ciubotariu@microchip.com
-Subject: [bug report] ASoC: mchp-spdifrx: add driver for SPDIF RX
-Message-ID: <X8j9HPrdXRy5IDvd@mwanda>
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="HX4owR3t"
+Date: Thu, 3 Dec 2020 16:06:24 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1607007916;
+ bh=/J7gpUERaDM9moTEEEztSBOYPXPY+1XBfrGQKejOuvY=;
+ h=From:To:Cc:Subject:References:In-Reply-To:From;
+ b=HX4owR3tVP+i3f7QYdDhUhab7Q8N1/aR087nZ+T3r/vCFu1loWGADTevPSNLXw54N
+ V29cV6+JhrNjwNbTM0z2MLR2nibX9loLE3RFShRdD97WvmNT13YpezMkpCTdCQGxZ8
+ kZZQ2ISElcTQv4wS9gTDn+FvriQ+caA/hx+g5+7w=
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <X8j+8DRrPeXBaTA7@kroah.com>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
- malwarescore=0 phishscore=0
- suspectscore=3 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=720
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012030091
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9823
- signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0
- bulkscore=0
- clxscore=1011 mlxscore=0 spamscore=0 priorityscore=1501 mlxlogscore=706
- suspectscore=3 lowpriorityscore=0 phishscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030092
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+ linux-rdma@vger.kernel.org, Shiraz Saleem <shiraz.saleem@intel.com>,
+ Martin Habets <mhabets@solarflare.com>, lgirdwood@gmail.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Fred Oh <fred.oh@linux.intel.com>, broonie@kernel.org, jgg@nvidia.com,
+ Dave Ertman <david.m.ertman@intel.com>, kuba@kernel.org,
+ netdev@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+ davem@davemloft.net, linux-kernel@vger.kernel.org,
+ Parav Pandit <parav@mellanox.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,49 +88,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Codrin Ciubotariu,
+On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
+> From: Dave Ertman <david.m.ertman@intel.com>
+> 
+> Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
+> It enables drivers to create an auxiliary_device and bind an
+> auxiliary_driver to it.
+> 
+> The bus supports probe/remove shutdown and suspend/resume callbacks.
+> Each auxiliary_device has a unique string based id; driver binds to
+> an auxiliary_device based on this id through the bus.
+> 
+> Co-developed-by: Kiran Patil <kiran.patil@intel.com>
+> Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
+> Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Kiran Patil <kiran.patil@intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
+> Reviewed-by: Parav Pandit <parav@mellanox.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: Martin Habets <mhabets@solarflare.com>
+> Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> This patch is "To:" the maintainers that have a pending backlog of
+> driver updates dependent on this facility, and "Cc:" Greg. Greg, I
+> understand you have asked for more time to fully review this and apply
+> it to driver-core.git, likely for v5.12, but please consider Acking it
+> for v5.11 instead. It looks good to me and several other stakeholders.
+> Namely, stakeholders that have pressure building up behind this facility
+> in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
+> Compute Express Link.
+> 
+> I will take the blame for the 2 months of silence that made this awkward
+> to take through driver-core.git, but at the same time I do not want to
+> see that communication mistake inconvenience other parties that
+> reasonably thought this was shaping up to land in v5.11.
+> 
+> I am willing to host this version at:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
+> 
+> ...for all the independent drivers to have a common commit baseline. It
+> is not there yet pending Greg's Ack.
 
-The patch ef265c55c1ac: "ASoC: mchp-spdifrx: add driver for SPDIF RX"
-from Oct 2, 2020, leads to the following static checker warning:
+I have been trying to carve out some time to review this.  At my initial
+glance, I still have objections, so please, give me a few more days to
+get this done...
 
-	sound/soc/atmel/mchp-spdifrx.c:468 mchp_spdifrx_hw_params()
-	warn: 'dev->gclk' not released on lines: 468.
+thanks,
 
-sound/soc/atmel/mchp-spdifrx.c
-   442                          params_format(params));
-   443                  return -EINVAL;
-   444          }
-   445  
-   446          if (dev->gclk_enabled) {
-   447                  clk_disable_unprepare(dev->gclk);
-   448                  dev->gclk_enabled = 0;
-   449          }
-   450          ret = clk_set_min_rate(dev->gclk, params_rate(params) *
-   451                                            SPDIFRX_GCLK_RATIO_MIN + 1);
-   452          if (ret) {
-   453                  dev_err(dev->dev,
-   454                          "unable to set gclk min rate: rate %u * ratio %u + 1\n",
-   455                          params_rate(params), SPDIFRX_GCLK_RATIO_MIN);
-   456                  return ret;
-   457          }
-   458          ret = clk_prepare_enable(dev->gclk);
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-   459          if (ret) {
-   460                  dev_err(dev->dev, "unable to enable gclk: %d\n", ret);
-   461                  return ret;
-   462          }
-   463          dev->gclk_enabled = 1;
-   464  
-   465          dev_dbg(dev->dev, "GCLK range min set to %d\n",
-   466                  params_rate(params) * SPDIFRX_GCLK_RATIO_MIN + 1);
-   467  
-   468          return regmap_write(dev->regmap, SPDIFRX_MR, mr);
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Smatch is complaining that if the regmap_write() fails then we should
-disable and unprepare the "dev->gclk".
-
-   469  }
-
-regards,
-dan carpenter
+greg k-h
