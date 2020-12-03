@@ -2,96 +2,77 @@ Return-Path: <SRS0=z1YM=FH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C10C9C001B0
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:44:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7485BC00130
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:44:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B971022CB8
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:43:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B971022CB8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8927322D49
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 14:44:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8927322D49
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2F951816;
-	Thu,  3 Dec 2020 15:42:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2F951816
+	by alsa0.perex.cz (Postfix) with ESMTPS id 902C61830;
+	Thu,  3 Dec 2020 15:44:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 902C61830
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607006628;
-	bh=pr8u4v1L17lZmDmkKunrZiR8bd4aGYSZbRk51XB6i2c=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eM1BEj49DCB0C1R34BJxlEnYlp4YFE7JPRjkEcr/9khccIRBbwrY4Q9/g4vdBykNc
-	 55h2uK0KHrj+5aryEKfjZdNkv1WXOLPWoSY35IzoXOwPZB0YV0y7zEs3VEmZONOPEG
-	 Sc5PEKMNcawWuuFg8/AF52gMnHBpULTKx1lIv3U8=
+	s=default; t=1607006696;
+	bh=DxJ4yIYFgoE+1eOz/ODDS5hA3PYUv9G+Xtpre9H2l3U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gMdIkv8Ph6u+ANy+rOIDaLRRG/WCYvbwODU8YTIwvSisxjNRq6cIrm12P1IlyUz6O
+	 QVHBeyDbLAyv5k9vFfnDL/a+J6Uo9U4rIIHmITBkJcfU6sarQ+ITxxRkrTRbdzKNZe
+	 uG1pPdhfKBy31Y/I64miS1VY3UuekkwFVKCmlbBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4AA51F80082;
-	Thu,  3 Dec 2020 15:42:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1ADE8F80158;
+	Thu,  3 Dec 2020 15:44:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F64EF8016D; Thu,  3 Dec 2020 15:42:44 +0100 (CET)
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
- [IPv6:2607:f8b0:4864:20::643])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 80A88F8025F; Thu,  3 Dec 2020 15:44:04 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B837F80082
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 15:42:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B837F80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6AE8F80082
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 15:44:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6AE8F80082
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="cu6WnOcz"
-Received: by mail-pl1-x643.google.com with SMTP id t18so1268902plo.0
- for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2020 06:42:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=X1uEb0a/fmwKssKVnSrBR+CZio6TfcFmqrf9Oztpt7Q=;
- b=cu6WnOczavFxEWRHaoPN6CUs+gLeJUD2zGzQ3oh9c5iR2hkaIo6eCLeAyCHQ9qVdX0
- +6SqEnDvIX/LnqDjW0+zKMgXHeqMrj2YmqvtaJ3HE60MqEt76xPz3BSyGBfWOJej6DhW
- UPjXJFKQyZMgNe39xyHKjMeRh+VZvK31FGCF3X85utpQgNj9/vp1DriMUOgLiWhNJsjo
- OacopigFvwkfVyVw4+I1Ma4/tlsJROvjRth0fPCx2wZgEvHmDiGMl48jSeL2cUqztsaA
- +hESuv1xIEks0908Xa58SvcYZu+xwvfcqAoZaHIGF53ISWQrW2Q65kfJMaOpVOi+CRGg
- ECnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=X1uEb0a/fmwKssKVnSrBR+CZio6TfcFmqrf9Oztpt7Q=;
- b=DYtDP99m4/uvl7lMt3EvP4TN0Xd6Bw9UHvcI1ssJq6O2Ep8NGJn3EpwV3XmkWhKLiI
- D1gUoJLSOKvH0ulyEduKHS5i+3fsflqp2GHbMcrOvtpYF3JUKhNfU9ELbRQg/gqHswgx
- zVUGiGOX2sdCc9GleiRv1AgQen3u8OCKkBhfbHo7Frq5N48s3y8EYT+WkTqpoLZlwqiB
- ToOe2dxHM+7XoRYcc/LaEVfriq7DkiIr5rtQLwiUDLHyEOUWSAZ1eoN+JMxUm04y9Ofv
- e3z6UYMAg+DToN7SCACllsyrLRzDeIV2jPJT6rycsR42Fk/hLrh7PeN9n0SmFVO3zkEq
- DSqw==
-X-Gm-Message-State: AOAM531wdIZFzEHv9QMxQc4JUp2K6RuHf9gojT3DD9KUNu7bqFziYmc5
- 4ny2e/fi2L4PtNFONe/44F4=
-X-Google-Smtp-Source: ABdhPJxdHH4SAMRmQgv5v1Pp3rTzUgxcXuJOi/Qz3P0KNxhymGiQgf33YHqxGp+RmfcgepouNJlSXQ==
-X-Received: by 2002:a17:902:860c:b029:da:1ba0:3979 with SMTP id
- f12-20020a170902860cb02900da1ba03979mr3490630plo.8.1607006558805; 
- Thu, 03 Dec 2020 06:42:38 -0800 (PST)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
- by smtp.gmail.com with ESMTPSA id d2sm1689322pji.7.2020.12.03.06.42.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 03 Dec 2020 06:42:38 -0800 (PST)
-From: Chuhong Yuan <hslester96@gmail.com>
-To: 
-Subject: [PATCH] ASoC: jz4740-i2s: add missed checks for clk_get()
-Date: Thu,  3 Dec 2020 22:42:27 +0800
-Message-Id: <20201203144227.418194-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.26.2
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="t6YKWIB+"
+Date: Thu, 3 Dec 2020 14:43:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1607006639;
+ bh=DxJ4yIYFgoE+1eOz/ODDS5hA3PYUv9G+Xtpre9H2l3U=;
+ h=From:To:Cc:Subject:References:In-Reply-To:From;
+ b=t6YKWIB+WG0ISjOdzos63GK19W7EXUSf5DOAIg5xNO0Qd6voGpvfVSsNfMyzth2kT
+ kQGPY0CC2GSrS+9NA2onWGCzvP57m3NFXrZ6CTxJG0Qy8Kl7Vh2EKR6Ebn50l/lDjw
+ srbZgZOv7pIILINBadg/xsnLwHsnIg48wWzsLczP/0uw1vudr87Ci2c4ETN5HQrC/i
+ h+HNoatu9wTRuRtgBmz0bJ0XFnFz3ZGRiDvgcnrZud6co5dSVFDEtG/BpcqwXLE7lv
+ XSPByT4+xQI5qUoDJ4JEjQV0TNLnBhLz30OXF6DJCNOFvj3kEPTTzUonYeMqHmn4JL
+ H2AtLhsJd4Xkg==
+From: Mark Brown <broonie@kernel.org>
+To: Chuhong Yuan <hslester96@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: add missed checks for clk_get()
+Message-ID: <20201203144356.GG4700@sirena.org.uk>
+References: <20201203143116.405930-1-hslester96@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Paul Cercueil <paul@crapouillou.net>, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="rV8arf8D5Dod9UkK"
+Content-Disposition: inline
+In-Reply-To: <20201203143116.405930-1-hslester96@gmail.com>
+X-Cookie: Sacred cows make great hamburgers.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Agrawal Akshu <Akshu.Agrawal@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,35 +88,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
-while the file dereferences the pointers in clk_put().
-Add the missed checks to fix it.
 
-Fixes: 11bd3dd1b7c2 ("ASoC: Add JZ4740 ASoC support")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
- sound/soc/jz4740/jz4740-i2s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+--rV8arf8D5Dod9UkK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index c7bd20104b20..0793e284d0e7 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -312,10 +312,14 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	switch (clk_id) {
- 	case JZ4740_I2S_CLKSRC_EXT:
- 		parent = clk_get(NULL, "ext");
-+		if (IS_ERR(parent))
-+			return PTR_ERR(parent);
- 		clk_set_parent(i2s->clk_i2s, parent);
- 		break;
- 	case JZ4740_I2S_CLKSRC_PLL:
- 		parent = clk_get(NULL, "pll half");
-+		if (IS_ERR(parent))
-+			return PTR_ERR(parent);
- 		clk_set_parent(i2s->clk_i2s, parent);
- 		ret = clk_set_rate(i2s->clk_i2s, freq);
- 		break;
--- 
-2.26.2
+On Thu, Dec 03, 2020 at 10:31:16PM +0800, Chuhong Yuan wrote:
 
+>  	da7219_dai_wclk = clk_get(component->dev, "da7219-dai-wclk");
+> +	if (IS_ERR(da7219_dai_wclk))
+> +		return PTR_ERR(da7219_dai_wclk);
+> +
+>  	da7219_dai_bclk = clk_get(component->dev, "da7219-dai-bclk");
+> +	if (IS_ERR(da7219_dai_bclk))
+> +		return PTR_ERR(da7219_dai_bclk);
+
+This is also buggy - instead of ignoring the errors (which is an issue)
+we now leak the wclk if the bclk fails.  Probably should convert to devm
+as well.
+
+--rV8arf8D5Dod9UkK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/I+asACgkQJNaLcl1U
+h9B6wQf/WHDDI4u+PUzca/wx02KyGxHEMupD7sXA+muUTiOQJBg5ZjZsrhA8A1hm
+QE1YZhTrsOoNgVOMxJf6xTNOZuuL4SLg1Ui425NLyEo1RFGje54n+sH4bHqYhI+Z
+86YIurOLx9pyazc6eJUzhOWC4A99ZoaOP8tTztw3Q3rbtktTNavbD54ypj0C+pb8
+YoJlgqI5RYaDNvxDc23s5UiEUgTDG/Ux7kjAn7b44y3sApcuUNYPXWkhgSWSfPmY
+j6073kxyYlLUwnsa/ZhZcx4ebFzA1mgz6bf8hdkxW+dszJxh7/GPTfj2eWmgBz57
+9o9c433ExVA2aVQLLoZjPA4HCDudZA==
+=6c+8
+-----END PGP SIGNATURE-----
+
+--rV8arf8D5Dod9UkK--
