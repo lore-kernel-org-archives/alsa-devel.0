@@ -7,57 +7,58 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99B21C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:30:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 737B9C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:39:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E0B85223E8
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:30:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E0B85223E8
+	by mail.kernel.org (Postfix) with ESMTPS id DBA7122224
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Dec 2020 22:39:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBA7122224
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 197C31849;
-	Thu,  3 Dec 2020 23:29:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 197C31849
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82C2D1843;
+	Thu,  3 Dec 2020 23:38:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82C2D1843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607034610;
-	bh=bQIxhsdicnC+Z7RPpvdq+M8C7w7gunh217IBDt9i73U=;
+	s=default; t=1607035162;
+	bh=Jz+eVh+viSeXmABrmOQFr/sfRteiiYgVjkCevGZxmfE=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=mkP91zg4tpNzJ9FicMPZqo2ijFm96EDSn/yWrivoZK9vBp7eOrhx2L7qkH054z4wK
-	 iqLUgtwDP05f6jFqAgav+IsnnWNk364vRMLhYd6o5EsZjXJV0DO2kQvaW8ecsBIVfw
-	 6r8AAY9RpZsv9FzFaKGI3D3KotS6MTLRdV0lZFNg=
+	b=ISf79Wx+XcCDl9B2NHNDydNp6fGmmmBuoOJpqONGNwScozEijRwSceiZOGiBEFmn+
+	 mqXsYvIMFMyzVzeDNxwCnRsLBNxSB2/ZgBEiu/N/Z5tT2JS8DuzvOP4YQAAUu1cMdk
+	 XOh2G4nzQ1TmoR/TPSr/HMMlHMFa04aZlKFKE4BI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73ED4F80158;
-	Thu,  3 Dec 2020 23:29:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE1FDF80158;
+	Thu,  3 Dec 2020 23:38:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F085AF8016D; Thu,  3 Dec 2020 23:29:16 +0100 (CET)
+ id A8736F8016D; Thu,  3 Dec 2020 23:38:30 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC738F8012A
- for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 23:29:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC738F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C097DF8012A
+ for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2020 23:38:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C097DF8012A
 From: Arnd Bergmann <arnd@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: [PATCH] ASoC: fsl_aud2htx: mark PM functions as __maybe_unused
-Date: Thu,  3 Dec 2020 23:28:47 +0100
-Message-Id: <20201203222900.1042578-1-arnd@kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [PATCH] ASoC: atmel: mchp-spdifrx needs COMMON_CLK
+Date: Thu,  3 Dec 2020 23:38:05 +0100
+Message-Id: <20201203223815.1353451-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Fabio Estevam <festevam@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,44 +76,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-When CONFIG_PM is disabled, we get a warning for unused functions:
+Compile-testing this driver on an older platform without CONFIG_COMMON_CLK fails with
 
-sound/soc/fsl/fsl_aud2htx.c:261:12: error: unused function 'fsl_aud2htx_runtime_suspend' [-Werror,-Wunused-function]
-static int fsl_aud2htx_runtime_suspend(struct device *dev)
-sound/soc/fsl/fsl_aud2htx.c:271:12: error: unused function 'fsl_aud2htx_runtime_resume' [-Werror,-Wunused-function]
-static int fsl_aud2htx_runtime_resume(struct device *dev)
+ERROR: modpost: "clk_set_min_rate" [sound/soc/atmel/snd-soc-mchp-spdifrx.ko] undefined!
 
-Mark these as __maybe_unused to avoid the warning without adding
-an #ifdef.
+Make this is a strict dependency.
 
-Fixes: 8a24c834c053 ("ASoC: fsl_aud2htx: Add aud2htx module driver")
+Fixes: ef265c55c1ac ("ASoC: mchp-spdifrx: add driver for SPDIF RX")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/fsl/fsl_aud2htx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/atmel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
-index 4091ccc7c3e9..d70d5e75a30c 100644
---- a/sound/soc/fsl/fsl_aud2htx.c
-+++ b/sound/soc/fsl/fsl_aud2htx.c
-@@ -258,7 +258,7 @@ static int fsl_aud2htx_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int fsl_aud2htx_runtime_suspend(struct device *dev)
-+static int __maybe_unused fsl_aud2htx_runtime_suspend(struct device *dev)
- {
- 	struct fsl_aud2htx *aud2htx = dev_get_drvdata(dev);
- 
-@@ -268,7 +268,7 @@ static int fsl_aud2htx_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int fsl_aud2htx_runtime_resume(struct device *dev)
-+static int __maybe_unused fsl_aud2htx_runtime_resume(struct device *dev)
- {
- 	struct fsl_aud2htx *aud2htx = dev_get_drvdata(dev);
- 	int ret;
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index bd8854bfd2ee..142373ec411a 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -148,6 +148,7 @@ config SND_MCHP_SOC_SPDIFTX
+ config SND_MCHP_SOC_SPDIFRX
+ 	tristate "Microchip ASoC driver for boards using S/PDIF RX"
+ 	depends on OF && (ARCH_AT91 || COMPILE_TEST)
++	depends on COMMON_CLK
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select REGMAP_MMIO
+ 	help
 -- 
 2.27.0
 
