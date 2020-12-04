@@ -2,87 +2,64 @@ Return-Path: <SRS0=L/cl=FI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCC82C4361A
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 22:43:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94CE8C4361A
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:31:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D11222287
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 22:43:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D11222287
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 03FB222838
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:31:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03FB222838
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EB581896;
-	Fri,  4 Dec 2020 23:42:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EB581896
+	by alsa0.perex.cz (Postfix) with ESMTPS id B817F1864;
+	Sat,  5 Dec 2020 00:30:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B817F1864
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607121793;
-	bh=mFmYPoBRvPgoa7mhE05am2M3T3g9NHjm2ODEOn+qynI=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1607124670;
+	bh=xTBIJKdOAFsfxzlq8TDI5yRslw6s7JmDFF2oydYTC0Q=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XtKiYWEZn4WkQSYLB5irmUKukb8L5m9B3ivp7ZOjqK/k2Al07OaYkmmgJfqBb62Vg
-	 8Fw2nuCueCy8ae3bmu8rhyllL+rZV1HOLKLSs0oYKazErhMV4OyPUsZSvKgkpVcjUx
-	 OUBp90VPxZ+61wasVNq7J77zGtcmu/8pbhs7Vq44=
+	b=fZTR1tyfIbqPzSaGhuI/hYgLNKCG3yKs7hUD60dlvQ97KWOgvAm8BlNNFLqL98aiK
+	 mdlwkKPeqYZ5Zd+/Gi0W8QJaZkJhJGvO3hzz8HhDDKWzDcWAoF+DKBRHTjGO+yWbZL
+	 gg4scci8Z/FXgdOCcuGDQX494oQp2Vi7nREvAcdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2B8BF80273;
-	Fri,  4 Dec 2020 23:42:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E42BFF8012A;
+	Sat,  5 Dec 2020 00:30:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52B0EF80278; Fri,  4 Dec 2020 23:42:21 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 77C25F80278; Sat,  5 Dec 2020 00:30:17 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2225F800E8
- for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2020 23:42:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2225F800E8
-IronPort-SDR: 0ALIhGtkrD1iw28ogOhGUihU8V/nMKbRz97/rS9EJXH/kKd9O0xlTjjTB2Ou6bOUqO6SJdMz2Q
- ha7TsKrtBsmg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9825"; a="152709374"
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; d="scan'208";a="152709374"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Dec 2020 14:42:07 -0800
-IronPort-SDR: mL4T++niox9qduaXmLUaSCbZRNL3NS1sisIFB2wHMqKyTmW/BqggT+WG99xKJ0n7bbuBDmZgDJ
- k5IJOft6vNzw==
-X-IronPort-AV: E=Sophos;i="5.78,393,1599548400"; d="scan'208";a="366470186"
-Received: from rdgreco-mobl.amr.corp.intel.com (HELO [10.209.191.178])
- ([10.209.191.178])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Dec 2020 14:42:07 -0800
-Subject: Re: [PATCH 1/4] ASoC/SoundWire: rt1316: Add RT1316 SDCA
- vendor-specific driver
-To: Mark Brown <broonie@kernel.org>, =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?=
- <shumingf@realtek.com>
-References: <20201202143845.18697-1-yung-chuan.liao@linux.intel.com>
- <20201202143845.18697-2-yung-chuan.liao@linux.intel.com>
- <20201203123802.GD4700@sirena.org.uk>
- <8b585fdb0b624ec892c55c0139d61e75@realtek.com>
- <20201204175601.GE4558@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <333b7226-6536-94d4-001f-c96214874948@linux.intel.com>
-Date: Fri, 4 Dec 2020 16:42:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3AB3F800E2
+ for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3AB3F800E2
+From: Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org;
+ dkim=permerror (bad message/signature format)
+To: Arnd Bergmann <arnd@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>,
+ Benson Leung <bleung@chromium.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Cheng-Yi Chiang <cychiang@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20201203225458.1477830-1-arnd@kernel.org>
+References: <20201203225458.1477830-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
+Message-Id: <160712460214.7629.8343797244506085540.b4-ty@kernel.org>
+Date: Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
-In-Reply-To: <20201204175601.GE4558@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "tiwai@suse.de" <tiwai@suse.de>, "vkoul@kernel.org" <vkoul@kernel.org>,
- "Flove\(HsinFu\)" <flove@realtek.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- "bard.liao@intel.com" <bard.liao@intel.com>
+Cc: Guenter Roeck <groeck@chromium.org>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,27 +75,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 12/4/20 11:56 AM, Mark Brown wrote:
-> On Fri, Dec 04, 2020 at 02:42:54AM +0000, Shuming [范書銘] wrote:
+On Thu, 3 Dec 2020 23:54:41 +0100, Arnd Bergmann wrote:
+> gcc points out a memory area that is copied to a device
+> but not initialized:
 > 
->>>> +/* RT1316 SDCA function topology */
->>>> +#define FUN_SMART_AMP 0x04
+> sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
+> arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+>    83 |   *((int *)to + 1) = *((int *)from + 1);
 > 
->>> Full marks for picking this constant!
-> 
->> Sorry, I don't get that point. Could you give me a hint?
-> 
-> The name is funny - "fun smart amp".
+> [...]
 
-Indeed.
+Applied to
 
-FWIW, 'fun' stands for 'function' here. The SDCA spec defines different 
-types of high-level 'functions', e.g. 'smart amp, 'smart mic', 'simple 
-mic', 'universal audio jack', etc., and for each provides a number of 
-options.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-in this series rt711 would be mapped to UAJ, rt715 to smart mic and 
-rt1316 to smart amp.
+Thanks!
 
+[1/1] ASoC: cros_ec_codec: fix uninitialized memory read
+      commit: 7061b8a52296e044eed47b605d136a48da1a7761
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
