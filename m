@@ -6,60 +6,60 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D9EC4361A
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 952B2C4361A
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:33:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 884B722838
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 884B722838
+	by mail.kernel.org (Postfix) with ESMTPS id 0156422838
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:33:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0156422838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEEE218B8;
-	Sat,  5 Dec 2020 00:32:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEEE218B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93CE218A4;
+	Sat,  5 Dec 2020 00:32:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93CE218A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607124774;
-	bh=WWpc58cptN/CPaaBQ693MgYfMNMsskbv9++KpRXvVdM=;
+	s=default; t=1607124815;
+	bh=WUARhguvNgrw2JJRojrfOq+1WyIVmKQOhNyuD4kdNu0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ccBpgyD4XBnFzxw5b8YhYGGW4XdPjyM4AtndUSYVBwKPtmLXyLFpiUZl5FLld8H1o
-	 +kYuHHkoxpdsAipo38NcXBxDgSgKBNIGWQ7oCTbE6FAFmMvrobOCBEYaXyWA4gsUOI
-	 3LXi/b7+fHiox3jaMzrBi3WMoPtzqplORbOESYcI=
+	b=Tiu2isYjU+UFGXVubdET8feSMFG9lTU6t6qkH0bd9V7zRHY6cQ9/6TkL61z4VOscN
+	 AV+Qlklq8lMJQL4FaEyTNuSlBlavcBn5aSB7llxUUi5eQBz1tlyE1xq2ozX2M+SAkt
+	 kwMeEZd7ckcPxxWlNxlPZCNOULkGrm0xzER0XM3U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0EF23F804CC;
-	Sat,  5 Dec 2020 00:30:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0202F804E0;
+	Sat,  5 Dec 2020 00:30:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1E93F804D6; Sat,  5 Dec 2020 00:30:27 +0100 (CET)
+ id 5AB92F804E1; Sat,  5 Dec 2020 00:30:32 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F052F804CC
- for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F052F804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09793F804D2
+ for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09793F804D2
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Patrick Lai <plai@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20201203231443.1483763-1-arnd@kernel.org>
-References: <20201203231443.1483763-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: qcom: fix QDSP6 dependencies, attempt #3
-Message-Id: <160712460214.7629.13610030760770322456.b4-ty@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Timur Tabi <timur@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20201203222900.1042578-1-arnd@kernel.org>
+References: <20201203222900.1042578-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: fsl_aud2htx: mark PM functions as __maybe_unused
+Message-Id: <160712460213.7629.13692802144415827947.b4-ty@kernel.org>
 Date: Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- Ajit Pandey <ajitp@codeaurora.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rohit kumar <rohitkr@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,13 +75,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Dec 2020 00:14:18 +0100, Arnd Bergmann wrote:
-> The previous fix left another warning in randconfig builds:
+On Thu, 3 Dec 2020 23:28:47 +0100, Arnd Bergmann wrote:
+> When CONFIG_PM is disabled, we get a warning for unused functions:
 > 
-> WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
->   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y] && COMMON_CLK [=n]
->   Selected by [y]:
->   - SND_SOC_MSM8996 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y]
+> sound/soc/fsl/fsl_aud2htx.c:261:12: error: unused function 'fsl_aud2htx_runtime_suspend' [-Werror,-Wunused-function]
+> static int fsl_aud2htx_runtime_suspend(struct device *dev)
+> sound/soc/fsl/fsl_aud2htx.c:271:12: error: unused function 'fsl_aud2htx_runtime_resume' [-Werror,-Wunused-function]
+> static int fsl_aud2htx_runtime_resume(struct device *dev)
 > 
 > [...]
 
@@ -91,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: fix QDSP6 dependencies, attempt #3
-      commit: b1b8eb1283c90a953089d988930d7b6156418958
+[1/1] ASoC: fsl_aud2htx: mark PM functions as __maybe_unused
+      commit: 7b153760513cee875515398f4a9ba329a8d426e2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
