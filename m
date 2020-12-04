@@ -6,60 +6,69 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94CE8C4361A
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:31:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4940C4361A
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03FB222838
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:31:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03FB222838
+	by mail.kernel.org (Postfix) with ESMTPS id D313922B4E
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D313922B4E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B817F1864;
-	Sat,  5 Dec 2020 00:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B817F1864
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0A8D18A5;
+	Sat,  5 Dec 2020 00:31:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0A8D18A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607124670;
-	bh=xTBIJKdOAFsfxzlq8TDI5yRslw6s7JmDFF2oydYTC0Q=;
+	s=default; t=1607124721;
+	bh=2prm3cXjpY6ZzqHiRJLhyiEJy/i41Mp3fbFKiT+EKCI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fZTR1tyfIbqPzSaGhuI/hYgLNKCG3yKs7hUD60dlvQ97KWOgvAm8BlNNFLqL98aiK
-	 mdlwkKPeqYZ5Zd+/Gi0W8QJaZkJhJGvO3hzz8HhDDKWzDcWAoF+DKBRHTjGO+yWbZL
-	 gg4scci8Z/FXgdOCcuGDQX494oQp2Vi7nREvAcdY=
+	b=cSq7iH8WqZvtW3ccE1j6MITHFyjswxjSx9Ts/deDbvUbcAKYrCIFNAy+gwI4cL4Pu
+	 K7Nv5sh6w+M8zvBg6uNHUUlGG6wR4ROxy8D9SNHK6PG1pT0L51YomeSRzGsQCqJ1yz
+	 ycJNyaSiWLHE94dIfl6PtPHA/rmFjOJBOrwR4SA8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E42BFF8012A;
-	Sat,  5 Dec 2020 00:30:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FF0DF804A9;
+	Sat,  5 Dec 2020 00:30:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77C25F80278; Sat,  5 Dec 2020 00:30:17 +0100 (CET)
+ id 42411F8049C; Sat,  5 Dec 2020 00:30:19 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3AB3F800E2
- for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3AB3F800E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6FCDF800E2
+ for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6FCDF800E2
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Arnd Bergmann <arnd@kernel.org>, Tzung-Bi Shih <tzungbi@google.com>,
- Benson Leung <bleung@chromium.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Cheng-Yi Chiang <cychiang@chromium.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20201203225458.1477830-1-arnd@kernel.org>
-References: <20201203225458.1477830-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-Message-Id: <160712460214.7629.8343797244506085540.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
+In-Reply-To: <20201203154010.29464-1-brent.lu@intel.com>
+References: <20201203154010.29464-1-brent.lu@intel.com>
+Subject: Re: [PATCH v2] ASoC: intel: sof_rt5682: Add support for
+ tgl_rt1011_rt5682
+Message-Id: <160712460213.7629.11587898255974280110.b4-ty@kernel.org>
 Date: Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Guenter Roeck <groeck@chromium.org>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Dharageswari R <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Fred Oh <fred.oh@linux.intel.com>,
+ Ben Zhang <benzh@chromium.org>,
+ Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+ Naveen Manohar <naveen.m@intel.com>, Libin Yang <libin.yang@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,15 +84,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Dec 2020 23:54:41 +0100, Arnd Bergmann wrote:
-> gcc points out a memory area that is copied to a device
-> but not initialized:
-> 
-> sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-> arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->    83 |   *((int *)to + 1) = *((int *)from + 1);
-> 
-> [...]
+On Thu, 3 Dec 2020 23:40:10 +0800, Brent Lu wrote:
+> This patch adds the driver data for two rt1011 speaker amplifiers on
+> SSP1 and rt5682 on SSP0 for TGL platform. DAI format for rt1011 is
+> leveraged from cml_rt1011_rt5682 which is 4-slot tdm with 100fs bclk.
 
 Applied to
 
@@ -91,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cros_ec_codec: fix uninitialized memory read
-      commit: 7061b8a52296e044eed47b605d136a48da1a7761
+[1/1] ASoC: intel: sof_rt5682: Add support for tgl_rt1011_rt5682
+      commit: aa6cc97c0ac31c668afc7027bcf2bdb0fe4610fe
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
