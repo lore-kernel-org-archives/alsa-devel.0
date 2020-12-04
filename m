@@ -6,62 +6,57 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24216C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D93F4C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EA7F22838
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EA7F22838
+	by mail.kernel.org (Postfix) with ESMTPS id F3CD722838
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3CD722838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00B9C18A2;
-	Sat,  5 Dec 2020 00:31:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00B9C18A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 891A218B5;
+	Sat,  5 Dec 2020 00:31:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 891A218B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607124727;
-	bh=8YkQp7LxANdRirlY8jaivI+wFXaEpM/oehsddJFSBYM=;
+	s=default; t=1607124767;
+	bh=TOXyhKgEn1kDswVSlOw6rZ+4mo8EL6xvkF8/jx3Bj1k=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CbeVsiuuASY5mJltTUNf2o3h2yfxkjcOrSlGfSX6wIygQhsf6TCcq1LtetZaeojfF
-	 ifGNYYT0yO1RBg/4417INwXcFvggNEWsP2C6zblsUXdKgyGV6af2yHu4tkQ6MebFY6
-	 eW7CeUAv+dFZCbSjragN9462e6YZ3nXkRQYVbzp8=
+	b=QiKkEvqTeKtk9pJAIofJcDdT00DHiLNkFDfO+y0ph0j0UX3MYc+0gokLQAJgm9mgc
+	 7q4kR0r0QY0gcMbAMXlLYSHSSj2bHgkVBFHP+SFxesjNqy89cMQNhpJ+YgYo9GI+8x
+	 DpcW7veJMR1+uGQ899A+2qAopqO/ErjHoOPs3MCE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3574AF804BC;
-	Sat,  5 Dec 2020 00:30:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6133AF804C3;
+	Sat,  5 Dec 2020 00:30:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C9DCF80278; Sat,  5 Dec 2020 00:30:20 +0100 (CET)
+ id A0167F804C3; Sat,  5 Dec 2020 00:30:23 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62855F80273
- for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62855F80273
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6D08F80278
+ for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6D08F80278
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Arnd Bergmann <arnd@kernel.org>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20201203223815.1353451-1-arnd@kernel.org>
-References: <20201203223815.1353451-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: atmel: mchp-spdifrx needs COMMON_CLK
-Message-Id: <160712460213.7629.11656615448561894421.b4-ty@kernel.org>
+To: Chuhong Yuan <hslester96@gmail.com>
+In-Reply-To: <20201203144227.418194-1-hslester96@gmail.com>
+References: <20201203144227.418194-1-hslester96@gmail.com>
+Subject: Re: [PATCH] ASoC: jz4740-i2s: add missed checks for clk_get()
+Message-Id: <160712460212.7629.1938775307281622942.b4-ty@kernel.org>
 Date: Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,12 +72,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Dec 2020 23:38:05 +0100, Arnd Bergmann wrote:
-> Compile-testing this driver on an older platform without CONFIG_COMMON_CLK fails with
-> 
-> ERROR: modpost: "clk_set_min_rate" [sound/soc/atmel/snd-soc-mchp-spdifrx.ko] undefined!
-> 
-> Make this is a strict dependency.
+On Thu, 3 Dec 2020 22:42:27 +0800, Chuhong Yuan wrote:
+> jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
+> while the file dereferences the pointers in clk_put().
+> Add the missed checks to fix it.
 
 Applied to
 
@@ -90,8 +83,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: atmel: mchp-spdifrx needs COMMON_CLK
-      commit: 29275309b0e32bb838d67158c6b6e687275f43e9
+[1/1] ASoC: jz4740-i2s: add missed checks for clk_get()
+      commit: 1c1fb2653a0c2e3f310c07eacd8fc3a10e08c97a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
