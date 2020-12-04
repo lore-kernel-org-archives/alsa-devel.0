@@ -6,57 +6,60 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D93F4C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D9EC4361A
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F3CD722838
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3CD722838
+	by mail.kernel.org (Postfix) with ESMTPS id 884B722838
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 23:32:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 884B722838
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 891A218B5;
-	Sat,  5 Dec 2020 00:31:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 891A218B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEEE218B8;
+	Sat,  5 Dec 2020 00:32:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEEE218B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607124767;
-	bh=TOXyhKgEn1kDswVSlOw6rZ+4mo8EL6xvkF8/jx3Bj1k=;
+	s=default; t=1607124774;
+	bh=WWpc58cptN/CPaaBQ693MgYfMNMsskbv9++KpRXvVdM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QiKkEvqTeKtk9pJAIofJcDdT00DHiLNkFDfO+y0ph0j0UX3MYc+0gokLQAJgm9mgc
-	 7q4kR0r0QY0gcMbAMXlLYSHSSj2bHgkVBFHP+SFxesjNqy89cMQNhpJ+YgYo9GI+8x
-	 DpcW7veJMR1+uGQ899A+2qAopqO/ErjHoOPs3MCE=
+	b=ccBpgyD4XBnFzxw5b8YhYGGW4XdPjyM4AtndUSYVBwKPtmLXyLFpiUZl5FLld8H1o
+	 +kYuHHkoxpdsAipo38NcXBxDgSgKBNIGWQ7oCTbE6FAFmMvrobOCBEYaXyWA4gsUOI
+	 3LXi/b7+fHiox3jaMzrBi3WMoPtzqplORbOESYcI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6133AF804C3;
-	Sat,  5 Dec 2020 00:30:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EF23F804CC;
+	Sat,  5 Dec 2020 00:30:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0167F804C3; Sat,  5 Dec 2020 00:30:23 +0100 (CET)
+ id B1E93F804D6; Sat,  5 Dec 2020 00:30:27 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6D08F80278
- for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6D08F80278
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F052F804CC
+ for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 00:30:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F052F804CC
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Chuhong Yuan <hslester96@gmail.com>
-In-Reply-To: <20201203144227.418194-1-hslester96@gmail.com>
-References: <20201203144227.418194-1-hslester96@gmail.com>
-Subject: Re: [PATCH] ASoC: jz4740-i2s: add missed checks for clk_get()
-Message-Id: <160712460212.7629.1938775307281622942.b4-ty@kernel.org>
+To: Patrick Lai <plai@codeaurora.org>, Arnd Bergmann <arnd@kernel.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20201203231443.1483763-1-arnd@kernel.org>
+References: <20201203231443.1483763-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: qcom: fix QDSP6 dependencies, attempt #3
+Message-Id: <160712460214.7629.13610030760770322456.b4-ty@kernel.org>
 Date: Fri, 04 Dec 2020 23:30:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ Ajit Pandey <ajitp@codeaurora.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rohit kumar <rohitkr@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,10 +75,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Dec 2020 22:42:27 +0800, Chuhong Yuan wrote:
-> jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
-> while the file dereferences the pointers in clk_put().
-> Add the missed checks to fix it.
+On Fri, 4 Dec 2020 00:14:18 +0100, Arnd Bergmann wrote:
+> The previous fix left another warning in randconfig builds:
+> 
+> WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y] && COMMON_CLK [=n]
+>   Selected by [y]:
+>   - SND_SOC_MSM8996 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y]
+> 
+> [...]
 
 Applied to
 
@@ -83,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: jz4740-i2s: add missed checks for clk_get()
-      commit: 1c1fb2653a0c2e3f310c07eacd8fc3a10e08c97a
+[1/1] ASoC: qcom: fix QDSP6 dependencies, attempt #3
+      commit: b1b8eb1283c90a953089d988930d7b6156418958
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
