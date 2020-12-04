@@ -2,94 +2,100 @@ Return-Path: <SRS0=L/cl=FI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F11BC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 02:57:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65C3DC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 03:38:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9377B224F4
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 02:57:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9377B224F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8B98622515
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 03:38:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B98622515
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7D85184D;
-	Fri,  4 Dec 2020 03:56:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7D85184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0610184D;
+	Fri,  4 Dec 2020 04:37:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0610184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607050639;
-	bh=7mCJs8mugeaB34o7v5UgJLkjOi2AVLnaXUNNG+16jIs=;
+	s=default; t=1607053091;
+	bh=/xZsX3A5SvCiLCNbFgQX//74obNgxZNkjOCWcZ1SdnM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OnzFzf5XzLgzi82woOQF+k49D5AC9HAjILqiZVc0eViYkyolpLk7rNtRS0TijmvQc
-	 e9VrRHX+WZcKwZ7Kf4OxMhAupWBGcnCsg+1LjLDzTz4KprKh5gMALwVpHaYX4kPe6E
-	 UuF0AioKyjI2d99GQW/iWCyBU/OhM8YkbeWRgva0=
+	b=caoqleAE+6y4+lY0d88mZ+3zrVaHfM1I6Ea5CclRNX+LQLJQ/Q2vtNbqS2aSzS6qM
+	 3Orwmgotqdee7wKyzyBnNc8fJTqkxZ1XkrFdcRfWULwfSwKTLfJ/ujW5G8dbjy3M+f
+	 z4N+OqxmVoL19eGqvAYCImvTPTTOVtIOPlv86ycs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4413FF80273;
-	Fri,  4 Dec 2020 03:56:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C00EF80273;
+	Fri,  4 Dec 2020 04:37:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BB75F80278; Fri,  4 Dec 2020 03:56:28 +0100 (CET)
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com
- [IPv6:2607:f8b0:4864:20::d42])
+ id A6089F80278; Fri,  4 Dec 2020 04:37:19 +0100 (CET)
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com
+ [IPv6:2a00:1450:4864:20::541])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62F6EF8012A
- for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2020 03:56:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62F6EF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 500C7F800E2
+ for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2020 04:37:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 500C7F800E2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="qX3Q4DkR"
-Received: by mail-io1-xd42.google.com with SMTP id i9so4347195ioo.2
- for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2020 18:56:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ dkim=pass (2048-bit key) header.d=intel-com.20150623.gappssmtp.com
+ header.i=@intel-com.20150623.gappssmtp.com header.b="h6lJHRIw"
+Received: by mail-ed1-x541.google.com with SMTP id d18so4378361edt.7
+ for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2020 19:37:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=intel-com.20150623.gappssmtp.com; s=20150623;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=isfeZ3kfKrYZjXvIfFGvKabQ5iROwvaOtPW6IFcmmAs=;
- b=qX3Q4DkRG4IPc+DXuwx7/KQaCd5Nwuqfesx4SdKjhFwC4QymWb8VnQb6HO3gnDaWw0
- Xhh5RWi9G/5bzChEsQrukG8vcxujHoPG49w+0qhEYXgUxLb3tQfFJ6bCQ12FzUQ3Sibf
- 4Vdjl48BpJGw2nV4VVdl+FVlReXKpHE3j82G0VNTw+hSfbFqtmfeQbDRJBmxaBVdmdBf
- akQ7m/3uQUVxY+EFvU4qy3Mn7QQaimgixdFoFy0ztsCG/sl6VNBPFwwk2RI1+moNT9fT
- zhocNE6DFpWeMR9LEbmUSQEo6e2PhzeomPDM0qmQ2QKNckOFoc97OZE2Uuwx/IMadF1W
- +L7g==
+ :cc; bh=H7q4vopEbHCewQ+qUf3Z4+KiH74FFIhB3Uhp8jwbeRs=;
+ b=h6lJHRIwp2kfx3tSOHVwfn7ZLGG5UVFD8MKBKp7vUUe6bQP9aSUb2KT6tfLpyXgiUe
+ uO6sK9Zr6nxXuBdVBLOzPIc/ctgN7f8WXi3+IqA+i/l4PUf34JFoUG1MgvdHxb83NkfG
+ 992rzEGAkOKMrn7Zk5BdbZcsSSV0ZoYaMre+DOnrBNpMGrfyzstujfH3254xsLfR4B7o
+ NVQrrDevjQHrIX4aoLuzXQrXRgPxWOtr4VWhBU4Frntmabksc0kVn0+NFWDqUXvoLt3v
+ 2+74tWrg/Ib+xO/tsR5jl9suTNwsI9fqZibS8HovKAsGg7JFCBbQoUNrxcvtwNjJvDg9
+ SazQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=isfeZ3kfKrYZjXvIfFGvKabQ5iROwvaOtPW6IFcmmAs=;
- b=JTjly5DWUu2XA2rFGu6+4G0VyBOnP8YhogpW40ywC5aZ6zTQ1zSlgJZvRHBziZ12UV
- PlM3EUYp7L6Cw+FLEJ4urGYklcv+YP1ZU+wXP02+AGkihc8ytvLhXKseTIIrS6mr2pGe
- niEuGjSRh7+pa9CPy+qJCkzt+ZlSQUaKuY2jy0/bDluHQzC4WLxF6Ja9znA57996VrQH
- 1sLB2y5018/rNUwkngdr9qrahcViLy71gz69k5Kq2BVSHTfWl4u4+MECsNnatlILHLhO
- YTZ/jQ8QsZM45wOkQ9UKgZqIiKAxxAybamr4++OKqYjL3B5Z7yK1GW5hRtcFTbtItspC
- wDEw==
-X-Gm-Message-State: AOAM530KfM3BNmV2+G9jyPQjW1BwfrMfG2r2oRgP91G/6msiJxCGQ2ej
- PIyg0ul1PeJ+ugf1874AcCX8bfL4XUlNAxCjo9PKfg==
-X-Google-Smtp-Source: ABdhPJxTr4JbkKHUEG1/9DIqVju9MZyNFzKYSjbwMrnw7cRRwoFQFlLrKA+Mn/8qkobkdeHunXJNXanaye0EQP+iUIo=
-X-Received: by 2002:a02:c804:: with SMTP id p4mr3166234jao.110.1607050577866; 
- Thu, 03 Dec 2020 18:56:17 -0800 (PST)
+ bh=H7q4vopEbHCewQ+qUf3Z4+KiH74FFIhB3Uhp8jwbeRs=;
+ b=hTAvhOiGgElWfcDeZ+TUOozXinIAughQakZ+CFs9nj90/IZyfoajgGmnVcEfWmiFeA
+ Ta9l4PCjcZWmVb5yrd/ud3kQrA2VPHCal6bDVi5oYaDIDLFDbBrGwCIaz7C1wFYJI6ja
+ j+Xcq1JykmHEIEP98DdWzOQ7I5FE28u0yBjCsnDXEiuTaDor3P+kipiT1BaAZzFFRolN
+ hvgxeEyTEPuYUofbXr0VCx9Sz1AhMEqL43cN5ylxhRM3EPUo0+QNtc4+jfj9kXgIo0Yd
+ kl2KKyrXq0PBxSP1CRxdZMnfV4qEimFlcZ09cEVeAx0C4gJAzBNZjPTX+uq5xNMEOuWi
+ 55fQ==
+X-Gm-Message-State: AOAM5303z8bonLfLIdZToND6sbujT0ihVrW2sesogSFaLBUFIeKoJEaG
+ ndOX5vfnKUoTP0AZqmO9Myh3OWUxk8O/O4jxOa+ibw==
+X-Google-Smtp-Source: ABdhPJypzF/zxqPx2JjCtFUbZXdp8DAB6CgTOr6BBeH65H/vxbjhDErMw8S4HuqSooRtOzznLRIL1KkQvJFsw0MnHHY=
+X-Received: by 2002:a50:8a44:: with SMTP id i62mr2924285edi.97.1607053030239; 
+ Thu, 03 Dec 2020 19:37:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203225458.1477830-1-arnd@kernel.org>
-In-Reply-To: <20201203225458.1477830-1-arnd@kernel.org>
-From: Tzung-Bi Shih <tzungbi@google.com>
-Date: Fri, 4 Dec 2020 10:56:06 +0800
-Message-ID: <CA+Px+wWmJrS46TzWgKWiufJH7ryB+mOH7H4xfGZex2j=NutfLA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: cros_ec_codec: fix uninitialized memory read
-To: Arnd Bergmann <arnd@kernel.org>
+References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <X8j+8DRrPeXBaTA7@kroah.com> <20201204023357.GA1337723@nvidia.com>
+In-Reply-To: <20201204023357.GA1337723@nvidia.com>
+From: Dan Williams <dan.j.williams@intel.com>
+Date: Thu, 3 Dec 2020 19:37:06 -0800
+Message-ID: <CAPcyv4iDr9RUK_F52mNuO=+ZuFtD4PTpB5QzKA4fnF_RaRoR1w@mail.gmail.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+To: Jason Gunthorpe <jgg@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
+ linux-rdma <linux-rdma@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+ Martin Habets <mhabets@solarflare.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Fred Oh <fred.oh@linux.intel.com>, Mark Brown <broonie@kernel.org>,
+ Shiraz Saleem <shiraz.saleem@intel.com>,
+ Dave Ertman <david.m.ertman@intel.com>, Jakub Kicinski <kuba@kernel.org>,
+ Netdev <netdev@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>,
+ David Miller <davem@davemloft.net>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Guenter Roeck <groeck@chromium.org>,
- Mark Brown <broonie@kernel.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+ Parav Pandit <parav@mellanox.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,36 +111,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Dec 4, 2020 at 6:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Thu, Dec 3, 2020 at 6:34 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> From: Arnd Bergmann <arnd@arndb.de>
+> On Thu, Dec 03, 2020 at 04:06:24PM +0100, Greg KH wrote:
 >
-> gcc points out a memory area that is copied to a device
-> but not initialized:
+> > > ...for all the independent drivers to have a common commit baseline. It
+> > > is not there yet pending Greg's Ack.
+> >
+> > I have been trying to carve out some time to review this.  At my initial
+> > glance, I still have objections, so please, give me a few more days to
+> > get this done...
 >
-> sound/soc/codecs/cros_ec_codec.c: In function 'i2s_rx_event':
-> arch/x86/include/asm/string_32.h:83:20: error: '*((void *)&p+4)' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->    83 |   *((int *)to + 1) = *((int *)from + 1);
+> There are still several more days till the merge window, but I am
+> going to ask Leon to get the mlx5 series, and this version of the
+> auxbus patch it depends on, into linux-next with the intention to
+> forward it to Linus if there are no substantive comments.
 >
-> Initialize all the unused fields to zero.
+> Regardless of fault or reason this whole 1.5 year odyssey seems to have
+> brought misery to everyone involved and it really is time to move on.
 >
-> Fixes: 727f1c71c780 ("ASoC: cros_ec_codec: refactor I2S RX")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Leon and his team did a good deed 6 weeks ago to quickly turn around
+> and build another user example. For their efforts they have been
+> rewarded with major merge conflicts and alot of delayed work due to
+> the invasive nature of the mlx5 changes. To continue to push this out
+> is disrespectful to him and his team's efforts.
+>
+> A major part of my time as RDMA maintainer has been to bring things
+> away from vendor trees and into a common opensource community.  Intel
+> shipping a large out of tree RDMA driver and abandoning their intree
+> driver is really harmful. This auxbus is a substantial blocker to them
+> normalizing their operations, thus I view it as important to
+> resolve. Even after this it is going to take a long time and alot of
+> effort to review their new RDMA driver.
 
-Acked-by: Tzung-Bi Shih <tzungbi@google.com>
-
-In the case in i2s_rx_event(), only the "cmd" member is used.  But it
-is fine to please the compiler.
-
-struct __ec_align4 ec_param_ec_codec_i2s_rx {
-        uint8_t cmd; /* enum ec_codec_i2s_rx_subcmd */
-        uint8_t reserved[3];
-
-        union {
-            ...
-        };
-};
-
-I am a bit curious about, in other use cases of
-ec_param_ec_codec_i2s_rx, why the compiler doesn't complain about
-uninitialization of the "reserved" member?
+When you have 3 independent driver teams (mlx5, i40e, sof) across 2
+companies (NVIDIA and Intel), and multiple subsystem maintainers with
+a positive track record of upstream engagement all agreeing on a piece
+of infrastructure, I struggle to imagine a stronger case for merging.
+I did get word of a fixup needed in the shutdown code, I'll get that
+folded. Then, barring a concrete objection, I'll look to publish a
+commit that others can pull in to start building soak time in -next
+this time tomorrow.
