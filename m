@@ -3,77 +3,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BF2EC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 12:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4921C4361A
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 15:51:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15E6F224F4
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 12:59:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15E6F224F4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8BB1622C9C
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Dec 2020 15:51:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BB1622C9C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15C5E185F;
-	Fri,  4 Dec 2020 13:58:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15C5E185F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D5EB17B5;
+	Fri,  4 Dec 2020 16:50:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D5EB17B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607086746;
-	bh=T9P6YNvJNBVRp2cBN+iSfyjc2OXEDnJ1F6QbORkDUkI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1607097103;
+	bh=FtXrkeP6RtnPuVMb5v4zUhk60yW2JHT3bMskKvY5Cj0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n2UpHp53NpKxdErmSuowJnTDgYSaqZIRAaLAa8VLkMVyR/Rr3YMZcyK/DaXIgebsB
-	 gTTOUSY12UmNbhc4jED9P1ih361Xtg+1BU4cc94gM5rOUj0mNqNuAeN6rvZzxydh7F
-	 ++rJ4Qz2hDejHy5mbGjFhtOYYitvoaVi4PfrpT2o=
+	b=aMI3GcMVwDSDaZtsGGzOEzaj1SUhyAJPiwf1aEatcb6ZmuAiucO1QL4rateLqAs1E
+	 WTw84lh1wpluF5EwCTqgQOqlUJ3+Hvive6v7bUMkjSMG8eeigUVn/AenRCfDXFDlWU
+	 L9cjaZo8yOXOcIOnqGwLwH3kNtYPiHLyKEy9Ev1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87DB4F800E8;
-	Fri,  4 Dec 2020 13:58:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A989F80273;
+	Fri,  4 Dec 2020 16:50:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7141F80278; Fri,  4 Dec 2020 13:58:14 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 707CEF80278; Fri,  4 Dec 2020 16:50:51 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BEE1F800E8
- for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2020 13:58:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BEE1F800E8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="1rOdLUSA"
-Date: Fri, 4 Dec 2020 13:59:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1607086686;
- bh=T9P6YNvJNBVRp2cBN+iSfyjc2OXEDnJ1F6QbORkDUkI=;
- h=From:To:Cc:Subject:References:In-Reply-To:From;
- b=1rOdLUSAyMehMfxu0QGULg7JLrQns9N5Zo8xqMs7B3V9pgcgSrLGxWnbJrmlen4Aq
- QI9NONPyOonqGM2MxkVNx8AtsibYsF0xqfAWR6VnVyK07RbeYrayQFi8D1/Fxdx6T/
- Z0hJEsI+dQSG0BVPDXg04jlUW3cr4PdtSryjxgZY=
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-Message-ID: <X8oyqpxDQ4JV31tj@kroah.com>
-References: <160695681289.505290.8978295443574440604.stgit@dwillia2-desk3.amr.corp.intel.com>
- <X8ogtmrm7tOzZo+N@kroah.com> <20201204123207.GH16543@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201204123207.GH16543@unreal>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- Martin Habets <mhabets@solarflare.com>, lgirdwood@gmail.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Fred Oh <fred.oh@linux.intel.com>, broonie@kernel.org, jgg@nvidia.com,
- Dave Ertman <david.m.ertman@intel.com>, kuba@kernel.org,
- Dan Williams <dan.j.williams@intel.com>,
- Shiraz Saleem <shiraz.saleem@intel.com>, davem@davemloft.net,
- linux-kernel@vger.kernel.org, Parav Pandit <parav@mellanox.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DC66F800E8
+ for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2020 16:50:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DC66F800E8
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id EF969AC9A;
+ Fri,  4 Dec 2020 15:50:37 +0000 (UTC)
+Date: Fri, 04 Dec 2020 16:50:37 +0100
+Message-ID: <s5hblf94lki.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: make bass spk volume adjustable on a
+ yoga laptop
+In-Reply-To: <20201204123459.71474-1-hui.wang@canonical.com>
+References: <20201204123459.71474-1-hui.wang@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,86 +76,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Dec 04, 2020 at 02:32:07PM +0200, Leon Romanovsky wrote:
-> On Fri, Dec 04, 2020 at 12:42:46PM +0100, Greg KH wrote:
-> > On Wed, Dec 02, 2020 at 04:54:24PM -0800, Dan Williams wrote:
-> > > From: Dave Ertman <david.m.ertman@intel.com>
-> > >
-> > > Add support for the Auxiliary Bus, auxiliary_device and auxiliary_driver.
-> > > It enables drivers to create an auxiliary_device and bind an
-> > > auxiliary_driver to it.
-> > >
-> > > The bus supports probe/remove shutdown and suspend/resume callbacks.
-> > > Each auxiliary_device has a unique string based id; driver binds to
-> > > an auxiliary_device based on this id through the bus.
-> > >
-> > > Co-developed-by: Kiran Patil <kiran.patil@intel.com>
-> > > Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Co-developed-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Co-developed-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Kiran Patil <kiran.patil@intel.com>
-> > > Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > > Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
-> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-> > > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Reviewed-by: Parav Pandit <parav@mellanox.com>
-> > > Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> > > Reviewed-by: Martin Habets <mhabets@solarflare.com>
-> > > Link: https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > > ---
-> > > This patch is "To:" the maintainers that have a pending backlog of
-> > > driver updates dependent on this facility, and "Cc:" Greg. Greg, I
-> > > understand you have asked for more time to fully review this and apply
-> > > it to driver-core.git, likely for v5.12, but please consider Acking it
-> > > for v5.11 instead. It looks good to me and several other stakeholders.
-> > > Namely, stakeholders that have pressure building up behind this facility
-> > > in particular Mellanox RDMA, but also SOF, Intel Ethernet, and later on
-> > > Compute Express Link.
-> > >
-> > > I will take the blame for the 2 months of silence that made this awkward
-> > > to take through driver-core.git, but at the same time I do not want to
-> > > see that communication mistake inconvenience other parties that
-> > > reasonably thought this was shaping up to land in v5.11.
-> > >
-> > > I am willing to host this version at:
-> > >
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux tags/auxiliary-bus-for-5.11
-> > >
-> > > ...for all the independent drivers to have a common commit baseline. It
-> > > is not there yet pending Greg's Ack.
-> > >
-> > > For example implementations incorporating this patch, see Dave Ertman's
-> > > SOF series:
-> > >
-> > > https://lore.kernel.org/r/20201113161859.1775473-2-david.m.ertman@intel.com
-> > >
-> > > ...and Leon's mlx5 series:
-> > >
-> > > http://lore.kernel.org/r/20201026111849.1035786-1-leon@kernel.org
-> > >
-> > > PS: Greg I know I promised some review on newcomer patches to help with
-> > > your queue, unfortunately Intel-internal review is keeping my plate
-> > > full. Again, I do not want other stakeholder to be waiting on me to
-> > > resolve that backlog.
-> >
-> > Ok, I spent some hours today playing around with this.  I wrote up a
-> > small test-patch for this (how did anyone test this thing???).
+On Fri, 04 Dec 2020 13:34:59 +0100,
+Hui Wang wrote:
 > 
-> We are running all verifications tests that we have over our
-> mlx5 driver. It includes devices reloads, power failures, FW
-> reconfiguration to emulate different devices with and without error
-> injections and many more. Up till now, no new bugs that are not known
-> to us were found.
+> This also make the headset button work on this machine.
 
-Yes, sorry, I was implying that the authors here had to create _some_
-code to test this with, it would have been nice to include that as well
-here.  We are collecting more and more in-kernel tests, having one for
-this code would be nice to also have so we make sure not to break any
-functionality in the future.
+Hm, the description isn't clearly related with the code changes.
+Could you elaborate a bit more?  The functions you changed are used
+commonly, so it needs clarification.
+
 
 thanks,
 
-greg k-h
+Takashi
+
+> 
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> ---
+>  sound/pci/hda/patch_realtek.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 8616c5624870..5a905fa1b33a 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -3104,6 +3104,7 @@ static void alc_disable_headset_jack_key(struct hda_codec *codec)
+>  	case 0x10ec0215:
+>  	case 0x10ec0225:
+>  	case 0x10ec0285:
+> +	case 0x10ec0287:
+>  	case 0x10ec0295:
+>  	case 0x10ec0289:
+>  	case 0x10ec0299:
+> @@ -3130,6 +3131,7 @@ static void alc_enable_headset_jack_key(struct hda_codec *codec)
+>  	case 0x10ec0215:
+>  	case 0x10ec0225:
+>  	case 0x10ec0285:
+> +	case 0x10ec0287:
+>  	case 0x10ec0295:
+>  	case 0x10ec0289:
+>  	case 0x10ec0299:
+> @@ -8578,6 +8580,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+>  		{0x14, 0x90170110},
+>  		{0x19, 0x04a11040},
+>  		{0x21, 0x04211020}),
+> +	SND_HDA_PIN_QUIRK(0x10ec0287, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_HEADSET_JACK,
+> +		{0x14, 0x90170110},
+> +		{0x17, 0x90170111},
+> +		{0x19, 0x03a11030},
+> +		{0x21, 0x03211020}),
+>  	SND_HDA_PIN_QUIRK(0x10ec0286, 0x1025, "Acer", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE,
+>  		{0x12, 0x90a60130},
+>  		{0x17, 0x90170110},
+> -- 
+> 2.25.1
+> 
