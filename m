@@ -2,63 +2,65 @@ Return-Path: <SRS0=jDen=FJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B00DC4361A
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 05:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0473C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 07:40:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6418622D07
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 05:12:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6418622D07
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3FE7A22D0B
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Dec 2020 07:40:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FE7A22D0B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FE471894;
-	Sat,  5 Dec 2020 06:11:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FE471894
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2F9818A4;
+	Sat,  5 Dec 2020 08:39:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2F9818A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607145167;
-	bh=fnUcfnQkVzljtpGBJUD36qwImDBL5NAE8FGU8r9Wwic=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NM2XpFTiB4Knex/nK9XDNGwPZADkgwwKHifzs6foIyVALpED3O8nOFemu2cs9z7Nm
-	 rzo02hZb9nCY50NSA242HTrrVnKfFwtkMTMqYWKCku/Am2AlSeuJqHFW7keUgVDA+q
-	 wrFeFxZhprMQKqV0IV130neDwB2qeMwijlJFsYok=
+	s=default; t=1607154037;
+	bh=Qr9Ywl/ZpDe4yb9tc2o0Vpu7qqx3tnvXtXGW2Oymftc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ACSsOrGPvGU4EOYTAeywBNg+9AOQ4Gp5W9GC4K7RHzhh1Fs1tNGirlWOB9CEWpSZO
+	 k/6zXfO1x9Cz9Fs2ew+DtN/XtLnbf0WHeNoiHm8hb39BOT184ESc8YTYKdxsMqPPtP
+	 Y7E7VK6rYJlutcbz+DPRXa8F+ljMIA+PH40/1VoA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72D13F8016C;
-	Sat,  5 Dec 2020 06:11:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F504F8016C;
+	Sat,  5 Dec 2020 08:39:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A494DF8016D; Sat,  5 Dec 2020 06:11:52 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id DB37CF8016D; Sat,  5 Dec 2020 08:39:45 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF3FEF800E8
- for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 06:11:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF3FEF800E8
-Received: from [111.196.65.193] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1klPrG-0007tw-5d; Sat, 05 Dec 2020 05:11:47 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	stable@vger.kernel.org
-Subject: [PATCH v2] ALSA: hda/realtek: make bass spk volume adjustable on a
- yoga laptop
-Date: Sat,  5 Dec 2020 13:11:30 +0800
-Message-Id: <20201205051130.8122-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F497F800E2
+ for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2020 08:39:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F497F800E2
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id E378DABCE;
+ Sat,  5 Dec 2020 07:39:38 +0000 (UTC)
+Date: Sat, 05 Dec 2020 08:39:38 +0100
+Message-ID: <s5hwnxw3dmt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v2] ALSA: hda/realtek: make bass spk volume adjustable on
+ a yoga laptop
+In-Reply-To: <20201205051130.8122-1-hui.wang@canonical.com>
+References: <20201205051130.8122-1-hui.wang@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,57 +76,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This change could fix 2 issues on this machine:
- - the bass speaker's output volume can't be adjusted, that is because
-   the bass speaker is routed to the DAC (Nid 0x6) which has no volume
-   control.
- - after plugging a headset with vol+, vol- and pause buttons on it,
-   press those buttons, nothing happens, this means those buttons
-   don't work at all. This machine has alc287 codec, need to add the
-   codec id to the disable/enable_headset_jack_key(), then the headset
-   button could work.
+On Sat, 05 Dec 2020 06:11:30 +0100,
+Hui Wang wrote:
+> 
+> This change could fix 2 issues on this machine:
+>  - the bass speaker's output volume can't be adjusted, that is because
+>    the bass speaker is routed to the DAC (Nid 0x6) which has no volume
+>    control.
+>  - after plugging a headset with vol+, vol- and pause buttons on it,
+>    press those buttons, nothing happens, this means those buttons
+>    don't work at all. This machine has alc287 codec, need to add the
+>    codec id to the disable/enable_headset_jack_key(), then the headset
+>    button could work.
+> 
+> The quirk of ALC285_FIXUP_THINKPAD_HEADSET_JACK could fix both of these
+> 2 issues.
+> 
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-The quirk of ALC285_FIXUP_THINKPAD_HEADSET_JACK could fix both of these
-2 issues.
+Thanks, this one is much better.
+Applied now.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8616c5624870..5a905fa1b33a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3104,6 +3104,7 @@ static void alc_disable_headset_jack_key(struct hda_codec *codec)
- 	case 0x10ec0215:
- 	case 0x10ec0225:
- 	case 0x10ec0285:
-+	case 0x10ec0287:
- 	case 0x10ec0295:
- 	case 0x10ec0289:
- 	case 0x10ec0299:
-@@ -3130,6 +3131,7 @@ static void alc_enable_headset_jack_key(struct hda_codec *codec)
- 	case 0x10ec0215:
- 	case 0x10ec0225:
- 	case 0x10ec0285:
-+	case 0x10ec0287:
- 	case 0x10ec0295:
- 	case 0x10ec0289:
- 	case 0x10ec0299:
-@@ -8578,6 +8580,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x14, 0x90170110},
- 		{0x19, 0x04a11040},
- 		{0x21, 0x04211020}),
-+	SND_HDA_PIN_QUIRK(0x10ec0287, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_HEADSET_JACK,
-+		{0x14, 0x90170110},
-+		{0x17, 0x90170111},
-+		{0x19, 0x03a11030},
-+		{0x21, 0x03211020}),
- 	SND_HDA_PIN_QUIRK(0x10ec0286, 0x1025, "Acer", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60130},
- 		{0x17, 0x90170110},
--- 
-2.25.1
-
+Takashi
