@@ -2,69 +2,93 @@ Return-Path: <SRS0=1Izd=FK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC644C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 10:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1CA3C4361B
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 12:25:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D0D422D2C
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 10:51:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D0D422D2C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 74D3D22D08
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 12:25:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74D3D22D08
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A32ED1791;
-	Sun,  6 Dec 2020 11:50:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A32ED1791
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EE221747;
+	Sun,  6 Dec 2020 13:24:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EE221747
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607251899;
-	bh=cre4ywBr6NEc2sClDhpJoXf1dKJBoApxlXDYlNL390A=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NHkBtrekJyuZBE/dGNV6lJA41D4rn092oUyzLLnfzl6Ll5Qxvy4bBsN+R1J6jqP3j
-	 KlXYJWL6iV7Is/QBCTv/YKP3z//3Rf5BIrk98HLVBVcmgZNoysz6O1CRhzE5ngSQA+
-	 +2lul5YGlFTt23R7jRPbn839j2ZXdZZxvaoIkbeA=
+	s=default; t=1607257543;
+	bh=K1q36zssMDbkzcVpi5HCsQOs4lr2yWjM7ztQSZhPI8Y=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CrFD98MNl/zr1vR4X8UrGplauzMJkSB+bgy8TVS+0bFQvW+5aGiwFQokfsKQALbJZ
+	 QDsCjIczIhP/8j0L+iB9vnCkG6LioCENJsydEV61MBYsGzD0dkxK5PSwlAwnV2U0+S
+	 8rCABNqU6F45C3oPAdnTowWUWePopHr4BECxd6gI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F4F3F804C2;
-	Sun,  6 Dec 2020 11:49:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71017F80218;
+	Sun,  6 Dec 2020 13:24:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8544CF8010A; Sun,  6 Dec 2020 11:49:55 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 385F4F8019D; Sun,  6 Dec 2020 13:24:50 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BF97FF8010A
- for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2020 11:49:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF97FF8010A
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BDF251A087E;
- Sun,  6 Dec 2020 11:49:48 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A3EE91A0AAF;
- Sun,  6 Dec 2020 11:49:43 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 26057402D0;
- Sun,  6 Dec 2020 11:49:37 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 1/2] ASoC: dt-bindings: imx-hdmi: Add binding doc for hdmi
- machine driver
-Date: Sun,  6 Dec 2020 18:41:58 +0800
-Message-Id: <1607251319-5821-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5581FF8010A
+ for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2020 13:24:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5581FF8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="C8DOG0vu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1607257485;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=SPna4+2FWzTr09AosTFKfCdqfvHpCl9uEeyRRGqXlGA=;
+ b=C8DOG0vuWCm6JvSJ5mtsinpTmcN4TTkNYKNxyDMl46UNpi0DPbsgqJQhWNJfNYGHncIFpO
+ PdpXm7HvNtPYuWKAOaleyiSp6bAUnUN1F88D1UNTyh4dhRBKZjrVIED4It1rCWwonpMMub
+ FPg2BMMz666BoYooFACjjSoCCNtCjhg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-0fPhjxVpNFuVDPZ5vQfXrQ-1; Sun, 06 Dec 2020 07:24:43 -0500
+X-MC-Unique: 0fPhjxVpNFuVDPZ5vQfXrQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
+ [10.5.11.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5148180A08A;
+ Sun,  6 Dec 2020 12:24:41 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-98.ams2.redhat.com [10.36.112.98])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id D5DF25D6A8;
+ Sun,  6 Dec 2020 12:24:39 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: Intel: cht_bsw_nau8824: Drop compress-cpu-dai bits
+Date: Sun,  6 Dec 2020 13:24:35 +0100
+Message-Id: <20201206122436.13553-2-hdegoede@redhat.com>
+In-Reply-To: <20201206122436.13553-1-hdegoede@redhat.com>
+References: <20201206122436.13553-1-hdegoede@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,77 +104,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Imx-hdmi is a new added machine driver for supporting hdmi devices
-on i.MX platforms. There is HDMI IP or external HDMI modules connect
-with SAI or AUD2HTX interface.
+When using the snd-soc-sst-acpi driver then the compress-cpu-dai bits are
+not used, the cht_bsw_nau8824 machine-driver is the only BYT/CHT driver
+defining them.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+When using the snd-sof-acpi driver then the presence of the
+compress-cpu-dai bits breaks things because the sof topology file for
+by/cht devices does not contain routing info for them.
+
+Drop the compress-cpu-dai bits, fixing the snd-sof-acpi driver not
+working on devices using the cht_bsw_nau8824 machine-driver.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-changes in v2:
-- none
+ sound/soc/intel/boards/cht_bsw_nau8824.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
- .../bindings/sound/imx-audio-hdmi.yaml        | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
-new file mode 100644
-index 000000000000..d5474f83ac2c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/imx-audio-hdmi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX audio complex with HDMI
-+
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx-audio-hdmi
-+      - fsl,imx-audio-sii902x
-+
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
-+
-+  audio-cpu:
-+    description: The phandle of an CPU DAI controller
-+
-+  hdmi-out:
-+    description: |
-+      This is a boolean property. If present, the transmitting function
-+      of HDMI will be enabled, indicating there's a physical HDMI out
-+      connector or jack on the board or it's connecting to some other IP
-+      block, such as an HDMI encoder or display-controller.
-+
-+  hdmi-in:
-+    description: |
-+      This is a boolean property. If present, the receiving function of
-+      HDMI will be enabled, indicating there is a physical HDMI in
-+      connector/jack on the board.
-+
-+required:
-+  - compatible
-+  - model
-+  - audio-cpu
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    sound-hdmi {
-+        compatible = "fsl,imx-audio-hdmi";
-+        model = "audio-hdmi";
-+        audio-cpu = <&aud2htx>;
-+        hdmi-out;
-+    };
+diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
+index 8131af1730f7..ac78173d01ec 100644
+--- a/sound/soc/intel/boards/cht_bsw_nau8824.c
++++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
+@@ -176,9 +176,6 @@ SND_SOC_DAILINK_DEF(media,
+ SND_SOC_DAILINK_DEF(deepbuffer,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("deepbuffer-cpu-dai")));
+ 
+-SND_SOC_DAILINK_DEF(compress,
+-	DAILINK_COMP_ARRAY(COMP_CPU("compress-cpu-dai")));
+-
+ SND_SOC_DAILINK_DEF(ssp2_port,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("ssp2-port")));
+ SND_SOC_DAILINK_DEF(ssp2_codec,
+@@ -209,11 +206,6 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 		.ops = &cht_aif1_ops,
+ 		SND_SOC_DAILINK_REG(deepbuffer, dummy, platform),
+ 	},
+-	[MERR_DPCM_COMPR] = {
+-		.name = "Compressed Port",
+-		.stream_name = "Compress",
+-		SND_SOC_DAILINK_REG(compress, dummy, platform),
+-	},
+ 	/* Back End DAI links */
+ 	{
+ 		/* SSP2 - Codec */
 -- 
-2.27.0
+2.28.0
 
