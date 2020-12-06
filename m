@@ -2,91 +2,113 @@ Return-Path: <SRS0=1Izd=FK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5029C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 12:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73EA2C4361B
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 12:51:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E14B2310E
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 12:50:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E14B2310E
+	by mail.kernel.org (Postfix) with ESMTPS id D51032310E
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 12:51:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D51032310E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7013D1768;
-	Sun,  6 Dec 2020 13:49:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7013D1768
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02D8C1766;
+	Sun,  6 Dec 2020 13:50:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02D8C1766
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607259002;
-	bh=NhRhWp3TwnTR0SwJfgMQmMo4cZ2msGMJYweLVUiJtRo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1607259109;
+	bh=8hGdS6UzgOQybCQZzGGsxEMYQS232BkGLLEIp+qUXEo=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JwK/oeIhf+1/cEV9j/NtK2sAAloaZF7eYH64HzKvP+sTHU/1v6YfOt7aCuxeACM4Y
-	 LujsWT9W/7W/BwuEMGMfLD7uyenuxgTT7pYkRiAS3noCVV2TTBMkmk5rjp6YSHs6Ll
-	 OxAbHdLyf1o7obj3zQMWNAPUsDGUHOSARt9sSDqk=
+	b=aLkqm8lhcz5XE33tAr3695w4+b7aSxvvUdHvb1iOJKTFLtsfB3Io67OL1IbgH9bOW
+	 rEzbELznXSo/7mfGlWxpV1jc4klcUeSLPFRk+kXoUprlnrMt69YL3Y7TDb4kpZTxM6
+	 FlA7wZe3qCK3oif0p9k99my1RPmZBpsyWT/aLdY0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52B3EF804E6;
-	Sun,  6 Dec 2020 13:47:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75545F8010A;
+	Sun,  6 Dec 2020 13:50:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4F96F804E0; Sun,  6 Dec 2020 13:47:30 +0100 (CET)
+ id AD7CDF8019D; Sun,  6 Dec 2020 13:50:56 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16129F804DF
- for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2020 13:47:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16129F804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15EE5F8010A
+ for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2020 13:50:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15EE5F8010A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="VYB87Z1F"
+ header.b="W1Kir29R"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1607258845;
+ s=mimecast20190719; t=1607259053;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=7nzW5VRZOLXk00dUUhaziO97yESG6VVkkKOIkNoMtro=;
- b=VYB87Z1FqDV8HqJJ2IzzftyfE15XM0fMi5yPDdqvTCAhngiUJYxzf6ngB2SHDAe2iQfs4n
- 4HdYYE9tMxLM7yfPUqxH4Vx74RurQCY5rsP3q0E0EYIV6tpe+ptIIIPR5KwOZHGH5uG7y3
- fEQ9KZKL+lFEbcMzBqzuXMBemOj44+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-q4YP6aIxMlSAMoe6vdxTSQ-1; Sun, 06 Dec 2020 07:47:23 -0500
-X-MC-Unique: q4YP6aIxMlSAMoe6vdxTSQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
- [10.5.11.11])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43F051005504;
- Sun,  6 Dec 2020 12:47:22 +0000 (UTC)
-Received: from x1.localdomain (ovpn-112-98.ams2.redhat.com [10.36.112.98])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 7B88B6062F;
- Sun,  6 Dec 2020 12:47:21 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Jaroslav Kysela <perex@perex.cz>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 3/3] chtnau8824: Boost analog mic volumes a bit
-Date: Sun,  6 Dec 2020 13:47:18 +0100
-Message-Id: <20201206124718.14060-3-hdegoede@redhat.com>
-In-Reply-To: <20201206124718.14060-1-hdegoede@redhat.com>
+ bh=T7jE2hfLpSDcQcP0QFZRun/ot3D3Mun0pa7ySPKf3lo=;
+ b=W1Kir29RS2Mi0juVGs857y7Z3Uex2UAWF1KGDE0qPXQCqf7Cj8Ok6h+n5G5OYZWELphSrD
+ /bkmh+6LeoJmW+qIW8l3oILC4XqZ4MsJ4QztJDADQiVGR2qsq1ZEUYk6Nu5udGREkMOF+d
+ 8S3B22Cv01oaw1LJN+RmprTKES/W/1E=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-rRnwnoCBNyuiZ7-vby3gWQ-1; Sun, 06 Dec 2020 07:50:51 -0500
+X-MC-Unique: rRnwnoCBNyuiZ7-vby3gWQ-1
+Received: by mail-ed1-f69.google.com with SMTP id l33so1055094ede.1
+ for <alsa-devel@alsa-project.org>; Sun, 06 Dec 2020 04:50:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=T7jE2hfLpSDcQcP0QFZRun/ot3D3Mun0pa7ySPKf3lo=;
+ b=uQgnYJRB2oKgtm2x6YlgbIMaCyOzSLRr9jSYKbWBgF3pMcKcgAWk23d6NH9UswsCqN
+ fFXD+cT8eM1Wk56t8UsHz2XVxIlcKT/z86W2u3t4WYczyK6S7e417ahnhVyBeAbpvzui
+ EQr3nkcrqMJtw6+mJORR6hleVXeeBtBFoV2vdwGEM8jtIT8wXRmK6kewfIP3TsiWmeMZ
+ HY9f61Z72uXdF3wm8ytX7bcTvcOZLXRZ3oOcY9p1j6Z0N0pGbZZ0ljLMUtiqrY6SqU9C
+ k2HWonux/gZ7bYRKNmVTpIu2Q1f28XAn8qjl77fayk1GJ0MY/ENiOGwoC/WA+i3UKhK9
+ CHxg==
+X-Gm-Message-State: AOAM533PZmOiLghpT0ZqUGjJvOFpb+39D8Q6L3zpesX+GUlLEVnsebI0
+ /0nNUxj0SLUHIKI+WhgmMOyqA0V0hnkVeKUkrqJMsIR70qX8LhXuDGtAQhFdTUs5IMcpzei7fYk
+ pkNVt0q0D3c1fg89TOYhW6BKyayNEYuIlSpQTsZ0pwKlRfa63v46qYFugU1kebn8eW/U7DPzd23
+ 4=
+X-Received: by 2002:a50:fb97:: with SMTP id e23mr16030535edq.208.1607259049999; 
+ Sun, 06 Dec 2020 04:50:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJznx7Sw5liE6hsOaAbguXfAcv1HlTtJ4uZ0yrDAYBobZkeNrTmsL/No+z6Bi6JEp8G6+IrvUg==
+X-Received: by 2002:a50:fb97:: with SMTP id e23mr16030526edq.208.1607259049845; 
+ Sun, 06 Dec 2020 04:50:49 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id e14sm7976504ejh.62.2020.12.06.04.50.49
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 06 Dec 2020 04:50:49 -0800 (PST)
+Subject: Re: [PATCH alsa-lib 1/3] chtnau8824: Fix mono speaker config not
+ working
+To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 References: <20201206124718.14060-1-hdegoede@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <64ced200-a23c-cf5a-7f21-392561cb74da@redhat.com>
+Date: Sun, 6 Dec 2020 13:50:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20201206124718.14060-1-hdegoede@redhat.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,29 +124,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Both Mic1 (internal analog mic) and Mic2 (headset mic) are a bit soft
-with the current settings, boost their volumes a bit.
+Hi,
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- ucm2/codecs/nau8824/EnableSeq.conf | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch prefix should have been "PATCH alsa-ucm-conf", I have fixed this in
+my git config now, sorry about that.
 
-diff --git a/ucm2/codecs/nau8824/EnableSeq.conf b/ucm2/codecs/nau8824/EnableSeq.conf
-index 433e8e2..3650d06 100644
---- a/ucm2/codecs/nau8824/EnableSeq.conf
-+++ b/ucm2/codecs/nau8824/EnableSeq.conf
-@@ -7,8 +7,8 @@ EnableSequence [
- 	cset "name='DMIC2 Enable Switch' off"
- 	cset "name='DMIC3 Enable Switch' off"
- 	cset "name='DMIC4 Enable Switch' off"
--	cset "name='MIC1 Volume' 10"
--	cset "name='MIC2 Volume' 10"
-+	cset "name='MIC1 Volume' 14"
-+	cset "name='MIC2 Volume' 14"
- 	# Button Configuration
- 	cset "name='THD for key media' 10"
- 	cset "name='THD for key voice command' 16"
--- 
-2.28.0
+Regards,
+
+Hans
+
+On 12/6/20 1:47 PM, Hans de Goede wrote:
+> Fix the Speaker define / var being changed from "Speaker" to "MonoSpeaker"
+> not having any effect because the variable gets expanded before the if
+> making the change is interpreted.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  ucm2/chtnau8824/HiFi.conf | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/ucm2/chtnau8824/HiFi.conf b/ucm2/chtnau8824/HiFi.conf
+> index 3ccd6b1..d7a5f63 100644
+> --- a/ucm2/chtnau8824/HiFi.conf
+> +++ b/ucm2/chtnau8824/HiFi.conf
+> @@ -34,8 +34,15 @@ SectionVerb {
+>  	}
+>  }
+>  
+> -Include.spk.File "/codecs/nau8824/${var:Speaker}.conf"
+> -Include.hp.File "/codecs/nau8824/HeadPhones.conf"
+> +# The includes using $vars in there path must be conditional otherwise the
+> +# $var gets expanded before the other If-s above can change the vars.
+> +If.cfg-includes {
+> +	Condition { Type String Empty "" }
+> +	True {
+> +		Include.spk.File "/codecs/nau8824/${var:Speaker}.conf"
+> +		Include.hp.File "/codecs/nau8824/HeadPhones.conf"
+>  
+> -Include.mic.File "/codecs/nau8824/InternalMic.conf"
+> -Include.hsmic.File "/codecs/nau8824/HeadsetMic.conf"
+> +		Include.mic.File "/codecs/nau8824/InternalMic.conf"
+> +		Include.hsmic.File "/codecs/nau8824/HeadsetMic.conf"
+> +	}
+> +}
+> 
 
