@@ -8,83 +8,83 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5773BC433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 13:36:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A84AC4361B
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 13:37:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9AC92312B
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 13:36:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9AC92312B
+	by mail.kernel.org (Postfix) with ESMTPS id 9CA4823121
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Dec 2020 13:37:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9CA4823121
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3737717A8;
-	Sun,  6 Dec 2020 14:36:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3737717A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AA0C176A;
+	Sun,  6 Dec 2020 14:36:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AA0C176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607261816;
-	bh=s8FuYgKJ78wSn3OGugmA8kez5JuseWvs+rnANyhbNJo=;
+	s=default; t=1607261855;
+	bh=cdCnhWNwtTkMNU7okWv2gCB2pWFhZYO+A3MGfiypVqQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YJny/gbigYrIukp/q90o76/S6EbL/eP3PrvPE9E26PyOwDXi4+sNXKzXLnrhQi8Rh
-	 W1xw0KxrAD/5G+NhYO2kLlxOR+bc3NcRYpC9pB3/XnUge1PvNmxEzqwdp1GfUcgrR4
-	 vdla2gEwdn+fb+EXTGXZpQmuaRzVWvAZq9x7cB0A=
+	b=Kn4n9haKSkUgvMeVQk3aOm36aoKuhpkwaAkQ3I7zx/WGIn45JgeJ2yZEI5Bup/AHw
+	 ejCpzlesMH8t/ca/3AH8xA//Kl87iCxmM+zVLpB6qx/5hUIPETK1qoUhmmdoYbo0Vw
+	 eRliOEv6iA4Pr2Qie6Gg6RkAalESCjkL+YDGKpZY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E192FF804E2;
-	Sun,  6 Dec 2020 14:34:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C5B9F804E6;
+	Sun,  6 Dec 2020 14:34:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07C52F804C3; Sun,  6 Dec 2020 14:34:20 +0100 (CET)
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com
- [IPv6:2a00:1450:4864:20::542])
+ id 85094F804D6; Sun,  6 Dec 2020 14:34:21 +0100 (CET)
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com
+ [IPv6:2a00:1450:4864:20::643])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18A90F80218
- for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2020 14:34:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18A90F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EF9FF804CA
+ for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2020 14:34:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EF9FF804CA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="YdnQLiCB"
-Received: by mail-ed1-x542.google.com with SMTP id cm17so10832603edb.4
- for <alsa-devel@alsa-project.org>; Sun, 06 Dec 2020 05:34:14 -0800 (PST)
+ header.b="JOVXuy3e"
+Received: by mail-ej1-x643.google.com with SMTP id b9so5250150ejy.0
+ for <alsa-devel@alsa-project.org>; Sun, 06 Dec 2020 05:34:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references;
- bh=XzfD+8x/gl2vij+zxF0vgPJlMvOnmt8qPR/mutEO1AU=;
- b=YdnQLiCBK/wBANdCyVFkDIuYa/Owf4imk6/kuZS+qLWOfNAnswRN6psvtJ+xR0sEmt
- ATVRfxNf+UUyiETI3QWMjzXJpGSoB5x0PF4tOzzbpLjuBtI3pBsExo8hF/wendpfC1Ls
- G50g+Gh6D1SAaAgkjYElwb5rF7b5wvXUkO9vFy/fzd/XkZgd+Zc/HqnAoH6PVb8m6saR
- QbtwHR4HI471Ws4jqKUEBawrQDuKmQrjASR3CWaScxinx7qj7hwrObD//yqNrmxiawgC
- rPBMHlrH8dTfgBoq1q84zAdYk8H9J0yq8MjmlJaPa/TvqPsIoqgkycNFhCNKwFNL/oGN
- 4PxA==
+ bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
+ b=JOVXuy3e6JymxKOPEoHBdkzfQUhgnoR1msgkoaiMxH70fRYib/t+qYr+VQpo7JKMln
+ F91whwe0wS6E4TTblt2ayRevdquO+k5v8NBiIGfJfJ6kCo75D+I0zR/Vp3M9iOTClr+y
+ RCD4WdS3002o8Co4VHrBS/SLNuFuYVhfulYpaFxC/YwFdKNT4An0K8Wd/1+AdipNSVDq
+ DmHl6hIzKsAopuPY3pE8J0vQW+3Q5+kXiYphccbg7W1ZVI6bX+A6IWPSUqr82lBEhjME
+ zxPxH0zFGmboVpKVBFPb3LvGF83sSP9eqfPZsKkrNaa7ufXKT5erD+NMFSrNFe0jGx/r
+ fRdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references;
- bh=XzfD+8x/gl2vij+zxF0vgPJlMvOnmt8qPR/mutEO1AU=;
- b=hOrc526Vuri5zex24KChi32QHjhoRRklhsHEAuSJmTR785Txf2xglEsBZ3pl2CigIh
- QSDsVL4qiHBo1gsDHxSzgh5nCvgUiqztIcjRyW0J0wPRckyQmtawaXHm71xRYhcLMKjy
- 7+eGa/Ov2dC4bGJPdrGTF+4IYfw8MZheydCTyFO16xNnLIimiHlSn5jSGRBfbVzmeuQ2
- z6iat4oRbd40NuyV+NAfyxJ9HwK1+67gEgjbjznvCSnrUBzQ/sa2PdBZCY9ZF0JOUrEu
- PwnkMjl8rmOOYsPr+IdqDT89qFfSwbJUjcGzosmwIB/wUnIJAOKzXS00S2vqW9skfCwt
- l7Lw==
-X-Gm-Message-State: AOAM532LUo8890PSi+W8TmMR24I8zmqN/EdyB/uQF5IPgROltFnFiibh
- TbsBYtZVQn5Y9JERDzQlxK8=
-X-Google-Smtp-Source: ABdhPJyTcga5ryTaOcjxeErZN0uSNiSlX+EAdf/VgZlWQgBUllwgGITJy/IVUbE7EtRHuBbkau4EpQ==
-X-Received: by 2002:aa7:d784:: with SMTP id s4mr15760934edq.215.1607261649141; 
- Sun, 06 Dec 2020 05:34:09 -0800 (PST)
+ bh=MNzWsDtU39BR4iFEfSJQ9mnoYu92ToJLMEGgLWUUrPw=;
+ b=HRAlazEVw6g5bdLDKaBDGTjhUzQ2fMWiEf8ZzgUPWNaFhJD7yvBYtm0deJWrqvJ/Lb
+ Ns3lHO/D3VYBMcqYyE97kTqCU/WcM8V9aY4nXzh9htt2fXJwi7/MoqaClhBw1lYm9ajK
+ Gsy172UCmI+2/WYK3Gf7UG1DSgI5cz/2NqCxAesbJYmM1J9Xak7uKViDvF4fEG4zPjGq
+ SRUyzyZuU87QE9nDqYCrlY26nBNarPv7d2Xa5DAtHh3EdNJqzdf2803zgP8orn9b1GlK
+ f+cbMrA5kpdsNEMVCs58+cPESGjcXE0tJoUPISf8rEkx4sfBbz6hpqCtKKp7JwETs8jF
+ /ebw==
+X-Gm-Message-State: AOAM533HKUYtv1z6OGjwkRPx68qbJRdDl3QOoR4AoHYy9dWkxu9070jm
+ /k7BXiAziSQfQpVYhiPVw6k=
+X-Google-Smtp-Source: ABdhPJztME1AEa+6AzKHTpyb9Y+omIXYUc5Z2Uz2KCJGA5tPM3cmuLgOt76RoEEmj6mHLL05lTnjBQ==
+X-Received: by 2002:a17:906:f05:: with SMTP id z5mr15442015eji.8.1607261651143; 
+ Sun, 06 Dec 2020 05:34:11 -0800 (PST)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
- by smtp.gmail.com with ESMTPSA id qh23sm7770129ejb.71.2020.12.06.05.34.08
+ by smtp.gmail.com with ESMTPSA id qh23sm7770129ejb.71.2020.12.06.05.34.10
  (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 06 Dec 2020 05:34:08 -0800 (PST)
+ Sun, 06 Dec 2020 05:34:10 -0800 (PST)
 From: Johan Jonker <jbx6244@gmail.com>
 To: heiko@sntech.de
-Subject: [PATCH v6 3/5] ARM: dts: rockchip: rk3066a: add #sound-dai-cells to
- hdmi node
-Date: Sun,  6 Dec 2020 14:33:53 +0100
-Message-Id: <20201206133355.16007-4-jbx6244@gmail.com>
+Subject: [PATCH v6 5/5] ARM: dts: rockchip: enable hdmi_sound and i2s0 for
+ rk3066a-mk808
+Date: Sun,  6 Dec 2020 14:33:55 +0100
+Message-Id: <20201206133355.16007-6-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20201206133355.16007-1-jbx6244@gmail.com>
 References: <20201206133355.16007-1-jbx6244@gmail.com>
@@ -108,27 +108,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-'#sound-dai-cells' is required to properly interpret
-the list of DAI specified in the 'sound-dai' property,
-so add them to the 'hdmi' node for 'rk3066a.dtsi'.
+Make some noise with mk808. Enable the hdmi_sound node and
+add i2s0 as sound source for hdmi.
 
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- arch/arm/boot/dts/rk3066a.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/rk3066a-mk808.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
-index 252750c97..67fcb0dc9 100644
---- a/arch/arm/boot/dts/rk3066a.dtsi
-+++ b/arch/arm/boot/dts/rk3066a.dtsi
-@@ -124,6 +124,7 @@
- 		pinctrl-0 = <&hdmii2c_xfer>, <&hdmi_hpd>;
- 		power-domains = <&power RK3066_PD_VIO>;
- 		rockchip,grf = <&grf>;
-+		#sound-dai-cells = <0>;
- 		status = "disabled";
+diff --git a/arch/arm/boot/dts/rk3066a-mk808.dts b/arch/arm/boot/dts/rk3066a-mk808.dts
+index eed9e60cf..5fe74c097 100644
+--- a/arch/arm/boot/dts/rk3066a-mk808.dts
++++ b/arch/arm/boot/dts/rk3066a-mk808.dts
+@@ -116,6 +116,14 @@
+ 	};
+ };
  
- 		ports {
++&hdmi_sound {
++	status = "okay";
++};
++
++&i2s0 {
++	status = "okay";
++};
++
+ &mmc0 {
+ 	bus-width = <4>;
+ 	cap-mmc-highspeed;
 -- 
 2.11.0
 
