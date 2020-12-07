@@ -6,58 +6,58 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09DDEC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 17:22:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 967FCC4361B
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 17:22:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5EF8623731
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 17:21:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5EF8623731
+	by mail.kernel.org (Postfix) with ESMTPS id 9A34C2388D
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 17:22:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A34C2388D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B77E1733;
-	Mon,  7 Dec 2020 18:21:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B77E1733
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16E80165E;
+	Mon,  7 Dec 2020 18:21:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16E80165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607361717;
-	bh=3bsg1/7JIEmM2sCoXIBnLHYqYDcZWModSSc7lZ3WKno=;
+	s=default; t=1607361768;
+	bh=vBo8ahB0eRZMy0RamLCRGK3e/TarQHy4ro4CEoCtiLY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oWDeXt1kmKQJfnkMSmfqXYbQyNEyFqQzpkTnjkaiKlCinc5P6AHjguAgj5HLboVnE
-	 RwdDgl/kVhmGKFmOsCMF2/XpyQcap4V0Ks7Wg9L02pugEdat49zJatPPKMVBDdIQTv
-	 saGmbqUOBt3yf50UeCtCl70ClcrQtuQXdkt/xxgY=
+	b=ThsA6zmdxu+YTzdJ30aW2KyG/JIENatGmRV16LTejAsL0BL0Lk389tXDmhUklfF4o
+	 mskqBSyHL2+LWPTiGzlChZubVgvh0quQV91pCS6cNgUlJCDllGScKEBBD3ECiyfCoB
+	 hV1M0XA/8CiKhhbgIERAmcvaG3bVIWu2GdMeSL60=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 926FFF801D8;
-	Mon,  7 Dec 2020 18:21:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76ED9F80227;
+	Mon,  7 Dec 2020 18:21:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79748F80217; Mon,  7 Dec 2020 18:21:04 +0100 (CET)
+ id 8E3F8F8020D; Mon,  7 Dec 2020 18:21:05 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4249EF800E1
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 18:20:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4249EF800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04F71F801D8
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 18:21:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F71F801D8
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20201204165014.2697903-1-kai.vehmanen@linux.intel.com>
-References: <20201204165014.2697903-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: trace: Add runtime trace filtering mechanism
-Message-Id: <160736164880.53222.15259224372038544033.b4-ty@kernel.org>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20201202193343.912942-1-ranjani.sridharan@linux.intel.com>
+References: <20201202193343.912942-1-ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH] ASoC: pcm: send DAPM_STREAM_STOP event in
+ dpcm_fe_dai_shutdown
+Message-Id: <160736164879.53222.1089898934708039437.b4-ty@kernel.org>
 Date: Mon, 07 Dec 2020 17:20:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- ranjani.sridharan@linux.intel.com,
- Karol Trzcinski <karolx.trzcinski@linux.intel.com>, daniel.baluta@nxp.com
+Cc: tiwai@suse.de, hdegoede@redhat.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,13 +73,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Dec 2020 18:50:14 +0200, Kai Vehmanen wrote:
-> The "filter" debugfs file defines the log levels used by
-> the firmware and reported by sof-logger.
+On Wed, 2 Dec 2020 11:33:43 -0800, Ranjani Sridharan wrote:
+> A recent change removed the call to send the DAPM_STREAM_STOP
+> event in dpcm_fe_dai_shutdown. But this causes a regression
+> when a PCM prepare is not paired with a hw_free. So, add
+> the DAPM_STREAM_STOP event back to dpcm_fe_dai_shutdown()
+> to fix this.
 > 
-> The file contains the formatted entry list, where each entry
-> follows the following syntax in plain text:
-> log_level uuid_id pipe_id comp_id;
+> The new sequence would be:
+> soc_pcm_prepare()
+>     -> SND_SOC_DAPM_STREAM_START
 > 
 > [...]
 
@@ -89,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: trace: Add runtime trace filtering mechanism
-      commit: 8f6cfbb6d4272635311b4604194e39172e7719ad
+[1/1] ASoC: pcm: send DAPM_STREAM_STOP event in dpcm_fe_dai_shutdown
+      commit: bb9dd3ce6177e1f8cf01b0d45e6bd9b93f656bd0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
