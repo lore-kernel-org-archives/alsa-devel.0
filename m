@@ -2,70 +2,79 @@ Return-Path: <SRS0=x+il=FL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F8FC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 03:16:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02638C4361B
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 04:44:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3EB3922CA0
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 03:16:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3EB3922CA0
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3F18B21734
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 04:44:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F18B21734
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9BAE16EC;
-	Mon,  7 Dec 2020 04:16:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9BAE16EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C8241738;
+	Mon,  7 Dec 2020 05:43:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C8241738
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607311014;
-	bh=x1310nLOtWqA7Bv7AOh1mMj0lONST9PI+v1h4Bnkj7A=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=b6vhn99gnMpgje6tVWx6EwtmrMcQRzgVDrT9ECN9PO76vEF0EU2Mmw2EqkJrgaReg
-	 741FqpwQ8/i2+uoUwXcBKKd0EU+LkG+HKgjS20IwKhBrh5yKX1H72R/GoPagshy4hD
-	 Grwxmkpzey4a27XbE1cES4Lm6MrKYZ7ld577h/74=
+	s=default; t=1607316283;
+	bh=qMWn0JbXUrp9SaF1F1XZeFEE50NfhTPxRsyzNxWxLk4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IwVpV4sDaaBd3TH0FK9D0L8vPngV9sCDTiDjOQUbrESn6k8WBW/h6lzSPHKyQTV/E
+	 YZfEzMb9qxIMenz8ziFyD4Dp/6htsrhlPL27BrOyWdFW95jpOMSJe4zCNbMijXSrHp
+	 oVCE8skDGbnyTwJ76+DV4vOMiYt7gL8iufMtZsuI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34158F801D8;
-	Mon,  7 Dec 2020 04:16:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67633F801D8;
+	Mon,  7 Dec 2020 05:43:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BD26F8020D; Mon,  7 Dec 2020 04:16:03 +0100 (CET)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+ id 5FD23F8020D; Mon,  7 Dec 2020 05:43:50 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFF89F8010A
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 04:15:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFF89F8010A
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
- by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Cq7jN4Hhnz79Th;
- Mon,  7 Dec 2020 11:15:20 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.9) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 7 Dec 2020 11:15:44 +0800
-From: Zhen Lei <thunder.leizhen@huawei.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- "Rob Herring" <robh+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>,
- devicetree <devicetree@vger.kernel.org>, linux-arm-kernel
- <linux-arm-kernel@lists.infradead.org>, linux-mediatek
- <linux-mediatek@lists.infradead.org>, linux-kernel
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] dt-bindings: mediatek: mt8192: eliminate yamllint warnings
-Date: Mon, 7 Dec 2020 11:14:30 +0800
-Message-ID: <20201207031430.1345-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E72E3F8010A
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 05:43:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E72E3F8010A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="GuFnNHRj"
+Date: Mon, 7 Dec 2020 10:13:34 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1607316218;
+ bh=qMWn0JbXUrp9SaF1F1XZeFEE50NfhTPxRsyzNxWxLk4=;
+ h=From:To:Cc:Subject:References:In-Reply-To:From;
+ b=GuFnNHRjXlgFURZ9+tIowoiVvL5eT7tpdqInm1mu0CGTCTH3jrtMxnlvno0K/qYh5
+ U08lebcc8G+fHy1Cooft8+GjB21xPo+KdQOZYNn5M36C1b56DJT6XLrLp32A2DxXlZ
+ FM473Vy0OVcrYWKiDhykpLbgrJTXFtbgaWge8e+GKDAp8bFZ3gBBg5VyRE8cfb6RFU
+ o20jLriO3ha76Nra0tlNhxM+1NaC6jssq90YPur3IBw++x/6ClJ1KWK9x+3xpUhqx3
+ iMgWO2dU10x3ZYDovI182JCWprt4GHVpZEoE3Wb78dmg8CzwBEMPpuxWH18qfq/iia
+ 9tyTyuJU6q9TQ==
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
+ initializing a device
+Message-ID: <20201207044334.GA8403@vkoul-mobl>
+References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
+ <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
+ <20201205074508.GQ8403@vkoul-mobl>
+ <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.177.9]
-X-CFilter-Loop: Reflected
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,31 +90,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Eliminate the following yamllint warnings:
-./Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-:10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
+On 05-12-20, 08:59, Pierre-Louis Bossart wrote:
+> Thanks for the review Vinod.
+> 
+> On 12/5/20 1:45 AM, Vinod Koul wrote:
+> > On 03-12-20, 04:46, Bard Liao wrote:
+> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > 
+> > > When a Slave device is resumed, it may resume the bus and restart the
+> > > enumeration. During that process, we absolutely don't want to call
+> > > regular read/write routines which will wait for the resume to
+> > > complete, otherwise a deadlock occurs.
+> > > 
+> > > Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+> > 
+> > Change looks okay, but not sure why this is a fix for adding no pm
+> > version?
+> 
+> when we added the no_pm version, we missed the two cases below where
+> sdw_update() was used and that creates a deadlock. To me that's a conceptual
+> bug, we didn't fully use the no_pm versions, hence the Fixes tag.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- .../devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml        | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Documentation says:
+"A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
+is used to make it easy to determine where a bug originated, which can help
+review a bug fix. This tag also assists the stable kernel team in determining
+which stable kernel versions should receive your fix. This is the preferred
+method for indicating a bug fixed by the patch. See :ref:`describe_changes`
+for more details."
 
-diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-index bf8c8ba25009dcc..54650823b29a41d 100644
---- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-+++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
-@@ -7,8 +7,8 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Mediatek MT8192 with MT6359, RT1015 and RT5682 ASoC sound card driver
- 
- maintainers:
--   - Jiaxin Yu <jiaxin.yu@mediatek.com>
--   - Shane Chien <shane.chien@mediatek.com>
-+  - Jiaxin Yu <jiaxin.yu@mediatek.com>
-+  - Shane Chien <shane.chien@mediatek.com>
- 
- description:
-   This binding describes the MT8192 sound card.
+I do not this this helps here as this does not help distros etc
+I would say this is incremental development which improved a case not
+done properly earlier, unless you would like this to be backported.. In
+that case it helps folks...
+
+> It's ok to remove the tag if you don't think it's useful/relevant, what
+> matters is that we agree on the content.
+
 -- 
-1.8.3
-
-
+~Vinod
