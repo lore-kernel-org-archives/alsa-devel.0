@@ -2,62 +2,90 @@ Return-Path: <SRS0=x+il=FL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 967FCC4361B
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 17:22:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39456C4361B
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 23:01:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A34C2388D
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 17:22:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A34C2388D
+	by mail.kernel.org (Postfix) with ESMTPS id 74CD6239ED
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 23:01:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74CD6239ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16E80165E;
-	Mon,  7 Dec 2020 18:21:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16E80165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CAA33170A;
+	Tue,  8 Dec 2020 00:00:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA33170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607361768;
-	bh=vBo8ahB0eRZMy0RamLCRGK3e/TarQHy4ro4CEoCtiLY=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1607382103;
+	bh=77sr8HFtHvJZAreczLwfeNUOat5H4YEjQTSP+cQ/HsU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ThsA6zmdxu+YTzdJ30aW2KyG/JIENatGmRV16LTejAsL0BL0Lk389tXDmhUklfF4o
-	 mskqBSyHL2+LWPTiGzlChZubVgvh0quQV91pCS6cNgUlJCDllGScKEBBD3ECiyfCoB
-	 hV1M0XA/8CiKhhbgIERAmcvaG3bVIWu2GdMeSL60=
+	b=MDk/ahcwf2QD3UFEZ6pn99Iyzwu32SdUQDXlfe0VRlWmlmpUfunqBv/MIBfTQ0NT3
+	 9OeGCebaNEH5aMiqyqVZ7U0qltML3/bhyRofUfweqBgm4+kK9Jus2E5jLd8AxB/EqJ
+	 G4DiWayp9u7om4mTcn0BmzB98rW3cC0KX0Tl1azA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76ED9F80227;
-	Mon,  7 Dec 2020 18:21:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE214F800E1;
+	Tue,  8 Dec 2020 00:00:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E3F8F8020D; Mon,  7 Dec 2020 18:21:05 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 16FA6F8020D; Tue,  8 Dec 2020 00:00:50 +0100 (CET)
+Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
+ [209.85.167.194])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04F71F801D8
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 18:21:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F71F801D8
-From: Mark Brown <broonie@kernel.org>
-Authentication-Results: mail.kernel.org;
- dkim=permerror (bad message/signature format)
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20201202193343.912942-1-ranjani.sridharan@linux.intel.com>
-References: <20201202193343.912942-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH] ASoC: pcm: send DAPM_STREAM_STOP event in
- dpcm_fe_dai_shutdown
-Message-Id: <160736164879.53222.1089898934708039437.b4-ty@kernel.org>
-Date: Mon, 07 Dec 2020 17:20:48 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E005F800E1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 00:00:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E005F800E1
+Received: by mail-oi1-f194.google.com with SMTP id y74so17338123oia.11
+ for <alsa-devel@alsa-project.org>; Mon, 07 Dec 2020 15:00:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=pOtnxwSjj67drQwIquaFUTWelLm5egSP5rxIl8SU7vE=;
+ b=W77u3L4M+veAMmoAwrYRbtZoiw8MTdTk7qGz/x7NA8PbIAEzQPORm+R2JybfM43UEW
+ 7XlPJk2IQPZZcOiLAWDDntJe92mGJ6pkRlPCSYtfjYsVvOotPi7yqY/IVrricYKKWXxA
+ C4qUPEwZV3N/zQBSo/kryjPSdeT0txABzvISDZKqVUm8cOSVDi/h4WHlVjYs08Hc1A92
+ UiTy1B1p9PQ5h6WmboTlAtsHXtYRWbQxccL+XLqnU+UUwfU4vEb6hGV+2RYgzguSVuYa
+ I1BfkvGR2QYTP44PFzYfJ/KglGamXXbCP78PRUDnCOXCaHjynexifJp3Xp7SymKTNBWU
+ rleA==
+X-Gm-Message-State: AOAM532qGwsMrFkviyqQXcICWOFWBAMkmcADelZaKNaPFUvO1p8nQdAg
+ Ko1UItgRIIkm7qkDPFdFDA==
+X-Google-Smtp-Source: ABdhPJzzP5lELAlv2UEEAGXv4tTBLCWDom3PpfzErxjtr7d2lasDJWYeKkDrSw+fq0+Y82sgW/YXPA==
+X-Received: by 2002:aca:1110:: with SMTP id 16mr814160oir.12.1607382040321;
+ Mon, 07 Dec 2020 15:00:40 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id y204sm1866830oiy.38.2020.12.07.15.00.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 07 Dec 2020 15:00:39 -0800 (PST)
+Received: (nullmailer pid 1007513 invoked by uid 1000);
+ Mon, 07 Dec 2020 23:00:38 -0000
+Date: Mon, 7 Dec 2020 17:00:38 -0600
+From: Rob Herring <robh@kernel.org>
+To: Zhen Lei <thunder.leizhen@huawei.com>
+Subject: Re: [PATCH 1/1] dt-bindings: mediatek: mt8192: eliminate yamllint
+ warnings
+Message-ID: <20201207230038.GA1007457@robh.at.kernel.org>
+References: <20201207031430.1345-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, hdegoede@redhat.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201207031430.1345-1-thunder.leizhen@huawei.com>
+Cc: devicetree <devicetree@vger.kernel.org>,
+ alsa-devel <alsa-devel@alsa-project.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,43 +101,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2 Dec 2020 11:33:43 -0800, Ranjani Sridharan wrote:
-> A recent change removed the call to send the DAPM_STREAM_STOP
-> event in dpcm_fe_dai_shutdown. But this causes a regression
-> when a PCM prepare is not paired with a hw_free. So, add
-> the DAPM_STREAM_STOP event back to dpcm_fe_dai_shutdown()
-> to fix this.
+On Mon, 07 Dec 2020 11:14:30 +0800, Zhen Lei wrote:
+> Eliminate the following yamllint warnings:
+> ./Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> :10:4: [warning] wrong indentation: expected 2 but found 3 (indentation)
 > 
-> The new sequence would be:
-> soc_pcm_prepare()
->     -> SND_SOC_DAPM_STREAM_START
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml        | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> [...]
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: pcm: send DAPM_STREAM_STOP event in dpcm_fe_dai_shutdown
-      commit: bb9dd3ce6177e1f8cf01b0d45e6bd9b93f656bd0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Rob Herring <robh@kernel.org>
