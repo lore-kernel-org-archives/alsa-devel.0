@@ -2,67 +2,94 @@ Return-Path: <SRS0=x+il=FL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 332E0C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 08:40:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF9A2C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 08:47:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9F9A229C4
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 08:40:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9F9A229C4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C4DDB229C4
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 08:47:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4DDB229C4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 504CF16D6;
-	Mon,  7 Dec 2020 09:39:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 504CF16D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0382173D;
+	Mon,  7 Dec 2020 09:46:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0382173D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607330400;
-	bh=cX2q2ytrMX9wf9HHGS76FzkRQonF+FUXGsL0OSVgz9c=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CmQBbHwewy3Hi9HwSXq84uUhk+ZLpGAfhCJpz2lS2ZA575a2mNwQQKP4KKB8jqVOp
-	 B2w6UVgXoXcQWvtLk32AQv1KEtTY2fMYataK4AehEpZQM9RF1cKhsDibGYM5VzelVr
-	 n8kY5iaW6whirasw3iIJf2GqAb9QzhvVD45XjB8E=
+	s=default; t=1607330841;
+	bh=9TuW79sUERd6wB8xZFTeMneXErbGQMwtyGsPE4Oyrr0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qwGeY4DUAZCRDsQh9hZ7NkPWJBZbfUDaWTRzthO7LeKBMSlGVsAwbP9Sgkm/FovS9
+	 qKdv8aFv9HR09vaLDdZWU3nGAUFrD+OK+tO7rIDJc2qTeNCtwD7b5+rLF5twd48BfN
+	 eJn3+QcyyXgc6wDIis+RTvTJZ6Y6xBF+H5XsIkwg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3E4BF8020D;
-	Mon,  7 Dec 2020 09:39:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17CC7F8020D;
+	Mon,  7 Dec 2020 09:46:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3801F80217; Mon,  7 Dec 2020 09:39:07 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4AA16F8020D; Mon,  7 Dec 2020 09:46:28 +0100 (CET)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com
+ [IPv6:2607:f8b0:4864:20::741])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C695F800E1
- for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 09:39:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C695F800E1
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 36D3AACBA;
- Mon,  7 Dec 2020 08:38:56 +0000 (UTC)
-Date: Mon, 07 Dec 2020 09:38:56 +0100
-Message-ID: <s5h360i2eov.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Chris Chiu <chiu@endlessos.org>
-Subject: Re: [PATCH] ALSA: hda/realtek - Add support for Memeza EDL03 headset
- mic
-In-Reply-To: <20201207073346.16571-1-chiu@endlessos.org>
-References: <20201207073346.16571-1-chiu@endlessos.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
- linux-kernel@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
- tiwai@suse.com, linux@endlessos.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C6D4F8015B
+ for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2020 09:46:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C6D4F8015B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="qtEErtAS"
+Received: by mail-qk1-x741.google.com with SMTP id 1so11890743qka.0
+ for <alsa-devel@alsa-project.org>; Mon, 07 Dec 2020 00:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=75+i+NBjMQ6GtQpKGQNJdPXnFNLfGkuAW15cSzTPqVQ=;
+ b=qtEErtAS+Fb92gBJJjJECw0zeq/TSSiOw+SAGqvz05PQyWQg+Vm5xV1PMYBZRTQSeL
+ rEYnaz/4PoSsnlGGivHNdiKKBwgNQkSGTKNEZc0iy/KmHB1Qqav1wnBWC4iDdj64ZJku
+ /JyQS3OsosSBW0QdRSqpayQ0qsaRarXb9lYfhgpbtNlKLuTVGjbVbqZPS9XUVJeqMypR
+ t0+8iZSKPwOWSBrIE/+4Sw4qBcw+I1IIB+/unnS7abycAYg9DHxJqvOAI+YDeGIuqLdB
+ kTCklslvNbRo/JU6Vp9Ur/03iGqPHlYnKgg6IgT4365O8hZsnDZ8xDOIkzcmxaJV5sym
+ SR9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=75+i+NBjMQ6GtQpKGQNJdPXnFNLfGkuAW15cSzTPqVQ=;
+ b=LLrjTk4hOBUHXa/hDWkhz18Wx4GJPV59N5Dm8SYSME81W1+FDYfwM30v8U1DV8ytJU
+ kyAPUT4bh+eElACF+W8QNR0AwwdzugLnL2FWjwflu27Q8+pt0fHmgcplRsK/T6jyenqc
+ G50sSXupNfrg/E8xd//CwwVXQK3RlcBmv/2fg8/WPYeTt05+wsjtTOz13ESVN7PPrIUM
+ fZCV8EkB5CKc3OkGl+44rXlwh5E9ubRzfxi8msCt7lXzPAqqX6sISfKqG4hGbyKylAHi
+ SBDKRmeUoISB3wSBaFupwuiZJ05NDum2s/UcccbPc8MBpP7pG7IFAHztJREi0M3TcHkk
+ aReg==
+X-Gm-Message-State: AOAM5300dCEF+nbt6sUPe2FntviB25STqV0VlG2vValaOt5U2iC7VD/V
+ gew73OOGBGqjv5ZRrORzmvUcvN4X6qc=
+X-Google-Smtp-Source: ABdhPJxAQ2lH+fXjAcGTh8FCHNA5Xmj8q7aXjdHsR8Ac7wnaqenQn56nJi45e0DcoO9LXDp2Q5xMWQ==
+X-Received: by 2002:a37:9c4a:: with SMTP id f71mr5396954qke.495.1607330783087; 
+ Mon, 07 Dec 2020 00:46:23 -0800 (PST)
+Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
+ [71.65.111.223])
+ by smtp.googlemail.com with ESMTPSA id a9sm3424681qkk.39.2020.12.07.00.46.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 07 Dec 2020 00:46:22 -0800 (PST)
+From: Connor McAdams <conmanx360@gmail.com>
+To: 
+Subject: [PATCH 1/3] ALSA: hda/ca0132 - Fix AE-5 rear headphone pincfg.
+Date: Mon,  7 Dec 2020 03:46:13 -0500
+Message-Id: <20201207084616.411531-1-conmanx360@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, conmanx360@gmail.com,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,38 +105,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 07 Dec 2020 08:33:46 +0100,
-Chris Chiu wrote:
-> 
-> The Memeza laptop EDL03 with codec ALC256 can't detect the headset
-> microphone. The headphone jack sensing works after we add a pin
-> definition for it by ALC256_FIXUP_ASUS_MIC_NO_PRESENCE.
-> 
-> Signed-off-by: Chris Chiu <chiu@endlessos.org>
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-> ---
->  sound/pci/hda/patch_realtek.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index d5e4d0ba1008..8b9b94cfc67e 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -7871,6 +7871,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0x10cf, 0x1629, "Lifebook U7x7", ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC),
->  	SND_PCI_QUIRK(0x10cf, 0x1845, "Lifebook U904", ALC269_FIXUP_LIFEBOOK_EXTMIC),
->  	SND_PCI_QUIRK(0x10ec, 0x10f2, "Intel Reference board", ALC700_FIXUP_INTEL_REFERENCE),
-> +	SND_PCI_QUIRK(0x10ec, 0x115a, "Memeza EDL03", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
+The Windows driver sets the pincfg for the AE-5's rear-headphone to
+report as a microphone. This causes issues with Pulseaudio mistakenly
+believing there is no headphone plugged in. In Linux, we should instead
+set it to be a headphone.
 
-This looks suspicious.  10ec is the vendor ID for Realtek, i.e. it
-implies that the BIOS on this machine didn't give the proper unique
-ID.  As you can see, the other entries with 10ec are only reference
-boards.
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If the newer BIOS still doesn't fix the PCI SSID, you can check the
-codec SSID instead.
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 4fbec4258f58..e96db73c32f5 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1223,7 +1223,7 @@ static const struct hda_pintbl ae5_pincfgs[] = {
+ 	{ 0x0e, 0x01c510f0 }, /* SPDIF In */
+ 	{ 0x0f, 0x01017114 }, /* Port A -- Rear L/R. */
+ 	{ 0x10, 0x01017012 }, /* Port D -- Center/LFE or FP Hp */
+-	{ 0x11, 0x01a170ff }, /* Port B -- LineMicIn2 / Rear Headphone */
++	{ 0x11, 0x012170ff }, /* Port B -- LineMicIn2 / Rear Headphone */
+ 	{ 0x12, 0x01a170f0 }, /* Port C -- LineIn1 */
+ 	{ 0x13, 0x908700f0 }, /* What U Hear In*/
+ 	{ 0x18, 0x50d000f0 }, /* N/A */
+-- 
+2.25.1
 
-
-thanks,
-
-Takashi
