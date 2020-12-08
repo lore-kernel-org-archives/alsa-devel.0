@@ -1,80 +1,102 @@
-Return-Path: <SRS0=x+il=FL=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=8QnY=FM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54FE8C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 23:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C55BC4361B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 01:29:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 634B623A04
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Dec 2020 23:56:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 634B623A04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0013A235F9
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 01:29:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0013A235F9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5F916C0;
-	Tue,  8 Dec 2020 00:55:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5F916C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4538F170E;
+	Tue,  8 Dec 2020 02:28:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4538F170E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607385393;
-	bh=8qBb50HGLzvNfG5jpY/REWFVy5xnyAqUOA8Mlu0N+e0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1607390960;
+	bh=xGJi5PhUawzxs4O4fbnN9Dky9ml2flgXknw3Jxhd1rE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QDkPoEplFPJkq5emK3ItrS6CmAW4k4XdAOT9yp1dfNAIbQ0SQv3ovCHARg2fFHb/S
-	 XhMwtlMa6ojdWw/z+PdSOJusSTmipusBrO2HUwHr53rWI/ajZn2xQ3gH5lTDVCMi1n
-	 zANbln4asLnsKaWyu71XAp9UU43SAk5QjWTf6ot0=
+	b=YFQ2TL2gtk6d9Vm21Ev01IvSNgMR6KTQwQeLPmYnyj7sqLkCqcUSEcGkVLglX1A3D
+	 5lCJxCxkX9lA8DrBrKY67uvnKNs4UOPXDdBq4Y2S1p0Jn9du0cfnP1HuvrVparq4qq
+	 Z3TEsL0Sxn+jwNUStu2SbbYNhk81N1VqR/VCAPls=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C123F8021D;
-	Tue,  8 Dec 2020 00:54:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B0B4F801D8;
+	Tue,  8 Dec 2020 02:28:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D856BF8010A; Tue,  8 Dec 2020 00:54:52 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8670BF8020D; Tue,  8 Dec 2020 02:28:27 +0100 (CET)
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com
+ [IPv6:2607:f8b0:4864:20::643])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C1E2F8010A
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 00:54:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C1E2F8010A
-IronPort-SDR: OJzaoeHIzZ01Nb3gcsJMIa1WZr4XZXwVG4OzWTnG/xSUdqMmV4PDKLAxPSLs2t+NICILV2bCAe
- 1yachUryPwwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9828"; a="171230469"
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; d="scan'208";a="171230469"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2020 15:54:40 -0800
-IronPort-SDR: I4fDSwli1pHW0IkRLT14fPitXakEreFyvn2qmV/IbyE/va9aI9zDTWyMan9f60MwVlM5lkohmz
- QfXO1WKUnEDA==
-X-IronPort-AV: E=Sophos;i="5.78,401,1599548400"; d="scan'208";a="483410888"
-Received: from cegeorge-mobl.amr.corp.intel.com (HELO [10.212.61.7])
- ([10.212.61.7])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Dec 2020 15:54:39 -0800
-Subject: Re: [PATCH 0/2] ASoC: Intel: cht_bsw_nau8824: 2 fixes for usage with
- sof-audio-acpi
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-References: <20201206122436.13553-1-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a9d5b273-b457-f293-47f4-25f818ffe228@linux.intel.com>
-Date: Mon, 7 Dec 2020 09:14:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E95BAF800E1
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 02:28:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E95BAF800E1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="c+bi86iX"
+Received: by mail-pl1-x643.google.com with SMTP id p6so6108417plr.7
+ for <alsa-devel@alsa-project.org>; Mon, 07 Dec 2020 17:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=g6R21sa3bkOjEnwqhAVxyM+kWVKk9KN5CJ8WQiyRzKg=;
+ b=c+bi86iXy/pSBac/0D9EHuYLqSgzndqvSEaxFibcNpweMKyQygRkZzQDEMO+Qw0UxT
+ /33sCLHGIDMYobzNYwvDSi74tyY8ITvbbDU0Sk258GTxreVez+owDIlHjtcFzsZa3xix
+ ndvhJ1d6ZErYf3EfuNA0LAXY706OqaLr54H27c48TPfhCf0qaS4L6PqOmMCtN1HN3dO1
+ QEJZ6vbRb6gjEs93MG4zMFETc25vJntRNgVRpY1n02Py/AK4BmQHWQK+H8sSTwpOHpWn
+ XXq5k8unAN/YWq7bTwYRW4BFivBs+VzBJ60omZmbh14WbOjmjjO7/mdsrXwe3+w0Qdr2
+ OW+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=g6R21sa3bkOjEnwqhAVxyM+kWVKk9KN5CJ8WQiyRzKg=;
+ b=WC91alXZYb35eIkBBYByQDPzOMKLAxd/eBgVv6d7Yl3D/4Ek7knixhNGGC1jkM6IOI
+ nTzn9nrz42ul7NgL3iQzyiTsWM8sl8YfJ920De629OIZKX55pHkxedvpAFkMV/C73lCb
+ ZuRJt2Gj9Vo4ukXq0Ps99IrH8DKs7PJG+5PV7m+VEK8IVkScScXo+MSrKhZvZSPFr83F
+ XB1y5UoH2S/gNexfrYEGenBq4xyFbZjbkpZsT3c57EfYAdrUiPm2fkAPsAjjirgAA0p+
+ 4rvsmrNW6mQuDD+SR6XfZ8mbRxy65LVMSTdx/P8h9pNinsZ63XACQFp0axr3r3wo07BZ
+ VbvA==
+X-Gm-Message-State: AOAM53329dEXt81bwIBonCg1hw/NVH04fGB4c2l2prHZPAD10r6SbDww
+ gvLccFZNFpbrT67oBaxqGEk=
+X-Google-Smtp-Source: ABdhPJxpxLxNICfqOJ5BiNFYHNzVKl0q1JwFffvvXbpF0tW9FuLkpPPBA+bELyA/XOq2JtoKBTRo5w==
+X-Received: by 2002:a17:902:6ac8:b029:da:d645:ab58 with SMTP id
+ i8-20020a1709026ac8b02900dad645ab58mr16864544plt.25.1607390896709; 
+ Mon, 07 Dec 2020 17:28:16 -0800 (PST)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+ by smtp.gmail.com with ESMTPSA id a22sm12495382pfa.215.2020.12.07.17.28.15
+ (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 07 Dec 2020 17:28:16 -0800 (PST)
+Date: Mon, 7 Dec 2020 17:25:26 -0800
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2 2/2] ASoC: fsl: Add imx-hdmi machine driver
+Message-ID: <20201208012526.GA21510@Asurada-Nvidia>
+References: <1607251319-5821-1-git-send-email-shengjiu.wang@nxp.com>
+ <1607251319-5821-2-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20201206122436.13553-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607251319-5821-2-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
+ Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
+ festevam@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,34 +112,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 12/6/20 6:24 AM, Hans de Goede wrote:
-> Hi All,
+On Sun, Dec 06, 2020 at 06:41:59PM +0800, Shengjiu Wang wrote:
+> The driver is initially designed for sound card using HDMI
+> interface on i.MX platform. There is internal HDMI IP or
+> external HDMI modules connect with SAI or AUD2HTX interface.
+> It supports both transmitter and receiver devices.
 > 
-> Here are 2 simple fixes which are necessary to make the
-> cht_bsw_nau8824 machine driver work together with the
-> sof-audio-acpi driver.
-> 
-> Note that atm the sof topology files are missing a .tplg
-> file for this setup. Simply copying over the standard
-> sof-byte-codec.tplg file does the trick, but then some
-> mixer setting changes are necessary to fix the right
-> speaker/headphones channel not working; and those mixer
-> settings break the right channel when used with the
-> sst-acpi driver.
-> 
-> I've been trying to fix this at the tplg level so that
-> we do not need to change the mixer settings, but no luck
-> sofar. I'll post a RFC with the topology changes which
-> I have and we can discuss this further there.
-> 
-> These 2 simple fixes are necessary to make the sof-audio-acpi
-> driver work regardless of the topology issue.
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Thanks for your work Hans, much appreciated. Both changes are valid and 
-were missed.
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
