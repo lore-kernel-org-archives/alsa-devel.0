@@ -2,151 +2,69 @@ Return-Path: <SRS0=8QnY=FM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB5EEC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 18:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA5ADC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 18:11:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0563423B5D
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 18:08:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0563423B5D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id E24D823B54
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 18:11:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E24D823B54
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 543D41680;
-	Tue,  8 Dec 2020 19:07:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 543D41680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C1BA1697;
+	Tue,  8 Dec 2020 19:10:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C1BA1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607450894;
-	bh=XCycTBv8hY9LZh6opz5uNweTc9jFUYeYoYeubeqxEB0=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=i5IOv7vRXH/SxEgWqeaVg5kLxGb5t/Og6ii4GyTxKynoQXQNR5WwmwU5A/xbMNtRT
-	 TnXbcHuE3xKDnqOgmd853fu67+1+kdIDVxDdm/9jBFh5VZlSu4xJfAf1ivvD7yZiHp
-	 UNAJfrIPw9hhu3LakAQaCgB6524G069lOHSlpg7c=
+	s=default; t=1607451099;
+	bh=jtoRVfSnTR6uvkCkevRlv1GFLRt6Do4me7pk+woPeAA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mfSvfS/XgovDXZov87Pw+9zuvuL9n2d2OyF1dBvNvCv3+tiSHGbasANl+ayMZAd1w
+	 U/+oeByIUGN+RxXwXc8nTM9iVzp5NzlOOQiVgtvFXekt8FTHcuNoWD8bWG+/2F+J7j
+	 qKkIEVvOnsm9BF3FJ6wUD1ucgj31vK7oyLaKsm9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8F07F800E1;
-	Tue,  8 Dec 2020 19:07:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D15D4F8010A;
+	Tue,  8 Dec 2020 19:10:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9E7CF80130; Tue,  8 Dec 2020 19:07:22 +0100 (CET)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B3AF5F8019D; Tue,  8 Dec 2020 19:10:47 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8212F8019D
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 19:07:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8212F8019D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
- header.i=@amdcloud.onmicrosoft.com header.b="AXDNOj64"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JY8K5Ij6mX+So5Q6sf758qUNCoaBEvcLBDnVbBVtnX8IGKbs1w75YyKpIbrChQ8ygY6kolRroTpvclo4Bz9PSLnriPffACZNQbntFqCwHP8j+UrILQJy3E2Hqn1/QO5sfOBFwFkLVToWNv/Tzzc9wQm0H79CpEC7jP3UqQ0ZBjPPrYVFOmAhU2M2+fzLeQj8V/mmtBGi3NtRTGP5zIttmG0CpSfoq9EaoVsJ3hDOTZ0K1sjjPoheoGHlbWFDHdkOFs6MNGyue26zosuYGjxuCxQRUVffJZU1AAzXPjtYjkfldpwaw2GnT91J/zp/BeIx73xMO66RAv9GyFs7gbQwLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7iUZDrM/YvY6JSqFoq21+bsYlxQZIGqLeOQOxHErjKQ=;
- b=bXz/UZsZG4W+XadcjyQtZebwCOFs6TYc1Bg2xyZ4frfbDOc8FtrWySxAlVxTbiYIAvdNUzzGILHhoLLo3ETSQoxIlDbnFmiX+NphwkTqoBHi0v+Rpt8GYqHal46IqC4fBQ6tFzf+633SGRWN2iEmUIp2D2alviLmAQyUPyj3HrJpD3sFkNjRZZ/XaZgdy1yxxsVOKhQDEMLxj/l2n6Xk+QtvKuDpew4gLBs5DjflF/H/jdLL0Q5LHfBj+Hk8QpCl8d0xfW5YMmqq7qpaS2Sk8YrynQBQ7u2s6t1h5ukH4oZTrW+/YVFex9ChiiXrJqHo3+C+I4df9OtgGf6MFkTNqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7iUZDrM/YvY6JSqFoq21+bsYlxQZIGqLeOQOxHErjKQ=;
- b=AXDNOj64Cqb8AlHMfWTeOTIaxhufMB2aVDDCmwPCA2CYDPlHcwnCRPG1+46wip4/9DyUB1x46VAVj6v24krO83J8mEVKozvv4HkA7BWzNMWMFi587I/lnV5qaNr4M7/j79XFVx3LhYhaT0j5ZtvYqUZP0RZmKqJFsG/H3bfFzn0=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1663.namprd12.prod.outlook.com (2603:10b6:301:e::9) by
- MW2PR12MB2521.namprd12.prod.outlook.com (2603:10b6:907:8::14) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3632.21; Tue, 8 Dec 2020 18:07:15 +0000
-Received: from MWHPR12MB1663.namprd12.prod.outlook.com
- ([fe80::c02b:5213:d160:9a34]) by MWHPR12MB1663.namprd12.prod.outlook.com
- ([fe80::c02b:5213:d160:9a34%5]) with mapi id 15.20.3632.023; Tue, 8 Dec 2020
- 18:07:15 +0000
-Subject: Re: [PATCH] ASoC: AMD Renoir - add DMI table to avoid the ACP mic
- probe (broken BIOS)
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-To: Takashi Iwai <tiwai@suse.de>
-References: <20201208153654.2733354-1-perex@perex.cz>
- <s5h4kkww9j3.wl-tiwai@suse.de> <20201208174002.GH6686@sirena.org.uk>
- <2e4587f8-f602-cf23-4845-fd27a32b1cfc@amd.com> <s5htuswuqng.wl-tiwai@suse.de>
- <2c48dcdb-e8c8-ca2e-e004-4e63887788c5@amd.com>
-Message-ID: <098fa0b7-5493-f3e5-afd5-8296d4300590@amd.com>
-Date: Tue, 8 Dec 2020 23:53:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <2c48dcdb-e8c8-ca2e-e004-4e63887788c5@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.159.251]
-X-ClientProxiedBy: MAXPR01CA0076.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:49::18) To MWHPR12MB1663.namprd12.prod.outlook.com
- (2603:10b6:301:e::9)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1E6FF8010A
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 19:10:41 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C50BCA003E;
+ Tue,  8 Dec 2020 19:10:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C50BCA003E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1607451040; bh=lP24/kVk08TtUPodXu+hHcP/J6uDrkuoevZ4U3U14K8=;
+ h=From:To:Cc:Subject:Date:From;
+ b=rdg5R31ySlRLAvSuSdBoAw6PgCdiIHjwiEg/nVi1NpdDdcz81hl5sddRVLzC1RcgE
+ txrIUqn2N0wQzE4UYTuO/3wHQPbstBEikrKeePRtoeV0fU8/9z5k83R676DF8Er2bk
+ 1GAVFjsYqsOSbC6K8Bmp72lNPNcIf/IQxhwK2KmE=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue,  8 Dec 2020 19:10:37 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: AMD Raven/Renoir - fix the PCI probe (PCI revision)
+Date: Tue,  8 Dec 2020 19:10:33 +0100
+Message-Id: <20201208181033.2745563-1-perex@perex.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.129.8.176] (165.204.159.251) by
- MAXPR01CA0076.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:49::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3654.12 via Frontend Transport; Tue, 8 Dec 2020 18:07:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 33336f11-4609-408f-f66b-08d89ba4180f
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2521:
-X-Microsoft-Antispam-PRVS: <MW2PR12MB2521BDB377B44EB004F91A5997CD0@MW2PR12MB2521.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fEPwQ1QvvZ7pvUPkX3tXNJ9Q3rCnHb8pbfvnWdqIirgTewpgnT5taB4pHNpbHhtRV97K9imE9uI6zx06CzPsbhZRGkGB4rYfCcosBk4mlemnabl0SCo08scZPK6nF/F33cPgO+SaR5GnqFXr2YClLZm18IubPN7pRs+/SyvXptIpjSPmTRZxb6nzyIxXpD/FzxGxs0WKChUKNnhytSud9wLu+X9X3mObUVaiIDZhp0XJHlBonkhQh18HkCLgSKt73Rhcji5KrfV+FQ+7bUKhgHmGH0bdgT6a+IOI7a7o2y3KxjCLcgR21OOThI69MGFkZ69bwbhqza2kuMwfpL58peMxas1XBXFaCJO/0D6DqY73lnSYR9x5wt43YpY6UxK12PRQwA5XkZhBZWK1HwyhehlTisNErGpAG/z5HiOjbqSAoVfYBEAf6n3R7aweZjw6
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR12MB1663.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(4636009)(376002)(346002)(136003)(366004)(36756003)(54906003)(16526019)(66556008)(16576012)(6486002)(52116002)(6916009)(956004)(508600001)(2906002)(6666004)(66476007)(34490700003)(66946007)(53546011)(4326008)(8676002)(5660300002)(186003)(2616005)(86362001)(31686004)(26005)(8936002)(31696002)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?b0k0bXJCMklObHBrUXpVMVNNbDMvcCt4SG9mZHZWbFRvaFJ5NFdBSG02UHVp?=
- =?utf-8?B?anFnM2JKTWlXbWVRZ1oyRkI4bWV0MzVxSjh6TnRoVFowdmZJZnh4ZHdCa1pU?=
- =?utf-8?B?SStGeTZHTEJDUkhwdDNHTkt5R2J5ODMxZE9CQldOc1BEU25PZ0Zmb2JIRDQr?=
- =?utf-8?B?bG1TYnhDcXV4K2JCZXpRbVpzb2UvYzE5b3o0TFZ5ZW8zdEJOeHNzblZmcGFt?=
- =?utf-8?B?b2RCSUlLUSsxNFU4b0I3SHhpQkppRUlrZEdiZmpTU0s5NVBmQUFmWW81d2xO?=
- =?utf-8?B?cHdsOXpIVjN2TjRvWEJ5em8yU2owQ1VpOThkbEk4U1dLM21nS0R4UGlhQXJv?=
- =?utf-8?B?dWpFVEdiUlUzbUdiZlBRN1JHWEdybXZyWlBGMjlUZkkyc0VmbWpuamxwQTFK?=
- =?utf-8?B?Z3E0MlF2Nms2L3NlcEFMQVh1eFJOSTRnT210R202azczRk4wVXY3NmtJRWlG?=
- =?utf-8?B?dkdCbGJVN01UWWZJb3p1dmlBZGtMbU03N0pBRjNiWkt5bldIeGZMVHlkRmlH?=
- =?utf-8?B?aWFpSS9ocHN0UDFjVkhTTzlFQzBEVk5zUHIzYzlId2EwZGoyVEZTNytxZVBs?=
- =?utf-8?B?Q2tXVWQ4RE9PeDQ1OTJJZGNmbVJudVJ2d3ZkT1p2NnBha29rL2NsRENHUjdL?=
- =?utf-8?B?eUdlWlRmOXYySDkranY1MEw0TDFZeTNvSzNBalhheFYxY2dMUzZsSjdrUkFq?=
- =?utf-8?B?bDF0R05tMitkZ1lSVGRSM0FHcnI3YjZUWVdCV2xmQTFaMHE2OHdWK2d4bVRD?=
- =?utf-8?B?T1hONmVzcitDU2xlUXhqZVNsZlEvT0xydU9OblVRNU9qQmxCVHhGZ1VsTndS?=
- =?utf-8?B?RlFwd3Y4eG1DQ05UZHB2MGRrYXk0UTFyTi9WNGN3N2VWU1dQc1I1c1RlWXdp?=
- =?utf-8?B?OUhIcWJsbXBETzJLMk9rZCtHTHhvUWRSaERiOFhhUnFrZkg3dmF2Y3pvdFJ5?=
- =?utf-8?B?OWNtakJwd01kZTZRN0I4MUdybEpBSmkxb1YxckdwMnpNVWFiTjh3YlFSbWFQ?=
- =?utf-8?B?dUdiTUVFZVNLY0NxUGtvcXQyb1JZK1JqcUk5YVhFQmdYbTZEZ2xaN09jNTda?=
- =?utf-8?B?bEJmOTZYMkJSZlcxTVhaOXJEdGNlSHBlV2czbmRxTHhnSGpLU0s3TlhiY2oz?=
- =?utf-8?B?Qm5lRFd3Yi9BTDdDVzNjQUZqNTdzWHRnaUx5U3FMNUoydzRFbnlGeUo4MVBP?=
- =?utf-8?B?VVVvUVdDV1Z3dERXdmwwOEoxTXRjMVFwbG0vZ3p4SDNGMkN6UkZldEdSekJU?=
- =?utf-8?B?OXUvVnlnZ3NWRC9kME84Z3Jsb0FKNktKV2pMZmwrOVJOM3gybExDclp4WU82?=
- =?utf-8?Q?X0naOdLgBoR3vI0lbnnriA29Hkyla93HEI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1663.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 18:07:15.3016 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33336f11-4609-408f-f66b-08d89ba4180f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YaPPrDPOv3rCLan+vkI+FKbXYemzE+M7SsewAp5S5tqSQ9/0Y9DtGoF/wC/EQmpyfQXNKzDDiPZYX2myXDhK/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2521
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>, stable@kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -162,48 +80,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The Raven and Renoir ACP can be distinguished by the PCI revision.
+Let's do the check very early, otherwise the wrong probe code
+can be run.
 
+Link: https://lore.kernel.org/alsa-devel/2e4587f8-f602-cf23-4845-fd27a32b1cfc@amd.com/
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/soc/amd/raven/pci-acp3x.c     | 4 ++++
+ sound/soc/amd/renoir/rn-pci-acp3x.c | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-On 08/12/20 11:51 pm, Mukunda,Vijendar wrote:
-> 
-> 
-> On 08/12/20 11:27 pm, Takashi Iwai wrote:
->> On Tue, 08 Dec 2020 19:06:21 +0100,
->> Mukunda,Vijendar wrote:
->>>
->>>
->>>
->>> On 08/12/20 11:10 pm, Mark Brown wrote:
->>>> On Tue, Dec 08, 2020 at 05:24:32PM +0100, Takashi Iwai wrote:
->>>>
->>>>> BTW, both Raven and Reonir drivers point to the very same PCI ID,
->>>>> and both drivers will be probed for this machine (and both to be
->>>>> skipped).
->>>>
->>>> Ugh, that's not good.  It's not even super obvious from the code that
->>>> this is happening.  Seems like it should be one core driver which
->>>> instantiates the components for Raven and Reonir as appropriate, the 
->>>> PCI
->>>> driver is pretty thin at present anyway.
->>>>
->>>
->>> Raven and Renoir has same PCI ID but both platforms have different
->>> revision ID. Raven platform revision id is 0x00 where as for Renoir it
->>> is 0x01.
->>
->> But your drivers don't check the revision ID, as far as I see?
->>
->> The linux PCI driver doesn't distinguish the revision id at the
->> matching time, unfortunately.
->>
->>
->> Takashi
->>
-> Apart from Revision ID difference, There are few hardware differences
-> specific to ACP IP.
-> ACP IP hardware versions are different for Raven and Renoir.
-> Unfortunately we don't have specific logic to distinguish ACP hardware 
-> versions for Raven and Renoir.
-> 
-But build wise both Raven and Renoir uses different Kconfig options.
-
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index 31b797c8bfe6..77f2d9389606 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -118,6 +118,10 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 	int ret, i;
+ 	u32 addr, val;
+ 
++	/* Raven device detection */
++	if (pci->revision != 0x00)
++		return -ENODEV;
++
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+ 		return -ENODEV;
+diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
+index 60a3e2f442db..338b78c514ec 100644
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -188,6 +188,10 @@ static int snd_rn_acp_probe(struct pci_dev *pci,
+ 	int ret, index;
+ 	u32 addr;
+ 
++	/* Renoir device check */
++	if (pci->revision != 0x01)
++		return -ENODEV;
++
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+ 		return -ENODEV;
+-- 
+2.26.2
