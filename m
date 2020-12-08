@@ -2,65 +2,65 @@ Return-Path: <SRS0=8QnY=FM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E8A2C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 14:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F12DFC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 15:05:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4AE4723975
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 14:58:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AE4723975
+	by mail.kernel.org (Postfix) with ESMTPS id 98FC123A6C
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 15:05:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98FC123A6C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89D3F16C9;
-	Tue,  8 Dec 2020 15:58:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89D3F16C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE1EC16F2;
+	Tue,  8 Dec 2020 16:04:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE1EC16F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607439537;
-	bh=7Gu+hjLBj/ekXP4mhVO/HAGiIJBXjipnm2DiHr4oTHA=;
+	s=default; t=1607439939;
+	bh=NtNEw/iI3GAZ16jDdkv/HQzKeznrEUxHwhv0P5rVx3I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ow3BdUrwQ1QKc3oGPi1j8RV/RTJm9YPZM7oTpH1/dSsXT7THXLCB+OSOBOgPSoHlK
-	 G0WEEzXUc3d8W1+NN1p1z+h8H7afIjGfd27YQTxrGi+msHt7Cv1Y8sJ1Im6RnU0Lpj
-	 7RAcDjYYvBNcDZOrHko+wnh7j2fJKz/eR2iffC4w=
+	b=K4aT1NrY4xaYzZyFgxPYQm2GtdSdlI440aACMfmJfMuFaePsidRpGnOF8HsGqcOC5
+	 9ZWGEx8ELN1s+jV2gPdjqX6xNIo2I3orTD00S2q5xe6UPljGFULLnUrGOnfcRsrkg4
+	 6B0u138n4KzEpXAOPNXG1bV2lDn0r757kgtoaW+Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0427AF80164;
-	Tue,  8 Dec 2020 15:58:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4505FF800E1;
+	Tue,  8 Dec 2020 16:04:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3D82F8019D; Tue,  8 Dec 2020 15:58:05 +0100 (CET)
+ id A4F62F8019D; Tue,  8 Dec 2020 16:04:48 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B119BF8010A
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 15:57:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B119BF8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BD2FF8010A
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 16:04:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BD2FF8010A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DEB60AB63;
- Tue,  8 Dec 2020 14:57:53 +0000 (UTC)
-Date: Tue, 08 Dec 2020 15:57:53 +0100
-Message-ID: <s5hft4gwdji.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 73750AC9A;
+ Tue,  8 Dec 2020 15:04:45 +0000 (UTC)
+Date: Tue, 08 Dec 2020 16:04:45 +0100
+Message-ID: <s5hczzkwd82.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: meschi@posteo.de
-Subject: Re: Steinberg UR22 Crackling and Clicks
-In-Reply-To: <61da73624ff3855867b8e65936fc2e1c@posteo.de>
-References: <ce03244f4699ffc9574ecc2dae41a417@posteo.de>
- <s5hft4gy4ar.wl-tiwai@suse.de>
- <61da73624ff3855867b8e65936fc2e1c@posteo.de>
+To: Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Subject: Re: AMD ACP raven ridge: invalid audio mode 2
+In-Reply-To: <07aae8e3-1ee2-60a9-daee-a0172c1012e7@kabelmail.de>
+References: <07aae8e3-1ee2-60a9-daee-a0172c1012e7@kabelmail.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
+ alsa-devel@alsa-project.org, Akshu Agrawal <akshu.agrawal@amd.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,27 +76,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 08 Dec 2020 15:50:28 +0100,
-meschi@posteo.de wrote:
+Adding AMD people to Cc.
+
+On Tue, 08 Dec 2020 15:01:24 +0100,
+Janpieter Sollie wrote:
 > 
-> > It's likely the issues with the implicit feedback.
-> >
-> > The latest development tree (either linux-next tree or
-> > topic/usb-audio-refactoring branch of my sound.git tree) contains the
-> > improvements of the implicit feedback mode.
-> >
-> >
-> > Takashi
+> Forwarded from: https://bugzilla.kernel.org/show_bug.cgi?id=208699
 > 
-> Here is the cropped lsusb -v output:
-> I also have dmesg output with debug boot flag enabled.
+> Anybody who knows what this "ACP" actually does? what's its use?
 > 
-> Bus 001 Device 003: ID 0499:1509 Yamaha Corp. Steinberg UR22
-
-OK, so it's a different device than UR22C.
-
-Try to pass the module option quirk_alias=04991509:0499172f to
-snd-usb-audio.  This will make the device compatible with UR22C.
-
-
-Takashi
+> 
+> Kind regards,
+> 
+> 
+> Janpieter Sollie
+> 
