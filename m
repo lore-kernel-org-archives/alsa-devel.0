@@ -2,91 +2,81 @@ Return-Path: <SRS0=8QnY=FM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B38BC4361B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 03:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4842FC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 04:57:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A84F23A75
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 03:55:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A84F23A75
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2109623A61
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 04:57:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2109623A61
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3EDC1704;
-	Tue,  8 Dec 2020 04:55:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3EDC1704
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A5EE16E6;
+	Tue,  8 Dec 2020 05:56:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A5EE16E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607399756;
-	bh=iUB9ZMWvlKhWiL6Nt363IWbp8GfZriWVS7Jl3aqT2Z4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1607403426;
+	bh=1RiFaYT5sszcYT3rzZ7wK33h9vZoHSV5GWfAX84nrpk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vdZeMEXevxhk1Uu93XSbfp/slqznLdeHyy/3aplwChM0kHed9h3L44vrr0zXC9BCF
-	 Psh2iQy/nzJYUF/AGx+WmQG4nbKSl7C3MloQunXU/ikAltnzQtV4SgFeIirgPRiso3
-	 brzYVCJb9tPbEWSONeDndACT85ARrHyyO1Wm4bVE=
+	b=hhzXahzxsVA6ZuBLRgzC4pSibDIbqHOCKj8TDSxUHCAOA/ZXAZo6Rzrb5to7yLTB1
+	 IzEkvcJCNGqWi0nUwUUlfbrmwrDwXB4QafGqnxwNLJqgodBx21yIO4w6ZcmfTmSkN+
+	 yAftwa7LBQTVS3SOnFDHNcui3sYuzyctHGluS8FQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CE56F80164;
-	Tue,  8 Dec 2020 04:55:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05138F80164;
+	Tue,  8 Dec 2020 05:56:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1A4AF8019D; Tue,  8 Dec 2020 04:55:03 +0100 (CET)
-Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
- [216.228.121.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id ADE0EF80130; Tue,  8 Dec 2020 05:56:14 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1AB3F800E1
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 04:54:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1AB3F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29E51F80130
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 05:56:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29E51F80130
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="SqDXS5tE"
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B5fcef90e0004>; Mon, 07 Dec 2020 19:54:54 -0800
-Received: from [10.25.96.159] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 8 Dec
- 2020 03:54:51 +0000
-Subject: Re: Re: [PATCH v6 0/6] Tegra210 audio graph card
-To: Mark Brown <broonie@kernel.org>
-References: <1606413823-19885-1-git-send-email-spujar@nvidia.com>
- <160683107678.35139.14772386553150233276.b4-ty@kernel.org>
- <a3541d83-1f2e-c60f-05f8-4fdd8c8f4175@nvidia.com>
- <20201207123131.GB5694@sirena.org.uk>
-From: Sameer Pujar <spujar@nvidia.com>
-Message-ID: <14d2a6cc-9ca6-f6dd-ae83-6fc75d5361eb@nvidia.com>
-Date: Tue, 8 Dec 2020 09:24:47 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="JsaVxd5i"
+Date: Tue, 8 Dec 2020 10:26:00 +0530
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1607403364;
+ bh=1RiFaYT5sszcYT3rzZ7wK33h9vZoHSV5GWfAX84nrpk=;
+ h=From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JsaVxd5iO6il066W28gWU1l0+3OyFChdHtmkgNKsV/SRsoHYAr+W9iqN3k6/BsuwY
+ MuEGN2cmbukxDF56bNvz94mtXuOCLuzlwe9eE5k25W0xYyE0NYvFKK6EWuodyfiATb
+ Ua0qLLzG7O4GstPtpxslD6vSnZ3AbvXkraNeglweCzSA4IE6v4/fNl1wrwkEHNjuy+
+ SvkiabnoRnfF8/S2usqxo4/3XEcJanoL3UQZyDxYj8OjinAs236rccCpdzsgittcZ0
+ 9XL6SitN1HnpfwQqaqEQ96C9zhNTWIcOdtSt7/LshVRMFE/OFpsmawixJ1bTpIfvWG
+ VAuytt2F626lA==
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/7] soundwire: bus: use sdw_update_no_pm when
+ initializing a device
+Message-ID: <20201208045600.GE8403@vkoul-mobl>
+References: <20201202204645.23891-1-yung-chuan.liao@linux.intel.com>
+ <20201202204645.23891-2-yung-chuan.liao@linux.intel.com>
+ <20201205074508.GQ8403@vkoul-mobl>
+ <1db93c2e-3c87-bc5e-ddeb-56424870b897@linux.intel.com>
+ <20201207044334.GA8403@vkoul-mobl>
+ <668b4d5c-d9eb-0256-ce26-df38e32cc520@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201207123131.GB5694@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1607399694; bh=57K2arrOkrJycwF/NemnQ2nVOm/DzL8o8jMnlSRtwvI=;
- h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
- MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
- Content-Language:X-Originating-IP:X-ClientProxiedBy;
- b=SqDXS5tEn21GY7pYzotCi6w+Aay3/ODcWDWFr9ajMXtspjiBxj905ymiwC6mZrh07
- U0PAJio4KsGhKpaiSAqSJ1A4M6dTRq2Oo02szHGWVkXWfm/pY1V31R/vWic5h+mayT
- 07v/9KAx1px26e3tLqMYdRkHWwbrsnDPHXzLV9HR50dB8hLFOz2cif/2F+HDZpsIyH
- R4WjVNtpBnusnLuIXG9K0GufcDjVph3MrOwy3L950iysmgvu53VtHxH3tQpjpHO5YZ
- pmrc8tGM9N98rtARkuHAa8Dd0f9vec7Gks10E8QYs6HKpc5sRiwnR6zpiwomm4Wdn8
- 3Oc2KaL66t1LA==
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
- thierry.reding@gmail.com, sharadg@nvidia.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <668b4d5c-d9eb-0256-ce26-df38e32cc520@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+ linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+ hui.wang@canonical.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ jank@cadence.com, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,16 +92,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 07-12-20, 09:31, Pierre-Louis Bossart wrote:
+> On 12/6/20 10:43 PM, Vinod Koul wrote:
+> > On 05-12-20, 08:59, Pierre-Louis Bossart wrote:
+> > > Thanks for the review Vinod.
+> > > 
+> > > On 12/5/20 1:45 AM, Vinod Koul wrote:
+> > > > On 03-12-20, 04:46, Bard Liao wrote:
+> > > > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > > > 
+> > > > > When a Slave device is resumed, it may resume the bus and restart the
+> > > > > enumeration. During that process, we absolutely don't want to call
+> > > > > regular read/write routines which will wait for the resume to
+> > > > > complete, otherwise a deadlock occurs.
+> > > > > 
+> > > > > Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+> > > > 
+> > > > Change looks okay, but not sure why this is a fix for adding no pm
+> > > > version?
+> > > 
+> > > when we added the no_pm version, we missed the two cases below where
+> > > sdw_update() was used and that creates a deadlock. To me that's a conceptual
+> > > bug, we didn't fully use the no_pm versions, hence the Fixes tag.
+> > 
+> > Documentation says:
+> > "A Fixes: tag indicates that the patch fixes an issue in a previous commit. It
+> > is used to make it easy to determine where a bug originated, which can help
+> > review a bug fix. This tag also assists the stable kernel team in determining
+> > which stable kernel versions should receive your fix. This is the preferred
+> > method for indicating a bug fixed by the patch. See :ref:`describe_changes`
+> > for more details."
+> > 
+> > I do not this this helps here as this does not help distros etc
+> > I would say this is incremental development which improved a case not
+> > done properly earlier, unless you would like this to be backported.. In
+> > that case it helps folks...
+> 
+> IMHO the changes in the series are absolutely required to have a reliable
+> suspend-resume operation and will need to be back-ported. When I said
+> 'conceptual bug', I didn't mean a hypothetical case, I really meant that a
+> proven race condition and timeouts will occur. That's not good... We will
+> provide the list of this patches to distros that are known to support
+> SoundWire as a 'must apply'.
+> 
+> If you look at the series, we provided Fixes tags for all patches except
+> 'cosmetic' ones which don't fundamentally change the behavior (Patch 3,
+> patch 7) or when the code has not reached Linus' tree (patch 5).
+> 
+> That said, 5.10 was the first release where SoundWire started to be
+> functional so there's no need to apply these patches to earlier versions of
+> the stable tree.
+> 
+> Does this help?
 
->>> [1/3] ASoC: dt-bindings: tegra: Add graph bindings
->>>         (no commit info)
->>> [2/3] ASoC: dt-bindings: tegra: Add json-schema for Tegra audio graph card
->>>         (no commit info)
->>> [3/3] ASoC: tegra: Add audio graph based card driver
->>>         (no commit info)
->> I don't see above patches in linux-next yet. Should I wait some more time
->> for this to appear?
-> No, this was sent by a b4 bug - notice the "no commit info" there, they
-> weren't applied.
+Yes, that helps, thanks
 
-Oh I see! I guess review would be still pending then.
+-- 
+~Vinod
