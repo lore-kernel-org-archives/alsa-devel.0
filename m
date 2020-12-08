@@ -2,67 +2,65 @@ Return-Path: <SRS0=8QnY=FM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC65CC4361B
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 20:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 033A6C4361B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 20:28:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E14623A79
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 20:24:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E14623A79
+	by mail.kernel.org (Postfix) with ESMTPS id B019C23A7B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 20:28:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B019C23A7B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8D3116DD;
-	Tue,  8 Dec 2020 21:23:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8D3116DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 485F316DD;
+	Tue,  8 Dec 2020 21:27:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 485F316DD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607459050;
-	bh=ql61bgTmEc6rZGH0rLsE4jwBXqLouTiTHGsQIxKGCRY=;
+	s=default; t=1607459323;
+	bh=rubGiZzZcXUKEDMusrJUXLreOpxgaG3YB1xC0yvDSOc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CkoTtWMwoLmt2v3hWSoA48nIERocKhrzcNR/NxXTK5Q3izjoI7q+nr0VWtdeSlijt
-	 Fa1CI9e9k3FaKSPc4sC9GdXpK073EtYw5v+vJ0yL+g35wRYxndm/NmBW4Eb0lzS3ss
-	 X0GS+Ju57ggzF1N9xUkkAL7P2c70BZMpGBDi2KyI=
+	b=Ua3v411vUGebjEW44cjm2QwtUzHo0cCOcMjcjGcN9WQVKMkfekpU/hTVLah3cY+Ra
+	 Eps2Lu7VWIEzASwFOzmKkflbDuhIqAHwooDouhx8nxWJOhZXc3HsN1LyJrI1JFG8wt
+	 3hisacLV7WVoQQWWAhVdRfSDxiuprozH3mzW/YSA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D9E0F80164;
-	Tue,  8 Dec 2020 21:23:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFD5BF80164;
+	Tue,  8 Dec 2020 21:27:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66040F8019D; Tue,  8 Dec 2020 21:23:17 +0100 (CET)
+ id 6BDA1F8019D; Tue,  8 Dec 2020 21:27:50 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A296F800E1
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 21:23:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A296F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DB4FF80130
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 21:27:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DB4FF80130
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 96B9FACC4;
- Tue,  8 Dec 2020 20:23:10 +0000 (UTC)
-Date: Tue, 08 Dec 2020 21:23:10 +0100
-Message-ID: <s5ho8j4ujwx.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id CCE1FAC55;
+ Tue,  8 Dec 2020 20:27:45 +0000 (UTC)
+Date: Tue, 08 Dec 2020 21:27:45 +0100
+Message-ID: <s5hlfe8ujpa.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: meschi@posteo.de
-Subject: Re: Steinberg UR22 Crackling and Clicks
-In-Reply-To: <eb1baf202fa4cd74a502661bb0ce5279@posteo.de>
-References: <ce03244f4699ffc9574ecc2dae41a417@posteo.de>
- <s5hft4gy4ar.wl-tiwai@suse.de>
- <61da73624ff3855867b8e65936fc2e1c@posteo.de>
- <s5hft4gwdji.wl-tiwai@suse.de>
- <eb1baf202fa4cd74a502661bb0ce5279@posteo.de>
+To: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: [PATCH v2 1/3] ALSA: hda/ca0132 - Fix AE-5 rear headphone pincfg.
+In-Reply-To: <20201208195223.424753-1-conmanx360@gmail.com>
+References: <20201208195223.424753-1-conmanx360@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, stable@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,49 +76,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 08 Dec 2020 20:41:33 +0100,
-meschi@posteo.de wrote:
+On Tue, 08 Dec 2020 20:52:20 +0100,
+Connor McAdams wrote:
 > 
+> The Windows driver sets the pincfg for the AE-5's rear-headphone to
+> report as a microphone. This causes issues with Pulseaudio mistakenly
+> believing there is no headphone plugged in. In Linux, we should instead
+> set it to be a headphone.
 > 
-> 
-> Am 08.12.2020 15:57 schrieb Takashi Iwai:
-> > On Tue, 08 Dec 2020 15:50:28 +0100,
-> > meschi@posteo.de wrote:
-> >>
-> >> > It's likely the issues with the implicit feedback.
-> >> >
-> >> > The latest development tree (either linux-next tree or
-> >> > topic/usb-audio-refactoring branch of my sound.git tree) contains the
-> >> > improvements of the implicit feedback mode.
-> >> >
-> >> >
-> >> > Takashi
-> >>
-> >> Here is the cropped lsusb -v output:
-> >> I also have dmesg output with debug boot flag enabled.
-> >>
-> >> Bus 001 Device 003: ID 0499:1509 Yamaha Corp. Steinberg UR22
-> >
-> > OK, so it's a different device than UR22C.
-> >
-> > Try to pass the module option quirk_alias=04991509:0499172f to
-> > snd-usb-audio.  This will make the device compatible with UR22C.
-> >
-> >
-> > Takashi
-> 
-> I removed snd_usb_audio and reloaded it with modprobe with the
-> parameters.
-> $ modprobe snd_usb_audio quirk_alias=04991509:0499172f
-> 
-> When I try to play a file now this happens:
-> $ aplay -D plughw:CARD=UR22 ./file.wav
-> Playing WAVE './file.wav' : Signed 16 bit Little Endian, Rate 44100
-> Hz, Stereo
-> aplay: set_params:1407: Unable to install hw params:
+> Fixes: a6b0961b39896 ("ALSA: hda/ca0132 - fix AE-5 pincfg")
+> Cc: <stable@kernel.org>
+> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 
-It's a known side-effect of the implicit feedback mode, and the latest
-patchset I mentioned earlier addresses the issue.
+Thanks, applied all three patches now.
 
 
 Takashi
