@@ -2,68 +2,59 @@ Return-Path: <SRS0=8QnY=FM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF4F3C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 13:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6A1AC4361B
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 13:52:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 716FD23AA9
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 13:31:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 716FD23AA9
+	by mail.kernel.org (Postfix) with ESMTPS id 8480623AA9
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Dec 2020 13:52:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8480623AA9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFC2516EB;
-	Tue,  8 Dec 2020 14:30:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFC2516EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EF0616EC;
+	Tue,  8 Dec 2020 14:52:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EF0616EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607434262;
-	bh=SljcaB0SaYf6LSgvIaMbxc2bAgzxpwEak7IehWNs3mw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=pMj84eW7OVPSd3/KHeV6of6m90hL66UWMod5M3W8gCL+1NvnjUFySQguKYMoIEnBP
-	 BA+VSGYJLhSLP67pHsX17juVpJn8LDqoaCTA4jUV3puIZgQuzvBpADrPwd0ZWTcJE7
-	 ow3+Yz+ZbFHL0W8awT4DRAB5rgDSXthU6jBNnFOU=
+	s=default; t=1607435575;
+	bh=/NZjxJrxrQwf7bNsWIBVqxJnmiGIcXleRZj+izHwU9U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mmvUOm7A9YB/T+9ARSXrp9JREVA/5ntQc9EgHNmNTy0U77Qu+xrSQAyeKL4IAYwpR
+	 hu8O34yj1cs85PIGsyNQnwBQNg4m5LWXSKPci6HtI0YISB1SOe80sYzzyfvtxXeSJF
+	 z3GESgS7MWhEDfZAcyqu3CiKRlprs6gR/b9O0844=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 414E9F80164;
-	Tue,  8 Dec 2020 14:30:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8BCFF80164;
+	Tue,  8 Dec 2020 14:52:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4988DF8019D; Tue,  8 Dec 2020 14:30:09 +0100 (CET)
+ id 5EB76F80130; Tue,  8 Dec 2020 14:52:03 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6ADFF800E1
- for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 14:30:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6ADFF800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 493D7F80130
+ for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2020 14:51:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 493D7F80130
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id BA343AC9A;
- Tue,  8 Dec 2020 13:30:02 +0000 (UTC)
-Date: Tue, 08 Dec 2020 14:30:02 +0100
-Message-ID: <s5hv9dcwhlx.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1C755AC94;
+ Tue,  8 Dec 2020 13:51:56 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Ben Bell <bjb-alsa-devel@deus.net>
-Subject: Re: Behringer WING usb audio - cyclic xruns dependent on
- periods/buffers
-In-Reply-To: <20201205144406.854292C16C@relay2.suse.de>
-References: <20201126180612.E3E0CF80166@alsa1.perex.cz>
- <s5hblfjjguc.wl-tiwai@suse.de>
- <20201128093612.48C0CF80166@alsa1.perex.cz>
- <20201203200633.CC66A2C16F@relay2.suse.de>
- <s5hblfa575t.wl-tiwai@suse.de>
- <20201205144406.854292C16C@relay2.suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: cx2072x: Fix doubly definitions of Playback and Capture
+ streams
+Date: Tue,  8 Dec 2020 14:51:54 +0100
+Message-Id: <20201208135154.9188-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -80,46 +71,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 05 Dec 2020 15:43:56 +0100,
-Ben Bell wrote:
-> 
-> > > Like I said in the initial email, it feels like some sort of clock drift
-> > > problem, where we're managing very slowly to collect more samples than
-> > > we're reading -- to the tune of about 1 extra every few cycles -- and
-> > > nothing on the consumer side is ever managing to compensate for that.
-> > > I'm not even sure how that sort of drift would be possible though. Seems
-> > > surprising.
-> [...]
-> 
-> > At least you can try the latest patch set destined for 5.11, which
-> > should improve the cases for the implicit feedback.
-> 
-> Aha! This actually was the key piece of information I needed. I haven't
-> tried 5.11 or the latest patch set yet, but googling "implicit feedback"
-> and learning abobut it led me to conclude that the Wing needs an entry in
-> the quirks list in set_sync_ep_implicit_fb_quirk to properly enable it:
-> 
-> --- sound/usb/pcm.c.orig        2020-11-22 23:36:08.000000000 +0000
-> +++ sound/usb/pcm.c     2020-12-05 08:40:21.639600074 +0000
-> @@ -340,6 +345,7 @@
->                 ep = 0x81;
->                 ifnum = 3;
->                 goto add_sync_ep_from_ifnum;
-> +       case USB_ID(0x1397, 0x050b): /* Behringer Wing */
->         case USB_ID(0x0763, 0x2080): /* M-Audio FastTrack Ultra */
->         case USB_ID(0x0763, 0x2081):
-> 
-> 
-> A week's worth of debugging and learning yielded a one line patch ;)
+The cx2072x codec driver defines multiple DAIs with the same stream
+name "Playback" and "Capture".  Although the current code works more
+or less as is as the secondary streams are never used, it still leads
+the error message like:
+ debugfs: File 'Playback' in directory 'dapm' already present!
+ debugfs: File 'Capture' in directory 'dapm' already present!
 
-That's a interesting piece of information :)
+Fix it by renaming the secondary streams to unique names.
 
-Could you give lsusb -v output of the device?  With the latest patch
-set, the driver can set up the implicit feedback mode automatically in
-certain cases.  I'm not sure whether Behringer device follows that
-pattern.  If not, we'd need to add the quirk manually.
+Fixes: a497a4363706 ("ASoC: Add support for Conexant CX2072X CODEC")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/codecs/cx2072x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
+index 2ad00ed21bec..2f10991a8bdb 100644
+--- a/sound/soc/codecs/cx2072x.c
++++ b/sound/soc/codecs/cx2072x.c
+@@ -1579,7 +1579,7 @@ static struct snd_soc_dai_driver soc_codec_cx2072x_dai[] = {
+ 		.id	= CX2072X_DAI_DSP,
+ 		.probe = cx2072x_dsp_dai_probe,
+ 		.playback = {
+-			.stream_name = "Playback",
++			.stream_name = "DSP Playback",
+ 			.channels_min = 2,
+ 			.channels_max = 2,
+ 			.rates = CX2072X_RATES_DSP,
+@@ -1591,7 +1591,7 @@ static struct snd_soc_dai_driver soc_codec_cx2072x_dai[] = {
+ 		.name = "cx2072x-aec",
+ 		.id	= 3,
+ 		.capture = {
+-			.stream_name = "Capture",
++			.stream_name = "AEC Capture",
+ 			.channels_min = 2,
+ 			.channels_max = 2,
+ 			.rates = CX2072X_RATES_DSP,
+-- 
+2.26.2
 
-thanks,
-
-Takashi
