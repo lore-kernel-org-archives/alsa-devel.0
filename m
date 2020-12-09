@@ -2,77 +2,59 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38FC4C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:10:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59EF0C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:19:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBB0123B51
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:10:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBB0123B51
+	by mail.kernel.org (Postfix) with ESMTPS id 6A1E523C16
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:19:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A1E523C16
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D6A316B8;
-	Wed,  9 Dec 2020 17:09:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D6A316B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9584716B1;
+	Wed,  9 Dec 2020 17:18:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9584716B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607530219;
-	bh=A9fSdemtapJdXZdu712/Y5S896PX0ghF2Ve1ktvpjKA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tY0ys8CWIVPM7RzLz1BXzosj/UoSNeALeQjVlbC9El52n09R/p+FIoq60wvUg1OWO
-	 WQb0Pak1dTuiQ7aUfFM5svzWVN7qLcMWTdzvTZDUm9lAauf/Kvab3Yk4SibM0mZca0
-	 Dw6tDo/9VOOuyo0pmjGRcINRqo2nMT+LVdoys2zI=
+	s=default; t=1607530775;
+	bh=0BmnoaGAY0PuBn5d+HBN2+hPUcbvMiVDrX/7GWjpJtg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IpwmcV7xtH+hmT57TB52yjz/KKfnusHEkI3OO39vYREtCqFTGzWHyJBOqHHE2cthd
+	 DjJ8kSGdwquEUgtbQZ45k9Skf64stvjWSMJ4/u25K4McA0GBH+K9UwgiZl5VKeXJc3
+	 Z4ju6vTMLZ5U3x3oRry31/rXN+puWzT0acEwvmlw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DD1AF800EF;
-	Wed,  9 Dec 2020 17:09:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A1FBF801D8;
+	Wed,  9 Dec 2020 17:18:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58148F8021D; Wed,  9 Dec 2020 17:09:27 +0100 (CET)
+ id 38A48F8020D; Wed,  9 Dec 2020 17:18:44 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16B01F801D8
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 17:09:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16B01F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7ABD7F800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 17:18:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7ABD7F800EF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5A986AF98;
- Wed,  9 Dec 2020 16:09:22 +0000 (UTC)
-Date: Wed, 09 Dec 2020 17:09:22 +0100
-Message-ID: <s5hmtynrmfh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id E2DE1AD89;
+ Wed,  9 Dec 2020 16:18:37 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Kilian <meschi@posteo.de>
-Subject: Re: Steinberg UR22 Crackling and Clicks
-In-Reply-To: <c7194dab05d5bbff24b589dfc126fd54@posteo.de>
-References: <ce03244f4699ffc9574ecc2dae41a417@posteo.de>
- <s5hft4gy4ar.wl-tiwai@suse.de>
- <61da73624ff3855867b8e65936fc2e1c@posteo.de>
- <s5hft4gwdji.wl-tiwai@suse.de>
- <eb1baf202fa4cd74a502661bb0ce5279@posteo.de>
- <s5ho8j4ujwx.wl-tiwai@suse.de>
- <987d1956f52ba49dc3b587c33e08bfb2@posteo.de>
- <s5heek0ugtk.wl-tiwai@suse.de>
- <4188489e2967b44e57653193cab9d1cb@posteo.de>
- <s5ha6unv52k.wl-tiwai@suse.de>
- <5811c5724e831c38395d3e5b57439b4d@posteo.de>
- <s5heejztcjc.wl-tiwai@suse.de>
- <e516dc005a88536dba67e958c5611180@posteo.de>
- <s5hczzjtbww.wl-tiwai@suse.de>
- <c7194dab05d5bbff24b589dfc126fd54@posteo.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Add implicit fb support for Steinberg UR22
+Date: Wed,  9 Dec 2020 17:18:35 +0100
+Message-Id: <20201209161835.13625-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: meschi@posteo.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,55 +70,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 09 Dec 2020 17:07:53 +0100,
-Kilian wrote:
-> 
-> >> > Then try to pass implicit_fb=1 option to snd-usb-audio module.
-> >> > It's a new option that was added recently.
-> >> >
-> >> >
-> >> > Takashi
-> >>
-> >> Nice, that did the trick. there was a small glitch on first playback
-> >> but I can not reproduce it now. Playback seems glitch-free now. I will
-> >> test it with pulseaudio in the gui if I can. It's not quite easy to
-> >> test, because the system locks up after a while with the new kernel
-> >> and gnome 3. I will also test concurrent playback and recording,
-> >> too. Thank you very much, that was a huge help!
-> >
-> > Good to hear.  If the implicit_fb option works, we can add a static
-> > quirk table entry easily.  Just add IMPLICIT_FB_GENERIC_DEV() with the
-> > device ID to playback_implicit_fb_quirks[] table in
-> > sound/usb/implicit.c.
-> >
-> >
-> > Takashi
-> 
-> Still having problems with the nouveau driver, so i couldn't thest
-> this with pulseaudio. Recording with arecord works parallel to playing
-> back with aplay. so here is my patch for implicit.c
+Steinberg UR22 (with USB ID 0499:1509) requires the implicit feedback
+for the proper playback, otherwise it causes occasional cracks.
+This patch adds the corresponding the quirk table entry with the
+recently added generic implicit fb support.
 
-OK, I'll cook up the proper patch and submit for 5.11 merge.
+Reported-and-tested-by: Kilian <meschi@posteo.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/implicit.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index 386198b36b87..4e911d200562 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -42,6 +42,7 @@ struct snd_usb_implicit_fb_match {
+ /* Implicit feedback quirk table for playback */
+ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
+ 	/* Generic matching */
++	IMPLICIT_FB_GENERIC_DEV(0x0499, 0x1509), /* Steinberg UR22 */
+ 	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2080), /* M-Audio FastTrack Ultra */
+ 	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2081), /* M-Audio FastTrack Ultra */
+ 	IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2030), /* M-Audio Fast Track C400 */
+-- 
+2.26.2
 
-thanks,
-
-Takashi
-
-> diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
-> index 386198b36b87..c729ff634b9d 100644
-> --- a/sound/usb/implicit.c
-> +++ b/sound/usb/implicit.c
-> @@ -46,6 +46,7 @@ static const struct snd_usb_implicit_fb_match
-> playback_implicit_fb_quirks[] = {
->         IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2081), /* M-Audio FastTrack
-> Ultra */
->         IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2030), /* M-Audio Fast Track
-> C400 */
->         IMPLICIT_FB_GENERIC_DEV(0x0763, 0x2031), /* M-Audio Fast Track
-> C600 */
-> +       IMPLICIT_FB_GENERIC_DEV(0x0499, 0x1509), /* Steinberg UR22 */
-> 
->         /* Fixed EP */
->         /* FIXME: check the availability of generic matching */
-> 
