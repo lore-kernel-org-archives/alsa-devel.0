@@ -2,80 +2,77 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BCE0C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4165C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 17:33:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 130C923BEF
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 16:20:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 130C923BEF
+	by mail.kernel.org (Postfix) with ESMTPS id 77CB323CD1
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 17:33:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 77CB323CD1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44FF516BE;
-	Wed,  9 Dec 2020 17:19:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44FF516BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00D07846;
+	Wed,  9 Dec 2020 18:32:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00D07846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607530836;
-	bh=7Rcvqzcfbrg7Ru6wnf5UpICJR9hJsvOFVv32oQ/f2Ww=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1607535219;
+	bh=hlSa4bDwdF9S8mNg0DltvwQvOv/sWNgzGD5/3ea4o30=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UMDWnzOUNYzqNq0nFcccIVX3bhRpeWfzXJPF+SpZxOPzs6eg6m7umdoovex0Do7SU
-	 nzgntxiqQCX/3uT1m/aN4I8fC5PFavAtDh15WbE0HwiYy361U5m+FGtfDAU/s/Azs5
-	 jR/Z5gUegGUwgOh2BAvvaOtaAMnzneentyF9z5iQ=
+	b=eQxcIhG4cwNBPphY7FZ+BB1wx+fpwj49VFW9QQ67ZJdwfk6+CjdwfujtXahAJnAad
+	 YvnRU0qSJWhPYthnPUp0TY+hZ9+U6Mo/AaWGUzguAtjqjJBkDCRkRRu5vEkN4czBoY
+	 mGlZRX/xYZ2UX6Seo5qh6KulzrTKKM7t2Fy0E2Sk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBFD2F8021D;
-	Wed,  9 Dec 2020 17:19:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E76AF801D8;
+	Wed,  9 Dec 2020 18:32:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18A3AF80227; Wed,  9 Dec 2020 17:19:45 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 3CD20F8020D; Wed,  9 Dec 2020 18:32:44 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E4C7F8020D
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 17:19:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E4C7F8020D
-IronPort-SDR: v573gzh1NFRiwQmYB+zPdbMHMWm8rQj2nWpuoRyPdIG4jJVJljOo4s3pIOqVtlZ6+Z1uU4QKHv
- fQNuRk6F/psA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="173342482"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; d="scan'208";a="173342482"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2020 08:19:39 -0800
-IronPort-SDR: SDm9yU9TO2EiBBg8rYxrlq4fOMEDfkUospzUXe5WDALpmWeozu1vG57bJTwJVLLBlzZOQnBNoB
- ZMBsIz6KAOIg==
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; d="scan'208";a="364199753"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.249.141.187])
- ([10.249.141.187])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2020 08:19:34 -0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 908FBF800E1
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 18:32:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 908FBF800E1
+IronPort-SDR: V8l4S0yY7HBWqyijlpisRHcoyYrT3KeDl/DkdnHNHSyHNKtH5nwDL1ZBqn4JDUrrPAmHMNQzBd
+ i7cUylnjoeTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174259861"
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; d="scan'208";a="174259861"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Dec 2020 09:32:35 -0800
+IronPort-SDR: xvi9zq65jAWNgXkolL4v7sU26VHMoD63xFbWahJfUwldfSvNpwK3hIjbuPDEkEayxCZrjt0YvM
+ eA3SxW4daeHg==
+X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; d="scan'208";a="542471514"
+Received: from atrived1-mobl3.amr.corp.intel.com ([10.212.135.156])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Dec 2020 09:32:34 -0800
+Message-ID: <150e8418051c6a783ed0f4f0d6c6dee6bf4ab048.camel@linux.intel.com>
 Subject: Re: [bug report] ASoC: topology: fix endianness issues
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>, Dan Carpenter
+ <dan.carpenter@oracle.com>
+Date: Wed, 09 Dec 2020 09:32:33 -0800
+In-Reply-To: <b98a6125-c1a6-31c1-578b-b5ce7dbf12dc@linux.intel.com>
 References: <X9B0eDcKy+9B6kZl@mwanda>
  <5d0d7992-49fa-21b4-d301-6456a11c13a9@linux.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <b98a6125-c1a6-31c1-578b-b5ce7dbf12dc@linux.intel.com>
-Date: Wed, 9 Dec 2020 17:19:31 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ <b98a6125-c1a6-31c1-578b-b5ce7dbf12dc@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <5d0d7992-49fa-21b4-d301-6456a11c13a9@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,116 +88,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12/9/2020 3:30 PM, Pierre-Louis Bossart wrote:
-> Thanks Dan for the bug report.
+On Wed, 2020-12-09 at 17:19 +0100, Amadeusz Sławiński wrote:
+> On 12/9/2020 3:30 PM, Pierre-Louis Bossart wrote:
+> > Thanks Dan for the bug report.
+> > 
+> > On 12/9/20 12:53 AM, Dan Carpenter wrote:
+> > > [ This bug is way older than your patch but you might know the
+> > > answer.
+> > >    -dan ]
+> > > 
+> > > Hello Pierre-Louis Bossart,
+> > > 
+> > > The patch 5aebe7c7f9c2: "ASoC: topology: fix endianness issues"
+> > > from
+> > > Apr 4, 2019, leads to the following static checker warning:
+> > > 
+> > >     sound/soc/soc-topology.c:903 soc_tplg_denum_create_values()
+> > >     warn: potential pointer math issue ('se-
+> > > >dobj.control.dvalues' is 
+> > > a 64 bit pointer)
+> > > 
+> > > sound/soc/soc-topology.c
+> > >     887  static int soc_tplg_denum_create_values(struct soc_tplg 
+> > > *tplg, struct soc_enum *se,
+> > >     888                                          struct 
+> > > snd_soc_tplg_enum_control *ec)
+> > >     889  {
+> > >     890          int i;
+> > >     891
+> > >     892          if (le32_to_cpu(ec->items) > sizeof(*ec-
+> > > >values))
+> > > 
+> > > The warning is from this line where Smatch starts to think that
+> > > "ec->items" is the number of bytes, but later in the function we
+> > > treat
+> > > it was the number of elements.
+> > > 
+> > > I do think probably this should be if:
+> > > 
+> > >         if (le32_to_cpu(ec->items) > ARRAY_SIZE(ec->values))
+> > >             return -EINVAL;
+> > > 
+> > > The ec->values[] is an array of u32:
+> > > 
+> > >     __le32 values[SND_SOC_TPLG_NUM_TEXTS * 
+> > > SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
+> > > 
+> > > so this code will return -EINVAL for anything larger than 4. 
+> > > Changing
+> > > it to ARRAY_SIZE() would raise the limit to 176.
+> > 
+> > I agree with your analysis, even in the initial code the pattern
+> > was
+> > 
+> > if (ec->items > sizeof(*ec->values))
+> > 
+> > and that's indeed a clear confusion between number of elements and
+> > total 
+> > number of bytes.
+> > 
+> > Ranjani and Amadeusz are more familiar than me with the topology
+> > code, 
+> > let's see if they concur?
+> > 
 > 
-> On 12/9/20 12:53 AM, Dan Carpenter wrote:
->> [ This bug is way older than your patch but you might know the answer.
->>    -dan ]
->>
->> Hello Pierre-Louis Bossart,
->>
->> The patch 5aebe7c7f9c2: "ASoC: topology: fix endianness issues" from
->> Apr 4, 2019, leads to the following static checker warning:
->>
->>     sound/soc/soc-topology.c:903 soc_tplg_denum_create_values()
->>     warn: potential pointer math issue ('se->dobj.control.dvalues' is 
->> a 64 bit pointer)
->>
->> sound/soc/soc-topology.c
->>     887  static int soc_tplg_denum_create_values(struct soc_tplg 
->> *tplg, struct soc_enum *se,
->>     888                                          struct 
->> snd_soc_tplg_enum_control *ec)
->>     889  {
->>     890          int i;
->>     891
->>     892          if (le32_to_cpu(ec->items) > sizeof(*ec->values))
->>
->> The warning is from this line where Smatch starts to think that
->> "ec->items" is the number of bytes, but later in the function we treat
->> it was the number of elements.
->>
->> I do think probably this should be if:
->>
->>         if (le32_to_cpu(ec->items) > ARRAY_SIZE(ec->values))
->>             return -EINVAL;
->>
->> The ec->values[] is an array of u32:
->>
->>     __le32 values[SND_SOC_TPLG_NUM_TEXTS * 
->> SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
->>
->> so this code will return -EINVAL for anything larger than 4.  Changing
->> it to ARRAY_SIZE() would raise the limit to 176.
+> Yes, seems about right, we can also replace devm_kzalloc below with 
+> devm_kcalloc to make it even more clear that we are dealing with
+> array.
 > 
-> I agree with your analysis, even in the initial code the pattern was
 > 
-> if (ec->items > sizeof(*ec->values))
+> On related note looking at the UAPI header... I noticed:
 > 
-> and that's indeed a clear confusion between number of elements and total 
-> number of bytes.
+> struct snd_soc_tplg_enum_control {
+> 	(...)
+> 	char
+> texts[SND_SOC_TPLG_NUM_TEXTS][SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> 	__le32 values[SND_SOC_TPLG_NUM_TEXTS *
+> SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
 > 
-> Ranjani and Amadeusz are more familiar than me with the topology code, 
-> let's see if they concur?
+> which means that there is 16 names and then there is an array of
+> values, 
+> which seems somehow oversized compared to names... not sure why we 
+> multiply it by maximum length of name and then divide...
 > 
+> I guess we could change it to something like:
+> __le32 values[SND_SOC_TPLG_NUM_TEXTS];
+> __le32 reserved[160];
+> 
+> I'm not sure if we want to change it, but I guess it is something to 
+> keep in the back of the head. Quite frankly looking at it bit more
+> I'm 
+> starting to think that those values from topology are not used
+> anywhere 
+> after being assigned in the function from which this investigation 
+> started, simple grep for "dvalues" reports nothing more than 
+> soc-topology.c file, but I might have missed something.
+> 
+> Another thing which I started wondering about, why we even keep
+> those 
+> values in "se->dobj.control", can't we just use "se" directly, as it 
+> seems to have required fields.
+> 
+> I guess I will look at it again tomorrow when I have a bit more
+> fresh 
+> head, but I guess for now ARRAY_SIZE and devm_kcalloc change seems
+> good 
+> to me, as the rest will have less to do with "array" type and more
+> with 
+> general logic of parsing things.
 
-Yes, seems about right, we can also replace devm_kzalloc below with 
-devm_kcalloc to make it even more clear that we are dealing with array.
+Would this be a simpler check than using ARRAY_SIZE?
 
+if (le32_to_cpu(ec->items) > SND_SOC_TPLG_NUM_TEXTS )
+		return -EINVAL;
 
-On related note looking at the UAPI header... I noticed:
-
-struct snd_soc_tplg_enum_control {
-	(...)
-	char texts[SND_SOC_TPLG_NUM_TEXTS][SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-	__le32 values[SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
-
-which means that there is 16 names and then there is an array of values, 
-which seems somehow oversized compared to names... not sure why we 
-multiply it by maximum length of name and then divide...
-
-I guess we could change it to something like:
-__le32 values[SND_SOC_TPLG_NUM_TEXTS];
-__le32 reserved[160];
-
-I'm not sure if we want to change it, but I guess it is something to 
-keep in the back of the head. Quite frankly looking at it bit more I'm 
-starting to think that those values from topology are not used anywhere 
-after being assigned in the function from which this investigation 
-started, simple grep for "dvalues" reports nothing more than 
-soc-topology.c file, but I might have missed something.
-
-Another thing which I started wondering about, why we even keep those 
-values in "se->dobj.control", can't we just use "se" directly, as it 
-seems to have required fields.
-
-I guess I will look at it again tomorrow when I have a bit more fresh 
-head, but I guess for now ARRAY_SIZE and devm_kcalloc change seems good 
-to me, as the rest will have less to do with "array" type and more with 
-general logic of parsing things.
-
-
->>
->>     893                  return -EINVAL;
->>     894
->>     895          se->dobj.control.dvalues = devm_kzalloc(tplg->dev, 
->> le32_to_cpu(ec->items) *
->>     896                                             sizeof(u32),
->>     897                                             GFP_KERNEL);
->>     898          if (!se->dobj.control.dvalues)
->>     899                  return -ENOMEM;
->>     900
->>     901          /* convert from little-endian */
->>     902          for (i = 0; i < le32_to_cpu(ec->items); i++) {
->>     903                  se->dobj.control.dvalues[i] = 
->> le32_to_cpu(ec->values[i]);
->>     904          }
->>     905
->>     906          return 0;
->>     907  }
->>
->> regards,
->> dan carpenter
->>
+Thanks,Ranjani
 
