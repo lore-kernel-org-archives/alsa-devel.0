@@ -2,101 +2,105 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
-	DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D78EC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 06:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CB41C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 06:57:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8BF523B84
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 06:56:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8BF523B84
+	by mail.kernel.org (Postfix) with ESMTPS id 2067B23B7D
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 06:57:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2067B23B7D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0CEA16D9;
-	Wed,  9 Dec 2020 07:54:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0CEA16D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D19616BB;
+	Wed,  9 Dec 2020 07:55:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D19616BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607496963;
-	bh=6hFDllIzdbOlM1juRiS4qM8qXIyIorBMa+dSvJJgaC4=;
+	s=default; t=1607497041;
+	bh=2N1cD0BKR7PdbhdZE3VRt92CGNVVbyqLwCkgD0Ss4u0=;
 	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=PGcgjkY9CR04UKQC5VyYJn6VFcy2aO8wdvqy7rvUuftExLIaspx34zBqbfB30soFm
-	 5z1wpZZ+3hjCf8S4slaqpWfITwj4PZm2I0KVTmHXMdi0SquWGKaX+ZuJX6sOhfMDUr
-	 9fbTqHDb394bM254u/TiUMijLXGSzAoZSE3Qgr7s=
+	b=IgMh+wizLS1bpy8sNTYvHUec2a3G8yhAb1BD+bqFM472gitIJIZcnk7ZDs8B7bfLE
+	 XzQnJjcYOKTLBz00eSlIW05xiQwBZWZhpXZ+o3nycGCRO/CvHF6zl/lU0rnRmLeOcb
+	 bQDIpfMz2L+9MuSYT1+OnmoNHtLhTA4t3GQd88Xc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21EB9F8012C;
-	Wed,  9 Dec 2020 07:54:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A745F800EF;
+	Wed,  9 Dec 2020 07:55:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFEE5F8020D; Wed,  9 Dec 2020 07:54:07 +0100 (CET)
-Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ id 2146EF80227; Wed,  9 Dec 2020 07:55:10 +0100 (CET)
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA9C7F8012C
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 07:54:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA9C7F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADC80F800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 07:55:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADC80F800EF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="nQb2KTk9"
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
- by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96rvPj060038;
- Wed, 9 Dec 2020 06:53:57 GMT
+ header.b="HFBiHGOC"
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+ by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96nU2m109622;
+ Wed, 9 Dec 2020 06:55:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
  h=date : from : to : cc
  : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=py50jVKEV/8HTbxBYMr3xZIe+GME98V7Xxgt1csFjuE=;
- b=nQb2KTk9icTNDQeXjsf/QrElWlqBDfYZiYDf7HyO0CLV+NDImQqsIhaq0BF1HmsaLWx0
- pf8/AEXPvY/PPkqe1/YzamAunzlGT569L2ByacVXZJZW0T4uinTBWmRlTRzcs60EzngG
- 5310w6lahsImAatvFxpEBRnIpdKVdlLAUi7JWLAwBdz2h34vgZyIaYsQUZmR8JVSgrxk
- rxOaK9WFijt63+23N3PGXbiEinLWM575psnIbgBT8xPwFGnx2BmSmmCBlRxK8LgibFx7
- y4MYjlBmlF8dO7Jh+FFJ3B/YqEq7oGMLpl3bv+b4MRnMIQg3n3oxH6pK8VtjMZyP67Hg lw== 
+ bh=zQvQwgEwh6ZSWy3cEv5wNYjxvNMsY8WwOvAKLLggvr0=;
+ b=HFBiHGOCwAXv0ssP3vBTzEj8J83wnUDSOSEhfNqeyrvoIlx+qySPIFULpnZCiE/3Ae9t
+ M0Jho8ncnv7RFn+EtTz05Vs837526+fBBLDbip0RHtVPepfV9WYNfQYR4KwTQYRCv7hP
+ M6vmFTYwDsF8Pdm/8bfQ+fCOHYhc6f1bqCHhmseUhzTBTwdvi+XlGIq5x3NTDEfS4mZr
+ IF7xGVojIW5vSZC5b7tKHecKKEZR8jXRWL4JjpuZd1nMMbOZXoKmLLp0EE9LyraG7W/S
+ fepnfr7lPDLTJG6MexKsMKP4oQD90EU1UkHnPX5Z1drWPpgblqvyfvWrlQ5G/7mWXmc7 ng== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by userp2130.oracle.com with ESMTP id 3581mqxfq4-1
+ by aserp2120.oracle.com with ESMTP id 35825m6j7v-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 09 Dec 2020 06:53:57 +0000
+ Wed, 09 Dec 2020 06:55:03 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96oabv138765;
- Wed, 9 Dec 2020 06:53:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
- by aserp3020.oracle.com with ESMTP id 358m3ytpvf-1
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96oauo138807;
+ Wed, 9 Dec 2020 06:55:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+ by aserp3020.oracle.com with ESMTP id 358m3ytqvt-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 09 Dec 2020 06:53:57 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
- by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B96rpxc024323;
- Wed, 9 Dec 2020 06:53:56 GMT
+ Wed, 09 Dec 2020 06:55:02 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+ by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B96t0kF003683;
+ Wed, 9 Dec 2020 06:55:01 GMT
 Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Tue, 08 Dec 2020 22:53:50 -0800
-Date: Wed, 9 Dec 2020 09:53:44 +0300
+ with ESMTP ; Tue, 08 Dec 2020 22:55:00 -0800
+Date: Wed, 9 Dec 2020 09:54:51 +0300
 From: Dan Carpenter <dan.carpenter@oracle.com>
-To: pierre-louis.bossart@linux.intel.com
-Subject: [bug report] ASoC: topology: fix endianness issues
-Message-ID: <X9B0eDcKy+9B6kZl@mwanda>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Steve Lee <steves.lee@maximintegrated.com>
+Subject: [PATCH] ASoC: max98390: Fix error codes in max98390_dsm_init()
+Message-ID: <X9B0uz4svyNTqeMb@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829
  signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
  malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=3 mlxscore=0 mlxlogscore=825
+ bulkscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2012090046
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829
  signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3
- mlxlogscore=822
- clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090047
-Cc: alsa-devel@alsa-project.org
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
+ adultscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090046
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,56 +116,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-[ This bug is way older than your patch but you might know the answer.
-  -dan ]
+These error paths return success but they should return -EINVAL.
 
-Hello Pierre-Louis Bossart,
+Fixes: 97ed3e509ee6 ("ASoC: max98390: Fix potential crash during param fw loading")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/soc/codecs/max98390.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The patch 5aebe7c7f9c2: "ASoC: topology: fix endianness issues" from
-Apr 4, 2019, leads to the following static checker warning:
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index ff5cc9bbec29..bb736c44e68a 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -784,6 +784,7 @@ static int max98390_dsm_init(struct snd_soc_component *component)
+ 	if (fw->size < MAX98390_DSM_PARAM_MIN_SIZE) {
+ 		dev_err(component->dev,
+ 			"param fw is invalid.\n");
++		ret = -EINVAL;
+ 		goto err_alloc;
+ 	}
+ 	dsm_param = (char *)fw->data;
+@@ -794,6 +795,7 @@ static int max98390_dsm_init(struct snd_soc_component *component)
+ 		fw->size < param_size + MAX98390_DSM_PAYLOAD_OFFSET) {
+ 		dev_err(component->dev,
+ 			"param fw is invalid.\n");
++		ret = -EINVAL;
+ 		goto err_alloc;
+ 	}
+ 	regmap_write(max98390->regmap, MAX98390_R203A_AMP_EN, 0x80);
+-- 
+2.29.2
 
-	sound/soc/soc-topology.c:903 soc_tplg_denum_create_values()
-	warn: potential pointer math issue ('se->dobj.control.dvalues' is a 64 bit pointer)
-
-sound/soc/soc-topology.c
-   887  static int soc_tplg_denum_create_values(struct soc_tplg *tplg, struct soc_enum *se,
-   888                                          struct snd_soc_tplg_enum_control *ec)
-   889  {
-   890          int i;
-   891  
-   892          if (le32_to_cpu(ec->items) > sizeof(*ec->values))
-
-The warning is from this line where Smatch starts to think that
-"ec->items" is the number of bytes, but later in the function we treat
-it was the number of elements.
-
-I do think probably this should be if:
-
-		if (le32_to_cpu(ec->items) > ARRAY_SIZE(ec->values))
-			return -EINVAL;
-
-The ec->values[] is an array of u32:
-
-	__le32 values[SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
-
-so this code will return -EINVAL for anything larger than 4.  Changing
-it to ARRAY_SIZE() would raise the limit to 176.
-
-   893                  return -EINVAL;
-   894  
-   895          se->dobj.control.dvalues = devm_kzalloc(tplg->dev, le32_to_cpu(ec->items) *
-   896                                             sizeof(u32),
-   897                                             GFP_KERNEL);
-   898          if (!se->dobj.control.dvalues)
-   899                  return -ENOMEM;
-   900  
-   901          /* convert from little-endian */
-   902          for (i = 0; i < le32_to_cpu(ec->items); i++) {
-   903                  se->dobj.control.dvalues[i] = le32_to_cpu(ec->values[i]);
-   904          }
-   905  
-   906          return 0;
-   907  }
-
-regards,
-dan carpenter
