@@ -2,110 +2,81 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF54C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 07:05:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2828BC4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 07:23:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E823023B84
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 07:05:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E823023B84
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
+	by mail.kernel.org (Postfix) with ESMTPS id 788F123B79
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 07:23:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 788F123B79
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEA3616DB;
-	Wed,  9 Dec 2020 08:04:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEA3616DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0198116CD;
+	Wed,  9 Dec 2020 08:22:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0198116CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607497499;
-	bh=8x7fYsl7QtSoraYuC+LPmCmrVWWoU98gfsrGFT92eSc=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1607498616;
+	bh=AnHzJPjtBQ5MWsrKAvuFGKy6O/3lWY/FmGU10befUzU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=kQU4H6zUFMdK6XLE1ercUBPpMH4KlJmL0Ji27mjZAn9uQIqOdBbPVGhdrpSQS/mOw
-	 tEgFRItvkyvhg9RHdZPeT6uxEy8zQvFlBBTaR9ygMtK/SSGd3cU+g5rTHVKf1WjSp3
-	 4XvE8FRCe/iswzc6p8nUwTkS92XI0KjhOazaKc/Y=
+	b=JfVQxYt7rr8zjDqDejSZZN7LdhyaSF7j8Yp4xGV0XF7rS84tXCaEhSn54A2NhdwUy
+	 hM442Ge6Sts/ifxjjQDCn/E3dCl+AnYbq08Di9Tx6cw8z/XKkSKKRt9t/t4U0kqZbh
+	 znL5VrCS7LD7Hl7ckdRgqba1DBclefkGYJMcBti0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75FE3F8012C;
-	Wed,  9 Dec 2020 07:56:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D9FEF801D8;
+	Wed,  9 Dec 2020 08:22:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02436F8021D; Wed,  9 Dec 2020 07:56:31 +0100 (CET)
-Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ id 8AEE1F8020D; Wed,  9 Dec 2020 08:22:43 +0100 (CET)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C8FAF8012C
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 07:56:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C8FAF8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E152F8012C
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 08:22:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E152F8012C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
- header.b="zWY0nC5F"
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
- by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96tRj6084325;
- Wed, 9 Dec 2020 06:56:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
- h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=npaGBODiUebhrnP5uVe/n/+Gmor/ZdeOhj8yDGqH2iQ=;
- b=zWY0nC5F+6wqHT6KOF/AX6qzs4ESHQp9NGUK9p61usz0Vu036cJ9TMfhAB2/SahN3Q4l
- +aiqCsRnTTknZi+S5R0w8vYskshuFR3rXJBOpquNIUT3GEySwZTfiI8RjPuDrwDty1p7
- IMKTJp9VxOis8wBYU94yygX7NrgWozn59yPmX7oBkfG5dz5yWZuhJPudvclS41T91xhb
- zGEJlDpH9bqpgfeCbI8T6JC7SUj1xuxAQAKPeoz+iTxxfzHCtQcji+mwH0H5h7Bx0ts4
- 8a62fbxIWXoZlt7ugr+JA9MyBRHAQXlM92zUKCZJ1UxTeEqAFkgCR1knLvjsoBZEYfst yA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
- by aserp2130.oracle.com with ESMTP id 357yqbxn52-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
- Wed, 09 Dec 2020 06:56:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
- by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96oaDZ138696;
- Wed, 9 Dec 2020 06:54:24 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
- by aserp3020.oracle.com with ESMTP id 358m3ytq82-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
- Wed, 09 Dec 2020 06:54:24 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
- by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B96sKIj003448;
- Wed, 9 Dec 2020 06:54:20 GMT
-Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
- with ESMTP ; Tue, 08 Dec 2020 22:54:19 -0800
-Date: Wed, 9 Dec 2020 09:54:09 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: wm_adsp: remove "ctl" from list on error in
- wm_adsp_create_control()
-Message-ID: <X9B0keV/02wrx9Xs@mwanda>
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="dHQv48V+"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B5fd07b360001>; Tue, 08 Dec 2020 23:22:30 -0800
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 9 Dec
+ 2020 07:22:30 +0000
+Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Wed, 9 Dec 2020 07:22:28 +0000
+From: Sameer Pujar <spujar@nvidia.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>
+Subject: [PATCH] ASoC: audio-graph-card: Drop remote-endpoint as required
+ property
+Date: Wed, 9 Dec 2020 12:52:12 +0530
+Message-ID: <1607498532-19518-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
- malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=2 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090046
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829
- signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2
- mlxlogscore=999
- clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090047
-Cc: alsa-devel@alsa-project.org, Adam Brickman <Adam.Brickman@cirrus.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, David Rhodes <david.rhodes@cirrus.com>,
- Mark Brown <broonie@kernel.org>, Luo Meng <luomeng12@huawei.com>,
- James Schulman <james.schulman@cirrus.com>,
- Vlad Karpovich <Vlad.Karpovich@cirrus.com>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1607498550; bh=z5xavFenRoKMKPK0qwGJtQP0fdSh62QlRJgN6qV4K8w=;
+ h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+ Content-Type;
+ b=dHQv48V+NDFdUQCPpJYA3492Zpdrgew/uYiPtGufbR33O8hJJ5R+clelWILhsyJW3
+ yD5u20s1TWNQvqTJ1IT+gO9LsPDxXSRHIJLiodd5HJ5vdoLaB3WLhYzOHqgCMGcxq0
+ 9aajja2pBwhPHfPxN+eqOpfmB0OXMDd266rLpTc8L2FgxqdLFjhkpe8IcYLHEA4JKU
+ BYZQHNhjYxct8+K0/Wou/M3kmWEbrsugJjI5zv5WQBbvT9E8lZvaDZpBnufVYN1P8S
+ R+mUin8zt+P15EfesoP/PFzf2h4ECa7dHZa3RqgAHM2Hro/gsCdim2/R+aQtV7Z8KV
+ m2FC2TEPfXFWw==
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, Rob Herring <robh@kernel.org>,
+ Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,39 +92,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The error handling frees "ctl" but it's still on the "dsp->ctl_list"
-list so that could result in a use after free.  Remove it from the list
-before returning.
+The remote-endpoint may not be available if it is part of some
+pluggable module. One such example would be an audio card, the
+Codec endpoint will not be available until it is plugged in.
+Hence drop 'remote-endpoint' as a required property.
 
-Fixes: 2323736dca72 ("ASoC: wm_adsp: Add basic support for rev 1 firmware file format")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/codecs/wm_adsp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/audio-graph-port.yaml | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index e61d00486c65..dec8716aa8ef 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1519,7 +1519,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
- 	if (!ctl_work) {
- 		ret = -ENOMEM;
--		goto err_ctl_cache;
-+		goto err_list_del;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+index 2005014..766e910 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
++++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+@@ -71,9 +71,6 @@ properties:
+             description: CPU to Codec rate channels.
+             $ref: /schemas/types.yaml#/definitions/uint32
  
- 	ctl_work->dsp = dsp;
-@@ -1529,7 +1529,8 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 
- 	return 0;
- 
--err_ctl_cache:
-+err_list_del:
-+	list_del(&ctl->list);
- 	kfree(ctl->cache);
- err_ctl_subname:
- 	kfree(ctl->subname);
+-        required:
+-          - remote-endpoint
+-
+   ports:
+     description: multi OF-Graph subnode
+     type: object
 -- 
-2.29.2
+2.7.4
 
