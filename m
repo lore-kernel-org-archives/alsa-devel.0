@@ -2,99 +2,71 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16733C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 04:58:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47519C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 05:36:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B612123B23
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 04:58:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B612123B23
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=endlessos.org
+	by mail.kernel.org (Postfix) with ESMTPS id CBD6723B77
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 05:36:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBD6723B77
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EF0916D0;
-	Wed,  9 Dec 2020 05:57:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EF0916D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 470D816B8;
+	Wed,  9 Dec 2020 06:35:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 470D816B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607489920;
-	bh=6LbhrhXd+BL4GBHJz0OjkvBsg5lZkhUqVdBLKBLcxhY=;
+	s=default; t=1607492171;
+	bh=tWKneUxYJkSM1u0rWOK1pKsWdt7p2csPClnmdcplUI0=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=M7GuuW0MxVOGJrFCtCN4StLALo/PsFK+sbSSpEdVJDGcmV3ct+Gf9qVpOgLb6m92b
-	 lMABcbjeBHqrN5sbbv47P9x29SX1Zw5Lu0vj4MaQer6zxK9M743mcwj5sRW0HD6YKB
-	 PeckWPOL6LDsrszcwFi112U1SHq/M9P0gF163axw=
+	b=uB4zgqUbCTXS8qMgSJfiUJGEob78yGcOpZsCICKkrPBjFMohTJqIhsw7iiOTNQWjz
+	 PJIB6jto7QPAaXbrYzZ7PQPUhKrtjy1jF3qkyvDng95O49t6hSHzgIxjxSPVYjo9Bv
+	 CgZXmOcIzNy84ls/0PJBsrEcr9o8LudfnMVBCfBo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6287CF801D8;
-	Wed,  9 Dec 2020 05:57:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9711FF801D8;
+	Wed,  9 Dec 2020 06:35:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7CE4F8020D; Wed,  9 Dec 2020 05:57:47 +0100 (CET)
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com
- [IPv6:2607:f8b0:4864:20::541])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7F970F80217; Wed,  9 Dec 2020 06:35:18 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9378F800E1
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 05:57:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9378F800E1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org
- header.b="dn95pMcd"
-Received: by mail-pg1-x541.google.com with SMTP id e2so437346pgi.5
- for <alsa-devel@alsa-project.org>; Tue, 08 Dec 2020 20:57:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=endlessos.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=95+j/heHWe1WaIW2wuU06rCfMJ7fLe/PVC+mrAa/tbA=;
- b=dn95pMcdeUnm+YT4tp8+Y2wFkXWa4mb4yIE+j4JqPFZv0xSXN+VZAhyIqRBTLTtZq9
- yCGI3qb6HXfKNBvUVDEXdUPlK3lQUNaFkHOF30JBV6uFO+jbkkVOLP8KPW2I6wYiQPkR
- OKFsXlyNbL8s44Xcv4XkG4tf9KBirJfTEu1SQoPpVEGoLYLzzXF0emSyy1ONZPIyHbHj
- gaYNGXWoPzcKKBpo/RzWauBZAt2mj3X1q9UuVEc58nUTW/zOB96YJZ5+ScVNgb62GNRk
- RZpw5fZODkQqZio0GhVmqecZBUBDSpthofgKGrkao98rsdpsz/hAI0+JFBC93vveSwLA
- HPvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=95+j/heHWe1WaIW2wuU06rCfMJ7fLe/PVC+mrAa/tbA=;
- b=lL0ggzY59UKtBeNVeA7FwsccrSDrMkEpM+GNHyPY9xbbaOxcUScf3b2nA2RhBomCFy
- VfKmf8S6S2Nps4Leh/Yvx6D4BNb5RqWo5DAEM2ZfyD6JU5TLIaAsfgk6Pot/9WMwHd8y
- S1TsoYFP72ucZ/Fu5vmg89Cl7Wi8czQ7Qionpmh6Fe4NG5E3EX5sitfsNSNyYMw42GvP
- XmUQE71baZ7b70fws6yd/QKFOXctAEFD0Kh9w3tvqR8I7RofBgkGiq5NVXt6mqShm2wI
- n3MW1h0C4On2JKz4W0y0/GCS5FUXUCjCF58QIPhjZwRDA9ekZuz1FYmK1KFdC+00WznV
- mP6g==
-X-Gm-Message-State: AOAM531yXOqYBi5r/VkytT2NMAMvFrNDcnuhdx+HMLnv4/EPL0R6cH/f
- pfgPSPR9ToFgbaZN+zS1ZDHtnQ==
-X-Google-Smtp-Source: ABdhPJxg65ZgHF/vA6oW5WocO5sz3Kfy3kVIIlBzbILfcXSFpS1uQBomSZDQw7WhHPdbmUCWr1U8mw==
-X-Received: by 2002:a62:5205:0:b029:19e:a0f:2c81 with SMTP id
- g5-20020a6252050000b029019e0a0f2c81mr678023pfb.50.1607489856851; 
- Tue, 08 Dec 2020 20:57:36 -0800 (PST)
-Received: from localhost.localdomain
- (2001-b011-3814-7903-632e-aa12-9563-de14.dynamic-ip6.hinet.net.
- [2001:b011:3814:7903:632e:aa12:9563:de14])
- by smtp.googlemail.com with ESMTPSA id v9sm551295pff.102.2020.12.08.20.57.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Dec 2020 20:57:36 -0800 (PST)
-From: Chris Chiu <chiu@endlessos.org>
-To: tiwai@suse.com,
-	kailang@realtek.com
-Subject: [PATCH] ALSA: hda/realtek - Enable headset mic of ASUS Q524UQK with
- ALC255
-Date: Wed,  9 Dec 2020 12:57:30 +0800
-Message-Id: <20201209045730.9972-1-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Chris Chiu <chiu@endlessos.org>,
- linux-kernel@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
- linux@endlessos.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15F42F800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 06:35:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15F42F800EF
+IronPort-SDR: Gg1j4tRY71gwnR/mvcMp7T9IgXl+RkhGDBiPFgchlUnj0ZWRPyigJuUo4MrY4x111lTae4eBvs
+ 3/JCekxaENyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="153258974"
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; d="scan'208";a="153258974"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2020 21:35:09 -0800
+IronPort-SDR: 9BujQTugYI4F6TxRMgLypp+yg5AquOmJmtBNYa8+psoQM10SUE7R/27xy3kOR51Ps0LlZ5beao
+ dZhZd2We/tUg==
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; d="scan'208";a="363989360"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Dec 2020 21:35:06 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH v2 0/9] soundwire/regmap: use _no_pm routines
+Date: Wed,  9 Dec 2020 13:34:50 +0800
+Message-Id: <20201209053459.5515-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, jank@cadence.com, sanyog.r.kale@intel.com,
+ rander.wang@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,27 +82,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The ASUS laptop Q524UQK with ALC255 codec can't detect the headset
-microphone until ALC255_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
+When a Slave device is resumed, it may resume the bus and restart the
+enumeration. And Slave drivers will wait for initialization_complete
+complete in their resume function, however initialization_complete will
+complete after sdw_update_slave_status function is finished and codec
+driver usually call some IO functions in the update_status callback
+function.
+It will become a deadlock if we use regular read/write routines during
+the resuming process.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+This series touches both soundwire and regmap trees.
+commit fb5103f9d6ce ("regmap/SoundWire: sdw: add support for SoundWire 1.2 MBQ")
+is needed for soundwire tree to complie.
+On the other hands,
+commit 6e06a85556f9 ("soundwire: bus: add comments to explain interrupt loop filter")
+to
+commit 47b8520997a8 ("soundwire: bus: only clear valid DPN interrupts")
+are needed for regmap tree.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8616c5624870..2d4bb9019cb8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7976,6 +7976,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-+	SND_PCI_QUIRK(0x1043, 0x125e, "ASUS Q524UQK", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
+v2:
+ - Separate commits according to maintainer's comments.
+
+Bard Liao (4):
+  soundwire: export sdw_write/read_no_pm functions
+  regmap: sdw: use _no_pm functions in regmap_read/write
+  regmap: sdw: use no_pm routines for SoundWire 1.2 MBQ
+  regmap: sdw-mbq: use MODULE_LICENSE("GPL")
+
+Pierre-Louis Bossart (5):
+  soundwire: bus: use sdw_update_no_pm when initializing a device
+  soundwire: bus: use sdw_write_no_pm when setting the bus scale
+    registers
+  soundwire: bus: use no_pm IO routines for all interrupt handling
+  soundwire: bus: fix confusion on device used by pm_runtime
+  soundwire: bus: clarify dev_err/dbg device references
+
+ drivers/base/regmap/regmap-sdw-mbq.c |  10 +-
+ drivers/base/regmap/regmap-sdw.c     |   4 +-
+ drivers/soundwire/bus.c              | 136 +++++++++++++++------------
+ include/linux/soundwire/sdw.h        |   2 +
+ 4 files changed, 85 insertions(+), 67 deletions(-)
+
 -- 
-2.20.1
+2.17.1
 
