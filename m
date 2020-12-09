@@ -2,87 +2,62 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F5F2C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72842C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:28:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D707239D1
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:17:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D707239D1
+	by mail.kernel.org (Postfix) with ESMTPS id 722C023B99
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:28:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 722C023B99
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAEFE16B5;
-	Wed,  9 Dec 2020 21:16:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAEFE16B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9614A1684;
+	Wed,  9 Dec 2020 21:27:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9614A1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607545045;
-	bh=7nmEM/p3sP2B+Q91cmncNJOr+oCAWzPBNHiCvQFhK9Y=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1607545701;
+	bh=Q+a+k5QONs291J9Te2Yc32V72UMcSPgwYlqjC1sGBBs=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jAkTFrCk2Rkunf5cAVoTlv8z1guBmisA/Zn3ovotVDVwOXA/Hk7N7gfSRmQsYCZqQ
-	 E24M/CAAMZ5iBsxXC4srCxR3RaSrVWVMlrzwY2Hm8Ec1vlHx3q8fqyU9v8crGQGFUW
-	 SYq2f4E6QAb9lrq2BpfxI+shPs5+7TpMKbexakdM=
+	b=dBvDCRMtWWjUCqcQ7kgm85cAoCt9AAXKbot5nyHCCNFKk9QMo5hTGfwBRcW4Kptf3
+	 p36JyMk+fF6rpP4PGLFa6s8BB7OUoV1CJBr35zEpi8bORspL8WMsFJarDziifKmWZZ
+	 w4lz/k2SE5g2jg5M09RPFj5RrbKOjYjIT78qF0p8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DB56F804BD;
-	Wed,  9 Dec 2020 21:15:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EACBAF801D8;
+	Wed,  9 Dec 2020 21:27:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DC6BF804C2; Wed,  9 Dec 2020 21:15:54 +0100 (CET)
-Received: from mail-ot1-f67.google.com (mail-ot1-f67.google.com
- [209.85.210.67])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AC4CCF8020D; Wed,  9 Dec 2020 21:27:29 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70C80F8027C
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 21:15:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70C80F8027C
-Received: by mail-ot1-f67.google.com with SMTP id q25so2651313otn.10
- for <alsa-devel@alsa-project.org>; Wed, 09 Dec 2020 12:15:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=8uhElzcobLmvJ4CJ8rrknqlI/sKGj1GFlEu7d86pG6Y=;
- b=JxCS8Fs3JSW5T2EU+W2ooCDePj3zfUK7lckFnGeclQj2kLde7+dwLxNGma9ysKmnml
- zraW9Akz4fkV9zrQOMjRzN6cSS4qi7/cDbBiBSYpz+c2WaA42wtPsMXL1xlN/DsRlYul
- KCwvxJKotNfmyhRzuoZT9hMij7N9ag/I+xJsc/54h03cYLk6Lw+NHiZpPeL5FxcDsQrX
- 5Vc6oTNJqtbgNJDqqVLZ038zmpM8gOx8wzCg1XRGWQp56Y5ae9Natxr+uHjvdVgjGvNx
- 7sC8g740SBBmbH1uflYEJW+tdYOsBXHnMbC7AwGLwE/F99cKj88n593rjuz721P730Th
- yXJA==
-X-Gm-Message-State: AOAM530MpyS4/rW+IFT/MoJlfB3goA61ZHN5u7e1dBmIljndOWbW0H4a
- BKX1fRRyqUX2C0ASThA/IQ==
-X-Google-Smtp-Source: ABdhPJybi0Z6Obt2cspPMGRt7yCnDYiVdU/vAftLj6qWIRBhe1uxzVYP6NeDiR9hYoTckA/bE7t1pQ==
-X-Received: by 2002:a9d:2946:: with SMTP id d64mr3240127otb.214.1607544949663; 
- Wed, 09 Dec 2020 12:15:49 -0800 (PST)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id a24sm529252oop.40.2020.12.09.12.15.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Dec 2020 12:15:48 -0800 (PST)
-Received: (nullmailer pid 867803 invoked by uid 1000);
- Wed, 09 Dec 2020 20:15:47 -0000
-Date: Wed, 9 Dec 2020 14:15:47 -0600
-From: Rob Herring <robh@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [RESEND PATCH 2/2] dt-bindings: tegra: Add missing HDA properties
-Message-ID: <20201209201547.GA867682@robh.at.kernel.org>
-References: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
- <1607006202-4078-3-git-send-email-spujar@nvidia.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 393FCF800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 21:27:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 393FCF800EF
+From: Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org;
+ dkim=permerror (bad message/signature format)
+To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+In-Reply-To: <20201209153102.3028310-1-kai.vehmanen@linux.intel.com>
+References: <20201209153102.3028310-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: Intel: common: add ACPI matching tables for
+ Alder Lake
+Message-Id: <160754563666.43974.2415817601197910601.b4-ty@kernel.org>
+Date: Wed, 09 Dec 2020 20:27:16 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607006202-4078-3-git-send-email-spujar@nvidia.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
- linux-tegra@vger.kernel.org, broonie@kernel.org, thierry.reding@gmail.com,
- sharadg@nvidia.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>, lgirdwood@gmail.com,
+ daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,14 +73,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 03 Dec 2020 20:06:42 +0530, Sameer Pujar wrote:
-> Document the missing properties which are currently required for
-> Tegra186/Tegra194 DT files.
-> 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> ---
->  .../devicetree/bindings/sound/nvidia,tegra30-hda.yaml      | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
+On Wed, 9 Dec 2020 17:31:01 +0200, Kai Vehmanen wrote:
+> Initial support for ADL w/ RT711
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: Intel: common: add ACPI matching tables for Alder Lake
+      commit: 4c8a4cab331d53fad39f3c5823428d8cea92d994
+[2/2] ASoC: SOF: Intel: add SoundWire support for ADL-S
+      commit: ac6b7bd33ad66fef99579e87bca4af985e3a7715
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
