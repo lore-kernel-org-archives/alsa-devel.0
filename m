@@ -2,78 +2,61 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 76D89C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:15:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C093FC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:24:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 62BE623AAC
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:15:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 62BE623AAC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 690DF23AAC
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:24:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 690DF23AAC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E11416B4;
-	Wed,  9 Dec 2020 16:14:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E11416B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id B539C16B4;
+	Wed,  9 Dec 2020 16:23:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B539C16B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607526921;
-	bh=bgs0cnwDX4fh0MtcMFM3rlVqpuNBlzhOX6iLXU7bKx4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1607527475;
+	bh=3cy1Nczy/C+7Pj77WwXnOg5+UD8tDnm7fczCDa3YfyM=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G8tNtODQ1ExKDOiZp7bkQF6SNo5jjevGgWLdEuF54cEvlh8uGOB83ONEtG61gZIxj
-	 3HwLGMxGzIJfYVCums7scAN+OpGxaV2PtixItQf4EeCMA1aIGyG+wInpRPRs9aViIM
-	 pps29MxPUDO3edIzXzEhLdymuw30r48h5WrupDcg=
+	b=PJphiLBGXsBrTv6JnShkfm5H+Bd3qY7XoAsqhAn6a82yEI6R0019cZtMA/DTVvPRe
+	 6Se0qXn4MT8LY81c/fxOPLiqOoNU+btP3EoJomMtRxFaMuzI7URMNqdOucUEbk4/7K
+	 3wR5cGVp9CdTjAM9YNIgVq/m66llQlBId0e0yYCM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B49B0F801D8;
-	Wed,  9 Dec 2020 16:14:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31803F800EF;
+	Wed,  9 Dec 2020 16:23:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46F27F8020D; Wed,  9 Dec 2020 16:14:29 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2BD0FF8020D; Wed,  9 Dec 2020 16:23:44 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3178AF800EF
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 16:14:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3178AF800EF
-IronPort-SDR: 2gQ8W7D5AdorSafq1QAIPbzv83UKc//Ou9h+1ZIkZsWb1Mri/6W5LpLpdxhUqZBQ2Es+2wOtmQ
- TSqSXX0h+eLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="170581642"
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; d="scan'208";a="170581642"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2020 07:14:23 -0800
-IronPort-SDR: ekkyn1leLVdzqegcL2ktRQjEv14N8bEWo+w5WNyXue7cxhCXKV7cAhyXQM3xmh9x4CxhuKw6JD
- TzE8/t2MxYSA==
-X-IronPort-AV: E=Sophos;i="5.78,405,1599548400"; d="scan'208";a="408090897"
-Received: from ljclardy-mobl1.amr.corp.intel.com (HELO [10.212.205.179])
- ([10.212.205.179])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2020 07:14:20 -0800
-Subject: Re: [bug report] ASoC: topology: fix endianness issues
-To: Dan Carpenter <dan.carpenter@oracle.com>
-References: <X9B0eDcKy+9B6kZl@mwanda>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5d0d7992-49fa-21b4-d301-6456a11c13a9@linux.intel.com>
-Date: Wed, 9 Dec 2020 08:30:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26EB4F800E1
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 16:23:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26EB4F800E1
+From: Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org;
+ dkim=permerror (bad message/signature format)
+To: tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com,
+ Chris Chiu <chiu@endlessos.org>
+In-Reply-To: <20201208060414.27646-1-chiu@endlessos.org>
+References: <20201208060414.27646-1-chiu@endlessos.org>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium 140
+Message-Id: <160752715602.48520.184118527808464071.b4-ty@kernel.org>
+Date: Wed, 09 Dec 2020 15:19:16 +0000
 MIME-Version: 1.0
-In-Reply-To: <X9B0eDcKy+9B6kZl@mwanda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux@endlessos.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,71 +72,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Dan for the bug report.
+On Tue, 8 Dec 2020 14:04:14 +0800, Chris Chiu wrote:
+> Tha ARCHOS Cesium 140 tablet has problem with the jack-sensing,
+> thus the heaset functions are not working.
+> 
+> Add quirk for this model to select the correct input map, jack-detect
+> options and channel map to enable jack sensing and headset microphone.
+> This device uses IN1 for its internal MIC and JD2 for jack-detect.
 
-On 12/9/20 12:53 AM, Dan Carpenter wrote:
-> [ This bug is way older than your patch but you might know the answer.
->    -dan ]
-> 
-> Hello Pierre-Louis Bossart,
-> 
-> The patch 5aebe7c7f9c2: "ASoC: topology: fix endianness issues" from
-> Apr 4, 2019, leads to the following static checker warning:
-> 
-> 	sound/soc/soc-topology.c:903 soc_tplg_denum_create_values()
-> 	warn: potential pointer math issue ('se->dobj.control.dvalues' is a 64 bit pointer)
-> 
-> sound/soc/soc-topology.c
->     887  static int soc_tplg_denum_create_values(struct soc_tplg *tplg, struct soc_enum *se,
->     888                                          struct snd_soc_tplg_enum_control *ec)
->     889  {
->     890          int i;
->     891
->     892          if (le32_to_cpu(ec->items) > sizeof(*ec->values))
-> 
-> The warning is from this line where Smatch starts to think that
-> "ec->items" is the number of bytes, but later in the function we treat
-> it was the number of elements.
-> 
-> I do think probably this should be if:
-> 
-> 		if (le32_to_cpu(ec->items) > ARRAY_SIZE(ec->values))
-> 			return -EINVAL;
-> 
-> The ec->values[] is an array of u32:
-> 
-> 	__le32 values[SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
-> 
-> so this code will return -EINVAL for anything larger than 4.  Changing
-> it to ARRAY_SIZE() would raise the limit to 176.
+Applied to
 
-I agree with your analysis, even in the initial code the pattern was
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-if (ec->items > sizeof(*ec->values))
+Thanks!
 
-and that's indeed a clear confusion between number of elements and total 
-number of bytes.
+[1/1] ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium 140
+      commit: 1bea2256aa96a2d7b1b576eb74e29d79edc9bea8
 
-Ranjani and Amadeusz are more familiar than me with the topology code, 
-let's see if they concur?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> 
->     893                  return -EINVAL;
->     894
->     895          se->dobj.control.dvalues = devm_kzalloc(tplg->dev, le32_to_cpu(ec->items) *
->     896                                             sizeof(u32),
->     897                                             GFP_KERNEL);
->     898          if (!se->dobj.control.dvalues)
->     899                  return -ENOMEM;
->     900
->     901          /* convert from little-endian */
->     902          for (i = 0; i < le32_to_cpu(ec->items); i++) {
->     903                  se->dobj.control.dvalues[i] = le32_to_cpu(ec->values[i]);
->     904          }
->     905
->     906          return 0;
->     907  }
-> 
-> regards,
-> dan carpenter
-> 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
