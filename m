@@ -2,64 +2,58 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32460C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0CF0C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:47:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 12E4F225AA
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:33:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12E4F225AA
+	by mail.kernel.org (Postfix) with ESMTPS id 6AB8C2332A
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:46:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6AB8C2332A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C201816D9;
-	Wed,  9 Dec 2020 09:33:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C201816D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0449B16DB;
+	Wed,  9 Dec 2020 09:46:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0449B16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607502837;
-	bh=pzUO6WK/Q8gTbqPk4U0NmUk0GT++Mh3ahwMifZcu9UU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eW5k1ghRAXU/erQ174XZ97xoObHMbBwh/EZSbD8HD1Do6s6nq5sTWXmfCT0sLt6QZ
-	 HxQHEwQsQr7uBax2qy+DUr5HSBV1Xu/KksQnWR4vZLvmnVJOXv1FHejvHh1pWKUOok
-	 gMX+1S1/EQBARnteOctHMcvwy40P0vi6USUK4rY8=
+	s=default; t=1607503617;
+	bh=GRlnmC9fbJCui693EATxe3YLhYLY+NFc3KZ9dKMrTQo=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=IJkhYd6rOkAPpycNk0a2CZHDLO7pUob96T/dFy5vb6nKcqhK7FSoFcfFZWrtZNxo2
+	 BeddMWWcY0y6axNvz18Jr4q4AGjR0rzWvCR6qyWgA0ee6h7eofFSIILv98fMCRc6Eg
+	 aamvo/21sJuFPfpQkTI095P6sN/n69NkLb6xciVM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42897F800E1;
-	Wed,  9 Dec 2020 09:33:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBDEAF801D8;
+	Wed,  9 Dec 2020 09:46:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CF18F8020D; Wed,  9 Dec 2020 09:33:05 +0100 (CET)
+ id 6BEC2F8021D; Wed,  9 Dec 2020 09:46:02 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5FAAF800EF
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 09:33:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5FAAF800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E6ACF800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 09:45:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E6ACF800EF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0507BAC94;
- Wed,  9 Dec 2020 08:33:01 +0000 (UTC)
-Date: Wed, 09 Dec 2020 09:33:00 +0100
-Message-ID: <s5hzh2ntm4j.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 813E6AB63
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 08:45:54 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 3/5] ALSA: hda/ca0132 - Add 8051 exram helper functions.
-In-Reply-To: <20201208212546.428392-4-conmanx360@gmail.com>
-References: <20201208212546.428392-1-conmanx360@gmail.com>
- <20201208212546.428392-4-conmanx360@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/2] ALSA: usb-audio: Fix potential out-of-bounds shift
+Date: Wed,  9 Dec 2020 09:45:51 +0100
+Message-Id: <20201209084552.17109-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,24 +69,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 08 Dec 2020 22:25:43 +0100,
-Connor McAdams wrote:
-> 
-> +static void chipio_8051_write_exram(struct hda_codec *codec,
-> +		unsigned int addr, unsigned int data, bool use_mutex)
-> +{
-> +	struct ca0132_spec *spec = codec->spec;
-> +	unsigned int tmp;
-> +
-> +	if (use_mutex)
-> +		mutex_lock(&spec->chipio_mutex);
+syzbot spotted a potential out-of-bounds shift in the USB-audio format
+parser that receives the arbitrary shift value from the USB
+descriptor.
 
-This can be better to split to two functions: a core helper function
-without mutex and a helper function to take the mutex lock and call
-the former function.  Applying the lock conditionally is often
-error-prone.
+Add a range check for avoiding the undefined behavior.
 
+Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/format.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-thanks,
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 93459ba228d3..9ebc5d202c87 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -39,6 +39,8 @@ static u64 parse_audio_format_i_type(struct snd_usb_audio *chip,
+ 	case UAC_VERSION_1:
+ 	default: {
+ 		struct uac_format_type_i_discrete_descriptor *fmt = _fmt;
++		if (format >= 64)
++			return 0; /* invalid format */
+ 		sample_width = fmt->bBitResolution;
+ 		sample_bytes = fmt->bSubframeSize;
+ 		format = 1ULL << format;
+-- 
+2.26.2
 
-Takashi
