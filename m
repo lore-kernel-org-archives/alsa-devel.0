@@ -3,61 +3,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C136C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:25:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 960BBC4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:26:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D720823AA8
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:25:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D720823AA8
+	by mail.kernel.org (Postfix) with ESMTPS id BBF3F23AA8
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 15:26:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBF3F23AA8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7021D16C6;
-	Wed,  9 Dec 2020 16:24:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7021D16C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1FCF16E0;
+	Wed,  9 Dec 2020 16:25:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1FCF16E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607527533;
-	bh=gLz/k3NohftuSAuPIMwRKAgMGdgZNgtDOo7NTS7FYbk=;
+	s=default; t=1607527571;
+	bh=KYdXwWw3dxkNfwNm8SUTdxo4g7gcXSW1AOKvcTo1J08=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=frhWkFOcDdtus2TKiV2YLgC8InU2SHhE1MZPx7dL9q//MKL0r6PzIvZlK51YksfC4
-	 OA7mCFnik0Tz9qkvG4Zf6kyY2BZY2wMhDRhthJsDIcUo0srAGZgGVuNVumnwNXEQLx
-	 OAXbrzQPfmEb9UqtmpqLceHBidBz5Oe39/tyqo5k=
+	b=iMpYEVYoYgq6wXHArRZQwuEIFxetYu4ZFHCtBm6ssqcltQrl5owHMANfsFenVPv+R
+	 lfwFWNEJx52yaiQQPK7+S8NS1cwy2cpUfCpoeZQ4J2csGPg5GjxPUHU7ABWlzUhH7x
+	 B2ZJv9MF4tbQ1SAlcf2EXY0+kLD9i39qk9jaijqM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2498F804C2;
-	Wed,  9 Dec 2020 16:23:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69CE0F8027C;
+	Wed,  9 Dec 2020 16:23:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68E54F8027C; Wed,  9 Dec 2020 16:23:55 +0100 (CET)
+ id BFDD5F804BD; Wed,  9 Dec 2020 16:23:56 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18B34F80227
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 16:23:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18B34F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6069DF801D8
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 16:23:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6069DF801D8
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: "derek.fang@realtek.com" <derek.fang@realtek.com>, lgirdwood@gmail.com
-In-Reply-To: <20201209091308.2823-1-derek.fang@realtek.com>
-References: <20201209091308.2823-1-derek.fang@realtek.com>
-Subject: Re: [PATCH] ASoC: rt1015: check the return value of regmap_read
- during i2c probe
-Message-Id: <160752715603.48520.4266480368563583200.b4-ty@kernel.org>
+To: Paul Cercueil <paul@crapouillou.net>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20201207125338.119397-1-paul@crapouillou.net>
+References: <20201207125338.119397-1-paul@crapouillou.net>
+Subject: Re: [PATCH 1/5] ASoC: codecs/jz47xx: Use regmap_{set,clear}_bits
+Message-Id: <160752715602.48520.8596440910035760463.b4-ty@kernel.org>
 Date: Wed, 09 Dec 2020 15:19:16 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: alsa-devel@alsa-project.org, od@zcrc.me, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,9 +71,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 9 Dec 2020 17:13:08 +0800, derek.fang@realtek.com wrote:
-> In some projects, the device ID register is not read correctly.
-> This patch helps to verify the issue is caused from i2c host or client.
+On Mon, 7 Dec 2020 12:53:33 +0000, Paul Cercueil wrote:
+> Use regmap_{set,clear}_bits instead of regmap_update_bits, when
+> applicable.
 
 Applied to
 
@@ -83,8 +81,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt1015: check the return value of regmap_read during i2c probe
-      commit: 397e089bda327a350c1cb29133cb66795339a5d9
+[1/5] ASoC: codecs/jz47xx: Use regmap_{set,clear}_bits
+      commit: ad13c835442cdb2a964588fd03327f51dbcd4dfa
+[2/5] ASoC: codecs/jz4770: Reset interrupt flags in bias PREPARE
+      commit: a346c77836183f6e3e054c5da022e0fde2773683
+[3/5] ASoC: codecs/jz4770: Adjust timeouts for cap-coupled outputs
+      commit: 6b4da5374b10a48be18df26288125746f1858507
+[4/5] ASoC: codecs/jz4770: Don't change cap-couple setting in HP PMU/PMD
+      commit: 4f293dfea9f6d23a972be0e38556f5b0c02c2d4e
+[5/5] ASoC: codecs/jz4770: Add DAPM widget to set HP out to cap-less mode
+      commit: e648e3f1165354f04a4deed1f41152a287b68d59
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
