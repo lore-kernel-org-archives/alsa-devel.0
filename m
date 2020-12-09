@@ -2,60 +2,75 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9322AC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3ADF1C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:26:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D0ED23406
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 13:31:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D0ED23406
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hadess.net
+	by mail.kernel.org (Postfix) with ESMTPS id A012F207B1
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 14:26:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A012F207B1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F301C16A9;
-	Wed,  9 Dec 2020 14:30:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F301C16A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5435716B8;
+	Wed,  9 Dec 2020 15:25:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5435716B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607520675;
-	bh=keruqDNzKLE1NUasPPRja8/DWST294fUrT0PGBtb7Qg=;
-	h=Subject:From:To:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=MVrlgHlOW5M1VEzFmnDKuDcAzwCp2dQ8OXEx+nzTm4klVdUt6YCGzpHRVNZdsnwiu
-	 WV9WXtDBQIloKY9LRFmwxDwzC7kseNRKo3rJqz/JM/rCPQMTWjuj/3Vs8j9zl0zCxC
-	 EyJXXvBsqPxNDn9VwWrXf1GiGQmtlWkILaB6zFnc=
+	s=default; t=1607524007;
+	bh=tWZfwuHpYnAzdWIvVyQMm6pm27Sb6JmeEuYNRE4b0r4=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JEeR3FwweWJANP3V53nAhP1QrGuam7iMbcv0YLWwRa1roibmwwj3lIGnAfxZ4U5RP
+	 FOHbNW8289ZGaw91fvt7mhb5eiXaSJaAc9/xp0sDGUvkVZxVpoT2FIxOw+XBZsIRPn
+	 FthvpTXAsh1lduAibYbG3uM49jFRWW3nHcUjGEk4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58505F801D8;
-	Wed,  9 Dec 2020 14:30:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBED8F801D8;
+	Wed,  9 Dec 2020 15:25:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB5A0F8020D; Wed,  9 Dec 2020 14:30:21 +0100 (CET)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 3AD81F8020D; Wed,  9 Dec 2020 15:25:55 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E974F8012C
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 14:30:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E974F8012C
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.0.28] (lns-bzn-39-82-255-60-242.adsl.proxad.net
- [82.255.60.242]) (Authenticated sender: hadess@hadess.net)
- by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 0F4001C0003
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 13:30:08 +0000 (UTC)
-Message-ID: <e1e944b48ae44106a57c74de19dd74d6193495fe.camel@hadess.net>
-Subject: USB Wireless device support
-From: Bastien Nocera <hadess@hadess.net>
-To: alsa-devel@alsa-project.org
-Date: Wed, 09 Dec 2020 14:30:08 +0100
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1 (3.38.1-1.fc33) 
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1440F801D8
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 15:25:46 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 55416A003F;
+ Wed,  9 Dec 2020 15:25:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 55416A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1607523945; bh=kZltQRPibv+9K1DdZsEKYdbPhvdjwqUtT/9m5dO92AU=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=jAE0axALkzjVT14hoOPIghTn7kJ/ejKrqPTB9Gr2T3f5FP/PG3kMN3s8/vyl0A9Ur
+ cssGM6dPAw/Mbt3+IYNQ7marXW5o4dqY8Y65G1UiJPzTzTkoweNXVelOMyhdRT86aY
+ nBaxR4bAGmBQqjjASkURXUhjYAOz64caKOnJG5uY=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed,  9 Dec 2020 15:25:42 +0100 (CET)
+Subject: Re: [RFC][PATCH 0/2] design a way to change audio Jack state by
+ software
+To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
+ tiwai@suse.de
+References: <20201209124344.219158-1-hui.wang@canonical.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <575811fc-cb64-c7d4-bf6b-5044949a326c@perex.cz>
+Date: Wed, 9 Dec 2020 15:25:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <20201209124344.219158-1-hui.wang@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -72,29 +87,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
+Dne 09. 12. 20 v 13:43 Hui Wang napsal(a):
+> After we change sth in the userspace audio stack like alsa-ucm or
+> pulseaudio, we want to perform remote audio auto test to verify if the
+> change introduce the regression or not, some of the tests are about
+> the defaut_sink/default_source or active_port switching, this needs
+> the audio jack state to be changed to trigger the userspace's audio
+> device switching.
+> 
+> So far, there is no software ways to change the audio jack state, this
+> block the auto test.
 
-I've recently bought a SteelSeries Arctis 1 wireless headset:
-https://steelseries.com/gaming-headsets/arctis-1-wireless-xbox
-and wanted to write a kernel driver to export a few features of the
-device, and needed some help getting started.
+I'm not convinced to pollute the kernel space with this code. You can use
+LD_PRELOAD and simulate this via a shared library or the alsa-lib may be extended.
 
-The receiver shows up as a audio class USB device, with extra features
-on a separate USB interface.[1]
+Also, the first patch can be omitted if you just create another
+snd_jack_report() function for the user API and put the common code to the
+static function in jack.c.
 
-The extra features that can be accessed are:
-- Presence detection. I wanted to use that so PulseAudio or Pipewire
-could make routing decisions based on whether the headset is available,
-or probably better, implementing a "jack detection" emulation for the
-main audio interface?
-- A slider to change the sidetone volume
-- Export the battery level
+					Jaroslav
 
-The latter is the only one I know how to do, so I'd be happy with any
-pointers or examples about the first two items.
-
-Cheers
-
-[1]: User-space code that accesses those features:
-https://github.com/Sapd/HeadsetControl/blob/master/src/devices/steelseries_arctis_1_xbox.c
-
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
