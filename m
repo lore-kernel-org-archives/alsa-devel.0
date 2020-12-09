@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72842C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:28:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 221BEC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:29:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 722C023B99
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:28:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 722C023B99
+	by mail.kernel.org (Postfix) with ESMTPS id 38F8E23CD1
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 20:29:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38F8E23CD1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9614A1684;
-	Wed,  9 Dec 2020 21:27:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9614A1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9733E16AF;
+	Wed,  9 Dec 2020 21:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9733E16AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607545701;
-	bh=Q+a+k5QONs291J9Te2Yc32V72UMcSPgwYlqjC1sGBBs=;
+	s=default; t=1607545752;
+	bh=Hz/U9OwNdWSEiVDYR62Rb8VxzhJaAhBx8ONDhitLFaQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dBvDCRMtWWjUCqcQ7kgm85cAoCt9AAXKbot5nyHCCNFKk9QMo5hTGfwBRcW4Kptf3
-	 p36JyMk+fF6rpP4PGLFa6s8BB7OUoV1CJBr35zEpi8bORspL8WMsFJarDziifKmWZZ
-	 w4lz/k2SE5g2jg5M09RPFj5RrbKOjYjIT78qF0p8=
+	b=afL6CZci+yubf8a3FSAP6Zx/nLvune7xUdPPZenY9mmvRdYLx8HFyWBo6QyJ+38Dg
+	 6QhSSI3wby7npUjUgZJCVpxftLzqIvghG065o69Sic4nGkqYxt+eA0VHCAKms4SX7U
+	 VEqLxfJ195f0uii0E6QC6WrnHDpo1jFhF8Uh173U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EACBAF801D8;
-	Wed,  9 Dec 2020 21:27:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0D68F8021D;
+	Wed,  9 Dec 2020 21:27:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC4CCF8020D; Wed,  9 Dec 2020 21:27:29 +0100 (CET)
+ id 21A26F80240; Wed,  9 Dec 2020 21:27:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 393FCF800EF
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 21:27:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 393FCF800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BB6DF8020D
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 21:27:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BB6DF8020D
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20201209153102.3028310-1-kai.vehmanen@linux.intel.com>
-References: <20201209153102.3028310-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: common: add ACPI matching tables for
- Alder Lake
-Message-Id: <160754563666.43974.2415817601197910601.b4-ty@kernel.org>
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+In-Reply-To: <20201205001508.346439-1-alexandre.belloni@bootlin.com>
+References: <20201205001508.346439-1-alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 1/2] dt-bindings: add simple-audio-mux binding
+Message-Id: <160754563667.43974.695690086980158511.b4-ty@kernel.org>
 Date: Wed, 09 Dec 2020 20:27:16 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>, lgirdwood@gmail.com,
- daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,8 +72,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 9 Dec 2020 17:31:01 +0200, Kai Vehmanen wrote:
-> Initial support for ADL w/ RT711
+On Sat, 5 Dec 2020 01:15:07 +0100, Alexandre Belloni wrote:
+> Add devicetree documentation for simple audio multiplexers
 
 Applied to
 
@@ -82,10 +81,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: Intel: common: add ACPI matching tables for Alder Lake
-      commit: 4c8a4cab331d53fad39f3c5823428d8cea92d994
-[2/2] ASoC: SOF: Intel: add SoundWire support for ADL-S
-      commit: ac6b7bd33ad66fef99579e87bca4af985e3a7715
+[1/2] dt-bindings: add simple-audio-mux binding
+      commit: f17a7db22b8ff1688f30bb66aeeaa8cc088e5230
+[2/2] ASoC: add simple-mux
+      commit: 342fbb7578d1741ff646d7b08e14e8753267b9fa
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
