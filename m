@@ -2,67 +2,64 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04CD5C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:29:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32460C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:34:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 36712233FA
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:29:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36712233FA
+	by mail.kernel.org (Postfix) with ESMTPS id 12E4F225AA
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 08:33:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 12E4F225AA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9574916D1;
-	Wed,  9 Dec 2020 09:28:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9574916D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C201816D9;
+	Wed,  9 Dec 2020 09:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C201816D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607502549;
-	bh=eSgBc64OV5//Lhm0tJIE1r2DpkgxWoh2NXSuPK0r+3M=;
+	s=default; t=1607502837;
+	bh=pzUO6WK/Q8gTbqPk4U0NmUk0GT++Mh3ahwMifZcu9UU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tlj+gebxi05AOFMesZ+VVM5dFbCkuPsc5cuxNw6/yxPot4v55MLHS3PSWKfPwZ5g8
-	 UhFrDlvNozoIQxcw/9gNmVtpRU8OueDW6yW6QEAO74CRg4lo98iu2Cq+lLWSIkU71P
-	 oI7PuVyO4rZgQPtiodMpWUOslUNxrHlOfcwzZW0I=
+	b=eW5k1ghRAXU/erQ174XZ97xoObHMbBwh/EZSbD8HD1Do6s6nq5sTWXmfCT0sLt6QZ
+	 HxQHEwQsQr7uBax2qy+DUr5HSBV1Xu/KksQnWR4vZLvmnVJOXv1FHejvHh1pWKUOok
+	 gMX+1S1/EQBARnteOctHMcvwy40P0vi6USUK4rY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B976AF801D8;
-	Wed,  9 Dec 2020 09:28:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42897F800E1;
+	Wed,  9 Dec 2020 09:33:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7261CF8020D; Wed,  9 Dec 2020 09:28:12 +0100 (CET)
+ id 0CF18F8020D; Wed,  9 Dec 2020 09:33:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7241BF800EF
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 09:28:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7241BF800EF
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5FAAF800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 09:33:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5FAAF800EF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9DB9BACBA;
- Wed,  9 Dec 2020 08:27:59 +0000 (UTC)
-Date: Wed, 09 Dec 2020 09:27:59 +0100
-Message-ID: <s5h1rfzv0xc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 0507BAC94;
+ Wed,  9 Dec 2020 08:33:01 +0000 (UTC)
+Date: Wed, 09 Dec 2020 09:33:00 +0100
+Message-ID: <s5hzh2ntm4j.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Chris Chiu <chiu@endlessos.org>
-Subject: Re: [PATCH] ALSA: hda/realtek - Enable headset mic of ASUS Q524UQK
- with ALC255
-In-Reply-To: <20201209045730.9972-1-chiu@endlessos.org>
-References: <20201209045730.9972-1-chiu@endlessos.org>
+To: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: [PATCH 3/5] ALSA: hda/ca0132 - Add 8051 exram helper functions.
+In-Reply-To: <20201208212546.428392-4-conmanx360@gmail.com>
+References: <20201208212546.428392-1-conmanx360@gmail.com>
+ <20201208212546.428392-4-conmanx360@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
- linux-kernel@vger.kernel.org, Jian-Hong Pan <jhp@endlessos.org>,
- tiwai@suse.com, linux@endlessos.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,16 +75,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 09 Dec 2020 05:57:30 +0100,
-Chris Chiu wrote:
+On Tue, 08 Dec 2020 22:25:43 +0100,
+Connor McAdams wrote:
 > 
-> The ASUS laptop Q524UQK with ALC255 codec can't detect the headset
-> microphone until ALC255_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
-> 
-> Signed-off-by: Chris Chiu <chiu@endlessos.org>
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+> +static void chipio_8051_write_exram(struct hda_codec *codec,
+> +		unsigned int addr, unsigned int data, bool use_mutex)
+> +{
+> +	struct ca0132_spec *spec = codec->spec;
+> +	unsigned int tmp;
+> +
+> +	if (use_mutex)
+> +		mutex_lock(&spec->chipio_mutex);
 
-Applied now.  Thanks.
+This can be better to split to two functions: a core helper function
+without mutex and a helper function to take the mutex lock and call
+the former function.  Applying the lock conditionally is often
+error-prone.
 
+
+thanks,
 
 Takashi
