@@ -2,72 +2,110 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 877D2C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 06:59:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AF54C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 07:05:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BFB723B85
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 06:59:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BFB723B85
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id E823023B84
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 07:05:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E823023B84
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=oracle.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8505016D9;
-	Wed,  9 Dec 2020 07:58:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8505016D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEA3616DB;
+	Wed,  9 Dec 2020 08:04:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEA3616DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607497166;
-	bh=G519REMpbaSc+PoJMmfEtm9vtSmpomPR7QxTv+qfUTE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RNsTVNft7MrHysuSyfWiSo9pMV8N7KM4ZNGP7ZmNYW14mkPTPoTI/NcXjhyvzRdrP
-	 fDWR4sodV2pbr6SR2dQQZHcVyl0g3O8ZDgoDwEjuY24GsP4xgBTAwBYEMoCt9eMXpq
-	 Ljj/Vzr0gjE468ufrnb0Kh5AbI0IIOgOdZD6cFxI=
+	s=default; t=1607497499;
+	bh=8x7fYsl7QtSoraYuC+LPmCmrVWWoU98gfsrGFT92eSc=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kQU4H6zUFMdK6XLE1ercUBPpMH4KlJmL0Ji27mjZAn9uQIqOdBbPVGhdrpSQS/mOw
+	 tEgFRItvkyvhg9RHdZPeT6uxEy8zQvFlBBTaR9ygMtK/SSGd3cU+g5rTHVKf1WjSp3
+	 4XvE8FRCe/iswzc6p8nUwTkS92XI0KjhOazaKc/Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F116DF80217;
-	Wed,  9 Dec 2020 07:58:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75FE3F8012C;
+	Wed,  9 Dec 2020 07:56:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDBADF8026A; Wed,  9 Dec 2020 07:58:34 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 02436F8021D; Wed,  9 Dec 2020 07:56:31 +0100 (CET)
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3F05F80240
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 07:58:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3F05F80240
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6FE96ACE1;
- Wed,  9 Dec 2020 06:58:27 +0000 (UTC)
-Date: Wed, 09 Dec 2020 07:58:27 +0100
-Message-ID: <s5ha6unv52k.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: meschi@posteo.de
-Subject: Re: Steinberg UR22 Crackling and Clicks
-In-Reply-To: <4188489e2967b44e57653193cab9d1cb@posteo.de>
-References: <ce03244f4699ffc9574ecc2dae41a417@posteo.de>
- <s5hft4gy4ar.wl-tiwai@suse.de>
- <61da73624ff3855867b8e65936fc2e1c@posteo.de>
- <s5hft4gwdji.wl-tiwai@suse.de>
- <eb1baf202fa4cd74a502661bb0ce5279@posteo.de>
- <s5ho8j4ujwx.wl-tiwai@suse.de>
- <987d1956f52ba49dc3b587c33e08bfb2@posteo.de>
- <s5heek0ugtk.wl-tiwai@suse.de>
- <4188489e2967b44e57653193cab9d1cb@posteo.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C8FAF8012C
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 07:56:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C8FAF8012C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com
+ header.b="zWY0nC5F"
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+ by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96tRj6084325;
+ Wed, 9 Dec 2020 06:56:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=npaGBODiUebhrnP5uVe/n/+Gmor/ZdeOhj8yDGqH2iQ=;
+ b=zWY0nC5F+6wqHT6KOF/AX6qzs4ESHQp9NGUK9p61usz0Vu036cJ9TMfhAB2/SahN3Q4l
+ +aiqCsRnTTknZi+S5R0w8vYskshuFR3rXJBOpquNIUT3GEySwZTfiI8RjPuDrwDty1p7
+ IMKTJp9VxOis8wBYU94yygX7NrgWozn59yPmX7oBkfG5dz5yWZuhJPudvclS41T91xhb
+ zGEJlDpH9bqpgfeCbI8T6JC7SUj1xuxAQAKPeoz+iTxxfzHCtQcji+mwH0H5h7Bx0ts4
+ 8a62fbxIWXoZlt7ugr+JA9MyBRHAQXlM92zUKCZJ1UxTeEqAFkgCR1knLvjsoBZEYfst yA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+ by aserp2130.oracle.com with ESMTP id 357yqbxn52-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Wed, 09 Dec 2020 06:56:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+ by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B96oaDZ138696;
+ Wed, 9 Dec 2020 06:54:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+ by aserp3020.oracle.com with ESMTP id 358m3ytq82-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 09 Dec 2020 06:54:24 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+ by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B96sKIj003448;
+ Wed, 9 Dec 2020 06:54:20 GMT
+Received: from mwanda (/102.36.221.92) by default (Oracle Beehive Gateway v4.0)
+ with ESMTP ; Tue, 08 Dec 2020 22:54:19 -0800
+Date: Wed, 9 Dec 2020 09:54:09 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH] ASoC: wm_adsp: remove "ctl" from list on error in
+ wm_adsp_create_control()
+Message-ID: <X9B0keV/02wrx9Xs@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0
+ malwarescore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=2 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012090046
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829
+ signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2
+ mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090047
+Cc: alsa-devel@alsa-project.org, Adam Brickman <Adam.Brickman@cirrus.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, David Rhodes <david.rhodes@cirrus.com>,
+ Mark Brown <broonie@kernel.org>, Luo Meng <luomeng12@huawei.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ Vlad Karpovich <Vlad.Karpovich@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,125 +121,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 08 Dec 2020 23:14:41 +0100,
-meschi@posteo.de wrote:
-> 
-> >> >> >> > It's likely the issues with the implicit feedback.
-> >> >> >> >
-> >> >> >> > The latest development tree (either linux-next tree or
-> >> >> >> > topic/usb-audio-refactoring branch of my sound.git tree) contains the
-> >> >> >> > improvements of the implicit feedback mode.
-> >> >> >> >
-> >> >> >> >
-> >> >> >> > Takashi
-> >> >> When I try to play a file now this happens:
-> >> >> $ aplay -D plughw:CARD=UR22 ./file.wav
-> >> >> Playing WAVE './file.wav' : Signed 16 bit Little Endian, Rate 44100
-> >> >> Hz, Stereo
-> >> >> aplay: set_params:1407: Unable to install hw params:
-> >> >
-> >> > It's a known side-effect of the implicit feedback mode, and the latest
-> >> > patchset I mentioned earlier addresses the issue.
-> >> >
-> >> >
-> >> > Takashi
-> >>
-> >> I'm already running the kernel built from the linux-next tree...
-> >> I built next-20201208 from
-> >> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >> Is there another patch set that I'm missing?
-> >
-> > Hm, strange.
-> >
-> > Please check the contents of /proc/asound/card*/stream* file.  With
-> > the latest patches and the implicit feedback mode, you should see the
-> > lines like "Sync Endpoint: 0x...." and "Implicit Feedback Mode: yes".
-> >
-> >
-> > Takashi
-> 
-> Yes, I see this:
-> 
-> Yamaha Corporation Steinberg UR22 at usb-0000:00:1a.7-3, high speed :
-> USB Audio
-> 
-> Playback:
->   Status: Stop
->   Interface 1
->     Altset 1
->     Format: S24_3LE
->     Channels: 2
->     Endpoint: 0x07 (7 OUT) (ASYNC)
->     Rates: 44100, 48000
->     Data packet interval: 125 us
->     Bits: 24
->     Channel map: FL FR
->     Sync Endpoint: 0x81 (1 IN)
->     Sync EP Interface: 2
->     Sync EP Altset: 1
->     Implicit Feedback Mode: Yes
->   Interface 1
->     Altset 2
->     Format: S24_3LE
->     Channels: 2
->     Endpoint: 0x07 (7 OUT) (ASYNC)
->     Rates: 88200, 96000
->     Data packet interval: 125 us
->     Bits: 24
->     Channel map: FL FR
->     Sync Endpoint: 0x81 (1 IN)
->     Sync EP Interface: 2
->     Sync EP Altset: 1
->     Implicit Feedback Mode: Yes
->   Interface 1
->     Altset 3
->     Format: S24_3LE
->     Channels: 2
->     Endpoint: 0x07 (7 OUT) (ASYNC)
->     Rates: 176400, 192000
->     Data packet interval: 125 us
->     Bits: 24
->     Channel map: FL FR
->     Sync Endpoint: 0x81 (1 IN)
->     Sync EP Interface: 2
->     Sync EP Altset: 1
->     Implicit Feedback Mode: Yes
-> 
-> Capture:
->   Status: Stop
->   Interface 2
->     Altset 1
->     Format: S24_3LE
->     Channels: 2
->     Endpoint: 0x86 (6 IN) (ASYNC)
->     Rates: 44100, 48000
->     Data packet interval: 125 us
->     Bits: 24
->     Channel map: FL FR
->   Interface 2
->     Altset 2
->     Format: S24_3LE
->     Channels: 2
->     Endpoint: 0x86 (6 IN) (ASYNC)
->     Rates: 88200, 96000
->     Data packet interval: 125 us
->     Bits: 24
->     Channel map: FL FR
->   Interface 2
->     Altset 3
->     Format: S24_3LE
->     Channels: 2
->     Endpoint: 0x86 (6 IN) (ASYNC)
->     Rates: 176400, 192000
->     Data packet interval: 125 us
->     Bits: 24
->     Channel map: FL FR
+The error handling frees "ctl" but it's still on the "dsp->ctl_list"
+list so that could result in a use after free.  Remove it from the list
+before returning.
 
-OK, then it means that your device isn't compatible with UR22C.
-It has a different endpoint assignment.
+Fixes: 2323736dca72 ("ASoC: wm_adsp: Add basic support for rev 1 firmware file format")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ sound/soc/codecs/wm_adsp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-What happens if you run this kernel without quirk_alias option?
-Is the implicit feedback still set?
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index e61d00486c65..dec8716aa8ef 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1519,7 +1519,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
+ 	if (!ctl_work) {
+ 		ret = -ENOMEM;
+-		goto err_ctl_cache;
++		goto err_list_del;
+ 	}
+ 
+ 	ctl_work->dsp = dsp;
+@@ -1529,7 +1529,8 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 
+ 	return 0;
+ 
+-err_ctl_cache:
++err_list_del:
++	list_del(&ctl->list);
+ 	kfree(ctl->cache);
+ err_ctl_subname:
+ 	kfree(ctl->subname);
+-- 
+2.29.2
 
-
-Takashi
