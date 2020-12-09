@@ -2,59 +2,63 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25DD6C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:45:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25A83C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:45:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3972B23BCD
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:45:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3972B23BCD
+	by mail.kernel.org (Postfix) with ESMTPS id 865D923BC7
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:45:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 865D923BC7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E17516B1;
-	Wed,  9 Dec 2020 13:44:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E17516B1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29B8916CD;
+	Wed,  9 Dec 2020 13:45:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29B8916CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607517900;
-	bh=dQxUHy60joV0nvWIcQWxf0WsJLWTquAXr+1S+1Y0qi8=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Sx+TeyYnXjBmetrtYpx4atjyap9Sz835GCAkonqHgmKegfwQnNfttLl9RW8TAT7UI
-	 vkGJ5qrd3es+utmMXd0XMVXsTovVW41p7cFLrVGu5UWEnBnNhCTVVD9hg/F9472wlv
-	 PNwqFoJliDfrUzKE+vTeNHSxUKWxFCyxIZ3y1Rpo=
+	s=default; t=1607517951;
+	bh=lO4T1ylt2xckGiPvcpJHVHugakz6edg4G95mq6Yy3Zk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qqJUAZMuNVK35anvDcjZnneoQAW4ixMyGcukZ2FqI6+eUEKMEK9kG/6vqlzWiKZBQ
+	 W84gMxb4NLrLI58Vaddx00fcUNEYh13Cvuz5ZVuWi/LvHxT9sz94uMdquEwxk0/AV1
+	 miJylmXkUN8D4jWUhoz7wXsOzcqwnpzllTD9Hx0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50600F80217;
-	Wed,  9 Dec 2020 13:44:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F49EF800EF;
+	Wed,  9 Dec 2020 13:44:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27774F80217; Wed,  9 Dec 2020 13:44:07 +0100 (CET)
+ id B45CEF8027C; Wed,  9 Dec 2020 13:44:11 +0100 (CET)
 Received: from youngberry.canonical.com (youngberry.canonical.com
  [91.189.89.112])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77656F8012C
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 13:43:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77656F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B93AF800EF
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 13:44:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B93AF800EF
 Received: from [123.114.42.209] (helo=localhost.localdomain)
  by youngberry.canonical.com with esmtpsa
  (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
  (envelope-from <hui.wang@canonical.com>)
- id 1kmyp3-0003Vb-Uw; Wed, 09 Dec 2020 12:43:58 +0000
+ id 1kmyp9-0003Vb-Sw; Wed, 09 Dec 2020 12:44:04 +0000
 From: Hui Wang <hui.wang@canonical.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.de
-Subject: [RFC][PATCH 0/2] design a way to change audio Jack state by software
-Date: Wed,  9 Dec 2020 20:43:42 +0800
-Message-Id: <20201209124344.219158-1-hui.wang@canonical.com>
+Subject: [RFC][PATCH 2/2] alsa: jack: adding support for software jack in or
+ out injection
+Date: Wed,  9 Dec 2020 20:43:44 +0800
+Message-Id: <20201209124344.219158-3-hui.wang@canonical.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201209124344.219158-1-hui.wang@canonical.com>
+References: <20201209124344.219158-1-hui.wang@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -72,109 +76,223 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After we change sth in the userspace audio stack like alsa-ucm or
-pulseaudio, we want to perform remote audio auto test to verify if the
-change introduce the regression or not, some of the tests are about
-the defaut_sink/default_source or active_port switching, this needs
-the audio jack state to be changed to trigger the userspace's audio
-device switching.
+We want to perform remote audio auto test, need the audio jack to
+change from plugout to plugin or vice versa by software ways.
 
-So far, there is no software ways to change the audio jack state, this
-block the auto test.
+Here the design is if the sound card has at least one Jack, the kernel
+will build a sysfs interface of jack injection for this sound card, it
+will create 2 files: jackin_inject and sw_inject_enable
 
-My design is adding a sysfs interface for each sound card if the card
-has audio jack, then users could echo different values to sysfs to
-change the jack state (Phantom jack is not controlled by injection).
-And once the users enable the jack injection via sysfs, this jack's
-state will not be controlled by hw events anymore until users disable
-the jack injection.
-
-Of course, this could not 100% simulate the plugin or plugout triggered
-by hw events, with the hw triggered plugin or plugout, the audio driver
-will set codec or does sth else, so the software injection is just
-changing the jack state and notify the userspace, it is just for
-testing userspace part.
-
-Here is an example to change jack state via sysfs:
-
-After booting up:
-/* cd to the jack injection folder for sound card0 in the sysfs */
-$cd /sys/devices/pci0000:00/0000:00:1f.3/skl_hda_dsp_generic/sound/card0/jack
-
-/* check file nodes in this folder */
-$ls
-jackin_inject  sw_inject_enable
-
-/* check all jack's software injection enable status, all disabled now */
-$ cat sw_inject_enable 
+users need to cat sw_inject_enable first to check all jacks and their
+injection enable status, like below (0 means disabled):
 Jack: Mic  0
 Jack: Headphone  0
 Jack: HDMI/DP,pcm=3  0
 Jack: HDMI/DP,pcm=4  0
 Jack: HDMI/DP,pcm=5  0
 
-/* enable software injection for Jack Headphone */
-$ sudo sh -c "echo Headphone 1 > sw_inject_enable"
+Suppose users want to enable jack injection for Headphone, they need
+to run $sudo sh -c 'echo Headphone 1 > sw_inject_enable', then users
+could change the Headphone Jack state through jackin_inject and this
+Jack's state will not changed by non-injection ways anymore.
 
-/* check all jack's software injection enable status again, now Headphone is enabled */
-$ cat sw_inject_enable 
-Jack: Mic  0
-Jack: Headphone  1
-Jack: HDMI/DP,pcm=3  0
-Jack: HDMI/DP,pcm=4  0
-Jack: HDMI/DP,pcm=5  0
+Users could run $sudo sh -c 'echo Headphone 1 > jackin_inject' to
+trigger the Headphone jack to plugin or echo Headphone 0 to trigger
+it to plugout.
 
-/* trigger plugin to Jack Headphone */
-$sudo sh -c "echo Headphone 1 > jackin_inject"
+If users finish their test, they could run
+$sudo sh -c 'echo Headphone 0 > sw_inject_enable' to disable injection
+and let non-injection ways control this Jack.
 
-/* check if Jack Headphone is plugged in */
-$ sudo amixer contents | grep "Headphone Jack" -3
-numid=30,iface=CARD,name='HDMI/DP,pcm=5 Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
-numid=17,iface=CARD,name='Headphone Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=on
-numid=14,iface=CARD,name='Mic Jack'
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ include/sound/core.h |   1 +
+ include/sound/jack.h |   1 +
+ sound/core/jack.c    | 126 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 128 insertions(+)
 
-/* trigger plugout to Jack Headphone */
-$ sudo sh -c "echo Headphone 0 > jackin_inject"
-
-/* check if Jack Headphone is plugged out */
-$ sudo amixer contents | grep "Headphone Jack" -3
-numid=30,iface=CARD,name='HDMI/DP,pcm=5 Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
-numid=17,iface=CARD,name='Headphone Jack'
-  ; type=BOOLEAN,access=r-------,values=1
-  : values=off
-numid=14,iface=CARD,name='Mic Jack'
-
-/* disable Jack Headphone software injection, this will return the control to non-injection ways */
-$ sudo sh -c "echo Headphone 0 > sw_inject_enable"
-
-/* check if the Jack Headphone software injection is disabled, it is disabled now */
-$ cat sw_inject_enable 
-Jack: Mic  0
-Jack: Headphone  0
-Jack: HDMI/DP,pcm=3  0
-Jack: HDMI/DP,pcm=4  0
-Jack: HDMI/DP,pcm=5  0
-
-Hui Wang (2):
-  alsa: jack: expand snd_jack_report parameter for jack sw_inject
-  alsa: jack: adding support for software jack in or out injection
-
- include/sound/core.h            |   1 +
- include/sound/jack.h            |   5 +-
- sound/core/jack.c               | 129 +++++++++++++++++++++++++++++++-
- sound/pci/hda/hda_jack.c        |   6 +-
- sound/pci/hda/patch_hdmi.c      |   2 +-
- sound/pci/oxygen/xonar_wm87x6.c |   2 +-
- sound/soc/soc-jack.c            |   2 +-
- sound/x86/intel_hdmi_audio.c    |   4 +-
- 8 files changed, 140 insertions(+), 11 deletions(-)
-
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 0462c577d7a3..6860bfe5bb46 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -122,6 +122,7 @@ struct snd_card {
+ 
+ 	size_t total_pcm_alloc_bytes;	/* total amount of allocated buffers */
+ 	struct mutex memory_mutex;	/* protection for the above */
++	bool jack_inject_attr_registered; /* jack software inject sysfs interface registered? */
+ 
+ #ifdef CONFIG_PM
+ 	unsigned int power_state;	/* power state */
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 17f71fe38ed5..082664f2aff2 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -67,6 +67,7 @@ struct snd_jack {
+ 	char name[100];
+ 	unsigned int key[6];   /* Keep in sync with definitions above */
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
++	bool sw_inject_enable;
+ 	void *private_data;
+ 	void (*private_free)(struct snd_jack *);
+ };
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index 49b9461aef51..2d8eef9dcab8 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -8,6 +8,7 @@
+ #include <linux/input.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
++#include <linux/ctype.h>
+ #include <sound/jack.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+@@ -180,6 +181,123 @@ int snd_jack_add_new_kctl(struct snd_jack *jack, const char * name, int mask)
+ }
+ EXPORT_SYMBOL(snd_jack_add_new_kctl);
+ 
++static struct snd_jack *parsing_jack_and_enable(struct snd_card *card, const char *buf,
++						size_t count, unsigned long *enable)
++{
++	struct snd_device *sdev;
++	struct snd_jack *jack = NULL;
++	bool jack_found = 0;
++	char *jackid, *ena;
++	int i, err;
++
++	/* skip the '\n\r' at the end of buf */
++	for (i = count - 2; i > 0; i--)
++		if (isspace(buf[i]))
++			break;
++	if (i == 0)
++		return NULL;
++
++	jackid = kstrndup(buf, i, GFP_KERNEL);
++	if (!jackid)
++		return NULL;
++
++	if (strstr(jackid, "Phantom"))
++		goto exit1;
++
++	ena = kstrndup(&buf[i+1], count - i - 2, GFP_KERNEL);
++	if (!ena)
++		goto exit1;
++
++	err = kstrtoul(ena, 0, enable);
++	if (err)
++		goto exit;
++
++	list_for_each_entry(sdev, &card->devices, list)
++		if (sdev->type == SNDRV_DEV_JACK) {
++			jack = (struct snd_jack *) sdev->device_data;
++			if (!strcmp(jack->id, jackid)) {
++				jack_found = 1;
++				break;
++			}
++		}
++
++	if (!jack_found)
++		jack = NULL;
++ exit:
++	kfree(ena);
++ exit1:
++	kfree(jackid);
++	return jack;
++}
++
++static ssize_t
++jackin_inject_store(struct device *dev, struct device_attribute *attr,
++		    const char *buf, size_t count)
++{
++	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	struct snd_jack *jack;
++	unsigned long enable;
++
++	jack = parsing_jack_and_enable(card, buf, count, &enable);
++	if (!jack)
++		return -EINVAL;
++
++	if (jack->sw_inject_enable)
++		snd_jack_report(jack, enable ? jack->type : 0, true);
++
++	return count;
++}
++static DEVICE_ATTR_WO(jackin_inject);
++
++static ssize_t
++sw_inject_enable_show(struct device *dev,
++		      struct device_attribute *attr, char *buf)
++{
++	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	struct snd_device *sdev;
++	struct snd_jack *jack = NULL;
++	ssize_t ret_count = 0;
++
++	list_for_each_entry(sdev, &card->devices, list)
++		if (sdev->type == SNDRV_DEV_JACK) {
++			jack = (struct snd_jack *) sdev->device_data;
++			if (strstr(jack->id, "Phantom"))
++				continue;
++			ret_count += scnprintf(buf + ret_count, PAGE_SIZE, "%s: %s  %i\n",
++					       "Jack", jack->id, jack->sw_inject_enable);
++		}
++	return ret_count;
++}
++
++static ssize_t
++sw_inject_enable_store(struct device *dev, struct device_attribute *attr,
++		       const char *buf, size_t count)
++{
++	struct snd_card *card = container_of(dev, struct snd_card, card_dev);
++	struct snd_jack *jack;
++	unsigned long enable;
++
++	jack = parsing_jack_and_enable(card, buf, count, &enable);
++	if (!jack)
++		return -EINVAL;
++
++	jack->sw_inject_enable = !!enable;
++
++	return count;
++}
++static DEVICE_ATTR_RW(sw_inject_enable);
++
++static struct attribute *snd_jack_dev_attrs[] = {
++	&dev_attr_jackin_inject.attr,
++	&dev_attr_sw_inject_enable.attr,
++	NULL
++};
++
++static const struct attribute_group snd_jack_dev_attr_group = {
++	.name = "jack",
++	.attrs = snd_jack_dev_attrs,
++};
++
+ /**
+  * snd_jack_new - Create a new jack
+  * @card:  the card instance
+@@ -256,6 +374,11 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 
+ 	*jjack = jack;
+ 
++	if (!jack->card->jack_inject_attr_registered) {
++		jack->card->jack_inject_attr_registered = true;
++		snd_card_add_dev_attr(jack->card, &snd_jack_dev_attr_group);
++	}
++
+ 	return 0;
+ 
+ fail_input:
+@@ -348,6 +471,9 @@ void snd_jack_report(struct snd_jack *jack, int status, bool sw_inject)
+ 	if (!jack)
+ 		return;
+ 
++	if (jack->sw_inject_enable && !sw_inject)
++		return;
++
+ 	list_for_each_entry(jack_kctl, &jack->kctl_list, list)
+ 		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
+ 					    status & jack_kctl->mask_bits);
 -- 
 2.25.1
 
