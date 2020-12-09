@@ -2,73 +2,83 @@ Return-Path: <SRS0=RrJr=FN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6EB5C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1CD4C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:11:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A7FB23B79
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:01:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A7FB23B79
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6287123B81
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Dec 2020 12:11:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6287123B81
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=posteo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 372E216C9;
-	Wed,  9 Dec 2020 13:00:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 372E216C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 793971682;
+	Wed,  9 Dec 2020 13:10:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 793971682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607515273;
-	bh=HauAsl65F36xybUSiyYc41iyJ1rJlYBDMSgnrVPHack=;
+	s=default; t=1607515878;
+	bh=mKmKB+6DSPExkQJa+VONskJhYPYY9cNcHLsGmx6BeY8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZrV1QBowS1HpuV2CPdxalzEHo82GbGzv45IssHbqtYT8onpeZJYANkAzxJlF7Ezk4
-	 bnpLSM4Hefc8rLC45NZZOgDe/NlsCVkR4opOQe6h027j4wqQpqMSTLU46jDKYF8qU4
-	 1Jp63M7MCUBPuRreuDLiT16MS6Tf4/JroZCUsgqA=
+	b=MpnlRpw4vP6AGGA0/f6FKLTP+yoSkpQ5IJEf+7xjU+swdkOmhqrQYVDmeUdN4GxsB
+	 620Yal6GZoHvnrTiXM6XVJjDTRar51o7zoBP7N6gn0nWQUt4nR+K/ll8bXOmdROF9L
+	 wz7PTFAAaVsJVQ4PqLTZlpA7xtIsVoHl40g2lNbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52A5DF801D8;
-	Wed,  9 Dec 2020 13:00:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D79A5F801D8;
+	Wed,  9 Dec 2020 13:10:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6FA8F800E1; Wed,  9 Dec 2020 13:00:19 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 24E83F8020D; Wed,  9 Dec 2020 13:10:26 +0100 (CET)
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B50F1F800E1
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 13:00:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B50F1F800E1
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 06801ACF1;
- Wed,  9 Dec 2020 12:00:08 +0000 (UTC)
-Date: Wed, 09 Dec 2020 13:00:07 +0100
-Message-ID: <s5heejztcjc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: meschi@posteo.de
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2718F8012C
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 13:10:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2718F8012C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de
+ header.b="hTvFqgVF"
+Received: from submission (posteo.de [89.146.220.130]) 
+ by mout02.posteo.de (Postfix) with ESMTPS id 391152400FE
+ for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 13:10:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+ t=1607515818; bh=mKmKB+6DSPExkQJa+VONskJhYPYY9cNcHLsGmx6BeY8=;
+ h=Date:From:To:Cc:Subject:From;
+ b=hTvFqgVFXHrBxBopcLw7BDCuHdeG4bNyJaBKsV5HkxtkIo23N4wYXbJjnRtUT7Fay
+ 1xPATWJiCtIqvL9qzifC9DdbkAKCRGHagXOBOdcaVMAHKs9N890oJn4aDyPwuXgRSC
+ qIE7wvny1SBwD5anvYzIIzG4BOM7ZuHl+m11+JZuymJAanYXdbluyWsOgI8bvKn11C
+ 8dUHQ+3G5vhudio10qp+r6zYFV1OOOIIg24tt7WI+hliYo/poxbIXDo+oyL+noOIuC
+ 9KuICcsOmyqHgGj+azS7K8HgQBYESCKDQAK6/ZSQGHkd3YGvxRogRmER5OFXhOgfKn
+ HBajfHIvHcWVA==
+Received: from customer (localhost [127.0.0.1])
+ by submission (posteo.de) with ESMTPSA id 4CrbTj68Ltz6tmK;
+ Wed,  9 Dec 2020 13:10:17 +0100 (CET)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Wed, 09 Dec 2020 13:10:17 +0100
+From: meschi@posteo.de
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: Steinberg UR22 Crackling and Clicks
-In-Reply-To: <5811c5724e831c38395d3e5b57439b4d@posteo.de>
+In-Reply-To: <s5heejztcjc.wl-tiwai@suse.de>
 References: <ce03244f4699ffc9574ecc2dae41a417@posteo.de>
- <s5hft4gy4ar.wl-tiwai@suse.de>
- <61da73624ff3855867b8e65936fc2e1c@posteo.de>
- <s5hft4gwdji.wl-tiwai@suse.de>
- <eb1baf202fa4cd74a502661bb0ce5279@posteo.de>
- <s5ho8j4ujwx.wl-tiwai@suse.de>
- <987d1956f52ba49dc3b587c33e08bfb2@posteo.de>
- <s5heek0ugtk.wl-tiwai@suse.de>
- <4188489e2967b44e57653193cab9d1cb@posteo.de>
- <s5ha6unv52k.wl-tiwai@suse.de>
- <5811c5724e831c38395d3e5b57439b4d@posteo.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5hft4gy4ar.wl-tiwai@suse.de> <61da73624ff3855867b8e65936fc2e1c@posteo.de>
+ <s5hft4gwdji.wl-tiwai@suse.de> <eb1baf202fa4cd74a502661bb0ce5279@posteo.de>
+ <s5ho8j4ujwx.wl-tiwai@suse.de> <987d1956f52ba49dc3b587c33e08bfb2@posteo.de>
+ <s5heek0ugtk.wl-tiwai@suse.de> <4188489e2967b44e57653193cab9d1cb@posteo.de>
+ <s5ha6unv52k.wl-tiwai@suse.de> <5811c5724e831c38395d3e5b57439b4d@posteo.de>
+ <s5heejztcjc.wl-tiwai@suse.de>
+Message-ID: <e516dc005a88536dba67e958c5611180@posteo.de>
+X-Sender: meschi@posteo.de
+User-Agent: Posteo Webmail
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -85,134 +95,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 09 Dec 2020 12:56:55 +0100,
-meschi@posteo.de wrote:
+> Then try to pass implicit_fb=1 option to snd-usb-audio module.
+> It's a new option that was added recently.
 > 
-> >> >> >> >> > It's likely the issues with the implicit feedback.
-> >> >> >> >> >
-> >> >> >> >> > The latest development tree (either linux-next tree or
-> >> >> >> >> > topic/usb-audio-refactoring branch of my sound.git tree) contains the
-> >> >> >> >> > improvements of the implicit feedback mode.
-> >> >> >> >> >
-> >> >> >> >> >
-> >> >> >> >> > Takashi
-> >> >> >> When I try to play a file now this happens:
-> >> >> >> $ aplay -D plughw:CARD=UR22 ./file.wav
-> >> >> >> Playing WAVE './file.wav' : Signed 16 bit Little Endian, Rate 44100
-> >> >> >> Hz, Stereo
-> >> >> >> aplay: set_params:1407: Unable to install hw params:
-> >> >> >
-> >> >> > It's a known side-effect of the implicit feedback mode, and the latest
-> >> >> > patchset I mentioned earlier addresses the issue.
-> >> >> >
-> >> >> >
-> >> >> > Takashi
-> >> >>
-> >> >> I'm already running the kernel built from the linux-next tree...
-> >> >> I built next-20201208 from
-> >> >> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> >> >> Is there another patch set that I'm missing?
-> >> >
-> >> > Hm, strange.
-> >> >
-> >> > Please check the contents of /proc/asound/card*/stream* file.  With
-> >> > the latest patches and the implicit feedback mode, you should see the
-> >> > lines like "Sync Endpoint: 0x...." and "Implicit Feedback Mode: yes".
-> >> >
-> >> >
-> >> > Takashi
-> >>
-> >> Yes, I see this:
-> >>
-> >> Yamaha Corporation Steinberg UR22 at usb-0000:00:1a.7-3, high speed :
-> >> USB Audio
-> >>
-> >> Playback:
-> >>   Status: Stop
-> >>   Interface 1
-> >>     Altset 1
-> >>     Format: S24_3LE
-> >>     Channels: 2
-> >>     Endpoint: 0x07 (7 OUT) (ASYNC)
-> >>     Rates: 44100, 48000
-> >>     Data packet interval: 125 us
-> >>     Bits: 24
-> >>     Channel map: FL FR
-> >>     Sync Endpoint: 0x81 (1 IN)
-> >>     Sync EP Interface: 2
-> >>     Sync EP Altset: 1
-> >>     Implicit Feedback Mode: Yes
-> >>   Interface 1
-> >>     Altset 2
-> >>     Format: S24_3LE
-> >>     Channels: 2
-> >>     Endpoint: 0x07 (7 OUT) (ASYNC)
-> >>     Rates: 88200, 96000
-> >>     Data packet interval: 125 us
-> >>     Bits: 24
-> >>     Channel map: FL FR
-> >>     Sync Endpoint: 0x81 (1 IN)
-> >>     Sync EP Interface: 2
-> >>     Sync EP Altset: 1
-> >>     Implicit Feedback Mode: Yes
-> >>   Interface 1
-> >>     Altset 3
-> >>     Format: S24_3LE
-> >>     Channels: 2
-> >>     Endpoint: 0x07 (7 OUT) (ASYNC)
-> >>     Rates: 176400, 192000
-> >>     Data packet interval: 125 us
-> >>     Bits: 24
-> >>     Channel map: FL FR
-> >>     Sync Endpoint: 0x81 (1 IN)
-> >>     Sync EP Interface: 2
-> >>     Sync EP Altset: 1
-> >>     Implicit Feedback Mode: Yes
-> >>
-> >> Capture:
-> >>   Status: Stop
-> >>   Interface 2
-> >>     Altset 1
-> >>     Format: S24_3LE
-> >>     Channels: 2
-> >>     Endpoint: 0x86 (6 IN) (ASYNC)
-> >>     Rates: 44100, 48000
-> >>     Data packet interval: 125 us
-> >>     Bits: 24
-> >>     Channel map: FL FR
-> >>   Interface 2
-> >>     Altset 2
-> >>     Format: S24_3LE
-> >>     Channels: 2
-> >>     Endpoint: 0x86 (6 IN) (ASYNC)
-> >>     Rates: 88200, 96000
-> >>     Data packet interval: 125 us
-> >>     Bits: 24
-> >>     Channel map: FL FR
-> >>   Interface 2
-> >>     Altset 3
-> >>     Format: S24_3LE
-> >>     Channels: 2
-> >>     Endpoint: 0x86 (6 IN) (ASYNC)
-> >>     Rates: 176400, 192000
-> >>     Data packet interval: 125 us
-> >>     Bits: 24
-> >>     Channel map: FL FR
-> >
-> > OK, then it means that your device isn't compatible with UR22C.
-> > It has a different endpoint assignment.
-> >
-> > What happens if you run this kernel without quirk_alias option?
-> > Is the implicit feedback still set?
-> >
-> >
-> > Takashi
 > 
-> When running it without the quirk_alias option implicit feedback isn't
-> set.
+> Takashi
 
-Then try to pass implicit_fb=1 option to snd-usb-audio module.
-It's a new option that was added recently.
+Nice, that did the trick. there was a small glitch on first playback but 
+I can not reproduce it now. Playback seems glitch-free now. I will test 
+it with pulseaudio in the gui if I can. It's not quite easy to test, 
+because the system locks up after a while with the new kernel and gnome 
+3. I will also test concurrent playback and recording, too. Thank you 
+very much, that was a huge help!
 
-
-Takashi
+Kilian
