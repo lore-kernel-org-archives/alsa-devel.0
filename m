@@ -2,66 +2,87 @@ Return-Path: <SRS0=kZkJ=FP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,HK_NAME_MR_MRS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6128AC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:38:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4B3FC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:39:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4C8FA23EF1
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:38:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C8FA23EF1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 4CBE023EF2
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:39:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CBE023EF2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=berkeley.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4DE31736;
-	Fri, 11 Dec 2020 18:37:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4DE31736
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF1951738;
+	Fri, 11 Dec 2020 18:39:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF1951738
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607708304;
-	bh=scZyuOwh5JCvAVl4fPzI299iEK/8Q7Mb/gXsWUJjp4k=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=cuWwPv8iXZVrkR9QgxAwOeoENew5FTARyRctFGDtLIsW7OKmyBIiCE5N7mZXfD2yD
-	 PGPr8ZvI2VsUA5INfYjjUWzS5A5AzkZ3CDdK4LlbZAlmy9gVE/i1F9uM0od7JmUTVK
-	 z8dUiWJQcRgjRQUsLYxfNB46Z+vg0GUofUBE5ukk=
+	s=default; t=1607708395;
+	bh=o1AUqD0pgkA678igUdwSCeHS6206+G3H5La7l6vrS4g=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bUlcR8AxgLT1sO+Vj8wR5cGy9/wLVLLuP9QT5h+v/WLSM1D9a4UEM/S5gAxPXDe6J
+	 SNVsR9h1tRRCrt7ysUX9iA+VqzdfpGNrt4rd64iyuO7tLxJF0VYq1DaISUwLmO2gsL
+	 kumcaAJg+soZZPcmTLhCOXz1c6dDLFjqNraUXuRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C144F80217;
-	Fri, 11 Dec 2020 18:37:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25BE8F801D8;
+	Fri, 11 Dec 2020 18:39:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C38CFF8021D; Fri, 11 Dec 2020 18:37:32 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E029AF8016E; Fri, 11 Dec 2020 00:10:33 +0100 (CET)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 602D0F8014E
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:37:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 602D0F8014E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id EB0B1AE4A;
- Fri, 11 Dec 2020 17:37:29 +0000 (UTC)
-Date: Fri, 11 Dec 2020 18:37:29 +0100
-Message-ID: <s5h5z58nt0m.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] alsactl: Skip restore during the lock
-In-Reply-To: <fae14c41-da2e-1bbb-2124-124ae9dd6cdb@perex.cz>
-References: <20201211083804.800-1-tiwai@suse.de>
- <a9bd692e-a55f-f068-b78d-1429a587307e@perex.cz>
- <s5heejwnusm.wl-tiwai@suse.de> <s5hblf0nufm.wl-tiwai@suse.de>
- <fae14c41-da2e-1bbb-2124-124ae9dd6cdb@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F95BF800E1
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 00:10:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F95BF800E1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=berkeley-edu.20150623.gappssmtp.com
+ header.i=@berkeley-edu.20150623.gappssmtp.com header.b="rsZHYCIl"
+Received: by mail-lf1-x133.google.com with SMTP id y19so10652155lfa.13
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 15:10:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=berkeley-edu.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=ngWQV55Kf2zVtmLkLg3PzKmxbT1Q+g8lKza65q1ZL88=;
+ b=rsZHYCIlDWD6yWOUtKh1vOnCbljY3N0jL5ADDG4rE5i5GEMSLJR/uzdN9FsiahNpaW
+ RgH5/NggJ5SmZ7pxiH8B1qv4FROTgPlbE7eZwRchX1UbeyjjGCz+QvLdaDEsk3GPXFgI
+ cdOuHjo8fHylX9IHAVhmPZrQ/MfAex+BnN3/+gNHfhLy8KDjXSyjczvMb5AdU6zy9GEZ
+ V050LGrJ5xShbqYeZJWdmoDVBf+C/RPxpFBatAFxiGPDXv8rdzCsxScAMNzhrMWMZjd8
+ u52mveYVjDL+cId0W2XBS6tcScsmrEb/4oKTZKFic88D/6/qvS3dbtcfDvTmlIS0ZE/N
+ RVFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=ngWQV55Kf2zVtmLkLg3PzKmxbT1Q+g8lKza65q1ZL88=;
+ b=pqNxlmCUpfv+kuKWM/oixwFthZtJhMRF4s+DhC+pUMFO3Xm14zQMd4DgdMFKFtuAt9
+ l0uTOHNGfEDlAyOdGbz8N1A7wdUPTSplmH73cIj2jv9/e0woe5H89jECeAlUbwzSTF5I
+ FM4cd4KoXGY3SembmSbnMn7vq9SzLjm02LuRaOi3FPiV4VW7HhBEM69Jqo4MPlQyYzWs
+ vVcySYtLFUtLXfIC+G8/wKNq1N8tbYxHVjuhRK0OsaP+EZ0/z2GLLIFzP9WQfR920fOD
+ nGzTDClYtSC6SWl6OZBr4mj4qUECKdf0A/3MXp8RnCKuPtXUW0yj0U0ZJ1XFtsAAr7U6
+ GiVQ==
+X-Gm-Message-State: AOAM530CwJAR0zzPJEU1c4jQcEjaxmkvsAodsMMFvR6u3un8uIw8z9Pe
+ sXN4/ZzTEJT6SFg4+Z57jM1pIKSoNJB9HhYbvT3gQEpLrUi3Yw==
+X-Google-Smtp-Source: ABdhPJyLNOLeyIHut8fgYLOLJQKoXRMb1eJBDDNOJbSE1pgz4O6agEsTVABf9M1tVrK9YaGflxGNqh+Euz9tR+JfEDo=
+X-Received: by 2002:a19:7b02:: with SMTP id w2mr1820435lfc.37.1607641820493;
+ Thu, 10 Dec 2020 15:10:20 -0800 (PST)
+MIME-Version: 1.0
+From: "Mr. Indro Fedrigo" <indro.fedrigo@berkeley.edu>
+Date: Thu, 10 Dec 2020 15:10:09 -0800
+Message-ID: <CAFir9wpY6WXq9PHV3t-zj4QdJdEMSwMuu6GrY+0AMOra6Q3ebg@mail.gmail.com>
+Subject: HP Envy 32" snd_hda_codec_realtek
+To: alsa-devel@alsa-project.org
+X-Mailman-Approved-At: Fri, 11 Dec 2020 18:39:03 +0100
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,71 +98,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Dec 2020 18:23:03 +0100,
-Jaroslav Kysela wrote:
-> 
-> Dne 11. 12. 20 v 18:06 Takashi Iwai napsal(a):
-> > On Fri, 11 Dec 2020 17:59:05 +0100,
-> > Takashi Iwai wrote:
-> >>
-> >> On Fri, 11 Dec 2020 17:45:45 +0100,
-> >> Jaroslav Kysela wrote:
-> >>>
-> >>> Dne 11. 12. 20 v 9:38 Takashi Iwai napsal(a):
-> >>>> Currently alsactl-restore tries to initialize the device when an error
-> >>>> is found for restore action.  But this isn't the right behavior in the
-> >>>> case where the lock is held; it implies that another alsactl is
-> >>>> running concurrently, hence you shouldn't initialize the card at the
-> >>>> same time.  The situation is found easily when two alsactls get
-> >>>> started by both udev and systemd (note that those two invocations are
-> >>>> the designed behavior, see /usr/lib/udev/rules.d/78-sound-cards.rules
-> >>>> for details).
-> >>>>
-> >>>> This patch changes load_state() not to handle the initialization if
-> >>>> the locking fails.
-> >>>
-> >>> The operation should serialize in this case (there's limit of 10 seconds which
-> >>> should be enough to finish the initialization). The state_lock() function
-> >>> should return -EBUSY when the file is locked (and I'm fine to change the
-> >>> behaviour from 'init' to 'skip' for this lock state).
-> >>>
-> >>> It seems that -EEXIST is returned when the lock file exists, but the
-> >>> open(file, O_CREAT|O_EXCL, 0644) caller has not enough priviledges to access
-> >>> this file when another user owns the file.
-> >>>
-> >>> But alsactl from /lib/udev/rules.d/90-alsa-restore.rules and
-> >>> /lib/systemd/system/alsa-restore.service should be run as root, right?
-> >>
-> >> Yes, it should be root.
-> >>
-> >> I also wondered how EEXIST comes, too.  Maybe it's also the race
-> >> between the first open(O_RDWR) and the second
-> >> open(O_RDWR|O_CREAT|O_EXCL)?  If so, it'd be better to go back again
-> >> to the normal open(O_RDWR)?
-> > 
-> > ... something like below
-> > 
-> > 
-> > diff --git a/alsactl/lock.c b/alsactl/lock.c
-> > index 4a485392b3bd..c1c30f0c5eee 100644
-> > --- a/alsactl/lock.c
-> > +++ b/alsactl/lock.c
-> > @@ -64,6 +64,9 @@ static int state_lock_(const char *file, int lock, int timeout, int _fd)
-> >  				if (errno == EBUSY || errno == EAGAIN) {
-> >  					sleep(1);
-> >  					timeout--;
-> > +				} if (errno == EEXIST){
-> > +					/* race at creating a lock, try again */
-> > +					continue;
-> >  				} else {
-> >  					err = -errno;
-> >  					goto out;
-> 
-> If we don't use the sleep call and the timeout counter, there's endless CPU
-> busy loop when the root creates the lock file and user wants to access it for
-> example. It's better to add EEXIST to the previous errno condition.
+Hi All,
+I=E2=80=99ve been trying for a while to get the Audio working on my HP Envy=
+ 32
+All-in-one desktop.
+It has a Bang&Olufsen audio system that works perfectly with windows, but
+it absolutely mute with Ubuntu 20.04- Centos Stream - Fedora 33 - OpenSUSE
+Tumbleweed...
+I can get sound output, using Bluetooth, on other devices but nothing from
+my speakers.
+I=E2=80=99m attaching the output of alsa-info.sh to begin with, if anybody =
+has any
+idea. I can provide any other kind of system info if that could help.
+Thanks.
+Indro Fedrigo
+UC Berkeley
 
-The timeout is decreased in the while condition.
-
-
-Takashi
+http://alsa-project.org/db/?f=3D943238345fb524c3e60f2348b8b39b824d8cdc05
