@@ -2,66 +2,65 @@ Return-Path: <SRS0=UiOR=FO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEB55C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 18:59:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7703AC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 19:00:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BC6023440
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 18:59:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BC6023440
+	by mail.kernel.org (Postfix) with ESMTPS id 68B5323D9A
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 19:00:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68B5323D9A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DBEC166C;
-	Thu, 10 Dec 2020 19:58:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DBEC166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D538167C;
+	Thu, 10 Dec 2020 19:59:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D538167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607626763;
-	bh=LKoRqcpkU+ZRAT/1dT/RntAhSq/eQKNBUlpU+YYEnpU=;
+	s=default; t=1607626846;
+	bh=5F5I7Y/11nPrzupD+aLjnjKxbMFCeM4qXwcWdLTBJs4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GEvlpd0wh12SWOKXDh4dLUCURa8IbOti1QuOqHzaynyOUh6WuLUUJ4cRwPTuykHFr
-	 iRgZpsCX7lHJMmDlghDbNhTWmpHLwx1s/xZj8QX8XoG/f4uBJuuBVrKThS2FgsMHSz
-	 U5AwMxzT6g2quue+5MqFqcGbzpAAaw73y8LcR4qg=
+	b=t+7mLoEmnzX+W6jUzBqzqlSII/c7zN+vrGjt5PpKozWZmDhs9CDK44sh9YvKJEAbQ
+	 +vNO84nHnu7uaFWO6Xc2Nq6jy1sSGCY0/6ldkgW9bR8CylWWFYbmok2faT7T2b2Nms
+	 Jw2hzrx3zbrwaK29EdJGrlhHT5aOgRKFw4ooHM/Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6953F80164;
-	Thu, 10 Dec 2020 19:58:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6F5EF8019D;
+	Thu, 10 Dec 2020 19:59:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5738F8016E; Thu, 10 Dec 2020 19:58:29 +0100 (CET)
+ id 0B57CF80218; Thu, 10 Dec 2020 19:59:54 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BDF3F80105
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 19:58:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BDF3F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 747EFF80105
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 19:59:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 747EFF80105
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 86581AC79;
- Thu, 10 Dec 2020 18:58:22 +0000 (UTC)
-Date: Thu, 10 Dec 2020 19:58:22 +0100
-Message-ID: <s5h7dppqyi9.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B57B4AC6A;
+ Thu, 10 Dec 2020 18:59:50 +0000 (UTC)
+Date: Thu, 10 Dec 2020 19:59:50 +0100
+Message-ID: <s5h4kktqyft.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: hda/hdmi: fix silent stream for first playback
- to DP
-In-Reply-To: <20201210174445.3134104-1-kai.vehmanen@linux.intel.com>
-References: <20201210174445.3134104-1-kai.vehmanen@linux.intel.com>
+To: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: [PATCH v3 1/2] ALSA: hda/ca0132 - Fix AE-5 rear headphone pincfg.
+In-Reply-To: <20201210173550.2968-1-conmanx360@gmail.com>
+References: <20201210173550.2968-1-conmanx360@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Harsha Priya <harshapriya.n@intel.com>,
- Emmanuel Jillela <emmanuel.jillela@intel.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, stable@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,31 +76,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Dec 2020 18:44:45 +0100,
-Kai Vehmanen wrote:
+On Thu, 10 Dec 2020 18:35:48 +0100,
+Connor McAdams wrote:
 > 
-> A problem exists in enabling silent stream when connection type is
-> DisplayPort. Silent stream programming is completed when a new DP
-> receiver is connected, but infoframe transmission does not actually
-> start until PCM is opened for the first time. This can result in audible
-> gap of multiple seconds. This only affects the first PCM open.
+> The Windows driver sets the pincfg for the AE-5's rear-headphone to
+> report as a microphone. This causes issues with Pulseaudio mistakenly
+> believing there is no headphone plugged in. In Linux, we should instead
+> set it to be a headphone.
 > 
-> Fix the issue by properly assigning a converter to the silent stream,
-> and modifying the required stream ID programming sequence.
-> 
-> This change only affects Intel display audio codecs.
-> 
-> BugLink: https://github.com/thesofproject/linux/issues/2468
-> Fixes: 951894cf30f4 ("ALSA: hda/hdmi: Add Intel silent stream support")
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> ---
->  sound/pci/hda/patch_hdmi.c | 98 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 86 insertions(+), 12 deletions(-)
-> 
-> v2 changes:
->  - locking missing in silent_stream_disable()
+> Fixes: a6b0961b39896 ("ALSA: hda/ca0132 - fix AE-5 pincfg")
+> Cc: <stable@kernel.org>
+> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+> Link: https://lore.kernel.org/r/20201208195223.424753-1-conmanx360@gmail.com
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Applied now.  Thanks.
+Now replaced with those two patches.  Thanks.
 
 
 Takashi
