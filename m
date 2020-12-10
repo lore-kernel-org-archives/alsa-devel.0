@@ -2,77 +2,86 @@ Return-Path: <SRS0=UiOR=FO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6049C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 08:28:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FA7DC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 09:46:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAF5A2343F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 08:28:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAF5A2343F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id A8484235F7
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 09:46:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8484235F7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=kabelmail.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE9651683;
-	Thu, 10 Dec 2020 09:27:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE9651683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37829829;
+	Thu, 10 Dec 2020 10:45:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37829829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607588925;
-	bh=H1g79x5Pts+Z6C3Tly+ps11RiYysJOdtJWF8zGNj2tk=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ASrJI5fHwzZrVaFTUhu/zY0C0w/0+bB7S2PErhk9I+0eB6tGStPObduhuhQrblKLT
-	 vFn6DybUg2CK8KN5atI4O4e1k5bCn2Nd3Xz5GNPPaFJXWQ+BAWZhIj3+5+weWnOfOf
-	 PDtzeKb/8cOAAbJvUdiAHnjOpORO8CNHyTQm7aYM=
+	s=default; t=1607593581;
+	bh=BAn7IHoYlvvjxfebnshgwjKfJ9S8htAhsUbCVOiV+rE=;
+	h=To:References:From:Subject:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FGLaRJtwLx4+vp2my1e1Msgx+dRH0/GniqER/2X+hhKBA/1GESBfXAYIAJ4im2sb3
+	 ZFaDKntFll7dpfgYN4JvxFRHeyrv/P5+FMN2uAH7h8iOTOLtpxIukdZpjPH4EF/JSj
+	 GaZ3IsVTW7+siELeELkZmDbwnVDixUSDD7qWyzME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFE7CF80253;
-	Thu, 10 Dec 2020 09:27:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 957DEF80164;
+	Thu, 10 Dec 2020 10:45:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12F74F8020D; Wed,  9 Dec 2020 08:33:22 +0100 (CET)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id ABDD8F8016E; Thu, 10 Dec 2020 10:45:29 +0100 (CET)
+Received: from relay-b02.edpnet.be (relay-b02.edpnet.be [212.71.1.222])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC5C2F801D8
- for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2020 08:33:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC5C2F801D8
-Received: by mail-il1-f200.google.com with SMTP id b18so639610ilr.7
- for <alsa-devel@alsa-project.org>; Tue, 08 Dec 2020 23:33:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=P9LZMAZBHJf7O9yDXHWHSE/19zyEUKOfD7IEF1OKF14=;
- b=lHaRwOIWK7KKQXzzVvAuEwAFZrnSAMmetdIdXP6+AvJfNaf3J+eI6pvdKWSjIaAzJw
- 6VbJcIyRe859FVLdu3uG9ANgBQ3lKhda3YG+oSv/1iPmQQmFFgXmZHqbvgorGEFLTU+S
- ftmv5poahjE+KncleHMuWXnV9+kCz0blELNxwWNvydTUBAz2yegCdjZYHnzBw/ev9ejK
- vfTFK/sAeWbbOEh/xiv9wpyipk4FYw7YNNDu12oHEcL/K35w7aPHt8vpMvdj5O8tQf5T
- ztuiIgbfS0aaxxVdVrVhlM0OTHiOalsUhWzssg9CjsgSpgLkcdW8KNSGl4VrFeFBeycf
- qB+w==
-X-Gm-Message-State: AOAM530Umn5PJU0cI6PJ46Wc+Cd6qxhihHyNZ99Gq53MVNn+o0Xh/lpl
- cgYGQnxMdzc+xM6SDl2QNtAeeTH2Y2v2+DeyH4cb2Dbfq/Ah
-X-Google-Smtp-Source: ABdhPJxeiG9pDSrKPLzAaSeLKo/j9mbJBnfYpzGtjanj1/S/ooN3PyFgINzu9pkjYBCnpJC/mqHlVwut2yh0IMMxDrRNPMYI/Hq8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39D9DF800E1
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 10:45:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39D9DF800E1
+X-ASG-Debug-ID: 1607593522-15c4334639c7040001-UKjUFf
+Received: from [192.168.177.53] ([213.219.152.236]) by relay-b02.edpnet.be
+ with ESMTP id 9XdgylBPtPV5gVO1 for <alsa-devel@alsa-project.org>;
+ Thu, 10 Dec 2020 10:45:22 +0100 (CET)
+X-Barracuda-Envelope-From: janpieter.sollie@kabelmail.de
+X-Barracuda-Effective-Source-IP: UNKNOWN[213.219.152.236]
+X-Barracuda-Apparent-Source-IP: 213.219.152.236
+To: alsa-devel@alsa-project.org
+References: <07aae8e3-1ee2-60a9-daee-a0172c1012e7@kabelmail.de>
+ <s5hczzkwd82.wl-tiwai@suse.de> <d4e099cd-3600-43d8-d2f5-9f7257da80ba@amd.com>
+ <99e81caf-2742-32a0-cee1-7ff3ea8c6913@kabelmail.de>
+ <3d8b7ad9-c6a4-0e2b-7e56-62b8d898eb23@amd.com>
+ <ca8fa345-f0dd-330a-5a16-a8dbf68ea687@amd.com>
+From: Janpieter Sollie <janpieter.sollie@kabelmail.de>
+Subject: Re: AMD ACP raven ridge: invalid audio mode 2
+Message-ID: <fec06387-1d64-9dda-c99f-c6d88b662f49@kabelmail.de>
+X-ASG-Orig-Subj: Re: AMD ACP raven ridge: invalid audio mode 2
+Date: Thu, 10 Dec 2020 10:45:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2211:: with SMTP id
- n17mr1139091ion.107.1607499191889; 
- Tue, 08 Dec 2020 23:33:11 -0800 (PST)
-Date: Tue, 08 Dec 2020 23:33:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f34f605b60312af@google.com>
-Subject: UBSAN: shift-out-of-bounds in parse_audio_format_i
-From: syzbot <syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com>
-To: alexander@tsoy.me, alsa-devel@alsa-project.org, 
- linux-kernel@vger.kernel.org, mickflemm@gmail.com, perex@perex.cz, 
- syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Thu, 10 Dec 2020 09:27:00 +0100
+In-Reply-To: <ca8fa345-f0dd-330a-5a16-a8dbf68ea687@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Barracuda-Connect: UNKNOWN[213.219.152.236]
+X-Barracuda-Start-Time: 1607593522
+X-Barracuda-URL: https://212.71.1.222:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 3338
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.40
+X-Barracuda-Spam-Status: No, SCORE=0.40 using global scores of TAG_LEVEL=1000.0
+ QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_SC0_SA085b
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.86423
+ Rule breakdown below
+ pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ 0.40 BSF_SC0_SA085b         Custom Rule SA085b
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,84 +97,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Hi Vijendar,
 
-syzbot found the following issue on:
+Thank you, the patch got rid of the error message.
 
-HEAD commit:    15ac8fdb Add linux-next specific files for 20201207
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16d4620f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3696b8138207d24d
-dashboard link: https://syzkaller.appspot.com/bug?extid=df7dc146ebdd6435eea3
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126afa13500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14389613500000
+Well, I'm not an ALSA expert (more like a noob), but I'll ask the manufac=
+turer (UDOO Bolt, ryzen
+v1000) about details for the SOC modes then, they *might* be able to show=
+ me something which
+could lead to a (more or less) good implementation.
+that said: would it be possible to get more info about the device an ABI =
+or something?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
+The PCI registers show me the following:
+frisbee /usr/src/linux # lspci -xxxxx -s 04:00.5
+04:00.5 Multimedia controller: Advanced Micro Devices, Inc. [AMD] Raven/R=
+aven2/FireFlight/Renoir
+Audio Processor
+00: 22 10 e2 15 06 04 10 00 00 00 80 04 10 00 80 00
+10: 00 00 68 fe 00 00 00 00 00 00 00 00 00 00 00 00
+20: 00 00 00 00 00 00 00 00 00 00 00 00 22 10 e2 15
+30: 00 00 00 00 48 00 00 00 00 00 00 00 ff 02 00 00
+40: 00 00 00 00 00 00 00 00 09 50 08 00 22 10 e2 15
+50: 01 64 03 c8 0b 01 00 00 00 00 00 00 00 00 00 00
+60: 00 00 00 00 10 a0 02 00 a1 8f 00 00 30 29 00 00
+70: 03 0d 40 00 40 00 03 11 00 00 00 00 00 00 00 00
+80: 00 00 00 00 00 00 00 00 00 08 70 00 00 00 00 00
+90: 0e 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00
+a0: 05 00 81 00 00 00 e0 fe 00 00 00 00 00 00 00 00
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+100: 0b 00 01 00 01 00 01 01 00 00 00 00 00 00 00 00
 
-usb 1-1: New USB device found, idVendor=1d6b, idProduct=0101, bcdDevice= 0.40
-usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 1-1: Product: syz
-usb 1-1: Manufacturer: syz
-usb 1-1: SerialNumber: syz
-usb 1-1: 2:1 : no or invalid class specific endpoint descriptor
-================================================================================
-UBSAN: shift-out-of-bounds in sound/usb/format.c:44:17
-shift exponent 4098 is too large for 64-bit type 'long long unsigned int'
-CPU: 0 PID: 8656 Comm: kworker/0:4 Not tainted 5.10.0-rc6-next-20201207-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- parse_audio_format_i_type sound/usb/format.c:44 [inline]
- parse_audio_format_i.cold+0xba/0x3e2 sound/usb/format.c:653
- snd_usb_parse_audio_format+0x89/0x290 sound/usb/format.c:753
- snd_usb_get_audioformat_uac12 sound/usb/stream.c:841 [inline]
- __snd_usb_parse_audio_interface+0xce4/0x3cf0 sound/usb/stream.c:1170
- snd_usb_parse_audio_interface+0x79/0x130 sound/usb/stream.c:1240
- snd_usb_create_stream.isra.0+0x23a/0x530 sound/usb/card.c:206
- snd_usb_create_streams sound/usb/card.c:278 [inline]
- usb_audio_probe+0x93c/0x2ab0 sound/usb/card.c:802
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x2b1/0xe40 drivers/base/dd.c:554
- driver_probe_device+0x285/0x3f0 drivers/base/dd.c:738
- __device_attach_driver+0x216/0x2d0 drivers/base/dd.c:844
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4c0 drivers/base/dd.c:912
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbb2/0x1ce0 drivers/base/core.c:2934
- usb_set_configuration+0x113c/0x1910 drivers/usb/core/message.c:2167
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x2b1/0xe40 drivers/base/dd.c:554
- driver_probe_device+0x285/0x3f0 drivers/base/dd.c:738
- __device_attach_driver+0x216/0x2d0 drivers/base/dd.c:844
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4c0 drivers/base/dd.c:912
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbb2/0x1ce0 drivers/base/core.c:2934
- usb_new_device.cold+0x725/0x1057 drivers/usb/core/hub.c:2555
- hub_port_connect drivers/usb/core/hub.c:5223 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
- port_event drivers/usb/core/hub.c:5509 [inline]
- hub_event+0x2348/0x42d0 drivers/usb/core/hub.c:5591
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-================================================================================
+Where can I find more info about what these registers mean (if anything, =
+I'll ask the udoo guys
+about the device specific bytes)?
+
+Janpieter
+
+Op 10/12/2020 om 01:12 schreef Mukunda,Vijendar:
+>
+>
+> On 10/12/20 12:18 am, Mukunda,Vijendar wrote:
+>>
+>
+>>>
+>>> So, if I understand correctly, the snd_pci_acp3x module initialised t=
+he acp to mode 0x2, and
+>>> then decides the mode is not supported?
+>>> doesn't this sound a little weird to you?
+>>
+>> On Raven Ridge platform, ACP device enumerated by PCI root.ACP PCI dri=
+ver creates child nodes
+>> for I2S device.
+>>
+>> Currently we had added support for only I2S configuration.
+>> We recently fixed audio driver probe failure issue when Audio configur=
+ation is set to other
+>> than I2S.
+>>
+>> When Audio Configuration is set to other than I2S, load the ACP PCI dr=
+iver instead of
+>> returning probe failure.
+>> Below patch already got merged in to asoc-next branch.
+>>
+>> https://lore.kernel.org/alsa-devel/1603476441-3506-1-git-send-email-Vi=
+jendar.Mukunda@amd.com/
+>>
+>>
+>> Thanks,
+>> Vijendar
+>>
+>>
+>
+> To add more to my previous explanation, Based on platform audio configu=
+ration, I2S_PIN_CONFIG
+> value is programmed from BIOS.
+>
+> ACP PCI driver during its probe it only checks what is the audio config=
+uration is really set.
+>
+> If it sees current configuration is set to I2S, then ACP PCI driver
+> will go ahead and create the platform devices required for I2S endpoint=
+=2E
+>
+> If it is other than I2S audio configuration, it wont create the child n=
+ode and returns the
+> probe as success.
+>
+> ACP IP do's lot more stuff beyond supporting simple audio endpoints.
+> For other audio configurations, we have added a default case
+> and left it as a place holder for future implementation.
+>
+>
+> Thanks,
+> Vijendar
+>
+> .
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
