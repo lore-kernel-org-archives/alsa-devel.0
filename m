@@ -7,64 +7,67 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0E28C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 13:10:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1523FC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 13:11:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 158D423D6C
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 13:10:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 158D423D6C
+	by mail.kernel.org (Postfix) with ESMTPS id 5AFAA23DE8
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Dec 2020 13:11:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5AFAA23DE8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 628A91663;
-	Thu, 10 Dec 2020 14:10:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 628A91663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59F0B1683;
+	Thu, 10 Dec 2020 14:10:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59F0B1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607605851;
-	bh=RloCOZ1mS9qShbBGvPnUerOnMg14SHidcYi1OxvdtE0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nBOdKYbMY44uVJMlw++UIMx03JWn334I/F5uyH5hmhU9h9/cFQTfZL0WAwPzzG7nL
-	 pT9M4ElwsSqu8isrhJd7QV8q8DNvu+cRmGKbGOVLIEMhlYU87iHvIATKQmchLQv3xR
-	 OixHf1955oAoTFU/n5eqjaZdLhyfUtSo5oCdxg7Y=
+	s=default; t=1607605902;
+	bh=SaKWsrwOZWMmHG9eQpzo8WNsBVRjX7dqL+tQ5OQKRrA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ewDxJc6SkzBIQoXRb9CnLChygJpp3IwORVSytLU6TIO+Dt/FzroxqrvN+TDByYZ+b
+	 pjTyaqZqgAjU5bc6PZC+1IJCA3DCCPkwPi+2yOjteJkOzYSkwiaiupbuSLZVmU1g7j
+	 qcnaIN1Y5kuKQtRHRzAouK8j6OazALjYy3BIxg4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBA10F8016E;
-	Thu, 10 Dec 2020 14:10:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4C62F8019D;
+	Thu, 10 Dec 2020 14:10:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0E84F8019D; Thu, 10 Dec 2020 14:09:58 +0100 (CET)
+ id 78CB8F800EF; Thu, 10 Dec 2020 14:10:03 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECAFCF800E1
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 14:09:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECAFCF800E1
-IronPort-SDR: MhHuyz4oEBOnrbd2S3rK0/Jxezm8FnCCaET3gfIYf8zSu/91auZyV5CQk/ar8biSpWKjGdnHV5
- 0CLCLorEMnuw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153483404"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; d="scan'208";a="153483404"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D97E9F800EF
+ for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 14:09:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D97E9F800EF
+IronPort-SDR: 8nZ8HK3FiEI65hm+wk/GCGLRwr/JVzZrFHFmpdRh0eyAga1OHbuDvGdztmrTDDVwfHic2T3/XE
+ HGPjdyo1lULg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="153483406"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; d="scan'208";a="153483406"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Dec 2020 05:09:45 -0800
-IronPort-SDR: GOW0+5szMA3we/r+x2570MbhjMXscVOOIhfUm68W27hXl8Y1NIpoTwk46vklOF7tA2LBAnJiRO
- uGuVagDsMEWA==
+ 10 Dec 2020 05:09:48 -0800
+IronPort-SDR: ndozflFV6veMPtSB+GHthOzgZUdOcnfW0J58+4+Is+zD8pxGuLsFfRJ4Dm7SRRG3Fmg1a9tvQa
+ F0pq6X/W1cIg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; d="scan'208";a="376956654"
+X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; d="scan'208";a="376956670"
 Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by FMSMGA003.fm.intel.com with ESMTP; 10 Dec 2020 05:09:43 -0800
+ by FMSMGA003.fm.intel.com with ESMTP; 10 Dec 2020 05:09:46 -0800
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 1/2] ASoC: topology: Fix wrong size check
-Date: Thu, 10 Dec 2020 10:25:40 -0500
-Message-Id: <20201210152541.191728-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: topology: Add missing size check
+Date: Thu, 10 Dec 2020 10:25:41 -0500
+Message-Id: <20201210152541.191728-2-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201210152541.191728-1-amadeuszx.slawinski@linux.intel.com>
+References: <20201210152541.191728-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -87,52 +90,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dan reported that smatch reports wrong size check and after analysis it
-is confirmed that we are comparing wrong value: pointer size instead of
-array size. However the check itself is problematic as in UAPI header
-there are two fields:
+When we parse "values" we perform check if there is correct number of
+them. However similar check is missing in case of "texts", add it.
 
-struct snd_soc_tplg_enum_control {
-    (...)
-    char texts[SND_SOC_TPLG_NUM_TEXTS][SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-    __le32 values[SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
-
-the texts field is for names and the values one for values assigned to
-those named fields, after analysis it becomes clear that there is quite
-a lot overhead values than we may possibly name. So instead of changing
-check to ARRAY_SIZE(ec->values), as it was first suggested, use
-hardcoded value of SND_SOC_TPLG_NUM_TEXTS.
-
-Link: https://lore.kernel.org/alsa-devel/X9B0eDcKy+9B6kZl@mwanda/
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/soc-topology.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index eb2633dd6454..7fb3a87ab860 100644
+index 7fb3a87ab860..950c45008e24 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -889,10 +889,16 @@ static int soc_tplg_denum_create_values(struct soc_tplg *tplg, struct soc_enum *
+@@ -856,6 +856,9 @@ static int soc_tplg_denum_create_texts(struct soc_tplg *tplg, struct soc_enum *s
  {
- 	int i;
+ 	int i, ret;
  
--	if (le32_to_cpu(ec->items) > sizeof(*ec->values))
-+	/*
-+	 * Following "if" checks if we have at most SND_SOC_TPLG_NUM_TEXTS
-+	 * values instead of using ARRAY_SIZE(ec->values) due to the fact that
-+	 * it is oversized for its purpose. Additionally it is done so because
-+	 * it is defined in UAPI header where it can't be easily changed.
-+	 */
-+	if (le32_to_cpu(ec->items) > SND_SOC_TPLG_NUM_TEXTS)
- 		return -EINVAL;
- 
--	se->dobj.control.dvalues = devm_kzalloc(tplg->dev, le32_to_cpu(ec->items) *
-+	se->dobj.control.dvalues = devm_kcalloc(tplg->dev, le32_to_cpu(ec->items),
- 					   sizeof(u32),
- 					   GFP_KERNEL);
- 	if (!se->dobj.control.dvalues)
++	if (le32_to_cpu(ec->items) > ARRAY_SIZE(ec->texts))
++		return -EINVAL;
++
+ 	se->dobj.control.dtexts =
+ 		devm_kcalloc(tplg->dev, le32_to_cpu(ec->items), sizeof(char *), GFP_KERNEL);
+ 	if (se->dobj.control.dtexts == NULL)
 -- 
 2.25.1
 
