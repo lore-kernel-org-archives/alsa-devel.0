@@ -6,55 +6,58 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CEB3C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9CAFC4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:52:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C703423F2A
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:51:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C703423F2A
+	by mail.kernel.org (Postfix) with ESMTPS id F05E723EF4
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:52:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F05E723EF4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6144A1718;
-	Fri, 11 Dec 2020 18:50:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6144A1718
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36D341750;
+	Fri, 11 Dec 2020 18:51:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36D341750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607709106;
-	bh=OUnl8ofGzb0Reeu82gdrxrPlRthLHeBQ6s227LzuONU=;
+	s=default; t=1607709151;
+	bh=TplYl+8hoGtr6lfTXRkTQFwOaFIrExSSRdo8x/MBfU4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P+bJrtjWG8m3lVDL3J3UYDqWPI7zWO/9xKGQM3aK1fOIWdGOSrWwVIWLoSeZ6mNEo
-	 l2G3U1v/d5Z80ij3TpIdBjp3RP0w9yDv0or7Dbq156Ol4QMnEc5CycjwdlaBrirxVV
-	 TSoNTilJSp588OhcD5gtmMbDqMbztn3VmKy6AIec=
+	b=mExi92ebiFEs52F0cg7WDR0+CE+f/9/MMLh/HT17KdmX52jq7BDn4GJvFEKUwlAZU
+	 f21W3tpiAqVeo+xF8JGDwtxoZgJW42yc1Z9OlaQiqazJKTtYjtC9YMYcZ62DW6Yo7u
+	 r2quKlrM9TjbnM9HZzz3CVZsd9txk56m9ak3s57s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2EDCF804B0;
-	Fri, 11 Dec 2020 18:50:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71C7DF804D8;
+	Fri, 11 Dec 2020 18:50:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4D49F8021D; Fri, 11 Dec 2020 18:50:03 +0100 (CET)
+ id 58A7DF804C3; Fri, 11 Dec 2020 18:50:06 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A1B7F8011F
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:49:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A1B7F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE1BFF8021D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:50:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE1BFF8021D
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20201211051334.2313899-1-tzungbi@google.com>
-References: <20201211051334.2313899-1-tzungbi@google.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8183: add PM ops to machine drivers
-Message-Id: <160770898113.26354.18412556693859362265.b4-ty@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <X9NFg3KVm16Gx6Io@mwanda>
+References: <X9NFg3KVm16Gx6Io@mwanda>
+Subject: Re: [PATCH] ASoC: mediatek: mt8183: delete some unreachable code
+Message-Id: <160770898112.26354.4365158422154864954.b4-ty@kernel.org>
 Date: Fri, 11 Dec 2020 17:49:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,9 +73,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Dec 2020 13:13:34 +0800, Tzung-Bi Shih wrote:
-> Adds PM ops to machine drivers so that they notify components in the
-> sound card when system suspend.
+On Fri, 11 Dec 2020 13:10:11 +0300, Dan Carpenter wrote:
+> This has a goto followed by an unreachable return statement.  The goto
+> is correct because it cleans up so the current runtime behavior is fine.
+> Let's delete the unreachable return statement.
 
 Applied to
 
@@ -80,8 +84,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8183: add PM ops to machine drivers
-      commit: de96bd7b7e9b4cf855fb6d1c7ce32a15dfbdfd92
+[1/1] ASoC: mediatek: mt8183: delete some unreachable code
+      commit: 1688dbe7a730e1c1ed05b9dde497288494d75ad4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
