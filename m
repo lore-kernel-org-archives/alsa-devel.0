@@ -2,98 +2,61 @@ Return-Path: <SRS0=kZkJ=FP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EC6EC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6378C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:50:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 50A5923EF2
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:40:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50A5923EF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id E818D23EF3
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:50:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E818D23EF3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA6A8173C;
-	Fri, 11 Dec 2020 18:39:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA6A8173C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83CCB1719;
+	Fri, 11 Dec 2020 18:49:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83CCB1719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607708446;
-	bh=EVeP3jEKGJ2nnb0wSUWPREzRRR+Uxi+evhpQQdxIjVg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=O8ZmYCip7XH5BnMbIbyWJXui9ULxeBqEeEp96niAFmweYcRd6LE11YDhTQ9+hjyzI
-	 v6oofB2HfFd0dhNPWKcmx795+FhZ+iLm2KkCbxbBXCWjHNZFUiQidWKhNKgngHScT5
-	 q+nh7XtURR1YJQicLB1NE/DmxZHJRew5dIvGORMc=
+	s=default; t=1607709049;
+	bh=qT5843lW1wcIqJcR7Od1zVZ0WfKDFWqe+1/HFmLgmqE=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jWZ3DLDjkQ6EBrHCg79zLP00XHH9HmDDejyviBroAZBbNx8Ap/2F8+WgRqA0zlgQl
+	 HVigYhpLpCgX2N3kIP4uJrDcaqi/5P8qjX50IjTZN4V47ymktA+pJ2MR/dqhZavyXy
+	 O/jJnHlQU/HgvR4N0d5RGCsPHmOx3aAuV2oJPkuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35CF1F80240;
-	Fri, 11 Dec 2020 18:39:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD6B1F8020D;
+	Fri, 11 Dec 2020 18:49:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A85A7F8020D; Fri, 11 Dec 2020 18:06:43 +0100 (CET)
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com
- [IPv6:2a00:1450:4864:20::444])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1B911F80217; Fri, 11 Dec 2020 18:49:57 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AADAF8014E
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:06:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AADAF8014E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="QPdgAmqa"
-Received: by mail-wr1-x444.google.com with SMTP id t4so9721353wrr.12
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 09:06:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=g8zX5fIH9uKJS0RZzLnoP4TzFB+P9VHxAQFkUoP/67o=;
- b=QPdgAmqayhSJPmy887Ad16AJkqcIS/QoRc1rogbiRUibbD7IewVil7Fbq0GrqbKdsM
- PfomXTQRE678qiS0L3z3u8hW33MVPEN5uwT0FR9Oo/je/6HVEuf/lh3VNMnfK7S62lEF
- 7xgRmfSXLJPEEDiHxDplLx8DDAtjH6LOds3+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=g8zX5fIH9uKJS0RZzLnoP4TzFB+P9VHxAQFkUoP/67o=;
- b=fFLqGLuy+vqvWeQedZgFy0/q1SIoSdok+XBqUVYw7ySLRK2S6rwarrm2R8tJtBy0Kp
- 36iBKpfhObGTeYILuax2p+QaWPEzhdga6RjciyEPsJ5laVdRWPCkx+MhF5CCP1olod1K
- +2BIzavRV8/C7I3KdnrtVicucY5Zw7ABpjaXNwcFI2ld8YShvo1w4QZE0buZo0gc9mVp
- ldzsc4Sprld3zoRSdn1XAfM/1qEUOqsmfuHZA+imi+d8M1f+zPIbOr3/CA2EQKxQZt3D
- 4f5OXv88aldFWCZTxHubipqmAXNQt9V+1bB6bT4XNkb5JyUAxjFJ0hw7TaX4SmkcCuah
- sMdA==
-X-Gm-Message-State: AOAM530yjvxUETMYm67HJk/OBvxsmRm/Ey+tJduZ085KGLnfAWwlYa4j
- 7zcrtafKloyT6yNuPww5ozH81Q==
-X-Google-Smtp-Source: ABdhPJyiv3j7K0H57fwiqhv5UkIV7W1Xa/63zhYkYCDfy2XnWY6xMQhBE6ef4VHZ7yxsWz1RrF49Sw==
-X-Received: by 2002:adf:81a2:: with SMTP id 31mr14851609wra.381.1607706391726; 
- Fri, 11 Dec 2020 09:06:31 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
- by smtp.gmail.com with ESMTPSA id h98sm17797100wrh.69.2020.12.11.09.06.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 11 Dec 2020 09:06:31 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Mateusz Gorski <mateusz.gorski@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib
- skl_tplg_complete
-Date: Fri, 11 Dec 2020 18:06:29 +0100
-Message-Id: <20201211170629.871085-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+ by alsa1.perex.cz (Postfix) with ESMTPS id D652FF8014E
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:49:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D652FF8014E
+From: Mark Brown <broonie@kernel.org>
+Authentication-Results: mail.kernel.org;
+ dkim=permerror (bad message/signature format)
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20201211102255.3189589-1-kai.vehmanen@linux.intel.com>
+References: <20201211102255.3189589-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: imx: update kernel-doc description
+Message-Id: <160770898112.26354.14104027567050606825.b4-ty@kernel.org>
+Date: Fri, 11 Dec 2020 17:49:41 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Fri, 11 Dec 2020 18:39:03 +0100
-Cc: Ricardo Ribalda <ribalda@chromium.org>
+Cc: pierre-louis.bossart@linux.intel.com,
+ Daniel Baluta <daniel.baluta@gmail.com>, daniel.baluta@nxp.com,
+ ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,59 +72,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If dobj->control is not initialized we end up in an OOPs during
-skl_tplg_complete:
+On Fri, 11 Dec 2020 12:22:55 +0200, Kai Vehmanen wrote:
+> Add missing parameters to avoid W=1 error
 
-[   26.553358] BUG: kernel NULL pointer dereference, address:
-0000000000000078
-[   26.561151] #PF: supervisor read access in kernel mode
-[   26.566897] #PF: error_code(0x0000) - not-present page
-[   26.572642] PGD 0 P4D 0
-[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-5.4.81 #4
-[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-Google_Soraka.10431.106.0 12/03/2019
-[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
+Applied to
 
-Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- sound/soc/intel/skylake/skl-topology.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 40bee10b0c65..0955cbb4e918 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3619,19 +3619,20 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 
- 	list_for_each_entry(dobj, &component->dobj_list, list) {
- 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
--		struct soc_enum *se =
--			(struct soc_enum *)kcontrol->private_value;
--		char **texts = dobj->control.dtexts;
-+		struct soc_enum *se;
-+		char **texts;
- 		char chan_text[4];
- 
--		if (dobj->type != SND_SOC_DOBJ_ENUM ||
--		    dobj->control.kcontrol->put !=
--		    skl_tplg_multi_config_set_dmic)
-+		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-+		    kcontrol->put != skl_tplg_multi_config_set_dmic)
- 			continue;
-+
-+		se = (struct soc_enum *)kcontrol->private_value;
-+		texts = dobj->control.dtexts;
- 		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
- 
- 		for (i = 0; i < se->items; i++) {
--			struct snd_ctl_elem_value val;
-+			struct snd_ctl_elem_value val = {};
- 
- 			if (strstr(texts[i], chan_text)) {
- 				val.value.enumerated.item[0] = i;
--- 
-2.29.2.576.ga3fc446d84-goog
+Thanks!
 
+[1/1] ASoC: SOF: imx: update kernel-doc description
+      commit: 45c29d9ae9ae41c38f525fab3546f22da80aefb9
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
