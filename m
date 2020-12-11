@@ -6,57 +6,56 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6378C4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:50:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8814CC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:51:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E818D23EF3
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:50:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E818D23EF3
+	by mail.kernel.org (Postfix) with ESMTPS id F264E23F29
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:51:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F264E23F29
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83CCB1719;
-	Fri, 11 Dec 2020 18:49:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83CCB1719
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27C7F1717;
+	Fri, 11 Dec 2020 18:50:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27C7F1717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607709049;
-	bh=qT5843lW1wcIqJcR7Od1zVZ0WfKDFWqe+1/HFmLgmqE=;
+	s=default; t=1607709100;
+	bh=VE9VK9w1/ODQ/mVE6CY0rLREOhTq6d/zaZA7h8rQ7LA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jWZ3DLDjkQ6EBrHCg79zLP00XHH9HmDDejyviBroAZBbNx8Ap/2F8+WgRqA0zlgQl
-	 HVigYhpLpCgX2N3kIP4uJrDcaqi/5P8qjX50IjTZN4V47ymktA+pJ2MR/dqhZavyXy
-	 O/jJnHlQU/HgvR4N0d5RGCsPHmOx3aAuV2oJPkuc=
+	b=orHs0mLvjccuzLEyxYvC4UUVo4qkZqTTZecTRdvUTB74rJswIRh/LnqMi+0nyyEBh
+	 abblhQDAhnZ/W5QnY7UpR/iiRkPcZPd4YyjKvhn0ivGSeVFOSuZgKkyBw+9prCSYzr
+	 FnvD6SXfTMdielsazfsSXaJAA73AA+4kk28wMvCk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BD6B1F8020D;
-	Fri, 11 Dec 2020 18:49:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9C13F80240;
+	Fri, 11 Dec 2020 18:50:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B911F80217; Fri, 11 Dec 2020 18:49:57 +0100 (CET)
+ id 83C0EF8026A; Fri, 11 Dec 2020 18:50:02 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D652FF8014E
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:49:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D652FF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8089FF8021D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:49:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8089FF8021D
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20201211102255.3189589-1-kai.vehmanen@linux.intel.com>
-References: <20201211102255.3189589-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: imx: update kernel-doc description
-Message-Id: <160770898112.26354.14104027567050606825.b4-ty@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>, Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20201210152541.191728-1-amadeuszx.slawinski@linux.intel.com>
+References: <20201210152541.191728-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: topology: Fix wrong size check
+Message-Id: <160770898108.26354.15347683405280708931.b4-ty@kernel.org>
 Date: Fri, 11 Dec 2020 17:49:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com,
- Daniel Baluta <daniel.baluta@gmail.com>, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,8 +71,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Dec 2020 12:22:55 +0200, Kai Vehmanen wrote:
-> Add missing parameters to avoid W=1 error
+On Thu, 10 Dec 2020 10:25:40 -0500, Amadeusz Sławiński wrote:
+> Dan reported that smatch reports wrong size check and after analysis it
+> is confirmed that we are comparing wrong value: pointer size instead of
+> array size. However the check itself is problematic as in UAPI header
+> there are two fields:
+> 
+> struct snd_soc_tplg_enum_control {
+>     (...)
+>     char texts[SND_SOC_TPLG_NUM_TEXTS][SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+>     __le32 values[SND_SOC_TPLG_NUM_TEXTS * SNDRV_CTL_ELEM_ID_NAME_MAXLEN / 4];
+> 
+> [...]
 
 Applied to
 
@@ -81,8 +90,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: imx: update kernel-doc description
-      commit: 45c29d9ae9ae41c38f525fab3546f22da80aefb9
+[1/2] ASoC: topology: Fix wrong size check
+      commit: 631c78ed72bbf852cc09b24e4e4e412ed88770f2
+[2/2] ASoC: topology: Add missing size check
+      commit: f5824e5ce1cdba523a357a4d3ffbe0876a27330f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
