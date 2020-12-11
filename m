@@ -2,61 +2,94 @@ Return-Path: <SRS0=kZkJ=FP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 785A1C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 22:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DE71C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 22:56:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7A94206B7
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 22:52:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7A94206B7
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 084B1206E5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 22:56:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 084B1206E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7F2B176D;
-	Fri, 11 Dec 2020 23:52:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7F2B176D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1479B16DE;
+	Fri, 11 Dec 2020 23:55:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1479B16DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607727174;
-	bh=h/gViz4biH66ZOf7E3+xdonpro9NW4DpmLv0PcmvmoY=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nmAtE4XOt/ATJMRbFTsU3fxKfuxBhzEhUhkm+99XeOeYHXggS93tUje977AALu1P/
-	 ByOL+G+5ZUFWWBk+toVhkNKbLpngFlwPbhXTMrWG0LcAix6yEzkYk5uHkuYrFYTiw9
-	 nWSap/42b/yoIdp/4z5rxCun+2LTjXGa+f2+qo2Q=
+	s=default; t=1607727375;
+	bh=2zsOMd+vuSfYxTDR/YoGlvAmwfLMsyJJuKA/tSwPzqY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Q1Q1TtgOOAEHH+IP+GxjfoP+zJifIR98IGGeKR5TtDdBwnQcOya/w3CfNlPhQlv7K
+	 fNIof0Gp0WjmCLVhL120JqYtqyI8nXyN0zmyics9Gp0jdLxDZ45cO+yE9nwkKXIWm2
+	 7p9f4j55R5F9pOS/6VXoOR0XsT3HtCQnXu/PQNIk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8563FF80240;
-	Fri, 11 Dec 2020 23:51:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96706F801D8;
+	Fri, 11 Dec 2020 23:55:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56053F8021D; Fri, 11 Dec 2020 23:51:08 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 565D5F80217; Fri, 11 Dec 2020 23:55:22 +0100 (CET)
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com
+ [IPv6:2607:f8b0:4864:20::742])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1057F8011F
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 23:50:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1057F8011F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B191DAC10;
- Fri, 11 Dec 2020 22:50:58 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-utils 2/2] alsactl: Fix race at creating a lock file
-Date: Fri, 11 Dec 2020 23:50:56 +0100
-Message-Id: <20201211225056.12301-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201211225056.12301-1-tiwai@suse.de>
-References: <20201211225056.12301-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80E9EF8011F
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 23:55:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80E9EF8011F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="epnhOlCp"
+Received: by mail-qk1-x742.google.com with SMTP id z11so10129527qkj.7
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 14:55:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=dRHr/uDawSIVOsWFHrSFkeCjCrKvMAqRmkxX5HLJ6pA=;
+ b=epnhOlCpUO40W9BG7w+rZSg+AU5U1lGqALVjfpJEPPQ0MsjW4ffyDec33UZNsilcWt
+ 2yNhZz8mxTW6nTMEXYIFMOtnPlaobDgT+Q5ZrmhiFKdleYaoYSSmzIbGK0bz3B+KOs7p
+ Oa96Co1IVeqz4SmmyBJFLubcNXfW5tTFQ4i1pY90CDsQQKQ93dmTyObpSyNxNCQiOmf+
+ LHmyUhGxDMudScs77QQoftYWk3kzylaK/KRDBDRMn7fDlQHQ/WXwI5MgMYmbvkppQxUD
+ pOni+WrodpNCVILZeCCB6o83lq9En9vPDHan8nP4J6rwj4val8fbU0n4tCEdz5+0ovhQ
+ xGvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=dRHr/uDawSIVOsWFHrSFkeCjCrKvMAqRmkxX5HLJ6pA=;
+ b=Mfmtl6jdvv7zPZXS2A8A4WVHcshwCON6wDrfpCS+PFxhD0Mzu9tuKi7wWAKnmafAnE
+ /SbOW1AZduyb/lAPfgA+nx69sIn4tLi4G63VgEn9S5SNL2IOU2CJE4FdoqZ0tA9Wh3Z4
+ VAF/KFZY5UIM84qgMaQ+KlaHfx5YGOeMQj7FGkwmmLVyJpQ8LAHlYHyAerKoDpiWgM1q
+ 9aZoKO3yY/ZYhzX8YiojJNeVw/OjINCxi6hwQtYBE0aEwh1hmKlebWMXzylFa3aGDHnk
+ /sfWwxlDA0WHkL816Tyd6XaEnq2Ft87c+ghCf28KrANquioRQ7qXTSnR3oMdaANKbE8u
+ 32Dw==
+X-Gm-Message-State: AOAM532EBuMSvPmKnOhSR7Knm/2gQynrR7XniAcDOhb3zilVWZCm8gAd
+ +KUL3SOSA62E7qYd55lqEPo=
+X-Google-Smtp-Source: ABdhPJwiweyqLPsItY+4everWoJtpf1jkZeRMN0vKOmoFwwE44OHmed0+BGfVuCWrhdzflXaXAt3qw==
+X-Received: by 2002:a37:90c4:: with SMTP id s187mr19012010qkd.6.1607727317375; 
+ Fri, 11 Dec 2020 14:55:17 -0800 (PST)
+Received: from localhost.localdomain (cpe-71-65-111-223.cinci.res.rr.com.
+ [71.65.111.223])
+ by smtp.googlemail.com with ESMTPSA id i4sm7409594qti.78.2020.12.11.14.55.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 11 Dec 2020 14:55:16 -0800 (PST)
+From: Connor McAdams <conmanx360@gmail.com>
+To: 
+Subject: [PATCH 1/2] ALSA: hda/ca0132 - Add 8051 PLL write helper functions.
+Date: Fri, 11 Dec 2020 17:55:02 -0500
+Message-Id: <20201211225504.4508-1-conmanx360@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, conmanx360@gmail.com,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,45 +105,240 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A race at creating a lock file in state_lock() was discovered
-recently: namely, between the first open(O_RDWR) and the second
-open(O_RDWR|O_CREAT|O_EXCL) calls, another alsactl invocation may
-already create a lock file, then the second open() will return EEXIST,
-which isn't handled properly and treated as a fatal error.
+Add helper functions for the 8051 PLL PMU write verbs.
 
-In this patch, we check EEXIST case and try again open() with O_RDWR.
-This must succeed usually, and if it fails, handle finally as the
-fatal error.
-
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1179904
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- alsactl/lock.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 130 ++++++++++++++---------------------
+ 1 file changed, 50 insertions(+), 80 deletions(-)
 
-diff --git a/alsactl/lock.c b/alsactl/lock.c
-index 05f6e4d2a102..5b4746231996 100644
---- a/alsactl/lock.c
-+++ b/alsactl/lock.c
-@@ -63,10 +63,15 @@ static int state_lock_(const char *file, int lock, int timeout, int _fd)
- 			if (fd < 0) {
- 				if (errno == EBUSY || errno == EAGAIN) {
- 					sleep(1);
--				} else {
--					err = -errno;
--					goto out;
-+					continue;
- 				}
-+				if (errno == EEXIST) {
-+					fd = open(nfile, O_RDWR);
-+					if (fd >= 0)
-+						break;
-+				}
-+				err = -errno;
-+				goto out;
- 			}
- 		}
- 	}
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index e9019e840a4d..9b6b7601a881 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1949,6 +1949,14 @@ static unsigned int chipio_8051_get_data(struct hda_codec *codec)
+ 				   VENDOR_CHIPIO_8051_DATA_READ, 0);
+ }
+ 
++/* PLL_PMU writes share the lower address register of the 8051 exram writes. */
++static void chipio_8051_set_data_pll(struct hda_codec *codec, unsigned int data)
++{
++	/* 8-bits of data. */
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_PLL_PMU_WRITE, data & 0xff);
++}
++
+ static void chipio_8051_write_exram(struct hda_codec *codec,
+ 		unsigned int addr, unsigned int data)
+ {
+@@ -1977,6 +1985,26 @@ static void chipio_8051_read_exram(struct hda_codec *codec,
+ 	*data = chipio_8051_get_data(codec);
+ }
+ 
++static void chipio_8051_write_pll_pmu(struct hda_codec *codec,
++		unsigned int addr, unsigned int data)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	mutex_lock(&spec->chipio_mutex);
++
++	chipio_8051_set_address(codec, addr & 0xff);
++	chipio_8051_set_data_pll(codec, data);
++
++	mutex_unlock(&spec->chipio_mutex);
++}
++
++static void chipio_8051_write_pll_pmu_no_mutex(struct hda_codec *codec,
++		unsigned int addr, unsigned int data)
++{
++	chipio_8051_set_address(codec, addr & 0xff);
++	chipio_8051_set_data_pll(codec, data);
++}
++
+ /*
+  * Enable clocks.
+  */
+@@ -1985,18 +2013,11 @@ static void chipio_enable_clocks(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 
+ 	mutex_lock(&spec->chipio_mutex);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xff);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 5);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0x0b);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 6);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xff);
++
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x00, 0xff);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x05, 0x0b);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x06, 0xff);
++
+ 	mutex_unlock(&spec->chipio_mutex);
+ }
+ 
+@@ -7904,10 +7925,7 @@ static void ae5_post_dsp_register_set(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 
+ 	chipio_8051_write_direct(codec, 0x93, 0x10);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
++	chipio_8051_write_pll_pmu(codec, 0x44, 0xc2);
+ 
+ 	writeb(0xff, spec->mem_base + 0x304);
+ 	writeb(0xff, spec->mem_base + 0x304);
+@@ -7949,30 +7967,11 @@ static void ae5_post_dsp_param_setup(struct hda_codec *codec)
+ 
+ static void ae5_post_dsp_pll_setup(struct hda_codec *codec)
+ {
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x41);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc8);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x45);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xcc);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x40);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xcb);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x51);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0x8d);
++	chipio_8051_write_pll_pmu(codec, 0x41, 0xc8);
++	chipio_8051_write_pll_pmu(codec, 0x45, 0xcc);
++	chipio_8051_write_pll_pmu(codec, 0x40, 0xcb);
++	chipio_8051_write_pll_pmu(codec, 0x43, 0xc7);
++	chipio_8051_write_pll_pmu(codec, 0x51, 0x8d);
+ }
+ 
+ static void ae5_post_dsp_stream_setup(struct hda_codec *codec)
+@@ -7994,10 +7993,7 @@ static void ae5_post_dsp_stream_setup(struct hda_codec *codec)
+ 
+ 	chipio_set_control_param_no_mutex(codec, CONTROL_PARAM_ASI, 4);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x43, 0xc7);
+ 
+ 	ca0113_mmio_command_set(codec, 0x48, 0x01, 0x80);
+ 
+@@ -8090,12 +8086,8 @@ static void ae7_post_dsp_pll_setup(struct hda_codec *codec)
+ 	};
+ 	unsigned int i;
+ 
+-	for (i = 0; i < ARRAY_SIZE(addr); i++) {
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_8051_ADDRESS_LOW, addr[i]);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_PLL_PMU_WRITE, data[i]);
+-	}
++	for (i = 0; i < ARRAY_SIZE(addr); i++)
++		chipio_8051_write_pll_pmu_no_mutex(codec, addr[i], data[i]);
+ }
+ 
+ static void ae7_post_dsp_asi_setup_ports(struct hda_codec *codec)
+@@ -8111,10 +8103,7 @@ static void ae7_post_dsp_asi_setup_ports(struct hda_codec *codec)
+ 
+ 	mutex_lock(&spec->chipio_mutex);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
++	chipio_8051_write_pll_pmu_no_mutex(codec, 0x43, 0xc7);
+ 
+ 	chipio_write_no_mutex(codec, 0x189000, 0x0001f101);
+ 	chipio_write_no_mutex(codec, 0x189004, 0x0001f101);
+@@ -8187,10 +8176,7 @@ static void ae7_post_dsp_asi_setup(struct hda_codec *codec)
+ {
+ 	chipio_8051_write_direct(codec, 0x93, 0x10);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
++	chipio_8051_write_pll_pmu(codec, 0x44, 0xc2);
+ 
+ 	ca0113_mmio_command_set_type2(codec, 0x48, 0x07, 0x83);
+ 	ca0113_mmio_command_set(codec, 0x30, 0x2e, 0x3f);
+@@ -8207,10 +8193,7 @@ static void ae7_post_dsp_asi_setup(struct hda_codec *codec)
+ 	ae7_post_dsp_pll_setup(codec);
+ 	ae7_post_dsp_asi_stream_setup(codec);
+ 
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x43);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc7);
++	chipio_8051_write_pll_pmu(codec, 0x43, 0xc7);
+ 
+ 	ae7_post_dsp_asi_setup_ports(codec);
+ }
+@@ -9367,18 +9350,11 @@ static void ae5_register_set(struct hda_codec *codec)
+ 	unsigned int i, cur_addr;
+ 	unsigned char tmp[3];
+ 
+-	if (ca0132_quirk(spec) == QUIRK_AE7) {
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x41);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc8);
+-	}
++	if (ca0132_quirk(spec) == QUIRK_AE7)
++		chipio_8051_write_pll_pmu(codec, 0x41, 0xc8);
+ 
+ 	chipio_8051_write_direct(codec, 0x93, 0x10);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
++	chipio_8051_write_pll_pmu(codec, 0x44, 0xc2);
+ 
+ 	if (ca0132_quirk(spec) == QUIRK_AE7) {
+ 		tmp[0] = 0x03;
+@@ -9454,10 +9430,7 @@ static void ca0132_alt_init(struct hda_codec *codec)
+ 		break;
+ 	case QUIRK_AE5:
+ 		ca0132_gpio_init(codec);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x49);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_PLL_PMU_WRITE, 0x88);
++		chipio_8051_write_pll_pmu(codec, 0x49, 0x88);
+ 		chipio_write(codec, 0x18b030, 0x00000020);
+ 		snd_hda_sequence_write(codec, spec->chip_init_verbs);
+ 		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
+@@ -9465,10 +9438,7 @@ static void ca0132_alt_init(struct hda_codec *codec)
+ 		break;
+ 	case QUIRK_AE7:
+ 		ca0132_gpio_init(codec);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x49);
+-		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-				VENDOR_CHIPIO_PLL_PMU_WRITE, 0x88);
++		chipio_8051_write_pll_pmu(codec, 0x49, 0x88);
+ 		snd_hda_sequence_write(codec, spec->chip_init_verbs);
+ 		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
+ 		chipio_write(codec, 0x18b008, 0x000000f8);
 -- 
-2.26.2
+2.25.1
 
