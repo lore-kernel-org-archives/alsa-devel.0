@@ -6,85 +6,76 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B77F5C4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 07:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F7C3C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 07:36:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 21CF42313E
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 07:15:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21CF42313E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8D9A623BAB
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 07:36:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D9A623BAB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77E1516CD;
-	Fri, 11 Dec 2020 08:14:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77E1516CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3596316CF;
+	Fri, 11 Dec 2020 08:35:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3596316CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607670936;
-	bh=UG/AzY5s2ecfv69Y+eRh+JIwqe+W0NA7/7LLdiQc62c=;
-	h=Date:From:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1607672165;
+	bh=y6BJ8+pVZsuwv1wN0mvEk0V4nMDFfwyT7TH+DTtvTe4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=FL82vtH5gzcDsWXGjIH2r6eIUctZRTXM7vPnTeIWqLZjktGUTWUKGBfG8m9GpHJm9
-	 9WZ0JQMgUdTtjfWXo5w2GS07Wjvk7HVsvLVAkQ2W+KEHJPco6axVu0ZcnUBSaRFpOy
-	 dKovTviNWcsCWwVzQdktz5DHHgsuj0hXslNSn8Ck=
+	b=O/mOFwE7ifNysiTlhgxhNffLAFiTuP1ioyFsLCrfsIO1V8ky0vTOxTJ2EHOyNa+e4
+	 Od6D9VWvQvE+2IR17FZ968lsFmbHdy4VoyZZF0JlDoVnNzwO6bGYgkJSN5H4o1oMrb
+	 O00xf4PCSYyzOmjWD1uKnfvnzttPTj+UlH1ffw0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AF21F801D8;
-	Fri, 11 Dec 2020 08:14:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF0EEF801D8;
+	Fri, 11 Dec 2020 08:35:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16660F8020D; Fri, 11 Dec 2020 08:14:44 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id CE7FCF8020D; Fri, 11 Dec 2020 08:35:12 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8073DF8014E
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 08:14:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8073DF8014E
-Received: from mail-pl1-f199.google.com ([209.85.214.199])
- by youngberry.canonical.com with esmtps
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>) id 1kncdQ-00053s-4L
- for alsa-devel@alsa-project.org; Fri, 11 Dec 2020 07:14:36 +0000
-Received: by mail-pl1-f199.google.com with SMTP id x17so4904695pll.8
- for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2020 23:14:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:subject:to:message-id:mime-version;
- bh=iBHI7+3aTwdl2EcYneEuYceNW8CRxfacexArOYQEiSw=;
- b=RnSvNtn4BZEPwEYIhEybaA8Be8nH3zMaISg6eWg6MZp0p5cZRulxd/wNbzTyU8dnPs
- k3Z5s8sZYWmA0KNG0vmz5nc5ZeZMBaIjzAy2RR0hJsXHo5Hn/6eVF7Tv0CvQpOSWTyW+
- jFSEcYSwhPtrcW+PUpJ6DSBBWHSKuQmmd2fQyRaSkD39Nnf5eneBxZ0HgMuIrGPFcdaQ
- QR3BE/xRXdtEzIjwNghMF4WoBLD5vCNae9wqes7VhCq4IAnGIx+vG3WdJXnHQGJXY7dn
- 4pDCdJiCmLpGMSwnb5aVcZSSL75wZLx0J4FDsRGH7IpywOE8Qt9ndUPN6FA6u6/CMpUR
- WYuw==
-X-Gm-Message-State: AOAM530tQMbaQ9MjxZYHNPwW5kAFPNK9y08vVH8BqqPR7TrXpj4mOEBK
- UoJeXqo5uQn+obVqlRSrEz2UQpe3MgSwwydoG3fqpBa4A/dLTl7hKi6uZ2/n1WwTtW0V9EEgWY1
- VCJ+of1xnAz1cxvXgU9DuXI7KhIFfMYw+YKke/nYM
-X-Received: by 2002:a17:902:22e:b029:d9:e591:7bd1 with SMTP id
- 43-20020a170902022eb02900d9e5917bd1mr9998632plc.50.1607670874306; 
- Thu, 10 Dec 2020 23:14:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxJfwu3qdjTDvMHmoTYkc0fo3N6x/qu9OJJZ12FpqNZ4HL2sTVSpHunJzyB4Sv/DrXAjC432w==
-X-Received: by 2002:a17:902:22e:b029:d9:e591:7bd1 with SMTP id
- 43-20020a170902022eb02900d9e5917bd1mr9998604plc.50.1607670873696; 
- Thu, 10 Dec 2020 23:14:33 -0800 (PST)
-Received: from 2001-b011-3815-5b5e-d66c-5a1f-1bf7-6aef.dynamic-ip6.hinet.net
- (2001-b011-3815-5b5e-d66c-5a1f-1bf7-6aef.dynamic-ip6.hinet.net.
- [2001:b011:3815:5b5e:d66c:5a1f:1bf7:6aef])
- by smtp.gmail.com with ESMTPSA id cu4sm9358690pjb.18.2020.12.10.23.14.32
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 10 Dec 2020 23:14:32 -0800 (PST)
-Date: Fri, 11 Dec 2020 15:14:24 +0800
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: How to annotate USB jacks without jack detection?
-To: SOUND <alsa-devel@alsa-project.org>
-Message-Id: <0SY5LQ.NPOPM8PL9XNK1@canonical.com>
-X-Mailer: geary/3.38.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id CDDFFF80105
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 08:35:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDDFFF80105
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0BB7YwzeE022935,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.34])
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0BB7YwzeE022935
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 11 Dec 2020 15:34:58 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXMBS03.realtek.com.tw (172.21.6.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 11 Dec 2020 15:34:58 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.36) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 11 Dec 2020 15:34:57 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::513b:ca8:6e55:15a2]) by
+ RTEXMBS01.realtek.com.tw ([fe80::513b:ca8:6e55:15a2%8]) with mapi id
+ 15.01.2106.003; Fri, 11 Dec 2020 15:34:57 +0800
+From: Kailang <kailang@realtek.com>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Subject: Add supported for more Lenovo ALC285 Headset Button
+Thread-Topic: Add supported for more Lenovo ALC285 Headset Button
+Thread-Index: AdbPj89EPTJxPXaPRSacZY8DLgpP2A==
+Date: Fri, 11 Dec 2020 07:34:57 +0000
+Message-ID: <9757dfc7542544319124a5481f941fda@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.102.96]
+Content-Type: multipart/mixed;
+ boundary="_004_9757dfc7542544319124a5481f941fdarealtekcom_"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
 X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,19 +91,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+--_004_9757dfc7542544319124a5481f941fdarealtekcom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-There are some UAC1 devices come with jacks, but without jack detection 
-ability. And many USB/Thunderbolt docks are equipped with such USB 
-device.
+Hi Takashi,
 
-Userspace like PulseAudio automatically switch to USB audio when they 
-gets plugged. However, auto-switching to UAC1 device can be problematic 
-because it may not connected to any headset or speaker.
+This platform had more SSID.
+So, use pin quirk for this platform.
 
-So I wonder what's the best way to let userspace know the USB device is 
-a jack without jack detection ability? Through sysfs or dedicated UCM 
-conf?
+Many Thanks.
 
-Kai-Heng
+Kailang
 
+--_004_9757dfc7542544319124a5481f941fdarealtekcom_
+Content-Type: application/octet-stream;
+	name="0000-alc285-more-thinkpad-hsb.patch"
+Content-Description: 0000-alc285-more-thinkpad-hsb.patch
+Content-Disposition: attachment;
+	filename="0000-alc285-more-thinkpad-hsb.patch"; size=987;
+	creation-date="Fri, 11 Dec 2020 06:19:52 GMT";
+	modification-date="Fri, 11 Dec 2020 07:31:28 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSBkNzU1Yjg1OTA0MjJmNGFiYjU4ZjRjMWZhYTg1YjgzYTZhZGU1NzAwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBrYWlsYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgpEYXRlOiBG
+cmksIDExIERlYyAyMDIwIDE0OjE3OjA5ICswODAwClN1YmplY3Q6IFtQQVRDSF0gQUxTQTogaGRh
+L3JlYWx0ZWsgLSBBZGQgc3VwcG9ydGVkIGZvciBtb3JlIExlbm92byBBTEMyODUgSGVhZHNldCBC
+dXR0b24KCkFkZCBzdXBwb3J0ZWQgZm9yIG1vcmUgTGVub3ZvIEFMQzI4NSBIZWFkc2V0IEJ1dHRv
+bi4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFuZ0ByZWFsdGVrLmNvbT4KCmRp
+ZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfcmVhbHRlay5jCmluZGV4IDg2MTZjNTYyNDg3MC4uYTk3NTVjN2VhYmUzIDEwMDY0NAot
+LS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3Bh
+dGNoX3JlYWx0ZWsuYwpAQCAtODU3Myw2ICs4NTczLDEwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+c25kX2hkYV9waW5fcXVpcmsgYWxjMjY5X3Bpbl9maXh1cF90YmxbXSA9IHsKIAkJezB4MTIsIDB4
+OTBhNjAxMzB9LAogCQl7MHgxOSwgMHgwM2ExMTAyMH0sCiAJCXsweDIxLCAweDAzMjExMDFmfSks
+CisJU05EX0hEQV9QSU5fUVVJUksoMHgxMGVjMDI4NSwgMHgxN2FhLCAiTGVub3ZvIiwgQUxDMjg1
+X0ZJWFVQX1RISU5LUEFEX05PX0JBU1NfU1BLX0hFQURTRVRfSkFDSywKKwkJezB4MTQsIDB4OTAx
+NzAxMTB9LAorCQl7MHgxOSwgMHgwNGExMTA0MH0sCisJCXsweDIxLCAweDA0MjExMDIwfSksCiAJ
+U05EX0hEQV9QSU5fUVVJUksoMHgxMGVjMDI4NSwgMHgxN2FhLCAiTGVub3ZvIiwgQUxDMjg1X0ZJ
+WFVQX0xFTk9WT19QQ19CRUVQX0lOX05PSVNFLAogCQl7MHgxMiwgMHg5MGE2MDEzMH0sCiAJCXsw
+eDE0LCAweDkwMTcwMTEwfSwK
+
+--_004_9757dfc7542544319124a5481f941fdarealtekcom_--
