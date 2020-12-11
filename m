@@ -2,66 +2,67 @@ Return-Path: <SRS0=kZkJ=FP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 777F4C4167B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 10:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D60BC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 10:13:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7289F23C18
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 10:13:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7289F23C18
+	by mail.kernel.org (Postfix) with ESMTPS id AC3F423C82
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 10:13:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC3F423C82
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 100D31742;
-	Fri, 11 Dec 2020 11:12:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 100D31742
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3CD7174C;
+	Fri, 11 Dec 2020 11:12:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3CD7174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607681582;
-	bh=ej5vnF7IUYjFuh52FGXoHNOCVctJ5+gD7y3xPzQJtMA=;
+	s=default; t=1607681588;
+	bh=Jsa689ZtQF0iYDCjhbyzgH/uf/tUTyPIELOogAfEPlI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EspurxGqnsEF8ZdvPb0FejyQR85fHVrFrC15qpW6B5ALX489M1A5lQo1yMyN9D+qC
-	 RyBN79JI36s3gUJA/Eiib3TpMS3vJNYL0kUiDe5RzBcCQhwCG5IEiuG26x97a/wBZc
-	 qUk3rDMlXPEbTgP663sh8NjbrZz6VRNNNUP2oug0=
+	b=Fwh1yqSsrK5rk+W68XuL33Q6hefI/ANuJd284swcxEpfKv0rjQaf222wSGfXraYP3
+	 cC0ivynptbbbb8NlbS8ENgK3yxi22g75hqRSuzd/wsOrtvWJZUJIDE9Al5aRMo9/mc
+	 0gKz1YRtGQTSkNmU05F4MoAAZoBQ+1HMYKkSl0H0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26081F804C3;
+	by alsa1.perex.cz (Postfix) with ESMTP id BE7BAF804CA;
 	Fri, 11 Dec 2020 11:10:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B59AFF804CA; Fri, 11 Dec 2020 11:10:40 +0100 (CET)
+ id 33318F804CA; Fri, 11 Dec 2020 11:10:44 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E92FF80240
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 11:10:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E92FF80240
-IronPort-SDR: ifXTeUAZzxATv6RQtkLTTpb9AZT6eHQvcmoVeodl6IXOccPpYMLpc27UN0ZSO8/Ge8d30e+01z
- GSNivcA0UufQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174554256"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; d="scan'208";a="174554256"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44975F8026A
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 11:10:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44975F8026A
+IronPort-SDR: WcpdqzyiRAG3yCCCR795CXe7upB7KWzBnBUgU6UjGdXyArtavv0FehRQaSZNKUYtSx54+WjSzf
+ d1VTcfzwyRvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="174554262"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; d="scan'208";a="174554262"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Dec 2020 02:10:29 -0800
-IronPort-SDR: LAPdIhfFZGNO6vy3TCBb1r7MKkrQuQkY1vx11zg4qbGBWM6qihS4qaI5SNpEec6Iwlb/naR50D
- 2NrtgsmjjMhg==
+ 11 Dec 2020 02:10:32 -0800
+IronPort-SDR: 9baPQKH5ewOvbL8mP3YZGfyU3EE3Nr/fEO3KAqKr9DcS+O7kLaOc9enWmnEDp/zvuwSWHzx6pw
+ eni4J/8hyvQg==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; d="scan'208";a="376450983"
+X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; d="scan'208";a="376451005"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga007.jf.intel.com with ESMTP; 11 Dec 2020 02:10:27 -0800
+ by orsmga007.jf.intel.com with ESMTP; 11 Dec 2020 02:10:30 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 2/3] ASoC: SOF: modify the SOF_DBG flags
-Date: Fri, 11 Dec 2020 12:07:42 +0200
-Message-Id: <20201211100743.3188821-3-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: Intel: hda: fix the condition passed to
+ sof_dev_dbg_or_err
+Date: Fri, 11 Dec 2020 12:07:43 +0200
+Message-Id: <20201211100743.3188821-4-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201211100743.3188821-1-kai.vehmanen@linux.intel.com>
 References: <20201211100743.3188821-1-kai.vehmanen@linux.intel.com>
@@ -87,117 +88,131 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-The SOF_DBG_* macros are used for dual purposes right now, for the
-sof_core_debug module parameter and for the dbg_dump() ops. So, separate
-these two types of flags into different types to avoid confusion.
+The condition boot_iteration == HDA_FW_BOOT_ATTEMPTS to determine
+the log level for the DSP status dump would only work in the case of DSP
+init failure after maximum number of attempts to initialize the DSP. If
+DSP init succeeds in less than HDA_FW_BOOT_ATTEMPTS attempts and FW
+loading fails, the ROM status dump would end up getting logged as debug
+instead of an error.
+
+So, add a new flag, SOF_DBG_DUMP_LOG_ERROR, to explicitly specify
+the log level for DSP status dump.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/debug.c            |  2 +-
- sound/soc/sof/intel/byt.c        |  2 +-
- sound/soc/sof/intel/hda-loader.c |  4 ++--
- sound/soc/sof/loader.c           |  4 ++--
- sound/soc/sof/ops.c              |  2 +-
- sound/soc/sof/sof-priv.h         | 11 ++++++-----
- 6 files changed, 13 insertions(+), 12 deletions(-)
+ sound/soc/sof/intel/hda-loader.c | 12 ++++++++++--
+ sound/soc/sof/intel/hda.c        | 10 ++++------
+ sound/soc/sof/loader.c           |  2 +-
+ sound/soc/sof/sof-priv.h         |  2 ++
+ 4 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 143117334ae5..30213a1beaaa 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -817,7 +817,7 @@ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
- 	}
- 
- 	/* dump vital information to the logs */
--	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
-+	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
- 	snd_sof_ipc_dump(sdev);
- 	snd_sof_trace_notify_for_error(sdev);
- }
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 186736ee5fc2..19260dbecac5 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -336,7 +336,7 @@ static int byt_run(struct snd_sof_dev *sdev)
- 	}
- 	if (tries < 0) {
- 		dev_err(sdev->dev, "error:  unable to run DSP firmware\n");
--		byt_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
-+		byt_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
- 		return -ENODEV;
- 	}
- 
 diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index d8fb4e277c19..c4dcbe500635 100644
+index c4dcbe500635..ed773696b495 100644
 --- a/sound/soc/sof/intel/hda-loader.c
 +++ b/sound/soc/sof/intel/hda-loader.c
-@@ -175,7 +175,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
+@@ -88,6 +88,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
+ 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
+ 	unsigned int status;
++	u32 flags;
+ 	int ret;
+ 	int i;
+ 
+@@ -175,7 +176,13 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
  			__func__);
  
  err:
--	hda_dsp_dump(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
-+	hda_dsp_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
+-	hda_dsp_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
++	flags = SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX;
++
++	/* force error log level after max boot attempts */
++	if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
++		flags |= SOF_DBG_DUMP_FORCE_ERR_LEVEL;
++
++	hda_dsp_dump(sdev, flags);
  	hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
  
  	return ret;
-@@ -411,7 +411,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+@@ -411,7 +418,8 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
  	if (!ret) {
  		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
  	} else {
--		hda_dsp_dump(sdev, SOF_DBG_REGS | SOF_DBG_PCI | SOF_DBG_MBOX);
-+		hda_dsp_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
+-		hda_dsp_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX);
++		hda_dsp_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_MBOX |
++			     SOF_DBG_DUMP_FORCE_ERR_LEVEL);
  		dev_err(sdev->dev, "error: load fw failed ret: %d\n", ret);
  	}
  
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index bb4128a72a42..509a9b256423 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -416,9 +416,8 @@ void hda_dsp_dump_skl(struct snd_sof_dev *sdev, u32 flags)
+ }
+ 
+ /* dump the first 8 dwords representing the extended ROM status */
+-static void hda_dsp_dump_ext_rom_status(struct snd_sof_dev *sdev)
++static void hda_dsp_dump_ext_rom_status(struct snd_sof_dev *sdev, u32 flags)
+ {
+-	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	char msg[128];
+ 	int len = 0;
+ 	u32 value;
+@@ -429,14 +428,13 @@ static void hda_dsp_dump_ext_rom_status(struct snd_sof_dev *sdev)
+ 		len += snprintf(msg + len, sizeof(msg) - len, " 0x%x", value);
+ 	}
+ 
+-	sof_dev_dbg_or_err(sdev->dev, hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS,
++	sof_dev_dbg_or_err(sdev->dev, flags & SOF_DBG_DUMP_FORCE_ERR_LEVEL,
+ 			   "extended rom status: %s", msg);
+ 
+ }
+ 
+ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
+ {
+-	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	struct sof_ipc_dsp_oops_xtensa xoops;
+ 	struct sof_ipc_panic_info panic_info;
+ 	u32 stack[HDA_DSP_STACK_DUMP_SIZE];
+@@ -456,11 +454,11 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
+ 		snd_sof_get_status(sdev, status, panic, &xoops, &panic_info,
+ 				   stack, HDA_DSP_STACK_DUMP_SIZE);
+ 	} else {
+-		sof_dev_dbg_or_err(sdev->dev, hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS,
++		sof_dev_dbg_or_err(sdev->dev, flags & SOF_DBG_DUMP_FORCE_ERR_LEVEL,
+ 				   "status = 0x%8.8x panic = 0x%8.8x\n",
+ 				   status, panic);
+ 
+-		hda_dsp_dump_ext_rom_status(sdev);
++		hda_dsp_dump_ext_rom_status(sdev, flags);
+ 		hda_dsp_get_status(sdev);
+ 	}
+ }
 diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index cbce484b6469..df39f477239a 100644
+index df39f477239a..08a17abb63ff 100644
 --- a/sound/soc/sof/loader.c
 +++ b/sound/soc/sof/loader.c
-@@ -856,8 +856,8 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
- 				 msecs_to_jiffies(sdev->boot_timeout));
+@@ -857,7 +857,7 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
  	if (ret == 0) {
  		dev_err(sdev->dev, "error: firmware boot failure\n");
--		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX |
--			SOF_DBG_TEXT | SOF_DBG_PCI);
-+		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX |
-+			SOF_DBG_DUMP_TEXT | SOF_DBG_DUMP_PCI);
+ 		snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX |
+-			SOF_DBG_DUMP_TEXT | SOF_DBG_DUMP_PCI);
++			SOF_DBG_DUMP_TEXT | SOF_DBG_DUMP_PCI | SOF_DBG_DUMP_FORCE_ERR_LEVEL);
  		sdev->fw_state = SOF_FW_BOOT_FAILED;
  		return -EIO;
  	}
-diff --git a/sound/soc/sof/ops.c b/sound/soc/sof/ops.c
-index 1a394b4c6a2f..11ecebd07907 100644
---- a/sound/soc/sof/ops.c
-+++ b/sound/soc/sof/ops.c
-@@ -157,7 +157,7 @@ void snd_sof_dsp_panic(struct snd_sof_dev *sdev, u32 offset)
- 		dev_dbg(sdev->dev, "panic: dsp_oops_offset %zu offset %d\n",
- 			sdev->dsp_oops_offset, offset);
- 
--	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_REGS | SOF_DBG_MBOX);
-+	snd_sof_dsp_dbg_dump(sdev, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
- 	snd_sof_trace_notify_for_error(sdev);
- }
- EXPORT_SYMBOL(snd_sof_dsp_panic);
 diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 9ba3e3ceed01..ba317d3b8e53 100644
+index ba317d3b8e53..68da8f797403 100644
 --- a/sound/soc/sof/sof-priv.h
 +++ b/sound/soc/sof/sof-priv.h
-@@ -22,11 +22,12 @@
- 
- /* debug flags */
- #define SOF_DBG_ENABLE_TRACE	BIT(0)
--#define SOF_DBG_REGS		BIT(1)
--#define SOF_DBG_MBOX		BIT(2)
--#define SOF_DBG_TEXT		BIT(3)
--#define SOF_DBG_PCI		BIT(4)
--#define SOF_DBG_RETAIN_CTX	BIT(5)	/* prevent DSP D3 on FW exception */
-+#define SOF_DBG_RETAIN_CTX	BIT(1)	/* prevent DSP D3 on FW exception */
+@@ -28,6 +28,8 @@
+ #define SOF_DBG_DUMP_MBOX		BIT(1)
+ #define SOF_DBG_DUMP_TEXT		BIT(2)
+ #define SOF_DBG_DUMP_PCI		BIT(3)
++#define SOF_DBG_DUMP_FORCE_ERR_LEVEL	BIT(4) /* used to dump dsp status with error log level */
 +
-+#define SOF_DBG_DUMP_REGS		BIT(0)
-+#define SOF_DBG_DUMP_MBOX		BIT(1)
-+#define SOF_DBG_DUMP_TEXT		BIT(2)
-+#define SOF_DBG_DUMP_PCI		BIT(3)
  
  /* global debug state set by SOF_DBG_ flags */
  extern int sof_core_debug;
