@@ -2,59 +2,64 @@ Return-Path: <SRS0=kZkJ=FP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34355C4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 13:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16E33C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 13:04:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A2D7723DE3
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 13:01:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2D7723DE3
+	by mail.kernel.org (Postfix) with ESMTPS id 0BA9E23DE4
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 13:04:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BA9E23DE4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B38A816A9;
-	Fri, 11 Dec 2020 14:01:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B38A816A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E822716A9;
+	Fri, 11 Dec 2020 14:03:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E822716A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607691710;
-	bh=BSRz0CCONlVGsGmluF9jFUBXjdlZw+IzW2M++QEDruU=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CfihBIwvaxOf1NUz7ISkicO4jWJIiTPNVS5fBVF/7SMAcxXLdGdPv8O0acW5s8X03
-	 ono3HIDUuYyKyT5lsnu/ZamMcaXjO1hbGS1Y0DRXoQUYEq5I9rijwVj9x7ykYOZotU
-	 L65vZtyezXCzfez5g/xrudCtS//OP5ISgLxLAG04=
+	s=default; t=1607691872;
+	bh=A++UIOO4msMjh3JrOwRrJ8VdSUJRpXDdhuik0xADQ3w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JxLxnPGmgg+5jixr1wNQ9QKd2whWZDSFwSU4V14yKXoUvCqVfQWcWTJ/H2xLTnUEY
+	 WwbKsgjgSV5bUkPQktxdW4tD5lfd1GkpG08TZkPpcwvBwFvSz5i4Tqtiztoe6blI8V
+	 hpc9pkU/Br0pBYgR9QsBqmsECj43AReqUn6KBT0g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FC02F801D8;
-	Fri, 11 Dec 2020 14:01:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DC88F801D8;
+	Fri, 11 Dec 2020 14:03:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07C0EF8020D; Fri, 11 Dec 2020 14:00:59 +0100 (CET)
+ id 21758F8020D; Fri, 11 Dec 2020 14:03:40 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DDDC3F8011F
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 14:00:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDDC3F8011F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BBC2F8014E
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 14:03:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BBC2F8014E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 17DADAE87
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 13:00:49 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id CF6CDAE87;
+ Fri, 11 Dec 2020 13:03:33 +0000 (UTC)
+Date: Fri, 11 Dec 2020 14:03:33 +0100
+Message-ID: <s5h4kkspk9m.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Fix control 'access overflow' errors from
- chmap
-Date: Fri, 11 Dec 2020 14:00:48 +0100
-Message-Id: <20201211130048.6358-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi: always print pin NIDs as hexadecimal
+In-Reply-To: <20201211124547.3243871-1-kai.vehmanen@linux.intel.com>
+References: <20201211124547.3243871-1-kai.vehmanen@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,46 +75,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current channel-map control implementation in USB-audio driver may
-lead to an error message like
-  "control 3:0:0:Playback Channel Map:0: access overflow"
-when CONFIG_SND_CTL_VALIDATION is set.  It's because the chmap get
-callback clears the whole array no matter which count is set, and
-rather the false-positive detection.
+On Fri, 11 Dec 2020 13:45:47 +0100,
+Kai Vehmanen wrote:
+> 
+> The debug prints from patch_hdmi.c are not aligned with HDA common code
+> in hda_codec.c nor with other HDA codec drivers.
+> 
+> To align with rest of the codebase, use hexadecimal formatting whenever
+> printing value of a HDA NID. Also refer to NIDs with capital letters in
+> traces as is done other modules. This presentation is also aligned with
+> the formatting used in HDA codec procfs entry.
+> 
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-This patch fixes the problem by clearing only the needed array range
-at usb_chmap_ctl_get().
+Thanks, applied now.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/stream.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index ca76ba5b5c0b..2f6d39c2ba7c 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -193,16 +193,16 @@ static int usb_chmap_ctl_get(struct snd_kcontrol *kcontrol,
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct snd_usb_substream *subs = info->private_data;
- 	struct snd_pcm_chmap_elem *chmap = NULL;
--	int i;
-+	int i = 0;
- 
--	memset(ucontrol->value.integer.value, 0,
--	       sizeof(ucontrol->value.integer.value));
- 	if (subs->cur_audiofmt)
- 		chmap = subs->cur_audiofmt->chmap;
- 	if (chmap) {
- 		for (i = 0; i < chmap->channels; i++)
- 			ucontrol->value.integer.value[i] = chmap->map[i];
- 	}
-+	for (; i < subs->channels_max; i++)
-+		ucontrol->value.integer.value[i] = 0;
- 	return 0;
- }
- 
--- 
-2.26.2
-
+Takashi
