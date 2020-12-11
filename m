@@ -6,55 +6,56 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E326C4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:52:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E6B3C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:53:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8C76E23EF3
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:52:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C76E23EF3
+	by mail.kernel.org (Postfix) with ESMTPS id 43B2323EF5
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:53:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 43B2323EF5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 277811740;
-	Fri, 11 Dec 2020 18:51:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 277811740
+	by alsa0.perex.cz (Postfix) with ESMTPS id 966241755;
+	Fri, 11 Dec 2020 18:52:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 966241755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607709160;
-	bh=yPL5e6OBDUX4abp+aurcofifMg+d5TgRFGoEiUuCnkA=;
+	s=default; t=1607709198;
+	bh=ewUDRPTEhwuO/K2gYeplP9h+hY4gCPNb/vErM50OTP0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LGgUmeWq54u53XYTUTxgNKzKfR11ICZImjr4JeQP2NFKYcj4MTgxIak6S+GaPFCBP
-	 Vsd/GZnl73NXqz8sB2+Cs+3zSn/rSn+sj5aiIqueX9C1osc9+TdD37pk43WxfLWtD6
-	 E42MYaJIXVFIkfFIWgcxKWq1mOl1EOhppH2RhJUg=
+	b=UEMdcqLk01TDG09TCLER4uKW4MCWcYBT3DviODiS+Qw4ZLppWPHoWbuDyqwoRwz2E
+	 BuIkE80J+rdzls/yEkf8ck1T8AzREPM77e1vkrp1s4ext+iVc/rGIwwA6QEdRyal8l
+	 VE1OCTkaqrZ7vXdkEkxsd9XoSZJSxyErj8L69rWU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33E59F804E1;
-	Fri, 11 Dec 2020 18:50:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDCAEF804E5;
+	Fri, 11 Dec 2020 18:50:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF65EF804E3; Fri, 11 Dec 2020 18:50:10 +0100 (CET)
+ id 2FBA8F804E7; Fri, 11 Dec 2020 18:50:18 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89DCCF804DF
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:50:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89DCCF804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9A41F804E2
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:50:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A41F804E2
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20201211051224.2307349-1-tzungbi@google.com>
-References: <20201211051224.2307349-1-tzungbi@google.com>
-Subject: Re: [PATCH v3 0/2] ASoC: rt1015p: delay 300ms for waiting calibration
-Message-Id: <160770898112.26354.6573689046730156511.b4-ty@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20201211100743.3188821-1-kai.vehmanen@linux.intel.com>
+References: <20201211100743.3188821-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: Intel: fix to dsp state dump trace levels
+Message-Id: <160770898112.26354.12482471552908120200.b4-ty@kernel.org>
 Date: Fri, 11 Dec 2020 17:49:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com, daniel.baluta@nxp.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,17 +71,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Dec 2020 13:12:22 +0800, Tzung-Bi Shih wrote:
-> The 1st patch moves SDB control from DAI ops trigger to DAPM event
-> (per review comments in v1).
+On Fri, 11 Dec 2020 12:07:40 +0200, Kai Vehmanen wrote:
+> Small series that addresses a problem where DSP status dump
+> for a failure case, ends up being printed as as debug print. This
+> is important information for any bug report. While at it, the series
+> contains a few cleanups to related code.
 > 
-> The 2nd patch adds the 300ms delay for waiting calibration.
-> 
-> Changes from v2:
-> - Use gpiod_set_value_cansleep() instead of gpiod_set_value().
-> (https://patchwork.kernel.org/project/alsa-devel/patch/20201210033617.79300-2-tzungbi@google.com/)
-> - Assuming the calibration state gets lost after system suspend.
-> (https://patchwork.kernel.org/project/alsa-devel/patch/20201210033617.79300-3-tzungbi@google.com/)
+> Ranjani Sridharan (3):
+>   ASoC: SOF: Intel: hda: remove duplicated status dump
+>   ASoC: SOF: modify the SOF_DBG flags
+>   ASoC: SOF: Intel: hda: fix the condition passed to sof_dev_dbg_or_err
 > 
 > [...]
 
@@ -90,10 +90,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt1015p: move SDB control from trigger to DAPM
-      commit: 4ab9301710760b99b4229d608eb5599040b2e07e
-[2/2] ASoC: rt1015p: delay 300ms after SDB pulling high for calibration
-      commit: f102d0d173982be3fc096d0293c1c0245e988ba6
+[1/3] ASoC: SOF: Intel: hda: remove duplicated status dump
+      commit: b278fc55b47739da49ea7f95e6ad58d436091ba2
+[2/3] ASoC: SOF: modify the SOF_DBG flags
+      commit: fbfa22ec4b2b8a1bb1a52c56c376295c7b7e7849
+[3/3] ASoC: SOF: Intel: hda: fix the condition passed to sof_dev_dbg_or_err
+      commit: 8f7ef6fca0317fb217d1eef8f30010d7a9c6ae0e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
