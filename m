@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E356C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 05:57:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26CC4C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 05:58:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B684523EB3
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 05:57:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B684523EB3
+	by mail.kernel.org (Postfix) with ESMTPS id 9A69823EB4
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 05:58:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A69823EB4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D2A516DE;
-	Fri, 11 Dec 2020 06:56:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D2A516DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAD0A16DB;
+	Fri, 11 Dec 2020 06:57:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAD0A16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607666259;
-	bh=uF7K/yXgwWdpZKFPOextfSBkFK3y11S6C39UCNAoE00=;
+	s=default; t=1607666301;
+	bh=BEeGOSFZwovGvyEUOy3XAYgJfAFMtp/BOTiekGF8Y58=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SvqG4In4MA+RniJShfoD6SpKPg1B52W7dE2y/VQXXDUd1L57hkQBtkKNCV6idvmqt
-	 SF9IiWDWmm6Ua4pJluIhXz4UpZ1EcB60Skjo452b0s+qzZMO6amzRHNFdz52b7Q4Kd
-	 ObAbqpX3i27LEflNjhDRyoP23F6iqxYlKmWdNIwk=
+	b=Bq/wKazO3fzTbC4kUTrbDTT16S9OWJbsE87+fuaPffXYMABdovbAQV9xf0+JRyyw0
+	 k0skym9W39Ih/uZvTcwl95Srm+wbn1KH5ZZ4OnZCNXLozxWbk3sUAVHtM7xFSQ6OAv
+	 Uy+Q++A/kn+pX/dseXP6r1p85sJvEENWtEAiO9wk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB258F804D2;
-	Fri, 11 Dec 2020 06:55:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FA7EF804E1;
+	Fri, 11 Dec 2020 06:55:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A11E6F804C3; Fri, 11 Dec 2020 06:55:38 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A5BF7F804C3
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 06:55:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5BF7F804C3
-Date: 11 Dec 2020 14:55:33 +0900
-X-IronPort-AV: E=Sophos;i="5.78,410,1599490800"; d="scan'208";a="65602861"
+ id CF114F804E2; Fri, 11 Dec 2020 06:55:46 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D3238F804D8
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 06:55:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3238F804D8
+Date: 11 Dec 2020 14:55:38 +0900
+X-IronPort-AV: E=Sophos;i="5.78,410,1599490800"; d="scan'208";a="65387383"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 11 Dec 2020 14:55:33 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 11 Dec 2020 14:55:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A0E1341EE975;
- Fri, 11 Dec 2020 14:55:33 +0900 (JST)
-Message-ID: <87wnxo7uyq.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 955B641EE975;
+ Fri, 11 Dec 2020 14:55:38 +0900 (JST)
+Message-ID: <87v9d87uyl.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/6] ASoC: soc-pcm: cleanup soc_pcm_apply_symmetry()
+Subject: [PATCH 5/6] ASoC: soc-pcm: cleanup soc_pcm_params_symmetry()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87360c99kb.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,92 +77,86 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc_pcm_apply_symmetry() want to call snd_pcm_hw_constraint_single()
-for rate/channel/sample_bits, but, it needs many condition check.
+soc_pcm_params_symmetry() checks rate/channel/sample_bits state.
 These are very similar but different, thus, it needs to have very
 verbose code.
 This patch use macro for it and make code more simple.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 67 ++++++++++++++-------------------------------
- 1 file changed, 20 insertions(+), 47 deletions(-)
+ sound/soc/soc-pcm.c | 60 ++++++++++++---------------------------------
+ 1 file changed, 15 insertions(+), 45 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 98a47fc43923..bf2b49dd691d 100644
+index bf2b49dd691d..2f2c4c19f1b8 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -349,53 +349,26 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	int ret;
+@@ -384,53 +384,23 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
  
--	if (soc_dai->rate && (soc_dai->driver->symmetric_rates ||
--				rtd->dai_link->symmetric_rates)) {
--		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %dHz rate\n",
--				soc_dai->rate);
+ 	soc_pcm_set_dai_params(&d, params);
+ 
+-	/* reject unmatched parameters when applying symmetry */
+-	symmetry = rtd->dai_link->symmetric_rates;
 -
--		ret = snd_pcm_hw_constraint_single(substream->runtime,
--						SNDRV_PCM_HW_PARAM_RATE,
--						soc_dai->rate);
--		if (ret < 0) {
--			dev_err(soc_dai->dev,
--				"ASoC: Unable to apply rate constraint: %d\n",
--				ret);
--			return ret;
+-	for_each_rtd_cpu_dais(rtd, i, dai)
+-		symmetry |= dai->driver->symmetric_rates;
+-
+-	if (symmetry) {
+-		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-			if (cpu_dai->rate && cpu_dai->rate != d.rate) {
+-				dev_err(rtd->dev, "ASoC: unmatched rate symmetry: %d - %d\n",
+-					cpu_dai->rate, d.rate);
+-				return -EINVAL;
+-			}
 -		}
 -	}
 -
--	if (soc_dai->channels && (soc_dai->driver->symmetric_channels ||
--				rtd->dai_link->symmetric_channels)) {
--		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %d channel(s)\n",
--				soc_dai->channels);
+-	symmetry = rtd->dai_link->symmetric_channels;
 -
--		ret = snd_pcm_hw_constraint_single(substream->runtime,
--						SNDRV_PCM_HW_PARAM_CHANNELS,
--						soc_dai->channels);
--		if (ret < 0) {
--			dev_err(soc_dai->dev,
--				"ASoC: Unable to apply channel symmetry constraint: %d\n",
--				ret);
--			return ret;
--		}
--	}
+-	for_each_rtd_dais(rtd, i, dai)
+-		symmetry |= dai->driver->symmetric_channels;
 -
--	if (soc_dai->sample_bits && (soc_dai->driver->symmetric_samplebits ||
--				rtd->dai_link->symmetric_samplebits)) {
--		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %d sample bits\n",
--				soc_dai->sample_bits);
--
--		ret = snd_pcm_hw_constraint_single(substream->runtime,
--						SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
--						soc_dai->sample_bits);
--		if (ret < 0) {
--			dev_err(soc_dai->dev,
--				"ASoC: Unable to apply sample bits symmetry constraint: %d\n",
--				ret);
--			return ret;
--		}
--	}
-+#define __soc_pcm_apply_symmetry(name, sname, NAME)			\
-+	if (soc_dai->name && (soc_dai->driver->symmetric_##sname ||	\
-+			      rtd->dai_link->symmetric_##sname)) {	\
-+		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %s to %d\n",\
-+			#name, soc_dai->name);				\
+-	if (symmetry) {
+-		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-			if (cpu_dai->channels &&
+-			    cpu_dai->channels != d.channels) {
+-				dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
+-					cpu_dai->channels, d.channels);
+-				return -EINVAL;
++#define __soc_pcm_params_symmetry(name, sname)				\
++	symmetry = rtd->dai_link->symmetric_##sname;			\
++	for_each_rtd_dais(rtd, i, dai)					\
++		symmetry |= dai->driver->symmetric_##sname;		\
 +									\
-+		ret = snd_pcm_hw_constraint_single(substream->runtime,	\
-+						   SNDRV_PCM_HW_PARAM_##NAME,\
-+						   soc_dai->name);	\
-+		if (ret < 0) {						\
-+			dev_err(soc_dai->dev,				\
-+				"ASoC: Unable to apply %s constraint: %d\n",\
-+				#name, ret);				\
-+			return ret;					\
-+		}							\
-+	}
-+
-+	__soc_pcm_apply_symmetry(rate,		rates,		RATE);
-+	__soc_pcm_apply_symmetry(channels,	channels,	CHANNELS);
-+	__soc_pcm_apply_symmetry(sample_bits,	samplebits,	SAMPLE_BITS);
++	if (symmetry)							\
++		for_each_rtd_cpu_dais(rtd, i, cpu_dai)			\
++			if (cpu_dai->name && cpu_dai->name != d.name) {	\
++				dev_err(rtd->dev, "ASoC: unmatched %s symmetry: %d - %d\n", \
++					#name, cpu_dai->name, d.name);	\
++				return -EINVAL;				\
+ 			}
+-		}
+-	}
+ 
+-	symmetry = rtd->dai_link->symmetric_samplebits;
+-
+-	for_each_rtd_dais(rtd, i, dai)
+-		symmetry |= dai->driver->symmetric_samplebits;
+-
+-	if (symmetry) {
+-		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-			if (cpu_dai->sample_bits &&
+-			    cpu_dai->sample_bits != d.sample_bits) {
+-				dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
+-					cpu_dai->sample_bits, d.sample_bits);
+-				return -EINVAL;
+-			}
+-		}
+-	}
++	/* reject unmatched parameters when applying symmetry */
++	__soc_pcm_params_symmetry(rate,		rates);
++	__soc_pcm_params_symmetry(channels,	channels);
++	__soc_pcm_params_symmetry(sample_bits,	samplebits);
  
  	return 0;
  }
