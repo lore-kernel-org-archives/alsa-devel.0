@@ -2,58 +2,59 @@ Return-Path: <SRS0=kZkJ=FP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BA55C4167B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:00:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9074CC4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:08:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94F8823E26
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:00:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94F8823E26
+	by mail.kernel.org (Postfix) with ESMTPS id 1F15523BCD
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:07:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F15523BCD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE3001738;
-	Fri, 11 Dec 2020 17:59:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE3001738
+	by alsa0.perex.cz (Postfix) with ESMTPS id B84F71718;
+	Fri, 11 Dec 2020 18:07:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B84F71718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607706005;
-	bh=GhSgID3DyX2rQc3/Jw29vo7urlyKS0Ks5hAHdIqzD8o=;
+	s=default; t=1607706476;
+	bh=MM30qqOTLy5F1QyTYmYWKiUZiMiT+I5elzfSgD/P+G8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mbs+GCvUtCsX4JlsQ4hTAJJ0x8Mz1jiMQ/slqVc2TJdX/G5UNVk5H1m7XObF9S22w
-	 dqol2sjsUQeCpji/HmgpXihGg3Rb9dV/jXq8OfWyc4fhfE0lwtQ8S47gW4XuWP+v0D
-	 +w//lnYYi8PrYGIojCkLcMiihvOjKpDUTuTmH9C0=
+	b=Hqh9avwH2nibLjrFBVLVX7yYwmnSEotk632eX22prSVKcfK8JnsK6tlPsANbAUV4V
+	 DlqxZ3NVG1/Lj7JH/c6Hj4xGViM/laVFqiH7mZxVf2SmNiwJDgUyZhtNxjs793o9aj
+	 gf9H5+owOBhSwMH/KeseJXTQhEd8diPMHddkRSPM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60D7FF801D8;
-	Fri, 11 Dec 2020 17:59:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BB0FF801D8;
+	Fri, 11 Dec 2020 18:07:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9CCAF8020D; Fri, 11 Dec 2020 17:59:13 +0100 (CET)
+ id EB392F8020D; Fri, 11 Dec 2020 18:07:04 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BAD13F80105
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 17:59:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAD13F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDADEF8014E
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:06:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDADEF8014E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C18C2ADCD;
- Fri, 11 Dec 2020 16:59:05 +0000 (UTC)
-Date: Fri, 11 Dec 2020 17:59:05 +0100
-Message-ID: <s5heejwnusm.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9031FADCD;
+ Fri, 11 Dec 2020 17:06:53 +0000 (UTC)
+Date: Fri, 11 Dec 2020 18:06:53 +0100
+Message-ID: <s5hblf0nufm.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH] alsactl: Skip restore during the lock
-In-Reply-To: <a9bd692e-a55f-f068-b78d-1429a587307e@perex.cz>
+In-Reply-To: <s5heejwnusm.wl-tiwai@suse.de>
 References: <20201211083804.800-1-tiwai@suse.de>
  <a9bd692e-a55f-f068-b78d-1429a587307e@perex.cz>
+ <s5heejwnusm.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -75,42 +76,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Dec 2020 17:45:45 +0100,
-Jaroslav Kysela wrote:
+On Fri, 11 Dec 2020 17:59:05 +0100,
+Takashi Iwai wrote:
 > 
-> Dne 11. 12. 20 v 9:38 Takashi Iwai napsal(a):
-> > Currently alsactl-restore tries to initialize the device when an error
-> > is found for restore action.  But this isn't the right behavior in the
-> > case where the lock is held; it implies that another alsactl is
-> > running concurrently, hence you shouldn't initialize the card at the
-> > same time.  The situation is found easily when two alsactls get
-> > started by both udev and systemd (note that those two invocations are
-> > the designed behavior, see /usr/lib/udev/rules.d/78-sound-cards.rules
-> > for details).
+> On Fri, 11 Dec 2020 17:45:45 +0100,
+> Jaroslav Kysela wrote:
 > > 
-> > This patch changes load_state() not to handle the initialization if
-> > the locking fails.
+> > Dne 11. 12. 20 v 9:38 Takashi Iwai napsal(a):
+> > > Currently alsactl-restore tries to initialize the device when an error
+> > > is found for restore action.  But this isn't the right behavior in the
+> > > case where the lock is held; it implies that another alsactl is
+> > > running concurrently, hence you shouldn't initialize the card at the
+> > > same time.  The situation is found easily when two alsactls get
+> > > started by both udev and systemd (note that those two invocations are
+> > > the designed behavior, see /usr/lib/udev/rules.d/78-sound-cards.rules
+> > > for details).
+> > > 
+> > > This patch changes load_state() not to handle the initialization if
+> > > the locking fails.
+> > 
+> > The operation should serialize in this case (there's limit of 10 seconds which
+> > should be enough to finish the initialization). The state_lock() function
+> > should return -EBUSY when the file is locked (and I'm fine to change the
+> > behaviour from 'init' to 'skip' for this lock state).
+> > 
+> > It seems that -EEXIST is returned when the lock file exists, but the
+> > open(file, O_CREAT|O_EXCL, 0644) caller has not enough priviledges to access
+> > this file when another user owns the file.
+> > 
+> > But alsactl from /lib/udev/rules.d/90-alsa-restore.rules and
+> > /lib/systemd/system/alsa-restore.service should be run as root, right?
 > 
-> The operation should serialize in this case (there's limit of 10 seconds which
-> should be enough to finish the initialization). The state_lock() function
-> should return -EBUSY when the file is locked (and I'm fine to change the
-> behaviour from 'init' to 'skip' for this lock state).
+> Yes, it should be root.
 > 
-> It seems that -EEXIST is returned when the lock file exists, but the
-> open(file, O_CREAT|O_EXCL, 0644) caller has not enough priviledges to access
-> this file when another user owns the file.
-> 
-> But alsactl from /lib/udev/rules.d/90-alsa-restore.rules and
-> /lib/systemd/system/alsa-restore.service should be run as root, right?
+> I also wondered how EEXIST comes, too.  Maybe it's also the race
+> between the first open(O_RDWR) and the second
+> open(O_RDWR|O_CREAT|O_EXCL)?  If so, it'd be better to go back again
+> to the normal open(O_RDWR)?
 
-Yes, it should be root.
-
-I also wondered how EEXIST comes, too.  Maybe it's also the race
-between the first open(O_RDWR) and the second
-open(O_RDWR|O_CREAT|O_EXCL)?  If so, it'd be better to go back again
-to the normal open(O_RDWR)?
+... something like below
 
 
-thanks,
+diff --git a/alsactl/lock.c b/alsactl/lock.c
+index 4a485392b3bd..c1c30f0c5eee 100644
+--- a/alsactl/lock.c
++++ b/alsactl/lock.c
+@@ -64,6 +64,9 @@ static int state_lock_(const char *file, int lock, int timeout, int _fd)
+ 				if (errno == EBUSY || errno == EAGAIN) {
+ 					sleep(1);
+ 					timeout--;
++				} if (errno == EEXIST){
++					/* race at creating a lock, try again */
++					continue;
+ 				} else {
+ 					err = -errno;
+ 					goto out;
+
 
 Takashi
