@@ -6,58 +6,62 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEB18C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:53:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C59EC4167B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:54:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BBBA723F29
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:53:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBBA723F29
+	by mail.kernel.org (Postfix) with ESMTPS id DE50323EF4
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 17:54:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE50323EF4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA431758;
-	Fri, 11 Dec 2020 18:52:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA431758
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AE331738;
+	Fri, 11 Dec 2020 18:53:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AE331738
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607709207;
-	bh=4EOf8D7OQUUvtQ6rD3P+pGdYNfTp7JphaQcIkzav/Ic=;
+	s=default; t=1607709245;
+	bh=3eNEFFIRklZak3VAQ5rwWNEeLo2/6IiZZQDo08zuhzI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jBUOdSnhKBio+ISQpqAwUHRtrr2Y3L5HWIOq1wCnCtOQei8A5cmjj3vLUYOaD7xNr
-	 a1AMq5eSJUe91mSzYiYeKRTN6ShWOBH5TQ1zcJF8haErI212lFjnxD872c0Rt2/GHJ
-	 W6cTY5J8DL8egCmQSJvSVfwa5/rST1NAbnr/pvLo=
+	b=Xwnq9UAHwGNU5NurO3ofyjxKTZOOqUlcEiTMnDBB1EtqEvOML7AQl+TT6pSqhUHvL
+	 P4ucmLRm+eAsOBEwoE/jk4iaB8nl9VKPGT1NWrsqfTlLsRroPPiMv+2gEYoSB2TppL
+	 afMntgF6z66A2uKqTilg+NmXZQInaxnXw48Li5Ds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BF0FF804ED;
-	Fri, 11 Dec 2020 18:50:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 351C2F804FA;
+	Fri, 11 Dec 2020 18:50:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C2B2F804ED; Fri, 11 Dec 2020 18:50:20 +0100 (CET)
+ id 460B9F804FB; Fri, 11 Dec 2020 18:50:24 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB572F804E2
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:50:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB572F804E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEBD5F804EC
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 18:50:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEBD5F804EC
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Sameer Pujar <spujar@nvidia.com>, robh+dt@kernel.org,
- thierry.reding@gmail.com
-In-Reply-To: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
-References: <1607006202-4078-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [RESEND PATCH 0/2] Convert Tegra HDA doc to json-schema
-Message-Id: <160770898108.26354.183397284224263445.b4-ty@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <X9B0keV/02wrx9Xs@mwanda>
+References: <X9B0keV/02wrx9Xs@mwanda>
+Subject: Re: [PATCH] ASoC: wm_adsp: remove "ctl" from list on error in
+ wm_adsp_create_control()
+Message-Id: <160770898111.26354.10129109008284234263.b4-ty@kernel.org>
 Date: Fri, 11 Dec 2020 17:49:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- linux-tegra@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Adam Brickman <Adam.Brickman@cirrus.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, David Rhodes <david.rhodes@cirrus.com>,
+ Luo Meng <luomeng12@huawei.com>, James Schulman <james.schulman@cirrus.com>,
+ Vlad Karpovich <Vlad.Karpovich@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,18 +77,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Dec 2020 20:06:40 +0530, Sameer Pujar wrote:
-> Convert Tegra HDA doc to YAML format. Ran binding validation checks to
-> ensure there are no warnings/errors for HDA.
-> 
-> Patch "arm64: tegra: Fix Tegra194 HDA {clock,reset}-names ordering" is
-> already merged and hence not included here.
-> 
-> Sameer Pujar (2):
->   dt-bindings: tegra: Convert HDA doc to json-schema
->   dt-bindings: tegra: Add missing HDA properties
-> 
-> [...]
+On Wed, 9 Dec 2020 09:54:09 +0300, Dan Carpenter wrote:
+> The error handling frees "ctl" but it's still on the "dsp->ctl_list"
+> list so that could result in a use after free.  Remove it from the list
+> before returning.
 
 Applied to
 
@@ -92,10 +88,8 @@ Applied to
 
 Thanks!
 
-[1/2] dt-bindings: tegra: Convert HDA doc to json-schema
-      commit: 2d8f8955fe02c1f5d41c283f48d8c6a2a02ae17f
-[2/2] dt-bindings: tegra: Add missing HDA properties
-      commit: 3759d5edc07598d55124d87bd292a95f79f47997
+[1/1] ASoC: wm_adsp: remove "ctl" from list on error in wm_adsp_create_control()
+      commit: 85a7555575a0e48f9b73db310d0d762a08a46d63
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
