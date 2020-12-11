@@ -7,64 +7,54 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FB98C4167B
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 12:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34355C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 13:01:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 74BCC23EF2
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 12:49:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74BCC23EF2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id A2D7723DE3
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Dec 2020 13:01:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2D7723DE3
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 128391746;
-	Fri, 11 Dec 2020 13:48:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 128391746
+	by alsa0.perex.cz (Postfix) with ESMTPS id B38A816A9;
+	Fri, 11 Dec 2020 14:01:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B38A816A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607690972;
-	bh=Z8FnnzK/sz/y+E1g0ZrYWqP7oRVj4oPWrkPok695s80=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1607691710;
+	bh=BSRz0CCONlVGsGmluF9jFUBXjdlZw+IzW2M++QEDruU=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=p6MdnGnB3sQ/iAnjTepeW5EpaNBw5jb1SkqT2mJ/6taYs9ItPqzHwc3o0yZUWX2t7
-	 DLQVop6biSCLxMtbMua9yDtu/y1Xju7t4RCZjgU/IREStN7sliN+jYzgZ9gk/snYro
-	 JomIh2QFRb8Dv2dpYOJrs9j7DmXBq3t8/diKdnEA=
+	b=CfihBIwvaxOf1NUz7ISkicO4jWJIiTPNVS5fBVF/7SMAcxXLdGdPv8O0acW5s8X03
+	 ono3HIDUuYyKyT5lsnu/ZamMcaXjO1hbGS1Y0DRXoQUYEq5I9rijwVj9x7ykYOZotU
+	 L65vZtyezXCzfez5g/xrudCtS//OP5ISgLxLAG04=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A07D2F801D8;
-	Fri, 11 Dec 2020 13:48:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FC02F801D8;
+	Fri, 11 Dec 2020 14:01:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 863F9F8020D; Fri, 11 Dec 2020 13:48:39 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 07C0EF8020D; Fri, 11 Dec 2020 14:00:59 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF1D3F8014E
- for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 13:48:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF1D3F8014E
-IronPort-SDR: m6+pPOxAkp/B+iDVTyBHJEfsLnTqv6vcWgGz/IxGd/4Owq2hPtEyi/mtkQ4gTZx+4tzyAOhCMc
- EtQct7pvBVXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9831"; a="238528537"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; d="scan'208";a="238528537"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Dec 2020 04:48:28 -0800
-IronPort-SDR: tJnt3+QXZCy8EEwXJ87999x5H07dP0gEk+bXuxc75tHlaN4Nuw2yqEcuV09mT/HpKFyqReCBfI
- QKaqjzMHVISA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; d="scan'208";a="322056078"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008.fm.intel.com with ESMTP; 11 Dec 2020 04:48:26 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [PATCH] ALSA: hda/hdmi: always print pin NIDs as hexadecimal
-Date: Fri, 11 Dec 2020 14:45:47 +0200
-Message-Id: <20201211124547.3243871-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDDC3F8011F
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 14:00:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDDC3F8011F
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 17DADAE87
+ for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2020 13:00:49 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Fix control 'access overflow' errors from
+ chmap
+Date: Fri, 11 Dec 2020 14:00:48 +0100
+Message-Id: <20201211130048.6358-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,120 +70,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The debug prints from patch_hdmi.c are not aligned with HDA common code
-in hda_codec.c nor with other HDA codec drivers.
+The current channel-map control implementation in USB-audio driver may
+lead to an error message like
+  "control 3:0:0:Playback Channel Map:0: access overflow"
+when CONFIG_SND_CTL_VALIDATION is set.  It's because the chmap get
+callback clears the whole array no matter which count is set, and
+rather the false-positive detection.
 
-To align with rest of the codebase, use hexadecimal formatting whenever
-printing value of a HDA NID. Also refer to NIDs with capital letters in
-traces as is done other modules. This presentation is also aligned with
-the formatting used in HDA codec procfs entry.
+This patch fixes the problem by clearing only the needed array range
+at usb_chmap_ctl_get().
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_hdmi.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ sound/usb/stream.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 2ddc27db8c01..22f5a29d25f6 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -253,7 +253,7 @@ static int pin_id_to_pin_index(struct hda_codec *codec,
- 			return pin_idx;
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index ca76ba5b5c0b..2f6d39c2ba7c 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -193,16 +193,16 @@ static int usb_chmap_ctl_get(struct snd_kcontrol *kcontrol,
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct snd_usb_substream *subs = info->private_data;
+ 	struct snd_pcm_chmap_elem *chmap = NULL;
+-	int i;
++	int i = 0;
+ 
+-	memset(ucontrol->value.integer.value, 0,
+-	       sizeof(ucontrol->value.integer.value));
+ 	if (subs->cur_audiofmt)
+ 		chmap = subs->cur_audiofmt->chmap;
+ 	if (chmap) {
+ 		for (i = 0; i < chmap->channels; i++)
+ 			ucontrol->value.integer.value[i] = chmap->map[i];
  	}
- 
--	codec_warn(codec, "HDMI: pin nid %d not registered\n", pin_nid);
-+	codec_warn(codec, "HDMI: pin NID 0x%x not registered\n", pin_nid);
- 	return -EINVAL;
- }
- 
-@@ -313,7 +313,7 @@ static int cvt_nid_to_cvt_index(struct hda_codec *codec, hda_nid_t cvt_nid)
- 		if (get_cvt(spec, cvt_idx)->cvt_nid == cvt_nid)
- 			return cvt_idx;
- 
--	codec_warn(codec, "HDMI: cvt nid %d not registered\n", cvt_nid);
-+	codec_warn(codec, "HDMI: cvt NID 0x%x not registered\n", cvt_nid);
- 	return -EINVAL;
- }
- 
-@@ -687,8 +687,7 @@ static void hdmi_pin_setup_infoframe(struct hda_codec *codec,
- 		dp_ai->CC02_CT47	= active_channels - 1;
- 		dp_ai->CA		= ca;
- 	} else {
--		codec_dbg(codec, "HDMI: unknown connection type at pin %d\n",
--			    pin_nid);
-+		codec_dbg(codec, "HDMI: unknown connection type at pin NID 0x%x\n", pin_nid);
- 		return;
- 	}
- 
-@@ -701,10 +700,8 @@ static void hdmi_pin_setup_infoframe(struct hda_codec *codec,
- 	 */
- 	if (!hdmi_infoframe_uptodate(codec, pin_nid, ai.bytes,
- 					sizeof(ai))) {
--		codec_dbg(codec,
--			  "hdmi_pin_setup_infoframe: pin=%d channels=%d ca=0x%02x\n",
--			    pin_nid,
--			    active_channels, ca);
-+		codec_dbg(codec, "%s: pin NID=0x%x channels=%d ca=0x%02x\n",
-+			  __func__, pin_nid, active_channels, ca);
- 		hdmi_stop_infoframe_trans(codec, pin_nid);
- 		hdmi_fill_audio_infoframe(codec, pin_nid,
- 					    ai.bytes, sizeof(ai));
-@@ -796,7 +793,7 @@ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res,
- 	jack->jack_dirty = 1;
- 
- 	codec_dbg(codec,
--		"HDMI hot plug event: Codec=%d Pin=%d Device=%d Inactive=%d Presence_Detect=%d ELD_Valid=%d\n",
-+		"HDMI hot plug event: Codec=%d NID=0x%x Device=%d Inactive=%d Presence_Detect=%d ELD_Valid=%d\n",
- 		codec->addr, jack->nid, jack->dev_id, !!(res & AC_UNSOL_RES_IA),
- 		!!(res & AC_UNSOL_RES_PD), !!(res & AC_UNSOL_RES_ELDV));
- 
-@@ -874,7 +871,7 @@ static void haswell_verify_D0(struct hda_codec *codec,
- 		msleep(40);
- 		pwr = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_POWER_STATE, 0);
- 		pwr = (pwr & AC_PWRST_ACTUAL) >> AC_PWRST_ACTUAL_SHIFT;
--		codec_dbg(codec, "Haswell HDMI audio: Power for pin 0x%x is now D%d\n", nid, pwr);
-+		codec_dbg(codec, "Haswell HDMI audio: Power for NID 0x%x is now D%d\n", nid, pwr);
- 	}
- }
- 
-@@ -1121,8 +1118,8 @@ static void intel_not_share_assigned_cvt(struct hda_codec *codec,
- 			per_cvt = get_cvt(spec, cvt_idx);
- 			if (!per_cvt->assigned) {
- 				codec_dbg(codec,
--					  "choose cvt %d for pin nid %d\n",
--					cvt_idx, nid);
-+					  "choose cvt %d for pin NID 0x%x\n",
-+					  cvt_idx, nid);
- 				snd_hda_codec_write_cache(codec, nid, 0,
- 					    AC_VERB_SET_CONNECT_SEL,
- 					    cvt_idx);
-@@ -1320,7 +1317,7 @@ static int hdmi_read_pin_conn(struct hda_codec *codec, int pin_idx)
- 
- 	if (!(get_wcaps(codec, pin_nid) & AC_WCAP_CONN_LIST)) {
- 		codec_warn(codec,
--			   "HDMI: pin %d wcaps %#x does not support connection list\n",
-+			   "HDMI: pin NID 0x%x wcaps %#x does not support connection list\n",
- 			   pin_nid, get_wcaps(codec, pin_nid));
- 		return -EINVAL;
- 	}
-@@ -1635,7 +1632,7 @@ static void hdmi_present_sense_via_verbs(struct hdmi_spec_per_pin *per_pin,
- 		eld->eld_valid = false;
- 
- 	codec_dbg(codec,
--		"HDMI status: Codec=%d Pin=%d Presence_Detect=%d ELD_Valid=%d\n",
-+		"HDMI status: Codec=%d NID=0x%x Presence_Detect=%d ELD_Valid=%d\n",
- 		codec->addr, pin_nid, eld->monitor_present, eld->eld_valid);
- 
- 	if (eld->eld_valid) {
-@@ -2795,7 +2792,7 @@ static int intel_pin2port(void *audio_ptr, int pin_nid)
- 			return i;
- 	}
- 
--	codec_info(codec, "Can't find the HDMI/DP port for pin %d\n", pin_nid);
-+	codec_info(codec, "Can't find the HDMI/DP port for pin NID 0x%x\n", pin_nid);
- 	return -1;
++	for (; i < subs->channels_max; i++)
++		ucontrol->value.integer.value[i] = 0;
+ 	return 0;
  }
  
 -- 
-2.29.2
+2.26.2
 
