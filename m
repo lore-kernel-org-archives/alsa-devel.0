@@ -2,104 +2,85 @@ Return-Path: <SRS0=TlZm=FT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE9BC4361B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E71C4361B
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:19:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDD6522516
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:08:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDD6522516
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id F2644206B7
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:19:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2644206B7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 337F617AC;
-	Tue, 15 Dec 2020 18:07:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 337F617AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16F0217F7;
+	Tue, 15 Dec 2020 18:18:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16F0217F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608052106;
-	bh=M40QAVRmFcKND3WCJfO8rHtKW49Y4T2DJip5dTXUaBo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eOxZA8DdetnHp1vl2nO1WEQwNS0noeAUjdCJ45mzXNTb+bvFq8U9V0AwhZ/rVRDhN
-	 DBEZNp9r3NmMJ/1Rj2lsIYEKTVaR5dOyyGVI2iASWwxLN8+Y3CZIewtdezSg1C8wLF
-	 Qtz3gFc0R0g340zaVy7LBfZ2vwiC0TTPtg6el6CA=
+	s=default; t=1608052772;
+	bh=WcAOKAJ7dXEpuaA9zLwBVsojVg8NC30Ugbg4J+GASDw=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KriJ/boTXnypKc+QP5w88I5DUMJ4s5gsOyaWfuZV9sJ49WJ4rrGt6oGSfBhKXxJvx
+	 hbRqxkCnuz0bp+FHYwi6WQFbtMlKHqWvU+wSxccg3iy8yDGWE+N75eV6g/F2JDnpq5
+	 e093jtkwlMVganiQFri4Br90SuZVaWmprcwoOGiM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4509F80278;
-	Tue, 15 Dec 2020 18:07:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BDD3F80259;
+	Tue, 15 Dec 2020 18:18:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E01EF8027B; Tue, 15 Dec 2020 18:07:34 +0100 (CET)
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com
- [IPv6:2607:f8b0:4864:20::d43])
+ id 8116BF80278; Sun, 13 Dec 2020 15:11:33 +0100 (CET)
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com
+ [IPv6:2607:f8b0:4864:20::b2b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B9C4F80259
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 18:07:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B9C4F80259
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21065F80121
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2020 15:11:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21065F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="X9/+MsjV"
-Received: by mail-io1-xd43.google.com with SMTP id o6so8080510iob.10
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 09:07:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=WXcMQVRxxLeMuWVGiYndN3AoNdrpmXXu+WgZDK7JSOo=;
- b=X9/+MsjVJxTdVVNIAwOOKGLUTMl8i8t1w540FOTNJZdpRIu+fEb7R0GFZFLXb3mXaI
- 0bRf60k0ipOiwqbhslK9jb/x4G0IT61oUFPqqfOyzs2V1Q+sY/WR6AsCvFZvl9Cq6YMf
- 88lj99hVSdMj7Dt1zOj6Hl8R27Wu7AqXx04eQ=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Os7ol5nG"
+Received: by mail-yb1-xb2b.google.com with SMTP id 82so6051331yby.6
+ for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2020 06:11:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=tmKXaVVRnS5gOW3nTyBcgeNdBgDEEqQnQ3hyrw17vss=;
+ b=Os7ol5nGuaTq9p07wZ2Bp3J33pPnzRiFV2ZUADJcdHqXqPHN70jO4GHDIuAZKD/04Y
+ WNbE6fsEKNnrhZMUV8RVcksr9BkIk5exwSIdC3Mx0hOQHTVb7Fvc+B4KY0B/BeDrFohn
+ s3gN2OcskGrndHc4bx23MYWDv7N46CQ1WhdLQKDbOWXkJ5uwJzIRFj/BayuZTMtfT/f5
+ A98Ll9T5tiw7CPk3XwatBcWSQAiScc6/ciyM0ss8fnJ+TftiGl/NCtm5svJtNlURqAah
+ SXjwJgPzPengRuMI1bRtP+y+G+esNPLk/zsBHRpldS/YiUxq4dudgkthqexzuINk6tJA
+ ZIDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=WXcMQVRxxLeMuWVGiYndN3AoNdrpmXXu+WgZDK7JSOo=;
- b=Sl2Wjdht6GrxcxVWA8BfcmGyShIwtHrzNfDJA4n/xYqCwL22OTXmjp2gsPU+SI8hSe
- 3HTavXXIu6VgaFMyVz4I5ygEYoz7fr6Q5HGQP9O0RUmndxj596fJCeFpaY6JjzxgiVds
- 4/fneQPXbjOVBr/K9A8ee5nMqMmAun8OfbTCtUIGBcDiqihQbJtfw2l06XiryiUa/ocq
- TJ2mUlzZZqZCLWTryCDJ8zfzYNeaRAShZLF9FZ3P2nGgBIhO7dSoQHoJZor20QZKUVsV
- iBg9ZWIdqWXo1/quPzSniZAA5Z+VpXlrELzicu6S6c2AyfrClvOvlFYBqvYhCuvDRNZP
- +h2g==
-X-Gm-Message-State: AOAM5339TL4rdZm44Y4sS5IB3pv6Ez1IlxMemU+ilcSyMVTqJ/wENmVs
- ElgsBGGpChJuyXv+pFpyVyFP/BwcHrDVPexO
-X-Google-Smtp-Source: ABdhPJzyukOinoNwgu8rnNPWKRqMM5945I5FuIB2ZVH+9dZcDFYk+vrkX7cUFQp2ENeZfb6WDUrvmw==
-X-Received: by 2002:a5d:9252:: with SMTP id e18mr38567645iol.146.1608052041221; 
- Tue, 15 Dec 2020 09:07:21 -0800 (PST)
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com.
- [209.85.166.171])
- by smtp.gmail.com with ESMTPSA id x5sm13521501ilm.22.2020.12.15.09.07.19
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 15 Dec 2020 09:07:19 -0800 (PST)
-Received: by mail-il1-f171.google.com with SMTP id q1so19911394ilt.6
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 09:07:19 -0800 (PST)
-X-Received: by 2002:a92:c112:: with SMTP id p18mr43613680ile.89.1608052038827; 
- Tue, 15 Dec 2020 09:07:18 -0800 (PST)
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=tmKXaVVRnS5gOW3nTyBcgeNdBgDEEqQnQ3hyrw17vss=;
+ b=uiMY+YOyteXBfi/GvNIzSfOfQMa+b3H2+5oz7xlsTLLa+Zmo5HDao6J4X2uP4nOwEL
+ ybjN2P9iea69P6OtExsodSCQ11YN3UpaZDcWqmKUGdbSlpmi4Of0ClAvWa+8/amrPhsm
+ JdKwcfFfWe+ONuDzppzQCyLwd1C2vOY4HdKyZefdn3yOEOr5Nsua7rQJKqCRE88LDM+T
+ ojqNwjzNm8jHHX2aGHgt0zJoiDv3q7bH2JvSYUoMzyMQZEU+rwPdbztCxKt5TkUykhDo
+ M6pXwJHHSsHZ2z/+n1LQ8PEkqwMWlTyfaa3Bd1ZN7XVV3kc9H5fw7bY99Vc39wS9xc2k
+ j/yQ==
+X-Gm-Message-State: AOAM533DuPp2KNkLp/oba2yUKdq4tChVM+Mp5uds86s6bRbzDp/r6UsU
+ DaIFNKSIR2XzsQNe9FGC479Nuxl7Hlr0UD1sFtbZxkNwVb+vMA==
+X-Google-Smtp-Source: ABdhPJwu4ZLC7kzYE+gA1k+U8shLe7yVLpFAQ0Cjl0Aaw51kPiK6gYJgD58so/tgAp8k/D8UA/MCWEYnN+dtw+ktGH8=
+X-Received: by 2002:a5b:b0b:: with SMTP id z11mr29203276ybp.164.1607868686903; 
+ Sun, 13 Dec 2020 06:11:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211170629.871085-1-ribalda@chromium.org>
- <6b933ad0-2b54-33de-4d74-c176efd4d110@linux.intel.com>
-In-Reply-To: <6b933ad0-2b54-33de-4d74-c176efd4d110@linux.intel.com>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 15 Dec 2020 18:07:07 +0100
-X-Gmail-Original-Message-ID: <CANiDSCsEXhwQhbpOup3DdM1v6GcvrreOopp+pzcZHsdkNAZPWQ@mail.gmail.com>
-Message-ID: <CANiDSCsEXhwQhbpOup3DdM1v6GcvrreOopp+pzcZHsdkNAZPWQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib
- skl_tplg_complete
-To: "Gorski, Mateusz" <mateusz.gorski@linux.intel.com>
+From: Spencer Kohan <spencerkohan@gmail.com>
+Date: Sun, 13 Dec 2020 15:11:15 +0100
+Message-ID: <CALy0E7Wqonzy4h0x5U4NycPe6oUMqohtHYJmLk4fhA12QrtH0g@mail.gmail.com>
+Subject: Problem with synthesized output
+To: alsa-devel@alsa-project.org
+X-Mailman-Approved-At: Tue, 15 Dec 2020 18:18:40 +0100
 Content-Type: text/plain; charset="UTF-8"
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,85 +96,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mateusz
+Hello,
 
-On Mon, Dec 14, 2020 at 6:07 PM Gorski, Mateusz
-<mateusz.gorski@linux.intel.com> wrote:
->
->
-> > If dobj->control is not initialized we end up in an OOPs during
-> > skl_tplg_complete:
-> >
-> > [   26.553358] BUG: kernel NULL pointer dereference, address:
-> > 0000000000000078
-> > [   26.561151] #PF: supervisor read access in kernel mode
-> > [   26.566897] #PF: error_code(0x0000) - not-present page
-> > [   26.572642] PGD 0 P4D 0
-> > [   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-> > [   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-> > 5.4.81 #4
-> > [   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-> > Google_Soraka.10431.106.0 12/03/2019
-> > [   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
-> >
-> > Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >   sound/soc/intel/skylake/skl-topology.c | 15 ++++++++-------
-> >   1 file changed, 8 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> > index 40bee10b0c65..0955cbb4e918 100644
-> > --- a/sound/soc/intel/skylake/skl-topology.c
-> > +++ b/sound/soc/intel/skylake/skl-topology.c
-> > @@ -3619,19 +3619,20 @@ static void skl_tplg_complete(struct snd_soc_component *component)
-> >
-> >       list_for_each_entry(dobj, &component->dobj_list, list) {
-> >               struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
-> > -             struct soc_enum *se =
-> > -                     (struct soc_enum *)kcontrol->private_value;
-> > -             char **texts = dobj->control.dtexts;
-> > +             struct soc_enum *se;
-> > +             char **texts;
-> >               char chan_text[4];
-> >
-> > -             if (dobj->type != SND_SOC_DOBJ_ENUM ||
-> > -                 dobj->control.kcontrol->put !=
-> > -                 skl_tplg_multi_config_set_dmic)
-> > +             if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-> > +                 kcontrol->put != skl_tplg_multi_config_set_dmic)
-> >                       continue;
-> > +
-> > +             se = (struct soc_enum *)kcontrol->private_value;
-> > +             texts = dobj->control.dtexts;
-> >               sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
-> >
-> >               for (i = 0; i < se->items; i++) {
-> > -                     struct snd_ctl_elem_value val;
-> > +                     struct snd_ctl_elem_value val = {};
-> >
-> >                       if (strstr(texts[i], chan_text)) {
-> >                               val.value.enumerated.item[0] = i;
->
->
-> Hi Ricardo,
->
-> there is another thread regarding this issue (with fix provided by
-> Lukasz Majczak), you can find it here:
->
->      https://www.spinics.net/lists/stable/msg431524.html
+I hope I am posting this to the correct place.
 
-I saw it just after I sent it :(. The most embarrassing thing is that
-we are working in the same project ;)
+I'm trying to use a Raspberry Pi as a wifi speaker, and as a first step I'm
+trying to just play some sound out of a buffer through the attached amp.
 
-Sorry for the noise
+I'm using an AMP2 with a RPi 4, and I'm getting some strange behavior when
+I try to play any "sine" output.
 
->
->
-> Thanks,
-> Mateusz
->
+So for instance, if I use `speaker-test`, I am able to play the wav test
+and the pink-noise test just fine, but when I try to play the sine test, it
+plays for like one quick instant, and then the program blocks.
+
+What's strange is I get the exact same behavior when I use other methods to
+try to play a sine output over ASLA.  For instance, if I use sox:
+
+    play -n synth sine 1000
+
+I get the same output: one quick blip of the tone, and then the program
+blocks.  The output to the console looks like this:
+
+    play WARN alsa: can't encode 0-bit Unknown or not applicable
+
+    File Size: 0
+    Encoding: n/a
+    Channels: 1 @ 32-bit
+    Samplerate: 48000Hz
+    Replaygain: off
+    Duration: unknown
+
+    In:0.00% 00:00:00.00 [00:00:00.00] Out:0 [ | ] Clip:0
+
+And then I get the exact same behavior when I try to do the `sio_sine`
+example from [libsoundio](https://github.com/andrewrk/libsoundio), with
+this output:
+
+    Backend: ALSA
+    ALSA lib pcm_dsnoop.c:575:(snd_pcm_dsnoop_open) The dsnoop plugin
+supports only capture stream
+    Output device: snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi
+pcm512x-hifi-0: Default Audio Device
+    Software latency: 0.008000
+    'p\n' - pause
+    'u\n' - unpause
+    'P\n' - pause from within callback
+    'c\n' - clear buffer
+    'q\n' - quit
+    unable to set channel layout: incompatible device
+
+Also interesting, when I try the [rsoundio](
+https://github.com/klingtnet/rsoundio) sine example, it reports an
+underflow.
+
+My output for aplay looks like this:
+
+    $ aplay -L
+
+null
+Discard all samples (playback) or generate zero samples (capture)
+default:CARD=sndrpihifiberry
+snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
+Default Audio Device
+sysdefault:CARD=sndrpihifiberry
+snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
+Default Audio Device
+dmix:CARD=sndrpihifiberry,DEV=0
+snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
+Direct sample mixing device
+dsnoop:CARD=sndrpihifiberry,DEV=0
+snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
+Direct sample snooping device
+hw:CARD=sndrpihifiberry,DEV=0
+snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
+Direct hardware device without any conversions
+plughw:CARD=sndrpihifiberry,DEV=0
+snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
+Hardware device with all software conversions
 
 
--- 
-Ricardo Ribalda
+
+It's just strange because the pre-recorded sample and the pink noise
+version work just fine.  How would I even go about trying to debug this?
