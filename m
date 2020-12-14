@@ -2,76 +2,99 @@ Return-Path: <SRS0=wVxo=FS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC9B2C4361B
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 08:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57277C4361B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 09:10:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BB0E229C5
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 08:24:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BB0E229C5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id C8CDF22AAD
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 09:09:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8CDF22AAD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85C0D1711;
-	Mon, 14 Dec 2020 09:23:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85C0D1711
+	by alsa0.perex.cz (Postfix) with ESMTPS id C30931718;
+	Mon, 14 Dec 2020 10:09:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C30931718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607934278;
-	bh=U0+WN//bevmJCbaLA/4cT+rVgT6WoMmqDj5K4ofHn5M=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	s=default; t=1607936995;
+	bh=71q7T4yAVGPhYjz7ww8c4j9pHMjnChBFOqCf+ha/XgE=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M9qzx++M9wu4hn7svw5vuSWpxJRNQWByN6+RpD9E4qcSH98HB0TXDa7wLF0WPYqci
-	 W0V7xAvXiQuZTG9C1EVVqEHVIBdyu87i1ff8rCqGuL0YonZxcDnSA3NhP0gOcdMFpf
-	 zTAKvY4YZNRDVpiTl6C6w51Sjlo+ir/BC6UayAsA=
+	b=nyNLhEF38TV9+V0IsWH8x6RoKMHUD7+YccwMohggQBr+j9NWtvTheuc734ssfjGaE
+	 U18TXWEw0e0G/eA5Ni6Al7wrSqBn07/lawfgYWRxfhGliGmai9depcA7GSPzi0SCZQ
+	 vza0/xkd9pkYl6PDaKLRqm6Nfvay8rVPa7CfokRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1561BF80171;
-	Mon, 14 Dec 2020 09:23:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5301AF80121;
+	Mon, 14 Dec 2020 10:09:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C543F801F7; Mon, 14 Dec 2020 09:23:47 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BFDBBF801F7; Mon, 14 Dec 2020 10:09:03 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16C06F80129
- for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 09:23:39 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0C025A0040;
- Mon, 14 Dec 2020 09:23:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0C025A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1607934219; bh=aSUhKr3cWbLQf+NgkRmnFYl4CfdKOSfau/v8JoMq78c=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=QtBFHqNdIaGYHnZqNoEA2nspk1gjOO73KhDQ47POeAR2Lbx6kFT7G0HT9gbIm4yq5
- bfgCMlDcPew1qvyNCKvNGVlJN9v+s7/gokK5rkqW9Xv7JZ3gGXohWi4hcvAHg5hzeE
- v3I3dVrYnuMO8mWQfLgRe17oII8ecwAUH1dgMhjs=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 14 Dec 2020 09:23:36 +0100 (CET)
-Subject: Re: [PATCH alsa-lib 1/3] chtnau8824: Fix mono speaker config not
- working
-To: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
-References: <20201206124718.14060-1-hdegoede@redhat.com>
- <64ced200-a23c-cf5a-7f21-392561cb74da@redhat.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <840442b7-88e4-aebc-eb90-f0616820c61f@perex.cz>
-Date: Mon, 14 Dec 2020 09:23:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <64ced200-a23c-cf5a-7f21-392561cb74da@redhat.com>
-Content-Type: text/plain; charset=utf-8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 531D4F80129
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 10:08:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 531D4F80129
+IronPort-SDR: KSBSKzsV0gpYoYK2d7WNwsy71zTUFmLX58/kGaOEHgbnCDjg5zUeuWT5YRRJ8X4zHKdC2n98ka
+ KoaggCUOY7BQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="153909201"
+X-IronPort-AV: E=Sophos;i="5.78,418,1599548400"; d="scan'208";a="153909201"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Dec 2020 01:08:50 -0800
+IronPort-SDR: xPzgKZQnh+ubZYnPU5ZhWL6WQZG2ZGvRNCMabknE6rXaPec5agfeZlzD3kxGvGly754p4ffykm
+ SxJlsuAundzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,418,1599548400"; d="scan'208";a="351224147"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+ by orsmga002.jf.intel.com with ESMTP; 14 Dec 2020 01:08:50 -0800
+Received: from bgsmsx602.gar.corp.intel.com (10.109.78.81) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 14 Dec 2020 01:08:48 -0800
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ BGSMSX602.gar.corp.intel.com (10.109.78.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 14 Dec 2020 14:38:45 +0530
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Mon, 14 Dec 2020 09:08:44 +0000
+From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: RE: [PATCH] ASoC: Intel: fix error code cnl_set_dsp_D0()
+Thread-Topic: [PATCH] ASoC: Intel: fix error code cnl_set_dsp_D0()
+Thread-Index: AQHWz6VrP/elf/kqtEm4xays79ITg6n2UdQQ
+Date: Mon, 14 Dec 2020 09:08:44 +0000
+Message-ID: <b3df1e4d04c84b02939321c6994ec978@intel.com>
+References: <X9NEvCzuN+IObnTN@mwanda>
+In-Reply-To: <X9NEvCzuN+IObnTN@mwanda>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Singh, 
+ Guneshwor O" <guneshwor.o.singh@intel.com>,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark
+ Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,16 +110,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 06. 12. 20 v 13:50 Hans de Goede napsal(a):
-> Hi,
-> 
-> Patch prefix should have been "PATCH alsa-ucm-conf", I have fixed this in
-> my git config now, sorry about that.
+On 2020-12-11 11:06 AM, Dan Carpenter wrote:
+> Return -ETIMEDOUT if the dsp boot times out instead of returning
+> success.
+>=20
+> Fixes: cb6a55284629 ("ASoC: Intel: cnl: Add sst library functions for cnl=
+ platform")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> Not tested.
+>=20
+>   sound/soc/intel/skylake/cnl-sst.c | 1 +
+>   1 file changed, 1 insertion(+)
+>=20
+> diff --git a/sound/soc/intel/skylake/cnl-sst.c b/sound/soc/intel/skylake/=
+cnl-sst.c
+> index fcd8dff27ae8..1275c149acc0 100644
+> --- a/sound/soc/intel/skylake/cnl-sst.c
+> +++ b/sound/soc/intel/skylake/cnl-sst.c
+> @@ -224,6 +224,7 @@ static int cnl_set_dsp_D0(struct sst_dsp *ctx, unsign=
+ed int core_id)
+>   				"dsp boot timeout, status=3D%#x error=3D%#x\n",
+>   				sst_dsp_shim_read(ctx, CNL_ADSP_FW_STATUS),
+>   				sst_dsp_shim_read(ctx, CNL_ADSP_ERROR_CODE));
+> +			ret =3D -ETIMEDOUT;
+>   			goto err;
+>   		}
+>   	} else {
+>=20
 
-Thanks for your patches. I applied them all to the alsa-ucm-conf repo.
+Thanks for the patch, Dan.
 
-				Jaroslav
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
