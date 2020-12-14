@@ -2,74 +2,84 @@ Return-Path: <SRS0=wVxo=FS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAF29C4361B
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 17:22:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54059C4361B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 17:51:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E42CB2251F
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 17:22:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E42CB2251F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id A3C9A21D7F
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 17:51:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3C9A21D7F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF4ED16EB;
-	Mon, 14 Dec 2020 18:21:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF4ED16EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 550A8178E;
+	Mon, 14 Dec 2020 18:50:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 550A8178E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607966566;
-	bh=eG9/GMTvJchdw+pXrydGe4pAJDbWOeBG/laqdsUTnT8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EOueokwODmDePb++Q6J7Suv5SoNpyMbY5d1G0QYkLrJsfAqctIFqOswhVA7OmQk0B
-	 eYdhh9qLXTLp9XUPJFYm+3endoqo3Cm9nR9+t8oQzJdRu4w5xACCAE/i5WRbqodgHe
-	 +W5z3a0jdQzCsJhIEZoC5EEU98T87IkHt7T8jdS0=
+	s=default; t=1607968278;
+	bh=7c3uSBpWEkrGyLpkCUlDnIX7pZbHL7FF3A2/sYOnzDo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FTA8PLWoHQc3pfGCblOxV+ubEN4axVj0oxXmgxpHttIYvCz9PYPwBfROVv9j2Zg+D
+	 /QRr9NWaIWS+Uu9oMNIm7GFizS+BrNl0P8nqLbIny4rzSEhGEhC85S3SzFCsMh4vOQ
+	 qo7zbi6ZLIUW7GUAhvQ5gSThQIXgpFxd41b29ZtQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80DD8F80171;
-	Mon, 14 Dec 2020 18:21:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1B2BF80171;
+	Mon, 14 Dec 2020 18:50:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F8BAF801F7; Mon, 14 Dec 2020 18:21:53 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1B46DF801F7; Mon, 14 Dec 2020 18:50:27 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE69CF80121
- for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 18:21:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE69CF80121
-IronPort-SDR: x4V1C8Eyn7+b7MEsn4aYDcGHQkXjKdbKXHa9pbtkMblIedb4QErETQBWtrWvBDllYbareukSit
- C45yFlLBWeWQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="154551702"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; d="scan'208";a="154551702"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Dec 2020 09:21:42 -0800
-IronPort-SDR: fuu9EzpOAj2MVMV7K1/JsMvQA8DXwjesD3XdafTjU0TGrF1CbKVVftZnhTBlOh3TcQR5nx1MvW
- o+gJrlPNQjXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; d="scan'208";a="378195395"
-Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga007.jf.intel.com with ESMTP; 14 Dec 2020 09:21:39 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
- id B606814A; Mon, 14 Dec 2020 19:21:38 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2] catpt: Switch to use list_entry_is_head() helper
-Date: Mon, 14 Dec 2020 19:21:38 +0200
-Message-Id: <20201214172138.44267-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC05EF800ED
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 18:50:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC05EF800ED
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="GX0fbQrY"
+Date: Mon, 14 Dec 2020 17:50:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1607968220;
+ bh=7c3uSBpWEkrGyLpkCUlDnIX7pZbHL7FF3A2/sYOnzDo=;
+ h=From:To:Cc:Subject:References:In-Reply-To:From;
+ b=GX0fbQrYdnWDEYLpMP3jiWLRtIOOsYgtpKSu6yRM+pJCcIH+FjzS9ask4+GRjrpQm
+ vkp46yljFoJQIui6UqV8RfkTeHcu6wzxYgXHKIQ/3o3ZLOYjmPeszYEBKGvBn4RApP
+ NYtJ+bibI0AiaE6nRP/4CWo0GBPClDFZBfnn8s2qb0MAi9Ga1tcGSRX9KZyUJbxiWE
+ lL6X1hc15h2A37GjepLfSflyzPimNZlF0NjNG7F+HOjeaYSiCDxXsq2dWiBuKndVGO
+ rTRaY0eLW7M8UsOiYnZCeCu6AdWVDwVGeNljzNEl9N3ZP9qkoqA3qKCI1pK3YXKPZN
+ OX7F6tJJhKANA==
+From: Mark Brown <broonie@kernel.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK
+ and LRCLK in LPAIF invalid state
+Message-ID: <20201214175009.GD4880@sirena.org.uk>
+References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
+ <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
+ <20201130124617.GC4756@sirena.org.uk>
+ <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
+ <20201201175135.GO5239@sirena.org.uk>
+ <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="/3yNEOqWowh/8j+e"
+Content-Disposition: inline
+In-Reply-To: <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
+X-Cookie: Everything you know is wrong!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+ linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
+ agross@kernel.org, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,51 +95,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since we got list_entry_is_head() helper in the generic header,
-we may switch catpt to use it. It removes the need in additional variable.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
-v2: left the structure definition at its initial location (Cezary)
- sound/soc/intel/catpt/pcm.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+--/3yNEOqWowh/8j+e
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
-index e5d54bb1c42a..9d304b3a817f 100644
---- a/sound/soc/intel/catpt/pcm.c
-+++ b/sound/soc/intel/catpt/pcm.c
-@@ -331,7 +331,7 @@ static int catpt_dai_apply_usettings(struct snd_soc_dai *dai,
- {
- 	struct catpt_dev *cdev = dev_get_drvdata(dai->dev);
- 	struct snd_soc_component *component = dai->component;
--	struct snd_kcontrol *pos, *kctl = NULL;
-+	struct snd_kcontrol *pos;
- 	const char *name;
- 	int ret;
- 	u32 id = stream->info.stream_hw_id;
-@@ -356,17 +356,15 @@ static int catpt_dai_apply_usettings(struct snd_soc_dai *dai,
- 
- 	list_for_each_entry(pos, &component->card->snd_card->controls, list) {
- 		if (pos->private_data == component &&
--		    !strncmp(name, pos->id.name, sizeof(pos->id.name))) {
--			kctl = pos;
-+		    !strncmp(name, pos->id.name, sizeof(pos->id.name)))
- 			break;
--		}
- 	}
--	if (!kctl)
-+	if (list_entry_is_head(pos, &component->card->snd_card->controls, list))
- 		return -ENOENT;
- 
- 	if (stream->template->type != CATPT_STRM_TYPE_LOOPBACK)
--		return catpt_set_dspvol(cdev, id, (long *)kctl->private_value);
--	ret = catpt_ipc_mute_loopback(cdev, id, *(bool *)kctl->private_value);
-+		return catpt_set_dspvol(cdev, id, (long *)pos->private_value);
-+	ret = catpt_ipc_mute_loopback(cdev, id, *(bool *)pos->private_value);
- 	if (ret)
- 		return CATPT_IPC_ERROR(ret);
- 	return 0;
--- 
-2.29.2
+On Mon, Dec 14, 2020 at 06:13:22PM +0530, Srinivasa Rao Mandadapu wrote:
+> On 12/1/2020 11:21 PM, Mark Brown wrote:
 
+> > > Later from review comments by Srinivas kandagatla, I got to know
+> > >=20
+> > > about regcache sync APIs, which can be used=A0 to sync cache after re=
+sume and
+> > >=20
+> > > HW registers can be updated with=A0 original values. With that playba=
+ck can be
+> > > continued.
+
+> > > So is the reason, I am reverting partial changes in the commit b18249=
+68221c.
+
+> > I don't understand why a fix for the register cache not being in sync
+> > with the hardware doesn't involve syncing the register cache with the
+> > hardware.
+
+> I am sorry I couldn't understand your point. Could you please elaborate y=
+our
+> query?
+
+Your changelog talks about syncing the cache but neither the driver nor
+your change actually does that.
+
+--/3yNEOqWowh/8j+e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/XpdAACgkQJNaLcl1U
+h9D/Zwf/fjn9hyBot5AFRtqGND9G8HLpAtWHKW70cPH+wBsFuqB0CLI8tZbBwh0q
+kWZwfm8x8OxC44uZBFactuNZmp1+PgJ6Gj9f7wUuFBAYWUAIMjERH3qmIdBnNKwk
+iVor+tLIrpGRfncjfL0tK7Xxd6YPQx0G7pDkxMHbP7sg6SS094m2CtHFo+jPRtec
+AKRcvjIy7xw561ot5vqjMz62CTazM87RuqnVJsE81XcST4slkJLD9IUOSWTLDivK
+UHNg/3hc3fAUBHwvPC+0t9suBwSMkifi9hJuTGbhPTnPILmRF9GJ0l4+PCqpnrVn
+v5oEVRw7ErT3avD1VlAlKlN49wz43Q==
+=jFTq
+-----END PGP SIGNATURE-----
+
+--/3yNEOqWowh/8j+e--
