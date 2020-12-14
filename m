@@ -2,103 +2,99 @@ Return-Path: <SRS0=wVxo=FS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5837C4361B
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 12:45:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5854AC4361B
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 14:24:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2C4A2064C
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 12:44:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2C4A2064C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id F17962054F
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Dec 2020 14:24:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F17962054F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A6D5175D;
-	Mon, 14 Dec 2020 13:44:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A6D5175D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E02C116AE;
+	Mon, 14 Dec 2020 15:23:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E02C116AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1607949896;
-	bh=U9q/RNBhkfqvglBjEu9KMafmOj5ICycxYvU4X1KQDt4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1607955855;
+	bh=NWdIbnRK9kz0GNjSz4eqhcCUXQFPKecN1rNsrKhO9Ic=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a6xLuBs4G4cvngTcaMiiHz2G7Pzrj7GRwpG1x7sdHwiaHD/SdfFnAgItA/waz+Nsw
-	 CqYCkXCqRBuvav47kwhWKWct3sZIqLXT0B740EXCJ8rV1C4CI7oNp2TKFGVrByyTBf
-	 3rgeNUm9vN0Pn9bDR6as4SMTkvmTUimtaGKUguXQ=
+	b=lf+ViPtiYnZR1aCXdAHeLBUwth8TnRhoSsJsXhYDZm9vhlgTjE8ngK8rJpKFlyHmq
+	 Eehb9ZZf85DLfnxod4N/cSpzoChcIjPJwGL9GeweEzHY8Ebjua4cnbPcMwMcSrz4vK
+	 5NYFt5AC+53F91yLZfCzMwqBnHIpjAoSCQXtrHTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08821F80171;
-	Mon, 14 Dec 2020 13:44:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66550F80129;
+	Mon, 14 Dec 2020 15:23:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D17B0F801F7; Mon, 14 Dec 2020 13:43:54 +0100 (CET)
-Received: from m43-15.mailgun.net (m43-15.mailgun.net [69.72.43.15])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 81CF0F801F7; Mon, 14 Dec 2020 15:23:22 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60E3CF800ED
- for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 13:43:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E3CF800ED
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="aTOy27k5"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1607949833; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=EtLiKOSmtdxM3lPu08opt0J1Uv63PkkfxPsuqDSZOg4=;
- b=aTOy27k5z41ncKdXjuyiPHw7bUrwN/jzmiVjDogzeOu05ZCDdjIMMni45qi9LWzpBM7Qhtnl
- qBp7azzoJ7BTBC8DPkZsejJQ3OilrvFbg5p+hL4LVsa4WsgvjAlK/G3caLZqv74iLNUFG9QJ
- pM3uHzF1oaPHMifQkp8CVWrPYjU=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5fd75df41c400338e540b622 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Dec 2020 12:43:32
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 5DDB7C43461; Mon, 14 Dec 2020 12:43:31 +0000 (UTC)
-Received: from [10.242.141.31] (unknown [202.46.23.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 72E11C433C6;
- Mon, 14 Dec 2020 12:43:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 72E11C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
- LRCLK in LPAIF invalid state
-To: Mark Brown <broonie@kernel.org>
-References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
- <1606539559-4277-2-git-send-email-srivasam@codeaurora.org>
- <20201130124617.GC4756@sirena.org.uk>
- <966993b7-4720-bdd2-cf4d-cf5a7c11a0c1@codeaurora.org>
- <20201201175135.GO5239@sirena.org.uk>
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
-Date: Mon, 14 Dec 2020 18:13:22 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E14EEF80129
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 15:23:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E14EEF80129
+Received: from mail-pl1-f198.google.com ([209.85.214.198])
+ by youngberry.canonical.com with esmtps
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>) id 1kooks-0003Pi-1i
+ for alsa-devel@alsa-project.org; Mon, 14 Dec 2020 14:23:14 +0000
+Received: by mail-pl1-f198.google.com with SMTP id p19so7879234plr.22
+ for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2020 06:23:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:subject:to:cc:message-id:in-reply-to
+ :references:mime-version;
+ bh=8hXEpgSFl+yYK0CksrJr9HdaeAHfnTTgOU/XuPLzbqU=;
+ b=bVRBFnYsIkngu0AR+H1McPW+6J7xk3+1fvcsYg96Uz78EdwKkAGJ4Ufp4IEIb541xX
+ NxuP3K1537QUKbkluox+b4nyxZaZzy0pnQ896Pk94WGIirb129Mt9td+ukEjEc+/w6Cd
+ oxwCBMzziEBKL31zrHsaFg8Bii7DDg6aWLG/CklaiZb7C9Uw6Ien2uiOLIakBRc/YZqD
+ tatPuIG6wh+rGdt7cuWVgxvuO6l8ZkV/iBBoIiXkMpwDnhhDpQdpWdFniyTNE7Szo43R
+ 0D4/bcHRXeXp6bw1HGEzpzzjOWDBZdKa5llWkvx5CXevBiggrK8ectLOSDWL+2DfUiw1
+ 43Gw==
+X-Gm-Message-State: AOAM530QqbicDxf39AjTO71H5HM8+ip+LtaqvgoSlYbZh2YXQgBeJcJ8
+ szZk1UI5PPos5cIqTo5IYQTStRkM1jnUk/Z1kklFxWi+m2Ut7xbqf0HBY0s7htvUPhUOBojK9Rv
+ mxyAY2wkq/bnRNFO7/88q2Lqj1DHhoeHnWSWkW1jZ
+X-Received: by 2002:a17:902:a585:b029:db:feae:425c with SMTP id
+ az5-20020a170902a585b02900dbfeae425cmr4736282plb.25.1607955792681; 
+ Mon, 14 Dec 2020 06:23:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzuuiFFvqKdQQKIcNJlRMrpA4uz/dfBHXmTjBMS98FHYyz55/UKk52cwCgYdk/vjCkRXGVVwQ==
+X-Received: by 2002:a17:902:a585:b029:db:feae:425c with SMTP id
+ az5-20020a170902a585b02900dbfeae425cmr4736245plb.25.1607955792243; 
+ Mon, 14 Dec 2020 06:23:12 -0800 (PST)
+Received: from [10.101.196.174] (61-220-137-34.HINET-IP.hinet.net.
+ [61.220.137.34])
+ by smtp.gmail.com with ESMTPSA id g33sm20370330pgm.74.2020.12.14.06.23.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 14 Dec 2020 06:23:11 -0800 (PST)
+Date: Mon, 14 Dec 2020 20:12:15 +0800
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda: Enable runtime PM when codec probe fails
+To: Takashi Iwai <tiwai@suse.de>
+Message-Id: <FKWBLQ.XJO3QQ2ZO2W23@canonical.com>
+In-Reply-To: <s5hblewn7ij.wl-tiwai@suse.de>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <s5hblewn7ij.wl-tiwai@suse.de>
+X-Mailer: geary/3.38.0
 MIME-Version: 1.0
-In-Reply-To: <20201201175135.GO5239@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
- linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, bjorn.andersson@linaro.org,
- agross@kernel.org, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ SOUND <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com,
+ Alex Deucher <alexander.deucher@amd.com>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,43 +110,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Mark for Your time!!!
 
-On 12/1/2020 11:21 PM, Mark Brown wrote:
-> On Tue, Dec 01, 2020 at 11:01:21PM +0530, Srinivasa Rao Mandadapu wrote:
->> On 11/30/2020 6:16 PM, Mark Brown wrote:
->>> Part of this commit message says that the problem was making the registers
->>> non-volatile but both the change and the rest of the commit message say
->>> that the issue was that the registers were made volatile.  I'm also
->>> still unclear as to what the issue is either way - how does reading the
->>> state of the registers from the hardware instead of the cache affect
->>> things?
->> Initial problem was, during playback if device suspended, I2S and DMA
->> control registers
->> are getting reset and unable to recover playback after resume.
->> As these registers were non volatile registers, driver is not getting actual
->> register value
->> and unable to report error state to application. Due to this application
->> keeps on polling for HW current pointer state and not exited from PCM
->> running state.
->> Later from review comments by Srinivas kandagatla, I got to know
->>
->> about regcache sync APIs, which can be used  to sync cache after resume and
->>
->> HW registers can be updated with  original values. With that playback can be
->> continued.
->>
->> So is the reason, I am reverting partial changes in the commit b1824968221c.
-> I don't understand why a fix for the register cache not being in sync
-> with the hardware doesn't involve syncing the register cache with the
-> hardware.
 
-I am sorry I couldn't understand your point. Could you please elaborate 
-your query?
+On Mon, Dec 14, 2020 at 08:58, Takashi Iwai <tiwai@suse.de> wrote:
+> On Mon, 14 Dec 2020 07:06:20 +0100,
+> Kai-Heng Feng wrote:
+>> 
+>>  When codec probe fails, it doesn't enable runtime suspend, and can
+>>  prevent graphics card from getting powered down:
+>>  [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+>> 
+>>  $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+>>  active
+>> 
+>>  So enable runtime PM when codec probe fails, to let graphics card be
+>>  able to runtime suspend again.
+> 
+> Well, the runtime status is also active if the driver isn't probed at
+> all.  In that sense, keeping the status active at the driver load
+> failure is rather consistent, IMO.  If the driver fails or unloaded,
+> it should restore the status as if it were beforehand.
 
-Actually I posted V5 version based on review comments.
+Ok, let me find a better way to handle it.
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Kai-Heng
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+>> 
+>>  Merge azx_probe_continue() into azx_probe() and just let probe fail 
+>> for
+>>  this case could be a better approach. However that's a much bigger 
+>> task
+>>  so let's settle with a quirk workaround.
+>> 
+>>  BugLink: <https://bugs.launchpad.net/bugs/1907212>
+>>  Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com 
+>> <mailto:kai.heng.feng@canonical.com>>
+>>  ---
+>>   sound/pci/hda/hda_intel.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>> 
+>>  diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+>>  index 6852668f1bcb..3fd920069268 100644
+>>  --- a/sound/pci/hda/hda_intel.c
+>>  +++ b/sound/pci/hda/hda_intel.c
+>>  @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx 
+>> *chip)
+>>   	if (bus->codec_mask) {
+>>   		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+>>   		if (err < 0)
+>>  -			goto out_free;
+>>  +			goto out_enable_rpm;
+>>   	}
+>> 
+>>   #ifdef CONFIG_SND_HDA_PATCH_LOADER
+>>  @@ -2360,6 +2360,7 @@ static int azx_probe_continue(struct azx 
+>> *chip)
+>> 
+>>   	set_default_power_save(chip);
+>> 
+>>  +out_enable_rpm:
+>>   	if (azx_has_pm_runtime(chip)) {
+>>   		pm_runtime_use_autosuspend(&pci->dev);
+>>   		pm_runtime_allow(&pci->dev);
+>>  --
+>>  2.29.2
+>> 
 
