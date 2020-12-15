@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
 	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13E71C4361B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:19:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0E4AC4361B
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:20:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2644206B7
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:19:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2644206B7
+	by mail.kernel.org (Postfix) with ESMTPS id 07BA822AAE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 17:20:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07BA822AAE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16F0217F7;
-	Tue, 15 Dec 2020 18:18:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16F0217F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF32D180A;
+	Tue, 15 Dec 2020 18:19:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF32D180A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608052772;
-	bh=WcAOKAJ7dXEpuaA9zLwBVsojVg8NC30Ugbg4J+GASDw=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1608052823;
+	bh=qujf+7+eLVTh+QG+wzng72nj+OxSThjMKK4iTlNW1vg=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=KriJ/boTXnypKc+QP5w88I5DUMJ4s5gsOyaWfuZV9sJ49WJ4rrGt6oGSfBhKXxJvx
-	 hbRqxkCnuz0bp+FHYwi6WQFbtMlKHqWvU+wSxccg3iy8yDGWE+N75eV6g/F2JDnpq5
-	 e093jtkwlMVganiQFri4Br90SuZVaWmprcwoOGiM=
+	b=j41as4i4+WrDW/PE+b8UbQ9hSepy1zah9Z6WTJed/0zpOfbDDHVg+uWcOLkj5VmrG
+	 kyvDLHscd7PXITkK2+OwoCaK1wFJFcCJa69onkfu+SNWHcKZ3reqMq3OR+niD4mn4B
+	 U6KuEdpEYhceL73d1w6rjc+5dmMhnHYk8C/rFFYI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BDD3F80259;
-	Tue, 15 Dec 2020 18:18:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 790B9F804AC;
+	Tue, 15 Dec 2020 18:18:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8116BF80278; Sun, 13 Dec 2020 15:11:33 +0100 (CET)
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com
- [IPv6:2607:f8b0:4864:20::b2b])
+ id 94FFBF80278; Tue, 15 Dec 2020 10:45:07 +0100 (CET)
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com
+ [IPv6:2607:f8b0:4864:20::644])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21065F80121
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2020 15:11:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21065F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 238A0F8014B
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 10:44:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 238A0F8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Os7ol5nG"
-Received: by mail-yb1-xb2b.google.com with SMTP id 82so6051331yby.6
- for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2020 06:11:28 -0800 (PST)
+ header.b="vTEMOMc9"
+Received: by mail-pl1-x644.google.com with SMTP id q4so5014454plr.7
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 01:44:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=tmKXaVVRnS5gOW3nTyBcgeNdBgDEEqQnQ3hyrw17vss=;
- b=Os7ol5nGuaTq9p07wZ2Bp3J33pPnzRiFV2ZUADJcdHqXqPHN70jO4GHDIuAZKD/04Y
- WNbE6fsEKNnrhZMUV8RVcksr9BkIk5exwSIdC3Mx0hOQHTVb7Fvc+B4KY0B/BeDrFohn
- s3gN2OcskGrndHc4bx23MYWDv7N46CQ1WhdLQKDbOWXkJ5uwJzIRFj/BayuZTMtfT/f5
- A98Ll9T5tiw7CPk3XwatBcWSQAiScc6/ciyM0ss8fnJ+TftiGl/NCtm5svJtNlURqAah
- SXjwJgPzPengRuMI1bRtP+y+G+esNPLk/zsBHRpldS/YiUxq4dudgkthqexzuINk6tJA
- ZIDA==
+ h=mime-version:from:date:message-id:subject:to:cc;
+ bh=JuotR0bsnwSo30/6mXPr21S9Zouq2xQsPdi52PTwkCM=;
+ b=vTEMOMc9bF4CBkDNy4uF20rx8kQ8hpC8JmnKXMYKeLl5GbLnblhKV9I6HwB8GKEAMa
+ MY8ftdtL/VdxxjhTXAZWV5PeGQ9AgEZwKfXZP6lejGjTJp7aBRb+pYsVscDbk5Z2eDAQ
+ ABq+6t6drEIFF/UxRC2/2LtQmi0i0KL8J0RyX7FDRIkymAUKItlnemNuaSZF82FT8oy8
+ 29o4YM7mihQrnS1GRbGz5wFdqXvgzwLZA5S2EA4eBRRim9LIWK/aUk21v22ZeWMCjsik
+ 6KGDqIhFWyXx3PGKgVMtUsfcxQJylrvKMSMOicJkQOgsRJkFdAxyY8/OQxp1uhXlopJN
+ +BcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=tmKXaVVRnS5gOW3nTyBcgeNdBgDEEqQnQ3hyrw17vss=;
- b=uiMY+YOyteXBfi/GvNIzSfOfQMa+b3H2+5oz7xlsTLLa+Zmo5HDao6J4X2uP4nOwEL
- ybjN2P9iea69P6OtExsodSCQ11YN3UpaZDcWqmKUGdbSlpmi4Of0ClAvWa+8/amrPhsm
- JdKwcfFfWe+ONuDzppzQCyLwd1C2vOY4HdKyZefdn3yOEOr5Nsua7rQJKqCRE88LDM+T
- ojqNwjzNm8jHHX2aGHgt0zJoiDv3q7bH2JvSYUoMzyMQZEU+rwPdbztCxKt5TkUykhDo
- M6pXwJHHSsHZ2z/+n1LQ8PEkqwMWlTyfaa3Bd1ZN7XVV3kc9H5fw7bY99Vc39wS9xc2k
- j/yQ==
-X-Gm-Message-State: AOAM533DuPp2KNkLp/oba2yUKdq4tChVM+Mp5uds86s6bRbzDp/r6UsU
- DaIFNKSIR2XzsQNe9FGC479Nuxl7Hlr0UD1sFtbZxkNwVb+vMA==
-X-Google-Smtp-Source: ABdhPJwu4ZLC7kzYE+gA1k+U8shLe7yVLpFAQ0Cjl0Aaw51kPiK6gYJgD58so/tgAp8k/D8UA/MCWEYnN+dtw+ktGH8=
-X-Received: by 2002:a5b:b0b:: with SMTP id z11mr29203276ybp.164.1607868686903; 
- Sun, 13 Dec 2020 06:11:26 -0800 (PST)
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+ bh=JuotR0bsnwSo30/6mXPr21S9Zouq2xQsPdi52PTwkCM=;
+ b=BGAwIHyWGyZ8a8i1u1c7c/tKjBxaZm2vwjAvdga3Gi7gPbGUeBLQWt+FZ1vJNvOJbQ
+ GTIb7v5ZSy3bzyZyuPmkpDo3vPNsDnAiE/ZEJ1hXZ2IASvzceZsZBiaxc4zxdTytnwI7
+ apQqURnz/IZHn2kCJsg9SwPIScIfyGBi44c/g7fc6MqiRt62PmKnzmF0T4iaMRv7uHQU
+ NjobHjHl/BexQHp85BaGIt2sW6jbnR+DM/4+wpbzn/uGsza5IBgOKKuum4MqK2pcZMkF
+ vp2XcPneCuBmjtsw6xy5zrcslPZnMXX2x/bfjVv2NqQfIV2PxQEqnjMyrGoGtJJIE1ib
+ wxOQ==
+X-Gm-Message-State: AOAM532wNzhy+gryPvbXOgq3sh6uvapndC0/+3jH8zPZ+gJh6vebxGOr
+ KiuQYJKfCr0tCm5OQeGYSVV0HG0JhvDWhmwOlnnAHLQx4kKT1w==
+X-Google-Smtp-Source: ABdhPJxWSg1AXJv4qi0lu5KaTYb4UCA26DY+D3KnWwE43LNekYsSzezWX08VuvIAR9Wx+4oh5oD63/AtrgMB2le0500=
+X-Received: by 2002:a17:90b:107:: with SMTP id
+ p7mr18462741pjz.216.1608025496069; 
+ Tue, 15 Dec 2020 01:44:56 -0800 (PST)
 MIME-Version: 1.0
-From: Spencer Kohan <spencerkohan@gmail.com>
-Date: Sun, 13 Dec 2020 15:11:15 +0100
-Message-ID: <CALy0E7Wqonzy4h0x5U4NycPe6oUMqohtHYJmLk4fhA12QrtH0g@mail.gmail.com>
-Subject: Problem with synthesized output
+From: Marco Giunta <giun7a@gmail.com>
+Date: Tue, 15 Dec 2020 10:44:45 +0100
+Message-ID: <CAE5BBpTEw2pTzDhLxaQiGwAvnH_q6aChLkuDXxEQrZFvS6wVyQ@mail.gmail.com>
+Subject: [PATCH] Fix mic sound on Jieli webcam
 To: alsa-devel@alsa-project.org
-X-Mailman-Approved-At: Tue, 15 Dec 2020 18:18:40 +0100
 Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+X-Mailman-Approved-At: Tue, 15 Dec 2020 18:18:40 +0100
+Cc: tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,86 +97,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+Hi,
+recently I've bought a usb webcam with integrated mic:
 
-I hope I am posting this to the correct place.
+  Jieli Technology USB PHY 2.0 (1224:2a25)
 
-I'm trying to use a Raspberry Pi as a wifi speaker, and as a first step I'm
-trying to just play some sound out of a buffer through the attached amp.
+The video part works well, but the mic sound is speedups, "like
+minions" (cit.). When I connect the camera, these are the dmesg
+messages:
 
-I'm using an AMP2 with a RPi 4, and I'm getting some strange behavior when
-I try to play any "sine" output.
+kernel: usb 1-8: current rate 0 is different from the runtime rate 8000
+kernel: usb 1-8: current rate 0 is different from the runtime rate 16000
+kernel: usb 1-8: current rate 0 is different from the runtime rate 44100
+kernel: usb 1-8: current rate 0 is different from the runtime rate 48000
+kernel: usb 1-8: Warning! Unlikely big volume range (=4096), cval->res
+is probably wrong.
+kernel: usb 1-8: [3] FU [Mic Capture Volume] ch = 1, val = 0/4096/1
+kernel: usbcore: registered new interface driver snd-usb-audio
 
-So for instance, if I use `speaker-test`, I am able to play the wav test
-and the pink-noise test just fine, but when I try to play the sine test, it
-plays for like one quick instant, and then the program blocks.
+and after a while, dmesg log is filled, every 5 seconds, with:
 
-What's strange is I get the exact same behavior when I use other methods to
-try to play a sine output over ASLA.  For instance, if I use sox:
+kernel: retire_capture_urb: 84 callbacks suppressed
+kernel: retire_capture_urb: 1714 callbacks suppressed
 
-    play -n synth sine 1000
+A guy reports on ArchLinux bug website the same problem
+(https://bugs.archlinux.org/task/68141?opened=12995&status%5B0%5D=)
+and provides a patch to fix the sound issue. I've applied the patch on
+kernel 5.9.13 (Fedora 33 x86_64) and now the mic works, no more
+minions voice effect. Now dmesg messages are only:
 
-I get the same output: one quick blip of the tone, and then the program
-blocks.  The output to the console looks like this:
+kernel: usb 1-8: Warning! Unlikely big volume range (=4096), cval->res
+is probably wrong.
+kernel: usb 1-8: [3] FU [Mic Capture Volume] ch = 1, val = 0/4096/1
+kernel: usbcore: registered new interface driver snd-usb-audio
 
-    play WARN alsa: can't encode 0-bit Unknown or not applicable
+the retire_capture_urb messages are gone.
 
-    File Size: 0
-    Encoding: n/a
-    Channels: 1 @ 32-bit
-    Samplerate: 48000Hz
-    Replaygain: off
-    Duration: unknown
+All credits for the patch go to him but I don't know how to contact
+that guy nor I don't know if he has already contacted you, so my
+question is if you could review his patch and finally apply upstream.
 
-    In:0.00% 00:00:00.00 [00:00:00.00] Out:0 [ | ] Clip:0
+If you need other information or you need a tester, I'm here.
 
-And then I get the exact same behavior when I try to do the `sio_sine`
-example from [libsoundio](https://github.com/andrewrk/libsoundio), with
-this output:
+Thanks,
+  Marco
 
-    Backend: ALSA
-    ALSA lib pcm_dsnoop.c:575:(snd_pcm_dsnoop_open) The dsnoop plugin
-supports only capture stream
-    Output device: snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi
-pcm512x-hifi-0: Default Audio Device
-    Software latency: 0.008000
-    'p\n' - pause
-    'u\n' - unpause
-    'P\n' - pause from within callback
-    'c\n' - clear buffer
-    'q\n' - quit
-    unable to set channel layout: incompatible device
+--- a/sound/usb/format.c    2020-10-01 18:36:35.000000000 +0300
++++ b/sound/usb/format.c    2020-10-04 02:10:21.678685952 +0300
+@@ -217,6 +217,21 @@
+                 (chip->usb_id == USB_ID(0x041e, 0x4064) ||
+                  chip->usb_id == USB_ID(0x041e, 0x4068)))
+                 rate = 8000;
++
++            // hack for "Jieli Technology USB PHY 2.0" webcam
++            if (chip->usb_id == USB_ID(0x1224, 0x2a25)) {
++                switch (rate) {
++                case 8000:
++                    fp->datainterval += 4;
++                    break;
++                case 16000:
++                    fp->datainterval += 3;
++                    break;
++                default:
++                    fp->datainterval += 1;
++                    break;
++                }
++            }
 
-Also interesting, when I try the [rsoundio](
-https://github.com/klingtnet/rsoundio) sine example, it reports an
-underflow.
-
-My output for aplay looks like this:
-
-    $ aplay -L
-
-null
-Discard all samples (playback) or generate zero samples (capture)
-default:CARD=sndrpihifiberry
-snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
-Default Audio Device
-sysdefault:CARD=sndrpihifiberry
-snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
-Default Audio Device
-dmix:CARD=sndrpihifiberry,DEV=0
-snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
-Direct sample mixing device
-dsnoop:CARD=sndrpihifiberry,DEV=0
-snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
-Direct sample snooping device
-hw:CARD=sndrpihifiberry,DEV=0
-snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
-Direct hardware device without any conversions
-plughw:CARD=sndrpihifiberry,DEV=0
-snd_rpi_hifiberry_dacplus, HiFiBerry DAC+ HiFi pcm512x-hifi-0
-Hardware device with all software conversions
-
-
-
-It's just strange because the pre-recorded sample and the pink noise
-version work just fine.  How would I even go about trying to debug this?
+             fp->rate_table[fp->nr_rates] = rate;
+             if (!fp->rate_min || rate < fp->rate_min)
+--- a/sound/usb/endpoint.c    2020-10-01 18:36:35.000000000 +0300
++++ b/sound/usb/endpoint.c    2020-10-04 02:09:09.471978982 +0300
+@@ -882,6 +882,8 @@
+     if (snd_usb_get_speed(ep->chip->dev) != USB_SPEED_FULL) {
+         packs_per_ms = 8 >> ep->datainterval;
+         max_packs_per_urb = MAX_PACKS_HS;
++        if (!packs_per_ms)
++            packs_per_ms = 1;
+     } else {
+         packs_per_ms = 1;
+         max_packs_per_urb = MAX_PACKS;
+--- a/sound/usb/quirks.c    2020-10-01 18:36:35.000000000 +0300
++++ b/sound/usb/quirks.c    2020-10-04 02:14:04.532196519 +0300
+@@ -1516,6 +1516,7 @@
+     case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
+     case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
+     case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
++    case USB_ID(0x1224, 0x2a25): /* Jieli Technology USB PHY 2.0 */
+         return true;
+     }
