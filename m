@@ -2,77 +2,87 @@ Return-Path: <SRS0=TlZm=FT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC309C4361B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 13:01:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8A0AC4361B
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 13:05:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C02BC2246B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 13:01:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C02BC2246B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B31C3224F4
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 13:05:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B31C3224F4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CA2C172D;
-	Tue, 15 Dec 2020 14:00:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CA2C172D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59AE817B0;
+	Tue, 15 Dec 2020 14:04:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59AE817B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608037291;
-	bh=fDiP7ilApLHaKkbPhxkJs3BwaJy+ICOzNNwrseuWDDQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bMPXo0Xfh0+NA0oh7tQWZGMmXZ6eu5r0NXvZcaVgAsbXVT98LhDlxo9KXCXW0+7Nn
-	 piwl0CoIAS4QqNUwtDWvLmzNEqUyCNrhE+bLRZx+mU8d2pIsJ6WciYC7qcOHduH9BT
-	 27gW/JKkQfyPEvnHDFvTr4lJFu2PnXzuikM8MfKo=
+	s=default; t=1608037511;
+	bh=LUqkggOeSjLSKOGp0rhWWEwMIEZGbCJkoQz4KMNsg74=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=UJiggOLXiP5zZeooTdpgkDP7Wlb14+gpP1Gnk6uIycE6EQKFa4VU7ebKxBt3JWTgG
+	 SUmN3yoy39sLG2DaAQQzAPaVPAOtmD1W5emhR5FaNrdmLXOhlRZREU+FInRRsGyENk
+	 qEX8IqnjdQJjmlUQEmpt7eiOTOBThelZHioxdpfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B35FFF80259;
-	Tue, 15 Dec 2020 14:00:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA635F80259;
+	Tue, 15 Dec 2020 14:04:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35ABFF80278; Tue, 15 Dec 2020 14:00:39 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B0256F8027B; Tue, 15 Dec 2020 14:04:19 +0100 (CET)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE17DF8014B
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 14:00:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE17DF8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A64EF80121
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 14:04:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A64EF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="igylZFgu"
-Date: Tue, 15 Dec 2020 13:00:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1608037233;
- bh=fDiP7ilApLHaKkbPhxkJs3BwaJy+ICOzNNwrseuWDDQ=;
- h=From:To:Cc:Subject:References:In-Reply-To:From;
- b=igylZFgutp+6ZB0uy7rkm5KPCGAKGCZ3mZ7wmryn8yElieFXFV6sfnel/Cz2/SXqb
- wVQLyLa5IxVG5Y1PuFhaH9N543ogMHakK69qg9PQ+PeykMYouz5iCpi+gD/w/Fk1Po
- IKjH40Ne5hYN0an/elbKmglXRdAddDvi4CYsJM8cLnOoZg56Ap0HTe0oHa55pGFYvu
- sKwEMVM52gRNnoc8m85BwOiTpJnxYjPrc8Fd0LBqAq0k609+tCZSJsVb44grJZeO4u
- gjiE2QIjDnaU2K2pjlAfuu1w3/3WeA5tp665NLBMS8DDdrypBh3+CLDLCjTSUpA8xh
- niVQhMC+fXB/g==
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH][RFC] ASoC: rsnd: don't call clk_disable_unprepare() if
- can't use
-Message-ID: <20201215130021.GC4738@sirena.org.uk>
-References: <CAMuHMdWvB+p=2JqTsO7bR8uJqKqO5A2XgXFXsVAjHk3hcxgcTw@mail.gmail.com>
- <87v9d4gcqt.wl-kuninori.morimoto.gx@renesas.com>
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="q0TGzEEA"
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BFD4Daa053244;
+ Tue, 15 Dec 2020 07:04:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1608037453;
+ bh=HZc58tX62PwkKvPlgQQvf+b5yzUbad2EgN3Bk3JTNIc=;
+ h=From:To:CC:Subject:Date;
+ b=q0TGzEEAco3alyV3haiAPGByEdp8UidlsJJURNP+spsKK2IFMOo0w8F89Uw32RAGM
+ 3TXdGM/m6nuUsCZnSK/jZIdv0IQnetctiQYH7MbiTFJIN4koEnwiiyCzQvSaopMUPt
+ Uj9eCeCUxaqFdkZ7NLafBaF5+Ypt0vigJsbicw2A=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BFD4DQJ087758
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 15 Dec 2020 07:04:13 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 15
+ Dec 2020 07:04:12 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 15 Dec 2020 07:04:12 -0600
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BFD49vK024224;
+ Tue, 15 Dec 2020 07:04:10 -0600
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <jarkko.nikula@bitmer.com>,
+ <robh+dt@kernel.org>
+Subject: [PATCH 0/2] ASoC: ti: Maintainer mail address change
+Date: Tue, 15 Dec 2020 15:05:10 +0200
+Message-ID: <20201215130512.8753-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="V88s5gaDVPzZ0KCq"
-Content-Disposition: inline
-In-Reply-To: <87v9d4gcqt.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: In specially marked packages only.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, jsarha@ti.com, tiwai@suse.com,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,43 +98,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---V88s5gaDVPzZ0KCq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+My TI address is going to bounce after Friday (18.12.2020), switch my email
+address to my private one for now.
 
-On Tue, Dec 15, 2020 at 09:06:05AM +0900, Kuninori Morimoto wrote:
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  MAINTAINERS: Update email address for TI ASoC and twl4030 codec
+    drivers
+  ASoC: dt-bindings: ti,j721e: Update maintainer and author information
 
-> -			adg->clk_rate[i] = clk_get_rate(adg->clk[i]);
-> +			if (ret < 0)
-> +				dev_warn(dev, "can't use clk %d\n", i);
-> +			else
-> +				adg->clk_rate[i] = clk_get_rate(adg->clk[i]);
+ .../devicetree/bindings/sound/ti,j721e-cpb-audio.yaml       | 4 +++-
+ .../devicetree/bindings/sound/ti,j721e-cpb-ivi-audio.yaml   | 4 +++-
+ MAINTAINERS                                                 | 6 +++---
+ 3 files changed, 9 insertions(+), 5 deletions(-)
 
-We never reset adg->clk_rate[i] so if we use the clock once then get an
-error attempting to use it again...
+-- 
+Peter
 
->  		} else {
-> -			clk_disable_unprepare(clk);
-> +			if (adg->clk_rate[i])
-> +				clk_disable_unprepare(clk);
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-...we'll try to disable twice.  This was already an issue of course, not
-something introduced in this patch.
-
---V88s5gaDVPzZ0KCq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/Ys2QACgkQJNaLcl1U
-h9DL3gf+LbNAoq+ie6MXE724oAYdw14gdhZfxkEnqHxElgGxZvKK4DzEZl6tGfvw
-pfaEOw057v0Jd+6M7/EgbVW+FEMMHkyrb9HJrsAaQJyBnKE8KreAqVCcsHuCIqGA
-z5qEphd6k9vzNByer4Rs+Lo8AAnNSLvEgKDfPjAVyJNOTJjR+C6JbCf/LrXU5u+s
-tuar+WbDmCTjX5mRPOqE2jyWt85IL5TFNnEegN80uYwXgpdBoIq25oFOgbzqP9Pg
-rW/6/xhRsUQ+WeyBfZrNCxpg0kgQt69OmqfG8uVniwUF0W2BAiYlG8jq46n6CAIB
-bzkkTuu/1Sh9yjRVkt9OIcQCjYvt6w==
-=B+vF
------END PGP SIGNATURE-----
-
---V88s5gaDVPzZ0KCq--
