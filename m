@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 550A2C4361B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 09:23:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37E4FC4361B
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 09:36:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E4BA22262
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 09:23:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E4BA22262
+	by mail.kernel.org (Postfix) with ESMTPS id C87C522285
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 09:36:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C87C522285
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0DE317BE;
-	Tue, 15 Dec 2020 10:22:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0DE317BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DC9316A1;
+	Tue, 15 Dec 2020 10:35:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DC9316A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608024217;
-	bh=OvB//+m5M5IP7YsShe6SOullUgzunpqD2T3Q5ab7Pe8=;
+	s=default; t=1608024989;
+	bh=X1lAuwdu/k+Fg5OURdEhAdRVG9yW6qHylXydz6deaEI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PgQMmFMwkA/7wLoYVER9N+Ov/Oifx2v2wM9MD68oZNO5T7+ePP86cVCFccfe9Oai1
-	 5vEQ05GhztXAmX1QLVsrt9MX63+RU13n4soNxr+TmGeHCkA17ejA8KLZK2ZNW8MX72
-	 de2sZy8C50mLGo6f6OlDkGdo3x42rpNo3ncpYDY8=
+	b=GUPfGzhy+AYOGvIMADP29Frv7G6c3V+igWEcxcHXG3ZfA7yPA5tgh1VNziC6R61bN
+	 FLbDjoAtGKDG+di240tWWNZHZM3vkW3n6eGLOU4q9q8IqdF3jpeNj6Eh92M2yOrWqN
+	 tZtK6EbYKH5D2/SS8pT+iZ8uQDEw8oEJrUlDN3Ks=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D059F80129;
-	Tue, 15 Dec 2020 10:22:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC18DF80259;
+	Tue, 15 Dec 2020 10:35:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6004FF80129; Tue, 15 Dec 2020 10:22:45 +0100 (CET)
+ id E0C70F80278; Tue, 15 Dec 2020 10:35:36 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 1B76AF80129
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 10:22:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B76AF80129
+ by alsa1.perex.cz (Postfix) with ESMTP id 27D3FF80129
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 10:35:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27D3FF80129
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1608024158246581078-webhooks-bot@alsa-project.org>
-References: <1608024158246581078-webhooks-bot@alsa-project.org>
-Subject: Enable ECS EF20EA's internel MIC and HDMI audio
-Message-Id: <20201215092245.6004FF80129@alsa1.perex.cz>
-Date: Tue, 15 Dec 2020 10:22:45 +0100 (CET)
+In-Reply-To: <1608024928759639978-webhooks-bot@alsa-project.org>
+References: <1608024928759639978-webhooks-bot@alsa-project.org>
+Subject: Enable ECS EF20EA's internal MIC and HDMI audio
+Message-Id: <20201215093536.E0C70F80278@alsa1.perex.cz>
+Date: Tue, 15 Dec 2020 10:35:36 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #68 was opened from starnight:
+alsa-project/alsa-ucm-conf pull request #68 was edited from starnight:
 
 * Add a card long name "Standard-EF20EA-1.0" match chtrt5645 enabling the internal DMIC.
 * Create HdmiLpeAudio folder and copy & modify HDMI.conf from HDA-Intel for the devices using HdmiLpeAudio as the HDMI audio driver.
