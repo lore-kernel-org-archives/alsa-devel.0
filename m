@@ -2,56 +2,55 @@ Return-Path: <SRS0=TlZm=FT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80D66C4361B
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 08:52:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 550A2C4361B
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 09:23:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 975B820771
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 08:52:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 975B820771
+	by mail.kernel.org (Postfix) with ESMTPS id 5E4BA22262
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Dec 2020 09:23:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E4BA22262
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0D5516F0;
-	Tue, 15 Dec 2020 09:51:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0D5516F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0DE317BE;
+	Tue, 15 Dec 2020 10:22:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0DE317BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608022318;
-	bh=f36VBf8oNSMyrbuC6Xi4IP9TpI12xl7gZMLdf+77pFM=;
+	s=default; t=1608024217;
+	bh=OvB//+m5M5IP7YsShe6SOullUgzunpqD2T3Q5ab7Pe8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kIdRlO+2x8hWWAVrl+p7ogEvs+udTgvtfDCFFPtZOccWY9/TK5IkGjV8RAZ9xA64M
-	 j0F6RZbOoPjIrc8LgOIKbbzI72Vb02GjUlkbt/Q9Rwz6S/ejdTf62tD9E60SB47xka
-	 PmYR83GJRUHMwt5fPN5LDT+nxG89khkXRqmu8Oqg=
+	b=PgQMmFMwkA/7wLoYVER9N+Ov/Oifx2v2wM9MD68oZNO5T7+ePP86cVCFccfe9Oai1
+	 5vEQ05GhztXAmX1QLVsrt9MX63+RU13n4soNxr+TmGeHCkA17ejA8KLZK2ZNW8MX72
+	 de2sZy8C50mLGo6f6OlDkGdo3x42rpNo3ncpYDY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A6B5F80259;
-	Tue, 15 Dec 2020 09:51:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D059F80129;
+	Tue, 15 Dec 2020 10:22:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6A43F80278; Tue, 15 Dec 2020 09:51:05 +0100 (CET)
+ id 6004FF80129; Tue, 15 Dec 2020 10:22:45 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 52905F80129
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 09:50:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52905F80129
+ by alsa1.perex.cz (Postfix) with ESMTP id 1B76AF80129
+ for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 10:22:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B76AF80129
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1608022249261568069-webhooks-bot@alsa-project.org>
-References: <1608022249261568069-webhooks-bot@alsa-project.org>
-Subject: ucm2: sof-soundwire - add support for new main capture switch and main
- capture volume control
-Message-Id: <20201215085105.A6A43F80278@alsa1.perex.cz>
-Date: Tue, 15 Dec 2020 09:51:05 +0100 (CET)
+In-Reply-To: <1608024158246581078-webhooks-bot@alsa-project.org>
+References: <1608024158246581078-webhooks-bot@alsa-project.org>
+Subject: Enable ECS EF20EA's internel MIC and HDMI audio
+Message-Id: <20201215092245.6004FF80129@alsa1.perex.cz>
+Date: Tue, 15 Dec 2020 10:22:45 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,16 +66,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #67 was opened from GoPerry:
+alsa-project/alsa-ucm-conf pull request #68 was opened from starnight:
 
-This patch was added for its new main capture switch and main capture
-volume control which combine the ADC 07 / ADC 27 Capture and Volume
-switch ,the new mute switch and volume control will be handled by codec
-rt715`s driver mute/volume kcontrol instead of PGA5.
+* Add a card long name "Standard-EF20EA-1.0" match chtrt5645 enabling the internal DMIC.
+* Create HdmiLpeAudio folder and copy & modify HDMI.conf from HDA-Intel for the devices using HdmiLpeAudio as the HDMI audio driver.
 
-BugLink: https://github.com/thesofproject/linux/issues/2544
-Signed-off-by: Perry Yuan <perry_yuan@dell.com>
-
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/67
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/67.patch
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/68
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/68.patch
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
