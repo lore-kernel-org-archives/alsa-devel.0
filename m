@@ -2,94 +2,92 @@ Return-Path: <SRS0=ORgw=FU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42118C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24315C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:09:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9221023104
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:00:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9221023104
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3E79523104
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:08:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E79523104
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE5771839;
-	Wed, 16 Dec 2020 16:59:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE5771839
+	by alsa0.perex.cz (Postfix) with ESMTPS id C02B11823;
+	Wed, 16 Dec 2020 17:08:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C02B11823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608134422;
-	bh=gNkmhZapJK7ExKO4GuwM2CQQ3uwNU2pVSyr4GJi37Gw=;
-	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pG+W9strzV9Aeq8VNkjEKIQuRk2pMEEGs2s4ziVWKJ7oliZu0JeE9hMcwQXII1PyX
-	 giA0v/wgssQ5iHWr6J8ISDmx12xR1auevOC9IY3HE9YnwgjYEBrC6nViLpdEqVN7YD
-	 RYLHHbcZ0IGjZlozL/W4aUgPZzFaHwxbMs4WTXGg=
+	s=default; t=1608134936;
+	bh=s+FRtw3klsRp4Owj9+WTgTFmKKbGDAAX7ZA7nOrbt8Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=i7lxQkSb1msv2VqVQfqlFONgkivGep20iavJYyB8HZPNA90ahbKR/GFCNePf5g3Yl
+	 NRCLIxUGTpVjp06SWYKHbHTAx8BbAsHi5tnwsfGFiQecRqq2DNtBoJ5i13gY+VQ6Ll
+	 1UIcBRd161Mxz3AIz3vXiWUvJ6rlPoIw3vRfvy1Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4501DF804BD;
-	Wed, 16 Dec 2020 16:59:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3497FF80168;
+	Wed, 16 Dec 2020 17:08:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31D5DF80278; Tue, 15 Dec 2020 19:09:18 +0100 (CET)
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com
- [IPv6:2a00:1450:4864:20::644])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2813CF8011B; Wed, 16 Dec 2020 17:08:04 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B1CEF8014B
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 19:09:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B1CEF8014B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="I06WjCTX"
-Received: by mail-ej1-x644.google.com with SMTP id j22so11041845eja.13
- for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2020 10:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:subject:message-id:mime-version:content-disposition;
- bh=B6qNOoqltxeloTXeSJiHEsnoejIa/iODS20XwCdkukE=;
- b=I06WjCTXP6nt0NcJ4l9hrmmdC4x5Wr3mD7g/3+g47lfmJROVVwEqeSAEdsgVyJGHHI
- Joq9c5J2ASwOvmK4fiiXF75pCyJOBnQLfppU3RuX0fNdixt8ycqBEZHd/c5qJWz4nX0Q
- EDvPaZkFNo+g6+4Vo7ksT55RaAahBTObBDJZdsX6lGM+H9c8bCnzDDiRcQ4ODHwR6R0v
- pnnCXmUG7PP3L09bd4VyyOvk7BRIuylgd6muDn4XC/HndhFZme50cP9Ur4gkg0qgXDq8
- GAsbP8eLfJkX3ur0v9XMU0qDL91hS5HjE9f5zTlWscdZST7f9pEqNSv/UsdBbkaPcQ9h
- rMDw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91538F8011B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 17:07:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91538F8011B
+Received: from mail-ot1-f69.google.com ([209.85.210.69])
+ by youngberry.canonical.com with esmtps
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>) id 1kpZLJ-00060c-R8
+ for alsa-devel@alsa-project.org; Wed, 16 Dec 2020 16:07:58 +0000
+Received: by mail-ot1-f69.google.com with SMTP id q8so11200384otk.6
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 08:07:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:subject:message-id:mime-version
- :content-disposition;
- bh=B6qNOoqltxeloTXeSJiHEsnoejIa/iODS20XwCdkukE=;
- b=rLzkAU2Mcsgct9VfDWIc6cH4EpaOq2JHU5kxhL9Wl5VFn20U15dlmXmmo+AEikEVUF
- baxlRoJS0ugbvrYxs4k2AITFHW5gfW65R2kGE0QWlHZbmu5Ehq2Hhz8VeRuJpsmO7M2L
- Ni3gc2Kq3H/HR+NEj2gA3MfvZlGy4ofhQib+yTIecdKCz28j2iVJC6x06XyIFGCeN7PB
- w/Gx9happXnHciNFwRfeEXZJBbfY++6F5t23m2HuaZriy9U8nmN7h3wz1janmvxJXwtI
- 4XHUPWVf1BtoPlbATucSppcGgSX4B/J56QoJyTaULMHaKhLX7hS91EuK7g8Sb2GZNkVk
- fqcg==
-X-Gm-Message-State: AOAM532lFXUHayt8AS/Ye5ga1qZmYZy7HVN2khsHMREsxk49088e6AC+
- H/ovLkxedEGLE0Swx7TOWRkVG3f8mVqxwsqS
-X-Google-Smtp-Source: ABdhPJz2IO79O71SXC9aCfFIDMOxVeNrshREHXMOkjWqAkXsEWBqIPfft4fwsgVURupKoiNMMTxNVA==
-X-Received: by 2002:a17:906:4304:: with SMTP id
- j4mr27386530ejm.304.1608055748031; 
- Tue, 15 Dec 2020 10:09:08 -0800 (PST)
-Received: from ryzen.localdomain (89-212-27-98.dynamic.t-2.net. [89.212.27.98])
- by smtp.gmail.com with ESMTPSA id n2sm1924842ejj.24.2020.12.15.10.09.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Dec 2020 10:09:07 -0800 (PST)
-Date: Tue, 15 Dec 2020 19:09:05 +0100
-From: Amadej Kastelic <amadejkastelic7@gmail.com>
-To: perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/01] Add VID to support native DSD reproduction on FiiO
- devices.
-Message-ID: <X9j7wdXSr4XyK7Bd@ryzen.localdomain>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=YPCF3dLDbYf8y5UYGzvfCqBCOHtihFhp16cOFRHaP1U=;
+ b=tO8quzFT7pbYiQigZEJg+A9TWw9r6AIsWoILvJdHEg5COTRUJEaYoU5nyaKYszemdT
+ o6GwIxIjQDAknOxdsn/1y0VggCJmwyQ0kMpQas03hzxwGfGvotFjfP8vLcgJbbxY0IbY
+ V9F1zwzpt5n7pUQPqr7DXotNpX7HaGoVK13bDGgW8tYKsSseHoRDvrX7G4xl7w2YiwHK
+ NA9pJh3+d32rKYAWK3DYVjRJPPlmMsBbQW/tcM7aKgbF2kDN5uchcBm8NI8uZuoYgE5y
+ A8N+BWB932pP54e8WsZe09cVlV5PxVjZE3eQbH9DUF5BtdrWySXRuy1PBZPFNxOc0Civ
+ kbfg==
+X-Gm-Message-State: AOAM532gdapn3g8pB4W/jBAQh9o4GjcY0xNMwvx1DUSwQ1e3Y6K+mV5/
+ /S9vLSG7Br4tqnoPyJmD9hg61sp9nApAJwgCSbxPoRa3Ph9QcbqKnFwtBYJVZ8Son4YsLnvLsvj
+ JjKF1I/oPQZ+xSpFuzd/p5XEdH2DRVu212FsYYV+vzpXq+5/BiyI9AW/t
+X-Received: by 2002:a9d:ece:: with SMTP id 72mr25708123otj.358.1608134876786; 
+ Wed, 16 Dec 2020 08:07:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzYhP6aMERTUDkaq4ZYfDI4l+IvAEAErYrDxrvbT0KAwGUMhBXxRbvR0BswTkrl1eIUAwbPsxwaUO5wiS9tmYs=
+X-Received: by 2002:a9d:ece:: with SMTP id 72mr25708095otj.358.1608134876354; 
+ Wed, 16 Dec 2020 08:07:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailman-Approved-At: Wed, 16 Dec 2020 16:59:14 +0100
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+ <s5h5z51oj12.wl-tiwai@suse.de>
+ <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+ <s5hzh2dn3oa.wl-tiwai@suse.de>
+In-Reply-To: <s5hzh2dn3oa.wl-tiwai@suse.de>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Thu, 17 Dec 2020 00:07:45 +0800
+Message-ID: <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com,
+ Alex Deucher <alexander.deucher@amd.com>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,27 +103,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Message-Id: <c759bc50134ea434bfed0a183e0ce72984f5b609.camel@gmail.com>
+On Wed, Dec 16, 2020 at 11:58 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 16 Dec 2020 16:50:20 +0100,
+> Kai-Heng Feng wrote:
+> >
+> > On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Wed, 16 Dec 2020 13:47:24 +0100,
+> > > Kai-Heng Feng wrote:
+> > > >
+> > > > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+> > > > initialization even if no codecs found"), when codec probe fails, it
+> > > > doesn't enable runtime suspend, and can prevent graphics card from
+> > > > getting powered down:
+> > > > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> > > >
+> > > > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+> > > > active
+> > > >
+> > > > So mark there's no codec and continue probing to let runtime PM to work.
+> > > >
+> > > > BugLink: https://bugs.launchpad.net/bugs/1907212
+> > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > >
+> > > Hm, but if the probe fails, doesn't it mean something really wrong?
+> > > IOW, how does this situation happen?
+> >
+> > The HDA controller is forcely created by quirk_nvidia_hda(). So
+> > probably there's really not an HDA controller.
+>
+> I still don't understand how non-zero codec_mask is passed.
+> The non-zero codec_mask means that BIOS or whatever believes that
+> HD-audio codecs are present and let HD-audio controller reporting the
+> presence.  What error did you get at probing?
 
-Add VID to support native DSD reproduction on FiiO devices.
+[    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+Full dmesg here:
+https://launchpadlibrarian.net/510351476/dmesg.log
 
-Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
-Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+>
+>
+> > > The usual no-codec state is for the devices that have a bogus HD-audio
+> > > bus remaining while codecs aren't hooked or disabled by BIOS.  For
+> > > that, it makes to leave the controller driver and let it idle.  But if
+> > > you get really an error, it's something to fix there, not to just
+> > > ignore in general.
+> >
+> > The best approach I can think of is to make current two steps probe
+> > into one. So when probe fails, the driver won't bind to the device.
+> > What's the reason behind the two steps approach?
+>
+> It's a sort of must, as the module loading is involved with binding
+> with the codecs, as well as (optionally) request_firmware()
+> invocation.
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 349e1e52996d..f5fc65aef628 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1658,6 +1658,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 	case 0x25ce:  /* Mytek devices */
- 	case 0x278b:  /* Rotel? */
- 	case 0x292b:  /* Gustard/Ess based devices */
-+	case 0x2972:  /* FiiO devices */
- 	case 0x2ab6:  /* T+A devices */
- 	case 0x3842:  /* EVGA */
- 	case 0xc502:  /* HiBy devices */
---
-2.20.1
+Ok. I also tried to use device_release_driver(), but azx_remove()
+calls "cancel_work_sync(&hda->probe_work)" so there will be a
+deadlock.
+
+Kai-Heng
+
+>
+>
+> Takashi
+
+
+
+-- 
+Kai-Heng
