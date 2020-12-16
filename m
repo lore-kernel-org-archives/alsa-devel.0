@@ -6,58 +6,62 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C23D2C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:55:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 171B0C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:55:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D690022283
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:55:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D690022283
+	by mail.kernel.org (Postfix) with ESMTPS id 372DD233CF
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:55:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 372DD233CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EC231812;
-	Wed, 16 Dec 2020 16:54:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EC231812
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD9B517ED;
+	Wed, 16 Dec 2020 16:54:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD9B517ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608134108;
-	bh=88R5HX8QPG4Rb/zadgAFPZrUoglDHE4sM8jJ+aR23aU=;
+	s=default; t=1608134132;
+	bh=hFO7YhkWSAUGPkhCh9ZxoldB8alUx+UJ1lgY3ZHhYgY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DpVlMHU0WWvj58j0isLJ8bwX6Vx7vpepU8zWBzyd6UzaVDINoOuC7OYIOlvlaewSX
-	 8whvNqYTHuwM5zNlDLbuIxzYGen6KKY07eH2M9nepQjUNCmLUYhqmM1N1K1/HLANMv
-	 yHZm/AIv5zF3zOTPVeLKrsG/xWgAtUKh3Cz4NOj4=
+	b=DVA0jpMmCeJU3GqnWkMmkwoDvluwGs+HM3K7isg8xcCmPrC8ysoHJg90tLPQmFqz5
+	 zTuBCt0wRGO8BXYLTQEyOJgtibGDFd9CZR9155yGMroH5iravz2Efd84jQpwZjJb1N
+	 p6AYnVzOqS0K4204a4hzCZIec5hnix61ADfBlTX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9903EF804BD;
-	Wed, 16 Dec 2020 16:53:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60060F804CA;
+	Wed, 16 Dec 2020 16:53:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27C3CF80276; Wed, 16 Dec 2020 16:53:25 +0100 (CET)
+ id 7AB1DF804CB; Wed, 16 Dec 2020 16:53:30 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA358F80276
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:53:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA358F80276
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F928F804C3
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:53:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F928F804C3
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: robh+dt@kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- lgirdwood@gmail.com, jarkko.nikula@bitmer.com
-In-Reply-To: <20201215130512.8753-1-peter.ujfalusi@ti.com>
-References: <20201215130512.8753-1-peter.ujfalusi@ti.com>
-Subject: Re: [PATCH 0/2] ASoC: ti: Maintainer mail address change
-Message-Id: <160813397774.31838.10952894427041068328.b4-ty@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Colin King <colin.king@canonical.com>, Takashi Iwai <tiwai@suse.com>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20201216112608.11385-1-colin.king@canonical.com>
+References: <20201216112608.11385-1-colin.king@canonical.com>
+Subject: Re: [PATCH] ASoC: atmel: fix spelling mistake in Kconfig
+ "programable" -> "programmable"
+Message-Id: <160813397775.31838.18327524076299334868.b4-ty@kernel.org>
 Date: Wed, 16 Dec 2020 15:52:57 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, jsarha@ti.com, tiwai@suse.com,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,12 +77,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Dec 2020 15:05:10 +0200, Peter Ujfalusi wrote:
-> My TI address is going to bounce after Friday (18.12.2020), switch my email
-> address to my private one for now.
-> 
-> Regards,
-> Peter
+On Wed, 16 Dec 2020 11:26:08 +0000, Colin King wrote:
+> There are a couple of spelling mistakes in the Kconfig help text. Fix them.
 
 Applied to
 
@@ -86,10 +86,8 @@ Applied to
 
 Thanks!
 
-[1/2] MAINTAINERS: Update email address for TI ASoC and twl4030 codec drivers
-      commit: fe6ce6c394fb1ef1d8a6384c5180e70893157f22
-[2/2] ASoC: dt-bindings: ti, j721e: Update maintainer and author information
-      commit: 61fc03b6512b18f27a25002426d595f5a36645ed
+[1/1] ASoC: atmel: fix spelling mistake in Kconfig "programable" -> "programmable"
+      commit: 13733775326ea9eb81c6148ad60c43b8d231a343
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
