@@ -2,87 +2,68 @@ Return-Path: <SRS0=ORgw=FU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24315C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63D51C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:23:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E79523104
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:08:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E79523104
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id E3E9423124
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:23:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3E9423124
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C02B11823;
-	Wed, 16 Dec 2020 17:08:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C02B11823
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5F0A1826;
+	Wed, 16 Dec 2020 17:22:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5F0A1826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608134936;
-	bh=s+FRtw3klsRp4Owj9+WTgTFmKKbGDAAX7ZA7nOrbt8Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1608135798;
+	bh=HmVkef4qCipIserziCWX2bXVQQZcQNyMzt1DUpME74U=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i7lxQkSb1msv2VqVQfqlFONgkivGep20iavJYyB8HZPNA90ahbKR/GFCNePf5g3Yl
-	 NRCLIxUGTpVjp06SWYKHbHTAx8BbAsHi5tnwsfGFiQecRqq2DNtBoJ5i13gY+VQ6Ll
-	 1UIcBRd161Mxz3AIz3vXiWUvJ6rlPoIw3vRfvy1Q=
+	b=X/IT3Vw6oWXk4ps1oeK+2efZ0mnDWwJ6nLcGtJpYbafZV+JhHaMawtfvOZMDcDPnD
+	 toVNr+pfUz2pWV5se3NJVISO8Y/Hxou19OpADd1X/NbqUlZDVtvo8fEPSCKrW3qWqE
+	 ZHVEgzxV7KTbF3XEMCtciwicNlpcRtkfOShZJhUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3497FF80168;
-	Wed, 16 Dec 2020 17:08:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76F03F8011B;
+	Wed, 16 Dec 2020 17:22:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2813CF8011B; Wed, 16 Dec 2020 17:08:04 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 0D5D5F80171; Wed, 16 Dec 2020 17:22:25 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91538F8011B
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 17:07:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91538F8011B
-Received: from mail-ot1-f69.google.com ([209.85.210.69])
- by youngberry.canonical.com with esmtps
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>) id 1kpZLJ-00060c-R8
- for alsa-devel@alsa-project.org; Wed, 16 Dec 2020 16:07:58 +0000
-Received: by mail-ot1-f69.google.com with SMTP id q8so11200384otk.6
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 08:07:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=YPCF3dLDbYf8y5UYGzvfCqBCOHtihFhp16cOFRHaP1U=;
- b=tO8quzFT7pbYiQigZEJg+A9TWw9r6AIsWoILvJdHEg5COTRUJEaYoU5nyaKYszemdT
- o6GwIxIjQDAknOxdsn/1y0VggCJmwyQ0kMpQas03hzxwGfGvotFjfP8vLcgJbbxY0IbY
- V9F1zwzpt5n7pUQPqr7DXotNpX7HaGoVK13bDGgW8tYKsSseHoRDvrX7G4xl7w2YiwHK
- NA9pJh3+d32rKYAWK3DYVjRJPPlmMsBbQW/tcM7aKgbF2kDN5uchcBm8NI8uZuoYgE5y
- A8N+BWB932pP54e8WsZe09cVlV5PxVjZE3eQbH9DUF5BtdrWySXRuy1PBZPFNxOc0Civ
- kbfg==
-X-Gm-Message-State: AOAM532gdapn3g8pB4W/jBAQh9o4GjcY0xNMwvx1DUSwQ1e3Y6K+mV5/
- /S9vLSG7Br4tqnoPyJmD9hg61sp9nApAJwgCSbxPoRa3Ph9QcbqKnFwtBYJVZ8Son4YsLnvLsvj
- JjKF1I/oPQZ+xSpFuzd/p5XEdH2DRVu212FsYYV+vzpXq+5/BiyI9AW/t
-X-Received: by 2002:a9d:ece:: with SMTP id 72mr25708123otj.358.1608134876786; 
- Wed, 16 Dec 2020 08:07:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzYhP6aMERTUDkaq4ZYfDI4l+IvAEAErYrDxrvbT0KAwGUMhBXxRbvR0BswTkrl1eIUAwbPsxwaUO5wiS9tmYs=
-X-Received: by 2002:a9d:ece:: with SMTP id 72mr25708095otj.358.1608134876354; 
- Wed, 16 Dec 2020 08:07:56 -0800 (PST)
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D6D6F8011B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 17:22:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D6D6F8011B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7F475AFAC;
+ Wed, 16 Dec 2020 16:22:17 +0000 (UTC)
+Date: Wed, 16 Dec 2020 17:22:17 +0100
+Message-ID: <s5hsg85n2km.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+In-Reply-To: <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
 References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
  <20201216124726.2842197-1-kai.heng.feng@canonical.com>
  <s5h5z51oj12.wl-tiwai@suse.de>
  <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
  <s5hzh2dn3oa.wl-tiwai@suse.de>
-In-Reply-To: <s5hzh2dn3oa.wl-tiwai@suse.de>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Thu, 17 Dec 2020 00:07:45 +0800
-Message-ID: <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
-Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+ <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  open list <linux-kernel@vger.kernel.org>,
@@ -103,72 +84,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 16, 2020 at 11:58 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Wed, 16 Dec 2020 16:50:20 +0100,
-> Kai-Heng Feng wrote:
+On Wed, 16 Dec 2020 17:07:45 +0100,
+Kai-Heng Feng wrote:
+> 
+> On Wed, Dec 16, 2020 at 11:58 PM Takashi Iwai <tiwai@suse.de> wrote:
 > >
-> > On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Wed, 16 Dec 2020 16:50:20 +0100,
+> > Kai-Heng Feng wrote:
 > > >
-> > > On Wed, 16 Dec 2020 13:47:24 +0100,
-> > > Kai-Heng Feng wrote:
+> > > On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
 > > > >
-> > > > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
-> > > > initialization even if no codecs found"), when codec probe fails, it
-> > > > doesn't enable runtime suspend, and can prevent graphics card from
-> > > > getting powered down:
-> > > > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> > > > On Wed, 16 Dec 2020 13:47:24 +0100,
+> > > > Kai-Heng Feng wrote:
+> > > > >
+> > > > > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+> > > > > initialization even if no codecs found"), when codec probe fails, it
+> > > > > doesn't enable runtime suspend, and can prevent graphics card from
+> > > > > getting powered down:
+> > > > > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> > > > >
+> > > > > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+> > > > > active
+> > > > >
+> > > > > So mark there's no codec and continue probing to let runtime PM to work.
+> > > > >
+> > > > > BugLink: https://bugs.launchpad.net/bugs/1907212
+> > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > > > >
-> > > > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
-> > > > active
-> > > >
-> > > > So mark there's no codec and continue probing to let runtime PM to work.
-> > > >
-> > > > BugLink: https://bugs.launchpad.net/bugs/1907212
-> > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > Hm, but if the probe fails, doesn't it mean something really wrong?
+> > > > IOW, how does this situation happen?
 > > >
-> > > Hm, but if the probe fails, doesn't it mean something really wrong?
-> > > IOW, how does this situation happen?
+> > > The HDA controller is forcely created by quirk_nvidia_hda(). So
+> > > probably there's really not an HDA controller.
 > >
-> > The HDA controller is forcely created by quirk_nvidia_hda(). So
-> > probably there's really not an HDA controller.
->
-> I still don't understand how non-zero codec_mask is passed.
-> The non-zero codec_mask means that BIOS or whatever believes that
-> HD-audio codecs are present and let HD-audio controller reporting the
-> presence.  What error did you get at probing?
+> > I still don't understand how non-zero codec_mask is passed.
+> > The non-zero codec_mask means that BIOS or whatever believes that
+> > HD-audio codecs are present and let HD-audio controller reporting the
+> > presence.  What error did you get at probing?
+> 
+> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> Full dmesg here:
+> https://launchpadlibrarian.net/510351476/dmesg.log
 
-[    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
-Full dmesg here:
-https://launchpadlibrarian.net/510351476/dmesg.log
+The actual problems are shown before that line.
 
->
->
-> > > The usual no-codec state is for the devices that have a bogus HD-audio
-> > > bus remaining while codecs aren't hooked or disabled by BIOS.  For
-> > > that, it makes to leave the controller driver and let it idle.  But if
-> > > you get really an error, it's something to fix there, not to just
-> > > ignore in general.
+[    4.178848] pci 0000:01:00.1: can't change power state from D3cold to D0 (config space inaccessible)
+[    4.179502] snd_hda_intel 0000:01:00.1: can't change power state from D3cold to D0 (config space inaccessible)
+[    4.179511] snd_hda_intel 0000:01:00.1: can't change power state from D3hot to D0 (config space inaccessible)
+....
+[    4.280571] hdaudio hdaudioC1D0: no AFG or MFG node found
+[    4.280633] hdaudio hdaudioC1D1: no AFG or MFG node found
+[    4.280685] hdaudio hdaudioC1D2: no AFG or MFG node found
+[    4.280736] hdaudio hdaudioC1D3: no AFG or MFG node found
+[    4.280788] hdaudio hdaudioC1D4: no AFG or MFG node found
+[    4.280839] hdaudio hdaudioC1D5: no AFG or MFG node found
+[    4.280892] hdaudio hdaudioC1D6: no AFG or MFG node found
+[    4.280943] hdaudio hdaudioC1D7: no AFG or MFG node found
+
+Could you check the codec_mask value read in
+sound/hda/hdac_controller.c?  I guess it reads 0xff.
+
+If that's the case, it can be corrected by the patch below.
+But, we should check the cause of the first error (inaccessible config
+space) in anyway; this must be the primary reason of the whole chain
+of errors.
+
+> > > > The usual no-codec state is for the devices that have a bogus HD-audio
+> > > > bus remaining while codecs aren't hooked or disabled by BIOS.  For
+> > > > that, it makes to leave the controller driver and let it idle.  But if
+> > > > you get really an error, it's something to fix there, not to just
+> > > > ignore in general.
+> > >
+> > > The best approach I can think of is to make current two steps probe
+> > > into one. So when probe fails, the driver won't bind to the device.
+> > > What's the reason behind the two steps approach?
 > >
-> > The best approach I can think of is to make current two steps probe
-> > into one. So when probe fails, the driver won't bind to the device.
-> > What's the reason behind the two steps approach?
->
-> It's a sort of must, as the module loading is involved with binding
-> with the codecs, as well as (optionally) request_firmware()
-> invocation.
+> > It's a sort of must, as the module loading is involved with binding
+> > with the codecs, as well as (optionally) request_firmware()
+> > invocation.
+> 
+> Ok. I also tried to use device_release_driver(), but azx_remove()
+> calls "cancel_work_sync(&hda->probe_work)" so there will be a
+> deadlock.
 
-Ok. I also tried to use device_release_driver(), but azx_remove()
-calls "cancel_work_sync(&hda->probe_work)" so there will be a
-deadlock.
-
-Kai-Heng
-
->
->
-> Takashi
+You can't do that.
 
 
+Takashi
 
--- 
-Kai-Heng
+---
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -449,6 +449,10 @@ int snd_hdac_bus_reset_link(struct hdac_bus *bus, bool full_reset)
+ 	if (!bus->codec_mask) {
+ 		bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
+ 		dev_dbg(bus->dev, "codec_mask = 0x%lx\n", bus->codec_mask);
++		if (bus->codec_mask == 0xff) {
++			dev_err(bus->dev, "failed to read STATESTS register\n");
++			bus->codec_mask = 0;
++		}
+ 	}
+ 
+ 	return 0;
