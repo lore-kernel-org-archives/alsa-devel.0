@@ -2,78 +2,82 @@ Return-Path: <SRS0=ORgw=FU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D7A2C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:39:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4D31C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:39:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B374D23104
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:39:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B374D23104
+	by mail.kernel.org (Postfix) with ESMTPS id 2992E22DBF
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:39:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2992E22DBF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AADD17B8;
-	Wed, 16 Dec 2020 16:38:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AADD17B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C17A17E8;
+	Wed, 16 Dec 2020 16:38:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C17A17E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608133178;
-	bh=j1QTUWN/q8oBdXgp9qSVETOQNvC33m0f7xDhMb59gUY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vVCu7O59noSxbSRwK2IgVtLU6j2JfV4RUfraQP5iTMGrgWxuZtGwu+fJuIq3/43ib
-	 Zpfi4eJZ73piUJiD9EUPaBcl/YMZpeYtT/KCEL/ZvReDwLzNQg4mZbeibPGH+xokD8
-	 Wx92ABL/mGySguBKNGQWg3JW2MMHmbg9TQ0rgQ4s=
+	s=default; t=1608133187;
+	bh=dAPh8ZJGuLrb3eagfsITJU3Ex/lPNwUSYfLKN7rpEFg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CRW1kA7v2CWZNRftkcDTIBrGmbiwpw7E21MyMMXeSNWK9HmBLn5cIuS69Op+u6wxo
+	 xkECKTSqbDhc+8noYFA+HlygXEzFSMRbEoONMNcO9W4v4HEzhRvG6DCpaa39O/M71o
+	 UeyhQ6Ko2u865kat0f8am6DAy8nMttgjVucxsADE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B293F80245;
-	Wed, 16 Dec 2020 16:38:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EF53F8027D;
+	Wed, 16 Dec 2020 16:38:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F1BEF80272; Wed, 16 Dec 2020 16:38:47 +0100 (CET)
+ id 9E987F804BD; Wed, 16 Dec 2020 16:38:54 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8FD8F80168
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:38:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8FD8F80168
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F972F80276
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:38:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F972F80276
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="MLCCBVLJ"
+ header.b="Burg6XN5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1608133123;
+ s=mimecast20190719; t=1608133129;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=JTF0o9oV4RmYD6ED/gY1H41/0K08xXARiFU7Fd9/Wgw=;
- b=MLCCBVLJXmRc3vriFnUocQgtFbSoTtQC5LIkipw6fp8PA5JoF15IU81lsksVUch4uLCGJT
- J8gO716aJT47uddWwS4IyIH8/qjAisjDlB+x1OPyWUR6ehtl+axVcXpU5uPnq8B+cPkrgK
- ABGMQta0xt6ureCZ3Vc3/CML2fn5gLA=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5PgrIfw1IxkkxPzFX12aQblm1NRfQqNfWU5IMNiJGH0=;
+ b=Burg6XN5bELVGrEwl8KaCNC++PS5f4rZ3XisymCt+F8T9ekKabWmjrRxCN4EF2Q6vSu9WR
+ 0rcZm2BOx4YdJIylK+b00Yj3/k+JKDP4A4ChcJgYcknDatHWchL1DY/mzM2f1rHO7WFZVc
+ HPvPmsBRdr4nvOxPQ6pkcA/FN/bgzX8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-224-KIU3FAL9PH2lkikUzF37cQ-1; Wed, 16 Dec 2020 10:38:42 -0500
-X-MC-Unique: KIU3FAL9PH2lkikUzF37cQ-1
+ us-mta-442-N6FGe6nyPdWlFXEXKSbtOA-1; Wed, 16 Dec 2020 10:38:45 -0500
+X-MC-Unique: N6FGe6nyPdWlFXEXKSbtOA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
  [10.5.11.13])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0515107B46F;
- Wed, 16 Dec 2020 15:38:40 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DBA2D100559B;
+ Wed, 16 Dec 2020 15:38:43 +0000 (UTC)
 Received: from x1.localdomain (ovpn-116-64.ams2.redhat.com [10.36.116.64])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 45F2660861;
- Wed, 16 Dec 2020 15:38:38 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id D8DE460861;
+ Wed, 16 Dec 2020 15:38:42 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf 1/3] chtnau8824: Move DAC Channel Source
- selection to Speaker/Headphones EnableSeq
-Date: Wed, 16 Dec 2020 16:38:36 +0100
-Message-Id: <20201216153838.34945-1-hdegoede@redhat.com>
+Subject: [PATCH alsa-ucm-conf 3/3] chtnau8824: Add support for using the SOF
+ driver
+Date: Wed, 16 Dec 2020 16:38:38 +0100
+Message-Id: <20201216153838.34945-3-hdegoede@redhat.com>
+In-Reply-To: <20201216153838.34945-1-hdegoede@redhat.com>
+References: <20201216153838.34945-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Authentication-Results: relay.mimecast.com;
@@ -99,68 +103,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move DAC Channel Source selection to Speaker/Headphones EnableSeq.
+The old (and currently the default) SST driver uses TDM 4 slots 24 bit
+as wire format to the codec. Where as the new SOF driver uses standard
+I2S 2 channel 24 bit.
 
-The main reason for doing this is to make it easier to allow using
-variables, as the Speaker/Headphones conf files are evaluated after
-the main HiFi.conf had a chance to set them.
+Normally this should not impact the UCM settings, but on the NAU8824
+the "DAC Right Channel Source" mixer setting must be set to 1 when
+using TDM 4 slots and to 0 when using I2S 2 channel mode.
+
+Getting this wrong (in either case) results in the right channel not
+outputting any sound.
+
+This commit introduces a RightOutputChannel variable which gets
+set to 0/1 depending on the driver and then uses that for the
+"DAC Right Channel Source" mixer setting so that we do the right
+thing depending on the driver.
+
+This has been tested on the following devices:
+
+Medion E2215T:    Stereo speakers, analog mic
+Medion E2228T:    Stereo speakers, stereo digital mics
+Cube iWork 8 Air: Mono speaker, analog mic
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- ucm2/codecs/nau8824/EnableSeq.conf   | 3 ---
- ucm2/codecs/nau8824/HeadPhones.conf  | 2 ++
- ucm2/codecs/nau8824/MonoSpeaker.conf | 2 ++
- ucm2/codecs/nau8824/Speaker.conf     | 2 ++
- 4 files changed, 6 insertions(+), 3 deletions(-)
+ ucm2/chtnau8824/HiFi.conf            | 2 ++
+ ucm2/codecs/nau8824/HeadPhones.conf  | 2 +-
+ ucm2/codecs/nau8824/MonoSpeaker.conf | 2 +-
+ ucm2/codecs/nau8824/Speaker.conf     | 2 +-
+ 4 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/ucm2/codecs/nau8824/EnableSeq.conf b/ucm2/codecs/nau8824/EnableSeq.conf
-index 3650d06..2595e5f 100644
---- a/ucm2/codecs/nau8824/EnableSeq.conf
-+++ b/ucm2/codecs/nau8824/EnableSeq.conf
-@@ -1,7 +1,4 @@
- EnableSequence [
--	# Playback TDM configuration
--	cset "name='DACL Channel Source' 0"
--	cset "name='DACR Channel Source' 1"
- 	# Input Configuration
- 	cset "name='DMIC1 Enable Switch' off"
- 	cset "name='DMIC2 Enable Switch' off"
+diff --git a/ucm2/chtnau8824/HiFi.conf b/ucm2/chtnau8824/HiFi.conf
+index b36588f..7e6669c 100644
+--- a/ucm2/chtnau8824/HiFi.conf
++++ b/ucm2/chtnau8824/HiFi.conf
+@@ -1,6 +1,7 @@
+ Define.Speaker "Speaker"
+ Define.Mic "InternalMic"
+ Define.SST "yes"
++Define.RightOutputChannel "1"
+ 
+ If.Controls {
+ 	Condition {
+@@ -9,6 +10,7 @@ If.Controls {
+ 	}
+ 	False {
+ 		Define.SST ""
++		Define.RightOutputChannel "0"
+ 	}
+ }
+ 
 diff --git a/ucm2/codecs/nau8824/HeadPhones.conf b/ucm2/codecs/nau8824/HeadPhones.conf
-index a807f84..46ec5d7 100644
+index 46ec5d7..81e6f1e 100644
 --- a/ucm2/codecs/nau8824/HeadPhones.conf
 +++ b/ucm2/codecs/nau8824/HeadPhones.conf
-@@ -12,6 +12,8 @@ SectionDevice."Headphones" {
- 	]
+@@ -13,7 +13,7 @@ SectionDevice."Headphones" {
  
  	EnableSequence [
-+		cset "name='DACL Channel Source' 0"
-+		cset "name='DACR Channel Source' 1"
+ 		cset "name='DACL Channel Source' 0"
+-		cset "name='DACR Channel Source' 1"
++		cset "name='DACR Channel Source' ${var:RightOutputChannel}"
  		cset "name='Headphone Switch' on"
  	]
  
 diff --git a/ucm2/codecs/nau8824/MonoSpeaker.conf b/ucm2/codecs/nau8824/MonoSpeaker.conf
-index 6b4ef8a..09edea5 100644
+index 09edea5..098bf03 100644
 --- a/ucm2/codecs/nau8824/MonoSpeaker.conf
 +++ b/ucm2/codecs/nau8824/MonoSpeaker.conf
-@@ -11,6 +11,8 @@ SectionDevice."Speaker" {
- 	]
+@@ -12,7 +12,7 @@ SectionDevice."Speaker" {
  
  	EnableSequence [
-+		cset "name='DACL Channel Source' 0"
-+		cset "name='DACR Channel Source' 1"
+ 		cset "name='DACL Channel Source' 0"
+-		cset "name='DACR Channel Source' 1"
++		cset "name='DACR Channel Source' ${var:RightOutputChannel}"
  		# nau8824 mono speaker boards have the speaker on the right chan
  		cset "name='Speaker Left DACL Volume' 0"
  		cset "name='Speaker Left DACR Volume' 0"
 diff --git a/ucm2/codecs/nau8824/Speaker.conf b/ucm2/codecs/nau8824/Speaker.conf
-index a995873..64d7eee 100644
+index 64d7eee..065a577 100644
 --- a/ucm2/codecs/nau8824/Speaker.conf
 +++ b/ucm2/codecs/nau8824/Speaker.conf
-@@ -11,6 +11,8 @@ SectionDevice."Speaker" {
- 	]
+@@ -12,7 +12,7 @@ SectionDevice."Speaker" {
  
  	EnableSequence [
-+		cset "name='DACL Channel Source' 0"
-+		cset "name='DACR Channel Source' 1"
+ 		cset "name='DACL Channel Source' 0"
+-		cset "name='DACR Channel Source' 1"
++		cset "name='DACR Channel Source' ${var:RightOutputChannel}"
  		cset "name='Speaker Left DACL Volume' 1"
  		cset "name='Speaker Left DACR Volume' 0"
  		cset "name='Speaker Right DACL Volume' 0"
