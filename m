@@ -4,89 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8D37C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:39:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D206EC4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:42:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0523723104
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:39:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0523723104
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 158BB23104
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:42:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 158BB23104
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7779417C4;
-	Wed, 16 Dec 2020 16:39:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7779417C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BBA517BC;
+	Wed, 16 Dec 2020 16:41:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BBA517BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608133195;
-	bh=q2TtwsfKyGfUXSdApyawZmYVOzM+uYi3wEaveDDGzeM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1608133354;
+	bh=5dRfRYWCgFal+ZhjhWz0nkCGii/ZM1lgOldLgpZTTrE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jeCGhvr3Ti3TIRqTvZyptJCS+qLtW9RsyCSGmULaHHFPSbj419BAYEzk1BAKr6kGf
-	 RlxIr2IQggSE4LaI5AlQBxQmHyLX8YcSodYTXJXDXQRSDCF0KhFhFd8bQGVKzgUuxX
-	 oeSL6MlsEEWyxoWLw6SJ3cKmDt60bsJ/kIbTaE4w=
+	b=lWeHCYy/xdj17gxb9a2rlNUi0c0tJszZlJRYJn5vY7mLbfeYByJPzVg8Oijf90STn
+	 WG/1TCSvjS8jsZe1b9+3LAaM8xvcHlxI+HVItZu9scCoTFQ0Y2wY5eXS9FztuK39+j
+	 CPu8/EKJZFDPZsYQGBM4HLRkz48/Wz5Lq1sHTF+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4388F80168;
-	Wed, 16 Dec 2020 16:38:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2BBFF80171;
+	Wed, 16 Dec 2020 16:41:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2711EF80168; Wed, 16 Dec 2020 16:38:56 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7C64F80272
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:38:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7C64F80272
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="aSKKapj8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1608133126;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=PJXp6UEMcReBTy9sdIGPjZlonnYD8dHy6PRyEeZJ4Ag=;
- b=aSKKapj8Tt6v0u/rIPLcFmYYr+W6ZVrnsdzEO7TxIJhRJVVSk5eAQ1APse7N9YVJFX8YdP
- OfwFvy8Ui9ylrI+0OqLcrL17zTZNipWfo0/1Lj3IruYuzF+Q3tr76Tn6Ve7ZJxxWfrNkld
- BosD1B7vJHj37OF+QrInUERhN1F7/f0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-EoLypP9FPoGC6GoUUglEfA-1; Wed, 16 Dec 2020 10:38:43 -0500
-X-MC-Unique: EoLypP9FPoGC6GoUUglEfA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
- [10.5.11.13])
+ id 1D87DF801F7; Wed, 16 Dec 2020 16:41:42 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4430A1E7C1;
- Wed, 16 Dec 2020 15:38:42 +0000 (UTC)
-Received: from x1.localdomain (ovpn-116-64.ams2.redhat.com [10.36.116.64])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 4741660C9C;
- Wed, 16 Dec 2020 15:38:41 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf 2/3] chtnau8824: Add a SST define/variable
-Date: Wed, 16 Dec 2020 16:38:37 +0100
-Message-Id: <20201216153838.34945-2-hdegoede@redhat.com>
-In-Reply-To: <20201216153838.34945-1-hdegoede@redhat.com>
-References: <20201216153838.34945-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63818F80168
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:41:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63818F80168
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 57395AD6B;
+ Wed, 16 Dec 2020 15:41:29 +0000 (UTC)
+Date: Wed, 16 Dec 2020 16:41:29 +0100
+Message-ID: <s5h5z51oj12.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+In-Reply-To: <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com,
+ Alex Deucher <alexander.deucher@amd.com>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,57 +80,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a SST define which gets set to "yes" when using the SST driver
-and to "" when not using the SST driver;
+On Wed, 16 Dec 2020 13:47:24 +0100,
+Kai-Heng Feng wrote:
+> 
+> Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+> initialization even if no codecs found"), when codec probe fails, it
+> doesn't enable runtime suspend, and can prevent graphics card from
+> getting powered down:
+> [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> 
+> $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+> active
+> 
+> So mark there's no codec and continue probing to let runtime PM to work.
+> 
+> BugLink: https://bugs.launchpad.net/bugs/1907212
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-And decide if platforms/bytcr/PlatformEnableSeq.conf should be included
-or not based on this.
+Hm, but if the probe fails, doesn't it mean something really wrong?
+IOW, how does this situation happen?
 
-This is a preparation patch for adding SOF support.
+The usual no-codec state is for the devices that have a bogus HD-audio
+bus remaining while codecs aren't hooked or disabled by BIOS.  For
+that, it makes to leave the controller driver and let it idle.  But if
+you get really an error, it's something to fix there, not to just
+ignore in general.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- ucm2/chtnau8824/HiFi.conf | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/ucm2/chtnau8824/HiFi.conf b/ucm2/chtnau8824/HiFi.conf
-index 105f360..b36588f 100644
---- a/ucm2/chtnau8824/HiFi.conf
-+++ b/ucm2/chtnau8824/HiFi.conf
-@@ -1,5 +1,16 @@
- Define.Speaker "Speaker"
- Define.Mic "InternalMic"
-+Define.SST "yes"
-+
-+If.Controls {
-+	Condition {
-+		Type ControlExists
-+		Control "name='media0_in Gain 0 Switch'"
-+	}
-+	False {
-+		Define.SST ""
-+	}
-+}
- 
- If.cfg-mspk {
- 	Condition {
-@@ -33,12 +44,12 @@ SectionVerb {
- 
- 	Include.e.File "/codecs/nau8824/EnableSeq.conf"
- 
--	If.Controls {
-+	If.SST {
- 		Condition {
--			Type ControlExists
--			Control "name='media0_in Gain 0 Switch'"
-+			Type String
-+			Empty "${var:SST}"
- 		}
--		True {
-+		False {
- 			Include.pe {
- 				File "/platforms/bytcr/PlatformEnableSeq.conf"
- 				Before.EnableSequence "0"
--- 
-2.28.0
+thanks,
 
+Takashi
+
+> ---
+>  sound/pci/hda/hda_intel.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 6852668f1bcb..872a703dee43 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -2328,7 +2328,7 @@ static int azx_probe_continue(struct azx *chip)
+>  	if (bus->codec_mask) {
+>  		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+>  		if (err < 0)
+> -			goto out_free;
+> +			bus->codec_mask = 0;
+>  	}
+>  
+>  #ifdef CONFIG_SND_HDA_PATCH_LOADER
+> -- 
+> 2.29.2
+> 
