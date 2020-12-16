@@ -6,58 +6,58 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91BF2C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5806C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:56:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC6D222283
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:55:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC6D222283
+	by mail.kernel.org (Postfix) with ESMTPS id 3F8B223104
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:56:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F8B223104
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75E441831;
-	Wed, 16 Dec 2020 16:55:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75E441831
+	by alsa0.perex.cz (Postfix) with ESMTPS id 813DF1830;
+	Wed, 16 Dec 2020 16:55:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 813DF1830
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608134155;
-	bh=WuFUiKFANJ9DlWRPFfwMCuFLc04ZQwLuVyLVlklFxI8=;
+	s=default; t=1608134168;
+	bh=cAAklVST+xPb2zoWDWtegqkPh2oe2H6Fu7I1Tz48mHM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lhkVs8pKKUkOXzCZjI9sxqhxtZOcybS+8ygnh+Wf9OkZAVl4sW+3bhRrWLJrqnOoj
-	 AjgG5QB/7445GmsLkOMbYzzOn0CqlBgqtfhEvlmNrjE//vfdbBx4Q3iZyZ6FqprO4R
-	 bWsFxkKzfVelUjKERIAawUR0KbszXjTqrtQZ74C4=
+	b=UhP4td1BCGWMMwCqoK8o4jWU4s/4UE1CLuNPRMQBkopiTv1ZFgsYbvV0Ll3z0UsMJ
+	 XGO1uvB+BT/wVPx93PoyFrp7iK3CsQeIRT17mVP92Dw9vZeR5DqflIAjkcmcxVqNlM
+	 Ayn/4onIg+1gZ+JdX4ljn9rtYJtdc9I1H8cA/Vfc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0606FF804CB;
-	Wed, 16 Dec 2020 16:53:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B1EBF804E1;
+	Wed, 16 Dec 2020 16:53:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CF7AF804D8; Wed, 16 Dec 2020 16:53:35 +0100 (CET)
+ id D2759F804E2; Wed, 16 Dec 2020 16:53:40 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DE3CF804D2
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:53:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DE3CF804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F0F8F804D6
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:53:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F0F8F804D6
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Colin King <colin.king@canonical.com>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20201216112859.11564-1-colin.king@canonical.com>
-References: <20201216112859.11564-1-colin.king@canonical.com>
-Subject: Re: [PATCH] ASoC: codecs: fix spelling mistake in Kconfig
- "comunicate" -> "communicate"
-Message-Id: <160813397775.31838.15795647597993212991.b4-ty@kernel.org>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, timur@kernel.org,
+ tiwai@suse.com, Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz,
+ festevam@gmail.com, alsa-devel@alsa-project.org
+In-Reply-To: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized variable
+ ret
+Message-Id: <160813397775.31838.8934909997692637790.b4-ty@kernel.org>
 Date: Wed, 16 Dec 2020 15:52:57 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,8 +73,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Dec 2020 11:28:59 +0000, Colin King wrote:
-> There is a spelling mistake in the Kconfig help text. Fix it.
+On Wed, 16 Dec 2020 18:44:24 +0800, Shengjiu Wang wrote:
+> When condition ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in))
+> is true, then goto fail, the uninitialized variable ret will be
+> returned.
 
 Applied to
 
@@ -82,8 +84,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: fix spelling mistake in Kconfig "comunicate" -> "communicate"
-      commit: 4ad2d3cf2a299645bdc6d72e5b8ee11b2ed147ac
+[1/1] ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
+      commit: acd894aee3149c15847bc4f0690fccba59ced5e7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
