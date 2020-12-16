@@ -7,90 +7,64 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E656C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 11:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3D77C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 11:27:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6CA5622D08
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 11:26:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CA5622D08
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 123B322D08
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 11:27:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 123B322D08
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B37A1672;
-	Wed, 16 Dec 2020 12:25:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B37A1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BCBB1796;
+	Wed, 16 Dec 2020 12:26:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BCBB1796
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608117987;
-	bh=rrWuxQ7LMS8pbpYB+pIL0ZGVyjv0yV6SZHW340oBqBs=;
+	s=default; t=1608118043;
+	bh=UyldxBFdLzj10sV5PQGFDw09JdzGQsCJfBCkmubOPNU=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=h0NCTgl8JKce135LkenH0sSbV5M/n3rWgQ7h0M2koxCZHyFVMHisxCQtI0Zj4d0yX
-	 UyQ2Ln1mLUCcgJfk2A5u7sP65IoVmgAcRYi5d7lyuGNjuzqHvdFzCDUZ22VGokustI
-	 j3uvR1Bav21oxFmsreVDUJYyc47lBLzN4Tur9au0=
+	b=f1z1q5cUNxDtVlVYFFt8aKedPiqDLKSrQcm+Vf6MIfcdJ0PLBOEIuPj1Y2YnD1jvx
+	 qruLMWY8P5MHbX1fGc96tGBvt9R0l6XQNQBnnd0p/f6YexYoFgjKgbNZv1/rc7mPVR
+	 LdU8gJjqLPw9JRFLlkwzd9d71DfQq9JniqbjG2bE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC6F8F80171;
-	Wed, 16 Dec 2020 12:25:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66F4EF80245;
+	Wed, 16 Dec 2020 12:26:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF38BF801F7; Wed, 16 Dec 2020 12:25:35 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id F1244F80272; Wed, 16 Dec 2020 12:26:23 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1951F8011B
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 12:25:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1951F8011B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="BWPlQ8k/"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 0BGBMmWJ005254; Wed, 16 Dec 2020 05:25:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=Z/vY/iQ2I+iiJtMr3mHJg0NgckGDdZkXzcZBFOYHIpQ=;
- b=BWPlQ8k/efhEWeFJfSgyZmKAMWt4+aKSms9lYhOuxzeUS7B6qt4rYeSnvB/54yK9f9e5
- AlJFgi6n7bIbGl6LZGFZ4Ye36OIiSbmvVUwa6QDYvoQ5Cj+F8EZ1eeO/KhsOc57iEnQw
- yBTAhK7A5S2PNRBOLpR9aBtT1jPy6mjq2+nvClG+eMpCZkqsabCmTDgjgP+60H9lVhfu
- kZVl3/iiQCG1pFCdW3nn0zbT10GDV8uIYQpqJeZ6JGdW9MYcu7WN3ebVVRW32sP0nipT
- TJ5LZ91zQ58iJGo9s6RDyKCBM3gqUDbC3vvWLJxO8DcRYFLA4cJ8A5tWQpbfm2KPkeVs iQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 35cv56n9b7-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 16 Dec 2020 05:25:23 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 16 Dec
- 2020 11:25:21 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 16 Dec 2020 11:25:21 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.64.236])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E96E22AB;
- Wed, 16 Dec 2020 11:25:14 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: wm_adsp: Improve handling of raw byte streams
-Date: Wed, 16 Dec 2020 11:25:12 +0000
-Message-ID: <20201216112512.26503-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3422F801F7
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 12:26:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3422F801F7
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <colin.king@canonical.com>)
+ id 1kpUwb-0003B8-76; Wed, 16 Dec 2020 11:26:09 +0000
+From: Colin King <colin.king@canonical.com>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ASoC: atmel: fix spelling mistake in Kconfig "programable" ->
+ "programmable"
+Date: Wed, 16 Dec 2020 11:26:08 +0000
+Message-Id: <20201216112608.11385-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- lowpriorityscore=0 spamscore=0
- clxscore=1015 impostorscore=0 priorityscore=1501 phishscore=0 mlxscore=0
- mlxlogscore=644 suspectscore=0 bulkscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012160073
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,135 +80,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As the register map is 16-bit or 32-bit big-endian, the 24-bit
-DSP words appear padded and with the bytes swapped. When reading a
-raw stream of bytes, the pad bytes must be removed and the data bytes
-swapped back to their original order.
+From: Colin Ian King <colin.king@canonical.com>
 
-The previous implementation of this assumed that the be32_to_cpu() in
-wm_adsp_read_data_block() would swap back to little-endian. But this is
-obviously only true on a little-endian CPU. It also made two walks
-through the data, once to endian-swap and again to strip the pad bytes.
+There are a couple of spelling mistakes in the Kconfig help text. Fix them.
 
-This patch re-works the code so that the endian-swap and unpad are done
-together in a single walk, and it is not dependent on the endianness of
-the CPU. The data_word_size argument to wm_adsp_remove_padding() has been
-dropped because currently this is always 3.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/codecs/wm_adsp.c | 55 +++++++++++++++++++++-----------------
- 1 file changed, 30 insertions(+), 25 deletions(-)
+ sound/soc/atmel/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index bcf18bf15a02..7c52ada10af3 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -3662,12 +3662,12 @@ int wm_adsp_compr_get_caps(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL_GPL(wm_adsp_compr_get_caps);
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 142373ec411a..9fe9471f4514 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -143,7 +143,7 @@ config SND_MCHP_SOC_SPDIFTX
+ 	  - sama7g5
  
--static int wm_adsp_read_data_block(struct wm_adsp *dsp, int mem_type,
--				   unsigned int mem_addr,
--				   unsigned int num_words, u32 *data)
-+static int wm_adsp_read_raw_data_block(struct wm_adsp *dsp, int mem_type,
-+				       unsigned int mem_addr,
-+				       unsigned int num_words, __be32 *data)
- {
- 	struct wm_adsp_region const *mem = wm_adsp_find_region(dsp, mem_type);
--	unsigned int i, reg;
-+	unsigned int reg;
- 	int ret;
+ 	  This S/PDIF TX driver is compliant with IEC-60958 standard and
+-	  includes programable User Data and Channel Status fields.
++	  includes programmable User Data and Channel Status fields.
  
- 	if (!mem)
-@@ -3680,16 +3680,22 @@ static int wm_adsp_read_data_block(struct wm_adsp *dsp, int mem_type,
- 	if (ret < 0)
- 		return ret;
+ config SND_MCHP_SOC_SPDIFRX
+ 	tristate "Microchip ASoC driver for boards using S/PDIF RX"
+@@ -157,5 +157,5 @@ config SND_MCHP_SOC_SPDIFRX
+ 	  - sama7g5
  
--	for (i = 0; i < num_words; ++i)
--		data[i] = be32_to_cpu(data[i]) & 0x00ffffffu;
--
- 	return 0;
- }
- 
- static inline int wm_adsp_read_data_word(struct wm_adsp *dsp, int mem_type,
- 					 unsigned int mem_addr, u32 *data)
- {
--	return wm_adsp_read_data_block(dsp, mem_type, mem_addr, 1, data);
-+	__be32 raw;
-+	int ret;
-+
-+	ret = wm_adsp_read_raw_data_block(dsp, mem_type, mem_addr, 1, &raw);
-+	if (ret)
-+		return ret;
-+
-+	*data = be32_to_cpu(raw) & 0x00ffffffu;
-+
-+	return 0;
- }
- 
- static int wm_adsp_write_data_word(struct wm_adsp *dsp, int mem_type,
-@@ -3722,18 +3728,22 @@ static inline int wm_adsp_buffer_write(struct wm_adsp_compr_buf *buf,
- 				       buf->host_buf_ptr + field_offset, data);
- }
- 
--static void wm_adsp_remove_padding(u32 *buf, int nwords, int data_word_size)
-+static void wm_adsp_remove_padding(u32 *buf, int nwords)
- {
--	u8 *pack_in = (u8 *)buf;
-+	const __be32 *pack_in = (__be32 *)buf;
- 	u8 *pack_out = (u8 *)buf;
--	int i, j;
-+	int i;
- 
--	/* Remove the padding bytes from the data read from the DSP */
-+	/*
-+	 * DSP words from the register map have pad bytes and the data bytes
-+	 * are in swapped order. This swaps back to the original little-endian
-+	 * order and strips the pad bytes.
-+	 */
- 	for (i = 0; i < nwords; i++) {
--		for (j = 0; j < data_word_size; j++)
--			*pack_out++ = *pack_in++;
--
--		pack_in += sizeof(*buf) - data_word_size;
-+		u32 word = be32_to_cpu(*pack_in++);
-+		*pack_out++ = (u8)word;
-+		*pack_out++ = (u8)(word >> 8);
-+		*pack_out++ = (u8)(word >> 16);
- 	}
- }
- 
-@@ -3917,12 +3927,7 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(coeff_v1.name); i++)
--		coeff_v1.name[i] = be32_to_cpu(coeff_v1.name[i]);
--
--	wm_adsp_remove_padding((u32 *)&coeff_v1.name,
--			       ARRAY_SIZE(coeff_v1.name),
--			       WM_ADSP_DATA_WORD_SIZE);
-+	wm_adsp_remove_padding((u32 *)&coeff_v1.name, ARRAY_SIZE(coeff_v1.name));
- 
- 	buf->name = kasprintf(GFP_KERNEL, "%s-dsp-%s", ctl->dsp->part,
- 			      (char *)&coeff_v1.name);
-@@ -4261,12 +4266,12 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
- 		return 0;
- 
- 	/* Read data from DSP */
--	ret = wm_adsp_read_data_block(buf->dsp, mem_type, adsp_addr,
--				      nwords, compr->raw_buf);
-+	ret = wm_adsp_read_raw_data_block(buf->dsp, mem_type, adsp_addr,
-+					  nwords, compr->raw_buf);
- 	if (ret < 0)
- 		return ret;
- 
--	wm_adsp_remove_padding(compr->raw_buf, nwords, WM_ADSP_DATA_WORD_SIZE);
-+	wm_adsp_remove_padding(compr->raw_buf, nwords);
- 
- 	/* update read index to account for words read */
- 	buf->read_index += nwords;
+ 	  This S/PDIF RX driver is compliant with IEC-60958 standard and
+-	  includes programable User Data and Channel Status fields.
++	  includes programmable User Data and Channel Status fields.
+ endif
 -- 
-2.20.1
+2.29.2
 
