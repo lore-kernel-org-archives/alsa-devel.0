@@ -2,62 +2,71 @@ Return-Path: <SRS0=ORgw=FU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5806C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B633C4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:59:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F8B223104
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:56:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F8B223104
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B0E5322283
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 15:59:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B0E5322283
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 813DF1830;
-	Wed, 16 Dec 2020 16:55:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 813DF1830
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EB1917C4;
+	Wed, 16 Dec 2020 16:58:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EB1917C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608134168;
-	bh=cAAklVST+xPb2zoWDWtegqkPh2oe2H6Fu7I1Tz48mHM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1608134369;
+	bh=jd2KS4xOoXhoiZ4hrRP9F4qzu331fz83X4EfEc1en5w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UhP4td1BCGWMMwCqoK8o4jWU4s/4UE1CLuNPRMQBkopiTv1ZFgsYbvV0Ll3z0UsMJ
-	 XGO1uvB+BT/wVPx93PoyFrp7iK3CsQeIRT17mVP92Dw9vZeR5DqflIAjkcmcxVqNlM
-	 Ayn/4onIg+1gZ+JdX4ljn9rtYJtdc9I1H8cA/Vfc=
+	b=pAtIuBQBJODYkhc8coWQ0JBSNtTYxl8glhdLbFlZLKnZGAieh6lxL4PASxKv14YmM
+	 FAZNt5Ahmw69z+LHnxWdXwit8fsdfSpjIvEizPwDTVWSKlvzPzY6Xdv0TBRD8U9SYL
+	 dlS9iVuQsiUNSXY12zEf8f0h8Exyd4eEqbqkNQ0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B1EBF804E1;
-	Wed, 16 Dec 2020 16:53:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 912B6F80168;
+	Wed, 16 Dec 2020 16:58:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2759F804E2; Wed, 16 Dec 2020 16:53:40 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 8EBF8F80171; Wed, 16 Dec 2020 16:58:36 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F0F8F804D6
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:53:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F0F8F804D6
-From: Mark Brown <broonie@kernel.org>
-Authentication-Results: mail.kernel.org;
- dkim=permerror (bad message/signature format)
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, timur@kernel.org,
- tiwai@suse.com, Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz,
- festevam@gmail.com, alsa-devel@alsa-project.org
-In-Reply-To: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized variable
- ret
-Message-Id: <160813397775.31838.8934909997692637790.b4-ty@kernel.org>
-Date: Wed, 16 Dec 2020 15:52:57 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0FE2F8011B
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 16:58:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0FE2F8011B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id C7B6AAC7B;
+ Wed, 16 Dec 2020 15:58:29 +0000 (UTC)
+Date: Wed, 16 Dec 2020 16:58:29 +0100
+Message-ID: <s5hzh2dn3oa.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
+In-Reply-To: <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+ <s5h5z51oj12.wl-tiwai@suse.de>
+ <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com,
+ Alex Deucher <alexander.deucher@amd.com>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,35 +82,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Dec 2020 18:44:24 +0800, Shengjiu Wang wrote:
-> When condition ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in))
-> is true, then goto fail, the uninitialized variable ret will be
-> returned.
+On Wed, 16 Dec 2020 16:50:20 +0100,
+Kai-Heng Feng wrote:
+> 
+> On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Wed, 16 Dec 2020 13:47:24 +0100,
+> > Kai-Heng Feng wrote:
+> > >
+> > > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
+> > > initialization even if no codecs found"), when codec probe fails, it
+> > > doesn't enable runtime suspend, and can prevent graphics card from
+> > > getting powered down:
+> > > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
+> > >
+> > > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
+> > > active
+> > >
+> > > So mark there's no codec and continue probing to let runtime PM to work.
+> > >
+> > > BugLink: https://bugs.launchpad.net/bugs/1907212
+> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> >
+> > Hm, but if the probe fails, doesn't it mean something really wrong?
+> > IOW, how does this situation happen?
+> 
+> The HDA controller is forcely created by quirk_nvidia_hda(). So
+> probably there's really not an HDA controller.
 
-Applied to
+I still don't understand how non-zero codec_mask is passed.
+The non-zero codec_mask means that BIOS or whatever believes that
+HD-audio codecs are present and let HD-audio controller reporting the
+presence.  What error did you get at probing?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+> > The usual no-codec state is for the devices that have a bogus HD-audio
+> > bus remaining while codecs aren't hooked or disabled by BIOS.  For
+> > that, it makes to leave the controller driver and let it idle.  But if
+> > you get really an error, it's something to fix there, not to just
+> > ignore in general.
+> 
+> The best approach I can think of is to make current two steps probe
+> into one. So when probe fails, the driver won't bind to the device.
+> What's the reason behind the two steps approach?
 
-[1/1] ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
-      commit: acd894aee3149c15847bc4f0690fccba59ced5e7
+It's a sort of must, as the module loading is involved with binding
+with the codecs, as well as (optionally) request_firmware()
+invocation.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
