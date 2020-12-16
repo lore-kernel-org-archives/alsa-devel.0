@@ -2,74 +2,96 @@ Return-Path: <SRS0=ORgw=FU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A625C4361B
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:58:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E657AC4361B
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 18:30:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 966E8233F6
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 16:58:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 966E8233F6
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id DC02A23AA1
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Dec 2020 18:30:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC02A23AA1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B88EE1826;
-	Wed, 16 Dec 2020 17:57:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B88EE1826
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFD2E1749;
+	Wed, 16 Dec 2020 19:29:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFD2E1749
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608137889;
-	bh=vMdvdYkFVvTR+QM259HHopmV2Nft/R5sEjSRpbMa5S8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1608143408;
+	bh=Q2mXO69JI+C4KlbS8Xnjif7vhtiejtfU/T6AKn+mJUU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vprZvn9eB6RoAHVB/Ln6YZxOm7w62yycxRajgJbrBCaDy0QlDimRZr5anINhFKZri
-	 PLQS+Padxx7eb2FvCXRHm0EXfYZ5VqTd3WDFF1jH/L3w4LsIoMMBy/RoA2FdCw0zAh
-	 jnCJl6X7kQZoJxmKIxuFhJEDg3l80knzRAQnsYjM=
+	b=WJ7BfDMw3Z6UyGcd1Q5yZBAy5E0ARU7RPzoIpSTm0V0CxrLvrjqdQh8juVNj3oqMo
+	 IdfrxV6CNRFD+Ue2t2LYEwPpE3TzW7L1BAwBwtLomSQLbmNg256PnoqbL6YfAetReX
+	 E7FzyrSZGcQxekrnVx5D3TTaoyee68dOFDBePcFA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F585F80168;
-	Wed, 16 Dec 2020 17:57:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55F5AF80171;
+	Wed, 16 Dec 2020 19:29:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1E2FF80171; Wed, 16 Dec 2020 17:57:17 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CD39DF801F7; Wed, 16 Dec 2020 19:29:15 +0100 (CET)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 257C2F8011B
- for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 17:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 257C2F8011B
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5E07CAC7F;
- Wed, 16 Dec 2020 16:57:11 +0000 (UTC)
-Date: Wed, 16 Dec 2020 17:57:11 +0100
-Message-ID: <s5hmtydn0yg.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v2] ALSA: hda: Continue to probe when codec probe fails
-In-Reply-To: <s5hsg85n2km.wl-tiwai@suse.de>
-References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
- <20201216124726.2842197-1-kai.heng.feng@canonical.com>
- <s5h5z51oj12.wl-tiwai@suse.de>
- <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
- <s5hzh2dn3oa.wl-tiwai@suse.de>
- <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
- <s5hsg85n2km.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com,
- Alex Deucher <alexander.deucher@amd.com>, Mike Rapoport <rppt@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44251F80168
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 19:29:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44251F80168
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="RQQ5ktXz"
+Received: by mail-ej1-x636.google.com with SMTP id b9so9241788ejy.0
+ for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2020 10:29:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=erIoBEbKbiz5oRvHJ2Hn0NTy908E7i+ePDr/KDJfqn0=;
+ b=RQQ5ktXzQkitjNrDXhSj68Nk76iCrFiuj/7rR8NhYWibX+TJEUAZ1ABRoLCFSvSyhD
+ K+XSzAJ8+JptHtbXZgAMLd0C8CH7rASXoNDM/suXiZSey8fRstAT7j/a3LBA4Z/ItkcW
+ 1KLlUTyufegGfHsfw6OASMbx35T/dOUZh2n2DtwPkjnY7UvC1lGopN435jaOCu9sLQRC
+ d+0ogLUP8B1gq+H/wdjWWd1r3jNt330yGJXpKDpBReCXvcZc0s9aGyzV4dq/pX7OCHL8
+ DrffsY8AoJZdbDgf3GUaosn01KgA5PC0mG+pQYhmh8NhXGU0wbK+OS4rc88M46Z8G6Pg
+ yO/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=erIoBEbKbiz5oRvHJ2Hn0NTy908E7i+ePDr/KDJfqn0=;
+ b=TcyDLFcZHd/6bZfKAe9b184WIfk+GSCHQtYioVA+l1tSaPSAc2H9QDdCBEZt284N6K
+ 7agshZWZokjXNQlTwRtE5k4/p42OhA7CT0QHOPAhwfdv3KoKoxhU7S8PbYcaC2Xo5Vwa
+ Bb4AXvA4RqqgqZAUoR7KAdWL7B1HUP+CUIa+HcW+LMrjSEtiGVpisoEcdwLybWPe4PPX
+ fJTKiyUnWJoUyFCXhQ6oMH8HBQHC2zKseBMaSklyeg+DTX8iY6/ZyECQNpoAF0Mt8QF4
+ iHIg/vdoreca7EyUNG7/0e8ze2MhIGMVL0rwVeaF3/hGzl7Nd2n2fXHuTGrb7De6APhR
+ dTYQ==
+X-Gm-Message-State: AOAM530odp5NLrUqE/gihvqjdQR0Y8dDBAp/J8b/uWIiF6aydJNz7ha0
+ HjWKbZ5RMW3AlvCkti3G6FU=
+X-Google-Smtp-Source: ABdhPJwYrZeKblL+48+EBX3qrAEooomDWvRk7xg3KKtcF9HUnU1fmEnVGyTYAjoEyim5ZUFQy/DxOg==
+X-Received: by 2002:a17:907:da7:: with SMTP id
+ go39mr33278642ejc.58.1608143352040; 
+ Wed, 16 Dec 2020 10:29:12 -0800 (PST)
+Received: from ryzen.localdomain (89-212-27-98.dynamic.t-2.net. [89.212.27.98])
+ by smtp.gmail.com with ESMTPSA id v9sm2032877ejk.48.2020.12.16.10.29.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 16 Dec 2020 10:29:11 -0800 (PST)
+Date: Wed, 16 Dec 2020 19:29:09 +0100
+From: Amadej Kastelic <amadejkastelic7@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 01/01] Add VID to support native DSD reproduction on FiiO
+ devices.
+Message-ID: <X9pR9X/uCqoij1b0@ryzen.localdomain>
+References: <X9j7wdXSr4XyK7Bd@ryzen.localdomain> <s5h8s9xoj6o.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h8s9xoj6o.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,90 +107,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Dec 2020 17:22:17 +0100,
-Takashi Iwai wrote:
-> 
-> On Wed, 16 Dec 2020 17:07:45 +0100,
-> Kai-Heng Feng wrote:
+On Wed, Dec 16, 2020 at 04:38:07PM +0100, Takashi Iwai wrote:
+> On Tue, 15 Dec 2020 19:09:05 +0100,
+> Amadej Kastelic wrote:
 > > 
-> > On Wed, Dec 16, 2020 at 11:58 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Wed, 16 Dec 2020 16:50:20 +0100,
-> > > Kai-Heng Feng wrote:
-> > > >
-> > > > On Wed, Dec 16, 2020 at 11:41 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > > >
-> > > > > On Wed, 16 Dec 2020 13:47:24 +0100,
-> > > > > Kai-Heng Feng wrote:
-> > > > > >
-> > > > > > Similar to commit 9479e75fca37 ("ALSA: hda: Keep the controller
-> > > > > > initialization even if no codecs found"), when codec probe fails, it
-> > > > > > doesn't enable runtime suspend, and can prevent graphics card from
-> > > > > > getting powered down:
-> > > > > > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
-> > > > > >
-> > > > > > $ cat /sys/bus/pci/devices/0000:01:00.1/power/runtime_status
-> > > > > > active
-> > > > > >
-> > > > > > So mark there's no codec and continue probing to let runtime PM to work.
-> > > > > >
-> > > > > > BugLink: https://bugs.launchpad.net/bugs/1907212
-> > > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > >
-> > > > > Hm, but if the probe fails, doesn't it mean something really wrong?
-> > > > > IOW, how does this situation happen?
-> > > >
-> > > > The HDA controller is forcely created by quirk_nvidia_hda(). So
-> > > > probably there's really not an HDA controller.
-> > >
-> > > I still don't understand how non-zero codec_mask is passed.
-> > > The non-zero codec_mask means that BIOS or whatever believes that
-> > > HD-audio codecs are present and let HD-audio controller reporting the
-> > > presence.  What error did you get at probing?
+> > Message-Id: <c759bc50134ea434bfed0a183e0ce72984f5b609.camel@gmail.com>
 > > 
-> > [    4.280991] snd_hda_intel 0000:01:00.1: no codecs initialized
-> > Full dmesg here:
-> > https://launchpadlibrarian.net/510351476/dmesg.log
+> > Add VID to support native DSD reproduction on FiiO devices.
+> > 
+> > Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+> > Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
 > 
-> The actual problems are shown before that line.
+> Could you give your own sign-off, too?  Each person who submits the
+> patch needs the sign-off.  This is mandatory for merging to the
+> upstream.
 > 
-> [    4.178848] pci 0000:01:00.1: can't change power state from D3cold to D0 (config space inaccessible)
-> [    4.179502] snd_hda_intel 0000:01:00.1: can't change power state from D3cold to D0 (config space inaccessible)
-> [    4.179511] snd_hda_intel 0000:01:00.1: can't change power state from D3hot to D0 (config space inaccessible)
-> ....
-> [    4.280571] hdaudio hdaudioC1D0: no AFG or MFG node found
-> [    4.280633] hdaudio hdaudioC1D1: no AFG or MFG node found
-> [    4.280685] hdaudio hdaudioC1D2: no AFG or MFG node found
-> [    4.280736] hdaudio hdaudioC1D3: no AFG or MFG node found
-> [    4.280788] hdaudio hdaudioC1D4: no AFG or MFG node found
-> [    4.280839] hdaudio hdaudioC1D5: no AFG or MFG node found
-> [    4.280892] hdaudio hdaudioC1D6: no AFG or MFG node found
-> [    4.280943] hdaudio hdaudioC1D7: no AFG or MFG node found
 > 
-> Could you check the codec_mask value read in
-> sound/hda/hdac_controller.c?  I guess it reads 0xff.
+> thanks,
 > 
-> If that's the case, it can be corrected by the patch below.
-> But, we should check the cause of the first error (inaccessible config
-> space) in anyway; this must be the primary reason of the whole chain
-> of errors.
+> Takashi
 
-Now I took a deeper look at the code.  So we hit errors after errors:
-- The first problem is that quirk_nvidia_hda() enabled HD-audio even
-  if it's non-functional by some reason.  We may need additional
-  checks there.
-
-- The second problem is that pci_enable_device() ignores the error
-  returned from pci_set_power_state() if it's -EIO.  And the
-  inaccessible access error returns -EIO, although it's rather a fatal
-  problem.  So the driver believes as the PCI device gets enabled
-  properly.
-
-- The third problem is that HD-audio driver blindly believes the
-  codec_mask read from the register even if it's a read failure as I
-  already showed.
-
-Ideally we should address in the first place.
-
-
-Takashi
+Signed-off-by: Amadej Kastelic <amadejkastelic7@gmail.com>
