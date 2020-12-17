@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B06CFC4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB89C4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C0E492395A
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:44:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0E492395A
+	by mail.kernel.org (Postfix) with ESMTPS id 14BAF23975
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14BAF23975
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AAF518E9;
-	Thu, 17 Dec 2020 16:43:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AAF518E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA2D218F8;
+	Thu, 17 Dec 2020 16:44:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA2D218F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608219874;
-	bh=tvAX3/2+xWsdlbqynAkPKd/pHdKxIJ6d0DeH1249BVg=;
+	s=default; t=1608219912;
+	bh=oXIOEXgKH6TMvhhIg3UeMIbasiKLq1NBgW7jOeIZB2M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GjPYcmsIsm6XeTC3nTFIDXoY0iolauYKAW39EibX/hOvdqlQ5QlvIC+i09fjhUbov
-	 3znIDuHRtABojoh+oCk+KZ5P/d3J3uurTJOIuyA7ylIv7BFrL/0j8kJUV+eq7negoK
-	 LgwpxqHS6QWbVfkbKmZjv+SQK2MOqVA2kg7xRL70=
+	b=j9WTQuo2vnBfQPQJQvXg+IOM5KOYcg8jJZyhcpmrIb3jWZVt+g8ebg9nMwhFsX7jM
+	 nANZnIIB0vKQMoSNne7m4qGEqTAcBXhnCXDVl6tJE9Qqr8F205VgYgkl8zl0XQk58K
+	 ncOb66Ds+8yvQdaon6HdjXE/JJosq4PJHSldgtlg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF68CF804E2;
-	Thu, 17 Dec 2020 16:42:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3CB8F804E5;
+	Thu, 17 Dec 2020 16:42:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35EBEF8028B; Thu, 17 Dec 2020 16:41:59 +0100 (CET)
+ id 4C1B6F804D8; Thu, 17 Dec 2020 16:42:00 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2C9EF8027B
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 16:41:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2C9EF8027B
+ by alsa1.perex.cz (Postfix) with ESMTPS id C37D7F80148
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 16:41:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C37D7F80148
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="mQZZo+Pi"
+ header.b="CDDTRJqM"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 0BHFPi9B001634; Thu, 17 Dec 2020 09:41:49 -0600
+ 0BHFPi97001634; Thu, 17 Dec 2020 09:41:47 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=627cyMSOyeSzZ7/Nq+d6A7Mp3C4WbFQei8V0n6bIm60=;
- b=mQZZo+Pi7R6Fw2vc3QnU2PDZOvG/itwxkWcl9IauT/jbJ5Qw4dsS9hI+b2tc5cdoazPA
- ZDCK+xpBVEkj41VvQ0NGkCHKSSy72keE9MZ+jUYUfFzbyDfJgpeRCc1WSfKiyh6ekf4Y
- 0utC3+CwciYEhMqfIvVyT9aOA1f63ZA6cbXdi8veFbS0P+HHKAjm1WsVr3Vd686zl8Mq
- Y0pgKldf0wFvCV20vEcHTDpCvZg4jup3ceJSunQQ2LTEjlOfLwgg62yFJAEkLTwpGYES
- pMULUg4+PW2YDieeTEMgmK3eCzpO3IRjXfJwto8Ika+R/WNN/yJZjgI0JMDr92GU6abJ kA== 
+ bh=6puJRNoQ85sTqXFHjZOZ1oaxCItH2xQD/d8qJchGYVE=;
+ b=CDDTRJqMj9+bBNxKFByKpeQohb8c8qSyt0/qgJWeIolW75sTfntLSyR7Q55RISrXvNLW
+ pMUaq1zyK/tdjeQkF8CJLtoih+rddWEk04abGcWYoakOoEiGRJcCTEUQKWOtDO08RuHS
+ t1wj6uZEHMWVzaVjRnu0OW6cNGj6lKn+fCleihtLwinH7PNf/jHK70gTnIvugo8ZdFvs
+ i4w5UswFdSDMNEnT39GEwRuxj0wfTziSkHQmylHlk2fyD8Sn44aObDCQl5YQRY7wIPP/
+ PtJJdKE+j/5tj8pYDHXprhhxuKy5VynSVrs6F+S/qZS2THyoXl3shnkr8XlUBZKqF1FE 8w== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-6
+ by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 17 Dec 2020 09:41:49 -0600
+ Thu, 17 Dec 2020 09:41:47 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
- 2020 15:41:48 +0000
+ 2020 15:41:46 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 17 Dec 2020 15:41:48 +0000
+ Transport; Thu, 17 Dec 2020 15:41:46 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.236])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C37E111CE;
- Thu, 17 Dec 2020 15:41:47 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 94C9F11CA;
+ Thu, 17 Dec 2020 15:41:45 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>
-Subject: [PATCH v3 5/6] ASoC: madera: Export clock config defines to
- dt-bindings
-Date: Thu, 17 Dec 2020 15:41:41 +0000
-Message-ID: <20201217154142.24301-6-rf@opensource.cirrus.com>
+Subject: [PATCH v3 1/6] of: base: Add of_count_phandle_with_fixed_args()
+Date: Thu, 17 Dec 2020 15:41:37 +0000
+Message-ID: <20201217154142.24301-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201217154142.24301-1-rf@opensource.cirrus.com>
 References: <20201217154142.24301-1-rf@opensource.cirrus.com>
@@ -90,13 +89,13 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
  adultscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1011 malwarescore=0
  impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2012170108
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Rob Herring <robh@kernel.org>, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -114,157 +113,153 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move the defines for clock/fll IDs and sources into the dt-bindings
-header so that they can be used by machine driver dts files.
+Add an equivalent of of_count_phandle_with_args() for fixed argument
+sets, to pair with of_parse_phandle_with_fixed_args().
+
+The existing of_count_phandle_with_args() is modified to be a
+private function that handles both cases and the public functions
+are trivial wrappers round that.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- include/dt-bindings/sound/madera.h | 60 ++++++++++++++++++++++++++++++
- sound/soc/codecs/madera.h          | 56 +---------------------------
- 2 files changed, 61 insertions(+), 55 deletions(-)
+ drivers/of/base.c  | 73 +++++++++++++++++++++++++++++++---------------
+ include/linux/of.h |  9 ++++++
+ 2 files changed, 59 insertions(+), 23 deletions(-)
 
-diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
-index d0096d5eb0da..5c5fc1bfe6f9 100644
---- a/include/dt-bindings/sound/madera.h
-+++ b/include/dt-bindings/sound/madera.h
-@@ -22,4 +22,64 @@
- #define CS47L35_DMIC_REF_MICBIAS2A	2
- #define CS47L35_DMIC_REF_MICBIAS2B	3
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 161a23631472..c5ff2524bf40 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -1720,34 +1720,22 @@ int of_parse_phandle_with_fixed_args(const struct device_node *np,
+ }
+ EXPORT_SYMBOL(of_parse_phandle_with_fixed_args);
  
-+/* FLL IDs */
-+#define MADERA_FLL1_REFCLK		1
-+#define MADERA_FLL2_REFCLK		2
-+#define MADERA_FLL3_REFCLK		3
-+#define MADERA_FLLAO_REFCLK		4
-+#define MADERA_FLL1_SYNCCLK		5
-+#define MADERA_FLL2_SYNCCLK		6
-+#define MADERA_FLL3_SYNCCLK		7
-+#define MADERA_FLLAO_SYNCCLK		8
-+
-+/* FLL input source pin IDs */
-+#define MADERA_FLL_SRC_NONE		-1
-+#define MADERA_FLL_SRC_MCLK1		0
-+#define MADERA_FLL_SRC_MCLK2		1
-+#define MADERA_FLL_SRC_MCLK3		2
-+#define MADERA_FLL_SRC_SLIMCLK		3
-+#define MADERA_FLL_SRC_FLL1		4
-+#define MADERA_FLL_SRC_FLL2		5
-+#define MADERA_FLL_SRC_AIF1BCLK		8
-+#define MADERA_FLL_SRC_AIF2BCLK		9
-+#define MADERA_FLL_SRC_AIF3BCLK		10
-+#define MADERA_FLL_SRC_AIF4BCLK		11
-+#define MADERA_FLL_SRC_AIF1LRCLK	12
-+#define MADERA_FLL_SRC_AIF2LRCLK	13
-+#define MADERA_FLL_SRC_AIF3LRCLK	14
-+#define MADERA_FLL_SRC_AIF4LRCLK	15
-+
-+/* SYSCLK IDs */
-+#define MADERA_CLK_SYSCLK_1		1
-+#define MADERA_CLK_ASYNCCLK_1		2
-+#define MADERA_CLK_OPCLK		3
-+#define MADERA_CLK_ASYNC_OPCLK		4
-+#define MADERA_CLK_SYSCLK_2		5
-+#define MADERA_CLK_SYSCLK_3		6
-+#define MADERA_CLK_ASYNCCLK_2		7
-+#define MADERA_CLK_DSPCLK		8
-+#define MADERA_CLK_OUTCLK		9
-+
-+/* SYSCLK source IDs */
-+#define MADERA_CLK_SRC_MCLK1		0x0
-+#define MADERA_CLK_SRC_MCLK2		0x1
-+#define MADERA_CLK_SRC_MCLK3		0x2
-+#define MADERA_CLK_SRC_FLL1		0x4
-+#define MADERA_CLK_SRC_FLL2		0x5
-+#define MADERA_CLK_SRC_FLL3		0x6
-+#define MADERA_CLK_SRC_FLLAO_HI		0x7
-+#define MADERA_CLK_SRC_FLL1_DIV6	0x7
-+#define MADERA_CLK_SRC_AIF1BCLK		0x8
-+#define MADERA_CLK_SRC_AIF2BCLK		0x9
-+#define MADERA_CLK_SRC_AIF3BCLK		0xA
-+#define MADERA_CLK_SRC_AIF4BCLK		0xB
-+#define MADERA_CLK_SRC_FLLAO		0xF
-+
-+/* OPCLK source IDs */
-+#define MADERA_OUTCLK_SYSCLK		0
-+#define MADERA_OUTCLK_ASYNCCLK		1
-+#define MADERA_OUTCLK_MCLK1		4
-+#define MADERA_OUTCLK_MCLK2		5
-+#define MADERA_OUTCLK_MCLK3		6
-+
- #endif
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-index e0c0be59e2ef..1f4ea15648c5 100644
---- a/sound/soc/codecs/madera.h
-+++ b/sound/soc/codecs/madera.h
-@@ -9,67 +9,13 @@
- #ifndef ASOC_MADERA_H
- #define ASOC_MADERA_H
+-/**
+- * of_count_phandle_with_args() - Find the number of phandles references in a property
+- * @np:		pointer to a device tree node containing a list
+- * @list_name:	property name that contains a list
+- * @cells_name:	property name that specifies phandles' arguments count
+- *
+- * Returns the number of phandle + argument tuples within a property. It
+- * is a typical pattern to encode a list of phandle and variable
+- * arguments into a single property. The number of arguments is encoded
+- * by a property in the phandle-target node. For example, a gpios
+- * property would contain a list of GPIO specifies consisting of a
+- * phandle and 1 or more arguments. The number of arguments are
+- * determined by the #gpio-cells property in the node pointed to by the
+- * phandle.
+- */
+-int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
+-				const char *cells_name)
++static int __of_count_phandle_with_args(const struct device_node *np,
++					const char *list_name,
++					const char *cells_name,
++					int cells_count)
+ {
+ 	struct of_phandle_iterator it;
+ 	int rc, cur_index = 0;
  
-+#include <dt-bindings/sound/madera.h>
- #include <linux/completion.h>
- #include <sound/soc.h>
- #include <sound/madera-pdata.h>
+ 	/*
+-	 * If cells_name is NULL we assume a cell count of 0. This makes
+-	 * counting the phandles trivial as each 32bit word in the list is a
+-	 * phandle and no arguments are to consider. So we don't iterate through
+-	 * the list but just use the length to determine the phandle count.
++	 * If cells_count < 0 and cells_name is NULL we assume a cell count
++	 * of 0. A zero cell count makes counting the phandles trivial as each
++	 * 32bit word in the list is a phandle and no arguments are to consider.
++	 * So we don't iterate through the list but just use the length to
++	 * determine the phandle count.
+ 	 */
+-	if (!cells_name) {
++	if ((cells_count < 0 && !cells_name) || cells_count == 0) {
+ 		const __be32 *list;
+ 		int size;
  
- #include "wm_adsp.h"
+@@ -1758,7 +1746,7 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
+ 		return size / sizeof(*list);
+ 	}
  
--#define MADERA_FLL1_REFCLK		1
--#define MADERA_FLL2_REFCLK		2
--#define MADERA_FLL3_REFCLK		3
--#define MADERA_FLLAO_REFCLK		4
--#define MADERA_FLL1_SYNCCLK		5
--#define MADERA_FLL2_SYNCCLK		6
--#define MADERA_FLL3_SYNCCLK		7
--#define MADERA_FLLAO_SYNCCLK		8
--
--#define MADERA_FLL_SRC_NONE		-1
--#define MADERA_FLL_SRC_MCLK1		0
--#define MADERA_FLL_SRC_MCLK2		1
--#define MADERA_FLL_SRC_MCLK3		2
--#define MADERA_FLL_SRC_SLIMCLK		3
--#define MADERA_FLL_SRC_FLL1		4
--#define MADERA_FLL_SRC_FLL2		5
--#define MADERA_FLL_SRC_AIF1BCLK		8
--#define MADERA_FLL_SRC_AIF2BCLK		9
--#define MADERA_FLL_SRC_AIF3BCLK		10
--#define MADERA_FLL_SRC_AIF4BCLK		11
--#define MADERA_FLL_SRC_AIF1LRCLK	12
--#define MADERA_FLL_SRC_AIF2LRCLK	13
--#define MADERA_FLL_SRC_AIF3LRCLK	14
--#define MADERA_FLL_SRC_AIF4LRCLK	15
--
--#define MADERA_CLK_SYSCLK_1		1
--#define MADERA_CLK_ASYNCCLK_1		2
--#define MADERA_CLK_OPCLK		3
--#define MADERA_CLK_ASYNC_OPCLK		4
--#define MADERA_CLK_SYSCLK_2		5
--#define MADERA_CLK_SYSCLK_3		6
--#define MADERA_CLK_ASYNCCLK_2		7
--#define MADERA_CLK_DSPCLK		8
--#define MADERA_CLK_OUTCLK		9
--
--#define MADERA_CLK_SRC_MCLK1		0x0
--#define MADERA_CLK_SRC_MCLK2		0x1
--#define MADERA_CLK_SRC_MCLK3		0x2
--#define MADERA_CLK_SRC_FLL1		0x4
--#define MADERA_CLK_SRC_FLL2		0x5
--#define MADERA_CLK_SRC_FLL3		0x6
--#define MADERA_CLK_SRC_FLLAO_HI		0x7
--#define MADERA_CLK_SRC_FLL1_DIV6	0x7
--#define MADERA_CLK_SRC_AIF1BCLK		0x8
--#define MADERA_CLK_SRC_AIF2BCLK		0x9
--#define MADERA_CLK_SRC_AIF3BCLK		0xA
--#define MADERA_CLK_SRC_AIF4BCLK		0xB
--#define MADERA_CLK_SRC_FLLAO		0xF
--
--#define MADERA_OUTCLK_SYSCLK		0
--#define MADERA_OUTCLK_ASYNCCLK		1
--#define MADERA_OUTCLK_MCLK1		4
--#define MADERA_OUTCLK_MCLK2		5
--#define MADERA_OUTCLK_MCLK3		6
--
- #define MADERA_MIXER_VOL_MASK		0x00FE
- #define MADERA_MIXER_VOL_SHIFT		1
- #define MADERA_MIXER_VOL_WIDTH		7
+-	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, -1);
++	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, cells_count);
+ 	if (rc)
+ 		return rc;
+ 
+@@ -1770,8 +1758,47 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
+ 
+ 	return cur_index;
+ }
++
++/**
++ * of_count_phandle_with_args() - Find the number of phandles references in a property
++ * @np:		pointer to a device tree node containing a list
++ * @list_name:	property name that contains a list
++ * @cells_name:	property name that specifies phandles' arguments count
++ *
++ * Returns the number of phandle + argument tuples within a property. It
++ * is a typical pattern to encode a list of phandle and variable
++ * arguments into a single property. The number of arguments is encoded
++ * by a property in the phandle-target node. For example, a gpios
++ * property would contain a list of GPIO specifies consisting of a
++ * phandle and 1 or more arguments. The number of arguments are
++ * determined by the #gpio-cells property in the node pointed to by the
++ * phandle.
++ */
++int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
++				const char *cells_name)
++{
++	return __of_count_phandle_with_args(np, list_name, cells_name, -1);
++}
+ EXPORT_SYMBOL(of_count_phandle_with_args);
+ 
++/**
++ * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
++ * @np:		pointer to a device tree node containing a list
++ * @list_name:	property name that contains a list
++ * @cell_count: number of argument cells following the phandle
++ *
++ * Returns the number of phandle + argument tuples within a property. It
++ * is a typical pattern to encode a list of phandle and variable
++ * arguments into a single property.
++ */
++int of_count_phandle_with_fixed_args(const struct device_node *np,
++				     const char *list_name,
++				     int cells_count)
++{
++	return __of_count_phandle_with_args(np, list_name, NULL, cells_count);
++}
++EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
++
+ /**
+  * __of_add_property - Add a property to a node without lock operations
+  */
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 5d51891cbf1a..2f28da56ec9b 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const struct device_node *np,
+ 	struct of_phandle_args *out_args);
+ extern int of_count_phandle_with_args(const struct device_node *np,
+ 	const char *list_name, const char *cells_name);
++extern int of_count_phandle_with_fixed_args(const struct device_node *np,
++	const char *list_name, int cells_count);
+ 
+ /* phandle iterator functions */
+ extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
+@@ -886,6 +888,13 @@ static inline int of_count_phandle_with_args(struct device_node *np,
+ 	return -ENOSYS;
+ }
+ 
++static inline int of_count_phandle_with_fixed_args(const struct device_node *np,
++						   const char *list_name,
++						   int cells_count)
++{
++	return -ENOSYS;
++}
++
+ static inline int of_phandle_iterator_init(struct of_phandle_iterator *it,
+ 					   const struct device_node *np,
+ 					   const char *list_name,
 -- 
 2.20.1
 
