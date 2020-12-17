@@ -2,69 +2,138 @@ Return-Path: <SRS0=tU6Y=FV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	DATE_IN_FUTURE_06_12,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B172C4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 07:47:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C87D5C2BB40
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:01:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B86B2376F
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 07:47:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B86B2376F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4CC992376F
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:01:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CC992376F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52F0B1764;
-	Thu, 17 Dec 2020 08:46:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52F0B1764
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDA84176F;
+	Thu, 17 Dec 2020 09:00:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDA84176F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608191230;
-	bh=DDh6fSemh9C9ABZjtLa15mrwQqdx/NgssO5rl6mvHic=;
+	s=default; t=1608192068;
+	bh=FZV+7zbNbJF5cPIOdaTC+P9/XBrlHDz8ek95Au3ikRw=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gcxhbsj1eA2AIqbOgf1bcj+YzAiJsVej6Ka0jQtHJtX+ana9SWeMHYkpoO3SsyRgV
-	 uXnEAwL8EGP+CdmTpVkogGPfPOgpyxBbax6rBNREJyhMlylrXGF3k64K3VvoUJQgYv
-	 oJBETK90OOtUNvkff2OOpAbAQdTSaAWGNiPYpUNM=
+	b=psjPk74LlDEGBemgn5dQO2OCeyS+X70c0RK4G5YVwNhxgmhc+tG/ZT+69ukFwct8n
+	 evipJG+ZMURf8Sjj1VdbodyXMNPTD5FIZXb/zY8zfp7Ew/zjNEp4JP7dJPxBGhm1LR
+	 rPJbBgKwWSxXyO3ebtDjRLHJF1LDFRyaP6dyH1X8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9457AF80259;
-	Thu, 17 Dec 2020 08:46:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51C0CF800C7;
+	Thu, 17 Dec 2020 09:00:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF9A7F80260; Thu, 17 Dec 2020 08:46:16 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id B9372F80260; Thu, 17 Dec 2020 09:00:15 +0100 (CET)
+Received: from EUR03-VE1-obe.outbound.protection.outlook.com
+ (mail-eopbgr50074.outbound.protection.outlook.com [40.107.5.74])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67417F800C7
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 08:46:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67417F800C7
-IronPort-SDR: rHDb8tXg079TTiBrH57HTZOrHMLR8xbncKqPP/Z5vipefx/qOqSVfoNBsHg6ZDH2D5c1EIbDaj
- 3czEsI+nHXjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9837"; a="239295911"
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; d="scan'208";a="239295911"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2020 23:46:03 -0800
-IronPort-SDR: t7mk5HUsibAMmhtbRo/GRw8X+NGwoZ5wS71QSkwrCLq3Ej0cOMQ+tgBWRpUzM7OpUxqXTy9Hbx
- lXd0EFWGKAVw==
-X-IronPort-AV: E=Sophos;i="5.78,426,1599548400"; d="scan'208";a="369666251"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2020 23:46:01 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: broonie@kernel.org,
-	tiwai@suse.de
-Subject: [PATCH v3] ASoC: max98373: don't access volatile registers in bias
- level off
-Date: Thu, 17 Dec 2020 15:45:56 +0800
-Message-Id: <20201217074556.32370-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: vkoul@kernel.org, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCEACF8014B
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 09:00:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCEACF8014B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="L7x7dviX"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HHaz4fkccrtJ/l5WhMeks8dA/mm4WD0LstdngQu1IhL4j5+OoQePA7Y/ehe3j0Z5iLeB7A7WlANHFrbLRi1AkRsXk1v1csspmJqpYEU0dq/dx9Ku9OSHQzllINcn4Mpaqf6Psl2PjOQZ1ESWG39/TRDCG/BlJFlByY+JMRgzlwau0j5/xALs4STQn8zZI+LhnfNPzB37vKe3tfpPJGue9hAi7rVWRvswQAi9lbNHW+TxlRaLrgtCIozRL5vgaaziHcP/CNlzIGKgPEC6Xv7CvWueY7FW8jSthBKwNWDGtYncjm1RWa5YasAw7SuD25oELzRWyGtzeXXnqlaAZoeTfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hg8l/NYhQ+1E/LChxorRpKnBB3P4TfJ2XYNh5dqZNQY=;
+ b=ZmNU+y51YGFisq6kzIoGROLefbfXg45q6ab40OcjtGMmKE5BleUV6QGDNEBRqvD61neA3eqi+zUPJIGWd/r5uOZ+NxpQ902BY8xPm/ksWn/9nnPnWFoHXBzx7k2pvdUVwoQgx/2vKzUsSPjxE6dC6St8GmzSrZ9efRcfRRcz8l4Tx/xVYrYVppjeKoMCW6XGpHqIj/Kyq/LyyQ4TXyJQOtA2w8WmisgKuSdfzoq5upKuPXHjdiQJYy/oB3O7KLQ0qXRNo5NL6hz9F39nDu5UFQa7CbzYa0TsYLzyhQFKu2tYRysMXwn3n/kK3lU69kDZSR+04a+KYpcZqFUdVuvGzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hg8l/NYhQ+1E/LChxorRpKnBB3P4TfJ2XYNh5dqZNQY=;
+ b=L7x7dviXKQZM4qPzpbRyrUUPj/zJUeEPEbvV35Y1Jki6JLgRNvX8IEFO2zqbBvcKjzOPkyXbYLP1qpEOB/vvf19wyY2FmztT0ow+XmWHH2rFAUFPlwh8WbNuFwpW9EUJHhGx9ew3bM6JHAbY532of6p27pQvuMBzG6YL/zRKipo=
+Authentication-Results: perex.cz; dkim=none (message not signed)
+ header.d=none;perex.cz; dmarc=none action=none header.from=nxp.com;
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+ by VI1PR0402MB3549.eurprd04.prod.outlook.com (2603:10a6:803:8::30)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Thu, 17 Dec
+ 2020 08:00:03 +0000
+Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::b042:5b55:165a:87e2]) by VE1PR04MB6638.eurprd04.prod.outlook.com
+ ([fe80::b042:5b55:165a:87e2%5]) with mapi id 15.20.3676.025; Thu, 17 Dec 2020
+ 08:00:03 +0000
+From: Robin Gong <yibin.gong@nxp.com>
+To: perex@perex.cz, tiwai@suse.com, akpm@linux-foundation.org,
+ xiang@kernel.org, pierre-louis.bossart@linux.intel.com,
+ gustavoars@kernel.org, shengjiu.wang@nxp.com
+Subject: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
+Date: Fri, 18 Dec 2020 00:15:47 +0800
+Message-Id: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR02CA0004.apcprd02.prod.outlook.com
+ (2603:1096:3:17::16) To VE1PR04MB6638.eurprd04.prod.outlook.com
+ (2603:10a6:803:119::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by
+ SG2PR02CA0004.apcprd02.prod.outlook.com (2603:1096:3:17::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.20.3654.12 via Frontend Transport; Thu, 17 Dec 2020 07:59:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: bcdca302-a3c5-4ed3-1bb3-08d8a261c278
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3549:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3549B4067E546C4BEC61BF3E89C40@VI1PR0402MB3549.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oxBOE49abwn1qigOjMY4nWRCp6G726ZQMHyGGYlWe9vx9qt8e76FGoI2g4zq2z0IJd3v/nkEuUenR67es6iY+uckiHe5uyPmWKUtlot6Cs+k+hj6hlkePMOnjkjKjroPrfaO3GX1GiJ+a4SeGuHFOhlIUPm4Msy0XVb5ZOQIxjCCkPH12fcvPTOZi/6r/57s2sUlr90HzHQw130vue7vxCsnV3szAAvyaAxtFdg52oSOeDAdXwcDJHbsf+CqAajkCIU52fxpfrmYav12J2Idz7Rpca60mID5MSAZJSsBsYFMDmUOYR4+91o97ox3nWgUM23h4dYSgOv798PlycygRQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:VE1PR04MB6638.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(346002)(366004)(39860400002)(396003)(376002)(136003)(6512007)(316002)(956004)(66476007)(478600001)(6486002)(36756003)(86362001)(6666004)(6636002)(52116002)(8936002)(186003)(4326008)(66946007)(83380400001)(2616005)(16526019)(26005)(4744005)(2906002)(8676002)(5660300002)(66556008)(6506007);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?d6kRqk39AqeaA9nRnlDXo7iq7Cjhb3mrGV+HUYVUfvmfKgUMsYEb3csfNDGK?=
+ =?us-ascii?Q?9jYrKPfDog7Rjvfl8MaIUNGmSuJ0Htu1lCBSsuvFpV98SJCc6QZ5FiOJGOIm?=
+ =?us-ascii?Q?OzlQGa3Edl26ssojdyf14iBgSYzC5OlxNjjV4dOOizhr/FwwhThrqnQEBghN?=
+ =?us-ascii?Q?u2UzhE2jPm5DiPRsLG4+F91E1ik115P5+O1c/eBL6+W/JeBBouZi+AV76yX2?=
+ =?us-ascii?Q?PY8ZNKBXUrrV3/FAZHUhQT2zm6Q2HutToHki66XQ5PKkl+1Y2VrOH21anOd6?=
+ =?us-ascii?Q?rBKPkGDbUV3THCI9JmrCg9n0W2H5qHjCaXYIghjswFEx9bxP/qkfSrQAhehQ?=
+ =?us-ascii?Q?1QOTvi3hfT48XaP9qR9sj1/Te4W0L5jH0nzfPr9B1RssxCqXj8VWUKW+g0CH?=
+ =?us-ascii?Q?azEA99Fa4XvXN3rbBDQw64XihrPyFr6sN6a6nGF38kuPn3zwy04dfd+3KoXc?=
+ =?us-ascii?Q?bEuEcyfwLE756EfqzQC4sIrV6LU18zBGt4SnUYwvxTFSQG/X2204Hr9Ao3Qv?=
+ =?us-ascii?Q?Qtno423TEZbi3YWoXAzWSzb7y553qLHDfSZuEjqmeLS1FVMI4Ytfb7gQd1FU?=
+ =?us-ascii?Q?6MCujNSSKMXYgUYXaS1bFj/pWMnEPh+9kAPfTLVMY1YPsHJesGEVivobBKcw?=
+ =?us-ascii?Q?OhymYwFcnWd2HUSLmBvKdpXclxnAN2eIXYQy37mYPxJlFS6FpoQ3P8ZgRL8N?=
+ =?us-ascii?Q?cPKgjFTXx6QRVPYsPdoZgglHIFlEI+YnFC8wAN4tQC2KI68+PD4TG/Eo5VSJ?=
+ =?us-ascii?Q?I0Nd8Wr/u6WvvtM944N9XPLdzhTIPwhsWUMT6psFIslmv2qveupav7DthYlP?=
+ =?us-ascii?Q?C1BPS4cceyrrR/JwIb3iJ/mZsxCKqf8dBhuHN7lBIikXSkjKfo9LiqgOONvn?=
+ =?us-ascii?Q?dfjHcKx8FNVNIh+UF8QzBvZeho/Rys2QoFzacShhji6dwNKHzO8l/yoilgdK?=
+ =?us-ascii?Q?QEEB81UgxAelgb8ytmTrTZZcWD9S27RuoDAwanEgvCmwuiVI1VhCimzlDuXZ?=
+ =?us-ascii?Q?wJyv?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 08:00:03.0104 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcdca302-a3c5-4ed3-1bb3-08d8a261c278
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rYccN9F+yDGyi3QGBd1QKhYCXx9xaw8uC7wwyJ97eci0wl+ImjM9VB8KNqipatu13n2ntmtrFQ8KX04Cnn1wjw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3549
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,215 +149,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We will set regcache_cache_only true in suspend. As a result,
-regmap_read will return error when we try to read volatile
-registers in suspend. Besides, it doesn't make sense to read
-feedback data when codec is not active. To make userspace
-happy, this patch returns a cached value shich should be a
-valid value.
+Since mmap for userspace is based on page alignment, add page alignment
+for iram alloc from pool, otherwise, some good data located in the same
+page of dmab->area maybe touched wrongly by userspace like pulseaudio.
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Robin Gong <yibin.gong@nxp.com>
 ---
-v3:
- - Allocate cache dynamically.
-v2:
- - Return cached values instead of 0.
----
- sound/soc/codecs/max98373-i2c.c | 20 +++++++++++++++++++
- sound/soc/codecs/max98373-sdw.c | 20 +++++++++++++++++++
- sound/soc/codecs/max98373.c     | 34 ++++++++++++++++++++++++++++++---
- sound/soc/codecs/max98373.h     |  8 ++++++++
- 4 files changed, 79 insertions(+), 3 deletions(-)
+ sound/core/memalloc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98373-i2c.c b/sound/soc/codecs/max98373-i2c.c
-index 92921e34f948..85f6865019d4 100644
---- a/sound/soc/codecs/max98373-i2c.c
-+++ b/sound/soc/codecs/max98373-i2c.c
-@@ -19,6 +19,12 @@
- #include <sound/tlv.h>
- #include "max98373.h"
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 0aeeb62..0f33516 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -77,7 +77,8 @@ static void snd_malloc_dev_iram(struct snd_dma_buffer *dmab, size_t size)
+ 	/* Assign the pool into private_data field */
+ 	dmab->private_data = pool;
  
-+static const u32 max98373_i2c_cache_reg[] = {
-+	MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK,
-+	MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK,
-+	MAX98373_R20B6_BDE_CUR_STATE_READBACK,
-+};
-+
- static struct reg_default max98373_reg[] = {
- 	{MAX98373_R2000_SW_RESET, 0x00},
- 	{MAX98373_R2001_INT_RAW1, 0x00},
-@@ -472,6 +478,11 @@ static struct snd_soc_dai_driver max98373_dai[] = {
- static int max98373_suspend(struct device *dev)
- {
- 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
-+	int i;
-+
-+	/* cache feedback register values before suspend */
-+	for (i = 0; i < max98373->cache_num; i++)
-+		regmap_read(max98373->regmap, max98373->cache[i].reg, &max98373->cache[i].val);
+-	dmab->area = gen_pool_dma_alloc(pool, size, &dmab->addr);
++	dmab->area = gen_pool_dma_alloc_align(pool, size, &dmab->addr,
++					PAGE_SIZE);
+ }
  
- 	regcache_cache_only(max98373->regmap, true);
- 	regcache_mark_dirty(max98373->regmap);
-@@ -509,6 +520,7 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
- {
- 	int ret = 0;
- 	int reg = 0;
-+	int i;
- 	struct max98373_priv *max98373 = NULL;
- 
- 	max98373 = devm_kzalloc(&i2c->dev, sizeof(*max98373), GFP_KERNEL);
-@@ -534,6 +546,14 @@ static int max98373_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	max98373->cache_num = ARRAY_SIZE(max98373_i2c_cache_reg);
-+	max98373->cache = devm_kcalloc(&i2c->dev, max98373->cache_num,
-+				       sizeof(*max98373->cache),
-+				       GFP_KERNEL);
-+
-+	for (i = 0; i < max98373->cache_num; i++)
-+		max98373->cache[i].reg = max98373_i2c_cache_reg[i];
-+
- 	/* voltage/current slot & gpio configuration */
- 	max98373_slot_config(&i2c->dev, max98373);
- 
-diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
-index ec2e79c57357..b8d471d79e93 100644
---- a/sound/soc/codecs/max98373-sdw.c
-+++ b/sound/soc/codecs/max98373-sdw.c
-@@ -23,6 +23,12 @@ struct sdw_stream_data {
- 	struct sdw_stream_runtime *sdw_stream;
- };
- 
-+static const u32 max98373_sdw_cache_reg[] = {
-+	MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK,
-+	MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK,
-+	MAX98373_R20B6_BDE_CUR_STATE_READBACK,
-+};
-+
- static struct reg_default max98373_reg[] = {
- 	{MAX98373_R0040_SCP_INIT_STAT_1, 0x00},
- 	{MAX98373_R0041_SCP_INIT_MASK_1, 0x00},
-@@ -245,6 +251,11 @@ static const struct regmap_config max98373_sdw_regmap = {
- static __maybe_unused int max98373_suspend(struct device *dev)
- {
- 	struct max98373_priv *max98373 = dev_get_drvdata(dev);
-+	int i;
-+
-+	/* cache feedback register values before suspend */
-+	for (i = 0; i < max98373->cache_num; i++)
-+		regmap_read(max98373->regmap, max98373->cache[i].reg, &max98373->cache[i].val);
- 
- 	regcache_cache_only(max98373->regmap, true);
- 
-@@ -757,6 +768,7 @@ static int max98373_init(struct sdw_slave *slave, struct regmap *regmap)
- {
- 	struct max98373_priv *max98373;
- 	int ret;
-+	int i;
- 	struct device *dev = &slave->dev;
- 
- 	/*  Allocate and assign private driver data structure  */
-@@ -768,6 +780,14 @@ static int max98373_init(struct sdw_slave *slave, struct regmap *regmap)
- 	max98373->regmap = regmap;
- 	max98373->slave = slave;
- 
-+	max98373->cache_num = ARRAY_SIZE(max98373_sdw_cache_reg);
-+	max98373->cache = devm_kcalloc(dev, max98373->cache_num,
-+				       sizeof(*max98373->cache),
-+				       GFP_KERNEL);
-+
-+	for (i = 0; i < max98373->cache_num; i++)
-+		max98373->cache[i].reg = max98373_sdw_cache_reg[i];
-+
- 	/* Read voltage and slot configuration */
- 	max98373_slot_config(dev, max98373);
- 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index 929bb1798c43..31d571d4fac1 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -168,6 +168,31 @@ static SOC_ENUM_SINGLE_DECL(max98373_adc_samplerate_enum,
- 			    MAX98373_R2051_MEAS_ADC_SAMPLING_RATE, 0,
- 			    max98373_ADC_samplerate_text);
- 
-+static int max98373_feedback_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct max98373_priv *max98373 = snd_soc_component_get_drvdata(component);
-+	int i;
-+
-+	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
-+		/*
-+		 * Register values will be cached before suspend. The cached value
-+		 * will be a valid value and userspace will happy with that.
-+		 */
-+		for (i = 0; i < max98373->cache_num; i++) {
-+			if (mc->reg == max98373->cache[i].reg) {
-+				ucontrol->value.integer.value[0] = max98373->cache[i].val;
-+				return 0;
-+			}
-+		}
-+	}
-+
-+	return snd_soc_put_volsw(kcontrol, ucontrol);
-+}
-+
- static const struct snd_kcontrol_new max98373_snd_controls[] = {
- SOC_SINGLE("Digital Vol Sel Switch", MAX98373_R203F_AMP_DSP_CFG,
- 	MAX98373_AMP_VOL_SEL_SHIFT, 1, 0),
-@@ -209,8 +234,10 @@ SOC_SINGLE("ADC PVDD FLT Switch", MAX98373_R2052_MEAS_ADC_PVDD_FLT_CFG,
- 	MAX98373_FLT_EN_SHIFT, 1, 0),
- SOC_SINGLE("ADC TEMP FLT Switch", MAX98373_R2053_MEAS_ADC_THERM_FLT_CFG,
- 	MAX98373_FLT_EN_SHIFT, 1, 0),
--SOC_SINGLE("ADC PVDD", MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK, 0, 0xFF, 0),
--SOC_SINGLE("ADC TEMP", MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK, 0, 0xFF, 0),
-+SOC_SINGLE_EXT("ADC PVDD", MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK, 0, 0xFF, 0,
-+	max98373_feedback_get, NULL),
-+SOC_SINGLE_EXT("ADC TEMP", MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK, 0, 0xFF, 0,
-+	max98373_feedback_get, NULL),
- SOC_SINGLE("ADC PVDD FLT Coeff", MAX98373_R2052_MEAS_ADC_PVDD_FLT_CFG,
- 	0, 0x3, 0),
- SOC_SINGLE("ADC TEMP FLT Coeff", MAX98373_R2053_MEAS_ADC_THERM_FLT_CFG,
-@@ -226,7 +253,8 @@ SOC_SINGLE("BDE LVL1 Thresh", MAX98373_R2097_BDE_L1_THRESH, 0, 0xFF, 0),
- SOC_SINGLE("BDE LVL2 Thresh", MAX98373_R2098_BDE_L2_THRESH, 0, 0xFF, 0),
- SOC_SINGLE("BDE LVL3 Thresh", MAX98373_R2099_BDE_L3_THRESH, 0, 0xFF, 0),
- SOC_SINGLE("BDE LVL4 Thresh", MAX98373_R209A_BDE_L4_THRESH, 0, 0xFF, 0),
--SOC_SINGLE("BDE Active Level", MAX98373_R20B6_BDE_CUR_STATE_READBACK, 0, 8, 0),
-+SOC_SINGLE_EXT("BDE Active Level", MAX98373_R20B6_BDE_CUR_STATE_READBACK, 0, 8, 0,
-+	max98373_feedback_get, NULL),
- SOC_SINGLE("BDE Clip Mode Switch", MAX98373_R2092_BDE_CLIPPER_MODE, 0, 1, 0),
- SOC_SINGLE("BDE Thresh Hysteresis", MAX98373_R209B_BDE_THRESH_HYST, 0, 0xFF, 0),
- SOC_SINGLE("BDE Hold Time", MAX98373_R2090_BDE_LVL_HOLD, 0, 0xFF, 0),
-diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
-index 4ab29b9d51c7..71f5a5228f34 100644
---- a/sound/soc/codecs/max98373.h
-+++ b/sound/soc/codecs/max98373.h
-@@ -203,6 +203,11 @@
- /* MAX98373_R2000_SW_RESET */
- #define MAX98373_SOFT_RESET (0x1 << 0)
- 
-+struct max98373_cache {
-+	u32 reg;
-+	u32 val;
-+};
-+
- struct max98373_priv {
- 	struct regmap *regmap;
- 	int reset_gpio;
-@@ -212,6 +217,9 @@ struct max98373_priv {
- 	bool interleave_mode;
- 	unsigned int ch_size;
- 	bool tdm_mode;
-+	/* cache for reading a valid fake feedback value */
-+	struct max98373_cache *cache;
-+	int cache_num;
- 	/* variables to support soundwire */
- 	struct sdw_slave *slave;
- 	bool hw_init;
+ /**
 -- 
-2.17.1
+2.7.4
 
