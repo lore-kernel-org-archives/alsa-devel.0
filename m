@@ -2,84 +2,89 @@ Return-Path: <SRS0=tU6Y=FV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C6FCC4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 11:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 898EFC4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 11:51:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1E9BD2389B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 11:14:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E9BD2389B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+	by mail.kernel.org (Postfix) with ESMTPS id B897E238E5
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 11:51:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B897E238E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31E7F186F;
-	Thu, 17 Dec 2020 12:13:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31E7F186F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45B93186F;
+	Thu, 17 Dec 2020 12:50:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45B93186F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608203640;
-	bh=CtGvSHS4WNBQELTxn57sa6pGXJ0TC6b5phmBfTCdtp4=;
+	s=default; t=1608205870;
+	bh=87q4IOfUoYTn9t414yFUEiu4hr7lvv/p9qbefgUvcLU=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Rh8s0DoRMR7QouhZ+ZAaBWrsg9eRbffKXrl14DD7ETjNK0MTOEAjZ1L1mF8L4i4nb
-	 d7uouWNO0L5WpPVZCUkEzyEbX4dwe1ZENWQxYLUJaNS8aheo3CV2MrW/NaXoAY1pFg
-	 fXzbQmH7UEwLIv9rPsdeziQXC6XIe3wgdRI+2eyk=
+	b=hYa5NDWCS+BMQUaC4v1NAPocMpCgLSM9M4i+GDWRofivLqw1ctBoYloEZZaSH48FD
+	 +ZjIWjMTzhEkjvhKUoot3m5wvDkLHO8+mG9U+zlx52A+rjSzEfAF1FySsbs8eOxEfk
+	 Osm26xA4Flg6qfkpoh83s9v/hdTgP3bRdaY1DXuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C429BF8027B;
-	Thu, 17 Dec 2020 12:12:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9D86F80259;
+	Thu, 17 Dec 2020 12:50:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A517F8027D; Thu, 17 Dec 2020 12:12:19 +0100 (CET)
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com
- [209.85.167.178])
+ id DAF90F80260; Thu, 17 Dec 2020 12:50:13 +0100 (CET)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
+ [IPv6:2607:f8b0:4864:20::430])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33479F80260
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 12:12:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33479F80260
-Received: by mail-oi1-f178.google.com with SMTP id x13so22731910oic.5
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 03:12:12 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25F7DF800C7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 12:50:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25F7DF800C7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="oASjuKuU"
+Received: by mail-pf1-x430.google.com with SMTP id x126so10064190pfc.7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 03:50:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=XKB1k0zcpmCbcRTXBIrjLwiqJXxpKCjHh0qvy/6PV3Q=;
+ b=oASjuKuUqD6Np33c/A+kwRVmBnuntBUrbZstV3PZRg4JRN2/zFWl6L5UKj0DW/n1s9
+ TA38bOzLRkenugP4gB4ymnDIQ6gmqsH7Ubj8P6R6NM4e1GsA5ltf983af640gFoyGenq
+ qXY7ToKrpGfOEBBabgzNodrUbeLPr6S9aykySmBcJ7GKltuvR62dtQoeZBveRS311Z8x
+ XNsDxJqe7i0INPG8L7ED/7MWKy1gYnDTIl5b0pHQqpQa9dpOEx3UzwhWi2TWap3zf62f
+ b9b8bM8vwPIQs842IldfL2vOamXnKksI+vNbemjv8+3UJBzcbvVnPo4Yl1XCYp9BEezR
+ TjJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=dZwOGaLScpIa+oDTSTtBNc2tCns1gxIeazUncCzbwsM=;
- b=ZQhDZHs+5/9JhdQo9VLMHWF8uqQnBBSMocOL3tuMfERlH8BBOTaD1T+V0UcXEsW50G
- jxUG0awBJg07wQebbBlYnvZpiTocBJHhv10vu0jK42SWHoTfL31Pqs62EXR3flbldwhz
- IfOScWq3FUqXQYQW9oAf1QuPNgwLHnfh2PIjyBcfeTgcRbNTLiGGb+dWGvOD/cu3zd1J
- xNb5MM0yOtyYs4y+iTK/dleolVFLKtDfaOAS/DemNfMRrOpCd7fbjDhEOHs39gPQA8AZ
- gtLcUGonPnQoOLzl8IMKc0bWMWV8cUjUkjWDWeFTZzosNUn0sPqdKj26S8at4Y064nUR
- 7VJA==
-X-Gm-Message-State: AOAM532hHESQ7KiplLCH7z+oH4PivaDG2QfRuQzubxJpTYRqQttqxyiV
- RvRUdYdTU+0evD6ZOM/H08bAIo7xMPDyZJ41fkk=
-X-Google-Smtp-Source: ABdhPJxfk5ceKnrD9w1jZShtgHYFhHcuDY8P/O/8WRdy5BqvXlQqYAxgRg3IU4KHs/mafiatAWuOar34FD81mi0HayU=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr4357125oih.153.1608203530592; 
- Thu, 17 Dec 2020 03:12:10 -0800 (PST)
+ bh=XKB1k0zcpmCbcRTXBIrjLwiqJXxpKCjHh0qvy/6PV3Q=;
+ b=n/A7PJI775AQsfqRpge0RPw8aJ1il5XT3aaO7A2haJ52Qxzkm6syhUWOMb7HZHybpt
+ YKd6zRtEMDvsc+EvK8oTLqNm07moc6uRT84I24QBJaEk5VT0fjT3ef7TAqr9WKd5UqaW
+ 8yBLwxskWhfUMnKEoBgK3sfHf6jBgLmVWwhCrWPnus4Hr/r7gU/FoYl/pBJlLvkNiXlb
+ lx0qvPNoyjP6v1hKZkybeVOrDgPj0HX4l4rdFgtusxRs01zSp8Cya9VVYNgEW8bQ8jQ1
+ qXc1nmp+MF1iwwsKfcb2/yAMg1AF/AH6OyZeWEEq9G1U6M0f0oeT/qS96w+4fxbPHVIZ
+ ZP5w==
+X-Gm-Message-State: AOAM532GUIKD2ZZ6hL+jH2Tws7rfmCOr0eL/lL7cQVTCtKf08rTeDZhz
+ yn/is4lC8yyPxbdWrIIBqemlvol8VRUpOy47ceM=
+X-Google-Smtp-Source: ABdhPJw83yrn+hdGW0l/nFQ3Eb0MoiGAEHBc1ltgAMrkL9l2PZYzpR/BNzSoxBJz/e9oZfnMUxDtPS+LJT9TdABzrUg=
+X-Received: by 2002:a63:5c52:: with SMTP id n18mr6734758pgm.404.1608205804805; 
+ Thu, 17 Dec 2020 03:50:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20201213183759.223246-1-aford173@gmail.com>
- <20201213183759.223246-7-aford173@gmail.com>
-In-Reply-To: <20201213183759.223246-7-aford173@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 17 Dec 2020 12:11:59 +0100
-Message-ID: <CAMuHMdU+d7SZc9gh_3WS+bqd4EhXYh=kv0XvYrgUUckdQ7o5jw@mail.gmail.com>
-Subject: Re: [PATCH 06/18] arm64: dts: renesas: beacon: Configure Audio CODEC
- clocks
-To: Adam Ford <aford173@gmail.com>
+References: <CAE5BBpTEw2pTzDhLxaQiGwAvnH_q6aChLkuDXxEQrZFvS6wVyQ@mail.gmail.com>
+ <s5h8s9wn4lr.wl-tiwai@suse.de>
+In-Reply-To: <s5h8s9wn4lr.wl-tiwai@suse.de>
+From: Marco Giunta <giun7a@gmail.com>
+Date: Thu, 17 Dec 2020 12:49:53 +0100
+Message-ID: <CAE5BBpTbyjkd--Nfcqpv01wYyScEgXJSQETYhWyUH9-qPKYw+g@mail.gmail.com>
+Subject: Re: [PATCH] Fix mic sound on Jieli webcam
+To: Takashi Iwai <tiwai@suse.de>
 Content-Type: text/plain; charset="UTF-8"
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Magnus Damm <magnus.damm@gmail.com>, Adam Ford-BE <aford@beaconembedded.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,55 +100,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Adam,
+Hi,
+thank you for your reply. As I told you, I'm not the guy who wrote the
+patch, but I try to continue his work.
 
-CC alsa-devel
+> What's the original datainterval value for those altsettings?
+Where I can read the original datainterval value ? Is it an USB
+property (so I can search in udev) ? Or can I debug in some way the
+snd_usb_audio module load to get the values ?
 
-On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
-> With the newly added configurable clock options, the audio CODEC can
-> configure the mclk automatically.  Add the reference to the versaclock.
-> Since the devices on I2C5 can communicate at 400KHz, let's also increase
-> that too
+Thanks,
+  Marco
+
+
+On Thu, Dec 17, 2020 at 10:50 AM Takashi Iwai <tiwai@suse.de> wrote:
 >
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-
-Thanks for your patch!
-
-> --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> @@ -424,13 +424,15 @@ &i2c0 {
+> On Tue, 15 Dec 2020 10:44:45 +0100,
+> Marco Giunta wrote:
+> >
+> > Hi,
+> > recently I've bought a usb webcam with integrated mic:
+> >
+> >   Jieli Technology USB PHY 2.0 (1224:2a25)
+> >
+> > The video part works well, but the mic sound is speedups, "like
+> > minions" (cit.). When I connect the camera, these are the dmesg
+> > messages:
+> >
+> > kernel: usb 1-8: current rate 0 is different from the runtime rate 8000
+> > kernel: usb 1-8: current rate 0 is different from the runtime rate 16000
+> > kernel: usb 1-8: current rate 0 is different from the runtime rate 44100
+> > kernel: usb 1-8: current rate 0 is different from the runtime rate 48000
+> > kernel: usb 1-8: Warning! Unlikely big volume range (=4096), cval->res
+> > is probably wrong.
+> > kernel: usb 1-8: [3] FU [Mic Capture Volume] ch = 1, val = 0/4096/1
+> > kernel: usbcore: registered new interface driver snd-usb-audio
+> >
+> > and after a while, dmesg log is filled, every 5 seconds, with:
+> >
+> > kernel: retire_capture_urb: 84 callbacks suppressed
+> > kernel: retire_capture_urb: 1714 callbacks suppressed
+> >
+> > A guy reports on ArchLinux bug website the same problem
+> > (https://bugs.archlinux.org/task/68141?opened=12995&status%5B0%5D=)
+> > and provides a patch to fix the sound issue. I've applied the patch on
+> > kernel 5.9.13 (Fedora 33 x86_64) and now the mic works, no more
+> > minions voice effect. Now dmesg messages are only:
+> >
+> > kernel: usb 1-8: Warning! Unlikely big volume range (=4096), cval->res
+> > is probably wrong.
+> > kernel: usb 1-8: [3] FU [Mic Capture Volume] ch = 1, val = 0/4096/1
+> > kernel: usbcore: registered new interface driver snd-usb-audio
+> >
+> > the retire_capture_urb messages are gone.
+> >
+> > All credits for the patch go to him but I don't know how to contact
+> > that guy nor I don't know if he has already contacted you, so my
+> > question is if you could review his patch and finally apply upstream.
+> >
+> > If you need other information or you need a tester, I'm here.
 >
->  &i2c5 {
->         status = "okay";
-> -       clock-frequency = <100000>;
-> +       clock-frequency = <400000>;
->         pinctrl-0 = <&i2c5_pins>;
->         pinctrl-names = "default";
+> Thanks for the patch.  The still remaining warnings are about the
+> mixer, and your patch doesn't touch about it.  You may apply the
+> similar change in volume_control_quirks() like other webcams.
 >
->         codec: wm8962@1a {
->                 compatible = "wlf,wm8962";
->                 reg = <0x1a>;
-> +               clocks = <&versaclock6_bb 3>;
-> +               clock-names = "mclk";
-
-While the driver does get the (nameless) clock, the DT bindings lack any
-mention of a clocks property.  It would be good to update the bindings.
-
-Note that arch/arm/boot/dts/imx6-logicpd-baseboard.dtsi and
-arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi (both by your
-hand) use "xclk" instead of "mclk"?
-
->                 DCVDD-supply = <&reg_audio>;
->                 DBVDD-supply = <&reg_audio>;
->                 AVDD-supply = <&reg_audio>;
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> And now about the patch:
+>
+> > --- a/sound/usb/format.c    2020-10-01 18:36:35.000000000 +0300
+> > +++ b/sound/usb/format.c    2020-10-04 02:10:21.678685952 +0300
+> > @@ -217,6 +217,21 @@
+> >                  (chip->usb_id == USB_ID(0x041e, 0x4064) ||
+> >                   chip->usb_id == USB_ID(0x041e, 0x4068)))
+> >                  rate = 8000;
+> > +
+> > +            // hack for "Jieli Technology USB PHY 2.0" webcam
+> > +            if (chip->usb_id == USB_ID(0x1224, 0x2a25)) {
+> > +                switch (rate) {
+> > +                case 8000:
+> > +                    fp->datainterval += 4;
+> > +                    break;
+> > +                case 16000:
+> > +                    fp->datainterval += 3;
+> > +                    break;
+> > +                default:
+> > +                    fp->datainterval += 1;
+> > +                    break;
+> > +                }
+> > +            }
+>
+> Modifying datainterval at this point doesn't look intuitive.
+> What's the original datainterval value for those altsettings?
+> The value is retrieved in snd_usb_parse_datainterval() in helper.c,
+> and if any, the correction there would be more sensible.
+>
+>
+> >              fp->rate_table[fp->nr_rates] = rate;
+> >              if (!fp->rate_min || rate < fp->rate_min)
+> > --- a/sound/usb/endpoint.c    2020-10-01 18:36:35.000000000 +0300
+> > +++ b/sound/usb/endpoint.c    2020-10-04 02:09:09.471978982 +0300
+> > @@ -882,6 +882,8 @@
+> >      if (snd_usb_get_speed(ep->chip->dev) != USB_SPEED_FULL) {
+> >          packs_per_ms = 8 >> ep->datainterval;
+> >          max_packs_per_urb = MAX_PACKS_HS;
+> > +        if (!packs_per_ms)
+> > +            packs_per_ms = 1;
+>
+> This rather indicates that the datainterval is somehow wrong.
+>
+> >      } else {
+> >          packs_per_ms = 1;
+> >          max_packs_per_urb = MAX_PACKS;
+> > --- a/sound/usb/quirks.c    2020-10-01 18:36:35.000000000 +0300
+> > +++ b/sound/usb/quirks.c    2020-10-04 02:14:04.532196519 +0300
+> > @@ -1516,6 +1516,7 @@
+> >      case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
+> >      case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
+> >      case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
+> > +    case USB_ID(0x1224, 0x2a25): /* Jieli Technology USB PHY 2.0 */
+> >          return true;
+> >      }
+>
+> This looks fine.
+>
+>
+> thanks,
+>
+> Takashi
