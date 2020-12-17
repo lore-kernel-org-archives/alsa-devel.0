@@ -2,63 +2,66 @@ Return-Path: <SRS0=tU6Y=FV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 035E3C4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B1FC4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:39:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61204236F9
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:38:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61204236F9
+	by mail.kernel.org (Postfix) with ESMTPS id 6FC23233FB
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:39:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FC23233FB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD6DB1826;
-	Thu, 17 Dec 2020 10:37:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD6DB1826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88551183D;
+	Thu, 17 Dec 2020 10:38:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88551183D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608197915;
-	bh=csJWqac4/I8hu6DXrboNnK8NBP051ytyefMoJ6QykpA=;
+	s=default; t=1608197972;
+	bh=usF5T0a6TeCyXbeFkOPEt+b9wmq49qSt4ptM1aDkhms=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AOR4sN/JC2rxXyZAeMN3GzEt5Ybob7s2ocTrlDJfT/r/C32w6e3C4zA276L+MDyRR
-	 mRZCqHn2TXIZSkLxFgx2Va7qTIgXb4wEYqujw6DID7HGQDhjYo1td/V2QXf+Jtx8VO
-	 hN+kcyDQsIxQ8plkwp+TRZhQH+zWGZJIQlIJgNtE=
+	b=OI+r6l6/hQo01MR5paToivZ0JjT+5PXelnVmU/rMIM4VYvMebVm/P0xGAu6mVZkw/
+	 BY4SNO2/GOXyDMkPMWBAQMPG/9CvoNFEBka6lNuQeWJz4WdqRO3Glg0hL2mUjm0wb/
+	 z9bep7YFWBToix0FHMMlTPR9Rcynu5zVK5E3tnHg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48493F80259;
-	Thu, 17 Dec 2020 10:37:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 309FFF80278;
+	Thu, 17 Dec 2020 10:38:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E28CFF80260; Thu, 17 Dec 2020 10:37:43 +0100 (CET)
+ id B7C1FF8027B; Thu, 17 Dec 2020 10:38:40 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 416DCF8014B
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 10:37:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 416DCF8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF036F80278
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 10:38:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF036F80278
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id EA14BAC7B;
- Thu, 17 Dec 2020 09:37:33 +0000 (UTC)
-Date: Thu, 17 Dec 2020 10:37:33 +0100
-Message-ID: <s5hczz8n57m.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 64863AC7B;
+ Thu, 17 Dec 2020 09:38:29 +0000 (UTC)
+Date: Thu, 17 Dec 2020 10:38:29 +0100
+Message-ID: <s5hblesn562.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kailang <kailang@realtek.com>
-Subject: Re: Dell fixed type headset platform
-In-Reply-To: <b97e971978034bc9b772a08ec91265e8@realtek.com>
-References: <b97e971978034bc9b772a08ec91265e8@realtek.com>
+To: Robin Gong <yibin.gong@nxp.com>
+Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
+In-Reply-To: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ shengjiu.wang@nxp.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ gustavoars@kernel.org, akpm@linux-foundation.org, xiang@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,17 +77,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Dec 2020 09:59:16 +0100,
-Kailang wrote:
+On Thu, 17 Dec 2020 17:15:47 +0100,
+Robin Gong wrote:
 > 
-> Hi Takashi,
+> Since mmap for userspace is based on page alignment, add page alignment
+> for iram alloc from pool, otherwise, some good data located in the same
+> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
 > 
-> Dell has fixed type headset platform for desktop.
-> Attach patch was add pin verb. BIOS verb table was setting for fixed type coef.
-> 
-> Many Thanks.
+> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
 
-Applied now.  Thanks.
+Thanks, applied now with Cc-to-stable.
 
 
 Takashi
