@@ -2,66 +2,66 @@ Return-Path: <SRS0=tU6Y=FV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B1FC4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:39:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9857AC4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:44:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6FC23233FB
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:39:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6FC23233FB
+	by mail.kernel.org (Postfix) with ESMTPS id 9F67A23603
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 09:44:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F67A23603
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88551183D;
-	Thu, 17 Dec 2020 10:38:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88551183D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C4D3183B;
+	Thu, 17 Dec 2020 10:43:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C4D3183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608197972;
-	bh=usF5T0a6TeCyXbeFkOPEt+b9wmq49qSt4ptM1aDkhms=;
+	s=default; t=1608198240;
+	bh=SifX3A/NxqW9sWiTuMw1cbveaRI4Uap2Lz3VhZHDq64=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OI+r6l6/hQo01MR5paToivZ0JjT+5PXelnVmU/rMIM4VYvMebVm/P0xGAu6mVZkw/
-	 BY4SNO2/GOXyDMkPMWBAQMPG/9CvoNFEBka6lNuQeWJz4WdqRO3Glg0hL2mUjm0wb/
-	 z9bep7YFWBToix0FHMMlTPR9Rcynu5zVK5E3tnHg=
+	b=A4Pc3XYDQOQCFotCHptJUJNXpNOO2c+tTDgu6aUoTA8aZ2Up3Yf3HKa1+zjAVBQU1
+	 A3nTJIh5dJMKrRmc3UbSAByawJPx4NowOerO8hyDoD0F0ceIPi5aUjw2K5wMM58zG0
+	 HMY9GgYK0OD9x8jZrVFZCQ4PmsIwDcoVMLz8bEvQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 309FFF80278;
-	Thu, 17 Dec 2020 10:38:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 386C2F80259;
+	Thu, 17 Dec 2020 10:43:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7C1FF8027B; Thu, 17 Dec 2020 10:38:40 +0100 (CET)
+ id CE3D0F80260; Thu, 17 Dec 2020 10:43:07 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF036F80278
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 10:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF036F80278
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B30EF8014B
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 10:43:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B30EF8014B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 64863AC7B;
- Thu, 17 Dec 2020 09:38:29 +0000 (UTC)
-Date: Thu, 17 Dec 2020 10:38:29 +0100
-Message-ID: <s5hblesn562.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 29122AC7B;
+ Thu, 17 Dec 2020 09:43:04 +0000 (UTC)
+Date: Thu, 17 Dec 2020 10:43:04 +0100
+Message-ID: <s5ha6ucn4yf.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Robin Gong <yibin.gong@nxp.com>
-Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
-In-Reply-To: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
-References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+To: Amadej Kastelic <amadejkastelic7@gmail.com>
+Subject: Re: [PATCH 01/01] Add VID to support native DSD reproduction on FiiO
+ devices.
+In-Reply-To: <X9pR9X/uCqoij1b0@ryzen.localdomain>
+References: <X9j7wdXSr4XyK7Bd@ryzen.localdomain> <s5h8s9xoj6o.wl-tiwai@suse.de>
+ <X9pR9X/uCqoij1b0@ryzen.localdomain>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- shengjiu.wang@nxp.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
- gustavoars@kernel.org, akpm@linux-foundation.org, xiang@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,16 +77,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Dec 2020 17:15:47 +0100,
-Robin Gong wrote:
+On Wed, 16 Dec 2020 19:29:09 +0100,
+Amadej Kastelic wrote:
 > 
-> Since mmap for userspace is based on page alignment, add page alignment
-> for iram alloc from pool, otherwise, some good data located in the same
-> page of dmab->area maybe touched wrongly by userspace like pulseaudio.
+> On Wed, Dec 16, 2020 at 04:38:07PM +0100, Takashi Iwai wrote:
+> > On Tue, 15 Dec 2020 19:09:05 +0100,
+> > Amadej Kastelic wrote:
+> > > 
+> > > Message-Id: <c759bc50134ea434bfed0a183e0ce72984f5b609.camel@gmail.com>
+> > > 
+> > > Add VID to support native DSD reproduction on FiiO devices.
+> > > 
+> > > Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+> > > Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
+> > 
+> > Could you give your own sign-off, too?  Each person who submits the
+> > patch needs the sign-off.  This is mandatory for merging to the
+> > upstream.
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
 > 
-> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+> Signed-off-by: Amadej Kastelic <amadejkastelic7@gmail.com>
 
-Thanks, applied now with Cc-to-stable.
+Thanks, the patch was merged now.
 
 
 Takashi
