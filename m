@@ -7,80 +7,81 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAB89C4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A538CC4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14BAF23975
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14BAF23975
+	by mail.kernel.org (Postfix) with ESMTPS id C84CD23998
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C84CD23998
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA2D218F8;
-	Thu, 17 Dec 2020 16:44:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA2D218F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 598C91908;
+	Thu, 17 Dec 2020 16:44:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 598C91908
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608219912;
-	bh=oXIOEXgKH6TMvhhIg3UeMIbasiKLq1NBgW7jOeIZB2M=;
+	s=default; t=1608219920;
+	bh=qLjVaxe16toUFN36XdlVAcoCBF6bzG7R0RANYcorbWY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j9WTQuo2vnBfQPQJQvXg+IOM5KOYcg8jJZyhcpmrIb3jWZVt+g8ebg9nMwhFsX7jM
-	 nANZnIIB0vKQMoSNne7m4qGEqTAcBXhnCXDVl6tJE9Qqr8F205VgYgkl8zl0XQk58K
-	 ncOb66Ds+8yvQdaon6HdjXE/JJosq4PJHSldgtlg=
+	b=M/FaHh46zonLdgJBZJU2Fz4HmUUZTuC4BV9gA+AToztZxpKrzL2rJ8jHO1BuliZ7g
+	 C20zfYKVfx8mo3wxilhFpfz5j/982ztyPp/BiNRvH0HYTj0Ji0H0e4bRavsvWofRte
+	 4UzDd6fh/r5H4/LZowQAdbYzfE6sYpBnnWIy3aRo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3CB8F804E5;
-	Thu, 17 Dec 2020 16:42:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D072F804ED;
+	Thu, 17 Dec 2020 16:42:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C1B6F804D8; Thu, 17 Dec 2020 16:42:00 +0100 (CET)
+ id DD3CBF804DF; Thu, 17 Dec 2020 16:42:00 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C37D7F80148
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 16:41:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C37D7F80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE273F804AE
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 16:41:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE273F804AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="CDDTRJqM"
+ header.b="PhDew2Qz"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 0BHFPi97001634; Thu, 17 Dec 2020 09:41:47 -0600
+ 0BHFPi99001634; Thu, 17 Dec 2020 09:41:48 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=6puJRNoQ85sTqXFHjZOZ1oaxCItH2xQD/d8qJchGYVE=;
- b=CDDTRJqMj9+bBNxKFByKpeQohb8c8qSyt0/qgJWeIolW75sTfntLSyR7Q55RISrXvNLW
- pMUaq1zyK/tdjeQkF8CJLtoih+rddWEk04abGcWYoakOoEiGRJcCTEUQKWOtDO08RuHS
- t1wj6uZEHMWVzaVjRnu0OW6cNGj6lKn+fCleihtLwinH7PNf/jHK70gTnIvugo8ZdFvs
- i4w5UswFdSDMNEnT39GEwRuxj0wfTziSkHQmylHlk2fyD8Sn44aObDCQl5YQRY7wIPP/
- PtJJdKE+j/5tj8pYDHXprhhxuKy5VynSVrs6F+S/qZS2THyoXl3shnkr8XlUBZKqF1FE 8w== 
+ bh=kFii/MLnvZEwlPNsABvyhf+yyvhxWU0C00Yc/1VrVIs=;
+ b=PhDew2QzyUdRHZvRsWOiVdMZEXD0Fn81WNu1ldgtJyFonvQluUc049buxY7mbVnGdyPX
+ RTiu3F9EsQ6HitkqLUe+Ac7Ym3aOad1TvxUMuv8TWUkGaf/k5S06RhrOG84qyqOAERXV
+ hlWBlvRRzpS+ZF68b6aLMxTYofKxRc/38sN6B4/+EMIyuGGC5T374hqZ0xglUcwiO+AH
+ ldnmQigljbLFnpVUrfK9JM6BMZgz6iDdtGvGwLI/D0WcH1yvisZwAlzXvnVHSOIWDJ4k
+ thKl8Gl/LpslBTNkK75/eF03Rdc0WhoJUlckcF/u1WcqoTN5jXBGDanamDzipLj51UAH IA== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-2
+ by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 17 Dec 2020 09:41:47 -0600
+ Thu, 17 Dec 2020 09:41:48 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
- 2020 15:41:46 +0000
+ 2020 15:41:47 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 17 Dec 2020 15:41:46 +0000
+ Transport; Thu, 17 Dec 2020 15:41:47 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.236])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 94C9F11CA;
- Thu, 17 Dec 2020 15:41:45 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B0B2111CC;
+ Thu, 17 Dec 2020 15:41:46 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>
-Subject: [PATCH v3 1/6] of: base: Add of_count_phandle_with_fixed_args()
-Date: Thu, 17 Dec 2020 15:41:37 +0000
-Message-ID: <20201217154142.24301-2-rf@opensource.cirrus.com>
+Subject: [PATCH v3 3/6] ASoC: audio-graph-card: Support setting component plls
+ and sysclks
+Date: Thu, 17 Dec 2020 15:41:39 +0000
+Message-ID: <20201217154142.24301-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201217154142.24301-1-rf@opensource.cirrus.com>
 References: <20201217154142.24301-1-rf@opensource.cirrus.com>
@@ -89,13 +90,13 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
  adultscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1011 malwarescore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
  impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2012170108
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh@kernel.org>, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -113,153 +114,401 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add an equivalent of of_count_phandle_with_args() for fixed argument
-sets, to pair with of_parse_phandle_with_fixed_args().
+Some codecs need plls and/or sysclks to be configured using the
+snd_soc_component_set_[sysclk|pll] functions. These drivers cannot
+necessarily be converted to use the clock framework. If the codec is on
+a I2C/SPI bus, a nested clk_get would be needed to enable the bus clock.
+But the clock framework does not support nested operations and this would
+deadlock.
 
-The existing of_count_phandle_with_args() is modified to be a
-private function that handles both cases and the public functions
-are trivial wrappers round that.
+This patch adds new dt properties that list phandles of components with
+the pll/sysclk settings to be applied. Multiple settings can be given for
+the same phandle to allow for components with multiple clocks and plls.
+The plls and sysclks are enabled when the card bias level moves to STANDBY
+and disabled when it moves to OFF.
+
+The implementation does not attempt to handle specifying complex clock
+ordering interdependencies between components. The plls and sysclks are
+applied to a component as it is passed to the card set_bias_level/
+set_bias_level_post callbacks. It follows from this that the order
+components are configured is the order that they are passed to those
+callbacks.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/of/base.c  | 73 +++++++++++++++++++++++++++++++---------------
- include/linux/of.h |  9 ++++++
- 2 files changed, 59 insertions(+), 23 deletions(-)
+ include/sound/simple_card_utils.h     |  25 +++
+ sound/soc/generic/audio-graph-card.c  |  16 +-
+ sound/soc/generic/simple-card-utils.c | 236 ++++++++++++++++++++++++++
+ 3 files changed, 275 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 161a23631472..c5ff2524bf40 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1720,34 +1720,22 @@ int of_parse_phandle_with_fixed_args(const struct device_node *np,
- }
- EXPORT_SYMBOL(of_parse_phandle_with_fixed_args);
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 86a1e956991e..0f9296e09ad3 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -38,6 +38,16 @@ struct asoc_simple_jack {
+ 	struct snd_soc_jack_gpio gpio;
+ };
  
--/**
-- * of_count_phandle_with_args() - Find the number of phandles references in a property
-- * @np:		pointer to a device tree node containing a list
-- * @list_name:	property name that contains a list
-- * @cells_name:	property name that specifies phandles' arguments count
-- *
-- * Returns the number of phandle + argument tuples within a property. It
-- * is a typical pattern to encode a list of phandle and variable
-- * arguments into a single property. The number of arguments is encoded
-- * by a property in the phandle-target node. For example, a gpios
-- * property would contain a list of GPIO specifies consisting of a
-- * phandle and 1 or more arguments. The number of arguments are
-- * determined by the #gpio-cells property in the node pointed to by the
-- * phandle.
-- */
--int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
--				const char *cells_name)
-+static int __of_count_phandle_with_args(const struct device_node *np,
-+					const char *list_name,
-+					const char *cells_name,
-+					int cells_count)
- {
- 	struct of_phandle_iterator it;
- 	int rc, cur_index = 0;
++struct asoc_simple_sysclk_pll {
++	struct device_node *node;
++	struct clk *clk;
++	int id;
++	int source;
++	unsigned int freq_out;
++	int dir;
++	bool enabled;
++};
++
+ struct asoc_simple_priv {
+ 	struct snd_soc_card snd_card;
+ 	struct simple_dai_props {
+@@ -56,6 +66,11 @@ struct asoc_simple_priv {
+ 	struct asoc_simple_dai *dais;
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	struct gpio_desc *pa_gpio;
++
++	struct asoc_simple_sysclk_pll *sysclks;
++	int num_sysclks;
++	struct asoc_simple_sysclk_pll *plls;
++	int num_plls;
+ };
+ #define simple_priv_to_card(priv)	(&(priv)->snd_card)
+ #define simple_priv_to_props(priv, i)	((priv)->dai_props + (i))
+@@ -94,6 +109,14 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream);
+ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
+ 			  struct snd_pcm_hw_params *params);
+ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd);
++
++int asoc_simple_set_bias_level(struct snd_soc_card *card,
++			       struct snd_soc_dapm_context *dapm,
++			       enum snd_soc_bias_level level);
++int asoc_simple_set_bias_level_post(struct snd_soc_card *card,
++				    struct snd_soc_dapm_context *dapm,
++				    enum snd_soc_bias_level level);
++
+ int asoc_simple_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 				   struct snd_pcm_hw_params *params);
  
- 	/*
--	 * If cells_name is NULL we assume a cell count of 0. This makes
--	 * counting the phandles trivial as each 32bit word in the list is a
--	 * phandle and no arguments are to consider. So we don't iterate through
--	 * the list but just use the length to determine the phandle count.
-+	 * If cells_count < 0 and cells_name is NULL we assume a cell count
-+	 * of 0. A zero cell count makes counting the phandles trivial as each
-+	 * 32bit word in the list is a phandle and no arguments are to consider.
-+	 * So we don't iterate through the list but just use the length to
-+	 * determine the phandle count.
- 	 */
--	if (!cells_name) {
-+	if ((cells_count < 0 && !cells_name) || cells_count == 0) {
- 		const __be32 *list;
- 		int size;
+@@ -128,6 +151,8 @@ int asoc_simple_parse_widgets(struct snd_soc_card *card,
+ 				      char *prefix);
+ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
+ 				   char *prefix);
++int asoc_simple_parse_sysclks(struct asoc_simple_priv *priv, char *prefix);
++int asoc_simple_parse_plls(struct asoc_simple_priv *priv, char *prefix);
  
-@@ -1758,7 +1746,7 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
- 		return size / sizeof(*list);
+ int asoc_simple_init_jack(struct snd_soc_card *card,
+ 			       struct asoc_simple_jack *sjack,
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 97b4f5480a31..c56a3a19a22f 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -509,6 +509,14 @@ static int graph_parse_of(struct asoc_simple_priv *priv)
+ 			return ret;
  	}
  
--	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, -1);
-+	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, cells_count);
- 	if (rc)
- 		return rc;
- 
-@@ -1770,8 +1758,47 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
- 
- 	return cur_index;
- }
++	ret = asoc_simple_parse_sysclks(priv, NULL);
++	if (ret < 0)
++		return ret;
 +
-+/**
-+ * of_count_phandle_with_args() - Find the number of phandles references in a property
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cells_name:	property name that specifies phandles' arguments count
-+ *
-+ * Returns the number of phandle + argument tuples within a property. It
-+ * is a typical pattern to encode a list of phandle and variable
-+ * arguments into a single property. The number of arguments is encoded
-+ * by a property in the phandle-target node. For example, a gpios
-+ * property would contain a list of GPIO specifies consisting of a
-+ * phandle and 1 or more arguments. The number of arguments are
-+ * determined by the #gpio-cells property in the node pointed to by the
-+ * phandle.
-+ */
-+int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
-+				const char *cells_name)
-+{
-+	return __of_count_phandle_with_args(np, list_name, cells_name, -1);
-+}
- EXPORT_SYMBOL(of_count_phandle_with_args);
- 
-+/**
-+ * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cell_count: number of argument cells following the phandle
-+ *
-+ * Returns the number of phandle + argument tuples within a property. It
-+ * is a typical pattern to encode a list of phandle and variable
-+ * arguments into a single property.
-+ */
-+int of_count_phandle_with_fixed_args(const struct device_node *np,
-+				     const char *list_name,
-+				     int cells_count)
-+{
-+	return __of_count_phandle_with_args(np, list_name, NULL, cells_count);
-+}
-+EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
++	ret = asoc_simple_parse_plls(priv, NULL);
++	if (ret < 0)
++		return ret;
 +
- /**
-  * __of_add_property - Add a property to a node without lock operations
-  */
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 5d51891cbf1a..2f28da56ec9b 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const struct device_node *np,
- 	struct of_phandle_args *out_args);
- extern int of_count_phandle_with_args(const struct device_node *np,
- 	const char *list_name, const char *cells_name);
-+extern int of_count_phandle_with_fixed_args(const struct device_node *np,
-+	const char *list_name, int cells_count);
- 
- /* phandle iterator functions */
- extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
-@@ -886,6 +888,13 @@ static inline int of_count_phandle_with_args(struct device_node *np,
- 	return -ENOSYS;
+ 	return asoc_simple_parse_card_name(card, NULL);
  }
  
-+static inline int of_count_phandle_with_fixed_args(const struct device_node *np,
-+						   const char *list_name,
-+						   int cells_count)
+@@ -642,6 +650,7 @@ static int graph_probe(struct platform_device *pdev)
+ 	card->dapm_widgets	= graph_dapm_widgets;
+ 	card->num_dapm_widgets	= ARRAY_SIZE(graph_dapm_widgets);
+ 	card->probe		= graph_card_probe;
++	snd_soc_card_set_drvdata(card, priv);
+ 
+ 	memset(&li, 0, sizeof(li));
+ 	graph_get_dais_count(priv, &li);
+@@ -666,10 +675,13 @@ static int graph_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
+-	snd_soc_card_set_drvdata(card, priv);
+-
+ 	asoc_simple_debug_info(priv);
+ 
++	if (priv->num_sysclks || priv->num_plls) {
++		card->set_bias_level = asoc_simple_set_bias_level;
++		card->set_bias_level_post = asoc_simple_set_bias_level_post;
++	}
++
+ 	ret = devm_snd_soc_register_card(dev, card);
+ 	if (ret < 0)
+ 		goto err;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 6cada4c1e283..5733a2955cb2 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -399,6 +399,162 @@ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_dai_init);
+ 
++static bool asoc_simple_node_is_component(struct snd_soc_component *component,
++					  struct device_node *node)
 +{
-+	return -ENOSYS;
++	struct device_node *comp_node;
++
++	comp_node = component->dev->of_node;
++	if (!comp_node && component->dev->parent)
++		comp_node = component->dev->parent->of_node;
++
++	return (comp_node == node);
 +}
 +
- static inline int of_phandle_iterator_init(struct of_phandle_iterator *it,
- 					   const struct device_node *np,
- 					   const char *list_name,
++int asoc_simple_set_bias_level(struct snd_soc_card *card,
++			       struct snd_soc_dapm_context *dapm,
++			       enum snd_soc_bias_level level)
++{
++	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
++	struct snd_soc_component *component = dapm->component;
++	int i, ret;
++
++	if (!component)
++		return 0;
++
++	switch (level) {
++	case SND_SOC_BIAS_STANDBY:
++		if (dapm->bias_level != SND_SOC_BIAS_OFF)
++			break;
++
++		/*
++		 * A component's PLLs normally supply its SYSCLKs so enable
++		 * the PLLs first.
++		 */
++		for (i = 0; i < priv->num_plls; ++i) {
++			if (!asoc_simple_node_is_component(component, priv->plls[i].node))
++				continue;
++
++			ret = clk_prepare_enable(priv->plls[i].clk);
++			if (ret) {
++				dev_err(card->dev,
++					"(%s) failed to enable pll %d parent clock: %d\n",
++					component->name, priv->plls[i].id, ret);
++				return ret;
++			}
++
++			ret = snd_soc_component_set_pll(component,
++							priv->plls[i].id,
++							priv->plls[i].source,
++							clk_get_rate(priv->plls[i].clk),
++							priv->plls[i].freq_out);
++			if (ret) {
++				dev_err(card->dev, "(%s) failed to set pll %d: %d\n",
++					component->name, priv->plls[i].id, ret);
++
++				clk_disable_unprepare(priv->plls[i].clk);
++				return ret;
++			}
++
++			priv->plls[i].enabled = true;
++		}
++
++		for (i = 0; i < priv->num_sysclks; ++i) {
++			if (!asoc_simple_node_is_component(component, priv->sysclks[i].node))
++				continue;
++
++			ret = clk_prepare_enable(priv->sysclks[i].clk);
++			if (ret) {
++				dev_err(card->dev,
++					"(%s) failed to enable sysclk %d parent clock: %d\n",
++					component->name, priv->sysclks[i].id, ret);
++				return ret;
++			}
++
++			ret = snd_soc_component_set_sysclk(component,
++							   priv->sysclks[i].id,
++							   priv->sysclks[i].source,
++							   clk_get_rate(priv->sysclks[i].clk),
++							   priv->sysclks[i].dir);
++			if (ret) {
++				dev_err(card->dev, "(%s) failed to set sysclk %d: %d\n",
++					component->name, priv->sysclks[i].id, ret);
++
++				clk_disable_unprepare(priv->sysclks[i].clk);
++				return ret;
++			}
++
++			priv->sysclks[i].enabled = true;
++		}
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_set_bias_level);
++
++int asoc_simple_set_bias_level_post(struct snd_soc_card *card,
++				    struct snd_soc_dapm_context *dapm,
++				    enum snd_soc_bias_level level)
++{
++	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
++	struct snd_soc_component *component = dapm->component;
++	int i, ret;
++
++	if (!component)
++		goto out;
++
++	switch (level) {
++	case SND_SOC_BIAS_OFF:
++		for (i = 0; i < priv->num_sysclks; ++i) {
++			if (!asoc_simple_node_is_component(component, priv->sysclks[i].node))
++				continue;
++
++			if (!priv->sysclks[i].enabled)
++				continue;
++
++			ret = snd_soc_component_set_sysclk(component,
++							   priv->sysclks[i].id,
++							   0,
++							   0,
++							   priv->sysclks[i].dir);
++			if (ret)
++				dev_warn(card->dev, "(%s) failed to disable sysclk %d: %d\n",
++					 component->name, priv->sysclks[i].id, ret);
++
++			clk_disable_unprepare(priv->sysclks[i].clk);
++			priv->sysclks[i].enabled = false;
++		}
++
++		for (i = 0; i < priv->num_plls; ++i) {
++			if (!asoc_simple_node_is_component(component, priv->plls[i].node))
++				continue;
++
++			if (!priv->plls[i].enabled)
++				continue;
++
++			ret = snd_soc_component_set_pll(component, priv->plls[i].id, 0, 0, 0);
++			if (ret)
++				dev_warn(card->dev, "(%s) failed to disable pll %d: %d\n",
++					 component->name, priv->plls[i].id, ret);
++
++			clk_disable_unprepare(priv->plls[i].clk);
++			priv->plls[i].enabled = false;
++		}
++		break;
++	default:
++		break;
++	}
++
++out:
++	dapm->bias_level = level;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_set_bias_level_post);
++
+ void asoc_simple_canonicalize_platform(struct snd_soc_dai_link *dai_link)
+ {
+ 	/* Assumes platform == cpu */
+@@ -433,6 +589,7 @@ EXPORT_SYMBOL_GPL(asoc_simple_canonicalize_cpu);
+ 
+ int asoc_simple_clean_reference(struct snd_soc_card *card)
+ {
++	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
+ 	struct snd_soc_dai_link *dai_link;
+ 	int i;
+ 
+@@ -440,6 +597,13 @@ int asoc_simple_clean_reference(struct snd_soc_card *card)
+ 		of_node_put(dai_link->cpus->of_node);
+ 		of_node_put(dai_link->codecs->of_node);
+ 	}
++
++	for (i = 0; i < priv->num_sysclks; ++i)
++		of_node_put(priv->sysclks[i].node);
++
++	for (i = 0; i < priv->num_plls; ++i)
++		of_node_put(priv->plls[i].node);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_clean_reference);
+@@ -538,6 +702,78 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_parse_pin_switches);
+ 
++static int asoc_simple_parse_sysclks_plls(struct asoc_simple_priv *priv,
++					  char *prefix,
++					  char *prop_root_name,
++					  struct asoc_simple_sysclk_pll **out,
++					  int *out_count)
++{
++	struct device *dev = priv->snd_card.dev;
++	struct device_node *node = dev->of_node;
++	struct of_phandle_args args;
++	int n_elem, i, ret;
++	char prop[128];
++	char clocks_prop[128];
++	const char *src_clk_name;
++	struct clk *in_clk;
++
++	if (!prefix)
++		prefix = "";
++
++	snprintf(prop, sizeof(prop), "%s%s", prefix, prop_root_name);
++	snprintf(clocks_prop, sizeof(clocks_prop), "%s-clocks", prop);
++	n_elem = of_count_phandle_with_fixed_args(node, prop, 3);
++	if (n_elem == -ENOENT || n_elem == 0) {
++		return 0;
++	} else if (n_elem < 0) {
++		dev_err(dev, "Failed to parse %s: %d\n", prop, n_elem);
++		return n_elem;
++	}
++
++	*out = devm_kcalloc(dev, n_elem, sizeof(**out), GFP_KERNEL);
++	if (!*out)
++		return -ENOMEM;
++	*out_count = 0;
++
++	for (i = 0; i < n_elem; ++i) {
++		ret = of_property_read_string_index(node, clocks_prop, i, &src_clk_name);
++		if (ret < 0)
++			return ret;
++
++		in_clk = devm_clk_get(dev, src_clk_name);
++		if (IS_ERR(in_clk))
++			return PTR_ERR(in_clk);
++
++		ret = of_parse_phandle_with_fixed_args(node, prop, 3, i, &args);
++		if (ret < 0)
++			return ret;
++
++		(*out)[i].node		= args.np;
++		(*out)[i].clk		= in_clk;
++		(*out)[i].id		= args.args[0];
++		(*out)[i].source	= args.args[1];
++		(*out)[i].dir		= args.args[2]; /* for sysclks */
++		(*out)[i].freq_out	= args.args[2]; /* for plls */
++		++*out_count;
++	}
++
++	return 0;
++}
++
++int asoc_simple_parse_sysclks(struct asoc_simple_priv *priv, char *prefix)
++{
++	return asoc_simple_parse_sysclks_plls(priv, prefix, "sysclks",
++					      &priv->sysclks, &priv->num_sysclks);
++}
++EXPORT_SYMBOL_GPL(asoc_simple_parse_sysclks);
++
++int asoc_simple_parse_plls(struct asoc_simple_priv *priv, char *prefix)
++{
++	return asoc_simple_parse_sysclks_plls(priv, prefix, "plls",
++					      &priv->plls, &priv->num_plls);
++}
++EXPORT_SYMBOL_GPL(asoc_simple_parse_plls);
++
+ int asoc_simple_init_jack(struct snd_soc_card *card,
+ 			  struct asoc_simple_jack *sjack,
+ 			  int is_hp, char *prefix,
 -- 
 2.20.1
 
