@@ -2,95 +2,77 @@ Return-Path: <SRS0=tU6Y=FV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4C4FC4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:27:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4C1C4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:58:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5186F23884
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:27:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5186F23884
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id B70612389E
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:58:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B70612389E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A99417E8;
-	Thu, 17 Dec 2020 09:26:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A99417E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95DF017FD;
+	Thu, 17 Dec 2020 09:57:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95DF017FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608193624;
-	bh=SAvb2i89VFBE1usJaP3sthE+QpuqYJRPtjsrDCrEikA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=e7S8ZiCEa1tO2irj2fR1SebUn+WmGAKPTJJ4nNwm4rLo1GbiegbF6kqp393fqYbkS
-	 +/+bT2dkGm2GC14GnHw/U97WoTAA+mRfh3c/ZlikRKBnu8iJq3Lw0cMqV3dj3aOkcx
-	 jBrAeu17SpcBb6+00oslU6xh1ygVmQDLc/QLIsTU=
+	s=default; t=1608195487;
+	bh=gw6AC9SbB8ryhFXsWblesAsC4zGrBkSG2OsYwJv1/XU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gWS4Rbsef0J/1+eCe699oMeaGTtlt5kYJuDTqX1uiXFhIpvLicsIzV7ONT9AqMMHT
+	 lB7VWMPdF8pauQdsbdrcM2WcQn7O2ARhFocm3qWAvUmy8HFVVI6yqfwLaFvBz9mpnl
+	 km5S7ui+VM0SDfv5LDrm0eCB2jAkkDfVhkCGlxVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8BA9F80259;
-	Thu, 17 Dec 2020 09:26:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0004F80148;
+	Thu, 17 Dec 2020 09:57:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6D3FF80278; Thu, 17 Dec 2020 09:26:11 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id A67F2F80260; Thu, 17 Dec 2020 09:57:14 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6D80F8014B
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 09:26:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6D80F8014B
-Received: from mail-lf1-f72.google.com ([209.85.167.72])
- by youngberry.canonical.com with esmtps
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>) id 1kpobs-0000HO-MT
- for alsa-devel@alsa-project.org; Thu, 17 Dec 2020 08:26:04 +0000
-Received: by mail-lf1-f72.google.com with SMTP id h64so15239036lfd.18
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 00:26:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=318flit9Dm+ZwsHBDY7shbWO6DQaalLU5o16lN0/k+U=;
- b=ffOB/VmuJ0nF0AF+TwjueW4GOFsPJmO4ahNKfFMILBzFstmG048ju8ePv2xIShcWfC
- QxZNC4l6FixWhmEDJA3uCY+BaEv94UYnOFZVRc6RXrnMOc19R9NXsejl/aShSvpvu+42
- KkhkTTudGBKBH61bf+mMccBy04kzdmnUCepnZM9di3P6/nkntNGGPOGCH6PUSulVGGUD
- Gwzlo43J7lty8pvV8pC20R3ZFkcSFlGWornVjY0ZwqzplsfECUgdgLCUyHTvZIgb5W4U
- xzTECyw8IE7YLronkXs0kgiwCZA3fvOFK3r4c+wHh38HoZOzEOyq5OZYGjEf+bKeWFvw
- hk6Q==
-X-Gm-Message-State: AOAM531qp4NFE6KIXa9Fv47ASRJQgEynnJXnzTadCWP1PYd9umk55WGT
- 3L4IYR6NfXBVmWSUgAcjaoypQs4YHCnjbfHNtP3eJPsGrl6K02wAkiISx7s6FVXpHOhqg2VVkDB
- snLPiw9jBXVwfFrWZSC+ACfMvgJyiisN/iw/79OtlcRmGd6XkhxGp8iA+
-X-Received: by 2002:a05:651c:315:: with SMTP id
- a21mr17032010ljp.403.1608193563678; 
- Thu, 17 Dec 2020 00:26:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzhFrRf6UZVnoJlLr9hyrXGQDi91dpC6tfJWsCAC/pUeFSXse5WDsBfRiK+cjSJG6xE+5neUWUXVlEKQiLGi/M=
-X-Received: by 2002:a05:651c:315:: with SMTP id
- a21mr17032005ljp.403.1608193563311; 
- Thu, 17 Dec 2020 00:26:03 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06F59F80148
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 09:57:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06F59F80148
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0BH8uxRI3011427,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb05.realtek.com.tw[172.21.6.98])
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0BH8uxRI3011427
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 17 Dec 2020 16:56:59 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Thu, 17 Dec 2020 16:56:59 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 17 Dec 2020 16:56:59 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: rt711: mutex between calibration and power state changes
+Date: Thu, 17 Dec 2020 16:56:51 +0800
+Message-ID: <20201217085651.24580-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <9I9CLQ.GP190FSJBRXK3@canonical.com>
- <f05cb5ff-b5b1-2882-ba4a-380e696b2569@linux.intel.com>
- <J74DLQ.CON4PD1O51YN@canonical.com>
- <47ec2533-584c-d7f3-4489-e3a043e658e1@linux.intel.com>
- <c3989d32-2949-048d-5fa2-8e586a17677c@linux.intel.com>
- <CAAd53p4Fh5LEEyg478GUS9O+zPPvb65jVWj3YYRt6GFkP-jaJQ@mail.gmail.com>
- <1afda15d-1ea7-3a8f-6dcc-37f747ff7bac@linux.intel.com>
- <CAAd53p7=kHLsZcNNy3AH8Y08=50Y4sVs_PMTDimRCY9ZOC3gsQ@mail.gmail.com>
-In-Reply-To: <CAAd53p7=kHLsZcNNy3AH8Y08=50Y4sVs_PMTDimRCY9ZOC3gsQ@mail.gmail.com>
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date: Thu, 17 Dec 2020 16:25:52 +0800
-Message-ID: <CAAd53p7Fn-kO67RVd8K4WoLqkOhc_qWhKO5BdATDJMcJkBNRGg@mail.gmail.com>
-Subject: Re: [Sound-open-firmware] SoF support for 8086:9d71?
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: SOUND <alsa-devel@alsa-project.org>, sound-open-firmware@alsa-project.org,
- =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMB06.realtek.com.tw (172.21.6.99) To
+ RTEXDAG01.realtek.com.tw (172.21.6.100)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
+ Shuming Fan <shumingf@realtek.com>, flove@realtek.com,
+ pierre-louis.bossart@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,107 +88,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 16, 2020 at 11:55 AM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On Wed, Dec 16, 2020 at 1:59 AM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
-> >
-> >
-> >
-> > >>> Something's not adding up here.
-> > >>
-> > >> Seems like you can enable CONFIG_SND_SOC_INTEL_KBL (and all other
-> > >> platforms), without enabling CONFIG_SND_SOC_INTEL_SKYLAKE, which enables
-> > >> building of snd_soc_skl module... I would say that there is something
-> > >> wrong with module dependencies in Kconfig :/
-> >
-> > rather the Makefile is wrong, see below.
-> >
-> > >
-> > > Yes that's exactly what happened here.
-> > > So I wonder why we need to separate CONFIG_SND_SOC_INTEL_SKYLAKE from
-> > > other configs...
-> > >
-> > >> Will look at it tomorrow. In the meantime any chance we can get the
-> > >> config which was used, to confirm my suspicion?
-> > >
-> > > Ubuntu 5.8 kernel has this:
-> > > # CONFIG_SND_SOC_INTEL_SKYLAKE is not set
-> > > CONFIG_SND_SOC_INTEL_SKL=m
-> > > CONFIG_SND_SOC_INTEL_APL=m
-> > > CONFIG_SND_SOC_INTEL_KBL=m
-> > > CONFIG_SND_SOC_INTEL_GLK=m
-> > > # CONFIG_SND_SOC_INTEL_CNL is not set
-> > > # CONFIG_SND_SOC_INTEL_CFL is not set
-> > > # CONFIG_SND_SOC_INTEL_CML_H is not set
-> > > # CONFIG_SND_SOC_INTEL_CML_LP is not set
-> > > CONFIG_SND_SOC_INTEL_SKYLAKE_FAMILY=m
-> > > CONFIG_SND_SOC_INTEL_SKYLAKE_SSP_CLK=m
-> > > # CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC is not set
-> >
-> > that would be needed to support DMIC+HDaudio platforms (with the
-> > Connexant restriction).
->
-> So should I enable this option? Is it safe for platforms with Connexant codec?
->
-> >
-> > > CONFIG_SND_SOC_INTEL_SKYLAKE_COMMON=m
-> > >
-> > > So I guess we can do something like this?
-> > > diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-> > > index 1c5114dedda9..c8142520532e 100644
-> > > --- a/sound/hda/intel-dsp-config.c
-> > > +++ b/sound/hda/intel-dsp-config.c
-> > > @@ -417,7 +417,7 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-> > >                          return SND_INTEL_DSP_DRIVER_SOF;
-> > >          }
-> > >
-> > > -
-> > > +#if IS_REACHABLE(CONFIG_SND_SOC_INTEL_SKYLAKE)
-> > >          if (cfg->flags & FLAG_SST) {
-> > >                  if (cfg->flags & FLAG_SST_ONLY_IF_DMIC) {
-> > >                          if (snd_intel_dsp_check_dmic(pci)) {
-> > > @@ -428,6 +428,7 @@ int snd_intel_dsp_driver_probe(struct pci_dev *pci)
-> > >                          return SND_INTEL_DSP_DRIVER_SST;
-> > >                  }
-> > >          }
-> > > +#endif
-> > >
-> > >          return SND_INTEL_DSP_DRIVER_LEGACY;
-> > >   }
-> > >
-> > > Kai-Heng
-> >
-> > Can you try this instead, the dependencies are indeed wrong in the Makefile:
->
-> Ok, compiling a kernel for user to test...
+From: Shuming Fan <shumingf@realtek.com>
 
-Well, this happens:
-ERROR: modpost: "skl_dsp_set_dma_control"
-[sound/soc/intel/skylake/snd-soc-skl-ssp-clk.ko] undefined!
-make[1]: *** [scripts/Makefile.modpost:111: sound/Module.symvers] Error 1
-make[1]: *** Deleting file 'sound/Module.symvers'
-make: *** [Makefile:1709: modules] Error 2
+To avoid calibration time-out, this patch adds the mutex between calibration and power state changes
 
-Kai-Heng
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt711.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
->
-> Kai-Heng
->
-> >
-> > diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-> > index 4e0248d2accc..7c5038803be7 100644
-> > --- a/sound/soc/intel/Makefile
-> > +++ b/sound/soc/intel/Makefile
-> > @@ -5,7 +5,7 @@ obj-$(CONFIG_SND_SOC) += common/
-> >   # Platform Support
-> >   obj-$(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM) += atom/
-> >   obj-$(CONFIG_SND_SOC_INTEL_CATPT) += catpt/
-> > -obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += skylake/
-> > +obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE_COMMON) += skylake/
-> >   obj-$(CONFIG_SND_SOC_INTEL_KEEMBAY) += keembay/
-> >
-> >   # Machine support
-> >
-> >
+diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
+index 5771c02c3459..85f744184a60 100644
+--- a/sound/soc/codecs/rt711.c
++++ b/sound/soc/codecs/rt711.c
+@@ -462,6 +462,8 @@ static int rt711_set_amp_gain_put(struct snd_kcontrol *kcontrol,
+ 	unsigned int read_ll, read_rl;
+ 	int i;
+ 
++	mutex_lock(&rt711->calibrate_mutex);
++
+ 	/* Can't use update bit function, so read the original value first */
+ 	addr_h = mc->reg;
+ 	addr_l = mc->rreg;
+@@ -547,6 +549,8 @@ static int rt711_set_amp_gain_put(struct snd_kcontrol *kcontrol,
+ 	if (dapm->bias_level <= SND_SOC_BIAS_STANDBY)
+ 		regmap_write(rt711->regmap,
+ 				RT711_SET_AUDIO_POWER_STATE, AC_PWRST_D3);
++
++	mutex_unlock(&rt711->calibrate_mutex);
+ 	return 0;
+ }
+ 
+@@ -859,9 +863,11 @@ static int rt711_set_bias_level(struct snd_soc_component *component,
+ 		break;
+ 
+ 	case SND_SOC_BIAS_STANDBY:
++		mutex_lock(&rt711->calibrate_mutex);
+ 		regmap_write(rt711->regmap,
+ 			RT711_SET_AUDIO_POWER_STATE,
+ 			AC_PWRST_D3);
++		mutex_unlock(&rt711->calibrate_mutex);
+ 		break;
+ 
+ 	default:
+-- 
+2.29.0
+
