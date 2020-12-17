@@ -2,103 +2,75 @@ Return-Path: <SRS0=tU6Y=FV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A538CC4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12AE0C4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 16:29:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C84CD23998
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 15:45:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C84CD23998
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5C2F4239EC
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 16:29:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C2F4239EC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 598C91908;
-	Thu, 17 Dec 2020 16:44:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 598C91908
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A23A192A;
+	Thu, 17 Dec 2020 17:28:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A23A192A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608219920;
-	bh=qLjVaxe16toUFN36XdlVAcoCBF6bzG7R0RANYcorbWY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1608222578;
+	bh=3lxfvae9XNfolbvHOgxOTcGIlQ5BWuT0EDRDkG3qfvA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M/FaHh46zonLdgJBZJU2Fz4HmUUZTuC4BV9gA+AToztZxpKrzL2rJ8jHO1BuliZ7g
-	 C20zfYKVfx8mo3wxilhFpfz5j/982ztyPp/BiNRvH0HYTj0Ji0H0e4bRavsvWofRte
-	 4UzDd6fh/r5H4/LZowQAdbYzfE6sYpBnnWIy3aRo=
+	b=UqNYseZnCsn/vxhTqcDWnlQdiA27cKHbglBCldedSrn12VfyeGY826cfEcvNtQqrc
+	 Ro2uOndjfVdS0A+QRyu0pFLqMbRmEk2dc2V4QXMSiR81HPeu7hZBj5NiF1U8ebO5zt
+	 f1oidyhBqoLy6ItN2YMFO00C6g60Wq+cGBdNtr0A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D072F804ED;
-	Thu, 17 Dec 2020 16:42:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96976F800C7;
+	Thu, 17 Dec 2020 17:28:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD3CBF804DF; Thu, 17 Dec 2020 16:42:00 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 648A2F80260; Thu, 17 Dec 2020 17:28:46 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE273F804AE
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 16:41:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE273F804AE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="PhDew2Qz"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 0BHFPi99001634; Thu, 17 Dec 2020 09:41:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=kFii/MLnvZEwlPNsABvyhf+yyvhxWU0C00Yc/1VrVIs=;
- b=PhDew2QzyUdRHZvRsWOiVdMZEXD0Fn81WNu1ldgtJyFonvQluUc049buxY7mbVnGdyPX
- RTiu3F9EsQ6HitkqLUe+Ac7Ym3aOad1TvxUMuv8TWUkGaf/k5S06RhrOG84qyqOAERXV
- hlWBlvRRzpS+ZF68b6aLMxTYofKxRc/38sN6B4/+EMIyuGGC5T374hqZ0xglUcwiO+AH
- ldnmQigljbLFnpVUrfK9JM6BMZgz6iDdtGvGwLI/D0WcH1yvisZwAlzXvnVHSOIWDJ4k
- thKl8Gl/LpslBTNkK75/eF03Rdc0WhoJUlckcF/u1WcqoTN5jXBGDanamDzipLj51UAH IA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 35cu5rxy90-4
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 17 Dec 2020 09:41:48 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 17 Dec
- 2020 15:41:47 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 17 Dec 2020 15:41:47 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.64.236])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B0B2111CC;
- Thu, 17 Dec 2020 15:41:46 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>,
- <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>
-Subject: [PATCH v3 3/6] ASoC: audio-graph-card: Support setting component plls
- and sysclks
-Date: Thu, 17 Dec 2020 15:41:39 +0000
-Message-ID: <20201217154142.24301-4-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201217154142.24301-1-rf@opensource.cirrus.com>
-References: <20201217154142.24301-1-rf@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0
- adultscore=0 mlxscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015 malwarescore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012170108
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C189F8014B
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 17:28:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C189F8014B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id F1A76AC90;
+ Thu, 17 Dec 2020 16:28:40 +0000 (UTC)
+Date: Thu, 17 Dec 2020 17:28:40 +0100
+Message-ID: <s5hh7okjt1j.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v1 ] ALSA: core: memalloc: add page alignment for iram
+In-Reply-To: <98fd6adb-5bae-56ce-c52b-f778f92f6a2d@metafoo.de>
+References: <1608221747-3474-1-git-send-email-yibin.gong@nxp.com>
+ <05c824e5-0c33-4182-26fa-b116a42b10d6@metafoo.de>
+ <s5h5z50n4dd.wl-tiwai@suse.de>
+ <70074f62-954a-9b40-ab4a-cb438925060c@metafoo.de>
+ <s5hmtyclmig.wl-tiwai@suse.de>
+ <8e103a2b-1097-6d54-7266-34743321efac@metafoo.de>
+ <s5hwnxgjysq.wl-tiwai@suse.de>
+ <1fc18b56-effa-9dbc-8263-00c632e163e7@metafoo.de>
+ <s5hmtycjwam.wl-tiwai@suse.de>
+ <98fd6adb-5bae-56ce-c52b-f778f92f6a2d@metafoo.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, gustavoars@kernel.org,
+ linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, xiang@kernel.org,
+ Robin Gong <yibin.gong@nxp.com>, akpm@linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,401 +86,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some codecs need plls and/or sysclks to be configured using the
-snd_soc_component_set_[sysclk|pll] functions. These drivers cannot
-necessarily be converted to use the clock framework. If the codec is on
-a I2C/SPI bus, a nested clk_get would be needed to enable the bus clock.
-But the clock framework does not support nested operations and this would
-deadlock.
+On Thu, 17 Dec 2020 16:38:22 +0100,
+Lars-Peter Clausen wrote:
+> 
+> >> Maybe what we need is a check that runtime->dma_area is page aligned
+> >> and runtime->dma_bytes is a multiple of PAGE_SIZE. With a warning at
+> >> first and then turn this into a error a year later or so.
+> > OK, how about the following instead?
+> > Just check SNDRV_PCM_INFO_MMAP in runtime->info; if this is set, the
+> > buffer size must be aligned with the page size, and we are safe to
+> > extend the size to clear.
+> >
+> > So the revised fix is much simpler, something like below.
+> 
+> I think this will work for the leaking data issue.
+> 
+> But it will not help with the original issue that
+> gen_pool_dma_alloc_align() does not reserve the remainder of the page
+> and could give it out to other allocations. We'd need a separate patch
+> for that.
 
-This patch adds new dt properties that list phandles of components with
-the pll/sysclk settings to be applied. Multiple settings can be given for
-the same phandle to allow for components with multiple clocks and plls.
-The plls and sysclks are enabled when the card bias level moves to STANDBY
-and disabled when it moves to OFF.
+That can be fixed by the pcm_memory.c change in the previous patch.
+Recited below.
 
-The implementation does not attempt to handle specifying complex clock
-ordering interdependencies between components. The plls and sysclks are
-applied to a component as it is passed to the card set_bias_level/
-set_bias_level_post callbacks. It follows from this that the order
-components are configured is the order that they are passed to those
-callbacks.
+Of course it won't cover the non-standard allocation case, but then
+it's rather the responsibility of such driver.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+
+Takashi
+
 ---
- include/sound/simple_card_utils.h     |  25 +++
- sound/soc/generic/audio-graph-card.c  |  16 +-
- sound/soc/generic/simple-card-utils.c | 236 ++++++++++++++++++++++++++
- 3 files changed, 275 insertions(+), 2 deletions(-)
-
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 86a1e956991e..0f9296e09ad3 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -38,6 +38,16 @@ struct asoc_simple_jack {
- 	struct snd_soc_jack_gpio gpio;
- };
- 
-+struct asoc_simple_sysclk_pll {
-+	struct device_node *node;
-+	struct clk *clk;
-+	int id;
-+	int source;
-+	unsigned int freq_out;
-+	int dir;
-+	bool enabled;
-+};
-+
- struct asoc_simple_priv {
- 	struct snd_soc_card snd_card;
- 	struct simple_dai_props {
-@@ -56,6 +66,11 @@ struct asoc_simple_priv {
- 	struct asoc_simple_dai *dais;
- 	struct snd_soc_codec_conf *codec_conf;
- 	struct gpio_desc *pa_gpio;
-+
-+	struct asoc_simple_sysclk_pll *sysclks;
-+	int num_sysclks;
-+	struct asoc_simple_sysclk_pll *plls;
-+	int num_plls;
- };
- #define simple_priv_to_card(priv)	(&(priv)->snd_card)
- #define simple_priv_to_props(priv, i)	((priv)->dai_props + (i))
-@@ -94,6 +109,14 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream);
- int asoc_simple_hw_params(struct snd_pcm_substream *substream,
- 			  struct snd_pcm_hw_params *params);
- int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd);
-+
-+int asoc_simple_set_bias_level(struct snd_soc_card *card,
-+			       struct snd_soc_dapm_context *dapm,
-+			       enum snd_soc_bias_level level);
-+int asoc_simple_set_bias_level_post(struct snd_soc_card *card,
-+				    struct snd_soc_dapm_context *dapm,
-+				    enum snd_soc_bias_level level);
-+
- int asoc_simple_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 				   struct snd_pcm_hw_params *params);
- 
-@@ -128,6 +151,8 @@ int asoc_simple_parse_widgets(struct snd_soc_card *card,
- 				      char *prefix);
- int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
- 				   char *prefix);
-+int asoc_simple_parse_sysclks(struct asoc_simple_priv *priv, char *prefix);
-+int asoc_simple_parse_plls(struct asoc_simple_priv *priv, char *prefix);
- 
- int asoc_simple_init_jack(struct snd_soc_card *card,
- 			       struct asoc_simple_jack *sjack,
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 97b4f5480a31..c56a3a19a22f 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -509,6 +509,14 @@ static int graph_parse_of(struct asoc_simple_priv *priv)
- 			return ret;
- 	}
- 
-+	ret = asoc_simple_parse_sysclks(priv, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = asoc_simple_parse_plls(priv, NULL);
-+	if (ret < 0)
-+		return ret;
-+
- 	return asoc_simple_parse_card_name(card, NULL);
- }
- 
-@@ -642,6 +650,7 @@ static int graph_probe(struct platform_device *pdev)
- 	card->dapm_widgets	= graph_dapm_widgets;
- 	card->num_dapm_widgets	= ARRAY_SIZE(graph_dapm_widgets);
- 	card->probe		= graph_card_probe;
-+	snd_soc_card_set_drvdata(card, priv);
- 
- 	memset(&li, 0, sizeof(li));
- 	graph_get_dais_count(priv, &li);
-@@ -666,10 +675,13 @@ static int graph_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	snd_soc_card_set_drvdata(card, priv);
--
- 	asoc_simple_debug_info(priv);
- 
-+	if (priv->num_sysclks || priv->num_plls) {
-+		card->set_bias_level = asoc_simple_set_bias_level;
-+		card->set_bias_level_post = asoc_simple_set_bias_level_post;
-+	}
-+
- 	ret = devm_snd_soc_register_card(dev, card);
- 	if (ret < 0)
- 		goto err;
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 6cada4c1e283..5733a2955cb2 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -399,6 +399,162 @@ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
- }
- EXPORT_SYMBOL_GPL(asoc_simple_dai_init);
- 
-+static bool asoc_simple_node_is_component(struct snd_soc_component *component,
-+					  struct device_node *node)
-+{
-+	struct device_node *comp_node;
-+
-+	comp_node = component->dev->of_node;
-+	if (!comp_node && component->dev->parent)
-+		comp_node = component->dev->parent->of_node;
-+
-+	return (comp_node == node);
-+}
-+
-+int asoc_simple_set_bias_level(struct snd_soc_card *card,
-+			       struct snd_soc_dapm_context *dapm,
-+			       enum snd_soc_bias_level level)
-+{
-+	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_component *component = dapm->component;
-+	int i, ret;
-+
-+	if (!component)
-+		return 0;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_STANDBY:
-+		if (dapm->bias_level != SND_SOC_BIAS_OFF)
-+			break;
-+
-+		/*
-+		 * A component's PLLs normally supply its SYSCLKs so enable
-+		 * the PLLs first.
-+		 */
-+		for (i = 0; i < priv->num_plls; ++i) {
-+			if (!asoc_simple_node_is_component(component, priv->plls[i].node))
-+				continue;
-+
-+			ret = clk_prepare_enable(priv->plls[i].clk);
-+			if (ret) {
-+				dev_err(card->dev,
-+					"(%s) failed to enable pll %d parent clock: %d\n",
-+					component->name, priv->plls[i].id, ret);
-+				return ret;
-+			}
-+
-+			ret = snd_soc_component_set_pll(component,
-+							priv->plls[i].id,
-+							priv->plls[i].source,
-+							clk_get_rate(priv->plls[i].clk),
-+							priv->plls[i].freq_out);
-+			if (ret) {
-+				dev_err(card->dev, "(%s) failed to set pll %d: %d\n",
-+					component->name, priv->plls[i].id, ret);
-+
-+				clk_disable_unprepare(priv->plls[i].clk);
-+				return ret;
-+			}
-+
-+			priv->plls[i].enabled = true;
-+		}
-+
-+		for (i = 0; i < priv->num_sysclks; ++i) {
-+			if (!asoc_simple_node_is_component(component, priv->sysclks[i].node))
-+				continue;
-+
-+			ret = clk_prepare_enable(priv->sysclks[i].clk);
-+			if (ret) {
-+				dev_err(card->dev,
-+					"(%s) failed to enable sysclk %d parent clock: %d\n",
-+					component->name, priv->sysclks[i].id, ret);
-+				return ret;
-+			}
-+
-+			ret = snd_soc_component_set_sysclk(component,
-+							   priv->sysclks[i].id,
-+							   priv->sysclks[i].source,
-+							   clk_get_rate(priv->sysclks[i].clk),
-+							   priv->sysclks[i].dir);
-+			if (ret) {
-+				dev_err(card->dev, "(%s) failed to set sysclk %d: %d\n",
-+					component->name, priv->sysclks[i].id, ret);
-+
-+				clk_disable_unprepare(priv->sysclks[i].clk);
-+				return ret;
-+			}
-+
-+			priv->sysclks[i].enabled = true;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_set_bias_level);
-+
-+int asoc_simple_set_bias_level_post(struct snd_soc_card *card,
-+				    struct snd_soc_dapm_context *dapm,
-+				    enum snd_soc_bias_level level)
-+{
-+	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_component *component = dapm->component;
-+	int i, ret;
-+
-+	if (!component)
-+		goto out;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_OFF:
-+		for (i = 0; i < priv->num_sysclks; ++i) {
-+			if (!asoc_simple_node_is_component(component, priv->sysclks[i].node))
-+				continue;
-+
-+			if (!priv->sysclks[i].enabled)
-+				continue;
-+
-+			ret = snd_soc_component_set_sysclk(component,
-+							   priv->sysclks[i].id,
-+							   0,
-+							   0,
-+							   priv->sysclks[i].dir);
-+			if (ret)
-+				dev_warn(card->dev, "(%s) failed to disable sysclk %d: %d\n",
-+					 component->name, priv->sysclks[i].id, ret);
-+
-+			clk_disable_unprepare(priv->sysclks[i].clk);
-+			priv->sysclks[i].enabled = false;
-+		}
-+
-+		for (i = 0; i < priv->num_plls; ++i) {
-+			if (!asoc_simple_node_is_component(component, priv->plls[i].node))
-+				continue;
-+
-+			if (!priv->plls[i].enabled)
-+				continue;
-+
-+			ret = snd_soc_component_set_pll(component, priv->plls[i].id, 0, 0, 0);
-+			if (ret)
-+				dev_warn(card->dev, "(%s) failed to disable pll %d: %d\n",
-+					 component->name, priv->plls[i].id, ret);
-+
-+			clk_disable_unprepare(priv->plls[i].clk);
-+			priv->plls[i].enabled = false;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+out:
-+	dapm->bias_level = level;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_set_bias_level_post);
-+
- void asoc_simple_canonicalize_platform(struct snd_soc_dai_link *dai_link)
+--- a/sound/core/pcm_memory.c
++++ b/sound/core/pcm_memory.c
+@@ -36,6 +36,7 @@ static int do_alloc_pages(struct snd_card *card, int type, struct device *dev,
  {
- 	/* Assumes platform == cpu */
-@@ -433,6 +589,7 @@ EXPORT_SYMBOL_GPL(asoc_simple_canonicalize_cpu);
+ 	int err;
  
- int asoc_simple_clean_reference(struct snd_soc_card *card)
- {
-+	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
- 	struct snd_soc_dai_link *dai_link;
- 	int i;
- 
-@@ -440,6 +597,13 @@ int asoc_simple_clean_reference(struct snd_soc_card *card)
- 		of_node_put(dai_link->cpus->of_node);
- 		of_node_put(dai_link->codecs->of_node);
- 	}
-+
-+	for (i = 0; i < priv->num_sysclks; ++i)
-+		of_node_put(priv->sysclks[i].node);
-+
-+	for (i = 0; i < priv->num_plls; ++i)
-+		of_node_put(priv->plls[i].node);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_clean_reference);
-@@ -538,6 +702,78 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_parse_pin_switches);
- 
-+static int asoc_simple_parse_sysclks_plls(struct asoc_simple_priv *priv,
-+					  char *prefix,
-+					  char *prop_root_name,
-+					  struct asoc_simple_sysclk_pll **out,
-+					  int *out_count)
-+{
-+	struct device *dev = priv->snd_card.dev;
-+	struct device_node *node = dev->of_node;
-+	struct of_phandle_args args;
-+	int n_elem, i, ret;
-+	char prop[128];
-+	char clocks_prop[128];
-+	const char *src_clk_name;
-+	struct clk *in_clk;
-+
-+	if (!prefix)
-+		prefix = "";
-+
-+	snprintf(prop, sizeof(prop), "%s%s", prefix, prop_root_name);
-+	snprintf(clocks_prop, sizeof(clocks_prop), "%s-clocks", prop);
-+	n_elem = of_count_phandle_with_fixed_args(node, prop, 3);
-+	if (n_elem == -ENOENT || n_elem == 0) {
-+		return 0;
-+	} else if (n_elem < 0) {
-+		dev_err(dev, "Failed to parse %s: %d\n", prop, n_elem);
-+		return n_elem;
-+	}
-+
-+	*out = devm_kcalloc(dev, n_elem, sizeof(**out), GFP_KERNEL);
-+	if (!*out)
-+		return -ENOMEM;
-+	*out_count = 0;
-+
-+	for (i = 0; i < n_elem; ++i) {
-+		ret = of_property_read_string_index(node, clocks_prop, i, &src_clk_name);
-+		if (ret < 0)
-+			return ret;
-+
-+		in_clk = devm_clk_get(dev, src_clk_name);
-+		if (IS_ERR(in_clk))
-+			return PTR_ERR(in_clk);
-+
-+		ret = of_parse_phandle_with_fixed_args(node, prop, 3, i, &args);
-+		if (ret < 0)
-+			return ret;
-+
-+		(*out)[i].node		= args.np;
-+		(*out)[i].clk		= in_clk;
-+		(*out)[i].id		= args.args[0];
-+		(*out)[i].source	= args.args[1];
-+		(*out)[i].dir		= args.args[2]; /* for sysclks */
-+		(*out)[i].freq_out	= args.args[2]; /* for plls */
-+		++*out_count;
-+	}
-+
-+	return 0;
-+}
-+
-+int asoc_simple_parse_sysclks(struct asoc_simple_priv *priv, char *prefix)
-+{
-+	return asoc_simple_parse_sysclks_plls(priv, prefix, "sysclks",
-+					      &priv->sysclks, &priv->num_sysclks);
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_parse_sysclks);
-+
-+int asoc_simple_parse_plls(struct asoc_simple_priv *priv, char *prefix)
-+{
-+	return asoc_simple_parse_sysclks_plls(priv, prefix, "plls",
-+					      &priv->plls, &priv->num_plls);
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_parse_plls);
-+
- int asoc_simple_init_jack(struct snd_soc_card *card,
- 			  struct asoc_simple_jack *sjack,
- 			  int is_hp, char *prefix,
--- 
-2.20.1
-
++	size = PAGE_ALIGN(size)
+ 	if (max_alloc_per_card &&
+ 	    card->total_pcm_alloc_bytes + size > max_alloc_per_card)
+ 		return -ENOMEM;
+@@ -187,7 +188,7 @@ static void snd_pcm_lib_preallocate_proc_write(struct snd_info_entry *entry,
+ 				buffer->error = -ENOMEM;
+ 				return;
+ 			}
+-			substream->buffer_bytes_max = size;
++			substream->buffer_bytes_max = new_dmab.bytes;
+ 		} else {
+ 			substream->buffer_bytes_max = UINT_MAX;
+ 		}
