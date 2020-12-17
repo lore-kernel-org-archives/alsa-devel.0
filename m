@@ -7,73 +7,74 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28A12C4361B
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:15:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1939C4361B
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:19:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7AEF323600
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:15:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AEF323600
+	by mail.kernel.org (Postfix) with ESMTPS id BCB532388A
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Dec 2020 08:19:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCB532388A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 699B016F3;
-	Thu, 17 Dec 2020 09:14:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 699B016F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC8071797;
+	Thu, 17 Dec 2020 09:18:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8071797
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608192946;
-	bh=CI1AanPGBi5R2zs6b8Xijp4JCDoEx68Q8qujehOGp1E=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1608193187;
+	bh=naEaB06gwZ5PyBZHRqClMPutzFeqwvN4jfwIADtYRUM=;
+	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KQpDH2eYRiOYTJrWkf9yl7xFefBLCaduM/wOxNQgJp9qw9BC1uXyj8ZAtIcDikaA3
-	 WSnt9grAkS3orQDMhLvNASwrbZD6bvyhmWzGbmKSuNLPV7oWLSjB9mvhbdNeZ+9Rdo
-	 LlzenaaYJZdwg8DDUO+VykznZolPwydBB3ICsEXY=
+	b=rEQ3Y833Iz3fAW2uDiGdAqiz6YAg7SVkY+/XnaWsDW02vPGVcNBy4H06u0zCeNYUH
+	 iH34Xcv8Dr9vLDYq27voBgdDQmncxory+FEQFLvtpHhZH+OErfSIdyLQq82doJrlGT
+	 N9lmQutLzdhuPBbYGHkVspHYYfMVWa0Z5CiJqzys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4670F80259;
-	Thu, 17 Dec 2020 09:14:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12FFBF80259;
+	Thu, 17 Dec 2020 09:18:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 037B6F8014B; Thu, 17 Dec 2020 09:14:53 +0100 (CET)
+ id 1AD45F80260; Thu, 17 Dec 2020 09:18:56 +0100 (CET)
 Received: from so254-31.mailgun.net (so254-31.mailgun.net [198.61.254.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BF7FF80148
- for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 09:14:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BF7FF80148
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CB57F80148
+ for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2020 09:18:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CB57F80148
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="peuY6rsa"
+ header.i=@mg.codeaurora.org header.b="QDhD64uT"
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
  q=dns/txt; 
- s=smtp; t=1608192890; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Vl15HlNa4mtXvZ1I16t5kCLv5QtQ8BV4wsxKyd1mo5E=;
- b=peuY6rsa/c+GHoOH0+jBLzrDcLGYEdCXUBi0+Vxiafj14ISdZ/wj5/TaGJZ6sfwCRUUfxoki
- pYsuYoVuO3FmCF7QQrH26l58qovj70jO2No6dyYvIdiZn8l9bvgnHSYb9cgngncA7DUMC1bn
- daFgQNFHAyCaEjw4skxE7hLyxoM=
+ s=smtp; t=1608193134; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
+ Subject: From: Sender; bh=q+gkjirX8bHiR8sRfJl8kJmFumhW7RL0znKrLM0wdfI=;
+ b=QDhD64uT3cIzyPA6hJ7hKI0eYPY4vtXgLTZD5LwvrLjj2+nmkFTCeFeEYnwaBrex3mKZXadj
+ T7R2K3sSDVYbtKU/Hz4P4yzIohBs45iYFIy/+D7lITtcF8FR0gmh8h1JHX0EKxgwKj/cbITo
+ KKx0l/8mOyFj24edIYZhXjuZtHw=
 X-Mailgun-Sending-Ip: 198.61.254.31
 X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fdb13790564dfefcdffbfa1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 08:14:49
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fdb1467253011a4b8b5aa2e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 17 Dec 2020 08:18:47
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 52687C43461; Thu, 17 Dec 2020 08:14:48 +0000 (UTC)
+ id 55D9EC43462; Thu, 17 Dec 2020 08:18:46 +0000 (UTC)
 Received: from [10.252.214.131] (unknown [202.46.23.19])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id AF250C433C6;
- Thu, 17 Dec 2020 08:14:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AF250C433C6
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 810E7C433C6;
+ Thu, 17 Dec 2020 08:18:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 810E7C433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
  spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Subject: Re: [PATCH v4 1/2] Partially revert ASoC: qcom: Fix enabling BCLK and
  LRCLK in LPAIF invalid state
 To: Mark Brown <broonie@kernel.org>
@@ -84,10 +85,9 @@ References: <1606539559-4277-1-git-send-email-srivasam@codeaurora.org>
  <20201201175135.GO5239@sirena.org.uk>
  <89456f01-aa02-7a7d-a47b-bf1f26e66d4c@codeaurora.org>
  <20201214175009.GD4880@sirena.org.uk>
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 Organization: Qualcomm India Private Limited.
-Message-ID: <043ecf21-bf1c-8a32-f079-a526dfc90b6e@codeaurora.org>
-Date: Thu, 17 Dec 2020 13:44:41 +0530
+Message-ID: <471379f0-0ab7-7c18-8c07-bd8a67615b3e@codeaurora.org>
+Date: Thu, 17 Dec 2020 13:48:39 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.1
 MIME-Version: 1.0
@@ -136,7 +136,7 @@ On 12/14/2020 11:20 PM, Mark Brown wrote:
 > Your changelog talks about syncing the cache but neither the driver nor
 > your change actually does that.
 
-Yeah.. Now I posted v6 patch 
+Okay. Now I posted v6 patch 
 (https://lore.kernel.org/patchwork/patch/1354638/)
 
 with subject lines explaining actual changes.
