@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70194C4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0F4EC4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:20:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A6F632395C
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:20:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6F632395C
+	by mail.kernel.org (Postfix) with ESMTPS id 14C8F23443
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:20:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14C8F23443
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44F461772;
-	Fri, 18 Dec 2020 13:19:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44F461772
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB7EE17A2;
+	Fri, 18 Dec 2020 13:19:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB7EE17A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608294042;
-	bh=cmY75H0sFE4QOYAMpUL30yKd09Brv22QxxKauVKw5Lk=;
+	s=default; t=1608294049;
+	bh=9kNe8C8PSo4rr3n8SgIw9xoT5taqQecbG2EBbdPdgqE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sc+Jh4Geoz+ZT6r6DRYUgUTJw8aKfJfh9SK1GaMFrNh7YvanIYewJBSCRDIExuIqN
-	 3aBs1BLoBAQDfAaLds6JJsu5vrqVsugEMEjEEuIcaPgJkwrb9kE1RTuJAY7WGwskXj
-	 W3xlqiXJ97DBiExG1QicOXSozCKI8qs6efrIvqhs=
+	b=uMh6nYt1Gwyu7jf6pd04npehKGJM5N9cEOWnKJqTtRtCJR278FJU0Bh2UMUI7Yz4B
+	 oJXAhqws67Iy0s6F8dJBNVPHwEDqWUJR2+RtSEOAgFgMPIoCEe8gWEq1oCLpmtQ4Y3
+	 L5cgfKCZkOu1kB2TqRrWcIlpPqcdbG6KCbmpfXYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16D91F804EB;
-	Fri, 18 Dec 2020 13:17:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6CB3F804F2;
+	Fri, 18 Dec 2020 13:17:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83B6EF804E1; Fri, 18 Dec 2020 13:17:08 +0100 (CET)
+ id C4936F804D6; Fri, 18 Dec 2020 13:17:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3379EF804D2
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 13:17:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3379EF804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A45CAF804D6
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 13:17:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A45CAF804D6
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Liam Girdwood <lgirdwood@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20201217150834.3247526-1-jbrunet@baylibre.com>
-References: <20201217150834.3247526-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: meson: axg-tdmin: fix axg skew offset
-Message-Id: <160829377018.10885.1833310761978739911.b4-ty@kernel.org>
+To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20201217074556.32370-1-yung-chuan.liao@linux.intel.com>
+References: <20201217074556.32370-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH v3] ASoC: max98373: don't access volatile registers in
+ bias level off
+Message-Id: <160829377017.10885.108778143464822701.b4-ty@kernel.org>
 Date: Fri, 18 Dec 2020 12:16:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
+Cc: vkoul@kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,12 +72,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 17 Dec 2020 16:08:34 +0100, Jerome Brunet wrote:
-> The signal captured on from tdm decoder of the AXG SoC is incorrect. It
-> appears amplified. The skew offset of the decoder is wrong.
-> 
-> Setting the skew offset to 3, like the g12 and sm1 SoCs, solves and gives
-> correct data.
+On Thu, 17 Dec 2020 15:45:56 +0800, Bard Liao wrote:
+> We will set regcache_cache_only true in suspend. As a result,
+> regmap_read will return error when we try to read volatile
+> registers in suspend. Besides, it doesn't make sense to read
+> feedback data when codec is not active. To make userspace
+> happy, this patch returns a cached value shich should be a
+> valid value.
 
 Applied to
 
@@ -84,8 +86,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: axg-tdmin: fix axg skew offset
-      commit: a84dfb3d55934253de6aed38ad75990278a2d21e
+[1/1] ASoC: max98373: don't access volatile registers in bias level off
+      commit: 349dd23931d1943b1083182e35715eba8b150fe1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
