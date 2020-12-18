@@ -6,57 +6,58 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37F38C4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B442C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:20:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A85382395C
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:19:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A85382395C
+	by mail.kernel.org (Postfix) with ESMTPS id B7EB62395C
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 12:20:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7EB62395C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D22AC177F;
-	Fri, 18 Dec 2020 13:19:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D22AC177F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 524CF1765;
+	Fri, 18 Dec 2020 13:19:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 524CF1765
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608293991;
-	bh=Erk8Dzi9MfovyQSRZWHEI4Ui4ce8a5IX1XowltvDRPI=;
+	s=default; t=1608294003;
+	bh=0NZkli/uiZ4M4DuflqtCIRfqQenr82L6tSGLuednRfg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KeiCslmtDIQa/jQwkz2R/USTDBAiA8+wItT0LeE2s0AjhAPuYH3jw09xUwJgmeE8Z
-	 UA+YbQdGrjASch/gSc7QKXCezR2f9vRjSXRSwllG2+322zJM18pdBv+sLKHbN3yTef
-	 qZbAmk4ke0A1Et+Ph9sWkdsV76phfJm3or630rFk=
+	b=tLW3hSMEc6kRTba032K7gDddnnby4JpO/6+o44dL1gvgOjHxsg5cO5FyI0gtk1m/F
+	 7GLp/2H+UIKRLFhZAfgIKJFDlWLm9xR912ch1hSY/d9X2lsoRLz0oTC+HHHqt8UCPo
+	 YvuVDUde7jdMLDugubhRdlEj5UVEI4MTBrWoicok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 855ABF804E1;
-	Fri, 18 Dec 2020 13:17:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FEB5F804D6;
+	Fri, 18 Dec 2020 13:17:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AE16F804E2; Fri, 18 Dec 2020 13:17:03 +0100 (CET)
+ id 2BE13F804E2; Fri, 18 Dec 2020 13:17:08 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6574CF804D2
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 13:16:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6574CF804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B61FEF804D6
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 13:17:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B61FEF804D6
 From: Mark Brown <broonie@kernel.org>
 Authentication-Results: mail.kernel.org;
  dkim=permerror (bad message/signature format)
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87eejpgoi9.wl-kuninori.morimoto.gx@renesas.com>
-References: <87eejpgoi9.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2] ASoC: rsnd: don't call clk_disable_unprepare() if
- can't use
-Message-Id: <160829377017.10885.9576447517795312039.b4-ty@kernel.org>
+To: lgirdwood@gmail.com, "shumingf@realtek.com" <shumingf@realtek.com>
+In-Reply-To: <20201217085651.24580-1-shumingf@realtek.com>
+References: <20201217085651.24580-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt711: mutex between calibration and power state
+ changes
+Message-Id: <160829377018.10885.7000256104492511426.b4-ty@kernel.org>
 Date: Fri, 18 Dec 2020 12:16:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
+ flove@realtek.com, pierre-louis.bossart@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,13 +73,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 17 Dec 2020 11:28:49 +0900, Kuninori Morimoto wrote:
-> We need to care clock accessibility,
-> because we might can't use clock for some reasons.
-> 
-> It sets clk_rate for each clocks when enabled.
-> This means it doesn't have clk_rate if we can't use.
-> We can avoid to call clk_disable_unprepare() in such case.
+On Thu, 17 Dec 2020 16:56:51 +0800, shumingf@realtek.com wrote:
+> To avoid calibration time-out, this patch adds the mutex between calibration and power state changes
 
 Applied to
 
@@ -86,8 +82,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rsnd: don't call clk_disable_unprepare() if can't use
-      commit: 61c7dbec33777ade95d3db58beec8d7f177868c8
+[1/1] ASoC: rt711: mutex between calibration and power state changes
+      commit: 6108f990c0887d3e8f1db2d13c7012e40a061f28
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
