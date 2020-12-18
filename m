@@ -7,57 +7,54 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7C0EC4361B
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 14:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71452C4361B
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 15:00:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B98023AFD
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 14:58:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B98023AFD
+	by mail.kernel.org (Postfix) with ESMTPS id AFCAD23B01
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Dec 2020 14:59:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFCAD23B01
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D102179A;
-	Fri, 18 Dec 2020 15:57:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D102179A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 267551797;
+	Fri, 18 Dec 2020 15:59:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 267551797
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608303506;
-	bh=xmxpMtIDWIYZR/wvx8aykJIe9JLj3Lsa5XjCYf4wZ24=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=p69melXzGwEcqBLAqPx+DcqJxpviHUKRe2sq/B5kN7FaOChleiCvAlT+a+tmNjQjU
-	 m7ylaPFJ7/NxNuXkKa79u9zVpIZ2wnIaQufB7+7JPFL0sUwUHas9VX77pJXUmoyGxM
-	 +68VhhZ88z11bH3rmFKYtEbfzyUX38hGx5sHB2vw=
+	s=default; t=1608303598;
+	bh=y9NjSkZGz/klgC/Ra+ckvB9I/fLr1i1FLXjQZNMBTzM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EwklWk+2UrytL9oYFZP+qHI3hbmOPcZE3RshE2W5yzDg7uq4SQDHKEg/Eu9WBd5I+
+	 jwjaYFhWvt2+vDzv7ie2yUcN2ooLKrVZLAoNa1CiHfX6qcL+oue5tzi/QeF8rXWhmA
+	 DToyMIW6jhCW1/lo6Fkqk6wCVDAWM7gZSLtThf84=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E79F8F804AC;
-	Fri, 18 Dec 2020 15:56:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C029EF801F7;
+	Fri, 18 Dec 2020 15:59:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60AE3F80171; Fri, 18 Dec 2020 15:56:38 +0100 (CET)
+ id 188A3F80240; Fri, 18 Dec 2020 15:59:06 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D75CAF80168
- for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 15:56:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D75CAF80168
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C5F1F80168
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 15:59:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C5F1F80168
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C4EADAD09;
- Fri, 18 Dec 2020 14:56:27 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id BE37FAD09
+ for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2020 14:58:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ALSA: memalloc: Align buffer allocations in page size
-Date: Fri, 18 Dec 2020 15:56:24 +0100
-Message-Id: <20201218145625.2045-2-tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Disable sample read check if firmware
+ doesn't give back
+Date: Fri, 18 Dec 2020 15:58:58 +0100
+Message-Id: <20201218145858.2357-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201218145625.2045-1-tiwai@suse.de>
-References: <20201218145625.2045-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Robin Gong <yibin.gong@nxp.com>, Lars-Peter Clausen <lars@metafoo.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,37 +70,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently the standard memory allocator (snd_dma_malloc_pages*())
-passes the byte size to allocate as is.  Most of the backends
-allocates real pages, hence the actual allocations are aligned in page
-size.  However, the genalloc doesn't seem assuring the size alignment,
-hence it may result in the access outside the buffer when the whole
-memory pages are exposed via mmap.
+Some buggy firmware don't give the current sample rate but leaves
+zero.  Handle this case more gracefully without warning but just skip
+the current rate verification from the next time.
 
-For avoiding such inconsistencies, this patch makes the allocation
-size always to be aligned in page size.
-
-Note that, after this change, snd_dma_buffer.bytes field contains the
-aligned size, not the originally requested size.  This value is also
-used for releasing the pages in return.
-
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/memalloc.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/clock.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 0f335162f87c..966bef5acc75 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -133,6 +133,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 	if (WARN_ON(!dmab))
- 		return -ENXIO;
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index e940dcee792b..31051f2be46d 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -534,6 +534,12 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip,
+ 	}
  
-+	size = PAGE_ALIGN(size);
- 	dmab->dev.type = type;
- 	dmab->dev.dev = device;
- 	dmab->bytes = 0;
+ 	crate = data[0] | (data[1] << 8) | (data[2] << 16);
++	if (!crate) {
++		dev_info(&dev->dev, "failed to read current rate; disabling the check\n");
++		chip->sample_rate_read_error = 3; /* three strikes, see above */
++		return 0;
++	}
++
+ 	if (crate != rate) {
+ 		dev_warn(&dev->dev, "current rate %d is different from the runtime rate %d\n", crate, rate);
+ 		// runtime->rate = crate;
 -- 
 2.26.2
 
