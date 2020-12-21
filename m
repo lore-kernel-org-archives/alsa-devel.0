@@ -1,59 +1,66 @@
-Return-Path: <SRS0=6k7k=FY=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Eq0+=FZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46536C4361B
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Dec 2020 08:10:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1D61C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:56:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 815D52389F
-	for <alsa-devel@archiver.kernel.org>; Sun, 20 Dec 2020 08:10:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 815D52389F
+	by mail.kernel.org (Postfix) with ESMTPS id 08A5922C7B
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:56:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08A5922C7B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14BD01761;
-	Sun, 20 Dec 2020 09:09:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14BD01761
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D60A1716;
+	Mon, 21 Dec 2020 08:55:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D60A1716
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608451849;
-	bh=sfDCdIrPJIS8bc/jQVfckGOWBTVUIEVjIGmJ4wAmxz8=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vQH548tN3VeNVaDlYxAYuEweM8E0sgGhn/1Mbh753O5M+47F6qoCu0UFxKTS61huY
-	 5erT7sQvuX+RVFYUkcpzB/xSb26qkOiFSPDXzTcfTDnh0EnU173qj6WiicnXEdkSnD
-	 t8YcGUeajuLnjM1E8qd1UkIXMA2WFVmu5sv0q/iM=
+	s=default; t=1608537403;
+	bh=v4RLd8AJZbbi5cY6Mj3gQJLcm4Mzk70SSyeqcpnqf0A=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DBZvDR4Tv7CqX5GEf4+qDp0tmyPP9hNDVNoANS4C8lNpoxxUfvq7l4gZtssFbHYXj
+	 UCX1cQ7lFjAZjBVYORRujtWfvbbAVdEy7l9Yl/Uf79wsPEIpzHHC+F5lt79kxrt/MY
+	 dRfgTqLtfpYLezFCKYBQEYOYC+nBXctZ7Cxc7BIU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A28ABF8021D;
-	Sun, 20 Dec 2020 09:09:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CEC8F80168;
+	Mon, 21 Dec 2020 08:55:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F8B1F80224; Sun, 20 Dec 2020 09:09:57 +0100 (CET)
+ id B1B39F801D5; Mon, 21 Dec 2020 08:55:49 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69E24F80157
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2020 09:09:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69E24F80157
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7AD9F800EC
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 08:55:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7AD9F800EC
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3F9A5AC7F
- for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2020 08:09:45 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id CF467AD10;
+ Mon, 21 Dec 2020 07:55:40 +0000 (UTC)
+Date: Mon, 21 Dec 2020 08:55:40 +0100
+Message-ID: <s5h8s9rh9tv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for MSI-GP73
-Date: Sun, 20 Dec 2020 09:09:43 +0100
-Message-Id: <20201220080943.24839-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: hui yang <yanghui.def@gmail.com>
+Subject: Re: [PATCH 2/2] sound: Remove redundant comments
+In-Reply-To: <1608531727-5433-1-git-send-email-yanghui.def@gmail.com>
+References: <1608531727-5433-1-git-send-email-yanghui.def@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,28 +76,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-MSI-GP73 (with SSID 1462:1229) requires yet again
-ALC1220_FIXUP_CLEVO_P950 quirk like other MSI models.
+On Mon, 21 Dec 2020 07:22:07 +0100,
+hui yang wrote:
+> 
+> From: YangHui <yanghui.def@gmail.com>
+> 
+> Remove redundant comments
+> 
+> Signed-off-by: YangHui <yanghui.def@gmail.com>
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210793
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks, applied.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c203eba8d9ff..5478a89d94e3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2516,6 +2516,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1462, 0x1229, "MSI-GP73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
--- 
-2.26.2
 
+Takashi
