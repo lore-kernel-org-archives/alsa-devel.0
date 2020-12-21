@@ -2,65 +2,58 @@ Return-Path: <SRS0=Eq0+=FZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1D61C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:56:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29763C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 08:03:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08A5922C7B
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 07:56:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08A5922C7B
+	by mail.kernel.org (Postfix) with ESMTPS id F06DC22C9C
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 08:03:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F06DC22C9C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D60A1716;
-	Mon, 21 Dec 2020 08:55:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D60A1716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F56C1730;
+	Mon, 21 Dec 2020 09:02:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F56C1730
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608537403;
-	bh=v4RLd8AJZbbi5cY6Mj3gQJLcm4Mzk70SSyeqcpnqf0A=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DBZvDR4Tv7CqX5GEf4+qDp0tmyPP9hNDVNoANS4C8lNpoxxUfvq7l4gZtssFbHYXj
-	 UCX1cQ7lFjAZjBVYORRujtWfvbbAVdEy7l9Yl/Uf79wsPEIpzHHC+F5lt79kxrt/MY
-	 dRfgTqLtfpYLezFCKYBQEYOYC+nBXctZ7Cxc7BIU=
+	s=default; t=1608537780;
+	bh=D+mB6g9mEHWZkNp68ct078z4Kw2DAIZeC3+0HH1+lOk=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aWYoJ+kAlJ4w0cPSq2NmGjR51j1ChVziydzClL0a2wQXJrGVkhGz+yKeg3bTJ0hfC
+	 Fw0V+M4fVJ6KrlhaBmG4y8/Gq83tT8cTr2UR1l9HhdpPwtwv521O1jOFnBIWgiti+D
+	 l0ZkIREWwHhIHY/8f8HdEjRkXRDG07N5v4+99knE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CEC8F80168;
-	Mon, 21 Dec 2020 08:55:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3AE8F800E4;
+	Mon, 21 Dec 2020 09:02:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1B39F801D5; Mon, 21 Dec 2020 08:55:49 +0100 (CET)
+ id 2F389F801D5; Mon, 21 Dec 2020 09:02:08 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7AD9F800EC
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 08:55:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7AD9F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD05AF800E4
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 09:02:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD05AF800E4
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CF467AD10;
- Mon, 21 Dec 2020 07:55:40 +0000 (UTC)
-Date: Mon, 21 Dec 2020 08:55:40 +0100
-Message-ID: <s5h8s9rh9tv.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D041DACF5
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 08:02:00 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: hui yang <yanghui.def@gmail.com>
-Subject: Re: [PATCH 2/2] sound: Remove redundant comments
-In-Reply-To: <1608531727-5433-1-git-send-email-yanghui.def@gmail.com>
-References: <1608531727-5433-1-git-send-email-yanghui.def@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Add alias entry for ASUS PRIME TRX40 PRO-S
+Date: Mon, 21 Dec 2020 09:01:59 +0100
+Message-Id: <20201221080159.24468-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,16 +69,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 21 Dec 2020 07:22:07 +0100,
-hui yang wrote:
-> 
-> From: YangHui <yanghui.def@gmail.com>
-> 
-> Remove redundant comments
-> 
-> Signed-off-by: YangHui <yanghui.def@gmail.com>
+ASUS PRIME TRX40 PRO-S mobo with 0b05:1918 needs the same quirk alias
+for another ASUS mobo (0b05:1917) for the proper mixer mapping, etc.
+Add the corresponding entry.
 
-Thanks, applied.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210783
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index cb0b6582dfee..d731ca62d599 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -383,6 +383,9 @@ static const struct usb_audio_device_name usb_audio_names[] = {
+ 	/* ASUS ROG Strix */
+ 	PROFILE_NAME(0x0b05, 0x1917,
+ 		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
++	/* ASUS PRIME TRX40 PRO-S */
++	PROFILE_NAME(0x0b05, 0x1918,
++		     "Realtek", "ALC1220-VB-DT", "Realtek-ALC1220-VB-Desktop"),
+ 
+ 	/* Dell WD15 Dock */
+ 	PROFILE_NAME(0x0bda, 0x4014, "Dell", "WD15 Dock", "Dell-WD15-Dock"),
+-- 
+2.26.2
 
-Takashi
