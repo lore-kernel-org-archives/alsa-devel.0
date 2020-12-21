@@ -2,99 +2,91 @@ Return-Path: <SRS0=Eq0+=FZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D84FC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 08:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC5EDC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 08:58:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 01BFE22C9C
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 08:16:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01BFE22C9C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	by mail.kernel.org (Postfix) with ESMTPS id E5E0722BF5
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Dec 2020 08:58:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5E0722BF5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E48021720;
-	Mon, 21 Dec 2020 09:15:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E48021720
+	by alsa0.perex.cz (Postfix) with ESMTPS id 515EA1724;
+	Mon, 21 Dec 2020 09:57:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 515EA1724
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608538574;
-	bh=SJzfuW5RA3xA47YYNnf9zSzFvatXEMZKH1QazhOXPOc=;
-	h=References:From:To:Subject:In-reply-to:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YM4J3KdOPr3dp/QgDShxxJZSsMniQfBfbc/f4iqT50E04q53oUt3EHnQCMB7USVWU
-	 esCPEp9rmcKNoR7CgWbXfz1izlD7rVZI12HNCNtJOSi00A5YyxmsErmLPrjI/wgfiU
-	 mhgm+4wOxpr3exh2U61r9eJr056neR4ogw4sPRvc=
+	s=default; t=1608541124;
+	bh=NF9ETLQ28wxGHAOsmKXKgggBpPUlxrkcjf1A0hfJGrw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vOpA3ZPry91p0VqHk2nsAFn/cuciyKmOV120Uwj35lbnTQExg2TV7a4rBYF2QO2po
+	 tqENecGbCYjQ45Bx8jPRMAO190RlyIhzBp3LgJb4oLTt/oqaHxL4RCLsO3leD4eOO5
+	 5tWReFU0x/Opc+pZhuS02lEazQAz8d1ag00G+V5s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C40CF80168;
-	Mon, 21 Dec 2020 09:15:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B079AF800EC;
+	Mon, 21 Dec 2020 09:57:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB59DF801D5; Mon, 21 Dec 2020 09:15:19 +0100 (CET)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
+ id 02D0DF800EC; Mon, 21 Dec 2020 07:22:23 +0100 (CET)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com
+ [IPv6:2607:f8b0:4864:20::443])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C3EDF800EC
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 09:15:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C3EDF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22EFDF800EC
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 07:22:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22EFDF800EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="hVl/2TgZ"
-Received: by mail-ej1-x62c.google.com with SMTP id d17so12173911ejy.9
- for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 00:15:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
- :date:mime-version;
- bh=xUsvdR/WeGTYf9wm0poC0ggXriA18BQWFkluydsdRYs=;
- b=hVl/2TgZ+0fHUReuJsBEZJ4FWb1VN4U9nO7+L2RWPGo/XxeapDTlLbgvt6onHI2jYI
- M1NEA33irdr0Z8U7rKcsogkfv9Hibo22pIHLnl7NNE1dUcaFZ8b9iDy/lOyEqWJHOiV+
- ZXfyE3MOqPXNW9Tmsp6CoqPv4DRqc1XoV1sAAVXJ6O8hUJRuSaJOphZBzJUSjAfwcucV
- CbzXTMDCtsXriukK2L7yCwSPjYMSSrZo0MDmSNFqxFp3gRt9iv5Zr7bpM5iQUqQSx+zC
- ohbml5gOQwXsPFPNzG/qgzWP7p0o9eBlvKyKjdCz2R99QhqjJYmkYtioBpjJOAMbLMyX
- ovOQ==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="b90kZ8Od"
+Received: by mail-pf1-x443.google.com with SMTP id s21so5865621pfu.13
+ for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2020 22:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id;
+ bh=lUDwRVuH6q0jXCQQ4vgnuuE3CYoMs8jTe3meHCZqN48=;
+ b=b90kZ8OdCKoSdgloi/UXfEjHlg5gCcx/P7t2HhDFjzuKsGwheSKdVVOcMXSsnZeCgo
+ vPQ4dUrnFg9P7sj84yV8Cw/bC8s+glpdJ5E209gh2ZvcIdJktcJh0NE/5IYRUKheZbcC
+ 7d8OJ8tdCpCbrgedz994RN3vfOjfqVXA2dMok8o42C/iU0EvvuzYMNC9mEBMhHJ+amwb
+ qHVJ2mq5/DgaMT3uti/SjQ9+jtGB2oYArw0t4Ree3J3i8JJfyAzxhT7pG0vZXY72jgZg
+ vECorHz29QxiVdxXwi2/UfBLnGzqHsWX/BlEQIFsUuIeGI/RH7ak8otKReYJEbZA7HKF
+ TVOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:references:user-agent:from:to:cc:subject
- :in-reply-to:message-id:date:mime-version;
- bh=xUsvdR/WeGTYf9wm0poC0ggXriA18BQWFkluydsdRYs=;
- b=OnK7Mp/wRwIQ2nZGrwHPtKG9hNpicA8OnxvPVcNV07lMH5gTardOsEIhhtmcG3un1w
- v3fUYSlD9SsCi4Akewe65n5vdfbMLgpsEpq7QVIgm1zWqPh3lD2drEp66jcipDt+JUu5
- ticPsAyXd/s4h75AG+ysJtuQDmlyidA0jKS0pdAG+zwghQ2+B3XV7nhScuJJnnymQV7M
- BTyg4FJ/2+iK3Xen27VOTopz5FNrifhxjs6cdUegOJa67hoVgaBBvLe+qLb7Ql8OAoxD
- TOasEBH8+k3Wsjs0UL352THyp0LuprEIYIBiqt3iQqxpSTx8u1IIBBbP1x34p+61uk+f
- Y7kA==
-X-Gm-Message-State: AOAM531GYtFPesZ61HeIguIv2k7WSwfgu/jgc0mB5oRu1HFMcHQ5Ynrn
- gLUi4QVl8qWI83pH0bmw9O5HOg==
-X-Google-Smtp-Source: ABdhPJwon213LIfdCYvAOzDUqZYJfH9VYNfLieHDt76eK9jdAu/WN2Tc3bo0+Cu83Kc4apAyMMxsYw==
-X-Received: by 2002:a17:906:94d4:: with SMTP id
- d20mr14194179ejy.475.1608538513189; 
- Mon, 21 Dec 2020 00:15:13 -0800 (PST)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
- by smtp.gmail.com with ESMTPSA id r7sm21421717edh.86.2020.12.21.00.15.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Dec 2020 00:15:12 -0800 (PST)
-References: <20201218154544.25513-1-lars@metafoo.de>
- <1jeejnnko5.fsf@starbuckisacylon.baylibre.com>
- <fa1f3bcc-885a-9258-6653-3d5a5dc4708e@metafoo.de>
-User-agent: mu4e 1.4.10; emacs 27.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: meson: Use managed DMA buffer allocation
-In-reply-to: <fa1f3bcc-885a-9258-6653-3d5a5dc4708e@metafoo.de>
-Message-ID: <1jbleno9rk.fsf@starbuckisacylon.baylibre.com>
-Date: Mon, 21 Dec 2020 09:15:11 +0100
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+ h=x-gm-message-state:from:to:cc:subject:date:message-id;
+ bh=lUDwRVuH6q0jXCQQ4vgnuuE3CYoMs8jTe3meHCZqN48=;
+ b=ZLXNgkSRLQ/YtrlrIKgKNjrGvtrtKKPFQ04BAUl99n89EltfUVTwbl40nLsDxLsc6f
+ /WeKnJ6lRdInSTTJSO36BCbsOtDpReSkArSzDFnKRmzCGtQAfjYTHnBHG5fgrmkLUU5V
+ YUchkkLPId5U5W55kZc93c49tshTlyC1bogiJgVwE83efpNZgFS7de3uq8cHpYjR+KeO
+ wvHdTIYVYkK7X52Trejv4MUS0or8f2Y7fnaPwJjWd+NX6r1X4eACrhSKq275D5ejVVRx
+ F/wmH9MlzY5/rOu9OAA8ABJPkPIzGOOBz1DcucvaZpiOzJnTcFG8UmZuJSlTJux8cDI5
+ D6ig==
+X-Gm-Message-State: AOAM531EbVvOYE2L/q53CG6b6gQZHC/IHrGjyZVOoQZTjnVUFt8+VjHm
+ wmDa9MJMESEEfZrl86t+UL4=
+X-Google-Smtp-Source: ABdhPJy4JUFSIKuGiBI1ToU8MZo7eXKE0T//GBpjHubr6MboVIIf68bZyKmVLJCyT/yw6iCIannBaA==
+X-Received: by 2002:aa7:978c:0:b029:1a9:1989:a07 with SMTP id
+ o12-20020aa7978c0000b02901a919890a07mr14590905pfp.30.1608531736511; 
+ Sun, 20 Dec 2020 22:22:16 -0800 (PST)
+Received: from ubuntu.localdomain ([202.155.238.153])
+ by smtp.gmail.com with ESMTPSA id k9sm14367059pjj.8.2020.12.20.22.22.13
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Sun, 20 Dec 2020 22:22:15 -0800 (PST)
+From: hui yang <yanghui.def@gmail.com>
+To: perex@perex.cz
+Subject: [PATCH 2/2] sound: Remove redundant comments
+Date: Mon, 21 Dec 2020 14:22:07 +0800
+Message-Id: <1608531727-5433-1-git-send-email-yanghui.def@gmail.com>
+X-Mailer: git-send-email 2.7.4
+X-Mailman-Approved-At: Mon, 21 Dec 2020 09:57:52 +0100
+Cc: YangHui <yanghui.def@gmail.com>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,108 +102,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: YangHui <yanghui.def@gmail.com>
 
-On Fri 18 Dec 2020 at 18:41, Lars-Peter Clausen <lars@metafoo.de> wrote:
+Remove redundant comments
 
-> On 12/18/20 5:28 PM, Jerome Brunet wrote:
->> On Fri 18 Dec 2020 at 16:45, Lars-Peter Clausen <lars@metafoo.de> wrote:
->>
->>> Using a managed buffer will pre-allocate the buffer using
->>> snd_pcm_lib_preallocate_pages() and automatically free it when the PCM is
->>> destroyed.
->>>
->>> In addition it will call snd_pcm_lib_malloc_pages() before the driver's
->>> hw_params() callback and snd_pcm_lib_free_pages() after the driver's
->>> hw_free() callback.
->>>
->>> This slightly reduces the boilerplate code of the driver.
->>>
->>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->>> ---
->>>   sound/soc/meson/aiu-fifo-i2s.c   |  1 -
->>>   sound/soc/meson/aiu-fifo-spdif.c |  1 -
->>>   sound/soc/meson/aiu-fifo.c       | 18 ++----------------
->>>   3 files changed, 2 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/sound/soc/meson/aiu-fifo-i2s.c b/sound/soc/meson/aiu-fifo-i2s.c
->>> index d91b0d874342..2388a2d0b3a6 100644
->>> --- a/sound/soc/meson/aiu-fifo-i2s.c
->>> +++ b/sound/soc/meson/aiu-fifo-i2s.c
->>> @@ -124,7 +124,6 @@ const struct snd_soc_dai_ops aiu_fifo_i2s_dai_ops = {
->>>   	.trigger	= aiu_fifo_i2s_trigger,
->>>   	.prepare	= aiu_fifo_i2s_prepare,
->>>   	.hw_params	= aiu_fifo_i2s_hw_params,
->>> -	.hw_free	= aiu_fifo_hw_free,
->>>   	.startup	= aiu_fifo_startup,
->>>   	.shutdown	= aiu_fifo_shutdown,
->>>   };
->>> diff --git a/sound/soc/meson/aiu-fifo-spdif.c b/sound/soc/meson/aiu-fifo-spdif.c
->>> index 44eb6faacf44..2fb30f89bf7a 100644
->>> --- a/sound/soc/meson/aiu-fifo-spdif.c
->>> +++ b/sound/soc/meson/aiu-fifo-spdif.c
->>> @@ -158,7 +158,6 @@ const struct snd_soc_dai_ops aiu_fifo_spdif_dai_ops = {
->>>   	.trigger	= fifo_spdif_trigger,
->>>   	.prepare	= fifo_spdif_prepare,
->>>   	.hw_params	= fifo_spdif_hw_params,
->>> -	.hw_free	= aiu_fifo_hw_free,
->>>   	.startup	= aiu_fifo_startup,
->>>   	.shutdown	= aiu_fifo_shutdown,
->>>   };
->>> diff --git a/sound/soc/meson/aiu-fifo.c b/sound/soc/meson/aiu-fifo.c
->>> index aa88aae8e517..4ad23267cace 100644
->>> --- a/sound/soc/meson/aiu-fifo.c
->>> +++ b/sound/soc/meson/aiu-fifo.c
->>> @@ -99,11 +99,6 @@ int aiu_fifo_hw_params(struct snd_pcm_substream *substream,
->>>   	struct snd_soc_component *component = dai->component;
->>>   	struct aiu_fifo *fifo = dai->playback_dma_data;
->>>   	dma_addr_t end;
->>> -	int ret;
->>> -
->>> -	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
->>> -	if (ret < 0)
->>> -		return ret;
->>>     	/* Setup the fifo boundaries */
->>>   	end = runtime->dma_addr + runtime->dma_bytes - fifo->fifo_block;
->>> @@ -124,12 +119,6 @@ int aiu_fifo_hw_params(struct snd_pcm_substream *substream,
->>>   	return 0;
->>>   }
->>>   -int aiu_fifo_hw_free(struct snd_pcm_substream *substream,
->>> -		     struct snd_soc_dai *dai)
->>> -{
->>> -	return snd_pcm_lib_free_pages(substream);
->>> -}
->>> -
->>>   static irqreturn_t aiu_fifo_isr(int irq, void *dev_id)
->>>   {
->>>   	struct snd_pcm_substream *playback = dev_id;
->>> @@ -187,15 +176,12 @@ void aiu_fifo_shutdown(struct snd_pcm_substream *substream,
->>>   int aiu_fifo_pcm_new(struct snd_soc_pcm_runtime *rtd,
->>>   		     struct snd_soc_dai *dai)
->>>   {
->>> -	struct snd_pcm_substream *substream =
->>> -		rtd->pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
->>>   	struct snd_card *card = rtd->card->snd_card;
->>>   	struct aiu_fifo *fifo = dai->playback_dma_data;
->>>   	size_t size = fifo->pcm->buffer_bytes_max;
->>>   -	snd_pcm_lib_preallocate_pages(substream,
->>> -				      SNDRV_DMA_TYPE_DEV,
->>> -				      card->dev, size, size);
->>> +	snd_pcm_set_managed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
->>> +				       card->dev, size, size);
->> Hi Lars-Peter,
->>
->> These FIFOs only do playback so to avoid wasting memory
->> s/snd_pcm_set_managed_buffer_all/snd_pcm_set_managed_buffer ?
->
-> snd_pcm_set_managed_buffer_all() will skip substreams that do not
-> exist. E.g. if the there is not capture support it wont allocate
-> memory for it.
+Signed-off-by: YangHui <yanghui.def@gmail.com>
+---
+ sound/core/init.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Indeed, Thanks !
-
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-Tested-by: Jerome Brunet <jbrunet@baylibre.com>
-
->
-> To keep things simple I prefer snd_pcm_set_managed_buffer_all(). snd_pcm_set_managed_buffer() only makes sense if you have a different DMA device for capture and playback or you want different buffer sizes.
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 764dbe6..75aec71 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -149,8 +149,6 @@ static void release_card_device(struct device *dev)
+  *  @extra_size: allocate this extra size after the main soundcard structure
+  *  @card_ret: the pointer to store the created card instance
+  *
+- *  Creates and initializes a soundcard structure.
+- *
+  *  The function allocates snd_card instance via kzalloc with the given
+  *  space for the driver to use freely.  The allocated struct is stored
+  *  in the given card_ret pointer.
+-- 
+2.7.4
 
