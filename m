@@ -2,83 +2,94 @@ Return-Path: <SRS0=3cEE=F3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13823C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F02BC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:49:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 326A0207CD
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 326A0207CD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
+	by mail.kernel.org (Postfix) with ESMTPS id DDB87223C8
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDB87223C8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alum.mit.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A487917E0;
-	Wed, 23 Dec 2020 18:47:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A487917E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E42917E3;
+	Wed, 23 Dec 2020 18:48:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E42917E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608745727;
-	bh=Cc2KblsMMsff70upoJ+KBtGICOZZreHb0cXrnvp+UZI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1608745738;
+	bh=MTmv8gzoszlWkMeBQ/OzWNq2dhw8AhsB6l8Td3Dqmmw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hglo+X8ZWzd5Hjg8Z+LkycMS7mY9XlLEOl9/hwUuz1dreVtRBPk66BnsRTA8my9Jo
-	 sG74vzTMUHSeApu8Z1rX5zNZaFA8BDOW9wWbFlAxXh/ig22kT9sYC9k4PqST4H3fKR
-	 lYaIiX18FISPpLBypupr4ATaVJhmzKeXR6Ib4qo4=
+	b=g57EspV6vhRwHYzGE0YSmM/KxB7pVDUiGUJXzlFQD0rYNJTl2Kst1illQdbncNTbw
+	 hpepLrkc0/cko1v9LzFs5aRaFBoqzmB9aX8+TwYMYQfB00e6jIFCBt+JPkYUaRe4BH
+	 7bK3fmmx7i1UULrkAUL4h3e8NwhqcRVZkWUZE0Ao=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0377F804F3;
-	Wed, 23 Dec 2020 18:44:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4D6EF800BC;
+	Wed, 23 Dec 2020 18:45:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F72EF804D6; Wed, 23 Dec 2020 18:44:46 +0100 (CET)
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0C0EEF801D5; Mon, 21 Dec 2020 18:56:55 +0100 (CET)
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com
+ [209.85.222.41])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EA0DF8021C
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 18:44:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EA0DF8021C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="Oen8ZSg5"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
- s=default2002;
- h=Content-Transfer-Encoding:MIME-Version:References:
- In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
- Resent-To:Resent-Cc:Resent-Message-ID;
- bh=ptErSt0dW5D12UWzQOQGAF3uLKabVk2M4jFCGw0i54c=; b=Oen8ZSg5gWzF0WUD9rTBNXdm4t
- CR2H4E2rpbCQSqcgaGU2EEzh0EfGPjeBjzO4eTx86Y0szf7NagcZvBtke/GI3byJIpCmsCMggfSvE
- 7x7e2IGcI+UrwbbTwmc4mU5Oi+DE4vMDLbk35MtogLuMcKIwaWCC/kXChvPatZN+/3oyGDnCFfboW
- +bDrtIW+IO7o7mni7NNWm6oJsyuBQCuSUuvtCJYr8nDakgWcrTIdmmV2R6jexWU+HcO6mQjDuRM2t
- UQLNM9Q2tkYjTtW2mMu+Qen2Gn9Jkv35cSNBmJHxw7O/gMdvr0zR8tjt4dwUd4s8QtqwaPhuQxZ6E
- fgU33xtw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
- by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1ks8Ba-0001PU-T9; Wed, 23 Dec 2020 18:44:30 +0100
-Received: from [62.216.202.54] (helo=lars-desktop.fritz.box)
- by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
- (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1ks7qo-000Crk-JK; Wed, 23 Dec 2020 18:23:02 +0100
-From: Lars-Peter Clausen <lars@metafoo.de>
-To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 11/18] ALSA: usb: Use DIV_ROUND_UP() instead of open-coding it
-Date: Wed, 23 Dec 2020 18:22:22 +0100
-Message-Id: <20201223172229.781-11-lars@metafoo.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201223172229.781-1-lars@metafoo.de>
-References: <20201223172229.781-1-lars@metafoo.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E214F800EC
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 18:56:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E214F800EC
+Received: by mail-ua1-f41.google.com with SMTP id y21so3567691uag.2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2020 09:56:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=MrAF3XcfgmbCY17OqyOzfLrhkI98KCYJDR2DMtLfdY8=;
+ b=s6KyXOSHT2yKby/8KUNdpBN8kzJcqPWdLTLgofPi97ngM/92uRirPe18RdtCp8ejh2
+ eU4M07+8l6P0hTLEvtvULDjCXvxInxYs43U24oaFQlfBnA/s84tHKdu4GaiubB5/77yF
+ fLFqi1QL4pBBpf8pYM4fgkuHEGWC8R/tubEr3Uo7BPQn7rKRILR95EzDbL3/TMORISfM
+ mLKJ2WMTljZpouC90+WQEKWaIl5Ol8p46MMzq/7s13bRjIX28tMPQovoKAFg+arz4ZKk
+ 3jNQVa8dh1oInoAUXB1fy6GoOX3FlqPYfs/0qh/MBhZX+fxopG5bTQRRQqRhjU0U8RSb
+ sElQ==
+X-Gm-Message-State: AOAM532CukWbE7LXjfv/aVtAdCmKFnSyack1LkLQ4slBKgwJm9/ixIBA
+ pnwc3g+AsonU+BFmOyKWJ7vg5gtgShepxVeYOcY=
+X-Google-Smtp-Source: ABdhPJzVdL7B8bTZxy+rQMk6er8L4T5ie68H4w9L1UEygB7FM35lOkrdx7hEzcfKNr2eDQb6J0Pb9eQgDYeA07DY5rA=
+X-Received: by 2002:ab0:1e4a:: with SMTP id n10mr13442742uak.98.1608573409390; 
+ Mon, 21 Dec 2020 09:56:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26026/Wed Dec 23 13:53:03 2020)
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
+References: <20201214060621.1102931-1-kai.heng.feng@canonical.com>
+ <20201216124726.2842197-1-kai.heng.feng@canonical.com>
+ <s5h5z51oj12.wl-tiwai@suse.de>
+ <CAAd53p6kORC1GsW5zt+=0=J5ki43iriO-OqtFvf5W67LWhyyhA@mail.gmail.com>
+ <s5hzh2dn3oa.wl-tiwai@suse.de>
+ <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
+ <s5hsg85n2km.wl-tiwai@suse.de> <s5hmtydn0yg.wl-tiwai@suse.de>
+ <CAAd53p6MMFh=HCNF9pyrJc9hVMZWFe7_8MvBcBHVWARqHU_TTA@mail.gmail.com>
+ <s5h7dpfk06y.wl-tiwai@suse.de>
+ <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
+In-Reply-To: <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
+From: Ilia Mirkin <imirkin@alum.mit.edu>
+Date: Mon, 21 Dec 2020 12:56:38 -0500
+Message-ID: <CAKb7UvjWX7xbwMKtnad5EVy16nY1M-A13YJeRWyUwHzemcVswA@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH v2] ALSA: hda: Continue to probe when codec
+ probe fails
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Wed, 23 Dec 2020 18:45:49 +0100
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ nouveau <nouveau@lists.freedesktop.org>, tiwai@suse.com,
+ open list <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Alan Stern <stern@rowland.harvard.edu>, Linux PCI <linux-pci@vger.kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Mike Rapoport <rppt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,46 +105,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use DIV_ROUND_UP() instead of open-coding it. This documents intent
-and makes it more clear what is going on for the casual reviewer.
+On Mon, Dec 21, 2020 at 11:33 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> [+Cc nouveau]
+>
+> On Fri, Dec 18, 2020 at 4:06 PM Takashi Iwai <tiwai@suse.de> wrote:
+> [snip]
+> > > Quite possibly the system doesn't power up HDA controller when there's
+> > > no external monitor.
+> > > So when it's connected to external monitor, it's still needed for HDMI audio.
+> > > Let me ask the user to confirm this.
+> >
+> > Yeah, it's the basic question whether the HD-audio is supposed to work
+> > on this machine at all.  If yes, the current approach we take makes
+> > less sense - instead we should rather make the HD-audio controller
+> > working.
+>
+> Yea, confirmed that the Nvidia HDA works when HDMI is connected prior boot.
+>
+> > > > - The second problem is that pci_enable_device() ignores the error
+> > > >   returned from pci_set_power_state() if it's -EIO.  And the
+> > > >   inaccessible access error returns -EIO, although it's rather a fatal
+> > > >   problem.  So the driver believes as the PCI device gets enabled
+> > > >   properly.
+> > >
+> > > This was introduced in 2005, by Alan's 11f3859b1e85 ("[PATCH] PCI: Fix
+> > > regression in pci_enable_device_bars") to fix UHCI controller.
+> > >
+> > > >
+> > > > - The third problem is that HD-audio driver blindly believes the
+> > > >   codec_mask read from the register even if it's a read failure as I
+> > > >   already showed.
+> > >
+> > > This approach has least regression risk.
+> >
+> > Yes, but it assumes that HD-audio is really non-existent.
+>
+> I really don't know any good approach to address this.
+> On Windows, HDA PCI is "hidden" until HDMI cable is plugged, then the
+> driver will flag the magic bit to make HDA audio appear on the PCI
+> bus.
+> IIRC the current approach is to make nouveau and device link work.
 
-Generated using the following the Coccinelle semantic patch.
+I don't have the full context of this discussion, but the kernel
+force-enables the HDA subfunction nowadays, irrespective of nouveau or
+nvidia or whatever:
 
-// <smpl>
-@@
-expression x, y;
-@@
--(((x) + (y) - 1) / (y))
-+DIV_ROUND_UP(x, y)
-// </smpl>
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/quirks.c?h=v5.10#n5267
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
----
- sound/usb/mixer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Cheers,
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 12b15ed59eaa..412fcd817ecc 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -254,7 +254,7 @@ static int get_relative_value(struct usb_mixer_elem_info *cval, int val)
- 	if (val < cval->min)
- 		return 0;
- 	else if (val >= cval->max)
--		return (cval->max - cval->min + cval->res - 1) / cval->res;
-+		return DIV_ROUND_UP(cval->max - cval->min, cval->res);
- 	else
- 		return (val - cval->min) / cval->res;
- }
-@@ -1338,7 +1338,7 @@ static int mixer_ctl_feature_info(struct snd_kcontrol *kcontrol,
- 		}
- 		uinfo->value.integer.min = 0;
- 		uinfo->value.integer.max =
--			(cval->max - cval->min + cval->res - 1) / cval->res;
-+			DIV_ROUND_UP(cval->max - cval->min, cval->res);
- 	}
- 	return 0;
- }
--- 
-2.20.1
-
+  -ilia
