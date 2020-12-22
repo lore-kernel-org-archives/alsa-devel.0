@@ -2,97 +2,76 @@ Return-Path: <SRS0=3cEE=F3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE4FEC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:49:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE23FC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:50:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FC65207D2
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:49:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FC65207D2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2F844207CD
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:50:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F844207CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AE9E17E0;
-	Wed, 23 Dec 2020 18:48:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AE9E17E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCBD01815;
+	Wed, 23 Dec 2020 18:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCBD01815
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608745787;
-	bh=qt4fd8kyPLRYqphlWNaaozWM8NiBWkUzLZdGPp/+wsg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nCBRpj0EgTbB7JYncQL5Q1TUJZuWXWEzMlqbbtfHcrCUoQj7RfdM6r51Aj+lMC3UX
-	 WG+IaIFg6pZedrDhq0VWuFew42a7pYkzUjb5znDYUcMnsTOxpaB7C1+Knsm1eiNXWG
-	 Gq59a7cvInEfuJ6TFFRxy/ERxYase9PwpiV4pE5s=
+	s=default; t=1608745802;
+	bh=lI+BS2HFamQJLIRRZRbM0DMK7ZnhJOh7ZDFdLHtHvq0=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZsprDVsp0FYyQsonaPlzsYz3Juxs7vCVDcs5SNsBNIdLsT3rJotdoEALDDOQQtyA2
+	 UYdGCHzx5JnulO8YJPkPyMlDeEq95Vt7+nfzOtidtBCLoG3wDYyWigemRab3oIMUIY
+	 S0nI5luKwkbAqWWcY4aPo/I8OMTswrxjBU/B7Rg4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CF19F80506;
-	Wed, 23 Dec 2020 18:45:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CAB1F80510;
+	Wed, 23 Dec 2020 18:45:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1913BF80224; Tue, 22 Dec 2020 17:40:16 +0100 (CET)
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com
- [IPv6:2607:f8b0:4864:20::62d])
+ id 9B7B8F80224; Tue, 22 Dec 2020 23:38:24 +0100 (CET)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 102ACF80116
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 17:40:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 102ACF80116
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XBZl/fP8"
-Received: by mail-pl1-x62d.google.com with SMTP id j1so7708132pld.3
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 08:40:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=XA14ElTeUosr9Ce812CRm87QO2rKQtr679G385v8kMg=;
- b=XBZl/fP8JfaKjImHJU56Okh7Pmq6oSlqsbjWtruce/kIO+jNbne6lPveMeQNQxnp5g
- +pLF+j+xuYF+XItUHD9rfD7VgypsMkmaK4nZpJHJen72knZ1pLBtdHdXDQxE0BC9Abuo
- mDIHGzkXvFPSxBY8Van6Xt+9NYy1KH+7/f6nWtI7nfPVkJpq3+bCiVwi6NIsm96Hi7cL
- xoYGhxL+b298xlYDlZyhkmbOYST4O3GRlyHcQOjcGS/uADxtKhbdw+TofsHeS4LqtMAc
- aKrOjvIvuZtyW07CYTs1Goinb3iDKTwpMNyt6HXSEU2k/xhq895exHFUv2vhPgKJJLjF
- Qr2w==
+ by alsa1.perex.cz (Postfix) with ESMTPS id E01C8F800BC
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 23:38:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E01C8F800BC
+Received: by mail-il1-f200.google.com with SMTP id x10so12897813ilq.12
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 14:38:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=XA14ElTeUosr9Ce812CRm87QO2rKQtr679G385v8kMg=;
- b=jcJVrM/oBbGKigi1K+91yuA+cPLN9LeQTVpshDmPHqz2fRB9Gd+mF/luJvAKAAxd8z
- eRJ58T1ZWXwaGpSsIOp6QRbkhauSXvVc5poIPbOv1n4Hhrny5+ixC2vP9wxoHjKHJyzc
- hBEyrauwz8Is0W6hiunxHVk2yB/RhOPv3HRc4PrYA0LpIeEQBWxT5rDpEMV+XK132yeK
- p4+qbP2pelUFlWc1O7qwAKeFmhFRCZutA0cxcRG3ofQKSflulAxUdKd3BAyiBxUp3dZR
- FHZV+FHw31ss6H8uyVwBr8hDk+Beo5OF2FNbGHgburlAxYU3LrvZ7MO/ixDPh82zxxBi
- VA3A==
-X-Gm-Message-State: AOAM5338Hso1dBID0ByJyygX/7xrZ3vp5hP1pQDpVaz6aTsNWmhqCZ+P
- 5cdrv3WGPG6NJnTJCMmHCv4VPQYT81zki2t2pJk=
-X-Google-Smtp-Source: ABdhPJzIwF2uyoRs5h3zHcpXR9B8X/+Kqf1ghnirkIrgLeEnyEAF8eGlnlscDztG0W09G5UHgi1pkkPM9Nt/7w4z4jE=
-X-Received: by 2002:a17:902:82c7:b029:da:cb88:38f8 with SMTP id
- u7-20020a17090282c7b02900dacb8838f8mr22192274plz.49.1608655205691; Tue, 22
- Dec 2020 08:40:05 -0800 (PST)
+ h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+ bh=phZcz8GHgDbMEr4XKo0BIqA5dWEQGOsnMVPYM3W1vas=;
+ b=m8tRKUcyArsX4EYWmJ51Jjmu++6ETKcVyL5Xfry5yykHYupT2Vq+uP2ixr9tnlDnTG
+ CeuqvWHBZIgF+cTrynZj0c06JouOy8atXiBEk1gKVI4JmteZqh0/lqkWpufMhnYzp3aQ
+ 6GzRz6xQa7IQrbqXh53WOuU9oDNAkCDBoAR5eagRu721zZYfZaC3JCZ++v7FqPic8ZeL
+ 5WHVwpupkXOZ2u3tEYV9REP7YJ8Bjo3sUMbRJwC1O1WJVSGlrA+4PtYdYdzxSSPQkd+i
+ ao+jI9Dp7MlV6dm0UuAXB3IpFDqpBOAlKLu485OjvYnnGwtWqoSbrguKUVGl1HEFZCRX
+ diRw==
+X-Gm-Message-State: AOAM533zmrt7TPRhloLY1bT57x30Q1eVU4439lBNW4/DgBzQqonk8yTY
+ 2jPADwBYqCfR1Qt7DCVyhYKJmrs2pPLfLzymSQCOXLxGKj/Z
+X-Google-Smtp-Source: ABdhPJyzjApcIzyu+k2K45bHD2KJm7nZ64jl/4wd4RpcvpOn88al+Y1kV/d84Xc7zi+ObDycuo8uB5ddCijryWgpoBms91IDki9i
 MIME-Version: 1.0
-References: <20201222040645.1323611-1-robh@kernel.org>
-In-Reply-To: <20201222040645.1323611-1-robh@kernel.org>
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Date: Tue, 22 Dec 2020 10:39:55 -0600
-Message-ID: <CABb+yY0Q+7vqoVsHJEdP4r9+RwhjEKoBHnKRtGqKc3BNAP_SCQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Drop redundant maxItems/items
-To: Rob Herring <robh@kernel.org>
+X-Received: by 2002:a92:bf09:: with SMTP id z9mr22316997ilh.194.1608676695952; 
+ Tue, 22 Dec 2020 14:38:15 -0800 (PST)
+Date: Tue, 22 Dec 2020 14:38:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000555a005b7153b7a@google.com>
+Subject: UBSAN: shift-out-of-bounds in snd_usbmidi_get_ms_info
+From: syzbot <syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, clemens@ladisch.de, 
+ linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, 
+ tiwai@suse.com
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Wed, 23 Dec 2020 18:45:49 +0100
-Cc: Devicetree List <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dri-devel@lists.freedesktop.org, Jassi Brar <jaswinder.singh@linaro.org>,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- dmaengine@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,32 +87,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Dec 21, 2020 at 10:10 PM Rob Herring <robh@kernel.org> wrote:
->
-> 'maxItems' equal to the 'items' list length is redundant. 'maxItems' is
-> preferred for a single entry while greater than 1 should have an 'items'
-> list.
->
-> A meta-schema check for this is pending once these existing cases are
-> fixed.
->
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jassi Brar <jaswinder.singh@linaro.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: dmaengine@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml    | 1 -
->  Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml   | 1 -
->  Documentation/devicetree/bindings/mailbox/arm,mhu.yaml         | 1 -
->  .../devicetree/bindings/sound/nvidia,tegra30-hda.yaml          | 2 --
->  Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml    | 1 -
->  Documentation/devicetree/bindings/usb/renesas,usbhs.yaml       | 3 ---
->  6 files changed, 9 deletions(-)
+Hello,
 
-Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=109531a3500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98408202fed1f636
+dashboard link: https://syzkaller.appspot.com/bug?extid=92e45ae45543f89e8c88
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1421ec47500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bfa077500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+
+usb 1-1: config 0 interface 0 altsetting 0 bulk endpoint 0x8A has invalid maxpacket 31
+usb 1-1: New USB device found, idVendor=324b, idProduct=5963, bcdDevice= 0.d2
+usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+usb 1-1: config 0 descriptor??
+usb 1-1: MIDIStreaming interface descriptor not found
+================================================================================
+UBSAN: shift-out-of-bounds in sound/usb/midi.c:1928:8
+shift exponent 244 is too large for 32-bit type 'int'
+CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ snd_usbmidi_get_ms_info.cold+0x83/0xd4 sound/usb/midi.c:1928
+ __snd_usbmidi_create+0x380/0x2320 sound/usb/midi.c:2404
+ snd_usb_create_quirk+0xa5/0xe0 sound/usb/quirks.c:562
+ usb_audio_probe+0x623/0x2ab0 sound/usb/card.c:795
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
