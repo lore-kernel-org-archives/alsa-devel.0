@@ -2,76 +2,58 @@ Return-Path: <SRS0=3cEE=F3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE23FC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03763C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:50:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F844207CD
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:50:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F844207CD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 30F3F207CD
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:50:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30F3F207CD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCBD01815;
-	Wed, 23 Dec 2020 18:49:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCBD01815
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98BA11822;
+	Wed, 23 Dec 2020 18:49:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98BA11822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608745802;
-	bh=lI+BS2HFamQJLIRRZRbM0DMK7ZnhJOh7ZDFdLHtHvq0=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1608745841;
+	bh=NvOOTQxORRsxyOV9RvOcdN5UdD224QdkY3bga4tCqAE=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ZsprDVsp0FYyQsonaPlzsYz3Juxs7vCVDcs5SNsBNIdLsT3rJotdoEALDDOQQtyA2
-	 UYdGCHzx5JnulO8YJPkPyMlDeEq95Vt7+nfzOtidtBCLoG3wDYyWigemRab3oIMUIY
-	 S0nI5luKwkbAqWWcY4aPo/I8OMTswrxjBU/B7Rg4=
+	b=Rz1gJQHKOP4/pG0LC04ZKUi4smCjeGVl0pI6wfStxsps87VG9nwN8xz22MQZ7aK3g
+	 w6mGXPZiCA9W0nt2ZnMapWZZs79fi4fkQRFLEVfAFnL2T8rhEhQgXkx71ZpUD4ebKA
+	 kYbCtQzJhbjhHZERvm2n8SPceFo7XJDirHboAKnU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CAB1F80510;
-	Wed, 23 Dec 2020 18:45:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 440E3F8051B;
+	Wed, 23 Dec 2020 18:46:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B7B8F80224; Tue, 22 Dec 2020 23:38:24 +0100 (CET)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C7724F8051D; Wed, 23 Dec 2020 18:46:04 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E01C8F800BC
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 23:38:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E01C8F800BC
-Received: by mail-il1-f200.google.com with SMTP id x10so12897813ilq.12
- for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 14:38:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
- bh=phZcz8GHgDbMEr4XKo0BIqA5dWEQGOsnMVPYM3W1vas=;
- b=m8tRKUcyArsX4EYWmJ51Jjmu++6ETKcVyL5Xfry5yykHYupT2Vq+uP2ixr9tnlDnTG
- CeuqvWHBZIgF+cTrynZj0c06JouOy8atXiBEk1gKVI4JmteZqh0/lqkWpufMhnYzp3aQ
- 6GzRz6xQa7IQrbqXh53WOuU9oDNAkCDBoAR5eagRu721zZYfZaC3JCZ++v7FqPic8ZeL
- 5WHVwpupkXOZ2u3tEYV9REP7YJ8Bjo3sUMbRJwC1O1WJVSGlrA+4PtYdYdzxSSPQkd+i
- ao+jI9Dp7MlV6dm0UuAXB3IpFDqpBOAlKLu485OjvYnnGwtWqoSbrguKUVGl1HEFZCRX
- diRw==
-X-Gm-Message-State: AOAM533zmrt7TPRhloLY1bT57x30Q1eVU4439lBNW4/DgBzQqonk8yTY
- 2jPADwBYqCfR1Qt7DCVyhYKJmrs2pPLfLzymSQCOXLxGKj/Z
-X-Google-Smtp-Source: ABdhPJyzjApcIzyu+k2K45bHD2KJm7nZ64jl/4wd4RpcvpOn88al+Y1kV/d84Xc7zi+ObDycuo8uB5ddCijryWgpoBms91IDki9i
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29390F80212
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 18:45:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29390F80212
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 451AAACC6
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 17:45:59 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
+Date: Wed, 23 Dec 2020 18:45:57 +0100
+Message-Id: <20201223174557.10249-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:bf09:: with SMTP id z9mr22316997ilh.194.1608676695952; 
- Tue, 22 Dec 2020 14:38:15 -0800 (PST)
-Date: Tue, 22 Dec 2020 14:38:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000555a005b7153b7a@google.com>
-Subject: UBSAN: shift-out-of-bounds in snd_usbmidi_get_ms_info
-From: syzbot <syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, clemens@ladisch.de, 
- linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, 
- tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Wed, 23 Dec 2020 18:45:49 +0100
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,50 +69,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+The calculation of in_cables and out_cables bitmaps are done with the
+bit shift by the value from the descriptor, which is an arbitrary
+value, and can lead to UBSAN shift-out-of-bounds warnings.
 
-syzbot found the following issue on:
+Fix it by filtering the bad descriptor values with the check of the
+upper bound 0x10 (the cable bitmaps are 16 bits).
 
-HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=109531a3500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98408202fed1f636
-dashboard link: https://syzkaller.appspot.com/bug?extid=92e45ae45543f89e8c88
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1421ec47500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bfa077500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
 Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
-
-usb 1-1: config 0 interface 0 altsetting 0 bulk endpoint 0x8A has invalid maxpacket 31
-usb 1-1: New USB device found, idVendor=324b, idProduct=5963, bcdDevice= 0.d2
-usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-usb 1-1: config 0 descriptor??
-usb 1-1: MIDIStreaming interface descriptor not found
-================================================================================
-UBSAN: shift-out-of-bounds in sound/usb/midi.c:1928:8
-shift exponent 244 is too large for 32-bit type 'int'
-CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- snd_usbmidi_get_ms_info.cold+0x83/0xd4 sound/usb/midi.c:1928
- __snd_usbmidi_create+0x380/0x2320 sound/usb/midi.c:2404
- snd_usb_create_quirk+0xa5/0xe0 sound/usb/quirks.c:562
- usb_audio_probe+0x623/0x2ab0 sound/usb/card.c:795
-
-
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ sound/usb/midi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index c8213652470c..0c23fa6d8525 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1889,6 +1889,8 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bNumEmbMIDIJack > 0x10)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+@@ -2141,6 +2143,8 @@ static int snd_usbmidi_detect_roland(struct snd_usb_midi *umidi,
+ 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
+ 		    cs_desc[2] == 0xf1 &&
+ 		    cs_desc[3] == 0x02) {
++			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
++				continue;
+ 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
+ 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
+ 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
+-- 
+2.26.2
+
