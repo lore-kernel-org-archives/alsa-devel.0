@@ -2,55 +2,88 @@ Return-Path: <SRS0=3cEE=F3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40025C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 03:06:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76F81C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:32:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D3FDD20757
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 03:06:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D3FDD20757
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id DC5D620867
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 04:32:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC5D620867
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bertschiettecatte.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F50017AC;
-	Wed, 23 Dec 2020 04:05:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F50017AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C05117BF;
+	Wed, 23 Dec 2020 05:31:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C05117BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608692779;
-	bh=QZNzCuj9nphlIobVAt3Cu+9v4mM7dluyAZ/GAAlR23s=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1608697962;
+	bh=S7CIbWUQ5EtWy4K2smd2DLLQocrv83d6WnTC8JsR1RE=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mFPdMW8oDaqMH/mog95e0nE3t2p0kfUci9V/OLj1a6Pn57Fl9tjqtFfowZLK8Jjo5
-	 fOA+DY1ezRs+U/y5rp2ZQaE25qHPgezHp4hT+LrqY+/wtMLYwySPmGrAb6HsDwmBCB
-	 3Sw9RD1Csah5AcrXVfJX4zoBUOx43y/oYFfpQYk4=
+	b=CYNB1chvgbwEf5o2G/CGHXibr4Hacfy9kt7ratnnp/L0X9TsgmYlCzO4mC+z+v9Zp
+	 gz9IViho8RyajGePqFc/aJOjofclvbXL9+C/8cZMjmTimBBgJn5KeuA9fNNlSH2A/J
+	 QodDcQ8YFGud3R9qDRMZWbUD7vcvL9EWF2wZH/eA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9FF8F800BC;
-	Wed, 23 Dec 2020 04:05:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05F4CF8013F;
+	Wed, 23 Dec 2020 05:31:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F6D6F801D5; Wed, 23 Dec 2020 04:05:27 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id DC6E3F80116
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 04:05:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC6E3F80116
+ id BA065F801D5; Wed, 23 Dec 2020 05:31:50 +0100 (CET)
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com
+ [IPv6:2607:f8b0:4864:20::b33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFAD0F8013F
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 05:31:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFAD0F8013F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=bertschiettecatte-com.20150623.gappssmtp.com
+ header.i=@bertschiettecatte-com.20150623.gappssmtp.com header.b="dndGR/OL"
+Received: by mail-yb1-xb33.google.com with SMTP id k78so13537599ybf.12
+ for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2020 20:31:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bertschiettecatte-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+ bh=S7CIbWUQ5EtWy4K2smd2DLLQocrv83d6WnTC8JsR1RE=;
+ b=dndGR/OLXsEd8TJhtj33sY+HFy9NnDh44uXKD5TPSgxFIQyjN07+j0XKJBVjdQyQQk
+ XbWi33x5dPoNAinzBSboBOTmZy29aHL9dj7zggZ1/eLVT6YkhJ5WYGd3t7NRPBuJytQe
+ USaGf12L31ThwSkUcxUkgU2y+/GCbTteQJbKIkpsf3IOoMcMkMtgDQ3Pm7hceTfa92Ne
+ PX3zlingXoawyTNDk4olARWtU5LmxXRmLV0GKi4L+yzOK/cyaLqa6oJ5RbW2fd70m072
+ dHTD8a1T7WGv0h2LMBFuGAw16EXpZdUQvH99N4s8P1maO5v/Z93da9si5mubDOTw5/XI
+ IVcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to;
+ bh=S7CIbWUQ5EtWy4K2smd2DLLQocrv83d6WnTC8JsR1RE=;
+ b=m1dGiAkizOcvZH1bMsrfR2rhT94HAN+dtR3T3rxZ/ojbwzOhkorel91FEhti6/xE5i
+ UN+NUNqOWstEXR/noZjROqJWA52KVUAianueD5hjkFE2HGIeBiav2RXoz9FTfzCi0Hvw
+ ycmFWH/iWIsINRZiy0wRvnTXErZFE5fjQ4mqRc4ADqzfpDVA5wqItBSyIVgN1DEoLvX4
+ METNyDEBmolmS2iusFEYUSTtJ9LXjJZK5T9hN5w98UpHJTcHRyqVVj8nl2daIJsxEZf4
+ TwsIrzpDVp/pvOWYhMlVkJia+b3upnmIg46iS5CIarYnD9rkbrg8JEU/7d+jP3fb6iki
+ yObQ==
+X-Gm-Message-State: AOAM531AOxGdJhW8aWgmZHaOvLo456nZ2dk8yA4ixnVZPKffLMiVdfet
+ 4JJtH5R4Sa7FyMAmvLUSzz/f9QgTXI/v6+IUmaiUvdwhlg0ZTQ==
+X-Google-Smtp-Source: ABdhPJzyRxIrmykSgDqhC9h90/PPxeraeiE4kGbWDWgo3oqJ5UA5C4ckCd5BRGr2R4IX3D2ChnjGGgeEIpXv7AfVnO8=
+X-Received: by 2002:a25:2d61:: with SMTP id s33mr35530376ybe.36.1608697905223; 
+ Tue, 22 Dec 2020 20:31:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+References: <CALd3UbSrAqYFe5Z-S6NMKGaVMvOZx7C4zV5O7CwtTKPmV+UeVQ@mail.gmail.com>
+ <CALd3UbS6MtKQEdhXQXH2GmU1EvZgS52XcTPihZ5wjb=4FaiYXA@mail.gmail.com>
+In-Reply-To: <CALd3UbS6MtKQEdhXQXH2GmU1EvZgS52XcTPihZ5wjb=4FaiYXA@mail.gmail.com>
+From: Bert Schiettecatte <bert@bertschiettecatte.com>
+Date: Tue, 22 Dec 2020 20:31:34 -0800
+Message-ID: <CALd3UbQuDU6asvTkQTP48ct4hT9euUGUoenD5TW2ZD7gbuHPag@mail.gmail.com>
+Subject: question about alsa tracepoints and alsa debugging
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1608692718193527937-webhooks-bot@alsa-project.org>
-References: <1608692718193527937-webhooks-bot@alsa-project.org>
-Subject: Sdca support
-Message-Id: <20201223030527.1F6D6F801D5@alsa1.perex.cz>
-Date: Wed, 23 Dec 2020 04:05:27 +0100 (CET)
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,10 +99,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #71 was opened from libinyang:
+Hi all,
 
-Add supports for SDW sdca codec devices
+I have a rk3288 board I am working with, it has two ADCs and one DAC.
+The ADCs are connected via an FPGA to the rk3288. The DAC is directly
+connected to the I2S port of the rk3288. The rk3288 generates the
+master clock. I am using buildroot and busybox and kernel 5.9.12
+(stable).
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/71
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/71.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+I have a driver which receives the ADC data from the FPGA via SDIO.
+When I run speaker-test in the background and use arecord to record
+simultaneously in the foreground, both arecord and speaker-test seem
+to lock up. When I run speaker-test alone I do not have a problem. The
+playback device uses the rockchip_i2s.c driver while the capture
+device uses my SDIO driver.
+
+My driver based on dw_mmc.c calls snd_pcm_period_elapsed() for each
+buffer of frames that is ready. I can see that this is being called
+for a while when I start arecord in the foreground, until the lockup
+occurs. The moment I start arecord, the console output from
+speaker-test stops, so it's locked up by starting arecord. Previously
+this was working fine on kernel 4.11. However, since I updated to
+kernel 5.9.12 this no longer works. Has anything changed between 4.11
+and 5.9.12 that could be the cause of the problem?
+
+commands used for starting playback / trace capture and for recording -
+./perf record -F 99 -g -e snd_pcm:* -e sched:sched_switch -e
+sched:sched_wakeup -e irq:* speaker-test -D
+hw:CARD=ak4458ak5558aud,DEV=0 -c8 -r192000 -FS32_LE -tsine &
+arecord -Dhw:CARD=ak4458ak5558aud,DEV=1 -fS32_LE -c16 -r192000
+/mnt/ramdisk/rec.wav
+
+I enabled the kernel options as described at
+https://www.kernel.org/doc/html/v5.9/sound/designs/tracepoints.html
+and have used perf to record a trace, which can be access here -
+https://kernel-debugging.s3-us-west-1.amazonaws.com/perf.data.script.211220202054.txt
+(exported using "perf script")
+
+The trace file shows "lockdep_recursion" at some point so I am
+wondering if my problem has to do with a deadlock somehow being
+caused. However, I also see handle_mm_fault, and do_page_fault, which
+has to do with memory mapping? So I'm not sure what the problem
+exactly is and what to do next to find out what's wrong.
+
+Thanks in advance for your help and interest and patience,
+Bert
