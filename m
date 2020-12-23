@@ -2,69 +2,69 @@ Return-Path: <SRS0=3cEE=F3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F171CC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:21:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29087C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:22:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7935222573
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:21:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7935222573
+	by mail.kernel.org (Postfix) with ESMTPS id 9C4E6225AA
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:22:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C4E6225AA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B554829;
-	Wed, 23 Dec 2020 03:20:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B554829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 304371780;
+	Wed, 23 Dec 2020 03:21:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 304371780
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608690094;
-	bh=77ZSZWfbcvJpjRQEnqkDrt0xG/D+qCn+Gkdj4HHB7FA=;
+	s=default; t=1608690122;
+	bh=o1KPzr2V9JnH7zpsW4mxOYZv3sejAdmSEGOS8GeiZyM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RD9f6khthBw3cl1mDYWGVbQoaRaX+yYU2tbBSPnlG41ZMWTCBopvyJI0aHWXFlZfp
-	 Msa044PWYvAyTmlms81RW7CGslLZoQI2ILP+GQq2lnliy1mYQ9IzwEJNb8/Gr7/QiU
-	 fNs8fTPWNdT8ISWNk43n2VJKxX4quWXjj0PqwPeg=
+	b=R3t8yVSiygm4gPN+BbqdPJu4lzVNf/gFK0aOjC2P7JNbXEaG5XcGWqikhgI2FGswo
+	 dSvYEKngvyBVVw9MW7K0rvWllUIUqKXGH2lFiF0s5zhL526i1rjTamUBX5hTBO9oze
+	 HEm8Kyx8yjgux8lo5Y+92ihdqWZI00SQNzlIf7pg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F411CF801EB;
-	Wed, 23 Dec 2020 03:20:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1C5FF80212;
+	Wed, 23 Dec 2020 03:20:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A71BDF804E1; Wed, 23 Dec 2020 03:20:14 +0100 (CET)
+ id B5D35F801EC; Wed, 23 Dec 2020 03:20:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EFDEF801EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 03:20:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EFDEF801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4164CF804C3
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 03:20:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4164CF804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Y9/tE8cF"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F07122273;
- Wed, 23 Dec 2020 02:20:05 +0000 (UTC)
+ header.b="p6SDPYEn"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F0A522D57;
+ Wed, 23 Dec 2020 02:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1608690006;
- bh=77ZSZWfbcvJpjRQEnqkDrt0xG/D+qCn+Gkdj4HHB7FA=;
+ s=k20201202; t=1608690020;
+ bh=o1KPzr2V9JnH7zpsW4mxOYZv3sejAdmSEGOS8GeiZyM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Y9/tE8cFqtclvml2JS0MyGLo0JSqeUHRHcpa50ETCxfSvMhpTutIhs4URS7f2nTyp
- 7B0gUtkt6OisQO5+jDUBzyaUJz1CtJKxHvNLDP6VHNZvFEQkKiUojLY12df10t9O37
- LcbU3izLpzMERUNi8sVO9I3+m768dBMtrAeOfBDp/xebexjw4Qydyjo5G2I5ipu40g
- QZNlGZBD+r+IljCS2K2ASSTj+ImoXoh7yoCU5ahsCL2k/jsA2GqPJ9fEGmYkutnvyT
- /YhZccO6TZVkcE5WWG7XZ21wZko0p/HaIfQ2XcR5TZk6wtSCavOm9Ia6x3cgiC90nu
- 87U1G95KyeR2w==
+ b=p6SDPYEnv6RUtZTWVu0wtfNJuYw1QUPXZisO6UKzSMkaLwLGPWah8JZxK4ZDJ2t7+
+ n0sSRTeEAG8iyB41haODdgBlKmA2jWSkrEKi+x9akbBe1uWuSMhIPLU9PTOIXr3IF1
+ 9LwgkGW2WHex+izKH+GwpLrTdPQnDY88av/SbWCo9VBgST9nUaC8xIxcQD5te4V7YE
+ VGvUaf9ZM8t4WbWb2XexAKF2wkr9TIvGQV7bWz5+W2JNkdCDc3J3pwnq/KhCdvdiy7
+ PxisE+H/MApHv81Gtf5Uw0NYdgwnpDnmZRPBBT4/Qun7sfhHqsDh64uMirpEblpEH7
+ QBHLeIUjX11Ng==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 087/130] ALSA: rawmidi: Access runtime->avail
- always in spinlock
-Date: Tue, 22 Dec 2020 21:17:30 -0500
-Message-Id: <20201223021813.2791612-87-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 098/130] ASoC: Intel: bytcr_rt5640: Add quirk for
+ ARCHOS Cesium 140
+Date: Tue, 22 Dec 2020 21:17:41 -0500
+Message-Id: <20201223021813.2791612-98-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -72,10 +72,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org,
- syzbot+3d367d1df1d2b67f5c19@syzkaller.appspotmail.com,
- syzbot+a23a6f1215c84756577c@syzkaller.appspotmail.com
+Cc: Sasha Levin <sashal@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Chris Chiu <chiu@endlessos.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,155 +91,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Chris Chiu <chiu@endlessos.org>
 
-[ Upstream commit 88a06d6fd6b369d88cec46c62db3e2604a2f50d5 ]
+[ Upstream commit 1bea2256aa96a2d7b1b576eb74e29d79edc9bea8 ]
 
-The runtime->avail field may be accessed concurrently while some
-places refer to it without taking the runtime->lock spinlock, as
-detected by KCSAN.  Usually this isn't a big problem, but for
-consistency and safety, we should take the spinlock at each place
-referencing this field.
+Tha ARCHOS Cesium 140 tablet has problem with the jack-sensing,
+thus the heaset functions are not working.
 
-Reported-by: syzbot+a23a6f1215c84756577c@syzkaller.appspotmail.com
-Reported-by: syzbot+3d367d1df1d2b67f5c19@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20201206083527.21163-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Add quirk for this model to select the correct input map, jack-detect
+options and channel map to enable jack sensing and headset microphone.
+This device uses IN1 for its internal MIC and JD2 for jack-detect.
+
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20201208060414.27646-1-chiu@endlessos.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/rawmidi.c | 49 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 35 insertions(+), 14 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 94db4683cfaff..6a3543b8455fc 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -72,11 +72,21 @@ static inline unsigned short snd_rawmidi_file_flags(struct file *file)
- 	}
- }
- 
--static inline int snd_rawmidi_ready(struct snd_rawmidi_substream *substream)
-+static inline bool __snd_rawmidi_ready(struct snd_rawmidi_runtime *runtime)
-+{
-+	return runtime->avail >= runtime->avail_min;
-+}
-+
-+static bool snd_rawmidi_ready(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
-+	unsigned long flags;
-+	bool ready;
- 
--	return runtime->avail >= runtime->avail_min;
-+	spin_lock_irqsave(&runtime->lock, flags);
-+	ready = __snd_rawmidi_ready(runtime);
-+	spin_unlock_irqrestore(&runtime->lock, flags);
-+	return ready;
- }
- 
- static inline int snd_rawmidi_ready_append(struct snd_rawmidi_substream *substream,
-@@ -945,7 +955,7 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
- 	if (result > 0) {
- 		if (runtime->event)
- 			schedule_work(&runtime->event_work);
--		else if (snd_rawmidi_ready(substream))
-+		else if (__snd_rawmidi_ready(runtime))
- 			wake_up(&runtime->sleep);
- 	}
- 	spin_unlock_irqrestore(&runtime->lock, flags);
-@@ -1024,7 +1034,7 @@ static ssize_t snd_rawmidi_read(struct file *file, char __user *buf, size_t coun
- 	result = 0;
- 	while (count > 0) {
- 		spin_lock_irq(&runtime->lock);
--		while (!snd_rawmidi_ready(substream)) {
-+		while (!__snd_rawmidi_ready(runtime)) {
- 			wait_queue_entry_t wait;
- 
- 			if ((file->f_flags & O_NONBLOCK) != 0 || result > 0) {
-@@ -1041,9 +1051,11 @@ static ssize_t snd_rawmidi_read(struct file *file, char __user *buf, size_t coun
- 				return -ENODEV;
- 			if (signal_pending(current))
- 				return result > 0 ? result : -ERESTARTSYS;
--			if (!runtime->avail)
--				return result > 0 ? result : -EIO;
- 			spin_lock_irq(&runtime->lock);
-+			if (!runtime->avail) {
-+				spin_unlock_irq(&runtime->lock);
-+				return result > 0 ? result : -EIO;
-+			}
- 		}
- 		spin_unlock_irq(&runtime->lock);
- 		count1 = snd_rawmidi_kernel_read1(substream,
-@@ -1181,7 +1193,7 @@ int __snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream, int coun
- 	runtime->avail += count;
- 	substream->bytes += count;
- 	if (count > 0) {
--		if (runtime->drain || snd_rawmidi_ready(substream))
-+		if (runtime->drain || __snd_rawmidi_ready(runtime))
- 			wake_up(&runtime->sleep);
- 	}
- 	return count;
-@@ -1370,9 +1382,11 @@ static ssize_t snd_rawmidi_write(struct file *file, const char __user *buf,
- 				return -ENODEV;
- 			if (signal_pending(current))
- 				return result > 0 ? result : -ERESTARTSYS;
--			if (!runtime->avail && !timeout)
--				return result > 0 ? result : -EIO;
- 			spin_lock_irq(&runtime->lock);
-+			if (!runtime->avail && !timeout) {
-+				spin_unlock_irq(&runtime->lock);
-+				return result > 0 ? result : -EIO;
-+			}
- 		}
- 		spin_unlock_irq(&runtime->lock);
- 		count1 = snd_rawmidi_kernel_write1(substream, buf, NULL, count);
-@@ -1452,6 +1466,7 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 	struct snd_rawmidi *rmidi;
- 	struct snd_rawmidi_substream *substream;
- 	struct snd_rawmidi_runtime *runtime;
-+	unsigned long buffer_size, avail, xruns;
- 
- 	rmidi = entry->private_data;
- 	snd_iprintf(buffer, "%s\n\n", rmidi->name);
-@@ -1470,13 +1485,16 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 				    "  Owner PID    : %d\n",
- 				    pid_vnr(substream->pid));
- 				runtime = substream->runtime;
-+				spin_lock_irq(&runtime->lock);
-+				buffer_size = runtime->buffer_size;
-+				avail = runtime->avail;
-+				spin_unlock_irq(&runtime->lock);
- 				snd_iprintf(buffer,
- 				    "  Mode         : %s\n"
- 				    "  Buffer size  : %lu\n"
- 				    "  Avail        : %lu\n",
- 				    runtime->oss ? "OSS compatible" : "native",
--				    (unsigned long) runtime->buffer_size,
--				    (unsigned long) runtime->avail);
-+				    buffer_size, avail);
- 			}
- 		}
- 	}
-@@ -1494,13 +1512,16 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 					    "  Owner PID    : %d\n",
- 					    pid_vnr(substream->pid));
- 				runtime = substream->runtime;
-+				spin_lock_irq(&runtime->lock);
-+				buffer_size = runtime->buffer_size;
-+				avail = runtime->avail;
-+				xruns = runtime->xruns;
-+				spin_unlock_irq(&runtime->lock);
- 				snd_iprintf(buffer,
- 					    "  Buffer size  : %lu\n"
- 					    "  Avail        : %lu\n"
- 					    "  Overruns     : %lu\n",
--					    (unsigned long) runtime->buffer_size,
--					    (unsigned long) runtime->avail,
--					    (unsigned long) runtime->xruns);
-+					    buffer_size, avail, xruns);
- 			}
- 		}
- 	}
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 6012367f6fe48..6b6749550fc4f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -422,6 +422,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 140 CESIUM"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
 -- 
 2.27.0
 
