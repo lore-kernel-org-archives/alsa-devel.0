@@ -7,71 +7,70 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69FEEC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13823C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92FD8207D2
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92FD8207D2
+	by mail.kernel.org (Postfix) with ESMTPS id 326A0207CD
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:48:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 326A0207CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3992D17E7;
-	Wed, 23 Dec 2020 18:47:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3992D17E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id A487917E0;
+	Wed, 23 Dec 2020 18:47:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A487917E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608745691;
-	bh=ILYQBT2VBsJ1aXZek4CMzDy95Z2JOOWDkqg3+MXeMTc=;
+	s=default; t=1608745727;
+	bh=Cc2KblsMMsff70upoJ+KBtGICOZZreHb0cXrnvp+UZI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ap5n5mbV6cUU/oXgkwdHGXTKpMHlQ6pNJby9RrThOY3Ugn192V+FnblbesTVzQ3Ph
-	 PVf1aqU4ruG19GFGz5RgNRnixw1GEizXKYBLwIXnzI1VVU6+IpS3iVWM7PT84Rt6fs
-	 EysItW0iuc1wNrOJVdh9+sMkSq/TNfDKn8MqSSe0=
+	b=Hglo+X8ZWzd5Hjg8Z+LkycMS7mY9XlLEOl9/hwUuz1dreVtRBPk66BnsRTA8my9Jo
+	 sG74vzTMUHSeApu8Z1rX5zNZaFA8BDOW9wWbFlAxXh/ig22kT9sYC9k4PqST4H3fKR
+	 lYaIiX18FISPpLBypupr4ATaVJhmzKeXR6Ib4qo4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F026EF804ED;
-	Wed, 23 Dec 2020 18:44:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0377F804F3;
+	Wed, 23 Dec 2020 18:44:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13189F804E0; Wed, 23 Dec 2020 18:44:45 +0100 (CET)
+ id 6F72EF804D6; Wed, 23 Dec 2020 18:44:46 +0100 (CET)
 Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56C4AF801EB
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 18:44:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C4AF801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8EA0DF8021C
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 18:44:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EA0DF8021C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="BQBbZpFV"
+ header.b="Oen8ZSg5"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
  s=default2002;
  h=Content-Transfer-Encoding:MIME-Version:References:
  In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
  Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
  Resent-To:Resent-Cc:Resent-Message-ID;
- bh=jas3II4B6NhABFSwerDEfkIJ+sDOaowYWFKzYUUXVK0=; b=BQBbZpFV7130fkbvf4Uj+qdZqs
- O/RVsMUxQpIAAkV5DIDt0TUKwNZVsBZ55V/Srr7YcjX1gGp6S/DMEENUoPvaP0BlvVAT5i+MzDiE/
- ouaKRUwoToRQADdta4Sk30HaXqX9GZ8gcu/TA5sjotjyKkmy1DQilkolOvPERy/ZX/ZIM3c8wRcHW
- peI+jMmBVDONSB6M+wfxpVdMV5p4E7z/eItac+XYn6RpkFdF4ygUf8Zjfm4G26llErHrBTmpMP1vh
- iNxYHTsDEL58WKSFrSj3UgAT5kZ0Wu22Yf7Waj064K70obDTvRswc23EbPYEQH6H5/kiUSE9XuWYb
- jI0tItBw==;
+ bh=ptErSt0dW5D12UWzQOQGAF3uLKabVk2M4jFCGw0i54c=; b=Oen8ZSg5gWzF0WUD9rTBNXdm4t
+ CR2H4E2rpbCQSqcgaGU2EEzh0EfGPjeBjzO4eTx86Y0szf7NagcZvBtke/GI3byJIpCmsCMggfSvE
+ 7x7e2IGcI+UrwbbTwmc4mU5Oi+DE4vMDLbk35MtogLuMcKIwaWCC/kXChvPatZN+/3oyGDnCFfboW
+ +bDrtIW+IO7o7mni7NNWm6oJsyuBQCuSUuvtCJYr8nDakgWcrTIdmmV2R6jexWU+HcO6mQjDuRM2t
+ UQLNM9Q2tkYjTtW2mMu+Qen2Gn9Jkv35cSNBmJHxw7O/gMdvr0zR8tjt4dwUd4s8QtqwaPhuQxZ6E
+ fgU33xtw==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
  by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
  (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1ks8BZ-0001O8-Rd; Wed, 23 Dec 2020 18:44:29 +0100
+ id 1ks8Ba-0001PU-T9; Wed, 23 Dec 2020 18:44:30 +0100
 Received: from [62.216.202.54] (helo=lars-desktop.fritz.box)
  by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
  (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1ks7qo-000Crk-Pp; Wed, 23 Dec 2020 18:23:02 +0100
+ id 1ks7qo-000Crk-JK; Wed, 23 Dec 2020 18:23:02 +0100
 From: Lars-Peter Clausen <lars@metafoo.de>
 To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 15/18] ALSA: trident: Use DIV_ROUND_CLOSEST() instead of
- open-coding it
-Date: Wed, 23 Dec 2020 18:22:26 +0100
-Message-Id: <20201223172229.781-15-lars@metafoo.de>
+Subject: [PATCH 11/18] ALSA: usb: Use DIV_ROUND_UP() instead of open-coding it
+Date: Wed, 23 Dec 2020 18:22:22 +0100
+Message-Id: <20201223172229.781-11-lars@metafoo.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201223172229.781-1-lars@metafoo.de>
 References: <20201223172229.781-1-lars@metafoo.de>
@@ -95,7 +94,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use DIV_ROUND_CLOSEST() instead of open-coding it. This documents intent
+Use DIV_ROUND_UP() instead of open-coding it. This documents intent
 and makes it more clear what is going on for the casual reviewer.
 
 Generated using the following the Coccinelle semantic patch.
@@ -104,62 +103,37 @@ Generated using the following the Coccinelle semantic patch.
 @@
 expression x, y;
 @@
--((x) + ((y) / 2)) / (y)
-+DIV_ROUND_CLOSEST(x, y)
-
-@r1@
-expression x;
-constant C1;
-constant C2;
-@@
- ((x) + C1) / C2
-
-@script:python@
-C1 << r1.C1;
-C2 << r1.C2;
-@@
-try:
-	if int(C1) * 2 != int(C2):
-		cocci.include_match(False)
-except:
-	cocci.include_match(False)
-
-@@
-expression r1.x;
-constant r1.C1;
-constant r1.C2;
-@@
--(((x) + C1) / C2)
-+DIV_ROUND_CLOSEST(x, C2)
+-(((x) + (y) - 1) / (y))
++DIV_ROUND_UP(x, y)
 // </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/trident/trident_main.c | 4 ++--
+ sound/usb/mixer.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-index 6e50376163a2..8d0d0d8335ec 100644
---- a/sound/pci/trident/trident_main.c
-+++ b/sound/pci/trident/trident_main.c
-@@ -678,7 +678,7 @@ static unsigned int snd_trident_convert_rate(unsigned int rate)
- 	else if (rate == 48000)
- 		delta = 0x1000;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 12b15ed59eaa..412fcd817ecc 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -254,7 +254,7 @@ static int get_relative_value(struct usb_mixer_elem_info *cval, int val)
+ 	if (val < cval->min)
+ 		return 0;
+ 	else if (val >= cval->max)
+-		return (cval->max - cval->min + cval->res - 1) / cval->res;
++		return DIV_ROUND_UP(cval->max - cval->min, cval->res);
  	else
--		delta = (((rate << 12) + 24000) / 48000) & 0x0000ffff;
-+		delta = DIV_ROUND_CLOSEST(rate << 12, 48000) & 0x0000ffff;
- 	return delta;
+ 		return (val - cval->min) / cval->res;
  }
- 
-@@ -1034,7 +1034,7 @@ static int snd_trident_capture_prepare(struct snd_pcm_substream *substream)
- 	ESO_bytes++;
- 
- 	// Set channel sample rate, 4.12 format
--	val = (((unsigned int) 48000L << 12) + (runtime->rate/2)) / runtime->rate;
-+	val = DIV_ROUND_CLOSEST(48000U << 12, runtime->rate);
- 	outw(val, TRID_REG(trident, T4D_SBDELTA_DELTA_R));
- 
- 	// Set channel interrupt blk length
+@@ -1338,7 +1338,7 @@ static int mixer_ctl_feature_info(struct snd_kcontrol *kcontrol,
+ 		}
+ 		uinfo->value.integer.min = 0;
+ 		uinfo->value.integer.max =
+-			(cval->max - cval->min + cval->res - 1) / cval->res;
++			DIV_ROUND_UP(cval->max - cval->min, cval->res);
+ 	}
+ 	return 0;
+ }
 -- 
 2.20.1
 
