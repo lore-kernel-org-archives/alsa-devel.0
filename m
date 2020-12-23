@@ -7,70 +7,71 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00F3EC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:46:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7C26C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:47:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 63EE0207A1
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:46:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63EE0207A1
+	by mail.kernel.org (Postfix) with ESMTPS id 06311207A1
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 17:47:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06311207A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9FB516E0;
-	Wed, 23 Dec 2020 18:45:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9FB516E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD5117DF;
+	Wed, 23 Dec 2020 18:46:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD5117DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608745601;
-	bh=tT+kaUYYyFJ2fcve7NDKH3cSAnRi5TZlnIt3GWB5WXs=;
+	s=default; t=1608745634;
+	bh=rbLzn8724zW0PT6dPhEL1L70ImPz3rX0us93VXdQ+h4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D45WtA1ScD4/RTj828SI5+tPKKT7/o365uUo/gOGMe9o9IVzWqLClk35hmyQUrj1o
-	 CvoQ0PJcqpDPpgcCgnrCWwm08l7FgHzhkQpVGa33xA6oAB69CZU1O9MIPOY9Nedb26
-	 37Bf6hsHmG+B+FQl34fon8roBr3fRzpFyiuAoU2w=
+	b=hNi5ii0/5teq2qf0Mh0ZAnud85gO5Io+W7zOc4DFRwEXez6qiLHLHIpNkn8NIZVST
+	 +XnUuGzizhwnA0obYx+EpDrMovBYG6gcMryq0twWJ4DHhxeUskHPauMlJkJwk6OG8y
+	 Rf2p9tfZIplJPxQT6eSXrawD0bFHhoW4o4BtA96Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 110D0F801EB;
+	by alsa1.perex.cz (Postfix) with ESMTP id DC0F3F801D5;
 	Wed, 23 Dec 2020 18:44:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62CEEF804DF; Wed, 23 Dec 2020 18:44:44 +0100 (CET)
+ id 916ABF804D2; Wed, 23 Dec 2020 18:44:44 +0100 (CET)
 Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CBB1F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 525D2F800BC
  for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 18:44:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CBB1F801D5
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 525D2F800BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
- header.b="L+xF5p/k"
+ header.b="ie4xv2ZR"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
  s=default2002;
  h=Content-Transfer-Encoding:MIME-Version:References:
  In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
  Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
  Resent-To:Resent-Cc:Resent-Message-ID;
- bh=s9rgC9sXQ+9rkZOqKnMTXbao0pZKDn6/mEWQH+x7Rx0=; b=L+xF5p/kVL/2v6HwoinzSnr24t
- Q7NFtH3p/Q0ylAi7qaIK8qEqVu270+x6L9Y3ilJDvt3X69h5Yn3tHpuN9a/YD6SlKWliRHcdwoHzt
- 7dmLGMtxAbeX+Ax9j4Kcn05IT/tBcMNuntxkXgW9ReEoE9XcnK2Ad5BS19D4Xevlp2aqdzMGFpMoP
- SFzDN34iZfN68b43Urst0CRDjqbh0QGtDmZ14WV9D6tzMMH8jE2hO6YcKq8eDX1WzNg2WSNFDdgJW
- weWO0tTQ9S9v71VLVfEJZDNCV6BOlFKpXUntIhEttmda62elnihGIgI/srCGqgDG4ltlVqKU/R6aj
- myExuT0A==;
+ bh=irU4ok4di1n21Jo8y2elJOfnOB0TgpA0rzfahs/6SuU=; b=ie4xv2ZROIcg8qqpziOpr5EW97
+ KLbvIpcxT+oQFBhqnGK4NRDP8SV3lNqKs+14hM3MguEpVv8sGrSNxpcW04VgYrQFaXp7sIEO9/jHv
+ AQ7nyvNZVUIPnsXI4jsoMidRdcn7Ys1EJRAomT35DTPQ5PiND2rOlx8pddC+koKv4zLQZhJhQV0/U
+ gMTyUAYTXDD7DaOXH3n9CcwbGLFQIap+WXXEiHHZhrkfEiIGblIrb1YYcSqoJReoZVnSpq93+AYhq
+ 6K4xvuKXcEEUEi7mQ3z0/4DE+b1pxN5xv4YCf3OhA1UUSwXEB9mvT4VExzSR3Uu61LuL0cOZk/B0X
+ ge73Su+w==;
 Received: from sslproxy01.your-server.de ([78.46.139.224])
  by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
  (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
- id 1ks8Ba-0001Ou-HG; Wed, 23 Dec 2020 18:44:30 +0100
+ id 1ks8Ba-0001PJ-Pf; Wed, 23 Dec 2020 18:44:30 +0100
 Received: from [62.216.202.54] (helo=lars-desktop.fritz.box)
  by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
  (Exim 4.92) (envelope-from <lars@metafoo.de>)
- id 1ks7qo-000Crk-Kt; Wed, 23 Dec 2020 18:23:02 +0100
+ id 1ks7qo-000Crk-TN; Wed, 23 Dec 2020 18:23:02 +0100
 From: Lars-Peter Clausen <lars@metafoo.de>
 To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 12/18] ALSA: vx: Use roundup() instead of open-coding it
-Date: Wed, 23 Dec 2020 18:22:23 +0100
-Message-Id: <20201223172229.781-12-lars@metafoo.de>
+Subject: [PATCH 17/18] ALSA: sis7019: Use DIV_ROUND_CLOSEST() instead of
+ open-coding it
+Date: Wed, 23 Dec 2020 18:22:28 +0100
+Message-Id: <20201223172229.781-17-lars@metafoo.de>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201223172229.781-1-lars@metafoo.de>
 References: <20201223172229.781-1-lars@metafoo.de>
@@ -94,38 +95,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use roundup() instead of open-coding it. This documents intent
+Use DIV_ROUND_CLOSEST() instead of open-coding it. This documents intent
 and makes it more clear what is going on for the casual reviewer.
 
 Generated using the following the Coccinelle semantic patch.
 
 // <smpl>
+@r1@
+expression x;
+constant C1;
+constant C2;
 @@
-expression x, y;
+ ((x) + C1) / C2
+
+@script:python@
+C1 << r1.C1;
+C2 << r1.C2;
 @@
--((((x) + (y) - 1) / (y)) * y)
-+roundup(x, y)
+try:
+	if int(C1) * 2 != int(C2):
+		cocci.include_match(False)
+except:
+	cocci.include_match(False)
+
+@@
+expression r1.x;
+constant r1.C1;
+constant r1.C2;
+@@
+-(((x) + C1) / C2)
++DIV_ROUND_CLOSEST(x, C2)
 // </smpl>
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/drivers/vx/vx_pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/sis7019.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/drivers/vx/vx_pcm.c b/sound/drivers/vx/vx_pcm.c
-index 3d2e3bcafca8..daffda99b4f7 100644
---- a/sound/drivers/vx/vx_pcm.c
-+++ b/sound/drivers/vx/vx_pcm.c
-@@ -1154,8 +1154,7 @@ static int vx_init_audio_io(struct vx_core *chip)
- 	chip->ibl.size = 0;
- 	vx_set_ibl(chip, &chip->ibl); /* query the info */
- 	if (preferred > 0) {
--		chip->ibl.size = ((preferred + chip->ibl.granularity - 1) /
--				  chip->ibl.granularity) * chip->ibl.granularity;
-+		chip->ibl.size = roundup(preferred, chip->ibl.granularity);
- 		if (chip->ibl.size > chip->ibl.max_size)
- 			chip->ibl.size = chip->ibl.max_size;
- 	} else
+diff --git a/sound/pci/sis7019.c b/sound/pci/sis7019.c
+index 7bf6059d50fb..8ffa2f53c0b5 100644
+--- a/sound/pci/sis7019.c
++++ b/sound/pci/sis7019.c
+@@ -363,7 +363,7 @@ static u32 sis_rate_to_delta(unsigned int rate)
+ 	else if (rate == 48000)
+ 		delta = 0x1000;
+ 	else
+-		delta = (((rate << 12) + 24000) / 48000) & 0x0000ffff;
++		delta = DIV_ROUND_CLOSEST(rate << 12, 48000) & 0x0000ffff;
+ 	return delta;
+ }
+ 
 -- 
 2.20.1
 
