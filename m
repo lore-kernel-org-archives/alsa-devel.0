@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D6E7C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03A38C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:20:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9EEF22A83
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:20:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9EEF22A83
+	by mail.kernel.org (Postfix) with ESMTPS id 5733123159
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Dec 2020 02:20:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5733123159
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C717D16FC;
-	Wed, 23 Dec 2020 03:19:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C717D16FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6358171A;
+	Wed, 23 Dec 2020 03:19:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6358171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608690015;
-	bh=07FJ94/JhhjeGtGooCgnuze+tKQIH5U96CHlFU0af00=;
+	s=default; t=1608690025;
+	bh=9WrxHlIPnNp2LgSPkoCOvqX+YYDkZfbRLXyupRqfVoI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nLWuMabf1tcgUonMMsXybRqJEaGh5kI/OgvJSDbY+LWvoEpZmOICGcXVm9gF1p1F+
-	 Obu/JVMdgSw7PogQvTFt5t+UzijTMeizvzTZC7RePHh/j7kAUJgQ3pnOSwwTTUXw9N
-	 jgKegkDUR4Oo2QADXFo79uWAnS/k1cFs8vOac59w=
+	b=FIVukMQJYSzO8cQleFgZs9Q5AGrBkbucmfcISpSB8MVLS5cMT+pzj7ZT3rqfpwgq4
+	 JjCtfLfXt4ogFdz1nAEfEFc5xuzEP682oF2YXOheSgf3pPocTYg/gwOmq5AVHm1sgw
+	 hoTO5n2w29ZwlDyQHY5b+mNl2pxH+4O1Suc+h7fs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D487F801D5;
-	Wed, 23 Dec 2020 03:19:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4161DF80168;
+	Wed, 23 Dec 2020 03:19:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A3EBF801EB; Wed, 23 Dec 2020 03:19:23 +0100 (CET)
+ id 10CAEF804C1; Wed, 23 Dec 2020 03:19:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EDF65F8013F
- for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 03:19:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDF65F8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87C3AF80212
+ for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2020 03:19:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87C3AF80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kFa3GeVw"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 924DA22202;
- Wed, 23 Dec 2020 02:19:18 +0000 (UTC)
+ header.b="ON+31HCc"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9ED923137;
+ Wed, 23 Dec 2020 02:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1608689959;
- bh=07FJ94/JhhjeGtGooCgnuze+tKQIH5U96CHlFU0af00=;
+ s=k20201202; t=1608689964;
+ bh=9WrxHlIPnNp2LgSPkoCOvqX+YYDkZfbRLXyupRqfVoI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kFa3GeVw3KSWYUEidErjZa2qej7snOtvL2FGGqjBAkvu+3IMgn/ezbWQ4oI9YbdKa
- XSkrt78/k8NVAP7Ecd8dOs3u2b85nRFiGU1NBkh0Gd2zgv4WbBAVRpCKNIWrqdtzxz
- RcCnogIF8/hLuUpM0gZf8bnF9xqcMj7yXjGX7JY28plQ03II4zJw/0Sh2GLljUItYK
- s44KbRvIEfR+MOjUA6SWNl+yZSBN7REu6NRCRV1uHQtiyeoJrSAd/GCzHSR6FSK3Q+
- meiaHcfOvb/zCQn6vFl1vDC74NT+BMwmfkTyG9ImI/doUrazwJMisl/ZrlS5iHBuTx
- o+5oJK6USxA5g==
+ b=ON+31HCcd8OSqeBJ7ICLtOYHJO5RNK3z2tZNYO59jX04q4XrygRFpRbHdVi+1Ecao
+ lsu1WGl00N12foCNTbDGEgnGnheIi3UMhvv5IfDpVLIOXTnxhmqxfHitJPN6uK2ixp
+ sSSI/Q4JY6uPAFCCmb4KC4kAOmhJ8q+UhYKeRt2/ncy/C4KMOLWC8Cg6DHKDs60gu3
+ lmSPC/XpocQpl+/EFGM+7dUoHyQ/6BrX8w8XTi0nhg2pANxBWeBC23VE5Ye+S1JO8l
+ D4Vo7yakjSgwdJS+WV5bR32McszEMIWcyftP4ReFrsumISi367EcTbEpZuEpHEWzip
+ sPhZEZfQ2YD8A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 051/130] ASoC: SOF: IPC: fix implicit type overflow
-Date: Tue, 22 Dec 2020 21:16:54 -0500
-Message-Id: <20201223021813.2791612-51-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 055/130] ALSA: usb-audio: Handle discrete rates
+ properly in hw constraints
+Date: Tue, 22 Dec 2020 21:16:58 -0500
+Message-Id: <20201223021813.2791612-55-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -71,10 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Curtis Malainey <cujomalainey@chromium.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Dylan Robinson <dylan_robinson@motu.com>,
+ Keith Milner <kamilner@superlative.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,45 +90,171 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 7c1d0e554a359cca77bfabd2a29b06f5322d172d ]
+[ Upstream commit bc4e94aa8e72e79598e63a0b73febdcd8aeb541f ]
 
-Implicit values may have a length of 15bits (s16) so we need to declare
-the proper size so we don't get undefined behaviour. This appears to be
-arch and compiler dependent. This commit is to keep the headers aligned
-between the firmware and kernel. UBSan discovered this bug in the
-firmware.
+In the current code, when the device provides the discrete sample rate
+tables with unusual sample rates, the driver tries to gather the whole
+values from the audioformat entries and create a hw-constraint rule to
+restrict with this single rate list.  This is rather inefficient and
+may overlook the rates that are associated only with the certain
+audioformat entries.
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20201120144025.2166023-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This patch improves the hw constraint setup by rewriting the existing
+hw_rule_rate().  The discrete sample rates (identified by rate_table
+and nr_rates of format entry) are checked in the existing
+hw_rule_rate() instead of extra rules; in the case of discrete rates,
+the function compares with each rate table entry and calculates the
+min/max values from there.  For the contiguous rates, the behavior
+doesn't change.
+
+Along with it, snd_usb_pcm_check_knot() and snb_usb_substream
+rate_list field become superfluous, thus those are dropped.
+
+Tested-by: Keith Milner <kamilner@superlative.org>
+Tested-by: Dylan Robinson <dylan_robinson@motu.com>
+Link: https://lore.kernel.org/r/20201123085347.19667-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/sof/header.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/usb/card.h   |  1 -
+ sound/usb/pcm.c    | 73 ++++++++++------------------------------------
+ sound/usb/stream.c |  1 -
+ 3 files changed, 15 insertions(+), 60 deletions(-)
 
-diff --git a/include/sound/sof/header.h b/include/sound/sof/header.h
-index 10f00c08dbb7a..aae673b2bb5e2 100644
---- a/include/sound/sof/header.h
-+++ b/include/sound/sof/header.h
-@@ -30,12 +30,12 @@
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index d8ec5caf464de..d619e5e77a305 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -153,7 +153,6 @@ struct snd_usb_substream {
+ 	u64 formats;			/* format bitmasks (all or'ed) */
+ 	unsigned int num_formats;		/* number of supported audio formats (list) */
+ 	struct list_head fmt_list;	/* format list */
+-	struct snd_pcm_hw_constraint_list rate_list;	/* limited rates */
+ 	spinlock_t lock;
  
- /* Global Message - Generic */
- #define SOF_GLB_TYPE_SHIFT			28
--#define SOF_GLB_TYPE_MASK			(0xf << SOF_GLB_TYPE_SHIFT)
-+#define SOF_GLB_TYPE_MASK			(0xfL << SOF_GLB_TYPE_SHIFT)
- #define SOF_GLB_TYPE(x)				((x) << SOF_GLB_TYPE_SHIFT)
+ 	int last_frame_number;          /* stored frame number */
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 1a5e555002b2b..49ad4e7bb70b5 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1034,27 +1034,31 @@ static int hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	struct snd_usb_substream *subs = rule->private;
+ 	struct audioformat *fp;
+ 	struct snd_interval *it = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
+-	unsigned int rmin, rmax;
++	unsigned int rmin, rmax, r;
+ 	int changed;
++	int i;
  
- /* Command Message - Generic */
- #define SOF_CMD_TYPE_SHIFT			16
--#define SOF_CMD_TYPE_MASK			(0xfff << SOF_CMD_TYPE_SHIFT)
-+#define SOF_CMD_TYPE_MASK			(0xfffL << SOF_CMD_TYPE_SHIFT)
- #define SOF_CMD_TYPE(x)				((x) << SOF_CMD_TYPE_SHIFT)
+ 	hwc_debug("hw_rule_rate: (%d,%d)\n", it->min, it->max);
+-	changed = 0;
+-	rmin = rmax = 0;
++	rmin = UINT_MAX;
++	rmax = 0;
+ 	list_for_each_entry(fp, &subs->fmt_list, list) {
+ 		if (!hw_check_valid_format(subs, params, fp))
+ 			continue;
+-		if (changed++) {
+-			if (rmin > fp->rate_min)
+-				rmin = fp->rate_min;
+-			if (rmax < fp->rate_max)
+-				rmax = fp->rate_max;
++		if (fp->rate_table && fp->nr_rates) {
++			for (i = 0; i < fp->nr_rates; i++) {
++				r = fp->rate_table[i];
++				if (!snd_interval_test(it, r))
++					continue;
++				rmin = min(rmin, r);
++				rmax = max(rmax, r);
++			}
+ 		} else {
+-			rmin = fp->rate_min;
+-			rmax = fp->rate_max;
++			rmin = min(rmin, fp->rate_min);
++			rmax = max(rmax, fp->rate_max);
+ 		}
+ 	}
  
- /* Global Message Types */
+-	if (!changed) {
++	if (rmin > rmax) {
+ 		hwc_debug("  --> get empty\n");
+ 		it->empty = 1;
+ 		return -EINVAL;
+@@ -1200,50 +1204,6 @@ static int hw_rule_period_time(struct snd_pcm_hw_params *params,
+ 	return changed;
+ }
+ 
+-/*
+- *  If the device supports unusual bit rates, does the request meet these?
+- */
+-static int snd_usb_pcm_check_knot(struct snd_pcm_runtime *runtime,
+-				  struct snd_usb_substream *subs)
+-{
+-	struct audioformat *fp;
+-	int *rate_list;
+-	int count = 0, needs_knot = 0;
+-	int err;
+-
+-	kfree(subs->rate_list.list);
+-	subs->rate_list.list = NULL;
+-
+-	list_for_each_entry(fp, &subs->fmt_list, list) {
+-		if (fp->rates & SNDRV_PCM_RATE_CONTINUOUS)
+-			return 0;
+-		count += fp->nr_rates;
+-		if (fp->rates & SNDRV_PCM_RATE_KNOT)
+-			needs_knot = 1;
+-	}
+-	if (!needs_knot)
+-		return 0;
+-
+-	subs->rate_list.list = rate_list =
+-		kmalloc_array(count, sizeof(int), GFP_KERNEL);
+-	if (!subs->rate_list.list)
+-		return -ENOMEM;
+-	subs->rate_list.count = count;
+-	subs->rate_list.mask = 0;
+-	count = 0;
+-	list_for_each_entry(fp, &subs->fmt_list, list) {
+-		int i;
+-		for (i = 0; i < fp->nr_rates; i++)
+-			rate_list[count++] = fp->rate_table[i];
+-	}
+-	err = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+-					 &subs->rate_list);
+-	if (err < 0)
+-		return err;
+-
+-	return 0;
+-}
+-
+ 
+ /*
+  * set up the runtime hardware information.
+@@ -1333,9 +1293,6 @@ static int setup_hw_info(struct snd_pcm_runtime *runtime, struct snd_usb_substre
+ 		if (err < 0)
+ 			return err;
+ 	}
+-	err = snd_usb_pcm_check_knot(runtime, subs);
+-	if (err < 0)
+-		return err;
+ 
+ 	return snd_usb_autoresume(subs->stream->chip);
+ }
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index d01edd5da6cf8..49c1b8a208582 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -47,7 +47,6 @@ static void free_substream(struct snd_usb_substream *subs)
+ 		return; /* not initialized */
+ 	list_for_each_entry_safe(fp, n, &subs->fmt_list, list)
+ 		audioformat_free(fp);
+-	kfree(subs->rate_list.list);
+ 	kfree(subs->str_pd);
+ 	snd_media_stream_delete(subs);
+ }
 -- 
 2.27.0
 
