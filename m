@@ -7,83 +7,84 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D346AC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Dec 2020 10:08:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59BFAC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Dec 2020 10:09:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 317AE221EB
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Dec 2020 10:08:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 317AE221EB
+	by mail.kernel.org (Postfix) with ESMTPS id AD2A92168B
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Dec 2020 10:09:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD2A92168B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93E011812;
-	Thu, 24 Dec 2020 11:08:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93E011812
+	by alsa0.perex.cz (Postfix) with ESMTPS id 435C7181E;
+	Thu, 24 Dec 2020 11:08:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 435C7181E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608804534;
-	bh=ZIyBW/OdCjm9OgNgwmgcJadImSmbzl+RKE3MWvR5MHU=;
+	s=default; t=1608804547;
+	bh=lxIgOnn7nn4gp0NnJ8H8XVWkj1lGeGIeRa/iJ9KF0Dc=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tKp8bphzRFw899jJZYGQ0Yxgo+462AEdncIbn6BkV+YvpUsb0kmZ7TuEg1D8u5PTG
-	 BxXyHj0AB1MWSmk4hreg7mS+1rNnTxqecSluIeR280NU1LJ1Ahmtpf73vFjmfeKJz+
-	 1O9Z/IvtloV+orP+3L5CN+ZJ+GCx3mBac4ZNlJFE=
+	b=tUEYlU1WNzRcQN0O0PO2yixHiSnd/ooQv7Z0YLSGBTLHEyKLKrVe0nxzNxKJI96u2
+	 mSxhY65UjaFNq9TkXUd/ZJsA7QRf7BqeJ8M1ZuUrulYBaQoMR2XoZyNAMCS9U/ua5N
+	 cBuoQJMMWJdEXnkVGTMtFAW04uJs+xqIzeij0XWY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9591BF804C1;
-	Thu, 24 Dec 2020 11:06:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4822BF804D2;
+	Thu, 24 Dec 2020 11:06:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16C1FF804CA; Thu, 24 Dec 2020 11:06:31 +0100 (CET)
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com
- [IPv6:2607:f8b0:4864:20::f4a])
+ id B3719F804CA; Thu, 24 Dec 2020 11:06:33 +0100 (CET)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com
+ [IPv6:2607:f8b0:4864:20::649])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52A87F804C1
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2020 11:06:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52A87F804C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B3C4F804C2
+ for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2020 11:06:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B3C4F804C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="knmXjOC+"
-Received: by mail-qv1-xf4a.google.com with SMTP id i13so1288797qvx.11
- for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2020 02:06:26 -0800 (PST)
+ header.b="LM8U8c+W"
+Received: by mail-pl1-x649.google.com with SMTP id y5so984700plr.19
+ for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2020 02:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=sender:date:in-reply-to:message-id:mime-version:references:subject
- :from:to:cc; bh=91fsL1pp4XLPsEvvcENGJE8PRwu4ZAo87pxxJcnuKws=;
- b=knmXjOC+U0U1WB4qx0X9WZJXMcnkL/pzaGHJ6kT5ap+mWIlPKInBio/2+gordkTHnK
- +oFOvZnYjV5J3qiSiYvmdl9Y4laRL5u7QwTl0fmt0rXSNuq4uQUHW85HvZwLP5TmkHhp
- NsK+gfmMZbGul6JfwI453baGUpvPo20VJ8kiyUgiZ7WVjw7KAm4xdaoCIXluHqNMf3WR
- UjX7kB1x9Gp5Oav4MZI3N1XDjcZ8e4Cfe3XaE5+OWuh9pruA9zUEPeoIa7VkkYJsRAud
- TEPgHOswaHNzPrpGa9QSI1ewEVyuDSXc+5efRZ1JxjP8syl5UvTVywZcUvGP0cBRxaQF
- sJiA==
+ :from:to:cc; bh=cesefJeA9SG97IrQXCu6DnjriyZpRNEevem65s6SRwg=;
+ b=LM8U8c+WIobkOFLgAb3KQHLWG4QJDkkcdDPQ5VSH29EpeRAL2xXpIxxPUZQ0C80zY5
+ tjfD/5kkHKoL1W+lFkDxatK78otky02zZVnY2EnqK5r4C2HGKZ5I3Bg1V0pSWphoiSP8
+ WzdxkjzaRVIeZ8zcZzuSrKMNTMJNtHNWZYjwq4TtbwKUXiAIZxt1WDF2NvlpzwnUJblX
+ qnOYBuZnUQSXCuDuVjfCzv9bohSw8q8bdZynga4DEt+hl7FXJlDHfJ4QEQd9dyAcE47+
+ K7z6EjGMizdZI576LkLyGIjPyB7G5vNFrJMdwU15mX0T8MWpkuG+/79SEdErQxc9oSrL
+ eo5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=91fsL1pp4XLPsEvvcENGJE8PRwu4ZAo87pxxJcnuKws=;
- b=VK1hn0a4g5KGMPb6C1oR7k2CzaFRPaLTt95Eq0vEc6IV6PyR50zWrx0CSQWOzQATMd
- uNLRSUrZj12k32XgX/lRt3NllF5rispKla4u50nDMcWTcuQVWzMRtFbb5EWgwJrWN8pQ
- 6CG82uYTkR+3Zmv5Wyf9WP1ex+WRuSL1TiYODpjprwf9njRF+PgBuApJag1Mxu21P+05
- 47qPlB2buS5SJu0ei7X01bRyjtYoT2feL3xPWA6FVI9Xdd3qqiaJbfBQ7CSEDr3iv98U
- Sw7q2t7FqqRyiHL6TrUncojmeeuKFEUDGtEv35B1v6h7qKIVHY/uA7hTU/Qj9hcSAA23
- Zhbg==
-X-Gm-Message-State: AOAM532yIYnD5Vjd25LcrlKJ/qdFSMdA6vML4hHCYawihWAPSPrUxWrL
- gFWOhqlizpiKcXncwsQ5pwdFsByhbuA8
-X-Google-Smtp-Source: ABdhPJzg7/USQygC4uwY8eQcVkRFZFmavk2XgbxeG00pBVgrZJuVjaf4bSC4wwcUNzQfaGtuBzZHX13pnDG1
+ bh=cesefJeA9SG97IrQXCu6DnjriyZpRNEevem65s6SRwg=;
+ b=mHLuttuhOQsKGLwQyMCRiXOb76e4RPTwzWHLYc+dnu6reCt4ESn/jYMsqwHVjcuBdo
+ YodGQNwaZ8i1/eULrvBxadrdjSyj3zhWtC2PSkbaXYDkft9aiLJXtYCTfR4qKddhxDWo
+ 810caGEtDXIb4756PY3ZeqdBVDK5D5fMeuLqSmjp38FI0KpCkiSG9mEky9QtfmCKDkBP
+ DH0+bTX8kRtpnenN3sPsN2kuniBVR1yclg7rGRNY3KgyxzEAp95IiGD5KeWqS6NT8PZ0
+ 8OiLjyf4UZfiw2faIZm4YN4vgF5J924I4lnui0w1VoklC/svlB9exbaN1nNqyXsmhjS8
+ VVYg==
+X-Gm-Message-State: AOAM532U1CKkWHMQLLVadjaiy9yf8Xn59OQ6MgK6eKXXV0qU6M1nNah6
+ T3grjgEd+bANIgICC/zIqC37/0f10Gu/
+X-Google-Smtp-Source: ABdhPJyX5iFk4UiHk7i/gjhzX40fEO68EHg1ZYqtyKvAkyRCN9jNscVshEFCp7i1C0gs0tLI/kMNTqTz8bav
 X-Received: from tzungbi-z840.tpe.corp.google.com
  ([2401:fa00:1:b:725a:fff:fe41:c6a5])
- (user=tzungbi job=sendgmr) by 2002:a0c:e651:: with SMTP id
- c17mr23148264qvn.34.1608804384288; Thu, 24 Dec 2020 02:06:24 -0800 (PST)
-Date: Thu, 24 Dec 2020 18:06:05 +0800
+ (user=tzungbi job=sendgmr) by 2002:a17:902:ff0e:b029:da:d4ee:eca3 with SMTP
+ id f14-20020a170902ff0eb02900dad4eeeca3mr29244211plj.41.1608804388362; Thu,
+ 24 Dec 2020 02:06:28 -0800 (PST)
+Date: Thu, 24 Dec 2020 18:06:06 +0800
 In-Reply-To: <20201224100607.3006171-1-tzungbi@google.com>
-Message-Id: <20201224100607.3006171-4-tzungbi@google.com>
+Message-Id: <20201224100607.3006171-5-tzungbi@google.com>
 Mime-Version: 1.0
 References: <20201224100607.3006171-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH 3/5] ASoC: rt1015: return error if any when setting
- bypass_boost
+Subject: [PATCH 4/5] ASoC: rt1015: refactor retry loop and rt1015_priv
+ allocation
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -103,46 +104,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Returns -EBUSY if DAC is using when setting bypass_boost.
+Refactors retry loop in flush DAC work.  It is more clear to use a
+for-loop here.
+
+Uses !rt1015 to check if NULL.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- sound/soc/codecs/rt1015.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ sound/soc/codecs/rt1015.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 696e00478991..93e4763ece11 100644
+index 93e4763ece11..a7b9dfcb4b0f 100644
 --- a/sound/soc/codecs/rt1015.c
 +++ b/sound/soc/codecs/rt1015.c
-@@ -548,17 +548,19 @@ static int rt1015_bypass_boost_put(struct snd_kcontrol *kcontrol,
- 	struct rt1015_priv *rt1015 =
- 		snd_soc_component_get_drvdata(component);
+@@ -570,15 +570,14 @@ static void rt1015_flush_work(struct work_struct *work)
+ 	struct rt1015_priv *rt1015 = container_of(work, struct rt1015_priv,
+ 						flush_work.work);
+ 	struct snd_soc_component *component = rt1015->component;
+-	unsigned int val, i = 0, count = 200;
++	unsigned int val, i;
  
--	if (!rt1015->dac_is_used) {
--		rt1015->bypass_boost = ucontrol->value.integer.value[0];
--		if (rt1015->bypass_boost == RT1015_Bypass_Boost &&
-+	if (rt1015->dac_is_used) {
-+		dev_err(component->dev, "DAC is being used!\n");
-+		return -EBUSY;
-+	}
-+
-+	rt1015->bypass_boost = ucontrol->value.integer.value[0];
-+	if (rt1015->bypass_boost == RT1015_Bypass_Boost &&
- 			!rt1015->cali_done) {
--			rt1015_calibrate(rt1015);
--			rt1015->cali_done = 1;
-+		rt1015_calibrate(rt1015);
-+		rt1015->cali_done = 1;
+-	while (i < count) {
++	for (i = 0; i < 200; ++i) {
+ 		usleep_range(1000, 1500);
+ 		dev_dbg(component->dev, "Flush DAC (retry:%u)\n", i);
+ 		regmap_read(rt1015->regmap, RT1015_CLK_DET, &val);
+ 		if (val & 0x800)
+ 			break;
+-		i++;
+ 	}
  
--			regmap_write(rt1015->regmap, RT1015_MONO_DYNA_CTRL, 0x0010);
--		}
--	} else
--		dev_err(component->dev, "DAC is being used!\n");
-+		regmap_write(rt1015->regmap, RT1015_MONO_DYNA_CTRL, 0x0010);
-+	}
+ 	regmap_write(rt1015->regmap, RT1015_SYS_RST1, 0x0597);
+@@ -1187,9 +1186,8 @@ static int rt1015_i2c_probe(struct i2c_client *i2c,
+ 	int ret;
+ 	unsigned int val;
  
- 	return 0;
- }
+-	rt1015 = devm_kzalloc(&i2c->dev, sizeof(struct rt1015_priv),
+-				GFP_KERNEL);
+-	if (rt1015 == NULL)
++	rt1015 = devm_kzalloc(&i2c->dev, sizeof(*rt1015), GFP_KERNEL);
++	if (!rt1015)
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(i2c, rt1015);
 -- 
 2.29.2.729.g45daf8777d-goog
 
