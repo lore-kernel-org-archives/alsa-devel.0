@@ -2,72 +2,151 @@ Return-Path: <SRS0=e5Na=F5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F449C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 08:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D32C1C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 12:01:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E590E230FF
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 08:44:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E590E230FF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=vivo.com
+	by mail.kernel.org (Postfix) with ESMTPS id 26EB122795
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 12:01:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26EB122795
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 644081831;
-	Fri, 25 Dec 2020 09:43:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 644081831
+	by alsa0.perex.cz (Postfix) with ESMTPS id B51CE1830;
+	Fri, 25 Dec 2020 13:00:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B51CE1830
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608885843;
-	bh=VJS/J2TP9T00uwaMsyS1+eoIM/9n5h1Or7YKTLjDaBA=;
-	h=To:Subject:From:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qPwlmDFo6mey42/vslTdSCuQZmQo9PVIepRBh3+OIViENxdocJWsZl0ymwt6vuyID
-	 HxDcT9TnGKAjJ7taylYfZNMcB14XtIENX21K99QFrlvV/eAPqORuDd5V0VNRFOKd5J
-	 mPxLNXNL2WMB6iP0Lq3TZUu3in59qonDII0dsKzY=
+	s=default; t=1608897675;
+	bh=TOBqz51/aV9sU/8oVilSLrbeWbLXAbJCT4XyebhaOMY=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=j06ywGWAQuddLV6X5SxgnfS7w3gDPHMBK0Iieb3yNe7B2Suw1txm8BKNjxeQDCFPm
+	 MYLM3kCx0iWflpWlUmSCwZrxJy0/dhRAa4tjcmXcTdI0evRQCGH6qkUdXjXVNzaHKf
+	 1ezfbtuUuE/69k4La2c3fYr6QE6gRVZmPxpUjAzk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5C9FF80168;
-	Fri, 25 Dec 2020 09:43:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23D47F80168;
+	Fri, 25 Dec 2020 13:00:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A42C2F801D5; Fri, 25 Dec 2020 09:43:10 +0100 (CET)
-Received: from m176148.mail.qiye.163.com (m176148.mail.qiye.163.com
- [59.111.176.148])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 75845F801D5; Fri, 25 Dec 2020 13:00:23 +0100 (CET)
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com
+ (mail-eopbgr750051.outbound.protection.outlook.com [40.107.75.51])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D63EFF80113
- for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2020 09:43:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D63EFF80113
-Received: from vivo.com (wm-8.qy.internal [127.0.0.1])
- by m176148.mail.qiye.163.com (Hmail) with ESMTP id 63AAF1A4F3A;
- Fri, 25 Dec 2020 16:42:48 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AAoArwDfDnoefyxzy2wyiaqm.1.1608885766936.Hmail.zhucancan@vivo.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, 
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?QVNvQzogc29jLXBjbTogZGlzY29ubmVjdCBCRXMgaWYgdGhlIEZFIGlzIG5vdCByZWFkeQ==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.232
+ by alsa1.perex.cz (Postfix) with ESMTPS id 560F0F80113
+ for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2020 13:00:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 560F0F80113
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=amdcloud.onmicrosoft.com
+ header.i=@amdcloud.onmicrosoft.com header.b="R0X3oH/3"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bVkaGVjpyhfUepl1TrvBVW2SwUZewvQadoxVmuxImrnCGrqES6rtc5N4PwjQEDiebaoz5zlcjYdpkKIHDJSJdVPX7E2G3cLld1MzIXRJq8NJ7t5qowkWLidfQQMVEbOR0xdI14+KnO2sJrD7/N148/mmN0/WP185kTLnbt9m2pIRn421HnHWV0DCtviY5Axb4MBnVFU67W8AKo8xH3jWZ+raZ42h2GmHqE+8w4Wktji2P2MEeAzYRRSARVGk1rPDlQrv6FjnVubblgzkOxv4pKPB3QhTduUE82MvDe5ICigRvuKjDyLu3XymvlcIAhVR5XJGoJcR/96oaw/gV6Sj8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lPEejCcYrw2CV7aZOf+eq0wuxGeKT0s4qcgh5O8H908=;
+ b=kXtD1LyLK9MPPEoA63sx9xCEitrqcdpnjDQo3x8j3WpQB2IsANeJ7nxWDK84HzQo5W45sqgqRdFSLngZ3i/0G48jgSnJ8I6v9DP8wkLFoZbn4RpZ8jEJr6bk/6+2og5cRc3lPGhGRgIDlR5vhX/mL/DTQQ/fGjATjRkNnCU3at7jsKNcBtK4uZYy5Y6h0hWWjjaha7MMjXEoaJyLNildhZ4IHu0pyXmyGhmFy0pP9zQ6LIFe+wI7T7dTu4LkONka5yCovJQTVHR1G29LlwO9JMNC0nWQyC8iEJhm9aNuw7xv5C6YfEbNekwnd9XySdOXxxQ6v4+sDP1O8LpPP5pDVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lPEejCcYrw2CV7aZOf+eq0wuxGeKT0s4qcgh5O8H908=;
+ b=R0X3oH/3kE5GspGXnL4TVft7dffEVtPVwdgwCUGHHzA1J9DGqiBtOxQGCmf3aOqEtgEtlH9BIO+ioRn0C0+JnHtDcn5JQEqxz4p0iDeWwVTeSiApDrcMpyevhqKV6vvSZmzRJX6c08HHYPQc1AL9lwxQwYtPMCeMx1ZwitTlQLY=
+Received: from BY5PR12MB4292.namprd12.prod.outlook.com (2603:10b6:a03:212::12)
+ by BY5PR12MB4307.namprd12.prod.outlook.com (2603:10b6:a03:20c::16)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.29; Fri, 25 Dec
+ 2020 12:00:10 +0000
+Received: from BY5PR12MB4292.namprd12.prod.outlook.com
+ ([fe80::85f7:5dda:fd88:66ca]) by BY5PR12MB4292.namprd12.prod.outlook.com
+ ([fe80::85f7:5dda:fd88:66ca%7]) with mapi id 15.20.3700.028; Fri, 25 Dec 2020
+ 12:00:10 +0000
+From: "RAVULAPATI, VISHNU VARDHAN RAO" <Vishnuvardhanrao.Ravulapati@amd.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: amd:Replacing MSI with Legacy IRQ model
+Thread-Topic: [PATCH] ASoC: amd:Replacing MSI with Legacy IRQ model
+Thread-Index: AQHW2FsA3CWx9R9NY06vjMrX9p78MKoDKQiAgASPs8E=
+Date: Fri, 25 Dec 2020 12:00:10 +0000
+Message-ID: <BY5PR12MB42927599598886F949586107E7DC0@BY5PR12MB4292.namprd12.prod.outlook.com>
+References: <20201222115929.11222-1-Vishnuvardhanrao.Ravulapati@amd.com>,
+ <s5hmty6dj0q.wl-tiwai@suse.de>
+In-Reply-To: <s5hmty6dj0q.wl-tiwai@suse.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Enabled=True;
+ MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_SetDate=2020-12-25T11:54:37.9816849Z;
+ MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_ContentBits=0;
+ MSIP_Label_76546daa-41b6-470c-bb85-f6f40f044d7f_Method=Privileged
+authentication-results: suse.de; dkim=none (message not signed)
+ header.d=none;suse.de; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [106.208.5.95]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5f1bddbb-a73c-415c-bc20-08d8a8cca150
+x-ms-traffictypediagnostic: BY5PR12MB4307:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR12MB43077E3E8F722F6D791F4A43E7DC0@BY5PR12MB4307.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TQFMBLE+WpewhDabWxBcNdC9++9PUzdQzgX2ZPoX1Cq1EsliSdHBU57xsBFrEcKV5C1Ynwqs0m73LO+y77DyQZ84pskFt4BuKUpcqiVseEZHANYJzzi8z2geuJMu5gvlT+KoCM5KiFOK9wdg3Iapv9hNdsE/uuP/pUPuq3SpHOM3HS1zJdbeL1DNF71qEYnAG7pl6d6Sq/Sy/ZW+/Vy+h12Leru+aeFZNCki59gdSwLyWRXZ1E3LN9Iu5EaxAfXJTMmv1zV+Wazm2pYDjoqigmdD9M5cznn1gE3z7Q6yhOuebORT1YmDybknFngU83ZFcMrgzTw7zf7GNjZIe6d5ueUtQc4ZoMfXKuim1ZrDPBlmMRkrIbkUXLibrbsQrNDS0g9Tf5zScZ3yYmanPLfZlg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:BY5PR12MB4292.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(376002)(366004)(136003)(346002)(396003)(39860400002)(6916009)(478600001)(9686003)(26005)(52536014)(55016002)(71200400001)(7696005)(33656002)(2906002)(66946007)(66446008)(91956017)(64756008)(66476007)(76116006)(66556008)(8936002)(86362001)(8676002)(6506007)(4326008)(186003)(316002)(54906003)(5660300002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?wWiL7EjI2BSvcMjLZS3DCTfd23aMDf9wVcxUAz7y1MJTFDB20GwOthefwZM2?=
+ =?us-ascii?Q?PqZWIbNiMXHEnUrxFQmejKdcXnp2aFloA2983t2r4zNdEovUxKDaPPgx3pqD?=
+ =?us-ascii?Q?f/FS2KZ5Omhu2VtrotqUJSD/viya+eRIxUKyehE6mbEbyfSvVp1nUsPZEjUv?=
+ =?us-ascii?Q?v5LBVtPQxFWT7prfvosdb8aha1l6M0ezy97aXPdS9zwawWFksS59KGPGggOT?=
+ =?us-ascii?Q?YkxdBbZcH6lz/wZ9Qa+G6XFNzrw1wdIywGjbomujswubPe+Gm8CKVaqI6eEr?=
+ =?us-ascii?Q?jqmkhDcklYNravXgB5wd6O5ckup/yKb8lPbBOoZbg6ey8GxZttpv/bS6ULKE?=
+ =?us-ascii?Q?bLbNNed4VtmI+YlRfdfEwt9UUX/7YW8PjCBkyheuAZnHVVPRLW4FxsD26TfG?=
+ =?us-ascii?Q?Enu4tC4anZfWhGiCsdo7gkcf8UACsy3LdyJv9yyE8anYRFfrkSnTuIwAaBqg?=
+ =?us-ascii?Q?D5/RiHF6Gj5fC2bZo0+2/Fgroscaji0tDv1ui9sEyM0tu4kzHHQ0Vzm8bDxB?=
+ =?us-ascii?Q?Hn80/pTzuf9mP8+WnwYXSCKBbQKvq9JFKKvNOF0sY6Ao7vOAEPDD1bKvOWpK?=
+ =?us-ascii?Q?wlmp+OHJntuv6OoV1uenwjDVwPEPFnEtILepkeE0VL+l2eNOgThiKMKoeR2j?=
+ =?us-ascii?Q?vrk7I85cyRCS1+Ki6AIbOE3avo8603sXPf2IxA7qPi8FcV4hn9u7IcrOmc5B?=
+ =?us-ascii?Q?XiprLMBQEf8O994GMJEFOlQKZP+6Vc2pUISqFL3mPVqkNnsAFO5IEyNGFy3z?=
+ =?us-ascii?Q?4zGHLsNlsHXF+wXlY4UEF/DdW0hpgnvTPCTrYXbjf4hPD+xPx3s6HlfzlfY1?=
+ =?us-ascii?Q?FiUFUL2yGpJHA3svu7l0phI+w3vtDxjA8RXsq6ST8+9q0sY3LfB3jvRhd66x?=
+ =?us-ascii?Q?xAIPfyzqSLTa2t8ZHqxaot7b3ZSfi8qca9hTfcKl8V5GANjEOeNPk9chd7/n?=
+ =?us-ascii?Q?/woqG5v3qsJCCDrP4+vu8OsZxOzBrLRSKWp2bqSednFVeH//3cizhHRkrgaF?=
+ =?us-ascii?Q?Gtad?=
 MIME-Version: 1.0
-Received: from zhucancan@vivo.com( [58.251.74.232) ] by ajax-webmail (
- [127.0.0.1] ) ; Fri, 25 Dec 2020 16:42:46 +0800 (GMT+08:00)
-From: =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>
-Date: Fri, 25 Dec 2020 16:42:46 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
- oVCBIfWUFZHh4fSkgfTB5IHxpOVkpNS0NDQ05MTEpPSElVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
- FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo6FDoJDD8dPxUUHh0CAwECSQwC
- EhoKFlVKVUpNS0NDQ05MTElJQ0hVMxYaEhdVARMOGBoVGBoVOw0SDRRVGBQWRVlXWRILWUFZTkNV
- SU5KVUxPVUlISVlXWQgBWUFPT09PNwY+
-X-HM-Tid: 0a7699109abb9394kuws63aaf1a4f3a
-Cc: kernel@vivo.com, trivial@kernel.org, zhucancan@vivo.com
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4292.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f1bddbb-a73c-415c-bc20-08d8a8cca150
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Dec 2020 12:00:10.4290 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q7uZiHyppIrCumfW9oMK5SwxJ+jJMZILVZds3kLDVT0DISvkN1KDTQpyvpLJkil7+zWlsqHHZTkI1Utjd4VQEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4307
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: "moderated list:SOUND - SOC LAYER /
+ DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>,
+ Mark Brown <broonie@kernel.org>, "Mukunda, 
+ Vijendar" <Vijendar.Mukunda@amd.com>, "Deucher,
+ Alexander" <Alexander.Deucher@amd.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +162,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-RkUgaXMgY29ubmVjdGVkIHRvIHR3byBCRXMsIEJFMSBpcyBhY3RpdmUsIEJFMiBpcyBkZWFjdGl2
-ZS4KV2hlbiBjbG9zaW5nIEJFMSwgRkUvQkUxIGlzIGluIEhXX0ZSRUUgc3RhdGUsIHRoZW4gQkUy
-IGlzCnN0YXJ0dXAgYnkgbWl4ZXIgcnVudGltZSB1cGRhdGUuCgpGb3IgRkUgaXMgaW4gSFdfRlJF
-RSBzdGF0ZSwgZHBjbV9ydW5fdXBkYXRlX3N0YXJ0dXAoKSB3aWxsIHNraXAKQkUyJ3Mgc3RhcnR1
-cCBiZWNhdXNlIEZFJ3Mgc3RhdGUgaXMgSFdfRlJFRSwgQkUyIHN0YXlzIGluIEZFJ3MKYmVfY2xp
-ZW50cyBsaXN0LgoKRHVyaW5nIEZFJ3MgY2xvc2VkLCB0aGUgZHBjbV9mZV9kYWlfY2xvc2UoKSB3
-aWxsIGNsb3NlIGFsbCByZWxhdGVkCkJFcywgQkUyIHdpbGwgYmUgY2xvc2VkLiBUaGlzIHdpbGwg
-bGVhZCB0byBCRTIncyBkcGNtW3N0cmVhbV0udXNlcnMKbWlzbWF0Y2guCgpXZSBuZWVkIGRpc2Nv
-bm5ldCBhbGwgcGVuZGluZyBCRXMgaW4gdGhlIGNvcm5lciBjYXNlLgoKU2lnbmVkLW9mZi1ieTog
-emh1Y2FuY2FuIDx6aHVjYW5jYW5Adml2by5jb20+Ci0tLQogc291bmQvc29jL3NvYy1wY20uYyB8
-IDE5ICsrKysrKysrKysrKysrLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCsp
-LCA1IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtcGNtLmMgYi9zb3Vu
-ZC9zb2Mvc29jLXBjbS5jCmluZGV4IGRjYWI5NTI3YmEzZC4uMDRhZDUzZjBhZTRmIDEwMDY0NAot
-LS0gYS9zb3VuZC9zb2Mvc29jLXBjbS5jCisrKyBiL3NvdW5kL3NvYy9zb2MtcGNtLmMKQEAgLTI0
-NTEsOCArMjQ1MSwxMSBAQCBzdGF0aWMgaW50IGRwY21fcnVuX3VwZGF0ZV9zdGFydHVwKHN0cnVj
-dCBzbmRfc29jX3BjbV9ydW50aW1lICpmZSwgaW50IHN0cmVhbSkKIAogCS8qIE9ubHkgc3RhcnQg
-dGhlIEJFIGlmIHRoZSBGRSBpcyByZWFkeSAqLwogCWlmIChmZS0+ZHBjbVtzdHJlYW1dLnN0YXRl
-ID09IFNORF9TT0NfRFBDTV9TVEFURV9IV19GUkVFIHx8Ci0JCWZlLT5kcGNtW3N0cmVhbV0uc3Rh
-dGUgPT0gU05EX1NPQ19EUENNX1NUQVRFX0NMT1NFKQotCQlyZXR1cm4gLUVJTlZBTDsKKwkJZmUt
-PmRwY21bc3RyZWFtXS5zdGF0ZSA9PSBTTkRfU09DX0RQQ01fU1RBVEVfQ0xPU0UpIHsKKwkJZGV2
-X2VycihmZS0+ZGV2LCAiQVNvQzogRkUgJXMgaXMgbm90IHJlYWR5ICVkXG4iLAorCQkJZmUtPmRh
-aV9saW5rLT5uYW1lLCBmZS0+ZHBjbVtzdHJlYW1dLnN0YXRlKTsKKwkJZ290byBkaXNjb25uZWN0
-OworCX0KIAogCS8qIHN0YXJ0dXAgbXVzdCBhbHdheXMgYmUgY2FsbGVkIGZvciBuZXcgQkVzICov
-CiAJcmV0ID0gZHBjbV9iZV9kYWlfc3RhcnR1cChmZSwgc3RyZWFtKTsKQEAgLTI1MTMsMTIgKzI1
-MTYsMTggQEAgc3RhdGljIGludCBkcGNtX3J1bl91cGRhdGVfc3RhcnR1cChzdHJ1Y3Qgc25kX3Nv
-Y19wY21fcnVudGltZSAqZmUsIGludCBzdHJlYW0pCiBjbG9zZToKIAlkcGNtX2JlX2RhaV9zaHV0
-ZG93bihmZSwgc3RyZWFtKTsKIGRpc2Nvbm5lY3Q6Ci0JLyogZGlzY29ubmVjdCBhbnkgY2xvc2Vk
-IEJFcyAqLworCS8qIGRpc2Nvbm5lY3QgYW55IHBlbmRpbmcgQkVzICovCiAJc3Bpbl9sb2NrX2ly
-cXNhdmUoJmZlLT5jYXJkLT5kcGNtX2xvY2ssIGZsYWdzKTsKIAlmb3JfZWFjaF9kcGNtX2JlKGZl
-LCBzdHJlYW0sIGRwY20pIHsKIAkJc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKmJlID0gZHBj
-bS0+YmU7Ci0JCWlmIChiZS0+ZHBjbVtzdHJlYW1dLnN0YXRlID09IFNORF9TT0NfRFBDTV9TVEFU
-RV9DTE9TRSkKLQkJCWRwY20tPnN0YXRlID0gU05EX1NPQ19EUENNX0xJTktfU1RBVEVfRlJFRTsK
-KworCQkvKiBpcyB0aGlzIG9wIGZvciB0aGlzIEJFID8gKi8KKwkJaWYgKCFzbmRfc29jX2RwY21f
-YmVfY2FuX3VwZGF0ZShmZSwgYmUsIHN0cmVhbSkpCisJCQljb250aW51ZTsKKworCQlpZiAoYmUt
-PmRwY21bc3RyZWFtXS5zdGF0ZSA9PSBTTkRfU09DX0RQQ01fU1RBVEVfQ0xPU0UgfHwKKwkJCWJl
-LT5kcGNtW3N0cmVhbV0uc3RhdGUgPT0gU05EX1NPQ19EUENNX1NUQVRFX05FVykKKwkJCQlkcGNt
-LT5zdGF0ZSA9IFNORF9TT0NfRFBDTV9MSU5LX1NUQVRFX0ZSRUU7CiAJfQogCXNwaW5fdW5sb2Nr
-X2lycXJlc3RvcmUoJmZlLT5jYXJkLT5kcGNtX2xvY2ssIGZsYWdzKTsKIAotLSAKMi4yMS4wCgoK
-DQoNCg==
+[AMD Official Use Only - Internal Distribution Only]
+
+
+
+On Tue, 22 Dec 2020 12:59:18 +0100,
+Ravulapati Vishnu vardhan rao wrote:
+>
+> When we try to play and capture simultaneously we see that
+> interrupts are genrated but our handler is not being acknowledged,
+> After investigating further more in detail on this issue we found
+> that IRQ delivery via MSI from the ACP IP is unreliable and so sometimes
+> interrupt generated will not be acknowledged so MSI model shouldn't be us=
+ed
+> and using legacy IRQs will resolve interrupt handling issue.
+>
+> This patch replaces MSI interrupt handling with legacy IRQ model.
+>
+> Issue can be reproduced easily by running below python script:
+>
+> import subprocess
+> import time
+> import threading
+>
+> def do2():
+>   cmd =3D 'aplay -f dat -D hw:2,1 /dev/zero -d 1'
+>     subprocess.call(cmd, stdin=3Dsubprocess.PIPE,
+>                        stderr=3Dsubprocess.PIPE, shell=3DTrue)
+>     print('Play Done')
+>
+> def run():
+>        for i in range(1000):
+>                do2()
+>
+> def do(i):
+>     cmd =3D 'arecord -f dat -D hw:2,2 /dev/null -d 1'
+>     subprocess.call(cmd, stdout=3Dsubprocess.PIPE,
+>                        stderr=3Dsubprocess.PIPE, shell=3DTrue)
+>     print(datetime.datetime.now(), i)
+>
+> t =3D threading.Thread(target=3Drun)
+> t.start()
+> for i in range(1000):
+>        do(i)
+>
+> t.join()
+>
+> After applying this patch issue is resolved.
+>
+> Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati=
+@amd.com>
+
+>Is this specific to Raven, i.e. Renoir doesn't need >the same fix?
+>If so, it should be mentioned in the patch >description.
+
+We will send this fix as separate patch for Renoir.
+
+Thanks,
+Vishnu
+
