@@ -2,64 +2,65 @@ Return-Path: <SRS0=e5Na=F5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF7ECC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 08:03:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3EC1C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 08:17:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E969523129
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 08:03:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E969523129
+	by mail.kernel.org (Postfix) with ESMTPS id 79CCA23136
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 08:17:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79CCA23136
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30A721839;
-	Fri, 25 Dec 2020 09:03:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30A721839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 692E3183B;
+	Fri, 25 Dec 2020 09:17:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 692E3183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608883433;
-	bh=cV6NuHa+XiD5ap1QveW+2xauqiIKxNxUoVDW5hF1MPE=;
+	s=default; t=1608884271;
+	bh=g10JXIIul28FJH2eLl7knaLOVMc0vJSNgeRN90qazig=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WCB56VFQe9gJSVwuE4TpDN4Ah7ANGexJeAwzveZ0lINP/kykcEmjE+EZLBWucXFZU
-	 YtlupxyUOMk3wfOC6qGQgFdE3mCBp43ZlxxlR2ZlunRXmULmrC8wiGJbTViducvyXN
-	 8v4xv8NpCv5XX0AONDz/175E48EebK5G/vVmUmuI=
+	b=t00eP1P6XtM7x4+AuQDP1lPooI18G/OmmoRcgCYWMn8pfWU9+fB9kFGVwb1jtGC7H
+	 HFXaXFz/MQKPp7pUKS26ydq6t1iGKMuyCmUn5TUk1yyfc0598Ebkc4ssVaX+UaS6zU
+	 jowjJSL6+EOU5jDjlnqtac/cJg3IUV8HHVU4FRPI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B40B2F80168;
-	Fri, 25 Dec 2020 09:03:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D70E9F80128;
+	Fri, 25 Dec 2020 09:17:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FD1AF801D5; Fri, 25 Dec 2020 09:03:01 +0100 (CET)
+ id BD612F801D5; Fri, 25 Dec 2020 09:16:59 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10F5EF80128
- for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2020 09:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10F5EF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id B996AF80128
+ for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2020 09:16:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B996AF80128
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 22FD5ACBA;
- Fri, 25 Dec 2020 08:02:54 +0000 (UTC)
-Date: Fri, 25 Dec 2020 09:02:53 +0100
-Message-ID: <s5hpn2yfh3m.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A704EACC4;
+ Fri, 25 Dec 2020 08:16:51 +0000 (UTC)
+Date: Fri, 25 Dec 2020 09:16:51 +0100
+Message-ID: <s5hmty2fggc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ALSA: pcm: use bit field on snd_pcm
-In-Reply-To: <878s9m212i.wl-kuninori.morimoto.gx@renesas.com>
-References: <878s9m212i.wl-kuninori.morimoto.gx@renesas.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 01/18] ALSA: core: Use DIV_ROUND_UP() instead of
+ open-coding it
+In-Reply-To: <20201223172229.781-1-lars@metafoo.de>
+References: <20201223172229.781-1-lars@metafoo.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,55 +76,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 25 Dec 2020 01:21:43 +0100,
-Kuninori Morimoto wrote:
+On Wed, 23 Dec 2020 18:22:12 +0100,
+Lars-Peter Clausen wrote:
 > 
+> Use DIV_ROUND_UP() instead of open-coding it. This documents intent
+> and makes it more clear what is going on for the casual reviewer.
 > 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Generated using the following the Coccinelle semantic patch.
 > 
-> snd_pcm's internal, nonatomic, no_device_suspend are defined as bool.
-> But we can reduce struct size if we use bit field for these.
-> This patch converts these.
+> // <smpl>
+> @@
+> expression x, y;
+> @@
+> -(((x) + (y) - 1) / (y))
+> +DIV_ROUND_UP(x, y)
+> // </smpl>
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-Practically seen, this doesn't reduce the struct size at all, as bool
-is usually a byte type.  And, a byte access is even better from the
-performance and concurrency POV.
+Thanks, applied now for 5.12 with all 18 patches.
 
-So, unless there is any better reason, I don't think it worth to
-switch to bit fields.
-
-
-thanks,
 
 Takashi
-
-> ---
->  include/sound/pcm.h | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> index 2336bf9243e1..e836741d2708 100644
-> --- a/include/sound/pcm.h
-> +++ b/include/sound/pcm.h
-> @@ -520,12 +520,13 @@ struct snd_pcm {
->  	wait_queue_head_t open_wait;
->  	void *private_data;
->  	void (*private_free) (struct snd_pcm *pcm);
-> -	bool internal; /* pcm is for internal use only */
-> -	bool nonatomic; /* whole PCM operations are in non-atomic context */
-> -	bool no_device_suspend; /* don't invoke device PM suspend */
->  #if IS_ENABLED(CONFIG_SND_PCM_OSS)
->  	struct snd_pcm_oss oss;
->  #endif
-> +	/* bit field */
-> +	unsigned int internal:1; /* pcm is for internal use only */
-> +	unsigned int nonatomic:1; /* whole PCM operations are in non-atomic context */
-> +	unsigned int no_device_suspend:1; /* don't invoke device PM suspend */
->  };
->  
->  /*
-> -- 
-> 2.25.1
-> 
