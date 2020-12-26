@@ -1,70 +1,72 @@
-Return-Path: <SRS0=e5Na=F5=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=92Yh=F6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D668C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 16:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A3D3C433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Dec 2020 07:47:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 347712222D
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Dec 2020 16:49:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 347712222D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id E758E221E7
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Dec 2020 07:47:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E758E221E7
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E0DF184A;
-	Fri, 25 Dec 2020 17:48:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E0DF184A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EDB6183A;
+	Sat, 26 Dec 2020 08:46:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EDB6183A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1608914937;
-	bh=HFiF3ffqo+Y+LtBc/U+zHvPRHGdS/sqTgH95EEVIpzk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tASmd8FiKQI9kwepGs7rltPjSN+X7PDT+7EFF4SnCauOkdEgpJDSD40tBS+Nymuj4
-	 sdH9MrXGMiLUCV6oXAThGa7Rk8CafRk4KUZO1hkgQnJhuXHi6o9yESRMP6eWFSj7A6
-	 OUD4iKFsSGFc9aXI9x0VCcGwPqib/AZehHf6M+go=
+	s=default; t=1608968864;
+	bh=tPO5V4HhUAerINbHcVe68Q4D0/AwQ/b08QAYXteUf8Y=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=heldVThfECEQIfwzKwZUsCvlMidjC+VkTQTQLm/H5HlqzEQBj2mt5x8Y6FeNuTwzQ
+	 xk50NSjWlrDFw66TYMLou6I978eIdJWWDXeEAfpzr2lAcL/Shoet++T8i+7ufHdvFm
+	 SWm90Kw3/+be2TqFRSYlpDAB9Z0ZGExOl3Q/Cfdo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 727DDF80128;
-	Fri, 25 Dec 2020 17:48:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FE54F80128;
+	Sat, 26 Dec 2020 08:46:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FAFAF801D5; Fri, 25 Dec 2020 17:48:04 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 9DABEF80128; Sat, 26 Dec 2020 08:46:50 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B98A7F80128
- for <alsa-devel@alsa-project.org>; Fri, 25 Dec 2020 17:47:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B98A7F80128
-Received: from 1-171-89-5.dynamic-ip.hinet.net ([1.171.89.5] helo=localhost)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <kai.heng.feng@canonical.com>)
- id 1ksqFd-0000Km-W6; Fri, 25 Dec 2020 16:47:39 +0000
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda: Resume codec for system suspend if LED is
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5286BF80128
+ for <alsa-devel@alsa-project.org>; Sat, 26 Dec 2020 08:46:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5286BF80128
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 6FEEBAD29;
+ Sat, 26 Dec 2020 07:46:41 +0000 (UTC)
+Date: Sat, 26 Dec 2020 08:46:41 +0100
+Message-ID: <s5hft3tf1r2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda: Resume codec for system suspend if LED is
  controlled by codec
-Date: Sat, 26 Dec 2020 00:47:23 +0800
-Message-Id: <20201225164727.103280-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+In-Reply-To: <20201225164727.103280-1-kai.heng.feng@canonical.com>
+References: <20201225164727.103280-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated
+ list:SOUND" <alsa-devel@alsa-project.org>, Randy Dunlap <rdunlap@infradead.org>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  open list <linux-kernel@vger.kernel.org>,
- =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
- Randy Dunlap <rdunlap@infradead.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -81,78 +83,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Laptop with codec controlled LEDs takes a very long time to suspend
-after commit 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use
-direct-complete optimization"):
-[   90.065964] PM: suspend entry (s2idle)
-[   90.067337] Filesystems sync: 0.001 seconds
-[   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
-[   90.188713] OOM killer disabled.
-[   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-[   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
-[   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
-[  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-[  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-[  329.490933] ACPI: EC: interrupt blocked
+On Fri, 25 Dec 2020 17:47:23 +0100,
+Kai-Heng Feng wrote:
+> 
+> Laptop with codec controlled LEDs takes a very long time to suspend
+> after commit 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use
+> direct-complete optimization"):
+> [   90.065964] PM: suspend entry (s2idle)
+> [   90.067337] Filesystems sync: 0.001 seconds
+> [   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
+> [   90.188713] OOM killer disabled.
+> [   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> [   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
+> [   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
+> [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> [  329.490933] ACPI: EC: interrupt blocked
+> 
+> That commit keeps codec suspended during the system suspend. This
+> doesn't play well with codec controlled mute and micmute LEDs, because
+> LED core will use codec registers to turn off those LEDs.
+> 
+> Currently, all users of create_mute_led_cdev() use codec to control
+> LED, so unconditionally runtime resume those codecs before system
+> suspend to solve the problem.
+> 
+> Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-That commit keeps codec suspended during the system suspend. This
-doesn't play well with codec controlled mute and micmute LEDs, because
-LED core will use codec registers to turn off those LEDs.
+A puzzling point is that it's applied only to the cases with the led
+cdev.  Or does it basically apply for the ASoC controller?
+That is, if you run with legacy HDA (snd-intel-dspcfg.dsp_driver=1),
+does the issue appear as well on those machines?
 
-Currently, all users of create_mute_led_cdev() use codec to control
-LED, so unconditionally runtime resume those codecs before system
-suspend to solve the problem.
 
-Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- include/sound/hda_codec.h   | 1 +
- sound/pci/hda/hda_codec.c   | 7 +++++++
- sound/pci/hda/hda_generic.c | 1 +
- 3 files changed, 9 insertions(+)
+thanks,
 
-diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-index 2e8d51937acd..b01d76abe008 100644
---- a/include/sound/hda_codec.h
-+++ b/include/sound/hda_codec.h
-@@ -255,6 +255,7 @@ struct hda_codec {
- 	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
- 	unsigned int forced_resume:1; /* forced resume for jack */
- 	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
-+	unsigned int resume_for_sleep:1;  /* runtime resume for system sleep */
- 
- #ifdef CONFIG_PM
- 	unsigned long power_on_acct;
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 687216e74526..b890d9b4339e 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -2983,6 +2983,13 @@ static int hda_codec_runtime_resume(struct device *dev)
- #ifdef CONFIG_PM_SLEEP
- static int hda_codec_pm_prepare(struct device *dev)
- {
-+	struct hda_codec *codec = dev_to_hda_codec(dev);
-+
-+	if (codec->resume_for_sleep) {
-+		pm_runtime_resume(dev);
-+		return 0;
-+	}
-+
- 	return pm_runtime_suspended(dev);
- }
- 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 8060cc86dfea..6d259d5bb5bb 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -3913,6 +3913,7 @@ static int create_mute_led_cdev(struct hda_codec *codec,
- 	cdev->brightness_set_blocking = callback;
- 	cdev->brightness = ledtrig_audio_get(micmute ? LED_AUDIO_MICMUTE : LED_AUDIO_MUTE);
- 	cdev->flags = LED_CORE_SUSPENDRESUME;
-+	codec->resume_for_sleep = 1;
- 
- 	return devm_led_classdev_register(&codec->core.dev, cdev);
- }
--- 
-2.29.2
+Takashi
 
+> ---
+>  include/sound/hda_codec.h   | 1 +
+>  sound/pci/hda/hda_codec.c   | 7 +++++++
+>  sound/pci/hda/hda_generic.c | 1 +
+>  3 files changed, 9 insertions(+)
+> 
+> diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+> index 2e8d51937acd..b01d76abe008 100644
+> --- a/include/sound/hda_codec.h
+> +++ b/include/sound/hda_codec.h
+> @@ -255,6 +255,7 @@ struct hda_codec {
+>  	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
+>  	unsigned int forced_resume:1; /* forced resume for jack */
+>  	unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
+> +	unsigned int resume_for_sleep:1;  /* runtime resume for system sleep */
+>  
+>  #ifdef CONFIG_PM
+>  	unsigned long power_on_acct;
+> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+> index 687216e74526..b890d9b4339e 100644
+> --- a/sound/pci/hda/hda_codec.c
+> +++ b/sound/pci/hda/hda_codec.c
+> @@ -2983,6 +2983,13 @@ static int hda_codec_runtime_resume(struct device *dev)
+>  #ifdef CONFIG_PM_SLEEP
+>  static int hda_codec_pm_prepare(struct device *dev)
+>  {
+> +	struct hda_codec *codec = dev_to_hda_codec(dev);
+> +
+> +	if (codec->resume_for_sleep) {
+> +		pm_runtime_resume(dev);
+> +		return 0;
+> +	}
+> +
+>  	return pm_runtime_suspended(dev);
+>  }
+>  
+> diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+> index 8060cc86dfea..6d259d5bb5bb 100644
+> --- a/sound/pci/hda/hda_generic.c
+> +++ b/sound/pci/hda/hda_generic.c
+> @@ -3913,6 +3913,7 @@ static int create_mute_led_cdev(struct hda_codec *codec,
+>  	cdev->brightness_set_blocking = callback;
+>  	cdev->brightness = ledtrig_audio_get(micmute ? LED_AUDIO_MICMUTE : LED_AUDIO_MUTE);
+>  	cdev->flags = LED_CORE_SUSPENDRESUME;
+> +	codec->resume_for_sleep = 1;
+>  
+>  	return devm_led_classdev_register(&codec->core.dev, cdev);
+>  }
+> -- 
+> 2.29.2
+> 
