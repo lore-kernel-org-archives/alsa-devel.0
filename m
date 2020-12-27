@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13B27C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 935C2C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:14:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88C8A229C6
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:14:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88C8A229C6
+	by mail.kernel.org (Postfix) with ESMTPS id 15A66229C7
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:14:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15A66229C7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1941731;
-	Sun, 27 Dec 2020 22:13:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1941731
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8388C172B;
+	Sun, 27 Dec 2020 22:13:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8388C172B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609103676;
-	bh=3njuq9ucHrR5YabpyXyYIMjMxj5CnpzLNedMbusvVVA=;
+	s=default; t=1609103681;
+	bh=ZGayqt2MdlT/EgXzClZD+4CtncCt9VspuiiPHxj5yXI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MdxllSJBpnXNGDeL1x9lgr8IQMxsOQPoj1hr407XKMV45BiBbpgVkPGzLHwY8uFxg
-	 MyLomX9f0CYdU7i7KvmWs7MV4WazvxwE74ScPVEPcYiKo8QeLtJIYDnrQrRki6AQ+f
-	 eO8eCNz/MRAKGMu91J2rNsOem6HCYTnAAUWXQgxQ=
+	b=ksrsV/iVMsNiOJ3qI9qc7wMyPT01FVu6vqE9fJtdkNuu57r/9wIXYgOdFT6B0yt4n
+	 xQZ+qoI0l+5Xrk4vnqpbmjahH8qriJc2R32GNrFhUM6UnVatGWX7Lqm60J8tRACph9
+	 tc41l7Os6/U2QwAr+B6RK+YanIKaS7tjx9FVtmVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90098F80258;
-	Sun, 27 Dec 2020 22:12:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38D9CF8026C;
+	Sun, 27 Dec 2020 22:12:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A74BF80085; Sun, 27 Dec 2020 22:12:55 +0100 (CET)
+ id 36623F80276; Sun, 27 Dec 2020 22:12:51 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D4B4F800C8
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 22:12:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D4B4F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12369F80085
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 22:12:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12369F80085
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="VM2ynAhL"
+ header.b="dWZ5HG5W"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1609103567;
+ s=mimecast20190719; t=1609103565;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Vm7Y8WgzRnmtdtSY9WnjMOrzj5tbdz7TQz37CAGCkhc=;
- b=VM2ynAhLcNE2aFPI601+O+SZoDaRubldL2WQfewEu/oAKTWGbxvRm/AKGId7sXwU6i9KN+
- QdwJ8UloemYOrjkUuIYW3r+zg7MG4AaJB5X1LJVK7zMvzw+3t2rIcWxQvXZIkcCqcRzFBA
- Y6PBnQ4F6szjhioEYEH/joZmElftq5Y=
+ bh=h6DblsvkQcBaI8Wi2z8PNad4xomPrNWUmS5lSu1NYpw=;
+ b=dWZ5HG5Wk9OQ3JcXlUX0PLDAET/GnHInPVElBRXpz26HoGlzbm0jL22E3Ry3iqZT3cVEEf
+ Ayz/+wBOdgl+X37kJsiOVr003h73/yOHe0W3hBkihw59aiTytaKZwLIgkv2fC+BKgobOu2
+ fIPenTWg27MxC+OmlnPA2dUz0/Ahlks=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-gETInfbCN6GPEb1do1u5WQ-1; Sun, 27 Dec 2020 16:12:43 -0500
-X-MC-Unique: gETInfbCN6GPEb1do1u5WQ-1
+ us-mta-325-mPobGU11NJ-A6I5uw4mowA-1; Sun, 27 Dec 2020 16:12:40 -0500
+X-MC-Unique: mPobGU11NJ-A6I5uw4mowA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B190107ACE4;
- Sun, 27 Dec 2020 21:12:41 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9B03E75A;
+ Sun, 27 Dec 2020 21:12:38 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-25.ams2.redhat.com [10.36.112.25])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 3E7A41ACB9;
- Sun, 27 Dec 2020 21:12:39 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id B069C62A24;
+ Sun, 27 Dec 2020 21:12:36 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Chanwoo Choi <cw00.choi@samsung.com>,
@@ -77,9 +77,9 @@ To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 02/14] mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
-Date: Sun, 27 Dec 2020 22:12:20 +0100
-Message-Id: <20201227211232.117801-3-hdegoede@redhat.com>
+Subject: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+Date: Sun, 27 Dec 2020 22:12:19 +0100
+Message-Id: <20201227211232.117801-2-hdegoede@redhat.com>
 In-Reply-To: <20201227211232.117801-1-hdegoede@redhat.com>
 References: <20201227211232.117801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -102,60 +102,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The (shared) probing code of the arizona-i2c and arizona-spi modules
-takes the following steps during init:
+The Linux Arizona driver uses the MFD framework to create several
+sub-devices for the Arizona codec and then uses a driver per function.
 
-1. Call mfd_add_devices() for a set of early child-devices, this
-includes the arizona_ldo1 device which provides one of the
-core-regulators.
+The jack-detect support for the Arizona codec is handled by the
+extcon-arizona driver. This driver exports info about the jack state
+to userspace through the standard extcon sysfs class interface.
 
-2. Bulk enable the core-regulators.
+But standard Linux userspace does not monitor/use the extcon sysfs
+interface for jack-detection.
 
-3. Read the device id.
+Add a jack pointer to the shared arizona data struct, this allows
+the ASoC machine driver to create a snd_soc_jack and then pass this
+to the extcon-arizona driver to report jack-detect state, so that
+jack-detection works with standard Linux userspace.
 
-4. Call mfd_add_devices() for the other child-devices.
-
-This sequence depends on 1. leading to not only the child-device
-being created, but also the driver for the child-device binding
-to it and registering its regulator.
-
-This requires the arizona_ldo1 driver to be loaded before the
-shared probing code runs. Add a doftdep for this to both modules to
-ensure that this requirement is met.
-
-Note this mirrors the existing MODULE_SOFTDEP("pre: wm8994_regulator")
-in the wm8994 code, which has a similar init sequence.
+The extcon-arizona code already depends on (waits for with -EPROBE_DEFER)
+the snd_card being registered by the machine driver, so this does not
+cause any ordering issues.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/mfd/arizona-i2c.c | 1 +
- drivers/mfd/arizona-spi.c | 1 +
- 2 files changed, 2 insertions(+)
+ include/linux/mfd/arizona/core.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 4b58e3ad6eb6..2a4a3a164d0a 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -115,6 +115,7 @@ static struct i2c_driver arizona_i2c_driver = {
+diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
+index 6d6f96b2b29f..5eb269bdbfcb 100644
+--- a/include/linux/mfd/arizona/core.h
++++ b/include/linux/mfd/arizona/core.h
+@@ -115,6 +115,7 @@ enum arizona_type {
+ #define ARIZONA_NUM_IRQ                   75
  
- module_i2c_driver(arizona_i2c_driver);
+ struct snd_soc_dapm_context;
++struct snd_soc_jack;
  
-+MODULE_SOFTDEP("pre: arizona_ldo1");
- MODULE_DESCRIPTION("Arizona I2C bus interface");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-index 2633e147b76c..704f214d2614 100644
---- a/drivers/mfd/arizona-spi.c
-+++ b/drivers/mfd/arizona-spi.c
-@@ -110,6 +110,7 @@ static struct spi_driver arizona_spi_driver = {
+ struct arizona {
+ 	struct regmap *regmap;
+@@ -148,6 +149,7 @@ struct arizona {
+ 	bool ctrlif_error;
  
- module_spi_driver(arizona_spi_driver);
+ 	struct snd_soc_dapm_context *dapm;
++	struct snd_soc_jack *jack;
  
-+MODULE_SOFTDEP("pre: arizona_ldo1");
- MODULE_DESCRIPTION("Arizona SPI bus interface");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
+ 	int tdm_width[ARIZONA_MAX_AIF];
+ 	int tdm_slots[ARIZONA_MAX_AIF];
 -- 
 2.28.0
 
