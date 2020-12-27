@@ -7,54 +7,55 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E0B0C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B4C9C433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:40:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9042221FD
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:40:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9042221FD
+	by mail.kernel.org (Postfix) with ESMTPS id B3E782222B
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:40:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B3E782222B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E46117D6;
-	Sun, 27 Dec 2020 09:39:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E46117D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 453B117E5;
+	Sun, 27 Dec 2020 09:39:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 453B117E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609058405;
-	bh=C/e2wwbldJhr76rDS6dIdY9gkbxJ9ODwUprFRnzVYMk=;
+	s=default; t=1609058418;
+	bh=5fT91PjE4MrwXbArri1NlDa2oJtdGVQQkRRgZObsKqc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QZhNycaos3TYCWgryrSd6q0rbsgeOeOGqh0bT0dEnQXxUjZRgXruCS5ZNl1Nk0SZR
-	 9cJWDakCSgObbZzUCm8u1DWfnrWhZEDCctoGrwAi7S2ork7UXaS/bsiYhRYSYqevX3
-	 vr17LVGkPt52rYuvaPEDP4DyH4BAiZHXFrQYwi8k=
+	b=NS9jyHVUe4sa7WOLEVQYteSPqyG3s6cwRVimLdSY9UtQGE+e2v+WxN/vbcZRWjzbj
+	 rTAFkRqEkEMar0bHbVmhhGAiYblDN6mPt3sxl/du5Lwd1sk8WaNiMxGxAQuh3TdJAe
+	 IsHuiT8GYfMexxPoX7hEbpozRhNftk4SqlAUiTZI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EA34F804C3;
-	Sun, 27 Dec 2020 09:38:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E63CEF804CA;
+	Sun, 27 Dec 2020 09:39:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9248F804C3; Sun, 27 Dec 2020 09:38:53 +0100 (CET)
+ id EF784F804D2; Sun, 27 Dec 2020 09:39:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7D5FF8026C
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:38:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7D5FF8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6431F804CA
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:39:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6431F804CA
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4A3CBADA3;
- Sun, 27 Dec 2020 08:38:51 +0000 (UTC)
-Date: Sun, 27 Dec 2020 09:38:51 +0100
-Message-ID: <s5hsg7rej8k.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 84F63AD64;
+ Sun, 27 Dec 2020 08:39:03 +0000 (UTC)
+Date: Sun, 27 Dec 2020 09:39:03 +0100
+Message-ID: <s5hr1nbej88.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alex Henrie <alexhenrie24@gmail.com>
-Subject: Re: [PATCH 3/9] rawmidi: fix memory leak in snd_rawmidi_virtual_open
-In-Reply-To: <20201226213547.175071-4-alexhenrie24@gmail.com>
+Subject: Re: [PATCH 5/9] timer: fix sizeof operator mismatch in
+ snd_timer_query_hw_open
+In-Reply-To: <20201226213547.175071-6-alexhenrie24@gmail.com>
 References: <20201226213547.175071-1-alexhenrie24@gmail.com>
- <20201226213547.175071-4-alexhenrie24@gmail.com>
+ <20201226213547.175071-6-alexhenrie24@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,7 +77,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 26 Dec 2020 22:35:41 +0100,
+On Sat, 26 Dec 2020 22:35:43 +0100,
 Alex Henrie wrote:
 > 
 > Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
