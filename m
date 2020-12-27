@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A7F4C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB487C433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:41:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E2C02217A0
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:40:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2C02217A0
+	by mail.kernel.org (Postfix) with ESMTPS id 74CE3221FD
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:41:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74CE3221FD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39F11173D;
-	Sun, 27 Dec 2020 09:40:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39F11173D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 197B917BC;
+	Sun, 27 Dec 2020 09:40:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 197B917BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609058450;
-	bh=kKj0ZO5jOYa20hdEsMhjPftcBOypX5wJEOV8Qo7hGuY=;
+	s=default; t=1609058467;
+	bh=eKHcTL/Ap/fdNwFzpwyNqH+Qjich3CKH7Rurf1u/gBE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NpkWeOPF7xQocE8q/JwVIz3wnVGvnM9KFle+P+N7VCuVY6qlfunospSHWL3cvMeE7
-	 Hc0iq8wAKIk37JcVdy/dm/WxFhXtmUb5FDqDLUUf5jJrcBA1G7M1jfrpsmLNwyszNV
-	 AMXTNVK4WHDnjKx4JHDEjPVqCLAKUbJ8Ffb0Lp3A=
+	b=dD2aDmElVAK4f1Q0k9tUUskwpGTax/FHkqiFILDEjbWepxZbE5SW7/El7smJqqFhi
+	 ohxczaPCLSv5LvSrywqW/OnfVR4PulvOjId7QarcH8+wrzDSucwJvbv727xMZ8hl5k
+	 Ojr0yvL6UjbB8pH55ZkqO7TbqCCaqnJ+oxPq0Uew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0E70F80276;
-	Sun, 27 Dec 2020 09:39:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FC88F804C2;
+	Sun, 27 Dec 2020 09:39:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30A0EF800C8; Sun, 27 Dec 2020 09:39:18 +0100 (CET)
+ id 934B8F804D6; Sun, 27 Dec 2020 09:39:28 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C140F800C8
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:39:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C140F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83DF7F80240
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:39:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83DF7F80240
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id CCE9EAD75;
- Sun, 27 Dec 2020 08:39:15 +0000 (UTC)
-Date: Sun, 27 Dec 2020 09:39:15 +0100
-Message-ID: <s5hpn2vej7w.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1DD7FAD75;
+ Sun, 27 Dec 2020 08:39:26 +0000 (UTC)
+Date: Sun, 27 Dec 2020 09:39:26 +0100
+Message-ID: <s5ho8ifej7l.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alex Henrie <alexhenrie24@gmail.com>
-Subject: Re: [PATCH 6/9] pcm: remove dead assignments from
- snd_pcm_rate_(commit_area|grab_next_period)
-In-Reply-To: <20201226213547.175071-7-alexhenrie24@gmail.com>
+Subject: Re: [PATCH 7/9] pcm_multi: remove dead assignment from
+ _snd_pcm_multi_open
+In-Reply-To: <20201226213547.175071-8-alexhenrie24@gmail.com>
 References: <20201226213547.175071-1-alexhenrie24@gmail.com>
- <20201226213547.175071-7-alexhenrie24@gmail.com>
+ <20201226213547.175071-8-alexhenrie24@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,7 +77,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 26 Dec 2020 22:35:44 +0100,
+On Sat, 26 Dec 2020 22:35:45 +0100,
 Alex Henrie wrote:
 > 
 > Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
