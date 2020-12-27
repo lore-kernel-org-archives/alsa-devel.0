@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F3FBC433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:35:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC0DC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:38:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8B041217A0
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:35:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B041217A0
+	by mail.kernel.org (Postfix) with ESMTPS id CD2A6221F5
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:38:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD2A6221F5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDF4B172D;
-	Sun, 27 Dec 2020 09:34:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF4B172D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5B63175A;
+	Sun, 27 Dec 2020 09:37:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5B63175A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609058107;
-	bh=layuWHgBNzzS/mlk2MkswunfjQR1gKxdP0yx9UWI7hE=;
+	s=default; t=1609058302;
+	bh=aDJrPjABdwWWUvB6LCCz3wjzeqRQp08wdUifWQZ1GZA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=drPyt7Dqanjlse6my3x4gT7dVFCXX47UZVzizUouq1xCcQu70C0htyXCa+WNIJ3hb
-	 bxzZVckLznXteMocPU5SmT1ctuIjfwOr6wn176nNQ9D2BJXxhtQ8pdQ6PfzOhC5uEf
-	 YsenTeFfBrU+rTZJZZNdR5sGjUZRZeWBKEA6S4kw=
+	b=WP5t21h5n6+1UAfgGllWHiLSuAHxXYax3PxoM0rCHVDuxpSAixTqaf6ZXURe+v6fb
+	 mbIb7Ae9/plpFCi65PpGBoQ3AJM6cc/AdyF8qLRGhCYb8WXdTU5VXU3jcXTnZ/NdDq
+	 sVSXuh58FmoNpTbkq9V65m6YEqEQ5+k5Y/+Gyw1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3822EF800C8;
-	Sun, 27 Dec 2020 09:34:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70ECFF8020C;
+	Sun, 27 Dec 2020 09:37:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2B51F8022B; Sun, 27 Dec 2020 09:34:14 +0100 (CET)
+ id 727EBF8022B; Sun, 27 Dec 2020 09:37:30 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EB61F80169
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:34:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EB61F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15051F800C8
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:37:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15051F800C8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 47F31AD64;
- Sun, 27 Dec 2020 08:34:12 +0000 (UTC)
-Date: Sun, 27 Dec 2020 09:34:12 +0100
-Message-ID: <s5hy2hjejgb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C7F90AD75;
+ Sun, 27 Dec 2020 08:37:27 +0000 (UTC)
+Date: Sun, 27 Dec 2020 09:37:27 +0100
+Message-ID: <s5hwnx3ejaw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alex Henrie <alexhenrie24@gmail.com>
-Subject: Re: [PATCH 8/9] pcm: fix undefined bit shift in bad_pcm_state
-In-Reply-To: <20201226213547.175071-9-alexhenrie24@gmail.com>
+Subject: Re: [PATCH 9/9] conf: remove dead code from get_hexachar
+In-Reply-To: <20201226213547.175071-10-alexhenrie24@gmail.com>
 References: <20201226213547.175071-1-alexhenrie24@gmail.com>
- <20201226213547.175071-9-alexhenrie24@gmail.com>
+ <20201226213547.175071-10-alexhenrie24@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,64 +76,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 26 Dec 2020 22:35:46 +0100,
+On Sat, 26 Dec 2020 22:35:47 +0100,
 Alex Henrie wrote:
 > 
 > Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
 > ---
->  include/pcm.h       | 4 +++-
->  src/pcm/pcm.c       | 2 ++
->  src/pcm/pcm_local.h | 2 +-
->  3 files changed, 6 insertions(+), 2 deletions(-)
+>  src/conf.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
 > 
-> diff --git a/include/pcm.h b/include/pcm.h
-> index e300b951..c6c5d8f8 100644
-> --- a/include/pcm.h
-> +++ b/include/pcm.h
-> @@ -307,7 +307,9 @@ typedef enum _snd_pcm_state {
->  	SND_PCM_STATE_SUSPENDED,
->  	/** Hardware is disconnected */
->  	SND_PCM_STATE_DISCONNECTED,
-> -	SND_PCM_STATE_LAST = SND_PCM_STATE_DISCONNECTED,
-> +	/** State cannot be queried */
-> +	SND_PCM_STATE_UNKNOWN,
-> +	SND_PCM_STATE_LAST = SND_PCM_STATE_UNKNOWN,
->  	/** Private - used internally in the library - do not use*/
->  	SND_PCM_STATE_PRIVATE1 = 1024
->  } snd_pcm_state_t;
-
-We can't add a random new state here.  If any, such a thing has to be
-defined locally, but this would also break ABI.  So, I don't think
-adding a new state is the right fix.
-
-> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-> index 24030b31..5fafc2a0 100644
-> --- a/src/pcm/pcm.c
-> +++ b/src/pcm/pcm.c
-> @@ -680,6 +680,8 @@ static int pcm_state_to_error(snd_pcm_state_t state)
->  		return -ESTRPIPE;
->  	case SND_PCM_STATE_DISCONNECTED:
->  		return -ENODEV;
-> +	case SND_PCM_STATE_UNKNOWN:
-> +		return -ENOSYS;
->  	default:
->  		return 0;
->  	}
-> diff --git a/src/pcm/pcm_local.h b/src/pcm/pcm_local.h
-> index fe77e50d..04f89623 100644
-> --- a/src/pcm/pcm_local.h
-> +++ b/src/pcm/pcm_local.h
-> @@ -444,7 +444,7 @@ static inline int __snd_pcm_start(snd_pcm_t *pcm)
->  static inline snd_pcm_state_t __snd_pcm_state(snd_pcm_t *pcm)
+> diff --git a/src/conf.c b/src/conf.c
+> index 44d1bfde..970ad643 100644
+> --- a/src/conf.c
+> +++ b/src/conf.c
+> @@ -877,16 +877,9 @@ static int get_nonwhite(input_t *input)
+>  
+>  static inline int get_hexachar(input_t *input)
 >  {
->  	if (!pcm->fast_ops->state)
-> -		return -ENOSYS;
-> +		return SND_PCM_STATE_UNKNOWN;
->  	return pcm->fast_ops->state(pcm->fast_op_arg);
+> -	int c, num = 0;
+> -
+> +	int c;
+>  	c = get_char(input);
+> -	if (c >= '0' && c <= '9') num |= (c - '0') << 4;
+> -	else if (c >= 'a' && c <= 'f') num |= (c - 'a') << 4;
+> -	else if (c >= 'A' && c <= 'F') num |= (c - 'A') << 4;
+>  	c = get_char(input);
+> -	if (c >= '0' && c <= '9') num |= (c - '0') << 0;
+> -	else if (c >= 'a' && c <= 'f') num |= (c - 'a') << 0;
+> -	else if (c >= 'A' && c <= 'F') num |= (c - 'A') << 0;
+>  	return c;
 
-We need either to handle a special error value in all places calling
-__snd_pcm_state() or to just return SND_PCM_STATE_XRUN or such instead
-here, IMO.
+The current code is obviously wrong and the suggested fix goes even to
+a wronger direction :)  The function should return num instead.
+
+I wonder how this did't hit any problem, so far.  Maybe 0x prefix was
+rarely used, fortunately.
 
 
 thanks,
