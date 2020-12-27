@@ -7,55 +7,54 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EC98C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:39:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D98FC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:39:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51D8A221F5
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:39:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51D8A221F5
+	by mail.kernel.org (Postfix) with ESMTPS id 9C40E217A0
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 08:39:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C40E217A0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FA89175A;
-	Sun, 27 Dec 2020 09:38:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FA89175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F1BE1764;
+	Sun, 27 Dec 2020 09:38:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F1BE1764
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609058365;
-	bh=o7u+h2VLdKKT+HTEoFbPJ50R/3C1mbRew5xBFg0zHUk=;
+	s=default; t=1609058374;
+	bh=S466+rkErT3VN9Ny9jqwTxoLvmvU5bY2ZwTt+919eKU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tjnJnMoUYnLeN3DVaiuhLQGuacNFtJZK3hhH0qlsu7L98FP/FrGVzIlnr+1xC7rL3
-	 M+qZyjCsRoJQTivqco3fxq1787v1ZwgW6PChldwt6j+Qk7RBmfyl8K/wmtIUzfku9U
-	 iBJR7AkgQB4vJ9C9cS1Bmd2tO3SIDRouovvt1eVU=
+	b=oLu7cPCLHJwy0F0z0fuaP7ZKpqKrCeu3GoAdBYzBzA4jemu/BmwOJft/LrKX6tZsK
+	 wikeoPgMl1QVh5Wa7A6vVOT/Trr/KrX3CfK/rFIbsG26z0YpZCkceSgyET9nhe9E03
+	 aGa+Y/yAnpYJXtzDhfaKodQ8Obfu8T27fEZ1S/8A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8561AF80169;
-	Sun, 27 Dec 2020 09:38:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D40DF80258;
+	Sun, 27 Dec 2020 09:38:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6CC9F8022D; Sun, 27 Dec 2020 09:38:29 +0100 (CET)
+ id F1B30F8026C; Sun, 27 Dec 2020 09:38:39 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54F26F80169
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:38:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54F26F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB75FF8020C
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 09:38:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB75FF8020C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 37BFFAD64;
- Sun, 27 Dec 2020 08:38:26 +0000 (UTC)
-Date: Sun, 27 Dec 2020 09:38:26 +0100
-Message-ID: <s5hv9cnej99.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6A124AD8C;
+ Sun, 27 Dec 2020 08:38:37 +0000 (UTC)
+Date: Sun, 27 Dec 2020 09:38:37 +0100
+Message-ID: <s5htus7ej8y.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Alex Henrie <alexhenrie24@gmail.com>
-Subject: Re: [PATCH 1/9] conf: fix use after free in
- _snd_config_load_with_include
-In-Reply-To: <20201226213547.175071-2-alexhenrie24@gmail.com>
+Subject: Re: [PATCH 2/9] ucm: fix bad frees in get_list0 and get_list20
+In-Reply-To: <20201226213547.175071-3-alexhenrie24@gmail.com>
 References: <20201226213547.175071-1-alexhenrie24@gmail.com>
- <20201226213547.175071-2-alexhenrie24@gmail.com>
+ <20201226213547.175071-3-alexhenrie24@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,7 +76,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 26 Dec 2020 22:35:39 +0100,
+On Sat, 26 Dec 2020 22:35:40 +0100,
 Alex Henrie wrote:
 > 
 > Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
