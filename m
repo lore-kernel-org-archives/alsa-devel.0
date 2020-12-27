@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 715F6C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:18:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4B5CC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:19:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6FB820659
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:18:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6FB820659
+	by mail.kernel.org (Postfix) with ESMTPS id 3542D20731
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:19:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3542D20731
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 752CD1769;
-	Sun, 27 Dec 2020 22:17:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 752CD1769
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB9DB17F0;
+	Sun, 27 Dec 2020 22:18:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB9DB17F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609103929;
-	bh=bW3QuxVMbBVZTTf3sFUPEi63Z6WzFeDrRv0L3WqzeCM=;
+	s=default; t=1609103964;
+	bh=AANgixua2zLE2CSF6IDvxn8PCvzR2bCY9eqnXnjtM5k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y1IMXHqUKFuXQfeqwKXn+0ZSQq3Wyetd3ExXkkbli44hEEe3I7y2YHeRS/xpxDIOv
-	 XWJh8Ij2DOkz+BgQL6vDNKQPtlDzeXnYL2yExoBzVedlQ/Y4CYR4q0u1CFpv3BWJha
-	 Kh9uYvpeHPgpTcAv32Qp6aUttmgXpm/6tSUDgR9c=
+	b=me2xjSIxLcfFBpt2EFkbphcvKfGEDEfoNcyC/PYVxEQduywdFM3Fj9YjKj/pn2SJX
+	 PAcBxQK64+guhMRMuTbklGrmJwNPgzI+9J/Il5p0S6o3F0YeDR4MwL1uUUodaBO2gR
+	 QkWssVHp3ZT4YBwoDRvfSv7N/HOiPKR5q61qkbNM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C879F80525;
-	Sun, 27 Dec 2020 22:13:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA8DCF80534;
+	Sun, 27 Dec 2020 22:13:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95737F8051D; Sun, 27 Dec 2020 22:13:14 +0100 (CET)
+ id 0BD90F80529; Sun, 27 Dec 2020 22:13:21 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 174D3F80517
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 22:13:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 174D3F80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21848F80525
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 22:13:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21848F80525
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="EJShejiB"
+ header.b="Imn/SzCX"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1609103590;
+ s=mimecast20190719; t=1609103597;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=G8KyNNaiBVLnhxo+0YNU2qQlWwmw2x62QlLhjDfhEhc=;
- b=EJShejiBJlycPaK77qUKm4gb2RQJ8K7n95YejQs1Q9N/SgyrEtfHt2hpM8eA9xWqDJ7ZkW
- +UANVXjnxpWfgNN9rB4PpCiX1r9MRpQKrKfiZgmrLEc2sg0INrftn8MN9/jotUx7vRrp2e
- OFS+ZBrG98fsRWygGkibeUMOZJpiMC0=
+ bh=7vh/KkzsTKpkkyc1hK+SFAImLEHZ8ZJqj8ya7YteCNo=;
+ b=Imn/SzCXtd7BZq0QafFAm+YLkiHNCeEsBCc/TfcP68HictvXr0KLtYnob6sQTQmxTXwb+I
+ IgSxOUcuHADNSxGZGn+8Bex3WmoL6vb+IRXP2dVcEJva4zXEYk/0eOhvaRe9YsSUNlMvZR
+ fwmSmgEfiF+tx5Bp5Az8TJH57ooQbHU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-V0sygp8ZNQO_ogqbRczvwQ-1; Sun, 27 Dec 2020 16:13:08 -0500
-X-MC-Unique: V0sygp8ZNQO_ogqbRczvwQ-1
+ us-mta-579-0G39lbq8OpGDDFYAz4Hm_A-1; Sun, 27 Dec 2020 16:13:14 -0500
+X-MC-Unique: 0G39lbq8OpGDDFYAz4Hm_A-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 076511800D42;
- Sun, 27 Dec 2020 21:13:07 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20A39107ACE3;
+ Sun, 27 Dec 2020 21:13:12 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-25.ams2.redhat.com [10.36.112.25])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 74B6762A23;
- Sun, 27 Dec 2020 21:13:04 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id E8EB21ACB9;
+ Sun, 27 Dec 2020 21:13:09 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Chanwoo Choi <cw00.choi@samsung.com>,
@@ -77,10 +77,9 @@ To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 12/14] ASoC: Intel: Add DMI quirk table to
- soc_intel_is_byt_cr()
-Date: Sun, 27 Dec 2020 22:12:30 +0100
-Message-Id: <20201227211232.117801-13-hdegoede@redhat.com>
+Subject: [PATCH 14/14] ASoC: Intel: bytcr_wm5102: Add jack detect support
+Date: Sun, 27 Dec 2020 22:12:32 +0100
+Message-Id: <20201227211232.117801-15-hdegoede@redhat.com>
 In-Reply-To: <20201227211232.117801-1-hdegoede@redhat.com>
 References: <20201227211232.117801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,71 +102,121 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some Bay Trail systems:
-1. Use a non CR version of the Bay Trail SoC
-2. Contain at least 6 interrupt resources so that the
-   platform_get_resource(pdev, IORESOURCE_IRQ, 5) check to workaround
-   non CR systems which list their IPC IRQ at index 0 despite being
-   non CR does not work
-3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
+The Linux Arizona/WM5102 driver uses the MFD framework to create several
+sub-devices for the WM5102 codec and then uses a driver per function.
 
-Add a DMI quirk table to check for the few known models with this issue,
-so that the right IPC IRQ index is used on these systems.
+The jack-detect support for the WM5102 codec is handled by the
+extcon-arizona driver. This driver exports info about the jack state
+to userspace through the standard extcon sysfs class interface.
+
+But standard Linux userspace does not monitor/use the extcon sysfs
+interface for jack-detection.
+
+The extcon-arizona driver can also report jack-detect state through
+the standard ASoC jack interface. For this we need to create a
+snd_soc_jack and pass this to the extcon-arizona driver through the
+shared arizona data struct.
+
+The extcon-arizona code already depends on (waits for with -EPROBE_DEFER)
+the snd_card being registered by the machine driver, so this does not
+cause any ordering issues.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/common/soc-intel-quirks.h | 25 +++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+ sound/soc/intel/boards/bytcr_wm5102.c | 36 ++++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/common/soc-intel-quirks.h b/sound/soc/intel/common/soc-intel-quirks.h
-index b07df3059926..a93987ab7f4d 100644
---- a/sound/soc/intel/common/soc-intel-quirks.h
-+++ b/sound/soc/intel/common/soc-intel-quirks.h
-@@ -11,6 +11,7 @@
+diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+index 7de09cb5c50e..25c7a6cacaad 100644
+--- a/sound/soc/intel/boards/bytcr_wm5102.c
++++ b/sound/soc/intel/boards/bytcr_wm5102.c
+@@ -13,11 +13,13 @@
+ #include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/input.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/spi/spi.h>
++#include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -31,6 +33,8 @@
+ #define WM5102_MAX_SYSCLK_11025	45158400 /* max sysclk for 11.025K family */
  
- #if IS_ENABLED(CONFIG_X86)
+ struct byt_wm5102_private {
++	struct snd_soc_jack jack;
++	struct arizona *arizona;
+ 	struct clk *mclk;
+ 	struct gpio_desc *spkvdd_en_gpio;
+ };
+@@ -184,11 +188,22 @@ static const struct snd_kcontrol_new byt_wm5102_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Speaker"),
+ };
  
-+#include <linux/dmi.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/iosf_mbi.h>
-@@ -38,12 +39,36 @@ SOC_INTEL_IS_CPU(cml, KABYLAKE_L);
- 
- static inline bool soc_intel_is_byt_cr(struct platform_device *pdev)
- {
-+	/*
-+	 * List of systems which:
-+	 * 1. Use a non CR version of the Bay Trail SoC
-+	 * 2. Contain at least 6 interrupt resources so that the
-+	 *    platform_get_resource(pdev, IORESOURCE_IRQ, 5) check below
-+	 *    succeeds
-+	 * 3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
-+	 *
-+	 * This needs to be here so that it can be shared between the SST and
-+	 * SOF drivers. We rely on the compiler to optimize this out in files
-+	 * where soc_intel_is_byt_cr is not used.
-+	 */
-+	static const struct dmi_system_id force_bytcr_table[] = {
-+		{	/* Lenovo Yoga Tablet 2 series */
-+			.matches = {
-+				DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+				DMI_MATCH(DMI_PRODUCT_FAMILY, "YOGATablet2"),
-+			},
-+		},
-+		{}
-+	};
- 	struct device *dev = &pdev->dev;
- 	int status = 0;
- 
- 	if (!soc_intel_is_byt())
- 		return false;
- 
-+	if (dmi_check_system(force_bytcr_table))
-+		return true;
++static struct snd_soc_jack_pin byt_wm5102_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
 +
- 	if (iosf_mbi_available()) {
- 		u32 bios_status;
+ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct byt_wm5102_private *priv = snd_soc_card_get_drvdata(card);
+-	int ret;
++	int ret, jack_type;
  
+ 	card->dapm.idle_bias_off = true;
+ 
+@@ -217,6 +232,22 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret;
+ 	}
+ 
++	jack_type = SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++		    SND_JACK_BTN_2 | SND_JACK_BTN_3;
++	ret = snd_soc_card_jack_new(card, "Headset", jack_type,
++				    &priv->jack, byt_wm5102_pins,
++				    ARRAY_SIZE(byt_wm5102_pins));
++	if (ret) {
++		dev_err(card->dev, "Error creating jack: %d\n", ret);
++		return ret;
++	}
++	snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++	snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++	snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++
++	priv->arizona->jack = &priv->jack;
++
+ 	return 0;
+ }
+ 
+@@ -409,6 +440,8 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 
+ 	/* Note no devm_ here since we call gpiod_get on codec_dev rather then dev */
+ 	priv->spkvdd_en_gpio = gpiod_get(codec_dev, "wlf,spkvdd-ena", GPIOD_OUT_LOW);
++
++	priv->arizona = dev_get_drvdata(codec_dev);
+ 	put_device(codec_dev);
+ 
+ 	if (IS_ERR(priv->spkvdd_en_gpio))
+@@ -452,6 +485,7 @@ static int snd_byt_wm5102_mc_remove(struct platform_device *pdev)
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct byt_wm5102_private *priv = snd_soc_card_get_drvdata(card);
+ 
++	priv->arizona->jack = NULL;
+ 	gpiod_put(priv->spkvdd_en_gpio);
+ 	return 0;
+ }
 -- 
 2.28.0
 
