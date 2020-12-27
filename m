@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29841C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E7FC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:18:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E197229C6
-	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:17:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E197229C6
+	by mail.kernel.org (Postfix) with ESMTPS id F07AB20659
+	for <alsa-devel@archiver.kernel.org>; Sun, 27 Dec 2020 21:18:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F07AB20659
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0041A1760;
-	Sun, 27 Dec 2020 22:17:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0041A1760
+	by alsa0.perex.cz (Postfix) with ESMTPS id 951FE17AB;
+	Sun, 27 Dec 2020 22:17:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 951FE17AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609103872;
-	bh=tp457z1sgx3wayrw71wcCYr8XuJwA0ZKje4gLro2Y9Y=;
+	s=default; t=1609103885;
+	bh=+/UwWk/EKTdhob+cOSogvtlwDcaejohqyO8xb+ih63Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rq97AC0EWL+kfgW/uNIt2TE7qxK99OQfpO0oQswHxQoaMdZIbY51Cuu0KMbkVDKmb
-	 G16RWwBScMLJKrMPgpxTQrZmB7urQD48YPtPt0W1W1VeqpIXv2PueA4fcfF4RkDaRL
-	 51wZZhTrZITwoseOMmewGHWka1s2IsE4duLKsCR4=
+	b=phKuo6sNo1Ueh20j6Caz9DyjJd7azb8Bbp0a80j2jT4htLe4Qy1hOUFAMrSAlMFZy
+	 vpmsp2onPhCQw60gGb1/ERNQ26WUyM2E0l6PKucYf7mG63wFp5oy9znKHm9XuH5hfU
+	 tKe+3ZtsRLNRx1snyw7vGDXnpjSx5Iwthow3Ssp0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86A42F804FF;
-	Sun, 27 Dec 2020 22:13:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39F86F8051C;
+	Sun, 27 Dec 2020 22:13:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6DF6F80506; Sun, 27 Dec 2020 22:13:08 +0100 (CET)
+ id ABFCBF80517; Sun, 27 Dec 2020 22:13:11 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CA13F804ED
- for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 22:13:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CA13F804ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87EF1F804FF
+ for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2020 22:13:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87EF1F804FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="U/5BFl3c"
+ header.b="bJ8QbkKK"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1609103585;
+ s=mimecast20190719; t=1609103587;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=BQxH9sfLP7XIGfK19mSlNx10DBn63OAUabiHWwiQZDU=;
- b=U/5BFl3cJogmwWFz5vmvu8ofQeY7J36p6FVNG8t/S8g5jq0tRjDqFvCFwPl8nQjt65mnCZ
- S7NCDLDfa8+d228poE0Z/3VPlChVSme0FHCI/007lfQHnZnRYqYcHENsOb/jldA7E5VdRN
- fS0LXcMY4/BITG3GZj7FZZomQqjqL/8=
+ bh=IuEkoy8risjXWW3C4tHd58C62AQQjBX95B2fmp+oAVw=;
+ b=bJ8QbkKKa1kU9nF+CGVm4HOGEqKgsnK46Ko+ok7AJaTI/0x2t5zluAY7DLIUpsu2dwj6zW
+ PVWJVR6uSfwodjIpbU4sEO2DmWh4wCgN0n3Z289H85EgFZLKOpLI37V9LT9Zri1YwLJLIT
+ utXb9Gfh0x9chiH3SKilnjavpVcrTa4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-Zx5DIo6UMRCFaw8hnoxYng-1; Sun, 27 Dec 2020 16:13:00 -0500
-X-MC-Unique: Zx5DIo6UMRCFaw8hnoxYng-1
+ us-mta-489-4kPUDcs5OTa3Hf9uLhBJXw-1; Sun, 27 Dec 2020 16:13:03 -0500
+X-MC-Unique: 4kPUDcs5OTa3Hf9uLhBJXw-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 373811800D42;
- Sun, 27 Dec 2020 21:12:59 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACA2D801A9E;
+ Sun, 27 Dec 2020 21:13:01 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-25.ams2.redhat.com [10.36.112.25])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 08FFF1ACB9;
- Sun, 27 Dec 2020 21:12:56 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 7EF901ACB9;
+ Sun, 27 Dec 2020 21:12:59 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Chanwoo Choi <cw00.choi@samsung.com>,
@@ -77,9 +77,10 @@ To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 09/14] extcon: arizona: Add arizona_set_extcon_state() helper
-Date: Sun, 27 Dec 2020 22:12:27 +0100
-Message-Id: <20201227211232.117801-10-hdegoede@redhat.com>
+Subject: [PATCH 10/14] extcon: arizona: Also report jack state through
+ snd_soc_jack_report()
+Date: Sun, 27 Dec 2020 22:12:28 +0100
+Message-Id: <20201227211232.117801-11-hdegoede@redhat.com>
 In-Reply-To: <20201227211232.117801-1-hdegoede@redhat.com>
 References: <20201227211232.117801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -102,117 +103,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All the callers of extcon_set_state_sync() log an error on failure,
-without doing any further error-handling (as there is nothing they
-can do about the error).
+The Linux Arizona driver uses the MFD framework to create several
+sub-devices for the Arizona codec and then uses a driver per function.
 
-Factor this out into a helper to remove some duplicate code.
+The extcon-arizona driver handles jack-detect support and exports info
+about the jack state to userspace through the standard extcon sysfs
+class interface.
+
+Standard Linux userspace does not monitor/use the extcon sysfs interface
+for jack-detection, resulting in the jack-state not being taken into
+account by userspace.
+
+The ASoC machine-driver may have created a standard ASoC jack when
+registering the card. In this case also report the jack-state through the
+ASoC jack so that jack-detection works with standard Linux userspace.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/extcon/extcon-arizona.c | 47 ++++++++++++---------------------
- 1 file changed, 17 insertions(+), 30 deletions(-)
+ drivers/extcon/extcon-arizona.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index 145ca5cd40d5..d5b3231744f9 100644
+index d5b3231744f9..931a7d239aea 100644
 --- a/drivers/extcon/extcon-arizona.c
 +++ b/drivers/extcon/extcon-arizona.c
-@@ -595,6 +595,16 @@ static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
- 	return 0;
- }
+@@ -20,6 +20,7 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/extcon-provider.h>
  
-+static void arizona_set_extcon_state(struct arizona_extcon_info *info,
-+				     unsigned int id, bool state)
-+{
-+	int ret;
-+
-+	ret = extcon_set_state_sync(info->edev, id, state);
-+	if (ret)
-+		dev_err(info->arizona->dev, "Failed to set extcon state: %d\n", ret);
-+}
-+
- static irqreturn_t arizona_hpdet_irq(int irq, void *data)
++#include <sound/jack.h>
+ #include <sound/soc.h>
+ 
+ #include <linux/mfd/arizona/core.h>
+@@ -598,11 +599,19 @@ static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
+ static void arizona_set_extcon_state(struct arizona_extcon_info *info,
+ 				     unsigned int id, bool state)
  {
- 	struct arizona_extcon_info *info = data;
-@@ -648,11 +658,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
- 	else
- 		report = EXTCON_JACK_HEADPHONE;
+-	int ret;
++	int ret, mask = 0;
  
--	ret = extcon_set_state_sync(info->edev, report, true);
--	if (ret != 0)
--		dev_err(arizona->dev, "Failed to report HP/line: %d\n",
--			ret);
--
-+	arizona_set_extcon_state(info, report, true);
- done:
- 	/* Reset back to starting range */
- 	regmap_update_bits(arizona->regmap,
-@@ -727,9 +733,7 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
- 	pm_runtime_put_autosuspend(info->dev);
- 
- 	/* Just report headphone */
--	ret = extcon_set_state_sync(info->edev, EXTCON_JACK_HEADPHONE, true);
--	if (ret != 0)
--		dev_err(arizona->dev, "Failed to report headphone: %d\n", ret);
-+	arizona_set_extcon_state(info, EXTCON_JACK_HEADPHONE, true);
- 
- 	if (info->mic)
- 		arizona_start_mic(info);
-@@ -781,10 +785,7 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
- 
- err:
- 	/* Just report headphone */
--	ret = extcon_set_state_sync(info->edev, EXTCON_JACK_HEADPHONE, true);
--	if (ret != 0)
--		dev_err(arizona->dev, "Failed to report headphone: %d\n", ret);
--
-+	arizona_set_extcon_state(info, EXTCON_JACK_HEADPHONE, true);
- 	info->hpdet_active = false;
+ 	ret = extcon_set_state_sync(info->edev, id, state);
+ 	if (ret)
+ 		dev_err(info->arizona->dev, "Failed to set extcon state: %d\n", ret);
++
++	switch (id) {
++	case EXTCON_JACK_HEADPHONE:	mask = SND_JACK_HEADPHONE;	break;
++	case EXTCON_JACK_MICROPHONE:	mask = SND_JACK_MICROPHONE;	break;
++	}
++
++	if (info->arizona->jack && mask)
++		snd_soc_jack_report(info->arizona->jack, state ? mask : 0, mask);
  }
  
-@@ -904,11 +905,7 @@ static int arizona_micdet_reading(void *priv)
- 
- 		arizona_identify_headphone(info);
- 
--		ret = extcon_set_state_sync(info->edev,
--					      EXTCON_JACK_MICROPHONE, true);
--		if (ret != 0)
--			dev_err(arizona->dev, "Headset report failed: %d\n",
--				ret);
-+		arizona_set_extcon_state(info, EXTCON_JACK_MICROPHONE, true);
- 
- 		/* Don't need to regulate for button detection */
- 		ret = regulator_allow_bypass(info->micvdd, true);
-@@ -1175,12 +1172,7 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
- 
- 	if (info->last_jackdet == present) {
- 		dev_dbg(arizona->dev, "Detected jack\n");
--		ret = extcon_set_state_sync(info->edev,
--					      EXTCON_MECHANICAL, true);
--
--		if (ret != 0)
--			dev_err(arizona->dev, "Mechanical report failed: %d\n",
--				ret);
-+		arizona_set_extcon_state(info, EXTCON_MECHANICAL, true);
- 
- 		info->detecting = true;
- 		info->mic = false;
-@@ -1216,13 +1208,8 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
- 					 info->micd_ranges[i].key, 0);
- 		input_sync(info->input);
- 
--		for (i = 0; i < ARRAY_SIZE(arizona_cable) - 1; i++) {
--			ret = extcon_set_state_sync(info->edev,
--					arizona_cable[i], false);
--			if (ret != 0)
--				dev_err(arizona->dev,
--					"Removal report failed: %d\n", ret);
--		}
-+		for (i = 0; i < ARRAY_SIZE(arizona_cable) - 1; i++)
-+			arizona_set_extcon_state(info, arizona_cable[i], false);
- 
- 		/*
- 		 * If the jack was removed during a headphone detection we
+ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
 -- 
 2.28.0
 
