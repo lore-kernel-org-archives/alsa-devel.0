@@ -6,70 +6,72 @@ X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E0A1C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98EDDC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:08:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9372020731
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:08:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9372020731
+	by mail.kernel.org (Postfix) with ESMTPS id 73BC8207C9
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:08:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73BC8207C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1ED9174A;
-	Mon, 28 Dec 2020 17:07:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1ED9174A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D7671763;
+	Mon, 28 Dec 2020 17:07:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D7671763
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609171709;
-	bh=mqb+V8KwpniY5OTuAQBPlleqKjClqNjI5EX4LEXBC1s=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1609171725;
+	bh=wTelgUznsDhN/8fLvdTzIb6NSyVxHVAgFT4YeXQ1xz4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WWgANr4Fi5Z2azK+22W0LPDV2jT06vAZJKioRq9QapwoeHboWCkpeUF6BoU5pJpkC
-	 JhVWoviLYEjHs4BSANqRAttVzd/2xcFCEv2wM7r+k1d8ebvZol9S/e7D5sXAhAxEiB
-	 Bz88cdq55qjoDDp0sIC+d8F5ljyviLml3EbfF0Ts=
+	b=qkTBeGPI+vVGN/uO/lllGeXu88lD3rxotOosD57pzLGhXxwLUZ5OynLNMl3TYsX+I
+	 pYLwMKnA6PyS2aRmuGwk4Su/gEJJUQXUtj/O7iVNqUppyy6y7d0qZz9u6X4ZKsz6pX
+	 lMvLbirH5NehIjf7ttfiwF3Bxztku8dLFQGV/9Mw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD8FCF80249;
-	Mon, 28 Dec 2020 17:06:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1DDBF804C3;
+	Mon, 28 Dec 2020 17:07:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FE19F801F9; Mon, 28 Dec 2020 17:06:42 +0100 (CET)
+ id 4B97CF801ED; Mon, 28 Dec 2020 17:06:43 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95A67F801ED
- for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 17:06:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95A67F801ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05982F801F5
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 17:06:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05982F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="YG+9hR2a"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD71720719;
- Mon, 28 Dec 2020 16:06:32 +0000 (UTC)
+ header.b="HgaeqaM1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C406D207C9;
+ Mon, 28 Dec 2020 16:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609171593;
- bh=mqb+V8KwpniY5OTuAQBPlleqKjClqNjI5EX4LEXBC1s=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=YG+9hR2a0eQLdmIwqUt5+j9zwe/xDbB+DHADXmxHsKfP9h0EsYODWYptwZ+C3F3EP
- gv4Q0/d4Ko8GFYpte+01WTZjAYGyZAwMdhykFMFxfsctA4yJs6DpF7Cc3GPqTBwSZm
- 0L4apwmL72WJ1Tb2M3pzsgb0X1O8KazpGKHBzoK0YryToyxJ1DPCAmzms59TlPRhcu
- 5ekaF5r+N0uQHS9bx3g/Y4nB/1OSXuLSnF3wBm7VenOtY5wGfSFzCC7BFCniYtelir
- /iMa161BbjEBNkcl+gQh7SsuLIJtdcnV/L5SBqWxfgfX/yd9/fiy8YLon701DUBXXM
- 1XYDVYY/E5dbQ==
+ s=k20201202; t=1609171598;
+ bh=wTelgUznsDhN/8fLvdTzIb6NSyVxHVAgFT4YeXQ1xz4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=HgaeqaM1vMoAEl+xttYy2yKFdYdweIR0fP1Drqp4Ob0qObr78j/ivXV+hVPNRG4o8
+ +18/uVxm8OkpmmSPAqHmrNasLdZiKHj7E8IGQDu/1Blx9tB1Ump/qWkCRbNL7zgqZf
+ CeieleugX99Jz3u+MZGbFIzqEtYs3aujgZ6n8basg1Ajvj+/ivhTINBUV/62mz1rgi
+ 6xZzA293ubZRG1SrhfxJlB8M+LDSIYXHzQubIR5ZWM41I+l9wXYEkSl8QNKb+boQG4
+ nDn+dWhSOZqHzb/YlujJLQh3wp3EmI4xZE240z5c35ocVSkeKDPvPPhNlM63++Binv
+ dzX0D6/mWFZeA==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Baolin Wang <baolin.wang7@gmail.com>,
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Chunyan Zhang <zhang.lyra@gmail.com>, Orson Zhai <orsonzhai@gmail.com>,
  alsa-devel@alsa-project.org
-In-Reply-To: <20201208111805.6989-1-andriy.shevchenko@linux.intel.com>
-References: <20201208111805.6989-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1] ASoC: sprd: Switch to use list_entry_is_head() helper
-Message-Id: <160917143257.51553.9711078590395339738.b4-ty@kernel.org>
+In-Reply-To: <20201214172138.44267-1-andriy.shevchenko@linux.intel.com>
+References: <20201214172138.44267-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2] catpt: Switch to use list_entry_is_head() helper
+Message-Id: <160917143257.51553.11900566987042005324.b4-ty@kernel.org>
 Date: Mon, 28 Dec 2020 16:03:52 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,10 +87,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 8 Dec 2020 13:18:05 +0200, Andy Shevchenko wrote:
+On Mon, 14 Dec 2020 19:21:38 +0200, Andy Shevchenko wrote:
 > Since we got list_entry_is_head() helper in the generic header,
-> we may switch driver to use it. This eliminates the need
-> in additional variable.
+> we may switch catpt to use it. It removes the need in additional variable.
 
 Applied to
 
@@ -96,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: sprd: Switch to use list_entry_is_head() helper
-      commit: 57fc2bbc62ef9d505e8732acbae0d6b5c59836cd
+[1/1] catpt: Switch to use list_entry_is_head() helper
+      commit: a9830fc388817c90282925694474fae005fec990
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
