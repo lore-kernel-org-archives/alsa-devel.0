@@ -4,71 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A57AC4332E
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:09:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF3B4C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:14:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A47FB207FB
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:09:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A47FB207FB
+	by mail.kernel.org (Postfix) with ESMTPS id 1E09B2084D
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 16:14:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1E09B2084D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42EA91744;
-	Mon, 28 Dec 2020 17:08:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42EA91744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EA411731;
+	Mon, 28 Dec 2020 17:13:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EA411731
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609171768;
-	bh=2oLXmg6ZIwbx9eqtsFZM89qawNb6c+iz5KCVUIu01QA=;
+	s=default; t=1609172047;
+	bh=JTzTzFegB9FBfkAuzB+MLl5bRflOQN4EeoFvDLSIToA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D53YjokrEsPv4f2oahTNiT3nff5Re7gAkbodhlnm7EGsIoSHUFv7ph/cHdy4vcj4E
-	 3JaKdOZE3S0IgruZ8KRcA3yLkAS5u5IeEuIw6VlgZPm7JGoPg5hkuzMxaXh49Dxqhl
-	 g0cmb7q0fO00ncSJ383waSReTubsbgtz+Kln2rlI=
+	b=eMbd1chvNu/O+QHeIe1iTu22drVwy61f+9PdVgU541JKP4jLCmvZ48+5XzFkNLPGv
+	 4QZzi2pL8iI3v1jNJD/Qw1DW9yq8qlviFZgHXPEwKiYk49zpNGe8fS0zwC9YnjUZ+i
+	 S3sdUcf/yG5/IulmGxygy0cnY2sh/x+t4px7qOQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1973F804E2;
-	Mon, 28 Dec 2020 17:07:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0728CF801ED;
+	Mon, 28 Dec 2020 17:13:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF1F9F804B0; Mon, 28 Dec 2020 17:06:46 +0100 (CET)
+ id 8813EF801F5; Mon, 28 Dec 2020 17:13:15 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 988BEF802A9
- for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 17:06:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 988BEF802A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EF52F8014E
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 17:13:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EF52F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iSsbvISm"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC06820719;
- Mon, 28 Dec 2020 16:06:42 +0000 (UTC)
+ header.b="AIfroMw7"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2513B207C9;
+ Mon, 28 Dec 2020 16:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609171603;
- bh=2oLXmg6ZIwbx9eqtsFZM89qawNb6c+iz5KCVUIu01QA=;
+ s=k20201202; t=1609171991;
+ bh=JTzTzFegB9FBfkAuzB+MLl5bRflOQN4EeoFvDLSIToA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=iSsbvISm7je79fraVplJB5Pf4mzovl3cO8ij4QnR6ytpLrbRY+Fo0LYniIeaOcPIp
- gQd58RQm9jMIQ84YHbq5U7FJ3SpPAuvJp8F7F4NAOy3ePGkh2jkUcV5unE+ibfKpKm
- Yb7zaqM/OYag68Bx3N8yM1LDsMUFoOy3pQe4iPJpmB/USJceDEk4Fuw0Rn7I3niXui
- XX2LXKs9Gb/tnpvahFQTrkDCk67XXHku4m4Y3Iz/AaZhHQ5XGFPKOGMfJdb3m7qyZn
- vqfGs+62ljW1AHeMugBm7BwowZOYF9+1tuZBVEDS1LcGoA/+NSQ1vGxdqJ0KW0R0xh
- iH2vlibv+1TZA==
+ b=AIfroMw77Z5TMmdgycyaSufV1ZDY94QesRrjOk5ZiKfXmaXA6lAjdox4g3h/c0URy
+ 2CQevYM8qvJAWYUJnQah6pgk+zIrm0/u8gxtGrNisj+b9JGJTRzTs//ik5yUEDY0zp
+ IzfsQzhN2c/1x8jFdf7cUqmSSS8YopbtyPYClcvGw7PvKFpDvh95I+kRTGIVP2AHWh
+ pn/cv88QkNrJfir6gzZPZfQK2/X4c+LlERwEBMuILLTUH31A9TuQ5ZWEor/nNy+G0D
+ G5FTBGQptQZ5emdUnISNp49eEFnN6B3TWXCKwBDqPIZYj+zsd0Mc8h+wI+uVPBIAAu
+ bKxK8dnktaTpA==
 From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20201216112512.26503-1-rf@opensource.cirrus.com>
-References: <20201216112512.26503-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Improve handling of raw byte streams
-Message-Id: <160917143257.51553.714728097367902102.b4-ty@kernel.org>
-Date: Mon, 28 Dec 2020 16:03:52 +0000
+To: ALSA development <alsa-devel@alsa-project.org>,
+ Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20201227164037.269893-1-perex@perex.cz>
+References: <20201227164037.269893-1-perex@perex.cz>
+Subject: Re: [PATCH v2] ASoC: AMD Renoir - add DMI entry for Lenovo ThinkPad
+ E14 Gen 2
+Message-Id: <160917197015.51862.7952652010355079842.b4-ty@kernel.org>
+Date: Mon, 28 Dec 2020 16:12:50 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, stable@kernel.org,
+ Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,18 +86,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Dec 2020 11:25:12 +0000, Richard Fitzgerald wrote:
-> As the register map is 16-bit or 32-bit big-endian, the 24-bit
-> DSP words appear padded and with the bytes swapped. When reading a
-> raw stream of bytes, the pad bytes must be removed and the data bytes
-> swapped back to their original order.
+On Sun, 27 Dec 2020 17:40:37 +0100, Jaroslav Kysela wrote:
+> The ThinkPad E14 Gen 2 latop does not have the internal digital
+> microphone connected to the AMD's ACP bridge, but it's advertised
+> via BIOS. The internal microphone is connected to the HDA codec.
 > 
-> The previous implementation of this assumed that the be32_to_cpu() in
-> wm_adsp_read_data_block() would swap back to little-endian. But this is
-> obviously only true on a little-endian CPU. It also made two walks
-> through the data, once to endian-swap and again to strip the pad bytes.
-> 
-> [...]
+> Use DMI to block the microphone PCM device for this platform.
 
 Applied to
 
@@ -103,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: Improve handling of raw byte streams
-      commit: 7726e49837af634accaec317c8d246d1d90d8fc5
+[1/1] ASoC: AMD Renoir - add DMI entry for Lenovo ThinkPad E14 Gen 2
+      commit: 275565997ade6fc32be9cd49a910ba996bcb4797
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
