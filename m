@@ -2,75 +2,115 @@ Return-Path: <SRS0=H50z=GA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A06BC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 12:22:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E526C43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 13:17:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3C48020897
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 12:22:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C48020897
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 59BE122BF5
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Dec 2020 13:17:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59BE122BF5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06BF8170B;
-	Mon, 28 Dec 2020 13:22:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06BF8170B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCA9B170B;
+	Mon, 28 Dec 2020 14:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCA9B170B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609158176;
-	bh=ZS7RUVKRP6wl2s9Oldv/OnnMPXjJxUml71Xrcq40DLY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1609161431;
+	bh=pDrUC6zcVzxt20zp77eoSlx3Hl6I4Sr4uAaAsz0Pbqs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P7TPU5O5IBuPWjvGEQpRRf4y/LEsUL5cZUoOWNJ74ATUqV7kvMsmOr3iL01cXW1H+
-	 vXULrxEX0g6k7BeC29X+pB4wu5m0wowZ9mEyKejyUxueB5rYe1frk0Y4aTZ8Rq/gkD
-	 S7dUmLNajNX0SWeHTr643gVHIsZhMdHlE33FEP3E=
+	b=uuzplJ1Es4qeL2uphBeXaDOiX8d+rsimys1wPjQan6YJjog7OakLcbrZ6dtXUslrP
+	 KoFs2wHbR+GIuTO6uOIezeGtSREIFWfWcXY8JMKoB3SmBVofPKmCls02EOBkpVBNMJ
+	 U4Ab9RowTS9w1tiunxaKU5jBXhXcQemYA4+yR7S0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C363F80143;
-	Mon, 28 Dec 2020 13:22:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BD16F801ED;
+	Mon, 28 Dec 2020 14:16:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D200F801F5; Mon, 28 Dec 2020 13:22:04 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 81AA1F801F5; Mon, 28 Dec 2020 14:16:19 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B766F80143
- for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 13:22:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B766F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9476F8014E
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 14:16:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9476F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="afv795xo"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1050D20867;
- Mon, 28 Dec 2020 12:21:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609158119;
- bh=ZS7RUVKRP6wl2s9Oldv/OnnMPXjJxUml71Xrcq40DLY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=afv795xo56065rW5LAgNEsf0rNu4PmmmcqZl/xI+8vIF/LcSKDW9LKKis24EfvvZP
- BAPoF+l9viA2KajTts/hFLBlUKqws1L/xsQrlufX3v43rXqc4qeJWpOEwtBRqf/J2o
- 6ily0+NOM6BqpHc8STVegwas8jVnwBJDJuRBpCzIT9/iJy2cnq/fnAlYUQzKXJKVFN
- L//31rdtvGIsEmjIUPE6t+dk8oC9zM1G3JtZBlyvDkouPAgLfMyCmpDrfv/VZwNGQ0
- tI33pIOybeJCY/g7jzq4qW7YnMFkK4W5KDXDzHq7EaVqfCl/F3hpZY9TQr7yOvBQfm
- /9Fc6+hxPlDsw==
-Date: Mon, 28 Dec 2020 12:21:38 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="gTK8LZsh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1609161370;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=BpGZqNqjl/EqgtMH0TEGlmSlmsvZxZ2+cVJLVuiye3o=;
+ b=gTK8LZshZ8PKIYMAuu/tr9nJ2El5KvjhbPMiKR5Ov1g8mxggXky0qNyve8HQDwOrFv69mP
+ YiUJjkpIq9UWqaMJslIyRXNx035wfpCeYUKptXyhkbEIjmIvh1p4RbrLT0Mlt/1jO/stOz
+ eQ4ZXYGeu9DD75xNQq6ddiBYq24oHhE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-307-ou7QJp9nNZmwawU2XoD2SA-1; Mon, 28 Dec 2020 08:16:07 -0500
+X-MC-Unique: ou7QJp9nNZmwawU2XoD2SA-1
+Received: by mail-ed1-f69.google.com with SMTP id n18so3311013eds.2
+ for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2020 05:16:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=BpGZqNqjl/EqgtMH0TEGlmSlmsvZxZ2+cVJLVuiye3o=;
+ b=jWcHEk+XPzYtlbDzJ60WBHm8JLcE9vUDzRBJb1uK21Aey9jYLpD50fTIy0VnwqDksW
+ MsvO45I20dfN0N/bGix9YEb4q7Eac3zPlIVr7hWLNdL+2uOefSUplGjY7rGvqReuRnJ7
+ 7tcC5fau9VbHU+dqb4VtewEbOtTWVlDuA5rzWT0Mnq40Chl4qaR1XWElpohYF69jHTjP
+ I8dqmfJx/BF33ynSqcZSs979kEZp1sj6wnnuUZXV4VGnKYfr4Mx+90ws79DhXH5O/z6l
+ AqHiotBbVTiiG0ZLlgmm4KevyAgCH/mEjnTPh23MvFoS1NEpVMrSa1e+EldzG8E6cKNj
+ Y3gg==
+X-Gm-Message-State: AOAM533Ik/LjvVTrZcyXj5zC196kN25iQw1aFJlRfD8AAYHqqsakZ+O7
+ bLS8h3DVyM/fuy8LJK9CTHWGWUXmRP1KO+8+P6eCMUN0Jh7wpFwQC9embtg2LywHSgstL6Sorle
+ ElcOOHOSi4TRShxduCbGsd2BCWm2sXpZWgpTGLBPIWQgFo+rGZd80Kv5iuX/p5TR2dIFISS0umr
+ U=
+X-Received: by 2002:a17:907:40f0:: with SMTP id
+ nn24mr40959184ejb.233.1609161366056; 
+ Mon, 28 Dec 2020 05:16:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxzrt1uKlVWXyK7ZFE9xUmRMZZXRSzEOAZI8gbA5K9cPIpgkRK+cinnSnJmQyqJNyCEoqnoxw==
+X-Received: by 2002:a17:907:40f0:: with SMTP id
+ nn24mr40959157ejb.233.1609161365830; 
+ Mon, 28 Dec 2020 05:16:05 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id e19sm36838102edr.61.2020.12.28.05.16.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 28 Dec 2020 05:16:05 -0800 (PST)
 Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-Message-ID: <20201228122138.GA5352@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
 References: <20201227211232.117801-1-hdegoede@redhat.com>
  <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+Date: Mon, 28 Dec 2020 14:16:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="h31gzZEtNLTqOjlF"
-Content-Disposition: inline
-In-Reply-To: <20201227211232.117801-2-hdegoede@redhat.com>
-X-Cookie: To see you is to sympathize.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201228122138.GA5352@sirena.org.uk>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
  patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -92,39 +132,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---h31gzZEtNLTqOjlF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 12/28/20 1:21 PM, Mark Brown wrote:
+> On Sun, Dec 27, 2020 at 10:12:19PM +0100, Hans de Goede wrote:
+>> The Linux Arizona driver uses the MFD framework to create several
+>> sub-devices for the Arizona codec and then uses a driver per function.
+>>
+>> The jack-detect support for the Arizona codec is handled by the
+>> extcon-arizona driver. This driver exports info about the jack state
+>> to userspace through the standard extcon sysfs class interface.
+>>
+>> But standard Linux userspace does not monitor/use the extcon sysfs
+>> interface for jack-detection.
+> 
+> This seems like the wrong layer to fix this problem at, this issue will
+> apply to all extcon devices that can detect audio.
 
-On Sun, Dec 27, 2020 at 10:12:19PM +0100, Hans de Goede wrote:
-> The Linux Arizona driver uses the MFD framework to create several
-> sub-devices for the Arizona codec and then uses a driver per function.
->=20
-> The jack-detect support for the Arizona codec is handled by the
-> extcon-arizona driver. This driver exports info about the jack state
-> to userspace through the standard extcon sysfs class interface.
->=20
-> But standard Linux userspace does not monitor/use the extcon sysfs
-> interface for jack-detection.
+Well, the problem really is that using extcon to report jack-state is
+rather unusual to do, extcon-arizona.c is the only extcon driver which
+deals with jack-state (typically extcon is used for things like determining
+the type of charger connected to an USB charging port):
 
-This seems like the wrong layer to fix this problem at, this issue will
-apply to all extcon devices that can detect audio.
+[hans@x1 linux]$ grep -lr EXTCON_JACK_HEADPHONE drivers/extcon/
+drivers/extcon/extcon-arizona.c
+drivers/extcon/extcon.c
 
---h31gzZEtNLTqOjlF
-Content-Type: application/pgp-signature; name="signature.asc"
+And more in general AFAIK extcon is sort of deprecated and it is
+not advised to use it for new code. I would esp. not expect it to
+be used for new jack-detection code since we already have standard
+uAPI support for that through sound/core/jack.c .
 
------BEGIN PGP SIGNATURE-----
+So extcon-arizona really is the odd duck here and writing some
+generic extcon to sound/core/jack.c glue seems unnecessary since
+we are just trying dealing with one special case here.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/pzdEACgkQJNaLcl1U
-h9Dh6Qf/UA5yTQvJa66elOCTvssl6VA4RzwILRf1mJoZYFl7zb2LHfzSVv6R3Uxa
-fNwQ5bphvGiDEToSULOtBujQIemOvFOZVJVxZ5ireFZJevoOFa3IHGae9XxFdG7M
-CEIBKMtl9ZFTQAMGqE8tTduASOyflLJtoGY2Vj9a/FlnE8Rad/Ufib/GDlpQ4suQ
-gK/Ng5bXWPcz/IooJDcsVr0grhWFtcKBifnRj6wnJ635gys/VUegIHiBuHzZCPtQ
-klbL6XE0YebmQUFUGQklaFCgbUtQUVoSCoAcmaREWRcHOtIIMBwfw14ZikBw8U8P
-4WnGOj4lhtL8cg9bZjOlquZ4w1mX6w==
-=frXM
------END PGP SIGNATURE-----
+Also at first I tried to use extcon-glue like code in
+sound/soc/intel/boards/bytcr_wm5102.c making it listen for
+extcon events and have sound/soc/intel/boards/bytcr_wm5102.c
+report jack events instead of sharing the jack with extcon-arizona.c
+through the shared MFD data struct. But that did not work, because
+the extcon-arizona.c probe function already (before this patch-set)
+has this:
 
---h31gzZEtNLTqOjlF--
+        if (!arizona->dapm || !arizona->dapm->card)
+                return -EPROBE_DEFER;
+
+Which means that the sound/soc/intel/boards/bytcr_wm5102.c machine
+driver must first complete calling devm_snd_soc_register_card() before
+the extcon driver will bind and register the extcon device.
+
+But listening to extcon events requires the machine driver to do an:
+extcon_get_extcon_dev("arizona-extcon") and as long as that returns
+NULL, return -EPROBE_DEFER.
+
+So now we have the machine-driver's probe returning with -EPROBE_DEFER
+until the extcon driver shows up and the other-way around, so neither
+ever binds.
+
+I could have fixed this by making the machine driver bind without the
+extcon driver being bound and then poll every second for the extcon device
+to show up, and once it has shown up stop polling and register the jack,
+once it has the extcon device.
+
+But that seems quite ugly, so I did not even try to implement that
+coming up with this solution instead which is much more KISS really.
+
+Also note that sharing the jack is necessary to avoid creating 2
+separate input_device-s for the headset, which also looks weird / ugly.
+
+Besides being ugly, there also is another potential problem with
+polling to wait for the extcon device to show up: the jack must be
+registered before the card registration completes otherwise
+snd_jack_dev_register will not run, since we are post registration.
+But I guess that the sound core might be smart enough to call
+the dev_register op immediately if the card has already been
+registered ?
+
+TL;DR: writing a generic solution for what is a special case used
+in just driver seems like overkill and also writing such a
+generic solution is not easily possible because of probe ordering
+issues. So instead I've gone with this approach which is a much
+simpler solution and as such seems a better way to deal with this
+special case.
+
+Regards,
+
+Hans
+
+
+
