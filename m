@@ -2,55 +2,64 @@ Return-Path: <SRS0=cglx=GB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAE90C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Dec 2020 08:13:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01DE9C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Dec 2020 08:24:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C03CB20867
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Dec 2020 08:13:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C03CB20867
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id BC22E22209
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Dec 2020 08:24:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC22E22209
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A774416E8;
-	Tue, 29 Dec 2020 09:12:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A774416E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CFFC16EB;
+	Tue, 29 Dec 2020 09:23:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CFFC16EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609229605;
-	bh=vipo0LOTj5dLomtIyxG/xtJLleVPtfpjVSTlIt4hNO8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1609230275;
+	bh=7XZ2hFzPecPugLW55cc7jp0iAO8WS2qbvrhsl4OfSmU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ce7/wVIOQ5YMww1ffx8K14hmLM7sliW5/febqPNoSvTG9CUjs20IlrZol6YDqT2XG
-	 cw//XTclLDJNWV+8JSbgb1Yl9axcrE1Z2N1uDNeitIHpDy/FiWGip9cxDt7lraDEB/
-	 Kol/PR9YZx0VHBuuPIiqcxfSmY594TQw/07I1PEM=
+	b=DrPqehOj4Zazwpb2kAaN9ko93qfZSnDYC7HXYbIr7SnhCNNvRFxJXQZY2yh7UTtZ8
+	 uWlhAVjmeXtcK9WD8KumEqo9pf+KwCkvBUIQZbjnOyy3aHnDWZr4P69LVprSaR1fWx
+	 RPcZOkp0BKpB5Twt1Z+AaKDtdaofI0PJoPM6kzoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41E21F8020C;
-	Tue, 29 Dec 2020 09:12:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9BBBF8020C;
+	Tue, 29 Dec 2020 09:23:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14D2FF8022B; Tue, 29 Dec 2020 09:12:34 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id CFB24F80143
- for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2020 09:12:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFB24F80143
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1609229549789000988-webhooks-bot@alsa-project.org>
-References: <1609229549789000988-webhooks-bot@alsa-project.org>
-Subject: regression of 'make config.log'
-Message-Id: <20201229081234.14D2FF8022B@alsa1.perex.cz>
-Date: Tue, 29 Dec 2020 09:12:34 +0100 (CET)
+ id 1FF22F8022B; Tue, 29 Dec 2020 09:23:42 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A50E6F80141
+ for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2020 09:23:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A50E6F80141
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 256BAAC42;
+ Tue, 29 Dec 2020 08:23:31 +0000 (UTC)
+Date: Tue, 29 Dec 2020 09:23:31 +0100
+Message-ID: <s5hh7o5c96k.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Alex Henrie <alexhenrie24@gmail.com>
+Subject: Re: [PATCH v2] confmisc: fix memory leak in snd_func_concat
+In-Reply-To: <20201228014315.39991-1-alexhenrie24@gmail.com>
+References: <20201228014315.39991-1-alexhenrie24@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,19 +75,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #108 was opened from libinyang:
+On Mon, 28 Dec 2020 02:43:15 +0100,
+Alex Henrie wrote:
+> 
+> Signed-off-by: Alex Henrie <alexhenrie24@gmail.com>
 
-In the latest alsa-lib code, make config.log will fail. After reverting the commit "5275d170", make config.log successfully.
+Thanks, applied.
 
-Steps to reproduce:
-1. update alsa-lib to the latest
-2. ./gitcompile
-3. cd test/lsb/ && make config.log
-The build will fail. And it shows:
-../../test-driver: line 107: 78589 Segmentation fault      (core dumped) "$@" > $log_file 2>&1
-FAIL: config
 
-After reverting commit 5275d170 (conf: fix use after free in _snd_config_load_with_include), the build works.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/108
-Repository URL: https://github.com/alsa-project/alsa-lib
+Takashi
