@@ -2,88 +2,72 @@ Return-Path: <SRS0=YQ6z=GC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D39ABC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 07:58:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98DCEC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 08:03:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B293C21973
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 07:58:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B293C21973
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
+	by mail.kernel.org (Postfix) with ESMTPS id B87A2217BA
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 08:03:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B87A2217BA
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31B881805;
-	Wed, 30 Dec 2020 08:57:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31B881805
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00FD01805;
+	Wed, 30 Dec 2020 09:02:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00FD01805
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609315128;
-	bh=mByqkhOakjDk5jMnujnWz09tRCAv5Ku1Jiz6cNbY+BY=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Vklmga/Czokd9RS8pcSjoxaPsRoNIFeqy13zG3+4rJdzxFVZwAPWPKtWrRX6vqXnu
-	 GcIi+ql8LldeQf8iBx9UQkyGtPGEMDli7EgO5c7F9lvRSoJrMkBF4EbWGZUdrTxKkw
-	 Tmgl2qKD5Ch99Vr5mVbF60rGEablsnUeXXRebHgA=
+	s=default; t=1609315423;
+	bh=o3pTPxUW/eCYbdmOuUOdL1/QgWU19hF0rmaFV+wT7a8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DWWcIKXz/KBmpbs8TlUDy5MtclC9ps48+vLoiS8ykqi6O1K+Q9qeuNba9UkuCYW/v
+	 d8GR/tpFBwBneOJdZp0KP9zMcztWvJH+24bNCcnjQaNEnnOqmmzP+xhW+5qn+mSBsS
+	 Bfa4mZBG7Acah1eqyLiX/n1SDQkFuT5GVIHUObKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 916C0F801ED;
-	Wed, 30 Dec 2020 08:57:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E889F801ED;
+	Wed, 30 Dec 2020 09:02:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4472F801F5; Wed, 30 Dec 2020 08:57:55 +0100 (CET)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id A2F82F801F5; Wed, 30 Dec 2020 09:02:50 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04D05F80132
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 08:57:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04D05F80132
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="mlsO69+M"; 
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="j5W6G564"
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 35B5EAA42B30E;
- Wed, 30 Dec 2020 08:57:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1609315070; bh=mByqkhOakjDk5jMnujnWz09tRCAv5Ku1Jiz6cNbY+BY=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=mlsO69+Mc+PMV9/E6AAC3r6fM/IsIT1G5gsjAq7FUvACWe3ZKDBOSR4F3QbOOFG6M
- GY8qYQR3nWeI5zaQZdeuKHjK8OtjvrP9+bPjMdGhNtvjNHgnlbvyvYToesOHoqOMVK
- 4zxKCe5Ia1ijPAU0XyngyFzz4ctiiy+bDGmMYrL0=
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id X8CnFMps-jSJ; Wed, 30 Dec 2020 08:57:44 +0100 (CET)
-Received: from [192.168.105.22] (ip28.insite.cz [81.0.237.28])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 881DCAA4280FE;
- Wed, 30 Dec 2020 08:57:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1609315064; bh=mByqkhOakjDk5jMnujnWz09tRCAv5Ku1Jiz6cNbY+BY=;
- h=Subject:To:References:From:Date:In-Reply-To:From;
- b=j5W6G564Dz678Ng+oQM+f3uRrehUqGtPpnernD7OUCsKEVs3zzddcUUj7g9rM1WEz
- zxUecFPC0uB38r2pfw2wUgKoy2nmpFxiAYnzp0h6dnmjSGOOCDtoofLGfKSpT/xVGR
- /TVSf1O6qs+MhvTnrK6tJ5SOGUPXmwdJN23CEhUc=
-Subject: Re: configuring usb 2.0 audio gadget correctly via configfs?
-To: Bert Schiettecatte <bert@bertschiettecatte.com>,
- alsa-devel@alsa-project.org
-References: <CALd3UbR-1WHwpw=y-OMM6w6wTpKQ9mkY6J1F3KwLMQKrwWL_Lw@mail.gmail.com>
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Message-ID: <642f66c0-8c10-a245-5f51-5e033cd33500@ivitera.com>
-Date: Wed, 30 Dec 2020 08:57:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2994F80162
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 09:02:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2994F80162
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0BU82ewZ6001259,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0BU82ewZ6001259
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 30 Dec 2020 16:02:40 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 30 Dec 2020 16:02:40 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: rt5645: Remove the redundant delay time
+Date: Wed, 30 Dec 2020 16:02:35 +0800
+Message-ID: <20201230080235.12698-1-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <CALd3UbR-1WHwpw=y-OMM6w6wTpKQ9mkY6J1F3KwLMQKrwWL_Lw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
+ alsa-devel@alsa-project.org, judyhsiao@google.com, albertchen@realtek.com,
+ derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,20 +83,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 29. 12. 20 v 16:22 Bert Schiettecatte napsal(a):
-> Hi all
-> 
-> 
-> Anyway, just wanted to know what the current state of things is
-> regarding the gadget driver and alsa.
+This patch removes the redundant delay time to speed up from the cold start
+of headphone playback.
 
-Hi Bert,
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 33 ++++++++-------------------------
+ 1 file changed, 8 insertions(+), 25 deletions(-)
 
-I would recommend to search linux-usb@vger.kernel.org mailing list, that
-is where the gadget development mostly takes place. There were a number
-of patches recently, most of them not included upstream yet.The
-f_uac2/g_audio gadget is receiving attention and development effort.
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 420003d062c7..1c9e61abda30 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -435,7 +435,6 @@ struct rt5645_priv {
+ 
+ 	int jack_type;
+ 	bool en_button_func;
+-	bool hp_on;
+ 	int v_id;
+ };
+ 
+@@ -1645,6 +1644,7 @@ static void hp_amp_power(struct snd_soc_component *component, int on)
+ {
+ 	static int hp_amp_power_count;
+ 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
++	int i, val;
+ 
+ 	if (on) {
+ 		if (hp_amp_power_count <= 0) {
+@@ -1655,7 +1655,13 @@ static void hp_amp_power(struct snd_soc_component *component, int on)
+ 				snd_soc_component_write(component, RT5645_DEPOP_M1, 0x000d);
+ 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
+ 					RT5645_HP_DCC_INT1, 0x9f01);
+-				msleep(20);
++				for (i = 0; i < 20; i++) {
++					usleep_range(1000, 1500);
++					regmap_read(rt5645->regmap, RT5645_PR_BASE +
++						RT5645_HP_DCC_INT1, &val);
++					if (!(val & 0x8000))
++						break;
++				}
+ 				snd_soc_component_update_bits(component, RT5645_DEPOP_M1,
+ 					RT5645_HP_CO_MASK, RT5645_HP_CO_EN);
+ 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
+@@ -1665,7 +1671,6 @@ static void hp_amp_power(struct snd_soc_component *component, int on)
+ 					RT5645_MAMP_INT_REG2, 0xfc00);
+ 				snd_soc_component_write(component, RT5645_DEPOP_M2, 0x1140);
+ 				msleep(90);
+-				rt5645->hp_on = true;
+ 			} else {
+ 				/* depop parameters */
+ 				snd_soc_component_update_bits(component, RT5645_DEPOP_M2,
+@@ -1885,27 +1890,6 @@ static int rt5645_bst2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
+-static int rt5650_hp_event(struct snd_soc_dapm_widget *w,
+-		struct snd_kcontrol *k, int  event)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
+-
+-	switch (event) {
+-	case SND_SOC_DAPM_POST_PMU:
+-		if (rt5645->hp_on) {
+-			msleep(100);
+-			rt5645->hp_on = false;
+-		}
+-		break;
+-
+-	default:
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+ static int rt5645_set_micbias1_event(struct snd_soc_dapm_widget *w,
+ 		struct snd_kcontrol *k, int  event)
+ {
+@@ -2242,7 +2226,6 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("PDM1R"),
+ 	SND_SOC_DAPM_OUTPUT("SPOL"),
+ 	SND_SOC_DAPM_OUTPUT("SPOR"),
+-	SND_SOC_DAPM_POST("DAPM_POST", rt5650_hp_event),
+ };
+ 
+ static const struct snd_soc_dapm_widget rt5645_specific_dapm_widgets[] = {
+-- 
+2.29.0
 
-Best regards,
-
-Pavel.
