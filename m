@@ -7,69 +7,75 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99722C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 15:45:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 958B0C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 15:45:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C6A721D1B
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 15:45:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C6A721D1B
+	by mail.kernel.org (Postfix) with ESMTPS id 17AB720725
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 15:45:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17AB720725
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 581971833;
-	Wed, 30 Dec 2020 16:44:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 581971833
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46EB31841;
+	Wed, 30 Dec 2020 16:45:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46EB31841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609343097;
-	bh=Dr9mLOW7dfuWMVS7lwdbQQhz8bsyb9ZknSWmQdtAQ50=;
+	s=default; t=1609343150;
+	bh=B6KEEyF4RQKJhn/Tlgm2gPhwOX1a1c48tzMAbskoqNY=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=HPUMDjHtpa0OEQvJCkgvRcbXHoLStaOp8u+R5VGEB5py+yVfveCSz260T0L4CMNXn
-	 veDmQKX3nZRYHmfwyb8LS0PzXyFsnTY8OsRmwlEORMSxJQrOD2jZz02McJohIiznYI
-	 1aNVL/9VASfZzl+Djr3XPO3so47WxULM5p0AgA0Y=
+	b=qGSj+vNcrTeHiUxAJVG4PScJ1wISrcOJWUjpdrPZLhzQYfw6Z71BeFZ2AH78egmia
+	 HSWly1OaedPz02BhS1y/PySEY0Kn6iCr1KeGgu/IkjYOTZLbtNUXSlHtxqhYNTZjNc
+	 LiCvef+0QwqflnRlCCNbbGTaqg8meg6M+Nlmq6NI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C171CF80132;
-	Wed, 30 Dec 2020 16:44:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEEABF801ED;
+	Wed, 30 Dec 2020 16:44:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26A63F801F5; Wed, 30 Dec 2020 16:44:05 +0100 (CET)
+ id EE850F8020B; Wed, 30 Dec 2020 16:44:57 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48C72F80132
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 16:43:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48C72F80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 818FBF80141
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 16:44:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 818FBF80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pBY3tylF"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4871021D1B;
- Wed, 30 Dec 2020 15:43:48 +0000 (UTC)
+ header.b="HCKeDJ0K"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 413BD20725;
+ Wed, 30 Dec 2020 15:44:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609343030;
- bh=Dr9mLOW7dfuWMVS7lwdbQQhz8bsyb9ZknSWmQdtAQ50=;
+ s=k20201202; t=1609343088;
+ bh=B6KEEyF4RQKJhn/Tlgm2gPhwOX1a1c48tzMAbskoqNY=;
  h=From:To:Cc:Subject:Date:From;
- b=pBY3tylFQvxqVhAaPPVFQMbq7vsGkynLjJ2rQxOAB0mcU8ct4N5wvdsEVCAttFypy
- AGsSpDqAV1abFnbgf/XgfjTmDMsiJocZolFIeb7Pro1rrDYC+kbsDYeM/DdrwAGnIK
- 2D6uD0J6nWDcWRKXoNsikkmhiHoq8/d8hGlsgerxei3aSMwH9oPNMVIiU3x4z/JcJa
- 71rrsftnWPirApCsts7sp889RZg8H3VkWoSn3q727UQIqDeOkrnhQcEmUavGxM6eT6
- KATY5Cu2nnu03RLafpxYqiJPFbiiDe2sja1nLRpUSCK/k3hPHE3G1Mb8MLQBPqspjC
- R0SMwOgQppTdg==
+ b=HCKeDJ0KSZ7nc1CoEISb/ZRNzccPTaWWh06Nn2VIZBsId6eP9cn0oGFUJlOABZZZO
+ iI0X3/jv9pxyQ5bU7W/XqVpiwAVKTetRviaE1CBU80GpLg/jmLlz66OeoO4ZhibBqQ
+ PjjjdalMW1Zz2BoWMBZ8kelnigjz4DMVLkz9RLZvfhx2BBPns1SB0TRK+cYujQxlOH
+ 8MnDwDJqOqRtqV2yMQCPacw1DfF9pBrJ/RhsJA8R+VJ3BdV7xvpCIPfiT77gwd3boZ
+ PiTBMWGGCaRfDf7RBRjRMAgbFOqHd28vArCHhJoja2QAirqWZnxT1vUTZKPDO8Anij
+ h3IyOvDVmuzrg==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH] ASoC: mediatek: add MTK_PMIC_WRAP dependency
-Date: Wed, 30 Dec 2020 16:43:34 +0100
-Message-Id: <20201230154345.639122-1-arnd@kernel.org>
+To: Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: fsl: fix -Wmaybe-uninitialized warning
+Date: Wed, 30 Dec 2020 16:44:15 +0100
+Message-Id: <20201230154443.656997-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Jiaxin Yu <jiaxin.yu@mediatek.com>, Tzung-Bi Shih <tzungbi@google.com>,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Takashi Iwai <tiwai@suse.com>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, clang-built-linux@googlegroups.com,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>, Nathan Chancellor <natechancellor@gmail.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,33 +93,37 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Randconfig builds often show harmless warnings like
+Clang points out a code path that returns an undefined value
+in an error case:
 
-WARNING: unmet direct dependencies detected for SND_SOC_MT6359
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
-  Selected by [y]:
-  - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y]
+sound/soc/fsl/imx-hdmi.c:165:6: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsom
+etimes-uninitialized]
+        if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/soc/fsl/imx-hdmi.c:212:9: note: uninitialized use occurs here
+        return ret;
 
-Add a dependency to avoid that.
+The driver returns -EINVAL for other broken DT properties, so do
+it the same way here.
 
+Fixes: 6a5f850aa83a ("ASoC: fsl: Add imx-hdmi machine driver")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/imx-hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 8d3dcfb6a580..effdb76369e4 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -172,7 +172,7 @@ config SND_SOC_MT8192
- config SND_SOC_MT8192_MT6359_RT1015_RT5682
- 	tristate "ASoC Audio driver for MT8192 with MT6359 RT1015 RT5682 codec"
- 	depends on I2C
--	depends on SND_SOC_MT8192
-+	depends on SND_SOC_MT8192 && MTK_PMIC_WRAP
- 	select SND_SOC_MT6359
- 	select SND_SOC_RT1015
- 	select SND_SOC_RT1015P
+diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
+index 2c2a76a71940..ede4a9ad1054 100644
+--- a/sound/soc/fsl/imx-hdmi.c
++++ b/sound/soc/fsl/imx-hdmi.c
+@@ -164,6 +164,7 @@ static int imx_hdmi_probe(struct platform_device *pdev)
+ 
+ 	if ((hdmi_out && hdmi_in) || (!hdmi_out && !hdmi_in)) {
+ 		dev_err(&pdev->dev, "Invalid HDMI DAI link\n");
++		ret = -EINVAL;
+ 		goto fail;
+ 	}
+ 
 -- 
 2.29.2
 
