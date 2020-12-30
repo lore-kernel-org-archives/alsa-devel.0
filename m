@@ -2,89 +2,74 @@ Return-Path: <SRS0=YQ6z=GC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD104C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99722C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 15:45:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38ABA2220B
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:39:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38ABA2220B
+	by mail.kernel.org (Postfix) with ESMTPS id 6C6A721D1B
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 15:45:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C6A721D1B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7890183C;
-	Wed, 30 Dec 2020 14:38:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7890183C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 581971833;
+	Wed, 30 Dec 2020 16:44:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 581971833
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609335567;
-	bh=UhBLZgCv7mN/iqwzx3ww+VJRza+85Eznm3Wt4zyJh8w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IpeJdi7cNJo3GE6SRumZZb3DZzkAyS1KNgNy/eebAMOa3rQo0j3W05hPJ8/bGpo7K
-	 qGpHtIXwj64bwhiLlBIWWFaWkwR1ZTaMLSy6OZhds2lTsGSY62WmqMQXtHf9OuCVcv
-	 WsBQF+6lt0tYAG3T0079cuZaKesSSi7bMQUx+YGg=
+	s=default; t=1609343097;
+	bh=Dr9mLOW7dfuWMVS7lwdbQQhz8bsyb9ZknSWmQdtAQ50=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HPUMDjHtpa0OEQvJCkgvRcbXHoLStaOp8u+R5VGEB5py+yVfveCSz260T0L4CMNXn
+	 veDmQKX3nZRYHmfwyb8LS0PzXyFsnTY8OsRmwlEORMSxJQrOD2jZz02McJohIiznYI
+	 1aNVL/9VASfZzl+Djr3XPO3so47WxULM5p0AgA0Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F1CAF801ED;
-	Wed, 30 Dec 2020 14:38:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C171CF80132;
+	Wed, 30 Dec 2020 16:44:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63D92F801F5; Wed, 30 Dec 2020 14:38:33 +0100 (CET)
+ id 26A63F801F5; Wed, 30 Dec 2020 16:44:05 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48CA9F80132
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 14:38:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48CA9F80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48C72F80132
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 16:43:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48C72F80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Q6Lrdv6h"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C74B206A5;
- Wed, 30 Dec 2020 13:38:25 +0000 (UTC)
+ header.b="pBY3tylF"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4871021D1B;
+ Wed, 30 Dec 2020 15:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609335505;
- bh=UhBLZgCv7mN/iqwzx3ww+VJRza+85Eznm3Wt4zyJh8w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Q6Lrdv6hskLKz83zqSey1QQir6lMnlJHTbjT6oewDWiAV0l3vD1yxe7icuEi+YPHa
- PwDq0WcpAOM8ecRzuplBpsJp3HVLwWBwIAQmwz5J5g79hY2vBfK1m3nL16a10VM9wS
- rMUppXa0YTgYgLZj4BbtF5Hw9dWvIFx9iPiSj+m3cRTHl+Qax7Xy4hbD1bjveYheVs
- a+ElD5AQa2qmIcCiOZFFD2eK/Xf1lq1JPmfifdXPaJCs+vfKGMddX2odab0wQwdcy5
- oJyuf3U79jEd3np2MjJ3wdF6uhPcTKB9j0+enlbVwl1fwhN9VZxNEFaj/LA0A43LOG
- wMgdXJlTkKnXQ==
-Date: Wed, 30 Dec 2020 13:38:03 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-Message-ID: <20201230133803.GC4428@sirena.org.uk>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
- <20201229130657.GN9673@ediswmail.ad.cirrus.com>
- <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
- <20201229150807.GF4786@sirena.org.uk>
- <07037a8a-1d35-362e-1b82-b73b81f7c6ac@redhat.com>
+ s=k20201202; t=1609343030;
+ bh=Dr9mLOW7dfuWMVS7lwdbQQhz8bsyb9ZknSWmQdtAQ50=;
+ h=From:To:Cc:Subject:Date:From;
+ b=pBY3tylFQvxqVhAaPPVFQMbq7vsGkynLjJ2rQxOAB0mcU8ct4N5wvdsEVCAttFypy
+ AGsSpDqAV1abFnbgf/XgfjTmDMsiJocZolFIeb7Pro1rrDYC+kbsDYeM/DdrwAGnIK
+ 2D6uD0J6nWDcWRKXoNsikkmhiHoq8/d8hGlsgerxei3aSMwH9oPNMVIiU3x4z/JcJa
+ 71rrsftnWPirApCsts7sp889RZg8H3VkWoSn3q727UQIqDeOkrnhQcEmUavGxM6eT6
+ KATY5Cu2nnu03RLafpxYqiJPFbiiDe2sja1nLRpUSCK/k3hPHE3G1Mb8MLQBPqspjC
+ R0SMwOgQppTdg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH] ASoC: mediatek: add MTK_PMIC_WRAP dependency
+Date: Wed, 30 Dec 2020 16:43:34 +0100
+Message-Id: <20201230154345.639122-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="32u276st3Jlj2kUU"
-Content-Disposition: inline
-In-Reply-To: <07037a8a-1d35-362e-1b82-b73b81f7c6ac@redhat.com>
-X-Cookie: Above all things, reverence yourself.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, MyungJoo Ham <myungjoo.ham@samsung.com>,
- Lee Jones <lee.jones@linaro.org>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, Tzung-Bi Shih <tzungbi@google.com>,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,100 +85,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---32u276st3Jlj2kUU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Randconfig builds often show harmless warnings like
 
-On Tue, Dec 29, 2020 at 04:33:09PM +0100, Hans de Goede wrote:
-> On 12/29/20 4:08 PM, Mark Brown wrote:
+WARNING: unmet direct dependencies detected for SND_SOC_MT6359
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
+  Selected by [y]:
+  - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y]
 
-> > No, that's not the case.  extcon is a port of an Android custom API that
-> > looks very similar to what ended up in mainline, it was also a
-> > combination of sysfs and uevents but a bit less generic.  It mainly
-> > existed to provide information to userspace about what was plugged into
-> > the various ports on devices, things like headphone jacks and the
-> > pre-USB C multifunction connectors you used to get on phones.
+Add a dependency to avoid that.
 
-> Interesting, I have close to 0 experience with Android userspace
-> (something which I would like to change one of these days). But I have
-> encountered a bunch of in-kernel use of extcon on Intel's Android X86
-> port for Bay and Cherry Trail devices (which I've ported to the mainline)
-> where extcon was e.g. used with a generic extcon-gpio like driver monitoring
-> the ID pin and then used by the USB code to detect (through monitoring the
-> extcon) if the USB port was in host or device/gadget mode.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/mediatek/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> So it seems that extcon has many different uses by different people...
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 8d3dcfb6a580..effdb76369e4 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -172,7 +172,7 @@ config SND_SOC_MT8192
+ config SND_SOC_MT8192_MT6359_RT1015_RT5682
+ 	tristate "ASoC Audio driver for MT8192 with MT6359 RT1015 RT5682 codec"
+ 	depends on I2C
+-	depends on SND_SOC_MT8192
++	depends on SND_SOC_MT8192 && MTK_PMIC_WRAP
+ 	select SND_SOC_MT6359
+ 	select SND_SOC_RT1015
+ 	select SND_SOC_RT1015P
+-- 
+2.29.2
 
-It was extended as part of getting it merged into mainline, there was
-some thought about what people could need to do with jacks at the time.
-
-> > The whole purpose of creating sound/core/jack.c is to abstract away the
-> > userspace interfaces from the drivers, most audio devices shouldn't be
-> > working with extcon directly just as they shouldn't be creating input
-> > devices or ALSA controls directly.  The missing bit there is to add
-> > extcon into jack.c.
-
-> So what you are suggesting is making sound/core/jack.c register the
-> extcon device and then have arizona-extcon.c talk to sound/core/jack.c
-> and no longer do any extcon stuff itself.
-
-Yes.
-
-> So we already export 2 userspace-APIs for this IMHO adding a 3th one is not
-> really a good idea unless it offers significant benifits which I don't
-> really see. The input_dev API is simple enough to use that extcon does
-> not really offer any significant benefits.
-
-Quite apart from anything else the reason the switch API was created was
-AIUI that the Android people couldn't figure out how to do jack
-detection on Linux - the current APIs are not terribly discoverable.
-There's also issues with extensibility and applicability to non-audio
-use csaes with the existing APIs.
-
-> My current solution to have the machine-driver register a jack and
-> then share that with the extcon-arizona.c code still seems like the
-> best/simplest solution to me here.
-
-Bodging it at the driver level gets in the way of improving the generic
-code.
-
-> Unless we go with your plan to make sound/core/jack.c export
-> an extcon device for all sound-devs registering a jack, and then move
-> extcon-arizona.c over to using sound/core/jack.c without it doing any
-> extcon stuff itself. But as discussed I'm really not a fan of exporting
-> a 3th uAPI for jack-detection for all sound-cards with jack-detect
-> capability.
-
-That *is* the plan, though clearly it's not exactly been backed by work.
-extcon already exists and supports reporting jacks.
-
-> > I do think pushing things over to extcon is a useful goal, the existing
-> > interfaces have fairly clear issues that it does actually address.
-
-> I don't really see any "fairly clear issues" with the input-device uAPI,
-> I agree that the ALSA controls can be hard to use, but that is not the
-> case for the input-device uAPI (*). What are your objections against using
-> the input-device uAPI ?
-
-Like I say it's discoverabiity and extensibility in a range of axes.
-Other examples of thing that'd be good to have that we don't really have
-with the input API are things like saying things like "the red jack on
-the front panel".
-
---32u276st3Jlj2kUU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/sgroACgkQJNaLcl1U
-h9CMlgf/SjdInnQRauNcJW8jl/PnrIjRn+DFyB3a6HsFOzAzc2NJY7WK66gaLKD0
-f+hya/I42j27ZqUiZU8JxRM7GO1tTSoLTAYNNvSavG4yac1CcqNmGcFRc1Wbu5xR
-+PeTo/90KPTYL7ZRgX9w/ly0brbGTkQhSRhYPrU7wKitPQUylvTkglIYYjKDurys
-rLmZOGlRMmMvwCqSmpqn7x147t9ic17lFlutmPRqIklmEPJb8nqBiNfWCgQQfKQ/
-yTm/uZvAFTDwnsA5Minuzq5bHBr9WNOLxGgWz7qhZIOS2LVEn0wwICDSJrbwkCio
-qvIkPSHs2rRitl+GKjHJ+I/fdS2ljw==
-=awoV
------END PGP SIGNATURE-----
-
---32u276st3Jlj2kUU--
