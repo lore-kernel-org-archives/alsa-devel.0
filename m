@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFA0DC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:05:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 218ADC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:06:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08B0B2220B
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:05:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08B0B2220B
+	by mail.kernel.org (Postfix) with ESMTPS id 97832222BB
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:06:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97832222BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EF611859;
-	Wed, 30 Dec 2020 14:04:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EF611859
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10D94185C;
+	Wed, 30 Dec 2020 14:05:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10D94185C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609333549;
-	bh=lAXHsb70nJP+WYyBcH4Sr0dYyef1OZUZJDEgRu/5+Wg=;
+	s=default; t=1609333593;
+	bh=gBkpl3m4jJGJDQ83gMnX/l9iczs2j62lLFhEFweDDFg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OAiTaRFUV0/5hq+nTsTe5ERrZEwbDP5sNW1aTE8T7Ji5uge217oPQ6/Lqg4gRpLSn
-	 w7Vlimk7poaHNK90RDasgWgSMowVDgqqjhxbhsy/fkAidZYFetSNjgal/cBMLlPLt9
-	 iqXMKxLggEZM1QTzyr42o7WBOcWeN1U2BKiRX+f0=
+	b=FD8vxX5vIkQiZqr4qiuzNKRS8JxP6StL/cIi+uElsjo3L8fdjFDhGXUaxrzINDFkc
+	 BF3yaASH2hkgi4kJa1rlkJmmkbsJgO60PWfg3rQ4MADXdTJykkEuNMIeuzhDmBGnsM
+	 CJYX2Hu0cyMs+WJZ51TsQO6lIu3ZcAeT3Pd6+TOM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 331B4F801F9;
-	Wed, 30 Dec 2020 14:04:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A22AF801ED;
+	Wed, 30 Dec 2020 14:04:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37C3DF804B0; Wed, 30 Dec 2020 14:04:39 +0100 (CET)
+ id 63136F804CA; Wed, 30 Dec 2020 14:04:53 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A539F80249
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 14:04:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A539F80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id 547FDF804C2
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 14:04:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 547FDF804C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MT/Mg4JG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D71B1229EF;
- Wed, 30 Dec 2020 13:04:33 +0000 (UTC)
+ header.b="CiMmd9Yv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE213222F9;
+ Wed, 30 Dec 2020 13:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609333474;
- bh=lAXHsb70nJP+WYyBcH4Sr0dYyef1OZUZJDEgRu/5+Wg=;
+ s=k20201202; t=1609333485;
+ bh=gBkpl3m4jJGJDQ83gMnX/l9iczs2j62lLFhEFweDDFg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=MT/Mg4JGG1hPSHbCbsP1k5QWOjxRowd68evOaAKrTQilr8fPT2poXfw/v9j64wfiv
- Ki/uzT4tYW8B4OxTtGCdxhQZZ9qYIgTpU9LmTb7QobcdRkngiAoI+Z3n0ej3bQI9NQ
- w1bW00PqNoiixIuyTqTz6yUUfD7R4zR2zPRJQ9Qn0osfy4noIPTdNZ4Pjrmm2I6x0x
- fgWTvLMM+9WMrQl8rsu/xOw+Zkv+E99K6hRkLNDHHmOMtHY0SHuGVm0hm3PdqHULs8
- E7d8GshT7LpAwPUX5XiWIrEalh9HNttrzYSgsNGVwX5ZeR4phmbqaAnb53vDE7o4Rt
- YdfaUGf8KuRyg==
+ b=CiMmd9YvaCncWtzs5yVkd02O/RgeePIlyf1obe2cBgD6rIvMLzjPS9hVCxgxPn4x6
+ B+SojeyRhgDo5nsJ+S060CProw7H2pwZLSdiuqc/AujHiwH5RwHZ622MgKOKVY1pOe
+ OAmDrnuepPCCZUcJxXkcGJuA1hLEPwd8ZnQIdNX0+l0AYwyt+lwXFrOUbnDPM8wHJh
+ 9pz4CH/0reYiOD5ZRzVeap+kDwikf4+1lW57RUW0kVo8XsZwx4Ykqg0I+OWwX7FklC
+ jqBr7Ded0NuoZjJ7hqQpaRsM3U0z7D19W7SUrGcSHq+XMDxA5eREKt3381ACrLRTwq
+ pJ/DBn37rpbLw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 09/10] ALSA: pcm: Clear the full allocated memory
+Subject: [PATCH AUTOSEL 4.14 7/8] ALSA: pcm: Clear the full allocated memory
  at hw_params
-Date: Wed, 30 Dec 2020 08:04:21 -0500
-Message-Id: <20201230130422.3637448-9-sashal@kernel.org>
+Date: Wed, 30 Dec 2020 08:04:35 -0500
+Message-Id: <20201230130436.3637579-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201230130422.3637448-1-sashal@kernel.org>
-References: <20201230130422.3637448-1-sashal@kernel.org>
+In-Reply-To: <20201230130436.3637579-1-sashal@kernel.org>
+References: <20201230130436.3637579-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -114,10 +114,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 7c12b0deb4eb5..db62dbe7eaa8a 100644
+index 071e09c3d8557..c78db361cbbaa 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -753,8 +753,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -721,8 +721,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
  		runtime->boundary *= 2;
  
  	/* clear the buffer for avoiding possible kernel info leaks */
