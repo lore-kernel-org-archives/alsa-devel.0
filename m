@@ -2,72 +2,131 @@ Return-Path: <SRS0=YQ6z=GC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98DCEC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 08:03:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E0BBC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 11:05:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B87A2217BA
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 08:03:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B87A2217BA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id B9CEF221FA
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 11:05:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9CEF221FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00FD01805;
-	Wed, 30 Dec 2020 09:02:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00FD01805
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5144717FD;
+	Wed, 30 Dec 2020 12:04:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5144717FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609315423;
-	bh=o3pTPxUW/eCYbdmOuUOdL1/QgWU19hF0rmaFV+wT7a8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DWWcIKXz/KBmpbs8TlUDy5MtclC9ps48+vLoiS8ykqi6O1K+Q9qeuNba9UkuCYW/v
-	 d8GR/tpFBwBneOJdZp0KP9zMcztWvJH+24bNCcnjQaNEnnOqmmzP+xhW+5qn+mSBsS
-	 Bfa4mZBG7Acah1eqyLiX/n1SDQkFuT5GVIHUObKc=
+	s=default; t=1609326338;
+	bh=ZpmbeItXQ3NG/o4j3sTFmaGUEn9F7z88bRykGZjDd1w=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dv+cgUyPkrFFjl8omZyegxHJVL5nCRypa4hModEn44nPuuXV9YdBu06b/oe3uxKJp
+	 Yokwz/O8OFlBPVgQB/YHLydqfEIg56CigxziDyv2vdhQ5n0kwga5kmt2jZrSDUy+ox
+	 GW60CXEEFNNQsrvzk1N6mf479ePhd7kF7CWVj7IQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E889F801ED;
-	Wed, 30 Dec 2020 09:02:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D81F7F801ED;
+	Wed, 30 Dec 2020 12:04:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2F82F801F5; Wed, 30 Dec 2020 09:02:50 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B7D3BF801F5; Wed, 30 Dec 2020 12:04:46 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2994F80162
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 09:02:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2994F80162
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 0BU82ewZ6001259,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 0BU82ewZ6001259
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 30 Dec 2020 16:02:40 +0800
-Received: from localhost.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 30 Dec 2020 16:02:40 +0800
-From: Oder Chiou <oder_chiou@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt5645: Remove the redundant delay time
-Date: Wed, 30 Dec 2020 16:02:35 +0800
-Message-ID: <20201230080235.12698-1-oder_chiou@realtek.com>
-X-Mailer: git-send-email 2.29.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17295F80141
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 12:04:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17295F80141
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="PID/IDlF"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1609326282;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TpgWKLH5J7D/Oa0vEFsu5sj48pEyZOyT3j58Gf22+Eo=;
+ b=PID/IDlFn7UXXi9qWmIryUUDuVnOIBbFjfxFzjjDwqX+Ft1Z7QsubDvHJl0UmLohAmZLtV
+ E8WrxN3ry2cSU8tQ95kaMJwJnDjvcZSfwxDkn8eIVR55RlNwmqtdbf4yobcBInhgAwQ7dw
+ pc+2U/CR8bsxNfDO8wLRkbXgpIu8X4U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-jKTRH-WHMKqP59TI2g4rGA-1; Wed, 30 Dec 2020 06:04:40 -0500
+X-MC-Unique: jKTRH-WHMKqP59TI2g4rGA-1
+Received: by mail-ed1-f71.google.com with SMTP id d12so5743689edx.23
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 03:04:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=TpgWKLH5J7D/Oa0vEFsu5sj48pEyZOyT3j58Gf22+Eo=;
+ b=I5pEMngi4RvDQ5u3dJ1RcYG03RivMrsSQGXQ+MtDnEiNOLvnd2+anMpVQCxyqq+N97
+ rCMNoRAq9gMryBqvwCLx/p+Zj+73n8KyxHhPG9cUwJKoH9cK4mZWgeuN1R6sXnnqXfvu
+ 8ftaYeZDzV5EGwMQk/mZBisCtrcBQcDvKsjbC+djCp1UH9c6NmG9BqOpNp1pSn5Y3GAn
+ XeXfoo30TfbHSIMPTeATSRuv7x9vn/VrvNhxEt81xTYOjg92X/Dup235nAs6DhjK92W5
+ /+gSVuoe4LP8/DKkWDlyrNxQW032qGYnuhP/BFlcXfbyHxTAfUex1UOYpYlIt2pHK+ZW
+ qgHg==
+X-Gm-Message-State: AOAM532OuoxGeSvs1We58n7EVZP8M25KMU0C1Tq3Foxvgr10OPrN/bxq
+ iC9lgY00+MbgrQazR76jTPHNq+xPkKl+Jmzg1n4va+QKvxgEWDDa8G23RgAL/zWDm1EYdzLndx+
+ BBc4EVvM5fPuSaf7zjEoY3Vy0q2ysYKAbIzxbppJNrA46f2G3lRFgQL1fuk/1SKciuVJtQUyiyO
+ E=
+X-Received: by 2002:a17:906:3712:: with SMTP id
+ d18mr50627993ejc.178.1609326278677; 
+ Wed, 30 Dec 2020 03:04:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwQoK2ErguTmqZhtInIPF5IxlgvA+O3IkrlZ4G4JnSsQc1SmFFfU76rlEsZKdix/bchzl6Hxw==
+X-Received: by 2002:a17:906:3712:: with SMTP id
+ d18mr50627978ejc.178.1609326278480; 
+ Wed, 30 Dec 2020 03:04:38 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+ by smtp.gmail.com with ESMTPSA id o10sm19041814eju.89.2020.12.30.03.04.37
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 30 Dec 2020 03:04:37 -0800 (PST)
+Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
+To: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Mark Brown <broonie@kernel.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-2-hdegoede@redhat.com>
+ <20201228122138.GA5352@sirena.org.uk>
+ <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
+ <20201228162807.GE5352@sirena.org.uk>
+ <20201229130657.GN9673@ediswmail.ad.cirrus.com>
+ <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
+ <20201229150635.GP9673@ediswmail.ad.cirrus.com>
+ <20201229151548.GG4786@sirena.org.uk>
+ <1d982dd1-eb02-e7c7-357e-83cf5003c624@redhat.com>
+ <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <833781fc-efde-fe98-fded-f81855e54de8@redhat.com>
+Date: Wed, 30 Dec 2020 12:04:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
- alsa-devel@alsa-project.org, judyhsiao@google.com, albertchen@realtek.com,
- derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+In-Reply-To: <21333e30-1e7a-2c95-9e7c-6325c7e78f9a@opensource.cirrus.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Chanwoo Choi <cw00.choi@samsung.com>, MyungJoo Ham <myungjoo.ham@samsung.com>,
+ Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,93 +142,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch removes the redundant delay time to speed up from the cold start
-of headphone playback.
+Hi,
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
----
- sound/soc/codecs/rt5645.c | 33 ++++++++-------------------------
- 1 file changed, 8 insertions(+), 25 deletions(-)
+On 12/29/20 5:51 PM, Richard Fitzgerald wrote:
+> 
+> 
+> On 29/12/2020 15:40, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 12/29/20 4:15 PM, Mark Brown wrote:
+>>> On Tue, Dec 29, 2020 at 03:06:35PM +0000, Charles Keepax wrote:
+>>>
+>>>> There is maybe more argument for porting the Arizona code across
+>>>> anyways, since for a long time Android didn't properly support extcon
+>>>> either. It supported the earlier out of tree switch stuff, extcon
+>>>
+>>> Completely moving the driver doesn't cause the same problems as the
+>>> current proposal (unless it drops functionality I guess, there were
+>>> issues with adding new detection types into the input layer but I can't
+>>> remember if this hardware was impacted by that or not).
+>>
+>> The input-layer supports the following switches:
+>>
+>> SW_HEADPHONE_INSERT
+>> SW_MICROPHONE_INSERT
+>> SW_LINEOUT_INSERT
+>> SW_JACK_PHYSICAL_INSERT
+>>
+>> Which is a 1:1 mapping with the cable-types currently exported by
+>> extcon-arizona.c .
+>>
+>> I'm fine with fully moving extcon-arizona.c over to only using
+>> sound/core/jack.c functionality and it no longer exporting an
+>> extcon device.
+>>
+>> I guess we should move it out of drivers/extcon then though.
+>> I suggest using: sound/soc/cirrus/arizona-jack-detect.c
+>> Note that sound/soc/cirrus is a new dir here. Would that work
+>> for you ?
+> 
+> Shouldn't it be sound/soc/codecs/arizona-jack.c so that it is with all
+> the other code for those codecs?
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 420003d062c7..1c9e61abda30 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -435,7 +435,6 @@ struct rt5645_priv {
- 
- 	int jack_type;
- 	bool en_button_func;
--	bool hp_on;
- 	int v_id;
- };
- 
-@@ -1645,6 +1644,7 @@ static void hp_amp_power(struct snd_soc_component *component, int on)
- {
- 	static int hp_amp_power_count;
- 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
-+	int i, val;
- 
- 	if (on) {
- 		if (hp_amp_power_count <= 0) {
-@@ -1655,7 +1655,13 @@ static void hp_amp_power(struct snd_soc_component *component, int on)
- 				snd_soc_component_write(component, RT5645_DEPOP_M1, 0x000d);
- 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
- 					RT5645_HP_DCC_INT1, 0x9f01);
--				msleep(20);
-+				for (i = 0; i < 20; i++) {
-+					usleep_range(1000, 1500);
-+					regmap_read(rt5645->regmap, RT5645_PR_BASE +
-+						RT5645_HP_DCC_INT1, &val);
-+					if (!(val & 0x8000))
-+						break;
-+				}
- 				snd_soc_component_update_bits(component, RT5645_DEPOP_M1,
- 					RT5645_HP_CO_MASK, RT5645_HP_CO_EN);
- 				regmap_write(rt5645->regmap, RT5645_PR_BASE +
-@@ -1665,7 +1671,6 @@ static void hp_amp_power(struct snd_soc_component *component, int on)
- 					RT5645_MAMP_INT_REG2, 0xfc00);
- 				snd_soc_component_write(component, RT5645_DEPOP_M2, 0x1140);
- 				msleep(90);
--				rt5645->hp_on = true;
- 			} else {
- 				/* depop parameters */
- 				snd_soc_component_update_bits(component, RT5645_DEPOP_M2,
-@@ -1885,27 +1890,6 @@ static int rt5645_bst2_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static int rt5650_hp_event(struct snd_soc_dapm_widget *w,
--		struct snd_kcontrol *k, int  event)
--{
--	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
--	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
--
--	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
--		if (rt5645->hp_on) {
--			msleep(100);
--			rt5645->hp_on = false;
--		}
--		break;
--
--	default:
--		return 0;
--	}
--
--	return 0;
--}
--
- static int rt5645_set_micbias1_event(struct snd_soc_dapm_widget *w,
- 		struct snd_kcontrol *k, int  event)
- {
-@@ -2242,7 +2226,6 @@ static const struct snd_soc_dapm_widget rt5645_dapm_widgets[] = {
- 	SND_SOC_DAPM_OUTPUT("PDM1R"),
- 	SND_SOC_DAPM_OUTPUT("SPOL"),
- 	SND_SOC_DAPM_OUTPUT("SPOR"),
--	SND_SOC_DAPM_POST("DAPM_POST", rt5650_hp_event),
- };
- 
- static const struct snd_soc_dapm_widget rt5645_specific_dapm_widgets[] = {
--- 
-2.29.0
+The arizona codecs use the MFD framework and there is a separate
+platform-device instantiated for the jack-detect functionality, so this
+(mostly) a standalone platform-driver which has very little interaction
+with the rest of the codec code.
+
+It is not a codec driver, or code shared between the codec drivers,
+so putting it under sound/soc/codecs would be a bit weird.
+
+With that said I have no strong preference for putting it under
+a new sound/soc/cirrus dir, if everyone is ok with putting it under
+sound/soc/codecs then that works for me.
+
+Regards,
+
+Hans
 
