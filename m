@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97CC0C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C903AC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:05:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D33E822AEC
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:04:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D33E822AEC
+	by mail.kernel.org (Postfix) with ESMTPS id 2610B22227
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 13:05:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2610B22227
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0BC91838;
-	Wed, 30 Dec 2020 14:04:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0BC91838
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EBAE1843;
+	Wed, 30 Dec 2020 14:04:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EBAE1843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609333493;
-	bh=zGv/m5AikMZ667F9yl+zvQX9024+DMSLSU/2yaYPhcc=;
+	s=default; t=1609333544;
+	bh=DzPD7MUYEs37ZsR4J4eFe2J1AKJMrumiPDtaWLyiu60=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rGsll2ZD/Ax0kjt9mi7suG3SJNCHZMv7KiLoSBe3QH+1In6dgEhxOLkSBkB61zbnS
-	 NB4hqnyRnc1pCmhxkloNY4K6bNQ/fXcCYgk84d5SaQWVhVuYEHYkgrpHD1nyjrTPi0
-	 Gqp+ZC+cl6rJqenGnaOky9WAqUN17djoWDwsg/Po=
+	b=nJ5hZc4iD6T3WjzUXY0XaYrOfZFmgnvJsVDH7KmeXDvrVSESOH7MGV0/LwhXrlwb5
+	 m8A6Qul8BvObfH1tEY6xdw2dWdTcQzjft3PaWAnJY9T261Z7Pjx0g0zjYAQ+Ozp0a5
+	 k07kHBJ/rvD/GtnEFdee1XZMRhDY9aCrRDS2A1cI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 495C1F801ED;
-	Wed, 30 Dec 2020 14:04:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3614EF8020B;
+	Wed, 30 Dec 2020 14:04:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FD0FF801F5; Wed, 30 Dec 2020 14:04:01 +0100 (CET)
+ id F2372F80229; Wed, 30 Dec 2020 14:04:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BCEFF80162
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 14:03:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BCEFF80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 672D8F80162
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 14:04:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 672D8F80162
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cKu2GX4K"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9C222475;
- Wed, 30 Dec 2020 13:03:51 +0000 (UTC)
+ header.b="pSu2EdUW"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1911222227;
+ Wed, 30 Dec 2020 13:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609333431;
- bh=zGv/m5AikMZ667F9yl+zvQX9024+DMSLSU/2yaYPhcc=;
+ s=k20201202; t=1609333459;
+ bh=DzPD7MUYEs37ZsR4J4eFe2J1AKJMrumiPDtaWLyiu60=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cKu2GX4KaR2u/pGLbnA5HT98ofpxh2C9Vg5VWf3ULgvDekx/psp81RI5GscfZL4Uf
- mA66kDcxaPPffUgXJocYq0UwxC1CLRjOqKjJGH8crfNbjuqqJz/khfaog8a+F/Tm4s
- NQTHtqmx9PxlxGmaokSOELNjsdn0B1pxpKQh8bFxGtkS1OI5MuSLJhzi8Ry+CW5aW+
- MBafoHbq4v35jLGdgZjAg6zJ3Pz0MeBJHjYduubOjMFtwyCaXtQ04xoPIZWE2nvgHk
- aBOGIPQzR+FReMB5dp/Ohrg6JWvbYVtn2xZGspehcUP1/Yjyqz4zfliA6733qEnyPZ
- ErvDs/wM1AayA==
+ b=pSu2EdUWYYHJ9JkXcEGMTxAZSry/dD2QfIlIDodJ8di3Yy0P3wwPLKl1pxf4VR6qf
+ Yk0QQPjTyBCLt/1rBTS68vujqJLJ6yF96FXBLtuhrz7UNOchUi8ufgzA+lIWfEDgjj
+ FpFz12WcQkZ/L2qCrWMjFo5pAJhHfi3O0D4riw0nzgYYQS+1t8iAD1bzMxd1V6gQgD
+ YzK7np65z4wZYwVsLwxEMxUdyidpNN1BpMxoDs0oVotejPoc9IIZePcyoiRvtbO35A
+ OHOne8UkmKT7YpBoB1+dcQWjFOtJdbed5+yiBnnCFaDDKpViRM+3i9xxNb3gMR0Aco
+ IpTrBuSsnYfRg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 28/31] ALSA: pcm: Clear the full allocated memory
+Subject: [PATCH AUTOSEL 5.4 16/17] ALSA: pcm: Clear the full allocated memory
  at hw_params
-Date: Wed, 30 Dec 2020 08:03:10 -0500
-Message-Id: <20201230130314.3636961-28-sashal@kernel.org>
+Date: Wed, 30 Dec 2020 08:03:56 -0500
+Message-Id: <20201230130357.3637261-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201230130314.3636961-1-sashal@kernel.org>
-References: <20201230130314.3636961-1-sashal@kernel.org>
+In-Reply-To: <20201230130357.3637261-1-sashal@kernel.org>
+References: <20201230130357.3637261-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -114,10 +114,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 47b155a49226f..9f3f8e953ff04 100644
+index ec501fbaabe49..0c5b7a54ca81c 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -755,8 +755,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -717,8 +717,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
  		runtime->boundary *= 2;
  
  	/* clear the buffer for avoiding possible kernel info leaks */
