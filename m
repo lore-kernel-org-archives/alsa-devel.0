@@ -2,76 +2,66 @@ Return-Path: <SRS0=gM+V=GD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 474E4C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FDB2C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:58:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65ADF223E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:56:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65ADF223E0
+	by mail.kernel.org (Postfix) with ESMTPS id 667B2207A5
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:58:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 667B2207A5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6D0816BE;
-	Thu, 31 Dec 2020 11:55:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6D0816BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2329016BC;
+	Thu, 31 Dec 2020 11:57:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2329016BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609412170;
-	bh=gBETDmPWX3DJfzm83FyuESZwypZpHghtRBaZoBqpE/U=;
+	s=default; t=1609412278;
+	bh=3XVGN1gTG619fneTQsMK46rRlLmbK3wK34GuQgJGwlI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uq29e424iJCK8pYfSpi4b2MeTNjk3W24Hw1CJ+xyanoZAOuP14/oJoifQIf1bm31j
-	 74cp9XGDdzXfYNU7hEKU6S7XJZWSW0ZrOHDrnzUsfY9HZNEzZMeSLBvstNaaz62IBN
-	 EP6qVDR/3eiKzqFGFUJoBt0u0oDRPdkD5OlFCWTI=
+	b=mKMx4kpkBNJMssuRpaFdln+IEFJKoo0h4MAL8v26gU2TNhYfKts2kEaxNbNONQcGE
+	 +zZlPtSE2zktcSyiIQovDGA7zA6nCvBUWjq3uPrbcF3FtvfIS2RkFzks6AhNW2XGk0
+	 gIChn5ScpIV0+8Y8Rqt+kOXXlRpVTo7o2Tn3lhcE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC4DAF80129;
-	Thu, 31 Dec 2020 11:55:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0DA6F8020C;
+	Thu, 31 Dec 2020 11:57:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 384E6F8022B; Thu, 31 Dec 2020 11:55:18 +0100 (CET)
+ id 7ADE6F80129; Thu, 31 Dec 2020 11:57:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9AA6F80129;
- Thu, 31 Dec 2020 11:55:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9AA6F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA695F80129
+ for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2020 11:56:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA695F80129
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 897B2AE76;
- Thu, 31 Dec 2020 10:55:10 +0000 (UTC)
-Date: Thu, 31 Dec 2020 11:55:10 +0100
-Message-ID: <s5hr1n6b5yp.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7FBA8AE91;
+ Thu, 31 Dec 2020 10:56:58 +0000 (UTC)
+Date: Thu, 31 Dec 2020 11:56:58 +0100
+Message-ID: <s5hpn2qb5vp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 2/2] ASoC: SOF: Intel: hda: Avoid checking jack on system
- suspend
-In-Reply-To: <20201229133817.190160-2-kai.heng.feng@canonical.com>
-References: <20201229133817.190160-1-kai.heng.feng@canonical.com>
- <20201229133817.190160-2-kai.heng.feng@canonical.com>
+To: Manuel =?UTF-8?B?Smltw6luZXo=?= <mjbfm99@me.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add mute LED quirk for more HP laptops
+In-Reply-To: <X+s/gKNydVrI6nLj@HP-Pavilion-13>
+References: <X+s/gKNydVrI6nLj@HP-Pavilion-13>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, Mark Brown <broonie@kernel.org>,
- Payal Kshirsagar <payalskshirsagar1234@gmail.com>, daniel.baluta@nxp.com,
- Marcin Rajwa <marcin.rajwa@linux.intel.com>,
- "moderated list:SOUND - SOUND OPEN FIRMWARE SOF DRIVERS"
- <sound-open-firmware@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com, tiwai@suse.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,60 +77,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 29 Dec 2020 14:38:15 +0100,
-Kai-Heng Feng wrote:
+On Tue, 29 Dec 2020 15:38:56 +0100,
+Manuel Jiménez wrote:
 > 
-> System takes a very long time to suspend after commit 215a22ed31a1
-> ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
-> [   90.065964] PM: suspend entry (s2idle)
-> [   90.067337] Filesystems sync: 0.001 seconds
-> [   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
-> [   90.188713] OOM killer disabled.
-> [   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> [   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
-> [   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
-> [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> [  329.490933] ACPI: EC: interrupt blocked
+> HP Pavilion 13-bb0000 (SSID 103c:87c8) needs the same
+> quirk as other models with ALC287.
 > 
-> That commit keeps codec suspended during the system suspend. However,
-> SOF driver's runtime resume, which is for system suspend, calls
-> hda_codec_jack_check() and schedules jackpoll_work. The jackpoll
-> work uses snd_hda_power_up_pm() which tries to resume the codec in
-> system suspend path, hence blocking the suspend process.
-> 
-> So only check jack status if it's not in system PM process.
+> Signed-off-by: Manuel Jiménez <mjbfm99@me.com>
 
-After your previous patch set, the legacy HDA does queue the
-jackpoll_work only if jackpoll_interval is set.  I suppose rather the
-same rule would be applied?
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
-
-> 
-> Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  sound/soc/sof/intel/hda-dsp.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-> index 7d00107cf3b2..1c5e05b88a90 100644
-> --- a/sound/soc/sof/intel/hda-dsp.c
-> +++ b/sound/soc/sof/intel/hda-dsp.c
-> @@ -685,7 +685,8 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
->  	/* check jack status */
->  	if (runtime_resume) {
->  		hda_codec_jack_wake_enable(sdev, false);
-> -		hda_codec_jack_check(sdev);
-> +		if (sdev->system_suspend_target == SOF_SUSPEND_NONE)
-> +			hda_codec_jack_check(sdev);
->  	}
->  
->  	/* turn off the links that were off before suspend */
-> -- 
-> 2.29.2
-> 
