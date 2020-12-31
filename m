@@ -2,65 +2,81 @@ Return-Path: <SRS0=gM+V=GD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED865C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 780F0C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:53:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 656D6223E4
-	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:42:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 656D6223E4
+	by mail.kernel.org (Postfix) with ESMTPS id 79CDE223C8
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 10:53:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79CDE223C8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B81316BC;
-	Thu, 31 Dec 2020 11:41:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B81316BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EA6216BE;
+	Thu, 31 Dec 2020 11:52:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EA6216BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609411325;
-	bh=pSyVF3hOxGTtCS3fV2ym4K5t6qzPXCKzGk8lBr34hCU=;
+	s=default; t=1609412001;
+	bh=2LnJZv950U5/yBDlUBeJdLll3DmCk6FoPBUPM7LnwRw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DVh2fPLBszqk0STFl0MjA4tHq0IPS4Dk7yBxMBxbBsP1ajnVy3lggySZjL3rtw+9C
-	 OYJE7N8lR9ARS3CzhMUnv3k9qCsabzB42qtE7JS4LZzBTtOe9qG6ZqwJ5JDMoUtsQE
-	 oqKXDUk/YD+oJ67p7BZRQ0+2vDHnEzfgpHglLk1o=
+	b=lpOoRaEgecKFjD8ewFpFEkenlkUknE3qQF/4SeQNTzuWGlVcaB8Y1r5haNmliLf/y
+	 tm87qgJXfMQr9EaOXTn8mUE/rtYhlT/dmRwcaswKiqdWQ76/Pyr8hzKmPDuiWolpPF
+	 P9vPKicS6YOIl5rcCwe/b+DCFFkLCu8JsNhfqsIk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13687F8020C;
-	Thu, 31 Dec 2020 11:41:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11516F8020C;
+	Thu, 31 Dec 2020 11:52:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB483F8022B; Thu, 31 Dec 2020 11:41:11 +0100 (CET)
+ id 1D045F8022B; Thu, 31 Dec 2020 11:52:28 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B3FAF80129
- for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2020 11:40:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B3FAF80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FB43F80129;
+ Thu, 31 Dec 2020 11:52:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FB43F80129
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 75027AD1E;
- Thu, 31 Dec 2020 10:40:58 +0000 (UTC)
-Date: Thu, 31 Dec 2020 11:40:57 +0100
-Message-ID: <s5hv9cib6me.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A8669AD1E;
+ Thu, 31 Dec 2020 10:52:14 +0000 (UTC)
+Date: Thu, 31 Dec 2020 11:52:14 +0100
+Message-ID: <s5hsg7mb63l.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: bo.liu@senarytech.com
-Subject: Re: [PATCH] sound: pci: hda: add a new hda codec
-In-Reply-To: <20201229035226.62120-1-bo.liu@senarytech.com>
-References: <20201229035226.62120-1-bo.liu@senarytech.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: Intel: hda: Modify existing helper to
+ disable WAKEEN
+In-Reply-To: <20201229133817.190160-1-kai.heng.feng@canonical.com>
+References: <20201229133817.190160-1-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- pegro@friiks.de, gustavoars@kernel.org, mirq-linux@rere.qmqm.pl
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ Rander Wang <rander.wang@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Keyon Jie <yang.jie@linux.intel.com>, ranjani.sridharan@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, Fred Oh <fred.oh@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+ Amery Song <chao.song@intel.com>, daniel.baluta@nxp.com,
+ Marcin Rajwa <marcin.rajwa@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "moderated list:SOUND - SOUND OPEN FIRMWARE SOF DRIVERS"
+ <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,17 +92,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 29 Dec 2020 04:52:26 +0100,
-bo.liu@senarytech.com wrote:
+On Tue, 29 Dec 2020 14:38:14 +0100,
+Kai-Heng Feng wrote:
 > 
-> From: bo liu <bo.liu@senarytech.com>
+> Modify hda_codec_jack_wake_enable() to also support disable WAKEEN.
+> This is a preparation for next patch.
 > 
-> The current kernel does not support the cx11970 codec chip.
-> Add a codec configuration item to kernel.
-> 
-> Signed-off-by: bo liu <bo.liu@senarytech.com>
+> No functional change intended.
 
-Thanks, applied with a minor coding style fix now.
+Maybe it's better to mention that this patch moves the WAKEEN
+disablement call out of hda_codec_jack_check() into
+hda_codec_jack_wake_enable(), too.
 
+
+thanks,
 
 Takashi
+
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  sound/soc/sof/intel/hda-codec.c | 16 +++++++---------
+>  sound/soc/sof/intel/hda-dsp.c   |  6 ++++--
+>  sound/soc/sof/intel/hda.h       |  2 +-
+>  3 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+> index 6875fa570c2c..bc9ac4abdab5 100644
+> --- a/sound/soc/sof/intel/hda-codec.c
+> +++ b/sound/soc/sof/intel/hda-codec.c
+> @@ -63,16 +63,18 @@ static int hda_codec_load_module(struct hda_codec *codec)
+>  }
+>  
+>  /* enable controller wake up event for all codecs with jack connectors */
+> -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev)
+> +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable)
+>  {
+>  	struct hda_bus *hbus = sof_to_hbus(sdev);
+>  	struct hdac_bus *bus = sof_to_bus(sdev);
+>  	struct hda_codec *codec;
+>  	unsigned int mask = 0;
+>  
+> -	list_for_each_codec(codec, hbus)
+> -		if (codec->jacktbl.used)
+> -			mask |= BIT(codec->core.addr);
+> +	if (enable) {
+> +		list_for_each_codec(codec, hbus)
+> +			if (codec->jacktbl.used)
+> +				mask |= BIT(codec->core.addr);
+> +	}
+>  
+>  	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, mask);
+>  }
+> @@ -81,12 +83,8 @@ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev)
+>  void hda_codec_jack_check(struct snd_sof_dev *sdev)
+>  {
+>  	struct hda_bus *hbus = sof_to_hbus(sdev);
+> -	struct hdac_bus *bus = sof_to_bus(sdev);
+>  	struct hda_codec *codec;
+>  
+> -	/* disable controller Wake Up event*/
+> -	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, 0);
+> -
+>  	list_for_each_codec(codec, hbus)
+>  		/*
+>  		 * Wake up all jack-detecting codecs regardless whether an event
+> @@ -97,7 +95,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
+>  					      codec->jackpoll_interval);
+>  }
+>  #else
+> -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev) {}
+> +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable) {}
+>  void hda_codec_jack_check(struct snd_sof_dev *sdev) {}
+>  #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
+>  EXPORT_SYMBOL_NS(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
+> diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+> index 2b001151fe37..7d00107cf3b2 100644
+> --- a/sound/soc/sof/intel/hda-dsp.c
+> +++ b/sound/soc/sof/intel/hda-dsp.c
+> @@ -617,7 +617,7 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+>  
+>  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+>  	if (runtime_suspend)
+> -		hda_codec_jack_wake_enable(sdev);
+> +		hda_codec_jack_wake_enable(sdev, true);
+>  
+>  	/* power down all hda link */
+>  	snd_hdac_ext_bus_link_power_down_all(bus);
+> @@ -683,8 +683,10 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+>  
+>  #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+>  	/* check jack status */
+> -	if (runtime_resume)
+> +	if (runtime_resume) {
+> +		hda_codec_jack_wake_enable(sdev, false);
+>  		hda_codec_jack_check(sdev);
+> +	}
+>  
+>  	/* turn off the links that were off before suspend */
+>  	list_for_each_entry(hlink, &bus->hlink_list, list) {
+> diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+> index 9ec8ae0fd649..a3b6f3e9121c 100644
+> --- a/sound/soc/sof/intel/hda.h
+> +++ b/sound/soc/sof/intel/hda.h
+> @@ -650,7 +650,7 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
+>   */
+>  void hda_codec_probe_bus(struct snd_sof_dev *sdev,
+>  			 bool hda_codec_use_common_hdmi);
+> -void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev);
+> +void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable);
+>  void hda_codec_jack_check(struct snd_sof_dev *sdev);
+>  
+>  #endif /* CONFIG_SND_SOC_SOF_HDA */
+> -- 
+> 2.29.2
+> 
