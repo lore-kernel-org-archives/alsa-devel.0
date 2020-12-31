@@ -1,96 +1,98 @@
-Return-Path: <SRS0=YQ6z=GC=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=gM+V=GD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD052C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 17:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8934CC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 03:06:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B211E22242
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Dec 2020 17:26:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B211E22242
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id D7B4E20B1F
+	for <alsa-devel@archiver.kernel.org>; Thu, 31 Dec 2020 03:06:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7B4E20B1F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF15B1851;
-	Wed, 30 Dec 2020 18:25:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF15B1851
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F29616C3;
+	Thu, 31 Dec 2020 04:05:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F29616C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609349192;
-	bh=qVcm01fTdpC+HPLTI0HQV04UJbNR5/gdhqO9VDOyvQM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Y38REbTqS1kBWeRZINmcAh4NvD8PBYCUZQQZ78zy7AqFNYdX+T9QHQ9/aC/rJswGE
-	 AZoDnFjZx/bXlHx66JvPjvxPKSrTwwjswt39s3mhC7Gb+I5LpU0y3G4F2uGplZGJ4S
-	 qRkE0fJz12Aggi5+kGPrR0DdpIUp/hMNugoLEk5A=
+	s=default; t=1609383999;
+	bh=Tt9Hzlc5IfybwmSk2vJw8ezHQrHNh675+JyhNznIL4E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=A8ItT+zjQgkyHAflgm5s6e9Ok2Y2WdxCbx5SPa+ziRPxKIKDWQTibKJYfFjx/7udv
+	 RdmwjUpBWcl6YSaW5AUhruOq1EN6KvBh7dpnuR2weE3HmiH1DMCCmRxFiiz0FNXNTL
+	 jkFKoCYWWk0u3kMi9mzMGbNq5aMH4oQHKNkjhlN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72F92F80229;
-	Wed, 30 Dec 2020 18:24:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 006C3F8020C;
+	Thu, 31 Dec 2020 04:05:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 223B2F801F5; Wed, 30 Dec 2020 18:24:45 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B9492F8022B; Thu, 31 Dec 2020 04:05:46 +0100 (CET)
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com
+ [IPv6:2607:f8b0:4864:20::d30])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C3D0F801ED
- for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 18:24:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C3D0F801ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id D07BEF80141
+ for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2020 04:05:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D07BEF80141
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="GEKin0jN"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 0BUHHJba022267; Wed, 30 Dec 2020 11:24:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=nHfeDmUdDzzSQruILSReW1tu+QSdBTHweUHxHjYb7hQ=;
- b=GEKin0jN1G/ffhlw6Io2EM2Ribit5RxAcANYkZ2e2tyjfmbOrZFs2BxIaNG0RWiL/6D2
- x1XTHGbNfZPIyCeZgCF5czUWJ+MRiCw8y/aLHTxhU7lrppgA2TYl0cBZWEefeK5t3+9M
- 9DPGOpQypc4FQRhfVBRvsjr4hC/LcAz11K+XAF3+WAIDcrlgddR6nR3prNG4IQ83GHTR
- Gu2lgNyH2K+CV8l0Lnbl/JtnYtX41HvzDItxjVn+/4qJW12u2eIOCFb8Q7fSwGNU3Qbv
- MHb2ksSjIKyZPVl1bU3SPfxKZDOINOvVDlbrlOOMZwR/2ce6/ZazQitgB0Ooa/UuWnoI Lw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 35p2fs3gmx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 30 Dec 2020 11:24:33 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 30 Dec
- 2020 17:24:32 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 30 Dec 2020 17:24:32 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.64.77])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4DD4345;
- Wed, 30 Dec 2020 17:24:31 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: wm_adsp: Only use __be32 for big-endian data
-Date: Wed, 30 Dec 2020 17:24:26 +0000
-Message-ID: <20201230172427.13865-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="TdwHg7F/"
+Received: by mail-io1-xd30.google.com with SMTP id m23so16288367ioy.2
+ for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2020 19:05:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Eh0LYyioy3C3UVC9bwYubsDJdeJ6pKMdFF5bTDt6YkI=;
+ b=TdwHg7F/YVh3cN8PVMIQ+oWuBWKeEigWj/hFDBYkaxozMfZ7KRhZV8NB24QPpMxZVK
+ xP3TNC2izS62C735GRSAXt/qTtQMNg7nBjEHOWTRKP1X5oZMcq3dMRgdbzQrH/TzGBQ+
+ SHM5HmfZirh22LlNPpXWW5PHSmqTU1/ts1e8j4qndJlm0ZcHX7mtgmz7VmvebMzPeZ5E
+ ftVVCPZJmNM8NzK+7HhYtl/TCiTuP/yl52CogDcqU7OrPzzEDGipEEGYXYxi23MHUGpc
+ Q4tu2j8nNkWSBI30ztNyCm8ZY7Uq4FW8S3wpY0Td3GVO1U4XtfLJ+Bu/4Y3gS5VhOuX6
+ 108w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Eh0LYyioy3C3UVC9bwYubsDJdeJ6pKMdFF5bTDt6YkI=;
+ b=KGrBOfBQvSrBIgAwcV0a3qdH1Oigx/4EbKm0q2lgIDJzBlxJ0us/snigNqWkkbBeHQ
+ A7Gm4uCp7+PSGvhgbjexMVDVG6mb5lX4tloAtQkDxZS9HAJsQK9qaghaAfJAF7nTgnq2
+ wVuxRO9L2TccG6Svn8ZIkuYuYfwRVQMdnP8FSyjBuc5tNlkaSCx8iLmXPJqw8HIcsyd+
+ 46cCtbGti52/0nZGQSpw0CHSZYd7IB90KYObkoKG9jVauLE9DTiFFI16SHZjFtgWnYY5
+ XxltZxYmcSntsQ3ZlB/3Phi6tXGa+vVfgF8t6gnJqcsj5n5ANRwW9QsZ0LJoXfMMECwW
+ 4z7g==
+X-Gm-Message-State: AOAM531tSI5LvYeazlHmjKjDByIPrPz4gVb7ICLe6Q7W5eaflh+TNuXb
+ X9u7Sb/ggj1WiIU1k9TdDp1/HHqB73j3wAQep419dw==
+X-Google-Smtp-Source: ABdhPJxN3b3LpOts6FmTvL8wbWxbWHHukhWKA4JsuemgJC0/GdUY8dN5ynrejN4PSioTS9QR8vw0smV+ayjN/GeXNak=
+X-Received: by 2002:a05:6638:1202:: with SMTP id
+ n2mr48302031jas.85.1609383936067; 
+ Wed, 30 Dec 2020 19:05:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- impostorscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 mlxlogscore=999 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012300108
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+References: <20201230154345.639122-1-arnd@kernel.org>
+In-Reply-To: <20201230154345.639122-1-arnd@kernel.org>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 31 Dec 2020 11:05:25 +0800
+Message-ID: <CA+Px+wXEjm+yb+8g2qdv8+WUWXJf+MPKpLL7ovS_08f0ch_Wnw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: mediatek: add MTK_PMIC_WRAP dependency
+To: Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,137 +108,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This fixes some minor cases where u32 or unsigned int types were used
-to store big-endian data, and __be32 types used to store both big-endian
-and cpu-endian data. This was producing sparse warnings.
+On Wed, Dec 30, 2020 at 11:43 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Randconfig builds often show harmless warnings like
+>
+> WARNING: unmet direct dependencies detected for SND_SOC_MT6359
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && MTK_PMIC_WRAP [=n]
+>   Selected by [y]:
+>   - SND_SOC_MT8192_MT6359_RT1015_RT5682 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=y] && SND_SOC_MT8192 [=y]
+>
+> Add a dependency to avoid that.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Most cases resulted from using the same variable to hold the big-endian
-value and its converted cpu-endian value. These can be simply fixed by
-introducing another local variable, or avoiding storing the intermediate
-value back into the original variable.
-
-One special case is the raw_buf used in the compressed streams to transfer
-data from DSP to user-side. The endian conversion happens in-place (as
-there's no point introducing another buffer) so a cast to (__be32 *) is
-added when passing it to wm_adsp_read_raw_data_block().
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/wm_adsp.c | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5b7d81a91df3..8cfa8ac1b8c4 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -980,7 +980,7 @@ static int wm_coeff_write_acked_control(struct wm_coeff_ctl *ctl,
- 					unsigned int event_id)
- {
- 	struct wm_adsp *dsp = ctl->dsp;
--	u32 val = cpu_to_be32(event_id);
-+	__be32 val = cpu_to_be32(event_id);
- 	unsigned int reg;
- 	int i, ret;
- 
-@@ -3704,6 +3704,7 @@ static int wm_adsp_write_data_word(struct wm_adsp *dsp, int mem_type,
- 				   unsigned int mem_addr, u32 data)
- {
- 	struct wm_adsp_region const *mem = wm_adsp_find_region(dsp, mem_type);
-+	__be32 val = cpu_to_be32(data & 0x00ffffffu);
- 	unsigned int reg;
- 
- 	if (!mem)
-@@ -3711,9 +3712,7 @@ static int wm_adsp_write_data_word(struct wm_adsp *dsp, int mem_type,
- 
- 	reg = dsp->ops->region_to_reg(mem, mem_addr);
- 
--	data = cpu_to_be32(data & 0x00ffffffu);
--
--	return regmap_raw_write(dsp->regmap, reg, &data, sizeof(data));
-+	return regmap_raw_write(dsp->regmap, reg, &val, sizeof(val));
- }
- 
- static inline int wm_adsp_buffer_read(struct wm_adsp_compr_buf *buf,
-@@ -3870,7 +3869,8 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- {
- 	struct wm_adsp_host_buf_coeff_v1 coeff_v1;
- 	struct wm_adsp_compr_buf *buf;
--	unsigned int val, reg;
-+	unsigned int reg, version;
-+	__be32 bufp;
- 	int ret, i;
- 
- 	ret = wm_coeff_base_reg(ctl, &reg);
-@@ -3878,17 +3878,17 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 		return ret;
- 
- 	for (i = 0; i < 5; ++i) {
--		ret = regmap_raw_read(ctl->dsp->regmap, reg, &val, sizeof(val));
-+		ret = regmap_raw_read(ctl->dsp->regmap, reg, &bufp, sizeof(bufp));
- 		if (ret < 0)
- 			return ret;
- 
--		if (val)
-+		if (bufp)
- 			break;
- 
- 		usleep_range(1000, 2000);
- 	}
- 
--	if (!val) {
-+	if (!bufp) {
- 		adsp_err(ctl->dsp, "Failed to acquire host buffer\n");
- 		return -EIO;
- 	}
-@@ -3898,7 +3898,7 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 		return -ENOMEM;
- 
- 	buf->host_buf_mem_type = ctl->alg_region.type;
--	buf->host_buf_ptr = be32_to_cpu(val);
-+	buf->host_buf_ptr = be32_to_cpu(bufp);
- 
- 	ret = wm_adsp_buffer_populate(buf);
- 	if (ret < 0)
-@@ -3918,14 +3918,13 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 	if (ret < 0)
- 		return ret;
- 
--	coeff_v1.versions = be32_to_cpu(coeff_v1.versions);
--	val = coeff_v1.versions & HOST_BUF_COEFF_COMPAT_VER_MASK;
--	val >>= HOST_BUF_COEFF_COMPAT_VER_SHIFT;
-+	version = be32_to_cpu(coeff_v1.versions) & HOST_BUF_COEFF_COMPAT_VER_MASK;
-+	version >>= HOST_BUF_COEFF_COMPAT_VER_SHIFT;
- 
--	if (val > HOST_BUF_COEFF_SUPPORTED_COMPAT_VER) {
-+	if (version > HOST_BUF_COEFF_SUPPORTED_COMPAT_VER) {
- 		adsp_err(ctl->dsp,
- 			 "Host buffer coeff ver %u > supported version %u\n",
--			 val, HOST_BUF_COEFF_SUPPORTED_COMPAT_VER);
-+			 version, HOST_BUF_COEFF_SUPPORTED_COMPAT_VER);
- 		return -EINVAL;
- 	}
- 
-@@ -3935,9 +3934,9 @@ static int wm_adsp_buffer_parse_coeff(struct wm_coeff_ctl *ctl)
- 			      (char *)&coeff_v1.name);
- 
- 	compr_dbg(buf, "host_buf_ptr=%x coeff version %u\n",
--		  buf->host_buf_ptr, val);
-+		  buf->host_buf_ptr, version);
- 
--	return val;
-+	return version;
- }
- 
- static int wm_adsp_buffer_init(struct wm_adsp *dsp)
-@@ -4269,7 +4268,7 @@ static int wm_adsp_buffer_capture_block(struct wm_adsp_compr *compr, int target)
- 
- 	/* Read data from DSP */
- 	ret = wm_adsp_read_raw_data_block(buf->dsp, mem_type, adsp_addr,
--					  nwords, compr->raw_buf);
-+					  nwords, (__be32 *)compr->raw_buf);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.20.1
-
+Acked-by: Tzung-Bi Shih <tzungbi@google.com>
