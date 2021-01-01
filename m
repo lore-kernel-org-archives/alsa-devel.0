@@ -7,122 +7,88 @@ X-Spam-Status: No, score=-8.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79C4DC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 13:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01B39C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 13:30:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DEC2A22228
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 13:25:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEC2A22228
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 514F7207AA
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 13:30:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 514F7207AA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B50816BB;
-	Fri,  1 Jan 2021 14:24:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B50816BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E8BD16EA;
+	Fri,  1 Jan 2021 14:29:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E8BD16EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609507544;
-	bh=s8PkXsyDTa8Nq+XJUTcsoy53HVxuWdg4Ggsi9J//vmM=;
+	s=default; t=1609507835;
+	bh=UjWu8CLZ2HSnqGVdJJQT7IUEHGeOBfn9TqbZekXEy50=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PoOc1glff5AKp5p6fRtp8WKaES0UerT3xZPJBEl3nPML16jSafTlkGMaN9yOoxsL/
-	 AxNXcCpQwwtaigBoM4YQJRMcZOl4rqtQD/xa7RikzCSnSvuH78TkYwJoUBVC+xWEMw
-	 BfHrIOSZp/Ti9/Dr1xZs0UPgj+A9owjo7mZ3G/qk=
+	b=bqPziBvcZpljPKbDv+h++oRAcsHzTiFxCrsUzTCnsbYJv0wEJoHpDXC9PXGY2hRl5
+	 GLzj7OzI4Nma7El1uMN95SdvWwPTujzzQdVYCCDVQaGK3DBMYuphnw188SEaULUKSQ
+	 Ie1Bl23MxGzhf1UhoEBTfkZ+aKS5rVWZqJwe/yeE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9ACDF801ED;
-	Fri,  1 Jan 2021 14:24:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85377F801ED;
+	Fri,  1 Jan 2021 14:29:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 309D6F801F5; Fri,  1 Jan 2021 14:24:51 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 31352F801F5; Fri,  1 Jan 2021 14:29:42 +0100 (CET)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F41BF8012B
- for <alsa-devel@alsa-project.org>; Fri,  1 Jan 2021 14:24:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F41BF8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A717F8012B
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jan 2021 14:29:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A717F8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="ifg8Q1B9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1609507482;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=NlUf3RFrTX25sJTt0DKiuNwG0dF3j8VQJM9/nMs04SU=;
- b=ifg8Q1B9sVhxs/HuhZtQ3f2LV3xJlFalrwgfIzZnLC4VddP2qd6ejOnmSKrERZXSiXGiPY
- xad/1jHvCmmHjbdHgeYuxwvyg1odVUzw7QzQ/krUwDRghxWkDAFP4x9Fh5MS6L7CSI7BsH
- 4v0j3QN2jJ+e3afKpIQXLLV4O8ppKlk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-115-GlwDLzGvNOqLVCq-bnAIhA-1; Fri, 01 Jan 2021 08:24:37 -0500
-X-MC-Unique: GlwDLzGvNOqLVCq-bnAIhA-1
-Received: by mail-ed1-f72.google.com with SMTP id e12so8272342eds.19
- for <alsa-devel@alsa-project.org>; Fri, 01 Jan 2021 05:24:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=NlUf3RFrTX25sJTt0DKiuNwG0dF3j8VQJM9/nMs04SU=;
- b=b/GHpVY5MF4T9vZaqwOmb0vaMoHj1sq4I6n6ZqmadGJinoWKM0P+usD9H/RXahORvR
- u/pPTKg1y9V5mBsP6WmJdsoIjRjC93FCC+utqz94y05gWvyUFRhJilxDxWc07R00QFoJ
- 0QdGoeUBlTA1qrU5eL3DG5JIXjsVAkxRJ3Ci7lNzPgcMyYMzGz7OvOES/JfM3MAFLdcf
- F/e+rihbQRHZfSqbWkrBBaXcq+BsydX8k5HcF8S/MWSN2VQdGu9ONLm2v0EpkR5btaB/
- +yFpcV17eUQANnwv0EriP3+xvDVORvgDfghMwbHJeg9n/QQk+PkrmpB1minRYXYNbXXr
- GGKw==
-X-Gm-Message-State: AOAM530SJNEee/qtGFljiDEN04VcnEwSHIOpvxx7AcftVIc0JfsIw1Fs
- QGx1qAyBMMz0vVuHJ2cAaNr5qt9ncoqeCWgQc3zdk9bvT2gptGsEfL9rIS13Pej01/A9q2dJo+0
- bv83iVIrjdeXIGWbm4uHGoGKi5WxFUEPn7hoe7X0F4l0iCjNVn2o26T+3EPtTrwUd0RznaljxMw
- M=
-X-Received: by 2002:a17:906:2c54:: with SMTP id
- f20mr57560684ejh.318.1609507476462; 
- Fri, 01 Jan 2021 05:24:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyOkcdqEPEYFudNaC7S3egmI6FCqsKLaZbnzjTvYAnMq7f7U8r4OTu9efaWXmITnAXsrwDSCQ==
-X-Received: by 2002:a17:906:2c54:: with SMTP id
- f20mr57560669ejh.318.1609507476213; 
- Fri, 01 Jan 2021 05:24:36 -0800 (PST)
-Received: from x1.localdomain ([185.200.132.250])
- by smtp.gmail.com with ESMTPSA id r23sm20864486ejd.56.2021.01.01.05.24.35
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 01 Jan 2021 05:24:35 -0800 (PST)
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-To: Mark Brown <broonie@kernel.org>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
- <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
- <20201228162807.GE5352@sirena.org.uk>
- <20201229130657.GN9673@ediswmail.ad.cirrus.com>
- <19c2d056-4f71-2c4c-c243-cdcc0115876c@redhat.com>
- <20201229150807.GF4786@sirena.org.uk>
- <07037a8a-1d35-362e-1b82-b73b81f7c6ac@redhat.com>
- <20201230133803.GC4428@sirena.org.uk>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <fca91ed2-408b-bb31-f6e8-4391f06b0ccc@redhat.com>
-Date: Fri, 1 Jan 2021 14:24:34 +0100
+ dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
+ header.b="Ekvvqifv"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
+ s=default2002;
+ h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+ MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID;
+ bh=p93aNNvhU3n4M9Mfq+lqHMlddP0IlMPVC2h2Kfg4gW0=; b=Ekvvqifv5Au8Uod8NsAacj0l4w
+ 8UaKeh2taOmY/NnV4nSyu8rDujovu8XeAk+lpFK9Zmf4JjiFNhKrM5RrtKQtfO2koiHAk/36Z+oRs
+ r8DDmKxayAC1Eu9mXwWdl/Qjgz4xZHT5aI0AG0zJhBOCO71IP0q3gn+cGExh4iGcOy54Ybi/MdQ+R
+ A6SQpbHBjOvItUkVARHy9TL2h92yedtAUIErN8jI03Uy0muNFzLbv7f1t+uzjlDGL8Z7SN/MrCegZ
+ 5wT5k/FCYa23Zt8rytd1ffAsCJo0wCz+XbU6wVwyXzJDf2I6GfSG0lbt0+budI39ZKIJSU82yfenb
+ 96wge6aA==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+ by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
+ id 1kvKUn-000EiX-NA; Fri, 01 Jan 2021 14:29:33 +0100
+Received: from [2001:a61:2bd0:3301:9e5c:8eff:fe01:8578]
+ by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92) (envelope-from <lars@metafoo.de>)
+ id 1kvKUn-00098p-IU; Fri, 01 Jan 2021 14:29:33 +0100
+Subject: Re: Haswell audio no longer working with new Catpt driver
+To: Christian Labisch <clnetbox@gmail.com>, Takashi Iwai <tiwai@suse.de>
+References: <8b005c64fe129fc2a283da90b2949b1fcb42e8c2.camel@gmail.com>
+ <1ad341b1b0e0eefb83d157ac24d162eaad53ab32.camel@gmail.com>
+ <0111f282-f044-47ed-f93e-5a19de61bdce@metafoo.de>
+ <088cd3b6ba6589266e316d6adcb76861edd18775.camel@gmail.com>
+ <s5h1rf4c10a.wl-tiwai@suse.de>
+ <1f5c37af35419358a8d7f22544490088675b2c3f.camel@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <3dcc3129-aee5-0eea-0307-4eba7f03c0d6@metafoo.de>
+Date: Fri, 1 Jan 2021 14:29:33 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201230133803.GC4428@sirena.org.uk>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <1f5c37af35419358a8d7f22544490088675b2c3f.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, MyungJoo Ham <myungjoo.ham@samsung.com>,
- Lee Jones <lee.jones@linaro.org>
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26034/Thu Dec 31 13:42:27 2020)
+Cc: gregkh@linuxfoundation.org,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.com>, amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -138,48 +104,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On 12/30/20 2:38 PM, Mark Brown wrote:
-> On Tue, Dec 29, 2020 at 04:33:09PM +0100, Hans de Goede wrote:
->> On 12/29/20 4:08 PM, Mark Brown wrote:
 
-<snip>
- 
->>> The whole purpose of creating sound/core/jack.c is to abstract away the
->>> userspace interfaces from the drivers, most audio devices shouldn't be
->>> working with extcon directly just as they shouldn't be creating input
->>> devices or ALSA controls directly.  The missing bit there is to add
->>> extcon into jack.c.
-> 
->> So what you are suggesting is making sound/core/jack.c register the
->> extcon device and then have arizona-extcon.c talk to sound/core/jack.c
->> and no longer do any extcon stuff itself.
-> 
-> Yes.
+On 1/1/21 2:25 PM, Christian Labisch wrote:
+> Hi Takashi,
+>
+> Thanks for your suggestion - unfortunately it does not work.
+> Still no sound after adding the boot parameter and a reboot.
 
-Ok, so this seems to be the same solution as which the opensource.cirrus.com
-folks want in that both you and the opensource.cirrus.com people want to
-change the arizona-extcon.c driver to be changed to stop reporting extcon
-info directly itself and instead do all the reporting through sound/core/jack.c.
+Can you run `cat /sys/module/snd_hda_intel/parameters/power_save` and 
+check whether it is still 0 when the system is running?
 
-Where the thoughts on this seem to differ is that the opensource.cirrus.com
-folks seem to be fine with dropping extcon support, where as you suggest
-to extend sound/core/jack.c to register an extcon device and have it report
-extcon events.
+>
+> Regards,
+> Christian
+>
+> On Fri, 2021-01-01 at 13:09 +0100, Takashi Iwai wrote:
+>> On Fri, 01 Jan 2021 12:10:23 +0100,
+>> Christian Labisch wrote:
+>>> Hi Lars,
+>>>
+>>> Thanks for your response, as requested I ran alsa-info while playing audio.
+>>> Please check the attached information - to me it looks like it being a bug.
+>>> It should affect many users, will it be solved in the next release 5.10.5 ?
+>> It's likely some runtime PM-related changes that caused this behavior
+>> change.  But, there must be some program that sets the power_save
+>> option explicitly on your system.  As dmesg shows, the default
+>> power_save to this device has been suppressed, but it's activated by
+>> the later action.  On, 5.9.x, this didn't take effect, but on 5.10.x,
+>> this became effective, as it seems.
+>>
+>> You can try to pass power_save=0 option to snd-hda-intel module (or
+>> boot with snd_hda_intel.power_save=0 boot option).  It could work
+>> around the issue, although it's no solution.
+>>
+>>
+>> thanks,
+>>
+>> Takashi
 
-I'm with the opensource.cirrus.com folks here that ATM it seems best to just
-drop extcon support since the only user is Android, which also supports the
-input_dev API.
-
-If the need arises we can always add extcon-support to sound/core/jack.c
-later.
-
-So I'll start on reworking this patch-series to change the arizona-extcon.c
-driver to stop it reporting extcon info directly itself and instead do all
-the reporting through sound/core/jack.c.
-
-Regards,
-
-Hans
 
