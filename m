@@ -2,61 +2,95 @@ Return-Path: <SRS0=z4jS=GE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-3.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B6DC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 08:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF55EC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 08:41:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0E6DC21707
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 08:40:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0E6DC21707
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 87E0521707
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jan 2021 08:41:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87E0521707
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=archlinux.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DBE316A4;
-	Fri,  1 Jan 2021 09:39:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DBE316A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 198F616A4;
+	Fri,  1 Jan 2021 09:40:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 198F616A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609490399;
-	bh=KXCliTDenGFnIpd5YWwkCeNWkEcPEALu9P65yrjuK8w=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VwaTKTYF8SQA5F9fBJHLe4u4/UauJ+AwRWsv/c7cFkVdnTFd0hUDvj7AQk8PURaeB
-	 Wi8iexJapXJ6eYBH00zd4enmQcDuFpSp3dWhmuFstkxUhfjLK+lVlkKhLwUvTLLBpo
-	 OvzZ+dQSlffP/r5PW1gTPo2r0rk1Lbr8TKbOqbys=
+	s=default; t=1609490490;
+	bh=f3UKxByAEdW/JRPvHJPKheyVkmnwL0J4lXWTO9H0JGk=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Vu0bztRRyxNv9Glnstm0PtW2Sak2+wA35KZhCLLIJrSaI0qwyazXnv5ccQeJmix1v
+	 X35ricXT9EzkPOn6e2x8rYK8iZwz04M5zwIm7Ybk9PvaFAd5h4BfTinzrQg5QlKrMX
+	 xLKdpWoNQhbOZuTdpIM8vcWloWVdGoscia80VS+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 644C2F801ED;
-	Fri,  1 Jan 2021 09:39:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8BC1F801F5;
+	Fri,  1 Jan 2021 09:40:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2027F801F5; Fri,  1 Jan 2021 09:39:04 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4BD7CF801F5; Fri,  1 Jan 2021 06:15:54 +0100 (CET)
+Received: from mail.archlinux.org (mail.archlinux.org [95.216.189.61])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88830F8015F
- for <alsa-devel@alsa-project.org>; Fri,  1 Jan 2021 09:38:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88830F8015F
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9F40FB750;
- Fri,  1 Jan 2021 08:38:53 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/hdmi: Fix incorrect mutex unlock in
- silent_stream_disable()
-Date: Fri,  1 Jan 2021 09:38:52 +0100
-Message-Id: <20210101083852.12094-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8202F8015F
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jan 2021 06:15:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8202F8015F
+Authentication-Results: alsa1.perex.cz;
+ dkim=permerror (0-bit key) header.d=archlinux.org header.i=@archlinux.org
+ header.b="YS0W2VTD"; 
+ dkim=pass (4096-bit key) header.d=archlinux.org header.i=@archlinux.org
+ header.b="Ez0ALtBe"
+Message-ID: <f9e278f822e97c6698a04ab848beed279fb793dd.camel@archlinux.org>
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
+ s=dkim-ed25519; t=1609478143;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=f3UKxByAEdW/JRPvHJPKheyVkmnwL0J4lXWTO9H0JGk=;
+ b=YS0W2VTD5mVfjWYmBIoaO52CjRgJZj/OyFhZd0KWYg/e9dMNo2Bz1wupfSSGDNlfVPeAbc
+ N/Gi0KW3C3XaKLDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
+ s=dkim-rsa; t=1609478143;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=f3UKxByAEdW/JRPvHJPKheyVkmnwL0J4lXWTO9H0JGk=;
+ b=Ez0ALtBeibtZ9fBkwyxWWWa38f40Vc5lx6LtA9JO4syx4cpDPO6Z4kMLyy1KdNovHYhgDB
+ g6Yzc3HFl3ZqEISqQqQcKfNvKXs9GbW9jLltnZfVX+yUFudbHbLGOPuKqkd7IUadF3CCFa
+ 0hN7ur8HCWt96fg+6MIHQ8jpDAWTPQ6uyt7V4H9VcYNyKG4OEjOwsAtbPZ75zYet7++HNU
+ Vz/ljQQynp0k0bPeQLUUSzM3p1evxv8ePJD0IecW1Gb+iYQHnm26rNHqi7IGOjSEZVCBMl
+ WEjejovAO7oFegq+ufjUYOodkOCpA6UVqlCcRQtC5g/uEzif1b7cwS2lKcK7NkKK1i/UGv
+ 8DROUqPLqyvKtng/XEjzs/rZH3WRDcEYh2PUCmPIvDSPV3gJ23smFKC+i2AI87sZHNNkHW
+ ey7lCOjKiS1gVgM/eF4wX2ni1wH+j8VZlZfeX6Sc+jdfrwNR5Nrdf9z4FT3Q9dpHq2ohyB
+ W/w7E6N0VHy3xjca5Or6FncdSnwN5meC/MooJ7yOJolXSNZqpLUTMGIZrraLa0D/v1GM61
+ kDC4tSHJ05+7lvmj31TzSXLILRow4fGAC8LwuI5906pnp/8axOYcRCMEYPBqeoi3/ts6uJ
+ K38TB8tqxD7UvBJUyLBxz6gIEDIDJo0XooncqD1MC3j9a3cTbzLWY=
+Subject: Re: [PATCH v2] ALSA: hda/hdmi: fix silent stream for first playback
+ to DP
+From: "Jan Alexander Steffens (heftig)" <heftig@archlinux.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ alsa-devel@alsa-project.org,  tiwai@suse.de
+Date: Fri, 01 Jan 2021 06:15:42 +0100
+In-Reply-To: <20201210174445.3134104-1-kai.vehmanen@linux.intel.com>
+References: <20201210174445.3134104-1-kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jan Alexander Steffens <heftig@archlinux.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Authentication-Results: mail.archlinux.org;
+ auth=pass smtp.auth=heftig smtp.mailfrom=heftig@archlinux.org
+X-Mailman-Approved-At: Fri, 01 Jan 2021 09:40:37 +0100
+Cc: Harsha Priya <harshapriya.n@intel.com>,
+ Emmanuel Jillela <emmanuel.jillela@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,32 +106,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The silent_stream_disable() function introduced by the commit
-b1a5039759cb ("ALSA: hda/hdmi: fix silent stream for first playback to
-DP") takes the per_pin->lock mutex, but it unlocks the wrong one,
-spec->pcm_lock, which causes a deadlock.  This patch corrects it.
+On Thu, 2020-12-10 at 19:44 +0200, Kai Vehmanen wrote:
+> +static void silent_stream_disable(struct hda_codec *codec,
+> +                                 struct hdmi_spec_per_pin *per_pin)
+> +{
+> +       struct hdmi_spec *spec = codec->spec;
+> +       struct hdmi_spec_per_cvt *per_cvt;
+> +       int cvt_idx;
+> +
+> +       mutex_lock(&per_pin->lock);
+> +       if (!per_pin->silent_stream)
+> +               goto unlock_out;
+> +
+> +       codec_dbg(codec, "HDMI: disable silent stream on pin-NID=0x%x
+> cvt-NID=0x%x\n",
+> +                 per_pin->pin_nid, per_pin->cvt_nid);
+> +
+> +       cvt_idx = cvt_nid_to_cvt_index(codec, per_pin->cvt_nid);
+> +       if (cvt_idx >= 0 && cvt_idx < spec->num_cvts) {
+> +               per_cvt = get_cvt(spec, cvt_idx);
+> +               per_cvt->assigned = 0;
+> +       }
+> +
+> +       per_pin->cvt_nid = 0;
+> +       per_pin->silent_stream = false;
+> +
+> + unlock_out:
+> +       mutex_unlock(&spec->pcm_lock);
 
-Fixes: b1a5039759cb ("ALSA: hda/hdmi: fix silent stream for first playback to DP")
-Reported-by: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Shouldn't this be `mutex_unlock(&per_pin->lock);`?
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 1e4a4b83fbf6..74d246a0dc6d 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1733,7 +1733,7 @@ static void silent_stream_disable(struct hda_codec *codec,
- 	per_pin->silent_stream = false;
- 
-  unlock_out:
--	mutex_unlock(&spec->pcm_lock);
-+	mutex_unlock(&per_pin->lock);
- }
- 
- /* update ELD and jack state via audio component */
--- 
-2.26.2
+I'm experiencing deadlocks since 5.10.4, which backported this patch.
+
+
 
