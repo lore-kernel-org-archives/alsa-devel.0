@@ -2,76 +2,70 @@ Return-Path: <SRS0=CAUP=GG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D501C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Jan 2021 13:54:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B898AC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Jan 2021 13:55:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C631220B1F
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Jan 2021 13:54:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C631220B1F
+	by mail.kernel.org (Postfix) with ESMTPS id 08E2620B1F
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Jan 2021 13:55:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08E2620B1F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
-Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
+Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D00C1664;
-	Sun,  3 Jan 2021 14:53:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D00C1664
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609682047;
-	bh=V7rDKYCFcuZSgAl1YWdvMaci7rDCqi0C/xM+NOOsOs8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nsE5q+qVqglsWvedotxNsml80B/oBC0I3GchWY7mzmet/ggm1fEUS+SRjy2sQqNKa
-	 pp2E4T/V6gaBP4JX5iZqCs8TeOGwrnDkO+8p8P6rBW8/GuRpIhkxxK7ynAStcuG6k9
-	 A4P0LRWOPkWjWVQAo9zu22H+XP0nruZ7NaSV+HBc=
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EF53167F;
+	Sun,  3 Jan 2021 14:54:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EF53167F
+Authentication-Results: alsa0.perex.cz;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5xNoNt2"
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE885F801F5;
-	Sun,  3 Jan 2021 14:53:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FADFF804B0;
+	Sun,  3 Jan 2021 14:53:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B2CDF80268; Sun,  3 Jan 2021 14:53:14 +0100 (CET)
+ id 65342F804B1; Sun,  3 Jan 2021 14:53:41 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F545F8014C;
- Sun,  3 Jan 2021 14:53:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F545F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A96EF8049C
+ for <alsa-devel@alsa-project.org>; Sun,  3 Jan 2021 14:53:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A96EF8049C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VVuw7uHh"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A2A52080D;
- Sun,  3 Jan 2021 13:53:01 +0000 (UTC)
+ header.b="b5xNoNt2"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C417208C7;
+ Sun,  3 Jan 2021 13:53:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609681983;
- bh=V7rDKYCFcuZSgAl1YWdvMaci7rDCqi0C/xM+NOOsOs8=;
+ s=k20201202; t=1609682012;
+ bh=RfD85uyAyXiT/UWv6+Zq6MnRrDYD8p+2jEiLShXKqnw=;
  h=From:To:Cc:Subject:Date:From;
- b=VVuw7uHhdIvgtoItbkQWTUChPwiOgzAgG4fHHoRtyAE+15/dCHKFuHWLe0roznUJn
- s5d0sSWRxv043pWfzTBDCH2VZU02AM1zSLkvuWNPRv+TiuNNay3FsN7IqPlwKY0cqW
- /ADlrVqTh/zmPTogXVEP8D85CmfUVMd6Yc7bMceOdaIU9OK7x1c0eMIDlGBWJdbRA3
- /uH/gC+mvPjhzFLoLxKIkdDLD545adVdgTH1EPbM8ug5YslUejWpJ8ycahCjMeDvrY
- Bvq+2s2DWJBprRJi43FyiObZBqd1J2n04cTu5FXmB4+7mZCZIw557GQTvcETS2eEJO
- LceL3fEdBEszA==
+ b=b5xNoNt2oqW1nFjz0hNJWeaDU9FkDI+xCSEveh9Ofia7TDzsKLy/X3gdXqadTSyc3
+ Z/v2pTuOzJqCnR6ZMPIE6B8ua+Zyti8cg3cEsWPseKwnW/oA/vfnPRflcFgm60Xlj7
+ qeCDI4W5KX1qAcUI6+JJcM6PmxRw8AHPcOhZWeNxgOl8adr0Vn6V2BR+hv3TDEK+36
+ iDZpS2kzPPlS8aPjVEB+zdS/wcxKQhbbtfK7Ugn+SP5KOXgKctsCGlKldqIp9SHM9y
+ EXMw2VtnmXFjG/tNDEO6NII6kUXfEI+UIfqRgaZe/wTShVOxsaBoRNM037Do4HNl2E
+ +VFo/3wdW3TZA==
 From: Arnd Bergmann <arnd@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
-Date: Sun,  3 Jan 2021 14:52:32 +0100
-Message-Id: <20210103135257.3611821-1-arnd@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
+Date: Sun,  3 Jan 2021 14:53:17 +0100
+Message-Id: <20210103135327.3630973-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org,
+ Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+ Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+ Viorel Suman <viorel.suman@nxp.com>, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,77 +83,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The sof-pci-dev driver fails to link when built into the kernel
-and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
+The newly added driver requires DMA support and fails to build
+when that is disabled:
 
-arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
+aarch64-linux-ld: sound/soc/fsl/fsl_aud2htx.o: in function `fsl_aud2htx_probe':
+fsl_aud2htx.c:(.text+0x3e0): undefined reference to `imx_pcm_dma_init'
 
-All other drivers using this interface already use a 'select
-SND_INTEL_DSP_CONFIG' statement to force the it to be present, so it
-seems reasonable to do the same here.
-
-The stub implementation in the header makes the problem harder to find,
-as it avoids the link error when SND_INTEL_DSP_CONFIG is completely
-disabled, without any obvious upsides. Remove these stubs to make it
-clearer that the driver is in fact needed here.
-
-Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
+Fixes: 8a24c834c053 ("ASoC: fsl_aud2htx: Add aud2htx module driver")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/sound/intel-dsp-config.h | 17 -----------------
- sound/soc/sof/Kconfig            |  2 ++
- 2 files changed, 2 insertions(+), 17 deletions(-)
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/intel-dsp-config.h b/include/sound/intel-dsp-config.h
-index d4609077c258..94667e870029 100644
---- a/include/sound/intel-dsp-config.h
-+++ b/include/sound/intel-dsp-config.h
-@@ -18,24 +18,7 @@ enum {
- 	SND_INTEL_DSP_DRIVER_LAST = SND_INTEL_DSP_DRIVER_SOF
- };
- 
--#if IS_ENABLED(CONFIG_SND_INTEL_DSP_CONFIG)
--
- int snd_intel_dsp_driver_probe(struct pci_dev *pci);
- int snd_intel_acpi_dsp_driver_probe(struct device *dev, const u8 acpi_hid[ACPI_ID_LEN]);
- 
--#else
--
--static inline int snd_intel_dsp_driver_probe(struct pci_dev *pci)
--{
--	return SND_INTEL_DSP_DRIVER_ANY;
--}
--
--static inline
--int snd_intel_acpi_dsp_driver_probe(struct device *dev, const u8 acpi_hid[ACPI_ID_LEN])
--{
--	return SND_INTEL_DSP_DRIVER_ANY;
--}
--
--#endif
--
- #endif
-diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
-index 031dad5fc4c7..051fd3d27047 100644
---- a/sound/soc/sof/Kconfig
-+++ b/sound/soc/sof/Kconfig
-@@ -12,6 +12,7 @@ if SND_SOC_SOF_TOPLEVEL
- config SND_SOC_SOF_PCI
- 	tristate "SOF PCI enumeration support"
- 	depends on PCI
-+	select SND_INTEL_DSP_CONFIG
- 	select SND_SOC_SOF
- 	select SND_SOC_ACPI if ACPI
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 84db0b7b9d59..d7f30036d434 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -108,6 +108,7 @@ config SND_SOC_FSL_XCVR
+ config SND_SOC_FSL_AUD2HTX
+ 	tristate "AUDIO TO HDMI TX module support"
+ 	depends on ARCH_MXC || COMPILE_TEST
++	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
  	help
-@@ -23,6 +24,7 @@ config SND_SOC_SOF_PCI
- config SND_SOC_SOF_ACPI
- 	tristate "SOF ACPI enumeration support"
- 	depends on ACPI || COMPILE_TEST
-+	select SND_INTEL_DSP_CONFIG
- 	select SND_SOC_SOF
- 	select SND_SOC_ACPI if ACPI
- 	select IOSF_MBI if X86 && PCI
+ 	  Say Y if you want to add AUDIO TO HDMI TX support for NXP.
+ 
 -- 
 2.29.2
 
