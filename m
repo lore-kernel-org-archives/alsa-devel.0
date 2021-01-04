@@ -2,82 +2,69 @@ Return-Path: <SRS0=I7Cd=GH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C596C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jan 2021 14:15:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD25DC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jan 2021 14:26:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 81F7E20770
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jan 2021 14:15:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 81F7E20770
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 49E85207BC
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jan 2021 14:26:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49E85207BC
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F1211681;
-	Mon,  4 Jan 2021 15:14:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F1211681
+	by alsa0.perex.cz (Postfix) with ESMTPS id B10DB1679;
+	Mon,  4 Jan 2021 15:25:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B10DB1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609769703;
-	bh=oqztWhFAZMPdxzyKlwb//7PmFe7TTLE83m1Z9TPVaEQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1609770378;
+	bh=kXP5gs3Papkj6yFNt8DVe/xGzNimR0gvbOpUxxCehi8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GiNhiFyJsK05ZQVWcRlErFBNYg38UMxNthXjujXt1beR/jSCyvKH+CJEaAC6TjpE4
-	 2E9X6+lNUeEgq9YC4fs2+nPOOdPcGZOl3vJRJhcGk4FgCTEPnjUmYD7SJV4pLC8eMq
-	 KRI/5VEVHh5SCzIYXqBLLIMpC/QyhPjxUAGUKJlI=
+	b=AiblUMhSkrvj13nodsNxepjoRcYqn8dB+Ov3BikSve4BJ3zn6ty6qYyX8WyGyAUqm
+	 38zIkURL6LnDeNrInXqgX1Mi9IYWGCE/EXA3+0bUYQZPrMCvPDenWf8sIGR0q/J3Sz
+	 OrIYwvsYRv8IA/Fd14WZtlA6Tg0GEn/a1o+J7b3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 910C3F8012B;
-	Mon,  4 Jan 2021 15:14:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43C34F80165;
+	Mon,  4 Jan 2021 15:25:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70161F80166; Mon,  4 Jan 2021 15:14:07 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 41A66F80166; Mon,  4 Jan 2021 15:25:27 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCF4DF8012C;
- Mon,  4 Jan 2021 15:13:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCF4DF8012C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uKW/2yvA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95FB52245C;
- Mon,  4 Jan 2021 14:13:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609769636;
- bh=oqztWhFAZMPdxzyKlwb//7PmFe7TTLE83m1Z9TPVaEQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uKW/2yvAczC2Qcx4GHy0h6O1SUctibjcRTVbNo6njkQqeWBgZiGOx7D1o2b9E9Lrb
- 17Io8T0KmdQe7/tHWrbr5QrxAARe8pIrHV8krqfTUwos2pTTTlqbmtmLp5axckNM0C
- G+MQKWwNq8XSLH0qyBJfTZYKL9WmXr91ozuo53y41S/2XFnaNbWUYeo98gLMbN/Bqd
- aoSzUbYZRlUTl+XiWX9OwCqifIfzGjB2uZPTBXiJT5soWNqZblYqryLjwuosbIbUfD
- sIuCQaXVGEx0jA5vwVBA/zJJOpEUwZBAl1pWaV4JYX0unGSkUMIdKf2Myiwg2SfCor
- ZbUPKhIIDY6iw==
-Date: Mon, 4 Jan 2021 14:13:29 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
-Message-ID: <20210104141329.GG5645@sirena.org.uk>
-References: <20210103135257.3611821-1-arnd@kernel.org>
- <s5hk0ss94kr.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="4eRLI4hEmsdu6Npr"
-Content-Disposition: inline
-In-Reply-To: <s5hk0ss94kr.wl-tiwai@suse.de>
-X-Cookie: Stupidity is its own reward.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Arnd Bergmann <arnd@kernel.org>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9C16F8012C
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2021 15:25:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9C16F8012C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 40850B7A7;
+ Mon,  4 Jan 2021 14:25:23 +0000 (UTC)
+Date: Mon, 04 Jan 2021 15:25:23 +0100
+Message-ID: <s5hft3g93u4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [PATCH 0/2] fix tegra-hda on tegra30 devices
+In-Reply-To: <20201225012025.507803-1-pgwipeout@gmail.com>
+References: <20201225012025.507803-1-pgwipeout@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Sameer Pujar <spujar@nvidia.com>, Stephen Boyd <sboyd@kernel.org>,
+ linux-kernel@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
+ linux-clk@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org,
+ Mohan Kumar <mkumard@nvidia.com>, Peter De Schrijver <pdeschrijver@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,35 +80,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 25 Dec 2020 02:20:24 +0100,
+Peter Geis wrote:
+> 
+> The following patches fix tegra-hda on legacy tegra devices.
+> Two issues were discovered preventing tegra-hda from functioning:
+> The hda clocks on tegra30 were assigned to clk_m and running at too low of a rate to function.
+> The tegra-hda encounters an input/output error when opening a stream.
+> 
+> Since the only mainline device that used tegra-hda previously was the t124, it is unknown exactly when this was broken.
+> Fortunately a recent patch was submitted that fixed the issue only on t194 devices.
+> We can apply it universally to the tegra-hda device to resolve the issues across the board.
+> Note that downstream devices used the spdif device instead of hda for hdmi audio.
+> The spdif device lacks a driver on mainline.
+> 
+> Peter Geis (2):
+>   clk: tegra30: Add hda clock default rates to clock driver
+>   ALSA: hda/tegra: fix tegra-hda on tegra30 soc
 
---4eRLI4hEmsdu6Npr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Can Nvidia people look at those?
 
-On Mon, Jan 04, 2021 at 03:09:24PM +0100, Takashi Iwai wrote:
 
-> IMO, the problem is rather the unconditional calls of
-> snd_intel_dsp_driver_probe() in snd-soc-sof-pci and snd-soc-sof-acpi
-> drivers.  Those calls should be done only if Intel drivers are
-> involved.  So, wrapping the call with ifdef
-> CONFIG_SND_SOC_SOF_INTEL_PCI or CONFIG_SND_SOC_SOF_INTEL_ACPI would
-> work better (although those are a bit uglier).
+thanks,
 
-Or stubbing them which might be neater.
+Takashi
 
---4eRLI4hEmsdu6Npr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/zIogACgkQJNaLcl1U
-h9Cs2gf+L8LA4jGPihc58O3+2gVfjpoTLwqR18RhrGsAJrQAhVjPb6+muvVH4rVw
-aKm648duaehQ4484pZXS/LUtyEw70+N8RHhchEfyfHu47SVF1Avku3rjsqSIZQF0
-qNe8HDF5kJ0npw2mazr/Iv+P1Uv7Yti9GVye63MmAaImJe5HPX9DmfQspj3zeIXu
-NMFycv6wLpMoo4L0P5qxFxCkVKVZXSjeJED7/uXQVrtpSJzcWhU+cUn7HI/J48gl
-Esu9cmu5UJLHzMbVpzhHxbH/L6GGljPGWxRfWoP9gP/GasEfv5q3gjBHeOLsPEgp
-YnyLj/Uegu5vdqyK+bVllUs1klgm3A==
-=HwUk
------END PGP SIGNATURE-----
-
---4eRLI4hEmsdu6Npr--
+> 
+>  drivers/clk/tegra/clk-tegra30.c | 2 ++
+>  sound/pci/hda/hda_tegra.c       | 3 +--
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
