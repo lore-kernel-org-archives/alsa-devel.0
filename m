@@ -7,46 +7,46 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 486D7C4332E
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 14:05:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F91C433E6
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 14:06:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6F24122AB9
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 14:05:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6F24122AB9
+	by mail.kernel.org (Postfix) with ESMTPS id 1CE1B22AAB
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 14:06:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CE1B22AAB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2EBE16A3;
-	Tue,  5 Jan 2021 15:04:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2EBE16A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4ED3D16AE;
+	Tue,  5 Jan 2021 15:05:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ED3D16AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609855540;
-	bh=ekQTOyDg8nBybU86OrMjPAMvRQajc0nWBEhgt2xLLRA=;
+	s=default; t=1609855584;
+	bh=fqEEt/ImLIhuWW0S+N9e4eZrC8ZetAN3CYBXJjwAqKc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZAk46WVVrUBZPQnTQoOaejJC7QUHuInkUzAYQPVSUBaJqWa/9zYyPBahi86wL5aOu
-	 8zSVHI6qEp662jpWw+OW93lwsKIqH4Z8wauBabWAD7qUzC3JwYLyX+pgARMZKszXVj
-	 y2dl0zTmtjqpYM9LF3KAuKJrgWrb8MW+Fn53w4ig=
+	b=Aa3WQRpiClsNBmTF1FuU1Al4cpDzIxLu0B91Tmw4XKK0nTEMqD/fpjCPY8nQcbp1Y
+	 HQl5ES+DCRXHUFESsN6O7yq/mLzDSzA94JqrInWMtsBcVwN8b45BVc436Ag8mbwyDK
+	 8z0yXfoJhzJJgn9y61qXyjJX2npBBdQSZvMai9QU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E14FF804CB;
-	Tue,  5 Jan 2021 15:03:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ACEAF8049C;
+	Tue,  5 Jan 2021 15:04:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84DB1F804C3; Tue,  5 Jan 2021 15:03:48 +0100 (CET)
+ id A1218F804C2; Tue,  5 Jan 2021 15:03:53 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9570BF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2021 15:03:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9570BF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38731F80271
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2021 15:03:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38731F80271
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 34C54AD57;
- Tue,  5 Jan 2021 14:03:41 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id C617AAD19;
+ Tue,  5 Jan 2021 14:03:44 +0000 (UTC)
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Matt Mackall <mpm@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>,
  Dan Williams <dan.j.williams@intel.com>, Vinod Koul <vkoul@kernel.org>,
@@ -64,9 +64,9 @@ To: Matt Mackall <mpm@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>,
  netdev@vger.kernel.org, linux-rtc@vger.kernel.org,
  linux-spi@vger.kernel.org, linux-watchdog@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH 02/10] net: tc35815: Drop support for TX49XX boards
-Date: Tue,  5 Jan 2021 15:02:47 +0100
-Message-Id: <20210105140305.141401-3-tsbogend@alpha.franken.de>
+Subject: [PATCH 07/10] char: hw_random: Remove tx4939 driver
+Date: Tue,  5 Jan 2021 15:02:52 +0100
+Message-Id: <20210105140305.141401-8-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210105140305.141401-1-tsbogend@alpha.franken.de>
 References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
@@ -87,58 +87,216 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CPU support for TX49xx is getting removed, so remove support in network
-drivers for it.
+CPU support for TX49xx is getting removed, so remove hw_random driver
+for it.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- drivers/net/ethernet/toshiba/tc35815.c | 29 --------------------------
- 1 file changed, 29 deletions(-)
+ drivers/char/hw_random/Kconfig      |  13 ---
+ drivers/char/hw_random/Makefile     |   1 -
+ drivers/char/hw_random/tx4939-rng.c | 157 ----------------------------
+ 3 files changed, 171 deletions(-)
+ delete mode 100644 drivers/char/hw_random/tx4939-rng.c
 
-diff --git a/drivers/net/ethernet/toshiba/tc35815.c b/drivers/net/ethernet/toshiba/tc35815.c
-index 7a6e5ff8e5d4..d4712cd2e28c 100644
---- a/drivers/net/ethernet/toshiba/tc35815.c
-+++ b/drivers/net/ethernet/toshiba/tc35815.c
-@@ -687,39 +687,10 @@ static int tc_mii_init(struct net_device *dev)
- 	return err;
- }
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index 1fe006f3f12f..9d13d640384a 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -226,19 +226,6 @@ config HW_RANDOM_VIRTIO
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called virtio-rng.  If unsure, say N.
  
--#ifdef CONFIG_CPU_TX49XX
+-config HW_RANDOM_TX4939
+-	tristate "TX4939 Random Number Generator support"
+-	depends on SOC_TX4939
+-	default HW_RANDOM
+-	help
+-	  This driver provides kernel-side support for the Random Number
+-	  Generator hardware found on TX4939 SoC.
+-
+-	  To compile this driver as a module, choose M here: the
+-	  module will be called tx4939-rng.
+-
+-	  If unsure, say Y.
+-
+ config HW_RANDOM_MXC_RNGA
+ 	tristate "Freescale i.MX RNGA Random Number Generator"
+ 	depends on SOC_IMX31
+diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
+index 8933fada74f2..b2aa37162e24 100644
+--- a/drivers/char/hw_random/Makefile
++++ b/drivers/char/hw_random/Makefile
+@@ -20,7 +20,6 @@ obj-$(CONFIG_HW_RANDOM_OMAP) += omap-rng.o
+ obj-$(CONFIG_HW_RANDOM_OMAP3_ROM) += omap3-rom-rng.o
+ obj-$(CONFIG_HW_RANDOM_PASEMI) += pasemi-rng.o
+ obj-$(CONFIG_HW_RANDOM_VIRTIO) += virtio-rng.o
+-obj-$(CONFIG_HW_RANDOM_TX4939) += tx4939-rng.o
+ obj-$(CONFIG_HW_RANDOM_MXC_RNGA) += mxc-rnga.o
+ obj-$(CONFIG_HW_RANDOM_IMX_RNGC) += imx-rngc.o
+ obj-$(CONFIG_HW_RANDOM_INGENIC_RNG) += ingenic-rng.o
+diff --git a/drivers/char/hw_random/tx4939-rng.c b/drivers/char/hw_random/tx4939-rng.c
+deleted file mode 100644
+index c8bd34e740fd..000000000000
+--- a/drivers/char/hw_random/tx4939-rng.c
++++ /dev/null
+@@ -1,157 +0,0 @@
 -/*
-- * Find a platform_device providing a MAC address.  The platform code
-- * should provide a "tc35815-mac" device with a MAC address in its
-- * platform_data.
+- * RNG driver for TX4939 Random Number Generators (RNG)
+- *
+- * Copyright (C) 2009 Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+- *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file "COPYING" in the main directory of this archive
+- * for more details.
 - */
--static int tc35815_mac_match(struct device *dev, const void *data)
+-#include <linux/err.h>
+-#include <linux/module.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/delay.h>
+-#include <linux/io.h>
+-#include <linux/platform_device.h>
+-#include <linux/hw_random.h>
+-#include <linux/gfp.h>
+-
+-#define TX4939_RNG_RCSR		0x00000000
+-#define TX4939_RNG_ROR(n)	(0x00000018 + (n) * 8)
+-
+-#define TX4939_RNG_RCSR_INTE	0x00000008
+-#define TX4939_RNG_RCSR_RST	0x00000004
+-#define TX4939_RNG_RCSR_FIN	0x00000002
+-#define TX4939_RNG_RCSR_ST	0x00000001
+-
+-struct tx4939_rng {
+-	struct hwrng rng;
+-	void __iomem *base;
+-	u64 databuf[3];
+-	unsigned int data_avail;
+-};
+-
+-static void rng_io_start(void)
 -{
--	struct platform_device *plat_dev = to_platform_device(dev);
--	const struct pci_dev *pci_dev = data;
--	unsigned int id = pci_dev->irq;
--	return !strcmp(plat_dev->name, "tc35815-mac") && plat_dev->id == id;
+-#ifndef CONFIG_64BIT
+-	/*
+-	 * readq is reading a 64-bit register using a 64-bit load.  On
+-	 * a 32-bit kernel however interrupts or any other processor
+-	 * exception would clobber the upper 32-bit of the processor
+-	 * register so interrupts need to be disabled.
+-	 */
+-	local_irq_disable();
+-#endif
 -}
 -
- static int tc35815_read_plat_dev_addr(struct net_device *dev)
- {
--	struct tc35815_local *lp = netdev_priv(dev);
--	struct device *pd = bus_find_device(&platform_bus_type, NULL,
--					    lp->pci_dev, tc35815_mac_match);
--	if (pd) {
--		if (pd->platform_data)
--			memcpy(dev->dev_addr, pd->platform_data, ETH_ALEN);
--		put_device(pd);
--		return is_valid_ether_addr(dev->dev_addr) ? 0 : -ENODEV;
--	}
- 	return -ENODEV;
- }
--#else
--static int tc35815_read_plat_dev_addr(struct net_device *dev)
+-static void rng_io_end(void)
 -{
--	return -ENODEV;
--}
+-#ifndef CONFIG_64BIT
+-	local_irq_enable();
 -#endif
- 
- static int tc35815_init_dev_addr(struct net_device *dev)
- {
+-}
+-
+-static u64 read_rng(void __iomem *base, unsigned int offset)
+-{
+-	return ____raw_readq(base + offset);
+-}
+-
+-static void write_rng(u64 val, void __iomem *base, unsigned int offset)
+-{
+-	return ____raw_writeq(val, base + offset);
+-}
+-
+-static int tx4939_rng_data_present(struct hwrng *rng, int wait)
+-{
+-	struct tx4939_rng *rngdev = container_of(rng, struct tx4939_rng, rng);
+-	int i;
+-
+-	if (rngdev->data_avail)
+-		return rngdev->data_avail;
+-	for (i = 0; i < 20; i++) {
+-		rng_io_start();
+-		if (!(read_rng(rngdev->base, TX4939_RNG_RCSR)
+-		      & TX4939_RNG_RCSR_ST)) {
+-			rngdev->databuf[0] =
+-				read_rng(rngdev->base, TX4939_RNG_ROR(0));
+-			rngdev->databuf[1] =
+-				read_rng(rngdev->base, TX4939_RNG_ROR(1));
+-			rngdev->databuf[2] =
+-				read_rng(rngdev->base, TX4939_RNG_ROR(2));
+-			rngdev->data_avail =
+-				sizeof(rngdev->databuf) / sizeof(u32);
+-			/* Start RNG */
+-			write_rng(TX4939_RNG_RCSR_ST,
+-				  rngdev->base, TX4939_RNG_RCSR);
+-			wait = 0;
+-		}
+-		rng_io_end();
+-		if (!wait)
+-			break;
+-		/* 90 bus clock cycles by default for generation */
+-		ndelay(90 * 5);
+-	}
+-	return rngdev->data_avail;
+-}
+-
+-static int tx4939_rng_data_read(struct hwrng *rng, u32 *buffer)
+-{
+-	struct tx4939_rng *rngdev = container_of(rng, struct tx4939_rng, rng);
+-
+-	rngdev->data_avail--;
+-	*buffer = *((u32 *)&rngdev->databuf + rngdev->data_avail);
+-	return sizeof(u32);
+-}
+-
+-static int __init tx4939_rng_probe(struct platform_device *dev)
+-{
+-	struct tx4939_rng *rngdev;
+-	int i;
+-
+-	rngdev = devm_kzalloc(&dev->dev, sizeof(*rngdev), GFP_KERNEL);
+-	if (!rngdev)
+-		return -ENOMEM;
+-	rngdev->base = devm_platform_ioremap_resource(dev, 0);
+-	if (IS_ERR(rngdev->base))
+-		return PTR_ERR(rngdev->base);
+-
+-	rngdev->rng.name = dev_name(&dev->dev);
+-	rngdev->rng.data_present = tx4939_rng_data_present;
+-	rngdev->rng.data_read = tx4939_rng_data_read;
+-
+-	rng_io_start();
+-	/* Reset RNG */
+-	write_rng(TX4939_RNG_RCSR_RST, rngdev->base, TX4939_RNG_RCSR);
+-	write_rng(0, rngdev->base, TX4939_RNG_RCSR);
+-	/* Start RNG */
+-	write_rng(TX4939_RNG_RCSR_ST, rngdev->base, TX4939_RNG_RCSR);
+-	rng_io_end();
+-	/*
+-	 * Drop first two results.  From the datasheet:
+-	 * The quality of the random numbers generated immediately
+-	 * after reset can be insufficient.  Therefore, do not use
+-	 * random numbers obtained from the first and second
+-	 * generations; use the ones from the third or subsequent
+-	 * generation.
+-	 */
+-	for (i = 0; i < 2; i++) {
+-		rngdev->data_avail = 0;
+-		if (!tx4939_rng_data_present(&rngdev->rng, 1))
+-			return -EIO;
+-	}
+-
+-	platform_set_drvdata(dev, rngdev);
+-	return devm_hwrng_register(&dev->dev, &rngdev->rng);
+-}
+-
+-static struct platform_driver tx4939_rng_driver = {
+-	.driver		= {
+-		.name	= "tx4939-rng",
+-	},
+-};
+-
+-module_platform_driver_probe(tx4939_rng_driver, tx4939_rng_probe);
+-
+-MODULE_DESCRIPTION("H/W Random Number Generator (RNG) driver for TX4939");
+-MODULE_LICENSE("GPL");
 -- 
 2.29.2
 
