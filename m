@@ -2,83 +2,95 @@ Return-Path: <SRS0=jAxA=GI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 873ADC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 15:43:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1320C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 15:49:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B562207A0
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 15:43:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B562207A0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 96D5922BF5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 15:49:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 96D5922BF5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A330E16B4;
-	Tue,  5 Jan 2021 16:43:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A330E16B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id C471F16B6;
+	Tue,  5 Jan 2021 16:48:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C471F16B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609861432;
-	bh=OG9C4J1BFgwS+JDUN+qsXMX0dhS9cwo8lRFqWrqU0kU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1609861761;
+	bh=exjbVXJp44u+pVE6fQ5+LZ7JcUb4ur3YJ8VVpBtZA/E=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hd7m2XC/0IPQcMA74TpF11J+jt7niYHJ4fV4XfEZgb+ZkkLVi8MVLYhNQJVGvxprr
-	 ustcvjVUYQKDrLHhjKy2cGYU88E9jrp4nR8V7LjgthC/auYh5IUQdlP2ZcE8q3Shff
-	 WJIh8YfwdActn7nrZK92WO5ELaDQMH/0QiiQ3oOM=
+	b=NmoHYU4PjvzIM/7wTP5/18ROEjcDdA13yUIwhTKa9igzjVDRLpDk/WOAQNbjMGWqU
+	 nT7rfkXWCUrxBmwx4kheVK9Uj7MJuRdccJeY9b+CGne7IQLKRSkIIVryg3xXmcL8gt
+	 scWShQqZlFMpEVMc5jdTKLFK0qMsI/95+BtKYYng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA841F80258;
-	Tue,  5 Jan 2021 16:42:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A8DEF801F5;
+	Tue,  5 Jan 2021 16:48:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6AD9F802C4; Tue,  5 Jan 2021 16:42:55 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D09A9F80258; Tue,  5 Jan 2021 16:48:29 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFFDCF8015B;
- Tue,  5 Jan 2021 16:42:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFFDCF8015B
-IronPort-SDR: QFGqjhOiFEYcZ3xQReH7PazEiKQyuYr1xpH0NqnfcbJEcxUPeiOImeVpCe1QtvpUo0s8yYcU57
- H6wf68kuHdGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="176341665"
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; d="scan'208";a="176341665"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jan 2021 07:42:39 -0800
-IronPort-SDR: QWCWi2VymOqSN6LRoxlv4ex9o8a4DKmuJppeSYTQc20/GkcXeWOxjVNE+VLptIdH5kuQJ6H/Cc
- qQ8hcGW/cGsA==
-X-IronPort-AV: E=Sophos;i="5.78,477,1599548400"; d="scan'208";a="378909382"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jan 2021 07:42:35 -0800
-Date: Tue, 5 Jan 2021 17:39:39 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
-In-Reply-To: <CAK8P3a1FZSfzu3TA6VMhqP+3H5OD3+BhH5W=vVYEkL+ExHqpMQ@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2101051631320.864696@eliteleevi.tm.intel.com>
-References: <20210103135257.3611821-1-arnd@kernel.org>
- <3c19a5d5-8883-f917-a96a-f51bb188d115@perex.cz>
- <s5hble491zu.wl-tiwai@suse.de>
- <CAK8P3a1FZSfzu3TA6VMhqP+3H5OD3+BhH5W=vVYEkL+ExHqpMQ@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA905F8015B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2021 16:48:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA905F8015B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gMRuCgsY"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 856B72070C;
+ Tue,  5 Jan 2021 15:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1609861704;
+ bh=exjbVXJp44u+pVE6fQ5+LZ7JcUb4ur3YJ8VVpBtZA/E=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gMRuCgsYekpNaoOTme7BOK9BV4pd7gsOFdyDiEVCa4L97sPaGG7c5xNcmISFOhh18
+ 7WIEBCovZf9nMpVrKZafXj1Ch/Sd28l5gh/6wm4lpx5UIFhpicBXqmlG0v4GLpgAU2
+ zBoYOYkU8MfArhPNSyUt9B8Lfz78obrgmu5D9AHJi//KPeUIwkRm+xCaf9y0cceDrU
+ 722lR8FPtXsRzLGu42WosALrUJO8pUaSBrtXM3mvtsHg6ERA/VLS06N9864Yn50r3K
+ ZZfLaM9sEJR+fSgby2mq9c6DgYi+khhvHYwdu1mUROSxvVwG5L+nI8JDQT2XJ5kJD2
+ Z9Q1LEZyyU+dg==
+Date: Tue, 5 Jan 2021 15:47:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20210105154756.GF4487@sirena.org.uk>
+References: <20201218180310.GD5333@sirena.org.uk>
+ <20201218184150.GY552508@nvidia.com>
+ <20201218203211.GE5333@sirena.org.uk>
+ <20201218205856.GZ552508@nvidia.com>
+ <20201221185140.GD4521@sirena.org.uk>
+ <20210104180831.GD552508@nvidia.com>
+ <20210104211930.GI5645@sirena.org.uk>
+ <20210105001341.GL552508@nvidia.com>
+ <20210105134256.GA4487@sirena.org.uk>
+ <20210105143627.GT552508@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Takashi Iwai <tiwai@suse.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Y1L3PTX8QE8cb2T+"
+Content-Disposition: inline
+In-Reply-To: <20210105143627.GT552508@nvidia.com>
+X-Cookie: I'm ANN LANDERS!!  I can SHOPLIFT!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, lee.jones@linaro.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Kiran Patil <kiran.patil@intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-rdma <linux-rdma@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
+ Martin Habets <mhabets@solarflare.com>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Fred Oh <fred.oh@linux.intel.com>, Netdev <netdev@vger.kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+ Jakub Kicinski <kuba@kernel.org>, Dave Ertman <david.m.ertman@intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Shiraz Saleem <shiraz.saleem@intel.com>, David Miller <davem@davemloft.net>,
+ Leon Romanovsky <leonro@nvidia.com>, Parav Pandit <parav@mellanox.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,32 +106,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hey,
 
-On Tue, 5 Jan 2021, Arnd Bergmann wrote:
+--Y1L3PTX8QE8cb2T+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Mon, Jan 4, 2021 at 4:05 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > As I wrote in another post, a part of the problem is that SOF PCI and
-> > ACPI drivers call snd_intel_dsp_driver_probe() unconditionally, even
-> > if no Intel driver is bound.
-> 
-> Makes sense. Is there an existing Kconfig that could be used to
-> decide whether the drivers use SND_INTEL_DSP_CONFIG or not?
+On Tue, Jan 05, 2021 at 10:36:27AM -0400, Jason Gunthorpe wrote:
+> On Tue, Jan 05, 2021 at 01:42:56PM +0000, Mark Brown wrote:
 
-no, unfortunately not. This is selected per platform in 
-sound/soc/sof/intel/Kconfig. CONFIG_SND_SOC_SOF_INTEL_PCI is close, but 
-there is at least one platform that does not use SND_INTEL_DSP_CONFIG.
+> > You're missing the point there.  I2C is enumerated by firmware in
+> > exactly the same way as the platform bus is, it's not discoverable from
+> > the hardware (and similarly for a bunch of other buses).  If we were to
 
-> According to sof_pci_ids[], all PCI IDs are Intel specific, but I can't
-> tell which ones need the DSP config.
+> No, I understand how I2C works and I think it is fine as is because
+> the enumeration outcome is all standard. You always end up with a
+> stable I2C device address (the name) and you always end up with the
+> I2C programming API. So it doesn't matter how I2C gets enumerated, it
+> is always an I2C device.
 
-Indeed currently all the ids are Intel ones (and with exception of old 
-Merrifield, all use DSP config). But that's just how it is now.
+I don't follow this logic at all, sorry - whatever the platonic ideal of
+what a platform device actually turns out to be when we get down to
+using the hardware it's the same hardware which we interact with in the
+same way no matter how we figured out that it was present.
 
-> Could it be part of the device specific driver_data? 
+--Y1L3PTX8QE8cb2T+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This would certainly be a clean way and allow to remove the Intel-specific 
-calls from sof_pci_probe(). As a short-term solution, IS_REACHABLE() 
-seems ok as well.
+-----BEGIN PGP SIGNATURE-----
 
-Br, Kai
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/0iisACgkQJNaLcl1U
+h9BB8wf+Nvnu4y6NJYvpzLoo2IgcymvT/prWQ1KEuyqHcAvdeu1xjdLu9OAfjsoy
+pMF/Jm/JOZ0IFRHxXoUZFJV9xvCMn872QTO0DcCPdR+fM5h77AYQK8rgtimD/Ub8
+EFDtt/K2ISvp4cA+YV9ERnZwi+LGpbUY9r5D9KYUJP4U+qJO1MgMq6YfXqrB2shL
+l1ZUB5CF1y5gsuHe4oIT7h510NcjGaOhz8heNjXlfVM2w4gyZjgXvitT9uIxmIzC
+TkqwF419JQgTFrNq6BsGB/19WH6AyMEokj987mDVEmeOJsvmZMRtExB4bL0UfgD/
+PA6KL84AFXMSXgjzqeapAd8MOcTBnw==
+=jQX1
+-----END PGP SIGNATURE-----
+
+--Y1L3PTX8QE8cb2T+--
