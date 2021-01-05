@@ -6,68 +6,81 @@ X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0CC2C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 16:09:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F15BC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 16:09:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4205D22C9E
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 16:09:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4205D22C9E
+	by mail.kernel.org (Postfix) with ESMTPS id 5F4AA22C9E
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jan 2021 16:09:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F4AA22C9E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDD8216B8;
-	Tue,  5 Jan 2021 17:08:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDD8216B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF4BD16B0;
+	Tue,  5 Jan 2021 17:08:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF4BD16B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609862946;
-	bh=aCLo2xhJZFJinAotkDQjeIIeunXHBJXvp+JElZ9J2cU=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1609862984;
+	bh=wJQJGEVMiFp+U9i3KB68KovC4I4ZjyrsTucyHvp+mYU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lyl1hmWRVihYDqNQI7PnjGRhLye04IXwWOkQcSCc4JzugNOezGRxiOvCt5+5xYiTo
-	 HZ/nashyT0Q4u7yoGIuqO8cgIDskGveIQuNZEx099P7VR8ZWwbGF7HRGzYKLJhFio0
-	 DSVDBXiI7bg13sFFJLKWcZFm0/dSqoHIEfhDl/bU=
+	b=kteIyMPNNb89hib2bIV32bEuRfUBv6ackyEniTi4BUJog+QcZqxqKk4C3EwmFFG4e
+	 nvVM73J+zWQQfwU3+RY6EE27qTjRRfnKqWFRp5rUVPQaRdS7BgySFgGlQk4UizKKGx
+	 RKQtpbFJDhyj+6xOQvU18KSzuLIrZqwJkdRsA1m0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F47BF8015B;
-	Tue,  5 Jan 2021 17:07:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F699F80258;
+	Tue,  5 Jan 2021 17:08:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66C0EF802C4; Tue,  5 Jan 2021 17:07:26 +0100 (CET)
+ id 7B014F80271; Tue,  5 Jan 2021 17:08:52 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 757BFF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2021 17:07:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 757BFF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BB02F801F5
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2021 17:08:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BB02F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GADbFOyZ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CCE422C9E;
- Tue,  5 Jan 2021 16:07:20 +0000 (UTC)
+ header.b="RAq1XL/B"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 519B722C9F;
+ Tue,  5 Jan 2021 16:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1609862841;
- bh=aCLo2xhJZFJinAotkDQjeIIeunXHBJXvp+JElZ9J2cU=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GADbFOyZ+OkRLo7B5KKQk6sQOsr+q+2wHTbJ/yPZnlPABhEHOi0teeyFTpMXn1M0e
- C2PEoZLVgU+M11TSBhTLYrq/23bdP+i7DzJ0GJqBC+7x3sMRO6Xfp5QOZD1WlMfiAb
- 7B7YAMnKI2UPSit1x8M39mJGBAsNXHyHVR/YdAqC8RHS9iGNt/pN116ydv2FPAPdjB
- T0u2I57e7FvU34A7n8O37bPHVp+3w5Eph2/y3MDL3OH+9+hKKaWGaK6EVTPVPEjN26
- QqxuTwEqAIaGYTdXMSrbhCfV0X6JNRB25LvvDEedyzlI1N+bI6CgDTaw0p5YbBqFWX
- iCUgQVhuJ6Xjw==
+ s=k20201202; t=1609862927;
+ bh=wJQJGEVMiFp+U9i3KB68KovC4I4ZjyrsTucyHvp+mYU=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=RAq1XL/BRN8XRTSri4cXSrqvujM81ioR4+GUq1AHhXecaj7QiUWiQ88dIVugFlchl
+ PLj0Tjq2k++ZbgqOoM47jhkKnKK69EB4dWwbb4SWWCCEgHFfJaIdqiA9j1o8CIDFGb
+ VmlHy1C+y878dkjkF4kZd8pHUgF6pphBI9JLc1TNqEr7Y5H/GxrnO2q9j6hXU6/0O6
+ F/BC+FOE5W7Pq7VFBMxUdC2Yx5x5dsQz87UyJo6xH3cai7eqArOI3dLNh6M9KIfFCe
+ bMnxRc9j/jnfB58g5Lt3IlL35kE9dM38IFdhf5NXVGmzl9LHHUkqI+ApfU/oQDMsjA
+ e2FHKR5qKJKMQ==
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20201225030845.4138497-1-tzungbi@google.com>
-References: <20201225030845.4138497-1-tzungbi@google.com>
-Subject: Re: [PATCH] ASoC: rt1015: re-calibrate again when resuming
-Message-Id: <160986280837.50063.9380709468821926841.b4-ty@kernel.org>
-Date: Tue, 05 Jan 2021 16:06:48 +0000
+To: linux-rtc@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+ linux-mtd@lists.infradead.org, linux-crypto@vger.kernel.org,
+ netdev@vger.kernel.org, alsa-devel@alsa-project.org, dmaengine@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Dan Williams <dan.j.williams@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, linux-mips@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Alessandro Zummo <a.zummo@towertech.it>,
+ Jaroslav Kysela <perex@perex.cz>, Vignesh Raghavendra <vigneshr@ti.com>,
+ Jakub Kicinski <kuba@kernel.org>, linux-watchdog@vger.kernel.org,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vinod Koul <vkoul@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org
+In-Reply-To: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+Subject: Re: (subset) [PATCH 00/10] Remove support for TX49xx
+Message-Id: <160986289007.50207.17900821173530027212.b4-ty@kernel.org>
+Date: Tue, 05 Jan 2021 16:08:10 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,21 +96,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 25 Dec 2020 11:08:45 +0800, Tzung-Bi Shih wrote:
-> Assuming the calibration state gets lost after system suspend.
-> Re-calibrates again when resuming.
+On Tue, 5 Jan 2021 15:02:45 +0100, Thomas Bogendoerfer wrote:
+> I couldn't find any buyable product other than reference boards using
+> TX49xx CPUs. And since nobody showed interest in keeping support for
+> it, it's time to remove it.
 > 
-> The rt1015_priv is alloced by kzalloc.  No need to initialize cali_done
-> to 0 in component probe callback.
+> I've split up the removal into seperate parts for different maintainers.
+> So if the patch fits your needs, please take it via your tree or
+> give me an ack so I can apply them  the mips-next tree.
+> 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: rt1015: re-calibrate again when resuming
-      commit: d750570e048165c54a99703729438b2a4ccf379b
+[04/10] spi: txx9: Remove driver
+        commit: 74523a5dae0c96d6503fe72da66ee37fd23eb8f5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
