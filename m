@@ -5,64 +5,85 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AFE2C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jan 2021 13:07:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69E72C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jan 2021 13:38:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 230ED22EBD
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jan 2021 13:07:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 230ED22EBD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 198622226A
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jan 2021 13:38:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 198622226A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=metafoo.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EEA6D1680;
-	Wed,  6 Jan 2021 14:06:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEA6D1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A53B1689;
+	Wed,  6 Jan 2021 14:37:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A53B1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609938443;
-	bh=ir4LO/BcuCCM1/Z2kbCxwYzmIHpWMs/pmOGsaKcCmus=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LMewVbrC2ZN7KazI2+RWPDSgaqB4x2CfEIlo4Kzk44+9w8utdzznveFuvKja06ry9
-	 GFYoOM0Ro5IF2zVhWYJD+OS7dcKCzAoGxbUEodCMKCl0YKHs/gD5kp2MgTc6Hu+CsR
-	 vn6Lgk3clnQhONtH0oXJpFHvGckJyXlDFkLC9CRw=
+	s=default; t=1609940288;
+	bh=Khqu3tr49Ty/osgRTcF23piy9ksH2NIfD2TnONOF6rg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kW4oMnr/kNrtLysP5Vy7XktT05SbZqq7Z5eaZO6r0qPBdYS+0N0j86egWtgsAaJaI
+	 aR9NmaJUNrtgNKkv4qCnLT4vle6l9xKbmkjD3F1Ha8XuZq2/kw5XV82xFbKRN7qBIO
+	 0mPWMDK8goIVKSsbfBQWEi+hubgO8ATMPAcoAU8E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56C2AF80165;
-	Wed,  6 Jan 2021 14:06:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8A14F80165;
+	Wed,  6 Jan 2021 14:37:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFF52F80166; Wed,  6 Jan 2021 14:06:30 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 5760BF8025E; Wed,  6 Jan 2021 14:37:11 +0100 (CET)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9D19F800E3
- for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2021 14:06:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9D19F800E3
-Received: from 61-220-137-34.hinet-ip.hinet.net ([61.220.137.34]
- helo=localhost) by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <jeremy.szu@canonical.com>)
- id 1kx8Vm-0005Pi-Ul; Wed, 06 Jan 2021 13:06:04 +0000
-From: Jeremy Szu <jeremy.szu@canonical.com>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: fix right sounds and mute/micmute LEDs for
- HP machines
-Date: Wed,  6 Jan 2021 21:05:46 +0800
-Message-Id: <20210106130549.100532-1-jeremy.szu@canonical.com>
-X-Mailer: git-send-email 2.29.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B711F80165
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2021 14:37:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B711F80165
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=metafoo.de header.i=@metafoo.de
+ header.b="d2JW1bAp"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de; 
+ s=default2002;
+ h=Content-Transfer-Encoding:MIME-Version:References:
+ In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+ Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+ Resent-To:Resent-Cc:Resent-Message-ID;
+ bh=0yxbNT9wTWoc6iG81rGwAhiEYwqPsvjQfLazBY/fsCw=; b=d2JW1bAp4iniehobYFKO0hnPpT
+ KdkJoDJndOY54eUr4pwfCjIACA4zKMoMoaG3ILOGuasYkZwenaBx4+2QVE+OrkqtXAQvu/u+i2+I6
+ 2VBXmWFRkS5UMLRDvcEFYNB5NBc1W3r4E5lS/EXrEVMsTHluTfiPCrRu04xNfch/4BEeSdmbTExp8
+ kSlpwtmpaGRR8gS0mCynCqtx+V2yC1sF7HHcreeCkk+rml/N1OIobGvZIuk29APw1rYN02qJ3qEFY
+ AMnKQogv2gTiCRZQxweWcHP08BE5IQdncCVPpzN7Jn5rA35ShdXBSswn/ovLbqu1yWrlYURVd8AZk
+ n+ZnGs/g==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+ by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92.3) (envelope-from <lars@metafoo.de>)
+ id 1kx8zi-000Eyw-JL; Wed, 06 Jan 2021 14:36:58 +0100
+Received: from [2001:a61:2bd0:3301:9e5c:8eff:fe01:8578]
+ (helo=lars-desktop.fritz.box)
+ by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+ (Exim 4.92) (envelope-from <lars@metafoo.de>)
+ id 1kx8zi-000Wdj-E0; Wed, 06 Jan 2021 14:36:58 +0100
+From: Lars-Peter Clausen <lars@metafoo.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 3/3] ASoC: kirkwood: Use managed DMA buffer allocation
+Date: Wed,  6 Jan 2021 14:36:50 +0100
+Message-Id: <20210106133650.13509-3-lars@metafoo.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210106133650.13509-1-lars@metafoo.de>
+References: <20210106133650.13509-1-lars@metafoo.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Kailang Yang <kailang@realtek.com>, Thomas Hebb <tommyhebb@gmail.com>,
- Jeremy Szu <jeremy.szu@canonical.com>,
- open list <linux-kernel@vger.kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
- Jian-Hong Pan <jhp@endlessos.org>, Hui Wang <hui.wang@canonical.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26040/Wed Jan  6 05:30:56 2021)
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Scott Branden <sbranden@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ Russell King <rmk+kernel@armlinux.org.uk>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Simran Rai <ssimran@broadcom.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,34 +99,136 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
- * The HP ZBook Fury 15/17 G7 Mobile Workstation are using ALC285 codec
-   which is using 0x04 to control mute LED and 0x01 to control micmute LED.
+Instead of manually managing its DMA buffers using
+dma_{alloc,free}_coherent() lets the sound core take care of this using
+managed buffers.
 
- * The right channel speaker is no sound and it needs to expose GPIO1 for
-   initialing AMP.
+On one hand this reduces the amount of boiler plate code, but the main
+motivation for the change is to use the shared code where possible. This
+makes it easier to argue about correctness and that the code does not
+contain subtle bugs like data leakage or similar.
 
-Add quirks to support them.
-
-Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/pci/hda/patch_realtek.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/kirkwood/kirkwood-dma.c | 79 ++-----------------------------
+ 1 file changed, 3 insertions(+), 76 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3c1d2a3fb1a4..dd82ff2bd5d6 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7970,6 +7970,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8780, "HP ZBook Fury 17 G7 Mobile Workstation",
-+		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
-+	SND_PCI_QUIRK(0x103c, 0x8783, "HP ZBook Fury 15 G7 Mobile Workstation",
-+		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index e037826b2451..c2a5933bfcfc 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -182,25 +182,6 @@ static int kirkwood_dma_close(struct snd_soc_component *component,
+ 	return 0;
+ }
+ 
+-static int kirkwood_dma_hw_params(struct snd_soc_component *component,
+-				  struct snd_pcm_substream *substream,
+-				  struct snd_pcm_hw_params *params)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+-	runtime->dma_bytes = params_buffer_bytes(params);
+-
+-	return 0;
+-}
+-
+-static int kirkwood_dma_hw_free(struct snd_soc_component *component,
+-				struct snd_pcm_substream *substream)
+-{
+-	snd_pcm_set_runtime_buffer(substream, NULL);
+-	return 0;
+-}
+-
+ static int kirkwood_dma_prepare(struct snd_soc_component *component,
+ 				struct snd_pcm_substream *substream)
+ {
+@@ -244,82 +225,28 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(
+ 	return count;
+ }
+ 
+-static int kirkwood_dma_preallocate_dma_buffer(struct snd_pcm *pcm,
+-		int stream)
+-{
+-	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
+-	struct snd_dma_buffer *buf = &substream->dma_buffer;
+-	size_t size = kirkwood_dma_snd_hw.buffer_bytes_max;
+-
+-	buf->dev.type = SNDRV_DMA_TYPE_DEV;
+-	buf->dev.dev = pcm->card->dev;
+-	buf->area = dma_alloc_coherent(pcm->card->dev, size,
+-			&buf->addr, GFP_KERNEL);
+-	if (!buf->area)
+-		return -ENOMEM;
+-	buf->bytes = size;
+-	buf->private_data = NULL;
+-
+-	return 0;
+-}
+-
+ static int kirkwood_dma_new(struct snd_soc_component *component,
+ 			    struct snd_soc_pcm_runtime *rtd)
+ {
++	size_t size = kirkwood_dma_snd_hw.buffer_bytes_max;
+ 	struct snd_card *card = rtd->card->snd_card;
+-	struct snd_pcm *pcm = rtd->pcm;
+ 	int ret;
+ 
+ 	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+-	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+-		ret = kirkwood_dma_preallocate_dma_buffer(pcm,
+-				SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+-		ret = kirkwood_dma_preallocate_dma_buffer(pcm,
+-				SNDRV_PCM_STREAM_CAPTURE);
+-		if (ret)
+-			return ret;
+-	}
++	snd_pcm_set_managed_buffer_all(rtd->pcm, SNDRV_DMA_TYPE_DEV,
++				       card->dev, size, size);
+ 
+ 	return 0;
+ }
+ 
+-static void kirkwood_dma_free_dma_buffers(struct snd_soc_component *component,
+-					  struct snd_pcm *pcm)
+-{
+-	struct snd_pcm_substream *substream;
+-	struct snd_dma_buffer *buf;
+-	int stream;
+-
+-	for (stream = 0; stream < 2; stream++) {
+-		substream = pcm->streams[stream].substream;
+-		if (!substream)
+-			continue;
+-		buf = &substream->dma_buffer;
+-		if (!buf->area)
+-			continue;
+-
+-		dma_free_coherent(pcm->card->dev, buf->bytes,
+-				buf->area, buf->addr);
+-		buf->area = NULL;
+-	}
+-}
+-
+ const struct snd_soc_component_driver kirkwood_soc_component = {
+ 	.name		= DRV_NAME,
+ 	.open		= kirkwood_dma_open,
+ 	.close		= kirkwood_dma_close,
+-	.hw_params	= kirkwood_dma_hw_params,
+-	.hw_free	= kirkwood_dma_hw_free,
+ 	.prepare	= kirkwood_dma_prepare,
+ 	.pointer	= kirkwood_dma_pointer,
+ 	.pcm_construct	= kirkwood_dma_new,
+-	.pcm_destruct	= kirkwood_dma_free_dma_buffers,
+ };
 -- 
-2.29.2
+2.20.1
 
