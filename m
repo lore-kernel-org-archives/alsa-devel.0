@@ -2,63 +2,100 @@ Return-Path: <SRS0=maC8=GO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D1F9C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47DF4C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:08:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B0BC21973
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:07:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B0BC21973
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9784322AAB
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:08:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9784322AAB
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C533D16B6;
-	Mon, 11 Jan 2021 14:06:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C533D16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C812A16DE;
+	Mon, 11 Jan 2021 14:07:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C812A16DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610370447;
-	bh=jpvlPaZVEezRMz9QjFHNhf6I/H6LSkXPCsNgw2Z23Xw=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=BMRcoGesGWmAUm2jpsD1ey0GEG3qZ+DR4k19bVK4evS/H6CakIInQIj2TaKRcnwgE
-	 jneT8FItV+WJdGJ36ll6xG/6lDEHLfhuaoRkRe+zby1tVJ+5o9ZvLEQHR68T6pi3Js
-	 jaPMdYkveEKLm83N0DEvy0jCPSeyEqGpfJ0fhW9Y=
+	s=default; t=1610370498;
+	bh=ADI0+Mi4lZGXFyg33NjPYSC/4ySofakTg23lOClaknE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Q3Hu9lNwqVSpqYSZcqKfM2jc/+aNYh2XON+x1MSll20fHBC8cs/NOPF+O9cqGlyZJ
+	 Zru5N9mZYMbDm062KfOS19AAOKXtJHUR714d7ASb9f6BVnOGZkkTMujDUbXKcLrdmN
+	 ZALraqyPMLGC+/9shAtURhL2G4LsOq+1BCAE5txg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E2EBF8016C;
-	Mon, 11 Jan 2021 14:06:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64EAEF8026B;
+	Mon, 11 Jan 2021 14:06:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6479EF8016D; Mon, 11 Jan 2021 14:06:35 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 167F5F80258; Thu,  7 Jan 2021 09:05:09 +0100 (CET)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com
+ [209.85.210.54])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A70A2F800BE
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 14:06:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A70A2F800BE
-Received: from [123.114.32.120] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1kywtv-0001Ym-Lu; Mon, 11 Jan 2021 13:06:31 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz,
- kai.vehmanen@linux.intel.com
-Subject: [RFC][PATCH v4 0/4] design a way to change audio Jack state by
- software
-Date: Mon, 11 Jan 2021 21:05:53 +0800
-Message-Id: <20210111130557.90208-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41A7DF80096
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 09:04:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41A7DF80096
+Received: by mail-ot1-f54.google.com with SMTP id j20so5542149otq.5
+ for <alsa-devel@alsa-project.org>; Thu, 07 Jan 2021 00:04:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=0TPseVwGCXsOzziJOFXy0csIKxTAA1WaNx2ZI4idEKY=;
+ b=cfIB4YjxQyDUao5caxYGKdujMauVYlBzYIm2adfxoaxmP+m3lmFNoOpMOkfF0Ecnq4
+ L05a6siJ01tuuAJosPmV+zzTBTbFz2hXz3fnFRQADJbCpSmAA8szQsyAn/TpKwV9DPKo
+ OoRvINdOzjRXFXt8F0D2yPVyDK1ZE3BZgSSMQqJbV1amiajsji6J9mnfPAi5dFyKBTt+
+ AzjU4Y8lOsd9eirf9urWpfnFo+1EKNUzmMwtCNvfTxFgxWQDy4GZ6PtE4UcCDwSNYD01
+ 915k6ItkfWTM5TdFohiCcEM/EGYTVbANKisQWYXbz5VSR6JQNfqTaY16NdnzsRnv3mAB
+ eYMw==
+X-Gm-Message-State: AOAM5314bfcOS5K+9HX89zxOrMo4uG7eITfRY3guWDD2mQwoCvMekdca
+ kiIRBuwfi/+os0leUq1fA1swuUBccKYLRYMLq8w=
+X-Google-Smtp-Source: ABdhPJzVAPf8/NQQQzT3zzrkoDzUv+P+SG+XgCFUWTKsU/u1ByX8ezoz8GuB2nVGz7LNk3BFgEKDp8LcWHb42uaO/Sc=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id
+ u26mr5905584oth.250.1610006693990; 
+ Thu, 07 Jan 2021 00:04:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAMuHMdX=trGqj8RzV7r1iTneqDjWOc4e1T-X+R_B34rxxhJpbg@mail.gmail.com>
+ <20210106184839.GA7773@alpha.franken.de>
+ <CAMuHMdV86BES7dmWr-7j1jbtoSy0bH1J0e5W41p8evagi0Nqcw@mail.gmail.com>
+ <20210107.101729.1936921832901251107.anemo@mba.ocn.ne.jp>
+In-Reply-To: <20210107.101729.1936921832901251107.anemo@mba.ocn.ne.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 7 Jan 2021 09:04:43 +0100
+Message-ID: <CAMuHMdX6ptaO3r=b55zqwrrK8ADfSRWdunwHA5DYD08PMCAPaA@mail.gmail.com>
+Subject: Re: [PATCH 00/10] Remove support for TX49xx
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 11 Jan 2021 14:06:42 +0100
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, "R,
+ Vignesh" <vigneshr@ti.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-ide@vger.kernel.org,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-rtc@vger.kernel.org,
+ Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger <richard@nod.at>,
+ Jakub Kicinski <kuba@kernel.org>,
+ "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Matt Mackall <mpm@selenic.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ netdev <netdev@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ linux-spi <linux-spi@vger.kernel.org>, Vinod <vkoul@kernel.org>,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ dmaengine <dmaengine@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,57 +111,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-the changes in the v4:
- - change the sound-core to sound and change the sound_core_debugfs_root
-   to sound_debugfs_root in the 0001-xxx.patch
- - change kzalloc/kfree to kvzalloc/kvfree in the debugfs fops for
-   0001-xxx.patch and 0003-xxx.patch
- - And if needed, I could squash 4 patches into 1 patch before merging.
+Hi Nemoto-san,
 
-the changes in the v3 (for easy to review, divide change into 4 patches):
- - address the comment about the snd_jack_report() and _snd_jack_report(),
-   the v2 design is hard to understand and is hard to review, in the v3,
-   separate the jack_report to snd_jack_report() and snd_jack_inject_report(),
-   hw jack events call snd_jack_report() as before, if a jack contains multi
-   jack_kctl and the jack_kctl's sw_inject is enabled, the status and the
-   related input-dev's events will not be reproted. The injection events call
-   snd_jack_inject_report(). This change is squashed to 0001-xxx.patch,  the
-   rest part of 0001-xxx.patch is same as v2.
+On Thu, Jan 7, 2021 at 2:18 AM Atsushi Nemoto <anemo@mba.ocn.ne.jp> wrote:
+> On Wed, 6 Jan 2021 21:41:24 +0100, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> >> > Is that sufficient to keep it?
+> >>
+> >> for me it is. But now we probaly need some reverts then...
+> >
+> > Indeed. Fortunately not all of it, as some removals were TX4938-only.
+>
+> These patches should not break RBTX4927:
+>
+>   net: tc35815: Drop support for TX49XX boards
+>   spi: txx9: Remove driver
+>   mtd: Remove drivers used by TX49xx
+>   char: hw_random: Remove tx4939 driver
+>   rtc: tx4939: Remove driver
+>   ide: tx4938ide: Remove driver
 
- - address the comment about folders'name in the 0002-xxx.patch, so far, drop
-   the '/', ',', '=' and ' ' from the folders' name.
+Indeed.
 
- - address the comment about adding more debugfs nodes in the 0003-xxx.patch,
-   it adds kctl_id, mask_bits, status and type.
+> And these patches just break audio-support only.
+>
+>   dma: tx49 removal
+>   ASoC: txx9: Remove driver
+>
+> I think dma and ASoC drivers are hard to maintain now, and can be
+> dropped for basic support for RBTX4927.
+> (TX39 boards does not have audio-support, so dma txx9 driver can be
+> dropped too)
 
- - address the comment about save-n-restore jack's hw status in the
-   0004-xxx.patch, adding a hw_status_cache and save the last reported jack
-   hw event, once the sw_inject is disabled, will restore all jack_kctl's
-   state under the same snd_jack with hw_status_cache.
-[snip]
+Agreed, I don't test audio anyway, but I know it used to work (I had
+intended to use the board as an MPD media server, but never got beyond
+the prototyping phase).
 
+Gr{oetje,eeting}s,
 
-the changes in the V2:
- - using debugfs instead of sysfs
- - using jack_ctrl to create a folder instead of snd_jack, since ASoC drivers
-   could create multi jack_ctrls within a snd_jack
- - create a folder for each jack_ctrl instead for all jack_ctrls
-[ snip ]
-
-
-Hui Wang (4):
-  alsa: jack: implement software jack injection via debugfs
-  alsa: jack: adjust jack_kctl debugfs folder's name
-  alsa: jack: add more jack_kctl debugfs nodes
-  alsa: jack: implement save-and-restore for jack's hw status
-
- include/sound/core.h |   2 +
- include/sound/jack.h |   1 +
- sound/core/init.c    |   7 +
- sound/core/jack.c    | 352 ++++++++++++++++++++++++++++++++++++++++++-
- sound/core/sound.c   |   8 +
- 5 files changed, 366 insertions(+), 4 deletions(-)
+                        Geert
 
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
