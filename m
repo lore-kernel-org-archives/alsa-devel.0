@@ -2,65 +2,77 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F958C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 14:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 327B5C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 14:29:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 986642333E
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 14:01:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 986642333E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 15A1E23118
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 14:29:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15A1E23118
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF3F416AD;
-	Thu,  7 Jan 2021 15:00:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF3F416AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id D862D167F;
+	Thu,  7 Jan 2021 15:28:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D862D167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610028087;
-	bh=IxY4iK/Pr/neK9BHTZeIlppfivdamm0HciIQ/LWqYL8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610029782;
+	bh=wq0bmkT0v1XJd/qFGy+kwVjV7IzBlnb2YgG9BaaPlAY=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fuPmjaPz+hZXS/qfFnfxSU1HvTyx2qeDJ7nfZUL+xHijE6hHyM4lxPuvHk8/2VVqX
-	 3kMokEAhRsKZX6CSWNRSD21Ne2WoGMCC3+P5wyGGixX8hrTwqaY+JVY9pOFZyTDJ4H
-	 zvOzYIfTFRgk5KxoOecG3FnRJ8Pu3aRpHRGY4SsA=
+	b=R7ixPISScrhuTy2itHaGABvrU8DYhvNmIC5nlzvAUM1BdsXpihjy9ZmDMZi1+HyeO
+	 afVM58lKNkUXizS24R+mr9PYu0tTGkgATi8R4ERPZfw+Voxp3XqgHt4/F26rGjR3RN
+	 krYz2tHAZlVxsP3v6TFbpfWMV/yjNn1axmGLU8rI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1124EF804E6;
-	Thu,  7 Jan 2021 14:58:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04133F800FD;
+	Thu,  7 Jan 2021 15:28:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71D2CF804D6; Thu,  7 Jan 2021 14:58:18 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 4597DF80258; Thu,  7 Jan 2021 15:28:34 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60D38F80268
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 14:58:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60D38F80268
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9CED1B719;
- Thu,  7 Jan 2021 13:58:05 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 1/5] ALSA: usb-audio: Fix the missing endpoints creations
- for quirks
-Date: Thu,  7 Jan 2021 14:57:57 +0100
-Message-Id: <20210107135801.23860-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210107135801.23860-1-tiwai@suse.de>
-References: <20210107135801.23860-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84903F800E9
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 15:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84903F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Rx27ouWQ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D3822EBF;
+ Thu,  7 Jan 2021 14:28:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610029695;
+ bh=wq0bmkT0v1XJd/qFGy+kwVjV7IzBlnb2YgG9BaaPlAY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Rx27ouWQ6IOJLohgRuNphzufjwGjIZTKJdUtwm5WUXxfzOtwRWhIhg3DwfS/sxA/N
+ 2E7nOeEnaEupq/NmPzzorvpPmAGTXdZ5H0DL7XOGYrn4C+ygRrTkyD6daNGIYaCmjC
+ +oW1fPsk31YHSy3CY0SXYce7qZxXilkgQUlFhTjacmsSL48lL29CWW6cOGld2Qg7Zf
+ BiLYY1zGRuRH6pXwnsPLAhpe3eOkWZ7iSkEPr+lnOwENl6oXPs/yxdjzxvoD3PKXSJ
+ iwq2xYGROQ8ujnneTRz/nDp+mmGnqQRzqJebZwmxsIspZ9rd7VosVzTxjfZwTTUvmb
+ u/Fv6nTTnmvbw==
+Date: Thu, 7 Jan 2021 14:27:46 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Chris Chiu <chiu@endlessos.org>
+Subject: Re: [PATCH 1/4] ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
+Message-ID: <20210107142746.GC4726@sirena.org.uk>
+References: <20210107090625.107078-1-chiu@endlessos.org>
+ <20210107090625.107078-2-chiu@endlessos.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>,
- Geraldo <geraldogabriel@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ctP54qlpMx3WjD+/"
+Content-Disposition: inline
+In-Reply-To: <20210107090625.107078-2-chiu@endlessos.org>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, linux@endlessos.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,130 +88,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent change in the endpoint management moved the endpoint object
-creation from the stream open time to the parser of the audio
-descriptor.  It works fine for the standard audio, but it overlooked
-the other places that create audio streams via quirks
-(QUIRK_AUDIO_FIXED_ENDPOINT) like the reported a few Pioneer devices;
-those call snd_usb_add_audio_stream() manually, hence they miss the
-endpoints, eventually resulting in the error at opening streams.
-Moreover, now the sync EP setup was moved to the explicit call of
-snd_usb_audioformat_set_sync_ep(), and this needs to be added for
-those places, too.
 
-This patch addresses those regressions for quirks.  It adds a local
-helper function add_audio_stream_from_fixed_fmt(), which does the all
-needed tasks, and replaces the calls of snd_usb_add_audio_stream()
-with this new function.
+--ctP54qlpMx3WjD+/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 54cb31901b83 ("ALSA: usb-audio: Create endpoint objects at parsing phase")
-Reported-by: František Kučera <konference@frantovo.cz>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 54 +++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 10 deletions(-)
+On Thu, Jan 07, 2021 at 05:06:22PM +0800, Chris Chiu wrote:
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index e4a690bb4c99..b70e2ebc3e29 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -120,6 +120,40 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
- 	return 0;
- }
- 
-+/* create the audio stream and the corresponding endpoints from the fixed
-+ * audioformat object; this is used for quirks with the fixed EPs
-+ */
-+static int add_audio_stream_from_fixed_fmt(struct snd_usb_audio *chip,
-+					   struct audioformat *fp)
-+{
-+	int stream, err;
-+
-+	stream = (fp->endpoint & USB_DIR_IN) ?
-+		SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+
-+	snd_usb_audioformat_set_sync_ep(chip, fp);
-+
-+	err = snd_usb_add_audio_stream(chip, stream, fp);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_usb_add_endpoint(chip, fp->endpoint,
-+				   SND_USB_ENDPOINT_TYPE_DATA);
-+	if (err < 0)
-+		return err;
-+
-+	if (fp->sync_ep) {
-+		err = snd_usb_add_endpoint(chip, fp->sync_ep,
-+					   fp->implicit_fb ?
-+					   SND_USB_ENDPOINT_TYPE_DATA :
-+					   SND_USB_ENDPOINT_TYPE_SYNC);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * create a stream for an endpoint/altsetting without proper descriptors
-  */
-@@ -131,8 +165,8 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 	struct audioformat *fp;
- 	struct usb_host_interface *alts;
- 	struct usb_interface_descriptor *altsd;
--	int stream, err;
- 	unsigned *rate_table = NULL;
-+	int err;
- 
- 	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
- 	if (!fp)
-@@ -153,11 +187,6 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 		fp->rate_table = rate_table;
- 	}
- 
--	stream = (fp->endpoint & USB_DIR_IN)
--		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
--	err = snd_usb_add_audio_stream(chip, stream, fp);
--	if (err < 0)
--		goto error;
- 	if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
- 	    fp->altset_idx >= iface->num_altsetting) {
- 		err = -EINVAL;
-@@ -176,6 +205,13 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
- 	if (fp->maxpacksize == 0)
- 		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
-+	if (!fp->fmt_type)
-+		fp->fmt_type = UAC_FORMAT_TYPE_I;
-+
-+	err = add_audio_stream_from_fixed_fmt(chip, fp);
-+	if (err < 0)
-+		goto error;
-+
- 	usb_set_interface(chip->dev, fp->iface, 0);
- 	snd_usb_init_pitch(chip, fp);
- 	snd_usb_init_sample_rate(chip, fp, fp->rate_max);
-@@ -417,7 +453,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
- 	struct usb_host_interface *alts;
- 	struct usb_interface_descriptor *altsd;
- 	struct audioformat *fp;
--	int stream, err;
-+	int err;
- 
- 	/* both PCM and MIDI interfaces have 2 or more altsettings */
- 	if (iface->num_altsetting < 2)
-@@ -482,9 +518,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
- 		return -ENXIO;
- 	}
- 
--	stream = (fp->endpoint & USB_DIR_IN)
--		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
--	err = snd_usb_add_audio_stream(chip, stream, fp);
-+	err = add_audio_stream_from_fixed_fmt(chip, fp);
- 	if (err < 0) {
- 		list_del(&fp->list); /* unlink for avoiding double-free */
- 		kfree(fp);
--- 
-2.26.2
+> +static const struct acpi_gpio_mapping *cht_rt5645_gpios;
+> +
 
+You're adding a read only static variable with no way to set it.  This
+doesn't actually do anything?
+
+> @@ -3780,7 +3782,6 @@ static const struct dmi_system_id dmi_platform_data=
+[] =3D {
+>  		},
+>  		.driver_data =3D (void *)&intel_braswell_platform_data,
+>  	},
+> -	{ }
+>  };
+> =20
+
+This is an unrelated change which removes the terminator on the array
+which will cause issues.
+
+--ctP54qlpMx3WjD+/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3GmEACgkQJNaLcl1U
+h9CLFAf/evzCs5u2gB5dTDWM0EbQ+WNYz3+RPiTWt8YOnZcdvn7CNyuOxA4daHhN
+qNtKWt3HL5iVv6N0QVm+KIApX1j/VAN1Wa+LKoSpJHh/+XlL2v2h9Gkcx/JqM2zi
+JYUj35rMJnL+TotjeOw+dtDRsWueo3IUN86o2QJX5SLBFwUXMdSFkW9VEsLu+2l7
+quPzgEelg/tSwEegKNlPPApb9uedQpKNy2w5gngtpSUQH8IGGxxISSAQF1Cdgt8h
+mCVLS53h93BEajHCGRlv6GPuBKTkgRnvyzbYEHgmJEpGihxxQPHzvyzjj+OlAXB5
+sSHjR+6+BfSP0CY+bG71x+PSPHwD9w==
+=w+Ra
+-----END PGP SIGNATURE-----
+
+--ctP54qlpMx3WjD+/--
