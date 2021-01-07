@@ -2,75 +2,81 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C832C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 13:31:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2D43C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 13:56:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EAEEA22BE8
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 13:31:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAEEA22BE8
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 5495623142
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 13:56:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5495623142
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA291672;
-	Thu,  7 Jan 2021 14:30:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA291672
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC3861672;
+	Thu,  7 Jan 2021 14:55:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3861672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610026272;
-	bh=hPy0p8TfVlXEZ8Sz7LbB2Z+zCZpbry7uWRf62kqGFqw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610027790;
+	bh=LXnYFuO/m7yLkPaglBXr1YjV5t1JasbH7WmOzsST9Wk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TfxcGjSjeHCd8uW1gYWYiHWITY367UM0T4zDbSHF0cWevOCeqq0N8+Xo8m8hgdD8m
-	 XCOCWUwOFzgsw91ja4eFHmTe8DgMBEGQp73jp74RWY5MDd4NtvKAZt5JaOSZtq6h1O
-	 FJadd3cxqUYXiESp61CZ+5O6Dmhl6U6tPx9DL9AA=
+	b=dCiJie0q7D1A5lXmXZen2QLhCPYJmrA3uFLtNGufqbyBiKl5UpmlS2BrkF8WGx1jI
+	 BT1LXbvjQDsNlkSPLp24qXAS7riaegRIrk/Gx2FljNh65wfNc+GToPaaZIK7+xw968
+	 wfpSwcKmmLO2oQwLJOw2j0n8/ut2xTeb7oV1u/a8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 366AAF801F5;
-	Thu,  7 Jan 2021 14:30:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41E57F801F5;
+	Thu,  7 Jan 2021 14:55:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 349CBF80258; Thu,  7 Jan 2021 14:30:17 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 77D9BF80258; Thu,  7 Jan 2021 14:55:39 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37051F800FD
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 14:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37051F800FD
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E34CAB71D;
- Thu,  7 Jan 2021 13:30:05 +0000 (UTC)
-Date: Thu, 07 Jan 2021 14:30:05 +0100
-Message-ID: <s5hk0so27tu.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>
-Subject: Re: [PATCH 14/41] ALSA: usb-audio: Create endpoint objects at parsing
- phase - Pioneer DJ DJM-250MK2 stopped working
-In-Reply-To: <9a48d68a-2875-4906-1d5f-4004fc53c8d6@frantovo.cz>
-References: <20201123085347.19667-1-tiwai@suse.de>
- <20201123085347.19667-15-tiwai@suse.de>
- <f7e8fe36-571e-7b78-3abe-777e365b53b0@frantovo.cz>
- <s5h8s9a9bvh.wl-tiwai@suse.de>
- <90c7f45a-91e6-f4e2-97a5-81df773bc22a@frantovo.cz>
- <s5him8b7mvf.wl-tiwai@suse.de> <s5hble35xlo.wl-tiwai@suse.de>
- <153e3b6e-0481-1d2e-fd00-4a2391a8035b@frantovo.cz>
- <s5ha6tm30ac.wl-tiwai@suse.de>
- <9a48d68a-2875-4906-1d5f-4004fc53c8d6@frantovo.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Matwey Kornilov <matwey.kornilov@gmail.com>,
- Dylan Robinson <dylan_robinson@motu.com>,
- Keith Milner <kamilner@superlative.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B85D2F800E9
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 14:55:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B85D2F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="tL/Xgu59"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB3C23142;
+ Thu,  7 Jan 2021 13:55:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610027729;
+ bh=LXnYFuO/m7yLkPaglBXr1YjV5t1JasbH7WmOzsST9Wk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=tL/Xgu59loQzasBhYzsuRuw5qW96vjuHKF6R7TV68gC7h09S8Pjnxe1wp/UjouzSQ
+ Wbz8oGvH+SsrVkZ6BXlbw625mlWaSMdhelst/hsQhEVn3pGNrSL/eAZ/d4CBw3anNA
+ SxFybFDAO+wcReIEx8xiIglNfdv5VqRLzTcOQqqODyTOKrW4ISNpmnQb1J/CJ8E0AE
+ q4Ruhu2Rwe1CJ+2F+42Drum5jt47YG1oAi4OFusucNgJP66s3gDGVxZ/ZH4lRpeYtL
+ jeZ/lrfRoW1mJ5O2q6GgTr7H4eE9rskovRPyKq5pOse1mNDg/2ETBqjS99sPI5xg+M
+ ipPpoTxeJpVWQ==
+Date: Thu, 7 Jan 2021 13:54:59 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: Re: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Message-ID: <20210107135459.GB4726@sirena.org.uk>
+References: <20210107085942.2891525-1-yuhsuan@chromium.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="kORqDWCi7qDJ0mEj"
+Content-Disposition: inline
+In-Reply-To: <20210107085942.2891525-1-yuhsuan@chromium.org>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Guenter Roeck <groeck@chromium.org>, Prashant Malani <pmalani@chromium.org>,
+ Pi-Hsun Shih <pihsun@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,21 +92,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 06 Jan 2021 20:01:16 +0100,
-František Kučera wrote:
-> 
-> Dne 06. 01. 21 v 10:03 Takashi Iwai napsal(a):
-> > OK, then could you try the v3 patch below?
-> 
-> I tried v3 patch. Playback works, but recording does not - i found errors like these in the log during recording:
 
-Hm.  There seem more problems than I've thought.  The Pioneer devices
-are special and don't look like the generic application of the
-implicit fb works.
+--kORqDWCi7qDJ0mEj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Now I worked on v4 patch set.  Will post in another thread.
+On Thu, Jan 07, 2021 at 04:59:41PM +0800, Yu-Hsuan Hsu wrote:
+> Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+> which is used for resetting the EC codec.
 
+I think the request was to sync over all the commands that are supported
+in the EC rather than just split this one addition into a separate
+patch.
 
-thanks,
+--kORqDWCi7qDJ0mEj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Takashi
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3ErIACgkQJNaLcl1U
+h9AuIQgAhsn5doavvuB2jUYoY2Vgy/KRdrB0f0S4BCUso6u8B5NBsKVudkZGYy2N
+UCNkXPtEnMnMR+hvvxw+b1Ntj80HbL26Ih/ZgtFAzWFkMg+DLf8QOIQIBaI9cK1r
+YC7IW1f3XZ+U81xyLncWZTXBJ0LI3mJMJ6TNnxWiYaa+ebFEsCS/wqUMtjUFOKjw
+en5ZSZpAa/KebHEmLU4q/cL8nF/xN9H/dNLuxGYJR30oQsdX8N69+fQRU24A717/
+KkGl2QXHlmOIS5+po6YTFC8auuuU6LEcsKVU1uEJ2w7asaklubUO71AaohFt4uT7
+UDghAbNdmHDXvrV7Dd6bCBqWLr4mtA==
+=zhj3
+-----END PGP SIGNATURE-----
+
+--kORqDWCi7qDJ0mEj--
