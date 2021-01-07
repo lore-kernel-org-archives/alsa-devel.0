@@ -2,55 +2,96 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C1FFC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 06:10:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B84C8C433E6
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 09:01:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C5A022E00
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 06:10:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C5A022E00
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 22A902313B
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 09:01:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22A902313B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93B171665;
-	Thu,  7 Jan 2021 07:09:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93B171665
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F37B1665;
+	Thu,  7 Jan 2021 10:00:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F37B1665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609999811;
-	bh=EruplcA1WdKocWEnpWIZex79mz29x6dctFxv+vyR9LA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SQlHXLxMc+UC6bYLaP1WdXXGYC0r+IU3+q/4/GcwZfrcAOsJGX2I3rrVSrDVIJPAr
-	 jNDUjMuwW4C6ChyAr9K4Jcksp+m52gxx/IevMA/WcNHH5pbqvvSnflslFahakwQijf
-	 NXVZC9uCB9w4PXz8QMHUDaoAAvCxxrNOy2UOsML4=
+	s=default; t=1610010064;
+	bh=vSS48Gc1qH6W3Dt9qEwjThJMepPqbKkGMCTFOIfcaec=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lb/WFYdFE7yrVyfJkcIwQJnE7H7QZTC2sZakvSPMEtU0fwOi2M5/N4rwdpItthS3E
+	 3t6bU/CNqUjHIjmR5zpQsfFA5QFLMQKuIMvNy2DRM4rT7h1uyBXuQnErfoxA5e2qFM
+	 Nh0HxyFuYV12EArM6caQ87uqxeC3k7GoEJRaqIh4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32571F801F5;
-	Thu,  7 Jan 2021 07:09:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBF61F801F5;
+	Thu,  7 Jan 2021 10:00:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87DD4F80258; Thu,  7 Jan 2021 07:09:19 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 75207F80096
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 07:09:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75207F80096
+ id 75DC2F80258; Thu,  7 Jan 2021 10:00:05 +0100 (CET)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com
+ [IPv6:2607:f8b0:4864:20::633])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2AC2F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 09:59:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2AC2F800FD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="jGRRdH14"
+Received: by mail-pl1-x633.google.com with SMTP id b8so3174115plx.0
+ for <alsa-devel@alsa-project.org>; Thu, 07 Jan 2021 00:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=D3NaOaWtyXj/T2ptk32bEzgFjNq4o/HFyZv3dYGEEcI=;
+ b=jGRRdH14K3aDVKXx595sg3CNZEVnLXEVL1uW7eWgv1MRfv8HAV1dEwfaGK6nTYzmZ7
+ hD+JvAI//dEdPwfLoZ7SYh/MX5PAACUktO8REpO4hicl77QqW4BfOWvNQX8rQxvI6A2x
+ /3+RKZhj3uWUAo1Qb5C35FS77lRTIRH9O52IE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=D3NaOaWtyXj/T2ptk32bEzgFjNq4o/HFyZv3dYGEEcI=;
+ b=VqilmnON0Ethp84UFZP6mbnFB6uQotplZmO+3wZQFBiF0COGOUNDEXjIGUhJm1xcY0
+ zUYE0vgzSxuowIYwHyw0I8k8FqYGQN+8TsYl/Vb46pDiv35rKgVnFmxTmoTIf6u9KA8R
+ n7QRhEMxM+9cqOCLKrJe6fhgF8IfdRCnb6kg6za7ngBzxqQ5DHOUZpAMZ8u0DZAOQEZu
+ TeuKgP4lrHi0T6AMnEFywnyDrHpWh1YJowBZJeqbcy+bmgc/21hsGHzSC8Oi9vdjit5o
+ /bL9YbBwlXgHgPRVicqA9qH3RF+drskX/5hf7BQx/ooLDwyDWBVB9pgkcKU6qJ+lcFVy
+ YBbg==
+X-Gm-Message-State: AOAM531IszTY6zXuvLxfULp1i0pDjOawYaO5yuTM47BjPgVgX/WBkEij
+ 2Cn95L6MXZpKylXjAPSsFBZiMw==
+X-Google-Smtp-Source: ABdhPJyA0M2EA1aG9AE/yZzNcyq5SDQXjyuMgt6bdQxEssG6sOZsHJQebAGRuxERBk3E6lTOdfHkaA==
+X-Received: by 2002:a17:902:7d94:b029:da:f673:18b9 with SMTP id
+ a20-20020a1709027d94b02900daf67318b9mr8264217plm.37.1610009992592; 
+ Thu, 07 Jan 2021 00:59:52 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+ by smtp.gmail.com with ESMTPSA id w19sm5335474pgf.23.2021.01.07.00.59.49
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 07 Jan 2021 00:59:51 -0800 (PST)
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Date: Thu,  7 Jan 2021 16:59:41 +0800
+Message-Id: <20210107085942.2891525-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1609999751912015915-webhooks-bot@alsa-project.org>
-References: <1609999751912015915-webhooks-bot@alsa-project.org>
-Subject: build fails using -flto=auto
-Message-Id: <20210107060919.87DD4F80258@alsa1.perex.cz>
-Date: Thu,  7 Jan 2021 07:09:19 +0100 (CET)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Guenter Roeck <groeck@chromium.org>,
+ Mark Brown <broonie@kernel.org>, Prashant Malani <pmalani@chromium.org>,
+ Pi-Hsun Shih <pihsun@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+ Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,18 +107,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #110 was edited from shoober420:
+Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+which is used for resetting the EC codec.
 
-When compiling alsa-lib with -flto=auto, the build will fail. Here are the logs.
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-64bit:
-[alsa-lib-git-1.2.4-1-x86_64-build.log](https://github.com/alsa-project/alsa-lib/files/5779850/alsa-lib-git-1.2.4-1-x86_64-build.log)
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 86376779ab31..95889ada83a3 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
+-- 
+2.29.2.729.g45daf8777d-goog
 
-32bit:
-[lib32-alsa-lib-minimal-git-1.2.4-1-x86_64-build.log](https://github.com/alsa-project/alsa-lib/files/5779853/lib32-alsa-lib-minimal-git-1.2.4-1-x86_64-build.log)
-
-64bit --with-versioned:
-[alsa-lib-git-1.2.4-1-x86_64-build.log](https://github.com/alsa-project/alsa-lib/files/5779857/alsa-lib-git-1.2.4-1-x86_64-build.log)
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/110
-Repository URL: https://github.com/alsa-project/alsa-lib
