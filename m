@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E7D5C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 06:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C1FFC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 06:10:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 114CA22E00
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 06:07:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 114CA22E00
+	by mail.kernel.org (Postfix) with ESMTPS id 2C5A022E00
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 06:10:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C5A022E00
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91FB01664;
-	Thu,  7 Jan 2021 07:06:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91FB01664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93B171665;
+	Thu,  7 Jan 2021 07:09:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93B171665
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1609999646;
-	bh=9SOkawqXpjfGkLQRcAE0Rd5w+KnnzEsvDygKJGtnHkQ=;
+	s=default; t=1609999811;
+	bh=EruplcA1WdKocWEnpWIZex79mz29x6dctFxv+vyR9LA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QYBEumA7u9mkoh7GXra3d0abkoDg6SYxo4zBD+VZd2tIQU4ROCUHuwUpvhfoTtsgr
-	 UKr7Ax1RiCozb4ckm0s1DNkCxXURF3QsqcIFdBZr0xqqwp0yRyKQ4tPNGf7KfThlyf
-	 3aeFCBcRsQITLN2LkexCnM403Q4Yt8tcoNDdobYw=
+	b=SQlHXLxMc+UC6bYLaP1WdXXGYC0r+IU3+q/4/GcwZfrcAOsJGX2I3rrVSrDVIJPAr
+	 jNDUjMuwW4C6ChyAr9K4Jcksp+m52gxx/IevMA/WcNHH5pbqvvSnflslFahakwQijf
+	 NXVZC9uCB9w4PXz8QMHUDaoAAvCxxrNOy2UOsML4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E164CF801F5;
-	Thu,  7 Jan 2021 07:06:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32571F801F5;
+	Thu,  7 Jan 2021 07:09:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A64D8F80258; Thu,  7 Jan 2021 07:06:33 +0100 (CET)
+ id 87DD4F80258; Thu,  7 Jan 2021 07:09:19 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4691EF80096
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 07:06:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4691EF80096
+ by alsa1.perex.cz (Postfix) with ESMTP id 75207F80096
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 07:09:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75207F80096
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1609999588092701912-webhooks-bot@alsa-project.org>
-References: <1609999588092701912-webhooks-bot@alsa-project.org>
+In-Reply-To: <1609999751912015915-webhooks-bot@alsa-project.org>
+References: <1609999751912015915-webhooks-bot@alsa-project.org>
 Subject: build fails using -flto=auto
-Message-Id: <20210107060633.A64D8F80258@alsa1.perex.cz>
-Date: Thu,  7 Jan 2021 07:06:33 +0100 (CET)
+Message-Id: <20210107060919.87DD4F80258@alsa1.perex.cz>
+Date: Thu,  7 Jan 2021 07:09:19 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #110 was opened from shoober420:
+alsa-project/alsa-lib issue #110 was edited from shoober420:
 
 When compiling alsa-lib with -flto=auto, the build will fail. Here are the logs.
 
@@ -75,6 +75,9 @@ When compiling alsa-lib with -flto=auto, the build will fail. Here are the logs.
 
 32bit:
 [lib32-alsa-lib-minimal-git-1.2.4-1-x86_64-build.log](https://github.com/alsa-project/alsa-lib/files/5779853/lib32-alsa-lib-minimal-git-1.2.4-1-x86_64-build.log)
+
+64bit --with-versioned:
+[alsa-lib-git-1.2.4-1-x86_64-build.log](https://github.com/alsa-project/alsa-lib/files/5779857/alsa-lib-git-1.2.4-1-x86_64-build.log)
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/110
 Repository URL: https://github.com/alsa-project/alsa-lib
