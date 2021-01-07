@@ -2,82 +2,90 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69042C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 11:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ACF5C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 11:54:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB4FB2333F
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 11:50:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB4FB2333F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 614EC2333D
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 11:54:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 614EC2333D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F334167C;
-	Thu,  7 Jan 2021 12:49:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F334167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1A8C167C;
+	Thu,  7 Jan 2021 12:53:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1A8C167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610020210;
-	bh=cNnWtonx4aB7cXFOitm9RswpNoIMzVzXIHEibUjXtO8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=q4R3KKYPbQesQX+x0DABO2WjTW3icCU2L7bd1UezHblhWWN3oQI48d2b3ik9OvoUn
-	 qbCqqNmkrg1qt7FhCITelfgvh7altyvVl0WIV+xEuoGW/4TOzLFnWTKihkySOJezx6
-	 KC7dGvPbkkdA5bOjTgklen0apwtcfirsOGmABUF4=
+	s=default; t=1610020469;
+	bh=jFeuhF8MpAbzJNZ/zmHLi37IMyrTg0uH/8MmIZQ+68I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tt77cPQyyMCXo/XKCKnpMu9Ynmbst1nb0iuYLQX9zPmLBQNVZtphxmcLwx6rdUpY0
+	 cV/lnXz3BU8hMYMD6K2Y39Fx4hxNgHuoBUKT5XezusbyEwkJuDnxaXs7EmIvsMJ7+A
+	 a4sUZY7Y1JhUhPY38VI4DRaBDL8qq2bT2Nhx5lts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBAADF801F5;
-	Thu,  7 Jan 2021 12:49:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 672F9F800FD;
+	Thu,  7 Jan 2021 12:53:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7A15F80258; Thu,  7 Jan 2021 12:49:12 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 388E8F80258; Thu,  7 Jan 2021 12:53:37 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45453F800FD;
- Thu,  7 Jan 2021 12:49:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45453F800FD
-IronPort-SDR: fZihJCkEhnszCtJC6XQIYDXJpGtdtfqIc2LBzwtpayEsoaCswCUqBAQVWHfknyFTgiSKfhXnFx
- 8uK/VW9BiiIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="165108474"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; d="scan'208";a="165108474"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jan 2021 03:48:57 -0800
-IronPort-SDR: Vp/wh3zZhv7tbV1si8fHMXjBU0nZMi1HsmC9tCjFgdrmDWGL7Ib0sQwf2xq8S2yEg2qqO2+yUM
- yO8B8xcUuL1Q==
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; d="scan'208";a="379688763"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jan 2021 03:48:53 -0800
-Date: Thu, 7 Jan 2021 13:45:55 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: SOF: Intel: avoid reverse module dependency
-In-Reply-To: <CAK8P3a1rp3d_H4uFN1hy_nASYTCZouH3x8ZhQ1JVvMYr+LsK_g@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2101071303040.864696@eliteleevi.tm.intel.com>
-References: <CAK8P3a0PXXHXLK36SB_4eia6z0u3nbBPanATwZEhposKOScqcw@mail.gmail.com>
- <20210105190808.613050-1-arnd@kernel.org>
- <CAK8P3a1rp3d_H4uFN1hy_nASYTCZouH3x8ZhQ1JVvMYr+LsK_g@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53046F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 12:53:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53046F800FD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="b0BY6Ngr"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1610020410;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=vguo8/yrD+/stCuZq9Tj26YARU6zQ1ImGlRCAkDRnVo=;
+ b=b0BY6NgrlYncXuGUqWUEeLHohyHmY6mWqmC1QZPqb7lV8vbajeT6bv34MsONhAVThumFIA
+ HU1++6l0xycmpPBzOWQyuMj7tNxkMbQGKUxLrNUYiufnruXlDMdkRj32oA4E8vmGiZlLgM
+ pA2BeghOUW6v+sU/7ALKsjftrbj4XP4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167--xoVhLImODedg_GGUK49QQ-1; Thu, 07 Jan 2021 06:53:28 -0500
+X-MC-Unique: -xoVhLImODedg_GGUK49QQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
+ [10.5.11.16])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14657180A095;
+ Thu,  7 Jan 2021 11:53:27 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-236.ams2.redhat.com [10.36.112.236])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id EB1435C67A;
+ Thu,  7 Jan 2021 11:53:24 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: cht_bsw_nau8824: Move snd_soc_dai_set_tdm_slot
+ call to cht_codec_fixup
+Date: Thu,  7 Jan 2021 12:53:24 +0100
+Message-Id: <20210107115324.11602-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Takashi Iwai <tiwai@suse.de>,
- "linux-kernel @ vger . kernel . org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, YueHaibing <yuehaibing@huawei.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,21 +101,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Arnd,
+Move the snd_soc_dai_set_tdm_slot() call from cht_codec_init() to
+cht_codec_fixup(). There are 2 reasons for doing this:
 
-On Wed, 6 Jan 2021, Arnd Bergmann wrote:
+1. This aligns the cht_bsw_nau8824 with all the other BYT/CHT machine
+drivers which also do this from their codec_fixup function.
 
-> On Tue, Jan 5, 2021 at 8:07 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > Change it to use the normal probe order of starting with a specific
-> > device in a driver, turning the sof-acpi-dev.c driver into a library.
-> 
-> There were a couple of build failures introduced by this version. I have
-> one that does build now, and can post that if others think this is the
-> direction they want to go.
+2. When using the SOF driver, things like the TDM info is set from the
+topology file. Moving the call to the codec_fixup function, which gets
+skipped when using the SOF driver avoids the call interfering with the
+settings when using the SOF driver.
 
-thanks for the follow-up. We have many SOF maintainers still out on 
-holidays this week, so let's give some time for people to digest. This is 
-certainly a big change. The version you posted is already sufficient to 
-describe the idea for sure.
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/intel/boards/cht_bsw_nau8824.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Br, Kai
+diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
+index fd5e25ca05f7..da5a5cbc8759 100644
+--- a/sound/soc/intel/boards/cht_bsw_nau8824.c
++++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
+@@ -100,13 +100,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_component *component = codec_dai->component;
+ 	int ret, jack_type;
+ 
+-	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+-	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0x1, 4, 24);
+-	if (ret < 0) {
+-		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
+-		return ret;
+-	}
+-
+ 	/* NAU88L24 supports 4 butons headset detection
+ 	 * KEY_PLAYPAUSE
+ 	 * KEY_VOICECOMMAND
+@@ -141,6 +134,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_mask *fmt =
+ 		hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++	int ret;
+ 
+ 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
+ 	rate->min = rate->max = 48000;
+@@ -150,6 +144,13 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	snd_mask_none(fmt);
+ 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
+ 
++	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
++	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_codec(rtd, 0), 0xf, 0x1, 4, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.28.0
+
