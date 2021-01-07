@@ -2,81 +2,68 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 027FCC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED08FC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 17:11:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15A6C233FD
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 16:53:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15A6C233FD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	by mail.kernel.org (Postfix) with ESMTPS id C54B72311E
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 17:11:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C54B72311E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F8481678;
-	Thu,  7 Jan 2021 17:52:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F8481678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 239411669;
+	Thu,  7 Jan 2021 18:10:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 239411669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610038424;
-	bh=mLOwDjLO1lqEx9Ucq3B3agP9XbEDIePWBOGu2yRJU08=;
+	s=default; t=1610039460;
+	bh=7R3BgriIySJdGpeljG6bzvtnkMT3NbWwTliY/udQ8fM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=LRLekNBj1m/Nb45yqXOcuFlv0Nv5PC9SIeQWyULhLY9LXe2/fGuk601LrlYb+bWsb
-	 NZ6bwGL6Pjf9M0Uqc9A1PMOhaMxzfeX4dldy63kYqFmj3wkU4ijJmzqtyxPYJ+ZRtl
-	 /lqeEj7rsKDdG4oW10nKLrAlGO6IUIFv1RNZOVRw=
+	b=lx6gfPiVjl1HOXKuKLkLH5RB2pYaYPpMw6rhOAP0ns87yNhAKJqpcRb9ZxJS29uTk
+	 +a/dTKdEOBk3FjL7QdW6lPoKipPAhSoahxfjg5j/Osyh1J3Dw4EuVx1w2NZM4Wl4A7
+	 9PcQ7kJ0GWy1lq7RfyKeG1vguNhe0MyqFdno2jXs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA634F801F5;
-	Thu,  7 Jan 2021 17:52:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9B21F800FD;
+	Thu,  7 Jan 2021 18:10:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0499FF80258; Thu,  7 Jan 2021 17:52:51 +0100 (CET)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [85.215.255.52])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B07F5F80258; Thu,  7 Jan 2021 18:10:01 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52D44F800FD
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 17:52:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52D44F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45396F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 18:09:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45396F800FD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="mnu/KX/f"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610038364;
- s=strato-dkim-0002; d=gerhold.net;
- h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
- bh=RC6LXZjHBesuyu3f6IHE2ALIoaQ4uWLoUTmD0oDXzBw=;
- b=mnu/KX/fOGGbiGC/5UVP0oskcjDANKD0pcx4vNGUbdv8KPeJb8qcPM7PPImznzqP/c
- UbuzJPd5ajwzFI7whAiwbQNYeMM5TB6KO8CdFyBrB/aHAh04Eu+q7TyuGkjAxVuMkx7D
- lyWV4u0lCV6VOIgOFBDJmUuqquabj/m+mgQiD5sOyC4jWBDXBozpJDRKw2e/HVVXjjTf
- /zDwUeGmEKDAFIJdK8lFlD/hdmFRo8d0VbV7Eq/v8TviUmc/+wUbPIXtkKyE/EhF8ZBL
- DoTDlYQak/YB/TFqVqryqWB/bruRdD+Du1/XStx2BtExcJgHtC0keEh1MPPNcTxcuB1t
- UdPw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB6m6NPwkA"
-X-RZG-CLASS-ID: mo00
-Received: from droid.. by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
- with ESMTPSA id R0a218x07Gqg6Dg
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Thu, 7 Jan 2021 17:52:42 +0100 (CET)
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2] ASoC: hdmi-codec: Fix return value in hdmi_codec_set_jack()
-Date: Thu,  7 Jan 2021 17:51:31 +0100
-Message-Id: <20210107165131.2535-1-stephan@gerhold.net>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Stephan Gerhold <stephan@gerhold.net>,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Fabio Estevam <festevam@gmail.com>, Cheng-Yi Chiang <cychiang@chromium.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="eB8RkEEk"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30AB52311E;
+ Thu,  7 Jan 2021 17:09:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610039391;
+ bh=7R3BgriIySJdGpeljG6bzvtnkMT3NbWwTliY/udQ8fM=;
+ h=From:To:Cc:Subject:Date:From;
+ b=eB8RkEEkzWYKpRHDY5fuj56YkbL9WN3WD+CFQB6IXalEolYkry3P4Nx9L7LOmO5HI
+ zhzgEw2mUiYO453gok1uKJHPE9QzFVfyIIjFFHd0Xtml4rMBzwcHjoU/AzrLausWWC
+ +KYrCwZ6LaWWUeQkiqXQ6d5CPoN5gkoI7R8kD1cwKKaVS/E9OB3NIp8EvmNEcec6Xm
+ NX5fN8vpLhreTGSEwhRqOdUKCCCX9IWiy4GD14O+utHCe5UUVyi5C6NjQeqlTBiM8J
+ E4mi56oaMmaSxJhUzkrbyrenap1wsmThEOCOw2Oh5KP7AuTjcp3CBhm5q2ryQlu8oT
+ 1BGSoe8n058Kg==
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: [GIT PULL] ASoC fixes for v5.11-rc2
+Date: Thu, 07 Jan 2021 17:09:09 +0000
+Message-Id: <20210107170951.30AB52311E@mail.kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,60 +79,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sound is broken on the DragonBoard 410c (apq8016_sbc) since 5.10:
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-  hdmi-audio-codec hdmi-audio-codec.1.auto: ASoC: error at snd_soc_component_set_jack on hdmi-audio-codec.1.auto: -95
-  qcom-apq8016-sbc 7702000.sound: Failed to set jack: -95
-  ADV7533: ASoC: error at snd_soc_link_init on ADV7533: -95
-  hdmi-audio-codec hdmi-audio-codec.1.auto: ASoC: error at snd_soc_component_set_jack on hdmi-audio-codec.1.auto: -95
-  qcom-apq8016-sbc: probe of 7702000.sound failed with error -95
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-This happens because apq8016_sbc calls snd_soc_component_set_jack() on
-all codec DAIs and attempts to ignore failures with return code -ENOTSUPP.
--ENOTSUPP is also excluded from error logging in soc_component_ret().
+are available in the Git repository at:
 
-However, hdmi_codec_set_jack() returns -E*OP*NOTSUPP if jack detection
-is not supported, which is not handled in apq8016_sbc and soc_component_ret().
-Make it return -ENOTSUPP instead to fix sound and silence the errors.
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.11-rc2
 
-Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Fixes: 55c5cc63ab32 ("ASoC: hdmi-codec: Use set_jack ops to set jack")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
-Changes in v2:
-  - Replace -EOPNOTSUPP check with -ENOTSUPP in imx-hdmi.c
----
- sound/soc/codecs/hdmi-codec.c | 2 +-
- sound/soc/fsl/imx-hdmi.c      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+for you to fetch changes up to 1f092d1c8819679d78a7d9c62a46d4939d217a9d:
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index d5fcc4db8284..0f3ac22f2cf8 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -717,7 +717,7 @@ static int hdmi_codec_set_jack(struct snd_soc_component *component,
- 			       void *data)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
--	int ret = -EOPNOTSUPP;
-+	int ret = -ENOTSUPP;
- 
- 	if (hcp->hcd.ops->hook_plugged_cb) {
- 		hcp->jack = jack;
-diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-index ede4a9ad1054..dbbb7618351c 100644
---- a/sound/soc/fsl/imx-hdmi.c
-+++ b/sound/soc/fsl/imx-hdmi.c
-@@ -90,7 +90,7 @@ static int imx_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	ret = snd_soc_component_set_jack(component, &data->hdmi_jack, NULL);
--	if (ret && ret != -EOPNOTSUPP) {
-+	if (ret && ret != -ENOTSUPP) {
- 		dev_err(card->dev, "Can't set HDMI Jack %d\n", ret);
- 		return ret;
- 	}
--- 
-2.30.0
+  ASoC: AMD Renoir - add DMI entry for Lenovo ThinkPad X395 (2020-12-28 14:22:44 +0000)
 
+----------------------------------------------------------------
+ASoC: Fixes for v5.11
+
+A collection of mostly driver specific fixes, plus a maintainership
+update for TI and a fix for DAPM driver removal paths.
+
+----------------------------------------------------------------
+Bard Liao (1):
+      ASoC: max98373: don't access volatile registers in bias level off
+
+Cezary Rojewski (1):
+      ASoC: Intel: haswell: Add missing pm_ops
+
+Colin Ian King (3):
+      ASoC: codecs: fix spelling mistake in Kconfig "comunicate" -> "communicate"
+      ASoC: SOF: Fix spelling mistake in Kconfig "ond" -> "and"
+      ASoC: atmel: fix spelling mistake in Kconfig "programable" -> "programmable"
+
+Dan Carpenter (1):
+      ASoC: Intel: fix error code cnl_set_dsp_D0()
+
+Jaroslav Kysela (2):
+      ASoC: AMD Renoir - add DMI entry for Lenovo ThinkPad E14 Gen 2
+      ASoC: AMD Renoir - add DMI entry for Lenovo ThinkPad X395
+
+Jerome Brunet (2):
+      ASoC: meson: axg-tdmin: fix axg skew offset
+      ASoC: meson: axg-tdm-interface: fix loopback
+
+Kuninori Morimoto (1):
+      ASoC: rsnd: don't call clk_disable_unprepare() if can't use
+
+Mark Brown (3):
+      Merge series "ASoC: ti: Maintainer mail address change" from Peter Ujfalusi <peter.ujfalusi@ti.com>:
+      Merge series "Platform driver update to support playback recover after resume" from Srinivasa Rao Mandadapu <srivasam@codeaurora.org>:
+      Merge tag 'v5.11-rc1' into asoc-5.11
+
+Peter Ujfalusi (2):
+      MAINTAINERS: Update email address for TI ASoC and twl4030 codec drivers
+      ASoC: dt-bindings: ti, j721e: Update maintainer and author information
+
+Ravulapati Vishnu vardhan rao (1):
+      ASoC: amd: Replacing MSI with Legacy IRQ model
+
+Shuming Fan (1):
+      ASoC: rt711: mutex between calibration and power state changes
+
+Srinivasa Rao Mandadapu (2):
+      ASoC: qcom: Fix incorrect volatile registers
+      ASoC: qcom: Add support for playback recover after resume
+
+Thomas Hebb (1):
+      ASoC: dapm: remove widget from dirty list on free
+
+shengjiu wang (1):
+      ASoC: imx-hdmi: Fix warning of the uninitialized variable ret
+
+ .../bindings/sound/ti,j721e-cpb-audio.yaml         |  4 +-
+ .../bindings/sound/ti,j721e-cpb-ivi-audio.yaml     |  4 +-
+ MAINTAINERS                                        |  6 +--
+ sound/soc/amd/raven/pci-acp3x.c                    | 16 ++-----
+ sound/soc/amd/renoir/rn-pci-acp3x.c                | 14 ++++++
+ sound/soc/atmel/Kconfig                            |  4 +-
+ sound/soc/codecs/Kconfig                           |  2 +-
+ sound/soc/codecs/max98373-i2c.c                    | 20 +++++++++
+ sound/soc/codecs/max98373-sdw.c                    | 20 +++++++++
+ sound/soc/codecs/max98373.c                        | 34 +++++++++++++--
+ sound/soc/codecs/max98373.h                        |  8 ++++
+ sound/soc/codecs/rt711.c                           |  6 +++
+ sound/soc/fsl/imx-hdmi.c                           |  1 +
+ sound/soc/intel/boards/haswell.c                   |  1 +
+ sound/soc/intel/skylake/cnl-sst.c                  |  1 +
+ sound/soc/meson/axg-tdm-interface.c                | 14 +++++-
+ sound/soc/meson/axg-tdmin.c                        | 13 +-----
+ sound/soc/qcom/lpass-cpu.c                         | 20 +--------
+ sound/soc/qcom/lpass-platform.c                    | 50 +++++++++++++++-------
+ sound/soc/sh/rcar/adg.c                            | 18 ++++----
+ sound/soc/soc-dapm.c                               |  1 +
+ sound/soc/sof/Kconfig                              |  2 +-
+ 22 files changed, 181 insertions(+), 78 deletions(-)
