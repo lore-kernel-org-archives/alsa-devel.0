@@ -2,64 +2,68 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EBA1EC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 17:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2346DC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 18:06:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37B54223E8
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 17:59:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37B54223E8
+	by mail.kernel.org (Postfix) with ESMTPS id 910B323370
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 18:06:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 910B323370
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8425B84C;
-	Thu,  7 Jan 2021 18:58:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8425B84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 090EA1697;
+	Thu,  7 Jan 2021 19:06:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 090EA1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610042384;
-	bh=p5lwJJSrgqZb56SOllxdc1VCLfe1FiqA2yZVumIONOg=;
+	s=default; t=1610042814;
+	bh=uYaz1MjHM02QCV3wvDS/gnkrK7XL0x6QEZxQY5zarb0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ILOwilr3Zkfd4PDh82hSgG37v/R4/tSHSKTZMPWfkapoiwIMr4q453iZ5bE82vuLW
-	 vm0fpq3iv8ln41UKhfH8tGLUGB536Pkw8vqsnbIuFugAiThEXnAmexfrjqb2ubrofv
-	 Qva7PSF0ciVjuAAwvkPgOmJI8dMVIA7PVaeUK3n0=
+	b=MR/cxlHkFC6k/ufpe5Q9/dvI4Y4r6NUiQbOG33gHLZwnZcxcdFvSkFbNNgwZBOX2t
+	 /X+ZgcRBoMSOHLJPCmMKqn0Cg4mdt4CnLx/hX4oQjB1+xKbQQXqj5q9biiukuNoa85
+	 LRIbpILSeexjNIr0HDU6D/mE3h7oxNt+bewddTKM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE406F800FD;
-	Thu,  7 Jan 2021 18:58:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82E6CF80096;
+	Thu,  7 Jan 2021 19:06:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF505F80258; Thu,  7 Jan 2021 18:58:46 +0100 (CET)
+ id DC86DF80258; Thu,  7 Jan 2021 19:06:01 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DEC21F800FD
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 18:58:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEC21F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BE60F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 19:05:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BE60F800FD
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C3849AD26;
- Thu,  7 Jan 2021 17:58:40 +0000 (UTC)
-Date: Thu, 07 Jan 2021 18:58:40 +0100
-Message-ID: <s5ho8i0zl0v.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2C5BDAAF1;
+ Thu,  7 Jan 2021 18:05:54 +0000 (UTC)
+Date: Thu, 07 Jan 2021 19:05:53 +0100
+Message-ID: <s5hmtxkzkou.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.11-rc2
-In-Reply-To: <20210107170951.30AB52311E@mail.kernel.org>
-References: <20210107170951.30AB52311E@mail.kernel.org>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH resend] sound: Convert strlcpy to strscpy when return
+ value is unused
+In-Reply-To: <22b393d1790bb268769d0bab7bacf0866dcb0c14.camel@perches.com>
+References: <22b393d1790bb268769d0bab7bacf0866dcb0c14.camel@perches.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>,
+ kernel-janitors <kernel-janitors@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Julia Lawall <Julia.Lawall@inria.fr>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,28 +79,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 07 Jan 2021 18:09:09 +0100,
-Mark Brown wrote:
+On Mon, 04 Jan 2021 18:17:34 +0100,
+Joe Perches wrote:
 > 
-> The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+> strlcpy is deprecated.  see: Documentation/process/deprecated.rst
 > 
->   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+> Change the calls that do not use the strlcpy return value to the
+> preferred strscpy.
 > 
-> are available in the Git repository at:
+> Done with cocci script:
 > 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.11-rc2
+> @@
+> expression e1, e2, e3;
+> @@
 > 
-> for you to fetch changes up to 1f092d1c8819679d78a7d9c62a46d4939d217a9d:
+> -	strlcpy(
+> +	strscpy(
+> 	e1, e2, e3);
 > 
->   ASoC: AMD Renoir - add DMI entry for Lenovo ThinkPad X395 (2020-12-28 14:22:44 +0000)
+> This cocci script leaves the instances where the return value is
+> used unchanged.
 > 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.11
+> After this patch, sound/ has 3 uses of strlcpy() that need to be
+> manually inspected for conversion and changed one day.
 > 
-> A collection of mostly driver specific fixes, plus a maintainership
-> update for TI and a fix for DAPM driver removal paths.
+> $ git grep -w strlcpy sound/
+> sound/usb/card.c:               len = strlcpy(card->longname, s, sizeof(card->longname));
+> sound/usb/mixer.c:      return strlcpy(buf, p->name, buflen);
+> sound/usb/mixer.c:                      return strlcpy(buf, p->names[index], buflen);
+> 
+> Miscellenea:
+> 
+> o Remove trailing whitespace in conversion of sound/core/hwdep.c
+> 
+> Link: https://lore.kernel.org/lkml/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-Pulled now.  Thanks!
+Applied now.  Thanks.
 
 
 Takashi
