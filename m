@@ -2,90 +2,75 @@ Return-Path: <SRS0=NlLR=GK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CBADC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 12:09:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C832C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 13:31:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A12123355
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 12:09:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A12123355
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id EAEEA22BE8
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 13:31:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAEEA22BE8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0460F1672;
-	Thu,  7 Jan 2021 13:08:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0460F1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EA291672;
+	Thu,  7 Jan 2021 14:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EA291672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610021342;
-	bh=nLbMsXzHeMvaB60dtUxYrznBcQpy1jT3ZXpYyfnyxds=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HdpHrnOjD9GuTrGlVblW+c80ANRFFMiEsBaW2X78LEv8yWd+OL3wLqi5DTmSskn4U
-	 HPL3QB8XFPnA4xgBvWVUEpaNOM1bC4O8gYAwFT5TfBlo5JvI9eQn7YUAh1//Dru3Wa
-	 XqHb7rmNRLkwK25P1Km6ZsmJl3os8iXJ+Gbzita4=
+	s=default; t=1610026272;
+	bh=hPy0p8TfVlXEZ8Sz7LbB2Z+zCZpbry7uWRf62kqGFqw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TfxcGjSjeHCd8uW1gYWYiHWITY367UM0T4zDbSHF0cWevOCeqq0N8+Xo8m8hgdD8m
+	 XCOCWUwOFzgsw91ja4eFHmTe8DgMBEGQp73jp74RWY5MDd4NtvKAZt5JaOSZtq6h1O
+	 FJadd3cxqUYXiESp61CZ+5O6Dmhl6U6tPx9DL9AA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CFE2F801F5;
-	Thu,  7 Jan 2021 13:08:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 366AAF801F5;
+	Thu,  7 Jan 2021 14:30:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F345F80258; Thu,  7 Jan 2021 13:08:10 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F7E4F800FD
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 13:08:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F7E4F800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="VtZ3VImg"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610021285;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=dclVRl4AvLjpUYzjvBr6r3I2uV6SBIZbF0M5sY+YGso=;
- b=VtZ3VImglhFOVPBPKQxEzZhcABE+PYOEsrCpw9XvO/CePXj2QzPy1g3opObvfL4j+6XmJO
- QQkLSl7N0Xy66NvlyYQGwjSMGXPxUsJ9VzknKwtBWvZ80WWU2GExC8PR0pd1wK1+2nNIGY
- fWW8kkt1rf9/oRJpUrY7zMEUcGH0V1k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-IfyUBBIvPR2UEogtkUuihg-1; Thu, 07 Jan 2021 07:08:01 -0500
-X-MC-Unique: IfyUBBIvPR2UEogtkUuihg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
- [10.5.11.22])
+ id 349CBF80258; Thu,  7 Jan 2021 14:30:17 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75C5E107ACE3;
- Thu,  7 Jan 2021 12:07:59 +0000 (UTC)
-Received: from x1.localdomain (ovpn-112-236.ams2.redhat.com [10.36.112.236])
- by smtp.corp.redhat.com (Postfix) with ESMTP id EBC8C1001281;
- Thu,  7 Jan 2021 12:07:57 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: Intel: bytcht_es8316: Remove comment about SSP0 being
- untested
-Date: Thu,  7 Jan 2021 13:07:57 +0100
-Message-Id: <20210107120757.12051-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37051F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 14:30:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37051F800FD
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id E34CAB71D;
+ Thu,  7 Jan 2021 13:30:05 +0000 (UTC)
+Date: Thu, 07 Jan 2021 14:30:05 +0100
+Message-ID: <s5hk0so27tu.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>
+Subject: Re: [PATCH 14/41] ALSA: usb-audio: Create endpoint objects at parsing
+ phase - Pioneer DJ DJM-250MK2 stopped working
+In-Reply-To: <9a48d68a-2875-4906-1d5f-4004fc53c8d6@frantovo.cz>
+References: <20201123085347.19667-1-tiwai@suse.de>
+ <20201123085347.19667-15-tiwai@suse.de>
+ <f7e8fe36-571e-7b78-3abe-777e365b53b0@frantovo.cz>
+ <s5h8s9a9bvh.wl-tiwai@suse.de>
+ <90c7f45a-91e6-f4e2-97a5-81df773bc22a@frantovo.cz>
+ <s5him8b7mvf.wl-tiwai@suse.de> <s5hble35xlo.wl-tiwai@suse.de>
+ <153e3b6e-0481-1d2e-fd00-4a2391a8035b@frantovo.cz>
+ <s5ha6tm30ac.wl-tiwai@suse.de>
+ <9a48d68a-2875-4906-1d5f-4004fc53c8d6@frantovo.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Matwey Kornilov <matwey.kornilov@gmail.com>,
+ Dylan Robinson <dylan_robinson@motu.com>,
+ Keith Milner <kamilner@superlative.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,29 +86,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove a stale comment about SSP0 being untested, the
-bytcht_es8316 has supported SSP0 for a while now and this has
-been successfully tested on a GP electrinic T701 tablet.
+On Wed, 06 Jan 2021 20:01:16 +0100,
+František Kučera wrote:
+> 
+> Dne 06. 01. 21 v 10:03 Takashi Iwai napsal(a):
+> > OK, then could you try the v3 patch below?
+> 
+> I tried v3 patch. Playback works, but recording does not - i found errors like these in the log during recording:
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcht_es8316.c | 3 ---
- 1 file changed, 3 deletions(-)
+Hm.  There seem more problems than I've thought.  The Pioneer devices
+are special and don't look like the generic application of the
+implicit fb works.
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 892cf684216e..06df2d46d910 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -331,9 +331,6 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
- 
- 		/* back ends */
- 	{
--		/* Only SSP2 has been tested here, so BYT-CR platforms that
--		 * require SSP0 will not work.
--		 */
- 		.name = "SSP2-Codec",
- 		.id = 0,
- 		.no_pcm = 1,
--- 
-2.28.0
+Now I worked on v4 patch set.  Will post in another thread.
 
+
+thanks,
+
+Takashi
