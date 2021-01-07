@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ACF5C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 11:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CBADC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 12:09:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 614EC2333D
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 11:54:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 614EC2333D
+	by mail.kernel.org (Postfix) with ESMTPS id 6A12123355
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jan 2021 12:09:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A12123355
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1A8C167C;
-	Thu,  7 Jan 2021 12:53:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1A8C167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0460F1672;
+	Thu,  7 Jan 2021 13:08:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0460F1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610020469;
-	bh=jFeuhF8MpAbzJNZ/zmHLi37IMyrTg0uH/8MmIZQ+68I=;
+	s=default; t=1610021342;
+	bh=nLbMsXzHeMvaB60dtUxYrznBcQpy1jT3ZXpYyfnyxds=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=tt77cPQyyMCXo/XKCKnpMu9Ynmbst1nb0iuYLQX9zPmLBQNVZtphxmcLwx6rdUpY0
-	 cV/lnXz3BU8hMYMD6K2Y39Fx4hxNgHuoBUKT5XezusbyEwkJuDnxaXs7EmIvsMJ7+A
-	 a4sUZY7Y1JhUhPY38VI4DRaBDL8qq2bT2Nhx5lts=
+	b=HdpHrnOjD9GuTrGlVblW+c80ANRFFMiEsBaW2X78LEv8yWd+OL3wLqi5DTmSskn4U
+	 HPL3QB8XFPnA4xgBvWVUEpaNOM1bC4O8gYAwFT5TfBlo5JvI9eQn7YUAh1//Dru3Wa
+	 XqHb7rmNRLkwK25P1Km6ZsmJl3os8iXJ+Gbzita4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 672F9F800FD;
-	Thu,  7 Jan 2021 12:53:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CFE2F801F5;
+	Thu,  7 Jan 2021 13:08:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 388E8F80258; Thu,  7 Jan 2021 12:53:37 +0100 (CET)
+ id 1F345F80258; Thu,  7 Jan 2021 13:08:10 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53046F800FD
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 12:53:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53046F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F7E4F800FD
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 13:08:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F7E4F800FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="b0BY6Ngr"
+ header.b="VtZ3VImg"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610020410;
+ s=mimecast20190719; t=1610021285;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding;
- bh=vguo8/yrD+/stCuZq9Tj26YARU6zQ1ImGlRCAkDRnVo=;
- b=b0BY6NgrlYncXuGUqWUEeLHohyHmY6mWqmC1QZPqb7lV8vbajeT6bv34MsONhAVThumFIA
- HU1++6l0xycmpPBzOWQyuMj7tNxkMbQGKUxLrNUYiufnruXlDMdkRj32oA4E8vmGiZlLgM
- pA2BeghOUW6v+sU/7ALKsjftrbj4XP4=
+ bh=dclVRl4AvLjpUYzjvBr6r3I2uV6SBIZbF0M5sY+YGso=;
+ b=VtZ3VImglhFOVPBPKQxEzZhcABE+PYOEsrCpw9XvO/CePXj2QzPy1g3opObvfL4j+6XmJO
+ QQkLSl7N0Xy66NvlyYQGwjSMGXPxUsJ9VzknKwtBWvZ80WWU2GExC8PR0pd1wK1+2nNIGY
+ fWW8kkt1rf9/oRJpUrY7zMEUcGH0V1k=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167--xoVhLImODedg_GGUK49QQ-1; Thu, 07 Jan 2021 06:53:28 -0500
-X-MC-Unique: -xoVhLImODedg_GGUK49QQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
- [10.5.11.16])
+ us-mta-368-IfyUBBIvPR2UEogtkUuihg-1; Thu, 07 Jan 2021 07:08:01 -0500
+X-MC-Unique: IfyUBBIvPR2UEogtkUuihg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
+ [10.5.11.22])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14657180A095;
- Thu,  7 Jan 2021 11:53:27 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75C5E107ACE3;
+ Thu,  7 Jan 2021 12:07:59 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-236.ams2.redhat.com [10.36.112.236])
- by smtp.corp.redhat.com (Postfix) with ESMTP id EB1435C67A;
- Thu,  7 Jan 2021 11:53:24 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id EBC8C1001281;
+ Thu,  7 Jan 2021 12:07:57 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: Intel: cht_bsw_nau8824: Move snd_soc_dai_set_tdm_slot
- call to cht_codec_fixup
-Date: Thu,  7 Jan 2021 12:53:24 +0100
-Message-Id: <20210107115324.11602-1-hdegoede@redhat.com>
+Subject: [PATCH] ASoC: Intel: bytcht_es8316: Remove comment about SSP0 being
+ untested
+Date: Thu,  7 Jan 2021 13:07:57 +0100
+Message-Id: <20210107120757.12051-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
@@ -101,62 +101,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move the snd_soc_dai_set_tdm_slot() call from cht_codec_init() to
-cht_codec_fixup(). There are 2 reasons for doing this:
-
-1. This aligns the cht_bsw_nau8824 with all the other BYT/CHT machine
-drivers which also do this from their codec_fixup function.
-
-2. When using the SOF driver, things like the TDM info is set from the
-topology file. Moving the call to the codec_fixup function, which gets
-skipped when using the SOF driver avoids the call interfering with the
-settings when using the SOF driver.
+Remove a stale comment about SSP0 being untested, the
+bytcht_es8316 has supported SSP0 for a while now and this has
+been successfully tested on a GP electrinic T701 tablet.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/cht_bsw_nau8824.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index fd5e25ca05f7..da5a5cbc8759 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -100,13 +100,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	struct snd_soc_component *component = codec_dai->component;
- 	int ret, jack_type;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 892cf684216e..06df2d46d910 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -331,9 +331,6 @@ static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
  
--	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
--	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xf, 0x1, 4, 24);
--	if (ret < 0) {
--		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
--		return ret;
--	}
--
- 	/* NAU88L24 supports 4 butons headset detection
- 	 * KEY_PLAYPAUSE
- 	 * KEY_VOICECOMMAND
-@@ -141,6 +134,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 		SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt =
- 		hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+	int ret;
- 
- 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
- 	rate->min = rate->max = 48000;
-@@ -150,6 +144,13 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	snd_mask_none(fmt);
- 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_codec(rtd, 0), 0xf, 0x1, 4, 24);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
+ 		/* back ends */
+ 	{
+-		/* Only SSP2 has been tested here, so BYT-CR platforms that
+-		 * require SSP0 will not work.
+-		 */
+ 		.name = "SSP2-Codec",
+ 		.id = 0,
+ 		.no_pcm = 1,
 -- 
 2.28.0
 
