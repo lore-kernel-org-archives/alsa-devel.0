@@ -5,98 +5,99 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D554C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:06:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC0A2C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:07:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2D8A239D1
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:06:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2D8A239D1
+	by mail.kernel.org (Postfix) with ESMTPS id C0592239A1
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:07:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0592239A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C7AD1681;
-	Fri,  8 Jan 2021 17:05:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C7AD1681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18C8716B2;
+	Fri,  8 Jan 2021 17:06:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18C8716B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610121976;
-	bh=90C92itGJsCZYg4oFujOz3ck3shZhmhRGKxzuV+bW/Y=;
+	s=default; t=1610122032;
+	bh=zke0cwuYWPy87yWbSu/IGJK4NZo9qlg+tKhtBHwPB5U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tf54WY7oL8a715qZ//bdVeIqkLS8kDanp7ETIZU4LvaDnuKsl9LHURp/h4k95dmKz
-	 Rz9JUtph1jhoDsh/v/rO/qR5KVY7LnGdDAjZN01ZhsrRTjBfd42MkmSLr0qZcHsnYC
-	 pEwWDRwQ9vf+7ekS5wGHaJNWVnnxUlNNTx6AO0aA=
+	b=DOMwbEpaaZwxJxQ93RblxzNW0p031CXTgoapP72yzimgmC1vUjfvQKRPC+yPqqj+g
+	 M4N45PUZVtmnGFFYdHS/laCFjDGkQSSVZ+BQ4mgiozAH2eo20N1mRO/rrAPUBngv7Z
+	 XKvRm8Qx0lOQSuLNFA3xnIHfiDnYkswiXJbBIqfY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBA87F8025E;
-	Fri,  8 Jan 2021 17:05:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E07CF8016A;
+	Fri,  8 Jan 2021 17:05:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B9D2F8027D; Fri,  8 Jan 2021 17:05:20 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 853F1F80166; Fri,  8 Jan 2021 17:05:20 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA5AFF800EE
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 17:05:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA5AFF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0B4CF80166
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 17:05:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0B4CF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="pjeryqd8"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 108G2EoX011561; Fri, 8 Jan 2021 10:05:08 -0600
+ header.b="VpR7EusF"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 108G2BWD031086; Fri, 8 Jan 2021 10:05:11 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=2j2pa6/Jqo6QYZqsSeLPknoRF/7N3vv/yIiaZr+oTAo=;
- b=pjeryqd8SbN62ve1AflY1HOFGYsSF12MSr/J0ayKxf8VxDDs0WzXsuwGL63k5P4mLg9d
- SRYppa6wyfsynAPIVqyGqEf1A6PE/4j/kbqY1EFbHBF/O6pQRLZ7AyBPAFa3VpSO48Pb
- 9hDk5PfaDMiCZTm95CJqlPj42QsapkYbqwQ5bQooHzxqtxX349NKk03PfgmDlm2lcQuc
- YuBECeZnrdT/5OHUjwQf0OvxqXRlLrwgPlDrBfOPQGSWkcnF8642gaPcyutHCx0rKe2b
- 7UqxzyOYlSDmHBBtYkL8zwDshabVuM4jCo2TCnFM6KBM645O3oD93jk0gJHbi4GJdYZ8 ag== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 35wqjka90t-1
+ bh=jmswdNoeuPYWCu6tey6zuSVbEdkvG2AmuQ5MyVpdB2c=;
+ b=VpR7EusFX0phly5iHULIsqN9p97CEPVAs6UxmRFXEeo+5F0YWVrijVtBsO5/O8/eKaEL
+ Ab95v9E3YAuDpDRu5QbtXJqFz+U2oMSMdZbVKQuDIUOFyKhPeDhJb8PVkMdU4cbMR2XE
+ tWVq1pEOEJUdY5V+9ErETJDSR70BNQjVmwzkMQzd9oQ9ldZlmoFL85Z7M2eKUcoNL7c0
+ vlpNLI04sBpjTNFGiUcptWlO02Ql3lxGwqS4LYLDiYOggZ08Waz+IECmvwLmFm+mVOPD
+ j6UKrXZ69Kfw7r2GSxwrXcrYGRw3scjuxGL8xUbyZkk9bV3aJwkFAPAvm1N8QqFHxe8V ew== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 35wqjm2gnm-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 08 Jan 2021 10:05:08 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 08 Jan 2021 10:05:10 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 Jan 2021
- 16:05:06 +0000
+ 16:05:08 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 8 Jan 2021 16:05:06 +0000
+ Transport; Fri, 8 Jan 2021 16:05:08 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.226])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 62C1E11CB;
- Fri,  8 Jan 2021 16:05:06 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2510811CC;
+ Fri,  8 Jan 2021 16:05:08 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>,
  <f.fainelli@gmail.com>
-Subject: [PATCH v4 1/6] of: base: Add of_count_phandle_with_fixed_args()
-Date: Fri, 8 Jan 2021 16:04:56 +0000
-Message-ID: <20210108160501.7638-2-rf@opensource.cirrus.com>
+Subject: [PATCH v4 4/6] ASoC: madera: Allow codecs to be selected from kernel
+ config
+Date: Fri, 8 Jan 2021 16:04:59 +0000
+Message-ID: <20210108160501.7638-5-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210108160501.7638-1-rf@opensource.cirrus.com>
 References: <20210108160501.7638-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
- malwarescore=0
- spamscore=0 clxscore=1015 bulkscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080091
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=978
+ lowpriorityscore=0
+ suspectscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080091
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh@kernel.org>, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
  bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -114,153 +115,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add an equivalent of of_count_phandle_with_args() for fixed argument
-sets, to pair with of_parse_phandle_with_fixed_args().
+The codec Kconfig options were hidden and intended to be selected by
+the machine driver that requires them. But that means having either a
+dedicated machine driver or building all codecs.
 
-The existing of_count_phandle_with_args() is modified to be a
-private function that handles both cases and the public functions
-are trivial wrappers round that.
+This patch makes the Kconfig options visible so that they can be
+selected independently of the machine driver, allowing the codec to be
+used with simple-card and other machine drivers that are not hardcoded
+to use a fixed set of codecs.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/of/base.c  | 73 +++++++++++++++++++++++++++++++---------------
- include/linux/of.h |  9 ++++++
- 2 files changed, 59 insertions(+), 23 deletions(-)
+ sound/soc/codecs/Kconfig | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 161a23631472..c5ff2524bf40 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1720,34 +1720,22 @@ int of_parse_phandle_with_fixed_args(const struct device_node *np,
- }
- EXPORT_SYMBOL(of_parse_phandle_with_fixed_args);
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 9bf6bfdaf11e..599dd8d2577f 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -678,23 +678,23 @@ config SND_SOC_CS4349
+ 	depends on I2C
  
--/**
-- * of_count_phandle_with_args() - Find the number of phandles references in a property
-- * @np:		pointer to a device tree node containing a list
-- * @list_name:	property name that contains a list
-- * @cells_name:	property name that specifies phandles' arguments count
-- *
-- * Returns the number of phandle + argument tuples within a property. It
-- * is a typical pattern to encode a list of phandle and variable
-- * arguments into a single property. The number of arguments is encoded
-- * by a property in the phandle-target node. For example, a gpios
-- * property would contain a list of GPIO specifies consisting of a
-- * phandle and 1 or more arguments. The number of arguments are
-- * determined by the #gpio-cells property in the node pointed to by the
-- * phandle.
-- */
--int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
--				const char *cells_name)
-+static int __of_count_phandle_with_args(const struct device_node *np,
-+					const char *list_name,
-+					const char *cells_name,
-+					int cells_count)
- {
- 	struct of_phandle_iterator it;
- 	int rc, cur_index = 0;
+ config SND_SOC_CS47L15
+-	tristate
++	tristate "Cirrus Logic CS47L15 CODEC"
  
- 	/*
--	 * If cells_name is NULL we assume a cell count of 0. This makes
--	 * counting the phandles trivial as each 32bit word in the list is a
--	 * phandle and no arguments are to consider. So we don't iterate through
--	 * the list but just use the length to determine the phandle count.
-+	 * If cells_count < 0 and cells_name is NULL we assume a cell count
-+	 * of 0. A zero cell count makes counting the phandles trivial as each
-+	 * 32bit word in the list is a phandle and no arguments are to consider.
-+	 * So we don't iterate through the list but just use the length to
-+	 * determine the phandle count.
- 	 */
--	if (!cells_name) {
-+	if ((cells_count < 0 && !cells_name) || cells_count == 0) {
- 		const __be32 *list;
- 		int size;
+ config SND_SOC_CS47L24
+ 	tristate
+ 	depends on MFD_CS47L24
  
-@@ -1758,7 +1746,7 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
- 		return size / sizeof(*list);
- 	}
+ config SND_SOC_CS47L35
+-	tristate
++	tristate "Cirrus Logic CS47L35 CODEC"
  
--	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, -1);
-+	rc = of_phandle_iterator_init(&it, np, list_name, cells_name, cells_count);
- 	if (rc)
- 		return rc;
+ config SND_SOC_CS47L85
+-	tristate
++	tristate "Cirrus Logic CS47L85 CODEC"
  
-@@ -1770,8 +1758,47 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
+ config SND_SOC_CS47L90
+-	tristate
++	tristate "Cirrus Logic CS47L90 CODEC"
  
- 	return cur_index;
- }
-+
-+/**
-+ * of_count_phandle_with_args() - Find the number of phandles references in a property
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cells_name:	property name that specifies phandles' arguments count
-+ *
-+ * Returns the number of phandle + argument tuples within a property. It
-+ * is a typical pattern to encode a list of phandle and variable
-+ * arguments into a single property. The number of arguments is encoded
-+ * by a property in the phandle-target node. For example, a gpios
-+ * property would contain a list of GPIO specifies consisting of a
-+ * phandle and 1 or more arguments. The number of arguments are
-+ * determined by the #gpio-cells property in the node pointed to by the
-+ * phandle.
-+ */
-+int of_count_phandle_with_args(const struct device_node *np, const char *list_name,
-+				const char *cells_name)
-+{
-+	return __of_count_phandle_with_args(np, list_name, cells_name, -1);
-+}
- EXPORT_SYMBOL(of_count_phandle_with_args);
+ config SND_SOC_CS47L92
+-	tristate
++	tristate "Cirrus Logic CS47L92 CODEC"
  
-+/**
-+ * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
-+ * @np:		pointer to a device tree node containing a list
-+ * @list_name:	property name that contains a list
-+ * @cell_count: number of argument cells following the phandle
-+ *
-+ * Returns the number of phandle + argument tuples within a property. It
-+ * is a typical pattern to encode a list of phandle and variable
-+ * arguments into a single property.
-+ */
-+int of_count_phandle_with_fixed_args(const struct device_node *np,
-+				     const char *list_name,
-+				     int cells_count)
-+{
-+	return __of_count_phandle_with_args(np, list_name, NULL, cells_count);
-+}
-+EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
-+
- /**
-  * __of_add_property - Add a property to a node without lock operations
-  */
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 4b27c9a27df3..4f09d644a803 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const struct device_node *np,
- 	struct of_phandle_args *out_args);
- extern int of_count_phandle_with_args(const struct device_node *np,
- 	const char *list_name, const char *cells_name);
-+extern int of_count_phandle_with_fixed_args(const struct device_node *np,
-+	const char *list_name, int cells_count);
- 
- /* phandle iterator functions */
- extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
-@@ -888,6 +890,13 @@ static inline int of_count_phandle_with_args(struct device_node *np,
- 	return -ENOSYS;
- }
- 
-+static inline int of_count_phandle_with_fixed_args(const struct device_node *np,
-+						   const char *list_name,
-+						   int cells_count)
-+{
-+	return -ENOSYS;
-+}
-+
- static inline int of_phandle_iterator_init(struct of_phandle_iterator *it,
- 					   const struct device_node *np,
- 					   const char *list_name,
+ # Cirrus Logic Quad-Channel ADC
+ config SND_SOC_CS53L30
 -- 
 2.20.1
 
