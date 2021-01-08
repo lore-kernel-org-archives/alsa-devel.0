@@ -2,87 +2,87 @@ Return-Path: <SRS0=g0zL=GL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD39C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9651C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:09:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B94B0239A1
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:08:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B94B0239A1
+	by mail.kernel.org (Postfix) with ESMTPS id C4F2E2399C
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 16:09:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4F2E2399C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 493521708;
-	Fri,  8 Jan 2021 17:07:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 493521708
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C5EB1727;
+	Fri,  8 Jan 2021 17:08:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C5EB1727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610122123;
-	bh=tvAX3/2+xWsdlbqynAkPKd/pHdKxIJ6d0DeH1249BVg=;
+	s=default; t=1610122143;
+	bh=wadWVVJV3pMHrb2U76avAlvxL6DUqq12r5eur0k9OwA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UA65wLGgYFCTqyAyq1+15MIk5IBPPq3OaTlPRIKK1XKRQCnn90hHys3Qx/yYMhnEz
-	 G+FdRCg0523DHbTbAjm9de8KJk65Z7940pae8pVzpYo+egk15kxwlWpeRly9ovicod
-	 vTMZAgNRVBEKxv4cSwUPe6yYsLev3FolT9bKrbnE=
+	b=H9fcw9UvCua8zB9qvUk1+2of6JsgDUYE17WKNUfmJvAHDrVdIJ83tik1xsv+QS5oV
+	 btTExuqnWlAHESirK53ByjkAWmTmPNgs6F8m4lfmoWZBfdgSMYIGxWFZL6+PB9oAKT
+	 k6YB8yVX7J5yZ7FDRsujhmi6PaviWxHCuTP0Y130=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DC84F80165;
-	Fri,  8 Jan 2021 17:05:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E6E5F804FE;
+	Fri,  8 Jan 2021 17:05:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C4F0F804CC; Fri,  8 Jan 2021 17:05:29 +0100 (CET)
+ id E1C35F80165; Fri,  8 Jan 2021 17:05:27 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0CFEF800E9
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 17:05:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0CFEF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD913F80165
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 17:05:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD913F80165
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="eoS6vRyt"
+ header.b="oJ5K4MIT"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 108G2EoZ011561; Fri, 8 Jan 2021 10:05:10 -0600
+ 108G2EoY011561; Fri, 8 Jan 2021 10:05:09 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=627cyMSOyeSzZ7/Nq+d6A7Mp3C4WbFQei8V0n6bIm60=;
- b=eoS6vRythwrqRcbrJrEBUWfYn/UNWAMCivNJSRovifGKPFGkKMmw9zgL4OO1Pe2G1NiR
- TqID91IfmBNy1Tmfnrni+Rb5m2O7eVvEbRbRVHnDCUm5B8qNQbYj3gzThostEu33kWYD
- 7t2/MQDQwmvCN8Le75mL4AX8yWWDAyLkV9P4looci6+liLdNTmyC4ATBG8cs7Gw2I1fX
- r7v5CaPNF7mJS/Nh7nKsVXGjev6SKCxW4FGz/gvrbYd9fZBXo0zfIyIwZeODuQWo4cxQ
- WoHJg4nfmmfom4aOE9wBjor6OJi5oDILe+Sx7SQ3TJDbk98XNEusZV2zA38aSctXZyNd 3Q== 
+ bh=kOekwXaZfSzN5B1r/aiMtLh+hLUch+Y8pXk00v7FV8I=;
+ b=oJ5K4MITbPRuVJtx9dPXSS661PHDCyQCrnd23VoiyFcfqPtvWjFD6vXGOghK5aFkh4t0
+ 4ySW1Rnyj8zU1lr1yMNIwBlrGILAOTLyhdlFTGxsfqvonQdMHVCED3H0q1i3/vk9Ff3c
+ PQOqVqy+w7CSViB2V7LYFB30/h6LnEp0OSZ406zbFopfYNkISh0OqhKayejVfRvCrCEG
+ +pMgabUx+uMEcxFnUpA61NMytQk8vfqXsrr/qBrAP9J1sY5l4vrgB9GhEjlWHGyd5aOF
+ GjNjmVAo9SHH3FlXgweDUXQlOrVh1jGycqq32xCr6f/D2iJI8rZ2ihb0F7pckeIAQufz GQ== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 35wqjka90t-3
+ by mx0b-001ae601.pphosted.com with ESMTP id 35wqjka90t-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Fri, 08 Jan 2021 10:05:09 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 8 Jan 2021
- 16:05:09 +0000
+ 16:05:07 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 8 Jan 2021 16:05:09 +0000
+ Transport; Fri, 8 Jan 2021 16:05:07 +0000
 Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.64.226])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B206811CB;
- Fri,  8 Jan 2021 16:05:08 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0395C11CE;
+ Fri,  8 Jan 2021 16:05:06 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <kuninori.morimoto.gx@renesas.com>, <nsaenzjulienne@suse.de>,
  <f.fainelli@gmail.com>
-Subject: [PATCH v4 5/6] ASoC: madera: Export clock config defines to
- dt-bindings
-Date: Fri, 8 Jan 2021 16:05:00 +0000
-Message-ID: <20210108160501.7638-6-rf@opensource.cirrus.com>
+Subject: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and sysclks
+ properties
+Date: Fri, 8 Jan 2021 16:04:57 +0000
+Message-ID: <20210108160501.7638-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210108160501.7638-1-rf@opensource.cirrus.com>
 References: <20210108160501.7638-1-rf@opensource.cirrus.com>
@@ -115,157 +115,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move the defines for clock/fll IDs and sources into the dt-bindings
-header so that they can be used by machine driver dts files.
+The audio-graph-card driver has properties for configuring the clocking
+for DAIs within a component, but is missing properties for setting
+up the PLLs and sysclks of the component.
+
+This patch adds the two new properties 'plls' and 'sysclks' so that the
+audio-graph-driver can fully configure the component clocking.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- include/dt-bindings/sound/madera.h | 60 ++++++++++++++++++++++++++++++
- sound/soc/codecs/madera.h          | 56 +---------------------------
- 2 files changed, 61 insertions(+), 55 deletions(-)
+ .../bindings/sound/audio-graph.yaml           | 46 +++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
-index d0096d5eb0da..5c5fc1bfe6f9 100644
---- a/include/dt-bindings/sound/madera.h
-+++ b/include/dt-bindings/sound/madera.h
-@@ -22,4 +22,64 @@
- #define CS47L35_DMIC_REF_MICBIAS2A	2
- #define CS47L35_DMIC_REF_MICBIAS2B	3
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph.yaml b/Documentation/devicetree/bindings/sound/audio-graph.yaml
+index 4b46794e5153..9e0819205a17 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph.yaml
++++ b/Documentation/devicetree/bindings/sound/audio-graph.yaml
+@@ -39,6 +39,52 @@ properties:
+   mic-det-gpio:
+     maxItems: 1
  
-+/* FLL IDs */
-+#define MADERA_FLL1_REFCLK		1
-+#define MADERA_FLL2_REFCLK		2
-+#define MADERA_FLL3_REFCLK		3
-+#define MADERA_FLLAO_REFCLK		4
-+#define MADERA_FLL1_SYNCCLK		5
-+#define MADERA_FLL2_SYNCCLK		6
-+#define MADERA_FLL3_SYNCCLK		7
-+#define MADERA_FLLAO_SYNCCLK		8
++  plls:
++    description: |
++      A list of component pll settings. There are 4 cells per PLL setting:
++        - phandle to the node of the codec or cpu component,
++        - component PLL id,
++        - component clock source id,
++        - frequency (in Hz) of the PLL output clock.
++      The PLL id and clock source id are specific to the particular component
++      so see the relevant component driver for the ids. Typically the
++      clock source id indicates the pin the source clock is connected to.
++      The same phandle can appear in multiple entries so that several plls
++      can be set in the same component.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
 +
-+/* FLL input source pin IDs */
-+#define MADERA_FLL_SRC_NONE		-1
-+#define MADERA_FLL_SRC_MCLK1		0
-+#define MADERA_FLL_SRC_MCLK2		1
-+#define MADERA_FLL_SRC_MCLK3		2
-+#define MADERA_FLL_SRC_SLIMCLK		3
-+#define MADERA_FLL_SRC_FLL1		4
-+#define MADERA_FLL_SRC_FLL2		5
-+#define MADERA_FLL_SRC_AIF1BCLK		8
-+#define MADERA_FLL_SRC_AIF2BCLK		9
-+#define MADERA_FLL_SRC_AIF3BCLK		10
-+#define MADERA_FLL_SRC_AIF4BCLK		11
-+#define MADERA_FLL_SRC_AIF1LRCLK	12
-+#define MADERA_FLL_SRC_AIF2LRCLK	13
-+#define MADERA_FLL_SRC_AIF3LRCLK	14
-+#define MADERA_FLL_SRC_AIF4LRCLK	15
++  plls-clocks:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      A list of clock names giving the source clock for each setting
++      in the plls property.
 +
-+/* SYSCLK IDs */
-+#define MADERA_CLK_SYSCLK_1		1
-+#define MADERA_CLK_ASYNCCLK_1		2
-+#define MADERA_CLK_OPCLK		3
-+#define MADERA_CLK_ASYNC_OPCLK		4
-+#define MADERA_CLK_SYSCLK_2		5
-+#define MADERA_CLK_SYSCLK_3		6
-+#define MADERA_CLK_ASYNCCLK_2		7
-+#define MADERA_CLK_DSPCLK		8
-+#define MADERA_CLK_OUTCLK		9
++  sysclks:
++    description: |
++      A list of component sysclk settings. There are 4 cells per sysclk
++      setting:
++        - phandle to the node of the codec or cpu component,
++        - component sysclk id,
++        - component clock source id,
++        - direction of the clock: 0 if the clock is an input to the component,
++          1 if it is an output.
++      The sysclk id and clock source id are specific to the particular
++      component so see the relevant component driver for the ids. Typically
++      the clock source id indicates the pin the source clock is connected to.
++      The same phandle can appear in multiple entries so that several sysclks
++      can be set in the same component.
++    $ref: /schemas/types.yaml#/definitions/phandle-array
 +
-+/* SYSCLK source IDs */
-+#define MADERA_CLK_SRC_MCLK1		0x0
-+#define MADERA_CLK_SRC_MCLK2		0x1
-+#define MADERA_CLK_SRC_MCLK3		0x2
-+#define MADERA_CLK_SRC_FLL1		0x4
-+#define MADERA_CLK_SRC_FLL2		0x5
-+#define MADERA_CLK_SRC_FLL3		0x6
-+#define MADERA_CLK_SRC_FLLAO_HI		0x7
-+#define MADERA_CLK_SRC_FLL1_DIV6	0x7
-+#define MADERA_CLK_SRC_AIF1BCLK		0x8
-+#define MADERA_CLK_SRC_AIF2BCLK		0x9
-+#define MADERA_CLK_SRC_AIF3BCLK		0xA
-+#define MADERA_CLK_SRC_AIF4BCLK		0xB
-+#define MADERA_CLK_SRC_FLLAO		0xF
++  sysclks-clocks:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      A list of clock names giving the source clock for each setting
++      in the sysclks property.
 +
-+/* OPCLK source IDs */
-+#define MADERA_OUTCLK_SYSCLK		0
-+#define MADERA_OUTCLK_ASYNCCLK		1
-+#define MADERA_OUTCLK_MCLK1		4
-+#define MADERA_OUTCLK_MCLK2		5
-+#define MADERA_OUTCLK_MCLK3		6
++dependencies:
++  plls: [ plls-clocks ]
++  sysclks: [ sysclks-clocks ]
 +
- #endif
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-index e0c0be59e2ef..1f4ea15648c5 100644
---- a/sound/soc/codecs/madera.h
-+++ b/sound/soc/codecs/madera.h
-@@ -9,67 +9,13 @@
- #ifndef ASOC_MADERA_H
- #define ASOC_MADERA_H
+ required:
+   - dais
  
-+#include <dt-bindings/sound/madera.h>
- #include <linux/completion.h>
- #include <sound/soc.h>
- #include <sound/madera-pdata.h>
- 
- #include "wm_adsp.h"
- 
--#define MADERA_FLL1_REFCLK		1
--#define MADERA_FLL2_REFCLK		2
--#define MADERA_FLL3_REFCLK		3
--#define MADERA_FLLAO_REFCLK		4
--#define MADERA_FLL1_SYNCCLK		5
--#define MADERA_FLL2_SYNCCLK		6
--#define MADERA_FLL3_SYNCCLK		7
--#define MADERA_FLLAO_SYNCCLK		8
--
--#define MADERA_FLL_SRC_NONE		-1
--#define MADERA_FLL_SRC_MCLK1		0
--#define MADERA_FLL_SRC_MCLK2		1
--#define MADERA_FLL_SRC_MCLK3		2
--#define MADERA_FLL_SRC_SLIMCLK		3
--#define MADERA_FLL_SRC_FLL1		4
--#define MADERA_FLL_SRC_FLL2		5
--#define MADERA_FLL_SRC_AIF1BCLK		8
--#define MADERA_FLL_SRC_AIF2BCLK		9
--#define MADERA_FLL_SRC_AIF3BCLK		10
--#define MADERA_FLL_SRC_AIF4BCLK		11
--#define MADERA_FLL_SRC_AIF1LRCLK	12
--#define MADERA_FLL_SRC_AIF2LRCLK	13
--#define MADERA_FLL_SRC_AIF3LRCLK	14
--#define MADERA_FLL_SRC_AIF4LRCLK	15
--
--#define MADERA_CLK_SYSCLK_1		1
--#define MADERA_CLK_ASYNCCLK_1		2
--#define MADERA_CLK_OPCLK		3
--#define MADERA_CLK_ASYNC_OPCLK		4
--#define MADERA_CLK_SYSCLK_2		5
--#define MADERA_CLK_SYSCLK_3		6
--#define MADERA_CLK_ASYNCCLK_2		7
--#define MADERA_CLK_DSPCLK		8
--#define MADERA_CLK_OUTCLK		9
--
--#define MADERA_CLK_SRC_MCLK1		0x0
--#define MADERA_CLK_SRC_MCLK2		0x1
--#define MADERA_CLK_SRC_MCLK3		0x2
--#define MADERA_CLK_SRC_FLL1		0x4
--#define MADERA_CLK_SRC_FLL2		0x5
--#define MADERA_CLK_SRC_FLL3		0x6
--#define MADERA_CLK_SRC_FLLAO_HI		0x7
--#define MADERA_CLK_SRC_FLL1_DIV6	0x7
--#define MADERA_CLK_SRC_AIF1BCLK		0x8
--#define MADERA_CLK_SRC_AIF2BCLK		0x9
--#define MADERA_CLK_SRC_AIF3BCLK		0xA
--#define MADERA_CLK_SRC_AIF4BCLK		0xB
--#define MADERA_CLK_SRC_FLLAO		0xF
--
--#define MADERA_OUTCLK_SYSCLK		0
--#define MADERA_OUTCLK_ASYNCCLK		1
--#define MADERA_OUTCLK_MCLK1		4
--#define MADERA_OUTCLK_MCLK2		5
--#define MADERA_OUTCLK_MCLK3		6
--
- #define MADERA_MIXER_VOL_MASK		0x00FE
- #define MADERA_MIXER_VOL_SHIFT		1
- #define MADERA_MIXER_VOL_WIDTH		7
 -- 
 2.20.1
 
