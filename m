@@ -2,94 +2,63 @@ Return-Path: <SRS0=g0zL=GL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68143C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 04:59:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40B82C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:53:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2C2922E02
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 04:59:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2C2922E02
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id E3F542343F
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:53:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E3F542343F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C4BC1686;
-	Fri,  8 Jan 2021 05:58:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C4BC1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29DE614E;
+	Fri,  8 Jan 2021 08:52:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29DE614E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610081961;
-	bh=W4rdGLSTxKDPfw75JgfkaBzk5kk79wjjJ9VA6MTDa2Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1610092410;
+	bh=w46963NwdI4LQtZwLqGVG9ZvySqbNoqxkCtBTf9P6zI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PaR+Tzd/xMUdnYIQlWMNCD6AMsOVc7y92n+nLzKJxsMAeMVmxUq1MRURREwDeTJu4
-	 yFERVzrjoodCQhwsSK41H/4otSYJagf1aL/gpCn1O4WGhNMhFLrF32YER2pCN/XNJO
-	 ouH/Ip8CchtAE20o2CIaZySaBAHI1BMQB4r3rDKA=
+	b=eyAEzkxIW6qG9i81Od+Vwb7+iDUnJ6rtOuF5r37/215wlz4gWhdQHkTxCjk2AiO1p
+	 k3rs+uLJ5wUb7b3WG/0oWN5fi592z6iac0LK5bZdGfJrJShB019/M5dV9IIMJbyN4d
+	 Xa4uAIkieiGm/eV/uN4wr5+8R9ctGqLVHC/2DGcs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1F0BF80165;
-	Fri,  8 Jan 2021 05:58:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 460DBF80165;
+	Fri,  8 Jan 2021 08:52:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82EEDF80166; Fri,  8 Jan 2021 05:58:20 +0100 (CET)
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com
- [IPv6:2607:f8b0:4864:20::e33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C94E0F80167; Fri,  8 Jan 2021 08:52:32 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC697F800E9
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 05:58:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC697F800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="EBMZa6kB"
-Received: by mail-vs1-xe33.google.com with SMTP id e20so4885046vsr.12
- for <alsa-devel@alsa-project.org>; Thu, 07 Jan 2021 20:58:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=W4rdGLSTxKDPfw75JgfkaBzk5kk79wjjJ9VA6MTDa2Q=;
- b=EBMZa6kBZYBFUvIxtYUIFiOOXtkDLs6tu3Tvx5QATngETYkJghg2EliH4XTOPu6Bt+
- 0t0NHpFnagN3TCzOA5+FLEHim1DI7PQ+X692eSQBbEHYYGOPWws48yRbHkqKQ7+yhTug
- QUhLjTjv8/eAlumFy41A9Hy1hZxx9jD7xPBb0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=W4rdGLSTxKDPfw75JgfkaBzk5kk79wjjJ9VA6MTDa2Q=;
- b=lHKnnOeYm+1D1FJ16T31XUVxmwY2Cu7lmgOBXoJh2nS30nugRSMRSCETbGWMD4kBJC
- FgSq+idmbjhhNGECDlcuu1Dw0557Z1rmRtjRuPyVqjOVJ8x4td6naZE0xyHjibXbXuQD
- dUlJRbInMwZIt4GI95gi9MTwKiYLlG+kvV/w+Z/upOAoh9vR9sFnQFRd3PtCCNdx/MzH
- 8ryReb71EH3YTlz9foU63IPkFBgB0FfuUdPwOBJpua+8uM3uY3Hb/+tW3toojYxuWRGr
- XfuRI1Dqs+UzRpLfg1z2qMehfks0El7MXG/NQ+EHO2HuV4BGwMvEf8Ifz14PRs7t3IEF
- cU/w==
-X-Gm-Message-State: AOAM533ipfUoZLnPx1+TXAGU4s3Ge6//4TYRQnK8/NpqFfCsWJAMh0I1
- mtaWrh1Nlu5Ri94c9ic62jxU9Z9aDabyiO8uOFU3Dw==
-X-Google-Smtp-Source: ABdhPJyUCYN4dVE7lrXmBC6FacDWh+fEpOGViWqsFYTO/SaNqRzaLv9WnGjUVFdcO3x4xtbcyaLZOpuEZ4UuFIMfrG0=
-X-Received: by 2002:a67:2287:: with SMTP id i129mr1529947vsi.15.1610081882763; 
- Thu, 07 Jan 2021 20:58:02 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33850F800E9
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 08:52:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33850F800E9
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 97E07AF16;
+ Fri,  8 Jan 2021 07:52:20 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v5 3/5] ALSA: usb-audio: Avoid unnecessary interface re-setup
+Date: Fri,  8 Jan 2021 08:52:17 +0100
+Message-Id: <20210108075219.21463-4-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210108075219.21463-1-tiwai@suse.de>
+References: <20210108075219.21463-1-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20210107085942.2891525-1-yuhsuan@chromium.org>
- <20210107135459.GB4726@sirena.org.uk>
-In-Reply-To: <20210107135459.GB4726@sirena.org.uk>
-From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Date: Fri, 8 Jan 2021 12:57:51 +0800
-Message-ID: <CAGvk5PqMCEib8Yr=V4SxT0BBMoC1+yGXm0y+52+LwC5dPQUVnA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Guenter Roeck <groeck@chromium.org>, Prashant Malani <pmalani@chromium.org>,
- Pi-Hsun Shih <pihsun@chromium.org>,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>,
+ Geraldo <geraldogabriel@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,21 +74,278 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=E6=97=A5=
- =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:55=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Thu, Jan 07, 2021 at 04:59:41PM +0800, Yu-Hsuan Hsu wrote:
-> > Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
-> > which is used for resetting the EC codec.
->
-> I think the request was to sync over all the commands that are supported
-> in the EC rather than just split this one addition into a separate
-> patch.
-Got it. However, after running make_linux_ec_commands_h.sh to create
-the new cros_ec_commands.h, I found there are lots of difference (1092
-insertions(+), 66 deletions(-)). In addition, there are also some
-redefined variables(most are in ./include/linux/usb/pd.h) causing the
-compile error.
+The current endpoint handling assumed (more or less) a unique 1:1
+relation between the endpoint and the iface/altset.  The exception was
+the sync EP without the implicit feedback which has usually the
+secondary EP of the same altset.  This works fine for most devices,
+but it turned out that some unusual devices like Pinoeer's ones have
+both playback and capture endpoints in the same iface/altsetting and
+use both for the implicit feedback mode.  For handling such a case, we
+need to extend the endpoint management to take the shared interface
+into account.
 
-It seems not easy to sync cros_ec_commands.h. I'm afraid of breaking
-something. Does anyone have any suggestion? Thanks.
+This patch does that: it adds a new object snd_usb_iface_ref for
+managing the reference counts of the each USB interface that is used
+by each endpoint.  The interface setup is performed only once for the
+(sharing) endpoints, and the doubly initialization is avoided.
+
+Along with this, the resource release of endpoints and interface
+refcounts are put into a single function, snd_usb_endpoint_free_all()
+instead of looping in the caller side.
+
+Fixes: bf6313a0ff76 ("ALSA: usb-audio: Refactor endpoint management")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.c     |  5 ++-
+ sound/usb/card.h     |  2 ++
+ sound/usb/endpoint.c | 82 ++++++++++++++++++++++++++++++++++++++------
+ sound/usb/endpoint.h |  2 +-
+ sound/usb/usbaudio.h |  1 +
+ 5 files changed, 77 insertions(+), 15 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index d731ca62d599..e08fbf8e3ee0 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -450,10 +450,8 @@ lookup_device_name(u32 id)
+ static void snd_usb_audio_free(struct snd_card *card)
+ {
+ 	struct snd_usb_audio *chip = card->private_data;
+-	struct snd_usb_endpoint *ep, *n;
+ 
+-	list_for_each_entry_safe(ep, n, &chip->ep_list, list)
+-		snd_usb_endpoint_free(ep);
++	snd_usb_endpoint_free_all(chip);
+ 
+ 	mutex_destroy(&chip->mutex);
+ 	if (!atomic_read(&chip->shutdown))
+@@ -611,6 +609,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
+ 	chip->usb_id = usb_id;
+ 	INIT_LIST_HEAD(&chip->pcm_list);
+ 	INIT_LIST_HEAD(&chip->ep_list);
++	INIT_LIST_HEAD(&chip->iface_ref_list);
+ 	INIT_LIST_HEAD(&chip->midi_list);
+ 	INIT_LIST_HEAD(&chip->mixer_list);
+ 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index 6a027c349194..de0d2aa883fa 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -42,6 +42,7 @@ struct audioformat {
+ };
+ 
+ struct snd_usb_substream;
++struct snd_usb_iface_ref;
+ struct snd_usb_endpoint;
+ struct snd_usb_power_domain;
+ 
+@@ -58,6 +59,7 @@ struct snd_urb_ctx {
+ 
+ struct snd_usb_endpoint {
+ 	struct snd_usb_audio *chip;
++	struct snd_usb_iface_ref *iface_ref;
+ 
+ 	int opened;		/* open refcount; protect with chip->mutex */
+ 	atomic_t running;	/* running status */
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 162da7a50046..ae6276aded91 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -24,6 +24,14 @@
+ #define EP_FLAG_RUNNING		1
+ #define EP_FLAG_STOPPING	2
+ 
++/* interface refcounting */
++struct snd_usb_iface_ref {
++	unsigned char iface;
++	bool need_setup;
++	int opened;
++	struct list_head list;
++};
++
+ /*
+  * snd_usb_endpoint is a model that abstracts everything related to an
+  * USB endpoint and its streaming.
+@@ -488,6 +496,28 @@ static void snd_complete_urb(struct urb *urb)
+ 	clear_bit(ctx->index, &ep->active_mask);
+ }
+ 
++/*
++ * Find or create a refcount object for the given interface
++ *
++ * The objects are released altogether in snd_usb_endpoint_free_all()
++ */
++static struct snd_usb_iface_ref *
++iface_ref_find(struct snd_usb_audio *chip, int iface)
++{
++	struct snd_usb_iface_ref *ip;
++
++	list_for_each_entry(ip, &chip->iface_ref_list, list)
++		if (ip->iface == iface)
++			return ip;
++
++	ip = kzalloc(sizeof(*ip), GFP_KERNEL);
++	if (!ip)
++		return NULL;
++	ip->iface = iface;
++	list_add_tail(&ip->list, &chip->iface_ref_list);
++	return ip;
++}
++
+ /*
+  * Get the existing endpoint object corresponding EP
+  * Returns NULL if not present.
+@@ -520,8 +550,8 @@ snd_usb_get_endpoint(struct snd_usb_audio *chip, int ep_num)
+  *
+  * Returns zero on success or a negative error code.
+  *
+- * New endpoints will be added to chip->ep_list and must be freed by
+- * calling snd_usb_endpoint_free().
++ * New endpoints will be added to chip->ep_list and freed by
++ * calling snd_usb_endpoint_free_all().
+  *
+  * For SND_USB_ENDPOINT_TYPE_SYNC, the caller needs to guarantee that
+  * bNumEndpoints > 1 beforehand.
+@@ -658,6 +688,12 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 		usb_audio_dbg(chip, "Open EP 0x%x, iface=%d:%d, idx=%d\n",
+ 			      ep_num, ep->iface, ep->altsetting, ep->ep_idx);
+ 
++		ep->iface_ref = iface_ref_find(chip, ep->iface);
++		if (!ep->iface_ref) {
++			ep = NULL;
++			goto unlock;
++		}
++
+ 		ep->cur_audiofmt = fp;
+ 		ep->cur_channels = fp->channels;
+ 		ep->cur_rate = params_rate(params);
+@@ -681,6 +717,11 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 			      ep->implicit_fb_sync);
+ 
+ 	} else {
++		if (WARN_ON(!ep->iface_ref)) {
++			ep = NULL;
++			goto unlock;
++		}
++
+ 		if (!endpoint_compatible(ep, fp, params)) {
+ 			usb_audio_err(chip, "Incompatible EP setup for 0x%x\n",
+ 				      ep_num);
+@@ -692,6 +733,9 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 			      ep_num, ep->opened);
+ 	}
+ 
++	if (!ep->iface_ref->opened++)
++		ep->iface_ref->need_setup = true;
++
+ 	ep->opened++;
+ 
+  unlock:
+@@ -760,12 +804,16 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ 	mutex_lock(&chip->mutex);
+ 	usb_audio_dbg(chip, "Closing EP 0x%x (count %d)\n",
+ 		      ep->ep_num, ep->opened);
+-	if (!--ep->opened) {
++
++	if (!--ep->iface_ref->opened)
+ 		endpoint_set_interface(chip, ep, false);
++
++	if (!--ep->opened) {
+ 		ep->iface = 0;
+ 		ep->altsetting = 0;
+ 		ep->cur_audiofmt = NULL;
+ 		ep->cur_rate = 0;
++		ep->iface_ref = NULL;
+ 		usb_audio_dbg(chip, "EP 0x%x closed\n", ep->ep_num);
+ 	}
+ 	mutex_unlock(&chip->mutex);
+@@ -775,6 +823,8 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ void snd_usb_endpoint_suspend(struct snd_usb_endpoint *ep)
+ {
+ 	ep->need_setup = true;
++	if (ep->iface_ref)
++		ep->iface_ref->need_setup = true;
+ }
+ 
+ /*
+@@ -1195,11 +1245,13 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+ 	int err = 0;
+ 
+ 	mutex_lock(&chip->mutex);
++	if (WARN_ON(!ep->iface_ref))
++		goto unlock;
+ 	if (!ep->need_setup)
+ 		goto unlock;
+ 
+-	/* No need to (re-)configure the sync EP belonging to the same altset */
+-	if (ep->ep_idx) {
++	/* If the interface has been already set up, just set EP parameters */
++	if (!ep->iface_ref->need_setup) {
+ 		err = snd_usb_endpoint_set_params(chip, ep);
+ 		if (err < 0)
+ 			goto unlock;
+@@ -1242,6 +1294,8 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+ 			goto unlock;
+ 	}
+ 
++	ep->iface_ref->need_setup = false;
++
+  done:
+ 	ep->need_setup = false;
+ 	err = 1;
+@@ -1387,15 +1441,21 @@ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep)
+ }
+ 
+ /**
+- * snd_usb_endpoint_free: Free the resources of an snd_usb_endpoint
++ * snd_usb_endpoint_free_all: Free the resources of an snd_usb_endpoint
++ * @card: The chip
+  *
+- * @ep: the endpoint to free
+- *
+- * This free all resources of the given ep.
++ * This free all endpoints and those resources
+  */
+-void snd_usb_endpoint_free(struct snd_usb_endpoint *ep)
++void snd_usb_endpoint_free_all(struct snd_usb_audio *chip)
+ {
+-	kfree(ep);
++	struct snd_usb_endpoint *ep, *en;
++	struct snd_usb_iface_ref *ip, *in;
++
++	list_for_each_entry_safe(ep, en, &chip->ep_list, list)
++		kfree(ep);
++
++	list_for_each_entry_safe(ip, in, &chip->iface_ref_list, list)
++		kfree(ip);
+ }
+ 
+ /*
+diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
+index 11e3bb839fd7..eea4ca49876d 100644
+--- a/sound/usb/endpoint.h
++++ b/sound/usb/endpoint.h
+@@ -42,7 +42,7 @@ void snd_usb_endpoint_sync_pending_stop(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_suspend(struct snd_usb_endpoint *ep);
+ int  snd_usb_endpoint_activate(struct snd_usb_endpoint *ep);
+ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep);
+-void snd_usb_endpoint_free(struct snd_usb_endpoint *ep);
++void snd_usb_endpoint_free_all(struct snd_usb_audio *chip);
+ 
+ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
+ int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 980287aadd36..215c1771dd57 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -44,6 +44,7 @@ struct snd_usb_audio {
+ 
+ 	struct list_head pcm_list;	/* list of pcm streams */
+ 	struct list_head ep_list;	/* list of audio-related endpoints */
++	struct list_head iface_ref_list; /* list of interface refcounts */
+ 	int pcm_devs;
+ 
+ 	struct list_head midi_list;	/* list of midi interfaces */
+-- 
+2.26.2
+
