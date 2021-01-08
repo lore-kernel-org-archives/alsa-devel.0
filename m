@@ -2,65 +2,94 @@ Return-Path: <SRS0=g0zL=GL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07AC0C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5A16C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 08:01:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BB742343F
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:56:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BB742343F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 5726E2343F
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 08:01:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5726E2343F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B55E11699;
-	Fri,  8 Jan 2021 08:55:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B55E11699
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0BEE16A8;
+	Fri,  8 Jan 2021 09:00:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0BEE16A8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610092558;
-	bh=IxY4iK/Pr/neK9BHTZeIlppfivdamm0HciIQ/LWqYL8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610092878;
+	bh=Rp5Q+LQ8DaHbEnjTmLGm3pfmDcExA/dcAHCMDe997Uk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DX74J3Oo/YrF6Lo6YChFH6On9yKQXE3Kga48WhwrIyWLsHiYhYEWY36QlBQWBrKsN
-	 TFiUHIqrHJypmwsO3Hohw116xuZHmbrmxg8ULLtp3HCtzYT8lDxCJz51iTFp31eUca
-	 NdaYUPatANX8DYCYnl1gE2Q2qAd1QUsULmu0FQUk=
+	b=O6WzuZJT+MxDlnDVmaRf7MRu8Djit9TXwjrPb21A5IFAtGTBAcIRYV9GGuQoGveWr
+	 dNK4Om/ucvTKVhw5wSuDVtn8C/CRygcRRoyk6Woo2p+rLOGbioIcRvIXdBmvMnq8h3
+	 JUvlNmjVvMKoZNH4qEI5w71gXyNwYXj1Lbf0qWo4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF8BAF804E2;
-	Fri,  8 Jan 2021 08:52:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45619F80165;
+	Fri,  8 Jan 2021 09:00:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FD73F80167; Fri,  8 Jan 2021 08:52:36 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BA032F80166; Fri,  8 Jan 2021 09:00:25 +0100 (CET)
+Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
+ [216.228.121.143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 286CEF80165
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 08:52:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 286CEF80165
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 7B3CBAED0;
- Fri,  8 Jan 2021 07:52:20 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 1/5] ALSA: usb-audio: Fix the missing endpoints creations
- for quirks
-Date: Fri,  8 Jan 2021 08:52:15 +0100
-Message-Id: <20210108075219.21463-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210108075219.21463-1-tiwai@suse.de>
-References: <20210108075219.21463-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DCDBF80165
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 09:00:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DCDBF80165
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="bVvAn6XM"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B5ff8110b0003>; Fri, 08 Jan 2021 00:00:11 -0800
+Received: from [10.25.98.33] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 Jan
+ 2021 08:00:06 +0000
+Subject: Re: [PATCH 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+To: Peter Geis <pgwipeout@gmail.com>
+References: <20201225012025.507803-1-pgwipeout@gmail.com>
+ <20201225012025.507803-3-pgwipeout@gmail.com>
+ <0c3665b2-bac6-546a-bdd4-0ab7a90adf7c@nvidia.com>
+ <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <b3a3ede2-22d5-b13d-f245-7c3b40ea411a@nvidia.com>
+Date: Fri, 8 Jan 2021 13:30:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>,
- Geraldo <geraldogabriel@gmail.com>
+In-Reply-To: <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1610092811; bh=tAX7+nwrhbWHTaFDYsrLY7TV7AsIei6JzO5pznTK/EY=;
+ h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+ MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+ Content-Language:X-Originating-IP:X-ClientProxiedBy;
+ b=bVvAn6XMiAZ7FoTF4OYFwB8L3AnCfRZgNwnpAWTwq9iSt9JPgLv0hKIvDEi8xr8lQ
+ laUYCy+WEWqF1ED0lhDotEwuMGmsiMEXe4bD6D7pLqVems6d7NQ1MaoceT9HHi6S28
+ v9peEUWyStRs/KnaepmCvucDQ6yfUdK7HadQ3Sj4Ahyk7ma4QxN3eH21eoUd6zilMn
+ Z95vNauSua3gmlKEuJEUMk2qj+ChuLK0NS9bRnPgN/IC3LE7KRH5MMpKmnn/Dkcs81
+ C6hDOkSU+Xhj4hJldLe5pFoBhGdHHsqS9y9gOWy1mTyd1SebKlo/bjI5KTdVg9z9NU
+ ecaVWzLmv8wmw==
+Cc: alsa-devel@alsa-project.org, Prashant
+ Gaikwad <pgaikwad@nvidia.com>, Mohan Kumar <mkumard@nvidia.com>,
+ Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+ Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Ion Agorria <ion@agorria.com>,
+ linux-tegra@vger.kernel.org, Peter De Schrijver <pdeschrijver@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,130 +105,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent change in the endpoint management moved the endpoint object
-creation from the stream open time to the parser of the audio
-descriptor.  It works fine for the standard audio, but it overlooked
-the other places that create audio streams via quirks
-(QUIRK_AUDIO_FIXED_ENDPOINT) like the reported a few Pioneer devices;
-those call snd_usb_add_audio_stream() manually, hence they miss the
-endpoints, eventually resulting in the error at opening streams.
-Moreover, now the sync EP setup was moved to the explicit call of
-snd_usb_audioformat_set_sync_ep(), and this needs to be added for
-those places, too.
 
-This patch addresses those regressions for quirks.  It adds a local
-helper function add_audio_stream_from_fixed_fmt(), which does the all
-needed tasks, and replaces the calls of snd_usb_add_audio_stream()
-with this new function.
 
-Fixes: 54cb31901b83 ("ALSA: usb-audio: Create endpoint objects at parsing phase")
-Reported-by: František Kučera <konference@frantovo.cz>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/quirks.c | 54 +++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 10 deletions(-)
+On 1/7/2021 2:51 AM, Peter Geis wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Tue, Jan 5, 2021 at 1:30 AM Sameer Pujar <spujar@nvidia.com> wrote:
+>>
+>>
+>> On 12/25/2020 6:50 AM, Peter Geis wrote:
+>>> External email: Use caution opening links or attachments
+>>>
+>>>
+>>> Currently hda on tegra30 fails to open a stream with an input/output er=
+ror.
+>>> This is similar to the issue referenced in [1].
+>>>
+>>> For example:
+>>> speaker-test -Dhw:0,3 -c 2
+>>>
+>>> speaker-test 1.2.2
+>>>
+>>> Playback device is hw:0,3
+>>> Stream parameters are 48000Hz, S16_LE, 2 channels
+>>> Using 16 octaves of pink noise
+>>> Rate set to 48000Hz (requested 48000Hz)
+>>> Buffer size range from 64 to 16384
+>>> Period size range from 32 to 8192
+>>> Using max buffer size 16384
+>>> Periods =3D 4
+>>> was set period_size =3D 4096
+>>> was set buffer_size =3D 16384
+>>>    0 - Front Left
+>>> Write error: -5,Input/output error
+>>> xrun_recovery failed: -5,Input/output error
+>>> Transfer failed: Input/output error
+>>>
+>>> [1] states "Due to a legacy HW design problem", implying the issue appl=
+ies to all previous tegra-hda devices.
+>>> The tegra-hda device was introduced in tegra30 but only utilized in teg=
+ra124 until now.
+>>> For this reason it is unknown when this issue first manifested.
+>>>
+>>> Applying the fix in [1] universally resolves this issue on tegra30.
+>>> Tested on the Ouya game console and the tf201 tablet.
+>>>
+>>> [1] 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on Tegr=
+a194")
+>> This issue was never seen on Tegra210/Tegra186 and hence at that time it
+>> was thought to be specific to Tegra194. I never tested this on Tegra30
+>> since I don't have this device. I will clarify this with HW folks if
+>> workaround is safer for all chips.
+> So this is confirmed to not affect Tegra210 and Tegra186, but it does
+> affect Tegra194 and Tegra30.
+> Is it possible for the hardware team to pitch on on where the fix was
+> implemented?
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index e4a690bb4c99..b70e2ebc3e29 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -120,6 +120,40 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
- 	return 0;
- }
- 
-+/* create the audio stream and the corresponding endpoints from the fixed
-+ * audioformat object; this is used for quirks with the fixed EPs
-+ */
-+static int add_audio_stream_from_fixed_fmt(struct snd_usb_audio *chip,
-+					   struct audioformat *fp)
-+{
-+	int stream, err;
-+
-+	stream = (fp->endpoint & USB_DIR_IN) ?
-+		SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+
-+	snd_usb_audioformat_set_sync_ep(chip, fp);
-+
-+	err = snd_usb_add_audio_stream(chip, stream, fp);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_usb_add_endpoint(chip, fp->endpoint,
-+				   SND_USB_ENDPOINT_TYPE_DATA);
-+	if (err < 0)
-+		return err;
-+
-+	if (fp->sync_ep) {
-+		err = snd_usb_add_endpoint(chip, fp->sync_ep,
-+					   fp->implicit_fb ?
-+					   SND_USB_ENDPOINT_TYPE_DATA :
-+					   SND_USB_ENDPOINT_TYPE_SYNC);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * create a stream for an endpoint/altsetting without proper descriptors
-  */
-@@ -131,8 +165,8 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 	struct audioformat *fp;
- 	struct usb_host_interface *alts;
- 	struct usb_interface_descriptor *altsd;
--	int stream, err;
- 	unsigned *rate_table = NULL;
-+	int err;
- 
- 	fp = kmemdup(quirk->data, sizeof(*fp), GFP_KERNEL);
- 	if (!fp)
-@@ -153,11 +187,6 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 		fp->rate_table = rate_table;
- 	}
- 
--	stream = (fp->endpoint & USB_DIR_IN)
--		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
--	err = snd_usb_add_audio_stream(chip, stream, fp);
--	if (err < 0)
--		goto error;
- 	if (fp->iface != get_iface_desc(&iface->altsetting[0])->bInterfaceNumber ||
- 	    fp->altset_idx >= iface->num_altsetting) {
- 		err = -EINVAL;
-@@ -176,6 +205,13 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
- 		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
- 	if (fp->maxpacksize == 0)
- 		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
-+	if (!fp->fmt_type)
-+		fp->fmt_type = UAC_FORMAT_TYPE_I;
-+
-+	err = add_audio_stream_from_fixed_fmt(chip, fp);
-+	if (err < 0)
-+		goto error;
-+
- 	usb_set_interface(chip->dev, fp->iface, 0);
- 	snd_usb_init_pitch(chip, fp);
- 	snd_usb_init_sample_rate(chip, fp, fp->rate_max);
-@@ -417,7 +453,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
- 	struct usb_host_interface *alts;
- 	struct usb_interface_descriptor *altsd;
- 	struct audioformat *fp;
--	int stream, err;
-+	int err;
- 
- 	/* both PCM and MIDI interfaces have 2 or more altsettings */
- 	if (iface->num_altsetting < 2)
-@@ -482,9 +518,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
- 		return -ENXIO;
- 	}
- 
--	stream = (fp->endpoint & USB_DIR_IN)
--		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
--	err = snd_usb_add_audio_stream(chip, stream, fp);
-+	err = add_audio_stream_from_fixed_fmt(chip, fp);
- 	if (err < 0) {
- 		list_del(&fp->list); /* unlink for avoiding double-free */
- 		kfree(fp);
--- 
-2.26.2
+I discussed this with HW team. The issue is applicable to all Tegra chips.
+
+Below is the striping formula referenced from HD audio spec.
+ =C2=A0 { ((num_channels * bits_per_sample) / number of SDOs) >=3D 8 }
+
+The current issue is seen because Tegra HW has a problem with boundary=20
+condition (=3D 8) for striping. The reason why it is not seen on=20
+Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is=20
+read from GCAP register.
+
+For the given stream (channels =3D 2, bps =3D 16);
+ratio =3D (channels * bps) / NSDO =3D 32 / NSDO;
+
+On Tegra30,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ratio =3D 32/4 =3D 8=C2=A0 (FAIL)
+On Tegra210/186, ratio =3D 32/2 =3D 16 (PASS)
+On Tegra194,=C2=A0=C2=A0=C2=A0=C2=A0 ratio =3D 32/4 =3D 8=C2=A0 (FAIL) =3D=
+=3D> Earlier workaround was=20
+applied for it
+
+If Tegra210/186 is forced to use 4SDO, it fails there as well. So the=20
+behavior is consistent across all these chips.
+
+>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+>>> Tested-by: Ion Agorria <ion@agorria.com>
+>>> ---
+>>>    sound/pci/hda/hda_tegra.c | 3 +--
+>>>    1 file changed, 1 insertion(+), 2 deletions(-)
+>>>
+>>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+>>> index 70164d1428d4..f8d61e677a09 100644
+>>> --- a/sound/pci/hda/hda_tegra.c
+>>> +++ b/sound/pci/hda/hda_tegra.c
+>>> @@ -388,8 +388,7 @@ static int hda_tegra_first_init(struct azx *chip, s=
+truct platform_device *pdev)
+>>>            * in powers of 2, next available ratio is 16 which can be
+>>>            * used as a limiting factor here.
+>>>            */
+>>> -       if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
+>>> -               chip->bus.core.sdo_limit =3D 16;
+>>> +       chip->bus.core.sdo_limit =3D 16;
+>> Future Tegra chips address this problem and hence cannot be enforced by
+>> default. May be we can have like below:
+>>
+>> if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+>> chip->bus.core.sdo_limit =3D 16;
+>>
+> It will need to be a bit more complicated than that, since the
+> tegra186 and tegra210 device trees have "nvidia,tegra30-hda" as a
+> fallback.
+> Looking at the generation map, tegra30-hda can be the fallback for the
+> broken implementation and tegra210-hda can be the fallback for the
+> working implementation.
+> Does that work for you?
+
+As per above explanation, it is fine to apply the workaround for=20
+Tegra210/186 as well. So it simplifies things for all existing chips.
+
+>>>           /* codec detection */
+>>>           if (!bus->codec_mask) {
+>>> --
+>>> 2.25.1
+>>>
 
