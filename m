@@ -2,93 +2,94 @@ Return-Path: <SRS0=g0zL=GL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C897AC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 03:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68143C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 04:59:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B05F0233F6
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 03:31:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B05F0233F6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=endlessos.org
+	by mail.kernel.org (Postfix) with ESMTPS id C2C2922E02
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 04:59:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2C2922E02
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2CDF1678;
-	Fri,  8 Jan 2021 04:30:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2CDF1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C4BC1686;
+	Fri,  8 Jan 2021 05:58:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C4BC1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610076675;
-	bh=tOE2OyC0pMXjvjdGhTH42pEsZ01sMS1A4D6+cG0uIF0=;
+	s=default; t=1610081961;
+	bh=W4rdGLSTxKDPfw75JgfkaBzk5kk79wjjJ9VA6MTDa2Q=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=smT1ggRlooJ3mh8844GGL76bV+XRaSz7019Dw+L624xnA/TiRclGmtgIR4tsVXHyW
-	 81gUwEDXPls/w77snjqv9Dp+yZILtjb1p0i1IRuwpUBA6t/6xnakb7ybaPz8NoM6VN
-	 zXw90NwAxjbXNmcIkIVShD/ffUzHvdnScxx1gw4M=
+	b=PaR+Tzd/xMUdnYIQlWMNCD6AMsOVc7y92n+nLzKJxsMAeMVmxUq1MRURREwDeTJu4
+	 yFERVzrjoodCQhwsSK41H/4otSYJagf1aL/gpCn1O4WGhNMhFLrF32YER2pCN/XNJO
+	 ouH/Ip8CchtAE20o2CIaZySaBAHI1BMQB4r3rDKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E3EAF80165;
-	Fri,  8 Jan 2021 04:30:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1F0BF80165;
+	Fri,  8 Jan 2021 05:58:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88B77F80166; Fri,  8 Jan 2021 04:30:21 +0100 (CET)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
- [IPv6:2607:f8b0:4864:20::635])
+ id 82EEDF80166; Fri,  8 Jan 2021 05:58:20 +0100 (CET)
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com
+ [IPv6:2607:f8b0:4864:20::e33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F442F800EE
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 04:30:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F442F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC697F800E9
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 05:58:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC697F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org
- header.b="KLJgXlwf"
-Received: by mail-pl1-x635.google.com with SMTP id y8so4955878plp.8
- for <alsa-devel@alsa-project.org>; Thu, 07 Jan 2021 19:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=endlessos.org; s=google;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="EBMZa6kB"
+Received: by mail-vs1-xe33.google.com with SMTP id e20so4885046vsr.12
+ for <alsa-devel@alsa-project.org>; Thu, 07 Jan 2021 20:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=OMhXAV38uws0Ksy5eFTBEtLZPPxlU+gVbo6AAxo9H64=;
- b=KLJgXlwfMJjBfzdSjGYTPhHPsAqpuShISXI+md2pS24yEXts3Xsoyt7jDloPiy2ToY
- L+In4ZjdKq0MzoUB+FHuzWNH3JOzmDAyda2LsOA1plUBqKswktdEKZsmOj2OCMavBsuU
- QFxc5kyCJzqLGG4nwZKgnq2Foi9eyv3mynfWMBd1kf4/vDoqenrDe0LBKEHLY0nw/Oyd
- xT7CjPx+jb6LL0q9Tp9uV4WN/HggllSPSNNUolnn6WEpkCrhyRuD584cwU9pX2ol/nkx
- oodvLacjwvr5y2Z6nr8hUd/Que/FOMbeNl3RGpjzF5MS9o6FCYYDU8GTVT9y+ZsKhwMk
- fljA==
+ :cc:content-transfer-encoding;
+ bh=W4rdGLSTxKDPfw75JgfkaBzk5kk79wjjJ9VA6MTDa2Q=;
+ b=EBMZa6kBZYBFUvIxtYUIFiOOXtkDLs6tu3Tvx5QATngETYkJghg2EliH4XTOPu6Bt+
+ 0t0NHpFnagN3TCzOA5+FLEHim1DI7PQ+X692eSQBbEHYYGOPWws48yRbHkqKQ7+yhTug
+ QUhLjTjv8/eAlumFy41A9Hy1hZxx9jD7xPBb0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=OMhXAV38uws0Ksy5eFTBEtLZPPxlU+gVbo6AAxo9H64=;
- b=RYpn3CKk7vVf0V+vrPQNAT6dtugL0/+IbWtI2l/Zvk2es05hLmVnPzTT6JHFJMeetL
- C10cBIG4H/XtBWlLf2f+zgQ/Yb/o8n5FRzzVGl3SJ1JZPxvC97HBsrL3dkjwEHWZQLtg
- cdsH689T2oLyrEFTq+Jucd44IGJSI1l4K+cudaSfDT89cyHiHQuE4zhoamEl1OhbbEDQ
- VoT0noMTv99giaczsVdN7skQgWCQ37WVRrqxc93svx8QqgheGWRB3GoVcWH+w7y4axzm
- 1ELM3d9R2a+7j+tk5T0kafSZYac4kFEdTxgVktdt31pWIkHBPC27SJ77/lkycZv67Bbn
- lStA==
-X-Gm-Message-State: AOAM5303/ZWB3XLUZ0h/uQlylj9y/oSrIOZW/kCG6XXTtELTHg39HHyP
- xMBss4/nF9Yq0x/Q1aKokm6qh/MuWXrdmxNo8LtckA==
-X-Google-Smtp-Source: ABdhPJx61kmnqYZNLacqSbd8guWpR5oS2tLYpoagBmZ9x0mVfpQqFrbKtiaI9DNbP+oxyiVvhMWfuWpcdUHWyUoSUHY=
-X-Received: by 2002:a17:90a:fa8e:: with SMTP id
- cu14mr1647501pjb.140.1610076611419; 
- Thu, 07 Jan 2021 19:30:11 -0800 (PST)
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=W4rdGLSTxKDPfw75JgfkaBzk5kk79wjjJ9VA6MTDa2Q=;
+ b=lHKnnOeYm+1D1FJ16T31XUVxmwY2Cu7lmgOBXoJh2nS30nugRSMRSCETbGWMD4kBJC
+ FgSq+idmbjhhNGECDlcuu1Dw0557Z1rmRtjRuPyVqjOVJ8x4td6naZE0xyHjibXbXuQD
+ dUlJRbInMwZIt4GI95gi9MTwKiYLlG+kvV/w+Z/upOAoh9vR9sFnQFRd3PtCCNdx/MzH
+ 8ryReb71EH3YTlz9foU63IPkFBgB0FfuUdPwOBJpua+8uM3uY3Hb/+tW3toojYxuWRGr
+ XfuRI1Dqs+UzRpLfg1z2qMehfks0El7MXG/NQ+EHO2HuV4BGwMvEf8Ifz14PRs7t3IEF
+ cU/w==
+X-Gm-Message-State: AOAM533ipfUoZLnPx1+TXAGU4s3Ge6//4TYRQnK8/NpqFfCsWJAMh0I1
+ mtaWrh1Nlu5Ri94c9ic62jxU9Z9aDabyiO8uOFU3Dw==
+X-Google-Smtp-Source: ABdhPJyUCYN4dVE7lrXmBC6FacDWh+fEpOGViWqsFYTO/SaNqRzaLv9WnGjUVFdcO3x4xtbcyaLZOpuEZ4UuFIMfrG0=
+X-Received: by 2002:a67:2287:: with SMTP id i129mr1529947vsi.15.1610081882763; 
+ Thu, 07 Jan 2021 20:58:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107090625.107078-1-chiu@endlessos.org>
- <20210107090625.107078-2-chiu@endlessos.org>
- <20210107142746.GC4726@sirena.org.uk>
-In-Reply-To: <20210107142746.GC4726@sirena.org.uk>
-From: Chris Chiu <chiu@endlessos.org>
-Date: Fri, 8 Jan 2021 11:30:00 +0800
-Message-ID: <CAB4CAwfyE_tXHENi5bbekFGFutU3Cxgr2SgKyUQbRnS4RtwuYQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
+References: <20210107085942.2891525-1-yuhsuan@chromium.org>
+ <20210107135459.GB4726@sirena.org.uk>
+In-Reply-To: <20210107135459.GB4726@sirena.org.uk>
+From: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Date: Fri, 8 Jan 2021 12:57:51 +0800
+Message-ID: <CAGvk5PqMCEib8Yr=V4SxT0BBMoC1+yGXm0y+52+LwC5dPQUVnA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
 To: Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- Linux Kernel <linux-kernel@vger.kernel.org>, linux@endlessos.org,
- tiwai@suse.com
+Content-Transfer-Encoding: quoted-printable
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Guenter Roeck <groeck@chromium.org>, Prashant Malani <pmalani@chromium.org>,
+ Pi-Hsun Shih <pihsun@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,37 +105,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 7, 2021 at 10:28 PM Mark Brown <broonie@kernel.org> wrote:
+Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=E6=97=A5=
+ =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:55=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> On Thu, Jan 07, 2021 at 05:06:22PM +0800, Chris Chiu wrote:
+> On Thu, Jan 07, 2021 at 04:59:41PM +0800, Yu-Hsuan Hsu wrote:
+> > Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+> > which is used for resetting the EC codec.
 >
-> > +static const struct acpi_gpio_mapping *cht_rt5645_gpios;
-> > +
->
-> You're adding a read only static variable with no way to set it.  This
-> doesn't actually do anything?
->
-This is a pointer to a 'const 'struct acpi_gpio_mapping', and I will
-need it to point to
-the 'static const struct acpi_gpio_mapping cht_rt5645_ef20_gpios[]' in
-my consequent
-patch '[PATCH 2/4] ASoC: rt5645: Add ACPI-defined GPIO for ECS EF20 series'.
+> I think the request was to sync over all the commands that are supported
+> in the EC rather than just split this one addition into a separate
+> patch.
+Got it. However, after running make_linux_ec_commands_h.sh to create
+the new cros_ec_commands.h, I found there are lots of difference (1092
+insertions(+), 66 deletions(-)). In addition, there are also some
+redefined variables(most are in ./include/linux/usb/pd.h) causing the
+compile error.
 
-I take the same idea from 'sound/soc/intel/boards/bytcr_rt5651.c' line 90.
-And it did work as expected on my ECS EF20EA
-
-> > @@ -3780,7 +3782,6 @@ static const struct dmi_system_id dmi_platform_data[] = {
-> >               },
-> >               .driver_data = (void *)&intel_braswell_platform_data,
-> >       },
-> > -     { }
-> >  };
-> >
->
-> This is an unrelated change which removes the terminator on the array
-> which will cause issues.
-
-Thanks for pointing that out. It's not my intention. I accidentally
-removed it. I'll fix this in v3.
-
-Chris
+It seems not easy to sync cros_ec_commands.h. I'm afraid of breaking
+something. Does anyone have any suggestion? Thanks.
