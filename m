@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2515FC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56636C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:55:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DA54B207B8
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:54:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DA54B207B8
+	by mail.kernel.org (Postfix) with ESMTPS id A69062343F
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jan 2021 07:55:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A69062343F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E05E168C;
-	Fri,  8 Jan 2021 08:53:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E05E168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41DD116C2;
+	Fri,  8 Jan 2021 08:54:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41DD116C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610092471;
-	bh=pBvHVjmxvZDv1CsEJ1+pw3LQO4JWZtM2PsQuEngSR6A=;
+	s=default; t=1610092513;
+	bh=/Eyh1zWo8kef16K3/fQ3J2ynzpE/h5F7WO9175qvZ/4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o/2ucpcK/d3gwSrm2HebxZumoobcgcSUkTtm13XDJm53NdxWu8DOV4wxBt2wX2PxH
-	 hWLgvsdUyzH/9EskzOv67s1PLJ1GPEviTwvkKU0eoiQhdj6YWmp6E2MA+FSJO2mGps
-	 ZkSmRjXh8++36rCXaBIDffquhkfrrtkIK4xoK73w=
+	b=TWa4idmHcB/W1WV5WFwLSimG8tW/YeTL+xEAa6tgsA6NQJbfDad5nTFFFlmFqJzqE
+	 dHpkotIId9VleQxz7kwkPqRPSC/b5z6amT4+Iggp6skYZ1zZ6Uz05JDziwIuGyYd3w
+	 QuYb2Iin4GlHM5kArAHwPu2roUWB+S/FWlN8MBPw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 441D8F8027D;
-	Fri,  8 Jan 2021 08:52:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B22DF804C3;
+	Fri,  8 Jan 2021 08:52:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58B09F8016A; Fri,  8 Jan 2021 08:52:33 +0100 (CET)
+ id 10034F800EE; Fri,  8 Jan 2021 08:52:34 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24A98F800EE
- for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 08:52:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24A98F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1B06F8025E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2021 08:52:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1B06F8025E
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9064CAED7;
+ by mx2.suse.de (Postfix) with ESMTP id B3914AF1E;
  Fri,  8 Jan 2021 07:52:20 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 2/5] ALSA: usb-audio: Choose audioformat of a counter-part
- substream
-Date: Fri,  8 Jan 2021 08:52:16 +0100
-Message-Id: <20210108075219.21463-3-tiwai@suse.de>
+Subject: [PATCH v5 5/5] ALSA: usb-audio: Fix implicit feedback sync setup for
+ Pioneer devices
+Date: Fri,  8 Jan 2021 08:52:19 +0100
+Message-Id: <20210108075219.21463-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210108075219.21463-1-tiwai@suse.de>
 References: <20210108075219.21463-1-tiwai@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>,
  Geraldo <geraldogabriel@gmail.com>
@@ -75,56 +76,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The implicit feedback mode needs to handle two endpoints and the
-choice of the audioformat object for the sync EP is important since
-this determines the compatibility of the hw_params.  The current code
-uses the same audioformat object if both the main EP and the sync EP
-point to the same iface/altsetting.  This was done in consideration of
-the non-implicit-fb sync EP handling, and it doesn't match well with
-the cases where actually to endpoints are defined in the sameiface /
-altsetting like a few Pioneer devices.
+Pioneer devices have both playback and capture streams sharing the
+same iface/altsetting, and those need to be paired as implicit
+feedback.  Instead of a half-baked (and broken) static quirk entry,
+set up more generically for those devices by checking the number of
+endpoints and the attribute of the secondary EP.
 
-Modify snd_usb_find_implicit_fb_sync_format() to pick up the
-audioformat that is assigned in the counter-part substreams primarily,
-so that the actual capture stream can be opened properly.  We keep the
-same audioformat object only as a fallback in case nothing found,
-though.
-
-Fixes: 9fddc15e8039 ("ALSA: usb-audio: Factor out the implicit feedback quirk code")
+Fixes: bf6313a0ff76 ("ALSA: usb-audio: Refactor endpoint management")
+Reported-by: František Kučera <konference@frantovo.cz>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/implicit.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/usb/implicit.c | 48 +++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 38 insertions(+), 10 deletions(-)
 
 diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
-index 931042a6a051..9724efe1cdce 100644
+index 9724efe1cdce..1ac2cc6c33fb 100644
 --- a/sound/usb/implicit.c
 +++ b/sound/usb/implicit.c
-@@ -378,20 +378,19 @@ snd_usb_find_implicit_fb_sync_format(struct snd_usb_audio *chip,
- 				     int stream)
+@@ -58,8 +58,6 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
+ 	IMPLICIT_FB_FIXED_DEV(0x0499, 0x172f, 0x81, 2), /* Steinberg UR22C */
+ 	IMPLICIT_FB_FIXED_DEV(0x0d9a, 0x00df, 0x81, 2), /* RTX6001 */
+ 	IMPLICIT_FB_FIXED_DEV(0x22f0, 0x0006, 0x81, 3), /* Allen&Heath Qu-16 */
+-	IMPLICIT_FB_FIXED_DEV(0x2b73, 0x000a, 0x82, 0), /* Pioneer DJ DJM-900NXS2 */
+-	IMPLICIT_FB_FIXED_DEV(0x2b73, 0x0017, 0x82, 0), /* Pioneer DJ DJM-250MK2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x1686, 0xf029, 0x82, 2), /* Zoom UAC-2 */
+ 	IMPLICIT_FB_FIXED_DEV(0x2466, 0x8003, 0x86, 2), /* Fractal Audio Axe-Fx II */
+ 	IMPLICIT_FB_FIXED_DEV(0x0499, 0x172a, 0x86, 2), /* Yamaha MODX */
+@@ -100,7 +98,7 @@ static const struct snd_usb_implicit_fb_match capture_implicit_fb_quirks[] = {
+ /* set up sync EP information on the audioformat */
+ static int add_implicit_fb_sync_ep(struct snd_usb_audio *chip,
+ 				   struct audioformat *fmt,
+-				   int ep, int ifnum,
++				   int ep, int ep_idx, int ifnum,
+ 				   const struct usb_host_interface *alts)
  {
- 	struct snd_usb_substream *subs;
--	const struct audioformat *fp, *sync_fmt;
-+	const struct audioformat *fp, *sync_fmt = NULL;
- 	int score, high_score;
+ 	struct usb_interface *iface;
+@@ -115,7 +113,7 @@ static int add_implicit_fb_sync_ep(struct snd_usb_audio *chip,
+ 	fmt->sync_ep = ep;
+ 	fmt->sync_iface = ifnum;
+ 	fmt->sync_altsetting = alts->desc.bAlternateSetting;
+-	fmt->sync_ep_idx = 0;
++	fmt->sync_ep_idx = ep_idx;
+ 	fmt->implicit_fb = 1;
+ 	usb_audio_dbg(chip,
+ 		      "%d:%d: added %s implicit_fb sync_ep %x, iface %d:%d\n",
+@@ -147,7 +145,7 @@ static int add_generic_uac2_implicit_fb(struct snd_usb_audio *chip,
+ 	    (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
+ 					USB_ENDPOINT_USAGE_IMPLICIT_FB)
+ 		return 0;
+-	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress,
++	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 0,
+ 				       ifnum, alts);
+ }
  
--	/* When sharing the same altset, use the original audioformat */
-+	/* Use the original audioformat as fallback for the shared altset */
- 	if (target->iface == target->sync_iface &&
- 	    target->altsetting == target->sync_altsetting)
--		return target;
-+		sync_fmt = target;
+@@ -173,10 +171,32 @@ static int add_roland_implicit_fb(struct snd_usb_audio *chip,
+ 	    (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
+ 					USB_ENDPOINT_USAGE_IMPLICIT_FB)
+ 		return 0;
+-	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress,
++	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 0,
+ 				       ifnum, alts);
+ }
  
- 	subs = find_matching_substream(chip, stream, target->sync_ep,
- 				       target->fmt_type);
- 	if (!subs)
--		return NULL;
-+		return sync_fmt;
++/* Pioneer devices: playback and capture streams sharing the same iface/altset
++ */
++static int add_pioneer_implicit_fb(struct snd_usb_audio *chip,
++				   struct audioformat *fmt,
++				   struct usb_host_interface *alts)
++{
++	struct usb_endpoint_descriptor *epd;
++
++	if (alts->desc.bNumEndpoints != 2)
++		return 0;
++
++	epd = get_endpoint(alts, 1);
++	if (!usb_endpoint_is_isoc_in(epd) ||
++	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC ||
++	    ((epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
++	     USB_ENDPOINT_USAGE_DATA &&
++	     (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
++	     USB_ENDPOINT_USAGE_IMPLICIT_FB))
++		return 0;
++	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 1,
++				       alts->desc.bInterfaceNumber, alts);
++}
  
--	sync_fmt = NULL;
- 	high_score = 0;
- 	list_for_each_entry(fp, &subs->fmt_list, list) {
- 		score = match_endpoint_audioformats(subs, fp,
+ static int __add_generic_implicit_fb(struct snd_usb_audio *chip,
+ 				     struct audioformat *fmt,
+@@ -197,7 +217,7 @@ static int __add_generic_implicit_fb(struct snd_usb_audio *chip,
+ 	if (!usb_endpoint_is_isoc_in(epd) ||
+ 	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
+ 		return 0;
+-	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress,
++	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 0,
+ 				       iface, alts);
+ }
+ 
+@@ -250,7 +270,7 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
+ 		case IMPLICIT_FB_NONE:
+ 			return 0; /* No quirk */
+ 		case IMPLICIT_FB_FIXED:
+-			return add_implicit_fb_sync_ep(chip, fmt, p->ep_num,
++			return add_implicit_fb_sync_ep(chip, fmt, p->ep_num, 0,
+ 						       p->iface, NULL);
+ 		}
+ 	}
+@@ -278,6 +298,14 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
+ 			return 1;
+ 	}
+ 
++	/* Pioneer devices implicit feedback with vendor spec class */
++	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
++	    alts->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
++	    USB_ID_VENDOR(chip->usb_id) == 0x2b73 /* Pioneer */) {
++		if (add_pioneer_implicit_fb(chip, fmt, alts))
++			return 1;
++	}
++
+ 	/* Try the generic implicit fb if available */
+ 	if (chip->generic_implicit_fb)
+ 		return add_generic_implicit_fb(chip, fmt, alts);
+@@ -295,8 +323,8 @@ static int audioformat_capture_quirk(struct snd_usb_audio *chip,
+ 
+ 	p = find_implicit_fb_entry(chip, capture_implicit_fb_quirks, alts);
+ 	if (p && p->type == IMPLICIT_FB_FIXED)
+-		return add_implicit_fb_sync_ep(chip, fmt, p->ep_num, p->iface,
+-					       NULL);
++		return add_implicit_fb_sync_ep(chip, fmt, p->ep_num, 0,
++					       p->iface, NULL);
+ 	return 0;
+ }
+ 
 -- 
 2.26.2
 
