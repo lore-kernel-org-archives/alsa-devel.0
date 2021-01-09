@@ -7,90 +7,87 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9BACC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jan 2021 21:04:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23377C433E0
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jan 2021 21:04:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5ED2D207C8
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jan 2021 21:04:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5ED2D207C8
+	by mail.kernel.org (Postfix) with ESMTPS id 5608E20729
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jan 2021 21:04:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5608E20729
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F6381710;
-	Sat,  9 Jan 2021 22:03:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F6381710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 898941731;
+	Sat,  9 Jan 2021 22:03:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 898941731
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610226262;
-	bh=x2JIrYixmc/9Xv2ZWtGLG3zgfJ598edkY2syBIc+wcY=;
+	s=default; t=1610226267;
+	bh=GzZJExIryUdWh6fr1HKfieNkK+t3GE0JIEkBIGay/U4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cVrsRyfKeGf9FWafrYGfUtZ8+PsGkEQ3VN/lSBJcJiFpxx1nRvfQJLrrqDrwBtrYH
-	 SlR2hryZJeqRcQl0WfmAhcOmh1UIPYNWZf2B1rW3I9ofDjaW3seZsd08/pj7fGTErY
-	 L1Jr6Fm4sKuHh4lumfL29md0RWk04Lesjcl476GY=
+	b=gy7vfY9kYRwyVjpFdoTr3e4Eu9vr88NJya6I8MAZVKnzZctqePjZDvRTym0dJsZo/
+	 a0jVrQM5F3jv/BkEy/ecyz3INUAk8pgvz+xmXv+l+031BdOeCQuC6QWe7RaZeQvs31
+	 eVq5OnkZYXgmtxOPn2FgKy7RBdsKLv2to964LlsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4B7EF804CA;
-	Sat,  9 Jan 2021 22:02:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26CA5F80258;
+	Sat,  9 Jan 2021 22:03:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3887FF801F5; Sat,  9 Jan 2021 22:01:43 +0100 (CET)
+ id 986C9F804D6; Sat,  9 Jan 2021 22:03:03 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CCBBF80258
- for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2021 22:01:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CCBBF80258
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD75DF801F5
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jan 2021 22:03:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD75DF801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="BXpexT8S"
+ header.b="HqnosZLm"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610226093;
+ s=mimecast20190719; t=1610226179;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i0MNJdUP5Bh78YDO8qXyM8DgkIdQP3GO3KNOp3f7vR8=;
- b=BXpexT8SO35foEyfY+Bw6ADaWQdK59a2brKzy2dymNzWeMZTPhDaFjfkILMasBOzXKnWYz
- IfO9NddMRGwNECjqnDmOjKLR0p7aAmUKff0UAO0SVMzoFIw4bFvN5dqf5IYuS1cXKRTb+g
- 6xR+3o6qq+D/HkULFYL5LC7enOTfyQQ=
+ bh=DPSBsAF1/mETDKSW+428hPTt3J6wkJb+epDI/JbPG/4=;
+ b=HqnosZLm9RSMpzPiyvz4yot4oB3Sj1r6umRVmo3zBB5NP5lyGToEKigh9abvI9Hm8M7YVE
+ xXgQFhKG09QaDb9JsCu622FD5SRlzsUsuul9q4aU/rQ1F1EIglEX60jjiwFcIw4jj4DMT6
+ MOAq49tqnD+W6TRgTxIjzHGxb00o6KM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-N3ZRI8gKMrGj8FYy-mhiiw-1; Sat, 09 Jan 2021 16:01:30 -0500
-X-MC-Unique: N3ZRI8gKMrGj8FYy-mhiiw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com
- [10.5.11.12])
+ us-mta-51-ekyHrc9UM6Gb8xDVus-a6g-1; Sat, 09 Jan 2021 16:02:57 -0500
+X-MC-Unique: ekyHrc9UM6Gb8xDVus-a6g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
+ [10.5.11.13])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7043C180A097;
- Sat,  9 Jan 2021 21:01:29 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7606E801A9D;
+ Sat,  9 Jan 2021 21:02:56 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-11.ams2.redhat.com [10.36.112.11])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 482F160BF3;
- Sat,  9 Jan 2021 21:01:27 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 7EC6C648A8;
+ Sat,  9 Jan 2021 21:02:55 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: Intel: bytcr_rt5640: Add quirk for the Mele PCG03
- Mini PC
-Date: Sat,  9 Jan 2021 22:01:19 +0100
-Message-Id: <20210109210119.159032-4-hdegoede@redhat.com>
-In-Reply-To: <20210109210119.159032-1-hdegoede@redhat.com>
-References: <20210109210119.159032-1-hdegoede@redhat.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH alsa-ucm-conf 2/2] rt5640: Move standard DAC setup to
+ EnableSeq.conf
+Date: Sat,  9 Jan 2021 22:02:52 +0100
+Message-Id: <20210109210252.159162-2-hdegoede@redhat.com>
+In-Reply-To: <20210109210252.159162-1-hdegoede@redhat.com>
+References: <20210109210252.159162-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="US-ASCII"
-Cc: Rasmus Porsager <rasmus@beat.dk>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,48 +103,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a quirk for the Mele PCG03 Mini PC, being a Mini PC this device
-has no speakers and no internal microphone.
+No matter which output is used, we always need to setup the standard
+DAC config. Move this to the shared EnableSeq.conf to avoid having
+to duplicate it in various places.
 
-To make matters worse the speaker output pins are shorted (to gnd or
-to each other?) and SPKVDD is provided. So trying to output sound on the
-speakers leads to shorting SPKVDD, this leads to a power dip after
-which the codec is an unknown state. Sometimes it drops of the i2c
-bus, sometimes it does still respond to i2c transfers, but is otherwise
-not functional. TL;DR: trying to use the speaker outputs on this model
-is BAD.
-
-Besides not having speakers / an internal mic, this is a Bay Trail CR
-device without a CHAN package in ACPI, so we default to SSP0-AIF2 as
-codec connection. But the device is actually using SSP0-AIF1, so we
-need to quirk that too.
-
-Cc: Rasmus Porsager <rasmus@beat.dk>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ ucm2/codecs/rt5640/EnableSeq.conf   | 6 ++++++
+ ucm2/codecs/rt5640/HeadPhones.conf  | 6 ------
+ ucm2/codecs/rt5640/MonoSpeaker.conf | 6 ------
+ ucm2/codecs/rt5640/Speaker.conf     | 6 ------
+ 4 files changed, 6 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 48d781faded1..2dee84578b90 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -620,6 +620,15 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* Mele PCG03 Mini PC */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Mini PC"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Mini PC"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_NO_INTERNAL_MIC_MAP |
-+					BYT_RT5640_NO_SPEAKERS |
-+					BYT_RT5640_SSP0_AIF1),
-+	},
- 	{	/* MPMAN Converter 9, similar hw as the I.T.Works TW891 2-in-1 */
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "MPMAN"),
+diff --git a/ucm2/codecs/rt5640/EnableSeq.conf b/ucm2/codecs/rt5640/EnableSeq.conf
+index cbf4038..145a23b 100644
+--- a/ucm2/codecs/rt5640/EnableSeq.conf
++++ b/ucm2/codecs/rt5640/EnableSeq.conf
+@@ -1,5 +1,11 @@
+ EnableSequence [
+ 	# RT5640 default output routing
++	cset "name='DAC MIXL INF1 Switch' on"
++	cset "name='DAC MIXR INF1 Switch' on"
++	cset "name='Stereo DAC MIXL DAC L1 Switch' on"
++	cset "name='Stereo DAC MIXR DAC R1 Switch' on"
++	cset "name='Stereo DAC MIXL DAC L2 Switch' on"
++	cset "name='Stereo DAC MIXR DAC R2 Switch' on"
+ 	cset "name='OUT MIXL DAC L1 Switch'  on"
+ 	cset "name='OUT MIXR DAC R1 Switch'  on"
+ 
+diff --git a/ucm2/codecs/rt5640/HeadPhones.conf b/ucm2/codecs/rt5640/HeadPhones.conf
+index b7707e5..a9e4d20 100644
+--- a/ucm2/codecs/rt5640/HeadPhones.conf
++++ b/ucm2/codecs/rt5640/HeadPhones.conf
+@@ -14,12 +14,6 @@ SectionDevice."Headphones" {
+ 	}
+ 
+ 	EnableSequence [
+- 		cset "name='DAC MIXL INF1 Switch'  on"
+- 		cset "name='DAC MIXR INF1 Switch'  on"
+- 		cset "name='Stereo DAC MIXL DAC L1 Switch'  on"
+- 		cset "name='Stereo DAC MIXR DAC R1 Switch'  on"
+-		cset "name='Stereo DAC MIXL DAC L2 Switch'  on"
+- 		cset "name='Stereo DAC MIXR DAC R2 Switch'  on"
+  		cset "name='HPO MIX HPVOL Switch'  on"
+  		cset "name='Headphone Switch'  on"
+ 		cset "name='HP Channel Switch' on"
+diff --git a/ucm2/codecs/rt5640/MonoSpeaker.conf b/ucm2/codecs/rt5640/MonoSpeaker.conf
+index ddc7ba8..23cf34c 100644
+--- a/ucm2/codecs/rt5640/MonoSpeaker.conf
++++ b/ucm2/codecs/rt5640/MonoSpeaker.conf
+@@ -6,12 +6,6 @@ SectionDevice."Speaker" {
+ 	]
+ 
+ 	EnableSequence [
+-		cset "name='DAC MIXL INF1 Switch' on"
+-		cset "name='DAC MIXR INF1 Switch' on"
+-		cset "name='Stereo DAC MIXL DAC L1 Switch' on"
+-		cset "name='Stereo DAC MIXR DAC R1 Switch' on"
+-		cset "name='Stereo DAC MIXL DAC L2 Switch'  on"
+-		cset "name='Stereo DAC MIXR DAC R2 Switch'  on"
+ 		cset "name='SPK MIXL DAC L1 Switch' on"
+ 		cset "name='SPK MIXR DAC R1 Switch' on"
+ 		cset "name='SPOL MIX SPKVOL L Switch' on"
+diff --git a/ucm2/codecs/rt5640/Speaker.conf b/ucm2/codecs/rt5640/Speaker.conf
+index 411cd13..422cfdf 100644
+--- a/ucm2/codecs/rt5640/Speaker.conf
++++ b/ucm2/codecs/rt5640/Speaker.conf
+@@ -6,12 +6,6 @@ SectionDevice."Speaker" {
+ 	]
+ 
+ 	EnableSequence [
+-		cset "name='DAC MIXL INF1 Switch' on"
+-		cset "name='DAC MIXR INF1 Switch' on"
+-		cset "name='Stereo DAC MIXL DAC L1 Switch' on"
+-		cset "name='Stereo DAC MIXR DAC R1 Switch' on"
+-		cset "name='Stereo DAC MIXL DAC L2 Switch'  on"
+- 		cset "name='Stereo DAC MIXR DAC R2 Switch'  on"
+ 		cset "name='SPK MIXL DAC L1 Switch' on"
+ 		cset "name='SPK MIXR DAC R1 Switch' on"
+ 		cset "name='SPOL MIX SPKVOL L Switch' on"
 -- 
 2.28.0
 
