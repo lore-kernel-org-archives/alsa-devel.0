@@ -7,57 +7,58 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE6BC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 09:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9BC7C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 09:28:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 653C0224F9
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 09:27:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 653C0224F9
+	by mail.kernel.org (Postfix) with ESMTPS id 933F122510
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 09:28:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 933F122510
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EC6A168B;
-	Mon, 11 Jan 2021 10:26:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EC6A168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B510D16AD;
+	Mon, 11 Jan 2021 10:27:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B510D16AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610357231;
-	bh=heIGWgd7WdGSAwTGIy58vjzqVvXKYXU7wvAyYOEx7oo=;
+	s=default; t=1610357329;
+	bh=PLnRmRO7r5IjUbXEs8/sgiZDTPVd/k4wSpbYr+BccFA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=dRk7hf6B5tnPebZjrWhayylwGVjEyu3OYbYeiJ9NeMk3sPtdXJw+2Al/1EW8TYByj
-	 Y6T8tFpwF5yLhHgcg+G/TTb1ODOWbpZ0ivm3JzP9iaHkpHObsaPTZ4kVJDkyl0bY0j
-	 Z1PeHbtRsSmCkYxSicNzJi701dHseVV9Qj/QHF5U=
+	b=kDR/T/CHKWHBg9DlQmnnthgdgmrKA02jVISuFoei5mg6c4X7APShfUzJA6z2mLBh8
+	 geeXdSC/ZZjaeCcKJkrTob842+D0LnfD+f0v8sCJ5CLAw90cTXNICwj8f9QxbHiXj8
+	 u094zEyHOggURNdfGHN6U27DRUmIguIy/0sU3dQw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99C4CF8016C;
-	Mon, 11 Jan 2021 10:26:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17D41F800BE;
+	Mon, 11 Jan 2021 10:27:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAA95F8016D; Mon, 11 Jan 2021 10:26:12 +0100 (CET)
+ id 9ACD3F8025F; Mon, 11 Jan 2021 10:27:56 +0100 (CET)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26C26F80113
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 10:26:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26C26F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD3D2F800BE
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 10:27:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD3D2F800BE
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10B9PpxX6021630,
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10B9RlMX2022320,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10B9PpxX6021630
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10B9RlMX2022320
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 11 Jan 2021 17:25:51 +0800
+ Mon, 11 Jan 2021 17:27:47 +0800
 Received: from localhost.localdomain (172.22.102.1) by
  RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 11 Jan 2021 17:25:51 +0800
+ 15.1.2106.2; Mon, 11 Jan 2021 17:27:46 +0800
 From: <shumingf@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] ASoC: rt5682: enable fast discharge for headset unplugging
-Date: Mon, 11 Jan 2021 17:25:44 +0800
-Message-ID: <20210111092544.9064-1-shumingf@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt5682: fix getting the wrong device id when the
+ suspend_stress_test
+Date: Mon, 11 Jan 2021 17:27:40 +0800
+Message-ID: <20210111092740.9128-1-shumingf@realtek.com>
 X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,8 +67,8 @@ X-Originating-IP: [172.22.102.1]
 X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
  RTEXMBS01.realtek.com.tw (172.21.6.94)
 Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
- Shuming Fan <shumingf@realtek.com>, flove@realtek.com
+ lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
+ Shuming Fan <shumingf@realtek.com>, naveen.m@intel.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,50 +86,60 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Shuming Fan <shumingf@realtek.com>
 
-To avoid the pop noise, this patch enables the feature of fast discharge.
+This patch will be the workaround to fix getting the wrong device ID on the rare chance.
+It seems like something unstable when the system resumes. e.g. the bus clock
+This patch tries to read the device ID to check several times.
+After the test, the driver will get the correct device ID the second time.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- sound/soc/codecs/rt5682.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5682-sdw.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 4d865edadd7e..42ad5bea86b5 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -953,6 +953,8 @@ int rt5682_headset_detect(struct snd_soc_component *component, int jack_insert)
- 		case 0x1:
- 		case 0x2:
- 			rt5682->jack_type = SND_JACK_HEADSET;
-+			snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
-+				RT5682_FAST_OFF_MASK, RT5682_FAST_OFF_EN);
- 			rt5682_enable_push_button_irq(component, true);
- 			break;
- 		default:
-@@ -982,6 +984,8 @@ int rt5682_headset_detect(struct snd_soc_component *component, int jack_insert)
- 		snd_soc_component_update_bits(component, RT5682_MICBIAS_2,
- 			RT5682_PWR_CLK25M_MASK | RT5682_PWR_CLK1M_MASK,
- 			RT5682_PWR_CLK25M_PD | RT5682_PWR_CLK1M_PD);
-+		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
-+			RT5682_FAST_OFF_MASK, RT5682_FAST_OFF_DIS);
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 4d707e854875..69f046bba67a 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -375,18 +375,12 @@ static int rt5682_sdw_init(struct device *dev, struct regmap *regmap,
+ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ {
+ 	struct rt5682_priv *rt5682 = dev_get_drvdata(dev);
+-	int ret = 0;
++	int ret = 0, loop = 10;
+ 	unsigned int val;
  
- 		rt5682->jack_type = 0;
- 	}
-@@ -1011,11 +1015,13 @@ static int rt5682_set_jack_detect(struct snd_soc_component *component,
- 	if (!rt5682->is_sdw) {
- 		switch (rt5682->pdata.jd_src) {
- 		case RT5682_JD1:
-+			snd_soc_component_update_bits(component,
-+				RT5682_CBJ_CTRL_5, 0x0700, 0x0600);
- 			snd_soc_component_update_bits(component,
- 				RT5682_CBJ_CTRL_2, RT5682_EXT_JD_SRC,
- 				RT5682_EXT_JD_SRC_MANUAL);
- 			snd_soc_component_write(component, RT5682_CBJ_CTRL_1,
--				0xd042);
-+				0xd142);
- 			snd_soc_component_update_bits(component,
- 				RT5682_CBJ_CTRL_3, RT5682_CBJ_IN_BUF_EN,
- 				RT5682_CBJ_IN_BUF_EN);
+ 	if (rt5682->hw_init)
+ 		return 0;
+ 
+-	regmap_read(rt5682->regmap, RT5682_DEVICE_ID, &val);
+-	if (val != DEVICE_ID) {
+-		dev_err(dev, "Device with ID register %x is not rt5682\n", val);
+-		return -ENODEV;
+-	}
+-
+ 	/*
+ 	 * PM runtime is only enabled when a Slave reports as Attached
+ 	 */
+@@ -406,6 +400,19 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+ 
+ 	pm_runtime_get_noresume(&slave->dev);
+ 
++	while (loop > 0) {
++		regmap_read(rt5682->regmap, RT5682_DEVICE_ID, &val);
++		if (val == DEVICE_ID)
++			break;
++		dev_warn(dev, "Device with ID register %x is not rt5682\n", val);
++		usleep_range(30000, 30005);
++		loop--;
++	}
++	if (val != DEVICE_ID) {
++		dev_err(dev, "Device with ID register %x is not rt5682\n", val);
++		return -ENODEV;
++	}
++
+ 	if (rt5682->first_hw_init) {
+ 		regcache_cache_only(rt5682->regmap, false);
+ 		regcache_cache_bypass(rt5682->regmap, true);
 -- 
 2.29.0
 
