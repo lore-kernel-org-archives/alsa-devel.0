@@ -2,79 +2,118 @@ Return-Path: <SRS0=maC8=GO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FDF7C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 20:32:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4F14C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 21:26:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B8F322CE3
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 20:32:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B8F322CE3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 19C4D22CB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 21:26:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19C4D22CB2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 147A71769;
-	Mon, 11 Jan 2021 21:31:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 147A71769
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B48A1749;
+	Mon, 11 Jan 2021 22:25:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B48A1749
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610397150;
-	bh=sUAKDTKxOa8lqzm5VbWXeY1NVXUbhfmfoUZQAmmJo8E=;
+	s=default; t=1610400365;
+	bh=pJjKYZtiPlODEbYxxbKwFMOMyHssIK7t8LlECH8Q2ig=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KMqFQ+otcv0xfMAeA6xPYR5IbrqrI+hPiPfV5TVv8/YQ4ZdFdZ8o+Sd8WQQMw8LzQ
-	 n+3vFjxThXbAjHqiVguWsQ/ghwST0773yc2U5Xu5NesM/CEEZCLnx6xpsjNXQ48IO6
-	 kquCpP0Qj7gB5+43z88jZMlx1uArRAg3xwJ6Yf+g=
+	b=TmMCon4DC1Eq59u1x6LacerPIbqWO4X9U19HWItHO2ms3NurE+/qM1z1HFAjCjeL4
+	 B64bHlARWPdqgX3YS8qRbm5GNMiYTx8GT2BhsWVuoZ+k+1PL+DhJhV8Ry9QlDAYRzl
+	 al6rttBWcq0eTfYcvERJqgnIGiV9IeAM4N06cilc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E3E2F804EC;
-	Mon, 11 Jan 2021 21:29:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B15C6F800BE;
+	Mon, 11 Jan 2021 22:25:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0762F8026B; Mon, 11 Jan 2021 21:29:00 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 80ED0F8016D; Mon, 11 Jan 2021 22:25:12 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE717F8026B
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 21:28:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE717F8026B
-IronPort-SDR: SpM30QeciMAuWbPXiE3n1ObpelsOtiHnRGnzqGhyCErGmhBHPXodXbeOHKQcKH6aUwu1a2ce9g
- 44G025fc9Now==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="242003770"
-X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; d="scan'208";a="242003770"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2021 12:28:38 -0800
-IronPort-SDR: 9S9XolgBjucu9vRfXyakHknNVCatDK7ijQBmAYxPGl4PCVhsF/gfBoPH3c+Y7SViNUeBpfU+IB
- T11ts5sM+UAw==
-X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; d="scan'208";a="344995363"
-Received: from gkbech1x-mobl.amr.corp.intel.com (HELO [10.212.87.85])
- ([10.212.87.85])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2021 12:28:29 -0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9C6AF800BE
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 22:25:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9C6AF800BE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="ABDGd1ry"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1610400300;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=5TWvqrIVm+eS1cOB00SDFYgHatsARh3E9H2TndpfG6E=;
+ b=ABDGd1ryrKsS6u3E95eJ70b5HliMs4b2OZnbaqMEjY4zX6+gbpvvCoJm8/3WPqlVk54Aem
+ xOYcvzxacW/cc0DpPl97UsOcxkWmTHUz+sBx0nPpv5RkNEOfYUk78ZC+IjSKTN+kiz9NSb
+ leUwbbWTeX9jBawaByz96ERuoS+W7FY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-YRGYXeJbOYm-YhgnXT544A-1; Mon, 11 Jan 2021 16:24:58 -0500
+X-MC-Unique: YRGYXeJbOYm-YhgnXT544A-1
+Received: by mail-ej1-f70.google.com with SMTP id p1so143932ejo.4
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 13:24:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=5TWvqrIVm+eS1cOB00SDFYgHatsARh3E9H2TndpfG6E=;
+ b=kbhIqrhqoAXFprhZZYE2dnEpyg1qV2CmDll8H+TdM0MgIPBDIVWDuOYl0+qTS/ncUh
+ jqzRa4yBZtS9oz0+/f9rjVWD4PDaDembjbh09vo94Bbf50vT4rBmX8Lfne0ILtDRKgR5
+ fZ3SAcxuTyPZ4UoFHkCfShYyB8khcitWcERJLuitwJ5nDD7Bn6Vzx0THrpgY0FKWNvSC
+ bxbR1FhoYJNoj2Sdi2sonMfv2ZRwfDn9Gdzfug504tNTew/WXqL1DdaLR3gLFqv0+A3J
+ 9RZzIq/50Sh3juckuMDCYn6DYBi0HoCVHzt+C6t0yJ3LazEsbkvTseRRdtdaVwForV72
+ DQ8A==
+X-Gm-Message-State: AOAM531tnkWzXxF2XLR4y0oC44obpLGlfX4efTN01KG7YkTsP24TIU9W
+ IijFQ9xzxD5iytYy5PhSanwafFG4uKeJgJi3p2ofjQ0k7gLvaCELsqus854g1iJvTwsCv8Kz6S8
+ 0GGE/fZyCu4UhcaJ/jLJ0EoM=
+X-Received: by 2002:a17:906:8151:: with SMTP id
+ z17mr978464ejw.48.1610400296191; 
+ Mon, 11 Jan 2021 13:24:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwxXhXldBoE2+pr7QCaS5A+yMjdW8BmlmZyOL9jrU41uAREPuAsgEFGMQIXw8nX9gHpG66zKg==
+X-Received: by 2002:a17:906:8151:: with SMTP id
+ z17mr978453ejw.48.1610400296046; 
+ Mon, 11 Jan 2021 13:24:56 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+ by smtp.gmail.com with ESMTPSA id rs27sm349583ejb.21.2021.01.11.13.24.55
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 11 Jan 2021 13:24:55 -0800 (PST)
 Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for DeeQ X5-Z8300
-To: Chris Chiu <chiu@endlessos.org>, cezary.rojewski@intel.com,
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Chris Chiu <chiu@endlessos.org>, cezary.rojewski@intel.com,
  yang.jie@linux.intel.com
 References: <20201216041601.5993-1-chiu@endlessos.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <8d4f7c48-cb3e-a868-3d48-fe63a3113ea1@linux.intel.com>
-Date: Mon, 11 Jan 2021 11:05:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <8d4f7c48-cb3e-a868-3d48-fe63a3113ea1@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <835f8b2e-5e9a-b8db-d126-d0cd5f0ec075@redhat.com>
+Date: Mon, 11 Jan 2021 22:24:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201216041601.5993-1-chiu@endlessos.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <8d4f7c48-cb3e-a868-3d48-fe63a3113ea1@linux.intel.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
- linux-kernel@vger.kernel.org, linux@endlessos.org,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ linux@endlessos.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,48 +129,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
-
-On 12/15/20 10:16 PM, Chris Chiu wrote:
-> DeeQ X5-Z8300 is a laptop empowered by Intel Atom Cherry Trail. Add
-> quirks to select the correct input map, jack-detect options to enable
-> jack sensing and internal/headset microphones.
+On 1/11/21 6:05 PM, Pierre-Louis Bossart wrote:
 > 
-> Signed-off-by: Chris Chiu <chiu@endlessos.org>
-
-You probably need to re-send and CC: maintainers (Mark Brown, Takashi 
-Iwai) and Hans de Goede who's been supporting all those quirks.
-
-I don't think the changes below are fully correct, most quirks start with		
-.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
-
-which e.g. enables the MCLK and overcurrent handling.
-
-I wonder if what you need is
-
-.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS | BYT_RT5651_IN1_IN2_MAP)
-
-> ---
->   sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
 > 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-> index 688b5e0a49e3..9df09e26b05a 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5651.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-> @@ -507,6 +507,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
->   					BYT_RT5651_SSP0_AIF1 |
->   					BYT_RT5651_MONO_SPEAKER),
->   	},
-> +	{
-> +		.callback = byt_rt5651_quirk_cb,
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "DeeQ"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "X5-Z8300"),
-> +		},
-> +		.driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP | BYT_RT5651_JD1_1),
-> +	},
->   	{}
->   };
->   
+> On 12/15/20 10:16 PM, Chris Chiu wrote:
+>> DeeQ X5-Z8300 is a laptop empowered by Intel Atom Cherry Trail. Add
+>> quirks to select the correct input map, jack-detect options to enable
+>> jack sensing and internal/headset microphones.
+>>
+>> Signed-off-by: Chris Chiu <chiu@endlessos.org>
 > 
+> You probably need to re-send and CC: maintainers (Mark Brown, Takashi Iwai) and Hans de Goede who's been supporting all those quirks.
+> 
+> I don't think the changes below are fully correct, most quirks start with       
+> .driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
+> 
+> which e.g. enables the MCLK and overcurrent handling.
+> 
+> I wonder if what you need is
+> 
+> .driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS | BYT_RT5651_IN1_IN2_MAP)
+
+Ack, BYT_RT5651_DEFAULT_QUIRKS is:
+
+#define BYT_RT5651_DEFAULT_QUIRKS       (BYT_RT5651_MCLK_EN | \
+                                         BYT_RT5651_JD1_1   | \
+                                         BYT_RT5651_OVCD_TH_2000UA | \
+                                         BYT_RT5651_OVCD_SF_0P75)
+
+So compared to the quirk from the original patch that will add:
+
+BYT_RT5651_MCLK_EN
+BYT_RT5651_OVCD_TH_2000UA
+BYT_RT5651_OVCD_SF_0P75
+
+Since you have working jack-detect you will definitely want the latter 2
+which will make headset vs headphones detection work and will add
+button-press detection for headsets.
+
+BYT_RT5651_MCLK_EN is also a quirk which you almost always want,
+the sole exception is boards where the mclk is not connected which
+are very rare. Boards where the mclk is not connected are easy to
+spot, since they will not work at all when setting BYT_RT5651_MCLK_EN,
+so if things work with BYT_RT5651_DEFAULT_QUIRKS then setting
+BYT_RT5651_MCLK_EN is the right thing to do.
+
+Tl;DR: use (BYT_RT5651_DEFAULT_QUIRKS | BYT_RT5651_IN1_IN2_MAP) as
+Pierre-Louis suggests.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+> 
+>> ---
+>>   sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+>> index 688b5e0a49e3..9df09e26b05a 100644
+>> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+>> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+>> @@ -507,6 +507,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+>>                       BYT_RT5651_SSP0_AIF1 |
+>>                       BYT_RT5651_MONO_SPEAKER),
+>>       },
+>> +    {
+>> +        .callback = byt_rt5651_quirk_cb,
+>> +        .matches = {
+>> +            DMI_MATCH(DMI_SYS_VENDOR, "DeeQ"),
+>> +            DMI_MATCH(DMI_PRODUCT_NAME, "X5-Z8300"),
+>> +        },
+>> +        .driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP | BYT_RT5651_JD1_1),
+>> +    },
+>>       {}
+>>   };
+>>  
+> 
+
