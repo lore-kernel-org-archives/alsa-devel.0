@@ -7,87 +7,87 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EAFFC433E6
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 05:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA93C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 05:46:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BADF32255F
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 05:45:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BADF32255F
+	by mail.kernel.org (Postfix) with ESMTPS id 40CAB2251F
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 05:46:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40CAB2251F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=endlessos.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB5D816C2;
-	Mon, 11 Jan 2021 06:44:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB5D816C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5986E16DE;
+	Mon, 11 Jan 2021 06:45:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5986E16DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610343916;
-	bh=Sumx0Ps5kXpKF6T6bCZ0dLxRobtzXZQ5jXM3zLNi/MY=;
+	s=default; t=1610343959;
+	bh=oK6p84HgXciQhiheBe3wdjlHfjFMNxr84zV5ScyYXp8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jl4Z25vMEduq9V9TJdMmyEw6/25ccTHa85EmmVpvaZ0yg64fu+0tSOAJBgDol3+Ii
-	 1WARivul/yHPEk3HPTIu77YAt2T44e93lbvlp6bxDneabSZj1hM5nx+TV2jCR21PLA
-	 bw58nffCQxGf/rKqxAYsnXSeTXEkusVUImDnH74g=
+	b=toOxcyxIvLFGz1ABxOBYGr8J4sEkkhWTKPItx8XfznHX2sBtED8UsqAId4YMaLSrJ
+	 8JxhXfPN6GQJHUq5ILNPl84fjVbsQzMEY5qZ2+ub9qext9pWQ91nqXtdys+PDcqlZ9
+	 yRXWLu5wH22gf5PlSkEBLEluKs2Fzlp/GoCn/ukw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E69EF8013D;
-	Mon, 11 Jan 2021 06:43:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11664F804CB;
+	Mon, 11 Jan 2021 06:43:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64CB3F8025F; Mon, 11 Jan 2021 06:43:29 +0100 (CET)
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com
- [IPv6:2607:f8b0:4864:20::634])
+ id 527F1F804C3; Mon, 11 Jan 2021 06:43:33 +0100 (CET)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com
+ [IPv6:2607:f8b0:4864:20::62d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77948F800BE
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 06:43:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77948F800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36603F8013D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 06:43:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36603F8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org
- header.b="vNYf09dS"
-Received: by mail-pl1-x634.google.com with SMTP id x18so8921150pln.6
- for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2021 21:43:20 -0800 (PST)
+ header.b="bMYkSxqT"
+Received: by mail-pl1-x62d.google.com with SMTP id s15so8905711plr.9
+ for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2021 21:43:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=endlessos.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=cZ/EQIt6H/y8SQLMWPm2hmgqxZ9ZXY3uZLH1G1eLd6I=;
- b=vNYf09dSEmnLqjpb9fwlPPtOVuiCpYHZhpUrFh4vGT2j14zeEUKsCQrBXONT+LscW2
- O/3PHI6D27Q3O2R/beN3nYGGWj7WdBsRWKxfc7nCrxTKG51JB3FIjL/j7DwfAdEnubow
- L90DGccWjme4lkmESgGM0EYinKWHQsH8R4JS0BDU6jQV1RAxP+1J9uzepmR7sYAffN0P
- VBSJTbpaip0InnrLeTM6WhESqC76gvq5bNozmQZpoPyteXOH0CxUMZjsMEjWU2HJfvHY
- f7LmdaG9uzDGnZO6hl3LPzyH2FvX0WQmIDcEmnefGMHkhuAp0YRi5Vr6QanrjGZI1LZm
- GSQg==
+ bh=XMbpkW+eDXvGxzeNZGTUiKWxTza0cLDoP13Yb/fIyl0=;
+ b=bMYkSxqTeyYPFRk6Pfhz8CMPrfkdIVqEnaZkjx1A4NiD1G+SHQEprLWePzbTtRwymi
+ fMaIewmflTMKlejsp93dOcWFtmUsjPgOrwVK8V6Yjozj97JaJ+fqxKzMOSXquPQdI6Ug
+ kTDL5H0AcoGMeJdiiutVJZfR7YcSyhbWh9UkSvEagAITkBE9zU9jeMG9kS0krud9XtoJ
+ CKRFE3EtENUvtI5URUlxcL7hWZnGhzLMuKU58qs09hdOipghLraS/CvfZNkbPxDTf41h
+ KEAie9QCB1noHHWvOsJn5rOz687whaEmKaClr0jgvcS3g5YlSDcNcCWvle7E3hPKOiHz
+ EFmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=cZ/EQIt6H/y8SQLMWPm2hmgqxZ9ZXY3uZLH1G1eLd6I=;
- b=DMhFBw7OKCSBfEsHPpcXalauhzUQmUaI0tThRwj0ZhHIjVQPRfVc9wlZPqlGp/066R
- AcFvN+hGkS6F5uIyhtwoiePrXOwY738x9I4kJvbgaQ01neAl/+aVqcq+yQbxcxgQfdZm
- kH7ksyeLUJzVjRzFZeLGujHsNtqK4wSQLYHFswO8f7O7FLfdyDMgDV1+9N0sjHeV5mDR
- 9bd6H2+53/Gm0sUa2WVEug/1yHLgZhArG5U3suaZB/6x7j2+52miCZfHv5jjwwPyrcGX
- t9FlwOWZzWZ+74KnyajkF20cObFOw2bZqP+e7rGeHtM1V7dL0IX+a8nutCJX22mv6LKx
- JnEw==
-X-Gm-Message-State: AOAM530ZABoaUEdLcZ7reACjA2UViFD/721iPLRQ6qIE6ceihFi6bDwo
- GuNCGpIrhlRrvlEsa7bQfQ9RLA==
-X-Google-Smtp-Source: ABdhPJygrqxArlu5P5B8h2ks1EBMZPzSzd2paE64adL5FqbBS1d+WCnpwz4d40w1WmhkvzazRazv3A==
-X-Received: by 2002:a17:902:ba97:b029:db:f662:a547 with SMTP id
- k23-20020a170902ba97b02900dbf662a547mr17654842pls.68.1610343797639; 
- Sun, 10 Jan 2021 21:43:17 -0800 (PST)
+ bh=XMbpkW+eDXvGxzeNZGTUiKWxTza0cLDoP13Yb/fIyl0=;
+ b=KhvmBPMrBj3JSMz789bk0j6IriVzJ3rkklNqDdMDgaL1wW12WRAQNGSzBNKqnag2vn
+ FngjcXxQUT8vSyiYh1ibCHvPHBQDvX56sOhZPi+yIUxeD4CA5PqM/Fvx+QwAYlvCAJOG
+ dFAiunHMgdb0dU/CTROwSfTXUsPeFsYBdWqheyBR351EyNxDi9/5VO+vEAHGP+aDJ4v8
+ 6TMpKBh8thTJl8sBesQMl/0upccS5AHFs/r0TTw7S/RgaIJ8XvjWrrI+xhdqrH4QfQD4
+ 0EfThvEFQ0hOzjXkt48z23E+Bi8adt6IM2dIs/SyMuxI5I1hhtebhgOguQCQ8KtMTwSK
+ qdIA==
+X-Gm-Message-State: AOAM530TU/4Teo2IdXhG/X8Xltn+ZlbtA1nClBxa8KBTEKyA4XSYjTgI
+ SqfJyX5+hFmcCXb0Lq0/M4vRFA==
+X-Google-Smtp-Source: ABdhPJyOXPSUd+ytQ62J99cOfI/+EggmHpRzgNFnwcWowc5UfgcsUgcIp/rGvomiHlSSMlGmKtb/Zw==
+X-Received: by 2002:a17:90b:ec2:: with SMTP id
+ gz2mr16289398pjb.143.1610343801948; 
+ Sun, 10 Jan 2021 21:43:21 -0800 (PST)
 Received: from localhost.localdomain (61-231-198-38.dynamic-ip.hinet.net.
  [61.231.198.38]) by smtp.googlemail.com with ESMTPSA id
- x15sm16726267pfn.118.2021.01.10.21.43.15
+ x15sm16726267pfn.118.2021.01.10.21.43.20
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 10 Jan 2021 21:43:17 -0800 (PST)
+ Sun, 10 Jan 2021 21:43:21 -0800 (PST)
 From: Chris Chiu <chiu@endlessos.org>
 To: oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v3 1/4] ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
-Date: Mon, 11 Jan 2021 13:41:38 +0800
-Message-Id: <20210111054141.4668-2-chiu@endlessos.org>
+Subject: [PATCH v3 3/4] ASoC: rt5645: add inv_hp_det flag
+Date: Mon, 11 Jan 2021 13:41:40 +0800
+Message-Id: <20210111054141.4668-4-chiu@endlessos.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210111054141.4668-1-chiu@endlessos.org>
 References: <20210111054141.4668-1-chiu@endlessos.org>
@@ -110,45 +110,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On at least one laptop (ECS EF20EA) the 'hp-detect' GPIO is defined in
-the DSDT table by the ACPI GpioIo resources in _CRS. The GPIO related
-information should be mapped to the rt5645 driver to enable the jack
-detection also on non-DT platforms.
+The ECS EF20EA laptop use gpio for jack detection instead of rt5645
+rt5645 JD. However, the GPIO polarity is inverse for hp-detect based
+on the _DSD property of the RTK2 device.
+
+Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+        Package () {"hp-detect-gpio", Package() {^RTK2, 0, 0, 1 }},
+    }
+})
+
+This flag will invert the hp-detect gpio polarity.
 
 Signed-off-by: Chris Chiu <chiu@endlessos.org>
 ---
   v2 -> v3:
-	- restore the terminator {} of the dmi_platform_data[]
+        - none
   v1 -> v2:
         - none
 
- sound/soc/codecs/rt5645.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ include/sound/rt5645.h    | 2 ++
+ sound/soc/codecs/rt5645.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index 39a77c7cea36..710c95be5509 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -22,6 +22,8 @@ struct rt5645_platform_data {
+ 	bool level_trigger_irq;
+ 	/* Invert JD1_1 status polarity */
+ 	bool inv_jd1_1;
++	/* Invert HP detect status polarity */
++	bool inv_hp_pol;
+ 
+ 	/* Value to asign to snd_soc_card.long_name */
+ 	const char *long_name;
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 420003d062c7..af8f95644f11 100644
+index 770801de42a6..4fd91ee3cfaa 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -42,6 +42,8 @@ static unsigned int quirk = -1;
- module_param(quirk, uint, 0444);
- MODULE_PARM_DESC(quirk, "RT5645 pdata quirk override");
- 
-+static const struct acpi_gpio_mapping *cht_rt5645_gpios;
-+
- #define RT5645_DEVICE_ID 0x6308
- #define RT5650_DEVICE_ID 0x6419
- 
-@@ -3848,6 +3850,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+@@ -34,6 +34,7 @@
+ #define QUIRK_INV_JD1_1(q)	((q) & 1)
+ #define QUIRK_LEVEL_IRQ(q)	(((q) >> 1) & 1)
+ #define QUIRK_IN2_DIFF(q)	(((q) >> 2) & 1)
++#define QUIRK_INV_HP_POL(q)	(((q) >> 3) & 1)
+ #define QUIRK_JD_MODE(q)	(((q) >> 4) & 7)
+ #define QUIRK_DMIC1_DATA_PIN(q)	(((q) >> 8) & 3)
+ #define QUIRK_DMIC2_DATA_PIN(q)	(((q) >> 12) & 3)
+@@ -3263,6 +3264,8 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 	case 0: /* Not using rt5645 JD */
+ 		if (rt5645->gpiod_hp_det) {
+ 			gpio_state = gpiod_get_value(rt5645->gpiod_hp_det);
++			if (rt5645->pdata.inv_hp_pol)
++				gpio_state ^= 1;
+ 			dev_dbg(rt5645->component->dev, "gpio_state = %d\n",
+ 				gpio_state);
+ 			report = rt5645_jack_detect(rt5645->component, gpio_state);
+@@ -3872,6 +3875,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		rt5645->pdata.in2_diff = QUIRK_IN2_DIFF(quirk);
+ 		rt5645->pdata.level_trigger_irq = QUIRK_LEVEL_IRQ(quirk);
+ 		rt5645->pdata.inv_jd1_1 = QUIRK_INV_JD1_1(quirk);
++		rt5645->pdata.inv_hp_pol = QUIRK_INV_HP_POL(quirk);
+ 		rt5645->pdata.jd_mode = QUIRK_JD_MODE(quirk);
+ 		rt5645->pdata.dmic1_data_pin = QUIRK_DMIC1_DATA_PIN(quirk);
  		rt5645->pdata.dmic2_data_pin = QUIRK_DMIC2_DATA_PIN(quirk);
- 	}
- 
-+	if (cht_rt5645_gpios && has_acpi_companion(&i2c->dev))
-+		if (devm_acpi_dev_add_driver_gpios(&i2c->dev, cht_rt5645_gpios))
-+			dev_dbg(&i2c->dev, "Failed to add driver gpios\n");
-+
- 	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
- 						       GPIOD_IN);
- 
 -- 
 2.20.1
 
