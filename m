@@ -2,118 +2,66 @@ Return-Path: <SRS0=maC8=GO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F86C433E6
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:08:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1400BC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:09:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFA2122B49
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:08:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFA2122B49
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 71B1B22A84
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 13:09:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 71B1B22A84
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DBDE16EF;
-	Mon, 11 Jan 2021 14:07:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DBDE16EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id D36D716F8;
+	Mon, 11 Jan 2021 14:08:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D36D716F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610370503;
-	bh=T+iZKNW1gmpT+HQqIiqmRRpQMcaG8pgogUVWa/pKYOM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1610370543;
+	bh=8v8IVd+IwBa1S/Hej1vw+RrPvKqA0JwuAql9Wbuzx9Y=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UXohETfvZiwYqYWEwY4mfgrSYAmyKkCYUaKat7jJER1I0h1BF8a7q2GFSrQ8nCFoH
-	 9I+J1d1JcAfK78pXqRWc6+w6Lr4t3HJZiksNeTSYKcwWni4+ZVOQ5c6WXgDm1ouqjf
-	 Z4Ug1mrrXr5ZdfQYF0kHgk9EsZi/bGlCNOmDF2Fs=
+	b=GGYzSRAajlPgTPD5ZeKpgOQtQZlBXEpwT5OYwNK4Ax/igQt7GaBPo6S1xhxDVkUAN
+	 sI+l9AMfYmuhhw1zYdj5p0xIMukdG5kch6tdNski8EUNXVzlJoObU3eyjeNKNdTFVc
+	 xSd2OTKGWr34bFvSUqMSWOhHdPSNYgDKp/DHsXV0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2C32F80475;
-	Mon, 11 Jan 2021 14:06:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D6CCF804CC;
+	Mon, 11 Jan 2021 14:06:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D1C6F80258; Thu,  7 Jan 2021 10:10:35 +0100 (CET)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6E49FF804C3; Mon, 11 Jan 2021 14:06:45 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97C0AF800FD
- for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2021 10:10:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97C0AF800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="cyz7QwbT"
-Received: by mail-lf1-x130.google.com with SMTP id 23so12896412lfg.10
- for <alsa-devel@alsa-project.org>; Thu, 07 Jan 2021 01:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=T+iZKNW1gmpT+HQqIiqmRRpQMcaG8pgogUVWa/pKYOM=;
- b=cyz7QwbTfHcC+qnorIFVkv7DnbL/oyA5L+VJJAN8XWkNMg42oKdig8X5tU4xa7X7pN
- 01zspKzmEcVvu5fY2nzlSr3geA/q2812tr8Wz0sUieGMHhvg1aGrsz+m0J4b8Wmr2jr4
- Bxuqd5E5gXQb8ARkFssKYAOK0W62M412pmNUBd9NwRQD04zf23syAxjzcLmFBod8VeLt
- Wkczn2W4OJkxg0o6mQ3tRUOpKTABRCCUpHtxAiPQFjxJEJCf/WQ1QzYZHEZTgGgMtnu2
- jNC0bNdR63+2S3cfHE4fDoxHLsYIWb3l6Ja+q5Vt8aM4kBs1TbyhYMIEDY91gB4GZfH3
- 2CvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=T+iZKNW1gmpT+HQqIiqmRRpQMcaG8pgogUVWa/pKYOM=;
- b=FO84mobcXav9g3eEW7Gh6Q5peeIdURePzFawByfqZFvugdVqb6o5AYNsIYHsOfKm5E
- Gd8/lp8MtyeD3ikNe3DSfxdsgdoYi/jxje/vbTwctX4RHocovCb7Lg5DOEn9iQAEDbar
- IiOkhVpo+Wm48UUkWdBRRJDnNOfCy2uIecX3qHKh3QCPHcDZmWKJfJcpn56ygB1w0WIe
- D16Zt/4Hva7J9Mlve6N2YXvvE/pyuf0XSB9QvTBWUfgSzukFRDpXUE0Ic/v9HOuHZ8+l
- 64ujgMUu6/WJjBzFc4sQEQtBbvW8Hblq4LyJlv85FcRE0ys52peO+xbWXqCXDvrEgdZr
- S7tQ==
-X-Gm-Message-State: AOAM530Uw/na5rGc2AnjHIn8OcI2H+pXoWchJNAgyi4+eGkle6+UYZ4X
- YGAUAPQoGWig97axGVeDSmlrwgdHLQLgsJS4Aymg8w==
-X-Google-Smtp-Source: ABdhPJz6FNuZKYGADUxlk9Tv8Rh/lJVu/2CmZBJO3UIrMaB/edLmB9ZlsVBcuBoQ7GbjgHsRrGXCE/gOnIldpK4OwK0=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr3392190lfj.465.1610010618615; 
- Thu, 07 Jan 2021 01:10:18 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13695F8013D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 14:06:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13695F8013D
+Received: from [123.114.32.120] (helo=localhost.localdomain)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1kywu4-0001Ym-Sq; Mon, 11 Jan 2021 13:06:37 +0000
+From: Hui Wang <hui.wang@canonical.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz,
+ kai.vehmanen@linux.intel.com
+Subject: [RFC][PATCH v4 1/4] alsa: jack: implement software jack injection via
+ debugfs
+Date: Mon, 11 Jan 2021 21:05:54 +0800
+Message-Id: <20210111130557.90208-2-hui.wang@canonical.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210111130557.90208-1-hui.wang@canonical.com>
+References: <20210111130557.90208-1-hui.wang@canonical.com>
 MIME-Version: 1.0
-References: <20210104230253.2805217-1-robh@kernel.org>
-In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 7 Jan 2021 10:10:07 +0100
-Message-ID: <CACRpkdZVC8RE-DTes+p6g-1EAHxQWpu2u+sBCX2ei32cvaCrDA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Mon, 11 Jan 2021 14:06:42 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb <linux-usb@vger.kernel.org>,
- linux-iio <linux-iio@vger.kernel.org>, linux-remoteproc@vger.kernel.org,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- "open list:LIBATA SUBSYSTEM \(Serial and Parallel ATA drivers\)"
- <linux-ide@vger.kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
- netdev <netdev@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
- Chanwoo Choi <cw00.choi@samsung.com>, Marc Zyngier <maz@kernel.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, Chen-Yu Tsai <wens@csie.org>,
- MyungJoo Ham <myungjoo.ham@samsung.com>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- Linux Input <linux-input@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Ohad Ben-Cohen <ohad@wizery.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Linux PM list <linux-pm@vger.kernel.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, Jens Axboe <axboe@kernel.dk>,
- Stephen Boyd <sboyd@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Sebastian Reichel <sre@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,41 +77,434 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 5, 2021 at 12:03 AM Rob Herring <robh@kernel.org> wrote:
+We want to perform remote audio auto test, need the audio jack to
+change from plugout to plugin or vice versa by software ways.
 
-> DT properties which can have multiple entries need to specify what the
-> entries are and define how many entries there can be. In the case of
-> only a single entry, just 'maxItems: 1' is sufficient.
->
-> Add the missing entry constraints. These were found with a modified
-> meta-schema. Unfortunately, there are a few cases where the size
-> constraints are not defined such as common bindings, so the meta-schema
-> can't be part of the normal checks.
->
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>
-> Cc: Chanwoo Choi <cw00.choi@samsung.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Here the design is creating a sound root folder in the debugfs
+dir, and each sound card will create a folder cardN under sound,
+then the sound jack will create folders by jack_ctrl->ctrl->id.name,
+and will create 2 file nodes jackin_inject and sw_inject_enable in
+the folder, this is the layout of folder on a machine with 2 sound
+cards:
+$tree $debugfs_mount_dir/sound
+sound/
+├── card0
+│   ├── HDMI!DP,pcm=10 Jack
+│   │   ├── jackin_inject
+│   │   └── sw_inject_enable
+│   ├── HDMI!DP,pcm=11 Jack
+│   │   ├── jackin_inject
+│   │   └── sw_inject_enable
+│   ├── HDMI!DP,pcm=3 Jack
+│   │   ├── jackin_inject
+│   │   └── sw_inject_enable
+│   ├── HDMI!DP,pcm=7 Jack
+│   │   ├── jackin_inject
+│   │   └── sw_inject_enable
+│   ├── HDMI!DP,pcm=8 Jack
+│   │   ├── jackin_inject
+│   │   └── sw_inject_enable
+│   └── HDMI!DP,pcm=9 Jack
+│       ├── jackin_inject
+│       └── sw_inject_enable
+└── card1
+    ├── HDMI!DP,pcm=3 Jack
+    │   ├── jackin_inject
+    │   └── sw_inject_enable
+    ├── HDMI!DP,pcm=4 Jack
+    │   ├── jackin_inject
+    │   └── sw_inject_enable
+    ├── HDMI!DP,pcm=5 Jack
+    │   ├── jackin_inject
+    │   └── sw_inject_enable
+    ├── Headphone Jack
+    │   ├── jackin_inject
+    │   └── sw_inject_enable
+    ├── Headset Jack
+    │   ├── jackin_inject
+    │   └── sw_inject_enable
+    └── Mic Jack
+        ├── jackin_inject
+        └── sw_inject_enable
 
-This is good. The stricter the better.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Suppose users want to enable jack injection for Headphone, they need
+to run $sudo sh -c 'echo 1 > 'Headphone Jack'/sw_inject_enable', then
+users could change the Headphone Jack state through jackin_inject and
+this Jack's state will not be changed by non-injection ways anymore
+until users echo 0 to sw_inject_enable.
 
-Yours,
-Linus Walleij
+Users could run $sudo sh -c 'echo 1 > 'Headphone Jack'/jackin_inject'
+to trigger the Headphone jack to plugin or echo 0 to trigger it to
+plugout.
+
+If users finish their test, they could run
+$sudo sh -c 'echo 0 > 'Headphone Jack'/sw_inject_enable' to disable
+injection and let non-injection ways control this Jack.
+
+For the jack event report, the hw jack event will call
+snd_jack_report(), it will avoid to report the events if a jack_kctl's
+sw_inject is enabled, also the related input_dev's events will not be
+reproted.
+
+If users inject a event, it will call snd_jack_inject_report(), it
+only reports the events for this jack_kctl and reports the related
+input_dev's events.
+
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ include/sound/core.h |   2 +
+ sound/core/init.c    |   7 ++
+ sound/core/jack.c    | 182 ++++++++++++++++++++++++++++++++++++++++++-
+ sound/core/sound.c   |   8 ++
+ 4 files changed, 195 insertions(+), 4 deletions(-)
+
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 0462c577d7a3..15175fd44971 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -122,6 +122,7 @@ struct snd_card {
+ 
+ 	size_t total_pcm_alloc_bytes;	/* total amount of allocated buffers */
+ 	struct mutex memory_mutex;	/* protection for the above */
++	struct dentry *debugfs_root;    /* debugfs root for card */
+ 
+ #ifdef CONFIG_PM
+ 	unsigned int power_state;	/* power state */
+@@ -180,6 +181,7 @@ static inline struct device *snd_card_get_device_link(struct snd_card *card)
+ extern int snd_major;
+ extern int snd_ecards_limit;
+ extern struct class *sound_class;
++extern struct dentry *sound_debugfs_root;
+ 
+ void snd_request_card(int card);
+ 
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 75aec71c48a8..d5ed2580f30c 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -13,6 +13,7 @@
+ #include <linux/time.h>
+ #include <linux/ctype.h>
+ #include <linux/pm.h>
++#include <linux/debugfs.h>
+ #include <linux/completion.h>
+ 
+ #include <sound/core.h>
+@@ -161,6 +162,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ {
+ 	struct snd_card *card;
+ 	int err;
++	char name[8];
+ 
+ 	if (snd_BUG_ON(!card_ret))
+ 		return -EINVAL;
+@@ -244,6 +246,10 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		dev_err(parent, "unable to create card info\n");
+ 		goto __error_ctl;
+ 	}
++
++	sprintf(name, "card%d", idx);
++	card->debugfs_root = debugfs_create_dir(name, sound_debugfs_root);
++
+ 	*card_ret = card;
+ 	return 0;
+ 
+@@ -416,6 +422,7 @@ int snd_card_disconnect(struct snd_card *card)
+ 	/* notify all devices that we are disconnected */
+ 	snd_device_disconnect_all(card);
+ 
++	debugfs_remove(card->debugfs_root);
+ 	snd_info_card_disconnect(card);
+ 	if (card->registered) {
+ 		device_del(&card->card_dev);
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index 503c8af79d55..0092cb6b5b79 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -8,6 +8,9 @@
+ #include <linux/input.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
++#include <linux/ctype.h>
++#include <linux/mm.h>
++#include <linux/debugfs.h>
+ #include <sound/jack.h>
+ #include <sound/core.h>
+ #include <sound/control.h>
+@@ -16,6 +19,9 @@ struct snd_jack_kctl {
+ 	struct snd_kcontrol *kctl;
+ 	struct list_head list;  /* list of controls belong to the same jack */
+ 	unsigned int mask_bits; /* only masked status bits are reported via kctl */
++	struct snd_jack *jack;  /* pointer to struct snd_jack */
++	bool sw_inject_enable;  /* allow to inject plug event via debugfs */
++	struct dentry *jack_debugfs_root; /* jack_kctl debugfs root */
+ };
+ 
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+@@ -109,12 +115,172 @@ static int snd_jack_dev_register(struct snd_device *device)
+ }
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 
++#ifdef CONFIG_DEBUG_FS
++static void snd_jack_inject_report(struct snd_jack_kctl *jack_kctl, int status)
++{
++	struct snd_jack *jack;
++#ifdef CONFIG_SND_JACK_INPUT_DEV
++	int i;
++#endif
++	if (!jack_kctl)
++		return;
++
++	jack = jack_kctl->jack;
++
++	if (jack_kctl->sw_inject_enable)
++		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
++				     status & jack_kctl->mask_bits);
++
++#ifdef CONFIG_SND_JACK_INPUT_DEV
++	if (!jack->input_dev)
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
++		int testbit = ((SND_JACK_BTN_0 >> i) & jack_kctl->mask_bits);
++
++		if (jack->type & testbit)
++			input_report_key(jack->input_dev, jack->key[i],
++					 status & testbit);
++	}
++
++	for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++) {
++		int testbit = ((1 << i) & jack_kctl->mask_bits);
++
++		if (jack->type & testbit)
++			input_report_switch(jack->input_dev,
++					    jack_switch_types[i],
++					    status & testbit);
++	}
++
++	input_sync(jack->input_dev);
++#endif /* CONFIG_SND_JACK_INPUT_DEV */
++}
++
++static ssize_t sw_inject_enable_read(struct file *file,
++				     char __user *to, size_t count, loff_t *ppos)
++{
++	struct snd_jack_kctl *jack_kctl = file->private_data;
++	char *buf;
++	int len, ret;
++
++	buf = kvzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	len = scnprintf(buf, PAGE_SIZE, "%s: %s\t\t%s: %i\n", "Jack", jack_kctl->kctl->id.name,
++			"Inject Enabled", jack_kctl->sw_inject_enable);
++	ret = simple_read_from_buffer(to, count, ppos, buf, len);
++
++	kvfree(buf);
++	return ret;
++}
++
++static ssize_t sw_inject_enable_write(struct file *file,
++				      const char __user *from, size_t count, loff_t *ppos)
++{
++	struct snd_jack_kctl *jack_kctl = file->private_data;
++	char *buf;
++	int ret, err;
++	unsigned long enable;
++
++	buf = kvzalloc(count, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = simple_write_to_buffer(buf, count, ppos, from, count);
++	err = kstrtoul(buf, 0, &enable);
++	if (err) {
++		ret = err;
++		goto exit;
++	}
++
++	jack_kctl->sw_inject_enable = !!enable;
++
++ exit:
++	kvfree(buf);
++	return ret;
++}
++
++static ssize_t jackin_inject_write(struct file *file,
++				   const char __user *from, size_t count, loff_t *ppos)
++{
++	struct snd_jack_kctl *jack_kctl = file->private_data;
++	char *buf;
++	int ret, err;
++	unsigned long enable;
++
++	if (!jack_kctl->sw_inject_enable)
++		return -EINVAL;
++
++	buf = kvzalloc(count, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = simple_write_to_buffer(buf, count, ppos, from, count);
++	err = kstrtoul(buf, 0, &enable);
++	if (err) {
++		ret = err;
++		goto exit;
++	}
++
++	snd_jack_inject_report(jack_kctl, !!enable ? jack_kctl->mask_bits : 0);
++
++ exit:
++	kvfree(buf);
++	return ret;
++}
++
++static const struct file_operations sw_inject_enable_fops = {
++	.open = simple_open,
++	.read = sw_inject_enable_read,
++	.write = sw_inject_enable_write,
++	.llseek = default_llseek,
++};
++
++static const struct file_operations jackin_inject_fops = {
++	.open = simple_open,
++	.write = jackin_inject_write,
++	.llseek = default_llseek,
++};
++
++static int snd_jack_debugfs_add_inject_node(struct snd_jack *jack,
++					    struct snd_jack_kctl *jack_kctl)
++{
++	char *tname;
++
++	/* the folder's name can't contains '/', need to replace it with '!'
++	 * as lib/kobject.c does
++	 */
++	tname = kstrdup(jack_kctl->kctl->id.name, GFP_KERNEL);
++	if (!tname)
++		return -ENOMEM;
++	strreplace(tname, '/', '!');
++	jack_kctl->jack_debugfs_root = debugfs_create_dir(tname, jack->card->debugfs_root);
++	kfree(tname);
++
++	debugfs_create_file("sw_inject_enable", 0644, jack_kctl->jack_debugfs_root, jack_kctl,
++			    &sw_inject_enable_fops);
++
++	debugfs_create_file("jackin_inject", 0200, jack_kctl->jack_debugfs_root, jack_kctl,
++			    &jackin_inject_fops);
++
++	return 0;
++}
++#else /* CONFIG_DEBUG_FS */
++static int snd_jack_debugfs_add_inject_node(struct snd_jack *jack,
++					    struct snd_jack_kctl *jack_kctl)
++{
++	return 0;
++}
++#endif /* CONFIG_DEBUG_FS */
++
+ static void snd_jack_kctl_private_free(struct snd_kcontrol *kctl)
+ {
+ 	struct snd_jack_kctl *jack_kctl;
+ 
+ 	jack_kctl = kctl->private_data;
+ 	if (jack_kctl) {
++		debugfs_remove(jack_kctl->jack_debugfs_root);
+ 		list_del(&jack_kctl->list);
+ 		kfree(jack_kctl);
+ 	}
+@@ -122,7 +288,10 @@ static void snd_jack_kctl_private_free(struct snd_kcontrol *kctl)
+ 
+ static void snd_jack_kctl_add(struct snd_jack *jack, struct snd_jack_kctl *jack_kctl)
+ {
++	jack_kctl->jack = jack;
+ 	list_add_tail(&jack_kctl->list, &jack->kctl_list);
++	if (!strstr(jack_kctl->kctl->id.name, "Phantom"))
++		snd_jack_debugfs_add_inject_node(jack, jack_kctl);
+ }
+ 
+ static struct snd_jack_kctl * snd_jack_kctl_new(struct snd_card *card, const char *name, unsigned int mask)
+@@ -340,6 +509,7 @@ EXPORT_SYMBOL(snd_jack_set_key);
+ void snd_jack_report(struct snd_jack *jack, int status)
+ {
+ 	struct snd_jack_kctl *jack_kctl;
++	unsigned int mask_bits = 0;
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+ 	int i;
+ #endif
+@@ -348,15 +518,18 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 		return;
+ 
+ 	list_for_each_entry(jack_kctl, &jack->kctl_list, list)
+-		snd_kctl_jack_report(jack->card, jack_kctl->kctl,
+-					    status & jack_kctl->mask_bits);
++		if (jack_kctl->sw_inject_enable)
++			mask_bits |= jack_kctl->mask_bits;
++		else
++			snd_kctl_jack_report(jack->card, jack_kctl->kctl,
++					     status & jack_kctl->mask_bits);
+ 
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+ 	if (!jack->input_dev)
+ 		return;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
+-		int testbit = SND_JACK_BTN_0 >> i;
++		int testbit = ((SND_JACK_BTN_0 >> i) & ~mask_bits);
+ 
+ 		if (jack->type & testbit)
+ 			input_report_key(jack->input_dev, jack->key[i],
+@@ -364,7 +537,8 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(jack_switch_types); i++) {
+-		int testbit = 1 << i;
++		int testbit = ((1 << i) & ~mask_bits);
++
+ 		if (jack->type & testbit)
+ 			input_report_switch(jack->input_dev,
+ 					    jack_switch_types[i],
+diff --git a/sound/core/sound.c b/sound/core/sound.c
+index b75f78f2c4b8..8a80f0440455 100644
+--- a/sound/core/sound.c
++++ b/sound/core/sound.c
+@@ -9,6 +9,7 @@
+ #include <linux/time.h>
+ #include <linux/device.h>
+ #include <linux/module.h>
++#include <linux/debugfs.h>
+ #include <sound/core.h>
+ #include <sound/minors.h>
+ #include <sound/info.h>
+@@ -39,6 +40,9 @@ MODULE_ALIAS_CHARDEV_MAJOR(CONFIG_SND_MAJOR);
+ int snd_ecards_limit;
+ EXPORT_SYMBOL(snd_ecards_limit);
+ 
++struct dentry *sound_debugfs_root;
++EXPORT_SYMBOL_GPL(sound_debugfs_root);
++
+ static struct snd_minor *snd_minors[SNDRV_OS_MINORS];
+ static DEFINE_MUTEX(sound_mutex);
+ 
+@@ -395,6 +399,9 @@ static int __init alsa_sound_init(void)
+ 		unregister_chrdev(major, "alsa");
+ 		return -ENOMEM;
+ 	}
++
++	sound_debugfs_root = debugfs_create_dir("sound", NULL);
++
+ #ifndef MODULE
+ 	pr_info("Advanced Linux Sound Architecture Driver Initialized.\n");
+ #endif
+@@ -403,6 +410,7 @@ static int __init alsa_sound_init(void)
+ 
+ static void __exit alsa_sound_exit(void)
+ {
++	debugfs_remove(sound_debugfs_root);
+ 	snd_info_done();
+ 	unregister_chrdev(major, "alsa");
+ }
+-- 
+2.25.1
+
