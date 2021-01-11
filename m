@@ -2,83 +2,78 @@ Return-Path: <SRS0=maC8=GO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F24C3C433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EAFB9C433E0
 	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 20:30:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08E4822CF6
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 20:30:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08E4822CF6
+	by mail.kernel.org (Postfix) with ESMTPS id DEFDF21BE5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 20:30:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DEFDF21BE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 652DC174E;
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00E361743;
 	Mon, 11 Jan 2021 21:29:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 652DC174E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00E361743
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
 	s=default; t=1610397047;
-	bh=RD+EP1iuw2MN4/WH+x0qA/FEncmO8Axa3NeAZqFHpVM=;
+	bh=9Pm4rCC+sqUb4lyvDSk8VEmesWovQ/lZhQLOo9ano0A=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l6/OqLe9cQBe5QMBm691tV3t+w0dzLYndJ9wL3eWkAcMra2sn13x2tcqM+oLnOEi8
-	 Dc4S3nd9sYrhO0RKSVrxWi/tvAlZzMhAHnjhY19R5GvoIvq+B4wfU1wJ3mRohxLKDm
-	 bR/nbFNeonE2+etf8jAiP2dkseiYwfeceX7yeCCg=
+	b=YpXGfVHM453Nz/miyk3TQjlz/O8Y6evZyVNxP67Lq6ke+3GqtU1+alqzpEYHWPTqf
+	 AJoSSr2VjtA/p/+bcKDGyvWOzFSBEdZ2WsFKlnmI7LYTOW7vyVMQwJ+Kl2qu4vtR6g
+	 ChXdBPEF1a52BqJHmxu7L5sliEh7tq6n+Yx/ikQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBFA8F8026D;
-	Mon, 11 Jan 2021 21:29:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24175F804C3;
+	Mon, 11 Jan 2021 21:29:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46976F80475; Mon, 11 Jan 2021 21:28:52 +0100 (CET)
+ id AD6C1F8026D; Mon, 11 Jan 2021 21:28:56 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48399F8016C
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 21:28:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48399F8016C
-IronPort-SDR: +IgRyG12q+yqr7BRKnkqG7daxlUPMHpCSu8dSRD0bFBb3gwz+OSvgINWYt7gDxZMQYz3nzSKdy
- O01J+dAJY5IQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="262712509"
-X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; d="scan'208";a="262712509"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D880F800BE
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 21:28:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D880F800BE
+IronPort-SDR: JIXwqjwvH+IcNBpSOe3Tq2zi2TgKfC2Z9A08Lg/3OLdiEcOqbBFueToq9AHbOirIEcRSAZ5PjY
+ Ycx3pTofSdnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="262712514"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; d="scan'208";a="262712514"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2021 12:28:37 -0800
-IronPort-SDR: Wk15VZMYLhTSRJe+wM8eN+4NsVkhDFIAzmHLW+rsMFHB/6IN88TOVK44+axPb81kMjUhRzbz9A
- VbzTZmXIqtAg==
-X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; d="scan'208";a="344995380"
+ 11 Jan 2021 12:28:39 -0800
+IronPort-SDR: v9xqixeOBz2f8oC/DhiwiKLZhaoneHTa9DPlR/LcDCVlgenEO/nzD/c1u5c6muexJAQwe9xvY9
+ fGYHtIf781LQ==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; d="scan'208";a="344995381"
 Received: from gkbech1x-mobl.amr.corp.intel.com (HELO [10.212.87.85])
  ([10.212.87.85])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2021 12:28:35 -0800
-Subject: Re: [PATCH 13/14] ASoC: Intel: bytcr_wm5102: Add machine driver for
- BYT/WM5102
-To: Charles Keepax <ckeepax@opensource.cirrus.com>,
- Hans de Goede <hdegoede@redhat.com>
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-14-hdegoede@redhat.com>
- <20201229135836.GO9673@ediswmail.ad.cirrus.com>
+ 11 Jan 2021 12:28:37 -0800
+Subject: Re: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
+To: Perry Yuan <Perry.Yuan@dell.com>, oder_chiou@realtek.com, perex@perex.cz, 
+ tiwai@suse.com
+References: <20201228133831.17464-1-Perry_Yuan@Dell.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b1a1a056-8347-5b5b-fcdd-8a37c24ecef9@linux.intel.com>
-Date: Mon, 11 Jan 2021 11:54:20 -0600
+Message-ID: <a12075b1-09f3-a993-eace-008224ca5f52@linux.intel.com>
+Date: Mon, 11 Jan 2021 12:07:11 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201229135836.GO9673@ediswmail.ad.cirrus.com>
+In-Reply-To: <20201228133831.17464-1-Perry_Yuan@Dell.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, patches@opensource.cirrus.com,
- Jie Yang <yang.jie@linux.intel.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, Mark Brown <broonie@kernel.org>,
- MyungJoo Ham <myungjoo.ham@samsung.com>, Lee Jones <lee.jones@linaro.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ broonie@kernel.org, lgirdwood@gmail.com,
+ Limonciello Mario <Mario.Limonciello@dell.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,35 +90,41 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->> +		return ret;
->> +	}
->> +
->> +	ret = snd_soc_component_set_sysclk(codec_component, ARIZONA_CLK_OPCLK, 0,
->> +					   rate * sr_mult, SND_SOC_CLOCK_OUT);
->> +	if (ret) {
->> +		dev_err(codec_component->dev, "Error setting OPCLK: %d\n", ret);
->> +		return ret;
->> +	}
-> 
-> OPCLK is a clock that can be outputted on the CODECs GPIOs. Is
-> that being used to clock some external component? If so it should
-> be added to the DAPM graph, if not you might as well remove this
-> call.
 
-Thanks Charles for the feedback.
 
-I have a vague recollection that the routing was supposed to be 
-something like:
+> @@ -268,6 +269,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+>   	unsigned int reg2 = mc->rreg;
+>   	unsigned int reg = mc->reg;
+>   	unsigned int max = mc->max;
+> +	unsigned int val0, val1;
+>   	int err;
+>   
+>   	val = ucontrol->value.integer.value[0];
+> @@ -286,7 +288,22 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+>   		if (err < 0)
+>   			return err;
+>   	}
+> -
+> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+> +	/* Privacy LED Trigger State Changed by muted/unmute switch */
+> +	if (mc->invert) {
+> +		val0 = ucontrol->value.integer.value[0];
+> +		val1 = ucontrol->value.integer.value[1];
+> +		if (val0 == 1 && val1 == 1) {
+> +			rt715->micmute_led = LED_OFF;
+> +			ledtrig_audio_set(LED_AUDIO_MICMUTE,
+> +					rt715->micmute_led ? LED_ON : LED_OFF);
+> +		} else if (val0 == 0 && val1 == 0) {
+> +			rt715->micmute_led = LED_ON;
+> +			ledtrig_audio_set(LED_AUDIO_MICMUTE,
+> +					rt715->micmute_led ? LED_ON : LED_OFF);
+> +		}
+> +	}
+> +#endif
 
-AP-----V
-        WM5102----> BT HFP
-Modem--^
+Should this be activated for specific DMI quirks? This driver is used in 
+non-Dell platforms (I am thinking of Intel RVPs or Realtek 
+daughterboards), I am not sure if a build-time behavior change makes sense.
 
-with processing on WM5102.
-
-But when I look at the initial Android code there are references to the 
-HFP path being handled by the AP.
-
-Probably better to remove this clock configuration if the need for it is 
-unclear, the goal is only to enable speaker/headset for now.
-
+Or conversely could we just set the LEDs unconditionally if doing so is 
+harmless?
