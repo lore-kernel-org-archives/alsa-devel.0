@@ -2,82 +2,88 @@ Return-Path: <SRS0=4l9v=GP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30E87C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 21:04:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86B8CC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 22:37:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C45F223125
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 21:04:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C45F223125
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7CD67230FC
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 22:37:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CD67230FC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26E6A1704;
-	Tue, 12 Jan 2021 22:03:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26E6A1704
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4C3D16BD;
+	Tue, 12 Jan 2021 23:36:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C3D16BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610485458;
-	bh=gxKDCTc3DUx93qN2h8tjbxo280mrzQgbU7ADu5Y6x3w=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1610491067;
+	bh=J7QjE17AqjvLbO+CmL4RXKquFskuE4WPyKHGjh/GR24=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KZWZyetsSBfAgGR2uEnDmsxrrQgbQJOKGvG+fguQdYqxfeHmK8yns4Morp/VHxP2E
-	 DhiB5VcVMuyPfVdNDePujq5PK0IeiD7tyy4alCQmgNj85AZG0xovMi+Q+Zk4QFedOa
-	 p6CBHAm4TkmcxNS2+YuvV30G+stiVwYTQCZzWY0s=
+	b=eyBv2LJLavnurhCeBbxy5G+fURAY8fti/YDR/ibwbSicrxZeTWRqvO0VVjXJR/sxX
+	 j5PX6bbusJdI+55iwrGaQkJM40XIGA/RAa9FK9ncB1Ejs4f0mXtmyxL26qJpvpuuz/
+	 c7M36S1xyLR7BDINp3p3NHlB+kdLfYqwyycjUjfU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2193F8026F;
-	Tue, 12 Jan 2021 22:03:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26435F80249;
+	Tue, 12 Jan 2021 23:36:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAAA6F8025E; Tue, 12 Jan 2021 22:03:23 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 40E66F8025E; Tue, 12 Jan 2021 23:36:53 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E52B8F80113;
- Tue, 12 Jan 2021 22:03:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E52B8F80113
-IronPort-SDR: K4ZA+WSt0BzAbsZUWdEyrNjJHsHI/AajBJvDoj7DB/M+QSmZ5juZ1Bk1A7dKz1Xagauu10shQZ
- Pu5Pw7AAwPAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="165785806"
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; d="scan'208";a="165785806"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2021 13:03:09 -0800
-IronPort-SDR: Hr2wj0qb4AnX3SeG5E+v960eRrN756QMpKgqbMmhAAfcIxmN+IgJOyx/zqEK9E8xFSDQNnJrMR
- jr6BgHo3XJfA==
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; d="scan'208";a="404604912"
-Received: from clinton1-mobl1.amr.corp.intel.com (HELO [10.212.214.129])
- ([10.212.214.129])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2021 13:03:06 -0800
-Subject: Re: [PATCH 2/2] ASoC: intel: fix soundwire dependencies
-To: Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1F48F80113;
+ Tue, 12 Jan 2021 23:36:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1F48F80113
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SBIoRO8d"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEA6923132;
+ Tue, 12 Jan 2021 22:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610490992;
+ bh=J7QjE17AqjvLbO+CmL4RXKquFskuE4WPyKHGjh/GR24=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=SBIoRO8d20IodXaunRyz4gn2Dxrm6UG06lAmRWV+tUrcIu9hmoPj4tnv3QVrkEC2s
+ IV8l/vucqrbh4lMDkPa/bUCT+ylCbm09ZBVTtVNiYSjBhZaqbs9wqPorwi6GyLPKYl
+ HMltuwO6HjQiUMpX/MO0pqVO7+hUaElnCLsf0UqQHiOF1XDmzfmcPhf35SoMXaZM41
+ DarDJDcu8U1ypMErKQktsclHm6ewPZct1w8K8uHORgU0ZYn8EbTqskxIPG4cZf2cAg
+ Y+utnJ9BMBNv3VTGeyzz1C9oSXqe5BHJMqTxnla4MUUPS/dZzohSgWAt77D5eNh7Lg
+ jlpuC1KmNZLLw==
+Received: by mail-oi1-f181.google.com with SMTP id q205so11111oig.13;
+ Tue, 12 Jan 2021 14:36:32 -0800 (PST)
+X-Gm-Message-State: AOAM53183f7yeeGkRSZuURI9DgFxYMVKxqzf+oGFi+owOBc1Z9EWE9Hg
+ M/Uq8CRN6LnVyIYwD1a7X1PhXYm+HMH6K1K938E=
+X-Google-Smtp-Source: ABdhPJyeEnuE9UYAY27XsYeaPsmwUePzkTqE4uAODRytnOoCWCRDeZPL5gxUWRj+3mYi22jOIXZCO7NimdvtkCBQ3WA=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr814199oig.11.1610490992060;
+ Tue, 12 Jan 2021 14:36:32 -0800 (PST)
+MIME-Version: 1.0
 References: <20210112203250.2576775-1-arnd@kernel.org>
  <20210112203250.2576775-2-arnd@kernel.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cde511d6-fa14-0cab-f00c-f75ad2d8281c@linux.intel.com>
-Date: Tue, 12 Jan 2021 15:03:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210112203250.2576775-2-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ <cde511d6-fa14-0cab-f00c-f75ad2d8281c@linux.intel.com>
+In-Reply-To: <cde511d6-fa14-0cab-f00c-f75ad2d8281c@linux.intel.com>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Tue, 12 Jan 2021 23:36:15 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3rOG8eCNQbk01-_t7RtyJknWbo-9tKo3959KhU5tcXsg@mail.gmail.com>
+Message-ID: <CAK8P3a3rOG8eCNQbk01-_t7RtyJknWbo-9tKo3959KhU5tcXsg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: intel: fix soundwire dependencies
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
  sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -94,99 +100,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Jan 12, 2021 at 10:03 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> On 1/12/21 2:32 PM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The Kconfig logic around SND_SOC_SOF_INTEL_SOUNDWIRE tries to
+> > ensure that all sound modules can be built with the minimal
+> > dependencies, but this fails in some configurations:
+> >
+> > x86_64-linux-ld: sound/hda/intel-dsp-config.o: in function `snd_intel_dsp_driver_probe':
+> > intel-dsp-config.c:(.text+0x134): undefined reference to `sdw_intel_acpi_scan'
+> >
+> > Specifically, this happens if the dsp-config driver is built-in but does
+> > not need to use soundwire, while CONFIG_SOUNDWIRE_INTEL is enabled as
+> > a loadable module.
+> >
+> > An easier and more correct way to do this is to remove
+> > CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE_LINK and instead have
+> > the two drivers that can link against SOUNDWIRE_INTEL,
+> > i.e. DSP_CONFIG and SND_SOC_SOF_HDA, select that driver whenever
+> > SND_SOC_SOF_INTEL_SOUNDWIRE_LINK is set.
+> >
+> > This however means that SND_SOC_SOF_INTEL_SOUNDWIRE cannot be selected
+> > by users when SOUNDWIRE is only usable by loadable modules and one or
+> > more drivers using SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE is built-in.
+>
+> The problem is real, but the proposal isn't completely right, there is
+> absolutely no logical link or functional dependency between
+> INTEL_DSP_CONFIG and SOUNDWIRE.
 
+If that is true, would it be possible to move the call to
+sdw_intel_acpi_scan() out of these drivers and one layer
+higher where the dependency actually is?
 
-On 1/12/21 2:32 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The Kconfig logic around SND_SOC_SOF_INTEL_SOUNDWIRE tries to
-> ensure that all sound modules can be built with the minimal
-> dependencies, but this fails in some configurations:
-> 
-> x86_64-linux-ld: sound/hda/intel-dsp-config.o: in function `snd_intel_dsp_driver_probe':
-> intel-dsp-config.c:(.text+0x134): undefined reference to `sdw_intel_acpi_scan'
-> 
-> Specifically, this happens if the dsp-config driver is built-in but does
-> not need to use soundwire, while CONFIG_SOUNDWIRE_INTEL is enabled as
-> a loadable module.
-> 
-> An easier and more correct way to do this is to remove
-> CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE_LINK and instead have
-> the two drivers that can link against SOUNDWIRE_INTEL,
-> i.e. DSP_CONFIG and SND_SOC_SOF_HDA, select that driver whenever
-> SND_SOC_SOF_INTEL_SOUNDWIRE_LINK is set.
-> 
-> This however means that SND_SOC_SOF_INTEL_SOUNDWIRE cannot be selected
-> by users when SOUNDWIRE is only usable by loadable modules and one or
-> more drivers using SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE is built-in.
+I was indeed wondering whether the intel-dsp-config.c is just
+another layering violation: this is another generic piece
+of code that seems to contain too much knowledge about
+specific hardware implementations.
 
-The problem is real, but the proposal isn't completely right, there is 
-absolutely no logical link or functional dependency between 
-INTEL_DSP_CONFIG and SOUNDWIRE.
+> We have a similar case with HDaudio, the two buses can be selected as
+> tristates, but the SOF configuration needs to match.
+>
+> In both cases, either we add a 'depends' and users need to make sure the
+> configurations match on the two sides. Or we use select but one of the
+> selections will be overridden and becomes meaningless.
 
-We have a similar case with HDaudio, the two buses can be selected as 
-tristates, but the SOF configuration needs to match.
+Maybe something like this:
 
-In both cases, either we add a 'depends' and users need to make sure the 
-configurations match on the two sides. Or we use select but one of the 
-selections will be overridden and becomes meaningless.
+config SND_SOC_SOF_INTEL_SOUNDWIRE
+-        bool "SOF support for SoundWire"
++       tristate "SOF support for SoundWire"
+-       depends on SOUNDWIRE && ACPI
++       depends on SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
++       depends on SOUNDWIRE
++       depends on ACPI
++       depends on !(SOUNDWIRE=m && SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE=y)
++       select SOUNDWIRE_INTEL
 
-Arnd, do you mind if I give it a try on my side?
+I have not tried it, but that should keep it all in one place.
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   sound/hda/Kconfig           |  1 +
->   sound/soc/sof/intel/Kconfig | 16 ++++++----------
->   2 files changed, 7 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-> index 3bc9224d5e4f..ecab814d7698 100644
-> --- a/sound/hda/Kconfig
-> +++ b/sound/hda/Kconfig
-> @@ -44,5 +44,6 @@ config SND_INTEL_NHLT
->   config SND_INTEL_DSP_CONFIG
->   	tristate
->   	select SND_INTEL_NHLT if ACPI
-> +	select SOUNDWIRE_INTEL if SND_SOC_SOF_INTEL_SOUNDWIRE
->   	# this config should be selected only for Intel DSP platforms.
->   	# A fallback is provided so that the code compiles in all cases.
-> diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-> index 67365ce0d86d..df8f9760870e 100644
-> --- a/sound/soc/sof/intel/Kconfig
-> +++ b/sound/soc/sof/intel/Kconfig
-> @@ -330,13 +330,17 @@ config SND_SOC_SOF_HDA
->   	tristate
->   	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
->   	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
-> +	select SOUNDWIRE_INTEL if SND_SOC_SOF_INTEL_SOUNDWIRE
->   	help
->   	  This option is not user-selectable but automagically handled by
->   	  'select' statements at a higher level.
->   
-> -config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
-> +config SND_SOC_SOF_INTEL_SOUNDWIRE
->   	bool "SOF support for SoundWire"
-> -	depends on SOUNDWIRE && ACPI
-> +	depends on SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
-> +	depends on SOUNDWIRE
-> +	depends on ACPI
-> +	depends on !(SOUNDWIRE=m && SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE=y)
->   	help
->   	  This adds support for SoundWire with Sound Open Firmware
->   	  for Intel(R) platforms.
-> @@ -345,14 +349,6 @@ config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
->   
->   config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
->   	tristate
-> -	select SND_SOC_SOF_INTEL_SOUNDWIRE if SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
-> -	help
-> -	  This option is not user-selectable but automagically handled by
-> -	  'select' statements at a higher level.
-> -
-> -config SND_SOC_SOF_INTEL_SOUNDWIRE
-> -	tristate
-> -	select SOUNDWIRE_INTEL
->   	help
->   	  This option is not user-selectable but automagically handled by
->   	  'select' statements at a higher level.
-> 
+> Arnd, do you mind if I give it a try on my side?
+
+I have no specific attachment to my patch, this was just what I came up
+with to fix the build regression locally.
+
+       Arnd
