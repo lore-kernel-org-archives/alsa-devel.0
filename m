@@ -2,68 +2,70 @@ Return-Path: <SRS0=4l9v=GP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C1CEC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 06:51:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4DF4C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 08:23:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F29622CAD
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 06:51:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F29622CAD
+	by mail.kernel.org (Postfix) with ESMTPS id F27EC22D2C
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 08:23:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F27EC22D2C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BE2C16B4;
-	Tue, 12 Jan 2021 07:50:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BE2C16B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 513C516B2;
+	Tue, 12 Jan 2021 09:22:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 513C516B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610434280;
-	bh=3IbcCRzcNa62fEPJSbtLhRh+9xq1/WIpGtz9S+HtWt4=;
+	s=default; t=1610439821;
+	bh=TI6V/WYTwrvlC5FU6HrzyDpN71p8oVe4gtm7skR5QRQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DQrylPC2gE41Ak3NUdMVUH+acn7hWmylayd6BZ5C/xa9ZGE5eFVWC6pmS596CBkNQ
-	 DlfhfwRN9e8crzYseGHmyUPq3q27eh7jMtOGqDcbwHz3mRyL+nhaCBzIeHXycaBVwh
-	 NYN7wi61O5ORfIcKwGiL1SJGCEE11PouzTzOBItE=
+	b=JoTBP7ung+PYmw6DvpmYX02c7OlQYB3AhAb1FuPXqJj8cniTT4L5vVqaCX4BHYEZm
+	 fDcaiHqt0ZgtlWQujsjftpuDTyLHTiVM1zhkFjnGAl2TW0i3x2KnHl2i6JW72ixooS
+	 QG987C9yI5vx8cdW3L8G2DW0XCQ/OP5+wbTcIHYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8657EF80249;
-	Tue, 12 Jan 2021 07:50:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7F57F80249;
+	Tue, 12 Jan 2021 09:22:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD51DF8025E; Tue, 12 Jan 2021 07:50:21 +0100 (CET)
+ id 1E90EF8025E; Tue, 12 Jan 2021 09:22:48 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29A23F80113
- for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 07:50:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29A23F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89F8FF800EB
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 09:22:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89F8FF800EB
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A30C5ABC4;
- Tue, 12 Jan 2021 06:50:14 +0000 (UTC)
-Date: Tue, 12 Jan 2021 07:50:14 +0100
-Message-ID: <s5h1reqtzrt.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 91D36AC8F;
+ Tue, 12 Jan 2021 08:22:38 +0000 (UTC)
+Date: Tue, 12 Jan 2021 09:22:38 +0100
+Message-ID: <s5hv9c2sgxd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] docs: ALSA: Fix reference to mixart.rst
-In-Reply-To: <20210111130110.72358aa9@lwn.net>
-References: <20210101221942.1068388-1-j.neuschaefer@gmx.net>
- <20210111130110.72358aa9@lwn.net>
+To: Peter Geis <pgwipeout@gmail.com>
+Subject: Re: [PATCH v2 0/2] fix tegra-hda on tegra30 devices
+In-Reply-To: <20210108135913.2421585-1-pgwipeout@gmail.com>
+References: <20210108135913.2421585-1-pgwipeout@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Sameer Pujar <spujar@nvidia.com>, Stephen Boyd <sboyd@kernel.org>,
+ linux-kernel@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>,
+ linux-clk@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org,
+ Mohan Kumar <mkumard@nvidia.com>, Peter De Schrijver <pdeschrijver@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,25 +81,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 11 Jan 2021 21:01:10 +0100,
-Jonathan Corbet wrote:
+On Fri, 08 Jan 2021 14:59:11 +0100,
+Peter Geis wrote:
 > 
-> On Fri,  1 Jan 2021 23:19:42 +0100
-> Jonathan Neuschäfer <j.neuschaefer@gmx.net> wrote:
+> The following patches fix tegra-hda on legacy tegra devices.
+> Two issues were discovered preventing tegra-hda from functioning:
+> -The hda clocks on tegra30 were assigned to clk_m and running at too low
+> of a rate to function.
+> -The tegra-hda encounters an input/output error when opening a stream.
 > 
-> > MIXART.txt has been converted to ReST and renamed. Fix the reference
-> > in alsa-configuration.rst.
-> > 
-> > Fixes: 3d8e81862ce4 ("ALSA: doc: ReSTize MIXART.txt")
-> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> > ---
-> >  Documentation/sound/alsa-configuration.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> Since the only mainline device that used tegra-hda until recently was the
+> t124, it is unknown exactly when this was broken. Fortunately a recent
+> patch was submitted that fixed the issue only on t194 devices. We can
+> apply it to the tegra30-hda device to resolve the issue across the board.
+> Note that downstream devices used the spdif device instead of hda for hdmi
+> audio. The spdif device lacks a driver on mainline.
 > 
-> Takashi, I'm assuming you'll pick this one up; let me know if you'd rather
-> I took it.
+> -Checkpatch seems to have issues finding [1], but git show has no issue.
+> [1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
+> Tegra194")
+> 
+> Changelog:
+> 
+> v2:
+> -Added ack and reviewed-by from Jon
+> -Updated fix to apply to tegra30-hda vice universally (Thanks Jon)
+> -Updated commit to include comments from hardware team (Thanks Sameer)
+> -Cleaned up commit messages
+> 
+> Peter Geis (2):
+>   clk: tegra30: Add hda clock default rates to clock driver
+>   ALSA: hda/tegra: fix tegra-hda on tegra30 soc
 
-Yes, I queued now.  Thanks for heads up, Jon.
+Shall I apply both patches via sound git tree?
 
+Or, if you want to take through clk tree, let me know.  In that case,
+feel free to take my ack:
+Acked-by: Takashi Iwai <tiwai@suse.de>
+
+
+thanks,
 
 Takashi
