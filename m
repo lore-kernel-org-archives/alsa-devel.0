@@ -1,119 +1,85 @@
-Return-Path: <SRS0=maC8=GO=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=4l9v=GP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4F14C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 21:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 593B6C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 00:43:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 19C4D22CB2
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jan 2021 21:26:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19C4D22CB2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id A25DC224F9
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 00:43:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A25DC224F9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B48A1749;
-	Mon, 11 Jan 2021 22:25:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B48A1749
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20A6316B4;
+	Tue, 12 Jan 2021 01:42:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A6316B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610400365;
-	bh=pJjKYZtiPlODEbYxxbKwFMOMyHssIK7t8LlECH8Q2ig=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1610412224;
+	bh=ixruP2jH6jsjZSfS1b9tO6gucm00OKQq+Tt59fxAIQo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TmMCon4DC1Eq59u1x6LacerPIbqWO4X9U19HWItHO2ms3NurE+/qM1z1HFAjCjeL4
-	 B64bHlARWPdqgX3YS8qRbm5GNMiYTx8GT2BhsWVuoZ+k+1PL+DhJhV8Ry9QlDAYRzl
-	 al6rttBWcq0eTfYcvERJqgnIGiV9IeAM4N06cilc=
+	b=IZhCyrGPb5Qz++dzlfTYrSroIFYx234VNGVmtdIWbtZTx2vhjDeqaLtPaMVqhRf8W
+	 mLTjGB3gAGE72ktK5Y8FJTAxFD1mX7QzHc3TNsEnk04sHxsNdCk+8E2zfa3PF57vXp
+	 50SCBiKcE7mPRnwpw+K92+sFrZdUajFOW2CZqKYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B15C6F800BE;
-	Mon, 11 Jan 2021 22:25:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 776FEF80113;
+	Tue, 12 Jan 2021 01:42:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80ED0F8016D; Mon, 11 Jan 2021 22:25:12 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 0FDE9F8016D; Tue, 12 Jan 2021 01:42:51 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9C6AF800BE
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 22:25:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9C6AF800BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD479F8013D
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 01:42:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD479F8013D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="ABDGd1ry"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610400300;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5TWvqrIVm+eS1cOB00SDFYgHatsARh3E9H2TndpfG6E=;
- b=ABDGd1ryrKsS6u3E95eJ70b5HliMs4b2OZnbaqMEjY4zX6+gbpvvCoJm8/3WPqlVk54Aem
- xOYcvzxacW/cc0DpPl97UsOcxkWmTHUz+sBx0nPpv5RkNEOfYUk78ZC+IjSKTN+kiz9NSb
- leUwbbWTeX9jBawaByz96ERuoS+W7FY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-YRGYXeJbOYm-YhgnXT544A-1; Mon, 11 Jan 2021 16:24:58 -0500
-X-MC-Unique: YRGYXeJbOYm-YhgnXT544A-1
-Received: by mail-ej1-f70.google.com with SMTP id p1so143932ejo.4
- for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2021 13:24:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=5TWvqrIVm+eS1cOB00SDFYgHatsARh3E9H2TndpfG6E=;
- b=kbhIqrhqoAXFprhZZYE2dnEpyg1qV2CmDll8H+TdM0MgIPBDIVWDuOYl0+qTS/ncUh
- jqzRa4yBZtS9oz0+/f9rjVWD4PDaDembjbh09vo94Bbf50vT4rBmX8Lfne0ILtDRKgR5
- fZ3SAcxuTyPZ4UoFHkCfShYyB8khcitWcERJLuitwJ5nDD7Bn6Vzx0THrpgY0FKWNvSC
- bxbR1FhoYJNoj2Sdi2sonMfv2ZRwfDn9Gdzfug504tNTew/WXqL1DdaLR3gLFqv0+A3J
- 9RZzIq/50Sh3juckuMDCYn6DYBi0HoCVHzt+C6t0yJ3LazEsbkvTseRRdtdaVwForV72
- DQ8A==
-X-Gm-Message-State: AOAM531tnkWzXxF2XLR4y0oC44obpLGlfX4efTN01KG7YkTsP24TIU9W
- IijFQ9xzxD5iytYy5PhSanwafFG4uKeJgJi3p2ofjQ0k7gLvaCELsqus854g1iJvTwsCv8Kz6S8
- 0GGE/fZyCu4UhcaJ/jLJ0EoM=
-X-Received: by 2002:a17:906:8151:: with SMTP id
- z17mr978464ejw.48.1610400296191; 
- Mon, 11 Jan 2021 13:24:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwxXhXldBoE2+pr7QCaS5A+yMjdW8BmlmZyOL9jrU41uAREPuAsgEFGMQIXw8nX9gHpG66zKg==
-X-Received: by 2002:a17:906:8151:: with SMTP id
- z17mr978453ejw.48.1610400296046; 
- Mon, 11 Jan 2021 13:24:56 -0800 (PST)
-Received: from x1.localdomain
- (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
- by smtp.gmail.com with ESMTPSA id rs27sm349583ejb.21.2021.01.11.13.24.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 11 Jan 2021 13:24:55 -0800 (PST)
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for DeeQ X5-Z8300
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Chris Chiu <chiu@endlessos.org>, cezary.rojewski@intel.com,
- yang.jie@linux.intel.com
-References: <20201216041601.5993-1-chiu@endlessos.org>
- <8d4f7c48-cb3e-a868-3d48-fe63a3113ea1@linux.intel.com>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <835f8b2e-5e9a-b8db-d126-d0cd5f0ec075@redhat.com>
-Date: Mon, 11 Jan 2021 22:24:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="f2ar9cwl"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DCA5224BD;
+ Tue, 12 Jan 2021 00:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610412160;
+ bh=ixruP2jH6jsjZSfS1b9tO6gucm00OKQq+Tt59fxAIQo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=f2ar9cwlhCekx8U9xqAaUt5oxbm+Pz3pY88CGx06ZcMOayXZMW96cYZz7tqFJbjBK
+ XNxsNgF5xW7mMHZ3XqRI706mA+qaSk5/chLY0waCTgQdazPZNubdDnLhAbQlKm4+4y
+ NhDWH2scjUFZ4qsktVls5o9g+29OhMz74+7RdXhlXFoUSUX7S0U2k0dAHxUEgkJ3aI
+ AY8iR3O1YM5/pJ5WT2PH/aTkwXGpuFlO9nCrD/c75LmK9x4dhHj2jpF3hrqX1N/lxl
+ akQkOJWQFg34PSAQ0ceUCudkBaEX03Hfy2fI8abrIR0mkFNzC5A511Q3IUniUTpoNL
+ Q8b0MupcLQzmg==
+Date: Tue, 12 Jan 2021 00:42:07 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: Re: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Message-ID: <20210112004207.GN4728@sirena.org.uk>
+References: <20210107085942.2891525-1-yuhsuan@chromium.org>
+ <20210107135459.GB4726@sirena.org.uk>
+ <CAGvk5PqMCEib8Yr=V4SxT0BBMoC1+yGXm0y+52+LwC5dPQUVnA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <8d4f7c48-cb3e-a868-3d48-fe63a3113ea1@linux.intel.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
- linux@endlessos.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="GOzekVbrLdOLv44p"
+Content-Disposition: inline
+In-Reply-To: <CAGvk5PqMCEib8Yr=V4SxT0BBMoC1+yGXm0y+52+LwC5dPQUVnA@mail.gmail.com>
+X-Cookie: Too much is not enough.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Guenter Roeck <groeck@chromium.org>, Prashant Malani <pmalani@chromium.org>,
+ Pi-Hsun Shih <pihsun@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,88 +95,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On 1/11/21 6:05 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 12/15/20 10:16 PM, Chris Chiu wrote:
->> DeeQ X5-Z8300 is a laptop empowered by Intel Atom Cherry Trail. Add
->> quirks to select the correct input map, jack-detect options to enable
->> jack sensing and internal/headset microphones.
->>
->> Signed-off-by: Chris Chiu <chiu@endlessos.org>
-> 
-> You probably need to re-send and CC: maintainers (Mark Brown, Takashi Iwai) and Hans de Goede who's been supporting all those quirks.
-> 
-> I don't think the changes below are fully correct, most quirks start with       
-> .driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
-> 
-> which e.g. enables the MCLK and overcurrent handling.
-> 
-> I wonder if what you need is
-> 
-> .driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS | BYT_RT5651_IN1_IN2_MAP)
+--GOzekVbrLdOLv44p
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ack, BYT_RT5651_DEFAULT_QUIRKS is:
+On Fri, Jan 08, 2021 at 12:57:51PM +0800, Yu-Hsuan Hsu wrote:
+> Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=E6=97=
+=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:55=E5=AF=AB=E9=81=93=EF=BC=9A
 
-#define BYT_RT5651_DEFAULT_QUIRKS       (BYT_RT5651_MCLK_EN | \
-                                         BYT_RT5651_JD1_1   | \
-                                         BYT_RT5651_OVCD_TH_2000UA | \
-                                         BYT_RT5651_OVCD_SF_0P75)
+> > I think the request was to sync over all the commands that are supported
+> > in the EC rather than just split this one addition into a separate
+> > patch.
 
-So compared to the quirk from the original patch that will add:
+> Got it. However, after running make_linux_ec_commands_h.sh to create
+> the new cros_ec_commands.h, I found there are lots of difference (1092
+> insertions(+), 66 deletions(-)). In addition, there are also some
+> redefined variables(most are in ./include/linux/usb/pd.h) causing the
+> compile error.
 
-BYT_RT5651_MCLK_EN
-BYT_RT5651_OVCD_TH_2000UA
-BYT_RT5651_OVCD_SF_0P75
+> It seems not easy to sync cros_ec_commands.h. I'm afraid of breaking
+> something. Does anyone have any suggestion? Thanks.
 
-Since you have working jack-detect you will definitely want the latter 2
-which will make headset vs headphones detection work and will add
-button-press detection for headsets.
+TBH that seems like a big enough change to split out from this and done
+as a separate series, I'd be perfectly happy to apply your original
+change.  I guess part of doing that sync up should ideally be to
+refactor things so that it can be done mechanically in future.
 
-BYT_RT5651_MCLK_EN is also a quirk which you almost always want,
-the sole exception is boards where the mclk is not connected which
-are very rare. Boards where the mclk is not connected are easy to
-spot, since they will not work at all when setting BYT_RT5651_MCLK_EN,
-so if things work with BYT_RT5651_DEFAULT_QUIRKS then setting
-BYT_RT5651_MCLK_EN is the right thing to do.
+--GOzekVbrLdOLv44p
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Tl;DR: use (BYT_RT5651_DEFAULT_QUIRKS | BYT_RT5651_IN1_IN2_MAP) as
-Pierre-Louis suggests.
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/88F4ACgkQJNaLcl1U
+h9AUXgf+NGKX1X7yUNmCGqQyYEJS+HdyisSjro4ojSQQ+LK3e9fnBBUOFoOg1Y+S
+rCgD6DHL041jBL/BV1Eh9e9B2j+nbzI3EqDUHLOjfd1zmKHfV23qLbvGkwaNUoF6
+Qd3Yb1bG4DCZtDymdhI/90CsM3rRamfrYOI4TwmkMASsRbU1PkmnNxmuUNqZRhxL
+kdT3mTVgtA8p2SzXIwBJzpS7ves32OGVGcMSO0ZXW8TCiLLO/vAhTDv8Bt72BSei
+FSEzehrc1QDdX5z3gYDG1aKOLtTeklrUSgYWpvjH5Fq8kfcfOBCSkIYv4mhGHvee
+6/ebyNfgdP1O8aXF3gURGpw7m8oYGQ==
+=N0ny
+-----END PGP SIGNATURE-----
 
-Hans
-
-
-
-
-
-
-> 
->> ---
->>   sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
->> index 688b5e0a49e3..9df09e26b05a 100644
->> --- a/sound/soc/intel/boards/bytcr_rt5651.c
->> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
->> @@ -507,6 +507,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
->>                       BYT_RT5651_SSP0_AIF1 |
->>                       BYT_RT5651_MONO_SPEAKER),
->>       },
->> +    {
->> +        .callback = byt_rt5651_quirk_cb,
->> +        .matches = {
->> +            DMI_MATCH(DMI_SYS_VENDOR, "DeeQ"),
->> +            DMI_MATCH(DMI_PRODUCT_NAME, "X5-Z8300"),
->> +        },
->> +        .driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP | BYT_RT5651_JD1_1),
->> +    },
->>       {}
->>   };
->>  
-> 
-
+--GOzekVbrLdOLv44p--
