@@ -8,88 +8,87 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAA0EC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 13:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 998ABC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 13:02:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1A82C2310F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 13:01:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A82C2310F
+	by mail.kernel.org (Postfix) with ESMTPS id EA7422310F
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 13:02:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA7422310F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8150D16E3;
-	Tue, 12 Jan 2021 14:00:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8150D16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67ADA1721;
+	Tue, 12 Jan 2021 14:01:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67ADA1721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610456509;
-	bh=oSU07iLhTNAcmZSgB3NWPXYbLE3v52HEQa49sGvP590=;
+	s=default; t=1610456519;
+	bh=4eHETLlufxvXXHNhZ8mTFPnqcGDwqgep9kbOxfa9XfE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aIA4wfeYR2c+UK38aGVFPIkq6OOKwieQcqEhKK8rFdID865BUvpRzLqXHTC4ziE1t
-	 HpHbCBJbSf30Zxqh/JnsHvAg8vx2A3c6rUy9LHwG+n1P7A597mBy6lPVeP0Ocom8gm
-	 +NhWLllIA8Yh0nLvQQ0vs0mOzkrkhY3FIM4iIuSs=
+	b=Y2CjkLO62kltAoACFyuJ3WM5sHDtywfeO+WJQFsF5ak7g54HF3otyvXftzhkCOkNj
+	 hRyRLVaOkX+CMOgZ4UraMCfMyXFaORwTnbGxMygXNgBUKyCHAJb71FrCoysRKeE/5D
+	 GkPiqFITZBAn4+YmG99zU4TD2XmE3bFtgn/DXyxA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 795B8F804E6;
-	Tue, 12 Jan 2021 13:59:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 716FBF804ED;
+	Tue, 12 Jan 2021 13:59:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16918F804E1; Tue, 12 Jan 2021 13:59:30 +0100 (CET)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+ id C4995F804E3; Tue, 12 Jan 2021 13:59:31 +0100 (CET)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
+ [IPv6:2a00:1450:4864:20::22b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8E74F804AB
- for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 13:59:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8E74F804AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79537F804D8
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 13:59:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79537F804D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eZFDw+8/"
-Received: by mail-lf1-x12e.google.com with SMTP id s26so3202702lfc.8
- for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 04:59:24 -0800 (PST)
+ header.b="Be+mTIPt"
+Received: by mail-lj1-x22b.google.com with SMTP id y22so2700445ljn.9
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2021 04:59:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=nOG+laR8Z5VOVTmF6Sy12FrgatG6zkwMpzVTv/S/8wI=;
- b=eZFDw+8/9/u7p+6fE1KA+XuOc6IySAthr3QWG7sQ9wciyLXHwxqPmnd2TBj2rmiMA/
- kvkYSkCtyWfbYYR1GhkIQIja6M0n4ZdDQkPxNXYonpGg2ZpbTT6nv4rHoLtcnmsAOn7v
- 1a2pHxVLGmfZLtEfZbIRID2BIWylr3NOpnlH5hewfUN4WbbvXpkSsSH61ojjBcxot+/3
- Pbn/OIix7bCWfJvKDiDs7HmH4d2g5Ogh87fuKFDiKNJfiAjy6oFM+xrKiOvroIv50097
- fy6k2sTEeR0n5K2wzW3BT4iYqxel3GONb5JkzWRwq18luiUVjKAkFhnB2dRMATPo3rkq
- f6ig==
+ bh=U1RnP9fDqxuGuZO3p6OVv1kBuZCep9lrHH2HK3m142A=;
+ b=Be+mTIPt6Au0v1PqAmS31FaJ0sTmRzMY9Xd+IV1+DnrSVFUQf+z4NoyF+xu6C+4uIN
+ Jb7vprZloh3evByiRo3D/x4SHRh87jcFIWPYRFloK6Igmlhky8UdXnL80uAzzR/tU6c1
+ ceW3wluhmqRpPvAI7CUBYAxcByKmbM1+zGk34G5dgrA/JoR2W8yLcMIvMkeM5Ym0Jq1I
+ WtfKNHTL8G3B4eEcDhZWDnwLXzBOUK/J4gFbHIN0if2/vEy0h1uCG9o1B/ODIOdJXQnQ
+ wzWLqeVDSj4Zs0UvOR1zVvZHG9nacOnw82W1FFWxj7Budx7tfMygevywNt2gAQhKi+Hx
+ X5lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=nOG+laR8Z5VOVTmF6Sy12FrgatG6zkwMpzVTv/S/8wI=;
- b=Trhj6ZgnQZYYVuY2JjWfNUzlxAUIL4362TPbQI2huseT2fwU4G50MR7opDv2q/gI2V
- jPzhr8JvWZJvqmAWrr+fc3TELtGFNPcVIqrH46NrZiZbTMvqx/zr7vh0/PTQ1ggXrw6N
- n9AMve/NCMrnmhz3CZPeMsVQ7Gjsrc4+iExp70VMO0YcqdxqR2vAIlQMNaLHAIOuxcsc
- A2kC9EYZn3GclEuvvaj+H+dN8rVLcsAA7Fz7zDNy3lm/xH1IO1xonSSuoe3qfIFXe1TR
- Mby+B15jCS+iSM3av5TePWIEQduZUJJyLF68px/ipf0HRxLNoKLMdEuebQHYiTsjXYB6
- Cvfw==
-X-Gm-Message-State: AOAM5307K0x2cORM4vDwKc86UUcDeQZZXXdFGCNZLwbj5M0zmyGGv194
- Mxk+Lb4cPHbDJxcUWsr871Q=
-X-Google-Smtp-Source: ABdhPJzlh6OOuLbC8EC9OmOQTflk2L6Zk58HxRZ5bEDEI01eSz/ACM8jjB2rGcDt9/JBGJJ+N95Smg==
-X-Received: by 2002:a19:6447:: with SMTP id b7mr2135081lfj.206.1610456364216; 
- Tue, 12 Jan 2021 04:59:24 -0800 (PST)
+ bh=U1RnP9fDqxuGuZO3p6OVv1kBuZCep9lrHH2HK3m142A=;
+ b=AxWeYwbq99DRZdUEkY1lE6mrGxQanUJYnGiEJFPv4lxm1si8dS3vMiKBPf6N2OuQ12
+ Jb9IwNC1u0vWk52Zag2GIaWpT9Ldop6q+zLedg4yDqhvoUees2GJ6f5M2a2PhhZYB7QO
+ FZxzIfUZSTCKZJw9Af2y1p94dlTMjTME2DY8k1X/nEWirDBgzx707+/yWbo6rDiDQ8Rf
+ huN7fVk8L4pvlkzfFNZDjXRtovfCKKyOBHaPhiJLcgB5rjlr8SGgmEfAfNFYHQv7yM/9
+ Yavd4hfERVEBqHZvdkSLYl+pGM+pWE6A1d9bVWQ2ycGwX8QSZNkCn52t4aKgLp+Cikq3
+ FNLg==
+X-Gm-Message-State: AOAM5322fOLRx52U2jVCB7pAbasVEP/pBmjBzKldRjTCryYsGRiF8iDg
+ OhUfNe2p5C6Akw9TL6VFXxc=
+X-Google-Smtp-Source: ABdhPJw4grk6GjPtZB2Ufck6pVcNJxP481ZSHWVuteTcIsfAJMKXJ+W+tdtJwlCX0rdYfDZNAt9PsA==
+X-Received: by 2002:a2e:6818:: with SMTP id c24mr2126208lja.184.1610456362442; 
+ Tue, 12 Jan 2021 04:59:22 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru.
  [109.252.192.57])
- by smtp.gmail.com with ESMTPSA id 192sm384211lfa.219.2021.01.12.04.59.23
+ by smtp.gmail.com with ESMTPSA id 192sm384211lfa.219.2021.01.12.04.59.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 12 Jan 2021 04:59:23 -0800 (PST)
+ Tue, 12 Jan 2021 04:59:22 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Sameer Pujar <spujar@nvidia.com>,
  Peter Geis <pgwipeout@gmail.com>, Nicolas Chauvet <kwizart@gmail.com>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v1 3/5] ASoC: tegra: ahub: Use
- of_reset_control_array_get_exclusive()
-Date: Tue, 12 Jan 2021 15:58:32 +0300
-Message-Id: <20210112125834.21545-4-digetx@gmail.com>
+Subject: [PATCH v1 1/5] ALSA: hda/tegra: Use clk_bulk helpers
+Date: Tue, 12 Jan 2021 15:58:30 +0300
+Message-Id: <20210112125834.21545-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210112125834.21545-1-digetx@gmail.com>
 References: <20210112125834.21545-1-digetx@gmail.com>
@@ -112,139 +111,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some of resets are erroneously missed in the configlink_mods[], like APBIF
-for example. Use of_reset_control_array_get_exclusive() which requests all
-the resets. The problem was hidden by the clk driver which implicitly
-de-asserts the missing resets.
+Use clk_bulk helpers to make code cleaner.
 
 Tested-by: Peter Geis <pgwipeout@gmail.com>
 Tested-by: Nicolas Chauvet <kwizart@gmail.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra30_ahub.c | 66 +++++-----------------------------
- sound/soc/tegra/tegra30_ahub.h |  1 -
- 2 files changed, 9 insertions(+), 58 deletions(-)
+ sound/pci/hda/hda_tegra.c | 68 ++++++---------------------------------
+ 1 file changed, 9 insertions(+), 59 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 156e3b9d613c..1e9767c75b11 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -323,41 +323,6 @@ int tegra30_ahub_unset_rx_cif_source(enum tegra30_ahub_rxcif rxcif)
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 70164d1428d4..4c799661c2f6 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -70,9 +70,8 @@
+ struct hda_tegra {
+ 	struct azx chip;
+ 	struct device *dev;
+-	struct clk *hda_clk;
+-	struct clk *hda2codec_2x_clk;
+-	struct clk *hda2hdmi_clk;
++	struct clk_bulk_data clocks[3];
++	unsigned int nclocks;
+ 	void __iomem *regs;
+ 	struct work_struct probe_work;
+ };
+@@ -113,36 +112,6 @@ static void hda_tegra_init(struct hda_tegra *hda)
+ 	writel(v, hda->regs + HDA_IPFS_INTR_MASK);
  }
- EXPORT_SYMBOL_GPL(tegra30_ahub_unset_rx_cif_source);
  
--#define MOD_LIST_MASK_TEGRA30	BIT(0)
--#define MOD_LIST_MASK_TEGRA114	BIT(1)
--#define MOD_LIST_MASK_TEGRA124	BIT(2)
+-static int hda_tegra_enable_clocks(struct hda_tegra *data)
+-{
+-	int rc;
 -
--#define MOD_LIST_MASK_TEGRA30_OR_LATER \
--		(MOD_LIST_MASK_TEGRA30 | MOD_LIST_MASK_TEGRA114 | \
--			MOD_LIST_MASK_TEGRA124)
--#define MOD_LIST_MASK_TEGRA114_OR_LATER \
--		(MOD_LIST_MASK_TEGRA114 | MOD_LIST_MASK_TEGRA124)
+-	rc = clk_prepare_enable(data->hda_clk);
+-	if (rc)
+-		return rc;
+-	rc = clk_prepare_enable(data->hda2codec_2x_clk);
+-	if (rc)
+-		goto disable_hda;
+-	rc = clk_prepare_enable(data->hda2hdmi_clk);
+-	if (rc)
+-		goto disable_codec_2x;
 -
--static const struct {
--	const char *rst_name;
--	u32 mod_list_mask;
--} configlink_mods[] = {
--	{ "i2s0", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s1", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s2", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s3", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "i2s4", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam0", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam1", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "dam2", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "spdif", MOD_LIST_MASK_TEGRA30_OR_LATER },
--	{ "amx", MOD_LIST_MASK_TEGRA114_OR_LATER },
--	{ "adx", MOD_LIST_MASK_TEGRA114_OR_LATER },
--	{ "amx1", MOD_LIST_MASK_TEGRA124 },
--	{ "adx1", MOD_LIST_MASK_TEGRA124 },
--	{ "afc0", MOD_LIST_MASK_TEGRA124 },
--	{ "afc1", MOD_LIST_MASK_TEGRA124 },
--	{ "afc2", MOD_LIST_MASK_TEGRA124 },
--	{ "afc3", MOD_LIST_MASK_TEGRA124 },
--	{ "afc4", MOD_LIST_MASK_TEGRA124 },
--	{ "afc5", MOD_LIST_MASK_TEGRA124 },
--};
+-	return 0;
 -
- #define LAST_REG(name) \
- 	(TEGRA30_AHUB_##name + \
- 	 (TEGRA30_AHUB_##name##_STRIDE * TEGRA30_AHUB_##name##_COUNT) - 4)
-@@ -484,17 +449,14 @@ static const struct regmap_config tegra30_ahub_ahub_regmap_config = {
- };
+-disable_codec_2x:
+-	clk_disable_unprepare(data->hda2codec_2x_clk);
+-disable_hda:
+-	clk_disable_unprepare(data->hda_clk);
+-	return rc;
+-}
+-
+-static void hda_tegra_disable_clocks(struct hda_tegra *data)
+-{
+-	clk_disable_unprepare(data->hda2hdmi_clk);
+-	clk_disable_unprepare(data->hda2codec_2x_clk);
+-	clk_disable_unprepare(data->hda_clk);
+-}
+-
+ /*
+  * power management
+  */
+@@ -186,7 +155,7 @@ static int __maybe_unused hda_tegra_runtime_suspend(struct device *dev)
+ 		azx_stop_chip(chip);
+ 		azx_enter_link_reset(chip);
+ 	}
+-	hda_tegra_disable_clocks(hda);
++	clk_bulk_disable_unprepare(hda->nclocks, hda->clocks);
  
- static struct tegra30_ahub_soc_data soc_data_tegra30 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA30,
- 	.set_audio_cif = tegra30_ahub_set_cif,
- };
+ 	return 0;
+ }
+@@ -198,7 +167,7 @@ static int __maybe_unused hda_tegra_runtime_resume(struct device *dev)
+ 	struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+ 	int rc;
  
- static struct tegra30_ahub_soc_data soc_data_tegra114 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA114,
- 	.set_audio_cif = tegra30_ahub_set_cif,
- };
+-	rc = hda_tegra_enable_clocks(hda);
++	rc = clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
+ 	if (rc != 0)
+ 		return rc;
+ 	if (chip && chip->running) {
+@@ -268,29 +237,6 @@ static int hda_tegra_init_chip(struct azx *chip, struct platform_device *pdev)
+ 	return 0;
+ }
  
- static struct tegra30_ahub_soc_data soc_data_tegra124 = {
--	.mod_list_mask = MOD_LIST_MASK_TEGRA124,
- 	.set_audio_cif = tegra124_ahub_set_cif,
- };
- 
-@@ -510,7 +472,6 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	const struct of_device_id *match;
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct reset_control *rst;
--	int i;
- 	struct resource *res0;
- 	void __iomem *regs_apbif, *regs_ahub;
- 	int ret = 0;
-@@ -528,26 +489,17 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	 * operate correctly, all devices on this bus must be out of reset.
- 	 * Ensure that here.
- 	 */
--	for (i = 0; i < ARRAY_SIZE(configlink_mods); i++) {
--		if (!(configlink_mods[i].mod_list_mask &
--					soc_data->mod_list_mask))
--			continue;
+-static int hda_tegra_init_clk(struct hda_tegra *hda)
+-{
+-	struct device *dev = hda->dev;
 -
--		rst = reset_control_get_exclusive(&pdev->dev,
--						  configlink_mods[i].rst_name);
--		if (IS_ERR(rst)) {
--			dev_err(&pdev->dev, "Can't get reset %s\n",
--				configlink_mods[i].rst_name);
--			ret = PTR_ERR(rst);
--			return ret;
--		}
+-	hda->hda_clk = devm_clk_get(dev, "hda");
+-	if (IS_ERR(hda->hda_clk)) {
+-		dev_err(dev, "failed to get hda clock\n");
+-		return PTR_ERR(hda->hda_clk);
+-	}
+-	hda->hda2codec_2x_clk = devm_clk_get(dev, "hda2codec_2x");
+-	if (IS_ERR(hda->hda2codec_2x_clk)) {
+-		dev_err(dev, "failed to get hda2codec_2x clock\n");
+-		return PTR_ERR(hda->hda2codec_2x_clk);
+-	}
+-	hda->hda2hdmi_clk = devm_clk_get(dev, "hda2hdmi");
+-	if (IS_ERR(hda->hda2hdmi_clk)) {
+-		dev_err(dev, "failed to get hda2hdmi clock\n");
+-		return PTR_ERR(hda->hda2hdmi_clk);
+-	}
 -
--		ret = reset_control_deassert(rst);
--		reset_control_put(rst);
--		if (ret)
--			return ret;
-+	rst = of_reset_control_array_get_exclusive(pdev->dev.of_node);
-+	if (IS_ERR(rst)) {
-+		dev_err(&pdev->dev, "Can't get reset: %p\n", rst);
-+		return PTR_ERR(rst);
+-	return 0;
+-}
+-
+ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
+ {
+ 	struct hda_tegra *hda = container_of(chip, struct hda_tegra, chip);
+@@ -495,7 +441,11 @@ static int hda_tegra_probe(struct platform_device *pdev)
+ 		return err;
  	}
  
-+	ret = reset_control_deassert(rst);
-+	reset_control_put(rst);
-+	if (ret)
-+		return ret;
+-	err = hda_tegra_init_clk(hda);
++	hda->clocks[hda->nclocks++].id = "hda";
++	hda->clocks[hda->nclocks++].id = "hda2hdmi";
++	hda->clocks[hda->nclocks++].id = "hda2codec_2x";
 +
- 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
- 			    GFP_KERNEL);
- 	if (!ahub)
-diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
-index 6889c5f23d02..5a2500b4ea06 100644
---- a/sound/soc/tegra/tegra30_ahub.h
-+++ b/sound/soc/tegra/tegra30_ahub.h
-@@ -491,7 +491,6 @@ void tegra124_ahub_set_cif(struct regmap *regmap, unsigned int reg,
- 			   struct tegra30_ahub_cif_conf *conf);
++	err = devm_clk_bulk_get(&pdev->dev, hda->nclocks, hda->clocks);
+ 	if (err < 0)
+ 		goto out_free;
  
- struct tegra30_ahub_soc_data {
--	u32 mod_list_mask;
- 	void (*set_audio_cif)(struct regmap *regmap,
- 			      unsigned int reg,
- 			      struct tegra30_ahub_cif_conf *conf);
 -- 
 2.29.2
 
