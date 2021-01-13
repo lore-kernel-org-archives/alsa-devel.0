@@ -2,72 +2,83 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCD1EC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17E5DC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:10:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C83923434
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:00:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C83923434
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4E27A23435
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:10:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E27A23435
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62BFE1712;
-	Wed, 13 Jan 2021 16:59:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62BFE1712
+	by alsa0.perex.cz (Postfix) with ESMTPS id 012E21709;
+	Wed, 13 Jan 2021 17:09:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012E21709
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610553636;
-	bh=nwR/+l7tGqLVyQizYtAYiZmWmdXHjr8LDWw1T2uIXB8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Oo1MdpKhmz7aDhLzDkxmXYpH6pTG+MRaYmjFxcpnIJXqfHoWGjg+9048dCF9NO1CI
-	 qIS/j91oiVbcMlVk74Ork121snwigUI0M8o6JiYFXOE3s+X3ZOobYj1p5GXdvTS0ey
-	 ikyzHEMu8qH5q2SQfj48X/Iqxn8pTvjzKB4Fmzhk=
+	s=default; t=1610554250;
+	bh=/V4uSeR8OSBZFOFVIDMw/BcMXL4VolcqPFbIKUiERHo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GUHmhDsT6umka2UcLOl5+bep4k3EpeItgooeeqWnVsHVLxCXTagKVSF1xdcT9KLPa
+	 1o9cFRzJH4AT8rju7nLjV7tF1brVLt7pcgE+G+12w1HJoB7K1LpOUNCbC+I+XnmHgb
+	 ryetFTK5LX23wQyHOdWjHvKXhxE/XoJbFMMgsDOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B501DF8016D;
-	Wed, 13 Jan 2021 16:59:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80027F8016D;
+	Wed, 13 Jan 2021 17:09:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A28C3F801ED; Wed, 13 Jan 2021 16:59:43 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 14D2FF801ED; Wed, 13 Jan 2021 17:09:57 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E34E9F80113
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:59:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E34E9F80113
-IronPort-SDR: ggefpbEaywGz4FBpjJVBEACK1L1gHRcErv0wavH6C7cEFBDRZSCNwitfvWSfKrUUQ2nTWfUq/l
- 8e0OSpcsIPJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="157404928"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="157404928"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2021 07:59:34 -0800
-IronPort-SDR: HY3vRV8wXKXm6TsvmPiqGxJ8LD8CQ4mZOQCaDSYXsSz1v8D20BOSPN5aNlZH0g9eYNsQnaW7NJ
- 87W4wvrGMcOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="381903736"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga008.jf.intel.com with ESMTP; 13 Jan 2021 07:59:32 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [PATCH] ALSA: hda: Add AlderLake-P PCI ID and HDMI codec vid
-Date: Wed, 13 Jan 2021 17:56:29 +0200
-Message-Id: <20210113155629.4097057-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BF21F80113
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 17:09:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BF21F80113
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="CIcwspXm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D4023435;
+ Wed, 13 Jan 2021 16:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610554191;
+ bh=/V4uSeR8OSBZFOFVIDMw/BcMXL4VolcqPFbIKUiERHo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=CIcwspXmZRh8pc/udeumy8UpzYBjmrX7dpcqHVBi+30uP1j3j4zU+0B10FqVEKafh
+ zYFna+tu0fTLy5NZW/+OxsohzEOeAjA+CH5Tr1A5js5pnPLHEoc9/gzjUyvx/1p91Y
+ YYwmVWgZAHyoZY4pYdT0ia5ZpErjCFa6mRI4+fPFeYRKY3nUj3aeO2k0e29sjipaFh
+ i8McAAFGMhCslAq/p6obQEr3RbKhxC09pzYp/p0JwRk6SB3DFC3DoaAAYyrj4Qgoax
+ zUHGMwuJv8rPnp6y8Q2ebD+pmNBb3VvMORqK8F/SLQLVb35ax0hThFX/HLs6hksODv
+ YBgNPtvxo0NXA==
+Date: Wed, 13 Jan 2021 16:09:17 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210113160917.GF4641@sirena.org.uk>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- kai.vehmanen@linux.intel.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="kbCYTQG2MZjuOjyn"
+Content-Disposition: inline
+In-Reply-To: <20210113152225.GA2334778@robh.at.kernel.org>
+X-Cookie: Ignore previous fortune.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, f.fainelli@gmail.com,
+ kuninori.morimoto.gx@renesas.com, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>,
+ bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
+ nsaenzjulienne@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,43 +94,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add HD Audio PCI ID and HDMI codec vendor ID for Intel AlderLake-P.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
----
- sound/pci/hda/hda_intel.c  | 3 +++
- sound/pci/hda/patch_hdmi.c | 1 +
- 2 files changed, 4 insertions(+)
+--kbCYTQG2MZjuOjyn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index f36ddf1149a6..279739fa3a7d 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2507,6 +2507,9 @@ static const struct pci_device_id azx_ids[] = {
- 	/* Alderlake-S */
- 	{ PCI_DEVICE(0x8086, 0x7ad0),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-+	/* Alderlake-P */
-+	{ PCI_DEVICE(0x8086, 0x51c8),
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Elkhart Lake */
- 	{ PCI_DEVICE(0x8086, 0x4b55),
- 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 74d246a0dc6d..97adff0cbcab 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4346,6 +4346,7 @@ HDA_CODEC_ENTRY(0x8086280f, "Icelake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x80862812, "Tigerlake HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862814, "DG1 HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862815, "Alderlake HDMI",	patch_i915_tgl_hdmi),
-+HDA_CODEC_ENTRY(0x8086281c, "Alderlake-P HDMI", patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x80862816, "Rocketlake HDMI",	patch_i915_tgl_hdmi),
- HDA_CODEC_ENTRY(0x8086281a, "Jasperlake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x8086281b, "Elkhartlake HDMI",	patch_i915_icl_hdmi),
--- 
-2.29.2
+On Wed, Jan 13, 2021 at 09:22:25AM -0600, Rob Herring wrote:
 
+> I'm not sure this makes sense to be generic, but if so, we already have=
+=20
+> the clock binding and should use (and possibly extend) that.
+
+> This appears to all be configuration of clocks within the codec, so=20
+> these properties belong in the codec or cpu nodes.
+
+Right, I think this should just be the clock binding.=20
+
+> > +      The PLL id and clock source id are specific to the particular co=
+mponent
+> > +      so see the relevant component driver for the ids. Typically the
+
+This should refer to the bindings for components, not to their drivers.
+
+> > +      clock source id indicates the pin the source clock is connected =
+to.
+> > +      The same phandle can appear in multiple entries so that several =
+plls
+> > +      can be set in the same component.
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +
+> > +  plls-clocks:
+> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > +    description: |
+> > +      A list of clock names giving the source clock for each setting
+> > +      in the plls property.
+> > +
+> > +  sysclks:
+> > +    description: |
+> > +      A list of component sysclk settings. There are 4 cells per sysclk
+> > +      setting:
+> > +        - phandle to the node of the codec or cpu component,
+> > +        - component sysclk id,
+> > +        - component clock source id,
+> > +        - direction of the clock: 0 if the clock is an input to the co=
+mponent,
+> > +          1 if it is an output.
+>=20
+> A clock provider and consumer would provide the direction.
+>=20
+> > +      The sysclk id and clock source id are specific to the particular
+> > +      component so see the relevant component driver for the ids. Typi=
+cally
+> > +      the clock source id indicates the pin the source clock is connec=
+ted to.
+> > +      The same phandle can appear in multiple entries so that several =
+sysclks
+> > +      can be set in the same component.
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +
+> > +  sysclks-clocks:
+> > +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> > +    description: |
+> > +      A list of clock names giving the source clock for each setting
+> > +      in the sysclks property.
+> > +
+> > +dependencies:
+> > +  plls: [ plls-clocks ]
+> > +  sysclks: [ sysclks-clocks ]
+> > +
+> >  required:
+> >    - dais
+> > =20
+> > --=20
+> > 2.20.1
+> >=20
+
+--kbCYTQG2MZjuOjyn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl//GywACgkQJNaLcl1U
+h9DmuwgAg4bSMDfqbeSbsp70+FR5h2BrfLgwsLwRE0uEEsHpMnvplu67Sb5EaYg7
+43mnbG/ru3uKHlU5gpqyXHFlqCGsbpr3s3+Drn6MfToxDD+lgk38LWADAPwgWOAi
+/Y3moCJTzxBEq1DuGk8w1PQqllu1+heWuVCiuo7iOXPJwrPhF5qtrL7P/f69RoFD
+JmfdGqGstHUQRc+rj4r3mGo1+61XFbin0Ptdvm8ST1Zx7D9FOKEfu7gL+UJK6ha8
+BfBUFCVU9Ov9zaBi1HRslnVULJ4h0i3JRao7rb2h7ajI9IzCr6PNuPkK1St1DDT6
+YJ/zH7Zd13mdMSqHWDgJVcGbPRT3Sg==
+=zuCm
+-----END PGP SIGNATURE-----
+
+--kbCYTQG2MZjuOjyn--
