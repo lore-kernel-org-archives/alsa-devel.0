@@ -2,67 +2,67 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8BABC433E6
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27E11C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:34:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F2482313E
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:21:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F2482313E
+	by mail.kernel.org (Postfix) with ESMTPS id A4773235F8
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 16:33:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4773235F8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B0C0172A;
-	Wed, 13 Jan 2021 17:21:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B0C0172A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C118F845;
+	Wed, 13 Jan 2021 17:33:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C118F845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610554911;
-	bh=vHfYrdW2ROcVAZ5+0lialqVLQD5HD8lbogm36H7nhg8=;
+	s=default; t=1610555635;
+	bh=IMUg9Hq4BzgsqhEwmz0wneuvRLoMRXjw4n9/nsAqmxk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K7cVwBojAvpYOByjLvvNjYvflq9In16dDYuj2CSEwnEi+5L6e2j4iB6YVr8LU2+Qr
-	 uP2AL48k1Op9MvwhaYLeKoj0MCCw2Rl++Eum+FPvzf8svUFk762gwup6YiSxr5hS67
-	 osUl4cUy8OJER6SZenrpI7dML4Mk+L5nIV9fIO7E=
+	b=i/vzpG8tbxXkq/+d/lHRbIaiyCmAbSN3qqe18jVLZ8TFt+wjQBmNXIgNTbDN+kEUw
+	 Bgc+geXCA/R0ROw1JaZW/ys1e+0ZC1YW0D+VWCyL+Ni1/aI1H+edeNVkAyJ829M3b0
+	 /1Y2j6p6nbsx6T6WrBBh4gC+DZWYMBrBYA47/6Lw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98AF8F80085;
-	Wed, 13 Jan 2021 17:21:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13E3EF8016D;
+	Wed, 13 Jan 2021 17:33:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B0BAF801ED; Wed, 13 Jan 2021 17:20:59 +0100 (CET)
+ id 41FACF801ED; Wed, 13 Jan 2021 17:33:03 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 333EEF80085
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 17:20:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 333EEF80085
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD115F80113
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 17:32:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD115F80113
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 02CC9B737;
- Wed, 13 Jan 2021 16:20:52 +0000 (UTC)
-Date: Wed, 13 Jan 2021 17:20:51 +0100
-Message-ID: <s5heeion6zg.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D9272AD26;
+ Wed, 13 Jan 2021 16:32:54 +0000 (UTC)
+Date: Wed, 13 Jan 2021 17:32:54 +0100
+Message-ID: <s5h8s8wn6fd.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: initial support to AlderLake-P
-In-Reply-To: <20210113160704.4106353-1-kai.vehmanen@linux.intel.com>
-References: <20210113160704.4106353-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: Add AlderLake-P PCI ID and HDMI codec vid
+In-Reply-To: <20210113155629.4097057-1-kai.vehmanen@linux.intel.com>
+References: <20210113155629.4097057-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
+ alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,32 +78,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 13 Jan 2021 17:07:04 +0100,
+On Wed, 13 Jan 2021 16:56:29 +0100,
 Kai Vehmanen wrote:
 > 
-> Add PCI id for the AlderLake-P.
+> Add HD Audio PCI ID and HDMI codec vendor ID for Intel AlderLake-P.
 > 
 > Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 > Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> ---
->  sound/soc/sof/sof-pci-dev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> index 63b989e3ec40..9c3cb719e268 100644
-> --- a/sound/soc/sof/sof-pci-dev.c
-> +++ b/sound/soc/sof/sof-pci-dev.c
-> @@ -512,6 +512,8 @@ static const struct pci_device_id sof_pci_ids[] = {
->  #if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
->  	{ PCI_DEVICE(0x8086, 0x7ad0),
->  		.driver_data = (unsigned long)&adls_desc},
-> +	{ PCI_DEVICE(0x8086, 0x51c8),
-> +		.driver_data = (unsigned long)&tgl_desc},
 
-Is it correct?  It's referring to TGL thing and it's not enabled with
-CONFIG_SND_SOC_SOF_ALDERLAKE.
+Applied now.  Thanks.
 
 
 Takashi
