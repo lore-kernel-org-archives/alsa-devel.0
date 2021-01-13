@@ -2,85 +2,110 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2583C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 02:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31A5AC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 06:07:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C7832311B
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 02:42:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C7832311B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id DF52023120
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 06:07:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF52023120
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFA7916AD;
-	Wed, 13 Jan 2021 03:41:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFA7916AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDD3A16B0;
+	Wed, 13 Jan 2021 07:06:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDD3A16B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610505767;
-	bh=dhU7I9HyAsxaz7FP97BDyV/MkKB+wO+rimTqxwk4KCk=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DF5QGz473J8lpGtrKzyYDwr4QiG+H25rR3cSO63I6WuZplFobKqKqWUJ59+xReDW2
-	 PtCmAn6laz/SjV19o4A4VVtcjc2Cq15eNomRt22/zO4An2ofbhoNGLjw8Nr8IplSV5
-	 ZqqYGgYSlTeuOjytCGWGqAIuyhtkKWXTx2t0llxY=
+	s=default; t=1610518045;
+	bh=7CE9mmOTtUeHM03dsqlsdOYUKqygzWg1NX2kSwo1NFw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SphPowHbMmz8wWfF3t6VXTiIZJq9pUB9I6zwgVGacrvIrwFcEvMNjf4dT3iY2V6O0
+	 81bnZtDLxPdVVB3ZTn7HOpyIG/ufW7Dx78BLQJD2rsGz9Mij7b0qW6OKS99/ddWXtN
+	 QnTL9T20a6QEMHBydqe9Ev1tUMG7+9CHUzpXrXnA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36140F8016D;
-	Wed, 13 Jan 2021 03:41:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23C30F8026B;
+	Wed, 13 Jan 2021 07:06:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06E05F801ED; Wed, 13 Jan 2021 03:41:53 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0AFCDF804C2; Wed, 13 Jan 2021 07:06:31 +0100 (CET)
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com
+ [64.147.123.27])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DBEFF80085
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 03:41:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DBEFF80085
-IronPort-SDR: immKiRPRpMVHvf116Rj4LwO3dbz11yW6sEaSk/U2tGzMYsl12LakuBqGkd9qQSL7M/P+2ubmlI
- bpojm6n6kS6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="165226869"
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; d="scan'208";a="165226869"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2021 18:41:39 -0800
-IronPort-SDR: AREd7oQnznsddHzTa3z54QGeZQx6RInVrOUVE9nAlPLf0TiToBCTCICK14AlmuhoVNUVQvaqh9
- TAdjZQmTT4cQ==
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; d="scan'208";a="353280739"
-Received: from ncorral-mobl2.amr.corp.intel.com (HELO [10.212.67.147])
- ([10.212.67.147])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2021 18:41:38 -0800
-Subject: Re: [PATCH v2 2/2] ASoC: rt715:add Mic Mute LED control support
-To: "Yuan, Perry" <Perry.Yuan@dell.com>,
- "Limonciello, Mario" <Mario.Limonciello@dell.com>,
- "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
- "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
-References: <20201228133831.17464-1-Perry_Yuan@Dell.com>
- <a12075b1-09f3-a993-eace-008224ca5f52@linux.intel.com>
- <SJ0PR19MB4528225B226C4F9AA7F7ECBE84AA0@SJ0PR19MB4528.namprd19.prod.outlook.com>
- <BY3PR19MB49130372226D65A235757BA1FAAA0@BY3PR19MB4913.namprd19.prod.outlook.com>
- <SJ0PR19MB4528FA846E29C0BB197725CA84A90@SJ0PR19MB4528.namprd19.prod.outlook.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d133c0fe-c9c6-fc55-8c08-5e9a3cf0d6e7@linux.intel.com>
-Date: Tue, 12 Jan 2021 20:41:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43A01F8025F
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 07:06:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43A01F8025F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="UXIuD5U6"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="jWbYxSHi"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.west.internal (Postfix) with ESMTP id 7FD8F1B95;
+ Wed, 13 Jan 2021 01:06:18 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Wed, 13 Jan 2021 01:06:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm1; bh=KmMtZW3LZXLFSWy68G91BENlig
+ LhFytnhm96lSzkJKY=; b=UXIuD5U6hOM1PeSc76T8bghdTxcioJVx11QwovyKYd
+ 4PvuSq6WbgYFQ/X2QqjaC/EHW+TQ4PG+yIBD/aDBEWkwzV+wmuSdp9KRy/ZWxhzt
+ n6IEk2A/uLm6pHu6P6l+1yzcWGqxSxkJbfyDiDOvKnhPMIudZLN5j4DH+3xMY/nq
+ BRmZSB6yGwEXnJTL/5CzqdiK/rQqwxdXgjd7nNL9c+/NHgtuPqMHrLo8XzKsYqL9
+ YPWGll7ksbhXh0Kgw4LIgJTzuB8qNOPwVO+X4bmDJZ+CFfNUMcrKeMt5ZcJ806YP
+ ME18OzW5KrBW7y5efSOKGBfF80Ch6hGewVOTfKDHmNIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=KmMtZW3LZXLFSWy68
+ G91BENligLhFytnhm96lSzkJKY=; b=jWbYxSHimgfdzYv1kRqdLmv56bVvP+IPP
+ uYO4Nmg1ZCYswJAfvT0pWoYcCQU8EuBzl3eQS1SZ08HfMljGjbETvmO8yesQoCbm
+ i2MQkkJRGp+/yuLa6pb898L4rdM1uQc3vDzJD2FMT+J1Fo0ADqLp+v5E3fBV12z/
+ LI7wqoUp3iq6LI91FY4cIe7NR2dZZ1p/PsuzuqKl562xvsiEnkpBHPImXkq4LwAd
+ T8u+TmI3MbrtQvaz55iK2RYXAgxPbEXpU8mkPwIUdN0T55EAaqx0V4yRBRAYRZ+y
+ d+UOJ3AhMuLdaPLEOGlu4aS9+VbqYGZy3oeBJgbH54b4n4mTKXA3Q==
+X-ME-Sender: <xms:2I3-X6fTgSHlfhlUYrVesWYjQW5XlPqG0gF8Vc0mOjJGWxFY2lLsyw>
+ <xme:2I3-X0NEWSAl6ug8PcjDZBJcdLaam4C_t3yWAJ9DquzIeE0p226FbJtJ9GHNS2RYn
+ JbcDssthugniljh5Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdelfecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+ ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+ htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+ tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+ dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+ rhhg
+X-ME-Proxy: <xmx:2I3-X7iaevjNiQOIx9nS208QHLFMirvUGN_RNzdQnXzeM7U8kpYzJg>
+ <xmx:2I3-X3-cuGkeIDb24Ti7hJ4CvIXQavn48cKT10BMtNTboT349yzfPw>
+ <xmx:2I3-X2uAjIMOKnhlHTq7JnMjtrRVhFK35AUVqEnFyx1iS2eOCWGkpg>
+ <xmx:2o3-X0ChZV9Zn_C8kQ7CEA2MEwN77Y-tt905xHzVQVvsjBCeL_SfN2mWJkw>
+Received: from titanium.stl.sholland.net
+ (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 629A5240057;
+ Wed, 13 Jan 2021 01:06:16 -0500 (EST)
+From: Samuel Holland <samuel@sholland.org>
+To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@siol.net>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 0/7] PinePhone BT audio bringup
+Date: Wed, 13 Jan 2021 00:06:08 -0600
+Message-Id: <20210113060615.53088-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <SJ0PR19MB4528FA846E29C0BB197725CA84A90@SJ0PR19MB4528.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Samuel Holland <samuel@sholland.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,57 +121,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This series makes use of the additional DAIs recently added to the
+sun8i-codec driver to add hardware routing for BT SCO (headset) audio
+on the PinePhone.
 
->>>>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
->>>>> +	/* Privacy LED Trigger State Changed by muted/unmute switch */
->>>>> +	if (mc->invert) {
->>>>> +		val0 = ucontrol->value.integer.value[0];
->>>>> +		val1 = ucontrol->value.integer.value[1];
->>>>> +		if (val0 == 1 && val1 == 1) {
->>>>> +			rt715->micmute_led = LED_OFF;
->>>>> +			ledtrig_audio_set(LED_AUDIO_MICMUTE,
->>>>> +					rt715->micmute_led ? LED_ON :
->>>> LED_OFF);
->>>>> +		} else if (val0 == 0 && val1 == 0) {
->>>>> +			rt715->micmute_led = LED_ON;
->>>>> +			ledtrig_audio_set(LED_AUDIO_MICMUTE,
->>>>> +					rt715->micmute_led ? LED_ON :
->>>> LED_OFF);
->>>>> +		}
->>>>> +	}
->>>>> +#endif
->>>>
->>>> Should this be activated for specific DMI quirks? This driver is
->>>> used in
->>> non-Dell
->>>> platforms (I am thinking of Intel RVPs or Realtek daughterboards), I
->>>> am not sure if a build-time behavior change makes sense.
->>>>
->>>> Or conversely could we just set the LEDs unconditionally if doing so
->>>> is harmless?
->>>
->>> The current mic mute led setting path is not common used for other
->>> vendors, just Dell platform support this mic mute led set operation.
->>>
->>> Do you think that I need to add one DMI quirk in the next version ?
->>> If so, I can add that.
->>>
->>>
->>
->>
->> In the HDA audio case this is modeled off of, the code runs whether or not a
->> vendor has support for a mic mute LED.  The calls to ledtrig_audio_set should
->> be a no-op.  I agree with @Pierre-Louis Bossart in this case, we should just be
->> running it whether or not dell-privacy is compiled in.  If another vendor
->> chooses to add LED support they'll just need to set up their ledtrig supported
->> backend and not change codec code.
-> 
-> Hi @Pierre-Louis Bossart
-> Seems like that we have two way to go.
-> * DMI quirks,seems like that it needs to maintain the quirk list when vendors have new system to support.
-> * We just set the mic mute led state unconditionally .
-> 
-> Which way would you prefer for next patch review?
+The BT audio connection is represented by the "dummy" bt-sco codec. The
+connection to the Quectel EG-25G modem via AIF2 works as well, but I do
+not include it here because there is no appropriate codec driver in
+tree. We have been using an out-of-tree "dummy" codec driver for the
+modem similar to bt-sco, and I'm not sure if such a driver would be
+desired upstream.
 
-Maintaining quirks is a hassle, it's much simpler and consistent with 
-HDaudio if the leds are set unconditionally. Thanks!
+Changes from v1:
+  - Fixed DT binding example to follow new binding
+
+Arnaud Ferraris (1):
+  arm64: dts: allwinner: pinephone: Set audio card name
+
+Samuel Holland (6):
+  ASoC: dt-bindings: sun8i-codec: Increase #sound-dai-cells
+  ARM: dts: sun8i-a33: Allow using multiple codec DAIs
+  arm64: dts: allwinner: a64: Allow using multiple codec DAIs
+  arm64: dts: allwinner: a64: Add pinmux nodes for AIF2/AIF3
+  arm64: dts: allwinner: a64: Allow multiple DAI links
+  arm64: dts: allwinner: pinephone: Add support for Bluetooth audio
+
+ .../sound/allwinner,sun8i-a33-codec.yaml      |  4 +-
+ arch/arm/boot/dts/sun8i-a33.dtsi              |  4 +-
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   | 25 +++++++++++++
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 ++++++++++++++-----
+ 4 files changed, 56 insertions(+), 14 deletions(-)
+
+-- 
+2.26.2
+
