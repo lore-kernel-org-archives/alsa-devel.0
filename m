@@ -1,82 +1,71 @@
-Return-Path: <SRS0=4l9v=GP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=no autolearn_force=no
-	version=3.4.0
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2F70C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 23:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21AE6C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 00:01:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 76FC22312F
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jan 2021 23:35:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76FC22312F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bootlin.com
+	by mail.kernel.org (Postfix) with ESMTPS id BA0BC23120
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 00:01:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA0BC23120
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E551B1685;
-	Wed, 13 Jan 2021 00:34:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E551B1685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8239416BD;
+	Wed, 13 Jan 2021 01:00:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8239416BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610494499;
-	bh=jK6xhsvTFBXbJFMHuE82FMHQLf3jl+2+jInTJl+Nuic=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610496085;
+	bh=u3GgkYH6BtlI4cLNPV39nilkhUzHTypvoPkEUjqdK2s=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NtThyGQh1z7JbVsQKO/3zAqS7Q0RsH6nkmeSqPBAB/sA2KrDS6yYrOVVm3zblIvuA
-	 xy9MYDPmhzc8NeYCSy0lDCjySvXMY4tn4DiIlWJcMeYhx70HhLWdYYuWTw+Fm/b07P
-	 WK22lAnu2V3WhjslpMzgy0xvg9VpfB4+aKZKMSMI=
+	b=NS8sV6hCGMG5XzMDTT0BdDn9Sg1Z4qT4b2pZT4sY91x9ssKdjxhsGlr0Z17BGH1Mn
+	 Enez1PdATrnr6bbbvFhpriapL9nkGQYUX1QmPf5f7vr+t4nshUKj72J2ViKIJyoYfd
+	 YvNKcFtnyWPA7nSHE/IqQ8VjVPD63Eho0jau0zp0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B561EF80249;
-	Wed, 13 Jan 2021 00:34:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00605F800B9;
+	Wed, 13 Jan 2021 01:00:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA565F8025E; Wed, 13 Jan 2021 00:34:04 +0100 (CET)
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
- [217.70.183.201])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21C21F80113
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 00:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21C21F80113
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr
- [86.202.109.140])
- (Authenticated sender: alexandre.belloni@bootlin.com)
- by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id A8AE81BF20B;
- Tue, 12 Jan 2021 23:33:41 +0000 (UTC)
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Jaroslav Kysela <perex@perex.cz>, Matt Mackall <mpm@selenic.com>,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>,
- dmaengine@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
- Richard Weinberger <richard@nod.at>,
- Alessandro Zummo <a.zummo@towertech.it>,
- "David S. Miller" <davem@davemloft.net>, Mark Brown <broonie@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
- linux-crypto@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
- linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org, linux-watchdog@vger.kernel.org,
- alsa-devel@alsa-project.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
- linux-ide@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: (subset) [PATCH 00/10] Remove support for TX49xx
-Date: Wed, 13 Jan 2021 00:33:30 +0100
-Message-Id: <161049432258.352381.2804715824942772218.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210105140305.141401-1-tsbogend@alpha.franken.de>
-References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+ id 5FBDFF8025E; Wed, 13 Jan 2021 01:00:30 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 0A69FF80113
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 01:00:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A69FF80113
+Date: 13 Jan 2021 09:00:19 +0900
+X-IronPort-AV: E=Sophos;i="5.79,342,1602514800"; d="scan'208";a="68582624"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 13 Jan 2021 09:00:19 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B10084009F78;
+ Wed, 13 Jan 2021 09:00:19 +0900 (JST)
+Message-ID: <87czy9r9ue.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v4 3/6] ASoC: audio-graph-card: Support setting component
+ plls and sysclks
+In-Reply-To: <762d798c-bd75-e24a-40fd-263f68f1a5f1@opensource.cirrus.com>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-4-rf@opensource.cirrus.com>
+ <87y2gzymc5.wl-kuninori.morimoto.gx@renesas.com>
+ <762d798c-bd75-e24a-40fd-263f68f1a5f1@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, f.fainelli@gmail.com,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, broonie@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-rpi-kernel@lists.infradead.org, nsaenzjulienne@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,22 +81,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 5 Jan 2021 15:02:45 +0100, Thomas Bogendoerfer wrote:
-> I couldn't find any buyable product other than reference boards using
-> TX49xx CPUs. And since nobody showed interest in keeping support for
-> it, it's time to remove it.
+
+Hi Richard
+
+> > As I mentioned in v3, adding *general* pll to common card driver is
+> > maybe difficult.
 > 
-> I've split up the removal into seperate parts for different maintainers.
-> So if the patch fits your needs, please take it via your tree or
-> give me an ack so I can apply them  the mips-next tree.
+> You did say that. But you did not say why.
+> Can you be more specific about what problem you see with adding it
+> to the generic driver?
 > 
-> [...]
+> > Using your own customized audio-graph-card driver is better idea,
+> > instead of adding code to common driver.
+> 
+> I just don't want to duplicate code without good reason.
 
-Applied, thanks!
+Ahh, sorry for my unclear comment.
+I think "PLL settings" is very board/platform specific,
+so, adding such code to common driver will be issue in the future.
+This is the reason why I don't want add it to audio-graph-card.
 
-[08/10] rtc: tx4939: Remove driver
-        commit: 446667df283002fdda0530523347ffd1cf053373
+But, as I mentioned above and Sameer is already doing,
+you can reuse audio-graph-card and customize it.
 
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+	Reuse audio-graph-card + Use your own PLL code
+	= your own customized audio-graph-card
+
+You can reuse audio-graph-card code by calling graph_parse_of(),
+and customize before/after that.
+I think no duplicate code is needed.
+
+I hope it can help you.
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
