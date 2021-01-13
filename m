@@ -4,73 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72309C433E6
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:29:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A323C433E6
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:29:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 808C6233ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:29:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 808C6233ED
+	by mail.kernel.org (Postfix) with ESMTPS id BC881233ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:29:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC881233ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2DE8171A;
-	Wed, 13 Jan 2021 16:28:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2DE8171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 084131706;
+	Wed, 13 Jan 2021 16:28:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 084131706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610551754;
-	bh=eEcbkRzk8bWXVOlfj158dOfEWwEYLSTHoyanoSEtP88=;
+	s=default; t=1610551768;
+	bh=vxd/kqSo8bN8c/zk/ku4UDlXJMGZVRAHdZAV8MksMrE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AHkueRoIA3QAlX5UeWst4m0Bo9afSuJO7C1vhFHtflexcH7GcKTF+cW7Xn+e5pv2S
-	 Huj52J7R2+7E6zGmhN27xPRFblMnSHoGwI7e7SzMqmL0p4eJKtATBLZJ8pHWByAsrs
-	 FtovnKz4mAlCNbz2jpTzzmonw5++c+gxDI7cYVBE=
+	b=A5ggAGBGrWdOB3z9n1zp6i5E51ErOUnbfOAEOtkV4Zwa8SmGuTsLj1lOBNKDH91l/
+	 09knbIv850+LFUchfbo4qTXeHFmKoQNkR4KHcjoL5Jb/xBdZ1S20R1aVoePk7q8lkb
+	 pNZtc+c1sgil5xY+kYfeDcPXPf4Dio3VLrunU9OE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 409C9F80254;
-	Wed, 13 Jan 2021 16:27:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC4DEF804CB;
+	Wed, 13 Jan 2021 16:27:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93A8FF8026D; Wed, 13 Jan 2021 16:27:32 +0100 (CET)
+ id 0A923F8026B; Wed, 13 Jan 2021 16:27:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE65EF80085
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:27:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE65EF80085
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9A43F80254;
+ Wed, 13 Jan 2021 16:27:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9A43F80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="NAsT1SH6"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9CF623382;
- Wed, 13 Jan 2021 15:27:27 +0000 (UTC)
+ header.b="RNF09ngm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 360F9233EA;
+ Wed, 13 Jan 2021 15:27:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610551648;
- bh=eEcbkRzk8bWXVOlfj158dOfEWwEYLSTHoyanoSEtP88=;
+ s=k20201202; t=1610551642;
+ bh=vxd/kqSo8bN8c/zk/ku4UDlXJMGZVRAHdZAV8MksMrE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=NAsT1SH66xRMBLoY2fCXoXUlEgYlBdXlnSUSTKi8lj90ogVFla84CXJvXZ/e0YzI2
- eHYqSv5t1g3w1KMaf39U78W78Euq1cNAZgTpuglx1L60QuXtthy+10du1YDt80dDW6
- bfbQTt16wCkz9o7o3o6O30dsMPj6uUBLwVDVDANZP9rh+1y7QDphoRnTnZoDn+nng3
- QDZ5wVscedLusUInZH2OhG2q56PzLnPDExq8REsPkKWgoc7uiUReR90LnZ/I4qW1oG
- Hc0CpO5gka6n/cdiDndvF1tnGRC4FmBQGYcMNh2S3cIM/83ykLLW94yV1UE0GvM1VJ
- hX204D/7fjs5g==
+ b=RNF09ngmseI9UabNoK5Vo4YTXrl8bOw2HXJhQ4ZYMb5ecL6c8XfI88+cB96dahPOq
+ cH7MNioULHXyycATFBQzr/Y9PMNna4r1+OEq9uiyQN1KleHubpBAKgqj9plbRDC6C5
+ lcMI1SDA67xZvCEqsxB0BWVLG693n/tqDMsL9igXqTeP0vkMFCVfDoY8GfIZ7zOzdy
+ zxPpmDRkE7HMHbg426eQp9IUSsH7oK6zT13QXTnULG7hN2T9V1E2vkgNf1oYsk77Tl
+ CNAOVgEW1dZxvX5qvJCiLVR0/xPF8co0R+nae5+9KtgRzF2+2Qn7q16sj2STyAPziR
+ hEXS4ngRJ0qDg==
 From: Mark Brown <broonie@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-In-Reply-To: <20201211203255.148246-1-stephan@gerhold.net>
-References: <20201211203255.148246-1-stephan@gerhold.net>
-Subject: Re: [PATCH] ASoC: qcom: qdsp6: Move frontend AIFs to q6asm-dai
-Message-Id: <161055160365.21623.6334522297634428774.b4-ty@kernel.org>
+To: pierre-louis.bossart@linux.intel.com,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, kai.vehmanen@linux.intel.com,
+ daniel.baluta@nxp.com, tiwai@suse.com, ranjani.sridharan@linux.intel.com,
+ lgirdwood@gmail.com
+In-Reply-To: <20210112181128.1229827-1-kai.heng.feng@canonical.com>
+References: <20210112181128.1229827-1-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v4 1/3] ASoC: SOF: Intel: hda: Resume codec to do jack
+ detection
+Message-Id: <161055160366.21623.4212588433578007556.b4-ty@kernel.org>
 Date: Wed, 13 Jan 2021 15:26:43 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Patrick Lai <plai@codeaurora.org>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>,
+ Rander Wang <rander.wang@intel.com>,
+ Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+ "moderated list:SOUND - SOUND OPEN FIRMWARE SOF DRIVERS"
+ <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,17 +93,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Dec 2020 21:32:55 +0100, Stephan Gerhold wrote:
-> At the moment it is necessary to set up the DAPM routes between
-> front-end AIF<->DAI explicitly in the device tree, e.g. using
+On Wed, 13 Jan 2021 02:11:23 +0800, Kai-Heng Feng wrote:
+> Instead of queueing jackpoll_work, runtime resume the codec to let it
+> use different jack detection methods based on jackpoll_interval.
 > 
-> 	audio-routing =
-> 		"MM_DL1", "MultiMedia1 Playback",
-> 		"MM_DL3", "MultiMedia3 Playback",
-> 		"MM_DL4", "MultiMedia4 Playback",
-> 		"MultiMedia2 Capture", "MM_UL2";
-> 
-> [...]
+> This partially matches SOF driver's behavior with commit a6e7d0a4bdb0
+> ("ALSA: hda: fix jack detection with Realtek codecs when in D3"), the
+> difference is SOF unconditionally resumes the codec.
 
 Applied to
 
@@ -104,8 +107,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: qdsp6: Move frontend AIFs to q6asm-dai
-      commit: 6fd8d2d275f74baa7ac17b2656da1235f56dab99
+[1/3] ASoC: SOF: Intel: hda: Resume codec to do jack detection
+      commit: bcd7059abc19e6ec5b2260dff6a008fb99c4eef9
+[2/3] ASoC: SOF: Intel: hda: Modify existing helper to disable WAKEEN
+      commit: 31ba0c0776027896553bd8477baff7c8b5d95699
+[3/3] ASoC: SOF: Intel: hda: Avoid checking jack on system suspend
+      commit: ef4d764c99f792b725d4754a3628830f094f5c58
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
