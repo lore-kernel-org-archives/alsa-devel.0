@@ -6,71 +6,71 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95611C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72309C433E6
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:29:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6B0A923382
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:28:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B0A923382
+	by mail.kernel.org (Postfix) with ESMTPS id 808C6233ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:29:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 808C6233ED
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5D1E16EC;
-	Wed, 13 Jan 2021 16:27:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5D1E16EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2DE8171A;
+	Wed, 13 Jan 2021 16:28:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2DE8171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610551698;
-	bh=sRSmZIMopolf+hIOOox7P85hYxa+y4mYLvhVskZdWpE=;
+	s=default; t=1610551754;
+	bh=eEcbkRzk8bWXVOlfj158dOfEWwEYLSTHoyanoSEtP88=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bIpttf/891zrvFzOB9TvjkG+RtMMRofCSajvI1Tm+s2F3CMDBiKxsJrAUuvu/+vUi
-	 Ns5UjG/JTkLH0U/HJ2SkH1/uz1SJokA7cBmBXszbqiDzDjI/8MNjFVKzAR9hco0ijR
-	 jWe7Ko5UXalx+o81aYEBzmTHup4+ehVXRXZG6ue8=
+	b=AHkueRoIA3QAlX5UeWst4m0Bo9afSuJO7C1vhFHtflexcH7GcKTF+cW7Xn+e5pv2S
+	 Huj52J7R2+7E6zGmhN27xPRFblMnSHoGwI7e7SzMqmL0p4eJKtATBLZJ8pHWByAsrs
+	 FtovnKz4mAlCNbz2jpTzzmonw5++c+gxDI7cYVBE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 635D0F8016D;
-	Wed, 13 Jan 2021 16:27:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 409C9F80254;
+	Wed, 13 Jan 2021 16:27:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41D75F801ED; Wed, 13 Jan 2021 16:27:27 +0100 (CET)
+ id 93A8FF8026D; Wed, 13 Jan 2021 16:27:32 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47A1DF8014D
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:27:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47A1DF8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE65EF80085
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:27:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE65EF80085
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ibJihYQ+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE2872339F;
- Wed, 13 Jan 2021 15:27:16 +0000 (UTC)
+ header.b="NAsT1SH6"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9CF623382;
+ Wed, 13 Jan 2021 15:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610551637;
- bh=sRSmZIMopolf+hIOOox7P85hYxa+y4mYLvhVskZdWpE=;
+ s=k20201202; t=1610551648;
+ bh=eEcbkRzk8bWXVOlfj158dOfEWwEYLSTHoyanoSEtP88=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ibJihYQ+kNAGzbw2GNFXhkXBq/B+ZvHAk9qRGwb7NyhGv8FHyiCFaHBtgwd2xJqB6
- NRT3AaziqELqQbWydHrul1KQa+SZybk3dSnqktYak9Jk96BAMZ7a2Da6/VVPTOO0o0
- 1gpTsY1i9fvvZX/FulGMWISz0YTHfKt9SvSitXEs3xl5xsfmCMjoa8ycJBKFWS/bBK
- 9YpwLZ7ALLHpbFA5RAi+SHgZxX4cmJ6TbdDqXNUHk3v3zJbAzSZpXCY/+vtqKfTQ6I
- zzmR4tukUCXmk1c95JxjHEVN9vTK3FKztArHwuF0x7NM2IBnV+LyO6gtNhX22BXRSJ
- 16QM/bb5SiwxA==
+ b=NAsT1SH66xRMBLoY2fCXoXUlEgYlBdXlnSUSTKi8lj90ogVFla84CXJvXZ/e0YzI2
+ eHYqSv5t1g3w1KMaf39U78W78Euq1cNAZgTpuglx1L60QuXtthy+10du1YDt80dDW6
+ bfbQTt16wCkz9o7o3o6O30dsMPj6uUBLwVDVDANZP9rh+1y7QDphoRnTnZoDn+nng3
+ QDZ5wVscedLusUInZH2OhG2q56PzLnPDExq8REsPkKWgoc7uiUReR90LnZ/I4qW1oG
+ Hc0CpO5gka6n/cdiDndvF1tnGRC4FmBQGYcMNh2S3cIM/83ykLLW94yV1UE0GvM1VJ
+ hX204D/7fjs5g==
 From: Mark Brown <broonie@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>
-In-Reply-To: <20210106133650.13509-1-lars@metafoo.de>
-References: <20210106133650.13509-1-lars@metafoo.de>
-Subject: Re: [PATCH 1/3] ASoC: atmel-pdc: Use managed DMA buffer allocation
-Message-Id: <161055160364.21623.458670653671904989.b4-ty@kernel.org>
+To: Stephan Gerhold <stephan@gerhold.net>
+In-Reply-To: <20201211203255.148246-1-stephan@gerhold.net>
+References: <20201211203255.148246-1-stephan@gerhold.net>
+Subject: Re: [PATCH] ASoC: qcom: qdsp6: Move frontend AIFs to q6asm-dai
+Message-Id: <161055160365.21623.6334522297634428774.b4-ty@kernel.org>
 Date: Wed, 13 Jan 2021 15:26:43 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Scott Branden <sbranden@broadcom.com>,
- Ray Jui <rjui@broadcom.com>, Russell King <rmk+kernel@armlinux.org.uk>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Simran Rai <ssimran@broadcom.com>
+Cc: Patrick Lai <plai@codeaurora.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,15 +86,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Jan 2021 14:36:48 +0100, Lars-Peter Clausen wrote:
-> Instead of manually managing its DMA buffers using
-> dma_{alloc,free}_coherent() lets the sound core take care of this using
-> managed buffers.
+On Fri, 11 Dec 2020 21:32:55 +0100, Stephan Gerhold wrote:
+> At the moment it is necessary to set up the DAPM routes between
+> front-end AIF<->DAI explicitly in the device tree, e.g. using
 > 
-> On one hand this reduces the amount of boiler plate code, but the main
-> motivation for the change is to use the shared code where possible. This
-> makes it easier to argue about correctness and that the code does not
-> contain subtle bugs like data leakage or similar.
+> 	audio-routing =
+> 		"MM_DL1", "MultiMedia1 Playback",
+> 		"MM_DL3", "MultiMedia3 Playback",
+> 		"MM_DL4", "MultiMedia4 Playback",
+> 		"MultiMedia2 Capture", "MM_UL2";
+> 
+> [...]
 
 Applied to
 
@@ -102,12 +104,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: atmel-pdc: Use managed DMA buffer allocation
-      commit: 22eee4d3efe370fedf71ee6a9e4dead3f32ad461
-[2/3] ASoC: bcm: cygnus: Use managed DMA buffer allocation
-      commit: 5ac813c83483e97a13b59aab34b89cebf9d5dcb8
-[3/3] ASoC: kirkwood: Use managed DMA buffer allocation
-      commit: b3c0ae75f5d3efa40174230b8c9c01848e03d4d0
+[1/1] ASoC: qcom: qdsp6: Move frontend AIFs to q6asm-dai
+      commit: 6fd8d2d275f74baa7ac17b2656da1235f56dab99
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
