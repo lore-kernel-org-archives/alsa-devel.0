@@ -2,70 +2,86 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2F7EC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 09:04:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73290C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 11:31:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C57C52339F
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 09:04:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C57C52339F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
+	by mail.kernel.org (Postfix) with ESMTPS id 08510233EA
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 11:31:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08510233EA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56DC616E3;
-	Wed, 13 Jan 2021 10:03:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56DC616E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D24A16C9;
+	Wed, 13 Jan 2021 12:30:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D24A16C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610528674;
-	bh=cn0uFD3/E9RSlfgVn+XI8ejaQ0irehXz2vuWGpYyA0A=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1610537461;
+	bh=Pr7ftSzEqQFBRyhav+VqvsVYCOqSGrjRiOX48WdaDb4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A/YwfIzAphKlmkYYtNl0sJu0P9orxeZX3wGZ2hQHYowmqXRW5YRjis00dYNWheNXg
-	 ayVCfZ4FeAG5nzLtmsyjELQAK+KA6uDJuGJPYxWRNCk4Dg5+UdZV+NHrBUZakVLgd+
-	 /9kmGsgZWAGzQpIvNi7QnCRSNVrKZtodAjcOuzd8=
+	b=tGl7RLBed557UDazHTQmYX8Ajphxn5aUN6qABJF7t4Vqmw89ttC7C9xqbupMEDPld
+	 NfHTecI1C42KUEYSAwpqYA3qx+tmL75Sq2vOpIyjtovB0B9CydWc7U8nXvgetxEb8z
+	 OJQ8zRhCSnXGmYvFkIXbOZdlrQs5rwOCP25Il2fY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B29AFF8016D;
-	Wed, 13 Jan 2021 10:03:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91BD2F8016D;
+	Wed, 13 Jan 2021 12:30:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FB99F8016D; Wed, 13 Jan 2021 10:03:41 +0100 (CET)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B4635F801ED; Wed, 13 Jan 2021 12:30:07 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6111CF8014D
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 10:03:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6111CF8014D
-Received: from [127.0.0.1] (localhost [127.0.0.1])
- (Authenticated sender: eballetbo) with ESMTPSA id 6EE6E1F44790
-Subject: Re: [PATCH v5] ASoC: cros_ec_codec: Reset I2S RX when probing
-To: Yu-Hsuan Hsu <yuhsuan@chromium.org>, linux-kernel@vger.kernel.org
-References: <20210113081745.2543882-1-yuhsuan@chromium.org>
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <d5a36f72-82a1-450c-3763-a27df31b8da4@collabora.com>
-Date: Wed, 13 Jan 2021 10:03:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3798CF8014D;
+ Wed, 13 Jan 2021 12:30:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3798CF8014D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="rhrVfXZC"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D11233E2;
+ Wed, 13 Jan 2021 11:29:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610537396;
+ bh=Pr7ftSzEqQFBRyhav+VqvsVYCOqSGrjRiOX48WdaDb4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=rhrVfXZCs65OzdDtMVbfheKemMz0Or+aNf7/XFlLpV8LaL2mMNiM8nIx6vbfR97iC
+ kRmOPP4IKMKSG5QwBt/NXI2B4YFNX6gim2HExyJeslQ0tVYurU8LU2UDlRC+dw9F0e
+ Gm9EinpEPfKIRQNU2v/j2eTLfF0eSI3fUNyW9DIqDj4Vu/yNI3h4r7GVrNpri8+GzV
+ adWFgwjMsMrByEWYtVc+Ld/nG8e2G/QGYGLJf6pyK6Jd9aZnACX1yltRpEy94/DwMb
+ SflW1+ReYdLx3o0e+Pv+avejf15YU+BbzAn1aml9fuqsSKxPBzYvkRJjB6m93NDf7D
+ BqEEP+B03xbAQ==
+Date: Wed, 13 Jan 2021 11:29:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: intel: fix soundwire dependencies
+Message-ID: <20210113112923.GA4641@sirena.org.uk>
+References: <20210112203250.2576775-1-arnd@kernel.org>
+ <20210112203250.2576775-2-arnd@kernel.org>
+ <cde511d6-fa14-0cab-f00c-f75ad2d8281c@linux.intel.com>
+ <CAK8P3a3rOG8eCNQbk01-_t7RtyJknWbo-9tKo3959KhU5tcXsg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210113081745.2543882-1-yuhsuan@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org,
- "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Prashant Malani <pmalani@chromium.org>, Pi-Hsun Shih <pihsun@chromium.org>,
- Guenter Roeck <groeck@chromium.org>, Benson Leung <bleung@chromium.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3rOG8eCNQbk01-_t7RtyJknWbo-9tKo3959KhU5tcXsg@mail.gmail.com>
+X-Cookie: Ignore previous fortune.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,77 +97,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Yu-Hsun,
 
-Thank you for your patch. Some comments below.
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Jan 12, 2021 at 11:36:15PM +0100, Arnd Bergmann wrote:
 
-On 13/1/21 9:17, Yu-Hsuan Hsu wrote:
-> It is not guaranteed that I2S RX is disabled when the kernel booting.
-> For example, if the kernel crashes while it is enabled, it will keep
-> enabled until the next time EC reboots. Reset I2S RX when probing to
-> fix this issue.
-> 
-> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-> ---
-> This patch checks the return value. If it is -ENOPROTOOPT
-> (EC_RES_INVALID_VERSION), it will ask clients to update EC firmware.
-> 
-> Previous patches
-> 
-> v1: https://patchwork.kernel.org/project/alsa-devel/patch/20200708071117.3070707-1-yuhsuan@chromium.org/
-> 
-> v2: https://patchwork.kernel.org/project/alsa-devel/patch/20200716170914.3623060-1-yuhsuan@chromium.org/
-> 
-> v3: https://patchwork.kernel.org/project/alsa-devel/patch/20210106050559.1459027-1-yuhsuan@chromium.org/
-> 
-> v4: https://patchwork.kernel.org/project/alsa-devel/patch/20210107085942.2891525-2-yuhsuan@chromium.org/
-> 
->  include/linux/platform_data/cros_ec_commands.h |  1 +
+> I was indeed wondering whether the intel-dsp-config.c is just
+> another layering violation: this is another generic piece
+> of code that seems to contain too much knowledge about
+> specific hardware implementations.
 
-Sorry if I confused you with my last comments, but this should be a separate patch.
+The purpose of that code is to try to figure out which of the multiple
+sets of drivers and firmwares available for Intel systems it's best to
+run on any given system by default and choose between them at runtime
+(or allow that choice to be overridden by users) so it's all about
+knowing about specific hardware implementations.
 
->  sound/soc/codecs/cros_ec_codec.c               | 11 +++++++++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-> index 86376779ab31..95889ada83a3 100644
-> --- a/include/linux/platform_data/cros_ec_commands.h
-> +++ b/include/linux/platform_data/cros_ec_commands.h
-> @@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
->  	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
->  	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
->  	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
-> +	EC_CODEC_I2S_RX_RESET = 0x5,
->  	EC_CODEC_I2S_RX_SUBCMD_COUNT,
->  };
->  
-> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-> index f33a2a9654e7..d35c57724b45 100644
-> --- a/sound/soc/codecs/cros_ec_codec.c
-> +++ b/sound/soc/codecs/cros_ec_codec.c
-> @@ -1011,6 +1011,17 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
->  	}
->  	priv->ec_capabilities = r.capabilities;
->  
-> +	/* Reset EC codec i2s rx. */
-> +	p.cmd = EC_CODEC_I2S_RX_RESET;
-> +	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-> +				   (uint8_t *)&p, sizeof(p), NULL, 0);
-> +	if (ret == -ENOPROTOOPT) {
-> +		dev_info(dev,
-> +			 "Command not found. Please update the EC firmware.\n");
-> +	} else if (ret) {
-> +		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
 
-On an error you should return the error and don't continue.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-  Enric
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/+2ZIACgkQJNaLcl1U
+h9D4awf/f/riblTLLLU0M4zy8SvdlZaC8UIH+GjOit2GLE0GyR4zgWkE9BGrNO6U
+qE31bCPBZ2Yl4juHbKwSX8eaun32fPa9KlcNTcs8VNHiBfHx6Z8umGuXglsfqnbk
+U3iKit1fa+Gf82OABwAnl9EVsGIKrFMPqGU97B064/vByeEqlNlQdN7XdIIq9b0b
+RLUaBEMZ8aBgXGZ1TiUCeMi1VaIvJI/YiqwqwNDhkhvb91yUNyVwDwjGtmWr0MEd
+mrruFa/tgd35ngWgZ2/k/RoZUHFvKWr/dvQ52/Yh4qLfRwrouLkd9QtqNeBXgWmd
+KTjwCczLvKzMe1znK8tKq4d+LVF7tA==
+=pwE+
+-----END PGP SIGNATURE-----
 
-> +	}
-> +
->  	platform_set_drvdata(pdev, priv);
->  
->  	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
-> 
+--k1lZvvs/B4yU6o8G--
