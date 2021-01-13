@@ -2,71 +2,70 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D586CC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:36:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3C3CC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:42:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B8FF23383
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:36:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B8FF23383
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 02853233F8
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:42:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 02853233F8
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hadess.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77A0F16DB;
-	Wed, 13 Jan 2021 16:35:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77A0F16DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 100971717;
+	Wed, 13 Jan 2021 16:41:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 100971717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610552158;
-	bh=mKXrENZTMhqviCsY4zcnkKK8vjdntUsClPQO4yFj/wE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610552528;
+	bh=b+MkyO7FZ4pLO3LtfVRzlPPOUXbH2O9IwIT/Q9HP3x4=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WKsaLeyg1fPsL7yOglahmBXo1FYGCOhtNM7owrcKyZKguvNv07GTWFNMT5t9O60ZQ
-	 LPJ08bdIuPvGB+zv/q06pzPm4G8tLh0P3BPo2C08EdrKIbC9tIkBKNiDRHRHqqAjiv
-	 9fp8DH+ZpITrBn1nByRK9dwQjZkIus4ViWHSEpFU=
+	b=gdkCGVpT6eo7HEej4qLe1crHBx7WNvQso7yNw9tHNG6dfL3K0DOQsxnCqiguwC7ae
+	 vII7YDXDo75W2uv/7UyCkL4gLM04j9VP0fI6zjELP3l2WJrbZja9gcPFWBEHs2GQZe
+	 e9G2gsVSqzFu6vPthN1QfUdxeDaOVf2lLDaH/XTw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68371F804A9;
-	Wed, 13 Jan 2021 16:34:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 970A2F8016D;
+	Wed, 13 Jan 2021 16:41:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89C70F804C2; Wed, 13 Jan 2021 16:34:20 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8D3ABF801ED; Wed, 13 Jan 2021 16:41:16 +0100 (CET)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
+ [217.70.183.197])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEFD2F8014D
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:34:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEFD2F8014D
-IronPort-SDR: tOkFmbXau8yMfM9ffM0+4SGHBdlMNKpS117A64GrlLTyMKFdGCJXGEQiWy9khzOYlrQgKeQPAS
- az79GFSn9z5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="178366949"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="178366949"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2021 07:34:09 -0800
-IronPort-SDR: DFg9Qas/tGzjfovr1jx06IyVCGgODCbK5tzYyVGm57QJKlLnwQ8OohPHuKXA/gt8pNcTw7G85/
- fWnS+OX3+vRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="348856516"
-Received: from kekkonen.fi.intel.com ([10.237.72.68])
- by orsmga003.jf.intel.com with ESMTP; 13 Jan 2021 07:34:08 -0800
-From: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH v2 2/2] ASoC: SOF: topology: use individual kcontrol types
-Date: Wed, 13 Jan 2021 17:25:40 +0200
-Message-Id: <20210113152540.2116439-3-jaska.uimonen@linux.intel.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210113152540.2116439-1-jaska.uimonen@linux.intel.com>
-References: <20210113152540.2116439-1-jaska.uimonen@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 528DAF80085
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:41:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 528DAF80085
+X-Originating-IP: 82.255.60.242
+Received: from [192.168.1.150] (lns-bzn-39-82-255-60-242.adsl.proxad.net
+ [82.255.60.242]) (Authenticated sender: hadess@hadess.net)
+ by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B6C8F1C0005;
+ Wed, 13 Jan 2021 15:41:04 +0000 (UTC)
+Message-ID: <7cdad520564986148739d4756ad1e6f35ea4295e.camel@hadess.net>
+Subject: Re: USB Wireless device support
+From: Bastien Nocera <hadess@hadess.net>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 13 Jan 2021 16:41:04 +0100
+In-Reply-To: <s5hsg74n9x5.wl-tiwai@suse.de>
+References: <e1e944b48ae44106a57c74de19dd74d6193495fe.camel@hadess.net>
+ <3b322bb54a1df4b2a45586bc687fba3be5f9e3d8.camel@hadess.net>
+ <s5h4kjkopsu.wl-tiwai@suse.de>
+ <8adebcef15874187b18b930d5a71e79c6297ee80.camel@hadess.net>
+ <s5hv9c0nabg.wl-tiwai@suse.de>
+ <06de89645b182ce8367d23c2bb2dbc6e2a895da7.camel@hadess.net>
+ <s5hsg74n9x5.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jaska Uimonen <jaska.uimonen@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,81 +81,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Change control creation and deletion to use individual kcontrol types.
-This enables the use of multiple different type of controls in single
-widget.
+On Wed, 2021-01-13 at 16:17 +0100, Takashi Iwai wrote:
+> On Wed, 13 Jan 2021 16:13:40 +0100,
+> Bastien Nocera wrote:
+> > 
+> > On Wed, 2021-01-13 at 16:08 +0100, Takashi Iwai wrote:
+> > > <snip>
+> > > Nothing so far, and that's the problem.  HID is managed in a
+> > > completely different layer, hence the integration needs to be
+> > > done in
+> > > a higher level like PA, I suppose.  In theory we might be able to
+> > > extend UCM to handle the other external devices, though.
+> > 
+> > hid-prodikeys.c seems to do some MIDI stuff...
+> 
+> It creates its own sound card.  But you want to use the mixer switch
+> for the existing audio interface, right?
 
-Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
----
- sound/soc/sof/topology.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+My idea was to create my own sound card (it's a separate USB interface
+after all) exporting the sidetone mixer, and figure out how to merge it
+with the USB audio interface at PulseAudio's level.
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 2c9581c6b92d..fbe7b7c9fb67 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1063,6 +1063,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	scontrol->min_volume_step = le32_to_cpu(mc->min);
- 	scontrol->max_volume_step = le32_to_cpu(mc->max);
- 	scontrol->num_channels = le32_to_cpu(mc->num_channels);
-+	scontrol->control_data->index = kc->index;
- 
- 	/* set cmd for mixer control */
- 	if (le32_to_cpu(mc->max) == 1) {
-@@ -1140,7 +1141,7 @@ static int sof_control_load_enum(struct snd_soc_component *scomp,
- 
- 	scontrol->comp_id = sdev->next_comp_id;
- 	scontrol->num_channels = le32_to_cpu(ec->num_channels);
--
-+	scontrol->control_data->index = kc->index;
- 	scontrol->cmd = SOF_CTRL_CMD_ENUM;
- 
- 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d comp_id %d\n",
-@@ -1188,6 +1189,7 @@ static int sof_control_load_bytes(struct snd_soc_component *scomp,
- 
- 	scontrol->comp_id = sdev->next_comp_id;
- 	scontrol->cmd = SOF_CTRL_CMD_BINARY;
-+	scontrol->control_data->index = kc->index;
- 
- 	dev_dbg(scomp->dev, "tplg: load kcontrol index %d chans %d\n",
- 		scontrol->comp_id, scontrol->num_channels);
-@@ -2133,7 +2135,7 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
- 	for (i = 0; i < widget->num_kcontrols; i++) {
- 		kc = &widget->kcontrol_news[i];
- 
--		switch (widget->dobj.widget.kcontrol_type) {
-+		switch (widget->dobj.widget.kcontrol_type[i]) {
- 		case SND_SOC_TPLG_TYPE_MIXER:
- 			sm = (struct soc_mixer_control *)kc->private_value;
- 			wdata[i].control = sm->dobj.private;
-@@ -2148,7 +2150,7 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
- 			break;
- 		default:
- 			dev_err(scomp->dev, "error: unknown kcontrol type %d in widget %s\n",
--				widget->dobj.widget.kcontrol_type,
-+				widget->dobj.widget.kcontrol_type[i],
- 				widget->name);
- 			return -EINVAL;
- 		}
-@@ -2164,7 +2166,8 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
- 			return -EINVAL;
- 
- 		/* make sure data is valid - data can be updated at runtime */
--		if (wdata[i].pdata->magic != SOF_ABI_MAGIC)
-+		if (widget->dobj.widget.kcontrol_type[i] == SND_SOC_TPLG_TYPE_BYTES &&
-+		    wdata[i].pdata->magic != SOF_ABI_MAGIC)
- 			return -EINVAL;
- 
- 		*size += wdata[i].pdata->size;
-@@ -2605,7 +2608,7 @@ static int sof_widget_unload(struct snd_soc_component *scomp,
- 	}
- 	for (i = 0; i < widget->num_kcontrols; i++) {
- 		kc = &widget->kcontrol_news[i];
--		switch (dobj->widget.kcontrol_type) {
-+		switch (widget->dobj.widget.kcontrol_type[i]) {
- 		case SND_SOC_TPLG_TYPE_MIXER:
- 			sm = (struct soc_mixer_control *)kc->private_value;
- 			scontrol = sm->dobj.private;
--- 
-2.24.1
+Otherwise 
 
