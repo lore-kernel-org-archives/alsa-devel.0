@@ -6,60 +6,61 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C99BFC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:04:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C87BC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:09:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 59E4823339
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:04:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59E4823339
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=hadess.net
+	by mail.kernel.org (Postfix) with ESMTPS id 61C9D2333E
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:09:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61C9D2333E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DEAB16DB;
-	Wed, 13 Jan 2021 16:04:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DEAB16DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2495516CE;
+	Wed, 13 Jan 2021 16:09:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2495516CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610550294;
-	bh=mdZ9xaK93T9xg2/cC8R0G7sEHqKCi2sF6l3ld9KnZUc=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610550593;
+	bh=QS6XIMHmrXyas6CPgV/Yted+z0vOP97VpAvV4CiuKlY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SSwVyFtwK4sPRwNHcxFuk3G4lIheE3I/C87XS5cTS2CrxUft30LdkBof2MOlmfc1l
-	 3L2+ZYGgRp2flu0B+BMfBGxV6gS19a7s9+vZu4lx+/KB9HG1U4pjzAcwexcuV5kFlj
-	 airDc61ABuvvT3fAXQEDZxqnIVZVSDPZ9Xr2qPUM=
+	b=I4+5TueMOt+5rtXo2uBt0OzQoITF8tPq2YHErYHjLtzzD3ak9F4jvzCSavBmILUdJ
+	 19YmMgWB0xguEXR6B6lZoi8iAA1xaN7N9S6GZ/W2qsqWpJCrlipsIfizKXy/4ifEt2
+	 DrxZi09lvS8O9XMLR+7bWiAKBelzG2f9Os0fd+t4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D19E8F8016D;
-	Wed, 13 Jan 2021 16:04:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A54DFF8016D;
+	Wed, 13 Jan 2021 16:09:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E617F801ED; Wed, 13 Jan 2021 16:03:58 +0100 (CET)
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [217.70.183.199])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id A67F0F801ED; Wed, 13 Jan 2021 16:09:01 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28D7FF80085
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:03:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28D7FF80085
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.1.150] (lns-bzn-39-82-255-60-242.adsl.proxad.net
- [82.255.60.242]) (Authenticated sender: hadess@hadess.net)
- by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A40FFFF811;
- Wed, 13 Jan 2021 15:03:40 +0000 (UTC)
-Message-ID: <8adebcef15874187b18b930d5a71e79c6297ee80.camel@hadess.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F9B1F8014D
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:08:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F9B1F8014D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7E592AB9F;
+ Wed, 13 Jan 2021 15:08:51 +0000 (UTC)
+Date: Wed, 13 Jan 2021 16:08:51 +0100
+Message-ID: <s5hv9c0nabg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bastien Nocera <hadess@hadess.net>
 Subject: Re: USB Wireless device support
-From: Bastien Nocera <hadess@hadess.net>
-To: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 13 Jan 2021 16:03:39 +0100
-In-Reply-To: <s5h4kjkopsu.wl-tiwai@suse.de>
+In-Reply-To: <8adebcef15874187b18b930d5a71e79c6297ee80.camel@hadess.net>
 References: <e1e944b48ae44106a57c74de19dd74d6193495fe.camel@hadess.net>
  <3b322bb54a1df4b2a45586bc687fba3be5f9e3d8.camel@hadess.net>
  <s5h4kjkopsu.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
-MIME-Version: 1.0
+ <8adebcef15874187b18b930d5a71e79c6297ee80.camel@hadess.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -77,69 +78,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2021-01-13 at 15:49 +0100, Takashi Iwai wrote:
-> On Wed, 13 Jan 2021 15:36:19 +0100,
-> Bastien Nocera wrote:
-> > 
-> > Hey,
-> > 
-> > On Wed, 2020-12-09 at 14:30 +0100, Bastien Nocera wrote:
+On Wed, 13 Jan 2021 16:03:39 +0100,
+Bastien Nocera wrote:
+> 
+> On Wed, 2021-01-13 at 15:49 +0100, Takashi Iwai wrote:
+> > On Wed, 13 Jan 2021 15:36:19 +0100,
+> > Bastien Nocera wrote:
+> > > 
 > > > Hey,
 > > > 
-> > > I've recently bought a SteelSeries Arctis 1 wireless headset:
-> > > https://steelseries.com/gaming-headsets/arctis-1-wireless-xbox
-> > > and wanted to write a kernel driver to export a few features of
-> > > the
-> > > device, and needed some help getting started.
+> > > On Wed, 2020-12-09 at 14:30 +0100, Bastien Nocera wrote:
+> > > > Hey,
+> > > > 
+> > > > I've recently bought a SteelSeries Arctis 1 wireless headset:
+> > > > https://steelseries.com/gaming-headsets/arctis-1-wireless-xbox
+> > > > and wanted to write a kernel driver to export a few features of
+> > > > the
+> > > > device, and needed some help getting started.
+> > > > 
+> > > > The receiver shows up as a audio class USB device, with extra
+> > > > features
+> > > > on a separate USB interface.[1]
+> > > > 
+> > > > The extra features that can be accessed are:
+> > > > - Presence detection. I wanted to use that so PulseAudio or
+> > > > Pipewire
+> > > > could make routing decisions based on whether the headset is
+> > > > available,
+> > > > or probably better, implementing a "jack detection" emulation for
+> > > > the
+> > > > main audio interface?
+> > > > - A slider to change the sidetone volume
+> > > > - Export the battery level
+> > > > 
+> > > > The latter is the only one I know how to do, so I'd be happy with
+> > > > any
+> > > > pointers or examples about the first two items.
 > > > 
-> > > The receiver shows up as a audio class USB device, with extra
-> > > features
-> > > on a separate USB interface.[1]
 > > > 
-> > > The extra features that can be accessed are:
-> > > - Presence detection. I wanted to use that so PulseAudio or
-> > > Pipewire
-> > > could make routing decisions based on whether the headset is
-> > > available,
-> > > or probably better, implementing a "jack detection" emulation for
-> > > the
-> > > main audio interface?
-> > > - A slider to change the sidetone volume
-> > > - Export the battery level
-> > > 
-> > > The latter is the only one I know how to do, so I'd be happy with
-> > > any
-> > > pointers or examples about the first two items.
+> > > I sent this in December and didn't get any answers, and I would
+> > > appreciate any guidance/examples if you have any into implementing
+> > > this.
 > > 
+> > Judging from the link, is it controlled through HID?  If so, it's
+> > primarily done by a HID driver, and it doesn't belong to the sound
+> > card stuff, so far.
+> > Though....
 > > 
-> > I sent this in December and didn't get any answers, and I would
-> > appreciate any guidance/examples if you have any into implementing
-> > this.
+> > > I would imagine that the new features would be implemented through
+> > > a
+> > > separate ALSA device with few features, which PulseAudio/Pipewire
+> > > could
+> > > merge with the existing USB audio device.
+> > 
+> > ... given that it's implemented in a HID driver, the integration to
+> > the system is a different question.  But unless it's implemented as a
+> > sound card device, the rest will become a totally different,
+> > e.g. another PA or PW module.
 > 
-> Judging from the link, is it controlled through HID?  If so, it's
-> primarily done by a HID driver, and it doesn't belong to the sound
-> card stuff, so far.
-> Though....
+> I think that it might be good to have the sidetone configuration
+> implemented as a channel mixer, so it could be shown along with the
+> device volume in sound settings.
 > 
-> > I would imagine that the new features would be implemented through
-> > a
-> > separate ALSA device with few features, which PulseAudio/Pipewire
-> > could
-> > merge with the existing USB audio device.
+> I believe there's already a device group feature in PulseAudio that
+> could be used to merge the sidetone level with the rest of the USB
+> audio mixers.
 > 
-> ... given that it's implemented in a HID driver, the integration to
-> the system is a different question.  But unless it's implemented as a
-> sound card device, the rest will become a totally different,
-> e.g. another PA or PW module.
+> Is there an example of a mixer like that implemented in a hid or
+> another type of non-ALSA/sound driver?
 
-I think that it might be good to have the sidetone configuration
-implemented as a channel mixer, so it could be shown along with the
-device volume in sound settings.
+Nothing so far, and that's the problem.  HID is managed in a
+completely different layer, hence the integration needs to be done in
+a higher level like PA, I suppose.  In theory we might be able to
+extend UCM to handle the other external devices, though.
 
-I believe there's already a device group feature in PulseAudio that
-could be used to merge the sidetone level with the rest of the USB
-audio mixers.
 
-Is there an example of a mixer like that implemented in a hid or
-another type of non-ALSA/sound driver?
-
+Takashi
