@@ -2,70 +2,59 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21AE6C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 00:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 042B2C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:36:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA0BC23120
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 00:01:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA0BC23120
+	by mail.kernel.org (Postfix) with ESMTPS id 3315B2312E
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:36:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3315B2312E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8239416BD;
-	Wed, 13 Jan 2021 01:00:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8239416BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id C97BB1663;
+	Wed, 13 Jan 2021 02:35:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C97BB1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610496085;
-	bh=u3GgkYH6BtlI4cLNPV39nilkhUzHTypvoPkEUjqdK2s=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NS8sV6hCGMG5XzMDTT0BdDn9Sg1Z4qT4b2pZT4sY91x9ssKdjxhsGlr0Z17BGH1Mn
-	 Enez1PdATrnr6bbbvFhpriapL9nkGQYUX1QmPf5f7vr+t4nshUKj72J2ViKIJyoYfd
-	 YvNKcFtnyWPA7nSHE/IqQ8VjVPD63Eho0jau0zp0=
+	s=default; t=1610501760;
+	bh=80oNgsK/OYqcoaQKfWgDGhMsS5EhDo4fQTCfGRZ/lBc=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AFdUH+lj/HZRN6sOTOMjyIsSqN0ZjQiQAg0kikdOp4iQ6l90VDXrQCI7mIq7St4LR
+	 6rjxWq3Dgkx1tj+epbNUmJgOZA0+VUY5oExieV7KPZJwrtBrVLsqG6/L3GK+zzyGSQ
+	 +P8doIJ7Hf9FJ0E49LPvSI+QoL4ljw6XW2vKKOTQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00605F800B9;
-	Wed, 13 Jan 2021 01:00:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30DF2F800EB;
+	Wed, 13 Jan 2021 02:35:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FBDFF8025E; Wed, 13 Jan 2021 01:00:30 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0A69FF80113
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 01:00:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A69FF80113
-Date: 13 Jan 2021 09:00:19 +0900
-X-IronPort-AV: E=Sophos;i="5.79,342,1602514800"; d="scan'208";a="68582624"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 13 Jan 2021 09:00:19 +0900
+ id 0DA43F8025E; Wed, 13 Jan 2021 02:35:07 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id AB071F800EB
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 02:34:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB071F800EB
+Date: 13 Jan 2021 10:34:49 +0900
+X-IronPort-AV: E=Sophos;i="5.79,343,1602514800"; d="scan'208";a="68812692"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 13 Jan 2021 10:34:49 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B10084009F78;
- Wed, 13 Jan 2021 09:00:19 +0900 (JST)
-Message-ID: <87czy9r9ue.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7F6324180E19;
+ Wed, 13 Jan 2021 10:34:49 +0900 (JST)
+Message-ID: <87a6tdr5gw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH v4 3/6] ASoC: audio-graph-card: Support setting component
- plls and sysclks
-In-Reply-To: <762d798c-bd75-e24a-40fd-263f68f1a5f1@opensource.cirrus.com>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-4-rf@opensource.cirrus.com>
- <87y2gzymc5.wl-kuninori.morimoto.gx@renesas.com>
- <762d798c-bd75-e24a-40fd-263f68f1a5f1@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/3] ASoC: soc-pcm: cleanup code
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, f.fainelli@gmail.com,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, broonie@kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-rpi-kernel@lists.infradead.org, nsaenzjulienne@suse.de
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,39 +71,22 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Richard
+Hi Mark
 
-> > As I mentioned in v3, adding *general* pll to common card driver is
-> > maybe difficult.
-> 
-> You did say that. But you did not say why.
-> Can you be more specific about what problem you see with adding it
-> to the generic driver?
-> 
-> > Using your own customized audio-graph-card driver is better idea,
-> > instead of adding code to common driver.
-> 
-> I just don't want to duplicate code without good reason.
+These are v2 of soc-pcm cleanup code.
+v1 had 6 patches, but I separated into 2 parts.
+This is 1st part of it.
 
-Ahh, sorry for my unclear comment.
-I think "PLL settings" is very board/platform specific,
-so, adding such code to common driver will be issue in the future.
-This is the reason why I don't want add it to audio-graph-card.
+Link: https://lore.kernel.org/r/87360c99kb.wl-kuninori.morimoto.gx@renesas.com
 
-But, as I mentioned above and Sameer is already doing,
-you can reuse audio-graph-card and customize it.
+Kuninori Morimoto (3):
+  ASoC: soc-pcm: move dpcm_set_fe_update_state()
+  ASoC: soc-pcm: add dpcm_set_be_update_state()
+  ASoC: soc-pcm: add soc_pcm_set_dai_params()
 
-	Reuse audio-graph-card + Use your own PLL code
-	= your own customized audio-graph-card
+ sound/soc/soc-pcm.c | 110 +++++++++++++++++++++++---------------------
+ 1 file changed, 58 insertions(+), 52 deletions(-)
 
-You can reuse audio-graph-card code by calling graph_parse_of(),
-and customize before/after that.
-I think no duplicate code is needed.
+-- 
+2.25.1
 
-I hope it can help you.
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
