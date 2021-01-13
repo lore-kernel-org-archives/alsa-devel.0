@@ -2,85 +2,115 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD21C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 08:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68FDDC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 08:49:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6EC123356
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 08:40:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6EC123356
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5F9E623139
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 08:49:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5F9E623139
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C8C016EA;
-	Wed, 13 Jan 2021 09:39:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C8C016EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9435516C9;
+	Wed, 13 Jan 2021 09:48:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9435516C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610527245;
-	bh=gNk8YtfAr6BS/7aY8N9rTnfuqu++fHdTS821z4IB40Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610527770;
+	bh=bVJT/Q8IBEuVeFQlj2dlnwHwIZl116udo6yzVQtdFgk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rVnY18Vwa8pH7MjuaH1qaV+eZEYI4tZCHCraXhgCTUnvP3t+RwlXP/oYFL+DvF2hn
-	 JHXMsVA1K0mVYyxbdsfI+L7JP2OAqm/xZZcxy4jV0zXw7M2k3QGkoBX0sfJK3WsyoV
-	 //Xx050Q8/rz0TRIcwixwi09pNOotglF9+nydfQY=
+	b=Y5MWdqZL4L73x6CEIR/ySjdYlcnTgT/75AU19vwSUZWFBw1w/aKUcJ7QvJcZrFOqj
+	 46Pce6PbL5MBqcyZ1lx0KFSE6v/HKWX9AKaYy7C/rNL+mqUxmzfD3bI52PaToH+HAB
+	 4BExynU0kRxCgDh2Zsw033sRbqANANae/oEQyDvc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2688F8016D;
-	Wed, 13 Jan 2021 09:39:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D341F8016D;
+	Wed, 13 Jan 2021 09:48:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A0EAF8016D; Wed, 13 Jan 2021 09:39:49 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A630AF801ED; Wed, 13 Jan 2021 09:48:37 +0100 (CET)
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18F70F80085;
- Wed, 13 Jan 2021 09:39:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18F70F80085
-IronPort-SDR: pGsAV7XEa8L6knMdYnNSbob51kOgiWc+2OXuF4/bn7fUGi3gN12U2r2qSiyVqGiukrfoL+/EWI
- klNC+ckFoC9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="178263621"
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; d="scan'208";a="178263621"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2021 00:39:32 -0800
-IronPort-SDR: y6c/uPMlHWU9i8L6dyLaduYNUjuU3S2kRoIXIr/sJfBiIbfWdEm4uJVPTAkDrACCwaLPpAaBUv
- FYPYQ0WaOB6A==
-X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; d="scan'208";a="353374255"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2021 00:39:28 -0800
-Date: Wed, 13 Jan 2021 10:36:25 +0200 (EET)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v4 3/3] ASoC: SOF: Intel: hda: Avoid checking jack on
- system suspend
-In-Reply-To: <20210112181128.1229827-3-kai.heng.feng@canonical.com>
-Message-ID: <alpine.DEB.2.22.394.2101130932480.864696@eliteleevi.tm.intel.com>
-References: <20210112181128.1229827-1-kai.heng.feng@canonical.com>
- <20210112181128.1229827-3-kai.heng.feng@canonical.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ by alsa1.perex.cz (Postfix) with ESMTPS id C329AF8014D
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 09:48:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C329AF8014D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="L7YQ88jS"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="mXEHiI89"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id 4A8AC5C03A6;
+ Wed, 13 Jan 2021 03:48:26 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Wed, 13 Jan 2021 03:48:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm1; bh=54FC/UrhpoPn3dwBbob71WsFOF+
+ RG/zilAC6ndIFeJ4=; b=L7YQ88jSPHsL/s4rPZKDqgzSM2gfSRsNNuTWy7XXlhd
+ 9EjF22n8DAhKKOdM3fnWSOAEhZVSqHuDUwJzDQKJT3iGw/DnkZlIL2rVRqJvDM4i
+ wdaHhfN/WFBrIV092d+NbPR/qVNm4udMSQX+O5VT+h+hVpPraXE/Gmi5er1fMOEb
+ +FtJfoRR+oOtGjpNt9PN9qxjpBhuW2lPM+ufD9F8YLbUoOZlDD83mF7y33IhOOw7
+ AKJJ8UOBGCTdLTuYYpAEJSaP+hNtqloCfZqrJFuUWHsyZD1A+pig8NxhrDtrSmSP
+ UpOj+pj4Zaf/74DJZ/sW8U5M4lLdlqEfK5nBhAscovA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=54FC/U
+ rhpoPn3dwBbob71WsFOF+RG/zilAC6ndIFeJ4=; b=mXEHiI89sGndK5hA5yvBFz
+ eUI/0EMjHhvuy7YX7G+NR3Q1E3qhGcH27F/6WbJVH4PCkpipMGw/DndwbKiApsEM
+ it+6Oh+0Ta90T4GiTrLsER1gJ8SGqIUXAqAP5qLxNj8Qy+RV+ntr8UPpFFuL/b9a
+ aFyPreWQP2uMWcR4bPuSxmDwTxgkMLE/JS3OUYDmgQ/LF85ukT4IvYji1ihKfL2k
+ 8qP/IfWdJeQyOiakV99okrTw0c46t9uNOwhpztYyFjarl6Cues4RBaJutKY78IZq
+ 15v5W7y49MjjzS90oeuS6PlUu33yhgXt1AQoVD9L96V5DhT5xZSbLSkuKA214jlQ
+ ==
+X-ME-Sender: <xms:2bP-X3lDszcVZIVkAIOUmFHxhFYdD9DT5xXF4XhIEy8a2U7T8k2rvQ>
+ <xme:2bP-X62MdC-M8B3TcyO0-TcjZUQi1bksQTea35ffYUVGyp8duE_-83zjufOzaS2OJ
+ Sc0h9aT-dYx_JUxYJ0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddvucetufdoteggodetrfdotffvucfrrh
+ hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+ lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+ epfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhmvgcutfhi
+ phgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrthhtvghrnh
+ epleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieehgedunecu
+ kfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+ hmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:2bP-X9qr35cc5YDK8ndamD0soQU46HD2IPKJR68oYA1wZjzcoWYFTw>
+ <xmx:2bP-X_lzfVzvfl_SbUWDLUKCWz6nvYMQBoZRi7do7St1GUDqj6xPWA>
+ <xmx:2bP-X13baytSsObXiZAv78PPL2sfNyAEfxjfcARaYTNABd2PdveqWQ>
+ <xmx:2rP-XymcfobYvEEAMVGm6s-0dMAempdOxKVTim2bN5zTzBh6eibl_Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id E17ED240062;
+ Wed, 13 Jan 2021 03:48:24 -0500 (EST)
+Date: Wed, 13 Jan 2021 09:48:22 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v2 1/7] ASoC: dt-bindings: sun8i-codec: Increase
+ #sound-dai-cells
+Message-ID: <20210113084822.4rx67gcgqnb63agu@gilmour>
+References: <20210113060615.53088-1-samuel@sholland.org>
+ <20210113060615.53088-2-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: pierre-louis.bossart@linux.intel.com,
- "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- kai.vehmanen@linux.intel.com, open list <linux-kernel@vger.kernel.org>,
- tiwai@suse.com, Keyon Jie <yang.jie@linux.intel.com>, lgirdwood@gmail.com,
- ranjani.sridharan@linux.intel.com, broonie@kernel.org,
- Payal Kshirsagar <payalskshirsagar1234@gmail.com>, daniel.baluta@nxp.com,
- Marcin Rajwa <marcin.rajwa@linux.intel.com>,
- "moderated list:SOUND - SOUND OPEN FIRMWARE SOF DRIVERS"
- <sound-open-firmware@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="voku56fj7iadly7o"
+Content-Disposition: inline
+In-Reply-To: <20210113060615.53088-2-samuel@sholland.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,68 +126,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
+--voku56fj7iadly7o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
 
-On Wed, 13 Jan 2021, Kai-Heng Feng wrote:
+On Wed, Jan 13, 2021 at 12:06:09AM -0600, Samuel Holland wrote:
+> Increase sound-dai-cells to 1 to allow using the DAIs in the codec
+> corresponding to AIF2 and AIF3.
+>=20
+> The generic ASoC OF code supports a #sound-dai-cells value of 0 or 1
+> with no impact to the driver, so this is a backward-compatible change.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../devicetree/bindings/sound/allwinner,sun8i-a33-codec.yaml  | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-=
+codec.yaml b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-co=
+dec.yaml
+> index 67405e6d8168..3e02baa1d9ce 100644
+> --- a/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.y=
+aml
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun8i-a33-codec.y=
+aml
+> @@ -12,7 +12,7 @@ maintainers:
+> =20
+>  properties:
+>    "#sound-dai-cells":
+> -    const: 0
+> +    const: 1
 
-> System takes a very long time to suspend after commit 215a22ed31a1
-> ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
-[...]
-> [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> [  329.490933] ACPI: EC: interrupt blocked
-> 
-> That commit keeps the codec suspended during the system suspend. However,
-> mute/micmute LED will clear codec's direct-complete flag by
-> dpm_clear_superiors_direct_complete().
+We should make it clearer that 0 is still ok, but is deprecated
 
-thanks Kai-Heng. This indeed explains why the regression is only seen on 
-some systems (those with mute/micmute LED).
+You can do it with:
 
-> This doesn't play well with SOF driver. When its runtime resume is
-> called for system suspend, hda_codec_jack_check() schedules
-> jackpoll_work which uses snd_hdac_is_power_on() to check whether codec
+oneOf:
+  - const: 1
+  - const: 0
+    deprecated: true
+    description: >
+      Whatever
 
-The commit explanation is a bit long, but this is indeed the problem. 
-jackpoll_work() is common code (also used by snd-hda-intel) and SOF should 
-align to snd-hda-intel and not call this directly to check jack status,
-and especially not when going to system suspend.
+Maxime
 
-There are a lot of details related to exact conditions when this problem 
-triggers, but in the end, this is the main point.
- 
-> When direct-complete path is taken, snd_hdac_is_power_on() returns true
-> and hda_jackpoll_work() is skipped by accident. So this is still not
-> correct.
+--voku56fj7iadly7o
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This doesn't really affect correctness of the patch, but I'm not sure if 
-"accident" is the best characterization. This just explains why the bug 
-was not hit in all cases.
+-----BEGIN PGP SIGNATURE-----
 
-snd_hdac_is_power_on() is called in a few places:
- - hda_jackpoll_work()
- - snd_hda_bus_reset_codecs()
- - snd_hda_update_power_acct()
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/6z1gAKCRDj7w1vZxhR
+xbcAAQD8BOXQ4mhrW8k34p2W/LdnOcWWWyDGx6stQULk2BU7VwD/X5vR9Bpz5gzT
+EYllDxi05aukw+nSebapy6q+jWFy/wk=
+=SsHU
+-----END PGP SIGNATURE-----
 
-In first two, the current logic seems appropriate (if runtime-pm is 
-disabled, the action guarded by is_power_on() should not be taken). The 
-third case seems suspicious and not sure if current is_power_on()
-is appropriate.
-
-So it's not quite clear whether hdaudio.h:snd_hdac_is_power_on() is
-wrong or not. But that's now a separate discussion to have, and not 
-related to this patchset anymore.
-
-> Because devices suspend in reverse order (i.e. child first), it doesn't
-> make much sense to resume an already suspended codec from audio
-> controller. So avoid the issue by making sure jackpoll isn't used in
-> system PM process.
-
-The commit explanation is a bit long, but it is probably useful to have 
-the background included. 
-
-For the whole series:
-
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-
-Br, Kai
+--voku56fj7iadly7o--
