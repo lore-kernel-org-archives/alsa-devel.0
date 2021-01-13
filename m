@@ -2,69 +2,91 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F09B0C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:18:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3803DC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:23:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2C0602339F
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:18:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C0602339F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 7882423329
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:23:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7882423329
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D65B16C3;
-	Wed, 13 Jan 2021 16:17:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D65B16C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B30EF16DB;
+	Wed, 13 Jan 2021 16:22:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B30EF16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610551103;
-	bh=3v39gszV98Lm+szWITxDZaIM4Zq5de9GTFZ57WxrGjI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610551408;
+	bh=W+QdX5ldSEd31t12yzV1m3tR3iTcBhgYI5dXBhY80F0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BRF72KLhjkw3WnwT/0+FBdQvwI0iNyq8zNL4V5NsSqKeZnU7tWXbHMpOAyjxQiFxD
-	 RLP6QI9nZRhmulgxuKnKdIaiW+Oznz1eBj6BfLCh53g5TNhVeLQP7aeAOqXwp60PGq
-	 v8w4Q6iFjcXsq7mxXbKfcGLoJCnw/yDQyRAq09g8=
+	b=XPCCMHqgGYLnn7XMA6sUkW0vmpZXwYTMXSgxb2sXZMxF1queyn1Q/2FE521JZxyO4
+	 2arIOXcjEaFkfCcyNF36lNb9VlMTpaiI6ajqaL+liWj53J87fXaAhtRuyEG81laf9i
+	 dbcz8/3GSbZ/5GRC5BPkMQ/g76Y4hYmc9UVT7d3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 966DFF8016D;
-	Wed, 13 Jan 2021 16:17:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2766DF80085;
+	Wed, 13 Jan 2021 16:22:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9454F801ED; Wed, 13 Jan 2021 16:17:31 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 35031F801ED; Wed, 13 Jan 2021 16:22:37 +0100 (CET)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com
+ [209.85.210.48])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08685F8014D
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:17:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08685F8014D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E7A7DAB92;
- Wed, 13 Jan 2021 15:17:26 +0000 (UTC)
-Date: Wed, 13 Jan 2021 16:17:26 +0100
-Message-ID: <s5hsg74n9x5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Bastien Nocera <hadess@hadess.net>
-Subject: Re: USB Wireless device support
-In-Reply-To: <06de89645b182ce8367d23c2bb2dbc6e2a895da7.camel@hadess.net>
-References: <e1e944b48ae44106a57c74de19dd74d6193495fe.camel@hadess.net>
- <3b322bb54a1df4b2a45586bc687fba3be5f9e3d8.camel@hadess.net>
- <s5h4kjkopsu.wl-tiwai@suse.de>
- <8adebcef15874187b18b930d5a71e79c6297ee80.camel@hadess.net>
- <s5hv9c0nabg.wl-tiwai@suse.de>
- <06de89645b182ce8367d23c2bb2dbc6e2a895da7.camel@hadess.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7AB3F80085
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:22:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7AB3F80085
+Received: by mail-ot1-f48.google.com with SMTP id o11so2221579ote.4
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 07:22:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=SE9am3kq8RjarWOXnd9kdCTvbTnepwR4fe9xga07N+k=;
+ b=cYPdQgDSVHTSMwfjhOfgruRGe574oONZ7l/w4YfaPm9XRmZ846O9JF6VFCRdQjpQ0t
+ 4BtFbUCp3xDUc+eJ0ixqmu/KvZb/V6XYBAubuGV2AV4lX5dk9LjkIAJy4WNSJFbf+tGz
+ E2pO8SXpX3vMXvcP/gh8hdMPX3Se4zmDl0E0gs+vTsz5y1YU8eooIDPlPmg9szh41czf
+ KmvBuJbzrO8d84of0Cta/WEtcKNOc1tMvYESdt48iQkxz7HFdHe3QieoKO+NEA75QmwQ
+ fvX2HyYJkQBQ5bGoOUmDsl1Yey81qZh0N9wx8rBb8CLLX5M4qxbph4vE4a8OW9bS08fk
+ L8xQ==
+X-Gm-Message-State: AOAM530mDTgEfIxacGdMtkPX9B2eIqh29ssB/hRL/tmEDLyskrA/sgTC
+ hoy5XGGY4HY2zb4T6sdN6w==
+X-Google-Smtp-Source: ABdhPJyXSD7O2u+KLy4dCmhAaS4RrzejnZJ8LhZpdTnooicBMv0HLXKioHgADiNofONZ/RIUjKsn5g==
+X-Received: by 2002:a9d:470f:: with SMTP id a15mr1617646otf.62.1610551347611; 
+ Wed, 13 Jan 2021 07:22:27 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id e10sm437795otl.38.2021.01.13.07.22.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 13 Jan 2021 07:22:26 -0800 (PST)
+Received: (nullmailer pid 2470201 invoked by uid 1000);
+ Wed, 13 Jan 2021 15:22:25 -0000
+Date: Wed, 13 Jan 2021 09:22:25 -0600
+From: Rob Herring <robh@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210113152225.GA2334778@robh.at.kernel.org>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108160501.7638-3-rf@opensource.cirrus.com>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, f.fainelli@gmail.com,
+ kuninori.morimoto.gx@renesas.com, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, broonie@kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
+ nsaenzjulienne@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,20 +102,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 13 Jan 2021 16:13:40 +0100,
-Bastien Nocera wrote:
+On Fri, Jan 08, 2021 at 04:04:57PM +0000, Richard Fitzgerald wrote:
+> The audio-graph-card driver has properties for configuring the clocking
+> for DAIs within a component, but is missing properties for setting
+> up the PLLs and sysclks of the component.
 > 
-> On Wed, 2021-01-13 at 16:08 +0100, Takashi Iwai wrote:
-> > <snip>
-> > Nothing so far, and that's the problem.  HID is managed in a
-> > completely different layer, hence the integration needs to be done in
-> > a higher level like PA, I suppose.  In theory we might be able to
-> > extend UCM to handle the other external devices, though.
+> This patch adds the two new properties 'plls' and 'sysclks' so that the
+> audio-graph-driver can fully configure the component clocking.
+
+I'm not sure this makes sense to be generic, but if so, we already have 
+the clock binding and should use (and possibly extend) that.
+
+This appears to all be configuration of clocks within the codec, so 
+these properties belong in the codec or cpu nodes.
+
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>  .../bindings/sound/audio-graph.yaml           | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
 > 
-> hid-prodikeys.c seems to do some MIDI stuff...
+> diff --git a/Documentation/devicetree/bindings/sound/audio-graph.yaml b/Documentation/devicetree/bindings/sound/audio-graph.yaml
+> index 4b46794e5153..9e0819205a17 100644
+> --- a/Documentation/devicetree/bindings/sound/audio-graph.yaml
+> +++ b/Documentation/devicetree/bindings/sound/audio-graph.yaml
+> @@ -39,6 +39,52 @@ properties:
+>    mic-det-gpio:
+>      maxItems: 1
+>  
+> +  plls:
+> +    description: |
+> +      A list of component pll settings. There are 4 cells per PLL setting:
+> +        - phandle to the node of the codec or cpu component,
+> +        - component PLL id,
+> +        - component clock source id,
+> +        - frequency (in Hz) of the PLL output clock.
 
-It creates its own sound card.  But you want to use the mixer switch
-for the existing audio interface, right?
+assigned-clocks binding can set frequencies and parent clocks.
 
+'pll' is too specific to the implementation. You may want to configure 
+the freq and parent of something that's not a pll.
 
-Takashi
+> +      The PLL id and clock source id are specific to the particular component
+> +      so see the relevant component driver for the ids. Typically the
+> +      clock source id indicates the pin the source clock is connected to.
+> +      The same phandle can appear in multiple entries so that several plls
+> +      can be set in the same component.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +  plls-clocks:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description: |
+> +      A list of clock names giving the source clock for each setting
+> +      in the plls property.
+> +
+> +  sysclks:
+> +    description: |
+> +      A list of component sysclk settings. There are 4 cells per sysclk
+> +      setting:
+> +        - phandle to the node of the codec or cpu component,
+> +        - component sysclk id,
+> +        - component clock source id,
+> +        - direction of the clock: 0 if the clock is an input to the component,
+> +          1 if it is an output.
+
+A clock provider and consumer would provide the direction.
+
+> +      The sysclk id and clock source id are specific to the particular
+> +      component so see the relevant component driver for the ids. Typically
+> +      the clock source id indicates the pin the source clock is connected to.
+> +      The same phandle can appear in multiple entries so that several sysclks
+> +      can be set in the same component.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +  sysclks-clocks:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> +    description: |
+> +      A list of clock names giving the source clock for each setting
+> +      in the sysclks property.
+> +
+> +dependencies:
+> +  plls: [ plls-clocks ]
+> +  sysclks: [ sysclks-clocks ]
+> +
+>  required:
+>    - dais
+>  
+> -- 
+> 2.20.1
+> 
