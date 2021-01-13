@@ -6,72 +6,70 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B1FC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 17:54:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9321FC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 17:55:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7C0723435
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 17:54:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7C0723435
+	by mail.kernel.org (Postfix) with ESMTPS id CBC5423435
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 17:55:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBC5423435
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8FAE1693;
-	Wed, 13 Jan 2021 18:54:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8FAE1693
+	by alsa0.perex.cz (Postfix) with ESMTPS id C236516AF;
+	Wed, 13 Jan 2021 18:54:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C236516AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610560493;
-	bh=VKQFaqffXhfR244XhGrBSCMJblHTpWefqzavC+ldkhU=;
+	s=default; t=1610560549;
+	bh=H6zaiQ68/zWFe0SdzT9exazDyHJ3yHh5vn7wK4h4jzc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ceukpSvCPBvo2nKUXWfNHxgVUd5WiksoKXoHJR6dKAZLcZP5M0k+7xQ8bo00X+Mck
-	 Q8f9UMQBiyT6d8MFwXLtsTmVYMpR+Ru7kz2au+SYQ1cAdO92Zf6q6DwcuRYJQCT2Ii
-	 mNSZssc1EjQSKBb6fmWz+xKx8yaaW0lwQzpZdrbM=
+	b=DAD7Ivqa8U/wMKnmH0yPxX1rKSOou9RXY00dPVOyP+KaXucPEvVcC/6i+zvliWrVw
+	 Rk8zxGoFCv31LJFUA9GRE2wluCQpvLcV6PMeHXtSxIsQ7haz0n0TYJfIrUhhDWnMF9
+	 HKnCfQ5qmh0o5llL2M5hQIUwGI97QUSsiis1BD0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B103F801ED;
-	Wed, 13 Jan 2021 18:54:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93AF6F80254;
+	Wed, 13 Jan 2021 18:54:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29AA0F801ED; Wed, 13 Jan 2021 18:54:02 +0100 (CET)
+ id 1D688F8026D; Wed, 13 Jan 2021 18:54:04 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D29EDF80113
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 18:53:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D29EDF80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED87AF8014D
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 18:54:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED87AF8014D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JGoPW/ob"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3970E2343F;
- Wed, 13 Jan 2021 17:53:54 +0000 (UTC)
+ header.b="U1skgfZE"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87D122343E;
+ Wed, 13 Jan 2021 17:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610560434;
- bh=VKQFaqffXhfR244XhGrBSCMJblHTpWefqzavC+ldkhU=;
+ s=k20201202; t=1610560440;
+ bh=H6zaiQ68/zWFe0SdzT9exazDyHJ3yHh5vn7wK4h4jzc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=JGoPW/objyOxbl7wNupZCyUZuCHAUoWDzh4xInu8g5rjw63TyV1ENyKwJz/Y9hx1K
- AW3rlLiHbgl+nAvWcKAEp+r0OE+dEFDdt49G7l/m96/gl74r4EedYO7eOWneboXVyI
- m1Wmr31IeJNECzMezVcqvs1NZEzK/8DEh+4a1102/i0LHAUcDLmi/cUNZJmcFAOyLc
- RI8AvM600kklll/6Y/ypuufGX52M/4oD86y/f24wic+qPajb5rypQLwlSHRDdEPQd0
- +gj0tMJ1U1jEFQdQaW6wXXozDR+Y7beeL5uxqspc3N0GjPkHGMrBiGIOpOAAk2ocPx
- s7MK2kHrWyzJQ==
+ b=U1skgfZEXNeaNaIWSXocNzwlEte+imI8NGu3CENI0en3CWAbeHnj8FEZA73rvRrSA
+ n/NW4/1MWocCFshcbCw1chxcowI1bJmd4fRG6mDY+hSnpS4C/jXjad5GuObcZgFcax
+ UCcqaiupnhPNOHAeuL0TXV+hHzVXBVUSK3k13qIeOJ1Sj6syO2gIQbteLNvn51GppS
+ 2zY0TzcnDX2h+1C6VvZnHvXKJ6D2ZTwek0HfwK96Xsl8W1eDSyRh9FUjfFOzhBl4hE
+ xMxtOPWV/56VcpIblvLO2y6jx+ZvncMkZ+EUob89VWRwuA/WTPyX6lzwL+adEcVjYS
+ 1W1qhQFL1kj/g==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20210113150715.3992635-1-kai.vehmanen@linux.intel.com>
-References: <20210113150715.3992635-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: fix page fault at probe if i915 init
- fails
-Message-Id: <161056040078.11774.18170025770333640119.b4-ty@kernel.org>
+In-Reply-To: <20210113152617.4048541-1-kai.vehmanen@linux.intel.com>
+References: <20210113152617.4048541-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 1/4] ASoC: SOF: add .shutdown() callback to snd_sof_dsp_ops
+Message-Id: <161056040078.11774.2119555745829499894.b4-ty@kernel.org>
 Date: Wed, 13 Jan 2021 17:53:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>, pierre-louis.bossart@linux.intel.com,
- lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
- Rander Wang <rander.wang@intel.com>, daniel.baluta@nxp.com,
- Bard Liao <bard.liao@intel.com>
+Cc: Keyon Jie <yang.jie@linux.intel.com>, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ daniel.baluta@nxp.com, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,19 +85,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 13 Jan 2021 17:07:15 +0200, Kai Vehmanen wrote:
-> The earlier commit to fix runtime PM in case i915 init fails,
-> introduces a possibility to hit a page fault.
-> 
-> snd_hdac_ext_bus_device_exit() is designed to be called from
-> dev.release(). Calling it outside device reference counting, is
-> not safe and may lead to calling the device_exit() function
-> twice. Additionally, as part of ext_bus_device_init(), the device
-> is also registered with snd_hdac_device_register(). Thus before
-> calling device_exit(), the device must be removed from device
-> hierarchy first.
-> 
-> [...]
+On Wed, 13 Jan 2021 17:26:14 +0200, Kai Vehmanen wrote:
+> Add .shutdown() callback to the struct snd_sof_dsp_ops, for
+> doing platform specific actions at shutdown.
 
 Applied to
 
@@ -107,8 +95,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Intel: fix page fault at probe if i915 init fails
-      commit: 9c25af250214e45f6d1c21ff6239a1ffeeedf20e
+[1/4] ASoC: SOF: add .shutdown() callback to snd_sof_dsp_ops
+      commit: 7edb3051f11683640c38b93e183ef1676090a79b
+[2/4] ASoC: SOF: add snd_sof_device_shutdown() helper for shutdown
+      commit: daff7f1478e12cdee3e639c83c571cfd38bc5080
+[3/4] ASoC: SOF: sof-pci-dev: add .shutdown() callback
+      commit: 3475b44c7601d6f2b4d96e731047ef73fd2f1eb2
+[4/4] ASoC: SOF: Intel: tgl: do thorough remove at .shutdown() callback
+      commit: 44a4cfad8d78efcda9ec0dd97ceea38d8b602f24
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
