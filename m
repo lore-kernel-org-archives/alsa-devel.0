@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57594C433E6
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FC3EC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:37:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 599642312F
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:37:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 599642312F
+	by mail.kernel.org (Postfix) with ESMTPS id 7CD732310F
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:37:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CD732310F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3A611701;
-	Wed, 13 Jan 2021 02:36:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3A611701
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0C0E16E9;
+	Wed, 13 Jan 2021 02:36:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0C0E16E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610501816;
-	bh=O6X/V6ACvf33VwHg9+RuOYyw0oHffabZmJqAFqTqIRI=;
+	s=default; t=1610501860;
+	bh=Q69lXpDMurRXziyUiX5M+1RunsUCz1DXhVYKHgSXHDA=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CRGyimU3ILND8Sr6DAMGlUemJpnH1+DSb8LjVqYq3wIlrRBbCSjwR0CKPqdTBYm/F
-	 zhzY8Go2mWTZN0+Or8NTH0M2u1KUFeeJos/2gdng3cLPPVaFlN6HYP4pEOCdT6oAkI
-	 P+vXDbh6K8adbevshi06s8dXpVI7nY0w0qpzwUSE=
+	b=hRhsd2ekFa1v6FoDcCikyeCAQIcb7YDWCuaoHtKj2nSqg3SpFsVIn2+cOUqsHKQGu
+	 612039s0ndt1WShQcXoQ6A8+k+2lCPbabt61wZFmYH8Bj+To3FOuPOmvrvfdpOZ5XZ
+	 R0MUAgFFXWxh4Zr/GECUj8VMwvAx2qn7TG335/MQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94BF8F80279;
-	Wed, 13 Jan 2021 02:35:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DB8DF804C3;
+	Wed, 13 Jan 2021 02:36:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16F9DF80475; Wed, 13 Jan 2021 02:35:27 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0175BF80113
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 02:35:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0175BF80113
-Date: 13 Jan 2021 10:35:17 +0900
-X-IronPort-AV: E=Sophos;i="5.79,343,1602514800"; d="scan'208";a="68594796"
+ id C34A6F804CA; Wed, 13 Jan 2021 02:36:10 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 52F29F800EB
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 02:36:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52F29F800EB
+Date: 13 Jan 2021 10:36:00 +0900
+X-IronPort-AV: E=Sophos;i="5.79,343,1602514800"; d="scan'208";a="68812962"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 13 Jan 2021 10:35:17 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 13 Jan 2021 10:36:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 77688400F4F1;
- Wed, 13 Jan 2021 10:35:17 +0900 (JST)
-Message-ID: <878s8xr5g4.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 297E1400F4F1;
+ Wed, 13 Jan 2021 10:36:00 +0900 (JST)
+Message-ID: <875z41r5ex.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/3] ASoC: soc-pcm: move dpcm_set_fe_update_state()
+Subject: [PATCH 3/3] ASoC: soc-pcm: add soc_pcm_set_dai_params()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a6tdr5gw.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,77 +77,132 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch moves dpcm_set_fe_update_state() to top side.
-This is prepare for cleanup soc-pcm.c
+Getting rate/channels/sample_bits from param needs fixed method.
+This patch adds new soc_pcm_set_dai_params() and replace existing code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 45 ++++++++++++++++++++++-----------------------
- 1 file changed, 22 insertions(+), 23 deletions(-)
+ sound/soc/soc-pcm.c | 52 +++++++++++++++++++++++----------------------
+ 1 file changed, 27 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index a253c9f918e1..1cc8d0b6ec3d 100644
+index 54b460f08373..6e9f14d482ab 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -203,6 +203,28 @@ static inline void dpcm_remove_debugfs_state(struct snd_soc_dpcm *dpcm)
+@@ -329,6 +329,20 @@ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 	return 0;
  }
- #endif
  
-+/* Set FE's runtime_update state; the state is protected via PCM stream lock
-+ * for avoiding the race with trigger callback.
-+ * If the state is unset and a trigger is pending while the previous operation,
-+ * process the pending trigger action here.
-+ */
-+static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
-+static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
-+				     int stream, enum snd_soc_dpcm_update state)
++static void soc_pcm_set_dai_params(struct snd_soc_dai *dai,
++				   struct snd_pcm_hw_params *params)
 +{
-+	struct snd_pcm_substream *substream =
-+		snd_soc_dpcm_get_substream(fe, stream);
-+
-+	snd_pcm_stream_lock_irq(substream);
-+	if (state == SND_SOC_DPCM_UPDATE_NO && fe->dpcm[stream].trigger_pending) {
-+		dpcm_fe_dai_do_trigger(substream,
-+				       fe->dpcm[stream].trigger_pending - 1);
-+		fe->dpcm[stream].trigger_pending = 0;
++	if (params) {
++		dai->rate	 = params_rate(params);
++		dai->channels	 = params_channels(params);
++		dai->sample_bits = snd_pcm_format_physical_width(params_format(params));
++	} else {
++		dai->rate	 = 0;
++		dai->channels	 = 0;
++		dai->sample_bits = 0;
 +	}
-+	fe->dpcm[stream].runtime_update = state;
-+	snd_pcm_stream_unlock_irq(substream);
 +}
 +
- /**
-  * snd_soc_runtime_action() - Increment/Decrement active count for
-  * PCM runtime components
-@@ -1710,29 +1732,6 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- 				&runtime->hw.rate_min, &runtime->hw.rate_max);
- }
- 
--static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
--
--/* Set FE's runtime_update state; the state is protected via PCM stream lock
-- * for avoiding the race with trigger callback.
-- * If the state is unset and a trigger is pending while the previous operation,
-- * process the pending trigger action here.
-- */
--static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
--				     int stream, enum snd_soc_dpcm_update state)
--{
--	struct snd_pcm_substream *substream =
--		snd_soc_dpcm_get_substream(fe, stream);
--
--	snd_pcm_stream_lock_irq(substream);
--	if (state == SND_SOC_DPCM_UPDATE_NO && fe->dpcm[stream].trigger_pending) {
--		dpcm_fe_dai_do_trigger(substream,
--				       fe->dpcm[stream].trigger_pending - 1);
--		fe->dpcm[stream].trigger_pending = 0;
--	}
--	fe->dpcm[stream].runtime_update = state;
--	snd_pcm_stream_unlock_irq(substream);
--}
--
- static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 			       int stream)
+ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
+ 					struct snd_soc_dai *soc_dai)
  {
+@@ -390,13 +404,12 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai d;
+ 	struct snd_soc_dai *dai;
+ 	struct snd_soc_dai *cpu_dai;
+-	unsigned int rate, channels, sample_bits, symmetry, i;
++	unsigned int symmetry, i;
+ 
+-	rate = params_rate(params);
+-	channels = params_channels(params);
+-	sample_bits = snd_pcm_format_physical_width(params_format(params));
++	soc_pcm_set_dai_params(&d, params);
+ 
+ 	/* reject unmatched parameters when applying symmetry */
+ 	symmetry = rtd->dai_link->symmetric_rates;
+@@ -406,9 +419,9 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 
+ 	if (symmetry) {
+ 		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+-			if (cpu_dai->rate && cpu_dai->rate != rate) {
++			if (cpu_dai->rate && cpu_dai->rate != d.rate) {
+ 				dev_err(rtd->dev, "ASoC: unmatched rate symmetry: %d - %d\n",
+-					cpu_dai->rate, rate);
++					cpu_dai->rate, d.rate);
+ 				return -EINVAL;
+ 			}
+ 		}
+@@ -422,9 +435,9 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 	if (symmetry) {
+ 		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+ 			if (cpu_dai->channels &&
+-			    cpu_dai->channels != channels) {
++			    cpu_dai->channels != d.channels) {
+ 				dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
+-					cpu_dai->channels, channels);
++					cpu_dai->channels, d.channels);
+ 				return -EINVAL;
+ 			}
+ 		}
+@@ -438,9 +451,9 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 	if (symmetry) {
+ 		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+ 			if (cpu_dai->sample_bits &&
+-			    cpu_dai->sample_bits != sample_bits) {
++			    cpu_dai->sample_bits != d.sample_bits) {
+ 				dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
+-					cpu_dai->sample_bits, sample_bits);
++					cpu_dai->sample_bits, d.sample_bits);
+ 				return -EINVAL;
+ 			}
+ 		}
+@@ -898,11 +911,8 @@ static int soc_pcm_hw_clean(struct snd_pcm_substream *substream, int rollback)
+ 	for_each_rtd_dais(rtd, i, dai) {
+ 		int active = snd_soc_dai_stream_active(dai, substream->stream);
+ 
+-		if (snd_soc_dai_active(dai) == 1) {
+-			dai->rate = 0;
+-			dai->channels = 0;
+-			dai->sample_bits = 0;
+-		}
++		if (snd_soc_dai_active(dai) == 1)
++			soc_pcm_set_dai_params(dai, NULL);
+ 
+ 		if (active == 1)
+ 			snd_soc_dai_digital_mute(dai, 1, substream->stream);
+@@ -999,11 +1009,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		if(ret < 0)
+ 			goto out;
+ 
+-		codec_dai->rate = params_rate(&codec_params);
+-		codec_dai->channels = params_channels(&codec_params);
+-		codec_dai->sample_bits = snd_pcm_format_physical_width(
+-						params_format(&codec_params));
+-
++		soc_pcm_set_dai_params(codec_dai, &codec_params);
+ 		snd_soc_dapm_update_dai(substream, &codec_params, codec_dai);
+ 	}
+ 
+@@ -1020,11 +1026,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			goto out;
+ 
+ 		/* store the parameters for each DAI */
+-		cpu_dai->rate = params_rate(params);
+-		cpu_dai->channels = params_channels(params);
+-		cpu_dai->sample_bits =
+-			snd_pcm_format_physical_width(params_format(params));
+-
++		soc_pcm_set_dai_params(cpu_dai, params);
+ 		snd_soc_dapm_update_dai(substream, params, cpu_dai);
+ 	}
+ 
 -- 
 2.25.1
 
