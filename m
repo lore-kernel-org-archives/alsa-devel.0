@@ -2,56 +2,60 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 042B2C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D5A1C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:37:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3315B2312E
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:36:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3315B2312E
+	by mail.kernel.org (Postfix) with ESMTPS id 2BA442312E
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 01:37:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BA442312E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C97BB1663;
-	Wed, 13 Jan 2021 02:35:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C97BB1663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C62A171B;
+	Wed, 13 Jan 2021 02:36:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C62A171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610501760;
-	bh=80oNgsK/OYqcoaQKfWgDGhMsS5EhDo4fQTCfGRZ/lBc=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=AFdUH+lj/HZRN6sOTOMjyIsSqN0ZjQiQAg0kikdOp4iQ6l90VDXrQCI7mIq7St4LR
-	 6rjxWq3Dgkx1tj+epbNUmJgOZA0+VUY5oExieV7KPZJwrtBrVLsqG6/L3GK+zzyGSQ
-	 +P8doIJ7Hf9FJ0E49LPvSI+QoL4ljw6XW2vKKOTQ=
+	s=default; t=1610501821;
+	bh=V3BWRk2VASgKQMla3F09MBHd4/B/xkxVTK5FccgOdMU=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=OtBDMKC96IfwdceG7ayivfm66azkHn+W+pTdwk2vuDui3CLH89oypnFUtFWdUVWT3
+	 X1itE0kAZzQVbsxt9SU11xdgLBqcseZJ3z4nARpr7klX5igT1ts1KncbBOxFQRp8Mk
+	 Rhxi2CY1DR6qKy3Np+s+4Lfl+4VdGAZfsDeJfHhY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30DF2F800EB;
-	Wed, 13 Jan 2021 02:35:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D723FF804C1;
+	Wed, 13 Jan 2021 02:35:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DA43F8025E; Wed, 13 Jan 2021 02:35:07 +0100 (CET)
+ id 354C0F804C2; Wed, 13 Jan 2021 02:35:50 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AB071F800EB
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 02:34:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB071F800EB
-Date: 13 Jan 2021 10:34:49 +0900
-X-IronPort-AV: E=Sophos;i="5.79,343,1602514800"; d="scan'208";a="68812692"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 13 Jan 2021 10:34:49 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 41AF9F804AB
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 02:35:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41AF9F804AB
+Date: 13 Jan 2021 10:35:41 +0900
+X-IronPort-AV: E=Sophos;i="5.79,343,1602514800"; d="scan'208";a="68812901"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 13 Jan 2021 10:35:41 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7F6324180E19;
- Wed, 13 Jan 2021 10:34:49 +0900 (JST)
-Message-ID: <87a6tdr5gw.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 55063400F4F3;
+ Wed, 13 Jan 2021 10:35:41 +0900 (JST)
+Message-ID: <877dohr5fg.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 0/3] ASoC: soc-pcm: cleanup code
+Subject: [PATCH 2/3] ASoC: soc-pcm: add dpcm_set_be_update_state()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87a6tdr5gw.wl-kuninori.morimoto.gx@renesas.com>
+References: <87a6tdr5gw.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -71,22 +75,67 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These are v2 of soc-pcm cleanup code.
-v1 had 6 patches, but I separated into 2 parts.
-This is 1st part of it.
+soc-pcm has dpcm_set_fe_update_state() to update FE's runtime_update
+(except dpcm_fe_dai_do_trigger() which needs to update it without it).
+OTOH, it doesn't have BE's update function.
 
-Link: https://lore.kernel.org/r/87360c99kb.wl-kuninori.morimoto.gx@renesas.com
+	O: dpcm_set_fe_update_state()
+	X: dpcm_set_be_update_state()
 
-Kuninori Morimoto (3):
-  ASoC: soc-pcm: move dpcm_set_fe_update_state()
-  ASoC: soc-pcm: add dpcm_set_be_update_state()
-  ASoC: soc-pcm: add soc_pcm_set_dai_params()
+This patch add BE's dpcm_set_fe_update_state()
 
- sound/soc/soc-pcm.c | 110 +++++++++++++++++++++++---------------------
- 1 file changed, 58 insertions(+), 52 deletions(-)
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 1cc8d0b6ec3d..54b460f08373 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -225,6 +225,12 @@ static void dpcm_set_fe_update_state(struct snd_soc_pcm_runtime *fe,
+ 	snd_pcm_stream_unlock_irq(substream);
+ }
+ 
++static void dpcm_set_be_update_state(struct snd_soc_pcm_runtime *be,
++				     int stream, enum snd_soc_dpcm_update state)
++{
++	be->dpcm[stream].runtime_update = state;
++}
++
+ /**
+  * snd_soc_runtime_action() - Increment/Decrement active count for
+  * PCM runtime components
+@@ -1357,7 +1363,7 @@ static int dpcm_prune_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 			stream ? "capture" : "playback",
+ 			dpcm->be->dai_link->name, fe->dai_link->name);
+ 		dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
+-		dpcm->be->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_BE;
++		dpcm_set_be_update_state(dpcm->be, stream, SND_SOC_DPCM_UPDATE_BE);
+ 		prune++;
+ 	}
+ 
+@@ -1412,7 +1418,7 @@ static int dpcm_add_paths(struct snd_soc_pcm_runtime *fe, int stream,
+ 			continue;
+ 
+ 		/* new */
+-		be->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_BE;
++		dpcm_set_be_update_state(be, stream, SND_SOC_DPCM_UPDATE_BE);
+ 		new++;
+ 	}
+ 
+@@ -1440,8 +1446,7 @@ void dpcm_clear_pending_state(struct snd_soc_pcm_runtime *fe, int stream)
+ 
+ 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm)
+-		dpcm->be->dpcm[stream].runtime_update =
+-						SND_SOC_DPCM_UPDATE_NO;
++		dpcm_set_be_update_state(dpcm->be, stream, SND_SOC_DPCM_UPDATE_NO);
+ 	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ }
+ 
 -- 
 2.25.1
 
