@@ -2,66 +2,67 @@ Return-Path: <SRS0=Rjjp=GQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B036C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:31:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC50CC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:32:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89ED823102
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:31:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89ED823102
+	by mail.kernel.org (Postfix) with ESMTPS id 27F6C23102
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jan 2021 15:32:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27F6C23102
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 138EF1719;
-	Wed, 13 Jan 2021 16:30:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 138EF1719
+	by alsa0.perex.cz (Postfix) with ESMTPS id 982A71731;
+	Wed, 13 Jan 2021 16:31:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 982A71731
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610551906;
-	bh=va7HwhRMxGVoMRw3bUAdYWwRxGS2kQzCEz6CNFlgqdQ=;
+	s=default; t=1610551943;
+	bh=J+WmqlVRiFX4q8k8E1bHf+5qHKQU4Hx3/NRgYWy6/rI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UG7oRnJuZfVSD+s5YesLZeRglopxZq2q81bgBSvJfWt5/L7SlVmlohtbV1d8PRgtx
-	 Ke7yK2IR8MgQXRXHO4OGSKMVXOCVMeEqqBoiRm4IWrBfvoNAMk6g2d8M1O/StbzlDA
-	 7OE3tLnmFGwDk5m7EajbTg7fWOxG5UrsweF1mVxs=
+	b=RT9+QdIuWgDCA2l5rxK9FP2+WcBCmtPm8o8JQuVxHNkeNIY6/k285EzgorV1iT7Sg
+	 1IgG1+vBt/bsf3CQ+VMNpmqPYdFAn1czYG11gDXz/NjlWjkwVwDmbGiDaCiZy5m0fh
+	 NXY+si7vkS4WonsEWRbM1K9v5ryeKWDDN7Pe7DPw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 520B9F804CA;
-	Wed, 13 Jan 2021 16:29:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46E58F804FA;
+	Wed, 13 Jan 2021 16:29:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55CE4F804A9; Wed, 13 Jan 2021 16:29:37 +0100 (CET)
+ id 7DA08F804D6; Wed, 13 Jan 2021 16:29:41 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F0DCF801ED
- for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:29:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F0DCF801ED
-IronPort-SDR: dlAlSyFSRkGViG8A7vCSI5oFwpsG8gRa8ePNDO6bzkcsWS6I5V2J3vTwWGzJQcf0Q4bGrmntJu
- rHyiF9XFi2Uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="175640170"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="175640170"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59D3CF80085
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2021 16:29:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59D3CF80085
+IronPort-SDR: bHINAyhofW//s0nAdERtDiuiD+mblFC9PHUid5F5dVNxOxAz97/4ToLdpkUfgFQJCyYTm9xzTE
+ Sh77sEKisDEQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="175640176"
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="175640176"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2021 07:29:29 -0800
-IronPort-SDR: PdfcH+w+gzkzyMcmgPFMR4AldD7wwIMKxpOTBv2ewII5fwwFIMZMqVXpw++PdPFXRpkL+mBAKa
- 53H77N0U1BMA==
+ 13 Jan 2021 07:29:32 -0800
+IronPort-SDR: F0vLq5K11pACGGjVxgTdj1TT7g20v4Chv9dqPseCi67wea5zi0p05n0wiiVZzrW7HrlgucEi+l
+ Cd8irh+vHOqw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="569445152"
+X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; d="scan'208";a="569445155"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga006.fm.intel.com with ESMTP; 13 Jan 2021 07:29:27 -0800
+ by fmsmga006.fm.intel.com with ESMTP; 13 Jan 2021 07:29:30 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 3/4] ASoC: SOF: sof-pci-dev: add .shutdown() callback
-Date: Wed, 13 Jan 2021 17:26:16 +0200
-Message-Id: <20210113152617.4048541-3-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: SOF: Intel: tgl: do thorough remove at .shutdown()
+ callback
+Date: Wed, 13 Jan 2021 17:26:17 +0200
+Message-Id: <20210113152617.4048541-4-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210113152617.4048541-1-kai.vehmanen@linux.intel.com>
 References: <20210113152617.4048541-1-kai.vehmanen@linux.intel.com>
@@ -88,41 +89,35 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Keyon Jie <yang.jie@linux.intel.com>
 
-Add the .shutdown() callback to the sof-pci-dev driver, to help to
-handle shutting down specific tasks for SOF PCI platforms.
+Invoke hda_dsp_remove() as the .shutdown() callback. This will help to
+perform shutdown of the DSP safely on TGL platforms before shutting down
+or rebooting the system.
 
+BugLink: https://github.com/thesofproject/linux/issues/2571
 Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/sof-pci-dev.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/sof/intel/tgl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 63b989e3ec40..5f53c3e76e6f 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -450,6 +450,11 @@ static void sof_pci_remove(struct pci_dev *pci)
- 	pci_release_regions(pci);
- }
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index 2252ca38ff4b..419f05ba1920 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -22,9 +22,10 @@ static const struct snd_sof_debugfs_map tgl_dsp_debugfs[] = {
  
-+static void sof_pci_shutdown(struct pci_dev *pci)
-+{
-+	snd_sof_device_shutdown(&pci->dev);
-+}
-+
- /* PCI IDs */
- static const struct pci_device_id sof_pci_ids[] = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
-@@ -523,6 +528,7 @@ static struct pci_driver snd_sof_pci_driver = {
- 	.id_table = sof_pci_ids,
- 	.probe = sof_pci_probe,
- 	.remove = sof_pci_remove,
-+	.shutdown = sof_pci_shutdown,
- 	.driver = {
- 		.pm = &sof_pci_pm,
- 	},
+ /* Tigerlake ops */
+ const struct snd_sof_dsp_ops sof_tgl_ops = {
+-	/* probe and remove */
++	/* probe/remove/shutdown */
+ 	.probe		= hda_dsp_probe,
+ 	.remove		= hda_dsp_remove,
++	.shutdown	= hda_dsp_remove,
+ 
+ 	/* Register IO */
+ 	.write		= sof_io_write,
 -- 
 2.29.2
 
