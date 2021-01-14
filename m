@@ -2,84 +2,66 @@ Return-Path: <SRS0=k679=GR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B0DC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 11:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C4DCC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 11:59:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EB031238A1
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 11:16:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB031238A1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id A462923A50
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 11:59:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A462923A50
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BF901697;
-	Thu, 14 Jan 2021 12:15:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BF901697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2139C1695;
+	Thu, 14 Jan 2021 12:58:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2139C1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610622962;
-	bh=HEn6x8XwIMQYX5cf2Cfwj/acaJyDmQOqh8W59GekF8E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1610625581;
+	bh=dBUxK4BnqalpnQrlabwn0r84nC+IX4xq57WauB81mtw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XmVZc3VXfxVyZaj1h4W7gLhKk8ZtVjdfTZEv+tzZsBZ3XVTMUyQ5xFEkFvmU+so/q
-	 4NMUlX51HzP8Ih1b9M7i+4XAbcoqz3I5erzlCG82is2XGNN/fog2olNeJKDbogLOJj
-	 k4gA43MiZT5FQ4/n9orRFkNiol0AF5rnC6IDDbiY=
+	b=fu27kvQKMaEaM2O2bjzErkzeDzMD2XQyu9zCQhpYqfoyiGQTEzWzM4EB2M9nzgUX+
+	 BPN7aJYbtgrsdwuQgLFOTk/a3ox5OEQjEjGyXVbc6ehUGVrbCurbYD3RRAB41CV9Zt
+	 Kn+3+VKq5OOlEfg348K4KVkXSateId9p93amKw1I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2963F80249;
-	Thu, 14 Jan 2021 12:15:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3FE9F80249;
+	Thu, 14 Jan 2021 12:58:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C12B5F8025E; Thu, 14 Jan 2021 12:15:04 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id A7A9CF8025E; Thu, 14 Jan 2021 12:58:48 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90EC7F80118
- for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 12:14:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90EC7F80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V7u08RCL"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23634238A1;
- Thu, 14 Jan 2021 11:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610622896;
- bh=HEn6x8XwIMQYX5cf2Cfwj/acaJyDmQOqh8W59GekF8E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V7u08RCLdM+KtZsvcdKRaIMwQwwW+USMkLqv2FG95OT9E3vTITF7t82wi97ZJqYog
- trIPVU4lmVePaaR7vfeitaonyAmiKNYCM0keKY9/HxE20EFIl02QNkvTzVzwWk7GGC
- u1iuXXs+6pLCsJ23d1+AmpL7iTKgAJMoq7akF+4EnW9epo6tq8Mc3VWvWw8rTqmP5l
- FCwB5wG6gCBQHqyuC1ec23U3TmMaoT1ivo/D0hu0/UqfH6ImGVo1P60KQdWzBhHbOm
- z3XW/LW+3zL5ygnfZO/xpQU+PAheuw3LsLhrXGO44JBJuJ+/XPo3SsEr7xDV2H6lUh
- VQEJiOuajCz9g==
-Date: Thu, 14 Jan 2021 11:14:22 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
- sysclks properties
-Message-ID: <20210114111422.GA4854@sirena.org.uk>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-3-rf@opensource.cirrus.com>
- <20210113152225.GA2334778@robh.at.kernel.org>
- <c12a846f-9e79-4646-e7f4-397f074eb613@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
-Content-Disposition: inline
-In-Reply-To: <c12a846f-9e79-4646-e7f4-397f074eb613@opensource.cirrus.com>
-X-Cookie: You have taken yourself too seriously.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>,
- alsa-devel@alsa-project.org, f.fainelli@gmail.com,
- kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
- nsaenzjulienne@suse.de
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D2BDF80134
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 12:58:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D2BDF80134
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id AD2FAB7A4;
+ Thu, 14 Jan 2021 11:58:34 +0000 (UTC)
+Date: Thu, 14 Jan 2021 12:58:34 +0100
+Message-ID: <s5h7dofpw5x.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chris Chiu <chiu@endlessos.org>
+Subject: Re: [PATCH] ALSA: hda/realtek - Limit int mic boost on Acer Aspire
+ E5-575T
+In-Reply-To: <20210114082728.74729-1-chiu@endlessos.org>
+References: <20210114082728.74729-1-chiu@endlessos.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, linux@endlessos.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,40 +77,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 14 Jan 2021 09:27:28 +0100,
+Chris Chiu wrote:
+> 
+> The Acer Apire E5-575T laptop with codec ALC255 has a terrible
+> background noise comes from internal mic capture. And the jack
+> sensing dose not work for headset like some other Acer laptops.
+> 
+> This patch limits the internal mic boost on top of the existing
+> ALC255_FIXUP_ACER_MIC_NO_PRESENCE quirk for Acer Aspire E5-575T.
+> 
+> Signed-off-by: Chris Chiu <chiu@endlessos.org>
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied now.  Thanks.
 
-On Thu, Jan 14, 2021 at 10:31:10AM +0000, Richard Fitzgerald wrote:
-> On 13/01/2021 15:22, Rob Herring wrote:
 
-> > This appears to all be configuration of clocks within the codec, so
-> > these properties belong in the codec or cpu nodes.
-
-> audio-graph-card doesn't have codec or cpu nodes. Those were in
-> simple-card but are replaced in audio-graph-card by a simple phandle
-> array forming a graph.
-
-> I could assume that all clock settings apply to the codec and that there
-> is only ever one codec in an audio-graph-card configuration.
-
-The suggestion here is to put properties in the node for the relevant
-device rather than the card.
-
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAAJ44ACgkQJNaLcl1U
-h9C5hgf/c2ZJGYL10xAvFbrBmbviZFuAh9cGNdSkafHv1OUH4E5CZNwTOSCwi+CE
-fJ7wykl1RjbEdTBdW0LFyMN47/dHLLFh2579jfRqVgBlEHn9oRLyfdJZjhjbrFfb
-FApz80U1oaVv6OlzmGdpzXvtuyqBooIt9yYyd3n9yFWWoetQGT9gn/ulWrrL3qyh
-J5GYZl0aoCdzxl2pA++666p7B5SYtwedDO+NeRVpuHVSvz/nFl7JKHoQWYaVXTmx
-0MTbcB+BtfSwN73s1YQW7CXmi+Pa2nDg552Wfld2eSf/lYnqBpPohF0jU05OAb1y
-vPPBJMABELNIG8+Cod8+RCi7wDzaLQ==
-=3PWv
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
+Takashi
