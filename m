@@ -2,63 +2,76 @@ Return-Path: <SRS0=k679=GR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F673C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66ED4C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:49:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 574E823A5D
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:36:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 574E823A5D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id D579F23A69
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:49:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D579F23A69
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCB3816D8;
-	Thu, 14 Jan 2021 14:35:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCB3816D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 429B1165D;
+	Thu, 14 Jan 2021 14:48:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 429B1165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610631379;
-	bh=C4/BMPDLZuQhXBNzb/wAtZHZe6z8pjCIHVfq3HdvhIs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610632162;
+	bh=zdrGa6V4aDBkKB9y0gpsAi0fUOhHIG8zYDhtoSH3ziM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AMY2jI7kfKZeEAnJheMcvomhaCN7KyY7I1MAoNhGXQyl3ztKsNekFKXGrHs7oIHbV
-	 NYAIGVywuJyUvQRK+4f1opr0sTWLe6Q4jYdy0oRZk4j6ikbOVfotj5ndqPlA06PFXm
-	 2Bw01nx4AANRYCc63Tt81UEJXdWfDtJjZ0/MaGVY=
+	b=Oq8FFwuQAAnJOFiJV8arTvA8NYhmevypn+T7Ohbtj4WISBYsynNtW83GM03nHO9mi
+	 k9bHTRZBLWgUZpUWahnoQQpz/tUO+pIKBXMZxNQmMu9p0AGGdey8e0WgExt8LZK2hU
+	 Ud9hZJcPnE/f+9tXnDKnBeLZaSr+MxPHBkHXYRlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0F3CF804CB;
-	Thu, 14 Jan 2021 14:33:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA453F80249;
+	Thu, 14 Jan 2021 14:48:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACB2DF804AB; Thu, 14 Jan 2021 14:33:51 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9CE2EF8025E; Thu, 14 Jan 2021 14:48:29 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94EB9F80134
- for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 14:33:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94EB9F80134
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E11A5ADE5;
- Thu, 14 Jan 2021 13:33:40 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ASoC: SOF: intel: Simplify with
- dma_set_mask_and_coherent()
-Date: Thu, 14 Jan 2021 14:33:36 +0100
-Message-Id: <20210114133337.1039-3-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210114133337.1039-1-tiwai@suse.de>
-References: <20210114133337.1039-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8B04F80113
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 14:48:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8B04F80113
+IronPort-SDR: rzljR9gL4ApGnY8AIO/VgWYVCaL4xPOMC0BIl1Kt4LzCu3wAt+VzZdd/yA6S9Kl5DPCHDWFH4E
+ /3Ald+tjtyJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="242437253"
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="242437253"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jan 2021 05:48:17 -0800
+IronPort-SDR: LPXGK75AcHx/Pw60m1Qwqa8V/KlU6stote91NRPfRrm6Uh5kqhg/guHs1njl+vRWifKi5MYVKb
+ PK95daUiwMBg==
+X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="382270627"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Jan 2021 05:48:14 -0800
+Date: Thu, 14 Jan 2021 15:45:10 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH v2] ASoC: SOF: Intel: initial support to AlderLake-P
+In-Reply-To: <s5h1renpv43.wl-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2101141534270.864696@eliteleevi.tm.intel.com>
+References: <20210114115558.52699-1-kai.vehmanen@linux.intel.com>
+ <s5h1renpv43.wl-tiwai@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,39 +87,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC Intel SOF driver still has explicit calls of dma_set_mask() and
-dma_set_coherent_mask().
+Hi,
 
-Let's simplify with dma_set_mask_and_coherent().
+On Thu, 14 Jan 2021, Takashi Iwai wrote:
 
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/sof/intel/hda.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+> On Thu, 14 Jan 2021 12:55:58 +0100, Kai Vehmanen wrote:
+> > --- a/sound/soc/sof/sof-pci-dev.c
+> > +++ b/sound/soc/sof/sof-pci-dev.c
+[...]
+> > -#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
+> > +#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE) || IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
+> >  static const struct sof_dev_desc tgl_desc = {
+> >  	.machines               = snd_soc_acpi_intel_tgl_machines,
+> >  	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
+> 
+> I guess snd_soc_acpi_intel_tgl_* would be missing even by this patch
+> alone if TIGERLAKE=n and ALDERLAKE=y.
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 509a9b256423..7e703ce22fcd 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -809,13 +809,9 @@ int hda_dsp_probe(struct snd_sof_dev *sdev)
- 	sdev->mailbox_bar = HDA_DSP_BAR;
+The ACPI matching tables soc-acpi-intel-match.h are not behind Kconfig 
+ifdefs, so this is ok. I did actually test all the build combinations this 
+time :) and the builds go through.
  
- 	/* allow 64bit DMA address if supported by H/W */
--	if (!dma_set_mask(&pci->dev, DMA_BIT_MASK(64))) {
--		dev_dbg(sdev->dev, "DMA mask is 64 bit\n");
--		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(64));
--	} else {
-+	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(64))) {
- 		dev_dbg(sdev->dev, "DMA mask is 32 bit\n");
--		dma_set_mask(&pci->dev, DMA_BIT_MASK(32));
--		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32));
-+		dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32));
- 	}
- 
- 	/* init streams */
--- 
-2.26.2
+> IMO, the easiest fix would be to select CONFIG_SND_SOC_SOF_TIGERLAKE
+> from CONFIG_SND_SOC_SOF_ALDERLAKE forcibly in Kconfig instead.  Then
+> no tweak of ifdef is needed.
 
+I'd rather keep this here. We may later update sof_dev_desc for ADL and no 
+longer reuse tgl_desc, and then it's easier to cleanup if the #ifdef is 
+only here, close to where the dependency is.
+
+I too think the ifdefs are too finegrained, so maybe the next step is to 
+just drop these, and/or reduce their number. We can review and discuss 
+this when we refactor sof-pci-dev to address the concern Arnd raised.
+
+Br, Kai
