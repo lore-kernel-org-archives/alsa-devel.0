@@ -2,78 +2,88 @@ Return-Path: <SRS0=k679=GR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8B01C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 14:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0CC4C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 15:10:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE9A323A69
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 14:23:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE9A323A69
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 280A223B26
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 15:10:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 280A223B26
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 878D216D7;
-	Thu, 14 Jan 2021 15:22:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 878D216D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CAC41697;
+	Thu, 14 Jan 2021 16:09:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CAC41697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610634199;
-	bh=WYkDQFcOisI01Y2kvy0bGM+km/h9TQOjXmA1xDI99bc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1610637043;
+	bh=8Ytg6rr+vhZOUVZ7YEBZ/tNIoxH6BmhiIZ4QW6uSU6k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c5cCZO/1f8can9OeKPhdaWDOqbvJY8L4Os79Pd2gUDM0bPrfz+ti6PXKeanx4k2Ur
-	 JkaLK8hRAMMegEeJwyP92mxPbxs/3RltNeYQ1etDz7e7TyeE8KGF1C1kJ2PK+CqRn1
-	 wyGspswYH6Ukmswap2Zp3Za6JLsXeOLn3oVDeli4=
+	b=qNKzeehxZSYO9B5wemxoFp1ZqBc1f2t5w5WvjCRLEUo4/ILTitVKBpFllHEPdw89J
+	 rP/OUYXnc1lJjmGVqyhRpSBiBbez9y/pFSMuQQsEfQYqLoNlp4Yzb1bkwGNx5HXvmk
+	 rkD2pdpE8Uf7MWjNfLpvEpWrDEBlQ/g4F0EXkAwo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF196F804D2;
-	Thu, 14 Jan 2021 15:21:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1311F80249;
+	Thu, 14 Jan 2021 16:09:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7AC3F804C2; Thu, 14 Jan 2021 15:21:29 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A2E80F8025E; Thu, 14 Jan 2021 16:09:49 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FC74F80249
- for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 15:21:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FC74F80249
-IronPort-SDR: c8b8GWjLk7hf9dHL76fcqjFEnmFSDIWuxFm3Y/DF3/l0JlD3BxCTaAVEiag2DtVDvRSglYXKkT
- ljHzRsB7Qaow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="175792529"
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="175792529"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jan 2021 06:21:21 -0800
-IronPort-SDR: +cXAz4qe1OFDauS8UhH2wNX39r08PLUAbOrnmx2raamEVciBq78ANrgy0l43knT+vf+jdfVrg0
- V/IbFshcVPjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,347,1602572400"; d="scan'208";a="400912808"
-Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by fmsmga002.fm.intel.com with ESMTP; 14 Jan 2021 06:21:18 -0800
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 2/2] ASoC: topology: Check if ops is set before dereference
-Date: Thu, 14 Jan 2021 11:36:02 -0500
-Message-Id: <20210114163602.911205-3-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210114163602.911205-1-amadeuszx.slawinski@linux.intel.com>
-References: <20210114163602.911205-1-amadeuszx.slawinski@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30C6DF80113;
+ Thu, 14 Jan 2021 16:09:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30C6DF80113
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="mPElLYb5"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FB4323A7F;
+ Thu, 14 Jan 2021 15:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610636979;
+ bh=8Ytg6rr+vhZOUVZ7YEBZ/tNIoxH6BmhiIZ4QW6uSU6k=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=mPElLYb5hepykdQ/Xo1H+mD6Knr9MAWGDeHJsjGCdHy0nLBB1bucA/BUl1lbldhGM
+ yb0C1DFlOnTna9RMU9tAD+Lw82ormFRQoTrckV5nbwuZLeDAQCRAguydFBjQ0wUtWs
+ BRklh/cg37QQYHMW06gJO1KBYdb+gvl80iw9OnxazPEunxML1/S5RP0J7tlCM6nH1u
+ JM4ocIbKfQBFa1XSZ9tEDjIZL0WQxlsx5VJ/j0pBB72FPpdHo8NXT/cConBnKV7B9Y
+ dxLd3PAUhO3935UWV8Uv3WbZZbmNquGR4TojaJ95Tmxgowt+Sgfej/CCE8CpjC7Lym
+ x6tNjzdT9NSsA==
+Received: by mail-oo1-f51.google.com with SMTP id k9so1432584oop.6;
+ Thu, 14 Jan 2021 07:09:39 -0800 (PST)
+X-Gm-Message-State: AOAM532XyFZWdYNlVi99Q/NFGeIz2eyR50df3zlolSL87wlHtOxqQcO2
+ 9ns/9b51zEm1UKl7K0zDBfcH+GiKzOEIxuWRmW0=
+X-Google-Smtp-Source: ABdhPJxy7/gXoT00gpRoe9YxdlRpPkuHIlxwpQreEYKCcKDdViftSZjGKzQ29riPpA+gtnR22JvNi9rxLl7X13N8tbE=
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr4951976ooj.15.1610636978562;
+ Thu, 14 Jan 2021 07:09:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
+References: <20210112203250.2576775-1-arnd@kernel.org>
+In-Reply-To: <20210112203250.2576775-1-arnd@kernel.org>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Thu, 14 Jan 2021 16:09:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0+YmZTzYYk0D5HpBEB7Kp=ryx1U4KRKCyz4XYM3v9rAQ@mail.gmail.com>
+Message-ID: <CAK8P3a0+YmZTzYYk0D5HpBEB7Kp=ryx1U4KRKCyz4XYM3v9rAQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] [v2] ALSA: hda: fix SND_INTEL_DSP_CONFIG dependency
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
+ Liam Girdwood <lgirdwood@gmail.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rander Wang <rander.wang@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,41 +99,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Topology can be created without ops overrides, in that case trying to
-assign any value would lead to dereferencing NULL pointer.
+On Tue, Jan 12, 2021 at 9:32 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
 
-Other places in code have either checks for tplg->ops or loop using
-*_count variables, hence they can't dereference NULL pointer and there
-is no need to add more checks.
+> ---
+> v2: fix various build issues in the first version, now passes
+>     all randconfig builds I tried
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/soc-topology.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Please disregard this version, while I have a tree that passes
+the randconfig builds now, this was not the patch from it that
+I wanted to send...
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 0d182a190c98..5476854c12b0 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2674,11 +2674,13 @@ int snd_soc_tplg_component_load(struct snd_soc_component *comp,
- 	tplg.fw = fw;
- 	tplg.dev = comp->dev;
- 	tplg.comp = comp;
--	tplg.ops = ops;
--	tplg.io_ops = ops->io_ops;
--	tplg.io_ops_count = ops->io_ops_count;
--	tplg.bytes_ext_ops = ops->bytes_ext_ops;
--	tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
-+	if (ops) {
-+		tplg.ops = ops;
-+		tplg.io_ops = ops->io_ops;
-+		tplg.io_ops_count = ops->io_ops_count;
-+		tplg.bytes_ext_ops = ops->bytes_ext_ops;
-+		tplg.bytes_ext_ops_count = ops->bytes_ext_ops_count;
-+	}
- 
- 	ret = soc_tplg_load(&tplg);
- 	/* free the created components if fail to load topology */
--- 
-2.25.1
-
+       Arnd
