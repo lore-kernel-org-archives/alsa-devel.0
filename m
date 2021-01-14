@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 422F7C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7780CC433E9
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:35:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6A19F23A5D
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:35:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6A19F23A5D
+	by mail.kernel.org (Postfix) with ESMTPS id B181F23A5E
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jan 2021 13:35:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B181F23A5E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AFC1016BF;
-	Thu, 14 Jan 2021 14:34:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFC1016BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id B564616D0;
+	Thu, 14 Jan 2021 14:34:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B564616D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610631334;
-	bh=MZty/B8WUsUsCev3XO3VPTVSeJL9zwl94+CqdI7YJy4=;
+	s=default; t=1610631339;
+	bh=5feUocNsPVkK0oDWEJrQhycAmpNmrGyF2Gpr/FM/hbc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jlp8uNdB+wJm2CMI2JQp+1OiCdRWgqfi5ikOTu4z010NaqoSpTCj4Lk96KKn0DsGL
-	 kbYEpQSpms9VTe8adpr1e+DRFi+1WWYUSkbko1acd0dRlcmffrLr9EGQI/nqyh9HP3
-	 lVcoSdSZhkrgI6/AO9vfI/0A/8k5cRs9T8qM9Yq0=
+	b=D9EONShAvStY5ThCB/feaKNrrpnYC9vWIGKY8Y3ziq3+9bgZBh9C8sNX7pTw4wmC7
+	 lRwVl/zrq5HFC0mSydH/cEYzKIdlTPJXJr5cc8iyx0EN4g+wF6KDfqQn8P9S5Rih3i
+	 o4SWe95vMZMBOZhiKOtwsK9Y/5Sce+I6rTnaydxY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7593F80249;
-	Thu, 14 Jan 2021 14:33:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00E34F804C2;
+	Thu, 14 Jan 2021 14:33:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05B83F80249; Thu, 14 Jan 2021 14:33:49 +0100 (CET)
+ id B5AA1F80134; Thu, 14 Jan 2021 14:33:51 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92892F80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FDA3F80118
  for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 14:33:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92892F80249
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FDA3F80118
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D2245ADCD;
+ by mx2.suse.de (Postfix) with ESMTP id EF690AE12;
  Thu, 14 Jan 2021 13:33:40 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ASoC: intel: skl: Simplify with
- dma_set_mask_and_coherent()
-Date: Thu, 14 Jan 2021 14:33:35 +0100
-Message-Id: <20210114133337.1039-2-tiwai@suse.de>
+Subject: [PATCH 3/3] ASoC: tegra: Simplify with dma_set_mask_and_coherent()
+Date: Thu, 14 Jan 2021 14:33:37 +0100
+Message-Id: <20210114133337.1039-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210114133337.1039-1-tiwai@suse.de>
 References: <20210114133337.1039-1-tiwai@suse.de>
@@ -74,37 +73,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC Intel Skylake driver still has explicit calls of dma_set_mask()
-and dma_set_coherent_mask().
+ASoC tegra PCM code still has explicit calls of dma_set_mask() and
+dma_set_coherent_mask().
 
 Let's simplify with dma_set_mask_and_coherent().
 
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/intel/skylake/skl.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/tegra/tegra_pcm.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 8b993722f74e..5b1a15e39912 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -950,12 +950,8 @@ static int skl_first_init(struct hdac_bus *bus)
- 	bus->num_streams = cp_streams + pb_streams;
+diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
+index b3f36515cbc1..573374b89b10 100644
+--- a/sound/soc/tegra/tegra_pcm.c
++++ b/sound/soc/tegra/tegra_pcm.c
+@@ -255,11 +255,7 @@ static int tegra_pcm_dma_allocate(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	int ret;
  
- 	/* allow 64bit DMA address if supported by H/W */
--	if (!dma_set_mask(bus->dev, DMA_BIT_MASK(64))) {
--		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(64));
--	} else {
--		dma_set_mask(bus->dev, DMA_BIT_MASK(32));
--		dma_set_coherent_mask(bus->dev, DMA_BIT_MASK(32));
--	}
-+	if (dma_set_mask_and_coherent(bus->dev, DMA_BIT_MASK(64)))
-+		dma_set_mask_and_coherent(bus->dev, DMA_BIT_MASK(32));
+-	ret = dma_set_mask(card->dev, DMA_BIT_MASK(32));
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = dma_set_coherent_mask(card->dev, DMA_BIT_MASK(32));
++	ret = dma_set_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+ 	if (ret < 0)
+ 		return ret;
  
- 	/* initialize streams */
- 	snd_hdac_ext_stream_init_all
 -- 
 2.26.2
 
