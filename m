@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8834C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:59:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F05A4C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:59:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F363A23406
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:59:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F363A23406
+	by mail.kernel.org (Postfix) with ESMTPS id 5304B2339E
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:59:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5304B2339E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A6341767;
-	Fri, 15 Jan 2021 05:58:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A6341767
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0D73176F;
+	Fri, 15 Jan 2021 05:58:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0D73176F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686759;
-	bh=q2dIM8eqfDSLMGcP8tKga3v1iFxcV0JBirQDyOYPNXs=;
+	s=default; t=1610686780;
+	bh=G2WIXPISe/y07dKtq/3G86pspTWTaUOc9aeIWrCVOT8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K6AVDl89jt6O1Gy4bzmT3zVBe6S+orFLeKxYopP7StqaRaez5FNAKcPdb72gdURkO
-	 WeqQpxelnXY37TRVO+FTRzXO53gySTAKNVsJP8YNVXk2uQjewdbeHCCdtWrsT2CbZv
-	 U8KtH8EGETSfrPqldMQmjm1MIVroq1/OcMx8Rxbc=
+	b=OsvY7TJSOildiLfUGJgS2HrJiNGy/rT7lWV8I7OVlgFtvf0YUrFOl4/xgTC20/2qn
+	 gmme8Gn/2gnk2Q9sszUA03hZIYpNJvGZkamV2KQLa+dYg1Y4OmONQlVGbLDJyYP7bs
+	 0roT+7wIs3rStOF4FGhoMJy4eipyVoUqJBplcwEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF337F8051D;
-	Fri, 15 Jan 2021 05:54:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7991F80537;
+	Fri, 15 Jan 2021 05:54:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0989BF80527; Fri, 15 Jan 2021 05:54:15 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A1C2CF80526
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1C2CF80526
-Date: 15 Jan 2021 13:54:08 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080417"
+ id 0088CF80536; Fri, 15 Jan 2021 05:54:25 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5B8EAF80525
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B8EAF80525
+Date: 15 Jan 2021 13:54:17 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68860929"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:08 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:17 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A8A1541A6658;
- Fri, 15 Jan 2021 13:54:08 +0900 (JST)
-Message-ID: <87eeimolh5.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0BA7841A6911;
+ Fri, 15 Jan 2021 13:54:17 +0900 (JST)
+Message-ID: <87bldqolgw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 15/44] ASoC: fsl: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 17/44] ASoC: tlv*: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,71 +87,73 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/fsl/fsl_esai.c | 4 ++--
- sound/soc/fsl/fsl_sai.c  | 8 ++++----
- sound/soc/fsl/fsl_ssi.c  | 4 ++--
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/tlv320adcx140.c | 2 +-
+ sound/soc/codecs/tlv320aic31xx.c | 4 ++--
+ sound/soc/codecs/tlv320aic32x4.c | 2 +-
+ sound/soc/codecs/tlv320aic3x.c   | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 39637ca78cdb..5a65cccdad22 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -1042,9 +1042,9 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 
- 	/* Implement full symmetry for synchronous mode */
- 	if (esai_priv->synchronous) {
--		fsl_esai_dai.symmetric_rates = 1;
-+		fsl_esai_dai.symmetric_rate = 1;
- 		fsl_esai_dai.symmetric_channels = 1;
--		fsl_esai_dai.symmetric_samplebits = 1;
-+		fsl_esai_dai.symmetric_sample_bits = 1;
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 3f027c8234a6..32b120d624b2 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -1069,7 +1069,7 @@ static struct snd_soc_dai_driver adcx140_dai_driver[] = {
+ 			.formats	 = ADCX140_FORMATS,
+ 		},
+ 		.ops = &adcx140_dai_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
  	}
+ };
  
- 	dev_set_drvdata(&pdev->dev, esai_priv);
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index f3d3d20d35d7..5e65b456d3e2 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -1079,9 +1079,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	/* Sync Tx with Rx as default by following old DT binding */
- 	sai->synchronous[RX] = true;
- 	sai->synchronous[TX] = false;
--	sai->cpu_dai_drv.symmetric_rates = 1;
-+	sai->cpu_dai_drv.symmetric_rate = 1;
- 	sai->cpu_dai_drv.symmetric_channels = 1;
--	sai->cpu_dai_drv.symmetric_samplebits = 1;
-+	sai->cpu_dai_drv.symmetric_sample_bits = 1;
- 
- 	if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
- 	    of_find_property(np, "fsl,sai-asynchronous", NULL)) {
-@@ -1098,9 +1098,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		/* Discard all settings for asynchronous mode */
- 		sai->synchronous[RX] = false;
- 		sai->synchronous[TX] = false;
--		sai->cpu_dai_drv.symmetric_rates = 0;
-+		sai->cpu_dai_drv.symmetric_rate = 0;
- 		sai->cpu_dai_drv.symmetric_channels = 0;
--		sai->cpu_dai_drv.symmetric_samplebits = 0;
-+		sai->cpu_dai_drv.symmetric_sample_bits = 0;
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 5ac7ce264431..51870d50f419 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1395,7 +1395,7 @@ static struct snd_soc_dai_driver dac31xx_dai_driver[] = {
+ 			.formats	 = AIC31XX_FORMATS,
+ 		},
+ 		.ops = &aic31xx_dai_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
  	}
+ };
  
- 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 404be27c15fe..41d10f7e7411 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1537,9 +1537,9 @@ static int fsl_ssi_probe(struct platform_device *pdev)
- 
- 	/* Set software limitations for synchronous mode except AC97 */
- 	if (ssi->synchronous && !fsl_ssi_is_ac97(ssi)) {
--		ssi->cpu_dai_drv.symmetric_rates = 1;
-+		ssi->cpu_dai_drv.symmetric_rate = 1;
- 		ssi->cpu_dai_drv.symmetric_channels = 1;
--		ssi->cpu_dai_drv.symmetric_samplebits = 1;
-+		ssi->cpu_dai_drv.symmetric_sample_bits = 1;
+@@ -1417,7 +1417,7 @@ static struct snd_soc_dai_driver aic31xx_dai_driver[] = {
+ 			.formats	 = AIC31XX_FORMATS,
+ 		},
+ 		.ops = &aic31xx_dai_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
  	}
+ };
  
- 	/*
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 9e3de9ded0ef..f04f88c8d425 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -916,7 +916,7 @@ static struct snd_soc_dai_driver aic32x4_dai = {
+ 			.rates = AIC32X4_RATES,
+ 			.formats = AIC32X4_FORMATS,},
+ 	.ops = &aic32x4_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ };
+ 
+ static void aic32x4_setup_gpios(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 6d066bc58ac8..db1444127444 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1503,7 +1503,7 @@ static struct snd_soc_dai_driver aic3x_dai = {
+ 		.rates = AIC3X_RATES,
+ 		.formats = AIC3X_FORMATS,},
+ 	.ops = &aic3x_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ };
+ 
+ static void aic3x_mono_init(struct snd_soc_component *component)
 -- 
 2.25.1
 
