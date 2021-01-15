@@ -7,51 +7,50 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD01CC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 09:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E747DC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 09:59:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD68A2339D
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 09:35:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD68A2339D
+	by mail.kernel.org (Postfix) with ESMTPS id 41DE0238EC
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 09:59:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41DE0238EC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21CDF173D;
-	Fri, 15 Jan 2021 10:34:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21CDF173D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6F30177F;
+	Fri, 15 Jan 2021 10:58:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6F30177F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610703340;
-	bh=NPFFFaYUBLeVicUPmlt4N/hbYaYsM90x8OaZqA1+mRI=;
+	s=default; t=1610704746;
+	bh=A4JGvYLcE7XSaqIBzMe6GVrFCc5QBfz2+9h6yUyFwuU=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=mFYx4SATTm6Tf0DJKT8nCgNvputFoni+CdkHryNwJlSZTK0VxlEpSsnpnvxKoovuG
-	 SMht4ob4KpIFO6kFBm9KatlUEQGYe4XnS8OonjMiMZQyg1nUIif8xtSKnegWy57sER
-	 lPy5QmdNCXM8koK303Kvq7fMf8u4JTawWXL6Copc=
+	b=qUa2UZwEijSyg5RSxITc9cXgg6UsXeU93R6N3xsNBkKC2ugO9pOv3AAzKu0IEZ8DA
+	 5GdGhjNDWxZQMRkDIs+4Reb/XLn7cZMDpGuwP6oveOC4Qfj348/SsPYNuu8XMZvo+Q
+	 UGWVxS1cFB4xErXxKz+YOdfWrI+KUnangrVEgkYQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59649F8016D;
-	Fri, 15 Jan 2021 10:34:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E267FF8016D;
+	Fri, 15 Jan 2021 10:58:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72D9BF801ED; Fri, 15 Jan 2021 10:34:45 +0100 (CET)
+ id 496C5F801ED; Fri, 15 Jan 2021 10:58:12 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCFEFF80134
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 10:34:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCFEFF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0456CF80134
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 10:57:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0456CF80134
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 99D98B1C4
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 09:34:30 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 076FFB7C6
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 09:57:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: seq: oss: Fix missing error check in
- snd_seq_oss_synth_make_info()
-Date: Fri, 15 Jan 2021 10:34:28 +0100
-Message-Id: <20210115093428.15882-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Convert remaining strlcpy() to strscpy()
+Date: Fri, 15 Jan 2021 10:57:58 +0100
+Message-Id: <20210115095758.19707-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -70,34 +69,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_seq_oss_synth_make_info() didn't check the error code from
-snd_seq_oss_midi_make_info(), and this leads to the call of strlcpy()
-with the uninitialized string as the source, which may lead to the
-access over the limit.
+USB-audio driver still contains two calls of strlcpy() because the
+return size is evaluated.  Basically it just checks whether the string
+is copied or not, but since strcpy() may return a negative error code,
+we should check the negative value and treat as filled.
 
-Add the proper error check for avoiding the failure.
-
-Reported-by: syzbot+e42504ff21cff05a595f@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/oss/seq_oss_synth.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/usb/mixer.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/sound/core/seq/oss/seq_oss_synth.c b/sound/core/seq/oss/seq_oss_synth.c
-index 11554d0412f0..1b8409ec2c97 100644
---- a/sound/core/seq/oss/seq_oss_synth.c
-+++ b/sound/core/seq/oss/seq_oss_synth.c
-@@ -611,7 +611,8 @@ snd_seq_oss_synth_make_info(struct seq_oss_devinfo *dp, int dev, struct synth_in
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 85fed017710e..c7da38348035 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -115,11 +115,14 @@ find_map(const struct usbmix_name_map *p, int unitid, int control)
+ static int
+ check_mapped_name(const struct usbmix_name_map *p, char *buf, int buflen)
+ {
++	int len;
++
+ 	if (!p || !p->name)
+ 		return 0;
  
- 	if (info->is_midi) {
- 		struct midi_info minf;
--		snd_seq_oss_midi_make_info(dp, info->midi_mapped, &minf);
-+		if (snd_seq_oss_midi_make_info(dp, info->midi_mapped, &minf))
-+			return -ENXIO;
- 		inf->synth_type = SYNTH_TYPE_MIDI;
- 		inf->synth_subtype = 0;
- 		inf->nr_voices = 16;
+ 	buflen--;
+-	return strlcpy(buf, p->name, buflen);
++	len = strscpy(buf, p->name, buflen);
++	return len < 0 ? buflen : len;
+ }
+ 
+ /* ignore the error value if ignore_ctl_error flag is set */
+@@ -151,12 +154,15 @@ static int check_mapped_selector_name(struct mixer_build *state, int unitid,
+ 				      int index, char *buf, int buflen)
+ {
+ 	const struct usbmix_selector_map *p;
++	int len;
+ 
+ 	if (!state->selector_map)
+ 		return 0;
+ 	for (p = state->selector_map; p->id; p++) {
+-		if (p->id == unitid && index < p->count)
+-			return strlcpy(buf, p->names[index], buflen);
++		if (p->id == unitid && index < p->count) {
++			len = strscpy(buf, p->names[index], buflen);
++			return len < 0 ? buflen : len;
++		}
+ 	}
+ 	return 0;
+ }
 -- 
 2.26.2
 
