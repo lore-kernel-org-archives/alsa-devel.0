@@ -5,63 +5,63 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02923C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D4AB9C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:41:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E9AF239EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:40:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E9AF239EF
+	by mail.kernel.org (Postfix) with ESMTPS id D6B07239EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:41:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6B07239EF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E478017BE;
-	Fri, 15 Jan 2021 06:39:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E478017BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33F0717A9;
+	Fri, 15 Jan 2021 06:40:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F0717A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610689232;
-	bh=c16L2UmjxdNA3HdRbwCKje8jde+iaqRXKVWGaGH7gwc=;
+	s=default; t=1610689267;
+	bh=1K8fmc0B78xEJfY23lI3eofNPiXrmfQ1MaedJhmgXD8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oLF5JQZluOIxU53p7mt9kgrDNDmcZYuqioLXuogS9Nfa/+UA5XsxYkz53tDzRLG8v
-	 EEsl23Wwinhd1ngzsTWg6REiP4lM2LfAYYuz7js6dWKqgkGUs7JTZsGB1PBkJFoo99
-	 5p1j8q+Wv3yH5E4cF8anMOgivR1bxi2P6IyRxTuc=
+	b=g1tqVpzSieeOoTYUG/qDVRjBvb3tUAked0qBdoK+0rREqVd3xv7og96QIHEfZ+IwD
+	 fg6UxWAM3zlOk+cUVPZilNCKzh948KUl5cr6MFyTgyEcC8cHvaMYHsF5XhUX1cqlca
+	 FtluMzxQDAEPNecd87+JY8HRpeuDtkpTKLWPIIkI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89AA1F804D8;
-	Fri, 15 Jan 2021 06:38:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23884F804E2;
+	Fri, 15 Jan 2021 06:38:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 218B5F8026B; Fri, 15 Jan 2021 06:37:58 +0100 (CET)
+ id 41C56F8025F; Fri, 15 Jan 2021 06:37:58 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF02AF80132
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 06:37:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF02AF80132
-IronPort-SDR: +ObRv/2mcGUgoTaFpsWhSPNilo79+2+JBqBRvNSuYid/HT83ydsZ94K7RBB3i2bcpQTGsZje3A
- iqDwHB86+hWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="240046289"
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; d="scan'208";a="240046289"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A102F8016D
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 06:37:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A102F8016D
+IronPort-SDR: UHA5umxGOICX4mAV0Zwr7fN4R5NlBE6gYJlHnThoL16zLukMM2v7Sz8YF7NCdOyscBnXWPww7H
+ TEmu9sWLgmdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9864"; a="240046301"
+X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; d="scan'208";a="240046301"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jan 2021 21:37:47 -0800
-IronPort-SDR: ewqWG8xDgNFLSwPtAA30s5IyQgMGygfb2JfnHnzckq47SJB6bdlNFvsM1xcxCaZoRT/dqSH6jH
- 9oedpshJ5RGw==
-X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; d="scan'208";a="382542456"
+ 14 Jan 2021 21:37:53 -0800
+IronPort-SDR: 184qEtKU3MGXr7ct/YeK4whfi7YNr0pETtiitEaWzRPRDWp9xRgfpf1kvEcnaeh4fW1MxFJBXe
+ FmSbOr3QwYgg==
+X-IronPort-AV: E=Sophos;i="5.79,348,1602572400"; d="scan'208";a="382542488"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Jan 2021 21:37:44 -0800
+ 14 Jan 2021 21:37:50 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 3/5] soundwire: bus: add more details to track failed transfers
-Date: Fri, 15 Jan 2021 13:37:36 +0800
-Message-Id: <20210115053738.22630-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 5/5] soundwire: cadence: adjust verbosity in response handling
+Date: Fri, 15 Jan 2021 13:37:38 +0800
+Message-Id: <20210115053738.22630-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210115053738.22630-1-yung-chuan.liao@linux.intel.com>
 References: <20210115053738.22630-1-yung-chuan.liao@linux.intel.com>
@@ -84,35 +84,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current error log does not provide details on the type of
-transfers and which address/count was requested. All this information
-can help locate in which parts of the configuration process an error
-occurred.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+There are too many logs on startup, e.g.
+
+[ 8811.851497] cdns_fill_msg_resp: 2 callbacks suppressed
+[ 8811.851497] intel-sdw intel-sdw.0: Msg Ack not received
+[ 8811.851498] intel-sdw intel-sdw.0: Msg Ack not received
+[ 8811.851499] intel-sdw intel-sdw.0: Msg Ack not received
+[ 8811.851499] intel-sdw intel-sdw.0: Msg Ack not received
+[ 8811.851500] intel-sdw intel-sdw.0: Msg Ack not received
+[ 8811.851500] intel-sdw intel-sdw.0: Msg Ack not received
+[ 8811.851502] intel-sdw intel-sdw.0: Msg ignored for Slave 0
+[ 8811.851503] soundwire sdw-master-0: No more devices to enumerate
+
+We can skip the 'Msg Ack not received' since it's typical of the
+enumeration end, and conversely add the information on which command
+fails.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/soundwire/cadence_master.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 3cc006bfae71..6e1c988f3845 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -267,8 +267,10 @@ static int sdw_transfer_unlocked(struct sdw_bus *bus, struct sdw_msg *msg)
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index d3c9cf920cbd..8d7166ffd4ad 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -483,11 +483,11 @@ cdns_fill_msg_resp(struct sdw_cdns *cdns,
+ 	for (i = 0; i < count; i++) {
+ 		if (!(cdns->response_buf[i] & CDNS_MCP_RESP_ACK)) {
+ 			no_ack = 1;
+-			dev_dbg_ratelimited(cdns->dev, "Msg Ack not received\n");
++			dev_vdbg(cdns->dev, "Msg Ack not received, cmd %d\n", i);
+ 		}
+ 		if (cdns->response_buf[i] & CDNS_MCP_RESP_NACK) {
+ 			nack = 1;
+-			dev_err_ratelimited(cdns->dev, "Msg NACK received\n");
++			dev_err_ratelimited(cdns->dev, "Msg NACK received, cmd %d\n", i);
+ 		}
+ 	}
  
- 	ret = do_transfer(bus, msg);
- 	if (ret != 0 && ret != -ENODATA)
--		dev_err(bus->dev, "trf on Slave %d failed:%d\n",
--			msg->dev_num, ret);
-+		dev_err(bus->dev, "trf on Slave %d failed:%d %s addr %x count %d\n",
-+			msg->dev_num, ret,
-+			(msg->flags & SDW_MSG_FLAG_WRITE) ? "write" : "read",
-+			msg->addr, msg->len);
- 
- 	if (msg->page)
- 		sdw_reset_page(bus, msg->dev_num);
 -- 
 2.17.1
 
