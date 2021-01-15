@@ -2,56 +2,56 @@ Return-Path: <SRS0=73/o=GS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46973C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE861C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 410F023117
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 410F023117
+	by mail.kernel.org (Postfix) with ESMTPS id 9A68C23117
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A68C23117
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA2D416E5;
-	Fri, 15 Jan 2021 05:54:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA2D416E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DB1C1723;
+	Fri, 15 Jan 2021 05:54:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DB1C1723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686498;
-	bh=rFnpg5NrSvnfknWAA3xodRmf5WsUoTwbt+J1Wmb+o3E=;
+	s=default; t=1610686530;
+	bh=HaddrgGjiMrsXMO9XslE53NTvm5AnLzJNnpPFZUVwNE=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J44uzA0m+eKmwgCrgjMl/V2t2r5yv1hlJ8EBcY3F8Q6qCpKLlhAICp3xLgG+ewqzp
-	 NREVMLlqzvLpoTksTGIdwfiKqT0zsCEEjVrcYIKHIaNGQg4yoGq3kzgqREVuPABxXY
-	 YTN/ixMy7GF3STMQCjtSqUPHxspETVveQ5ngdVGk=
+	b=kk7knfNIB3uGZxfgSEoSe1BeNLIHAjO9Inc5SsXyJetvKS9zccjvGzJ02MnM64XNU
+	 +K4X6B8BpGg3tIl2bmF5ZZtH6DlGchljFnyNAjBEgUU2EqsLOrTH5KicMRnrMDp4/r
+	 GlqjtczNKTUw8+QvPb8H1wNxKiXR/+CPKhGcCKFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54CB5F804E1;
-	Fri, 15 Jan 2021 05:53:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A791F804E6;
+	Fri, 15 Jan 2021 05:53:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 556ECF804DF; Fri, 15 Jan 2021 05:53:20 +0100 (CET)
+ id D1DA0F804E2; Fri, 15 Jan 2021 05:53:21 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E1567F804E0
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1567F804E0
-Date: 15 Jan 2021 13:53:13 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080333"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:13 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id B97E7F804E1
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B97E7F804E1
+Date: 15 Jan 2021 13:53:18 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080336"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:18 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id A9A3F4016588;
- Fri, 15 Jan 2021 13:53:13 +0900 (JST)
-Message-ID: <87turiolio.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 402FC41A608F;
+ Fri, 15 Jan 2021 13:53:18 +0900 (JST)
+Message-ID: <87sg72olij.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 04/44] ASoC: atmel: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 05/44] ASoC: au1x: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,38 +87,22 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/atmel/atmel-i2s.c    | 2 +-
- sound/soc/atmel/mchp-i2s-mcc.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/au1x/i2sc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
-index 232300dda548..7c6187e41f2b 100644
---- a/sound/soc/atmel/atmel-i2s.c
-+++ b/sound/soc/atmel/atmel-i2s.c
-@@ -541,7 +541,7 @@ static struct snd_soc_dai_driver atmel_i2s_dai = {
- 		.formats = ATMEL_I2S_FORMATS,
- 	},
- 	.ops = &atmel_i2s_dai_ops,
--	.symmetric_rates = 1,
-+	.symmetric_rate = 1,
+diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
+index 7fd08fafa490..65bd39f5032d 100644
+--- a/sound/soc/au1x/i2sc.c
++++ b/sound/soc/au1x/i2sc.c
+@@ -210,7 +210,7 @@ static const struct snd_soc_dai_ops au1xi2s_dai_ops = {
  };
  
- static const struct snd_soc_component_driver atmel_i2s_component = {
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 04acc18f2d72..6d5ae18f8b38 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -859,8 +859,8 @@ static struct snd_soc_dai_driver mchp_i2s_mcc_dai = {
- 		.formats = MCHP_I2SMCC_FORMATS,
- 	},
- 	.ops = &mchp_i2s_mcc_dai_ops,
--	.symmetric_rates = 1,
--	.symmetric_samplebits = 1,
-+	.symmetric_rate = 1,
-+	.symmetric_sample_bits = 1,
- 	.symmetric_channels = 1,
- };
- 
+ static struct snd_soc_dai_driver au1xi2s_dai_driver = {
+-	.symmetric_rates	= 1,
++	.symmetric_rate		= 1,
+ 	.playback = {
+ 		.rates		= AU1XI2SC_RATES,
+ 		.formats	= AU1XI2SC_FMTS,
 -- 
 2.25.1
 
