@@ -2,96 +2,92 @@ Return-Path: <SRS0=73/o=GS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43811C433E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 14:04:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A5F1C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 14:04:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BC0CD23888
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 14:04:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC0CD23888
+	by mail.kernel.org (Postfix) with ESMTPS id 326E7208E4
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 14:04:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 326E7208E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B8D117C2;
-	Fri, 15 Jan 2021 15:03:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B8D117C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7C0817D3;
+	Fri, 15 Jan 2021 15:04:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7C0817D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610719453;
-	bh=IpbLHl8WrHHQID/tYoOU2h4F3pt+FBELHeCJZACyM5k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UPRb94XBp6RA4pjkLMyYImQM8mAaY5iVESKhwMOpJROfilRsClFUaZCiCKhr782og
-	 PrkmCI6VUfRqkE6xe/kEjFQwdvMg7xmXf2EKmku9X6j4AQ8n+KG7zbHIGgGf7wlWjb
-	 cPKv0yI87qkzXtv/DkTdeKTTkf4phAIsKmEiLNtA=
+	s=default; t=1610719493;
+	bh=t5fhaUfTDRVay1XP6tWxGd8h92Sd5Lg8YM77CuejEOM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EypSOQyJhwclicMuT4TYAFWKcthsWU3oFBBXXPK3iJR1kAEO0zu0JehN9dF0QZy5g
+	 U5+ULbicLZFMo2XxeSybCXVSX3MtbPN4/DQiIlNHAiCIMbt6A1dI3D3z2ltmd/x9eU
+	 y7LpAZ3qJYtelQq7OXD1WXsnTB7hfIezFn9rls14=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E570F804C3;
-	Fri, 15 Jan 2021 15:02:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA9BEF804D2;
+	Fri, 15 Jan 2021 15:02:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93140F8026B; Fri, 15 Jan 2021 15:02:18 +0100 (CET)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
+ id 5A675F80254; Fri, 15 Jan 2021 15:02:20 +0100 (CET)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F792F80254
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 15:02:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F792F80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCC74F8025F
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 15:02:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCC74F8025F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="esP6s1up"
-Received: by mail-lj1-x235.google.com with SMTP id f17so10444729ljg.12
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 06:02:08 -0800 (PST)
+ header.b="pIMnj0Ny"
+Received: by mail-lf1-x12a.google.com with SMTP id 23so13229304lfg.10
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 06:02:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=sAP+3CkhcyAzGSOOjeDge3bGII17aWYwDL7K0dtBg44=;
- b=esP6s1upDtlp2uQOrdq1lxKgaCueiDMX/Cduzlzb5LWZedBD0FYmJ7XmN/hYK+jOz5
- 55GRMimGODVhKTncYqiCRi5rHvZ189Idn9KaCvVpKNeP6JdPaaA1RC5dOUGjiEfxQ57Y
- 16AzaMSCuXU5lde4DqZ383S+jdeuLcJF2mJY3jYj4d0ZX3YAlbsooPwSSk5MV/my7pIX
- Ci0L8OfFpsEZDfC/tCkTUuAcXx43CghtQZ6JfZ49CLxfjDqnNurQSeVCv0ag1Z5nG0wx
- PP+Yn6jfPo+8jlCAZ4DDqtNFKjGRN5T4KSR5XjXFVyGJPelkwAC2TM9HX/xUwd+/1KTr
- JwFA==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1NsOkp9iBw88H+ZIyGf5qHZeJSQo1CPXWCUE5H26Igg=;
+ b=pIMnj0Ny2iVoIMGIgV4yaPUZg2T7Ozx6rPZDHqDTGpbe1qAB8ekyJzLZ8AEnr/HflK
+ goWt8UIldM1V0kyzcRw12jZoCcpNtosEdpbMK7D8GXOR4klIOJGyjKm/CpYM339gE145
+ hE2eVQBQOoYXc1jG3j1ykc02kMuyI+A4XnggEM7RxGsVNsIdlbdJVwQcxC7wWstoRSxa
+ pyojsYO7VG9/pg73ufpCOipJV5dvIv8ET5uBHd9SD7AZCyvEiETu8wGzjxL3IzLw7/Tb
+ A/Z6Xvr7ollvPvGk3591QRXFo9HCGK4IteUP+0W9TSu9JOF0jn8qEUSJmAc/FZ8GW0C6
+ dGoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=sAP+3CkhcyAzGSOOjeDge3bGII17aWYwDL7K0dtBg44=;
- b=BhoMeUrHoiTtCo3PK8bE8bN0ik39U1nqCkbFZT4bypgukw3i5roGcNf8Ge7E1mkpDG
- pFPWMrAtQ0V9t4ekjNsUiY++Nny/7ujR9GTMrVT0GxCBnzfrQVJfsLpTy6A1ULNsNPjF
- o0tCHYV5ILGrbtVLpeEzcmLPTWMG3WFzjT3QOVdbgvztAdZdcrUwqdjM2mzEMsmTum68
- 2UbEEPBbZ+J8tYQ+Mypdt/g/M6kreLYr05VW64RvmU/Nsx3h+2WKwGUZ+sj+O+3TtrkE
- HKInStMJaSh0kW+girQ2+8A+7VPnFuG18C2Un0Ru92DJgMojBI76vbH8dYF4LDHRKUQD
- QGaA==
-X-Gm-Message-State: AOAM533DJ2VZONwaerSLN4blouoMtBg/kPVubXqwcfam/3Jf63/HjU8z
- 6+x3urxXpCNPjjMAmWk3VAc=
-X-Google-Smtp-Source: ABdhPJwDsWHwKzdFGUfir57SjL+eIx0jVbGppz6E0440MAgbkTD8QUEuIhW4v5pg8TEZ1W0DSXi/yQ==
-X-Received: by 2002:a2e:8745:: with SMTP id q5mr5177200ljj.77.1610719327257;
- Fri, 15 Jan 2021 06:02:07 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=1NsOkp9iBw88H+ZIyGf5qHZeJSQo1CPXWCUE5H26Igg=;
+ b=mtPk3mkQ1jnctA46wuWD7c0QKpXms6tKV3OKqn6Mj4aCu/EMza8vTLnPDf0k993rj0
+ qTVxzR2iHYOPT+NumOKATWc2Woe11Ha/isuqFZcL3ARBAdU5w2LUYE0GolfEiGK+A0LY
+ nhP+Z8eWXQghtedZCj/4WO9BxFXlJkbY+3+Q7h3+0d2PBlkycupWZNSZYfwgguEo9z/3
+ iqFolnSGRpPejL7Pep4QSedGQAD6KAe9VfUJ4ba75hOHGZaYSqVkSKtypFmcrB6vciz5
+ +gdJPBsACMHuFqqbFAB2/unGYnOfj53UEWyLcj2EmLcCH/HFxnxFxRc8nVByfzopDOXp
+ h4FQ==
+X-Gm-Message-State: AOAM531QrqVgkMJLdw8qS4H3/ogJCdh1bjr0qudf5dIqvgh/jEXo1kLN
+ Hn09lrbyhUD/prL24LLx41o=
+X-Google-Smtp-Source: ABdhPJwqZrKQFdE/ox4izOJ8DbpPJvYBRbch14yPMzyXPyscXCSPnW1yhdL5OpAsDMfD9AfHyiNGgA==
+X-Received: by 2002:ac2:43a4:: with SMTP id t4mr5708194lfl.197.1610719323774; 
+ Fri, 15 Jan 2021 06:02:03 -0800 (PST)
 Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru.
  [109.252.192.57])
- by smtp.gmail.com with ESMTPSA id f132sm906852lfd.252.2021.01.15.06.02.06
+ by smtp.gmail.com with ESMTPSA id f132sm906852lfd.252.2021.01.15.06.02.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Jan 2021 06:02:06 -0800 (PST)
+ Fri, 15 Jan 2021 06:02:03 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Sameer Pujar <spujar@nvidia.com>,
  Peter Geis <pgwipeout@gmail.com>, Nicolas Chauvet <kwizart@gmail.com>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v2 4/5] ASoC: tegra: ahub: Use clk_bulk helpers
-Date: Fri, 15 Jan 2021 17:01:44 +0300
-Message-Id: <20210115140145.10668-5-digetx@gmail.com>
+Subject: [PATCH v2 0/5] Clock and reset improvements for Tegra ALSA drivers
+Date: Fri, 15 Jan 2021 17:01:40 +0300
+Message-Id: <20210115140145.10668-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210115140145.10668-1-digetx@gmail.com>
-References: <20210115140145.10668-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -111,89 +107,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use clk_bulk helpers to make code cleaner.
+This series improves the handling of clock and reset controls of
+NVIDA Tegra ALSA drivers. Tegra HDA and AHUB drivers aren't handling
+resets properly, which needs to be fixed in order to unblock other patches
+related to fixes of the reset controller driver since HDA/AHUB are bound
+to fail once reset controller driver will be corrected. In particular ALSA
+drivers are relying on implicit de-assertion of resets which is done by the
+tegra-clk driver. It's not the business of the clk driver to touch resets
+and we need to fix this because it breaks reset/clk programming sequences
+of other Tegra drivers.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_ahub.c | 30 +++++++-----------------------
- sound/soc/tegra/tegra30_ahub.h |  4 ++--
- 2 files changed, 9 insertions(+), 25 deletions(-)
+Changelog:
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 8bd3e83b2c3b..37a847569a40 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -45,8 +45,7 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 	regcache_cache_only(ahub->regmap_ahub, true);
- 
--	clk_disable_unprepare(ahub->clk_apbif);
--	clk_disable_unprepare(ahub->clk_d_audio);
-+	clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
- 
- 	return 0;
- }
-@@ -66,17 +65,9 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
--	ret = clk_prepare_enable(ahub->clk_d_audio);
--	if (ret) {
--		dev_err(dev, "clk_enable d_audio failed: %d\n", ret);
--		return ret;
--	}
--	ret = clk_prepare_enable(ahub->clk_apbif);
--	if (ret) {
--		dev_err(dev, "clk_enable apbif failed: %d\n", ret);
--		clk_disable(ahub->clk_d_audio);
-+	ret = clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
-+	if (ret)
- 		return ret;
--	}
- 
- 	regcache_cache_only(ahub->regmap_apbif, false);
- 	regcache_cache_only(ahub->regmap_ahub, false);
-@@ -509,19 +500,12 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	ahub->soc_data = soc_data;
- 	ahub->dev = &pdev->dev;
- 
--	ahub->clk_d_audio = devm_clk_get(&pdev->dev, "d_audio");
--	if (IS_ERR(ahub->clk_d_audio)) {
--		dev_err(&pdev->dev, "Can't retrieve ahub d_audio clock\n");
--		ret = PTR_ERR(ahub->clk_d_audio);
--		return ret;
--	}
-+	ahub->clocks[ahub->nclocks++].id = "apbif";
-+	ahub->clocks[ahub->nclocks++].id = "d_audio";
- 
--	ahub->clk_apbif = devm_clk_get(&pdev->dev, "apbif");
--	if (IS_ERR(ahub->clk_apbif)) {
--		dev_err(&pdev->dev, "Can't retrieve ahub apbif clock\n");
--		ret = PTR_ERR(ahub->clk_apbif);
-+	ret = devm_clk_bulk_get(&pdev->dev, ahub->nclocks, ahub->clocks);
-+	if (ret)
- 		return ret;
--	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs_apbif = devm_ioremap_resource(&pdev->dev, res0);
-diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
-index 5a2500b4ea06..063aed5037d7 100644
---- a/sound/soc/tegra/tegra30_ahub.h
-+++ b/sound/soc/tegra/tegra30_ahub.h
-@@ -510,8 +510,8 @@ struct tegra30_ahub_soc_data {
- struct tegra30_ahub {
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct device *dev;
--	struct clk *clk_d_audio;
--	struct clk *clk_apbif;
-+	struct clk_bulk_data clocks[2];
-+	unsigned int nclocks;
- 	resource_size_t apbif_addr;
- 	struct regmap *regmap_apbif;
- 	struct regmap *regmap_ahub;
+v2: - Added regcache_sync() to the "ahub: Reset hardware properly" patch,
+      which was missed by accident in v1.
+
+    - Corrected typo in the format of the error message in "ahub: Use
+      of_reset_control_array_get_exclusive()" patch by s/%p/%pe/.
+
+Dmitry Osipenko (5):
+  ALSA: hda/tegra: Use clk_bulk helpers
+  ALSA: hda/tegra: Reset hardware
+  ASoC: tegra: ahub: Use of_reset_control_array_get_exclusive()
+  ASoC: tegra: ahub: Use clk_bulk helpers
+  ASoC: tegra: ahub: Reset hardware properly
+
+ sound/pci/hda/hda_tegra.c      |  86 ++++++++-----------------
+ sound/soc/tegra/tegra30_ahub.c | 113 +++++++++------------------------
+ sound/soc/tegra/tegra30_ahub.h |   6 +-
+ 3 files changed, 59 insertions(+), 146 deletions(-)
+
 -- 
 2.29.2
 
