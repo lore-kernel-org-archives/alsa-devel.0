@@ -2,56 +2,56 @@ Return-Path: <SRS0=73/o=GS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE861C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 490ADC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A68C23117
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A68C23117
+	by mail.kernel.org (Postfix) with ESMTPS id 924AE2339E
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:55:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 924AE2339E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DB1C1723;
-	Fri, 15 Jan 2021 05:54:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DB1C1723
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13BEC173C;
+	Fri, 15 Jan 2021 05:54:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13BEC173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686530;
-	bh=HaddrgGjiMrsXMO9XslE53NTvm5AnLzJNnpPFZUVwNE=;
+	s=default; t=1610686545;
+	bh=tYoT6WMUATbL/ZWbykidaA8WMCL//7f16VkDDR7mMOk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kk7knfNIB3uGZxfgSEoSe1BeNLIHAjO9Inc5SsXyJetvKS9zccjvGzJ02MnM64XNU
-	 +K4X6B8BpGg3tIl2bmF5ZZtH6DlGchljFnyNAjBEgUU2EqsLOrTH5KicMRnrMDp4/r
-	 GlqjtczNKTUw8+QvPb8H1wNxKiXR/+CPKhGcCKFU=
+	b=DNDGdO3qclNtdePrSYM6Kogh9fqtxtz8a8An4+0uM6UePW1mitaoKkqq1mGAJLpml
+	 6UCu1aI6qczFm4mjz3Y9eGtl05EOUxkBSgqGIjDwnSCz4FwpG8293SVWVKksXIE/Sq
+	 zjy2heAWCtIsiCkospUY3LtrlFX9Fkp5C1NnNxOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A791F804E6;
-	Fri, 15 Jan 2021 05:53:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E02AEF804ED;
+	Fri, 15 Jan 2021 05:53:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1DA0F804E2; Fri, 15 Jan 2021 05:53:21 +0100 (CET)
+ id 5B655F804ED; Fri, 15 Jan 2021 05:53:32 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B97E7F804E1
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B97E7F804E1
-Date: 15 Jan 2021 13:53:18 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080336"
+ by alsa1.perex.cz (Postfix) with ESMTP id 0EA84F804E3
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EA84F804E3
+Date: 15 Jan 2021 13:53:23 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080338"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:18 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:23 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 402FC41A608F;
- Fri, 15 Jan 2021 13:53:18 +0900 (JST)
-Message-ID: <87sg72olij.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 9043141A608F;
+ Fri, 15 Jan 2021 13:53:23 +0900 (JST)
+Message-ID: <87r1mmolie.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 05/44] ASoC: au1x: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 06/44] ASoC: bcm: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,22 +87,38 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/au1x/i2sc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/bcm/bcm2835-i2s.c          | 4 ++--
+ sound/soc/bcm/bcm63xx-i2s-whistler.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
-index 7fd08fafa490..65bd39f5032d 100644
---- a/sound/soc/au1x/i2sc.c
-+++ b/sound/soc/au1x/i2sc.c
-@@ -210,7 +210,7 @@ static const struct snd_soc_dai_ops au1xi2s_dai_ops = {
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index c2f7631e8705..3d668f449bc1 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -783,8 +783,8 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 				| SNDRV_PCM_FMTBIT_S32_LE
+ 		},
+ 	.ops = &bcm2835_i2s_dai_ops,
+-	.symmetric_rates = 1,
+-	.symmetric_samplebits = 1,
++	.symmetric_rate = 1,
++	.symmetric_sample_bits = 1,
  };
  
- static struct snd_soc_dai_driver au1xi2s_dai_driver = {
--	.symmetric_rates	= 1,
-+	.symmetric_rate		= 1,
- 	.playback = {
- 		.rates		= AU1XI2SC_RATES,
- 		.formats	= AU1XI2SC_FMTS,
+ static bool bcm2835_i2s_volatile_reg(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/bcm/bcm63xx-i2s-whistler.c b/sound/soc/bcm/bcm63xx-i2s-whistler.c
+index 246a57ac6679..527caf430715 100644
+--- a/sound/soc/bcm/bcm63xx-i2s-whistler.c
++++ b/sound/soc/bcm/bcm63xx-i2s-whistler.c
+@@ -212,7 +212,7 @@ static struct snd_soc_dai_driver bcm63xx_i2s_dai = {
+ 		.formats = SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+ 	.ops = &bcm63xx_i2s_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ 	.symmetric_channels = 1,
+ };
+ 
 -- 
 2.25.1
 
