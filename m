@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED487C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C5B2C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:01:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4241523406
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:00:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4241523406
+	by mail.kernel.org (Postfix) with ESMTPS id EE3E622CBE
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:01:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE3E622CBE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2F8E1752;
-	Fri, 15 Jan 2021 06:00:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2F8E1752
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76045178C;
+	Fri, 15 Jan 2021 06:00:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76045178C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686852;
-	bh=1DvKU78wSdLzb1nsFnysybe7wqZy/LtV95cN5V5f2DY=;
+	s=default; t=1610686877;
+	bh=TeBUWFejAq5l2iKU6j+qCsDyDSPaN3jZupZBzTvacyo=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=on2iiQj25QyyZSGJK3aRWT/v/qvtS4VtLbfj9Uk+kKwb4fNOaDTn24+rBbbX5aZuM
-	 Ufx5xLu4uDtDKpA0ZRwynBY8lLj4/Ov/1fc9Qqgam2nFX4osDFpT+QdFRz2txwC48k
-	 Wnbpuub1iNoKzVIjYEkdYK5m+LOcFVeCrmjF37uk=
+	b=fjkk9mloXnQM3lsnkYuDDS61OzLx9S6oZAPDX9g/7qiwjbDEYZmSUMjT4V94nH4lV
+	 61YorhTkLKvOOebxXVsnQdk3Oa/tNdzHdKushKfziAbmtEi5FldUEqmnaB1p2QDYiU
+	 8mNeYSwzB5R5lLl3GxTQbI7UOGOgU7IP1Siujd80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16D2EF80553;
-	Fri, 15 Jan 2021 05:54:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4252F80557;
+	Fri, 15 Jan 2021 05:54:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 845ABF80525; Fri, 15 Jan 2021 05:54:31 +0100 (CET)
+ id 14CBEF80543; Fri, 15 Jan 2021 05:54:35 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5B37AF80534
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B37AF80534
-Date: 15 Jan 2021 13:54:21 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080432"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:21 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 965BDF80536
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 965BDF80536
+Date: 15 Jan 2021 13:54:29 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080441"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1D033401658E;
- Fri, 15 Jan 2021 13:54:21 +0900 (JST)
-Message-ID: <87a6taolgs.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5E92541A6658;
+ Fri, 15 Jan 2021 13:54:29 +0900 (JST)
+Message-ID: <877doeolgk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 18/44] ASoC: rt*: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 20/44] ASoC: tas*: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,86 +87,31 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/rt274.c  | 2 +-
- sound/soc/codecs/rt286.c  | 4 ++--
- sound/soc/codecs/rt298.c  | 4 ++--
- sound/soc/codecs/rt5670.c | 4 ++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/tas2764.c | 2 +-
+ sound/soc/codecs/tas2770.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index 70cf17c0aa99..0d3773c576f8 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -1056,7 +1056,7 @@ static struct snd_soc_dai_driver rt274_dai[] = {
- 			.formats = RT274_FORMATS,
+diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
+index 14a193e48dc7..8ff4d9e8d568 100644
+--- a/sound/soc/codecs/tas2764.c
++++ b/sound/soc/codecs/tas2764.c
+@@ -490,7 +490,7 @@ static struct snd_soc_dai_driver tas2764_dai_driver[] = {
+ 			.formats = TAS2764_FORMATS,
  		},
- 		.ops = &rt274_aif_dai_ops,
+ 		.ops = &tas2764_dai_ops,
 -		.symmetric_rates = 1,
 +		.symmetric_rate = 1,
  	},
  };
  
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 5fb9653d9131..8abe232ca4a4 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1017,7 +1017,7 @@ static struct snd_soc_dai_driver rt286_dai[] = {
- 			.formats = RT286_FORMATS,
+diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
+index a91a0a31e74d..15fca5109e14 100644
+--- a/sound/soc/codecs/tas2770.c
++++ b/sound/soc/codecs/tas2770.c
+@@ -499,7 +499,7 @@ static struct snd_soc_dai_driver tas2770_dai_driver[] = {
+ 			.formats    = TAS2770_FORMATS,
  		},
- 		.ops = &rt286_aif_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 	},
- 	{
- 		.name = "rt286-aif2",
-@@ -1037,7 +1037,7 @@ static struct snd_soc_dai_driver rt286_dai[] = {
- 			.formats = RT286_FORMATS,
- 		},
- 		.ops = &rt286_aif_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 	},
- 
- };
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index dc0273a5a11f..32cc9b6287d2 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -1084,7 +1084,7 @@ static struct snd_soc_dai_driver rt298_dai[] = {
- 			.formats = RT298_FORMATS,
- 		},
- 		.ops = &rt298_aif_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 	},
- 	{
- 		.name = "rt298-aif2",
-@@ -1104,7 +1104,7 @@ static struct snd_soc_dai_driver rt298_dai[] = {
- 			.formats = RT298_FORMATS,
- 		},
- 		.ops = &rt298_aif_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 	},
- 
- };
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index a0c8f58d729b..c29317ea5df2 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2741,7 +2741,7 @@ static struct snd_soc_dai_driver rt5670_dai[] = {
- 			.formats = RT5670_FORMATS,
- 		},
- 		.ops = &rt5670_aif_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 	},
- 	{
- 		.name = "rt5670-aif2",
-@@ -2761,7 +2761,7 @@ static struct snd_soc_dai_driver rt5670_dai[] = {
- 			.formats = RT5670_FORMATS,
- 		},
- 		.ops = &rt5670_aif_dai_ops,
+ 		.ops = &tas2770_dai_ops,
 -		.symmetric_rates = 1,
 +		.symmetric_rate = 1,
  	},
