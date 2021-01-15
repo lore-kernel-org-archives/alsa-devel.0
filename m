@@ -7,81 +7,81 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35B72C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 03:45:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D19FC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 03:46:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92F9221D95
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 03:45:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92F9221D95
+	by mail.kernel.org (Postfix) with ESMTPS id 36368221FD
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 03:46:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36368221FD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1650516E0;
-	Fri, 15 Jan 2021 04:44:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1650516E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AD2E16F7;
+	Fri, 15 Jan 2021 04:45:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AD2E16F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610682343;
-	bh=HPChyODOycgwQjwu3iaw34rKduy1AHV/7ZgFD8r0bMY=;
+	s=default; t=1610682386;
+	bh=cdA03ySb6CKYUpa8DOBv5+3JqjRThDbxdgqNJ+mZD5g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HRlbeh7aSj6pmqdSVRLO19pMlpyA/GYtVAtaBGlsKBwaE+CZdt5/3b8HhkgOMfiZW
-	 qFGDinsQaNMnYOyo4/dehC4JjcuL902OnR/rkBiZlEg400bttq3YBB4M4TaepjR/6+
-	 /E3b97MFQ83cr5rfnLlfW1QdOA48qGURMIi9ue+c=
+	b=sW8OpJDE2dAsr0Kp25XiAJb9I8GnT+yQj0P0wmDWDNgqzkaP1KOIA2rPbx2ikEh5E
+	 cYvOPFSPn+di1OEO3KsXk3XhyOH4dLPIdB2SziphG2Ija60urTr4Kh0B3Ppp62LNZk
+	 KJSwOXyPbthRpVzu/bkT3alvuvs5ZTsPrysZAmKY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56850F804B4;
-	Fri, 15 Jan 2021 04:43:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28758F804CB;
+	Fri, 15 Jan 2021 04:43:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81202F804B4; Fri, 15 Jan 2021 04:43:48 +0100 (CET)
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com
- [IPv6:2607:f8b0:4864:20::1033])
+ id 8CF0CF80134; Fri, 15 Jan 2021 04:43:48 +0100 (CET)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com
+ [IPv6:2607:f8b0:4864:20::62e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E1CBF8016D
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 04:43:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E1CBF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id F228DF80254
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 04:43:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F228DF80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="GJ5Qhb9s"
-Received: by mail-pj1-x1033.google.com with SMTP id my11so4860129pjb.1
- for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 19:43:33 -0800 (PST)
+ header.b="ULgpNlpg"
+Received: by mail-pl1-x62e.google.com with SMTP id r4so3995196pls.11
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2021 19:43:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=C6He9tPGs+/ws70kmAFtHlq88pmaEAaoR8SLKcK4SNg=;
- b=GJ5Qhb9slRBrvf9Om96+ZSgwwXop709x4reSxdwYFvhArCZ3JxK8K7CppeVFX1E93P
- iR9hC/FsprYlbJQiI4OXZmTUdzuVCPNGkW4/EPu7ozcWyhUoB1s3D5RlZmEgqz0CzEb3
- FIeIrmAMceMKjNeUuMEJhBRyPr8WrCBDqZkoY=
+ bh=s9PD4ybSHZrcBjqJdCoM6Loutk4FCNAKb8nE3vMhAu8=;
+ b=ULgpNlpghQ9NJjD5vXpJkCkxc5lpEZk+FKzDxjuV8U3gtUVPgS4zRvph+8sD0vuzHU
+ kQvyNzl5N3kMb/BVxk35jR/bz8moMQ5n3zKWW/F/acBIEglyH5B4zMCpZlXDCXfv1SOb
+ 9h8ceUKhgzwe8+Hym9qjEKTFdhJwMjbVNZKdk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=C6He9tPGs+/ws70kmAFtHlq88pmaEAaoR8SLKcK4SNg=;
- b=olxfONYO9F9ea1ZYCmM+uildCYYJjuGEtdpQmA7JxLOcHLbKPmhmRKMEIuhUxgO+95
- MYzLRRKnrj1wWPOxCdJVwHsTRfStTp6z24CLvTU3TDasAZ/iElNmkCDPmHlT1aMuPSyq
- /I/NaMPg++0YuZiVTeUfxZbPQfdp5/IfoCvExDpE3o5ovf0khNknnEtoA49QX+zDV4Hu
- S+ugpXne+tvCwzSgQFio3Q9zW/ovTqregXSZqvQ2c4CMCRl0MV8lnv8QIttIJIaeC+eq
- xBYz3tbOxevRdSSTJ407Pd1hUxucWYHrn1bBr/S6r6cxwBP/7e4MKulIy/H93RgtgSWl
- xWQA==
-X-Gm-Message-State: AOAM533i7Kl1HUi9mfGJ0f0d/UbgpfIjrmO0LzBz6El7XwDChLBD8l43
- 84K+15GvTmcg7em+fkjJo5fzlw==
-X-Google-Smtp-Source: ABdhPJyBWMQFKo0YFElvC/23fia/mMyG6g/vnSyuo284t516we9EDHsMfA3/PLuEvFZ8ZcHDB4FoPg==
-X-Received: by 2002:a17:90a:68ce:: with SMTP id
- q14mr8096304pjj.223.1610682210864; 
- Thu, 14 Jan 2021 19:43:30 -0800 (PST)
+ bh=s9PD4ybSHZrcBjqJdCoM6Loutk4FCNAKb8nE3vMhAu8=;
+ b=QG/YRSXOkawHuKdxzNLJVSas042XYuPrhMzTt0Eo8L2NGinlkbtclA8FHWvjXumzDE
+ TRnsR9eanFBW5TP8BdPz4PtFMpbDEAJw+E1hqu05k3YP/UqADcAiWyamGMcWmaz88LwR
+ H2iS1hsYwdEIFKn/ORL94HMGCDPUT9r0N+JQpIJRiwkbO4Tv6WeA1gWBoDGCnJs2R1F0
+ qcQlahMNSgPFAyzmTqztGF+jiC21K/Rxsst6f6atVBkYIfHugsZnh2Gt8wjwJjI6+Y4/
+ 4ePW1XcZ7Y0qggfZ876RuYrUtfAtNbUaBjSssqRnQqubwAI05V9BvyckqasZXdrrrRgX
+ qssQ==
+X-Gm-Message-State: AOAM533Q/4cNPjSW23DJRfXTePKmm4cppiV8uGfIv4ZEfQzKNTsQ/MTs
+ SZHEMzh5Ub9OvYNVqUaqDgGLCg==
+X-Google-Smtp-Source: ABdhPJxzUj6LzFxBo07BcRycwd7BfBvw0qIjiQ85/31Woj+IflcM3doIGxugpkX9nsBytclcZTlsrQ==
+X-Received: by 2002:a17:90a:4042:: with SMTP id
+ k2mr8498240pjg.160.1610682213617; 
+ Thu, 14 Jan 2021 19:43:33 -0800 (PST)
 Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
- by smtp.gmail.com with ESMTPSA id u12sm6499062pfh.98.2021.01.14.19.43.29
+ by smtp.gmail.com with ESMTPSA id u12sm6499062pfh.98.2021.01.14.19.43.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 Jan 2021 19:43:30 -0800 (PST)
+ Thu, 14 Jan 2021 19:43:33 -0800 (PST)
 From: Stephen Boyd <swboyd@chromium.org>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/4] ASoC: qcom: Remove useless debug print
-Date: Thu, 14 Jan 2021 19:43:24 -0800
-Message-Id: <20210115034327.617223-2-swboyd@chromium.org>
+Subject: [PATCH 3/4] ASoC: qcom: Stop casting away __iomem for error pointers
+Date: Thu, 14 Jan 2021 19:43:26 -0800
+Message-Id: <20210115034327.617223-4-swboyd@chromium.org>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 In-Reply-To: <20210115034327.617223-1-swboyd@chromium.org>
 References: <20210115034327.617223-1-swboyd@chromium.org>
@@ -109,32 +109,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This looks like a left over debug print that tells us that HDMI is
-enabled. Let's remove it as that's definitely not an error to have HDMI
-enabled.
+We don't need to cast away __iomem when testing with IS_ERR() or
+converting with PTR_ERR(). Modern sparse can handle this just fine.
+Drop it.
 
 Cc: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 Cc: Srinivasa Rao <srivasam@codeaurora.org>
 Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- sound/soc/qcom/lpass-cpu.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/qcom/lpass-cpu.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index af684fd19ab9..8437ba31a306 100644
+index 40126202a4a3..b267fe8db3fc 100644
 --- a/sound/soc/qcom/lpass-cpu.c
 +++ b/sound/soc/qcom/lpass-cpu.c
-@@ -742,7 +742,6 @@ static void of_lpass_cpu_parse_dai_data(struct device *dev,
+@@ -788,10 +788,10 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-lpaif");
+ 
+ 	drvdata->lpaif = devm_ioremap_resource(dev, res);
+-	if (IS_ERR((void const __force *)drvdata->lpaif)) {
++	if (IS_ERR(drvdata->lpaif)) {
+ 		dev_err(dev, "error mapping reg resource: %ld\n",
+-				PTR_ERR((void const __force *)drvdata->lpaif));
+-		return PTR_ERR((void const __force *)drvdata->lpaif);
++				PTR_ERR(drvdata->lpaif));
++		return PTR_ERR(drvdata->lpaif);
+ 	}
+ 
+ 	lpass_cpu_regmap_config.max_register = LPAIF_WRDMAPER_REG(variant,
+@@ -810,10 +810,10 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-hdmiif");
+ 
+ 		drvdata->hdmiif = devm_ioremap_resource(dev, res);
+-		if (IS_ERR((void const __force *)drvdata->hdmiif)) {
++		if (IS_ERR(drvdata->hdmiif)) {
+ 			dev_err(dev, "error mapping reg resource: %ld\n",
+-					PTR_ERR((void const __force *)drvdata->hdmiif));
+-			return PTR_ERR((void const __force *)drvdata->hdmiif);
++					PTR_ERR(drvdata->hdmiif));
++			return PTR_ERR(drvdata->hdmiif);
  		}
- 		if (id == LPASS_DP_RX) {
- 			data->hdmi_port_enable = 1;
--			dev_err(dev, "HDMI Port is enabled: %d\n", id);
- 		} else {
- 			data->mi2s_playback_sd_mode[id] =
- 				of_lpass_cpu_parse_sd_lines(dev, node,
+ 
+ 		lpass_hdmi_regmap_config.max_register = LPAIF_HDMI_RDMAPER_REG(variant,
 -- 
 https://chromeos.dev
 
