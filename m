@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE59BC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27CE6C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:08:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C60B423730
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:08:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C60B423730
+	by mail.kernel.org (Postfix) with ESMTPS id 6C00623730
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:08:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C00623730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E81517F0;
-	Fri, 15 Jan 2021 06:07:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E81517F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id D61D717E5;
+	Fri, 15 Jan 2021 06:07:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D61D717E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610687286;
-	bh=ppBf27mUZuqfkAS4n8sXtiMyP2Zr8y2DvE7ZU32SkQY=;
+	s=default; t=1610687305;
+	bh=nE3e4p9bCqhBi7l1J9jqiwQesNmsO9H23aJ/lEmyFr8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z/I5VLe4jsM2e22+nFNrgTg4PYHhN/2bdtfNdN25Qx0D3Q07Ilar7NYwWu8JIxvOI
-	 ogNxhE/jRlz3YzSEXQTOGS1AN7XBsRLas8Z2hzHbD/dSYD/+yEYPi7JOgW+VFgUSzj
-	 J7zPo//VIjeYyIciSECCSy63mHNij+ZHP3MAPr3U=
+	b=WfSp398No6ox0nXnvXT3y44oCHPhg9JHiYgFH8D69KDJ5bebodWXWyZF/KxntbjFN
+	 QOKkNlWbXHN6EmRljhTKR2W4r01Y5Wl+hBl/o41d8f3tDZsPhbLv2UFZsV6anAkkQq
+	 q/T6iyfLRl4KXKhelUoGLJo5KlqbPfbcbOqqWcqo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9E8BF805E6;
-	Fri, 15 Jan 2021 05:56:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DA16F804FE;
+	Fri, 15 Jan 2021 05:56:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B262F805ED; Fri, 15 Jan 2021 05:56:13 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 344B3F805E6
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:56:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 344B3F805E6
-Date: 15 Jan 2021 13:56:09 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080619"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:56:09 +0900
+ id 17C70F805EC; Fri, 15 Jan 2021 05:56:16 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 25B11F804FE
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:56:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25B11F804FE
+Date: 15 Jan 2021 13:56:12 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68861118"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:56:12 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D85BC401658E;
- Fri, 15 Jan 2021 13:56:08 +0900 (JST)
-Message-ID: <87h7nin6tc.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D073C41A78C7;
+ Fri, 15 Jan 2021 13:56:12 +0900 (JST)
+Message-ID: <87ft32n6t8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 38/44] ASoC: cx2072x: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 39/44] ASoC: inno_rk3036: sync parameter naming
+ (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,7 +75,6 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch syncs naming rule.
@@ -87,22 +87,22 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/cx2072x.c | 2 +-
+ sound/soc/codecs/inno_rk3036.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
-index 2f10991a8bdb..8ab22815c2c9 100644
---- a/sound/soc/codecs/cx2072x.c
-+++ b/sound/soc/codecs/cx2072x.c
-@@ -1572,7 +1572,7 @@ static struct snd_soc_dai_driver soc_codec_cx2072x_dai[] = {
- 			.formats = CX2072X_FORMATS,
+diff --git a/sound/soc/codecs/inno_rk3036.c b/sound/soc/codecs/inno_rk3036.c
+index 4dbce24c5f76..e05c4f27486e 100644
+--- a/sound/soc/codecs/inno_rk3036.c
++++ b/sound/soc/codecs/inno_rk3036.c
+@@ -325,7 +325,7 @@ static struct snd_soc_dai_driver rk3036_codec_dai_driver[] = {
+ 			.formats = RK3036_CODEC_FMTS,
  		},
- 		.ops = &cx2072x_dai_ops,
+ 		.ops = &rk3036_codec_dai_ops,
 -		.symmetric_rates = 1,
 +		.symmetric_rate = 1,
  	},
- 	{ /* plabayck only, return echo reference to Conexant DSP chip */
- 		.name = "cx2072x-dsp",
+ };
+ 
 -- 
 2.25.1
 
