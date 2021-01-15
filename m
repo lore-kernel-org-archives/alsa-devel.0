@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E7B1C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:07:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B3FCC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:07:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6715623772
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:07:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6715623772
+	by mail.kernel.org (Postfix) with ESMTPS id EC2C923730
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:07:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC2C923730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4771170E;
-	Fri, 15 Jan 2021 06:06:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4771170E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BB0B17E5;
+	Fri, 15 Jan 2021 06:06:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BB0B17E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610687223;
-	bh=k1iVo6wAGtiRN7zdZXZ8QS4w7t18DaxNx4yTQgIOWgo=;
+	s=default; t=1610687241;
+	bh=P/nDrVGtmSpljW+cq0waWF12vftlhiEbuU8bpp/LG54=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y11gsUVmbOzm6vWhW+Y9kYQVHkFRipwZo1sXwyWmQ/oy9nCyo79FEuiMtdEr3pl8f
-	 xCKIqBRvsrLNZc/0Eglft4lPqMDFZT4V/3ukryALmTcXB/CMjcZ2jLXbXrfWLPLEKt
-	 lazlCVYxGpo/jxHxzgeVFCYvlpHWfrMiFYDh8U+k=
+	b=EOVYQ24lmY2ZmW9HuOlmhvnfWQqK++hGUi74icKnnGvEGkodyyWmzxu/R21hEPX6f
+	 yQmjwnFKqdvqqOLBV5DIUsv6EDmVJz06tI4S4sykMn86FY1ak9ILOaBC/Um/fa6V44
+	 s2lWGRVj0tdxqWASvqiSFP4DgjXGrau9hEjvGYDw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21C45F805E2;
-	Fri, 15 Jan 2021 05:56:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77C60F805E4;
+	Fri, 15 Jan 2021 05:56:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4DF6F804E3; Fri, 15 Jan 2021 05:56:04 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 077C7F805D8
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:55:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 077C7F805D8
-Date: 15 Jan 2021 13:55:56 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080594"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:55:56 +0900
+ id 8F546F804E3; Fri, 15 Jan 2021 05:56:08 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E885CF805D9
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:56:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E885CF805D9
+Date: 15 Jan 2021 13:56:00 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68861095"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:56:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 85CFD401658C;
- Fri, 15 Jan 2021 13:55:56 +0900 (JST)
-Message-ID: <87lfcun6tp.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A398641A78B9;
+ Fri, 15 Jan 2021 13:56:00 +0900 (JST)
+Message-ID: <87k0sen6tl.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 35/44] ASoC: lochnagar-sc: sync parameter naming
- (rate/sample_bits)
+Subject: [PATCH 36/44] ASoC: ab8500: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,6 +74,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch syncs naming rule.
@@ -87,44 +87,29 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/lochnagar-sc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/ab8500-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/lochnagar-sc.c b/sound/soc/codecs/lochnagar-sc.c
-index 3209b39e46af..54426a90bc0b 100644
---- a/sound/soc/codecs/lochnagar-sc.c
-+++ b/sound/soc/codecs/lochnagar-sc.c
-@@ -166,8 +166,8 @@ static struct snd_soc_dai_driver lochnagar_sc_dai[] = {
- 			.formats = SNDRV_PCM_FMTBIT_S32_LE,
+diff --git a/sound/soc/codecs/ab8500-codec.c b/sound/soc/codecs/ab8500-codec.c
+index 31a8c4162d20..c95f007cede1 100644
+--- a/sound/soc/codecs/ab8500-codec.c
++++ b/sound/soc/codecs/ab8500-codec.c
+@@ -2384,7 +2384,7 @@ static struct snd_soc_dai_driver ab8500_codec_dai[] = {
+ 			.formats = AB8500_SUPPORTED_FMT,
  		},
- 		.ops = &lochnagar_sc_line_ops,
--		.symmetric_rates = true,
--		.symmetric_samplebits = true,
-+		.symmetric_rate = true,
-+		.symmetric_sample_bits = true,
+ 		.ops = &ab8500_codec_ops,
+-		.symmetric_rates = 1
++		.symmetric_rate = 1
  	},
  	{
- 		.name = "lochnagar-usb1",
-@@ -186,8 +186,8 @@ static struct snd_soc_dai_driver lochnagar_sc_dai[] = {
- 			.formats = SNDRV_PCM_FMTBIT_S32_LE,
+ 		.name = "ab8500-codec-dai.1",
+@@ -2397,7 +2397,7 @@ static struct snd_soc_dai_driver ab8500_codec_dai[] = {
+ 			.formats = AB8500_SUPPORTED_FMT,
  		},
- 		.ops = &lochnagar_sc_usb_ops,
--		.symmetric_rates = true,
--		.symmetric_samplebits = true,
-+		.symmetric_rate = true,
-+		.symmetric_sample_bits = true,
- 	},
- 	{
- 		.name = "lochnagar-usb2",
-@@ -206,8 +206,8 @@ static struct snd_soc_dai_driver lochnagar_sc_dai[] = {
- 			.formats = SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &lochnagar_sc_usb_ops,
--		.symmetric_rates = true,
--		.symmetric_samplebits = true,
-+		.symmetric_rate = true,
-+		.symmetric_sample_bits = true,
- 	},
+ 		.ops = &ab8500_codec_ops,
+-		.symmetric_rates = 1
++		.symmetric_rate = 1
+ 	}
  };
  
 -- 
