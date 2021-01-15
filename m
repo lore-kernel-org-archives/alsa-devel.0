@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D2E5C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA1E2C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:58:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56A8223406
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56A8223406
+	by mail.kernel.org (Postfix) with ESMTPS id 30DFF23406
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:58:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30DFF23406
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAE9F170A;
-	Fri, 15 Jan 2021 05:56:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAE9F170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A07931711;
+	Fri, 15 Jan 2021 05:57:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A07931711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686667;
-	bh=euxzdKKqN6uwEno8NGgOY0qTpWbgTdbJt70vOL8GwQc=;
+	s=default; t=1610686691;
+	bh=gWPupn3GTWGM7hgEmPmyyDmcu4ucFUnvDkrmcSi7MAk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QjQReJ+jozVg8/DsYYfalKyfpFHOeGFV0uUnSvm93jMAcC/Z1v81wZRYFUuCHsxHJ
-	 lsudpj0bdELqdvT6tsq7jHeklzrx5jfpd3lQwwEqAp/RsrfCmQIIfvUhVS9bsk+uWY
-	 fN6fKdEjJel970mXv10+nyukp1tC2SEheizHr9fc=
+	b=WnbLvHDY/5yCQuJ2o+TGJyo0pSnUyKKJE9+A2GlSzZo+eZOiAYm/JBEyvfF9T8+Lf
+	 57pVVPtpFs/5KDBptO6YBix9WbLfXIdVQbtiT9xQca/149JAAxWT2bOZfWOpVHRFg1
+	 GklN2YfPk4AP7wmczNaUQbKwMG8cgivIYGKgk4uU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 169DDF8026D;
-	Fri, 15 Jan 2021 05:53:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7767F804CB;
+	Fri, 15 Jan 2021 05:54:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00430F80510; Fri, 15 Jan 2021 05:53:56 +0100 (CET)
+ id C389FF8026B; Fri, 15 Jan 2021 05:54:02 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id C4896F80515
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4896F80515
-Date: 15 Jan 2021 13:53:49 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080380"
+ by alsa1.perex.cz (Postfix) with ESMTP id 2D80CF80254
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D80CF80254
+Date: 15 Jan 2021 13:53:53 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080389"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:49 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:53 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4AF4B41A608F;
- Fri, 15 Jan 2021 13:53:49 +0900 (JST)
-Message-ID: <87k0seolho.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A8A2141A6658;
+ Fri, 15 Jan 2021 13:53:53 +0900 (JST)
+Message-ID: <87im7yolhk.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 11/44] ASoC: sh: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 12/44] ASoC: ti: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,24 +87,22 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/rcar/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/ti/davinci-mcasp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 6e670b3e92a0..c405bf3b4c99 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1320,8 +1320,8 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index 6247ec3d3a09..b94220306d1a 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -1641,7 +1641,7 @@ static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
+ 		},
+ 		.ops 		= &davinci_mcasp_dai_ops,
  
- 	if (rsnd_ssi_is_pin_sharing(io_capture) ||
- 	    rsnd_ssi_is_pin_sharing(io_playback)) {
--		/* should have symmetric_rates if pin sharing */
--		drv->symmetric_rates = 1;
-+		/* should have symmetric_rate if pin sharing */
-+		drv->symmetric_rate = 1;
- 	}
- 
- 	dev_dbg(dev, "%s (%s/%s)\n", rdai->name,
+-		.symmetric_rates	= 1,
++		.symmetric_rate		= 1,
+ 	},
+ 	{
+ 		.name		= "davinci-mcasp.1",
 -- 
 2.25.1
 
