@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49DE1C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80084C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A003C23A34
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:56:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A003C23A34
+	by mail.kernel.org (Postfix) with ESMTPS id D7A1823730
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7A1823730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 119BD1740;
-	Fri, 15 Jan 2021 05:55:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 119BD1740
+	by alsa0.perex.cz (Postfix) with ESMTPS id 251B3174A;
+	Fri, 15 Jan 2021 05:56:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 251B3174A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686591;
-	bh=wiO2FBCmozYnM3RHaRdnRzP3GLuVRpyxi1ppKbnuUx8=;
+	s=default; t=1610686625;
+	bh=Utwv094G7Ka3//dfL36rS0QFpwNm0vwhmxSaL+Pqvic=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PiqPOh5MfD/kbEiKRkpApNLt7JFNrB6DBeRUkGoxJJPp2HHcOS3FJo7YLfKIvrZ0M
-	 WEIn85iZH8e7BQTbelZZW6rfTVORZItNq2nCbi+uW5jON8UbboYzN2Sgy0fhgQHmsC
-	 5WxhOhZx30f7wPHZ5hRMMP9fbWGQ01RLWEt37YZI=
+	b=h66DtLHDBbuMvE94nuWw7VJdei3MNeW+sfpGPSH7iTsl4Jv3oAlj16Wf4Pp+7Tuad
+	 H3FXsUwukfXtRhiz/NsPYD3nxwbuzGZPhSJh8tQ7yT4U58E9kR9zQ6B6ksrhWukknP
+	 cijJUmx4cOfU1VN6aKuOnG4W6BjI3wtezhJ/ICdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FDD0F804FC;
-	Fri, 15 Jan 2021 05:53:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA9FBF80506;
+	Fri, 15 Jan 2021 05:53:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E6A9F804F3; Fri, 15 Jan 2021 05:53:37 +0100 (CET)
+ id 7F7EAF80507; Fri, 15 Jan 2021 05:53:41 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D99EFF804EC
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D99EFF804EC
-Date: 15 Jan 2021 13:53:33 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080348"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:33 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id BED1FF804FE
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BED1FF804FE
+Date: 15 Jan 2021 13:53:38 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080356"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 56CCE401658C;
- Fri, 15 Jan 2021 13:53:33 +0900 (JST)
-Message-ID: <87o8hqoli4.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4F61E41A6629;
+ Fri, 15 Jan 2021 13:53:38 +0900 (JST)
+Message-ID: <87mtxaolhz.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 08/44] ASoC: tegra: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 09/44] ASoC: rockchip: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,7 +74,6 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch syncs naming rule.
@@ -87,78 +86,36 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/tegra/tegra186_dspk.c | 2 +-
- sound/soc/tegra/tegra20_i2s.c   | 2 +-
- sound/soc/tegra/tegra210_dmic.c | 2 +-
- sound/soc/tegra/tegra210_i2s.c  | 2 +-
- sound/soc/tegra/tegra30_i2s.c   | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 2 +-
+ sound/soc/rockchip/rockchip_pdm.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra186_dspk.c b/sound/soc/tegra/tegra186_dspk.c
-index 7d9948fb2ca7..8ee9a77bd83d 100644
---- a/sound/soc/tegra/tegra186_dspk.c
-+++ b/sound/soc/tegra/tegra186_dspk.c
-@@ -217,7 +217,7 @@ static struct snd_soc_dai_driver tegra186_dspk_dais[] = {
- 			   SNDRV_PCM_FMTBIT_S32_LE,
- 	    },
- 	    .ops = &tegra186_dspk_dai_ops,
--	    .symmetric_rates = 1,
-+	    .symmetric_rate = 1,
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 662de86eca11..0740764e7f71 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -471,7 +471,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+ 			    SNDRV_PCM_FMTBIT_S32_LE),
  	},
- };
- 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index 005fc4e645aa..d7a3d046c8f8 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -260,7 +260,7 @@ static const struct snd_soc_dai_driver tegra20_i2s_dai_template = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.ops = &tegra20_i2s_dai_ops,
+ 	.ops = &rockchip_i2s_dai_ops,
 -	.symmetric_rates = 1,
 +	.symmetric_rate = 1,
  };
  
- static const struct snd_soc_component_driver tegra20_i2s_component = {
-diff --git a/sound/soc/tegra/tegra210_dmic.c b/sound/soc/tegra/tegra210_dmic.c
-index ead2c99bf72e..b096478cd2ef 100644
---- a/sound/soc/tegra/tegra210_dmic.c
-+++ b/sound/soc/tegra/tegra210_dmic.c
-@@ -228,7 +228,7 @@ static struct snd_soc_dai_driver tegra210_dmic_dais[] = {
- 				   SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &tegra210_dmic_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
+ static const struct snd_soc_component_driver rockchip_i2s_component = {
+diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
+index e5f732747f71..9295d648624e 100644
+--- a/sound/soc/rockchip/rockchip_pdm.c
++++ b/sound/soc/rockchip/rockchip_pdm.c
+@@ -338,7 +338,7 @@ static struct snd_soc_dai_driver rockchip_pdm_dai = {
+ 		.formats = ROCKCHIP_PDM_FORMATS,
  	},
- };
- 
-diff --git a/sound/soc/tegra/tegra210_i2s.c b/sound/soc/tegra/tegra210_i2s.c
-index ca31ec92e508..45f31ccb49d8 100644
---- a/sound/soc/tegra/tegra210_i2s.c
-+++ b/sound/soc/tegra/tegra210_i2s.c
-@@ -577,7 +577,7 @@ static struct snd_soc_dai_driver tegra210_i2s_dais[] = {
- 				SNDRV_PCM_FMTBIT_S32_LE,
- 		},
- 		.ops = &tegra210_i2s_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 	},
- };
- 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index db5a8587bfa4..6740df541508 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -316,7 +316,7 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.ops = &tegra30_i2s_dai_ops,
+ 	.ops = &rockchip_pdm_dai_ops,
 -	.symmetric_rates = 1,
 +	.symmetric_rate = 1,
  };
  
- static const struct snd_soc_component_driver tegra30_i2s_component = {
+ static const struct snd_soc_component_driver rockchip_pdm_component = {
 -- 
 2.25.1
 
