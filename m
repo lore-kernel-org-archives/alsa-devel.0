@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80084C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6878FC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D7A1823730
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D7A1823730
+	by mail.kernel.org (Postfix) with ESMTPS id B435B23406
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:57:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B435B23406
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 251B3174A;
-	Fri, 15 Jan 2021 05:56:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 251B3174A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34E9516FA;
+	Fri, 15 Jan 2021 05:56:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34E9516FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686625;
-	bh=Utwv094G7Ka3//dfL36rS0QFpwNm0vwhmxSaL+Pqvic=;
+	s=default; t=1610686639;
+	bh=RTr+StdVPUz/3GiSIQQniDyTGzbkGM72snTTmtBPB3s=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h66DtLHDBbuMvE94nuWw7VJdei3MNeW+sfpGPSH7iTsl4Jv3oAlj16Wf4Pp+7Tuad
-	 H3FXsUwukfXtRhiz/NsPYD3nxwbuzGZPhSJh8tQ7yT4U58E9kR9zQ6B6ksrhWukknP
-	 cijJUmx4cOfU1VN6aKuOnG4W6BjI3wtezhJ/ICdA=
+	b=uBISLdqUHHg5grosn9yEzazOmQX3mw2UQGX+WEF+xIjDm6VoJ6cXh6I0+3ielWElz
+	 YZk9nh2VnK3iHnb+gUGl7UbDpOVNwohaqpLefGjXfPYJUa15ULsefZKiCAAE8nkXCm
+	 XvaxQrwXMF/sS/qs+9tk+u02hdAsFDT7745VFEzw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA9FBF80506;
-	Fri, 15 Jan 2021 05:53:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CADE3F8050F;
+	Fri, 15 Jan 2021 05:53:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F7EAF80507; Fri, 15 Jan 2021 05:53:41 +0100 (CET)
+ id DBF36F80507; Fri, 15 Jan 2021 05:53:47 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id BED1FF804FE
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BED1FF804FE
-Date: 15 Jan 2021 13:53:38 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080356"
+ by alsa1.perex.cz (Postfix) with ESMTP id 9B4D6F804FF
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4D6F804FF
+Date: 15 Jan 2021 13:53:43 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080363"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:38 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:43 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4F61E41A6629;
- Fri, 15 Jan 2021 13:53:38 +0900 (JST)
-Message-ID: <87mtxaolhz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2B85C41A608F;
+ Fri, 15 Jan 2021 13:53:43 +0900 (JST)
+Message-ID: <87lfcuolhu.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 09/44] ASoC: rockchip: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 10/44] ASoC: samsung: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,6 +74,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch syncs naming rule.
@@ -86,36 +87,36 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 2 +-
- sound/soc/rockchip/rockchip_pdm.c | 2 +-
+ sound/soc/samsung/i2s.c | 2 +-
+ sound/soc/samsung/pcm.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 662de86eca11..0740764e7f71 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -471,7 +471,7 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
- 			    SNDRV_PCM_FMTBIT_S32_LE),
- 	},
- 	.ops = &rockchip_i2s_dai_ops,
--	.symmetric_rates = 1,
-+	.symmetric_rate = 1,
- };
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 4bdc268fd981..b043183174b2 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1175,7 +1175,7 @@ static int i2s_alloc_dais(struct samsung_i2s_priv *priv,
+ 		dai_drv->probe = samsung_i2s_dai_probe;
+ 		dai_drv->remove = samsung_i2s_dai_remove;
  
- static const struct snd_soc_component_driver rockchip_i2s_component = {
-diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index e5f732747f71..9295d648624e 100644
---- a/sound/soc/rockchip/rockchip_pdm.c
-+++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -338,7 +338,7 @@ static struct snd_soc_dai_driver rockchip_pdm_dai = {
- 		.formats = ROCKCHIP_PDM_FORMATS,
- 	},
- 	.ops = &rockchip_pdm_dai_ops,
--	.symmetric_rates = 1,
-+	.symmetric_rate = 1,
- };
+-		dai_drv->symmetric_rates = 1;
++		dai_drv->symmetric_rate = 1;
+ 		dai_drv->ops = &samsung_i2s_dai_ops;
  
- static const struct snd_soc_component_driver rockchip_pdm_component = {
+ 		dai_drv->playback.channels_min = 1;
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index 6f50c7b47326..bfd76e9cc0ca 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -452,7 +452,7 @@ static int s3c_pcm_dai_probe(struct snd_soc_dai *dai)
+ #define S3C_PCM_RATES  SNDRV_PCM_RATE_8000_96000
+ 
+ #define S3C_PCM_DAI_DECLARE			\
+-	.symmetric_rates = 1,					\
++	.symmetric_rate = 1,					\
+ 	.probe = s3c_pcm_dai_probe,				\
+ 	.ops = &s3c_pcm_dai_ops,				\
+ 	.playback = {						\
 -- 
 2.25.1
 
