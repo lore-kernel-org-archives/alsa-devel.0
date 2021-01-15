@@ -2,56 +2,56 @@ Return-Path: <SRS0=73/o=GS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37D8DC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:03:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6561AC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:04:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92B9523730
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:03:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92B9523730
+	by mail.kernel.org (Postfix) with ESMTPS id 9A0B823730
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:04:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A0B823730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 154F81780;
-	Fri, 15 Jan 2021 06:02:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 154F81780
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2786117B0;
+	Fri, 15 Jan 2021 06:03:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2786117B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610687015;
-	bh=CsZg2KHD4H8K6s/mFV+OppCOglLjdpCWo9HQ90E42WQ=;
+	s=default; t=1610687039;
+	bh=gMhXfROXT3O/PrG6C8cC5gumtgbvJkW2KdNksa7YW3o=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eTUH3wml5FRkOsjIrRb4Hf/lZR8fmIQz7JS4vUeWC4wNz8PamWYJgRLmjjcLLq7iR
-	 g6r8usVC+0ar7mp87N6O3J0nRB3Q9197qOhMkKWwjW9O45wYXD+cKaDRyoBorPsl8Z
-	 Uiw3v8XKyfM2+rp+dzVsMJpIbPHI6zeyrbNO2YRc=
+	b=KtI8dwiBxYYoJaO+dBBFKyltc0j9Jhl270muDfJEM9wlO22P0nf6o3crBWQW3TAaG
+	 gfan7dqAk13Lv4RvafkOlC5HQPOgX4ol0ou/xBiQYc10fc1pAgEvhEPUV8t4uCDtZy
+	 a0efexOp4DbB4AGS33ODMERD6tb4yeW9g68MkIqY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50587F805AA;
-	Fri, 15 Jan 2021 05:55:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1834AF804DF;
+	Fri, 15 Jan 2021 05:55:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C77EF8058C; Fri, 15 Jan 2021 05:55:03 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 8822BF80571
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8822BF80571
-Date: 15 Jan 2021 13:54:52 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68860972"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:52 +0900
+ id 7FA02F804DF; Fri, 15 Jan 2021 05:55:29 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 42871F80588
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:55:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42871F80588
+Date: 15 Jan 2021 13:55:20 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080536"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:55:20 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8866F401658E;
- Fri, 15 Jan 2021 13:54:52 +0900 (JST)
-Message-ID: <87zh1an6vh.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DE93841A78AF;
+ Fri, 15 Jan 2021 13:55:20 +0900 (JST)
+Message-ID: <87v9byn6uo.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 25/44] ASoC: tscs*: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 28/44] ASoC: jz4740: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,64 +87,34 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/tscs42xx.c |  4 ++--
- sound/soc/codecs/tscs454.c  | 12 ++++++------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/jz4740.c     | 2 +-
+ sound/soc/jz4740/jz4740-i2s.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index 6200fab7896f..fb861baf50e8 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -1397,9 +1397,9 @@ static struct snd_soc_dai_driver tscs42xx_dai = {
- 		.rates = TSCS42XX_RATES,
- 		.formats = TSCS42XX_FORMATS,},
- 	.ops = &tscs42xx_dai_ops,
+diff --git a/sound/soc/codecs/jz4740.c b/sound/soc/codecs/jz4740.c
+index 5e58bfee2b49..081485f784e9 100644
+--- a/sound/soc/codecs/jz4740.c
++++ b/sound/soc/codecs/jz4740.c
+@@ -214,7 +214,7 @@ static struct snd_soc_dai_driver jz4740_codec_dai = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8,
+ 	},
+ 	.ops = &jz4740_codec_dai_ops,
 -	.symmetric_rates = 1,
 +	.symmetric_rate = 1,
- 	.symmetric_channels = 1,
--	.symmetric_samplebits = 1,
-+	.symmetric_sample_bits = 1,
  };
  
- static const struct reg_sequence tscs42xx_patch[] = {
-diff --git a/sound/soc/codecs/tscs454.c b/sound/soc/codecs/tscs454.c
-index cd1f1a592386..1bafc9d1101c 100644
---- a/sound/soc/codecs/tscs454.c
-+++ b/sound/soc/codecs/tscs454.c
-@@ -3346,9 +3346,9 @@ static struct snd_soc_dai_driver tscs454_dais[] = {
- 			.rates = TSCS454_RATES,
- 			.formats = TSCS454_FORMATS,},
- 		.ops = &tscs454_dai1_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 		.symmetric_channels = 1,
--		.symmetric_samplebits = 1,
-+		.symmetric_sample_bits = 1,
+ static void jz4740_codec_wakeup(struct regmap *regmap)
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index 0a68f4c3d15a..52ba0e3a9e95 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -455,7 +455,7 @@ static struct snd_soc_dai_driver jz4740_i2s_dai = {
+ 		.rates = SNDRV_PCM_RATE_8000_48000,
+ 		.formats = JZ4740_I2S_FMTS,
  	},
- 	{
- 		.name = "tscs454-dai2",
-@@ -3366,9 +3366,9 @@ static struct snd_soc_dai_driver tscs454_dais[] = {
- 			.rates = TSCS454_RATES,
- 			.formats = TSCS454_FORMATS,},
- 		.ops = &tscs454_dai23_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 		.symmetric_channels = 1,
--		.symmetric_samplebits = 1,
-+		.symmetric_sample_bits = 1,
- 	},
- 	{
- 		.name = "tscs454-dai3",
-@@ -3386,9 +3386,9 @@ static struct snd_soc_dai_driver tscs454_dais[] = {
- 			.rates = TSCS454_RATES,
- 			.formats = TSCS454_FORMATS,},
- 		.ops = &tscs454_dai23_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
- 		.symmetric_channels = 1,
--		.symmetric_samplebits = 1,
-+		.symmetric_sample_bits = 1,
- 	},
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ 	.ops = &jz4740_i2s_dai_ops,
  };
  
 -- 
