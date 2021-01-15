@@ -3,66 +3,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A2A6C433E9
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:17:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30BC1C43381
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:19:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2A5D23603
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:17:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2A5D23603
+	by mail.kernel.org (Postfix) with ESMTPS id 6E37923730
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:19:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6E37923730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD68E179D;
-	Fri, 15 Jan 2021 11:16:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD68E179D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C3761793;
+	Fri, 15 Jan 2021 11:18:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C3761793
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610705854;
-	bh=Torf4sJ0Uaad3FlIhP4EtGY4Uq/n8KIH7XRyO1zqPS8=;
+	s=default; t=1610705981;
+	bh=m5jTTOB+tdoP/Apfvjjtunxhw0ygb8tmyITVtwAE9HU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m/1HldqTaMH/h2MEcrUJJuTRp7kwhhP0DEh+gV7RphXVDe5jz8CDImM/ja4TI9eQn
-	 Wme7rleTzYWPDL/plF0TH/OXg3yINVjqUqTIKURkPrxZOurr9BYX3/xztCON48DzjD
-	 95RsUQPOkjjSrNIMKNib7f9i/fri3EOnhkwerK5k=
+	b=QoGepPFJrXCBq2uXWT26hD/Dq+kyi5eXkYnKq4miXBmB+3WI0UI/SmgTRwEDJLHms
+	 x7zh8mrKmE+IQMLKi2WoxpC/7vmoc/fct9p0XTeqwBt/iMh8A9lGxgIZof8obWcy4B
+	 xDCYZO5DTuL2WXIktaJPEntsoNUH0rE4yISMXiew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A078F8025F;
-	Fri, 15 Jan 2021 11:16:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7686F8016D;
+	Fri, 15 Jan 2021 11:18:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 617FDF8026B; Fri, 15 Jan 2021 11:16:31 +0100 (CET)
+ id 11132F801ED; Fri, 15 Jan 2021 11:18:49 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3120DF80254
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 11:16:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3120DF80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2AA27F80132
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 11:18:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AA27F80132
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C7000AE12;
- Fri, 15 Jan 2021 10:16:24 +0000 (UTC)
-Date: Fri, 15 Jan 2021 11:16:24 +0100
-Message-ID: <s5hft32mrnr.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id C1FE4B809;
+ Fri, 15 Jan 2021 10:18:45 +0000 (UTC)
+Date: Fri, 15 Jan 2021 11:18:45 +0100
+Message-ID: <s5heeimmrju.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
-Subject: Re: [PATCH] ALSA: hda: Add Cometlake-R PCI ID
-In-Reply-To: <20210115031515.13100-1-kaichuan.hsieh@canonical.com>
-References: <20210115031515.13100-1-kaichuan.hsieh@canonical.com>
+To: Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [PATCH v1 0/5] Clock and reset improvements for Tegra ALSA drivers
+In-Reply-To: <20210112125834.21545-1-digetx@gmail.com>
+References: <20210112125834.21545-1-digetx@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
- kai.heng.feng@canonical.com, rppt@kernel.org
+Cc: alsa-devel@alsa-project.org, Nicolas Chauvet <kwizart@gmail.com>,
+ linux-kernel@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
+ Takashi Iwai <tiwai@suse.com>, Jonathan Hunter <jonathanh@nvidia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Peter Geis <pgwipeout@gmail.com>,
+ linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,15 +78,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Jan 2021 04:15:15 +0100,
-Kai-Chuan Hsieh wrote:
+On Tue, 12 Jan 2021 13:58:29 +0100,
+Dmitry Osipenko wrote:
 > 
-> Add HD Audio Device PCI ID for the Intel Cometlake-R platform
+> This series improves the handling of clock and reset controls of
+> NVIDA Tegra ALSA drivers. Tegra HDA and AHUB drivers aren't handling
+> resets properly, which needs to be fixed in order to unblock other patches
+> related to fixes on the reset controller driver since HDA/AHUB are bound
+> to fail once reset controller driver will be corrected. In particular ALSA
+> drivers are relying on implicit de-assertion of resets which is done by the
+> tegra-clk driver. It's not the business of the clk driver to touch resets
+> and we need to fix this because it breaks reset/clk programming sequences
+> of other Tegra drivers.
 > 
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Signed-off-by: Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
+> Dmitry Osipenko (5):
+>   ALSA: hda/tegra: Use clk_bulk helpers
+>   ALSA: hda/tegra: Reset hardware
+>   ASoC: tegra: ahub: Use of_reset_control_array_get_exclusive()
+>   ASoC: tegra: ahub: Use clk_bulk helpers
+>   ASoC: tegra: ahub: Reset hardware properly
 
-Thanks, applied.
+Thierry, Jonathan, Sameer, could you guys check those please?
 
+
+thanks,
 
 Takashi
+
+> 
+>  sound/pci/hda/hda_tegra.c      |  86 +++++++++------------------
+>  sound/soc/tegra/tegra30_ahub.c | 103 ++++++---------------------------
+>  sound/soc/tegra/tegra30_ahub.h |   6 +-
+>  3 files changed, 49 insertions(+), 146 deletions(-)
+> 
+> -- 
+> 2.29.2
+> 
