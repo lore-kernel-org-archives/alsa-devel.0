@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4370FC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:58:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C758C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:58:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79F0A23406
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:58:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79F0A23406
+	by mail.kernel.org (Postfix) with ESMTPS id 3FFC623406
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:58:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FFC623406
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F320D1759;
-	Fri, 15 Jan 2021 05:57:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F320D1759
+	by alsa0.perex.cz (Postfix) with ESMTPS id A76161750;
+	Fri, 15 Jan 2021 05:58:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A76161750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686717;
-	bh=y3agv1Un6l5xj5oLpUnrzQPTRZLBGm5O1KiEq1vJnVY=;
+	s=default; t=1610686735;
+	bh=k9ISkEfIo2cGoYdbhxjI4riDKVRlDOFE5rMG8iUyhBY=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pr4f2u8xat616Fws1P6SLDivmTYhk7/rAxnhwLqXuS2HY6ucDOZzGYbJB3EK/SbC6
-	 sFneajFCQKneOURTZ9dKH5ifdBijLX2vIk4wIJgvorD7WkVkCgEUIWkeQU4zjEh3jN
-	 7/QHwZqTqkWAzbr2vwbC4qu5agaXAHPmjRg0ajNQ=
+	b=fTYc+FYcq5jiaAoVoBssAhbbiqdcDRlpHG5IVspIzdVYZH7I8tCwjiOUM37rSrgD3
+	 mD6cgKXRyXeTUtOn39C34/omPyDWKCtBuEBVJI0xasT7X3ScqaACJRm26rAx2j3XrW
+	 0/m1saeN3L3Ksyug2RnjbnYg8m0f0fItXVAaTjsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62BE8F8051C;
-	Fri, 15 Jan 2021 05:54:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D8A6F80520;
+	Fri, 15 Jan 2021 05:54:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57CAFF804D8; Fri, 15 Jan 2021 05:54:05 +0100 (CET)
+ id 58027F8051E; Fri, 15 Jan 2021 05:54:09 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id E6296F80254
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6296F80254
-Date: 15 Jan 2021 13:53:58 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68860897"
+ by alsa1.perex.cz (Postfix) with ESMTP id EE92CF8025F
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE92CF8025F
+Date: 15 Jan 2021 13:54:03 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68860910"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:58 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:03 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 177DD401658E;
- Fri, 15 Jan 2021 13:53:58 +0900 (JST)
-Message-ID: <87h7niolhf.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 74C0C401658C;
+ Fri, 15 Jan 2021 13:54:03 +0900 (JST)
+Message-ID: <87ft32olha.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 13/44] ASoC: pxa: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 14/44] ASoC: mediatek: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,7 +74,6 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch syncs naming rule.
@@ -87,22 +86,153 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/pxa/pxa2xx-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 10 +++++-----
+ sound/soc/mediatek/mt6797/mt6797-dai-pcm.c |  8 ++++----
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c |  2 +-
+ sound/soc/mediatek/mt8183/mt8183-dai-pcm.c |  8 ++++----
+ sound/soc/mediatek/mt8192/mt8192-dai-pcm.c |  8 ++++----
+ 5 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 5301859a8453..bcde4a96c168 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -353,7 +353,7 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
- 		.rates = PXA2XX_I2S_RATES,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
- 	.ops = &pxa_i2s_dai_ops,
--	.symmetric_rates = 1,
-+	.symmetric_rate = 1,
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index df29641c74aa..d5cffe7a7e15 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -655,7 +655,7 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
+ 
+ 		},
+ 		.ops = &mt2701_afe_i2s_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
+ 	},
+ 	{
+ 		.name = "I2S1",
+@@ -679,7 +679,7 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
+ 				| SNDRV_PCM_FMTBIT_S32_LE)
+ 			},
+ 		.ops = &mt2701_afe_i2s_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
+ 	},
+ 	{
+ 		.name = "I2S2",
+@@ -703,7 +703,7 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
+ 				| SNDRV_PCM_FMTBIT_S32_LE)
+ 			},
+ 		.ops = &mt2701_afe_i2s_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
+ 	},
+ 	{
+ 		.name = "I2S3",
+@@ -727,7 +727,7 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
+ 				| SNDRV_PCM_FMTBIT_S32_LE)
+ 			},
+ 		.ops = &mt2701_afe_i2s_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
+ 	},
+ 	{
+ 		.name = "MRG BT",
+@@ -749,7 +749,7 @@ static struct snd_soc_dai_driver mt2701_afe_pcm_dais[] = {
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+ 		.ops = &mt2701_btmrg_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
+ 	}
  };
  
- static const struct snd_soc_component_driver pxa_i2s_component = {
+diff --git a/sound/soc/mediatek/mt6797/mt6797-dai-pcm.c b/sound/soc/mediatek/mt6797/mt6797-dai-pcm.c
+index 3136f0bc7827..51f736f319e4 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-dai-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-dai-pcm.c
+@@ -270,8 +270,8 @@ static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
+ 			.formats = MTK_PCM_FORMATS,
+ 		},
+ 		.ops = &mtk_dai_pcm_ops,
+-		.symmetric_rates = 1,
+-		.symmetric_samplebits = 1,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 	},
+ 	{
+ 		.name = "PCM 2",
+@@ -291,8 +291,8 @@ static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
+ 			.formats = MTK_PCM_FORMATS,
+ 		},
+ 		.ops = &mtk_dai_pcm_ops,
+-		.symmetric_rates = 1,
+-		.symmetric_samplebits = 1,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 	},
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+index 7e7bda70d12e..685f4074b4e0 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
++++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+@@ -571,7 +571,7 @@ static struct snd_soc_dai_driver mt8173_afe_pcm_dais[] = {
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		},
+ 		.ops = &mt8173_afe_i2s_ops,
+-		.symmetric_rates = 1,
++		.symmetric_rate = 1,
+ 	},
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8183/mt8183-dai-pcm.c b/sound/soc/mediatek/mt8183/mt8183-dai-pcm.c
+index bc3ba3228f08..38ce0e36cdb4 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-dai-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-dai-pcm.c
+@@ -270,8 +270,8 @@ static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
+ 			.formats = MTK_PCM_FORMATS,
+ 		},
+ 		.ops = &mtk_dai_pcm_ops,
+-		.symmetric_rates = 1,
+-		.symmetric_samplebits = 1,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 	},
+ 	{
+ 		.name = "PCM 2",
+@@ -291,8 +291,8 @@ static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
+ 			.formats = MTK_PCM_FORMATS,
+ 		},
+ 		.ops = &mtk_dai_pcm_ops,
+-		.symmetric_rates = 1,
+-		.symmetric_samplebits = 1,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 	},
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8192/mt8192-dai-pcm.c b/sound/soc/mediatek/mt8192/mt8192-dai-pcm.c
+index 6e94cfdf06fc..239e3f5b53d3 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-dai-pcm.c
++++ b/sound/soc/mediatek/mt8192/mt8192-dai-pcm.c
+@@ -360,8 +360,8 @@ static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
+ 			.formats = MTK_PCM_FORMATS,
+ 		},
+ 		.ops = &mtk_dai_pcm_ops,
+-		.symmetric_rates = 1,
+-		.symmetric_samplebits = 1,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 	},
+ 	{
+ 		.name = "PCM 2",
+@@ -381,8 +381,8 @@ static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
+ 			.formats = MTK_PCM_FORMATS,
+ 		},
+ 		.ops = &mtk_dai_pcm_ops,
+-		.symmetric_rates = 1,
+-		.symmetric_samplebits = 1,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 	},
+ };
+ 
 -- 
 2.25.1
 
