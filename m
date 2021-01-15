@@ -2,64 +2,66 @@ Return-Path: <SRS0=Aiaa=GV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7190C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B14AFC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:03:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57C812253A
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:01:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57C812253A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C76212253A
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:03:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C76212253A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 479FA17E8;
-	Mon, 18 Jan 2021 09:00:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 479FA17E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BE7517C0;
+	Mon, 18 Jan 2021 09:02:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BE7517C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610956859;
-	bh=wm3P/kqbC801iBrIKCM7L9smYhfSGw21OxjuN3xMbdU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KQlFMWJILYQvKEgFXYs0wyV9K6qpNVRI9KyDMILdOywvDl8mJ1UhJrQhkJjehiJjn
-	 rvujOUKF946hAEkMj7tLfxMPthQkZYO8gYEsGsy2oXRlAOukCaCrJuCjYyBGmpzZY1
-	 A6q/h0Yq9eRe/yS46tbfnx8HcZdoW3feTqISWJdQ=
+	s=default; t=1610957023;
+	bh=EJxhoyEmSaqCRdcWrU1VnsIyeaqiRGWrmIGfOsH/p8A=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=pXtAfGWEQkOiMRIfGmwcdp6fDz5kHEcWpTRZ8yxu59ftDckfHG3HpKU6SwQ1NXgvL
+	 KCIvC0VnYuQAor3yY8u6Aq9sCwbVqIRzcHUjclGu97GwFzSU097qEE9eiUmbZwALxR
+	 7ktNg9DF6X91j5pJJ+Q4yStMDBs5+68Vg/dPolVg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD9A5F804C3;
-	Mon, 18 Jan 2021 08:58:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD0EFF800C0;
+	Mon, 18 Jan 2021 09:02:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21E1CF804BD; Mon, 18 Jan 2021 08:58:34 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CF4C1F801ED; Fri, 15 Jan 2021 04:15:26 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACC95F8019D
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 08:58:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACC95F8019D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 782A7AB9F;
- Mon, 18 Jan 2021 07:58:19 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ALSA: usb-audio: Fix UAC1 rate setup for secondary
- endpoints
-Date: Mon, 18 Jan 2021 08:58:14 +0100
-Message-Id: <20210118075816.25068-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210118075816.25068-1-tiwai@suse.de>
-References: <20210118075816.25068-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9D4CF80132
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 04:15:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9D4CF80132
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
+ helo=canonical.com) by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kaichuan.hsieh@canonical.com>)
+ id 1l0Fa1-0004Zi-VE; Fri, 15 Jan 2021 03:15:18 +0000
+From: Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
+To: alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com,
+ guennadi.liakhovetski@linux.intel.com, kai.heng.feng@canonical.com,
+ kai.vehmanen@linux.intel.com, rppt@kernel.org,
+ linux-kernel@vger.kernel.org, kaichuan.hsieh@canonical.com
+Subject: [PATCH] ALSA: hda: Add Cometlake-R PCI ID
+Date: Fri, 15 Jan 2021 11:15:15 +0800
+Message-Id: <20210115031515.13100-1-kaichuan.hsieh@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <konference@frantovo.cz>,
- Geraldo <geraldogabriel@gmail.com>
+X-Mailman-Approved-At: Mon, 18 Jan 2021 09:02:51 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,125 +77,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current sample rate setup function for UAC1 assumes only the first
-endpoint retrieved from the interface:altset pair, but the rate set up
-may be needed also for the secondary endpoint.  Also, retrieving the
-endpoint number from the interface descriptor is redundant; we have
-already the target endpoint in the given audioformat object.
+Add HD Audio Device PCI ID for the Intel Cometlake-R platform
 
-This patch simplifies the code and corrects the target endpoint as
-described in the above.  It simply refers to fmt->endpoint directly.
-
-Also, this patch drops the pioneer_djm_set_format_quirk() that is
-caleld from snd_usb_set_format_quirk(); this function does the sample
-rate setup but for the capture endpoint (0x82), and that's exactly
-what the change above fixes.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>
 ---
- sound/usb/clock.c  | 21 ++++++---------------
- sound/usb/quirks.c | 28 ----------------------------
- 2 files changed, 6 insertions(+), 43 deletions(-)
+ sound/pci/hda/hda_intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 31051f2be46d..dc68ed65e478 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -485,18 +485,9 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip,
- 			      const struct audioformat *fmt, int rate)
- {
- 	struct usb_device *dev = chip->dev;
--	struct usb_host_interface *alts;
--	unsigned int ep;
- 	unsigned char data[3];
- 	int err, crate;
- 
--	alts = snd_usb_get_host_interface(chip, fmt->iface, fmt->altsetting);
--	if (!alts)
--		return -EINVAL;
--	if (get_iface_desc(alts)->bNumEndpoints < 1)
--		return -EINVAL;
--	ep = get_endpoint(alts, 0)->bEndpointAddress;
--
- 	/* if endpoint doesn't have sampling rate control, bail out */
- 	if (!(fmt->attributes & UAC_EP_CS_ATTR_SAMPLE_RATE))
- 		return 0;
-@@ -506,11 +497,11 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip,
- 	data[2] = rate >> 16;
- 	err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_SET_CUR,
- 			      USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_OUT,
--			      UAC_EP_CS_ATTR_SAMPLE_RATE << 8, ep,
--			      data, sizeof(data));
-+			      UAC_EP_CS_ATTR_SAMPLE_RATE << 8,
-+			      fmt->endpoint, data, sizeof(data));
- 	if (err < 0) {
- 		dev_err(&dev->dev, "%d:%d: cannot set freq %d to ep %#x\n",
--			fmt->iface, fmt->altsetting, rate, ep);
-+			fmt->iface, fmt->altsetting, rate, fmt->endpoint);
- 		return err;
- 	}
- 
-@@ -524,11 +515,11 @@ static int set_sample_rate_v1(struct snd_usb_audio *chip,
- 
- 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC_GET_CUR,
- 			      USB_TYPE_CLASS | USB_RECIP_ENDPOINT | USB_DIR_IN,
--			      UAC_EP_CS_ATTR_SAMPLE_RATE << 8, ep,
--			      data, sizeof(data));
-+			      UAC_EP_CS_ATTR_SAMPLE_RATE << 8,
-+			      fmt->endpoint, data, sizeof(data));
- 	if (err < 0) {
- 		dev_err(&dev->dev, "%d:%d: cannot get freq at ep %#x\n",
--			fmt->iface, fmt->altsetting, ep);
-+			fmt->iface, fmt->altsetting, fmt->endpoint);
- 		chip->sample_rate_read_error++;
- 		return 0; /* some devices don't support reading */
- 	}
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 89e172642d98..e196e364cef1 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1470,30 +1470,6 @@ static void set_format_emu_quirk(struct snd_usb_substream *subs,
- 	subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ? 4 : 0;
- }
- 
--
--/*
-- * Pioneer DJ DJM-900NXS2
-- * Device needs to know the sample rate each time substream is started
-- */
--static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs)
--{
--	unsigned int cur_rate = subs->data_endpoint->cur_rate;
--	/* Convert sample rate value to little endian */
--	u8 sr[3];
--
--	sr[0] = cur_rate & 0xff;
--	sr[1] = (cur_rate >> 8) & 0xff;
--	sr[2] = (cur_rate >> 16) & 0xff;
--
--	/* Configure device */
--	usb_set_interface(subs->dev, 0, 1);
--	snd_usb_ctl_msg(subs->stream->chip->dev,
--		usb_rcvctrlpipe(subs->stream->chip->dev, 0),
--		0x01, 0x22, 0x0100, 0x0082, &sr, 0x0003);
--
--	return 0;
--}
--
- void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 			      const struct audioformat *fmt)
- {
-@@ -1504,10 +1480,6 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	case USB_ID(0x041e, 0x3f19): /* E-Mu 0204 USB */
- 		set_format_emu_quirk(subs, fmt);
- 		break;
--	case USB_ID(0x2b73, 0x000a): /* Pioneer DJ DJM-900NXS2 */
--	case USB_ID(0x2b73, 0x0017): /* Pioneer DJ DJM-250MK2 */
--		pioneer_djm_set_format_quirk(subs);
--		break;
- 	case USB_ID(0x534d, 0x2109): /* MacroSilicon MS2109 */
- 		subs->stream_offset_adj = 2;
- 		break;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 83a4a6290070..313d2c9fb35d 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2482,6 +2482,9 @@ static const struct pci_device_id azx_ids[] = {
+ 	/* CometLake-S */
+ 	{ PCI_DEVICE(0x8086, 0xa3f0),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
++	/* CometLake-R */
++	{ PCI_DEVICE(0x8086, 0xf0c8),
++	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
+ 	/* Icelake */
+ 	{ PCI_DEVICE(0x8086, 0x34c8),
+ 	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
 -- 
-2.26.2
+2.25.1
 
