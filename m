@@ -2,58 +2,64 @@ Return-Path: <SRS0=73/o=GS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA658C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65282C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:16:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 66CBF23603
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:05:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66CBF23603
+	by mail.kernel.org (Postfix) with ESMTPS id 9DAEA236FB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 10:16:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DAEA236FB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5926C178B;
-	Fri, 15 Jan 2021 11:04:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5926C178B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE1431778;
+	Fri, 15 Jan 2021 11:15:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE1431778
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610705141;
-	bh=7eihApRRbFgZXVcGSaJ7DiiBTvVOd5M5/cE8j2wmXzA=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FUKWRhLThX/d1GTAQxo4Jv+mub3/AbUYdm3Afd3UrkzhGp3+gODEhBOO5qU5hIzeZ
-	 nAsV925mrngx2xW/NxXXndiEebASzLj0yUPoMYNvJP6147iaghSge8sA/5Yx4CH3xZ
-	 9NiiXH6ZRtj4hMz7vI3OWupWVRZxK0GV1YG5pp8M=
+	s=default; t=1610705799;
+	bh=5lD0VnVQGj4UXxaO+0S13D0kO4FTsWgn2tONxnjdhsQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qH9IwNeFO6s9JnOTWJd+uvIe00f/Eob/1pvmOE/305h/huJgc+v3IRSxeiyngafRa
+	 TOD8q20JzmWt2FEqtAwUaZthpKu573hpLdtVm1y+QynHd/fX2iQdemlhnCsUkoq2AT
+	 flaBYVUfQXOGJQfG+Z66sxoc47tUz6YW6KO3x0Oo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97DF3F80134;
-	Fri, 15 Jan 2021 11:04:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6412FF8016D;
+	Fri, 15 Jan 2021 11:15:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6DC9BF801ED; Fri, 15 Jan 2021 11:04:46 +0100 (CET)
+ id 752CCF801ED; Fri, 15 Jan 2021 11:15:45 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AA34F80113
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 11:04:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AA34F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D378F80134
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 11:15:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D378F80134
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 368CBB7D1
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 10:04:38 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 6D2D3AA6F;
+ Fri, 15 Jan 2021 10:15:37 +0000 (UTC)
+Date: Fri, 15 Jan 2021 11:15:36 +0100
+Message-ID: <s5hh7nimrp3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Convert the last strlcpy() usage
-Date: Fri, 15 Jan 2021 11:04:37 +0100
-Message-Id: <20210115100437.20906-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: dice: add support for Lexicon I-ONIX FW810s
+In-Reply-To: <20210115035623.148580-1-o-takashi@sakamocchi.jp>
+References: <20210115035623.148580-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,49 +75,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The last remaining usage of strlcpy() in USB-audio driver is the setup
-of the card longname string.  Basically we need to know whether any
-non-empty string is set or not, and no real length is needed.
-Refactor the code and use strscpy() instead.  After this change,
-strlcpy() is gone from all sound/* code.
+On Fri, 15 Jan 2021 04:56:23 +0100,
+Takashi Sakamoto wrote:
+> 
+> I-ONIX FW810s was shipped in Lexicon brand of HARMAN International
+> industries, Inc 2009. The model uses TCD2220 ASIC as its communication
+> engine. TCAT general protocol is supported, its extension isn't.
+> 
+> This patch adds support for the model with hard-coded stream formats.
+> 
+> $ python3 ~/git/linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
+>                ROM header and bus information block
+>                -----------------------------------------------------------------
+> 400  04042b91  bus_info_length 4, crc_length 4, crc 11153
+> 404  31333934  bus_name "1394"
+> 408  e0008102  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 0, max_rec 8 (512)
+> 40c  000fd720  company_id 000fd7     |
+> 410  007d7ecf  device_id 20007d7ecf  | EUI-64 000fd720007d7ecf
+> 
+>                root directory
+>                -----------------------------------------------------------------
+> 414  00064c2d  directory_length 6, crc 19501
+> 418  03000fd7  vendor
+> 41c  8100000a  --> descriptor leaf at 444
+> 420  17000001  model
+> 424  8100000d  --> descriptor leaf at 458
+> 428  0c0087c0  node capabilities per IEEE 1394
+> 42c  d1000001  --> unit directory at 430
+> 
+>                unit directory at 430
+>                -----------------------------------------------------------------
+> 430  000438f2  directory_length 4, crc 14578
+> 434  12000fd7  specifier id
+> 438  13000001  version
+> 43c  17000001  model
+> 440  8100000d  --> descriptor leaf at 474
+> 
+>                descriptor leaf at 444
+>                -----------------------------------------------------------------
+> 444  000489d5  leaf_length 4, crc 35285
+> 448  00000000  textual descriptor
+> 44c  00000000  minimal ASCII
+> 450  4c657869  "Lexi"
+> 454  636f6e00  "con"
+> 
+>                descriptor leaf at 458
+>                -----------------------------------------------------------------
+> 458  0006594b  leaf_length 6, crc 22859
+> 45c  00000000  textual descriptor
+> 460  00000000  minimal ASCII
+> 464  492d4f4e  "I-ON"
+> 468  49585f46  "IX_F"
+> 46c  57383130  "W810"
+> 470  53000000  "S"
+> 
+>                descriptor leaf at 474
+>                -----------------------------------------------------------------
+> 474  0006594b  leaf_length 6, crc 22859
+> 478  00000000  textual descriptor
+> 47c  00000000  minimal ASCII
+> 480  492d4f4e  "I-ON"
+> 484  49585f46  "IX_F"
+> 488  57383130  "W810"
+> 48c  53000000  "S"
+> 
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+Thanks, applied.
 
-I forgot to submit this as well in the previous patch, but they are
-applied independently.
 
- sound/usb/card.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 85e79b9ecb08..45407cb81b66 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -514,18 +514,17 @@ static void usb_audio_make_longname(struct usb_device *dev,
- 		s = preset->vendor_name;
- 	else if (quirk && quirk->vendor_name)
- 		s = quirk->vendor_name;
-+	*card->longname = 0;
- 	if (s && *s) {
--		len = strlcpy(card->longname, s, sizeof(card->longname));
-+		strscpy(card->longname, s, sizeof(card->longname));
- 	} else {
- 		/* retrieve the vendor and device strings as longname */
- 		if (dev->descriptor.iManufacturer)
--			len = usb_string(dev, dev->descriptor.iManufacturer,
--					 card->longname, sizeof(card->longname));
--		else
--			len = 0;
-+			usb_string(dev, dev->descriptor.iManufacturer,
-+				   card->longname, sizeof(card->longname));
- 		/* we don't really care if there isn't any vendor string */
- 	}
--	if (len > 0) {
-+	if (*card->longname) {
- 		strim(card->longname);
- 		if (*card->longname)
- 			strlcat(card->longname, " ", sizeof(card->longname));
--- 
-2.26.2
-
+Takashi
