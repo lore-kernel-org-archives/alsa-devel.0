@@ -2,77 +2,89 @@ Return-Path: <SRS0=73/o=GS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0472CC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 18:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB5D6C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 18:37:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2EAE523AAA
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 18:21:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2EAE523AAA
+	by mail.kernel.org (Postfix) with ESMTPS id 66C582371F
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 18:37:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66C582371F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7C23183D;
-	Fri, 15 Jan 2021 19:20:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7C23183D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D61A1829;
+	Fri, 15 Jan 2021 19:36:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D61A1829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610734888;
-	bh=IYih6HK5bywhQPCe8+Ubp9rfmDXcS5Y7rKssma+9IVE=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1610735825;
+	bh=nrEh5qKyFfcqrhQvojtYrOk8oDWspF+B8YHetNxIp/I=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rY4rGz9vZjskQw0wwsBYKRYVMCJwtzBbqPfwq/lwGhQdANwHBP/GPpYdHhXC2sMBi
-	 GX9nBudga1vJMlIvYyvvvUJ4gDJraihdk9okGJgahmYTfr35rISAO23Fn1/LQVX09T
-	 iQidk5/5zMvw7Gsdfu4TyoED79KUrZSoiGpMSglg=
+	b=rgU8UYxw345FmnzxUt1M82PZFh6BNd8pG91cn1GIcTXggRcweqSVxDC8ONl+887iP
+	 C/KUXl81U4m3JYzaZPBszF0jhu/l6gGnwlM8msQI2rYq3k+apLayWIe/yH3Z6lEO6i
+	 als5w2x+HEJc1sJp/AC/F8nuoMm1CLu5pgnaZOjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8979F8025F;
-	Fri, 15 Jan 2021 19:19:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D9DBF8016D;
+	Fri, 15 Jan 2021 19:36:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AF18F80254; Fri, 15 Jan 2021 19:19:41 +0100 (CET)
+ id 354BDF801ED; Fri, 15 Jan 2021 19:36:12 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A988F8016D
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 19:19:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A988F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id D02ECF80134
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 19:36:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D02ECF80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BOIS6Ji+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4412723A59;
- Fri, 15 Jan 2021 18:19:36 +0000 (UTC)
+ header.b="iud4H4qh"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBF892371F;
+ Fri, 15 Jan 2021 18:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610734776;
- bh=IYih6HK5bywhQPCe8+Ubp9rfmDXcS5Y7rKssma+9IVE=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BOIS6Ji++V0fQAyQSsHFJYaaqiy7HWX1p+ZVER5G37YtaClPJVR1Fk06bS+x+Y6pR
- 56dVep3mubKlDlGRJineKYsLuryVFj+ePsFznyx2QYOwkTbXW/D6b+qU0Gl7Q9VTCl
- sZADmEi85HkKNDEvgMQhagcksWfXJmIV97t7hBl6LNTptVj1d7KY7uT9TGHIinzOw8
- vepRKpLkYWGJ8gChzIVjfRcVFRlhpVFdU//qGdF7rdKQR613rxxf/Zx17rliEBgpVa
- hrsdQZ6vTixx2QaCjAIVPJZAdBASQNKRW2arsov734Z+u2qI4tAyJXvyFNQ20rCXY9
- VcvTdSykkwxjA==
+ s=k20201202; t=1610735762;
+ bh=nrEh5qKyFfcqrhQvojtYrOk8oDWspF+B8YHetNxIp/I=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=iud4H4qhXR7cQadVrAZeKW3YsK9FY+a6ESBYwIDqPuHCrVo1FTirO4xZK11ZOcx4w
+ lhdZ3iWiiuaAn4db+D3/pACYwfMX4PgMM+8a8xbdgSVUg7jiPuTF7k5ib0JRsxJSKN
+ KVHM0ZKAqeNP8SirE7ocjw16rqeDu9UblTqtmNxE9ILFVn6VZm8ZouQno8BaYniDS9
+ w5JgP0NzqNUtXEwrQWs06NtyLpp7p+YZE71C0qfm6seHnuP4bmj6AzuO4Xr9H03IIh
+ efYdqRW3fXg/wbTZooTu8cCrpK04KhjyeRoNQ4YCcqFFboCllOz7SB/nZ5LhcnH2wM
+ T2NdtCgMzFaIQ==
+Date: Fri, 15 Jan 2021 18:35:27 +0000
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
- vkoul@kernel.org
-In-Reply-To: <20210115061651.9740-1-yung-chuan.liao@linux.intel.com>
-References: <20210115061651.9740-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: (subset) [PATCH 0/2] ASoC/SoundWire: fix timeout values
-Message-Id: <161073473698.12268.1646614149546970077.b4-ty@kernel.org>
-Date: Fri, 15 Jan 2021 18:18:56 +0000
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v4 2/6] dt-bindings: audio-graph-card: Add plls and
+ sysclks properties
+Message-ID: <20210115183527.GG4384@sirena.org.uk>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-3-rf@opensource.cirrus.com>
+ <20210113152225.GA2334778@robh.at.kernel.org>
+ <20210113160917.GF4641@sirena.org.uk>
+ <ee3d0b75-dc2f-9994-19a4-a3c3f21a2c65@opensource.cirrus.com>
+ <20210115131142.GA4384@sirena.org.uk>
+ <1ec5e5f4-f672-2c60-23a5-9d985b943379@opensource.cirrus.com>
+ <20210115152004.GD4384@sirena.org.uk>
+ <d67f805f-2813-14e9-0c4f-5948ec73f7b0@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@vger.kernel.org, vinod.koul@linaro.org, tiwai@suse.de,
- gregkh@linuxfoundation.org, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, hui.wang@canonical.com,
- srinivas.kandagatla@linaro.org, jank@cadence.com, sanyog.r.kale@intel.com,
- rander.wang@linux.intel.com, bard.liao@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="reI/iBAAp9kzkmX4"
+Content-Disposition: inline
+In-Reply-To: <d67f805f-2813-14e9-0c4f-5948ec73f7b0@opensource.cirrus.com>
+X-Cookie: Debug is human, de-fix divine.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-arm-kernel@lists.infradead.org, Rob Herring <robh@kernel.org>,
+ alsa-devel@alsa-project.org, f.fainelli@gmail.com,
+ kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org,
+ nsaenzjulienne@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,40 +100,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Jan 2021 14:16:49 +0800, Bard Liao wrote:
-> The timeout for an individual transaction w/ the Cadence IP is the same as
-> the entire resume operation for codecs.
-> This doesn't make sense, we need to have at least one order of magnitude
-> between individual transactions and the entire resume operation.
-> 
-> Set the timeout on the Cadence side to 500ms and 5s for the codec resume.
-> 
-> [...]
 
-Applied to
+--reI/iBAAp9kzkmX4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Jan 15, 2021 at 04:15:21PM +0000, Richard Fitzgerald wrote:
 
-Thanks!
+> If I do:
+>  	sound {
+>  		clocks =3D <&clock>;
+>  	};
+>=20
+> 	clock: clock {
+> 		compatible =3D "fixed-clock";
+> 		clock-frequency =3D <98304000>;
+> 	};
+>=20
+> I can clk_bulk_get_all().
+> But if I remove the 'compatible' from the clock node, clk_bulk_get_all()
+> will return -EPROBE_DEFER and log:
 
-[1/2] ASoC: codecs: soundwire: increase resume timeout
-      commit: 7ef8c9edc86cff0881b2eb9a3274796258fbd872
+OK, so if this is only supposed to represent a fixed clock on the board
+separate to the CODEC then yes, of course you do need to instantiate a
+driver for it like you do for every device on the board.  However it
+shouldn't be a subdevice of the CODEC as you had it originally, it
+should be a distinct device as the above has it since that is what
+physically exists.  This obviously won't configure the FLL at all though
+(which was what the binding you were proposing was for, the above is
+definitely not a direct substitute for the binding you originally
+proposed).
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> > When we say to use the clock binding what we are saying is to use the
+> > actual clock bindings to describe the clocks, not make a custom binding
+> > that looks kind of like them - making a custom binding doesn't address
+> > the problem.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> But I don't know what you mean by "use the actual clock bindings to
+> describe the clocks".
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> What is not clear to me is how you want me to use a clock binding to
+> describe something that isn't a clk-framework clk. If you know what you
+> want, then please.. an example would help explain.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+The concept of a clock framework is an implementation detail of Linux
+which should not affect how the DT bindings for a device or system are
+written, DT bindings should be clear and idiomatic as DT bindings.  The
+goal is to represent the system in a clear and standardized fashion
+which is useful to OSs in general, not just something convenient for
+Linux as it happens to be implemented right now.  Current Linux
+internals are not a constraint for DT bindings.
 
-Thanks,
-Mark
+In this case if you can't figure out how to parse clock bindings without
+moving the clocks over to standard Linux clock APIs (which seems likely)
+then it follows that if you want to describe the clock configuration in
+DT then the driver support for these clocks should use the standard
+Linux clock framework.  This seems like a good idea in general anyway.
+
+--reI/iBAAp9kzkmX4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAB4G4ACgkQJNaLcl1U
+h9Ajugf/V/c7kkx7kjE3+tn6nJNrg21PFVDm4St0hGGrFYbLX5tp94E++n7e+0S4
+1O72CIgQcws/PAoj49e1eR9ucRcZztKs5ahuZNxEtGti7ASiGaVfsP63/496zQZN
+VPW5tOl/xrSw4kNiMkoCSZXT4Izm05XeLtLvV2SQxeVevR2ifnp38Ms5KTEG9PXT
+q5Kecf+CmTuIXlFFvyY3eD5Pqdvqe7F7obdoOxUET3NEEfuPYtRCA7YLHmFu/EfH
+Co3vKlM5RmSi8s4RJ4jXplNFEGMDSjfdLbvrIUPFl/fC4aHMIRk0sAQnKftj9vkO
+rs0GP4a8Qfuiyb0YYpMLrw2ora7WTQ==
+=sFv+
+-----END PGP SIGNATURE-----
+
+--reI/iBAAp9kzkmX4--
