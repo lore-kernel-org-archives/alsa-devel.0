@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A6A7C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F3A4C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:02:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 690EF22CBE
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:02:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 690EF22CBE
+	by mail.kernel.org (Postfix) with ESMTPS id 70BCC23730
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:02:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70BCC23730
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E80471735;
-	Fri, 15 Jan 2021 06:01:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E80471735
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDA111792;
+	Fri, 15 Jan 2021 06:01:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDA111792
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686923;
-	bh=PchD95BIKDbFHVDlj17+5I79lmjey79LvjOtocOwmLo=;
+	s=default; t=1610686940;
+	bh=b+iWyWhbNaoKWMlSAatjOH9PZt4VhY97b1jkwr3c7QM=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IKYAEtoPUXBId70azNeLo0ETcZjPQJTdfiihQvN0/kiJ5xYay7vZa7DarzRFVc2es
-	 mUvNGtZoUJqD8+5s4ghRlyEOawZ+Jaa5ISIQJBQLeKExKJvCSCYh5Gelul3Jb8XWpA
-	 lZvzk9ttK2NAZnexB38JwJYXQlYRXABA9UGUU6rw=
+	b=KOjZxmuHIANXYYD/WtRV/sVyeFQW1fJuw2s8d2CJ+jZpURSMlLHOQn2TkKszBawPl
+	 m7PWpgDNOlKGT4LDAK8jZ1ZXq/hIn1495XsF4ZqlA7kVG3IZFGPa6EewNxhPtvlS9F
+	 D05I9/ESjSqFl0lpfBphRd52TtNvrtQlrAw2mMGE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F32FF804CC;
-	Fri, 15 Jan 2021 05:54:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C222F80566;
+	Fri, 15 Jan 2021 05:54:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6918CF80567; Fri, 15 Jan 2021 05:54:43 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 8D976F80563
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D976F80563
-Date: 15 Jan 2021 13:54:39 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080457"
+ id 06B75F80570; Fri, 15 Jan 2021 05:54:48 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6D18AF80566
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D18AF80566
+Date: 15 Jan 2021 13:54:44 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68860962"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:39 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:44 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 35D03401658E;
- Fri, 15 Jan 2021 13:54:39 +0900 (JST)
-Message-ID: <874kjiolga.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 32E33401658E;
+ Fri, 15 Jan 2021 13:54:44 +0900 (JST)
+Message-ID: <8735z2olg5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 22/44] ASoC: es*: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 23/44] ASoC: max*: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,36 +87,36 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/es8316.c | 2 +-
- sound/soc/codecs/es8328.c | 2 +-
+ sound/soc/codecs/max9860.c | 2 +-
+ sound/soc/codecs/max9867.c | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 1ce84f12a4cf..d632055370e0 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -543,7 +543,7 @@ static struct snd_soc_dai_driver es8316_dai = {
- 		.formats = ES8316_FORMATS,
+diff --git a/sound/soc/codecs/max9860.c b/sound/soc/codecs/max9860.c
+index d5925c42b4b5..dd29b183ecd6 100644
+--- a/sound/soc/codecs/max9860.c
++++ b/sound/soc/codecs/max9860.c
+@@ -489,7 +489,7 @@ static struct snd_soc_dai_driver max9860_dai = {
+ 			   SNDRV_PCM_FMTBIT_S32_LE,
  	},
- 	.ops = &es8316_ops,
+ 	.ops = &max9860_dai_ops,
 -	.symmetric_rates = 1,
 +	.symmetric_rate = 1,
  };
  
- static void es8316_enable_micbias_for_mic_gnd_short_detect(
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index b537300d0ce8..9632afc2d4d6 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -715,7 +715,7 @@ static struct snd_soc_dai_driver es8328_dai = {
- 		.formats = ES8328_FORMATS,
+ static int max9860_set_bias_level(struct snd_soc_component *component,
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 512e6f2513d3..09b2d730e9fd 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -520,7 +520,7 @@ static struct snd_soc_dai_driver max9867_dai[] = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
  	},
- 	.ops = &es8328_dai_ops,
+ 	.ops = &max9867_dai_ops,
 -	.symmetric_rates = 1,
 +	.symmetric_rate = 1,
+ 	}
  };
  
- static int es8328_suspend(struct snd_soc_component *component)
 -- 
 2.25.1
 
