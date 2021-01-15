@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B196DC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:09:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE9EEC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:09:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 05BF823730
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:09:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 05BF823730
+	by mail.kernel.org (Postfix) with ESMTPS id 40EED23877
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:09:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 40EED23877
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8345117E6;
-	Fri, 15 Jan 2021 06:08:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8345117E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA8381804;
+	Fri, 15 Jan 2021 06:08:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA8381804
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610687350;
-	bh=W5F4673aswyusnzjBSabKIv7GNfdkVILxDtu8mzMM4Q=;
+	s=default; t=1610687375;
+	bh=UZVwKYbxK459f/R1/zDPYmtJ3NPuMld4wM2FDlXHejM=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SgKX+OcgXIpSPCDVBGoSIeuwt6oyFQ2+UzQyD2eUf4KRRgKmd5KMBhqmqNWxrym4M
-	 jWTEty1UezBe1HjB9b11Z1lRMoN4ElklmrPg4bkFPbJRSmqqZjTk9+q4YSQQiwGCcV
-	 jmTtEzd2bVE4dwuvUq8MO46dbdOaNS7Tbff0B9vE=
+	b=t0Zx+aE9qXKXV88Uli6Hr2RGxFCAHuAhN4HLAJiEdkQuPcW1uH5fhBz4YW0r8ZLzp
+	 KSQL++Jk/oq/6k7mCGhhwWHGPW7jKKbKpA+EXXwYrTxA0Qe69TaIB8ARfq7TxtUm3l
+	 WlZXQtV+5fq73t98rFcxfGRCISGgSdaB1MtV1IMM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DDD1F80507;
-	Fri, 15 Jan 2021 05:56:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9984DF805F5;
+	Fri, 15 Jan 2021 05:56:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4424AF80507; Fri, 15 Jan 2021 05:56:30 +0100 (CET)
+ id BE0EEF805F5; Fri, 15 Jan 2021 05:56:34 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id EED26F805F2
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:56:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EED26F805F2
-Date: 15 Jan 2021 13:56:21 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080633"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:56:21 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id C9572F804F3
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:56:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9572F804F3
+Date: 15 Jan 2021 13:56:30 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080643"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:56:30 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id AD1D641A78C7;
- Fri, 15 Jan 2021 13:56:21 +0900 (JST)
-Message-ID: <87czy6n6t0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8588F401658C;
+ Fri, 15 Jan 2021 13:56:30 +0900 (JST)
+Message-ID: <87bldqn6sr.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 41/44] ASoC: ml26124: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 42/44] ASoC: soc-dai.h: remove symmetric_rates/samplebits
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,32 +77,50 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-This patch syncs naming rule.
-
- - xxx_rates;
- + xxx_rate;
-
- - xxx_samplebits;
- + xxx_sample_bits;
+All drivers are using new name.
+Let's remove old one.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/ml26124.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-dai.h | 2 --
+ sound/soc/soc-core.c    | 9 ---------
+ 2 files changed, 11 deletions(-)
 
-diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
-index 70c17be455ca..4d7c0be2a4aa 100644
---- a/sound/soc/codecs/ml26124.c
-+++ b/sound/soc/codecs/ml26124.c
-@@ -513,7 +513,7 @@ static struct snd_soc_dai_driver ml26124_dai = {
- 		.rates = ML26124_RATES,
- 		.formats = ML26124_FORMATS,},
- 	.ops = &ml26124_dai_ops,
--	.symmetric_rates = 1,
-+	.symmetric_rate = 1,
- };
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index ee3c6deb5719..1358a0ceb4d0 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -353,10 +353,8 @@ struct snd_soc_dai_driver {
+ 	/* DAI capabilities */
+ 	struct snd_soc_pcm_stream capture;
+ 	struct snd_soc_pcm_stream playback;
+-	unsigned int symmetric_rates:1; /* will be removed */
+ 	unsigned int symmetric_rate:1;
+ 	unsigned int symmetric_channels:1;
+-	unsigned int symmetric_samplebits:1; /* will be removed */
+ 	unsigned int symmetric_sample_bits:1;
  
- static int ml26124_probe(struct snd_soc_component *component)
+ 	/* probe ordering - for components with runtime dependencies */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index bb8323cad51a..f6d4e99b590c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2509,15 +2509,6 @@ int snd_soc_register_component(struct device *dev,
+ {
+ 	struct snd_soc_component *component;
+ 	int ret;
+-	int i;
+-
+-	/* Remove ME */
+-	for (i = 0; i < num_dai; i++) {
+-		if (dai_drv[i].symmetric_rates)
+-			dai_drv[i].symmetric_rate = dai_drv[i].symmetric_rates;
+-		if (dai_drv[i].symmetric_samplebits)
+-			dai_drv[i].symmetric_sample_bits = dai_drv[i].symmetric_samplebits;
+-	}
+ 
+ 	component = devm_kzalloc(dev, sizeof(*component), GFP_KERNEL);
+ 	if (!component)
 -- 
 2.25.1
 
