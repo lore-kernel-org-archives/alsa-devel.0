@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB24CC43381
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:54:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ECBFC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:54:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F75823117
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:54:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F75823117
+	by mail.kernel.org (Postfix) with ESMTPS id DBBCB221EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 04:54:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBBCB221EF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0F95170D;
-	Fri, 15 Jan 2021 05:53:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0F95170D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21B76172E;
+	Fri, 15 Jan 2021 05:54:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21B76172E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686441;
-	bh=Cwzo4EspHeQWmnv98x2DyLQrsSjhirMo78XSDLE/9/g=;
+	s=default; t=1610686490;
+	bh=OqytXS2aA7ppCUI0h1PwxnjgN064CBcDqaVgu+purYo=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G1c/4T3Ozu54ilH4I7U86AN3oaCueX2uwCqhgg3qDzPH6BFsfxrIJD1Fb6HpFlr/R
-	 fWF+hrZ7fwW/p1DrS1r2uICkZ97FRH51K0bKRVM+c340wVZrGk/gJbZqaQEyFb4k1C
-	 0TXzN9BTLoIGs7Rh+hfFi3iQMEM3tyzkVXFzyTEw=
+	b=Nm552f6xwLM/GRMAh3tBpaCTCE3M3jpPWK3RG9mwEINwiabh8DW1V/t4A8HTvKV5e
+	 q0fy+EdJWigcmMMBQyBO7oYsA92PDSppJU2IdB60sI58y5+7KRFLmMhf7MHR2GHEZh
+	 cdJKITcmQRvxNOULOXqsmqeHxNPW/oPQwtkvfhUY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AAC7F8025F;
-	Fri, 15 Jan 2021 05:53:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4DDE6F804B4;
+	Fri, 15 Jan 2021 05:53:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF15CF8025F; Fri, 15 Jan 2021 05:52:59 +0100 (CET)
+ id 54C68F804D6; Fri, 15 Jan 2021 05:53:11 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 18C90F8029B
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:52:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18C90F8029B
-Date: 15 Jan 2021 13:52:54 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080293"
+ by alsa1.perex.cz (Postfix) with ESMTP id 41A25F804B4
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:53:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41A25F804B4
+Date: 15 Jan 2021 13:53:00 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080302"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:52:54 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:53:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id DDAB1401658C;
- Fri, 15 Jan 2021 13:52:54 +0900 (JST)
-Message-ID: <87wnweolj6.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B6393401658E;
+ Fri, 15 Jan 2021 13:53:00 +0900 (JST)
+Message-ID: <87v9byolj1.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 02/44] ASoC: sync parameter naming : rate / sample_bits
+Subject: [PATCH 03/44] ASoC: adi: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,240 +77,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-snd_pcm_runtime / snd_soc_dai / snd_soc_dai_driver / snd_soc_dai_link
-have related parameter which is similar but not same naming.
+This patch syncs naming rule.
 
-	struct snd_pcm_runtime {
-		...
-(A)		unsigned int rate;
-		...
-(B)		unsigned int sample_bits;
-		...
-	};
+ - xxx_rates;
+ + xxx_rate;
 
-	struct snd_soc_dai {
-		...
-(A)		unsigned int rate;
-(B)		unsigned int sample_bits;
-		...
-	};
-
-	struct snd_soc_dai_driver {
-		...
-(A)		unsigned int symmetric_rates:1;
-(B)		unsigned int symmetric_samplebits:1;
-		...
-	};
-
-	struct snd_soc_dai_link {
-		...
-(A)		unsigned int symmetric_rates:1;
-(B)		unsigned int symmetric_samplebits:1;
-		...
-	};
-
-Because it is similar but not same naming rule,
-code can be verbose / can't share macro.
-
-This patch sync naming rule for framework.
-	- xxx_rates;
-	+ xxx_rate;
-
-	- xxx_samplebits;
-	+ xxx_sample_bits;
-
-old name will be removed if all drivers were switched
-to new naming rule.
+ - xxx_samplebits;
+ + xxx_sample_bits;
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc-dai.h           |  6 ++++--
- include/sound/soc.h               |  4 ++--
- sound/soc/rockchip/rockchip_i2s.c |  2 +-
- sound/soc/soc-core.c              |  9 +++++++++
- sound/soc/soc-pcm.c               | 24 ++++++++++++------------
- sound/soc/soc-topology.c          |  8 ++++----
- 6 files changed, 32 insertions(+), 21 deletions(-)
+ sound/soc/adi/axi-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 34d0dbf73ca9..ee3c6deb5719 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -353,9 +353,11 @@ struct snd_soc_dai_driver {
- 	/* DAI capabilities */
- 	struct snd_soc_pcm_stream capture;
- 	struct snd_soc_pcm_stream playback;
--	unsigned int symmetric_rates:1;
-+	unsigned int symmetric_rates:1; /* will be removed */
-+	unsigned int symmetric_rate:1;
- 	unsigned int symmetric_channels:1;
--	unsigned int symmetric_samplebits:1;
-+	unsigned int symmetric_samplebits:1; /* will be removed */
-+	unsigned int symmetric_sample_bits:1;
+diff --git a/sound/soc/adi/axi-i2s.c b/sound/soc/adi/axi-i2s.c
+index 8c4dc82be0df..aa082131fb90 100644
+--- a/sound/soc/adi/axi-i2s.c
++++ b/sound/soc/adi/axi-i2s.c
+@@ -156,7 +156,7 @@ static const struct snd_soc_dai_ops axi_i2s_dai_ops = {
+ static struct snd_soc_dai_driver axi_i2s_dai = {
+ 	.probe = axi_i2s_dai_probe,
+ 	.ops = &axi_i2s_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ };
  
- 	/* probe ordering - for components with runtime dependencies */
- 	int probe_order;
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3fa6c40a63b7..bd38015d6c6d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -685,9 +685,9 @@ struct snd_soc_dai_link {
- 	unsigned int ignore_suspend:1;
- 
- 	/* Symmetry requirements */
--	unsigned int symmetric_rates:1;
-+	unsigned int symmetric_rate:1;
- 	unsigned int symmetric_channels:1;
--	unsigned int symmetric_samplebits:1;
-+	unsigned int symmetric_sample_bits:1;
- 
- 	/* Do not create a PCM for this DAI link (Backend link) */
- 	unsigned int no_pcm:1;
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index eae287d905eb..662de86eca11 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -373,7 +373,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
- 			   I2S_DMACR_RDL(16));
- 
- 	val = I2S_CKR_TRCM_TXRX;
--	if (dai->driver->symmetric_rates && rtd->dai_link->symmetric_rates)
-+	if (dai->driver->symmetric_rate && rtd->dai_link->symmetric_rate)
- 		val = I2S_CKR_TRCM_TXONLY;
- 
- 	regmap_update_bits(i2s->regmap, I2S_CKR,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f6d4e99b590c..bb8323cad51a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2509,6 +2509,15 @@ int snd_soc_register_component(struct device *dev,
- {
- 	struct snd_soc_component *component;
- 	int ret;
-+	int i;
-+
-+	/* Remove ME */
-+	for (i = 0; i < num_dai; i++) {
-+		if (dai_drv[i].symmetric_rates)
-+			dai_drv[i].symmetric_rate = dai_drv[i].symmetric_rates;
-+		if (dai_drv[i].symmetric_samplebits)
-+			dai_drv[i].symmetric_sample_bits = dai_drv[i].symmetric_samplebits;
-+	}
- 
- 	component = devm_kzalloc(dev, sizeof(*component), GFP_KERNEL);
- 	if (!component)
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 6e9f14d482ab..1a5d0cb3dc69 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -349,8 +349,8 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	int ret;
- 
--	if (soc_dai->rate && (soc_dai->driver->symmetric_rates ||
--				rtd->dai_link->symmetric_rates)) {
-+	if (soc_dai->rate && (soc_dai->driver->symmetric_rate ||
-+				rtd->dai_link->symmetric_rate)) {
- 		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %dHz rate\n",
- 				soc_dai->rate);
- 
-@@ -381,8 +381,8 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream,
- 		}
- 	}
- 
--	if (soc_dai->sample_bits && (soc_dai->driver->symmetric_samplebits ||
--				rtd->dai_link->symmetric_samplebits)) {
-+	if (soc_dai->sample_bits && (soc_dai->driver->symmetric_sample_bits ||
-+				rtd->dai_link->symmetric_sample_bits)) {
- 		dev_dbg(soc_dai->dev, "ASoC: Symmetry forces %d sample bits\n",
- 				soc_dai->sample_bits);
- 
-@@ -412,10 +412,10 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
- 	soc_pcm_set_dai_params(&d, params);
- 
- 	/* reject unmatched parameters when applying symmetry */
--	symmetry = rtd->dai_link->symmetric_rates;
-+	symmetry = rtd->dai_link->symmetric_rate;
- 
- 	for_each_rtd_cpu_dais(rtd, i, dai)
--		symmetry |= dai->driver->symmetric_rates;
-+		symmetry |= dai->driver->symmetric_rate;
- 
- 	if (symmetry) {
- 		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-@@ -443,10 +443,10 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
- 		}
- 	}
- 
--	symmetry = rtd->dai_link->symmetric_samplebits;
-+	symmetry = rtd->dai_link->symmetric_sample_bits;
- 
- 	for_each_rtd_dais(rtd, i, dai)
--		symmetry |= dai->driver->symmetric_samplebits;
-+		symmetry |= dai->driver->symmetric_sample_bits;
- 
- 	if (symmetry) {
- 		for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-@@ -469,15 +469,15 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *dai;
- 	unsigned int symmetry, i;
- 
--	symmetry = link->symmetric_rates ||
-+	symmetry = link->symmetric_rate ||
- 		link->symmetric_channels ||
--		link->symmetric_samplebits;
-+		link->symmetric_sample_bits;
- 
- 	for_each_rtd_dais(rtd, i, dai)
- 		symmetry = symmetry ||
--			dai->driver->symmetric_rates ||
-+			dai->driver->symmetric_rate ||
- 			dai->driver->symmetric_channels ||
--			dai->driver->symmetric_samplebits;
-+			dai->driver->symmetric_sample_bits;
- 
- 	return symmetry;
- }
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 950c45008e24..27f7dd8fb7f6 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1672,7 +1672,7 @@ static void set_dai_flags(struct snd_soc_dai_driver *dai_drv,
- 			  unsigned int flag_mask, unsigned int flags)
- {
- 	if (flag_mask & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES)
--		dai_drv->symmetric_rates =
-+		dai_drv->symmetric_rate =
- 			flags & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_RATES ? 1 : 0;
- 
- 	if (flag_mask & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS)
-@@ -1681,7 +1681,7 @@ static void set_dai_flags(struct snd_soc_dai_driver *dai_drv,
- 			1 : 0;
- 
- 	if (flag_mask & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS)
--		dai_drv->symmetric_samplebits =
-+		dai_drv->symmetric_sample_bits =
- 			flags & SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS ?
- 			1 : 0;
- }
-@@ -1763,7 +1763,7 @@ static void set_link_flags(struct snd_soc_dai_link *link,
- 		unsigned int flag_mask, unsigned int flags)
- {
- 	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES)
--		link->symmetric_rates =
-+		link->symmetric_rate =
- 			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_RATES ? 1 : 0;
- 
- 	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_CHANNELS)
-@@ -1772,7 +1772,7 @@ static void set_link_flags(struct snd_soc_dai_link *link,
- 			1 : 0;
- 
- 	if (flag_mask & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS)
--		link->symmetric_samplebits =
-+		link->symmetric_sample_bits =
- 			flags & SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS ?
- 			1 : 0;
- 
+ static const struct snd_soc_component_driver axi_i2s_component = {
 -- 
 2.25.1
 
