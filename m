@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C5B2C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 457E4C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:01:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE3E622CBE
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:01:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE3E622CBE
+	by mail.kernel.org (Postfix) with ESMTPS id 8523323406
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jan 2021 05:01:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8523323406
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76045178C;
-	Fri, 15 Jan 2021 06:00:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76045178C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03DEF1776;
+	Fri, 15 Jan 2021 06:00:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03DEF1776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610686877;
-	bh=TeBUWFejAq5l2iKU6j+qCsDyDSPaN3jZupZBzTvacyo=;
+	s=default; t=1610686897;
+	bh=U3/wtOp1MQf5Pjiihmp7jYok44EsdfSVFTGD/jRHWjU=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fjkk9mloXnQM3lsnkYuDDS61OzLx9S6oZAPDX9g/7qiwjbDEYZmSUMjT4V94nH4lV
-	 61YorhTkLKvOOebxXVsnQdk3Oa/tNdzHdKushKfziAbmtEi5FldUEqmnaB1p2QDYiU
-	 8mNeYSwzB5R5lLl3GxTQbI7UOGOgU7IP1Siujd80=
+	b=G5DV5jxVBVJIBkRy93kcD+fWptYd/msQLWVexGOSPQFVMSVYdE4VwgbUYvxzGWHMy
+	 LSoJjRF6aiigWEYQzjpEK1LAEviXY2bpNewVNsw2FvM6DC9JKN+ooySXOABrwVTquO
+	 oW3oFao7igioqF/Kjohj+iww7YLwo/xBM+s/iDl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4252F80557;
-	Fri, 15 Jan 2021 05:54:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CE87F80564;
+	Fri, 15 Jan 2021 05:54:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14CBEF80543; Fri, 15 Jan 2021 05:54:35 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 965BDF80536
- for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 965BDF80536
-Date: 15 Jan 2021 13:54:29 +0900
-X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="69080441"
+ id 2E19AF80558; Fri, 15 Jan 2021 05:54:39 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 39E89F80552
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2021 05:54:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39E89F80552
+Date: 15 Jan 2021 13:54:33 +0900
+X-IronPort-AV: E=Sophos;i="5.79,348,1602514800"; d="scan'208";a="68860950"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:29 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Jan 2021 13:54:33 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5E92541A6658;
- Fri, 15 Jan 2021 13:54:29 +0900 (JST)
-Message-ID: <877doeolgk.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id D78F941A6658;
+ Fri, 15 Jan 2021 13:54:33 +0900 (JST)
+Message-ID: <875z3yolgf.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 20/44] ASoC: tas*: sync parameter naming (rate/sample_bits)
+Subject: [PATCH 21/44] ASoC: da*: sync parameter naming (rate/sample_bits)
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87zh1aolkt.wl-kuninori.morimoto.gx@renesas.com>
@@ -87,36 +87,84 @@ This patch syncs naming rule.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/codecs/tas2764.c | 2 +-
- sound/soc/codecs/tas2770.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/da7210.c | 2 +-
+ sound/soc/codecs/da7213.c | 2 +-
+ sound/soc/codecs/da7218.c | 4 ++--
+ sound/soc/codecs/da7219.c | 4 ++--
+ sound/soc/codecs/da9055.c | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
-index 14a193e48dc7..8ff4d9e8d568 100644
---- a/sound/soc/codecs/tas2764.c
-+++ b/sound/soc/codecs/tas2764.c
-@@ -490,7 +490,7 @@ static struct snd_soc_dai_driver tas2764_dai_driver[] = {
- 			.formats = TAS2764_FORMATS,
- 		},
- 		.ops = &tas2764_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 3d05c37f676e..8af344b2fdbf 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -1059,7 +1059,7 @@ static struct snd_soc_dai_driver da7210_dai = {
+ 		.formats = DA7210_FORMATS,
  	},
+ 	.ops = &da7210_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
  };
  
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index a91a0a31e74d..15fca5109e14 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -499,7 +499,7 @@ static struct snd_soc_dai_driver tas2770_dai_driver[] = {
- 			.formats    = TAS2770_FORMATS,
- 		},
- 		.ops = &tas2770_dai_ops,
--		.symmetric_rates = 1,
-+		.symmetric_rate = 1,
+ static int da7210_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 72402467adcc..3ab89387b4e6 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -1551,7 +1551,7 @@ static struct snd_soc_dai_driver da7213_dai = {
+ 		.formats = DA7213_FORMATS,
  	},
+ 	.ops = &da7213_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
  };
  
+ static int da7213_set_auto_pll(struct snd_soc_component *component, bool enable)
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index 2bfafbe9e3dc..0e5b91eb420b 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -2194,9 +2194,9 @@ static struct snd_soc_dai_driver da7218_dai = {
+ 		.formats = DA7218_FORMATS,
+ 	},
+ 	.ops = &da7218_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ 	.symmetric_channels = 1,
+-	.symmetric_samplebits = 1,
++	.symmetric_sample_bits = 1,
+ };
+ 
+ 
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index e9b45daec0ca..13009d08b09a 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1692,9 +1692,9 @@ static struct snd_soc_dai_driver da7219_dai = {
+ 		.formats = DA7219_FORMATS,
+ 	},
+ 	.ops = &da7219_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ 	.symmetric_channels = 1,
+-	.symmetric_samplebits = 1,
++	.symmetric_sample_bits = 1,
+ };
+ 
+ 
+diff --git a/sound/soc/codecs/da9055.c b/sound/soc/codecs/da9055.c
+index aed92f615b02..a9676b261129 100644
+--- a/sound/soc/codecs/da9055.c
++++ b/sound/soc/codecs/da9055.c
+@@ -1347,7 +1347,7 @@ static struct snd_soc_dai_driver da9055_dai = {
+ 		.formats = DA9055_FORMATS,
+ 	},
+ 	.ops = &da9055_dai_ops,
+-	.symmetric_rates = 1,
++	.symmetric_rate = 1,
+ };
+ 
+ static int da9055_set_bias_level(struct snd_soc_component *component,
 -- 
 2.25.1
 
