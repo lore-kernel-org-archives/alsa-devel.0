@@ -2,101 +2,112 @@ Return-Path: <SRS0=Aiaa=GV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-12.4 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3A5EC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C5F7C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:06:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B081F2245C
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:05:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B081F2245C
+	by mail.kernel.org (Postfix) with ESMTPS id 00A042245C
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 08:06:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00A042245C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D221D181A;
-	Mon, 18 Jan 2021 09:04:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D221D181A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F421B17F7;
+	Mon, 18 Jan 2021 09:05:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F421B17F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610957126;
-	bh=rk77lSxH9rnwujiBFo8G3SLcAUg+ENu1+sd1TKwGCE8=;
+	s=default; t=1610957164;
+	bh=WXVbEPHZWkzTKhLkeMaDFokYPFdkwmf0B/IGsYAsgcE=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QnnpFo8QT/Bg5ulVwKy/CWCJy2HzTQrgBfLlVyoSE6N2CGFWpkDbiHbRDYFWxgJIX
-	 TAdLmXNYnLwpUHXCCwuiZZgdFv8Uvfxfh6Efnttkm2bBLq+CD4ypH4UzBQjROQ11VD
-	 p9GmnNjuyaRK1qannn6VTqtUXVsDwa0+9pB4hDBU=
+	b=jv2Xv/NoCzi/krGkOKGoTB9nHaY13Hc9x8a2ZIANQ/ilihjdStShvZqh3tZ9/Bo6j
+	 lclcdN8Ro2F/syr9ahgcPGVHX6aFN1AKYLbo9f6xIcYrxpga3GZOvXloOpMF3iyjo8
+	 jzkEFJXVdy5HDRIcH5Seo/9b8Qpz7F+VkuuFJ4QA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DFF0F80137;
-	Mon, 18 Jan 2021 09:02:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C266F804E2;
+	Mon, 18 Jan 2021 09:02:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59179F8025E; Sat, 16 Jan 2021 16:50:55 +0100 (CET)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ id C52A9F8025E; Sat, 16 Jan 2021 17:19:08 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FE47F80132
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2021 16:50:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FE47F80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F817F80132
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2021 17:18:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F817F80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="plFPi22y"
-Received: by mail-wm1-x330.google.com with SMTP id r4so10143893wmh.5
- for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2021 07:50:50 -0800 (PST)
+ header.b="Br7DlbQw"
+Received: by mail-wm1-x333.google.com with SMTP id m187so3673752wme.2
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jan 2021 08:18:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-transfer-encoding;
- bh=x+00tIBf/QefUex9fblzjYl8TVeelPB225Pi420+hDY=;
- b=plFPi22y1+imtJRfUHti77svL+kZBuzp5qyZDcOiHMP2+n+0/Acj/PDpFpa7hrrOYR
- 1SN5YXQUzXOr5+MEU2ZlVgYY9Ef03M66UNUpYv6+lkWybj7r/p4j/skU+gNomxyeZMrL
- ldAbJCAvC+fI9P7XIFu4aaDwyqNwZ9Q5JJ875Hrv+Xl6ZWN/trptb0ecxQ42yiO+ePTc
- u8gstUBtd89iHDiy+yqrr5mWK1MiSgq/UTjFZzsX75wm0AOGRuGnPd9KQcEbSzZidck5
- p3urffKVECdgsB0dvUbthXqOFTYsivgcDFddD6Ak9/NszbRcQWQRs3Pyn8nrMU9JvTkJ
- iUtQ==
+ bh=d9hZ/TM5iFjRNEPcTQvwAm1Rf9sa0Vn8GHaFhrGDyS8=;
+ b=Br7DlbQwVMZMdpQkS8OEUUubQLykxVinoU54O9T5LGgV73zKKYiSYp+EQEgEQHc3kd
+ C3zHI+cIQVHmkewFEzkS6QcxKJefsVb1ES17Am1WyRxrmTs971Uo/whoH4+HjPE5eoiC
+ 3F6dBqeRALhbJTIWkIHFqeX2ItuHqy10KOrCF5B/L9RHSfNf67JXTLzYWloo81nVpHk4
+ xpHQ6wf+ER8o+xHl0QwUjSYHkPu0Ms3BN8o6A6/3b5u1Zr4dQgHfl2ZL2rOkHGF/Wr0l
+ /CFY6YQthHKjcTy+Nqzmnpo+RGkFnjH3P/OdxF/tjLCwOqgasGv3P8krGRqgRXOnIcg4
+ wwCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-transfer-encoding;
- bh=x+00tIBf/QefUex9fblzjYl8TVeelPB225Pi420+hDY=;
- b=ksewMQnh1o01qbUWUXi9EsoEUawGBxhwt/iXewAuABGSRPeUM2RQdnGJgMQT9oAeX5
- eCmsobvYHVdHi2VwDpKQ5CyFPdOQfgpVw+gfP1VoFFRY6pRdh8YoY0VjEjg3CyuIfKux
- +qxvG7lhCgtDePDldQkRqsE2WkK1POAdOklkjEl4ZQ8AzNOe6P0EqUhrDJhusU7Ftmiw
- rQ7hMDssdwLImns2wU3JXkPwSP/CmOqAI7psAsCDArPC+YKZYjXgqSInRVRwG9qWR2cj
- R5pTM8+S8VFRPhujwPn1g99O5hSQlPzZoouEYJINpBTxJ/TuwcAa4LIv7VxP+mq1BoWe
- 1b9Q==
-X-Gm-Message-State: AOAM533pYVQ/ZGTAkBaZMym+cvZTJ6gHigazASjhWpUQYHzYgxn5QWvC
- qeuPxS/gfVvbhEFNqQ6yj/I=
-X-Google-Smtp-Source: ABdhPJwV1ftSvgQ9GSkbR7qmb2GHxkGVLRGKlny5KKMHQ3z0eLqDXCdkKL4jT9t79JwW8nifC8z4eA==
-X-Received: by 2002:a7b:c115:: with SMTP id w21mr2300075wmi.114.1610812248994; 
- Sat, 16 Jan 2021 07:50:48 -0800 (PST)
+ bh=d9hZ/TM5iFjRNEPcTQvwAm1Rf9sa0Vn8GHaFhrGDyS8=;
+ b=mVSTN16NWudsNzvcXfYIYuTYqL0sqfc6Fr/Oq8p7adamNyHeBOh+oNPPoYP7dtJDPE
+ 0LNE9WwQP5w2r++v5RsmhrYFEAwn27R2hFdXjFVQi5fvyx2ypFin9Hqh4z5Nq6ldQJnY
+ fWQvKUKznxI3vTUCs5yt32dywUSAUswPHzMul3pigKSgl7hofKfr0AQkOt9DhKPCL+jb
+ lGglvZ5lPbmoSE/7uO0m/BI9wcRO1+yos2a59Wps9u+3zkoB5+XLU3G2Jdsf3fED9+Qy
+ /NoeUZfObJ35DVhEAta9eOzLeItIpwSzPJxQFCc+CSTq2gmDaZNACDpRpNFrok5GNdAl
+ t8og==
+X-Gm-Message-State: AOAM531E3R808qtHTahC0xbNHPFhXSYPOFh2fFfuogK7hX91IXvwXTeX
+ d1wSQ2I3sHwt8AFt+3tRuTY=
+X-Google-Smtp-Source: ABdhPJwfXUbrlF/7/i3HpOAjRWzSx6CID+NldJIDTrdbVDmdF/K2ezrDy2plL4pyJZXRpJrn9ujOZA==
+X-Received: by 2002:a05:600c:2888:: with SMTP id
+ g8mr13821246wmd.169.1610813932365; 
+ Sat, 16 Jan 2021 08:18:52 -0800 (PST)
 Received: from [0.0.0.0] ([2a01:4f8:c17:e10a::1])
- by smtp.gmail.com with ESMTPSA id o8sm18256383wrm.17.2021.01.16.07.50.41
+ by smtp.gmail.com with ESMTPSA id y6sm18721730wrp.6.2021.01.16.08.18.47
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 16 Jan 2021 07:50:47 -0800 (PST)
-Subject: Re: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
-To: Mark Brown <broonie@kernel.org>, Perry Yuan <Perry.Yuan@dell.com>
-References: <20210112171814.5404-1-Perry_Yuan@Dell.com>
- <20210112175406.GF4646@sirena.org.uk>
+ Sat, 16 Jan 2021 08:18:51 -0800 (PST)
+Subject: Re: [PATCH v3 2/3] x86/platform/dell-privacy-wmi: add document for
+ dell privacy driver
+To: "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+ "Yuan, Perry" <Perry.Yuan@dell.com>,
+ "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>,
+ "hdegoede@redhat.com" <hdegoede@redhat.com>,
+ "mgross@linux.intel.com" <mgross@linux.intel.com>
+References: <20210112171755.14408-1-Perry_Yuan@Dell.com>
+ <BY3PR19MB49137D1D7508190AF87655FEFAAA0@BY3PR19MB4913.namprd19.prod.outlook.com>
 From: Perry Yuan <perry979106@gmail.com>
-Message-ID: <bd2aea87-2f91-2748-424b-50b3b6feb22b@gmail.com>
-Date: Sat, 16 Jan 2021 23:50:31 +0800
+Message-ID: <b58b36a6-e964-663b-cf76-c058ba6f36eb@gmail.com>
+Date: Sun, 17 Jan 2021 00:18:38 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210112175406.GF4646@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <BY3PR19MB49137D1D7508190AF87655FEFAAA0@BY3PR19MB4913.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Mon, 18 Jan 2021 09:02:51 +0100
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, mgross@linux.intel.com,
- Mario.Limonciello@dell.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- tiwai@suse.com, platform-driver-x86@vger.kernel.org, hdegoede@redhat.com
+Cc: "platform-driver-x86@vger.kernel.org"
+ <platform-driver-x86@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,90 +123,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
-  Thanks for your review feedback.
+Hi Mario,
+Thanks for your review.
+On 2021/1/13 1:54, Limonciello, Mario wrote:
+>> -----Original Message-----
+>> From: Yuan, Perry <Perry_Yuan@Dell.com>
+>> Sent: Tuesday, January 12, 2021 11:18
+>> To: oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
+>> hdegoede@redhat.com; mgross@linux.intel.com
+>> Cc: lgirdwood@gmail.com; broonie@kernel.org; alsa-devel@alsa-project.org;
+>> linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; Yuan,
+>> Perry; Limonciello, Mario
+>> Subject: [PATCH v3 2/3] x86/platform/dell-privacy-wmi: add document for dell
+>> privacy driver
+>>
+>> From: Perry Yuan <perry_yuan@dell.com>
+>>
+>> Describe the Dell Privacy feature capabilities and devices
+>> state class exposed by BIOS
+>>
+>> Signed-off-by: Perry Yuan <perry_yuan@dell.com>
+>> ---
+>>   .../testing/sysfs-platform-dell-privacy-wmi   | 31 +++++++++++++++++++
+>>   1 file changed, 31 insertions(+)
+>>   create mode 100644 Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+> 
+> I don't see a reason that the documentation needs to come in it's own commit.
+> In v4, I would think this can collapse as part of:
+> "Add support for Dell hardware privacy"
+> 
+Agreed. will merge this patch content to "Add support for Dell hardware 
+privacy"
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+>> b/Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+>> new file mode 100644
+>> index 000000000000..3dbc2d25b60e
+>> --- /dev/null
+>> +++ b/Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+>> @@ -0,0 +1,31 @@
+>> +What:		/sys/bus/wmi/devices/6932965F-1671-4CEB-B988-
+>> D3AB0A901919/devices_supported
+>> +Date:		Jan 2021
+>> +KernelVersion:	5.11
+> I think this is 5.12 material now.
+> Need to update this to approximate 5.12 date.
+> 
+>> +Contact:	"perry_yuan@dell.com>"
+> 
+> I think Dell addresses publicly use a period rather than an underscore, no?
+> So shouldn't this be perry.yuan@dell.com? (Although I acknowledge it's an
+> alias, I don't trust that I/T wouldn't remove that some day).
+> 
+changed using period for the mail address.
+>> +Description:
+>> +		Display which dell hardware level privacy devices are supported
+>> +		“Dell Privacy” is a set of HW, FW, and SW features to enhance
+>> +		Dell’s commitment to platform privacy for MIC, Camera, and
+>> +		ePrivacy screens.
+>> +		The supported privacy haredware privacy devices are:
+> 
+> You have a typo here.
+will fix this in V4.
+> 
+>> +		 * 0x0 - None,
+>> +		 * 0x1 - Microphone,
+>> +		 * 0x2 - Camera,
+>> +		 * 0x4 - ePrivacy Screen
+> 
+> So this is an bitmap encoded in the integer?  I think that needs to be mentioned
+> in the documentation.
+> 
+Indeed it is a bitmap , will change this part as below in V4.
 
-On 2021/1/13 1:54, Mark Brown wrote:
-> On Wed, Jan 13, 2021 at 01:18:14AM +0800, Perry Yuan wrote:
-> 
->> Some new Dell system is going to support audio internal micphone
->> privacy setting from hardware level with micmute led state changing
->> When micmute hotkey pressed by user, soft mute will need to be enabled
->> firstly in case of pop noise, and codec driver need to react to mic
->> mute event to EC(embedded controller) notifying that SW mute is completed
->> Then EC will do the hardware mute physically within the timeout reached
-> 
->> This patch allow codec rt715 driver to ack EC when micmute key pressed
->> through this micphone led control interface like hda_generic provided
->> ACPI method defined in dell-privacy micmute led trigger will be called
->> for notifying the EC that software mute has been completed
-> 
-> It feels like there's an abstraction problem here with this being hard
-> coded in a specific CODEC driver.
-> 
+  What: 
+/sys/bus/wmi/devices/6932965F-1671-4CEB-B988-D3AB0A901919/devices_supported
+  Date:          Jan 2021
+-KernelVersion: 5.11
+-Contact:       "perry_yuan@dell.com>"
++KernelVersion: 5.12
++Contact:       "perry.yuan@dell.com>"
+  Description:
+                 Display which dell hardware level privacy devices are 
+supported
+                 “Dell Privacy” is a set of HW, FW, and SW features to 
+enhance
+                 Dell’s commitment to platform privacy for MIC, Camera, and
+                 ePrivacy screens.
+-               The supported privacy haredware privacy devices are:
+-                * 0x0 - None,
+-                * 0x1 - Microphone,
+-                * 0x2 - Camera,
+-                * 0x4 - ePrivacy Screen
++               The supported hardware privacy devices are:
++               - 0 = Not Supported
++               - 1 = Supported
++               - Bit0 -> Microphone
++               - Bit1 -> Camera
++               - Bit2 -> ePrivacy Screen
 
-I will remove the CONFIG_DELL_PRIVACY ,because other vendors and other 
-platforms maybe need to set their Mic mute led state when they enable 
-soundwire and sof driver for audio function.
-We can avoid hardcode in codec driver, indeed it is need for this new
-soundwire & sof architecture of alsa.
-
->>   #include <linux/soundwire/sdw.h>
->> @@ -244,6 +245,7 @@ static int rt715_sdca_get_volsw(struct snd_kcontrol *kcontrol,
->>   	unsigned int max = mc->max;
->>   	int val;
->>   
->> +	pr_err("++++++rt715_sdca_get_volsw++\n");
->>   	val = snd_soc_component_read(component, mc->reg);
->>   	if (val < 0)
->>   		return -EINVAL;
-> 
-> This shouldn't be in the patch.
-It is my mistake to leave the debug line here.
-will be removed in next V4 .
-> 
->> @@ -287,6 +291,18 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
->>   			return err;
->>   	}
->>   
->> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
->> +	/* dell privacy LED trigger state changed by muted/unmute switch */
->> +	if (mc->invert) {
->> +		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
->> +			rt715->micmute_led = LED_OFF;
->> +		} else {
->> +			rt715->micmute_led = LED_ON;
->> +		}
->> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
->> +	}
->> +#endif
 >> +
+>> +What:		/sys/bus/wmi/devices/6932965F-1671-4CEB-B988-
+>> D3AB0A901919/current_state
+>> +Date:		Jan 2021
+>> +KernelVersion:	5.11
+>> +Contact:	"perry_yuan@dell.com>"
+>> +Description:
+>> +		Allow user space to check current dell privacy device state.
+>> +		Describes the Device State class exposed by BIOS which can be
+>> +		consumed by various applications interested in knowing the Privacy
+>> +		feature capabilities
+>> +		There are three Bits for available states:
+>> +		    * 0 -> Off
+>> +		    * 1 -> On
+>> +		    * Bit0 -> Microphone
+>> +		    * Bit1 -> Camera
+>> +		    * Bit2 -> ePrivacyScreen
+>> +
+>> --
+>> 2.25.1
 > 
-> This doesn't look good.  There's nothing Dell specific here, and nothing
-> about this is conditional on any sort of runtime detection of Dell
-> systems, it's not obvious why this is conditional on DELL_PRIVACY or why
-> we only report the state if the control is inverted.
-
-I will remove the CONFIG_DELL_PRIVACY for the mic mute led operation is 
-not only needed for dell platforms but also other Vendors all need to 
-set micmute led necessaryily.
-> 
-> I'm also not convinced that it's a good idea to set the mute LED if only
-> one channel in a stereo microphone is muted, that seems likely to lead
-> to surprising behaviour for users.
-> 
-At first, i just want to handle val0 == 1 && val1 == 1 and val0 == 0 && 
-val1 == 0 only. Intel suggested i need to cover all about other cases, 
-the mute led should be off if any channel of mic is on.
-So i change the led state when any one channel is muted or unmuted.
-
-> TBH I don't understand why this isn't being done in generic code.
-> 
->> +	bool micmute_led;
-> 
-> What is this for, it never seems to be read except for in the function
-> where it's set?
-> 
-
-Do you mean i can use a local micmute_led var in the function?
 
