@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB63FC433E6
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0E1BC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:12:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6182B22510
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:11:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6182B22510
+	by mail.kernel.org (Postfix) with ESMTPS id 140DA22510
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:12:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 140DA22510
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7209174A;
-	Sun, 17 Jan 2021 17:10:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7209174A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96CBA178B;
+	Sun, 17 Jan 2021 17:11:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96CBA178B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610899906;
-	bh=gA+9UWlUdeha3xxLUfXwJnmxCl/h7745Aq8gS7xvDSU=;
+	s=default; t=1610899927;
+	bh=ziHLUdkIsaSStJ48wQrtLTbkmy02eDgERkJ7eYcc7eI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PiqdtZUbo8aAwpdSuJLUt6l3aSRJnsgX1Pd/edbcdHTfOKdc+ZKErWoGSH/ioTX7K
-	 3zpDSefmVq4uWUS/Vn+Be2Km2dAzOa+nISqds9BgBN7weey5mP+PHcvTb8FejXRXX7
-	 gGUntk3zS6TrqBa1dUPTGlJcM1AmGe7GyKqBg6l8=
+	b=Zl0aSjsbmo6visrOCIqDhheV6hTOe6tStS31cdpQnPTCdAwP+2MMhNGpKkl/TiVK0
+	 s20nPq7QRTPcVq34+/2Znd72yEsecTlh2z74ek4PWFBfSpny5H4BmzBncFYoMQFJG3
+	 Viz4pj8iixKC//xkEzFmRqX7R84rWvqV/lsX/iY0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4383EF80527;
-	Sun, 17 Jan 2021 17:07:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21CC6F80529;
+	Sun, 17 Jan 2021 17:07:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A16DF804E2; Sun, 17 Jan 2021 17:06:32 +0100 (CET)
+ id E3E6CF804FE; Sun, 17 Jan 2021 17:06:43 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3081AF8026A
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 17:06:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3081AF8026A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45782F804ED
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 17:06:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45782F804ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="B45JFnuV"
+ header.b="aMhOmP2f"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610899588;
+ s=mimecast20190719; t=1610899596;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=pPpDVW4Z7epgF4/Pf2+S8J+h+2S2GVmGKe2F3fVzvTc=;
- b=B45JFnuVQ/DU2Jb4IJNEa8iqoopRY10a7Pbd78C+7Ggoq5aNsU6d+hAzzAZqeiOpFnFH1K
- B/V//3kF5HOtfK2PSJSb5I3fG5/OsY2DgcOdnGorzJBlWlZu5m5QkR7IgQB/FMIZNDHTpj
- HXr3zOwRgEQs552TfBbYP6KN9wN7Krc=
+ bh=q6w3bi1VSaEW/f8A1/1lkclMfS3GjoBKCES77U3cUT0=;
+ b=aMhOmP2fQxWOQj4KJPXoAtbwn+1iCTxaHigBA+OukClxbOARdReTmmCuNplXKpSAU4OyND
+ iQenqml35Btc58+yWiWoRuqz0hhvSE71asda/psV0Kp5PQvA3UJhEIdX12Ma1X3dfKskn3
+ 4PIChEmT5wsfqVmWQOEOJLy6nxQERko=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-568-GDoRi8D0ONK9KGdwyXutLQ-1; Sun, 17 Jan 2021 11:06:24 -0500
-X-MC-Unique: GDoRi8D0ONK9KGdwyXutLQ-1
+ us-mta-249-V0Tcl4gMMLqzB16-CBI35g-1; Sun, 17 Jan 2021 11:06:32 -0500
+X-MC-Unique: V0Tcl4gMMLqzB16-CBI35g-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4A3D15720;
- Sun, 17 Jan 2021 16:06:22 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 527A1107ACE4;
+ Sun, 17 Jan 2021 16:06:30 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 8ED135C266;
- Sun, 17 Jan 2021 16:06:20 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 1C19A5C233;
+ Sun, 17 Jan 2021 16:06:27 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 07/12] ASoC: arizona-jack: Use arizona->dev for runtime-pm
-Date: Sun, 17 Jan 2021 17:05:50 +0100
-Message-Id: <20210117160555.78376-8-hdegoede@redhat.com>
+Subject: [PATCH v2 10/12] ASoC: arizona: Make the wm5102, wm5110,
+ wm8997 and wm8998 drivers use the new jack library
+Date: Sun, 17 Jan 2021 17:05:53 +0100
+Message-Id: <20210117160555.78376-11-hdegoede@redhat.com>
 In-Reply-To: <20210117160555.78376-1-hdegoede@redhat.com>
 References: <20210117160555.78376-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,203 +104,218 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use arizona->dev for runtime-pm as the main shared/libray code from
-sound/soc/codecs/arizona.c does.
+Make all arizona codec drivers for which drivers/mfd/arizona-core.c used
+to instantiate a "arizona-extcon" child-device use the new arizona-jack.c
+library for jack-detection.
 
-This is part of a patch series converting the arizona extcon driver into
-a helper library for letting the arizona codec-drivers directly report jack
-state through the standard sound/soc/soc-jack.c functions.
+This has been tested on a Lenovo Yoga Tablet 2 1051L with a WM5102 codec.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/arizona-jack.c | 42 ++++++++++++++-------------------
- sound/soc/codecs/arizona.h      |  1 -
- 2 files changed, 18 insertions(+), 25 deletions(-)
+ sound/soc/codecs/wm5102.c | 12 +++++++++++-
+ sound/soc/codecs/wm5110.c | 12 +++++++++++-
+ sound/soc/codecs/wm8997.c | 14 ++++++++++++--
+ sound/soc/codecs/wm8998.c |  9 +++++++++
+ 4 files changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona-jack.c b/sound/soc/codecs/arizona-jack.c
-index c81c3b20f94e..a6e8071f84ab 100644
---- a/sound/soc/codecs/arizona-jack.c
-+++ b/sound/soc/codecs/arizona-jack.c
-@@ -251,7 +251,7 @@ static void arizona_start_mic(struct arizona_priv *info)
- 	unsigned int mode;
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 70d353b63fe0..b77595fb3ea8 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2004,6 +2004,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm5102 = {
+ 	.remove			= wm5102_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm5102_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.name			= DRV_NAME,
+ 	.compress_ops		= &wm5102_compress_ops,
+ 	.controls		= wm5102_snd_controls,
+@@ -2057,6 +2058,11 @@ static int wm5102_probe(struct platform_device *pdev)
+ 	if (ret != 0)
+ 		return ret;
  
- 	/* Microphone detection can't use idle mode */
--	pm_runtime_get(info->dev);
-+	pm_runtime_get_sync(arizona->dev);
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm5102->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm5102->fll); i++)
+ 		wm5102->fll[i].vco_mult = 1;
  
- 	if (info->detecting) {
- 		ret = regulator_allow_bypass(info->micvdd, false);
-@@ -296,7 +296,7 @@ static void arizona_start_mic(struct arizona_priv *info)
- 		dev_err(arizona->dev, "Failed to enable micd: %d\n", ret);
- 	} else if (!change) {
- 		regulator_disable(info->micvdd);
--		pm_runtime_put_autosuspend(info->dev);
-+		pm_runtime_put_autosuspend(arizona->dev);
- 	}
- }
- 
-@@ -341,8 +341,8 @@ static void arizona_stop_mic(struct arizona_priv *info)
- 
- 	if (change) {
- 		regulator_disable(info->micvdd);
--		pm_runtime_mark_last_busy(info->dev);
--		pm_runtime_put_autosuspend(info->dev);
-+		pm_runtime_mark_last_busy(arizona->dev);
-+		pm_runtime_put_autosuspend(arizona->dev);
- 	}
- }
- 
-@@ -534,7 +534,7 @@ static int arizona_hpdet_do_id(struct arizona_priv *info, int *reading,
- 		info->num_hpdet_res = 0;
- 		info->hpdet_retried = true;
- 		arizona_start_hpdet_acc_id(info);
--		pm_runtime_put(info->dev);
-+		pm_runtime_put(arizona->dev);
- 		return -EAGAIN;
+@@ -2089,7 +2095,7 @@ static int wm5102_probe(struct platform_device *pdev)
+ 				  wm5102);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Failed to request DSP IRQ: %d\n", ret);
+-		return ret;
++		goto err_jack_codec_dev;
  	}
  
-@@ -631,7 +631,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
- 		arizona_start_mic(info);
+ 	ret = arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 1);
+@@ -2123,6 +2129,8 @@ static int wm5102_probe(struct platform_device *pdev)
+ err_dsp_irq:
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5102);
++err_jack_codec_dev:
++	arizona_jack_codec_dev_remove(&wm5102->core);
  
- 	if (info->hpdet_active) {
--		pm_runtime_put_autosuspend(info->dev);
-+		pm_runtime_put_autosuspend(arizona->dev);
- 		info->hpdet_active = false;
- 	}
- 
-@@ -656,7 +656,7 @@ static void arizona_identify_headphone(struct arizona_priv *info)
- 	dev_dbg(arizona->dev, "Starting HPDET\n");
- 
- 	/* Make sure we keep the device enabled during the measurement */
--	pm_runtime_get(info->dev);
-+	pm_runtime_get_sync(arizona->dev);
- 
- 	info->hpdet_active = true;
- 
-@@ -685,7 +685,7 @@ static void arizona_identify_headphone(struct arizona_priv *info)
- 
- err:
- 	arizona_extcon_hp_clamp(info, false);
--	pm_runtime_put_autosuspend(info->dev);
-+	pm_runtime_put_autosuspend(arizona->dev);
- 
- 	/* Just report headphone */
- 	ret = extcon_set_state_sync(info->edev, EXTCON_JACK_HEADPHONE, true);
-@@ -708,7 +708,7 @@ static void arizona_start_hpdet_acc_id(struct arizona_priv *info)
- 	dev_dbg(arizona->dev, "Starting identification via HPDET\n");
- 
- 	/* Make sure we keep the device enabled during the measurement */
--	pm_runtime_get_sync(info->dev);
-+	pm_runtime_get_sync(arizona->dev);
- 
- 	info->hpdet_active = true;
- 
-@@ -1006,7 +1006,7 @@ static void arizona_micd_detect(struct work_struct *work)
- 	else
- 		arizona_button_reading(info);
- 
--	pm_runtime_mark_last_busy(info->dev);
-+	pm_runtime_mark_last_busy(arizona->dev);
- 	mutex_unlock(&info->lock);
- }
- 
-@@ -1090,7 +1090,7 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
- 	cancelled_hp = cancel_delayed_work_sync(&info->hpdet_work);
- 	cancelled_mic = cancel_delayed_work_sync(&info->micd_timeout_work);
- 
--	pm_runtime_get_sync(info->dev);
-+	pm_runtime_get_sync(arizona->dev);
- 
- 	mutex_lock(&info->lock);
- 
-@@ -1110,7 +1110,7 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
- 		dev_err(arizona->dev, "Failed to read jackdet status: %d\n",
- 			ret);
- 		mutex_unlock(&info->lock);
--		pm_runtime_put_autosuspend(info->dev);
-+		pm_runtime_put_autosuspend(arizona->dev);
- 		return IRQ_NONE;
- 	}
- 
-@@ -1210,8 +1210,8 @@ static irqreturn_t arizona_jackdet(int irq, void *data)
- 
- 	mutex_unlock(&info->lock);
- 
--	pm_runtime_mark_last_busy(info->dev);
--	pm_runtime_put_autosuspend(info->dev);
-+	pm_runtime_mark_last_busy(arizona->dev);
-+	pm_runtime_put_autosuspend(arizona->dev);
- 
- 	return IRQ_HANDLED;
- }
-@@ -1366,7 +1366,6 @@ static int arizona_extcon_probe(struct platform_device *pdev)
- 
- 	mutex_init(&info->lock);
- 	info->arizona = arizona;
--	info->dev = &pdev->dev;
- 	info->last_jackdet = ~(ARIZONA_MICD_CLAMP_STS | ARIZONA_JD1_STS);
- 	INIT_DELAYED_WORK(&info->hpdet_work, arizona_hpdet_work);
- 	INIT_DELAYED_WORK(&info->micd_detect_work, arizona_micd_detect);
-@@ -1617,9 +1616,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
- 
- 	arizona_extcon_set_mode(info, 0);
- 
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_idle(&pdev->dev);
--	pm_runtime_get_sync(&pdev->dev);
-+	pm_runtime_get_sync(arizona->dev);
- 
- 	if (info->micd_clamp) {
- 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
-@@ -1689,7 +1686,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
- 		goto err_hpdet;
- 	}
- 
--	pm_runtime_put(&pdev->dev);
-+	pm_runtime_put(arizona->dev);
- 
- 	return 0;
- 
-@@ -1706,8 +1703,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
- err_rise:
- 	arizona_free_irq(arizona, jack_irq_rise, info);
- err_pm:
--	pm_runtime_put(&pdev->dev);
--	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put(arizona->dev);
- err_gpio:
- 	gpiod_put(info->micd_pol_gpio);
  	return ret;
-@@ -1747,7 +1743,7 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 			ret);
- 	} else if (change) {
- 		regulator_disable(info->micvdd);
--		pm_runtime_put(info->dev);
-+		pm_runtime_put(arizona->dev);
- 	}
+ }
+@@ -2141,6 +2149,8 @@ static int wm5102_remove(struct platform_device *pdev)
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5102);
  
- 	regmap_update_bits(arizona->regmap,
-@@ -1759,8 +1755,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 
- 	gpiod_put(info->micd_pol_gpio);
- 
--	pm_runtime_disable(&pdev->dev);
--
++	arizona_jack_codec_dev_remove(&wm5102->core);
++
  	return 0;
  }
  
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index d1a263a67bba..7132dbc3c840 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -93,7 +93,6 @@ struct arizona_priv {
- 	bool dvfs_cached;
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 4238929b2375..ef22051a3599 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2370,6 +2370,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm5110 = {
+ 	.remove			= wm5110_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm5110_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.name			= DRV_NAME,
+ 	.compress_ops		= &wm5110_compress_ops,
+ 	.controls		= wm5110_snd_controls,
+@@ -2424,6 +2425,11 @@ static int wm5110_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
  
- 	/* Variables used by arizona-jack.c code */
--	struct device *dev;
- 	struct mutex lock;
- 	struct delayed_work hpdet_work;
- 	struct delayed_work micd_detect_work;
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm5110->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm5110->fll); i++)
+ 		wm5110->fll[i].vco_mult = 3;
+ 
+@@ -2456,7 +2462,7 @@ static int wm5110_probe(struct platform_device *pdev)
+ 				  wm5110);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Failed to request DSP IRQ: %d\n", ret);
+-		return ret;
++		goto err_jack_codec_dev;
+ 	}
+ 
+ 	ret = arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 1);
+@@ -2490,6 +2496,8 @@ static int wm5110_probe(struct platform_device *pdev)
+ err_dsp_irq:
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
++err_jack_codec_dev:
++	arizona_jack_codec_dev_remove(&wm5110->core);
+ 
+ 	return ret;
+ }
+@@ -2510,6 +2518,8 @@ static int wm5110_remove(struct platform_device *pdev)
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
+ 
++	arizona_jack_codec_dev_remove(&wm5110->core);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 229f2986cd96..4f5a848960e0 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1096,6 +1096,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8997 = {
+ 	.remove			= wm8997_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm8997_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.controls		= wm8997_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(wm8997_snd_controls),
+ 	.dapm_widgets		= wm8997_dapm_widgets,
+@@ -1132,6 +1133,11 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ 	arizona_init_dvfs(&wm8997->core);
+ 
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm8997->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8997->fll); i++)
+ 		wm8997->fll[i].vco_mult = 1;
+ 
+@@ -1163,10 +1169,10 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ 	ret = arizona_init_vol_limit(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_jack_codec_dev;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_jack_codec_dev;
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &soc_component_dev_wm8997,
+@@ -1181,6 +1187,8 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ err_spk_irqs:
+ 	arizona_free_spk_irqs(arizona);
++err_jack_codec_dev:
++	arizona_jack_codec_dev_remove(&wm8997->core);
+ 
+ 	return ret;
+ }
+@@ -1194,6 +1202,8 @@ static int wm8997_remove(struct platform_device *pdev)
+ 
+ 	arizona_free_spk_irqs(arizona);
+ 
++	arizona_jack_codec_dev_remove(&wm8997->core);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 5413254295b7..f74af1c46933 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -1316,6 +1316,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8998 = {
+ 	.remove			= wm8998_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm8998_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.controls		= wm8998_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(wm8998_snd_controls),
+ 	.dapm_widgets		= wm8998_dapm_widgets,
+@@ -1350,6 +1351,11 @@ static int wm8998_probe(struct platform_device *pdev)
+ 	wm8998->core.arizona = arizona;
+ 	wm8998->core.num_inputs = 3;	/* IN1L, IN1R, IN2 */
+ 
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm8998->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8998->fll); i++)
+ 		wm8998->fll[i].vco_mult = 1;
+ 
+@@ -1392,6 +1398,7 @@ static int wm8998_probe(struct platform_device *pdev)
+ 	arizona_free_spk_irqs(arizona);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
++	arizona_jack_codec_dev_remove(&wm8998->core);
+ 
+ 	return ret;
+ }
+@@ -1405,6 +1412,8 @@ static int wm8998_remove(struct platform_device *pdev)
+ 
+ 	arizona_free_spk_irqs(arizona);
+ 
++	arizona_jack_codec_dev_remove(&wm8998->core);
++
+ 	return 0;
+ }
+ 
 -- 
 2.28.0
 
