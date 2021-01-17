@@ -7,78 +7,79 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E729CC433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 15:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A02BFC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 15:50:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D9F3221ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 15:49:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D9F3221ED
+	by mail.kernel.org (Postfix) with ESMTPS id E6621207B5
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 15:50:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6621207B5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D10CA1743;
-	Sun, 17 Jan 2021 16:48:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D10CA1743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 013EF174D;
+	Sun, 17 Jan 2021 16:49:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 013EF174D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610898565;
-	bh=GhU8PGO1+yx8Njokzd23JuRMxpfYiQ6QA0BKKiNBVyY=;
+	s=default; t=1610898606;
+	bh=Ggdl+GWhET9S15PnCflBg7ZffwCEes+Z/BLR2Ig07jQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lf4lpiBpKsQNSWsWmnAu5xe6C3bi/3GI0YcSIyYwqilAJTOhs0ogQxFpY/ePITllC
-	 AsqDbkGwHkKDBbFejbIEVlDnmRJPTWQNWQESUCRtGNHKI7ahKN1cPA4vpRrofth4mZ
-	 fOvnkOJ29vVUnwxHAkAbrur18d9Y0XA4fdSllGFc=
+	b=oBZuA3mW9leBjdQdhlBdp9HJ5W4oMFFUc/3HrQDYWhQ/N26oc5awZGL2wKgRqjZ1L
+	 CS+872qiJSj9UVDc1EjzB2d8usg9gLsrpm2qd8CNQI3UJBFfZGoC1rJzf0B/g9IHAc
+	 PyMZybWO1nua0iwl+nITAVI2UT4ws7N6ZDBlXamc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 240BDF804C2;
-	Sun, 17 Jan 2021 16:47:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6FE9F804CB;
+	Sun, 17 Jan 2021 16:47:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA57DF800C0; Sun, 17 Jan 2021 16:47:36 +0100 (CET)
+ id E5255F804D6; Sun, 17 Jan 2021 16:47:43 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A34CF800C0
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 16:47:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A34CF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47D07F804C3
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 16:47:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47D07F804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="jAtCPZUO"
+ header.b="iYUMO1AM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610898448;
+ s=mimecast20190719; t=1610898455;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=dwWb/jzvcF0HeOiU902re41Et7/qhlMHI34fzUY/I1I=;
- b=jAtCPZUOywfoq1yrWZkeqX3bVMv7LMrvFIzLTrf1/2l8x4zl/mMYfdEXMdDoc6PlTw4TEw
- ftAxG8mJR5F36IiX3kSVTxiwLTJeK80MAY68kUJ77tolJ/2ZT1+erz+cKyOysOQW4x/6TZ
- OQSDI7fgTHYpEHw3AmzEwIFKesO0pM0=
+ bh=S7lzl9Lt2MjVC8UQX3UTaRWTMvWQodOhj9ejnhEdfCg=;
+ b=iYUMO1AMyg0lRnUwJGnnobFlo2F3ZB0Jsn1/j1Tgqkkob+FN3GNRyK6P6/dnbRoF+PswUG
+ YnvSDB4vTK1Nh9viY6+uynIj+u6MB/HEGQs3ggDRl88bZ2O2YCiigD5xXyo+701B56UDHH
+ XkW9hbXzphevd8JVR+rm19MkiACq5g0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-JgnJjhLpOCGyru3Zl0Fk8Q-1; Sun, 17 Jan 2021 10:47:25 -0500
-X-MC-Unique: JgnJjhLpOCGyru3Zl0Fk8Q-1
+ us-mta-237-YiYRAXsIPRGibLaIOYTprQ-1; Sun, 17 Jan 2021 10:47:33 -0500
+X-MC-Unique: YiYRAXsIPRGibLaIOYTprQ-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EE29107ACE6;
- Sun, 17 Jan 2021 15:47:23 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 582D6107ACE4;
+ Sun, 17 Jan 2021 15:47:31 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 6593919D9F;
- Sun, 17 Jan 2021 15:47:21 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 0F9F619C44;
+ Sun, 17 Jan 2021 15:47:28 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 1/5] mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
-Date: Sun, 17 Jan 2021 16:47:13 +0100
-Message-Id: <20210117154717.77969-2-hdegoede@redhat.com>
+Subject: [PATCH v2 4/5] ASoC: Intel: Add DMI quirk table to
+ soc_intel_is_byt_cr()
+Date: Sun, 17 Jan 2021 16:47:16 +0100
+Message-Id: <20210117154717.77969-5-hdegoede@redhat.com>
 In-Reply-To: <20210117154717.77969-1-hdegoede@redhat.com>
 References: <20210117154717.77969-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,62 +104,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The (shared) probing code of the arizona-i2c and arizona-spi modules
-takes the following steps during init:
+Some Bay Trail systems:
+1. Use a non CR version of the Bay Trail SoC
+2. Contain at least 6 interrupt resources so that the
+   platform_get_resource(pdev, IORESOURCE_IRQ, 5) check to workaround
+   non CR systems which list their IPC IRQ at index 0 despite being
+   non CR does not work
+3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
 
-1. Call mfd_add_devices() for a set of early child-devices, this
-includes the arizona_ldo1 device which provides one of the
-core-regulators.
-
-2. Bulk enable the core-regulators.
-
-3. Read the device id.
-
-4. Call mfd_add_devices() for the other child-devices.
-
-This sequence depends on 1. leading to not only the child-device
-being created, but also the driver for the child-device binding
-to it and registering its regulator.
-
-This requires the arizona_ldo1 driver to be loaded before the
-shared probing code runs. Add a softdep for this to both modules to
-ensure that this requirement is met.
-
-Note this mirrors the existing MODULE_SOFTDEP("pre: wm8994_regulator")
-in the wm8994 code, which has a similar init sequence.
+Add a DMI quirk table to check for the few known models with this issue,
+so that the right IPC IRQ index is used on these systems.
 
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/mfd/arizona-i2c.c | 1 +
- drivers/mfd/arizona-spi.c | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/intel/common/soc-intel-quirks.h | 25 +++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 4b58e3ad6eb6..2a4a3a164d0a 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -115,6 +115,7 @@ static struct i2c_driver arizona_i2c_driver = {
+diff --git a/sound/soc/intel/common/soc-intel-quirks.h b/sound/soc/intel/common/soc-intel-quirks.h
+index b07df3059926..a93987ab7f4d 100644
+--- a/sound/soc/intel/common/soc-intel-quirks.h
++++ b/sound/soc/intel/common/soc-intel-quirks.h
+@@ -11,6 +11,7 @@
  
- module_i2c_driver(arizona_i2c_driver);
+ #if IS_ENABLED(CONFIG_X86)
  
-+MODULE_SOFTDEP("pre: arizona_ldo1");
- MODULE_DESCRIPTION("Arizona I2C bus interface");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-index 2633e147b76c..704f214d2614 100644
---- a/drivers/mfd/arizona-spi.c
-+++ b/drivers/mfd/arizona-spi.c
-@@ -110,6 +110,7 @@ static struct spi_driver arizona_spi_driver = {
++#include <linux/dmi.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ #include <asm/iosf_mbi.h>
+@@ -38,12 +39,36 @@ SOC_INTEL_IS_CPU(cml, KABYLAKE_L);
  
- module_spi_driver(arizona_spi_driver);
+ static inline bool soc_intel_is_byt_cr(struct platform_device *pdev)
+ {
++	/*
++	 * List of systems which:
++	 * 1. Use a non CR version of the Bay Trail SoC
++	 * 2. Contain at least 6 interrupt resources so that the
++	 *    platform_get_resource(pdev, IORESOURCE_IRQ, 5) check below
++	 *    succeeds
++	 * 3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
++	 *
++	 * This needs to be here so that it can be shared between the SST and
++	 * SOF drivers. We rely on the compiler to optimize this out in files
++	 * where soc_intel_is_byt_cr is not used.
++	 */
++	static const struct dmi_system_id force_bytcr_table[] = {
++		{	/* Lenovo Yoga Tablet 2 series */
++			.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++				DMI_MATCH(DMI_PRODUCT_FAMILY, "YOGATablet2"),
++			},
++		},
++		{}
++	};
+ 	struct device *dev = &pdev->dev;
+ 	int status = 0;
  
-+MODULE_SOFTDEP("pre: arizona_ldo1");
- MODULE_DESCRIPTION("Arizona SPI bus interface");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
+ 	if (!soc_intel_is_byt())
+ 		return false;
+ 
++	if (dmi_check_system(force_bytcr_table))
++		return true;
++
+ 	if (iosf_mbi_available()) {
+ 		u32 bios_status;
+ 
 -- 
 2.28.0
 
