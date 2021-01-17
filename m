@@ -2,96 +2,88 @@ Return-Path: <SRS0=1bGq=GU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D6C0C433E6
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 13:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C0FC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 15:48:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F41720707
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 13:59:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F41720707
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 45F832251F
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 15:48:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45F832251F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DF08170C;
-	Sun, 17 Jan 2021 14:58:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DF08170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09CBA1729;
+	Sun, 17 Jan 2021 16:47:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09CBA1729
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610891940;
-	bh=0UkWh6NIgLIhhLXboJqI+HPPitKYKUiY1zJSOFW/Zss=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SEOq5k/W/+5MPj+7339pI2nZdclEQ30QRZdxhpbe805k6dTdxvmr76rq5ro/T1YKz
-	 fA7tIv4QfJgrXsUGlP5idMRHtTDnYFELrQqknXl9UTWA9wXD6HLnSg/UuZXiJxCYon
-	 H7cvKs1BjxBmRqcKrKDUJc6BFssmCWGlDvj/3Jg8=
+	s=default; t=1610898505;
+	bh=QiBlg/LRTf+7zZ0Dh7vt02GWJNSjL1FrHu3EJ+bfA0o=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=noJEfq0JAegeEyiGlJ4NWUCaxUkBRw7FkQ2VbuIsICErZFYNwxEvhuKTi4AD18wOc
+	 FoDJLXv3I+YFqlYGoq95TRrjxRWrzVfC5NG6nsHXv/YuphbPPVuokf3DgBnqT1+nDb
+	 X99MSFwSRHiA2UYlIWWpc1ImKn70pKNwPpqZhilY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1367DF80255;
-	Sun, 17 Jan 2021 14:58:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70551F80115;
+	Sun, 17 Jan 2021 16:47:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CE27F80257; Sun, 17 Jan 2021 14:58:09 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 99239F8026A; Sun, 17 Jan 2021 16:47:31 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B1EEF800C0
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 14:58:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B1EEF800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 991A3F80115
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 16:47:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 991A3F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="CdezZa8z"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 10HDvxmN020822; Sun, 17 Jan 2021 07:57:59 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=xE1JljvO7ZczxrfosQstnRFJWgh+VIwr03wAOheM0bc=;
- b=CdezZa8zVdzagXQvultXiLHrYOjfm/uNh0rJw0//Hz37qijqyhA4qe4xehM9mUe7+yez
- seEiUFLXbkFVcBZ91YTj3X4L0IU1omfDcVqFCa6dw/e5FoLAkVv8Fx/yvG61wvaxb3ud
- w1CE7t3sH8OkU8gLPHpI3d4eBjU27ea+iW1MArobEB20SIB5IinD418DLmtp7Y+AUAx4
- sQQEJPnfPe6O653mp4igHYXuCEiFzR2ASt4XodBBGcUJ4WU7ESikCL4FingoeI3BbJYP
- 2nQ+b0h43jWxtMRQm3yjmCc4uR+fKhlyrpQV2En5NELlKkzWDwwjdyOFrPencJ1ZHom/ nA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 363x3yh1nr-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sun, 17 Jan 2021 07:57:58 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Sun, 17 Jan
- 2021 13:27:53 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Sun, 17 Jan 2021 13:27:53 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5B2EF11CA;
- Sun, 17 Jan 2021 13:27:53 +0000 (UTC)
-Date: Sun, 17 Jan 2021 13:27:53 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: James Schulman <james.schulman@cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Fix control name parsing for multi-fw
-Message-ID: <20210117132753.GB106851@ediswmail.ad.cirrus.com>
-References: <20210115201105.14075-1-james.schulman@cirrus.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="OFT6nbtw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1610898445;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=QiBlg/LRTf+7zZ0Dh7vt02GWJNSjL1FrHu3EJ+bfA0o=;
+ b=OFT6nbtwShU9Xsz1KvdC3eCpFVuKts2v+wvsQWZWc8K3maMQeTlDbfYwEMUUX36iwGyUPG
+ 91nz9I50iO+0S1kzFIPAuRrKjwGcuGfaW10thviSKeq9CX38vwonenC9iIFVg75hJdrKSv
+ W9VhTN00vz9v0bNH1b/eJ3r14+xwnY0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-7auhgNBcPMSsYKnq8EkRJw-1; Sun, 17 Jan 2021 10:47:23 -0500
+X-MC-Unique: 7auhgNBcPMSsYKnq8EkRJw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
+ [10.5.11.23])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E8651005D60;
+ Sun, 17 Jan 2021 15:47:21 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 2F1FA19C44;
+ Sun, 17 Jan 2021 15:47:18 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Lee Jones <lee.jones@linaro.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2 0/5] MFD/ASoC: Add support for Intel Bay Trail boards with
+ WM5102 codec
+Date: Sun, 17 Jan 2021 16:47:12 +0100
+Message-Id: <20210117154717.77969-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210115201105.14075-1-james.schulman@cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015
- impostorscore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 mlxscore=0 priorityscore=1501
- adultscore=0 mlxlogscore=826 suspectscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101170088
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, david.rhodes@cirrus.com
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ Hans de Goede <hdegoede@redhat.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,16 +99,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Jan 15, 2021 at 02:11:05PM -0600, James Schulman wrote:
-> When switching between firmware types, the wrong control
-> can be selected when requesting control in kernel API.
-> Use the currently selected DSP firwmare type to select
-> the proper mixer control.
-> 
-> Signed-off-by: James Schulman <james.schulman@cirrus.com>
-> ---
+Hi All,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Here is v2 of my series to add support for Intel Bay Trail based devices
+which use a WM5102 codec for audio output/input. This was developed and
+tested on a Lenovo Yoga Tablet 1051L.
 
-Thanks,
-Charles
+The biggest difference from v1 is that, based on all the discussions about
+the jack-detect stuff, I've decided to split this into 2 series.
+One series adding the basic support for this setup, which is this series.
+
+And a second series which reworks the extcon driver into an arizona-jackdet
+library and then modifies the codec drivers to use that directly, replacing
+the old separate extcon child-device and extcon-driver.
+
+The are 2 reasons for the split:
+
+1. With the new jack-det rework, the series really address 2 separate
+(but related) enhancements.
+
+2. I expect this series to be ready for merging, while the jack-det stuff
+likely will need a couple more revisions.
+
+Other then the split there are some minor changes addressing various review
+comments, see the individual patch changelogs.
+
+The MFD and ASoC parts can be merged independent from each-other (both must
+be merged to get working sound on these boards, but that is only a runtime
+dependency and a part missing won't have any bad side-effects). Or the
+entire series could be merged through the MFD tree if people prefer that.
+
+Regards,
+
+Hans
+
