@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BD43C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7223EC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:09:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CBD1206E5
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:09:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CBD1206E5
+	by mail.kernel.org (Postfix) with ESMTPS id DBBA7206D6
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 16:09:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DBBA7206D6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 709B71750;
-	Sun, 17 Jan 2021 17:08:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 709B71750
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70B2F1773;
+	Sun, 17 Jan 2021 17:08:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70B2F1773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610899764;
-	bh=nI+wbZE1iNeFxK176ng30OdQnF0rX2XYm+fAsrkletg=;
+	s=default; t=1610899781;
+	bh=vcVzey3hkuM0bNEdQ4fm5SiZq4cBe3BYv5KpANn+obM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VvrYxvLbXNqFxhXSA827Gmy2TPMzpmzINUfvmSiMYzMwGCGQkbU8gB8B9Lr1AyOOw
-	 wnl9EW2C1Kj13Pz7c7isrxHGxdQ8WbBNbhRLjYw4djpjqbaZk0/2Q6gRPheRTsRM6t
-	 0wmmYqXz1Q4bwJwix2BQIgR+cKSKsPR6bj+4on8A=
+	b=pH4IRacqyijCI0jXqPZsN/UQ29VW/JVUtl/L95ptg/YK2kVkviuDiS5FYkmAmv1Q3
+	 P9/QF6xcPNPEOky4HXAmlHFv1NNIcABWxvp/2bltjdXHpg80FAHY1NX1dJGvymwUNG
+	 wGmt1EOToJoJOo49yUbNutGyoG851z2jvimu2nsE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 919A0F804E5;
-	Sun, 17 Jan 2021 17:06:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DC34F804EC;
+	Sun, 17 Jan 2021 17:06:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DC77F804DF; Sun, 17 Jan 2021 17:06:29 +0100 (CET)
+ id E4336F804DF; Sun, 17 Jan 2021 17:06:29 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0439DF804D6
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 17:06:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0439DF804D6
+ by alsa1.perex.cz (Postfix) with ESMTPS id D152FF8026A
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 17:06:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D152FF8026A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="W+TMG9Kv"
+ header.b="eQMxmmwP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1610899584;
+ s=mimecast20190719; t=1610899578;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=3OPNL8TmDwRAfsQFhxqdWh76qKahzus4qkCyeNYrEMc=;
- b=W+TMG9KvQjt8u9YB5/ZYJtyWRJS0jX2C17hfm1Hw5ayeX+zvA0QcRyjacoapnt3dXyqOTZ
- RyRrebHYfEyCRhS4T6FniP37fxS/IAaVAoMRSUHnPKLtLQXFA2nOw1WvI+x2P+bDCyl/Mb
- 5Vinuab5eCEGgLey57PW3+Hr87ZK6Gw=
+ bh=3GFr+M+b77IYgatau3bEnca3lkuiTNNdKCzNUpFVVAw=;
+ b=eQMxmmwPAMAh8hgS3HXJS3FJx4JY37j60z5A6yu9T6dfmkAoLebA+2oDmnwsBw1pe2Z/Ys
+ XspYQAi90BnOtxtEH7BnPZDQnwQeZBGzKadOd4NUu03zu8Jsj5yyhph+tqZ2zW4U5zedle
+ ZCz+9AieHsJb/Z/vJk2YqysfnfssfkE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-mi57-yGtPou96suhlT-k8g-1; Sun, 17 Jan 2021 11:06:22 -0500
-X-MC-Unique: mi57-yGtPou96suhlT-k8g-1
+ us-mta-250-ExUQhB0oN6itsCvZwi2XJg-1; Sun, 17 Jan 2021 11:06:17 -0500
+X-MC-Unique: ExUQhB0oN6itsCvZwi2XJg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44D781572D;
- Sun, 17 Jan 2021 16:06:20 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56DEA107ACE3;
+ Sun, 17 Jan 2021 16:06:15 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-7.ams2.redhat.com [10.36.112.7])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 1DA395C233;
- Sun, 17 Jan 2021 16:06:17 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 28C9E5C233;
+ Sun, 17 Jan 2021 16:06:13 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 06/12] ASoC: arizona-jack: Move jack-detect variables to
- struct arizona_priv
-Date: Sun, 17 Jan 2021 17:05:49 +0100
-Message-Id: <20210117160555.78376-7-hdegoede@redhat.com>
+Subject: [PATCH v2 04/12] ASoC: arizona-jack: Fix various races on driver
+ unbind
+Date: Sun, 17 Jan 2021 17:05:47 +0100
+Message-Id: <20210117160555.78376-5-hdegoede@redhat.com>
 In-Reply-To: <20210117160555.78376-1-hdegoede@redhat.com>
 References: <20210117160555.78376-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -104,343 +104,122 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move all the jack-detect variables from struct arizona_extcon_info to
-struct arizona_priv.
+We must free/disable all interrupts and cancel all pending works
+before doing further cleanup.
 
-This is part of a patch series converting the arizona extcon driver into
-a helper library for letting the arizona codec-drivers directly report jack
-state through the standard sound/soc/soc-jack.c functions.
+Before this commit arizona_extcon_remove() was doing several
+register writes to shut things down before disabling the IRQs
+and it was cancelling only 1 of the 3 different works used.
 
+Move all the register-writes shutting things down to after
+the disabling of the IRQs and add the 2 missing
+cancel_delayed_work_sync() calls.
+
+This fixes various possible races on driver unbind. One of which
+would always trigger on devices using the mic-clamp feature for
+jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
+done before disabling the IRQs, causing:
+1. arizona_jackdet() to run
+2. detect a jack being inserted (clamp disabled means jack inserted)
+3. call arizona_start_mic() which:
+3.1 Enables the MICVDD regulator
+3.2 takes a pm_runtime_reference
+
+And this was all happening after the ARIZONA_MICD_ENA bit clearing,
+which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
+update was being done after the ARIZONA_MICD_ENA bit clearing.
+
+So this means that arizona_extcon_remove() would exit with
+1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
+
+MICVDD still being enabled caused the following oops when the
+regulator is released by the devm framework:
+
+[ 2850.745757] ------------[ cut here ]------------
+[ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
+[ 2850.745835] Modules linked in: extcon_arizona ...
+...
+[ 2850.746909] Call Trace:
+[ 2850.746932]  regulator_put+0x2d/0x40
+[ 2850.746946]  release_nodes+0x22a/0x260
+[ 2850.746984]  __device_release_driver+0x190/0x240
+[ 2850.747002]  driver_detach+0xd4/0x120
+...
+[ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
+
+Note this oops is just one of various theoretically possible races caused
+by the wrong ordering inside arizona_extcon_remove(), this fixes the
+ordering fixing all possible races, including the reported oops.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/arizona-jack.c | 97 ++++++++++-----------------------
- sound/soc/codecs/arizona.h      | 36 ++++++++++++
- 2 files changed, 65 insertions(+), 68 deletions(-)
+ sound/soc/codecs/arizona-jack.c | 40 +++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
 diff --git a/sound/soc/codecs/arizona-jack.c b/sound/soc/codecs/arizona-jack.c
-index 72d23b15108c..c81c3b20f94e 100644
+index f7ef247de46a..76aacbac5869 100644
 --- a/sound/soc/codecs/arizona-jack.c
 +++ b/sound/soc/codecs/arizona-jack.c
-@@ -27,6 +27,8 @@
- #include <linux/mfd/arizona/registers.h>
- #include <dt-bindings/mfd/arizona.h>
- 
-+#include "arizona.h"
-+
- #define ARIZONA_MAX_MICD_RANGE 8
- 
- #define ARIZONA_MICD_CLAMP_MODE_JDL      0x4
-@@ -61,47 +63,6 @@
- 
- #define MICD_LVL_0_TO_8 (MICD_LVL_0_TO_7 | ARIZONA_MICD_LVL_8)
- 
--struct arizona_extcon_info {
--	struct device *dev;
--	struct arizona *arizona;
--	struct mutex lock;
--	struct regulator *micvdd;
--	struct input_dev *input;
--
--	u16 last_jackdet;
--
--	int micd_mode;
--	const struct arizona_micd_config *micd_modes;
--	int micd_num_modes;
--
--	const struct arizona_micd_range *micd_ranges;
--	int num_micd_ranges;
--
--	bool micd_reva;
--	bool micd_clamp;
--
--	struct delayed_work hpdet_work;
--	struct delayed_work micd_detect_work;
--	struct delayed_work micd_timeout_work;
--
--	bool hpdet_active;
--	bool hpdet_done;
--	bool hpdet_retried;
--
--	int num_hpdet_res;
--	unsigned int hpdet_res[3];
--
--	bool mic;
--	bool detecting;
--	int jack_flips;
--
--	int hpdet_ip_version;
--
--	struct extcon_dev *edev;
--
--	struct gpio_desc *micd_pol_gpio;
--};
--
- static const struct arizona_micd_config micd_default_modes[] = {
- 	{ ARIZONA_ACCDET_SRC, 1, 0 },
- 	{ 0,                  2, 1 },
-@@ -135,9 +96,9 @@ static const unsigned int arizona_cable[] = {
- 	EXTCON_NONE,
- };
- 
--static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info);
-+static void arizona_start_hpdet_acc_id(struct arizona_priv *info);
- 
--static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
-+static void arizona_extcon_hp_clamp(struct arizona_priv *info,
- 				    bool clamp)
- {
- 	struct arizona *arizona = info->arizona;
-@@ -222,7 +183,7 @@ static void arizona_extcon_hp_clamp(struct arizona_extcon_info *info,
- 	snd_soc_dapm_mutex_unlock(arizona->dapm);
- }
- 
--static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
-+static void arizona_extcon_set_mode(struct arizona_priv *info, int mode)
- {
- 	struct arizona *arizona = info->arizona;
- 
-@@ -243,7 +204,7 @@ static void arizona_extcon_set_mode(struct arizona_extcon_info *info, int mode)
- 	dev_dbg(arizona->dev, "Set jack polarity to %d\n", mode);
- }
- 
--static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
-+static const char *arizona_extcon_get_micbias(struct arizona_priv *info)
- {
- 	switch (info->micd_modes[0].bias) {
- 	case 1:
-@@ -257,7 +218,7 @@ static const char *arizona_extcon_get_micbias(struct arizona_extcon_info *info)
- 	}
- }
- 
--static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
-+static void arizona_extcon_pulse_micbias(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	const char *widget = arizona_extcon_get_micbias(info);
-@@ -282,7 +243,7 @@ static void arizona_extcon_pulse_micbias(struct arizona_extcon_info *info)
- 	}
- }
- 
--static void arizona_start_mic(struct arizona_extcon_info *info)
-+static void arizona_start_mic(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
+@@ -1760,25 +1760,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
  	bool change;
-@@ -339,7 +300,7 @@ static void arizona_start_mic(struct arizona_extcon_info *info)
- 	}
- }
- 
--static void arizona_stop_mic(struct arizona_extcon_info *info)
-+static void arizona_stop_mic(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	const char *widget = arizona_extcon_get_micbias(info);
-@@ -407,7 +368,7 @@ static struct {
- 	{ 1000, 10000 },
- };
- 
--static int arizona_hpdet_read(struct arizona_extcon_info *info)
-+static int arizona_hpdet_read(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	unsigned int val, range;
-@@ -527,7 +488,7 @@ static int arizona_hpdet_read(struct arizona_extcon_info *info)
- 	return val;
- }
- 
--static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
-+static int arizona_hpdet_do_id(struct arizona_priv *info, int *reading,
- 			       bool *mic)
- {
- 	struct arizona *arizona = info->arizona;
-@@ -597,7 +558,7 @@ static int arizona_hpdet_do_id(struct arizona_extcon_info *info, int *reading,
- 
- static irqreturn_t arizona_hpdet_irq(int irq, void *data)
- {
--	struct arizona_extcon_info *info = data;
-+	struct arizona_priv *info = data;
- 	struct arizona *arizona = info->arizona;
- 	int id_gpio = arizona->pdata.hpdet_id_gpio;
- 	unsigned int report = EXTCON_JACK_HEADPHONE;
-@@ -684,7 +645,7 @@ static irqreturn_t arizona_hpdet_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static void arizona_identify_headphone(struct arizona_extcon_info *info)
-+static void arizona_identify_headphone(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
  	int ret;
-@@ -737,7 +698,7 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
- 	info->hpdet_active = false;
+ 
+-	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
+-				       ARIZONA_MICD_ENA, 0,
+-				       &change);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
+-			ret);
+-	} else if (change) {
+-		regulator_disable(info->micvdd);
+-		pm_runtime_put(info->dev);
+-	}
+-
+-	gpiod_put(info->micd_pol_gpio);
+-
+-	pm_runtime_disable(&pdev->dev);
+-
+-	regmap_update_bits(arizona->regmap,
+-			   ARIZONA_MICD_CLAMP_CONTROL,
+-			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
+-
+ 	if (info->micd_clamp) {
+ 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
+ 		jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
+@@ -1794,10 +1775,31 @@ static int arizona_extcon_remove(struct platform_device *pdev)
+ 	arizona_free_irq(arizona, jack_irq_rise, info);
+ 	arizona_free_irq(arizona, jack_irq_fall, info);
+ 	cancel_delayed_work_sync(&info->hpdet_work);
++	cancel_delayed_work_sync(&info->micd_detect_work);
++	cancel_delayed_work_sync(&info->micd_timeout_work);
++
++	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
++				       ARIZONA_MICD_ENA, 0,
++				       &change);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
++			ret);
++	} else if (change) {
++		regulator_disable(info->micvdd);
++		pm_runtime_put(info->dev);
++	}
++
++	regmap_update_bits(arizona->regmap,
++			   ARIZONA_MICD_CLAMP_CONTROL,
++			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
+ 	regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
+ 			   ARIZONA_JD1_ENA, 0);
+ 	arizona_clk32k_disable(arizona);
+ 
++	gpiod_put(info->micd_pol_gpio);
++
++	pm_runtime_disable(&pdev->dev);
++
+ 	return 0;
  }
  
--static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
-+static void arizona_start_hpdet_acc_id(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	int hp_reading = 32;
-@@ -790,8 +751,8 @@ static void arizona_start_hpdet_acc_id(struct arizona_extcon_info *info)
- 
- static void arizona_micd_timeout_work(struct work_struct *work)
- {
--	struct arizona_extcon_info *info = container_of(work,
--						struct arizona_extcon_info,
-+	struct arizona_priv *info = container_of(work,
-+						struct arizona_priv,
- 						micd_timeout_work.work);
- 
- 	mutex_lock(&info->lock);
-@@ -805,7 +766,7 @@ static void arizona_micd_timeout_work(struct work_struct *work)
- 	mutex_unlock(&info->lock);
- }
- 
--static int arizona_micd_adc_read(struct arizona_extcon_info *info)
-+static int arizona_micd_adc_read(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	unsigned int val;
-@@ -842,7 +803,7 @@ static int arizona_micd_adc_read(struct arizona_extcon_info *info)
- 	return val;
- }
- 
--static int arizona_micd_read(struct arizona_extcon_info *info)
-+static int arizona_micd_read(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	unsigned int val = 0;
-@@ -875,7 +836,7 @@ static int arizona_micd_read(struct arizona_extcon_info *info)
- 
- static int arizona_micdet_reading(void *priv)
- {
--	struct arizona_extcon_info *info = priv;
-+	struct arizona_priv *info = priv;
- 	struct arizona *arizona = info->arizona;
- 	int ret, val;
- 
-@@ -969,7 +930,7 @@ static int arizona_micdet_reading(void *priv)
- 
- static int arizona_button_reading(void *priv)
- {
--	struct arizona_extcon_info *info = priv;
-+	struct arizona_priv *info = priv;
- 	struct arizona *arizona = info->arizona;
- 	int val, key, lvl, i;
- 
-@@ -1017,8 +978,8 @@ static int arizona_button_reading(void *priv)
- 
- static void arizona_micd_detect(struct work_struct *work)
- {
--	struct arizona_extcon_info *info = container_of(work,
--						struct arizona_extcon_info,
-+	struct arizona_priv *info = container_of(work,
-+						struct arizona_priv,
- 						micd_detect_work.work);
- 	struct arizona *arizona = info->arizona;
- 	int ret;
-@@ -1051,7 +1012,7 @@ static void arizona_micd_detect(struct work_struct *work)
- 
- static irqreturn_t arizona_micdet(int irq, void *data)
- {
--	struct arizona_extcon_info *info = data;
-+	struct arizona_priv *info = data;
- 	struct arizona *arizona = info->arizona;
- 	int debounce = arizona->pdata.micd_detect_debounce;
- 
-@@ -1075,8 +1036,8 @@ static irqreturn_t arizona_micdet(int irq, void *data)
- 
- static void arizona_hpdet_work(struct work_struct *work)
- {
--	struct arizona_extcon_info *info = container_of(work,
--						struct arizona_extcon_info,
-+	struct arizona_priv *info = container_of(work,
-+						struct arizona_priv,
- 						hpdet_work.work);
- 
- 	mutex_lock(&info->lock);
-@@ -1084,7 +1045,7 @@ static void arizona_hpdet_work(struct work_struct *work)
- 	mutex_unlock(&info->lock);
- }
- 
--static int arizona_hpdet_wait(struct arizona_extcon_info *info)
-+static int arizona_hpdet_wait(struct arizona_priv *info)
- {
- 	struct arizona *arizona = info->arizona;
- 	unsigned int val;
-@@ -1120,7 +1081,7 @@ static int arizona_hpdet_wait(struct arizona_extcon_info *info)
- 
- static irqreturn_t arizona_jackdet(int irq, void *data)
- {
--	struct arizona_extcon_info *info = data;
-+	struct arizona_priv *info = data;
- 	struct arizona *arizona = info->arizona;
- 	unsigned int val, present, mask;
- 	bool cancelled_hp, cancelled_mic;
-@@ -1380,7 +1341,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
- {
- 	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
- 	struct arizona_pdata *pdata = &arizona->pdata;
--	struct arizona_extcon_info *info;
-+	struct arizona_priv *info;
- 	unsigned int val;
- 	unsigned int clamp_mode;
- 	int jack_irq_fall, jack_irq_rise;
-@@ -1754,7 +1715,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
- 
- static int arizona_extcon_remove(struct platform_device *pdev)
- {
--	struct arizona_extcon_info *info = platform_get_drvdata(pdev);
-+	struct arizona_priv *info = platform_get_drvdata(pdev);
- 	struct arizona *arizona = info->arizona;
- 	int jack_irq_rise, jack_irq_fall;
- 	bool change;
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index b893d3e4c97c..d1a263a67bba 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -91,6 +91,42 @@ struct arizona_priv {
- 	unsigned int dvfs_reqs;
- 	struct mutex dvfs_lock;
- 	bool dvfs_cached;
-+
-+	/* Variables used by arizona-jack.c code */
-+	struct device *dev;
-+	struct mutex lock;
-+	struct delayed_work hpdet_work;
-+	struct delayed_work micd_detect_work;
-+	struct delayed_work micd_timeout_work;
-+	struct regulator *micvdd;
-+	struct input_dev *input;
-+	struct extcon_dev *edev;
-+	struct gpio_desc *micd_pol_gpio;
-+
-+	u16 last_jackdet;
-+
-+	int micd_mode;
-+	const struct arizona_micd_config *micd_modes;
-+	int micd_num_modes;
-+
-+	const struct arizona_micd_range *micd_ranges;
-+	int num_micd_ranges;
-+
-+	bool micd_reva;
-+	bool micd_clamp;
-+
-+	bool hpdet_active;
-+	bool hpdet_done;
-+	bool hpdet_retried;
-+
-+	bool mic;
-+	bool detecting;
-+
-+	int num_hpdet_res;
-+	unsigned int hpdet_res[3];
-+
-+	int jack_flips;
-+	int hpdet_ip_version;
- };
- 
- struct arizona_voice_trigger_info {
 -- 
 2.28.0
 
