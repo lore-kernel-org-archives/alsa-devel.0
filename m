@@ -8,84 +8,87 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91876C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 22:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A9D8DC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 22:17:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BEFC20793
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 22:07:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BEFC20793
+	by mail.kernel.org (Postfix) with ESMTPS id 73871224DF
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jan 2021 22:17:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73871224DF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94B16176B;
-	Sun, 17 Jan 2021 23:06:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94B16176B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBA921772;
+	Sun, 17 Jan 2021 23:16:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBA921772
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610921234;
-	bh=LwuQrz774FkhzJuQVSNXSK86uwSZJcFdrTZPPaO/qcE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=AN/7+RsYt268VIr8CGNEY2zJczumnsd5wL3FEsSQkYsbkbknQXMzj0Gj+sSQuz+PR
-	 Qvvh0ePdWoJHQKPjIIT1FMPLuojyAbPxqrFkZh6fkB4HeO+83RxbkD1uFSdBoZIlvC
-	 eYJix6iBERn/Qum/wgTsh3p33EieZGGCaoTp6bIY=
+	s=default; t=1610921841;
+	bh=u1dJn0PC6j0KXn9zYnYHl80+R/ZYqJFNm+ucNRlz2Fo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UIiuwOruihctOnI98RdBT8LJx0DSWTP/+oMaLBFgpxPUHTSbS6//S4pKcMp9teBgW
+	 CqJsY9JzNKGK2X8m8+eDMuNfjhzWd/S9odoqIu2HZz/QH7HDx4WQXhU3eL7FFa3CTl
+	 pbEmBZwNGS5Hli2Vp+bqXQeOWFRWk7M+xbu3MwhQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23AE4F800C0;
-	Sun, 17 Jan 2021 23:06:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B127F80255;
+	Sun, 17 Jan 2021 23:16:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00138F80257; Sun, 17 Jan 2021 23:06:21 +0100 (CET)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+ id 6072AF80257; Sun, 17 Jan 2021 23:16:29 +0100 (CET)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D742F800C0
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 23:06:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D742F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E185EF80115
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 23:16:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E185EF80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="BEcTSurd"
-Received: by mail-lj1-x22d.google.com with SMTP id m10so16279250lji.1
- for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 14:06:16 -0800 (PST)
+ header.b="QhTPvho9"
+Received: by mail-lf1-x133.google.com with SMTP id s26so21273652lfc.8
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2021 14:16:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=sk03eSAe1i1kiZvLpOKZi/f9KCnWeoSdMZIHeuRne8o=;
- b=BEcTSurdW1C9IcPJmU/H4Yyd8N0FyjZsyy++4GyY6yl9Qdmqc9fD0XuYgtdcCPZZ+k
- 106b++bz6AV+mzCIKhFfER6CUpYTh+7FuZQgIWvaEhnZlXZiXHftlu6iyK5Zj4+650ci
- FuWFpKd4Skn/E0lK+4wQjuWK/dJNgoXG5mq9mDKGM7kIueJeDYhuAV70Wx5s8vGx+Yru
- v17WYvGYi8HHjNV1bN21dMBX+SE+l5SD5ka546kbMsIWA9t3d272jYwxcKGeUoJ3IP1J
- TrlWQC4UNWWD8fXVygqbfBlgb/Z3cfrovX+l9F7/lmx3Oiz0wYi5yUeSswaNR0I7IkOc
- +CRw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=kEQwHSt5wB+FY+WFucfVyvvqOmezqvFu6e0JdF0f7rc=;
+ b=QhTPvho9EhN/5rHBWXQzenGdub9EnpcDaE6RWo4t0LK41xIzVZhRFpwJPcUt9X2fqq
+ r5RpK07cl2eXDH6XdsmiuSvPI9b1B/vnCZew3lDSGEfgygbhBHBFwa3LJj9fzgnbQUU0
+ Oga24U13FJOHncLCNfQB34RoscPVWOS8LEGcj8ibWQMTdxUMMVbVIj0Z14qgDXjolEcI
+ Kv1LomVjVTtd9C9W1nlLL7Y0PZFIAx0nZ37yp+jlSiiOGsSHESBt9gFCkk7Emdf0lrdq
+ JTEV90dO6ow3ocYT15rsxK+Y6SXiWldFEjRnMpPyhsiLKBblU+rONNz9zsPwP204cXl3
+ 2I8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=sk03eSAe1i1kiZvLpOKZi/f9KCnWeoSdMZIHeuRne8o=;
- b=pW+BxxE6eZNDTtB/fLCHJl/5FSJieZ/ts5xHXD514zIwoEgRtblvuJwGjkGggcU7qf
- +9d8fMWWDKCSzRJka1ETuMlI7Ow012Hyh3clHYEADX4HKlvJbZ2ScTQ+4V99HlTyobFA
- jfK2JCwT4zOxBIKFee04kU4KpOM5y4fJG37IT5uFYV4/jZfO4c5lzQwcH4d8kyQUE/+6
- JhY4+pjVKVLRQgLYH2VBvlUv8xta+kU1X9xREURlkWupdCbADcCvUQoZcqp6c7d8lr/o
- aHgnH47F5nYv2UTIffSWAwnNJpV+xQhu1yZKLOhjk1yY5ky+0EGSRGuSAcKAHvXmtzU0
- sCsQ==
-X-Gm-Message-State: AOAM530HENwpNHd3ztGA3LCaUtIpyjLAzW/kYbcENX5FApQ6oXUendZX
- oF8mPKjKocMhGo6u9MxwBhM=
-X-Google-Smtp-Source: ABdhPJxolJh0Z5JiF5XnwRcEQtK7maKetm1vKt92O8mYmYp6DZA/emjaKA/NuUfE4qUgLFTX7n0gKQ==
-X-Received: by 2002:a2e:9ad3:: with SMTP id p19mr9246210ljj.286.1610921176342; 
- Sun, 17 Jan 2021 14:06:16 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=kEQwHSt5wB+FY+WFucfVyvvqOmezqvFu6e0JdF0f7rc=;
+ b=gprlQrTy6wuDEknW3Udnx6guO+sIIVuSUE88whI8sxmBQXLf77+jVb2CFV0TPdCJZX
+ 88RYbr8Gprh2CdcX8gg36YA1qBME2oXKHLKuRznExyJMhzOANR/xJ79sLOhEsN6q/egF
+ gINFKemFr6abBvVHubG4Rcl4AmH3iLirGazQ/WJuq+WjFr0+bKWgqZ+yo/Dd5+G1ZINj
+ NLTVL/KSXRYaJMgZWVLLSpSXDEJcmvgHfSRt7asKwLZBcU1GmyCf0IAGoOo4EUrFZYsI
+ AgReq1Pynjz5Tl1603MgYlvQ2ySN/tnJaAgn5QpvLcMocg4VAm0mmLs6ZcG4fgZ8u45r
+ IvGw==
+X-Gm-Message-State: AOAM530hRCvuGCdY5sPwXy5JaBPCwwqDvjr+eag2L2DI9IMxIoBr8Mkn
+ SkHiyElqt57v5yLod/e0i534joXJPNlX5Q==
+X-Google-Smtp-Source: ABdhPJyvz9B2O1hXQosSgiboAyYNtVk1MFwHdbeuvC85sZ1pEGYSwwRJ5W3s0MbOlSySvMjuew+mpQ==
+X-Received: by 2002:a19:890b:: with SMTP id l11mr10194400lfd.66.1610921785919; 
+ Sun, 17 Jan 2021 14:16:25 -0800 (PST)
 Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se.
  [158.174.22.164])
- by smtp.gmail.com with ESMTPSA id b141sm1684647lfd.148.2021.01.17.14.06.14
+ by smtp.gmail.com with ESMTPSA id j20sm1510262ljc.47.2021.01.17.14.16.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 17 Jan 2021 14:06:15 -0800 (PST)
+ Sun, 17 Jan 2021 14:16:25 -0800 (PST)
 From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH] soundwire: sysfs: Constiyf static struct attribute_group
-Date: Sun, 17 Jan 2021 23:06:11 +0100
-Message-Id: <20210117220611.30921-1-rikard.falkeborn@gmail.com>
+Subject: [PATCH V2] soundwire: sysfs: Constify static struct attribute_group
+Date: Sun, 17 Jan 2021 23:16:22 +0100
+Message-Id: <20210117221622.34315-1-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210117220611.30921-1-rikard.falkeborn@gmail.com>
+References: <20210117220611.30921-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org,
@@ -116,6 +119,8 @@ const. Done with the help of Coccinelle.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
+Changes since v 1: Fix spelling in commit message title (sorry for the noise...)
+
  drivers/soundwire/sysfs_slave.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
