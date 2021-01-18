@@ -6,70 +6,72 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 598C8C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F286C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:06:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2554822472
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:05:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2554822472
+	by mail.kernel.org (Postfix) with ESMTPS id BE2B122AAA
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:06:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE2B122AAA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD0CC1845;
-	Mon, 18 Jan 2021 17:04:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD0CC1845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1809C183F;
+	Mon, 18 Jan 2021 17:05:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1809C183F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610985925;
-	bh=QXwKP4DJh3Kn2ggUnJljWCLaQYV3zf+1V69gurgjk8o=;
+	s=default; t=1610985961;
+	bh=aCdwQR0ujqDllQM02Gt/LZIEeZwAmc8NRQO9hypFVMQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k0mpeGUlooHuE7vcvokjVecsfKsYjx05DxCY5FLGUy2EMpOyJh+snT0JSGm1fR9ki
-	 lXvjvH9OA+9Zfa5HHQ0EIRdD/RkmhJa3kup9z2ddv8SB1tC62EgBdqIzjAv4/8mvwf
-	 X/HUpWbaC1DJThuFLk540MdrG60Uyd8q+r0cFUA8=
+	b=BvFWoCWmjmPJUEqbFjUD+ePXLevRKia88a2/bWUCYJjmlyXkgJulApaZNrKwUGlvU
+	 IvKkJXKcCeg6qhv8bWO6QTeEFWvNlQnOMOOgDb8sz49PwlAxu5zLb/zG/Ro1akxepA
+	 Uw5kEOEaAFQnCm2g9Con4Rew7uoJEi8T+15XpIjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32471F804BD;
-	Mon, 18 Jan 2021 17:03:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D645F804CB;
+	Mon, 18 Jan 2021 17:03:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE015F804C2; Mon, 18 Jan 2021 17:03:34 +0100 (CET)
+ id 60BA0F804CA; Mon, 18 Jan 2021 17:03:39 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6997EF8016E
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 17:03:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6997EF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1C07F804CA
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 17:03:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1C07F804CA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DzaQPszK"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EED4722C9C;
- Mon, 18 Jan 2021 16:03:29 +0000 (UTC)
+ header.b="dtLZxqhe"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BF1F22AAA;
+ Mon, 18 Jan 2021 16:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1610985810;
- bh=QXwKP4DJh3Kn2ggUnJljWCLaQYV3zf+1V69gurgjk8o=;
+ s=k20201202; t=1610985815;
+ bh=aCdwQR0ujqDllQM02Gt/LZIEeZwAmc8NRQO9hypFVMQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=DzaQPszKrsXyNhHeNY/bJR0uJ+USaEuVxsAhqZTq8B739YmF1fPIlKZaJmuKLg93h
- HnRvborY50l/6rrfIVe/L2YaWSMAlp4FnOVA9WZuSE9sLV16SR+KktP0lCy6TgraxG
- IrQNevtu9h0XRh6MgFpb608i8rm5FqEk9j6l/lK0QVVbdKfkopShCccF6xNnC/W7SL
- RVQgUmuBo0pWHDLu7tz4XgsbbBscqZvbzQxdrqLYp/t1gxKX8ofxIdH0LMH9j6JWb6
- 3VSkK/uJ9qBYvHKIgX9XmkYJBQ0JoBhbte014Jj4kkhotw6LQuTEmYHNdU3tjpiNbU
- 2Gyi7zgvrh4tQ==
+ b=dtLZxqheV7OH+BVL5uNzaC55AaBmzAHs3H5VT1hhyDnTyykfkzb19csd5euX+1jjR
+ FXocEhfYsYT8hRCuXW8d2gl/KPyIBSJEJcEBM0LsTOAHG5bQhYBPHleN+CzdL3xbJG
+ ejUpoQwyYM08imr0gWM+kHibq5c0Ui20xAZubTJfOf8xGej1ke/dOS4RU3kHqrF+oa
+ ZT2AL0cgOyxdwFHujziv/+vsSLrONNnzvvdMOLZfSN0x370oOUtjdyXHUepVClv3tl
+ 1DDjazyXnf5InS/T2USzZjR5bmmMwSf2V2ffTSSYiLRVFHnJjce9h7rtPOjeUdAyV1
+ OjquFnZxAO9WA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-In-Reply-To: <20210118102706.6125-1-michael.wei.hong.sit@intel.com>
-References: <20210118102706.6125-1-michael.wei.hong.sit@intel.com>
-Subject: Re: [PATCH] dt-bindings: sound: intel,
- keembay-i2s: Fix dt binding errors
-Message-Id: <161098576158.26872.386153958098693344.b4-ty@kernel.org>
+To: Jonathan Neuschäfer <j.neuschaefer@gmx.net>, devicetree@vger.kernel.org
+In-Reply-To: <20210116013403.3490518-1-j.neuschaefer@gmx.net>
+References: <20210116013403.3490518-1-j.neuschaefer@gmx.net>
+Subject: Re: [PATCH] ASoC: dt-bindings: mt8192-mt6359: Fix indentation
+Message-Id: <161098576157.26872.3242007396802413840.b4-ty@kernel.org>
 Date: Mon, 18 Jan 2021 16:02:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: robh+dt@kernel.org, lgirdwood@gmail.com, jee.heng.sia@intel.com
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, linux-kernel@vger.kernel.org,
+ Shane Chien <shane.chien@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,8 +87,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 Jan 2021 18:27:06 +0800, Michael Sit Wei Hong wrote:
-> Fix devicetree binding errors caused by newly added parameters
+On Sat, 16 Jan 2021 02:34:03 +0100, Jonathan Neuschäfer wrote:
+> The items of the 'maintainers' list are indented with three spaces.
+> Use the usual two spaces instead, for consistency and to silence
+> yamllint.
 
 Applied to
 
@@ -94,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] dt-bindings: sound: intel, keembay-i2s: Fix dt binding errors
-      commit: 160e8f96c626ae2bfeef18df467fd9f3814ec89a
+[1/1] ASoC: dt-bindings: mt8192-mt6359: Fix indentation
+      commit: e36626bb099e5159a7868dbfad6957ff6b0e4102
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
