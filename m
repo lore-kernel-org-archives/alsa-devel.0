@@ -8,83 +8,85 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 876FDC433E6
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 12:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DCB7C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 12:43:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BCE722231F
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 12:42:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCE722231F
+	by mail.kernel.org (Postfix) with ESMTPS id 13899227C3
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 12:43:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13899227C3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 194AC17FA;
-	Mon, 18 Jan 2021 13:41:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 194AC17FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8242B17FB;
+	Mon, 18 Jan 2021 13:42:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8242B17FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610973743;
-	bh=ULQ7jcqZC2eaNGucxdFbtpqw2lw6reMMFN5QCYuXsRY=;
+	s=default; t=1610973785;
+	bh=LZn7qqsqPk2XSv6r0cys1yFe/NZJIIhMg01HlkydHuA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=INlQhEygDbhriOkBMuT2g4WnnCY1+RvSzg6v57DP72ni+/NlU0m3sPMPwiKWN1+z0
-	 QSCppxQ3UPp0F+jjSWktNo3tDNEBZZCqSMySNtH8Qzor0tqrWoHNICvH8ueyxqmFPu
-	 8ZO3yNl0Nzdbpaq4R7I0C1CaPFy3Gx75MDIsPnSc=
+	b=JP+Smx8dugiPSGORchIKxt5bgVeJxLOpty6gp0ZkB57q+GN9aj/5VFNKjjL21cQxT
+	 f5pflTkfszElunulbuABzbrK273H2Hq8dEyaVmSm1UeB3TS5/ikuKH/JAhwpNKwhJT
+	 oa+MjGmmJLTOe3fyYtCKZRRdJbE5jcZIOXQB95xk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A81ECF8016E;
-	Mon, 18 Jan 2021 13:40:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 810E1F804CC;
+	Mon, 18 Jan 2021 13:40:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 957BEF80218; Mon, 18 Jan 2021 13:40:36 +0100 (CET)
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com
- [IPv6:2607:f8b0:4864:20::830])
+ id 32B46F8026B; Mon, 18 Jan 2021 13:40:43 +0100 (CET)
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com
+ [IPv6:2607:f8b0:4864:20::731])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B47E6F800E7
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 13:40:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B47E6F800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F28CF8026B
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 13:40:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F28CF8026B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="tNYAQe4U"
-Received: by mail-qt1-x830.google.com with SMTP id h19so11063051qtq.13
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 04:40:29 -0800 (PST)
+ header.b="Yc7VdFXJ"
+Received: by mail-qk1-x731.google.com with SMTP id 186so18459177qkj.3
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 04:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=UX/cKx68h768c+qYb1NW5l7xmxav6pdEySWoiWZNisY=;
- b=tNYAQe4UWY729TposfJ29q/T2iy6005f+jDtRIQa4hGPrNpDsoYcfAcw/UnfQ/z4Vz
- SK7tcETcZwyt2CAQuC9Ib+xT8dHHkDRYf194QKG3gOElhSwz0KKL3efiB7/HDxhPQmiO
- gdyqePqAGyhexMFHc+NU9na9HK7+6frzQpQZ5UYU3LK5o1w+Dau/X/fu57ycqCrFAVyl
- 0nOS2u5P1ucWXjeru9XliKwFHSujBqWeUYcSB89tBp7t0W4xmnSthIs0AvixkIXaX2rK
- PL9mkKloGZRrVrKEAy6I2//OFta73tV/+yxoktaGTRtTZavXIjHMkxUaXkuPAUxhjn7v
- XIsw==
+ bh=R5U3n8kNssmwRQPCwUYtUeJSgG0vkw7lShI1uTuBirI=;
+ b=Yc7VdFXJCOiZqMrprGqvr2VpU0/raLGQDI3J3b+rUq8av28nNh9ypc/10JVJTSTVeL
+ zr1Z/m2kDTlZStKAT4dXHNF31bhoCeZF22QqMt/xuD6BTLHvQQUYAevUtKzZrD7ClIa+
+ OO0ElZSkU2IfHW7SDg1zIyR5X+ASuozlyVWeYYYrWkUxgbAPV9iD3ZCeszWpZIgFUvu3
+ IyQyRkQXGhdh4dOqSZwVe+sBiGctn5PeS+KMxBJQya3iyyypCAX7FtVcfG4SB5yG0H0i
+ U0eUKN5FfGij7IySLie/67F3XjYCnPALfiAsMjk3gXlChnRPIPvRCpKBx+uppn+zehZQ
+ ISdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=UX/cKx68h768c+qYb1NW5l7xmxav6pdEySWoiWZNisY=;
- b=tQPC0k9p5yX+T/Zt0+Xi9NCEt4bxa1TMR+O6LSFIVQJplDmhZ9vLoUFxbE50aqQLt3
- aft5sPrx1QCuvGa878oYEd4D7WO6dzsC3N0thWWVFowPm/j48stb5hMZ4V9TweBXpeFR
- Cs0T3FKD+qFVXi+dtEEretrRdM0NHfXwu7wbfypf5pHxggLacpb1e62euPELxvKCYE22
- ORSgViS1iuc7HlnyJLLOBQKLDNfySjvTuw9zmqLjgjfkaafjRfZvVFpnL7Xid5OEyg+L
- 0hgnMqUzZE6lLrc8y7GvdLHz2Fk6jec0Gjy1aAMI9iK58hlgBJvwIversgQqJB+n6eNC
- foAQ==
-X-Gm-Message-State: AOAM531mFKD1O5RFjo88tR7Ie+1iFxrTWIANMQrWbgh8b5mrn2dfTlDa
- VOxdGxXJdlTAZsyF+dxF5Ko=
-X-Google-Smtp-Source: ABdhPJxcAIsTTro4Q1uMN/5/6mi0fAG9IVBoZyKHUYGepestaZT5ILrijELhmJPNoDmS3jH0KuHI8g==
-X-Received: by 2002:ac8:1c92:: with SMTP id f18mr22669850qtl.234.1610973628083; 
- Mon, 18 Jan 2021 04:40:28 -0800 (PST)
+ bh=R5U3n8kNssmwRQPCwUYtUeJSgG0vkw7lShI1uTuBirI=;
+ b=ANScb7uftqNSfUXUwSMA8jyp01JM8vqza7ZzwZX/mqyVVD51P+BcJIXTxVqBPYuUpn
+ RjSJk/YpQTFWOvwlfrfIG2Rx7r9CS0Nu69VGHWOy37Y1TwxSAjK+iPaGlmzf8e8DFuag
+ NNqJqB2c9IeZT7lVX4YmJLif8kaiib+lek+3F1LucdEJfAaRpPTDAWYeB0EJgLkZPLdG
+ r9+kcEAn39Nj/klxlG5TJM3GZh6egMsemm3jRkoxLks3JaKJiKGNmxGhvFwcjELaBtAJ
+ aTxW0OKhnuhjXMigfIUPEYWg+prjSHNysVnynZbYdtC1DkArEoeY2+GHEft2QqsxxWR0
+ 7JNw==
+X-Gm-Message-State: AOAM532vKjksXHSwQGo7FCpIWDCzJTKwafEsX88Eu5pg6qInYaW4+f/B
+ BKuqzRHzuJqo8Wg43she2MQ=
+X-Google-Smtp-Source: ABdhPJwIL0SCOctWsTug0ue7r5ar70CH59LN3taG6IG0ZnEHm/9VLpd/AyF2zLFiLkBfg11KOJI15g==
+X-Received: by 2002:a05:620a:b0f:: with SMTP id
+ t15mr24645531qkg.485.1610973634154; 
+ Mon, 18 Jan 2021 04:40:34 -0800 (PST)
 Received: from localhost.localdomain ([177.194.79.136])
- by smtp.gmail.com with ESMTPSA id q92sm10022654qtd.48.2021.01.18.04.40.25
+ by smtp.gmail.com with ESMTPSA id q92sm10022654qtd.48.2021.01.18.04.40.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 18 Jan 2021 04:40:27 -0800 (PST)
+ Mon, 18 Jan 2021 04:40:33 -0800 (PST)
 From: Fabio Estevam <festevam@gmail.com>
 To: broonie@kernel.org
-Subject: [PATCH 2/6] ASoC: fsl_micfil: Use of_device_get_match_data()
-Date: Mon, 18 Jan 2021 09:38:11 -0300
-Message-Id: <20210118123815.1630882-2-festevam@gmail.com>
+Subject: [PATCH 4/6] ASoC: fsl_asrc: Remove of_device_get_match_data() error
+ check
+Date: Mon, 18 Jan 2021 09:38:13 -0300
+Message-Id: <20210118123815.1630882-4-festevam@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210118123815.1630882-1-festevam@gmail.com>
 References: <20210118123815.1630882-1-festevam@gmail.com>
@@ -107,41 +109,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The retrieval of driver data via of_device_get_match_data() can make
-the code simpler.
+The only way this driver can be probed is via devicetree, which always
+provides driver data.
 
-Use of_device_get_match_data() to simplify the code.
+Remove the unneeded of_device_get_match_data() error check, as it
+can never fail.
 
 Signed-off-by: Fabio Estevam <festevam@gmail.com>
 ---
- sound/soc/fsl/fsl_micfil.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index efc5daf53bba..8aedf6590b28 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -637,7 +637,6 @@ static irqreturn_t micfil_err_isr(int irq, void *devid)
- static int fsl_micfil_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	struct fsl_micfil *micfil;
- 	struct resource *res;
- 	void __iomem *regs;
-@@ -651,11 +650,7 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	micfil->pdev = pdev;
- 	strncpy(micfil->name, np->name, sizeof(micfil->name) - 1);
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 02c81d2e34ad..c325c984d165 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1083,11 +1083,6 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 	}
  
--	of_id = of_match_device(fsl_micfil_dt_ids, &pdev->dev);
--	if (!of_id || !of_id->data)
--		return -EINVAL;
+ 	asrc_priv->soc = of_device_get_match_data(&pdev->dev);
+-	if (!asrc_priv->soc) {
+-		dev_err(&pdev->dev, "failed to get soc data\n");
+-		return -ENODEV;
+-	}
 -
--	micfil->soc = of_id->data;
-+	micfil->soc = of_device_get_match_data(&pdev->dev);
- 
- 	/* ipg_clk is used to control the registers
- 	 * ipg_clk_app is used to operate the filter
+ 	asrc->use_edma = asrc_priv->soc->use_edma;
+ 	asrc->get_dma_channel = fsl_asrc_get_dma_channel;
+ 	asrc->request_pair = fsl_asrc_request_pair;
 -- 
 2.17.1
 
