@@ -2,79 +2,75 @@ Return-Path: <SRS0=Aiaa=GV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7614C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 14:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 627A5C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:04:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3CAD022472
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 14:41:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CAD022472
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 1478722CA2
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:04:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1478722CA2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DDBF182E;
-	Mon, 18 Jan 2021 15:40:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DDBF182E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5980182C;
+	Mon, 18 Jan 2021 17:03:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5980182C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610980908;
-	bh=dovklxNTQVdgkflXnpRCiV1PTF2ZcxuOwY5BZsHjDPg=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1610985859;
+	bh=JJ+xu3Acn6PcB1BsK1BVa7sOixxHgq0EUlCHCpoLFMY=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jnZFnctDXzS5bxP+IYm9dlhlCbADyMO2aZe4oCrW8eAh/4+BP9/FjVh3TZHLr0Ydj
-	 Bu50Uv9KdIHV1pWFRw1zkAwH/CmnTdP1YtSe68BK6j6fnZp8CKTqWjDvPXKRLPdBSz
-	 hvfCUPkGwwaFTtMmGWxqgWkRy0TwvdA1wHXOcrj4=
+	b=QGMmqBQ3slvzOdew3yndnsPhau1VAfCcjQSErgn4XBpQQbS7s1NmqeiBGy0hmARb/
+	 kcM0YUalsDBxPSlR0tQlPnGTcXG7R9sejvVeIaa/WzEJhLDHWs5KeaCBgp1hGALDTY
+	 Bg2efhB/P+8Nvxy8rAjMEdq44fjVUNeBi5OkD6Ss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 340ABF80166;
-	Mon, 18 Jan 2021 15:40:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37555F80166;
+	Mon, 18 Jan 2021 17:03:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E376F8016E; Mon, 18 Jan 2021 15:40:57 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id A704CF80137; Mon, 18 Jan 2021 17:03:26 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6DF8F800C0
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 15:40:50 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 82576A0040;
- Mon, 18 Jan 2021 15:40:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 82576A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1610980844; bh=Fu+3X2LEs1KKohiOmbSShBNc9sfyCFpVED+4xWu8VUs=;
- h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
- b=Mo0LWd3qOaLqgs9mgOawkWcVcVGt6tSSN1tk4z7MnDfdZcCHj0ux0EDx2m2e+zVvK
- LE2E4537O5DdlNFQmblOS0no0qripWEGaF6Wkmh/L+EzxTobxOB9YL6WoxiWHYVWdk
- zAA8Gq7a6hgn9kndbDfas5upzwMVSfpF9mwG+/V4=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 18 Jan 2021 15:40:41 +0100 (CET)
-Subject: Re: [PATCH alsa-ucm-conf 1/3] chtnau8824: Move DAC Channel Source
- selection to Speaker/Headphones EnableSeq
-From: Jaroslav Kysela <perex@perex.cz>
-To: Hans de Goede <hdegoede@redhat.com>
-References: <20201216153838.34945-1-hdegoede@redhat.com>
- <7c075e59-8576-99e9-3688-1ab858e59716@redhat.com>
- <90f18f8a-192e-fa2c-8975-93acd70006ee@perex.cz>
-Message-ID: <78e29bab-1b9f-b57e-0d2a-46a6838018db@perex.cz>
-Date: Mon, 18 Jan 2021 15:40:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CD86F800C0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 17:03:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CD86F800C0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="i67Advaw"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3AF822C9C;
+ Mon, 18 Jan 2021 16:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1610985799;
+ bh=JJ+xu3Acn6PcB1BsK1BVa7sOixxHgq0EUlCHCpoLFMY=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=i67AdvawR9AYxj5n71j5eB96nhufax/TaqyW+R1OesuI1NlBP6bHQvD+N0Fa377UE
+ XBEXhQg3CO/s+XHLcc6APw0taLOTcc3dSMqlS1BRSxoFsKeSkH1/UHRbyf8dC7qEDP
+ lRgNfOLuhGBOc8dW1QWZ1L15UHVKMjp5XdMkchjdRHyqBIjw1HKAzhSzKxyrWI9b3G
+ ONV92z4uHqzwJDa/E5g3anfM2094RfFc43mlmtXuF+wpXARx8wZtclz+r/zda8H7vd
+ Uacj7zoxtmMz9UFYBpNqhDKAIFXWMBn/mYV3YD4XEXLE/Ly3GtkVCHrD8e4OT1Lkmk
+ qezj6zTdOrlYw==
+From: Mark Brown <broonie@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20210113160704.4106353-1-kai.vehmanen@linux.intel.com>
+References: <20210113160704.4106353-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: initial support to AlderLake-P
+Message-Id: <161098576157.26872.10578316079174457589.b4-ty@kernel.org>
+Date: Mon, 18 Jan 2021 16:02:41 +0000
 MIME-Version: 1.0
-In-Reply-To: <90f18f8a-192e-fa2c-8975-93acd70006ee@perex.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: daniel.baluta@nxp.com,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,43 +86,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 17. 01. 21 v 17:52 Jaroslav Kysela napsal(a):
-> Dne 17. 01. 21 v 17:09 Hans de Goede napsal(a):
->> Hi,
->>
->> On 12/16/20 4:38 PM, Hans de Goede wrote:
->>> Move DAC Channel Source selection to Speaker/Headphones EnableSeq.
->>>
->>> The main reason for doing this is to make it easier to allow using
->>> variables, as the Speaker/Headphones conf files are evaluated after
->>> the main HiFi.conf had a chance to set them.
->>>
->>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->>
->> ping? It would be nice to get this series merged for proper SOF
->> support.
->>
->> Maybe this got confused with my other UCM chtnau8824 series which
->> I send 10 days before t
-> 
-> Hi,
-> 
-> Thanks for the reminder. I though that this one was resolved. I don't think
-> that we need the first change - the evaluation for If and Include sequences is
-> executed before SectionVerb {} parsing. So the If...Define.RightOutputChannel
-> should be valid for SectionVerb...Include...File
-> "/codecs/nau8824/EnableSeq.conf". The 'DACR Channel Source' control seems to
-> require a static settings so keeping it in the verb init sequence has sense.
-> 
-> I applied the second (SST variable) patch for now. It's nice cleanup. Thanks.
+On Wed, 13 Jan 2021 18:07:04 +0200, Kai Vehmanen wrote:
+> Add PCI id for the AlderLake-P.
 
-Hans,
+Applied to
 
-	could you test https://github.com/alsa-project/alsa-ucm-conf/pull/74 ?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-					Thank you,
-						Jaroslav
+Thanks!
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+[1/1] ASoC: SOF: Intel: initial support to AlderLake-P
+      commit: 39860fe070c97e62ae9e80addce40ce0b3c2b082
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
