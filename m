@@ -7,85 +7,85 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7061AC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07DEDC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:47:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B09B5222BB
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:47:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B09B5222BB
+	by mail.kernel.org (Postfix) with ESMTPS id 2C0DA22285
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 16:47:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C0DA22285
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0FF5184D;
-	Mon, 18 Jan 2021 17:46:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0FF5184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BC061846;
+	Mon, 18 Jan 2021 17:46:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BC061846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1610988466;
-	bh=udNTEq+9RaLO6Krb+vwhz0SFEhKOgzoSBF0JmqrYI30=;
+	s=default; t=1610988469;
+	bh=lpEBtkolrEzfkpxXgheQktqQ1M3+aNPvetuqHZAXJu8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OES02oAdJ3VYFkJVlLvRAw8zGGVJEuUFLyzoqy/fqUZbi6blxsr29y/cOWUuqOqTs
-	 AuQkp/S9dVG+H6TuGYpiRq6PBuhfWLnlMfvuix9qOPG399zaCE0qT6JgfW0cOj8sSh
-	 3W38AHIC5cDQRaxL3e33bWrcI9fx5bN3wOx6IA30=
+	b=H9duoS0jjEdJx9yVDKiaSAVMCzQW+3NxGzoNi5McFO165HzYSlKYUi9GxVYOTbYr7
+	 WX48runAuiLFoALHCVMdVwWKH6SbN3NRwzVgNO1xBeB5aIrtHT2V7CwjR+cYre9I7G
+	 SXcfAS9BfQA3wwXmrzTvDCyAi4vn8OCsplgwXY1Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D64BF80227;
-	Mon, 18 Jan 2021 17:46:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23BF7F804BD;
+	Mon, 18 Jan 2021 17:46:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5708CF80227; Mon, 18 Jan 2021 17:46:06 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ id 3D68BF804C2; Mon, 18 Jan 2021 17:46:08 +0100 (CET)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 080ADF800E7
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 17:45:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 080ADF800E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AF1EF80137
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 17:46:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF1EF80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mD8ac/Z1"
-Received: by mail-wm1-x329.google.com with SMTP id i63so14173393wma.4
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 08:45:59 -0800 (PST)
+ header.b="jgD9+UKj"
+Received: by mail-wm1-x32c.google.com with SMTP id 190so14188001wmz.0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 08:46:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wmLLpMDcTzwTcd2iwuJ9vR2klJWBqD/Av6l36UeAzc4=;
- b=mD8ac/Z14v/F5QeuA8FYENQhQZBL8Yb+HDQHeGSMn0ue88NLQjz9nMy/PK0NrIP4yt
- XSG4GOLhqbeiBj3TYt2igDfM3BWsVl//EVY/ECWuql4DJpjHUDJyhQHv4aHeJBoeKfgp
- aJiU7ck06hGKOTHbT+Kc0eWKtORRNGWmrDWjybsGcSLS9/Kq1XOzPMmLqs7OHuC76JTh
- AJyuAP52n6vCggQ9oUcDInyRv2Ts0JvO4cxoFPFq1Bb4soKe27iBsSdM20my8AbCjoNM
- n5SrN4OMEQ9kslyKD6R3N+zhxhlQOFwau/81py3YAs9anBz+6Ckw/ggCRHhvbhUA8dIf
- YmDw==
+ bh=afHQlupgwlBpTXZFCKDQz5rJ89ZJvr2SG2zTDycFeRQ=;
+ b=jgD9+UKjYT/U+m/KnMBNETAdIz0CuCjB9shFN4bJz6oUqgcRoD73LbP6BpBffTRr2f
+ I+2nwQukdyAcXZ6ft1T63+z7I8Vi8Tagd1mIJXpWrkWqMXVNU44kPlIZSmLlmJMm0N8E
+ WUyQHWNUluOLe3+k0PRXnP63NZD9BTojofjz9z2PVprv5oU7VMG6iUw/jlzvCdhX+X9i
+ A/Ix46ZMw5+9q7hXCfmps3mvbpCjaUpbddacD8FD+gCHkP0Zqc23wZ9MdQ+M6hwB58gN
+ t2cVX5ZA/07w+WAvM3pXNRB2mxhYlmxTk0g8TqctgyX6j+OY6t0bBMmXB9/3X0QdtD2K
+ QzZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wmLLpMDcTzwTcd2iwuJ9vR2klJWBqD/Av6l36UeAzc4=;
- b=QrMo+az8gBxEL3AYum0w6q+KeIlyZsy7pGYSJoUco5AhvzYopa/4MpI4pTHryZvih0
- tuzkuCoP7SaVOth/a1/eSxGipKbJEagM9kPbuCrriesdd182Uj+5W/Sef+GUtaumdIQG
- c/QBwK1/jSWUQsbk14j6eUGg+qk93MbimGSKs8idZChquVT4g5C1ENNrS8+zfpv7TnpB
- 3vGfmC/ZPZmzqc1g7me289zR9DgEAbHFofRCKO6RMTEnF7fSp7o6N75tAMzbZjgfiAmM
- EshML+FxpXwO7oWQcwZ5VeeWnmdrryn2NMSa4cpyzZww35hYnFx+2zlRDDn/pzTdqjyK
- vDHQ==
-X-Gm-Message-State: AOAM53202tubIfbp6clJPK6/N0A3FZ0AsYB2LQHR3YdFMrTHQuK0LbCH
- BJgzs3kisD+g3RjoaDXyFqjHpg==
-X-Google-Smtp-Source: ABdhPJy/688Fpx644RezfHexEtpdEdlqVwgrCqMgmEIv9bxeoPHv0y23wuD/mHbGUNmnYgzAx4Lqdg==
-X-Received: by 2002:a05:600c:4e87:: with SMTP id
- f7mr206177wmq.163.1610988357192; 
- Mon, 18 Jan 2021 08:45:57 -0800 (PST)
+ bh=afHQlupgwlBpTXZFCKDQz5rJ89ZJvr2SG2zTDycFeRQ=;
+ b=eDvs4PloSQgQXIofOcahncziAYRgxg9Wwoom9dN71WXq5n/C8Uk5XHLQbQ5kRI4IBy
+ 1WZdA+Pc1ae76z1ePsu2I9X2N//RVXjZLaXA1pJoRhvcV1jxTIFPs9OEZ/BdzA7FztFW
+ uKRlDJlKfhpqflIJxwLlBQzBJzCHMXcowfhQOFpmSwy6fwy5xKmUv0nBHlNMa9ed+Txb
+ yg4ycFqWjQiNOlfKT5cCQ/bpYI4RM2nJxoZSuSfZ/Zpov40VySFnIgyFrKoUUj9L8LTp
+ F6KmQLpa4KQ6uDrEKVjMIYOf3zmxnVRA0fnz//MelSs5IXU9IHQSqjQkhQmCv8+swo1i
+ t2ng==
+X-Gm-Message-State: AOAM533vtrxFPCiL4s/K3EJZAWnpKsRQPURpKaJf/0BaA8wWwHnycmFg
+ QRrVyO52zefetAxd71qZzYo1Dw==
+X-Google-Smtp-Source: ABdhPJwyrnPvJAns+vFXJpm0yqo57dVdHYU5dDVyEJT1tkLHeWPUwEZEGrkTe7VWBefVClx59Nh4pw==
+X-Received: by 2002:a1c:790f:: with SMTP id l15mr243443wme.188.1610988358349; 
+ Mon, 18 Jan 2021 08:45:58 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id t25sm21247218wmj.39.2021.01.18.08.45.56
+ by smtp.gmail.com with ESMTPSA id t25sm21247218wmj.39.2021.01.18.08.45.57
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 18 Jan 2021 08:45:56 -0800 (PST)
+ Mon, 18 Jan 2021 08:45:57 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 1/2] ASoC: dt-bindings: lpass: Fix and common up lpass dai ids
-Date: Mon, 18 Jan 2021 16:45:08 +0000
-Message-Id: <20210118164509.32307-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] ASoC: qcom: Fix broken support to MI2S TERTIARY and
+ QUATERNARY
+Date: Mon, 18 Jan 2021 16:45:09 +0000
+Message-Id: <20210118164509.32307-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210118164509.32307-1-srinivas.kandagatla@linaro.org>
 References: <20210118164509.32307-1-srinivas.kandagatla@linaro.org>
@@ -110,85 +110,155 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Existing header file design of having separate SoC specific header files
-for the common lpass driver has mutiple issues.
+lpass hdmi support patch totally removed support for MI2S TERTIARY
+and QUATERNARY.
+
+One of the major issue was spotted with the design of having
+separate SoC specific header files for the common lpass driver.
 This design is prone to break as an when new SoC header is added
 as the common DAI ids of other SoCs will be overwritten by the
 new ones.
 
-One of them surfaced by recent patch that adds support to sc7180, this
-one totally broke LPASS drivers on other Qualcomm SoCs.
+Having a common header qcom,lpass.h should fix the issue and any new
+DAI ids should be added to the common header.
 
-Before this gets worst, fix this by having a common header qcom,lpass.h.
-This should fix the issue and any new DAI ids should be added to the
-common header. This will be more sustainable then the existing design!
+With this change lpass also needs a new of_xlate function to resolve
+dai name.
 
-Fixes: 12fbfc4cabec6595 ("ASoC: Add sc7180-lpass binding header hdmi define")
+Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
 Reported-by: Jun Nie <jun.nie@linaro.org>
 Reported-by: Stephan Gerhold <stephan@gerhold.net>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/dt-bindings/sound/apq8016-lpass.h |  7 +++----
- include/dt-bindings/sound/qcom,lpass.h    | 15 +++++++++++++++
- include/dt-bindings/sound/sc7180-lpass.h  |  6 ++----
- 3 files changed, 20 insertions(+), 8 deletions(-)
- create mode 100644 include/dt-bindings/sound/qcom,lpass.h
+ sound/soc/qcom/lpass-cpu.c      | 22 ++++++++++++++++++++++
+ sound/soc/qcom/lpass-platform.c | 12 ++++++++++++
+ sound/soc/qcom/lpass-sc7180.c   |  6 +++---
+ sound/soc/qcom/lpass.h          |  2 +-
+ 4 files changed, 38 insertions(+), 4 deletions(-)
 
-diff --git a/include/dt-bindings/sound/apq8016-lpass.h b/include/dt-bindings/sound/apq8016-lpass.h
-index 3c3e16c0aadb..dc605c4bc224 100644
---- a/include/dt-bindings/sound/apq8016-lpass.h
-+++ b/include/dt-bindings/sound/apq8016-lpass.h
-@@ -2,9 +2,8 @@
- #ifndef __DT_APQ8016_LPASS_H
- #define __DT_APQ8016_LPASS_H
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index af684fd19ab9..02441021a13d 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -356,8 +356,30 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+ }
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_probe);
  
--#define MI2S_PRIMARY	0
--#define MI2S_SECONDARY	1
--#define MI2S_TERTIARY	2
--#define MI2S_QUATERNARY	3
++static int asoc_qcom_of_xlate_dai_name(struct snd_soc_component *component,
++				   struct of_phandle_args *args,
++				   const char **dai_name)
++{
++	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
++	struct lpass_variant *variant = drvdata->variant;
++	int id = args->args[0];
++	int ret = -EINVAL;
++	int i;
++
++	for (i = 0; i  < variant->num_dai; i++) {
++		if (variant->dai_driver[i].id == id) {
++			*dai_name = variant->dai_driver[i].name;
++			ret = 0;
++			break;
++		}
++	}
++
++	return ret;
++}
++
+ static const struct snd_soc_component_driver lpass_cpu_comp_driver = {
+ 	.name = "lpass-cpu",
++	.of_xlate_dai_name = asoc_qcom_of_xlate_dai_name,
+ };
+ 
+ static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+index 80b09dede5f9..e27443e520de 100644
+--- a/sound/soc/qcom/lpass-platform.c
++++ b/sound/soc/qcom/lpass-platform.c
+@@ -257,6 +257,9 @@ static int lpass_platform_pcmops_hw_params(struct snd_soc_component *component,
+ 		break;
+ 	case MI2S_PRIMARY:
+ 	case MI2S_SECONDARY:
++	case MI2S_TERTIARY:
++	case MI2S_QUATERNARY:
++	case MI2S_QUINARY:
+ 		ret = regmap_fields_write(dmactl->intf, id,
+ 						LPAIF_DMACTL_AUDINTF(dma_port));
+ 		if (ret) {
+@@ -519,6 +522,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 			break;
+ 		case MI2S_PRIMARY:
+ 		case MI2S_SECONDARY:
++		case MI2S_TERTIARY:
++		case MI2S_QUATERNARY:
++		case MI2S_QUINARY:
+ 			map = drvdata->lpaif_map;
+ 			reg_irqclr = LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST);
+ 			val_irqclr = LPAIF_IRQ_ALL(ch);
+@@ -573,6 +579,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+ 			break;
+ 		case MI2S_PRIMARY:
+ 		case MI2S_SECONDARY:
++		case MI2S_TERTIARY:
++		case MI2S_QUATERNARY:
++		case MI2S_QUINARY:
+ 			map = drvdata->lpaif_map;
+ 			reg_irqen = LPAIF_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST);
+ 			val_mask = LPAIF_IRQ_ALL(ch);
+@@ -670,6 +679,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
+ 	break;
+ 	case MI2S_PRIMARY:
+ 	case MI2S_SECONDARY:
++	case MI2S_TERTIARY:
++	case MI2S_QUATERNARY:
++	case MI2S_QUINARY:
+ 		map = drvdata->lpaif_map;
+ 		reg = LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST);
+ 		val = 0;
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 85db650c2169..eff5de918e3a 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -20,7 +20,7 @@
+ #include "lpass.h"
+ 
+ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+-	[MI2S_PRIMARY] = {
++	[0] = {
+ 		.id = MI2S_PRIMARY,
+ 		.name = "Primary MI2S",
+ 		.playback = {
+@@ -46,7 +46,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
+ 	},
+ 
+-	[MI2S_SECONDARY] = {
++	[1] = {
+ 		.id = MI2S_SECONDARY,
+ 		.name = "Secondary MI2S",
+ 		.playback = {
+@@ -61,7 +61,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
+ 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
+ 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
+ 	},
+-	[LPASS_DP_RX] = {
++	[2] = {
+ 		.id = LPASS_DP_RX,
+ 		.name = "Hdmi",
+ 		.playback = {
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 0195372905ed..2d68af0da34d 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -12,7 +12,7 @@
+ #include <linux/compiler.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+-#include <dt-bindings/sound/sc7180-lpass.h>
 +#include <dt-bindings/sound/qcom,lpass.h>
-+
-+/* NOTE: Use qcom,lpass.h to define any AIF ID's for LPASS */
+ #include "lpass-hdmi.h"
  
- #endif /* __DT_APQ8016_LPASS_H */
-diff --git a/include/dt-bindings/sound/qcom,lpass.h b/include/dt-bindings/sound/qcom,lpass.h
-new file mode 100644
-index 000000000000..7b0b80b38699
---- /dev/null
-+++ b/include/dt-bindings/sound/qcom,lpass.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_QCOM_LPASS_H
-+#define __DT_QCOM_LPASS_H
-+
-+#define MI2S_PRIMARY	0
-+#define MI2S_SECONDARY	1
-+#define MI2S_TERTIARY	2
-+#define MI2S_QUATERNARY	3
-+#define MI2S_QUINARY	4
-+
-+#define LPASS_DP_RX	5
-+
-+#define LPASS_MCLK0	0
-+
-+#endif /* __DT_QCOM_LPASS_H */
-diff --git a/include/dt-bindings/sound/sc7180-lpass.h b/include/dt-bindings/sound/sc7180-lpass.h
-index 56ecaafd2dc6..5c1ee8b36b19 100644
---- a/include/dt-bindings/sound/sc7180-lpass.h
-+++ b/include/dt-bindings/sound/sc7180-lpass.h
-@@ -2,10 +2,8 @@
- #ifndef __DT_SC7180_LPASS_H
- #define __DT_SC7180_LPASS_H
- 
--#define MI2S_PRIMARY	0
--#define MI2S_SECONDARY	1
--#define LPASS_DP_RX	2
-+#include <dt-bindings/sound/qcom,lpass.h>
- 
--#define LPASS_MCLK0	0
-+/* NOTE: Use qcom,lpass.h to define any AIF ID's for LPASS */
- 
- #endif /* __DT_APQ8016_LPASS_H */
+ #define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
 -- 
 2.21.0
 
