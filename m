@@ -1,116 +1,96 @@
-Return-Path: <SRS0=Aiaa=GV=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.5 required=3.0 tests=BAYES_00,DKIM_ADSP_DISCARD,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 858E1C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 22:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 890DEC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 00:28:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1044E22D3E
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jan 2021 22:42:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1044E22D3E
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=frantovo.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 9E36D230FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 00:28:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E36D230FE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nostatic.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93BD8185B;
-	Mon, 18 Jan 2021 23:41:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93BD8185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41A27184C;
+	Tue, 19 Jan 2021 01:27:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41A27184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611009764;
-	bh=cDOpuffs4o5PiZQ+QaHMGX2e0Q8UlElDWYwQQbW3enM=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1611016087;
+	bh=Tgj7jExjLGl1+7M3FfCpRWtqdO9WrY+Oj90L0hkxV+s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UCFKRi1DUzldsoz/4BrTiDWYxudgxBf0K+SmpqKV0itQ4dyuj7kbwynV3SFUwipvR
-	 6fdGwI4ybfrPLr151bNOIg5GgeftK8Y2V2P1k5/1w6WK9l5lQuwx6e1ghGxQnpcav2
-	 /ds1bKKdhpBWxZ104L4g8vHPDCRPVDdRSeX9PdKk=
+	b=O1zExldAU233+NJFMr6lh6J/Y43KbBiD3yQETVEMKC8bPJ9sXD7pFIZoek2BqmJZE
+	 vMBSLGbfFm2Jpd1m0r4hHwxX7GlAasmkUQAmGTwBF4svSyS3VLFcs2knR/sLBymGOb
+	 dF4cWyHGtvKTsV3PBtLJ9rwlrL0tjn8oG96xzV20=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22CF5F80166;
-	Mon, 18 Jan 2021 23:41:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5782F80166;
+	Tue, 19 Jan 2021 01:27:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B464EF8016E; Mon, 18 Jan 2021 23:41:52 +0100 (CET)
-Received: from posta.frantovo.cz (czf.frantovo.cz [91.219.244.97])
- (using TLSv1.1 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DC84F80137
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 23:41:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DC84F80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=frantovo.cz header.i=@frantovo.cz
- header.b="UWEKnWeg"
-Received: from [192.168.1.4] (osma.doma.frantovo.cz [192.168.1.4])
+ id 47C1AF8016E; Tue, 19 Jan 2021 01:27:14 +0100 (CET)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
+ [IPv6:2607:f8b0:4864:20::b2a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- (Authenticated sender: fiki@frantovo.cz)
- by posta.frantovo.cz (Postfix) with ESMTPSA id E705F1AA442;
- Mon, 18 Jan 2021 23:40:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=frantovo.cz;
- s=default; t=1611009616;
- bh=cDOpuffs4o5PiZQ+QaHMGX2e0Q8UlElDWYwQQbW3enM=;
- h=Subject:From:To:References:Cc:Date:In-Reply-To;
- b=UWEKnWegGmUUuJkDX6ihgLhMTeJyY4tOotCPfT9EBGXLTJrBMnpMbmrexZfwuhzYH
- Z/1XQMUl/dywPht0lly/HG/56Bz9CkOAwNSBTz7ve1P4PcPOUieHxSgASZqdfXtQoQ
- Fy0qbKPT7DmreONm7rYzQLkvkAUwmh7m7lgO+nZs=
-Subject: MIDI handshake for Pioneer DJ DJM-250MK2 to enable recording
- LINE/PHONO channels
-From: =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <konference@frantovo.cz>
-To: alsa-devel@alsa-project.org
-References: <20200825153113.6352-1-konference@frantovo.cz>
- <1b3af11b-939e-1822-2d87-fd1f64dd7200@frantovo.cz>
-Autocrypt: addr=konference@frantovo.cz; prefer-encrypt=mutual; keydata=
- xsDiBEjwoPcRBACBMDDYEUSJnvb+vp9ISGGgbVeCjRGgTUYL0y8DE38EiFXHvs5xnuQwjDnD
- g5voqSsrehxLu3AnLCXVZAmRwJUw++9WbvWkuiML122u+zHi8CKOEaJDw6Wy9+/XJZwwpGAO
- zqCVoMZ9BKbp/FYJZd30F8Syg8iRpwOAFO5/6rq+ewCgiYsx9Gs0FkaQE3dm2Gl3+vlxjr0D
- /30qARahDlIWv3xSR0XDQWGQd+6sq0kwfd63etqjQfeeq0KRAld6f3BsQhWKcQwm0kIww7yr
- OBas5mMyS+m9eNNo8Y1f995oGYkPtMVSkWZZ/chVe/HNCyZJmJj4MPBBiiuc3IK/HyC4VFU2
- rOzB8NL9EHGM71kDPWghPUvYjukfA/4jUsaJx9f1QWkJoxim+35T0L4ucyEMPKyf5I7H0jg9
- wW3/Ealit43uXHldrDfH6HGJqqBUQjiPwCygSgdiOwQcdmlcOGX5fXNC8ZXErwnjObL9oXTr
- tanK7BK93DTRUrL0G7g3gl8k2bVKG1eQ4bA/ZXMktuTN7Tu+/8mAycGVgs01RnJhbnRpxaFl
- ayBLdcSNZXJhIChGcmFudG92by5jeikgPGZyYW50YUBmcmFudG92by5jej7CYwQTEQIAIwIb
- AwYLCQgHAwIEFQIIAwQWAgMBAh4BAheABQJI8K31AhkBAAoJEHHVq8jcl9H3hMUAn3hlINxa
- qAfvvuqBuESuhLvie913AJ90YVNwCEwPrHp/b5iV5/c2sitcG87DTQRI8KEcEBAAtpx9vU1l
- lAFEQWQLVKsI2YTS5pQhwb/OVmIQLnM6vguFhMH0ZXSjsZrWkEvrvrPNncsB3QSYlS9Zed69
- UHq3obZ8Jy8E2mwhggdxfSWutelG3mqOh9NbHm9GUGyE7LhFAkjRONNwnF3Bt8AbnjCWbd+0
- gZeh2ojmvnmHVY/4qUtEUflN1tZfHhOu6S6CNFyv/QTj6vSueVIBqrtpJuFxisWdKw8Ff3jq
- sDL9lGPgsfOHoFTufpIAFchgGhw648YDBqDWX/vtIKqqnPbeSXMCqI9hrWtZwUanlJeOihT+
- sAaGYNXrz8JCbOe6rSA4pvV1eu4agelS7y9YXwn06kuWjBrqitFc8Oeu9iZLKkK3cEdfczr9
- WLig1El8wN/naE9/kfv4OPCLKramuM0RMNLIBWmYJSMwWQm3QdlrBasuuJZc1GMdjcRJpk5H
- wa4aWT1tA3qe+BIv8GCqRMo8q51U6mjGlOsH+VFe5fhhJTybWYkeGFn4k/AvV6dXj/MVyniD
- DeYqsrLVwwFlCMMqwCsyL0o69fVO8RsKNaWk/rzMjkuV6Cy3B7YYOj4YJkTDjnEXdvmPNVz7
- YVjS6RqLagltHwqgkzW9v0IHpwBn9sS29EqBkRbGk/8ed9taCH0RE3AUyyeR3/GWN2YgU62S
- /NxS/SgKE3398A+/b6O90oRMyd8AAwUP/jTAUDJBR3digLqsxsPGu0ivQYdVup0e9Xdz/5Mh
- 6UqwGVsXnYjkBjfuJGtCIxdJJQ3ZZmsj2qVXwxTpLe6s1EKZorbh88bQKrlHThKVBlaFo6Hc
- wUbeYL/lXMyCJcDCtbUaYKeBrIV5UDjKA90lVYbhdUYVcf1ddBEtAFSjgg9cMuPYlZ9AB0cK
- 2UPknm+c7P2Q/Ao1EGaTAQjpmu4RHGpdVZMaZCFYl2pK+UTWEp++vzb8NDDhfvN57TpadcYJ
- 42wLFUVHwddOLYviPIMdwAWsFe4g5se9ogJu65rS5YU3Aekz2+uXIq91kN+mUaySZ4R2bUni
- yCJ6++Dq06awKCV2BSQai8HyhrFyyufX/XZW+4UEPTEQRwgA8BAdv/5zjfNLo5+TVSu0cbHQ
- eu9UTqwwC19KPSfHLzuzlQvsi2R0lt/tj487fTgjryTO0rtcKX06q996YU+2Wt1ltKFwyKsk
- 2Zu3FM9Fo9gGufh325V9ItFyemb620zBaPiEi+HldgkeaNw0eyWCaiTCLaehZ7LBvsgBwv0M
- 4vw2Rbtfi8gtY5wI3Xre37XcA9lNcqigsag+LPw2TaczGbahqeuXJCIEzOHnWWdzFwjvlIZI
- 1IvmAU/9+vSLRyVvvJ5LjGFrUOib2jWJTL+mRsfYxI+st2o8BPH2kQ2ZeWHQUmYUPRhQwkkE
- GBECAAkFAkjwoRwCGwwACgkQcdWryNyX0ffmsQCeNj9hurvXwOQ5ZIjHiVhUDdftkGsAn2If
- hW6mcblB0mov13r3UFNF1TB7
-Message-ID: <191a2803-f049-f73e-14b9-74c6b038e213@frantovo.cz>
-Date: Mon, 18 Jan 2021 23:41:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD878F800C0
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 01:27:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD878F800C0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nostatic-org.20150623.gappssmtp.com
+ header.i=@nostatic-org.20150623.gappssmtp.com header.b="LGr6+Xz9"
+Received: by mail-yb1-xb2a.google.com with SMTP id x78so9869289ybe.11
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 16:27:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nostatic-org.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=XRaF4AcjIBU0yuwEAUkTt15vHcbut6PNHtOlpD0pOR0=;
+ b=LGr6+Xz9MQa2JPHa+2KVvrVumSFcczxPQJcyF9H4JTzVO4lReraTRXhHW6XGnCeeZD
+ SPGT6mVRFnUfKG0K1h8vseX4OD603uMCKH28rjj+Vq1RL1dKAdLo9R8sFELJEE6NX18j
+ wEcMoW6QrWxQRnppFKpGiwOlByw1lXt3MyxOkHpMBN1H55yDfquydJTtKwVInQpcDtfl
+ Ak8M2e1T3Z2NIwdhMNKdRgEjTPxwOs15ZEQiduzujhvqUeK0HI1k21ydlF5QAbqzRneY
+ 4OUfrXPh67QZrKIdG+lsz9IeppQeBgtgW5sxU788fUPyO3TVRpPaugcy2hT1fX5wlsY9
+ zYdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=XRaF4AcjIBU0yuwEAUkTt15vHcbut6PNHtOlpD0pOR0=;
+ b=Y8P2n5bxexYDCF9D4f7V8QN5BZ1WsiD/3V3lsnM4KQElgyKLJoRzgY0CnxbrkbNOkZ
+ zCrt0vuXhFQXMDHr1wWPOYLqa68zxwN+0SgtaJopLGQ6+roKp2cpx85oRoD7bG9s64gE
+ vDYqdHHSJdIMqeDylkGF2tZTk1ypAWpL2tT0oK7agINGYe5TVmxb93Fu4yyV4XyiFIVY
+ Ya3fe71jroTf++wEs+kf7krdNqELUCkcRt1EUmvnzre07eQr7MAIHRcPnl1mCa3xFUET
+ XAEWUNrVLgDLmqLVYUUXik2JQDGrdVw099NiiBAFGqGbj//cqkXSzBuYnAMfQXhgs+o/
+ 1w0A==
+X-Gm-Message-State: AOAM530P+pFu3k/EmjGTAgP/zP+oUoi9K0TAKD1nuGVg82j+pAWjInHd
+ oxd7nlcd1yk6gw/Y5oJD86ukkPZyuSh5P5luNAUgtQ==
+X-Google-Smtp-Source: ABdhPJznom3St1jSHe5wpvvdfOk53rUR6fwbonxis7trnbI16RimpVkER6Bb/R5Fc4+SsUS0IrR6rEK/UG1OEKqZmHs=
+X-Received: by 2002:a25:1d5:: with SMTP id 204mr2223107ybb.417.1611016021398; 
+ Mon, 18 Jan 2021 16:27:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1b3af11b-939e-1822-2d87-fd1f64dd7200@frantovo.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Virus-Scanned: clamav-milter 0.98.1 at posta
-X-Virus-Status: Clean
-Cc: Takashi Iwai <tiwai@suse.de>, Dmitry Panchenko <dmitry@d-systems.ee>,
- Fabian Lesniak <fabian@lesniak-it.de>
+References: <CAHXb3bdk71ivJUp9HBRccDvd8SD2F1uFdsC_FxUjhh5zpcQobQ@mail.gmail.com>
+ <s5hr1mik7vu.wl-tiwai@suse.de>
+ <CAHXb3bdt6mgUcZ0+MH1i7QeYF03MSwx=kad-YBBNeVjqoH=KhA@mail.gmail.com>
+ <CAHXb3bcFM0BswbuTe=6vP6JRd=TOf94Gu0FPAZmXT6634bCiAQ@mail.gmail.com>
+ <s5hr1migiie.wl-tiwai@suse.de>
+ <CAHXb3be9EpEtaEc0iH06wmLMhyizkV7arvgxsT2bWK=aJHKVLA@mail.gmail.com>
+ <s5him7thpoz.wl-tiwai@suse.de>
+In-Reply-To: <s5him7thpoz.wl-tiwai@suse.de>
+From: Mike Oliphant <oliphant@nostatic.org>
+Date: Mon, 18 Jan 2021 16:26:51 -0800
+Message-ID: <CAHXb3bd8zHFmHxDp=4dNKa90eAT568yCwTWo_5L0Zry1EY45UA@mail.gmail.com>
+Subject: Re: Support for NUX MG-300 USB interface
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -126,32 +106,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 25. 08. 20 v 17:36 Franti=C5=A1ek Ku=C4=8Dera napsal(a):
-> 1) The direct (before fader) PHONO/LINE recording channels are silent u=
-ntil some (yet unknown) special command is send to the mixer. There is qu=
-ite a lot communication over USB in both directions and I have to dig thr=
-ough the dumps. This would be a separate commit and I do not know, how lo=
-ng it could take.
+Unfortunately, the "uac_clock_selector_set_val()" call does not seem to
+change anything.
 
-As mentioned earlier, the Pioneer DJM devices are somehow broken and by d=
-efault they produce only silence on LINE/PHONO recording channels.
+From doing some more testing, I think that the references to clock id "40"
+are ok - it has "40" stored in fmt->clock, but when it uses it,
+"__uac_clock_find_source()" gets called and it resolved to the actual clock
+source - "41".
 
-It was really challenging but it is no more hopeless =E2=80=93 in the mea=
-ntime, someone described, how it works inside, and I wrote a standalone p=
-rogram called djm-fix that fixes the device and enables the LINE/PHONO ch=
-annels (so the mixer is usable e.g. for DVS). Details are described here:=
- <https://blog.frantovo.cz/c/387/>. The djm-fix tool is still a bit raw, =
-but it works for me and at least one more DJM-250MK2 owner confirmed, tha=
-t it works.
+Not sure about the "No valid sample rate available for 1:1, assuming a
+firmware bug" error, but I suspect it is spurious.
+"check_valid_altsetting_v2v3()" is failing for some reason, but it is
+ignoring the error.
 
-Is it possible to move this fix to the kernel level? Or should it stay ra=
-ther as a standalone tool? I think that it would be nice to have Pioneer =
-DJM devices fully working out of the box without additional tools.
+Playback is completely silent, but the system seems to think it is working.
+No apparent errors, and a play operation seems to take the correct amount
+of time. Just no audio.
 
-The fix consists of a MIDI handshake =E2=80=93 we need to send and receiv=
-e some messages, compute some hash and then periodically send a keep-aliv=
-e message (when we stop, the LINE/PHONO channels become silent again).
+Maybe it is a mixer issue? mixer.c is putting out "RANGE setting not yet
+supported" errors on startup.
 
-Franta
+Here is a sample of dmesg output for a playback session:
 
+[ 4748.260975] usb 1-1.3: Open EP 0x1, iface=1:1, idx=0
+[ 4748.260983] usb 1-1.3:   channels=2, rate=48000, format=S32_LE,
+period_bytes=48000, periods=4, implicit_fb=0
+[ 4748.260988] usb 1-1.3: Open EP 0x81, iface=1:1, idx=1
+[ 4748.260992] usb 1-1.3:   channels=2, rate=48000, format=S32_LE,
+period_bytes=48000, periods=4, implicit_fb=0
+[ 4748.260996] usb 1-1.3: Setting usb interface 1:0 for EP 0x1
+[ 4748.261320] usb 1-1.3: 1:1 Set sample rate 48000, clock 40
+[ 4748.261873] usb 1-1.3: Setting params for data EP 0x1, pipe 0x9d00
+[ 4748.261890] usb 1-1.3: Set up 12 URBS, ret=0
+[ 4748.261897] usb 1-1.3: Setting usb interface 1:1 for EP 0x1
+[ 4748.262097] usb 1-1.3: Setting params for sync EP 0x81, pipe 0x9d80
+[ 4748.262105] usb 1-1.3: Set up 4 URBS, ret=0
+[ 4748.262147] usb 1-1.3: Starting data EP 0x1 (running 0)
+[ 4748.262180] usb 1-1.3: 12 URBs submitted for EP 0x1
+[ 4748.262183] usb 1-1.3: Starting sync EP 0x81 (running 0)
+[ 4748.262193] usb 1-1.3: 4 URBs submitted for EP 0x81
+[ 4748.262311] usb 1-1.3: 1:1 Start Playback PCM
+[ 4762.887812] usb 1-1.3: Stopping sync EP 0x81 (running 1)
+[ 4762.887836] usb 1-1.3: Stopping data EP 0x1 (running 1)
+[ 4762.887849] usb 1-1.3: 1:1 Stop Playback PCM
+[ 4762.902542] usb 1-1.3: Closing EP 0x1 (count 1)
+[ 4762.902549] usb 1-1.3: Setting usb interface 1:0 for EP 0x1
+[ 4762.902915] usb 1-1.3: EP 0x1 closed
+[ 4762.902928] usb 1-1.3: Closing EP 0x81 (count 1)
+[ 4762.902935] usb 1-1.3: Setting usb interface 1:0 for EP 0x81
+[ 4762.903179] usb 1-1.3: EP 0x81 closed
 
+On Mon, Jan 18, 2021 at 1:59 PM Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Mon, 18 Jan 2021 22:15:26 +0100,
+> Mike Oliphant wrote:
+> >
+> > Progress - thanks for the patch!
+> >
+> > That got rid of the clock errors, and the the device now reports a 48000
+> > sample rate, which is correct.
+> >
+> > Unfortunately, it still isn't working properly. Playback doesn't seem to
+> work
+> > at all. Capture kind of works - it does record, but the audio is
+> extremely
+> > noisy.
+> >
+> > Here is the current dmesg output when the device is connected.
+> >
+> > Notable is the error "No valid sample rate available for 1:1, assuming a
+> > firmware bug".
+> >
+> > Also notable is "1:1 Set sample rate 48000, clock 40" - where "40" is
+> the id
+> > of the clock selector - "41" is the id of the actual clock source. So
+> maybe
+> > something is still getting wired up wrong?
+>
+> OK, how about the one below instead?
+>
+>
+> Takashi
+>
+> --- a/sound/usb/clock.c
+> +++ b/sound/usb/clock.c
+> @@ -298,6 +298,12 @@ static int __uac_clock_find_source(struct
+> snd_usb_audio *chip,
+>         if (selector) {
+>                 int ret, i, cur;
+>
+> +               if (selector->bNrInPins == 1) {
+> +                       uac_clock_selector_set_val(chip,
+> selector->bClockID, 1);
+> +                       ret = 1;
+> +                       goto find_source;
+> +               }
+> +
+>                 /* the entity ID we are looking for is a selector.
+>                  * find out what it currently selects */
+>                 ret = uac_clock_selector_get_val(chip, selector->bClockID);
+> @@ -314,6 +320,7 @@ static int __uac_clock_find_source(struct
+> snd_usb_audio *chip,
+>                         return -EINVAL;
+>                 }
+>
+> +       find_source:
+>                 cur = ret;
+>                 ret = __uac_clock_find_source(chip, fmt,
+>                                               selector->baCSourceID[ret -
+> 1],
+>
