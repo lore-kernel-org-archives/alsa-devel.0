@@ -2,99 +2,81 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82CC6C433E9
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C5EEC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:10:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F314123104
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:06:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F314123104
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7D3ED20776
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:10:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D3ED20776
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFF7E18BF;
-	Tue, 19 Jan 2021 18:16:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFF7E18BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CF92183B;
+	Tue, 19 Jan 2021 20:09:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CF92183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611076654;
-	bh=2Nm3OhJd7SqwgowW/wgUOnsdCQ6I3skmiZCS1brxuME=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611083444;
+	bh=muahRlfQGSlDcXl/A/o/UouCCZpBjnP1V4dgrD+koNQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ae2L9iHsaDKYqj3IwIEzWnsi7lbYDPHnIbJn+0l4gShZD5mc+t4BTOpBwU7SnfCzt
-	 4+oekQv8+RvZvE+IiFKt+joj38g9yaibRRklVen057Cnqh93GRWL5tkozrai+yuxv4
-	 hcDuF1dQFTHzqYv6BffY4L25i4owMB22cu7iWhiU=
+	b=M9GPz+dBdKSd9SQOD1wFBldZzCZX3tgLTkC8KYdktbAFCC9eNZ5Cjn1AF8QpFKO/n
+	 XnCZr2xnJh9h/uVfNANQC1FO/HNq9Ie2DHdilp4zMhpeEIMq+TC8pvydKJo2hcDcyT
+	 AVRnHYjFEzyaSEzWh/JtXiO6DqezAwThIUp2c7jI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3EAAF802BE;
-	Tue, 19 Jan 2021 18:15:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1661F80255;
+	Tue, 19 Jan 2021 20:09:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 587ABF80272; Tue, 19 Jan 2021 18:15:48 +0100 (CET)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 58F3FF80257; Tue, 19 Jan 2021 20:09:52 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69512F80117
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 18:15:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69512F80117
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="k0p5MJow"
-Received: by mail-wr1-x430.google.com with SMTP id y17so20498677wrr.10
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 09:15:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=4UPEBqfaefkPq1YYF/lxiReSr4VDehjPvW+E069OjHM=;
- b=k0p5MJow6DmxYg7E8SrqHlPpxHer3kS4GJyXukAg+c9jcxyNp5B+neAVxsRD8cCD2H
- IGDmk+GnPRhZvaX6ty4QfChzd3xZ+AC87q95T+SQcS/Z/zNbdZ7CAyakO3HoNKZBc8kQ
- LOuJjlWECA09sZoRqRyUGep8tp4dByDPJzeoWJghHhyEgGf8dEYpMzFMDVt/wNws+3lq
- XZUZm/GiZ+4oidO1yl9hB118214oKIsOGhDp3JMyMrCXLR8pebnGko268CtHBQf+2jwx
- BPCiTnjMdSby6GwILd7C4ApUSlgS28quhZuuN+/OQNEVZaxk5lHIsrs2lfONocj6SUgH
- 8nxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=4UPEBqfaefkPq1YYF/lxiReSr4VDehjPvW+E069OjHM=;
- b=lhRWLK3lxHm/O8rtyH56on2/F1+o3bm6RdWhfivOd+oWp/th8imQ8CtA4GrbK8wctI
- asv3K9H4cocruIWcNb23dRx1Ro1bJ+3eX/m/Kakg6UuWqBPQVU3X/uLr1WJJyjceNSik
- KIknrACcBKUuTGEZyGSAVpw5VbvNETcYj2t+jV3VVCnlcs51fAMNFNgOc5A/SrJgb8yA
- 2EwnCPTnnEBxFHr/ZKtZMS1OYZIXGyKF80JrE9fSh+ZAv3iIhHy08uDkiAkGc1kdXpwY
- Gw5+RldbkuSfvUO8bwH+qGN1WFh7hWYrbVE6080YXqweK+KvVSyG5AbG2F4EQJegptwp
- 7lTQ==
-X-Gm-Message-State: AOAM530CO3vn+mH5YhA7ajSma130b6dKSV8bXmhq4arERbzHUM4ZMtSd
- 9W/j+LbbcsWRN+EUB2fHLvCX+A==
-X-Google-Smtp-Source: ABdhPJxZ6bkSJFnjIvSc9ba5CZO+PNNJP+Ua40XsQOS6FjIVIj2lzcCfAbAk6x2YYG3ZnjhBab1zng==
-X-Received: by 2002:a5d:4241:: with SMTP id s1mr5385455wrr.269.1611076541494; 
- Tue, 19 Jan 2021 09:15:41 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id x18sm41649358wrg.55.2021.01.19.09.15.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Jan 2021 09:15:39 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2 2/2] ASoC: qcom: Fix broken support to MI2S TERTIARY and
- QUATERNARY
-Date: Tue, 19 Jan 2021 17:15:27 +0000
-Message-Id: <20210119171527.32145-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
-References: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 14479F80137
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 20:09:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14479F80137
+IronPort-SDR: +TXizE9APRnfwhAGHwHe3j6mUxO9lVqeHl0OyB482mpcYjn2rA/xphOEDTT1CVRukkx1Wa/N9V
+ 813mNIFR+2SA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="178203952"
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; d="scan'208";a="178203952"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2021 11:09:43 -0800
+IronPort-SDR: 6NwjqznG8OHinEFNfhklW31CU1SQAGfKOYSCbFYUDylpZmFWv1BJhsqAkX1qv0p0vUDEBvAXQC
+ yMUK7CYX3uGA==
+X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; d="scan'208";a="384059682"
+Received: from lrstallo-mobl.amr.corp.intel.com (HELO [10.212.39.144])
+ ([10.212.39.144])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2021 11:09:43 -0800
+Subject: Re: [PATCH] soundwire: debugfs: use controller id instead of link_id
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Vinod Koul <vkoul@kernel.org>
+References: <20210115162559.20869-1-srinivas.kandagatla@linaro.org>
+ <20210119145220.GS2771@vkoul-mobl>
+ <45300dc3-00b0-497b-804e-f7f1e857f32a@linux.intel.com>
+ <57d5f1bd-50fa-30ab-03c0-260460e45d61@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <6d4d4a6b-f28c-81db-4e67-2b5b94116fa4@linux.intel.com>
+Date: Tue, 19 Jan 2021 13:09:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- srivasam@codeaurora.org, stephan@gerhold.net, lgirdwood@gmail.com,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Jun Nie <jun.nie@linaro.org>
+In-Reply-To: <57d5f1bd-50fa-30ab-03c0-260460e45d61@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
+ yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,159 +92,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-lpass hdmi support patch totally removed support for MI2S TERTIARY
-and QUATERNARY.
 
-One of the major issue was spotted with the design of having
-separate SoC specific header files for the common lpass driver.
-This design is prone to break as an when new SoC header is added
-as the common DAI ids of other SoCs will be overwritten by the
-new ones.
+>>>> link_id can be zero and if we have multiple controller instances
+>>>> in a system like Qualcomm debugfs will end-up with duplicate namespace
+>>>> resulting in incorrect debugfs entries.
+>>>>
+>>>> Using id should give a unique debugfs directory entry and should fix 
+>>>> below
+>>>> warning too.
+>>>> "debugfs: Directory 'master-0' with parent 'soundwire' already 
+>>>> present!"
+>>>
+>>> Yeah id is guaranteed to be unique so this will work.
+>>>
+>>> Applied, thanks
+>>
+>> This patch is a no-op for Intel, but I am not convinced it's the right 
+>> fix or the definitions are not consistent.
+> 
+> It depends if the intention is to represent full Hierarchy in debugfs, 
+> then I agree. Its was consistent even before!
 
-Having a common header qcom,lpass.h should fix the issue and any new
-DAI ids should be added to the common header.
+Indeed, we don't currently have a notion of controller in debugfs.
 
-With this change lpass also needs a new of_xlate function to resolve
-dai name.
+> currently we have
+> /sys/kernel/debug/soundwire/master-*
+> 
+> Are you suggesting that we have something like this:
+> 
+> /sys/kernel/debug/soundwire/xyz-controller/master-<LINK-ID> ??
 
-Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
-Reported-by: Jun Nie <jun.nie@linaro.org>
-Reported-by: Stephan Gerhold <stephan@gerhold.net>
-Tested-by: Srinivasa Rao <srivasam@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/lpass-cpu.c      | 22 ++++++++++++++++++++++
- sound/soc/qcom/lpass-platform.c | 12 ++++++++++++
- sound/soc/qcom/lpass-sc7180.c   |  9 +++------
- sound/soc/qcom/lpass.h          |  2 +-
- 4 files changed, 38 insertions(+), 7 deletions(-)
+Yes this is what I was thinking about.
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index af539e0d7e56..ae8efbc89af2 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -344,8 +344,30 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
- }
- EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_probe);
- 
-+static int asoc_qcom_of_xlate_dai_name(struct snd_soc_component *component,
-+				   struct of_phandle_args *args,
-+				   const char **dai_name)
-+{
-+	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
-+	struct lpass_variant *variant = drvdata->variant;
-+	int id = args->args[0];
-+	int ret = -EINVAL;
-+	int i;
-+
-+	for (i = 0; i  < variant->num_dai; i++) {
-+		if (variant->dai_driver[i].id == id) {
-+			*dai_name = variant->dai_driver[i].name;
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
- static const struct snd_soc_component_driver lpass_cpu_comp_driver = {
- 	.name = "lpass-cpu",
-+	.of_xlate_dai_name = asoc_qcom_of_xlate_dai_name,
- };
- 
- static bool lpass_cpu_regmap_writeable(struct device *dev, unsigned int reg)
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index d1c248590f3a..0074b7f2dbc1 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -257,6 +257,9 @@ static int lpass_platform_pcmops_hw_params(struct snd_soc_component *component,
- 		break;
- 	case MI2S_PRIMARY:
- 	case MI2S_SECONDARY:
-+	case MI2S_TERTIARY:
-+	case MI2S_QUATERNARY:
-+	case MI2S_QUINARY:
- 		ret = regmap_fields_write(dmactl->intf, id,
- 						LPAIF_DMACTL_AUDINTF(dma_port));
- 		if (ret) {
-@@ -507,6 +510,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 			break;
- 		case MI2S_PRIMARY:
- 		case MI2S_SECONDARY:
-+		case MI2S_TERTIARY:
-+		case MI2S_QUATERNARY:
-+		case MI2S_QUINARY:
- 			reg_irqclr = LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST);
- 			val_irqclr = LPAIF_IRQ_ALL(ch);
- 
-@@ -559,6 +565,9 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
- 			break;
- 		case MI2S_PRIMARY:
- 		case MI2S_SECONDARY:
-+		case MI2S_TERTIARY:
-+		case MI2S_QUATERNARY:
-+		case MI2S_QUINARY:
- 			reg_irqen = LPAIF_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST);
- 			val_mask = LPAIF_IRQ_ALL(ch);
- 			val_irqen = 0;
-@@ -655,6 +664,9 @@ static irqreturn_t lpass_dma_interrupt_handler(
- 	break;
- 	case MI2S_PRIMARY:
- 	case MI2S_SECONDARY:
-+	case MI2S_TERTIARY:
-+	case MI2S_QUATERNARY:
-+	case MI2S_QUINARY:
- 		map = drvdata->lpaif_map;
- 		reg = LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST);
- 		val = 0;
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 85db650c2169..8c168d3c589e 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -20,7 +20,7 @@
- #include "lpass.h"
- 
- static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
--	[MI2S_PRIMARY] = {
-+	{
- 		.id = MI2S_PRIMARY,
- 		.name = "Primary MI2S",
- 		.playback = {
-@@ -44,9 +44,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		},
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
--	},
--
--	[MI2S_SECONDARY] = {
-+	}, {
- 		.id = MI2S_SECONDARY,
- 		.name = "Secondary MI2S",
- 		.playback = {
-@@ -60,8 +58,7 @@ static struct snd_soc_dai_driver sc7180_lpass_cpu_dai_driver[] = {
- 		},
- 		.probe	= &asoc_qcom_lpass_cpu_dai_probe,
- 		.ops    = &asoc_qcom_lpass_cpu_dai_ops,
--	},
--	[LPASS_DP_RX] = {
-+	}, {
- 		.id = LPASS_DP_RX,
- 		.name = "Hdmi",
- 		.playback = {
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 0195372905ed..2d68af0da34d 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -12,7 +12,7 @@
- #include <linux/compiler.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
--#include <dt-bindings/sound/sc7180-lpass.h>
-+#include <dt-bindings/sound/qcom,lpass.h>
- #include "lpass-hdmi.h"
- 
- #define LPASS_AHBIX_CLOCK_FREQUENCY		131072000
--- 
-2.21.0
+> /sys/kernel/debug/soundwire/xyz-controller/master-<LINK-ID>/xyz-slave/master-<LINK-ID> 
+> ??
 
+This would be for a bridge which to the best of my knowledge hasn't been 
+implemented by anyone (clocking and command/control timing issues).
+
+> Or may be something much simpler like:
+> 
+> /sys/kernel/debug/soundwire/master-<ID>.<LINK_ID>
+
+the bus->id is an IDA, which is useful for to avoid conflicts, but it's 
+not really meaningful for debugfs. I remember seeing a case where we had 
+links 2 and 4 enabled, and the bus->id were 0 and 1, a completely 
+artificial value that doesn't really help in debugging.
