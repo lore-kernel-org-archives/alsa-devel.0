@@ -2,84 +2,109 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F29C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:32:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CACAEC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:52:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 096F222227
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:32:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 096F222227
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	by mail.kernel.org (Postfix) with ESMTPS id 30E6023138
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:52:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30E6023138
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 618101894;
-	Tue, 19 Jan 2021 10:31:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 618101894
+	by alsa0.perex.cz (Postfix) with ESMTPS id 054481860;
+	Tue, 19 Jan 2021 10:51:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 054481860
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611048768;
-	bh=TUlUqNxHFyYZjXwzlzw/tBOW7HAf+DBAfcJ9EaGrYzM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611049969;
+	bh=u6vd0WH8Jkh2ZtT/Km3GMAnv6EYJMf8Jei5+9GKAl68=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=INJLduECgvcdkzaWETa+sPSTt/pFHxrCtS4xuF/O4+2KemcV0fBBmO+rKmhb8KEsq
-	 s3aqBxjO5+9GmbgAnAkjajPJJcx1Q84BCskKx/xhgy+PC+9UhzoPBkdj+TeW3jsU+u
-	 FZLqQyUD8wKTXuYhGTY++52Q5/JBl8Wt1sJTDvEY=
+	b=VhD50LNOT59juVFKXuGwDP41bHd0LuVx1nUE/WW62KOvSowS2aO8Z+8JZOoMgtrXl
+	 07ALHW5BQ6tfUUCd/lXMuMfD8bJZZnbzkgkYRp/Ky41x4YuaTKyh6L9yeIdo1i1vLe
+	 BtmsJCbWxs5pkiXx2qiAUrCOoy9WVpFKO/RJhbUM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5FEFF804E3;
-	Tue, 19 Jan 2021 10:29:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 867BDF80255;
+	Tue, 19 Jan 2021 10:51:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F169AF80272; Tue, 19 Jan 2021 10:29:04 +0100 (CET)
-Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
- [216.228.121.65])
+ id 07A9FF80257; Tue, 19 Jan 2021 10:51:57 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC163F80257
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 10:28:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC163F80257
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C158F80137
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 10:51:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C158F80137
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="IiKZ/gmS"
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B6006a6570001>; Tue, 19 Jan 2021 01:28:56 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 09:28:55 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 19 Jan 2021 09:28:52 +0000
-From: Sameer Pujar <spujar@nvidia.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>, <thierry.reding@gmail.com>
-Subject: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header for Tegra210
-Date: Tue, 19 Jan 2021 14:58:15 +0530
-Message-ID: <1611048496-24650-6-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
-References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="E0FLQ5IM"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 10J9poiF017510; Tue, 19 Jan 2021 03:51:50 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=ZGcMmV8ud8RsHGVG+9fWIXTvDt1zAVWYEvH2Lib4jVI=;
+ b=E0FLQ5IMWCry+Mfo6u3aruWZbOGbkgCf5ivhN9bPBatcRSsUC23rbZ/0dEjXNZWThb9w
+ wZi8T0ROP1rZ9E0mqKjoU19GwrVHFtFfF2kcepgO6LuFzeva57UYD/XhAISQIe5olW1I
+ aX5+WU8g/4hur2QF4ISPcjdgXx0WMXdY73NzYedr5dq199O9Nc/gB8FlIuzxEuNjMesX
+ 1+haR7jWn0j9o00um2j/6DXTf3qcTiG9R4Dd986tFzHlG0SSUZt18WM3onJ0vqRZZPV2
+ j1NNVT/6qMCTI450P9AFWCfKUJbWu8O7Mua0kl1Mdt6XkQq5f9JtANGOtvrXlgOXYF4v 3w== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 363xe7avy7-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 19 Jan 2021 03:51:50 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 19 Jan
+ 2021 09:51:48 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 19 Jan 2021 09:51:48 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.215])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 84AA311CB;
+ Tue, 19 Jan 2021 09:51:41 +0000 (UTC)
+Subject: Re: [PATCH v2 08/12] ASoC: arizona-jack: convert into a helper
+ library for codec drivers
+To: Andy Shevchenko <andy.shevchenko@gmail.com>, Hans de Goede
+ <hdegoede@redhat.com>
+References: <20210117160555.78376-1-hdegoede@redhat.com>
+ <20210117160555.78376-9-hdegoede@redhat.com>
+ <CAHp75VeSqVYWE9o-6JwY+pmjU7nfBJwZvaSk0v-ngjeGMMxQAQ@mail.gmail.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <e902dc43-42d1-c90b-98df-d054a72a5558@opensource.cirrus.com>
+Date: Tue, 19 Jan 2021 09:51:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1611048536; bh=N3YeQvDKJduX5rcoNDcv6iWQ9sjVvrYYOtuEvh0ZCJo=;
- h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
- References:MIME-Version:Content-Type;
- b=IiKZ/gmShJ4GCYlIp5VJ1K5kB4mI8e6aA8N4zC256M87TfQciuURyz3IKSBsV+1E0
- mQuVhNIGSIWCeo8/9iwJ33T+2Ymrov4ZGOk8QwvsGx950L+AZNZ7GWqMGFbL4P5HCG
- 8gogBXGpUzZGb73bea1JQ2uqL8IniYaYJSwbHOClJ0jLeLd8RLF41kh96v2MrsE9xt
- hxP62HquMpYSHOMDZlNE5/ZWTSfZ5WF2qidHVJDgUzzM9z2K/Ef0zjs1ClXeqYurA9
- gwIYrh/6UEc68RkEKlQyBTgraBm5IfWJP8TLgu+oWDIUY7exL4z/YDWrxDTblXgNZl
- +cHciyKFJOlUw==
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- linux-tegra@vger.kernel.org
+In-Reply-To: <CAHp75VeSqVYWE9o-6JwY+pmjU7nfBJwZvaSk0v-ngjeGMMxQAQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ malwarescore=0
+ mlxlogscore=937 mlxscore=0 adultscore=0 impostorscore=0 phishscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190059
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,177 +120,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Expose a header which describes DT bindings required to use audio-graph
-based sound card. All Tegra210 based platforms can include this header
-and add platform specific information. Currently, from SoC point of view,
-all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
+On 18/01/2021 17:24, Andy Shevchenko wrote:
+> On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Convert the arizona extcon driver into a helper library for direct use
+>> from the arizona codec-drivers, rather then being bound to a separate
+>> MFD cell.
+>>
+>> Note the probe (and remove) sequence is split into 2 parts:
+>>
+>> 1. The arizona_jack_codec_dev_probe() function inits a bunch of
+>> jack-detect specific variables in struct arizona_priv and tries to get
+>> a number of resources where getting them may fail with -EPROBE_DEFER.
+>>
+>> 2. Then once the machine driver has create a snd_sock_jack through
+>> snd_soc_card_jack_new() it calls snd_soc_component_set_jack() on
+>> the codec component, which will call the new arizona_jack_set_jack(),
+>> which sets up jack-detection and requests the IRQs.
+>>
+>> This split is necessary, because the IRQ handlers need access to the
+>> arizona->dapm pointer and the snd_sock_jack which are not available
+>> when the codec-driver's probe function runs.
+>>
+>> Note this requires that machine-drivers for codecs which are converted
+>> to use the new helper functions from arizona-jack.c are modified to
+>> create a snd_soc_jack through snd_soc_card_jack_new() and register
+>> this jack with the codec through snd_soc_component_set_jack().
+> 
+> ...
+> 
+>> +int arizona_jack_codec_dev_probe(struct arizona_priv *info, struct device *dev)
+>>   {
+>> -       struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
+>> +       struct arizona *arizona = info->arizona;
+>>          struct arizona_pdata *pdata = &arizona->pdata;
+> 
+>> +       int ret, mode;
+>>
+>>          if (!dev_get_platdata(arizona->dev))
+>> -               arizona_extcon_device_get_pdata(&pdev->dev, arizona);
+>> +               arizona_extcon_device_get_pdata(dev, arizona);
+>>
+>> -       info->micvdd = devm_regulator_get(&pdev->dev, "MICVDD");
+>> +       info->micvdd = devm_regulator_get(arizona->dev, "MICVDD");
+> 
+> I'm wondering if arizona->dev == dev here. if no, can this function
+> get a comment / kernel-doc explaining what dev is?
+> 
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
----
- .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 +++++++++++++++++++++
- 1 file changed, 153 insertions(+)
- create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+pdev->dev would be *this* driver.
+arizona->dev should be the MFD parent driver.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi b/arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
-new file mode 100644
-index 0000000..5c54358
---- /dev/null
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/ {
-+	tegra_sound {
-+		status = "disabled";
-+
-+		clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-+			 <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+		clock-names = "pll_a", "plla_out0";
-+
-+		assigned-clocks = <&tegra_car TEGRA210_CLK_PLL_A>,
-+				  <&tegra_car TEGRA210_CLK_PLL_A_OUT0>,
-+				  <&tegra_car TEGRA210_CLK_EXTERN1>;
-+		assigned-clock-parents = <0>, <0>, <&tegra_car TEGRA210_CLK_PLL_A_OUT0>;
-+		assigned-clock-rates = <368640000>, <49152000>, <12288000>;
-+	};
-+};
-+
-+&tegra_admaif {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		admaif1_port: port@0 {
-+			reg = <0>;
-+			admaif1_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif1_ep>;
-+			};
-+		};
-+		admaif2_port: port@1 {
-+			reg = <1>;
-+			admaif2_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif2_ep>;
-+			};
-+		};
-+		admaif3_port: port@2 {
-+			reg = <2>;
-+			admaif3_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif3_ep>;
-+			};
-+		};
-+		admaif4_port: port@3 {
-+			reg = <3>;
-+			admaif4_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif4_ep>;
-+			};
-+		};
-+		admaif5_port: port@4 {
-+			reg = <4>;
-+			admaif5_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif5_ep>;
-+			};
-+		};
-+		admaif6_port: port@5 {
-+			reg = <5>;
-+			admaif6_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif6_ep>;
-+			};
-+		};
-+		admaif7_port: port@6 {
-+			reg = <6>;
-+			admaif7_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif7_ep>;
-+			};
-+		};
-+		admaif8_port: port@7 {
-+			reg = <7>;
-+			admaif8_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif8_ep>;
-+			};
-+		};
-+		admaif9_port: port@8 {
-+			reg = <8>;
-+			admaif9_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif9_ep>;
-+			};
-+		};
-+		admaif10_port: port@9 {
-+			reg = <9>;
-+			admaif10_ep: endpoint {
-+				remote-endpoint = <&xbar_admaif10_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_ahub {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0x0>;
-+			xbar_admaif1_ep: endpoint {
-+				remote-endpoint = <&admaif1_ep>;
-+			};
-+		};
-+		port@1 {
-+			reg = <0x1>;
-+			xbar_admaif2_ep: endpoint {
-+				remote-endpoint = <&admaif2_ep>;
-+			};
-+		};
-+		port@2 {
-+			reg = <0x2>;
-+			xbar_admaif3_ep: endpoint {
-+				remote-endpoint = <&admaif3_ep>;
-+			};
-+		};
-+		port@3 {
-+			reg = <0x3>;
-+			xbar_admaif4_ep: endpoint {
-+				remote-endpoint = <&admaif4_ep>;
-+			};
-+		};
-+		port@4 {
-+			reg = <0x4>;
-+			xbar_admaif5_ep: endpoint {
-+				remote-endpoint = <&admaif5_ep>;
-+			};
-+		};
-+		port@5 {
-+			reg = <0x5>;
-+			xbar_admaif6_ep: endpoint {
-+				remote-endpoint = <&admaif6_ep>;
-+			};
-+		};
-+		port@6 {
-+			reg = <0x6>;
-+			xbar_admaif7_ep: endpoint {
-+				remote-endpoint = <&admaif7_ep>;
-+			};
-+		};
-+		port@7 {
-+			reg = <0x7>;
-+			xbar_admaif8_ep: endpoint {
-+				remote-endpoint = <&admaif8_ep>;
-+			};
-+		};
-+		port@8 {
-+			reg = <0x8>;
-+			xbar_admaif9_ep: endpoint {
-+				remote-endpoint = <&admaif9_ep>;
-+			};
-+		};
-+		port@9 {
-+			reg = <0x9>;
-+			xbar_admaif10_ep: endpoint {
-+				remote-endpoint = <&admaif10_ep>;
-+			};
-+		};
-+	};
-+};
--- 
-2.7.4
+I think these gets should be against the dev passed in as argument
+(I assume that is the caller's pdev->dev). So they are owned by this
+driver, not its parent.
 
