@@ -7,75 +7,76 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06770C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:31:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2311C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:32:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 15ABD221F7
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:31:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15ABD221F7
+	by mail.kernel.org (Postfix) with ESMTPS id 0B100221F7
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:32:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B100221F7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73AD01886;
-	Tue, 19 Jan 2021 10:31:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73AD01886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 887691885;
+	Tue, 19 Jan 2021 10:31:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 887691885
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611048710;
-	bh=R1tPE5Atsd4uoeWfeIVUYpmhbG1Ul9Uubk+aZomNu8Y=;
+	s=default; t=1611048719;
+	bh=vdkSpH/7lspvEHsOEIgQQ3Rpz4UTuc0RmPaf8fh26QE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GSK/n4uP1rzWje2bcj5qYUWG/WmIlzIR9IqQoOEO2hE6rdnT+EuNtPVYl76nzTi3t
-	 KoGPhktZL6OYP0NGEtNR57FyZIRM45Ljh/YyDlq2iEzWPsiMec/PKjp0/GONTMTzwr
-	 cL1c57nESPmrkw9sW9+UbAlkrMeaUWv4DAbtUOoM=
+	b=S90sc322p9ytzUe6/WVIlMZrHUfIfUQOb68+ksJqPXUclLOJKkz+jhqjS9PEMN/pi
+	 d1xqn95NBN9Ru+XQ4Nm+5LkVGsMFkyV7oAVd1r1Yl2qrPMvV1RtUPUAC4nZpkpy/7K
+	 3nrIArTj6EPpCn3jhEwZFZ/GR/DwZZWky/DF4sOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00DC4F804CA;
-	Tue, 19 Jan 2021 10:29:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A27EF804D6;
+	Tue, 19 Jan 2021 10:29:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE4FBF8027D; Tue, 19 Jan 2021 10:28:55 +0100 (CET)
+ id 6C4C6F802BE; Tue, 19 Jan 2021 10:29:04 +0100 (CET)
 Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
  [216.228.121.143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8315F80255
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 10:28:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8315F80255
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2035AF800FE
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 10:29:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2035AF800FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="m9vW/HRM"
+ header.b="jNUNUsm+"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
  hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B6006a6500001>; Tue, 19 Jan 2021 01:28:48 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
- 2021 09:28:48 +0000
+ id <B6006a65b0007>; Tue, 19 Jan 2021 01:28:59 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 19 Jan
+ 2021 09:28:59 +0000
 Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 19 Jan 2021 09:28:44 +0000
+ Transport; Tue, 19 Jan 2021 09:28:55 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>, <thierry.reding@gmail.com>
-Subject: [RESEND PATCH v6 3/6] ASoC: tegra: Add audio graph based card driver
-Date: Tue, 19 Jan 2021 14:58:13 +0530
-Message-ID: <1611048496-24650-4-git-send-email-spujar@nvidia.com>
+Subject: [RESEND PATCH v6 6/6] arm64: tegra: Audio graph sound card for Jetson
+ Nano and TX1
+Date: Tue, 19 Jan 2021 14:58:16 +0530
+Message-ID: <1611048496-24650-7-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
 References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1611048528; bh=myn0avhGV8FRG9HA6zQNhSBQW8UTjpYuBexd3sk0A6w=;
+ t=1611048539; bh=7Xf2p7q6sLj/nHibZUjeyNnHhKjOwsiJG8GjpwoFLzg=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=m9vW/HRMemRjp1mhm0Ecz/1Mc58eAxzpOdprgp43gUQ79Tq9gw3dtmA8Jk942JM6l
- SSKXnOTC/AIL43KsOBNRurynZRs86/C1ii9o+xKAEhqPUk5wJap3PfaHq9bibT8kOf
- jeYuQmfF0oalJ93Qy2eTJNT+XGXbBP3GZfWEiAJA+DYZ3qtM7DldMksNMDqgvMVMoz
- 0EcFR4LO3BieeVY78GnSCnBMq9doU+WyINnNpjhKoY3rgx/HcBbUC3tPv67h6gO4vu
- exT1fyuzO9laGOq+95xhdFIEOE5SKsibmESQ4mDZUGr2/kScX4CSbExYtv8HRhQn8h
- WTa9XYHKCecwQ==
+ b=jNUNUsm+3xhMKMb6vXU4TLnmOBV4MQZf0YQ8VMmmPbeVCB557bynunD6ziKW4KhaA
+ 6JfTERAnFRO6/a2okVEH6ws7zJOhiuFde8J+JC7L/PKJCmMI4SHnawr/Z9wvvB/USV
+ pinSPON81Qnjpmr/tYH4fG1xr2Vv07AzNmhLiSOlpXG6YGHzp6SMB6aKTDcXwq+G0V
+ GOePii8TDEMP2+OCCnmOYDxVQ/j3MjR2cPlr/f59Qox9/odYUMhG3+u2Jiw+Z2sesY
+ WbcJMOhPVGUafJ5RNb5RrfQr/h/pckbEdH/XokhY1A1jnYNvs3MTekAX1Drelrze6i
+ sAxSdlFgZLKxQ==
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
@@ -95,329 +96,460 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add Tegra audio machine driver which is based on generic audio graph card
-driver. It re-uses most of the common stuff from audio graph driver and
-uses the same DT binding. Required Tegra specific customizations are done
-in the driver and additional DT bindings are required for clock handling.
+Enable support for audio-graph based sound card on Jetson-Nano and
+Jetson-TX1. Depending on the platform, required I/O interfaces are
+enabled.
 
-Details on the customizations done:
-
- - Update PLL rates at runtime: Tegra HW supports multiple sample rates
-   (multiples of 8x and 11.025x) and both of these groups require different
-   PLL rates. Hence there is a requirement to update this at runtime.
-   This is achieved by providing a custom 'snd_soc_ops' and in hw_param()
-   callback PLL rate is updated as per the sample rate.
-
- - Internal structure 'tegra_audio_graph_data' is used to maintain clock
-   handles of PLL.
-
- - The 'force_dpcm' flag is set to use DPCM for all DAI links.
-
- - The 'component_chaining' flag is set to use DPCM with component model.
+ * Jetson-Nano: Enable I2S3, I2S4, DMIC1 and DMIC2.
+ * Jetson-TX1: Enable all I2S and DMIC interfaces.
 
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 ---
- sound/soc/tegra/Kconfig                  |   9 ++
- sound/soc/tegra/Makefile                 |   2 +
- sound/soc/tegra/tegra_audio_graph_card.c | 251 +++++++++++++++++++++++++++++++
- 3 files changed, 262 insertions(+)
- create mode 100644 sound/soc/tegra/tegra_audio_graph_card.c
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 262 +++++++++++++++++++++
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 146 ++++++++++++
+ 2 files changed, 408 insertions(+)
 
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index a62cc87..6dc83ad 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -117,6 +117,15 @@ config SND_SOC_TEGRA210_ADMAIF
- 	  channel. Buffer size is configurable for each ADMAIIF channel.
- 	  Say Y or M if you want to add support for Tegra210 ADMAIF module.
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
+index 69102dc..747ab93 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
+@@ -3,6 +3,7 @@
  
-+config SND_SOC_TEGRA_AUDIO_GRAPH_CARD
-+	tristate "Audio Graph Card based Tegra driver"
-+	depends on SND_AUDIO_GRAPH_CARD
-+	help
-+	  Config to enable Tegra audio machine driver based on generic
-+	  audio graph driver. It is a thin driver written to customize
-+	  few things for Tegra audio. Most of the code is re-used from
-+	  audio graph driver and the same DT bindings are used.
-+
- config SND_SOC_TEGRA_RT5640
- 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
-diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-index 60040a0..b17dd6e 100644
---- a/sound/soc/tegra/Makefile
-+++ b/sound/soc/tegra/Makefile
-@@ -38,6 +38,7 @@ snd-soc-tegra-trimslice-objs := trimslice.o
- snd-soc-tegra-alc5632-objs := tegra_alc5632.o
- snd-soc-tegra-max98090-objs := tegra_max98090.o
- snd-soc-tegra-sgtl5000-objs := tegra_sgtl5000.o
-+snd-soc-tegra-audio-graph-card-objs := tegra_audio_graph_card.o
+ #include "tegra210-p2180.dtsi"
+ #include "tegra210-p2597.dtsi"
++#include "tegra210-audio-graph.dtsi"
  
- obj-$(CONFIG_SND_SOC_TEGRA_RT5640) += snd-soc-tegra-rt5640.o
- obj-$(CONFIG_SND_SOC_TEGRA_RT5677) += snd-soc-tegra-rt5677.o
-@@ -48,3 +49,4 @@ obj-$(CONFIG_SND_SOC_TEGRA_TRIMSLICE) += snd-soc-tegra-trimslice.o
- obj-$(CONFIG_SND_SOC_TEGRA_ALC5632) += snd-soc-tegra-alc5632.o
- obj-$(CONFIG_SND_SOC_TEGRA_MAX98090) += snd-soc-tegra-max98090.o
- obj-$(CONFIG_SND_SOC_TEGRA_SGTL5000) += snd-soc-tegra-sgtl5000.o
-+obj-$(CONFIG_SND_SOC_TEGRA_AUDIO_GRAPH_CARD) += snd-soc-tegra-audio-graph-card.o
-diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
-new file mode 100644
-index 0000000..9e43f16
---- /dev/null
-+++ b/sound/soc/tegra/tegra_audio_graph_card.c
-@@ -0,0 +1,251 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// tegra_audio_graph_card.c - Audio Graph based Tegra Machine Driver
-+//
-+// Copyright (c) 2020 NVIDIA CORPORATION.  All rights reserved.
+ / {
+ 	model = "NVIDIA Jetson TX1 Developer Kit";
+@@ -127,4 +128,265 @@
+ 			status = "okay";
+ 		};
+ 	};
 +
-+#include <linux/math64.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <sound/graph_card.h>
-+#include <sound/pcm_params.h>
++	tegra_sound {
++		status = "okay";
 +
-+#define MAX_PLLA_OUT0_DIV 128
++		compatible = "nvidia,tegra210-audio-graph-card";
 +
-+#define simple_to_tegra_priv(simple) \
-+		container_of(simple, struct tegra_audio_priv, simple)
++		dais = /* FE */
++		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
++		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
++		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
++		       <&admaif10_port>,
++		       /* Router */
++		       <&xbar_i2s1_port>, <&xbar_i2s2_port>, <&xbar_i2s3_port>,
++		       <&xbar_i2s4_port>, <&xbar_i2s5_port>, <&xbar_dmic1_port>,
++		       <&xbar_dmic2_port>, <&xbar_dmic3_port>,
++		       /* I/O DAP Ports */
++		       <&i2s1_port>, <&i2s2_port>, <&i2s3_port>, <&i2s4_port>,
++		       <&i2s5_port>, <&dmic1_port>, <&dmic2_port>, <&dmic3_port>;
 +
-+enum srate_type {
-+	/*
-+	 * Sample rates multiple of 8000 Hz and below are supported:
-+	 * ( 8000, 16000, 32000, 48000, 96000, 192000 Hz )
-+	 */
-+	x8_RATE,
-+
-+	/*
-+	 * Sample rates multiple of 11025 Hz and below are supported:
-+	 * ( 11025, 22050, 44100, 88200, 176400 Hz )
-+	 */
-+	x11_RATE,
-+
-+	NUM_RATE_TYPE,
++		label = "jetson-tx1-ape";
++	};
 +};
 +
-+struct tegra_audio_priv {
-+	struct asoc_simple_priv simple;
-+	struct clk *clk_plla_out0;
-+	struct clk *clk_plla;
++&tegra_admaif {
++	status = "okay";
 +};
 +
-+/* Tegra audio chip data */
-+struct tegra_audio_cdata {
-+	unsigned int plla_rates[NUM_RATE_TYPE];
-+	unsigned int plla_out0_rates[NUM_RATE_TYPE];
++&tegra_ahub {
++	status = "okay";
++
++	ports {
++		xbar_i2s1_port: port@a {
++			reg = <0xa>;
++			xbar_i2s1_ep: endpoint {
++				remote-endpoint = <&i2s1_cif_ep>;
++			};
++		};
++		xbar_i2s2_port: port@b {
++			reg = <0xb>;
++			xbar_i2s2_ep: endpoint {
++				remote-endpoint = <&i2s2_cif_ep>;
++			};
++		};
++		xbar_i2s3_port: port@c {
++			reg = <0xc>;
++			xbar_i2s3_ep: endpoint {
++				remote-endpoint = <&i2s3_cif_ep>;
++			};
++		};
++		xbar_i2s4_port: port@d {
++			reg = <0xd>;
++			xbar_i2s4_ep: endpoint {
++				remote-endpoint = <&i2s4_cif_ep>;
++			};
++		};
++		xbar_i2s5_port: port@e {
++			reg = <0xe>;
++			xbar_i2s5_ep: endpoint {
++				remote-endpoint = <&i2s5_cif_ep>;
++			};
++		};
++		xbar_dmic1_port: port@f {
++			reg = <0xf>;
++			xbar_dmic1_ep: endpoint {
++				remote-endpoint = <&dmic1_cif_ep>;
++			};
++		};
++		xbar_dmic2_port: port@10 {
++			reg = <0x10>;
++			xbar_dmic2_ep: endpoint {
++				remote-endpoint = <&dmic2_cif_ep>;
++			};
++		};
++		xbar_dmic3_port: port@11 {
++			reg = <0x11>;
++			xbar_dmic3_ep: endpoint {
++				remote-endpoint = <&dmic3_cif_ep>;
++			};
++		};
++	};
 +};
 +
-+/* Setup PLL clock as per the given sample rate */
-+static int tegra_audio_graph_update_pll(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct asoc_simple_priv *simple = snd_soc_card_get_drvdata(rtd->card);
-+	struct tegra_audio_priv *priv = simple_to_tegra_priv(simple);
-+	struct device *dev = rtd->card->dev;
-+	const struct tegra_audio_cdata *data = of_device_get_match_data(dev);
-+	unsigned int plla_rate, plla_out0_rate, bclk;
-+	unsigned int srate = params_rate(params);
-+	int err;
++&tegra_i2s1 {
++	status = "okay";
 +
-+	switch (srate) {
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+	case 176400:
-+		plla_out0_rate = data->plla_out0_rates[x11_RATE];
-+		plla_rate = data->plla_rates[x11_RATE];
-+		break;
-+	case 8000:
-+	case 16000:
-+	case 32000:
-+	case 48000:
-+	case 96000:
-+	case 192000:
-+		plla_out0_rate = data->plla_out0_rates[x8_RATE];
-+		plla_rate = data->plla_rates[x8_RATE];
-+		break;
-+	default:
-+		dev_err(rtd->card->dev, "Unsupported sample rate %u\n",
-+			srate);
-+		return -EINVAL;
-+	}
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+	/*
-+	 * Below is the clock relation:
-+	 *
-+	 *	PLLA
-+	 *	  |
-+	 *	  |--> PLLA_OUT0
-+	 *		  |
-+	 *		  |---> I2S modules
-+	 *		  |
-+	 *		  |---> DMIC modules
-+	 *		  |
-+	 *		  |---> DSPK modules
-+	 *
-+	 *
-+	 * Default PLLA_OUT0 rate might be too high when I/O is running
-+	 * at minimum PCM configurations. This may result in incorrect
-+	 * clock rates and glitchy audio. The maximum divider is 128
-+	 * and any thing higher than that won't work. Thus reduce PLLA_OUT0
-+	 * to work for lower configurations.
-+	 *
-+	 * This problem is seen for I2S only, as DMIC and DSPK minimum
-+	 * clock requirements are under allowed divider limits.
-+	 */
-+	bclk = srate * params_channels(params) * params_width(params);
-+	if (div_u64(plla_out0_rate, bclk) > MAX_PLLA_OUT0_DIV)
-+		plla_out0_rate >>= 1;
-+
-+	dev_dbg(rtd->card->dev,
-+		"Update clock rates: PLLA(= %u Hz) and PLLA_OUT0(= %u Hz)\n",
-+		plla_rate, plla_out0_rate);
-+
-+	/* Set PLLA rate */
-+	err = clk_set_rate(priv->clk_plla, plla_rate);
-+	if (err) {
-+		dev_err(rtd->card->dev,
-+			"Can't set plla rate for %u, err: %d\n",
-+			plla_rate, err);
-+		return err;
-+	}
-+
-+	/* Set PLLA_OUT0 rate */
-+	err = clk_set_rate(priv->clk_plla_out0, plla_out0_rate);
-+	if (err) {
-+		dev_err(rtd->card->dev,
-+			"Can't set plla_out0 rate %u, err: %d\n",
-+			plla_out0_rate, err);
-+		return err;
-+	}
-+
-+	return err;
-+}
-+
-+static int tegra_audio_graph_hw_params(struct snd_pcm_substream *substream,
-+				       struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	int err;
-+
-+	/*
-+	 * This gets called for each DAI link (FE or BE) when DPCM is used.
-+	 * We may not want to update PLLA rate for each call. So PLLA update
-+	 * must be restricted to external I/O links (I2S, DMIC or DSPK) since
-+	 * they actually depend on it. I/O modules update their clocks in
-+	 * hw_param() of their respective component driver and PLLA rate
-+	 * update here helps them to derive appropriate rates.
-+	 *
-+	 * TODO: When more HW accelerators get added (like sample rate
-+	 * converter, volume gain controller etc., which don't really
-+	 * depend on PLLA) we need a better way to filter here.
-+	 */
-+	if (cpu_dai->driver->ops && rtd->dai_link->no_pcm) {
-+		err = tegra_audio_graph_update_pll(substream, params);
-+		if (err)
-+			return err;
-+	}
-+
-+	return asoc_simple_hw_params(substream, params);
-+}
-+
-+static const struct snd_soc_ops tegra_audio_graph_ops = {
-+	.startup	= asoc_simple_startup,
-+	.shutdown	= asoc_simple_shutdown,
-+	.hw_params	= tegra_audio_graph_hw_params,
++		port@0 {
++			reg = <0>;
++			i2s1_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s1_ep>;
++			};
++		};
++		i2s1_port: port@1 {
++			reg = <1>;
++			i2s1_dap_ep: endpoint {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
 +};
 +
-+static int tegra_audio_graph_card_probe(struct snd_soc_card *card)
-+{
-+	struct asoc_simple_priv *simple = snd_soc_card_get_drvdata(card);
-+	struct tegra_audio_priv *priv = simple_to_tegra_priv(simple);
++&tegra_i2s2 {
++	status = "okay";
 +
-+	priv->clk_plla = devm_clk_get(card->dev, "pll_a");
-+	if (IS_ERR(priv->clk_plla)) {
-+		dev_err(card->dev, "Can't retrieve clk pll_a\n");
-+		return PTR_ERR(priv->clk_plla);
-+	}
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+	priv->clk_plla_out0 = devm_clk_get(card->dev, "plla_out0");
-+	if (IS_ERR(priv->clk_plla_out0)) {
-+		dev_err(card->dev, "Can't retrieve clk plla_out0\n");
-+		return PTR_ERR(priv->clk_plla_out0);
-+	}
-+
-+	return graph_card_probe(card);
-+}
-+
-+static int tegra_audio_graph_probe(struct platform_device *pdev)
-+{
-+	struct tegra_audio_priv *priv;
-+	struct device *dev = &pdev->dev;
-+	struct snd_soc_card *card;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	card = simple_priv_to_card(&priv->simple);
-+
-+	card->probe = tegra_audio_graph_card_probe;
-+
-+	/* graph_parse_of() depends on below */
-+	card->component_chaining = 1;
-+	priv->simple.ops = &tegra_audio_graph_ops;
-+	priv->simple.force_dpcm = 1;
-+
-+	return graph_parse_of(&priv->simple, dev);
-+}
-+
-+static const struct tegra_audio_cdata tegra210_data = {
-+	/* PLLA */
-+	.plla_rates[x8_RATE] = 368640000,
-+	.plla_rates[x11_RATE] = 338688000,
-+	/* PLLA_OUT0 */
-+	.plla_out0_rates[x8_RATE] = 49152000,
-+	.plla_out0_rates[x11_RATE] = 45158400,
++		port@0 {
++			reg = <0>;
++			i2s2_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s2_ep>;
++			};
++		};
++		i2s2_port: port@1 {
++			reg = <1>;
++			i2s2_dap_ep: endpoint {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
 +};
 +
-+static const struct tegra_audio_cdata tegra186_data = {
-+	/* PLLA */
-+	.plla_rates[x8_RATE] = 245760000,
-+	.plla_rates[x11_RATE] = 270950400,
-+	/* PLLA_OUT0 */
-+	.plla_out0_rates[x8_RATE] = 49152000,
-+	.plla_out0_rates[x11_RATE] = 45158400,
++&tegra_i2s3 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			i2s3_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s3_ep>;
++			};
++		};
++		i2s3_port: port@1 {
++			reg = <1>;
++			i2s3_dap_ep: endpoint {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
 +};
 +
-+static const struct of_device_id graph_of_tegra_match[] = {
-+	{ .compatible = "nvidia,tegra210-audio-graph-card",
-+	  .data = &tegra210_data },
-+	{ .compatible = "nvidia,tegra186-audio-graph-card",
-+	  .data = &tegra186_data },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, graph_of_tegra_match);
++&tegra_i2s4 {
++	status = "okay";
 +
-+static struct platform_driver tegra_audio_graph_card = {
-+	.driver = {
-+		.name = "tegra-audio-graph-card",
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = graph_of_tegra_match,
-+	},
-+	.probe = tegra_audio_graph_probe,
-+};
-+module_platform_driver(tegra_audio_graph_card);
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("ASoC Tegra Audio Graph Sound Card");
-+MODULE_AUTHOR("Sameer Pujar <spujar@nvidia.com>");
++		port@0 {
++			reg = <0>;
++			i2s4_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s4_ep>;
++			};
++		};
++		i2s4_port: port@1 {
++			reg = <1>;
++			i2s4_dap_ep: endpoint {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_i2s5 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			i2s5_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s5_ep>;
++			};
++		};
++		i2s5_port: port@1 {
++			reg = <1>;
++			i2s5_dap_ep: endpoint {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_dmic1 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dmic1_cif_ep: endpoint {
++				remote-endpoint = <&xbar_dmic1_ep>;
++			};
++		};
++		dmic1_port: port@1 {
++			reg = <1>;
++			dmic1_dap_ep: endpoint {
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_dmic2 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dmic2_cif_ep: endpoint {
++				remote-endpoint = <&xbar_dmic2_ep>;
++			};
++		};
++		dmic2_port: port@1 {
++			reg = <1>;
++			dmic2_dap_ep: endpoint {
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_dmic3 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dmic3_cif_ep: endpoint {
++				remote-endpoint = <&xbar_dmic3_ep>;
++			};
++		};
++		dmic3_port: port@1 {
++			reg = <1>;
++			dmic3_dap_ep: endpoint {
++				/* Placeholder for external Codec */
++			};
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+index 6a877de..0c917a1 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+@@ -6,6 +6,7 @@
+ #include <dt-bindings/mfd/max77620.h>
+ 
+ #include "tegra210.dtsi"
++#include "tegra210-audio-graph.dtsi"
+ 
+ / {
+ 	model = "NVIDIA Jetson Nano Developer Kit";
+@@ -870,4 +871,149 @@
+ 
+ 		vin-supply = <&vdd_5v0_sys>;
+ 	};
++
++	tegra_sound {
++		status = "okay";
++
++		compatible = "nvidia,tegra210-audio-graph-card";
++
++		dais = /* FE */
++		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
++		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
++		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
++		       <&admaif10_port>,
++		       /* Router */
++		       <&xbar_i2s3_port>, <&xbar_i2s4_port>,
++		       <&xbar_dmic1_port>, <&xbar_dmic2_port>,
++		       /* I/O DAP Ports */
++		       <&i2s3_port>, <&i2s4_port>,
++		       <&dmic1_port>, <&dmic2_port>;
++
++		label = "jetson-nano-ape";
++	};
++};
++
++&tegra_admaif {
++	status = "okay";
++};
++
++&tegra_ahub {
++	status = "okay";
++
++	ports {
++		xbar_i2s3_port: port@c {
++			reg = <0xc>;
++			xbar_i2s3_ep: endpoint {
++				remote-endpoint = <&i2s3_cif_ep>;
++			};
++		};
++		xbar_i2s4_port: port@d {
++			reg = <0xd>;
++			xbar_i2s4_ep: endpoint {
++				remote-endpoint = <&i2s4_cif_ep>;
++			};
++		};
++		xbar_dmic1_port: port@f {
++			reg = <0xf>;
++			xbar_dmic1_ep: endpoint {
++				remote-endpoint = <&dmic1_cif_ep>;
++			};
++		};
++		xbar_dmic2_port: port@10 {
++			reg = <0x10>;
++			xbar_dmic2_ep: endpoint {
++				remote-endpoint = <&dmic2_cif_ep>;
++			};
++		};
++	};
++};
++
++&tegra_i2s3 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			i2s3_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s3_ep>;
++			};
++		};
++		i2s3_port: port@1 {
++			reg = <1>;
++			i2s3_dap_ep: endpoint {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_i2s4 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			i2s4_cif_ep: endpoint {
++				remote-endpoint = <&xbar_i2s4_ep>;
++			};
++		};
++		i2s4_port: port@1 {
++			reg = <1>;
++			i2s4_dap_ep: endpoint@0 {
++				dai-format = "i2s";
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_dmic1 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dmic1_cif_ep: endpoint@0 {
++				remote-endpoint = <&xbar_dmic1_ep>;
++			};
++		};
++		dmic1_port: port@1 {
++			reg = <1>;
++			dmic1_dap_ep: endpoint@0 {
++				/* Placeholder for external Codec */
++			};
++		};
++	};
++};
++
++&tegra_dmic2 {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dmic2_cif_ep: endpoint@0 {
++				remote-endpoint = <&xbar_dmic2_ep>;
++			};
++		};
++		dmic2_port: port@1 {
++			reg = <1>;
++			dmic2_dap_ep: endpoint@0 {
++				/* Placeholder for external Codec */
++			};
++		};
++	};
+ };
 -- 
 2.7.4
 
