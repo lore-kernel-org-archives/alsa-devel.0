@@ -2,79 +2,102 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE6A9C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 15:57:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5FA8C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 18:31:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CC0AD216FD
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 15:57:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC0AD216FD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id E319322CAD
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 18:31:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E319322CAD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D833118A5;
-	Tue, 19 Jan 2021 16:56:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D833118A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFFE918C6;
+	Tue, 19 Jan 2021 18:34:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFFE918C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611071848;
-	bh=ywQVo752nY5+Wwag1C0/DkVGCbLMyjOyZsNQNx4/4ZM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1611077730;
+	bh=H/THdVmSdhA3Cl0SXsGlx/ZUHg2eqhfs/DWMqOqSu/I=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dAyNduiT19oAMzGXnnCe+Z5cNGvZyxHIjDnVUhoXjArmArLYPR+duVXflZkmMitW4
-	 vmPYP3zRHs7d3bzJXtyCG8MOcjJ3e3uzCwhjw2wxY0w859OQlt3KwjI4pTXo/fl9nk
-	 F0XTugqoih0GAtYE6xTiMIhJ9F49BfbOjy6genH4=
+	b=n398KmrkQMNhBxM+FkEsUt6zD5hR+ep17dpcP8FGEqwbQ/YrfTu/M65kwsCLDEZ8s
+	 3MyKw0n5/ogqggwfq37OfxsuN5k3+/VYw3nxb10ZTetTmQQgz+JkwRzI/upIYYyvpo
+	 8wccIFyGYRlgrNY6lGT1XSYQ9aY3BJz/zCBaQLRk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C94BF80255;
-	Tue, 19 Jan 2021 16:56:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2384AF80255;
+	Tue, 19 Jan 2021 18:34:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EC78F80257; Tue, 19 Jan 2021 16:56:36 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0031AF80257; Tue, 19 Jan 2021 18:34:38 +0100 (CET)
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com
+ [IPv6:2607:f8b0:4864:20::733])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC6BDF80137
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 16:56:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC6BDF80137
-IronPort-SDR: SG34bJmm9qYtKeMBuEF0XU5urYsFiYcpli0Nk9/2K403XG2gc1uIhRWUj3pouLadAg5qzp7piQ
- J5T8UNEvR7/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="166613502"
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; d="scan'208";a="166613502"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2021 07:56:29 -0800
-IronPort-SDR: +8un7h/G1TOmeEyJrzdSGbntlMjbolD6o8NwPWDZu63WBRIAxEuHQLH7wUhDjm1jSRT5phmmXI
- hyrb7Kg4D5kw==
-X-IronPort-AV: E=Sophos;i="5.79,359,1602572400"; d="scan'208";a="500975811"
-Received: from kxu2-mobl.amr.corp.intel.com (HELO [10.212.225.199])
- ([10.212.225.199])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2021 07:56:29 -0800
-Subject: Re: [PATCH] soundwire: debugfs: use controller id instead of link_id
-To: Vinod Koul <vkoul@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-References: <20210115162559.20869-1-srinivas.kandagatla@linaro.org>
- <20210119145220.GS2771@vkoul-mobl>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <45300dc3-00b0-497b-804e-f7f1e857f32a@linux.intel.com>
-Date: Tue, 19 Jan 2021 09:54:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C50AF800FE
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 18:34:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C50AF800FE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="UURw0+UW"
+Received: by mail-qk1-x733.google.com with SMTP id k193so1517860qke.6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 09:34:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to:user-agent;
+ bh=p8tNnzd4y2KJS/reGqJBwxz1GlmlM3VOZcIG7Ld49os=;
+ b=UURw0+UWpe4aBZNtUILUdnwTTMO1z8WUJzSWZTGPjiftc+oGCvSwte9YNL490jXhJF
+ ZMnFHWbUZvKenzQacEy16CV4FbJg46GhIqUCnIO0yYn9wMYUJGFlVcXLubVyORs4HKsP
+ mLqAhRyj5m8cezm5qBLezA//8tM/X71+wPf+pPCQpUBxJMijzB/j9uhLLPT79r0c1QTS
+ Gt3nRfyb3gZvePzLJUZYU1ZIDIsP1+lCmEYFlB69v48s30WDoXChwvgMl2R1vd22NIIy
+ v7UVbFSGJenO3HurJUww+WAwho2Q23TYuIC2HUknAjJdreqZSa91bxJgEBzKIZcMgk6R
+ 2eOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to:user-agent;
+ bh=p8tNnzd4y2KJS/reGqJBwxz1GlmlM3VOZcIG7Ld49os=;
+ b=CL04gv5JaoVGh6HYCAGdSTfSuF/PBRVEAep+nzCvfh7+PthuUQRKeHeTx3Ck1oOLW8
+ yj//le45cXFmkN1HgUzy5ZKjFfg5DB7pYjRGNFnZBnRXvGPwEmHjjzDDW1ClZlsM8DqY
+ dDHzY6lbEm5OqTCF1suhcupGsfYey6YkcLoeL0PWMpUyFiwXN3j/j8LDs1axO4nMAiJK
+ SJPx26BRdG2Apde7Y500mOnIYACEk4RVCJhj1Jn2sVdfSSQ2QUFElCAozXmumrwlqKlv
+ zxv/YrOaueveeRHBkcqPyjWSxq7e3Q9l/rQZcb7DSqF+84KS9O82NotUgSMoPMWLo/7f
+ 7Ggw==
+X-Gm-Message-State: AOAM533+KiCgORrqBepk4roLcYoikE7XgY5SKdms92HJJ2joXn2lfdVO
+ 0bZsTv1PA9KZHCX3PcCOqGc=
+X-Google-Smtp-Source: ABdhPJxnBhaCimzZgQX62uN2ZXLlnTeBj4V52zrzuS8102pthkDV0hPys/7gF47J3dljrPwAm+Gz6Q==
+X-Received: by 2002:a37:a110:: with SMTP id k16mr5462338qke.320.1611077673854; 
+ Tue, 19 Jan 2021 09:34:33 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+ by smtp.gmail.com with ESMTPSA id k141sm13376514qke.38.2021.01.19.09.34.32
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 19 Jan 2021 09:34:32 -0800 (PST)
+Date: Tue, 19 Jan 2021 18:34:30 +0100
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [PATCH v1 5/5] ASoC: tegra: ahub: Reset hardware properly
+Message-ID: <YAcYJpb/Zf7IKZp5@ulmo>
+References: <20210112125834.21545-1-digetx@gmail.com>
+ <20210112125834.21545-6-digetx@gmail.com> <YAG4aFADwo7dh/oR@ulmo>
+ <c2f3d149-0781-3d0a-1d68-f6820386e84d@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210119145220.GS2771@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
- yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org,
- sanyog.r.kale@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="gssaDyI1tNRHdKsC"
+Content-Disposition: inline
+In-Reply-To: <c2f3d149-0781-3d0a-1d68-f6820386e84d@gmail.com>
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+Cc: alsa-devel@alsa-project.org, Nicolas Chauvet <kwizart@gmail.com>,
+ linux-kernel@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
+ Takashi Iwai <tiwai@suse.com>, Peter Geis <pgwipeout@gmail.com>,
+ linux-tegra@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,28 +114,137 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--gssaDyI1tNRHdKsC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/19/21 8:52 AM, Vinod Koul wrote:
-> On 15-01-21, 16:25, Srinivas Kandagatla wrote:
->> link_id can be zero and if we have multiple controller instances
->> in a system like Qualcomm debugfs will end-up with duplicate namespace
->> resulting in incorrect debugfs entries.
->>
->> Using id should give a unique debugfs directory entry and should fix below
->> warning too.
->> "debugfs: Directory 'master-0' with parent 'soundwire' already present!"
-> 
-> Yeah id is guaranteed to be unique so this will work.
-> 
-> Applied, thanks
+On Mon, Jan 18, 2021 at 03:02:38AM +0300, Dmitry Osipenko wrote:
+> 15.01.2021 18:44, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Tue, Jan 12, 2021 at 03:58:34PM +0300, Dmitry Osipenko wrote:
+> >> Assert hardware reset before clocks are enabled and then de-assert it
+> >> after clocks are enabled. This brings hardware into a predictable state
+> >> and removes relying on implicit de-assertion of resets which is done by
+> >> the clk driver.
+> >>
+> >> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>  sound/soc/tegra/tegra30_ahub.c | 33 ++++++++++++++++-----------------
+> >>  sound/soc/tegra/tegra30_ahub.h |  1 +
+> >>  2 files changed, 17 insertions(+), 17 deletions(-)
+> >>
+> >> diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_=
+ahub.c
+> >> index 4dbb58f7ea36..246cf6a373a1 100644
+> >> --- a/sound/soc/tegra/tegra30_ahub.c
+> >> +++ b/sound/soc/tegra/tegra30_ahub.c
+> >> @@ -65,10 +65,20 @@ static int tegra30_ahub_runtime_resume(struct devi=
+ce *dev)
+> >>  {
+> >>  	int ret;
+> >> =20
+> >> +	ret =3D reset_control_assert(ahub->reset);
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >>  	ret =3D clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
+> >>  	if (ret)
+> >>  		return ret;
+> >> =20
+> >> +	ret =3D reset_control_reset(ahub->reset);
+> >> +	if (ret) {
+> >> +		clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
+> >> +		return ret;
+> >> +	}
+> >> +
+> >>  	regcache_cache_only(ahub->regmap_apbif, false);
+> >>  	regcache_cache_only(ahub->regmap_ahub, false);
+> >> =20
+> >> @@ -462,7 +472,6 @@ static int tegra30_ahub_probe(struct platform_devi=
+ce *pdev)
+> >>  {
+> >>  	const struct of_device_id *match;
+> >>  	const struct tegra30_ahub_soc_data *soc_data;
+> >> -	struct reset_control *rst;
+> >>  	struct resource *res0;
+> >>  	void __iomem *regs_apbif, *regs_ahub;
+> >>  	int ret =3D 0;
+> >> @@ -475,22 +484,6 @@ static int tegra30_ahub_probe(struct platform_dev=
+ice *pdev)
+> >>  		return -EINVAL;
+> >>  	soc_data =3D match->data;
+> >> =20
+> >> -	/*
+> >> -	 * The AHUB hosts a register bus: the "configlink". For this to
+> >> -	 * operate correctly, all devices on this bus must be out of reset.
+> >> -	 * Ensure that here.
+> >> -	 */
+> >> -	rst =3D of_reset_control_array_get_exclusive(pdev->dev.of_node);
+> >> -	if (IS_ERR(rst)) {
+> >> -		dev_err(&pdev->dev, "Can't get reset: %p\n", rst);
+> >> -		return PTR_ERR(rst);
+> >> -	}
+> >> -
+> >> -	ret =3D reset_control_deassert(rst);
+> >> -	reset_control_put(rst);
+> >> -	if (ret)
+> >> -		return ret;
+> >> -
+> >>  	ahub =3D devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+> >>  			    GFP_KERNEL);
+> >>  	if (!ahub)
+> >> @@ -507,6 +500,12 @@ static int tegra30_ahub_probe(struct platform_dev=
+ice *pdev)
+> >>  	if (ret)
+> >>  		return ret;
+> >> =20
+> >> +	ahub->reset =3D devm_reset_control_array_get_exclusive(&pdev->dev);
+> >> +	if (IS_ERR(ahub->reset)) {
+> >> +		dev_err(&pdev->dev, "Can't get reset: %p\n", ahub->reset);
+> >=20
+> > I didn't notice that the prior patch already introduced this, but I'd
+> > prefer for this to either be %pe so that the symbolic error name is
+> > printed, or %ld with PTR_ERR(ahub->reset) to format this in a more
+> > standard way that can be more easily grepped for and parsed.
+>=20
+> This is already fixed in v2. Good catch anyways, thanks.
+>=20
+> > It also seems like the prior patch that converts this to use
+> > of_reset_control_array_get_exclusive() is a bit pointless now. Why not
+> > just move to this directly instead?
+>=20
+> These are two independent changes. The previous patch fixed the missing
+> resets, this patch changes the hardware initialization logic.
 
-This patch is a no-op for Intel, but I am not convinced it's the right 
-fix or the definitions are not consistent.
+But moving to devm_reset_control_array_get_exclusive() isn't really part
+of the hardware initialization logic change, right? So it's not strictly
+related to the rest of this patch.
 
-  * @link_id: Link id number, can be 0 to N, unique for each Master
-  * @id: bus system-wide unique id
+Anyway, I don't feel strongly about it being part of this patch, so feel
+free to keep it here.
 
-In the MIPI/DisCo definitions, a controller can have multiple masters. 
-if you have multiple controllers, each of them should have their own 
-debugfs directory IMHO. It's totally fine to have multiple bus/masters 
-with a link_id == 0.
+Thierry
+
+--gssaDyI1tNRHdKsC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAHGCYACgkQ3SOs138+
+s6E2pw//fpPwc7rRFuwtI+fpGYhR9bkSJGAsW8c13WeGUXpmIBG24DNPTMa5Dwjr
+dunxgN+tl4MRPvegW2vqWIDy/Gasxcp1eCryiYSal2W3UsDSb3B8DO/6zo4l0jUF
+XjLRslsDLVlXPvtiKLTeIAV6xbWmvjXvYLv0kZ6KrPj61PmSdejglDq+WqhG+mZu
+qYodRgqRCByrfjVhR1pvTtARbSZl+iQLsb9RhomzsB/bJUITiIu6+/ZVi+r/i6aR
+xj7mUu9YKkTmpVVi4Wv480Tuq2+u5sZc569FA6utPWAEelPdiFpDJrEjz6eq9Ouj
+ImjgMqZwFsERkJaAb35BU1eXn+VlylLjn8L+pzfGj2zW3TLrQ++Be7UY3iftlhrD
+qYssfr1rQmElNd1UuCWDDF5fyp1T423mxupboWmrai4iIAe+aUmgXlZZfHQaaI60
+5I4niaNihm9R4ZzBlkGvS7p93/dmSHY5MMAyTDMLrGXzt076MGcWezBk6P/jAW+m
+/hwWBXaRnf1E1v0BYX89P8pHUIr07LhmeYTu8IJGTna0IiLexmDrzh1U7gnw/MUk
+SbRFMYKCm4x5P3DSk9AnKo7R4yWavYohy9GMFVCQA48HLKAukKWLiDc1ayalNPf/
+Cb7exez/22oxAeTG+OWRH26o41R727BtXkl+SCP0tLj6X9urpQw=
+=ejHG
+-----END PGP SIGNATURE-----
+
+--gssaDyI1tNRHdKsC--
