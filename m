@@ -2,70 +2,72 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0247C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82FBFC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:13:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D04123135
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:06:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D04123135
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 8D77C23159
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 09:13:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D77C23159
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7B4F1869;
-	Tue, 19 Jan 2021 10:06:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7B4F1869
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73439186B;
+	Tue, 19 Jan 2021 10:12:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73439186B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611047212;
-	bh=BTF1B3Brp192l/gIcLaKG/FHo8+O83gFKZX8nIIaUz0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KZb9cfaIwVkrpHT2+upKa0BXWBtr2lHqfjrRkVjDC9K7kcdkT/wxFXG9YDLx2XXDq
-	 bGzuJ1cMeIdKcEoP01fh9gFU8A3cJzPSfXu2GQzvi1ap4an6uM33nkj8GztYRJ5dtx
-	 I8Mf97mw0ZPKdAngPWAv7pttIjM4A2R4krStOnFQ=
+	s=default; t=1611047589;
+	bh=34FExZkf1iwZ/WD9Zkm0l3bwv2Kdm13tGwL1M628eW0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=rfEOdISuCzScfE4OtZN2V+L1/JsrlNzsFRgRR7fyUCmazPiL45dYxxW8pq1Nb1AGc
+	 exW9Xh3tTh9jx1gYlXWvJgBggEJjcIE7gA0WtjpMxE4VaLxEHAnkGS6lyRYqwysthw
+	 JIkzPjfMUV0LEGQVvGV2UwKzVbkx9HlXMk7UsPe8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D625F80255;
-	Tue, 19 Jan 2021 10:06:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEB10F80255;
+	Tue, 19 Jan 2021 10:12:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3A7AF80257; Tue, 19 Jan 2021 10:05:59 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 56E94F80257; Tue, 19 Jan 2021 10:12:17 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70DE6F800FE
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 10:05:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70DE6F800FE
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 38C8EB905;
- Tue, 19 Jan 2021 09:05:55 +0000 (UTC)
-Date: Tue, 19 Jan 2021 10:05:55 +0100
-Message-ID: <s5hczy1guto.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mike Oliphant <oliphant@nostatic.org>
-Subject: Re: Support for NUX MG-300 USB interface
-In-Reply-To: <CAHXb3bd8zHFmHxDp=4dNKa90eAT568yCwTWo_5L0Zry1EY45UA@mail.gmail.com>
-References: <CAHXb3bdk71ivJUp9HBRccDvd8SD2F1uFdsC_FxUjhh5zpcQobQ@mail.gmail.com>
- <s5hr1mik7vu.wl-tiwai@suse.de>
- <CAHXb3bdt6mgUcZ0+MH1i7QeYF03MSwx=kad-YBBNeVjqoH=KhA@mail.gmail.com>
- <CAHXb3bcFM0BswbuTe=6vP6JRd=TOf94Gu0FPAZmXT6634bCiAQ@mail.gmail.com>
- <s5hr1migiie.wl-tiwai@suse.de>
- <CAHXb3be9EpEtaEc0iH06wmLMhyizkV7arvgxsT2bWK=aJHKVLA@mail.gmail.com>
- <s5him7thpoz.wl-tiwai@suse.de>
- <CAHXb3bd8zHFmHxDp=4dNKa90eAT568yCwTWo_5L0Zry1EY45UA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 758A1F80137
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 10:12:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 758A1F80137
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10J9C4140010129,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10J9C4140010129
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 19 Jan 2021 17:12:04 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 19 Jan 2021 17:12:04 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: rt5682: remove LDO2 power supply widget
+Date: Tue, 19 Jan 2021 17:11:58 +0800
+Message-ID: <20210119091158.12988-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, derek.fang@realtek.com,
+ Shuming Fan <shumingf@realtek.com>, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,96 +83,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Jan 2021 01:26:51 +0100,
-Mike Oliphant wrote:
-> 
-> Unfortunately, the "uac_clock_selector_set_val()" call does not seem to
-> change anything.
+From: Shuming Fan <shumingf@realtek.com>
 
-OK,
+The application circuit shall provide MICVDD power.
+Hence, the codec driver doesn't need to enable LDO2.
+This patch also reduces power consumption while the recording from the headset.
 
-> >From doing some more testing, I think that the references to clock id "40"
-> are ok - it has "40" stored in fmt->clock, but when it uses it,
-> "__uac_clock_find_source()" gets called and it resolved to the actual clock
-> source - "41".
-> 
-> Not sure about the "No valid sample rate available for 1:1, assuming a
-> firmware bug" error, but I suspect it is spurious.
-> "check_valid_altsetting_v2v3()" is failing for some reason, but it is
-> ignoring the error.
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt5682.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Yes, that's the part where verifying the altsetting for the given
-rate.  The UAC2 device must return the valid altsetting bit mask for
-the current rate in the request, but your device didn't seem returning
-it.  The code is there for devices like MOTU that have multiple
-altsets where each one has one sample rate exclusively.
-
-> Playback is completely silent, but the system seems to think it is working.
-> No apparent errors, and a play operation seems to take the correct amount
-> of time. Just no audio.
-
-Check the status in /proc/asound/card*/pcm*/sub*/status.  If the
-pointer moves forward and the position is expected, at least the data
-feed is done, and the problem must be something else.
-
-What about the capture?  Do you get also only silence?
-
-> Maybe it is a mixer issue? mixer.c is putting out "RANGE setting not yet
-> supported" errors on startup.
-
-That's probably no problem, I guess it comes from the code trying to
-get the resolution.  The patch below may paper over it.
-
-> Here is a sample of dmesg output for a playback session:
-> 
-> [ 4748.260975] usb 1-1.3: Open EP 0x1, iface=1:1, idx=0
-> [ 4748.260983] usb 1-1.3:   channels=2, rate=48000, format=S32_LE,
-> period_bytes=48000, periods=4, implicit_fb=0
-> [ 4748.260988] usb 1-1.3: Open EP 0x81, iface=1:1, idx=1
-> [ 4748.260992] usb 1-1.3:   channels=2, rate=48000, format=S32_LE,
-> period_bytes=48000, periods=4, implicit_fb=0
-> [ 4748.260996] usb 1-1.3: Setting usb interface 1:0 for EP 0x1
-> [ 4748.261320] usb 1-1.3: 1:1 Set sample rate 48000, clock 40
-> [ 4748.261873] usb 1-1.3: Setting params for data EP 0x1, pipe 0x9d00
-> [ 4748.261890] usb 1-1.3: Set up 12 URBS, ret=0
-> [ 4748.261897] usb 1-1.3: Setting usb interface 1:1 for EP 0x1
-> [ 4748.262097] usb 1-1.3: Setting params for sync EP 0x81, pipe 0x9d80
-> [ 4748.262105] usb 1-1.3: Set up 4 URBS, ret=0
-> [ 4748.262147] usb 1-1.3: Starting data EP 0x1 (running 0)
-> [ 4748.262180] usb 1-1.3: 12 URBs submitted for EP 0x1
-> [ 4748.262183] usb 1-1.3: Starting sync EP 0x81 (running 0)
-> [ 4748.262193] usb 1-1.3: 4 URBs submitted for EP 0x81
-> [ 4748.262311] usb 1-1.3: 1:1 Start Playback PCM
-> [ 4762.887812] usb 1-1.3: Stopping sync EP 0x81 (running 1)
-> [ 4762.887836] usb 1-1.3: Stopping data EP 0x1 (running 1)
-> [ 4762.887849] usb 1-1.3: 1:1 Stop Playback PCM
-> [ 4762.902542] usb 1-1.3: Closing EP 0x1 (count 1)
-> [ 4762.902549] usb 1-1.3: Setting usb interface 1:0 for EP 0x1
-> [ 4762.902915] usb 1-1.3: EP 0x1 closed
-> [ 4762.902928] usb 1-1.3: Closing EP 0x81 (count 1)
-> [ 4762.902935] usb 1-1.3: Setting usb interface 1:0 for EP 0x81
-> [ 4762.903179] usb 1-1.3: EP 0x81 closed
-
-The flow looks good judging from this log, at least.
-
-The device is configured with the dedicated sync endpoint, but it's
-not with the implicit feedback mode.  It's interesting whether the
-device behaves differently if you load snd-usb-audio module with
-implicit_fb=1 boot option.  I don't expect it working better, but
-anyway...
-
-
-Takashi
-
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1238,7 +1238,7 @@ static int get_min_max_with_quirks(struct usb_mixer_elem_info *cval,
- 				  (cval->control << 8) | minchn,
- 				  &cval->res) < 0) {
- 			cval->res = 1;
--		} else {
-+		} else if (cval->head.mixer->protocol == UAC_VERSION_1) {
- 			int last_valid_res = cval->res;
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 42ad5bea86b5..81a4b115b538 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -1630,8 +1630,6 @@ static const struct snd_kcontrol_new rt5682_adcdat_pin_ctrl =
+ 	SOC_DAPM_ENUM("ADCDAT", rt5682_adcdat_pin_enum);
  
- 			while (cval->res > 1) {
+ static const struct snd_soc_dapm_widget rt5682_dapm_widgets[] = {
+-	SND_SOC_DAPM_SUPPLY("LDO2", RT5682_PWR_ANLG_3, RT5682_PWR_LDO2_BIT,
+-		0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("PLL1", RT5682_PWR_ANLG_3, RT5682_PWR_PLL_BIT,
+ 		0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("PLL2B", RT5682_PWR_ANLG_3, RT5682_PWR_PLL2B_BIT,
+@@ -1854,8 +1852,6 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
+ 
+ 	{"CLKDET SYS", NULL, "CLKDET"},
+ 
+-	{"IN1P", NULL, "LDO2"},
+-
+ 	{"BST1 CBJ", NULL, "IN1P"},
+ 
+ 	{"RECMIX1L", "CBJ Switch", "BST1 CBJ"},
+-- 
+2.29.0
 
