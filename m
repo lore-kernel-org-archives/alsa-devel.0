@@ -2,103 +2,99 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D186C43381
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:06:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 454A8C433E6
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:06:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4BA5620706
+	by mail.kernel.org (Postfix) with ESMTPS id C9D8222E00
 	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:06:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BA5620706
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9D8222E00
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ADD518C4;
-	Tue, 19 Jan 2021 18:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ADD518C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9555418B6;
+	Tue, 19 Jan 2021 18:16:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9555418B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611076691;
-	bh=vH6ify53jJZxp0r9WrGZFsNLOsIkb4JC1wf2N253h2M=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1611076650;
+	bh=VaQkFQ9f9Tkm4Q1Np0klnxLn+VKai7OwS3loKTZqaPw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cZNIVpoz/IEYmMUruAxSaEg5czUfNjD2/gqouVA8ElzNgd7v/rMyDNGxraBLrZRKc
-	 AFwaxLkkeCF7QRIXC+pjNb5PuLadjFTziTp37oRxCHSAvH0ffinSNuOObxDCbt2B+d
-	 GjISI56ZSEwBD0DyfVOaC/GxXzlNd73CjnJFABLo=
+	b=K6zHjMQqYhbTB3kFv40ygIGpsr1ZY3PCFs5NqXA9MceGxFeVIsOhwxmQHsefKBqEk
+	 Gg6nqLrGyw6bZ4LDVBx9o18rMzLsIfJoXB08qOb28VfKV1+kk1YWCtRA1gqsNGQKOI
+	 A4K0KAaM006E3Fk2UOTrz5EBxyPMLAcfjSywwz1k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADA33F804CA;
-	Tue, 19 Jan 2021 18:16:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F992F80257;
+	Tue, 19 Jan 2021 18:15:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C276F804CB; Tue, 19 Jan 2021 18:16:05 +0100 (CET)
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com
- [IPv6:2607:f8b0:4864:20::72a])
+ id 22C13F8029B; Tue, 19 Jan 2021 18:15:46 +0100 (CET)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DB6AF804BD
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 18:15:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DB6AF804BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0EBDF800FE
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 18:15:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0EBDF800FE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JFx2kpR6"
-Received: by mail-qk1-x72a.google.com with SMTP id z11so22549965qkj.7
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 09:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=/Wq4qZjE/3PIn7FnaG2ZyC5WlhiHEngk1+PS8fgItLE=;
- b=JFx2kpR6qED4GlcB1JBdL5pzb/N3debM49RiAn3r7cD6kOxykr8h2jV+oZtcfVmtDv
- bl/NyyyYuuaeH/1X5rZ+hzMOFCj1R3DC5fRote5OwHhGCh+6sXR0tLGauMdV/2ZMJLZg
- XlM1/CS1QvD/r1jDrwt/QRyvGdBkp4eXu44ypOEoLpwsKKgZyxZyDWzI/GdmzIdyvml4
- 3sU6NxKqDlAJvEfceK2wGe/Tp1i+BKjl6vt2y8i+IXD0z8Se2skSl36xrWsLyr65k6Z4
- h4uVH0458HyM/qP9HCFsQJseKhbIEkeuBIILcLiE1SJGlfIjGkqHkazxbKE775/8sZZ+
- wj/g==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="aeEZH0A8"
+Received: by mail-wr1-x429.google.com with SMTP id c5so20484521wrp.6
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 09:15:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=rt6odInkctgi1LaT0EnE3drEnzTVT16y5lMMJQ5HPFQ=;
+ b=aeEZH0A8v1XaWIokY7slQm5xOeTMhJH/x6bk0fWNrLFCaZqnUUQwxnb14pOvoFllab
+ kiQCUjQTCRFmoTrmWDSYkXydgLqjCGqg5U3cAOojw9uhOrbn7+yIkERTl4oUock5dg2Z
+ 8o/l5yF4uDdTOmktFdGURYVjXW/RK06mr0fREaVgmGUkDQzFyQz0d2ctRAg5ERxXvVBy
+ QCHvf1po4KBfwUYjSVVX5oj+oqR27RV4QYWg6pjh//miIpROJkEuM83/D3vcC5CekUlG
+ wH1X5S5cqJ5A5nzuNFTC3ufijmDYY1zloN0qA2pX6k0dOsG+y81YMRen20fD/34+LtHM
+ kO0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=/Wq4qZjE/3PIn7FnaG2ZyC5WlhiHEngk1+PS8fgItLE=;
- b=dGdueNs4gvYHcJJzKuYlptJpoaJ5VjlH5IEwo8yd0/GYwdov66oYxJWWmb03IxDwU5
- omGBY/l/W0kelOzyhR4vgW/dRLNB1JKiRGMkWz4gTbLKA6QN1yTBlDPDk1mjmKdSztTo
- YUyS4exLbTiLOhZrR+4D/FCWWBeNI3AumKk28RnTPWziuoLTsF1bExh/wn4jzmwxrWWK
- Z6YlnNbRSO3PAvT6lqoVNpJ9lTLv6o0jS4BjyLXDAXNUxW4If5b4A4F1D4oq5UAt2JX0
- JEDnRzjVjp4pOOAcFTMO4PUbmZ4jbB0GYirIJEsp5wERMrxaaXoziGSN3S2qwXMzSlUY
- mLbw==
-X-Gm-Message-State: AOAM532Th2QW5simA70K3l5P2f/h9DA2qfNcwIykws2ifylKkKB+V5Kq
- NeWJO3FVktynsXfKHH+Bqg0=
-X-Google-Smtp-Source: ABdhPJycqx06CLHOtr8yYwKPAeyRnNsWmzo5DsVRoLEFQGnY+lx39eEbN/524ikbpYu5IHC3qNi4Kw==
-X-Received: by 2002:a05:620a:12ed:: with SMTP id
- f13mr5362033qkl.497.1611076554637; 
- Tue, 19 Jan 2021 09:15:54 -0800 (PST)
-Received: from localhost ([62.96.65.119])
- by smtp.gmail.com with ESMTPSA id k64sm13500696qkc.110.2021.01.19.09.15.53
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=rt6odInkctgi1LaT0EnE3drEnzTVT16y5lMMJQ5HPFQ=;
+ b=IBY49MBRtR8UKeAo6cAbHdUBE+Ahjs1sggA+yDsQGZz+YB6NIFOUAT59TYpydjmpox
+ a6FOUiFmsmJEoptcHC5ytqicCT8tMwipHu0yOteTBgp3pFXz1rrsBncffZGPe8YRuQqe
+ gdqdIHG8OcFULPjLnjuXL23FYCZYgnM0SP9KX6/cyJ4GoiS12KDzoSYd7x4yXsAQqBO/
+ SIAutAZu3sLJK2HPtC3SBvEd8vZBH64tx5Sft/niDsMSy8x5+qAzA1wPUneMsUCHf+Bt
+ 9ih5gTNcXQR1F/XecIS/Y2J14Oz4xqCX6Bg8f7oyRdHO9thVQvaxrHC1W5Fra47nhkRe
+ Qx4g==
+X-Gm-Message-State: AOAM530Lyp1DH7Jt+FX6BMgmapIA3rf52j9P8mbe1DHc54p7L9HqjZK5
+ L6ZqAoSGCbfgGoOkfqBi92WnJQ==
+X-Google-Smtp-Source: ABdhPJyh4nQo1IQXOWca3gVjJeetHott5bg2lpND6mXC57YfUDt0wVnOIJ7AVaFxtBh0Ai2D+DCgUQ==
+X-Received: by 2002:a5d:4ece:: with SMTP id s14mr5288315wrv.427.1611076539246; 
+ Tue, 19 Jan 2021 09:15:39 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id x18sm41649358wrg.55.2021.01.19.09.15.38
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Jan 2021 09:15:53 -0800 (PST)
-Date: Tue, 19 Jan 2021 18:15:51 +0100
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: [RESEND PATCH v6 5/6] arm64: tegra: Audio graph header for
- Tegra210
-Message-ID: <YAcTxxyogVgfN1uw@ulmo>
-References: <1611048496-24650-1-git-send-email-spujar@nvidia.com>
- <1611048496-24650-6-git-send-email-spujar@nvidia.com>
+ Tue, 19 Jan 2021 09:15:38 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH v2 1/2] ASoC: dt-bindings: lpass: Fix and common up lpass dai
+ ids
+Date: Tue, 19 Jan 2021 17:15:26 +0000
+Message-Id: <20210119171527.32145-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
+References: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="V/me9ht3Hy4FdSi0"
-Content-Disposition: inline
-In-Reply-To: <1611048496-24650-6-git-send-email-spujar@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- broonie@kernel.org, linux-tegra@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ srivasam@codeaurora.org, stephan@gerhold.net, lgirdwood@gmail.com,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Jun Nie <jun.nie@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,50 +110,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Existing header file design of having separate SoC specific header files
+for the common lpass driver has mutiple issues.
+This design is prone to break as an when new SoC header is added
+as the common DAI ids of other SoCs will be overwritten by the
+new ones.
 
---V/me9ht3Hy4FdSi0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One of them surfaced by recent patch that adds support to sc7180, this
+one totally broke LPASS drivers on other Qualcomm SoCs.
 
-On Tue, Jan 19, 2021 at 02:58:15PM +0530, Sameer Pujar wrote:
-> Expose a header which describes DT bindings required to use audio-graph
-> based sound card. All Tegra210 based platforms can include this header
-> and add platform specific information. Currently, from SoC point of view,
-> all links are exposed for ADMAIF, AHUB, I2S and DMIC components.
->=20
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  .../boot/dts/nvidia/tegra210-audio-graph.dtsi      | 153 +++++++++++++++=
-++++++
->  1 file changed, 153 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/nvidia/tegra210-audio-graph.dtsi
+Before this gets worst, fix this by having a common header qcom,lpass.h.
+This should fix the issue and any new DAI ids should be added to the
+common header. This will be more sustainable then the existing design!
 
-I prefer keeping everything in tegra210.dtsi, but I can do that merge
-when I apply, after the DT bindings have been acked, so no need to
-resend just because of that.
+Fixes: 12fbfc4cabec6595 ("ASoC: Add sc7180-lpass binding header hdmi define")
+Reported-by: Jun Nie <jun.nie@linaro.org>
+Reported-by: Stephan Gerhold <stephan@gerhold.net>
+Tested-by: Srinivasa Rao <srivasam@codeaurora.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ include/dt-bindings/sound/apq8016-lpass.h |  7 +++----
+ include/dt-bindings/sound/qcom,lpass.h    | 15 +++++++++++++++
+ include/dt-bindings/sound/sc7180-lpass.h  |  6 ++----
+ 3 files changed, 20 insertions(+), 8 deletions(-)
+ create mode 100644 include/dt-bindings/sound/qcom,lpass.h
 
-Thierry
+diff --git a/include/dt-bindings/sound/apq8016-lpass.h b/include/dt-bindings/sound/apq8016-lpass.h
+index 3c3e16c0aadb..dc605c4bc224 100644
+--- a/include/dt-bindings/sound/apq8016-lpass.h
++++ b/include/dt-bindings/sound/apq8016-lpass.h
+@@ -2,9 +2,8 @@
+ #ifndef __DT_APQ8016_LPASS_H
+ #define __DT_APQ8016_LPASS_H
+ 
+-#define MI2S_PRIMARY	0
+-#define MI2S_SECONDARY	1
+-#define MI2S_TERTIARY	2
+-#define MI2S_QUATERNARY	3
++#include <dt-bindings/sound/qcom,lpass.h>
++
++/* NOTE: Use qcom,lpass.h to define any AIF ID's for LPASS */
+ 
+ #endif /* __DT_APQ8016_LPASS_H */
+diff --git a/include/dt-bindings/sound/qcom,lpass.h b/include/dt-bindings/sound/qcom,lpass.h
+new file mode 100644
+index 000000000000..7b0b80b38699
+--- /dev/null
++++ b/include/dt-bindings/sound/qcom,lpass.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_QCOM_LPASS_H
++#define __DT_QCOM_LPASS_H
++
++#define MI2S_PRIMARY	0
++#define MI2S_SECONDARY	1
++#define MI2S_TERTIARY	2
++#define MI2S_QUATERNARY	3
++#define MI2S_QUINARY	4
++
++#define LPASS_DP_RX	5
++
++#define LPASS_MCLK0	0
++
++#endif /* __DT_QCOM_LPASS_H */
+diff --git a/include/dt-bindings/sound/sc7180-lpass.h b/include/dt-bindings/sound/sc7180-lpass.h
+index 56ecaafd2dc6..5c1ee8b36b19 100644
+--- a/include/dt-bindings/sound/sc7180-lpass.h
++++ b/include/dt-bindings/sound/sc7180-lpass.h
+@@ -2,10 +2,8 @@
+ #ifndef __DT_SC7180_LPASS_H
+ #define __DT_SC7180_LPASS_H
+ 
+-#define MI2S_PRIMARY	0
+-#define MI2S_SECONDARY	1
+-#define LPASS_DP_RX	2
++#include <dt-bindings/sound/qcom,lpass.h>
+ 
+-#define LPASS_MCLK0	0
++/* NOTE: Use qcom,lpass.h to define any AIF ID's for LPASS */
+ 
+ #endif /* __DT_APQ8016_LPASS_H */
+-- 
+2.21.0
 
---V/me9ht3Hy4FdSi0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAHE8QACgkQ3SOs138+
-s6HyRRAAr5aaieN+iwicZO0lllDEMbxrMSPQLW5lRPP/IsqHcVcSaInc2Xuoyeks
-Q36vwKPpeHV4mWLwAPgunERnusPLI705z88oTVJnV1mXMiduyW2yfyBHdd6tpMZS
-KX2rPHf1AoiBrvh170nem+ZCxjfqcMR4+YL58JjIpyXaPbfJ2qwnOuBDFKLU2uiS
-yG3k6wyYsBBJWsS41rOya4dqNi+YpzGaQ7IE7r5YP3R0Or9RiEhwjE8xgXiLPVhM
-YilIjWyv3Csc9yPsliO1WCriNboKL+BgClNQ4YELltr+mYbsSZwIzqXrApRwXJP3
-6tuZA67Cmhmk9ghCxI2dljX+fkEks5lEIVpChT4GmF6vSbfF0kp8Sc+sIiGtkCRH
-wx+30v+iqYLXN407FCL5gqiqzZPfIeAAKJ1pv7vDL+p4kqdiFHF0UTCvZoZKG4R5
-FCsmesbdBCk8VjgfoHG2oFZ764r7uMdhrO1sTOryYEzqaUpEPh4dfHGye8OM9vYd
-JvvEtllWM2nNLQ32sSKbvYZaRLVpqP3njGXp8qvTZ+TGkYDpTuHqYI2jpQmciq5f
-gYN6k2z12Za8D82/QzEDwtgyLYayRmbFFIuaX7+eAjQBYSH6j2nEgwY4aOAUyXZF
-Zmuw02HfH1lGSwdKNvQ60ynTniWrIfqxSlUVZQ9emj56wlkz8WE=
-=if1e
------END PGP SIGNATURE-----
-
---V/me9ht3Hy4FdSi0--
