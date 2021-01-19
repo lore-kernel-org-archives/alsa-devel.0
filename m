@@ -2,84 +2,100 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-17.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CF37C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 18:45:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE9A5C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:01:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3113522E00
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 18:45:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3113522E00
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+	by mail.kernel.org (Postfix) with ESMTPS id 1D904216FD
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:01:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D904216FD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B67E218B2;
-	Tue, 19 Jan 2021 19:45:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B67E218B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13E5718D1;
+	Tue, 19 Jan 2021 18:43:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13E5718D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611081955;
-	bh=wVQok1AIySdpltdtE76sXVNoWXBFVDfBsi3A3CqGwrk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1611078252;
+	bh=Ygo7po+AAt06+o6JWkVV0C5SxRw/1gifJcMB0XGQKh0=;
+	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XAfMd90Un3ji6iS0hL64ras/xiUwhnwDAoCe6n9fiVu84M+3+/1KErQXVqRnyidKy
-	 S78DyDPykvrhaOn53W6TEx6H7uvX+BFVCQnnZe4mRqPdD/lW8k1m6a4ngRHfmgr18P
-	 XkU51F45/5kKtqu0rhPX351bWOGNb/D6hsQX5NWs=
+	b=CN/v9ZV0vYBZO6VqrLOu6gvky/ENI4wD0zGyONtfL4ZiPPD3F0AqnAid2s3EI0Fzy
+	 8gg6OMm0lALjJtDZ7555Rc4PLFowwvbqRZV9EH/z3LCgbBQipKVm+83fIhYthOUk2/
+	 AoSBAG2cIiiznzyR0D817iEyv2bVDzg13UpkHfRs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3AD6F80255;
-	Tue, 19 Jan 2021 19:45:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0088F80255;
+	Tue, 19 Jan 2021 18:43:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6160CF80257; Tue, 19 Jan 2021 19:45:02 +0100 (CET)
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
- [81.169.146.166])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0223CF80117; Tue, 19 Jan 2021 18:43:20 +0100 (CET)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92934F80137
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 19:44:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92934F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBA7CF80117
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 18:43:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBA7CF80117
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
- header.b="Rpo7nks9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611081896;
- s=strato-dkim-0002; d=gerhold.net;
- h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
- Subject:Sender;
- bh=3sjdJm0c7v9cPImEYb6S8hIuTSPyGzqRji6UojT+LWU=;
- b=Rpo7nks9shhBxOfMgFkkxdC5xX4sjf3HgxAO56XDP0w0jF57kGX2FpmVI3WRl2F5Wj
- 1ulR4fiaRPL0YzflZyO6Zqh9QWWvuPsjSVigSz/wkH+wtCuuZE2NLm1YgUE60fZCRuqL
- 1Net0AB0A2u9j4zaiXLfkSwnUvGoynZjTXus3GP/9FKOA/8PFnVY9EhR307pzLV76Ecr
- uqkqxir28KnajtjMKFACdnb8HQNU5OyuqY+icTaml6DTQn1+DlYcj0yu0zJSA84SFbl7
- +8IrlJ6CrBUX30YXgl6FABKeov19xcTt8k4bObT/eOZUMq0Q0mCukyR/bSrUUGyTo8E8
- 8gcA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7Ic3ABg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
- with ESMTPSA id R0a218x0JIiuGra
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
- (Client did not present a certificate);
- Tue, 19 Jan 2021 19:44:56 +0100 (CET)
-Date: Tue, 19 Jan 2021 19:44:49 +0100
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 2/2] ASoC: qcom: Fix broken support to MI2S TERTIARY
- and QUATERNARY
-Message-ID: <YAcooWUYZkE/Kg8O@gerhold.net>
-References: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
- <20210119171527.32145-3-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="p4j/1K5X"
+Received: by mail-wm1-x32c.google.com with SMTP id c124so547782wma.5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 09:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:from:to:cc:references:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=NreVrBzRdjWUMhnpyW0Laz51KK4BAiOJ7sHL2lFW67M=;
+ b=p4j/1K5XStmkuE8kCFJC9Iu4VM5mc/KqUVyHqFTwQZTyhZGjLUOm0inZYAlIlIEsP0
+ kPWxPMb7UsKq0ZxeGvee+GsDlApIcnHwIs3tVGd4QAPqGKAwOsiVhzyN0KEc8zCueW+M
+ og/rcV8p4r8twJzW5NEOFf7zPAcTkgiu7bcDH6CN68AzlUevJlgXWJJUWBAo0lWXYLBU
+ 7+DVDwHsRtjh2sDogCgDR0RUx+65ePkrunOd0vjfZeYP3UHbUnaE70RQqbpcia6uTmyV
+ uWcVJVFLHUsMf4vnU7xIkqHuJngx7xQ68lwywkWs75PDAqcpXuo6AbcjBCd+8KFZEwiZ
+ PnUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=NreVrBzRdjWUMhnpyW0Laz51KK4BAiOJ7sHL2lFW67M=;
+ b=VYk3iNoK6S2VYU6AJPMqZWSNeE0kNl0OYs6V2m2jQN04xAGOhA4j0rEPQqKzXz0lgv
+ VTXF0byKIJu6pFEPNHCnLBAdm0BqQptB1QhpB3OENSWHEh1Ao8LasdnEJEWMJUnnez+O
+ ZhEkoS2QPDbqge1D5uktQWQwMKHshOa4PjnT9RaNbPus5b4lfjL5DodxwSrgDUmeZ16G
+ a6f8u1VMlq05YO10PCi6doCvBCdjEBi/9dvfsf1Uu2Cfv7rEBL8lXH0XeERbKSjxOnyH
+ VxzeoxvcY90rpYGCnBv2pKDHHbKZDCjS81Qrq90dx6SVAU1z0u0fo3ooGEAvLfnRBGJv
+ Tv1w==
+X-Gm-Message-State: AOAM531ZbtTOzgo+h31tTPmLDCGFURdSAlPkuzpJR4b3l0yZpELJKyUy
+ a55sc5RABvIl/GY+eKl8zOX+v9e2ehxYhQ==
+X-Google-Smtp-Source: ABdhPJxii8CrSvXRLdl73y2ckjlcDzUwFF3pGoJKBcpvEHZTa1jtaaKK5mF0pBGw3FG+DUznIxqXZg==
+X-Received: by 2002:a1c:608b:: with SMTP id u133mr689338wmb.140.1611078192354; 
+ Tue, 19 Jan 2021 09:43:12 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id k16sm5463871wmj.45.2021.01.19.09.43.11
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 19 Jan 2021 09:43:11 -0800 (PST)
+Subject: Re: [PATCH] ASoC: qcom: lpass: Fix i2s ctl register bit map
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Jun Nie <jun.nie@linaro.org>
+References: <20210119071718.3867961-1-jun.nie@linaro.org>
+ <875d9fbc-ddad-b62d-0374-2a77bc9d6d83@linaro.org>
+Message-ID: <a9e5b6d5-742a-9814-353f-c979543fcb9c@linaro.org>
+Date: Tue, 19 Jan 2021 17:43:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119171527.32145-3-srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- srivasam@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org,
- Jun Nie <jun.nie@linaro.org>
+In-Reply-To: <875d9fbc-ddad-b62d-0374-2a77bc9d6d83@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: plai@codeaurora.org, bgoswami@codeaurora.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,31 +111,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 19, 2021 at 05:15:27PM +0000, Srinivas Kandagatla wrote:
-> lpass hdmi support patch totally removed support for MI2S TERTIARY
-> and QUATERNARY.
-> 
-> One of the major issue was spotted with the design of having
-> separate SoC specific header files for the common lpass driver.
-> This design is prone to break as an when new SoC header is added
-> as the common DAI ids of other SoCs will be overwritten by the
-> new ones.
-> 
-> Having a common header qcom,lpass.h should fix the issue and any new
-> DAI ids should be added to the common header.
-> 
-> With this change lpass also needs a new of_xlate function to resolve
-> dai name.
-> 
-> Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
-> Reported-by: Jun Nie <jun.nie@linaro.org>
-> Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> Tested-by: Srinivasa Rao <srivasam@codeaurora.org>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This applies fine now and HDMI audio works again on DB410c:
 
-Tested-by: Stephan Gerhold <stephan@gerhold.net>
+On 19/01/2021 17:37, Srinivas Kandagatla wrote:
+> Thanks for the Patch Jun,
+> 
+> On 19/01/2021 07:17, Jun Nie wrote:
+>> Fix bitwidth mapping in i2s ctl register per APQ8016 document.
+>>
+>> Signed-off-by: Jun Nie <jun.nie@linaro.org>
+> 
+> 
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Thank you!
-Stephan
+
+I sent reply too quickly, just realized that this was a regression from
+
+  b5022a36d28f ("ASoC: qcom: lpass: Use regmap_field for i2sctl and 
+dmactl registers")
+
+So can you add Fixes tag and resend your patch!
+
+--srini
+
+> 
+> 
+> --srini
+> 
+>> ---
+>>   sound/soc/qcom/lpass-apq8016.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/qcom/lpass-apq8016.c 
+>> b/sound/soc/qcom/lpass-apq8016.c
+>> index 0aedb3a0a798..7c0e774ad062 100644
+>> --- a/sound/soc/qcom/lpass-apq8016.c
+>> +++ b/sound/soc/qcom/lpass-apq8016.c
+>> @@ -250,7 +250,7 @@ static struct lpass_variant apq8016_data = {
+>>       .micmode        = REG_FIELD_ID(0x1000, 4, 7, 4, 0x1000),
+>>       .micmono        = REG_FIELD_ID(0x1000, 3, 3, 4, 0x1000),
+>>       .wssrc            = REG_FIELD_ID(0x1000, 2, 2, 4, 0x1000),
+>> -    .bitwidth        = REG_FIELD_ID(0x1000, 0, 0, 4, 0x1000),
+>> +    .bitwidth        = REG_FIELD_ID(0x1000, 0, 1, 4, 0x1000),
+>>       .rdma_dyncclk        = REG_FIELD_ID(0x8400, 12, 12, 2, 0x1000),
+>>       .rdma_bursten        = REG_FIELD_ID(0x8400, 11, 11, 2, 0x1000),
+>>
