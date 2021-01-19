@@ -7,91 +7,88 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E29AC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 04:43:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2602C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 07:18:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2217320848
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 04:43:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2217320848
+	by mail.kernel.org (Postfix) with ESMTPS id 48D692312D
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 07:18:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48D692312D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E9911836;
-	Tue, 19 Jan 2021 05:42:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E9911836
+	by alsa0.perex.cz (Postfix) with ESMTPS id AEED01861;
+	Tue, 19 Jan 2021 08:17:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEED01861
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611031422;
-	bh=vtl47ou48k7trYzbPp8vEBkmaGWR+nm7PtZI+sV/u1o=;
+	s=default; t=1611040728;
+	bh=12bvdWliR0DiU3ILD3dH9fdrTxWTP7VodO8+SmzWLHg=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=g5YIW+tdWwBER1kdtX6mtS41hjItB6lEG+hGLVqiJBRMqkD9WezL1kxCPfEyTQlW0
-	 /wOZQDbiHd3J4TXRXhYuNU+wbgN+ZGoEGUcHbChXqejRup5zyhLHN3GC7lhM80hnxn
-	 MpCgb4v9a5e4EVoU5S62ADXSKqMfEzCJ1MXEvEIM=
+	b=SMKmEbauMshIu9k8PPBdl6ptuvSDLAVQtefduK7BWK1rW26CXvP+dfBVuBPsHs0JL
+	 7ZFZzhehDVAVa+qybLA7XlUIExhhAh8n7HMQnHD2prM+hnfqm84CYQUvltifMNL+tq
+	 6/ZByAytgAYgx7aewcNxMcrWCb8GLL9b2iNf26vg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB513F80255;
-	Tue, 19 Jan 2021 05:42:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29856F80255;
+	Tue, 19 Jan 2021 08:17:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D73BF80257; Tue, 19 Jan 2021 05:42:49 +0100 (CET)
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com
- [IPv6:2607:f8b0:4864:20::333])
+ id 384F1F80257; Tue, 19 Jan 2021 08:17:53 +0100 (CET)
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com
+ [IPv6:2607:f8b0:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EBE0AF80117
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 05:42:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBE0AF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56F4AF80117
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 08:17:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56F4AF80117
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="xPxjbryp"
-Received: by mail-ot1-x333.google.com with SMTP id i30so5686096ota.6
- for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 20:42:38 -0800 (PST)
+ header.b="kDVBhl47"
+Received: by mail-oi1-x234.google.com with SMTP id x71so4423621oia.9
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2021 23:17:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=lEGHa/fw+pXIBREv347tt5onnQ/KqN9oFmmcQKWLUbk=;
- b=xPxjbryp22HRmb8+ZYS9I7l0hi8pYHA5ePzpgkS6UYYEpN/jiV88/B+3gx3BuxiYoy
- GrwapJ3pmku3FfPj1n74s9jhefYdICmKIEZ3zsdWzcLgXSqk2ZHAtlkrBFcBFJSOS9Ti
- 6IJuuIkPPFYJzVfwdtrCSO47BCyraDTdYEr2EY94v5mSQ2awnssGxkUapkJYTCodHODA
- 1BrEDMh3sSGoINMl7w8HlZEZxy6FU068TI5p+2ngPpjYdyejQx4vKkP/jMLv8l8nq6Yd
- lUwb6YilPWhhc+wK3Q4UpRrkmorMcmC47Cs4YO5ILjVLsTckR+6kwmliEMFmaglxpnPt
- AX7Q==
+ bh=jvcrSxD1ATraRj0smzrNy77aHDYuL+QWFJcD8g6nwgI=;
+ b=kDVBhl47hptkZEpTH6JSvU6tgpzDhOem0BUYo7bZedEj8XmmHJ6SWQ0bMbhqGw12Ak
+ ziIXabBuI6LnooLRz5NLPl8KJPzkEGfD1IZLElKP45TixL65notLzQ5mL15emx3BdFoM
+ sV/69v5jrdXpyg9nulczbmf0+ZiLXPNbF3rdJcCPB/77+NN1DfZGcNhAVap+SnbjQOpL
+ 2ytfYc3GHaSgKNsa+NYivF6NbDg1o0ePHOMEE1PC0H4gK7UndW8TyCNuoB7Zm8AiKuVN
+ BRFdS1SdzlJakYx6h1w2P7azwn+exFIfcNoBcmFoDNgkc8GGEEYBIu2xk5r17Atn3rcu
+ NSVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=lEGHa/fw+pXIBREv347tt5onnQ/KqN9oFmmcQKWLUbk=;
- b=Z5/qjGvmNDQfCbSzZ0/safwzhGhvDtfvpxTaAtDwayCoC7BGyFzFPPfLgqBvrlGhAe
- HLEsb1FktYmH46zSpsk55OkZo5a8s/nqusFRvAagimnj+xXOeMZ/IxyCE+iulWOphRRK
- CdspTaRNbse+GWqKsAo+GXodDxz25KypW9yv5x9xd8Md/BpJegpv6tVr11Ov72ExY3XO
- QFzw3eQ7TZdHzxO7qeAaQovJ6DRlKFr1MOYmRyKT0/qWDnu10NRl/QX+2vxBSv1lMD2E
- SGXAh80XkYm3kP+1B7K3027gtek1ch5KSb9lvYK8blkswKxnPzwuCnMLsKxB0T5U9Wpq
- Qr0A==
-X-Gm-Message-State: AOAM5315bJU8DVbEzidyzNZL+j1qZ0YjvvqXG0F2bYTnH5Me32qO4fxH
- JxsI/GyN4RDI1xesgxAe8x546w==
-X-Google-Smtp-Source: ABdhPJytkVwYJyjW3NPbkDVvL8+Dw0n40mrQBKACtAcutScv90A86ExydUH6m4vm8AS+/cwkWGubyw==
-X-Received: by 2002:a9d:22a6:: with SMTP id y35mr2134126ota.20.1611031356353; 
- Mon, 18 Jan 2021 20:42:36 -0800 (PST)
+ bh=jvcrSxD1ATraRj0smzrNy77aHDYuL+QWFJcD8g6nwgI=;
+ b=aZHsx5ywKjSwelnmcuUyhQ8ZMdOXuqwAHY2hIiW/tUeIwSzXHEP/fsR0vHH0Khpv9F
+ DvrrcDQHtpp80QkdoyKiWuPwlbE9gEok8SjNvVfsRMohGON2du+h9RrsmYS+CZoVWzfl
+ +ApqKu0+xDp/bUr4A9hg+hGy1PZOw0l+deVvBTRM9KQXiOlTiskl1nwTztN0CpvWAImi
+ xSynRyzjOSQsvcgOFckdcOETc+CIFJB4R61i//EVAxEUDf95UVerurs5++r9Ip1Sk44q
+ bSkbHxwM3eobkLOWI5B2L1SpqHPLvUxvPZCWPLRKa0ENrQIJDpb7jM6n6omVqG8QU2jV
+ Oy3Q==
+X-Gm-Message-State: AOAM530KKlQNooZFM6jaetgGatNi7SzmMcNtROaD5Js1f4ucXVr9AWAw
+ qDEFqEXrXBQfo7EWOf0w1nf1kQ==
+X-Google-Smtp-Source: ABdhPJyLMnQti8ZgjeK6nNQd8nqWgLmIOJhVQkbyjx2ddDynFegNgeAssRhPyNaw67mMtl/ZL9XDXw==
+X-Received: by 2002:aca:5e03:: with SMTP id s3mr1740211oib.125.1611040662434; 
+ Mon, 18 Jan 2021 23:17:42 -0800 (PST)
 Received: from localhost.localdomain (li519-153.members.linode.com.
  [66.175.222.153])
- by smtp.gmail.com with ESMTPSA id r26sm2236901oij.3.2021.01.18.20.42.01
+ by smtp.gmail.com with ESMTPSA id m7sm4054075ool.29.2021.01.18.23.17.39
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 18 Jan 2021 20:42:05 -0800 (PST)
+ Mon, 18 Jan 2021 23:17:41 -0800 (PST)
 From: Jun Nie <jun.nie@linaro.org>
-To: a.hajda@samsung.com,
-	john.stultz@linaro.org
-Subject: [PATCH] drm: bridge: adv7511: Add set_jack handler
-Date: Tue, 19 Jan 2021 12:41:57 +0800
-Message-Id: <20210119044157.3801598-1-jun.nie@linaro.org>
+To: srinivas.kandagatla@linaro.org
+Subject: [PATCH] ASoC: qcom: lpass: Fix i2s ctl register bit map
+Date: Tue, 19 Jan 2021 15:17:18 +0800
+Message-Id: <20210119071718.3867961-1-jun.nie@linaro.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: architt@codeaurora.org, lars@metafoo.de, kuninori.morimoto.gx@renesas.com,
- airlied@linux.ie, broonie@kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
- bogdan.togorean@analog.com
+Cc: Jun Nie <jun.nie@linaro.org>, plai@codeaurora.org, bgoswami@codeaurora.org,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,62 +104,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With commit 55c5cc63ab, the hdmi_codec_set_jack() will report unsupport
-failure if set_jack handler is missing. Add set_jack handler to resolve
-this failure.
+Fix bitwidth mapping in i2s ctl register per APQ8016 document.
 
 Signed-off-by: Jun Nie <jun.nie@linaro.org>
 ---
- .../gpu/drm/bridge/adv7511/adv7511_audio.c    | 27 ++++++++++++++-----
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ sound/soc/qcom/lpass-apq8016.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-index f101dd2819b5..16de1a8ca7a0 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-@@ -217,22 +217,35 @@ static int adv7511_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
- 	return -EINVAL;
- }
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 0aedb3a0a798..7c0e774ad062 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -250,7 +250,7 @@ static struct lpass_variant apq8016_data = {
+ 	.micmode		= REG_FIELD_ID(0x1000, 4, 7, 4, 0x1000),
+ 	.micmono		= REG_FIELD_ID(0x1000, 3, 3, 4, 0x1000),
+ 	.wssrc			= REG_FIELD_ID(0x1000, 2, 2, 4, 0x1000),
+-	.bitwidth		= REG_FIELD_ID(0x1000, 0, 0, 4, 0x1000),
++	.bitwidth		= REG_FIELD_ID(0x1000, 0, 1, 4, 0x1000),
  
-+static int adv7511_hdmi_i2s_hook_plugged_cb(struct device *dev, void *data,
-+					    hdmi_codec_plugged_cb fn,
-+					    struct device *codec_dev)
-+{
-+	struct adv7511 *adv7511 = data;
-+	bool plugged = adv7511->connector.status == connector_status_connected;
-+
-+	fn(codec_dev, plugged);
-+	return 0;
-+}
-+
- static const struct hdmi_codec_ops adv7511_codec_ops = {
- 	.hw_params	= adv7511_hdmi_hw_params,
- 	.audio_shutdown = audio_shutdown,
- 	.audio_startup	= audio_startup,
- 	.get_dai_id	= adv7511_hdmi_i2s_get_dai_id,
--};
--
--static const struct hdmi_codec_pdata codec_data = {
--	.ops = &adv7511_codec_ops,
--	.max_i2s_channels = 2,
--	.i2s = 1,
--	.spdif = 1,
-+	.hook_plugged_cb = adv7511_hdmi_i2s_hook_plugged_cb,
- };
- 
- int adv7511_audio_init(struct device *dev, struct adv7511 *adv7511)
- {
-+	struct hdmi_codec_pdata codec_data = {
-+		.ops = &adv7511_codec_ops,
-+		.max_i2s_channels = 2,
-+		.i2s = 1,
-+		.spdif = 1,
-+		.data = adv7511,
-+	};
-+
- 	adv7511->audio_pdev = platform_device_register_data(dev,
- 					HDMI_CODEC_DRV_NAME,
- 					PLATFORM_DEVID_AUTO,
+ 	.rdma_dyncclk		= REG_FIELD_ID(0x8400, 12, 12, 2, 0x1000),
+ 	.rdma_bursten		= REG_FIELD_ID(0x8400, 11, 11, 2, 0x1000),
 -- 
 2.25.1
 
