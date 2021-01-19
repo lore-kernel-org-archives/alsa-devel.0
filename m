@@ -2,102 +2,125 @@ Return-Path: <SRS0=kxA9=GW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EA62C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EB45C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 20:34:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E000123107
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 19:26:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E000123107
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id E9DBD23104
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jan 2021 20:34:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E9DBD23104
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE29A18BC;
-	Tue, 19 Jan 2021 18:30:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE29A18BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8215C18B0;
+	Tue, 19 Jan 2021 21:33:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8215C18B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611077502;
-	bh=jj9nRak6dQY9I22vt/Ljetoj6wQ4+H3OidlEqdespxA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1611088453;
+	bh=SVImvOhgkU+hXOYgN2yE2/kkBlbD8b4Lgt+9m6mMkc0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PWbF0bMcbm8Q9lZRG39AD4+lk9VMl7ro39/oQqZWwfbhJEcvguKtTYACysjvv3WBl
-	 VYHcaxnlilzI9e7MUPOYLv+RbmE/ILzf0KXchkJateAA9i/qX8AcEydh44zUZmRiY9
-	 gHIUz8V6z0RDxOmu9fIN43XTSFT+LIMO13XZdNrI=
+	b=tIco+SsngFNBlsh77/IsFkrCryhT9gM2tgOeP7gjbDB/9EXxCzFE17boh4TdIKSnx
+	 86kWvAUt8uorrcWg8cE+qWisilTEXQJWafx0ZHS47v3brl9mVofUmv5KMmWswqbe4X
+	 6LUrDcf0hAxq8G3uOD0psQPv1R3xj+H0bqQotNok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16FA9F80255;
-	Tue, 19 Jan 2021 18:30:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01ADFF800FE;
+	Tue, 19 Jan 2021 21:33:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FF90F80257; Tue, 19 Jan 2021 18:30:50 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 70E7CF80257; Tue, 19 Jan 2021 21:33:19 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7C4DF80117
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 18:30:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7C4DF80117
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABA59F800FE
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 21:33:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABA59F800FE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="cB/cvOGR"
-Received: by mail-wm1-x32f.google.com with SMTP id c124so511751wma.5
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 09:30:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to:user-agent;
- bh=nDyXlmZnRyCURD1JgXC1GjN+18/ZRktMLfCEGonjNiY=;
- b=cB/cvOGRB1gD5rc6vL9IgpaDCXgmftNI+tHoINdC6AkY39fyHjVEKIWETwsNn9a+K9
- 2ptLMPA15AN0o/aquqG1B1u4a7ThvW2kQwhR+Rn9ByjrKDI1LuE+K+/x1i02hi2pRMmT
- e4XOZJUD18lVOOhSofGDpfYPntuY+nHbFNFE2gGK5fuxskKYrojUWzMc32eJ8gcQG3nD
- AgdXH+7YzVlhUFv+Ns3zs65pqvFht1Uuj4RZFm/iP/w7pyIt5RT0voiGYqH/ptx2ZymI
- Qg71NLESVLsIRhqxeaeoqbQN0nVKbynplj4Yuuldi3d4fn4gcglpyhL4hwVPRCyQ7Nqg
- InqQ==
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="T6RuepD9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1611088389;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=23er8d4qGSqJb9+O8wFFWdVfoc1tFodQp+QH8dpUNoA=;
+ b=T6RuepD9RA+0C+1IdVEVKQCXrW/Dx0AcQywGp01YdoSwbixKb9nRRRLYd17e6HUALJwWqY
+ k5BpSHct2QDdgsG1fJfvxcMVo3Ffak8i6HQZD0ZyV2eVjViovuaAYJySfJ8xrb5oy3v9uJ
+ r7LIHYW/UOS+zx3tbYg1Z4bZCQiAwRg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-G337c2IqMFSbzIyNv0a6VA-1; Tue, 19 Jan 2021 15:33:07 -0500
+X-MC-Unique: G337c2IqMFSbzIyNv0a6VA-1
+Received: by mail-ej1-f72.google.com with SMTP id le12so3645429ejb.13
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 12:33:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to:user-agent;
- bh=nDyXlmZnRyCURD1JgXC1GjN+18/ZRktMLfCEGonjNiY=;
- b=LzamHPzG5hPYY0dJQOjP+wdn9Uk59qL2ZIJNLHEqs68aVTPtC8+fYp7+wG0UtrppHl
- t5vTMt2JxCv8BVy2v6E9dZBb/z6kBHipeadsiwzbuLAa1xI9m9UBd8DA7g97G8j2MHv7
- kS6EjSC7PvAtP/WBk5kHyBIGaqm+JjgBdZDjKrUwWkD7qctAJ8ETzEVxOasl6UliPD8+
- UMz0hJ9XVz1IY1+eI9S7AY2suJokQJf/gUJqrXaLC0vtZE2gKeP0Gr7RmOzE6Uh6EIGZ
- jQP8GJ6MaD0NwlDBVowJmWfHlpsKHNCBW0ceUNmfx5TZwMqaNUbcLpB6ZfDlAj1U9b3K
- f5zw==
-X-Gm-Message-State: AOAM532nIlRlDxvqFHNl1pkD/Ozk5dGdhl+LKn7yrh5HQjG0Gzfe722f
- Xjbjrd5dKQo/bvMIeTRyeLQ=
-X-Google-Smtp-Source: ABdhPJxFo4IKI66fTtRW7gSBX2uD/raX9mtUo9KupK/7Dj8LSiAN4LhhRiY4DDdNxWwdEzmmGBaA6g==
-X-Received: by 2002:a1c:e486:: with SMTP id b128mr649392wmh.136.1611077441676; 
- Tue, 19 Jan 2021 09:30:41 -0800 (PST)
-Received: from localhost ([62.96.65.119])
- by smtp.gmail.com with ESMTPSA id 62sm5866498wmd.34.2021.01.19.09.30.40
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Jan 2021 09:30:40 -0800 (PST)
-Date: Tue, 19 Jan 2021 18:30:39 +0100
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [PATCH v1 2/5] ALSA: hda/tegra: Reset hardware
-Message-ID: <YAcXP/h30ULq5OU3@ulmo>
-References: <20210112125834.21545-1-digetx@gmail.com>
- <20210112125834.21545-3-digetx@gmail.com> <YAG2K4CjtCdSs6P2@ulmo>
- <e26bac65-7cde-439f-a353-3b960691096f@gmail.com>
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=23er8d4qGSqJb9+O8wFFWdVfoc1tFodQp+QH8dpUNoA=;
+ b=o1H99TPKWoPvZyCizRqO9V10k4vOdfUBBQm01u/Js+4NiS4x5aV6cmVQMgkyl0WUff
+ 2Pac72VE1O/I1uBxeNLy0HaakCChji+sN26QXSTa34aoy9AC0xzFviMtquEaih7mnZm9
+ eIfQezrfNqGTr4yNbxYZlC2dw8Fpi1bJti/YZ7yhUwt3bYFVNqEQSoyaiDLAjbFXv/wj
+ LUbMdKWwKivm5eH1EPDwxXAwS06dDMOVynZo2BR+WNulD5rnjXikIfnus55u7/+ApmHq
+ Hh/21Oqd3UWQBTWApWbbXZ5eJdwtkpM50Dz3IvfLzpJPrsKWnMl1/ALI/1Rx9ecCsDnu
+ c09w==
+X-Gm-Message-State: AOAM531cU7cvb0nL0mg5EiyA+ojfIPMSHix3okSedGaR1wsv+6MnISTZ
+ yhzAE55G0VpmJyQGJjq0qxjm2dSzdL9B6wUhfdQT3BEOE/yJYQebhyiyPn9aD0drRZ44UudRjXy
+ YHtkCYKq7Krk6Vc2kbgou/wU=
+X-Received: by 2002:a05:6402:35ca:: with SMTP id
+ z10mr4892576edc.186.1611088385946; 
+ Tue, 19 Jan 2021 12:33:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy33Eg9h8JbuZTX6k5/kDSmWInMmfJEaiXUN+F2hixliyB0mPa+RgXNILd+5n9Uwu42CZTX0A==
+X-Received: by 2002:a05:6402:35ca:: with SMTP id
+ z10mr4892569edc.186.1611088385774; 
+ Tue, 19 Jan 2021 12:33:05 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+ by smtp.gmail.com with ESMTPSA id m10sm7230897edi.54.2021.01.19.12.33.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 19 Jan 2021 12:33:05 -0800 (PST)
+Subject: Re: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
+To: "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+ Perry Yuan <perry979106@gmail.com>, "Yuan, Perry" <Perry.Yuan@dell.com>,
+ "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+ "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>,
+ "mgross@linux.intel.com" <mgross@linux.intel.com>
+References: <20210112171814.5404-1-Perry_Yuan@Dell.com>
+ <BY3PR19MB49131AA4EAE7C24D365FAC8DFAAA0@BY3PR19MB4913.namprd19.prod.outlook.com>
+ <44d8e280-c8f3-4e3a-7ef7-b68224c96def@gmail.com>
+ <SA1PR19MB4926382ED61402D0F0BFA3B3FAA30@SA1PR19MB4926.namprd19.prod.outlook.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <47830d92-e98a-00f8-bf91-79e187ba7c5b@redhat.com>
+Date: Tue, 19 Jan 2021 21:33:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="/klCL1aWdNUFUILq"
-Content-Disposition: inline
-In-Reply-To: <e26bac65-7cde-439f-a353-3b960691096f@gmail.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
-Cc: alsa-devel@alsa-project.org, Nicolas Chauvet <kwizart@gmail.com>,
- linux-kernel@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
- Takashi Iwai <tiwai@suse.com>, Peter Geis <pgwipeout@gmail.com>,
- linux-tegra@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>
+In-Reply-To: <SA1PR19MB4926382ED61402D0F0BFA3B3FAA30@SA1PR19MB4926.namprd19.prod.outlook.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "platform-driver-x86@vger.kernel.org"
+ <platform-driver-x86@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,128 +136,259 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
---/klCL1aWdNUFUILq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 1/19/21 5:33 PM, Limonciello, Mario wrote:
+>>>> -----Original Message-----
+>>>> From: Yuan, Perry <Perry_Yuan@Dell.com>
+>>>> Sent: Tuesday, January 12, 2021 11:18
+>>>> To: oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
+>>>> hdegoede@redhat.com; mgross@linux.intel.com
+>>>> Cc: lgirdwood@gmail.com; broonie@kernel.org; alsa-devel@alsa-project.org;
+>>>> linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; Yuan,
+>>>> Perry; Limonciello, Mario
+>>>> Subject: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
+>>>>
+>>>> From: Perry Yuan <perry_yuan@dell.com>
+>>>>
+>>>> Some new Dell system is going to support audio internal micphone
+>>>> privacy setting from hardware level with micmute led state changing
+>>>> When micmute hotkey pressed by user, soft mute will need to be enabled
+>>>> firstly in case of pop noise, and codec driver need to react to mic
+>>>> mute event to EC(embedded controller) notifying that SW mute is completed
+>>>> Then EC will do the hardware mute physically within the timeout reached
+>>>>
+>>>> This patch allow codec rt715 driver to ack EC when micmute key pressed
+>>>> through this micphone led control interface like hda_generic provided
+>>>> ACPI method defined in dell-privacy micmute led trigger will be called
+>>>> for notifying the EC that software mute has been completed
+>>>>
+>>>> Signed-off-by: Perry Yuan <perry_yuan@dell.com>
+>>>>
+>>>> --------
+>>>> v2 -> v3
+>>>> * simplify the patch to reuse some val value
+>>>> * add more detail to the commit info
+>>>>
+>>>> v1 -> v2:
+>>>> * fix some format issue
+>>>> --------
+>>>> ---
+>>>>   sound/soc/codecs/rt715-sdca.c | 16 ++++++++++++++++
+>>>>   sound/soc/codecs/rt715-sdca.h |  1 +
+>>>>   sound/soc/codecs/rt715.c      | 14 ++++++++++++++
+>>>>   sound/soc/codecs/rt715.h      |  1 +
+>>>>   4 files changed, 32 insertions(+)
+>>>>
+>>>> diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
+>>>> index b43ac8559e45..861a0d2a8957 100644
+>>>> --- a/sound/soc/codecs/rt715-sdca.c
+>>>> +++ b/sound/soc/codecs/rt715-sdca.c
+>>>> @@ -12,6 +12,7 @@
+>>>>   #include <linux/version.h>
+>>>>   #include <linux/kernel.h>
+>>>>   #include <linux/init.h>
+>>>> +#include <linux/leds.h>
+>>>>   #include <linux/pm_runtime.h>
+>>>>   #include <linux/pm.h>
+>>>>   #include <linux/soundwire/sdw.h>
+>>>> @@ -244,6 +245,7 @@ static int rt715_sdca_get_volsw(struct snd_kcontrol
+>>>> *kcontrol,
+>>>>   	unsigned int max = mc->max;
+>>>>   	int val;
+>>>>
+>>>> +	pr_err("++++++rt715_sdca_get_volsw++\n");
+>>>>   	val = snd_soc_component_read(component, mc->reg);
+>>>>   	if (val < 0)
+>>>>   		return -EINVAL;
+>>>> @@ -261,6 +263,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol
+>>>> *kcontrol,
+>>>>   	struct snd_ctl_elem_value *ucontrol)
+>>>>   {
+>>>>   	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+>>>> +	struct rt715_sdca_priv *rt715 =
+>>>> snd_soc_component_get_drvdata(component);
+>>>>   	struct soc_mixer_control *mc =
+>>>>   		(struct soc_mixer_control *)kcontrol->private_value;
+>>>>   	unsigned int val, val2, loop_cnt = 2, i;
+>>>> @@ -268,6 +271,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol
+>>>> *kcontrol,
+>>>>   	unsigned int reg2 = mc->rreg;
+>>>>   	unsigned int reg = mc->reg;
+>>>>   	unsigned int max = mc->max;
+>>>> +	unsigned int val0, val1;
+>>>>   	int err;
+>>>>
+>>>>   	val = ucontrol->value.integer.value[0];
+>>>> @@ -287,6 +291,18 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol
+>>>> *kcontrol,
+>>>>   			return err;
+>>>>   	}
+>>>>
+>>>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>>>> +	/* dell privacy LED trigger state changed by muted/unmute switch */
+>>>> +	if (mc->invert) {
+>>>> +		if (ucontrol->value.integer.value[0] || ucontrol-
+>>>>> value.integer.value[1]) {
+>>>> +			rt715->micmute_led = LED_OFF;
+>>>> +		} else {
+>>>> +			rt715->micmute_led = LED_ON;
+>>>> +		}
+>>>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
+>>>> +	}
+>>>> +#endif
+>>>> +
+>>>>   	return 0;
+>>>>   }
+>>>>
+>>>> diff --git a/sound/soc/codecs/rt715-sdca.h b/sound/soc/codecs/rt715-sdca.h
+>>>> index 840c237895dd..f8988ab88f80 100644
+>>>> --- a/sound/soc/codecs/rt715-sdca.h
+>>>> +++ b/sound/soc/codecs/rt715-sdca.h
+>>>> @@ -31,6 +31,7 @@ struct rt715_sdca_priv {
+>>>>   	int l_is_unmute;
+>>>>   	int r_is_unmute;
+>>>>   	int hw_sdw_ver;
+>>>> +	bool micmute_led;
+>>>>   };
+>>>>
+>>>>   struct rt715_sdw_stream_data {
+>>>> diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+>>>> index cdcba70146da..b4e480744c94 100644
+>>>> --- a/sound/soc/codecs/rt715.c
+>>>> +++ b/sound/soc/codecs/rt715.c
+>>>> @@ -13,6 +13,7 @@
+>>>>   #include <linux/init.h>
+>>>>   #include <linux/delay.h>
+>>>>   #include <linux/i2c.h>
+>>>> +#include <linux/leds.h>
+>>>>   #include <linux/pm_runtime.h>
+>>>>   #include <linux/pm.h>
+>>>>   #include <linux/soundwire/sdw.h>
+>>>> @@ -88,6 +89,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol
+>>>> *kcontrol,
+>>>>   		RT715_SET_GAIN_MIX_ADC2_L};
+>>>>   	unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
+>>>>   	unsigned int read_ll, read_rl, i, j, loop_cnt;
+>>>> +	unsigned int val0, val1;
+>>>>
+>>>>   	if (strstr(ucontrol->id.name, "Main Capture Switch") ||
+>>>>   		strstr(ucontrol->id.name, "Main Capture Volume"))
+>>>> @@ -95,6 +97,18 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol
+>>>> *kcontrol,
+>>>>   	else
+>>>>   		loop_cnt = 1;
+>>>>
+>>>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>>>> +	/* Micmute LED state changed by muted/unmute switch */
+>>>> +	if (mc->invert) {
+>>>> +		if (ucontrol->value.integer.value[0] || ucontrol-
+>>>>> value.integer.value[1]) {
+>>>> +			rt715->micmute_led = LED_OFF;
+>>>> +		} else {
+>>>> +			rt715->micmute_led = LED_ON;
+>>>> +		}
+>>>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
+>>>> +	}
+>>>> +#endif
+>>>> +
+>>> You might have missed my other comment on v2 feedback, but is there a reason
+>>> to keep it behind a compile time flag for dell privacy module?  In practice
+>>> any other future led backend provider should work too.  Another way to think
+>>> about it - if dell privacy wasn't enabled would this cause a problem to run
+>>> this code?  I think it would just be a no-op.
+>>>
+>>>>   	for (j = 0; j < loop_cnt; j++) {
+>>>>   		/* Can't use update bit function, so read the original value first
+>>>> */
+>>>>   		if (loop_cnt == 1) {
+>>>> diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
+>>>> index 009a8266f606..57c9af041181 100644
+>>>> --- a/sound/soc/codecs/rt715.h
+>>>> +++ b/sound/soc/codecs/rt715.h
+>>>> @@ -22,6 +22,7 @@ struct rt715_priv {
+>>>>   	struct sdw_bus_params params;
+>>>>   	bool hw_init;
+>>>>   	bool first_hw_init;
+>>>> +	bool micmute_led;
+>>>>   };
+>>>>
+>>>>   struct sdw_stream_data {
+>>>> --
+>>>> 2.25.1
+>>
+>> Pierre Louis suggested to just set the mic mute led state unconditionally .
+>> It is more common interface to allow other platforms to change micmute led.
+>> The discussion result is from "[PATCH v2 2/2] ASoC: rt715:add Mic Mute LED
+>> control support"
+>>
+>> Here is the change compared to V3 ,the CONFIG_DELL_PRIVACY will be removed
+>>
+>> -#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>> -       /* dell privacy LED trigger state changed by muted/unmute switch */
+>> +       /* MicMute LED state changed by muted/unmute switch */
+>>          if (mc->invert) {
+>>                  if (ucontrol->value.integer.value[0] || ucontrol-
+>>> value.integer.value[1]) {
+>>                          rt715->micmute_led = LED_OFF;
+>> diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
+>> index b4e480744c94..60bb3d98103e 100644
+>> --- a/sound/soc/codecs/rt715.c
+>> +++ b/sound/soc/codecs/rt715.c
+>> @@ -97,8 +97,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol
+>> *kcontrol,
+>>          else
+>>                  loop_cnt = 1;
+>>
+>> -#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>> -       /* Micmute LED state changed by muted/unmute switch */
+>> +       /* MicMute LED state changed by muted/unmute switch */
+>>          if (mc->invert) {
+>>                  if (ucontrol->value.integer.value[0] || ucontrol-
+>>> value.integer.value[1]) {
+>>                          rt715->micmute_led = LED_OFF;
+>> @@ -107,7 +106,6 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol
+>> *kcontrol,
+>>                  }
+>>                  ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
+>>          }
+>> -#endif
+> 
+> I'm not sure which thread, but I believe there was still also another suggestion
+> that this should be made more "generic" and to work for all codecs.  So that when
+> we have lets say a hypothetical rt717 we don't need the same in that module.
 
-On Mon, Jan 18, 2021 at 02:39:37AM +0300, Dmitry Osipenko wrote:
-> 15.01.2021 18:35, Thierry Reding =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Tue, Jan 12, 2021 at 03:58:31PM +0300, Dmitry Osipenko wrote:
-> >> Reset hardware in order to bring it into a predictable state.
-> >>
-> >> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>  sound/pci/hda/hda_tegra.c | 18 ++++++++++++++++++
-> >>  1 file changed, 18 insertions(+)
-> >>
-> >> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-> >> index 4c799661c2f6..e406b7980f31 100644
-> >> --- a/sound/pci/hda/hda_tegra.c
-> >> +++ b/sound/pci/hda/hda_tegra.c
-> >> @@ -17,6 +17,7 @@
-> >>  #include <linux/moduleparam.h>
-> >>  #include <linux/mutex.h>
-> >>  #include <linux/of_device.h>
-> >> +#include <linux/reset.h>
-> >>  #include <linux/slab.h>
-> >>  #include <linux/time.h>
-> >>  #include <linux/string.h>
-> >> @@ -70,6 +71,7 @@
-> >>  struct hda_tegra {
-> >>  	struct azx chip;
-> >>  	struct device *dev;
-> >> +	struct reset_control *reset;
-> >>  	struct clk_bulk_data clocks[3];
-> >>  	unsigned int nclocks;
-> >>  	void __iomem *regs;
-> >> @@ -167,6 +169,12 @@ static int __maybe_unused hda_tegra_runtime_resum=
-e(struct device *dev)
-> >>  	struct hda_tegra *hda =3D container_of(chip, struct hda_tegra, chip);
-> >>  	int rc;
-> >> =20
-> >> +	if (!(chip && chip->running)) {
-> >=20
-> > Isn't that check for !chip a bit redundant? If that pointer isn't valid,
-> > we're just going to go crash when dereferencing hda later on, so I think
-> > this can simply be:
-> >=20
-> > 	if (!chip->running)
-> >=20
-> > I guess you took this from the inverse check below, but I think we can
-> > also drop it from there, perhaps in a separate patch.
-> >=20
-> >> +		rc =3D reset_control_assert(hda->reset);
-> >> +		if (rc)
-> >> +			return rc;
-> >> +	}
-> >> +
-> >>  	rc =3D clk_bulk_prepare_enable(hda->nclocks, hda->clocks);
-> >>  	if (rc !=3D 0)
-> >>  		return rc;
-> >> @@ -176,6 +184,10 @@ static int __maybe_unused hda_tegra_runtime_resum=
-e(struct device *dev)
-> >>  		/* disable controller wake up event*/
-> >>  		azx_writew(chip, WAKEEN, azx_readw(chip, WAKEEN) &
-> >>  			   ~STATESTS_INT_MASK);
-> >> +	} else {
-> >> +		rc =3D reset_control_reset(hda->reset);
-> >=20
-> > The "if (chip)" part definitely doesn't make sense after this anymore
-> > because now if chip =3D=3D NULL, then we end up in here and dereference=
- an
-> > invalid "hda" pointer.
->=20
-> Okay, I took a note for the v3.
->=20
-> > Also, why reset_control_reset() here? We'll reach this if we ran
-> > reset_control_assert() above, so this should just be
-> > reset_control_deassert() to undo that, right? I suppose it wouldn't hurt
-> > to put throw that standard usleep_range() in there as well that we use
-> > to wait between reset assert and deassert to make sure the clocks have
-> > stabilized and the reset has indeed propagated through the whole IP.
->=20
-> The reset_control_reset() does the delaying before the deassert, i.e. it
-> does assert -> udelay(1) -> deassert.
->=20
-> https://elixir.free-electrons.com/linux/v5.11-rc3/source/drivers/clk/tegr=
-a/clk.c#L133
->=20
-> The reset_control_reset() usage appears to be a bit more code-tidy
-> variant in comparison to delaying directly. But I don't mind to use
-> delay + reset_control_deassert() directly since it may not be obvious to
-> everyone what reset_control_reset() does.
-> I'll change it in v3.
+Right:
 
-Thanks. I know that manually having to add the delay everywhere seems a
-bit tedious, but I like the way we very explicitly only ever do reset
-assert and deassert, rather than the combined reset pulse, because the
-latter can give the impression that the device isn't actually in reset
-when we do reset_control_reset().
 
-Thierry
+On 1/15/21 6:45 PM, Jaroslav Kysela wrote:
+> Dne 12. 01. 21 v 18:18 Perry Yuan napsal(a):
+> 
+>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>> +	/* dell privacy LED trigger state changed by muted/unmute switch */
+>> +	if (mc->invert) {
+>> +		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
+>> +			rt715->micmute_led = LED_OFF;
+>> +		} else {
+>> +			rt715->micmute_led = LED_ON;
+>> +		}
+>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
+>> +	}
+>> +#endif
+> 
+> [removing lkml and x86-platform lists]
+> 
+> Looking to this code, perhaps, it may be a good idea to move the LED trigger
+> handling from the low-level drivers and do it in the top-level control code
+> (sound/core/control.c). Adding a new flag SNDRV_CTL_ELEM_ACCESS_MIC_LED may be
+> an option and we can nicely handle the situation for multiple microphones (OR
+> operation). The motivation is to remove the duplicated code.
+> 
+> The same situation is for the playback LED.
 
---/klCL1aWdNUFUILq
-Content-Type: application/pgp-signature; name="signature.asc"
+I believe that this is an excellent suggestion and that this is the way to go.
 
------BEGIN PGP SIGNATURE-----
+Regards,
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAHFz8ACgkQ3SOs138+
-s6Hyxw//SGrLuWocfMwUkHmxiyxq+LvXQERK6nWL9L0e+TX2eHKm68l8j3eCsY/t
-gMEXlaF60LxIqyVvah+Yg3uXAhiHOGzdeFWprkstQ9XKZZKyqjOpK9fUuzLwSa5m
-WXMti4whOfk3g5eQsotpK1C0pdY2cdfWzYyUFGkDRnrBUK4KZZ2+iQXtHeT1tVaV
-LzgYRXvzMX8dfCQYJx0w8wnEs3PGbIa+K1XsVpK5LxpXZe91LV4aaYRJZw68PHie
-APKx9lVi+gMwpYLtkPmGtkdT+stLMicaAccPHY9TBpYHzUbGFAVSTxWOM0j92efr
-JXkHOkRJy8W1cs0cl3CCz+b4XM/1CKjHIJpB9Z0fwymX13iCm2zKVEKDKxJBfoLV
-gQAWcJc7A0bjPftSk4cyeth3YCasQ7c/JXKDtNQVrXOYuqKmHBRq73gOZPtU/5mU
-ndwpZT72SBKf1co8GWGiq0sVTlxHQy7WgfscxxVHphzeuKCyxZHN+SsEAzID154p
-KIrRsSbp/L8AD0Mck/rPxPDapbH15Zlng5D4AothCnHoulVARtZLIpuxWxY0l84z
-Ud84sqD8vI3HQ3HtkbkkZKEcIZ//kJ7HhfGs8qEeUcX6arb/hb4tak/VYzraturM
-vSAFZ9a/joyT2zQlByjJsgunHfkyf5mTJuWWd0xIHiSZ3k9z3BU=
-=eV6P
------END PGP SIGNATURE-----
+Hans
 
---/klCL1aWdNUFUILq--
