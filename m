@@ -2,72 +2,70 @@ Return-Path: <SRS0=/R4B=GX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7A93C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 14:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24597C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 14:43:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 535D423329
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 14:34:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 535D423329
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 22FFB2336E
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 14:43:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22FFB2336E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02D9C17AB;
-	Wed, 20 Jan 2021 15:33:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02D9C17AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4580317B5;
+	Wed, 20 Jan 2021 15:42:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4580317B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611153264;
-	bh=7ZtAhBgaG/DjFgBTE41jPAaHeG+8d7ZNeWd48uoIols=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vZJpgHnXR1iqmDF7sQdJRHTHMyZwHE7ue9jb3BRTPROSqcD9jXlr7qcTGiFhYQ2Xe
-	 y2ftqCe5K6/L1v5unpzWyTuYSs6CtHBCBNrN2CGWmOCngEKGPmwcJvdmHkJD7ia1oF
-	 cwlxkxypj5MHD6PY73DlvgViBff5JFku2PSO0/E4=
+	s=default; t=1611153807;
+	bh=86k/MhCGSrJKkip7llvxzh7qujn8rsp+6Wwt4jyxvDQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=j5PebTq0gh/F/XfE57idAy+7yzULJOR6CKJvnjAt2zIPu98XtmJqKTlFuuMeRNjyW
+	 KCtuqH2qztrk/Kd5VZTfAhJxBRxQLk/yhCVSyrZGte/8749OrQr/Teb15bs3mzKDzP
+	 29JB6Mcn0HCjpIXKNLg55ECo9PYZflXzor1hTeVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BEA7F80166;
-	Wed, 20 Jan 2021 15:33:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2FFAF8012C;
+	Wed, 20 Jan 2021 15:42:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDB1FF8016E; Wed, 20 Jan 2021 15:33:16 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 436BAF8016E; Wed, 20 Jan 2021 15:42:34 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A38EF80164
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 15:33:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A38EF80164
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5C34AAC85;
- Wed, 20 Jan 2021 14:33:12 +0000 (UTC)
-Date: Wed, 20 Jan 2021 15:33:12 +0100
-Message-ID: <s5ha6t3el07.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mike Oliphant <oliphant@nostatic.org>
-Subject: Re: Support for NUX MG-300 USB interface
-In-Reply-To: <CAHXb3bfUv7QzvgOmtV3LxJXaY=Uk+pKhWZmU0M+YkgB0kNrXmA@mail.gmail.com>
-References: <CAHXb3bdk71ivJUp9HBRccDvd8SD2F1uFdsC_FxUjhh5zpcQobQ@mail.gmail.com>
- <s5hr1mik7vu.wl-tiwai@suse.de>
- <CAHXb3bdt6mgUcZ0+MH1i7QeYF03MSwx=kad-YBBNeVjqoH=KhA@mail.gmail.com>
- <CAHXb3bcFM0BswbuTe=6vP6JRd=TOf94Gu0FPAZmXT6634bCiAQ@mail.gmail.com>
- <s5hr1migiie.wl-tiwai@suse.de>
- <CAHXb3be9EpEtaEc0iH06wmLMhyizkV7arvgxsT2bWK=aJHKVLA@mail.gmail.com>
- <s5him7thpoz.wl-tiwai@suse.de>
- <CAHXb3bd8zHFmHxDp=4dNKa90eAT568yCwTWo_5L0Zry1EY45UA@mail.gmail.com>
- <s5hczy1guto.wl-tiwai@suse.de>
- <CAHXb3bfUv7QzvgOmtV3LxJXaY=Uk+pKhWZmU0M+YkgB0kNrXmA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAEA2F8012C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 15:42:29 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BBB97A0046;
+ Wed, 20 Jan 2021 15:42:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz BBB97A0046
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1611153748; bh=5+CO6EYjJLO0X0s5gywNEhBjjj1gJ/sEzV50VqcgNQE=;
+ h=From:To:Cc:Subject:Date:From;
+ b=JwVlomU0CThUMYXMboRh9BSo7EA4t67TBUB4/fwoKY3D3SW1pFKKIgjXMK5VBdckM
+ lzC31zG34p7Bm2+A6EpStz8hbB/XXa0mdD3wLeXPZDMoAYHd808Nw0JRMAndyynJPS
+ ZnjV310D1Bay56TYR4ySKaMgg4m1GfV3DolM8DCg=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 20 Jan 2021 15:42:23 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: AMD Renoir - refine DMI entries for some Lenovo products
+Date: Wed, 20 Jan 2021 15:42:11 +0100
+Message-Id: <20210120144211.817937-1-perex@perex.cz>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
+ stable@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,34 +81,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Jan 2021 18:40:04 +0100,
-Mike Oliphant wrote:
-> 
-> Your mixer.c patch does get rid of the RANGE errors. No change to behavior,
-> though.
-> 
-> I'd already tried setting "implicit_fb=1" even though I didn't expect it to
-> work, since there is a separate feedback endpoint. I just tried it again - it
-> doesn't seem to hurt anything, but it doesn't help either.
-> 
-> Capture seems to be working perfectly with the clock patch - I'm not sure why
-> I was initially getting noisy input.
-> 
-> I checked "/proc/asound/card*/pcm*/sub*/status" during playback, and the
-> pointer seems to be moving forward as it should. All indications are that the
-> system thinks playback is working fine.
-> 
-> One interesting piece of information - alsamixer shows two stereo outputs
-> ("pcm" and "pcm1"). Not sure why there are two - maybe output is going to the
-> wrong one?
+Apparently, the DMI board name LNVNB161216 is also used also
+for products with the digital microphones connected to the AMD's
+audio bridge. Refine the DMI table - use product name identifiers
+extracted from https://bugzilla.redhat.com/show_bug.cgi?id=1892115 .
 
-You might need to unmute and increase both.  The first one should be a
-master volume/switch while the second one is for the stereo channels.
+The report for Lenovo Yoga Slim 7 14ARE05 (82A2) is in buglink.
 
-Naming the mixer elements properly for USB-audio is a really tough
-task.  Many firmware don't set the right strings and a guess work
-doesn't fit to all.  But certainly there are some rooms for
-improvements there.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211299
+Cc: <stable@kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Cc: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/renoir/rn-pci-acp3x.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-
-Takashi
+diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
+index deca8c7a0e87..050a61fe9693 100644
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -165,10 +165,24 @@ static int rn_acp_deinit(void __iomem *acp_base)
+ 
+ static const struct dmi_system_id rn_acp_quirk_table[] = {
+ 	{
+-		/* Lenovo IdeaPad Flex 5 14ARE05, IdeaPad 5 15ARE05 */
++		/* Lenovo IdeaPad S340-14API */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
+-			DMI_EXACT_MATCH(DMI_BOARD_NAME, "LNVNB161216"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "81NB"),
++		}
++	},
++	{
++		/* Lenovo IdeaPad Flex 5 14ARE05 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "81X2"),
++		}
++	},
++	{
++		/* Lenovo IdeaPad 5 15ARE05 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "81YQ"),
+ 		}
+ 	},
+ 	{
+-- 
+2.29.2
