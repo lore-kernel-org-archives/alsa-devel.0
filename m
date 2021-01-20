@@ -7,58 +7,57 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00CEDC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 09:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CD8AC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 09:14:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B879A23131
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 09:13:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B879A23131
+	by mail.kernel.org (Postfix) with ESMTPS id 0C5BF23131
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 09:14:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C5BF23131
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BEF11813;
-	Wed, 20 Jan 2021 10:12:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BEF11813
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0E8A1842;
+	Wed, 20 Jan 2021 10:13:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0E8A1842
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611133998;
-	bh=rewafI9x7R7GiZSgReR4BvFZRtd2ll/i+DyQs/wA4es=;
+	s=default; t=1611134054;
+	bh=RckfIc2CTz/EXsU82GAMLqOwdJjJtZxMs1ligH4Y5UI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=E6AGDUxWMI+1m3JdhmK95WYxe0W/XH1Msscd4XSbURqmS4YOgLF9CMFELTQIZ2uxf
-	 CgdGoGmWPNqchHIng4OVRFv036h+eP/7kfsetGph3nK6gmac003DCApISPju3hFUlF
-	 iKpd5/CAT3bKXagd5680RD2PKwozZ+rQMRbIJmPc=
+	b=ZLPwH0aLASZxkuFy381H7DyJf5fdQpzWnNmQctG5Ke1XdSPfJWNhOV11DujnmwnPA
+	 sIyQrkt9aBFxX7l0iP5QlEYlUKnTOLFba5ZISw26pX1Z0c8wiQrUDr5XLY9okprdUl
+	 p7+1yJhxsaQ0JG1abk51pyPZZ8wM5kvNE/bcC8mo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27F31F8016E;
-	Wed, 20 Jan 2021 10:12:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8597F80164;
+	Wed, 20 Jan 2021 10:12:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9594F8016E; Wed, 20 Jan 2021 10:12:25 +0100 (CET)
+ id 05C00F80227; Wed, 20 Jan 2021 10:12:32 +0100 (CET)
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4643F80137
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 10:12:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4643F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64D03F8012C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 10:12:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64D03F8012C
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10K9CA7K0006149,
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10K9CLlU4006167,
  This message is accepted by code: ctloc85258
 Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10K9CA7K0006149
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10K9CLlU4006167
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 20 Jan 2021 17:12:10 +0800
+ Wed, 20 Jan 2021 17:12:21 +0800
 Received: from localhost.localdomain (172.22.102.1) by
  RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 20 Jan 2021 17:12:10 +0800
+ 15.1.2106.2; Wed, 20 Jan 2021 17:12:20 +0800
 From: <shumingf@realtek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] ASoC: dt-bindings: rt5682: add LDO2 power control device
- property
-Date: Wed, 20 Jan 2021 17:12:07 +0800
-Message-ID: <20210120091207.10778-1-shumingf@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt5682: add device property to control LDO2 power
+Date: Wed, 20 Jan 2021 17:12:18 +0800
+Message-ID: <20210120091218.10837-1-shumingf@realtek.com>
 X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -86,26 +85,71 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Shuming Fan <shumingf@realtek.com>
 
-The "realtek,ldo2-pow-en" device property uses to enable LDO2 power while the headset recording.
+The application circuit shall provide MICVDD power.
+In default, the codec driver doesn't need to enable LDO2 power.
+In case, the customers use VBAT for micbias, it should enable the device property "realtek,ldo2-pow-en".
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
- Documentation/devicetree/bindings/sound/rt5682.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/rt5682.h    |  1 +
+ sound/soc/codecs/rt5682.c | 18 +++++++++++++++++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
-index 9c5fadb6ac82..eba2ea588564 100644
---- a/Documentation/devicetree/bindings/sound/rt5682.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5682.txt
-@@ -46,6 +46,8 @@ Optional properties:
+diff --git a/include/sound/rt5682.h b/include/sound/rt5682.h
+index 3900a07e3935..4b4c61b48380 100644
+--- a/include/sound/rt5682.h
++++ b/include/sound/rt5682.h
+@@ -41,6 +41,7 @@ struct rt5682_platform_data {
+ 	unsigned int dmic_clk_rate;
+ 	unsigned int dmic_delay;
+ 	bool dmic_clk_driving_high;
++	bool ldo2_pow_en;
  
- - realtek,dmic-clk-driving-high : Set the high drving of the DMIC clock out.
+ 	const char *dai_clk_names[RT5682_DAI_NUM_CLKS];
+ };
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 42ad5bea86b5..68d29d71d6e4 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -1343,6 +1343,19 @@ static int is_using_asrc(struct snd_soc_dapm_widget *w,
+ 	}
+ }
  
-+- realtek,ldo2-pow-en : Enable LDO2 power control if the application circuit uses VBAT, not MICVDD.
++static int is_using_ldo2(struct snd_soc_dapm_widget *w,
++		struct snd_soc_dapm_widget *sink)
++{
++	struct snd_soc_component *component =
++		snd_soc_dapm_to_component(w->dapm);
++	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
 +
- Pins on the device (for linking into audio routes) for RT5682:
++	if (rt5682->pdata.ldo2_pow_en)
++		return 1;
++
++	return 0;
++}
++
+ /* Digital Mixer */
+ static const struct snd_kcontrol_new rt5682_sto1_adc_l_mix[] = {
+ 	SOC_DAPM_SINGLE("ADC1 Switch", RT5682_STO1_ADC_MIXER,
+@@ -1854,7 +1867,7 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
  
-   * DMIC L1
+ 	{"CLKDET SYS", NULL, "CLKDET"},
+ 
+-	{"IN1P", NULL, "LDO2"},
++	{"IN1P", NULL, "LDO2", is_using_ldo2},
+ 
+ 	{"BST1 CBJ", NULL, "IN1P"},
+ 
+@@ -2999,6 +3012,9 @@ int rt5682_parse_dt(struct rt5682_priv *rt5682, struct device *dev)
+ 	rt5682->pdata.dmic_clk_driving_high = device_property_read_bool(dev,
+ 		"realtek,dmic-clk-driving-high");
+ 
++	rt5682->pdata.ldo2_pow_en = device_property_read_bool(dev,
++		"realtek,ldo2-pow-en");
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(rt5682_parse_dt);
 -- 
 2.29.0
 
