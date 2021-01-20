@@ -2,101 +2,77 @@ Return-Path: <SRS0=/R4B=GX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 383BDC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 00:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 997B6C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 00:38:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9634423109
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 00:35:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9634423109
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id DB19622AAA
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 00:38:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB19622AAA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01AC718AC;
-	Wed, 20 Jan 2021 01:34:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01AC718AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 759BF18BE;
+	Wed, 20 Jan 2021 01:37:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 759BF18BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611102940;
-	bh=GcwtOtZ7PMrrwaXGrYjQd8wAXMcnNKD1acPSllTy2U4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bM5bdauIGLUVn8tbqNdmjY8Ly5Bayf3CZYCNZGS8y+BtwytBYL0y5nf8DuDewDWR2
-	 4VcocnNqbhr4EoALUlz9bfnCYgZx6E9TvUf5FB6BbUiOjRUejOLyDbk04HktES8PYh
-	 MhJFqOUWHTGKSLOpciYZXRkuzZ6zTdYcZ9dFuHzo=
+	s=default; t=1611103086;
+	bh=pv+rOrDxyJHGyoqG5R8Xorygzi2EgiAT8Ni0zDlL/F0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QSSLz/vdMtrQFa4NtKGkkDz07D/muPKqWxJ5w6WyxZCkc04mALTYi3mZbN2TyiMA8
+	 OZb26Tf6pZ8s8PpcN+EAQ04B6z+o8r61iBgqcRlrUqLdNab375mWalup8PJmqd5bv3
+	 hQ1KFFQmRbO5stXvlK0ByghL2o+bi6LIXdVlo/y0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32DF4F804EB;
-	Wed, 20 Jan 2021 01:32:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01D36F80137;
+	Wed, 20 Jan 2021 01:37:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE5D3F804D8; Wed, 20 Jan 2021 01:32:19 +0100 (CET)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EC6B4F80273; Wed, 20 Jan 2021 01:37:13 +0100 (CET)
+Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA201F8029B
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 01:32:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA201F8029B
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFB5AF80137
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 01:37:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFB5AF80137
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="bNI7tICp"
-Received: by mail-lf1-x132.google.com with SMTP id u25so31756210lfc.2
- for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2021 16:32:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=BkfpoZ2DBwSy/7t/sBd6cTgmevAql8zxb6PjlBGFGSg=;
- b=bNI7tICpC2sSxM+jFdetoek/0rllgf412sOwXeAK52dua6iYcRfrnCuidmz/E8ImyA
- fzN1emYj1lXszYgyRzRxm4glcj6nWI5YQxfdwO4MTti4iNG7w4VrULdM6uW+4GFmJeGy
- PubOftElxQhjan5XtAC1GMAb0bZMBqxBd3f3O6bTKBrkThnDH0GNyCGQSXw87t/99XUU
- 1acn1BmhM6vD1I2Iv1p5NIJabRU3FyLq3pcEdAe316roNwD2cDvUFUii0EUxTQExSVqr
- I4tbhJx3dbc0Dg46Uneew7hSGWDa6DlRDKRBW9FvxgX4EEwa4aGJv37ZpEVwFSrXPLZp
- gStQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=BkfpoZ2DBwSy/7t/sBd6cTgmevAql8zxb6PjlBGFGSg=;
- b=DA6A+TDq3yLBKCtRUgIEmHeUOVQX2Z3WU2DFo4VRvc4VDS5l6FrDYHZCMYvNrxLPvk
- fF0hXjFh2gp4mIbyEj/7vWrkJiZTgs0E7qFB4u6Fn185eWPmSAR5itHRZ41q6ZPDqVxi
- KST3HWplHMgjz7OUWi1zlRgL1/V5Mjh8BjK/tTXaYjIimRRbVCnqKO5oLe02fp4Dw4ql
- 7maPaauNn5iJOdoinkismbiOnrfie/gbRjL1DM8zYTUZhQnQWY1Lav91WmEDZwP4nyNZ
- 1c4CZEf4q26lh+HB2+a8LHYHCfPaz2Y+xEhv+9WNpACEZOh5OHhEBugrHUR2VKWzaOUx
- QS3w==
-X-Gm-Message-State: AOAM531E41D8uPIV9fgV3Vz+wy4EYdUL2O6solaevbs9Og3DBlXkER82
- oHVPSJbMfp6n9Ql0OGlnpJs=
-X-Google-Smtp-Source: ABdhPJyTAco6YeHEkpZ58zIIIX/ydrEE4NFxobStGLQQuhnnjM6HsFJjK7DUyqXmg2Av2KKLSlPQ9g==
-X-Received: by 2002:ac2:4d56:: with SMTP id 22mr2948792lfp.15.1611102727477;
- Tue, 19 Jan 2021 16:32:07 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru.
- [109.252.192.57])
- by smtp.gmail.com with ESMTPSA id s27sm17710ljd.25.2021.01.19.16.32.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Jan 2021 16:32:07 -0800 (PST)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Sameer Pujar <spujar@nvidia.com>,
- Peter Geis <pgwipeout@gmail.com>, Nicolas Chauvet <kwizart@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Matt Merhar <mattmerhar@protonmail.com>,
- Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH v3 5/6] ASoC: tegra: ahub: Use clk_bulk helpers
-Date: Wed, 20 Jan 2021 03:31:53 +0300
-Message-Id: <20210120003154.26749-6-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120003154.26749-1-digetx@gmail.com>
-References: <20210120003154.26749-1-digetx@gmail.com>
+ dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
+ header.b="mkyAGhl2"
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
+ [127.0.0.1])
+ by mx1.opensynergy.com (Proxmox) with ESMTP id 7EA2AA13B0;
+ Wed, 20 Jan 2021 01:37:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ h=cc:cc:content-transfer-encoding:content-type:content-type
+ :date:from:from:message-id:mime-version:reply-to:subject:subject
+ :to:to; s=srmailgate02; bh=g3peVLu/aEuE3zFN78uiHYXZs/lCyoR9D8SzT
+ duAw8k=; b=mkyAGhl2jWeIn8aNb2TP5Oss8ufW4W6HuAgCnNCr52wtQe6hCk7Uy
+ UN+7gIj3g6rJ4rJtak9LTd/DdfJ2tMOMGIGnnmAMs7JcwiobToyTL7jueJTw/AG/
+ WXWL1HmD2MYs3SdbRT6l7NkdNAZWCdjsQSvcnEEhfEo7VX4PErCdCW7L4BPdoU3E
+ 9vtgkwxnOJIt3B0dwAEE2RZxRyVFdWuqHNHstVuI2b6+qMOO9UF7+8NXsSaCqDmg
+ kx7o+Yc5678s8egVNx9eqbHB63YxyaNW5PeRfuMTghWEFPkakGtFi5dD5jEJQlm4
+ f3dp2nRG+cnTlUq7St2vk3ZarHWvZ96Ng==
+From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+To: <virtualization@lists.linux-foundation.org>,
+ <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
+Subject: [PATCH 0/7] ALSA: add virtio sound driver
+Date: Wed, 20 Jan 2021 01:36:28 +0100
+Message-ID: <20210120003638.3339987-1-anton.yakovlev@opensynergy.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+Cc: Jason Wang <jasowang@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,92 +88,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use clk_bulk helpers to make code cleaner.
+This series implements a driver part of the virtio sound device
+specification v8 [1].
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30 audio works
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30 boot-tested
-Tested-by: Dmitry Osipenko <digetx@gmail.com> # Nexus7 T30 audio works
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # TK1 boot-tested
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_ahub.c | 30 +++++++-----------------------
- sound/soc/tegra/tegra30_ahub.h |  4 ++--
- 2 files changed, 9 insertions(+), 25 deletions(-)
+The driver supports PCM playback and capture substreams, jack and
+channel map controls. A message-based transport is used to write/read
+PCM frames to/from a device.
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index 8c32333cc08c..12ca8e3ca4f6 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -45,8 +45,7 @@ static int tegra30_ahub_runtime_suspend(struct device *dev)
- 	regcache_cache_only(ahub->regmap_apbif, true);
- 	regcache_cache_only(ahub->regmap_ahub, true);
- 
--	clk_disable_unprepare(ahub->clk_apbif);
--	clk_disable_unprepare(ahub->clk_d_audio);
-+	clk_bulk_disable_unprepare(ahub->nclocks, ahub->clocks);
- 
- 	return 0;
- }
-@@ -66,17 +65,9 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
- {
- 	int ret;
- 
--	ret = clk_prepare_enable(ahub->clk_d_audio);
--	if (ret) {
--		dev_err(dev, "clk_enable d_audio failed: %d\n", ret);
-+	ret = clk_bulk_prepare_enable(ahub->nclocks, ahub->clocks);
-+	if (ret)
- 		return ret;
--	}
--	ret = clk_prepare_enable(ahub->clk_apbif);
--	if (ret) {
--		dev_err(dev, "clk_enable apbif failed: %d\n", ret);
--		clk_disable(ahub->clk_d_audio);
--		return ret;
--	}
- 
- 	regcache_cache_only(ahub->regmap_apbif, false);
- 	regcache_cache_only(ahub->regmap_ahub, false);
-@@ -559,19 +550,12 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	ahub->soc_data = soc_data;
- 	ahub->dev = &pdev->dev;
- 
--	ahub->clk_d_audio = devm_clk_get(&pdev->dev, "d_audio");
--	if (IS_ERR(ahub->clk_d_audio)) {
--		dev_err(&pdev->dev, "Can't retrieve ahub d_audio clock\n");
--		ret = PTR_ERR(ahub->clk_d_audio);
--		return ret;
--	}
-+	ahub->clocks[ahub->nclocks++].id = "apbif";
-+	ahub->clocks[ahub->nclocks++].id = "d_audio";
- 
--	ahub->clk_apbif = devm_clk_get(&pdev->dev, "apbif");
--	if (IS_ERR(ahub->clk_apbif)) {
--		dev_err(&pdev->dev, "Can't retrieve ahub apbif clock\n");
--		ret = PTR_ERR(ahub->clk_apbif);
-+	ret = devm_clk_bulk_get(&pdev->dev, ahub->nclocks, ahub->clocks);
-+	if (ret)
- 		return ret;
--	}
- 
- 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs_apbif = devm_ioremap_resource(&pdev->dev, res0);
-diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
-index 6889c5f23d02..01480d7dc940 100644
---- a/sound/soc/tegra/tegra30_ahub.h
-+++ b/sound/soc/tegra/tegra30_ahub.h
-@@ -511,8 +511,8 @@ struct tegra30_ahub_soc_data {
- struct tegra30_ahub {
- 	const struct tegra30_ahub_soc_data *soc_data;
- 	struct device *dev;
--	struct clk *clk_d_audio;
--	struct clk *clk_apbif;
-+	struct clk_bulk_data clocks[2];
-+	unsigned int nclocks;
- 	resource_size_t apbif_addr;
- 	struct regmap *regmap_apbif;
- 	struct regmap *regmap_ahub;
+The series is based (and was actually tested) on Linus's master
+branch [2], on top of
+
+commit 1e2a199f6ccd ("Merge tag 'spi-fix-v5.11-rc4' of ...")
+
+As a device part was used OpenSynergy proprietary implementation.
+
+Any comments are very welcome.
+
+[1] https://lists.oasis-open.org/archives/virtio-dev/202003/msg00185.html
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+
+
+Anton Yakovlev (7):
+  uapi: virtio_ids: add a sound device type ID from OASIS spec
+  uapi: virtio_snd: add the sound device header file
+  ALSA: virtio: add virtio sound driver
+  ALSA: virtio: handling control and I/O messages for the PCM device
+  ALSA: virtio: PCM substream operators
+  ALSA: virtio: introduce jack support
+  ALSA: virtio: introduce device suspend/resume support
+
+ MAINTAINERS                     |   8 +
+ include/uapi/linux/virtio_ids.h |   1 +
+ include/uapi/linux/virtio_snd.h | 361 +++++++++++++++++++
+ sound/Kconfig                   |   2 +
+ sound/Makefile                  |   3 +-
+ sound/virtio/Kconfig            |  10 +
+ sound/virtio/Makefile           |  13 +
+ sound/virtio/virtio_card.c      | 593 ++++++++++++++++++++++++++++++++
+ sound/virtio/virtio_card.h      | 121 +++++++
+ sound/virtio/virtio_chmap.c     | 237 +++++++++++++
+ sound/virtio/virtio_ctl_msg.c   | 293 ++++++++++++++++
+ sound/virtio/virtio_ctl_msg.h   | 122 +++++++
+ sound/virtio/virtio_jack.c      | 255 ++++++++++++++
+ sound/virtio/virtio_pcm.c       | 582 +++++++++++++++++++++++++++++++
+ sound/virtio/virtio_pcm.h       | 132 +++++++
+ sound/virtio/virtio_pcm_msg.c   | 317 +++++++++++++++++
+ sound/virtio/virtio_pcm_ops.c   | 524 ++++++++++++++++++++++++++++
+ 17 files changed, 3573 insertions(+), 1 deletion(-)
+ create mode 100644 include/uapi/linux/virtio_snd.h
+ create mode 100644 sound/virtio/Kconfig
+ create mode 100644 sound/virtio/Makefile
+ create mode 100644 sound/virtio/virtio_card.c
+ create mode 100644 sound/virtio/virtio_card.h
+ create mode 100644 sound/virtio/virtio_chmap.c
+ create mode 100644 sound/virtio/virtio_ctl_msg.c
+ create mode 100644 sound/virtio/virtio_ctl_msg.h
+ create mode 100644 sound/virtio/virtio_jack.c
+ create mode 100644 sound/virtio/virtio_pcm.c
+ create mode 100644 sound/virtio/virtio_pcm.h
+ create mode 100644 sound/virtio/virtio_pcm_msg.c
+ create mode 100644 sound/virtio/virtio_pcm_ops.c
+
 -- 
-2.29.2
+2.30.0
+
 
