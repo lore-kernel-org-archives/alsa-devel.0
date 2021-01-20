@@ -2,80 +2,72 @@ Return-Path: <SRS0=/R4B=GX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6609C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 12:57:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7A93C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 14:34:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CCE5B2333C
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 12:57:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CCE5B2333C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 535D423329
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 14:34:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 535D423329
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C12921765;
-	Wed, 20 Jan 2021 13:56:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C12921765
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02D9C17AB;
+	Wed, 20 Jan 2021 15:33:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02D9C17AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611147425;
-	bh=IwYDTbgv7l8gfAq2lBYWWwHBmn5X2suTvokBBEdEnJQ=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1611153264;
+	bh=7ZtAhBgaG/DjFgBTE41jPAaHeG+8d7ZNeWd48uoIols=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AcakpMMy2viWdYw8yMq51xSpOabXP4DpKvRHNcvcZ7se29EkICeeQeSwFAhh5grkI
-	 TuUXFeRx50Jm8rXDbWDJC20V8yFsMeLRRyD3+u+fbGX5tIFlZYt4ZGVQomUacYxVvw
-	 /7L/rfgogjW9IQCj1/pzHhG4Ys2wTAbWqEK/BRiQ=
+	b=vZJpgHnXR1iqmDF7sQdJRHTHMyZwHE7ue9jb3BRTPROSqcD9jXlr7qcTGiFhYQ2Xe
+	 y2ftqCe5K6/L1v5unpzWyTuYSs6CtHBCBNrN2CGWmOCngEKGPmwcJvdmHkJD7ia1oF
+	 cwlxkxypj5MHD6PY73DlvgViBff5JFku2PSO0/E4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F2AFF80166;
-	Wed, 20 Jan 2021 13:56:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BEA7F80166;
+	Wed, 20 Jan 2021 15:33:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C141DF8016E; Wed, 20 Jan 2021 13:56:13 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CDB1FF8016E; Wed, 20 Jan 2021 15:33:16 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F6CAF80164
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 13:56:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F6CAF80164
-IronPort-SDR: 9OaP5ovc31gOqBlRDiWEN9vk+z93IDPdw3MbVp3WqzUCY1R/zsXt6SBkToRy5nP5eWO1U7b+/2
- Li6jCgVTs0bQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="178320728"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; d="scan'208";a="178320728"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2021 04:56:00 -0800
-IronPort-SDR: 1v99U5vq/F+smE783HMvfPtX7hpqVEE/qe85bfTe/fYFyjtygxB6VnFGzBowwF7L08pMAbi/dq
- 4/apgEH3lvbA==
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; d="scan'208";a="384825706"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.249.157.238])
- ([10.249.157.238])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2021 04:55:58 -0800
-Subject: Re: [PATCH] ASoC: topology: Fix memory corruption in
- soc_tplg_denum_create_values()
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-References: <YAf+8QZoOv+ct526@mwanda>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <5d5cce3b-916a-97ba-1c13-7ba5eba9bf38@linux.intel.com>
-Date: Wed, 20 Jan 2021 13:55:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <YAf+8QZoOv+ct526@mwanda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A38EF80164
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 15:33:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A38EF80164
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 5C34AAC85;
+ Wed, 20 Jan 2021 14:33:12 +0000 (UTC)
+Date: Wed, 20 Jan 2021 15:33:12 +0100
+Message-ID: <s5ha6t3el07.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mike Oliphant <oliphant@nostatic.org>
+Subject: Re: Support for NUX MG-300 USB interface
+In-Reply-To: <CAHXb3bfUv7QzvgOmtV3LxJXaY=Uk+pKhWZmU0M+YkgB0kNrXmA@mail.gmail.com>
+References: <CAHXb3bdk71ivJUp9HBRccDvd8SD2F1uFdsC_FxUjhh5zpcQobQ@mail.gmail.com>
+ <s5hr1mik7vu.wl-tiwai@suse.de>
+ <CAHXb3bdt6mgUcZ0+MH1i7QeYF03MSwx=kad-YBBNeVjqoH=KhA@mail.gmail.com>
+ <CAHXb3bcFM0BswbuTe=6vP6JRd=TOf94Gu0FPAZmXT6634bCiAQ@mail.gmail.com>
+ <s5hr1migiie.wl-tiwai@suse.de>
+ <CAHXb3be9EpEtaEc0iH06wmLMhyizkV7arvgxsT2bWK=aJHKVLA@mail.gmail.com>
+ <s5him7thpoz.wl-tiwai@suse.de>
+ <CAHXb3bd8zHFmHxDp=4dNKa90eAT568yCwTWo_5L0Zry1EY45UA@mail.gmail.com>
+ <s5hczy1guto.wl-tiwai@suse.de>
+ <CAHXb3bfUv7QzvgOmtV3LxJXaY=Uk+pKhWZmU0M+YkgB0kNrXmA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,39 +83,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 1/20/2021 10:59 AM, Dan Carpenter wrote:
-> The allocation uses sizeof(u32) when it should use sizeof(unsigned long)
-> so it leads to memory corruption later in the function when the data is
-> initialized.
+On Tue, 19 Jan 2021 18:40:04 +0100,
+Mike Oliphant wrote:
 > 
-> Fixes: 5aebe7c7f9c2 ("ASoC: topology: fix endianness issues")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> This is from static analysis, not from testing.  Obviously we don't
-> want memory corruption, so my patch is an improvement.  But I feel like
-> a better approach might be to change the type of dvalues[] to u32.  I
-> took the less risky approach because I'm not an expert and can't test
-> it.  But if someone else can take a look at it, then I'll redo the
-> patch.
+> Your mixer.c patch does get rid of the RANGE errors. No change to behavior,
+> though.
 > 
->   sound/soc/soc-topology.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> I'd already tried setting "implicit_fb=1" even though I didn't expect it to
+> work, since there is a separate feedback endpoint. I just tried it again - it
+> doesn't seem to hurt anything, but it doesn't help either.
 > 
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index 950c45008e24..37a5d73e643b 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -902,7 +902,7 @@ static int soc_tplg_denum_create_values(struct soc_tplg *tplg, struct soc_enum *
->   		return -EINVAL;
->   
->   	se->dobj.control.dvalues = devm_kcalloc(tplg->dev, le32_to_cpu(ec->items),
-> -					   sizeof(u32),
-> +					   sizeof(*se->dobj.control.dvalues),
->   					   GFP_KERNEL);
->   	if (!se->dobj.control.dvalues)
->   		return -ENOMEM;
+> Capture seems to be working perfectly with the clock patch - I'm not sure why
+> I was initially getting noisy input.
 > 
+> I checked "/proc/asound/card*/pcm*/sub*/status" during playback, and the
+> pointer seems to be moving forward as it should. All indications are that the
+> system thinks playback is working fine.
+> 
+> One interesting piece of information - alsamixer shows two stereo outputs
+> ("pcm" and "pcm1"). Not sure why there are two - maybe output is going to the
+> wrong one?
 
-Looks good to me. And yes as we store already parsed value, dvalues 
-could be changed to u32, but I would still change the sizeof as you did 
-above.
+You might need to unmute and increase both.  The first one should be a
+master volume/switch while the second one is for the stereo channels.
+
+Naming the mixer elements properly for USB-audio is a really tough
+task.  Many firmware don't set the right strings and a guess work
+doesn't fit to all.  But certainly there are some rooms for
+improvements there.
+
+
+Takashi
