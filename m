@@ -2,99 +2,78 @@ Return-Path: <SRS0=/R4B=GX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDB58C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 18:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1094C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 18:04:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B212D2311C
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 18:03:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B212D2311C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id BFE1023122
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 18:04:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BFE1023122
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AF8017EF;
-	Wed, 20 Jan 2021 19:02:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AF8017EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BCC517BE;
+	Wed, 20 Jan 2021 19:03:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BCC517BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611165818;
-	bh=P9WbPiksAWe5G6FrtSKQxHooiks3e43VSM8blAXrrx0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611165859;
+	bh=80QPQ1tUnCI+MW0jTeGbyt3BfzbMKu1EZPYFQ/8znYo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a5XcCxddFrJqm9+p7fia5QnRfBGXcr8KZHE47maMAugnl4Srdb3U4bhsEvZz63MmO
-	 gdu9I3er1cEl6Pq2w6Nm62rtkHdaA8WptG7dy3d9lpv9P0X2qOU0vDpGD/pU7OB6v1
-	 86uprfYRG4xSRCDLtu/e6yhGICQIlWuy9YruJXSw=
+	b=UtEi1U5bXijIuJZwOqVNVTIkpqgJE2CpIzm22ik7gRuBzWA9Y962Sf3yRaAPK7xfx
+	 qSRx7Q8XH1ZnxpcFeuiQToWdA1tlmUkrv9rocS3contHUmAZCbp5+NBbT+r+Hpqf7t
+	 /EwgUhL9STY3O5jYzqzpqKvB9caIwdnvpnziyWOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 539D2F804D2;
-	Wed, 20 Jan 2021 19:02:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F375CF804DF;
+	Wed, 20 Jan 2021 19:02:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69DCAF804C3; Wed, 20 Jan 2021 19:01:49 +0100 (CET)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 16286F804E0; Wed, 20 Jan 2021 19:02:04 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1B04F80164
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 19:01:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1B04F80164
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBE8DF804C2
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 19:01:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBE8DF804C2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="n1TBEkVV"
-Received: by mail-wm1-x332.google.com with SMTP id i63so3589678wma.4
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 10:01:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=zQoVeBFspR4mt3piNvLaPW/lHzLoxodJhfaRGQgUT1o=;
- b=n1TBEkVVeRe65EecswdyymfUn7w4pRZ39sPs3d6I+/YsPGlFlkRSPmtoPTLcm/pCL8
- 7R62yN0J13Y6ttRM5kWB7NlUsyJ22RODR8K+Cfaqg1PrpGMCBbhDZxgS6aL6Giqjy+Jd
- jEm1XNoT9GsFI5fax/PaWYYmj1hWmwYKJutleqn36DvIBsUiaGCHswZs7aIKL6uE/Bx5
- FLQ/3YKBhdM+0H876HH29jAQUmYlbA7Z8JXw17csFA39INZAEN9BLftUMA42iEc9ufDV
- 9ps7E8K69ade4CPGYEimPznqY0ZjGXVZROQxlHOj78+PD08f7uEL+Bo3Z5+eC+CWKri4
- P5ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=zQoVeBFspR4mt3piNvLaPW/lHzLoxodJhfaRGQgUT1o=;
- b=V0Y0IK7ZjsgQqdMC4GCV8w5h8pBFPm6YMIWlsH7krdU95NDG7o/+IyXv76Ph7xTffJ
- ARfqEj3O9ORT9OV8mBLJtI0DvKFMqjsbmA33qKPKZKVxQSnQVgLh33L4x/RpmDvkx4FZ
- rUcKAcFOt53QI7R3EpqyRj9/QT4NhNIQ7ebhP61CQnFDozIZ6g2bVnaynar1Gq8ltwQp
- n7F2czSOgL3a8WtNH6oyrpdpcXm0HN2Kr7a0/a0tTKZRwaztWRsTvWgCBiPDfZ236BAi
- gmw59nBFibI/6As6QUAYCPTRio4tac75Yxs8sRN73DXIGIZ9xGQK5/bklCejk3cC9dtb
- O4BQ==
-X-Gm-Message-State: AOAM530deP56TKW8Li5H+r/toi5bBn8SxoouIayxBmJY734/H21Fizuj
- dLYW5Ublm6OnTZOhIkTmyWwuJ5bfn6JlBg==
-X-Google-Smtp-Source: ABdhPJy+vZ5Ndk2chQmEIUc7iK9pg24cCvNdSKut3bwHquW7xDOJ8GeEpBtiILkL2aWLPoPKAjyxiw==
-X-Received: by 2002:a05:600c:299:: with SMTP id
- 25mr5414365wmk.183.1611165700508; 
- Wed, 20 Jan 2021 10:01:40 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id g194sm5267422wme.39.2021.01.20.10.01.39
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 Jan 2021 10:01:39 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org,
-	yung-chuan.liao@linux.intel.com
-Subject: [RFC PATCH 1/2] soundwire: add support for static port mapping
-Date: Wed, 20 Jan 2021 18:01:09 +0000
-Message-Id: <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
-References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="iguP1zsY"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0A73223E0;
+ Wed, 20 Jan 2021 18:01:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1611165714;
+ bh=80QPQ1tUnCI+MW0jTeGbyt3BfzbMKu1EZPYFQ/8znYo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=iguP1zsYz+guPEqch2wN+Veq3R2y5uH+8bvPG3YSyGndMBy08wFATTnEuFfaZDYpw
+ n0jSHz15FPbAxGxQeUS6f1vkoD7IuDlT/DuvuFjdoytNA70lJCohEV3ISAOYR8uFDy
+ oRsNi2DZd3r2NiCecmRbSyYYaHWLpdNe45fRX/wyjH3RIawFAI3oirpayXq0foZ/GL
+ OKKdIvUMR2eAQ28Wr3S7oJouj9gxlMFIH65ExIfYIzw/L0KTJgOFVlE7xdg/eMH7Kr
+ Af2QAzZLeOX0W8xBR2M+81k6rZD+Pk+KAln+bkn90Q2g7cvu3o+QnqweKR0jn4fwRk
+ chC/A/NkbuejQ==
+Date: Wed, 20 Jan 2021 18:01:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: shumingf@realtek.com
+Subject: Re: [PATCH 2/2] ASoC: rt5682: add device property to control LDO2
+ power
+Message-ID: <20210120180116.GG6794@sirena.org.uk>
+References: <20210120091218.10837-1-shumingf@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="2hMgfIw2X+zgXrFs"
+Content-Disposition: inline
+In-Reply-To: <20210120091218.10837-1-shumingf@realtek.com>
+X-Cookie: Beware of Bigfoot!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com,
+ derek.fang@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,80 +89,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some of the soundwire controllers can have static functions assigned
-to each port, like some ports can only do PCM or PDM. This is the situation
-with some of the Qualcomm Controllers.
 
-In such cases its not correct to assign/map any free port on master
-during streaming.
+--2hMgfIw2X+zgXrFs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So, this patch provides a way to pass mapped port number along
-with the port config, so that master can assign correct ports based
-on the provided static mapping.
+On Wed, Jan 20, 2021 at 05:12:18PM +0800, shumingf@realtek.com wrote:
+> From: Shuming Fan <shumingf@realtek.com>
+>=20
+> The application circuit shall provide MICVDD power.
+> In default, the codec driver doesn't need to enable LDO2 power.
+> In case, the customers use VBAT for micbias, it should enable the device =
+property "realtek,ldo2-pow-en".
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/bus.h       | 4 ++++
- drivers/soundwire/stream.c    | 4 ++++
- include/linux/soundwire/sdw.h | 4 ++++
- 3 files changed, 12 insertions(+)
+Given that this is just adding a DAPM route I think we can just skip the
+property and instead simply leave the LDO registered but not connected
+in the DAPM graph, if a board wants to use it then it can just add a
+route from the LDO to the relevant input like is currently hard coded in
+the board file.
 
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 2e049d39c6e5..e812557c3293 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -85,6 +85,8 @@ int sdw_find_col_index(int col);
-  * @num: Port number. For audio streams, valid port number ranges from
-  * [1,14]
-  * @ch_mask: Channel mask
-+ * @mapped_port_num: Port number to map on Master or Slave in Static Configuration
-+ * @is_static_map: true for static port mapping
-  * @transport_params: Transport parameters
-  * @port_params: Port parameters
-  * @port_node: List node for Master or Slave port_list
-@@ -95,6 +97,8 @@ int sdw_find_col_index(int col);
- struct sdw_port_runtime {
- 	int num;
- 	int ch_mask;
-+	unsigned int mapped_port_num;
-+	bool is_static_map;
- 	struct sdw_transport_params transport_params;
- 	struct sdw_port_params port_params;
- 	struct list_head port_node;
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 1099b5d1262b..eab3bc0c95ed 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1202,6 +1202,10 @@ static struct sdw_port_runtime
- 
- 	p_rt->ch_mask = port_config[port_index].ch_mask;
- 	p_rt->num = port_config[port_index].num;
-+	p_rt->is_static_map = port_config[port_index].is_static_map;
-+
-+	if (p_rt->is_static_map)
-+	       p_rt->mapped_port_num = port_config[port_index].mapped_port_num;
- 
- 	return p_rt;
- }
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index f0b01b728640..a523f062993d 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -894,10 +894,14 @@ void sdw_bus_master_delete(struct sdw_bus *bus);
-  *
-  * @num: Port number
-  * @ch_mask: channels mask for port
-+ * @mapped_port_num: Port number to map on Master or Slave in Static Configuration
-+ * @is_static_map: true for static port mapping
-  */
- struct sdw_port_config {
- 	unsigned int num;
- 	unsigned int ch_mask;
-+	unsigned int mapped_port_num;
-+	bool is_static_map;
- };
- 
- /**
--- 
-2.21.0
+--2hMgfIw2X+zgXrFs
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAIb+sACgkQJNaLcl1U
+h9B9Kgf+O9gfjwVDh1s8alMiUDUiAG5F5IIeNjXvHrENnJtRRFsRgSU52eaLm2AL
+9vK61g/F3eSK+1YLPhBwihX7q6Yuv59AHtWMxxUhvzt1FPYLFYKk8IwznllsXZCd
+hNS5c6QJ5al+LfMLyGkozbmcTlk4t3kmubXovWAEHCQ1aKc1xAAUK3iLdR8Bpj0f
+b4JynBWRVejTK/NfxfRpl7wpKq9oHSZ8qoEHIb4jIW/e6Vf9TH2LnVXu7pKSKfJj
+YlgLAmHIsCPSfqMj9qaVkpwZ0mGcuyK0dPHI/OA9ixByoA2Kf2RkfLdDm6IXM6P1
+gO+rTK7jQr7K4XYS79TLUh7RxF1TSA==
+=+Q2S
+-----END PGP SIGNATURE-----
+
+--2hMgfIw2X+zgXrFs--
