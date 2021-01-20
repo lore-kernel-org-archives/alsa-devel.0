@@ -7,73 +7,77 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AB4CC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 22:16:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E251C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 22:29:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D386235FF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 22:16:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D386235FF
+	by mail.kernel.org (Postfix) with ESMTPS id 3FD162220B
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 22:29:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FD162220B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 305AB17EF;
-	Wed, 20 Jan 2021 23:15:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 305AB17EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C7201762;
+	Wed, 20 Jan 2021 23:28:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C7201762
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611180978;
-	bh=n0qz2bseMc9cl3f2t1BSQ0A1p0iGPOPENTqFXgvkwNw=;
+	s=default; t=1611181778;
+	bh=YehWsBvz02Ie/mkFcxkwZtY6qgTTaA6FZKfzUfFSejU=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Rp99XpJ3yJKIidDH0IK4pqLqihnv7cGZcxkLtZ92yKCq7+8eE8DY7H0i2ilkrS4uR
-	 zy2PGeU6trkwmVfJwnxD8j9WnADjhyluiBLvAbbU/AYzf+9LJRAv2J2bV2u/c3Hj9V
-	 EwyMqrOmUN/SPKQ0boF4mcmTxdK1UtsztZLmk0xI=
+	b=AvB8/pBzYs6P7Oqv9K//x01+6uDPqTHZZR3f2hm9Jp7ak6Q+ksYY6TD2EXUCLvwDT
+	 4uoKGwTvOkIU0kZtKzMzmIQSCsbobEBxu2D9ONlaSrl3xiF47fhh6AJDvDHzs/yMR1
+	 gDCYj5k0pPbqPxrwQRU0FmMMr5a+TQsr3y2nRIks=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4171F8012C;
-	Wed, 20 Jan 2021 23:15:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9677AF80166;
+	Wed, 20 Jan 2021 23:28:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98B63F8016E; Wed, 20 Jan 2021 23:15:24 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 6E9EFF8016E; Wed, 20 Jan 2021 23:28:37 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88EA7F8012C
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 23:15:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88EA7F8012C
-IronPort-SDR: NlUq0pRTDVon1Oiw3zLwqwh8RdfQJEeuSRVMhukjQV05RPlJfyhuvUY1A+ep8aIvKAOHUh7KJ3
- X6PJipW2yVRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="175678112"
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; d="scan'208";a="175678112"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0CE5F8012C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 23:28:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0CE5F8012C
+IronPort-SDR: n4H1gvzgntXb2jrkmQs45OWNe9hYzah/svesFwRghHlgVdAvDSgXGUX0NIO1kLnPKUWOHxV+op
+ 0moEdHQ3rweA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="263999021"
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; d="scan'208";a="263999021"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2021 14:15:11 -0800
-IronPort-SDR: Wjo0c6C/w/yBCGStuE5kfgMxktdIffdv8ncqct3gjkw5pSnZxF8jMSjl5d1M26u662x43IVT9A
- hy6C84yiQXtQ==
-X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; d="scan'208";a="356216635"
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jan 2021 14:28:26 -0800
+IronPort-SDR: A3l+tWrwWD2lDdIHZ9JWJZ3mi0uI5w+xME/wG0yHTwQSnfHvUyJXlZ1Iok3hN6IWeVOo8LrCfu
+ aLZ3Uc8uqs2g==
+X-IronPort-AV: E=Sophos;i="5.79,362,1602572400"; d="scan'208";a="356220083"
 Received: from bmetsx-mobl1.amr.corp.intel.com (HELO [10.209.108.15])
  ([10.209.108.15])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2021 14:15:10 -0800
-Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com
-References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
- <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+ 20 Jan 2021 14:28:25 -0800
+Subject: Re: Crash in acpi_ns_validate_handle triggered by soundwire on Linux
+ 5.10
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+ =?UTF-8?Q?Marcin_=c5=9alusarz?= <marcin.slusarz@gmail.com>
+References: <CA+GA0_sPC3rp5K4qwZm-u+W1C=+2Y2p-dbF4DMdHkKaTpeKKkg@mail.gmail.com>
+ <CAJZ5v0iapmc8ywuySwexwTagKr89Hj7TPXkAvd_HXMhdLoyyQQ@mail.gmail.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
-Date: Wed, 20 Jan 2021 16:15:08 -0600
+Message-ID: <1f0f7273-597e-cdf0-87d1-908e56c13133@linux.intel.com>
+Date: Wed, 20 Jan 2021 16:28:23 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <CAJZ5v0iapmc8ywuySwexwTagKr89Hj7TPXkAvd_HXMhdLoyyQQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Len Brown <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,43 +95,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 1/20/21 12:01 PM, Srinivas Kandagatla wrote:
-> Some of the soundwire controllers can have static functions assigned
-> to each port, like some ports can only do PCM or PDM. This is the situation
-> with some of the Qualcomm Controllers.
+
+>> Linux 5.10 fails to boot on my IceLake laptop, where 5.9 worked fine.
+>> I'm not sure whether it's a bug in ACPI or Soundwire subsystem, so I'm
+>> sending this to both
+>> lists. The W taint flag is because of an unrelated nouveau failure (It
+>> was busted on 5.9, and is
+>> still on 5.10). Full kernel log down below.
+>> It's from a distro kernel, but I can build my own kernel with patches if needed.
 > 
-> In such cases its not correct to assign/map any free port on master
-> during streaming.
+> Please try to add a check for handle against NULL to
+> snd_intel_dsp_check_soundwire() after
 > 
-> So, this patch provides a way to pass mapped port number along
-> with the port config, so that master can assign correct ports based
-> on the provided static mapping.
+> handle = ACPI_HANDLE(&pci->dev);
+> 
+> and see if this makes any difference.
+> 
+> This should check handle against NULL anyway, even if it didn't crash later on.
 
-I am not sure I understand the problem or what's different between Intel 
-and Qualcomm.
+Is there a way you can share the DSDT?
 
-On the Intel side we also have fixed-function ports, some for PDM and 
-some for PCM. They are not interchangeable, and they are also dedicated 
-for each link.
+The only thing we do in that sdw_intel_acpi_scan() function is check for 
+an _ADR and read two _DSD properties. I think it's been 2 years since we 
+wrote it and never had an issue, never say never I guess...
 
-We don't dynamically allocate ports on the master side, the mapping is 
-defined by the dai->id and is static. There is a 1:1 relationship 
-between dai->id and port_number. See intel_register_dai() and 
-intel_hw_params() in drivers/soundwire/intel.c
+If you want to bypass this problem for the time being, you can add a 
+kernel option in /etc/modprobe.d/alsa-base.conf
 
-In the machine driver we make use of specific master DAIs in the dailink 
-definitions, just like regular ASoC solutions, so which DAIs you use in 
-the machine driver defines what ports end-up being used. There is 
-nothing fancy or dynamic here, the dai/port allocation is defined by the 
-dailinks. This is a static/worst-case allocation, we don't reassign 
-ports depending on use-cases, etc.
+options snd-intel-dspcfg dsp_driver=1
 
-The only thing that is dynamic is that the programming of each port is 
-handled based on the bandwidth needs of that port, i.e if you play 16 or 
-24 bits you'd get fewer or more bitSlots allocated to that dai/port, and 
-the DPn registers are updated if you have concurrent streaming on other 
-ports. If you only have a fixed set of payloads, as in the existing 
-amplifier cases, you can hard-code this allocation as well.
-
-Does this help and can you align on what Intel started with?
-
+that will force the use of the HDaudio legacy driver and bypass the 
+driver autodetection.
