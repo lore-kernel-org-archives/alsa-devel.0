@@ -2,100 +2,79 @@ Return-Path: <SRS0=/R4B=GX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CE30C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 16:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77128C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 16:48:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0010123358
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 16:46:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0010123358
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7A2C0233ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 16:48:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A2C0233ED
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A30CB17EA;
-	Wed, 20 Jan 2021 17:45:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A30CB17EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8913917F2;
+	Wed, 20 Jan 2021 17:47:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8913917F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611161204;
-	bh=Knb4p7kFd1ZigXwPDVJXlzeNF3Wf5aHrKyXWqZjPfuI=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1611161308;
+	bh=bwvaCWsQmO8/Vs+oEL5eWnWG0GK3Jp5SWEVof2D5jcE=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OWU1EvC3JtQcSoYkxgP+IkiW3I9hwyXPvdvYhuqYIhmRS0JNjiD41UK5pHWR0QTI7
-	 AuY7K3uAN7sd3Be0y82fFaU8Ko0UMXuhfnknX0Ab7I9S+2NbC8Yv6WXdiDSyZI1wwS
-	 FggYT8CtyZLcczGQaZG6IJfv6FQQEIOmgkYiz5JU=
+	b=FrKAIIhoMTap+TIVGiWxD8MJNuLTfc7FYfoeiH8DUGikJpXpJIfFPtD0nOU2fZlCz
+	 WZS/Kjcb3VyqfoUDGF65ATNlcDLshSksNq/KyEl4e+IVkEUAkkhSo89ZBKMF4YnQ97
+	 HsGquOa2B5Pifgvvi+ajb1UxDm7FDAr1lFIiy//Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A111F80166;
-	Wed, 20 Jan 2021 17:45:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 261B3F80166;
+	Wed, 20 Jan 2021 17:47:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A51EAF8016E; Wed, 20 Jan 2021 17:45:53 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 138ECF80166; Wed, 20 Jan 2021 17:47:35 +0100 (CET)
+Received: from merlin.infradead.org (merlin.infradead.org
+ [IPv6:2001:8b0:10b:1231::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2C2FF80164
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 17:45:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2C2FF80164
-IronPort-SDR: 3cDuyc3i+Nku+J3v/Y2V5BoiBmYhC73XwLpKPhKU5OhVPiJ0ICuRJi1hy6J2Rj7UxCID+oslrU
- 7BPA/Nkn5+og==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="243208041"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; d="scan'208";a="243208041"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jan 2021 08:45:42 -0800
-IronPort-SDR: jOQpdhF77cakpHtUSgc9r40S1D8+/msWUO7+eagZo6MLNNrkJO1lYHyeeq0tJq2TWBOUDqlzE+
- M3XmMiIUTMWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; d="scan'208";a="402798582"
-Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
- by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2021 08:45:39 -0800
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 20 Jan 2021 16:45:38 +0000
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Wed, 20 Jan 2021 16:45:38 +0000
-From: "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?utf-8?B?xYF1a2FzeiBNYWpjemFr?= <lma@semihalf.com>
-Subject: RE: [PATCH v2] ASoC: Intel: Skylake: Check the kcontrol against NULL
-Thread-Topic: [PATCH v2] ASoC: Intel: Skylake: Check the kcontrol against NULL
-Thread-Index: AQHW1HWlBDRR5udg2US7JjUHUSX5h6okBMqAgAzZ2oCAAAxcgIAAAbqwgAABYaA=
-Date: Wed, 20 Jan 2021 16:45:38 +0000
-Message-ID: <4774f65a7f2f464781a45790c8934a62@intel.com>
-References: <20201210121438.7718-1-lma@semihalf.com>
- <20201217130439.141943-1-lma@semihalf.com>
- <CAFJ_xbprw7UKREWgRAq3dDAA9oC_3cWoozn5pCY8w9By4dASag@mail.gmail.com>
- <CAFJ_xbrvr7jcCB57MPwzXf=oC5OYT5KUBkcqHYyOYH=a5njfSA@mail.gmail.com>
- <8c22c415-1807-b673-20e3-bc8d7f4c05b7@linux.intel.com>
- <371e612ac59c458cad1bafb82ca09c9f@intel.com>
-In-Reply-To: <371e612ac59c458cad1bafb82ca09c9f@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6845F8012C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 17:47:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6845F8012C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="YUldAD+F"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+ Reply-To:Cc:Content-ID:Content-Description;
+ bh=v15GZJs344S4B1Ug8bOvbsCvV3se60ZDN+6/fmvp0gw=; b=YUldAD+FmxQHTMks8lq2Stjlky
+ OkX9rlT8RWQXzg8abFLyflf88pMLWJ2FOCIhxKJWSC9B36ZOGOJg+ybcam2/u8dZDEx7FhodjdiGc
+ NTqWrr1FZcsHONV3KyCKjTYDFLjlytVoC5QqtFSvHkWWFYFeddC4amsqTQHFCVW7q9t4cdLYeN6UH
+ n7teDgz13pcguEql7x2Vr2JBcZS9qCD8WsAhr6LqN+VRw2t19TlYJLjPHyOTL4G2wDoJKfQzjWBPM
+ GpPDvw22DhugF8eCOFm+ASmdr/KZA7BTrbrkJ6dw6h+CObmo4OM4ZI1zhJekOcKxjtXZn4+VB0Xfi
+ fiLtP2Cw==;
+Received: from [2601:1c0:6280:3f0::9abc]
+ by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+ id 1l2Gdi-0005Hq-HG; Wed, 20 Jan 2021 16:47:26 +0000
+Subject: Re: [PATCH] drivers: slimbus: Fix word resposible -> responsible in
+ slimbus.h
+To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+ srinivas.kandagatla@linaro.org, alsa-devel@alsa-project.org
+References: <20210120144006.3587856-1-unixbhaskar@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9a5b2d3d-0622-78db-a685-dd522ba47dca@infradead.org>
+Date: Wed, 20 Jan 2021 08:47:21 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Guenter Roeck <groeck@google.com>, Radoslaw Biernacki <rad@semihalf.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- =?utf-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mateusz Gorski <mateusz.gorski@linux.intel.com>,
- Marcin Wojtas <mw@semihalf.com>, Alex Levin <levinale@google.com>
+In-Reply-To: <20210120144006.3587856-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,9 +90,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gMjAyMS0wMS0yMCA1OjQxIFBNLCBSb2pld3NraSwgQ2V6YXJ5IHdyb3RlOg0KPiANCj4gSnVz
-dCBjaGVja2VkIHRoZSBoaXN0b3J5IGJlaGluZCB0aGlzLiBBbmQgbXVzdCBzYXksIEkgbGlrZWQg
-UmljYXJkbydzDQo+IHZlcnNpb24gYmV0dGVyLiBFeGNlcHQgZm9yIHRoZSAiPSB7fTsiIGJpdCB3
-aGljaCBNYXJrIGFscmVhZHkgcG9pbnRlZA0KPiBvdXQgLSBpdCBzaG91bGQgYmUgYSBzZXBhcmF0
-ZSBmaXggLSBpdCdzIHNpbXBseSBtb3JlIG9wdGlvbmFsDQoNCk1lYW50IHRvIHNheTogb3B0aW1h
-bC4NCg0K
+On 1/20/21 6:40 AM, Bhaskar Chowdhury wrote:
+> s/resposible/responsible/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  drivers/slimbus/slimbus.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
+> index 00a7f112574b..503e2a0200f5 100644
+> --- a/drivers/slimbus/slimbus.h
+> +++ b/drivers/slimbus/slimbus.h
+> @@ -368,7 +368,7 @@ struct slim_stream_runtime {
+>   * @get_laddr: It is possible that controller needs to set fixed logical
+>   *	address table and get_laddr can be used in that case so that controller
+>   *	can do this assignment. Use case is when the master is on the remote
+> - *	processor side, who is resposible for allocating laddr.
+> + *	processor side, who is responsible for allocating laddr.
+>   * @wakeup: This function pointer implements controller-specific procedure
+>   *	to wake it up from clock-pause. Framework will call this to bring
+>   *	the controller out of clock pause.
+> --
+> 2.30.0
+> 
+
+
+-- 
+~Randy
+"He closes his eyes and drops the goggles.  You can't get hurt
+by looking at a bitmap.  Or can you?"
+(Neal Stephenson: Snow Crash)
