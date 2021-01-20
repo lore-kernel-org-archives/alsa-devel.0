@@ -4,73 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA00EC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 01:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56689C433E6
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 01:28:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B192F235DD
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 01:28:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B192F235DD
+	by mail.kernel.org (Postfix) with ESMTPS id 399582371F
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jan 2021 01:28:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 399582371F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DED6C18DA;
-	Wed, 20 Jan 2021 02:27:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DED6C18DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1BFB18E6;
+	Wed, 20 Jan 2021 02:27:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1BFB18E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611106084;
-	bh=HmkN0mm9wbN/TCVJTimhHdMI1XEsCsdxLiIIZk5t0hQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jgsAabnis7bshec/oSvKKOuSTyM5dd48s0gXnSSo9Gi1COFCWF8m0iQGOb+tTeWMw
-	 aTwCkvObAvAm/nQ715TIQyV/PCjGcZorgqK6/puhVsZZC+miENGg4lwN6ceAFJXkBO
-	 gYael21Fnx6otyDN7d9cIDU9nXDg1nPUfizKmwO4=
+	s=default; t=1611106087;
+	bh=zf06WvKE26zV5ow8VlxcqUjx0V17nDRZjEQZpv7wDKA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gPWKpf7SXxNovM+Xa8azKzuy/43krBbN8MBhE0NZkzPpHw+489mLSBB0WzBabG5ao
+	 fttMoRKYxaqZ0CZtT/s2D6ile7E4Vf4OD1nGnK/VL3HtPddoVoeS10LlPtD7qdYWZK
+	 v2qwoaZJ1sCXFyLQ61/cRmzCUDmENzjksLH2hDpY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C5ADF8027D;
-	Wed, 20 Jan 2021 02:26:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C76CF80257;
+	Wed, 20 Jan 2021 02:26:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E34FF800FE; Wed, 20 Jan 2021 02:26:16 +0100 (CET)
+ id 7479AF802BE; Wed, 20 Jan 2021 02:26:21 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F280F80137
- for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 02:26:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F280F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6ECDEF80257
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2021 02:26:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ECDEF80257
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gGhhP42z"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9664223109;
- Wed, 20 Jan 2021 01:26:03 +0000 (UTC)
+ header.b="g+K6tIkc"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 231592312D;
+ Wed, 20 Jan 2021 01:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611105964;
- bh=HmkN0mm9wbN/TCVJTimhHdMI1XEsCsdxLiIIZk5t0hQ=;
- h=From:To:Cc:Subject:Date:From;
- b=gGhhP42zJgjqLRPVs79DVu3aXg0iu5vMzBO+51S1vhqWpfX2cUHxb0vKO5u696JRX
- mfHcrYAU+nEzAgp1+udbwg14OJP8XfXtvDpnM22HEn8pG2xHZEmhKPGTa4OVVtugbo
- ToxAxu8ebqPadsA1HgEUPS6MF3uRy1W/RWBWM+lmMqUlPjqC5xRVcmRWyBGUG32kXM
- Chtx+ec4rc/nQ2PJYXCB7XZ3D+IKT06hnxjmR4dTh5bJw0PFwd3aDjNB0dCBTmZnq3
- vEU6ybA1s2HK+nxRtuDSSmlyJw2O5sgUOr8UWGEnLDi8G+ksuuDKyG2tdXunaZw8N0
- ReQBwrnXc2K9g==
+ s=k20201202; t=1611105967;
+ bh=zf06WvKE26zV5ow8VlxcqUjx0V17nDRZjEQZpv7wDKA=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=g+K6tIkcOuUT2H3Q8bi8+0E7Gnr6eid0G3GU9XNm+XS/6R1K10julL2sBtvSDnOcs
+ FUU9V9ERptDk7Kqa5pSF5fgpIVd97CVdSRU5pGQpZh6cKtA8QvTqpv/+Dpyx0KyOQq
+ RURSxwKZ/8IefjKhqYWx3dFzIJMUpIm+ZgKPJlzmc+LuZj/5pMIJGmjNNi2Z5dQan8
+ OsvD88XalDaeNTDNMcOEZlCKzYZUnT+FTAUuighHUFf71Ss2FPln1cua3HdBnCKsns
+ LH7dAZyBhIyaAQYlWaKvSa3jicGuN64xClhRiRq3Z1bfelUdc9YJ5TnHw54r4VcCeQ
+ Gn1ODgipgr5Sw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 01/45] ASoC: Intel: haswell: Add missing pm_ops
-Date: Tue, 19 Jan 2021 20:25:18 -0500
-Message-Id: <20210120012602.769683-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 04/45] ASoC: AMD Renoir - add DMI entry for
+ Lenovo ThinkPad E14 Gen 2
+Date: Tue, 19 Jan 2021 20:25:21 -0500
+Message-Id: <20210120012602.769683-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210120012602.769683-1-sashal@kernel.org>
+References: <20210120012602.769683-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
+ Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,32 +90,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 
-[ Upstream commit bb224c3e3e41d940612d4cc9573289cdbd5cb8f5 ]
+[ Upstream commit 275565997ade6fc32be9cd49a910ba996bcb4797 ]
 
-haswell machine board is missing pm_ops what prevents it from undergoing
-suspend-resume procedure successfully. Assign default snd_soc_pm_ops so
-this is no longer the case.
+The ThinkPad E14 Gen 2 latop does not have the internal digital
+microphone connected to the AMD's ACP bridge, but it's advertised
+via BIOS. The internal microphone is connected to the HDA codec.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20201217105401.27865-1-cezary.rojewski@intel.com
+Use DMI to block the microphone PCM device for this platform.
+
+Reported-by: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Link: https://lore.kernel.org/r/20201227164037.269893-1-perex@perex.cz
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/haswell.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/renoir/rn-pci-acp3x.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index c55d1239e705b..c763bfeb1f38f 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -189,6 +189,7 @@ static struct platform_driver haswell_audio = {
- 	.probe = haswell_audio_probe,
- 	.driver = {
- 		.name = "haswell-audio",
-+		.pm = &snd_soc_pm_ops,
+diff --git a/sound/soc/amd/renoir/rn-pci-acp3x.c b/sound/soc/amd/renoir/rn-pci-acp3x.c
+index 338b78c514ec9..c006fec7ef351 100644
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -171,6 +171,13 @@ static const struct dmi_system_id rn_acp_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_NAME, "LNVNB161216"),
+ 		}
  	},
++	{
++		/* Lenovo ThinkPad E14 Gen 2 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "20T6CTO1WW"),
++		}
++	},
+ 	{}
  };
  
 -- 
