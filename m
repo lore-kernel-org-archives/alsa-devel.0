@@ -2,73 +2,74 @@ Return-Path: <SRS0=oBR+=GY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2057C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:07:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BFB3C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:08:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 727F523730
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:07:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 727F523730
+	by mail.kernel.org (Postfix) with ESMTPS id 16008238EE
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:08:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16008238EE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 082791806;
-	Thu, 21 Jan 2021 01:06:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 082791806
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0BE4184C;
+	Thu, 21 Jan 2021 01:07:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0BE4184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611187634;
-	bh=ZLWvffTsDz1qNch4fD7+1+LXI31vPb+p7ftbWO67Jug=;
+	s=default; t=1611187690;
+	bh=Y/wa9Mf/0iAavFyxeuwT39lhA2cZcDPtk63eCqQq4po=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VuhcGyh0dhk0SRCo5K41K6A8E0k4rSY++gJ/5w3AgWf1Pd2txG0oh8A+gD/6ljmsr
-	 MhrDSB61P4B5S0SbK5OCz3is8QoY4GGeFNc7PjXHzZmGVz8CukHulPZP4yLD1QSYWX
-	 O8sAoFS8UHrzNE2CqAKUvrHn5k02+YxEzdJPod0s=
+	b=eXOlSWoxZxqslxNUuL3BlyoIzajT5wJg84JnUTu1sEzs+MkZHiGe+lhg8bKSJP3ja
+	 uspJeI608rvjeSAP0tkv+tdwL/LAp/BGcVkM03ICuxAm9jY5iyqPttJjPpUxYfKhRu
+	 bnWpXaElNT/LjHYC8U//baC6ELg1hhyLUKkSvRgs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F6BBF80137;
-	Thu, 21 Jan 2021 01:06:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78C3FF8019D;
+	Thu, 21 Jan 2021 01:06:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E5B0F8016E; Thu, 21 Jan 2021 01:06:21 +0100 (CET)
+ id 09423F80227; Thu, 21 Jan 2021 01:06:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11284F80137
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:06:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11284F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9054EF80164
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:06:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9054EF80164
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bmJfkUQM"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A9FC23716;
- Thu, 21 Jan 2021 00:06:13 +0000 (UTC)
+ header.b="IIgDsOLC"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 416F623716;
+ Thu, 21 Jan 2021 00:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611187574;
- bh=ZLWvffTsDz1qNch4fD7+1+LXI31vPb+p7ftbWO67Jug=;
+ s=k20201202; t=1611187582;
+ bh=Y/wa9Mf/0iAavFyxeuwT39lhA2cZcDPtk63eCqQq4po=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bmJfkUQMKeQay1QoxU+kViI6A87yu3A9pcmztq+/h32CYr+RaIsDCPUREQSFEyG+s
- c6iFUAFHKaFm2KSaxIvBaRuDKajfx9nlARNtTyMsHYKfaoIinan20cvRjnGKOBY6os
- D+bUn9HzpdXhVnLGEc9Jbc3qHhkzn3SGdh31F+dkiBOFeiOHb20SWAa8xe3rGZYqmi
- VWT3rEua/jYXK1rYEftCLHBimlqqeywLkA9CO5uEvpVLaOLxHo16h52ePS4dRpkUk4
- 4kB/CBo5u/B9kL+aJ5w4K3XSyv21JLigg47Aq6/GSMipNFfjb+HcmCkVsQKOENGAI8
- p0rMjMl0peNEw==
+ b=IIgDsOLCoiq0zt1/LdpJQrFLBx2BeYwUxm2couzcNJ/EskqetY+2SXgkdUsf9tFwC
+ xTY/dff/cFDysDuQovaCaAzmV+hXKesGvnndEOzm3Y+cvW3J6SIrHjvqKx1O4vddc4
+ ztr5FyP7ABC+p9t3ajnSHCET+3vI7YcXtwEcuv3irUjmgFanVtsOxtRr6rHMR26b9d
+ OJv4PXJZz6m4DcfQ26J9WuuJP5E4Z42TG20F61tScMLADO+SqPfVJh9XXCZCgNWSMR
+ 5y9A5cD4RL/83btw4e+fsMg9PvDuqrKhGto5vQEYuH7X2zV3j9IBzJMs9e7+mJ/wA+
+ 5VAjoLqw054jA==
 From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20210120092237.1553938-1-tzungbi@google.com>
-References: <20210120092237.1553938-1-tzungbi@google.com>
-Subject: Re: [PATCH 0/2] ASoC: mediatek: mt8183: ignore TDM DAI link by by
- default
-Message-Id: <161118753484.45718.2516194829359308534.b4-ty@kernel.org>
+To: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20210120152846.1703655-1-amadeuszx.slawinski@linux.intel.com>
+References: <20210120152846.1703655-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: (subset) [PATCH 0/5] Add KUNIT tests for ASoC topology
+Message-Id: <161118753484.45718.2035617869863702205.b4-ty@kernel.org>
 Date: Thu, 21 Jan 2021 00:05:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +85,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Jan 2021 17:22:35 +0800, Tzung-Bi Shih wrote:
-> hdmi-codec is an optional property.  The 2 patches fix DAI link binding
-> error when the property doesn't exist in DTS.
+On Wed, 20 Jan 2021 16:28:41 +0100, Amadeusz Sławiński wrote:
+> This series adds unit tests for ASoC topology.
 > 
-> Tzung-Bi Shih (2):
->   ASoC: mediatek: mt8183-mt6358: ignore TDM DAI link by default
->   ASoC: mediatek: mt8183-da7219: ignore TDM DAI link by default
+> First fix problems found when developing and running test cases and
+> then add tests implementation.
+> 
+> Tests themselves are quite simple and just call
+> snd_soc_tplg_component_load() with various parameters and check the
+> result. Tests themselves are described in more detail in commits
+> adding them.
 > 
 > [...]
 
@@ -100,10 +104,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mediatek: mt8183-mt6358: ignore TDM DAI link by default
-      commit: 5ac154443e686b06242aa49de30a12b74ea9ca98
-[2/2] ASoC: mediatek: mt8183-da7219: ignore TDM DAI link by default
-      commit: 4d36ed8eb0f749c9e781e0d3b041a7adeedcdaa9
+[1/5] ASoC: topology: Properly unregister DAI on removal
+      commit: fc4cb1e15f0c66f2e37314349dc4a82bd946fbb1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
