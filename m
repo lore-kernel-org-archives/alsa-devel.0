@@ -2,73 +2,71 @@ Return-Path: <SRS0=oBR+=GY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0E5BC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F320C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:10:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4D8C323716
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:09:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D8C323716
+	by mail.kernel.org (Postfix) with ESMTPS id 8396B23716
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:10:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8396B23716
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC21D17B3;
-	Thu, 21 Jan 2021 01:09:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC21D17B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C8BE18AB;
+	Thu, 21 Jan 2021 01:09:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C8BE18AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611187790;
-	bh=0b3Izsel90SvJ9GzLBvtBj4diCavE0tP2Bmu5Ek/cpI=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1611187830;
+	bh=UUKzBQxLkBhYjym818Hr0vGurpuNCZqXyHa55eogA14=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o9VldAKgZOeNlSWd7UABC3/DO+GF/4t9JE8IG9ihFFCzIrseBIuAhv0J5dJvmLg+W
-	 c45qesWR6+xeHhjx7ZPZuK1jLouf6yDZ+z8Ef2O3yCEUZOcE4b8aLBVNHTksuyo+jn
-	 8/628vMwM21AqGVX9j1ZVDi3oJMfBAKRl3YfdZj4=
+	b=Dkt8NcwDfpl+OgDWb1DWMGQIuDkXhNtH3smqRjgP4Ni8rF33w03ZxrFtwDrgZwKYi
+	 PSGSI48GXOP1Y+rcSUhTzK3znGTZ7uRvcLH2BNONiBqaybrGP890xIZhuyXXnPjG6L
+	 31hKrZ70S659ojiVUQqt1DaINevmKDiVneliuvKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE02CF804E1;
-	Thu, 21 Jan 2021 01:07:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C411F804FA;
+	Thu, 21 Jan 2021 01:07:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0932F804E6; Thu, 21 Jan 2021 01:07:04 +0100 (CET)
+ id BD3EFF804FC; Thu, 21 Jan 2021 01:07:12 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8514DF804E1
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:07:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8514DF804E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0748AF804F2
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:07:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0748AF804F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="udZkbwGJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B8B2371F;
- Thu, 21 Jan 2021 00:06:59 +0000 (UTC)
+ header.b="fViAopOo"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B70B32054F;
+ Thu, 21 Jan 2021 00:07:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611187620;
- bh=0b3Izsel90SvJ9GzLBvtBj4diCavE0tP2Bmu5Ek/cpI=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=udZkbwGJjHaM5NHxoULpLByfXo88OjBCkGKL+KazoE35wgOQtSPBOPZNGcniI2o77
- poPVWIc3fUxHu8suAOMyarC2q5HsX05B6Qb/oY+RGn3w9tCZQ+UZwGwqrl1C3iSmeU
- EalYgmTkS+qWAU9e1EASE9hVADlkcjOwwKByFALW9TruDghKnihTJXjnM0u7oYXOuG
- kNZNcDj4O4rPYc3XWiLS66Bjuz828Fp8oHhsC4rNOJiJGTO1jihiuGWTsgrnPJvFK6
- RpwY4sk66awfksnNizCMZFloxDJ1yfLYvCYiDYHzrmSJNMxAOTNjTY/zH784wc/0lx
- 86OGOqWHX6ArA==
+ s=k20201202; t=1611187627;
+ bh=UUKzBQxLkBhYjym818Hr0vGurpuNCZqXyHa55eogA14=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=fViAopOoAexLJGAd+U1pDwCk/ujh6INeub8C31Wte83Cm2//fdqeanJ84NzrYEQB8
+ uNR+e3TystfROvpU2N7JhtlYRpw74bTXhp3bz0XsYZfO8XZc//F5iCDMQmsmH1RPjQ
+ DCvQs/rGsLl202+07lW8Cwz3EUlaLCtuaKLNWRhddbE2svs7YwU+fnc3Hzf1tNdcA4
+ AbYlcMcJ36kU3NuuTY0MPzlERiPR14pGzzXPjyZtoijGaZr0snA2uqwgW2QHGvR4PM
+ 1D04eauUxeSdf0u9yerfq8lo4/E+0n12SfkkgNtyWybFkbN8BoMEcL9ftZGfSkYfpY
+ el9ZCw6F6HSOQ==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210118164509.32307-1-srinivas.kandagatla@linaro.org>
-References: <20210118164509.32307-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/2] ASoC: qcom: Fix broken lpass driver
-Message-Id: <161118753482.45718.14536427008782572345.b4-ty@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+In-Reply-To: <20210114133337.1039-1-tiwai@suse.de>
+References: <20210114133337.1039-1-tiwai@suse.de>
+Subject: Re: [PATCH 0/3] ASoC: Simplify with dma_set_mask_and_coherent()
+Message-Id: <161118753483.45718.7168616825847385991.b4-ty@kernel.org>
 Date: Thu, 21 Jan 2021 00:05:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- srivasam@codeaurora.org, lgirdwood@gmail.com, stephan@gerhold.net
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,19 +82,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 Jan 2021 16:45:07 +0000, Srinivas Kandagatla wrote:
-> LPASS driver is partially broken on DragonBoard DB410c on 5.10 and
-> its totally broken on other Supported Qualcomm SoCs.
+On Thu, 14 Jan 2021 14:33:34 +0100, Takashi Iwai wrote:
+> Simple conversions from two dma_set_mask*() calls into the single
+> dma_set_mask_and_coherent().
 > 
-> This was due to DAI ids being over written by the SoC specific header files
-> in the dt-bindings.
+> Just a minor code refactoring, no functional changes.
 > 
-> Idea of having SoC specific headers is not doable when we are dealing with
-> a common driver. So this patchset attempts to fix this properly by creating
-> a common dt-bindings header for lpass which can be updated with new entries
-> if required. This patchset also add an simple of_xlate function to resolve
-> the dai names and different SoCs might not have 1:1 mapping for the
-> dai_driver array with dai ids.
+> 
+> Takashi
 > 
 > [...]
 
@@ -106,10 +99,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: lpass: Fix and common up lpass dai ids
-      commit: 09a4f6f5d21cb1f2633f4e8b893336b60eee9a01
-[2/2] ASoC: qcom: Fix broken support to MI2S TERTIARY and QUATERNARY
-      commit: cd3484f7f1386071b1af159023917ed12c182d39
+[1/3] ASoC: intel: skl: Simplify with dma_set_mask_and_coherent()
+      commit: d3afb00220becf81bc2d9016f04e05949dfd5bb2
+[2/3] ASoC: SOF: intel: Simplify with dma_set_mask_and_coherent()
+      commit: ab152afa2427bb3e4eea7c9f21c4393287838774
+[3/3] ASoC: tegra: Simplify with dma_set_mask_and_coherent()
+      commit: 7cc206bff69b52be24fa13ee2c9afde3320c6cf6
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
