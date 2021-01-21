@@ -6,69 +6,73 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0103AC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5A78C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:11:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 584E22054F
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:11:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 584E22054F
+	by mail.kernel.org (Postfix) with ESMTPS id 3CC3B23441
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:11:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3CC3B23441
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2E981889;
-	Thu, 21 Jan 2021 01:10:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2E981889
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD1E418B1;
+	Thu, 21 Jan 2021 01:10:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD1E418B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611187887;
-	bh=8FKYosXPvv3FUOJpSS4TQL6/pMTyAw/0IsBrN+udhPw=;
+	s=default; t=1611187906;
+	bh=fJmBuuQz1f9NwhONIikUc47J0yR0liG2Nz8foWUbmEk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sBzXeFKZP8kvAIwT+hzLCcK2LI2+xgkUMFxQzoGAHZ4byK2/r5ERheCUNDfJG1vsj
-	 YUwJi4lhUMQjbbzxEQKHq6/aYfP5WXnVPaVNnQO45gaFAeBZ37Hqg8Y7Ltqf2Jhb7q
-	 FE3sCx6pHYzuwqg3YKrqy0r/S8s0oFtxDoqYEaUM=
+	b=ioGjK7dFj/cfvyZpnUtIe6wLvIQJhVEfRCweaP4txCgoSAs07qZCk/sXyjBwz0shP
+	 ZH1fTwqyVfx8t3ZF6UAesGxv9xy+kBr9jcgkCM3PSASbQW0Z42/YsdBpRzOSBehJTB
+	 YZK0iyPFGws8Ckkxk3UfdTQWanwOhKVI7VcWo/uY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FFB4F80511;
-	Thu, 21 Jan 2021 01:07:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23C38F8019B;
+	Thu, 21 Jan 2021 01:07:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26866F80515; Thu, 21 Jan 2021 01:07:27 +0100 (CET)
+ id 4DE48F80518; Thu, 21 Jan 2021 01:07:35 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7658F80253
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:07:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7658F80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9D11F80516
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:07:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9D11F80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gdvtbe+8"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D266E23719;
- Thu, 21 Jan 2021 00:07:22 +0000 (UTC)
+ header.b="SnPsPXl1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51FDC2371F;
+ Thu, 21 Jan 2021 00:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611187643;
- bh=8FKYosXPvv3FUOJpSS4TQL6/pMTyAw/0IsBrN+udhPw=;
+ s=k20201202; t=1611187648;
+ bh=fJmBuuQz1f9NwhONIikUc47J0yR0liG2Nz8foWUbmEk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gdvtbe+8eGrpAOj4KN+Et0uer2Vm1lXoFwKueZUFL32p8SDMfpMUu5t+/O3PbyHSr
- 7BChQlPzicvM2R/IzUHKZr2uJgpBoTSt7kZTr53VkUHd+/MzkDAfL6j7y5419AC9c0
- qq3PA/OvZ6JJy9JggHWx/I0i3d6imBx/95iQUhsR/RCIScMQWwH7ZxVmVODAlPtH0C
- 9oL1TQRMRE0diauObEHal926C17qoxtwOXnDDd5DvJxRLxdMT8Pevcb3di9uHdYr2e
- uj8CyqykFyUOkXNte+3JNeaG0KwXUaq0EhnX66sJol9WtoXERgEOtYd3OVHl6quLDb
- XnMHgedfIz96w==
+ b=SnPsPXl1tiPS+azOKnNIvzhGrwT4/YsQ63jr5C1n3T4hL4SWX9mRhcHx7O8HIS0uQ
+ 2ImssWH4HdpuYfd2hgF303mSaC7eaysm/WVETJ8oUQxa7TSZbhArcaQ9zOASmwi/OF
+ FIqqiIuWIFPj7RTk1wpJpInHK4HnF3xD6FepnjxTVZoJvA+r66T3SIRKetAYy9Jvpu
+ iOIrcef9mu29soIhGZnGLNJIV/1NaHCiWa2doZWPI1Md5gMC9n7+hr44VEOQDcgj+n
+ Rwl/KVAL/OXdRN+2ZujJdbJenTeB8dUsBvPxnZtCvPXmsrl/lJCNrFBV+rqwI/Ztxo
+ TASnIVbV6hD/w==
 From: Mark Brown <broonie@kernel.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Arnd Bergmann <arnd@kernel.org>
-In-Reply-To: <20210120162553.21666-1-arnd@kernel.org>
-References: <20210120162553.21666-1-arnd@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: remove obsolete drivers
-Message-Id: <161118753484.45718.5745796421689353764.b4-ty@kernel.org>
+To: Yu-Hsuan Hsu <yuhsuan@chromium.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20210115075301.47995-1-yuhsuan@chromium.org>
+References: <20210115075301.47995-1-yuhsuan@chromium.org>
+Subject: Re: [PATCH v7 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Message-Id: <161118753483.45718.10581891654341693206.b4-ty@kernel.org>
 Date: Thu, 21 Jan 2021 00:05:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ "Gustavo A . R . Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Guenter Roeck <groeck@chromium.org>, Prashant Malani <pmalani@chromium.org>,
+ Pi-Hsun Shih <pihsun@chromium.org>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,17 +88,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Jan 2021 17:25:51 +0100, Arnd Bergmann wrote:
-> A few Arm platforms are getting removed in v5.12, this removes
-> the corresponding sound drivers.
-> 
-> Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
-> 
-> Arnd Bergmann (2):
->   ASoC: remove sirf prima/atlas drivers
->   ASoC: remove zte zx drivers
-> 
-> [...]
+On Fri, 15 Jan 2021 15:53:00 +0800, Yu-Hsuan Hsu wrote:
+> Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+> which is used for resetting the EC codec.
 
 Applied to
 
@@ -102,10 +98,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: remove sirf prima/atlas drivers
-      commit: 61fbeb5dcb3debb88d9f2eeed7e599b1ed7e3344
-[2/2] ASoC: remove zte zx drivers
-      commit: dc98f1d655ca4411b574b1bd2629e7132e502c1c
+[1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+      commit: f4d3bd8be4f2bc43e4b13490cbc9969d15c2f058
+[2/2] ASoC: cros_ec_codec: Reset I2S RX when probing
+      commit: 7f1f7ae102ea082745e320b3c8c003f43c063edf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
