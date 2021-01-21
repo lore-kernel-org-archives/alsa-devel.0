@@ -3,72 +3,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6718C433E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:08:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C6AEC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:08:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A86523750
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:08:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A86523750
+	by mail.kernel.org (Postfix) with ESMTPS id C7C4823772
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:08:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7C4823772
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD6211880;
-	Thu, 21 Jan 2021 01:07:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD6211880
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B71B183B;
+	Thu, 21 Jan 2021 01:08:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B71B183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611187693;
-	bh=WJMenhoY3ig/CdMaKFzwT0Oyk6Kf5z+W1dJpEuH1Gyo=;
+	s=default; t=1611187731;
+	bh=HEKEkHysRBuy+PeeILPFJYalzK0RmedOTwrVoRREE8c=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XdLVzWrf8ZSqPol6n5myPY/OZl6t9lphyuENE/weT1E5sR01q0umUb5I/vRNnXVEd
-	 3O5imcsW1zdXtGhKg+uFd0JReKgNjZ3ailKia0xemVQh5yQGxva6L14VwU9mFtReTI
-	 GEQ8RnB+UG6ek+Iuj2oOOxpEtXpZFDtTHr9/amHY=
+	b=DuHD6YDYiZkiYVuaGx6TiMwtXUw/tJ6KhPtPQT+RhP6qhW5m5p9gfGHw4kH9lOpUN
+	 71lCCYa/lolKr6afLwUnZMVJPAlDg1JEwnh2wdYNTSFRTMrgRdYIPg/khgIxeKdQH4
+	 oFH0bigc7lNye2VU9vLUysS3becNYEFheYg45zxo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FB94F804B2;
-	Thu, 21 Jan 2021 01:06:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E08B4F804CA;
+	Thu, 21 Jan 2021 01:06:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16154F804BD; Thu, 21 Jan 2021 01:06:36 +0100 (CET)
+ id 57AD6F804CB; Thu, 21 Jan 2021 01:06:46 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4D5CF80253
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:06:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4D5CF80253
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F9EAF804BD
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:06:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F9EAF804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DdGNMy5h"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E8EE23716;
- Thu, 21 Jan 2021 00:06:30 +0000 (UTC)
+ header.b="upMOudlv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D695023718;
+ Thu, 21 Jan 2021 00:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611187591;
- bh=WJMenhoY3ig/CdMaKFzwT0Oyk6Kf5z+W1dJpEuH1Gyo=;
+ s=k20201202; t=1611187598;
+ bh=HEKEkHysRBuy+PeeILPFJYalzK0RmedOTwrVoRREE8c=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=DdGNMy5hdei+bvBte/gZcpfZ2rD45Iq0ksNyMEmNQqM1B0W4mW0w7xJrEzgVUtTSl
- O+4sZHSLHBEM2VGsVOri0owCnRRivIFpYAV+I7E4KQ5YNrEk0glk3Ly08RaRAEwB7I
- 0Dk8UerKwBnkEy5oYN4gOKThLP4ZHYMi44yzN7fY2xH7Fcajik03az4n8wbpovdYp0
- dKSli41hgmIlSB511aRAn7KhguRjsWZovDie9Vb1wACxc5wl7n3Z25Ge2lfWymFbNZ
- VeMXIr9XZLxq8JpVvHAO0bV64khXqItt9WzvZ1qGcYa0jTfg/XKEkQA4eN5b2sGgXe
- gfd+pfuV9ac5g==
+ b=upMOudlv+WUULDlia6UY3uV0AGbhzfW5mDLZBDMntNTjVU95pZwKM8bjAObC29O+O
+ xpJ1P1Dngb8ln6ypxdl5SZsS1L4PcCFWPx8UoxZYZtPcJg+m3ieY8VfpQN8eKAf3bQ
+ f9wzRtahsTu29rCOce2Mgz0zyZTJKl2e9ShJdJimgbrrCp8LaJrbn6bgQOHuQlL2nT
+ 7584sXJd3iDkRtLOusahYXP/crpSupz2Vz09naxrKWNZFbRlRBTaKs0bEmenw3OVLu
+ JPnhM1aoPxzxxq1NPWju2JBxlh65lS28aKpDe0zWjRspndpki0xpVFJEk11zoMxY0P
+ RYtQ9sBu3pTvg==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
-References: <20210119171527.32145-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 0/2] ASoC: qcom: Fix broken lpass driver
-Message-Id: <161118753483.45718.16793872451068502751.b4-ty@kernel.org>
+To: peter.ujfalusi@ti.com, lgirdwood@gmail.com, tony@atomide.com,
+ Pavel Machek <pavel@ucw.cz>, perex@perex.cz, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com
+In-Reply-To: <20210112174704.GA13496@duo.ucw.cz>
+References: <20210112174704.GA13496@duo.ucw.cz>
+Subject: Re: ASoC: cpcap: Implement set_tdm_slot for voice call support
+Message-Id: <161118753482.45718.9232559568095752872.b4-ty@kernel.org>
 Date: Thu, 21 Jan 2021 00:05:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- srivasam@codeaurora.org, lgirdwood@gmail.com, stephan@gerhold.net
+Cc: Merlijn Wajer <merlijn@wizzup.org>, "Arthur D." <spinal.by@gmail.com>,
+ Sebastian Reichel <sre@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,19 +86,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Jan 2021 17:15:25 +0000, Srinivas Kandagatla wrote:
-> LPASS driver is partially broken on DragonBoard DB410c on 5.10 and
-> its totally broken on other Supported Qualcomm SoCs.
+On Tue, 12 Jan 2021 18:47:04 +0100, Pavel Machek wrote:
+> From: Tony Lindgren <tony@atomide.com>
 > 
-> This was due to DAI ids being over written by the SoC specific header files
-> in the dt-bindings.
+> ASoC: cpcap: Implement set_tdm_slot for voice call support
 > 
-> Idea of having SoC specific headers is not doable when we are dealing with
-> a common driver. So this patchset attempts to fix this properly by creating
-> a common dt-bindings header for lpass which can be updated with new entries
-> if required. This patchset also add an simple of_xlate function to resolve
-> the dai names and different SoCs might not have 1:1 mapping for the
-> dai_driver array with dai ids.
+> For using cpcap for voice calls, we need to route audio directly from
+> the modem to cpcap for TDM (Time Division Multiplexing). The voice call
+> is direct data between the modem and cpcap with no CPU involvment. In
+> this mode, the cpcap related audio mixer controls work for the speaker
+> selection and volume though.
 > 
 > [...]
 
@@ -106,10 +105,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: lpass: Fix and common up lpass dai ids
-      commit: 09a4f6f5d21cb1f2633f4e8b893336b60eee9a01
-[2/2] ASoC: qcom: Fix broken support to MI2S TERTIARY and QUATERNARY
-      commit: cd3484f7f1386071b1af159023917ed12c182d39
+[1/1] ASoC: cpcap: Implement set_tdm_slot for voice call support
+      commit: 0dedbde5062dbc3cf71ab1ba40792c04a68008e9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
