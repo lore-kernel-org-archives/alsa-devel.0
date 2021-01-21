@@ -2,78 +2,103 @@ Return-Path: <SRS0=oBR+=GY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2D10C433E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 19:43:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCF21C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 20:19:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 21D2923A00
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 19:43:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21D2923A00
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 11C6123A54
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 20:19:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11C6123A54
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nostatic.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6571D1927;
-	Thu, 21 Jan 2021 20:42:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6571D1927
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45B4E1927;
+	Thu, 21 Jan 2021 21:19:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45B4E1927
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611258209;
-	bh=N0U+XWIf0wWuQGetEOr/vLTRMW3Qgr7Tde8oPv8YgWs=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1611260392;
+	bh=uCD9A9OtYpK536FA726NOs2BTV5vnt2Ii/0/T8Kmws8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TbbO/EO/4jElVX9ETwHv9j7USWYdHwXOKEIhWrEPHtiblVzEI+U4ZglVFATWZ/3yS
-	 g5nb/Ox9XzekTO5Op4UA5tifnsEUtq6PUHSogmAA7XDvCcu4HSmMBlQA0L7dP7r1NL
-	 b+QKMPAdM+p4rpLMhGHvfvkhBVF2/M1wV4oP4VZ0=
+	b=d0iq33XXsnxsB7KeK4o0oh51LXl4nWDYNvYwyOd683k5jkqN9n4Bq3PtheuBCnHzz
+	 OVrK1jebgGYR0Rf06tvi5Wl2045UhnAr1Peb2x6JqrE1sbOgGNOHSeXQa3C2zmM0VD
+	 ov+CoaBOOUXlWynBc6busFlnI69Nm/bfXoqtAuBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 147CEF804E7;
-	Thu, 21 Jan 2021 20:40:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 630EBF80164;
+	Thu, 21 Jan 2021 21:19:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1241F804EB; Thu, 21 Jan 2021 20:40:26 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 421EBF80257; Thu, 21 Jan 2021 21:19:00 +0100 (CET)
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com
+ [IPv6:2607:f8b0:4864:20::b30])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F14C7F804E3
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 20:40:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F14C7F804E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8BC0F80164
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 21:18:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8BC0F80164
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HTyZQkGK"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 379D123A3A;
- Thu, 21 Jan 2021 19:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611258021;
- bh=N0U+XWIf0wWuQGetEOr/vLTRMW3Qgr7Tde8oPv8YgWs=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=HTyZQkGKeUeDcbyaOAdGK7eVFwCwNaQy/59IRXOBZ1ZdF5yFogOkcItdm3+kIwClc
- Js2NH8GhbnNh+BTTz9Cx8M0IaoTt+z8GZIlizvKQEeqr8a1c6BHLv41jWrwqzubG+4
- qann443jt52H43Ku74iNnja3hmbMBkrlseN4g1inR+i7LisLqspdVtL2O4Z3FcNuGz
- bgvG7rCs6ce6feQIe14IH8Gg8dHFH/I/xgFgBMtpR+TCm2opL3PAeqbgb3YiSMJ2Kj
- YJLWUDh6f+BlTbuSLq2XFG/1ZuxVN+UsXcEYanH3F1HxRd0J0MGqVMlAacyGTV2qbq
- DK7q7bnlpdjMw==
-From: Mark Brown <broonie@kernel.org>
-To: Stephen Boyd <swboyd@chromium.org>
-In-Reply-To: <20210115203329.846824-1-swboyd@chromium.org>
-References: <20210115203329.846824-1-swboyd@chromium.org>
-Subject: Re: [PATCH] ASoC: qcom: Fix number of HDMI RDMA channels on sc7180
-Message-Id: <161125795422.35635.5979635189908672108.b4-ty@kernel.org>
-Date: Thu, 21 Jan 2021 19:39:14 +0000
+ dkim=pass (2048-bit key) header.d=nostatic-org.20150623.gappssmtp.com
+ header.i=@nostatic-org.20150623.gappssmtp.com header.b="zS5Ouq6d"
+Received: by mail-yb1-xb30.google.com with SMTP id z1so3295479ybr.4
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 12:18:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nostatic-org.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=9bycxjG9sbNJWV6i2hBE3g/Zn3eE2n25TNxu1BmJieE=;
+ b=zS5Ouq6dp+NFHug6PRuszyTT07+1lHXULLCZau0tAfI51aNe9SYeGaxVyfg6TGRVzU
+ ggJ3g2bYyFiXWlVaA2hS+948aFu4qMCSRGcahatxOJ2unlWC88UlbDjh7UB52UYaybPb
+ W3Zbe8Rp6Lg0OG0ECOqOB/X10IQLD1EHRJ7Cplu91F2eTvf6ElEvlVe894POgb+gTrpy
+ ojFZSZ5MMPLj0gTCvpp5AiURo70Kfg2oUwvhwy+sVkoVRSdQxlm2hN+wD4Y19pPVikzw
+ Zcm39EZy/r6yf+U//FuEU6odNNniTLB6UOKH7mBN8EzL9jn0p9zU8WOpqTBTQheNkJfh
+ 8m1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=9bycxjG9sbNJWV6i2hBE3g/Zn3eE2n25TNxu1BmJieE=;
+ b=EMja8mEOHFkmgYz0MMhKBsVDLuXcUKigvWCnj+jAyZ0o0Jhnu/2XuGW7jvZOUTU8A3
+ 5EQpKj2y4qGi6szSjEuF17b4i7CPH+M2LLtVAxdCUymfOdXaN3ZvQqUZ6pg3dGk6OOCT
+ VsSG26JLA8MWpspoI/Jpuh8jLNpzkhbOgKBdnkrM+oBoNYGyzfRL5gOm87VV8j2V5I1F
+ aNA+pJCrm+0OIKp4rCHQlrZztpK17yqFMURe0+cxrcodwk6Lgcma7SD6CipuA+NfJyp0
+ lXX7ioPSQG9RpHbFEp4oeqygBtGyQHUrOMXWEY3B370udVCcPRqaFy1RayVBi3Joh5rL
+ XlWg==
+X-Gm-Message-State: AOAM531dIt+ujjo8ZMUmc6Dtyark9p1S4PPKcRD4aQVnDlE92gDEO13B
+ grV4AFUVRMMcpisvLcc4tXI+dMH7TmscnOtL4pg+zw==
+X-Google-Smtp-Source: ABdhPJy3oEpqYUxmsqmSXzb9iPQKZbaHJZdKb83x3a4cGdUt7VflVQeVR1G5wxS/1YiViSoV5oeu5bNP/4BAnknl1f8=
+X-Received: by 2002:a25:e64c:: with SMTP id d73mr1675191ybh.160.1611260329089; 
+ Thu, 21 Jan 2021 12:18:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Srinivasa Rao <srivasam@codeaurora.org>,
- V Sujith Kumar Reddy <vsujithk@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Cheng-Yi Chiang <cychiang@chromium.org>
+References: <CAHXb3bdk71ivJUp9HBRccDvd8SD2F1uFdsC_FxUjhh5zpcQobQ@mail.gmail.com>
+ <s5hr1mik7vu.wl-tiwai@suse.de>
+ <CAHXb3bdt6mgUcZ0+MH1i7QeYF03MSwx=kad-YBBNeVjqoH=KhA@mail.gmail.com>
+ <CAHXb3bcFM0BswbuTe=6vP6JRd=TOf94Gu0FPAZmXT6634bCiAQ@mail.gmail.com>
+ <s5hr1migiie.wl-tiwai@suse.de>
+ <CAHXb3be9EpEtaEc0iH06wmLMhyizkV7arvgxsT2bWK=aJHKVLA@mail.gmail.com>
+ <s5him7thpoz.wl-tiwai@suse.de>
+ <CAHXb3bd8zHFmHxDp=4dNKa90eAT568yCwTWo_5L0Zry1EY45UA@mail.gmail.com>
+ <s5hczy1guto.wl-tiwai@suse.de>
+ <CAHXb3bfUv7QzvgOmtV3LxJXaY=Uk+pKhWZmU0M+YkgB0kNrXmA@mail.gmail.com>
+ <s5ha6t3el07.wl-tiwai@suse.de>
+ <CAHXb3bcucvF63itp6+R8aC6hByBJs4AorQg5KAa1YkunCB89tw@mail.gmail.com>
+ <s5h4kjbcmql.wl-tiwai@suse.de>
+ <CAHXb3be5Va8_K9YmObjTg+KGH3HZO9y_L4YrXvprbMY5J4fpsw@mail.gmail.com>
+ <CAHXb3beukZJ=r6dDS3fxd8MBtkFqt=qEFwHwRPhVgAJZXTzMrA@mail.gmail.com>
+In-Reply-To: <CAHXb3beukZJ=r6dDS3fxd8MBtkFqt=qEFwHwRPhVgAJZXTzMrA@mail.gmail.com>
+From: Mike Oliphant <oliphant@nostatic.org>
+Date: Thu, 21 Jan 2021 12:18:38 -0800
+Message-ID: <CAHXb3bd3VUH0pJB+tQjD96ePFHUEFBOa_3ameJ=dC-g8M5bf4g@mail.gmail.com>
+Subject: Re: Support for NUX MG-300 USB interface
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,64 +114,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 15 Jan 2021 12:33:29 -0800, Stephen Boyd wrote:
-> Suspending/resuming with an HDMI dongle attached leads to crashes from
-> an audio regmap.
-> 
->  Unable to handle kernel paging request at virtual address ffffffc018068000
->  Mem abort info:
->    ESR = 0x96000047
->    EC = 0x25: DABT (current EL), IL = 32 bits
->    SET = 0, FnV = 0
->    EA = 0, S1PTW = 0
->  Data abort info:
->    ISV = 0, ISS = 0x00000047
->    CM = 0, WnR = 1
->  swapper pgtable: 4k pages, 39-bit VAs, pgdp=0000000081b12000
->  [ffffffc018068000] pgd=0000000275d14003, pud=0000000275d14003, pmd=000000026365d003, pte=0000000000000000
->  Internal error: Oops: 96000047 [#1] PREEMPT SMP
->  Call trace:
->   regmap_mmio_write32le+0x2c/0x40
->   regmap_mmio_write+0x48/0x6c
->   _regmap_bus_reg_write+0x34/0x44
->   _regmap_write+0x100/0x150
->   regcache_default_sync+0xc0/0x138
->   regcache_sync+0x188/0x26c
->   lpass_platform_pcmops_resume+0x48/0x54 [snd_soc_lpass_platform]
->   snd_soc_component_resume+0x28/0x40
->   soc_resume_deferred+0x6c/0x178
->   process_one_work+0x208/0x3c8
->   worker_thread+0x23c/0x3e8
->   kthread+0x144/0x178
->   ret_from_fork+0x10/0x18
->  Code: d503201f d50332bf f94002a8 8b344108 (b9000113)
-> 
-> [...]
+After some more testing, it seems to be working inconsistently on my
+Raspberry Pi. Sometimes it works perfectly, sometimes only capture works,
+and sometimes only playback works.
 
-Applied to
+The behavior seems reminiscent of some of the problems with implicit
+feedback devices which have now been fixed.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Mike
 
-Thanks!
+On Thu, Jan 21, 2021 at 11:04 AM Mike Oliphant <oliphant@nostatic.org>
+wrote:
 
-[1/1] ASoC: qcom: Fix number of HDMI RDMA channels on sc7180
-      commit: 7dfe20ee92f681ab1342015254ddb77a18f40cdb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> As a last ditch effort before returning the device, I tried the clock
+> patch on a Raspberry Pi 4 running an older kernel, and... it works.
+>
+> The kernel version is "Linux raspberrypi 4.19.89-v7l+" and is from late
+> February 2020.
+>
+> Maybe a change between then and now broke something? I know there have
+> been a *lot* of changes since then, though...
+>
+> Mike
+>
+> On Wed, Jan 20, 2021 at 1:47 PM Mike Oliphant <oliphant@nostatic.org>
+> wrote:
+>
+>> Yeah, I tried every possible permutation of mute/volumes on the mixer
+>> controls.
+>>
+>> Thanks for submitting the patches. Maybe someone else will have better
+>> luck down the road.
+>>
+>> Mike
+>>
+>> On Wed, Jan 20, 2021 at 1:38 PM Takashi Iwai <tiwai@suse.de> wrote:
+>>
+>>> On Wed, 20 Jan 2021 22:17:35 +0100,
+>>> Mike Oliphant wrote:
+>>> >
+>>> > I spent a fair bit of time debugging the code setting/getting mixer
+>>> control
+>>> > values, and I can't see anything that seems to be operating
+>>> incorrectly.
+>>>
+>>> So, even if you unmute and raise both mixers, it didn't help, right?
+>>> I took a look at the lsusb output, but I couldn't find anything else
+>>> suspicious.
+>>>
+>>> > Unless you have any other suggestions, I'm going to admit defeat and
+>>> return
+>>> > the audio interface.
+>>> >
+>>> > It is probably worth committing the clock selector patch - it at least
+>>> made
+>>> > capture work, and it may help with other audio interfaces.
+>>>
+>>> OK, I'll submit two fix patches.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>
