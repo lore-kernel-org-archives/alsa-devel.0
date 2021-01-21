@@ -6,69 +6,68 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74033C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:09:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F792C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:09:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDCB723787
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:09:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDCB723787
+	by mail.kernel.org (Postfix) with ESMTPS id CAA5723772
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 00:09:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAA5723772
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 183191895;
-	Thu, 21 Jan 2021 01:08:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 183191895
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DFE21878;
+	Thu, 21 Jan 2021 01:08:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DFE21878
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611187743;
-	bh=N1mlBY088igQfsMBJR6jW/QOyJyZXrVgghJ4959COtQ=;
+	s=default; t=1611187776;
+	bh=YL44CnZctD7Nrp8a6u+xZn8iahwWctK4Iz+i4D+mucY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mAb2gGqYAfjqhoriAj7BwMqZOodkBhQfUUsNJSyhoPfXiU7+sRiNeDklkuSxiNrX8
-	 BLZp06dKknBLCHUusaWuKo+uwK1CtB68L0LONEHn7g8N3ZpxW/mjmFBlyAF/P9WN79
-	 t54iG5Z4AafURZVSVkJKV7CVdiU2Yw0et0wdBFEE=
+	b=lbgP5zI9BBPSv6UcYw11Scj3JQQcX3MombdPeUDim440El9YZuGfPG49Rj+GgLsT4
+	 JwfKWWufv6UK4BcV3J3HgNSYQ49N3lZAzwfeQiJ4IjPQKsvfaHYt3xFpv0z4kGDZBW
+	 UJ+gTBbLV7czib5rSpLj30iaiHeZZbwRqI1Sniwg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB8B8F804D6;
-	Thu, 21 Jan 2021 01:06:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1A01F804DF;
+	Thu, 21 Jan 2021 01:06:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A060F804D8; Thu, 21 Jan 2021 01:06:51 +0100 (CET)
+ id C359BF804E2; Thu, 21 Jan 2021 01:06:57 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FB5EF804CB
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:06:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB5EF804CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A51DF804DF
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 01:06:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A51DF804DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sZT099S3"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E1F52054F;
- Thu, 21 Jan 2021 00:06:45 +0000 (UTC)
+ header.b="dRO3JocM"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A15B2054F;
+ Thu, 21 Jan 2021 00:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611187607;
- bh=N1mlBY088igQfsMBJR6jW/QOyJyZXrVgghJ4959COtQ=;
+ s=k20201202; t=1611187613;
+ bh=YL44CnZctD7Nrp8a6u+xZn8iahwWctK4Iz+i4D+mucY=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=sZT099S3yrC7+GQVsgAY20HuW3eJmjIe15yHokXNRt/HMqFbClhRgxhKmT+Hz9RtC
- N0TM1RDgj9ZIVg2xuPoxrj8GhMV1KjYVZXuFUaQPZeP/5UHSk0HN2k2QoaXspLfwzu
- QTkEkIxjmAYxeVvfWRKRqTImNA/nwRNifg51rI4MuWQaRPbeRgtsicjcQgqIY2Bd3M
- jKdiALTUqHJixHd3U1qQfXg8JPmsLfKxjr70Cm81WRhiUZhrqHbbPHsE7A/HYS2fVh
- eZIQ5F0fbydWMcSlFxrtEQRAdnzsEfVEtJL/ItD1Xi85HOSlWKYWTgFJ61ufWYG7dX
- 6V4yV27x4obHg==
+ b=dRO3JocMwyhg34lTsNp5TXa88yVEQZvzQK7XwYm0ApTDG2Gkhz5tQNvfAKX2ZL+sp
+ GGXTaDtrwikf016MO9C9A7xvVGF2dv3dp9yEvE9XblV0dyVn0TYVofo4qFLb2lPfb1
+ fc4f/hdDvbMu3xtFFOttXTqiWGuS2kW6n9qjBXNt7Iarwhr8TzWcmct1WGi1g12xAO
+ pxS2MZHUuoqr3Yx0tN/3QfjJD39xXZmCsoLSzV/vWb86cdWG0iYQSycrGMvUMHR1s8
+ ReS9PFjVvX7HEORJ/jk9X2ppKreh4Q9RRvSdRAef2YNNqN/ro5JsGPaoz8CbOJ0ojC
+ AXyZlCQuyhyLA==
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-In-Reply-To: <20210118123815.1630882-1-festevam@gmail.com>
-References: <20210118123815.1630882-1-festevam@gmail.com>
-Subject: Re: [PATCH 1/6] ASoC: fsl_ssi: Use of_device_get_match_data()
-Message-Id: <161118753485.45718.16707397897261103162.b4-ty@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210119174700.32639-1-srinivas.kandagatla@linaro.org>
+References: <20210119174700.32639-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: lpass-ipq806x: fix bitwidth regmap field
+Message-Id: <161118753484.45718.12934710533567816798.b4-ty@kernel.org>
 Date: Thu, 21 Jan 2021 00:05:34 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, shengjiu.wang@nxp.com,
- timur@kernel.org
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,11 +83,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 Jan 2021 09:38:10 -0300, Fabio Estevam wrote:
-> The retrieval of driver data via of_device_get_match_data() can make
-> the code simpler.
-> 
-> Use of_device_get_match_data() to simplify the code.
+On Tue, 19 Jan 2021 17:47:00 +0000, Srinivas Kandagatla wrote:
+> BIT_WIDTH field in I2S_CTL register is two bits wide, however
+> recent regmap field conversion patch trimmed it down to one bit.
+> Fix this by correcting the bit range!
 
 Applied to
 
@@ -96,18 +94,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: fsl_ssi: Use of_device_get_match_data()
-      commit: 9ce63203eb2071fe0117d2e2454c19d79af4a2f1
-[2/6] ASoC: fsl_micfil: Use of_device_get_match_data()
-      commit: d7388718d491463ed0fb7383a4c678b94fdda785
-[3/6] ASoC: fsl_xcvr: Remove unused of_id variable
-      commit: 42450175a3d21d0818976114833d23ca5035e713
-[4/6] ASoC: fsl_asrc: Remove of_device_get_match_data() error check
-      commit: 214172a9ca26f77c3d6912f97246dc6ec9b16141
-[5/6] ASoC: fsl_esai: Remove of_device_get_match_data() error check
-      commit: 1ccf6e6ef9261c0c8c0be495070c45c030adcc40
-[6/6] ASoC: fsl_spdif: Remove of_device_get_match_data() error check
-      commit: 4e63b56593e25937f22c01ae60574a3b0548553c
+[1/1] ASoC: qcom: lpass-ipq806x: fix bitwidth regmap field
+      commit: 1e066a23e76f90c9c39c189fe0dbf7c6e3dd5044
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
