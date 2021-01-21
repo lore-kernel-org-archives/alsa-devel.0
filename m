@@ -2,99 +2,82 @@ Return-Path: <SRS0=oBR+=GY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A719CC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 17:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0329AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 18:01:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D70522CE3
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 17:53:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D70522CE3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6D22D22B45
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 18:01:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D22D22B45
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1201911;
-	Thu, 21 Jan 2021 18:52:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1201911
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EB1D1908;
+	Thu, 21 Jan 2021 19:00:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EB1D1908
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611251624;
-	bh=LW8JzvZJKts5o//cmTHYQ6uPD7CX1c5Y7XKfjIOE1Jk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rJlUmw3uet/eOJIGL7JNtv5ZkNWeT4qpx62nDRfYtvrkQ+8MWxF84DVdba3Qi7EcB
-	 raPHZOjydZgqAg7mbFdOjY2lzMxPiWXzcQ4oqR+dBmNYxsy2KJuSVuoRYRfIKI/wAi
-	 sZUqT7Zw8hxLXCHNgLwNv8UCp4QDb73SlvLpczSo=
+	s=default; t=1611252105;
+	bh=27qRat+h7+HYtXyLdBMhhp6KRy5y2Hhy6MbcDthwRDI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=s/0htrxyjdjk+V071O4zJfHA9j6IAK401Jp5GUaPwEFS7mO2ivvRJTsP6Gk39RVpm
+	 lje8aw6aGlxgiwRX4rMw+JCSPYMTNxdX1a5m+pRing0hw/2GwpTjTPHBYsL1h/SG/C
+	 xAz5rCfz9SZPPcOyolwE/xrGTLaJrRNJwOu07Aw4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAAE0F80273;
-	Thu, 21 Jan 2021 18:52:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E87D8F80162;
+	Thu, 21 Jan 2021 19:00:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A216AF80257; Thu, 21 Jan 2021 18:52:01 +0100 (CET)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 70DBEF80257; Thu, 21 Jan 2021 19:00:53 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01AD7F80125
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 18:51:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01AD7F80125
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="H5RbvKJz"
-Received: by mail-ej1-x636.google.com with SMTP id ox12so3893913ejb.2
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 09:51:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=51VcyZ0wcuGuW2m213F8YE94gBtxdpp+DVm+1XUV/kc=;
- b=H5RbvKJzOAZSzZttqk+4D6J5otSROP5TEODNUwb21iPJKfP+Ab3VInvWrEmmIXc51D
- kT4vXcIGucGm/xDXGd5766NQhpstAG53Q8NLEmg4cvuF7NJn7NI2aqKPPNarNCatpphL
- n04UttoRPSTulyYrFLysFiGhqiFnUg2Vsf0CI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=51VcyZ0wcuGuW2m213F8YE94gBtxdpp+DVm+1XUV/kc=;
- b=fHiZF1qVqDvVNkBSnOm1GKnmWPRR2sEOQqeg7Ro5bmdLtjpJBT3vMqxtg0WwKghh3t
- jd0RvjpHckLG3fKCmlI3Yi+I5P0j4sVKrJc3/6zT/U3V/iqAKNmkwxGtKmZvpPRbcRjk
- T/hqJz+SAJAUb6zi57Ekbq8+mgnCnFie6M7f/y7bznBFpIoBJytsuKEUHeZyWdMkchBW
- 6eYJE3v6QmofXk8ucOf5DO7E0vOU1kWO9ZN6ZekvQ7miBCVtZQkEQ53RyS5uHEZ//ADb
- HxLTul3x1Xgvfa7+TnRW9onwgl3IzEijJRXoySYndLYkobSzAFeJg+3kBVDugRWcpwQo
- /3jg==
-X-Gm-Message-State: AOAM53123ituFLdGDh79yxfZ58a2fzZAoWvJzd3jpCA/+bjTiCDsvrwg
- mDxw9WM90zUcOoX1tlwtpX0KwA==
-X-Google-Smtp-Source: ABdhPJx+D8/Miw7niFfErjOQWn8sH7EaMNhkJL7TJSDo4zIFgNNDjogLT0p7KxD+/CzpFUu1z+e5Lw==
-X-Received: by 2002:a17:906:4893:: with SMTP id
- v19mr421764ejq.454.1611251513363; 
- Thu, 21 Jan 2021 09:51:53 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
- by smtp.gmail.com with ESMTPSA id w16sm3232349edv.4.2021.01.21.09.51.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 21 Jan 2021 09:51:52 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Mateusz Gorski <mateusz.gorski@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Lukasz Majczak <lma@semihalf.com>
-Subject: [PATCH v3 1/2] ASoC: Intel: Skylake: skl-topology: Fix OOPs ib
- skl_tplg_complete
-Date: Thu, 21 Jan 2021 18:51:50 +0100
-Message-Id: <20210121175151.139111-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51C5AF80162
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 19:00:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51C5AF80162
+IronPort-SDR: b0OsI7c/PSj28+2iQohI3IqdX+PpANclcxEa+vTxEGLixnlbwLa/6X9pwgEx5xuiA33qPXjrN1
+ T1jGSem5WQQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="158493436"
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; d="scan'208";a="158493436"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jan 2021 10:00:46 -0800
+IronPort-SDR: WbrhJ1s/WXBl7c594rfxC/HuUP/PkmBXeJ4I2wCTdEr3SjQf3h2E8bpa6/NABbH42Aa3FuL1Rf
+ /KnXMnaUzQeg==
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; d="scan'208";a="354853875"
+Received: from swehrlex-mobl.amr.corp.intel.com (HELO [10.212.61.64])
+ ([10.212.61.64])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jan 2021 10:00:44 -0800
+Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org,
+ yung-chuan.liao@linux.intel.com
+References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
+ <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
+ <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
+ <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
+ <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
+ <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
+Date: Thu, 21 Jan 2021 12:00:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: stable@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
+Cc: gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,60 +93,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If dobj->control is not initialized we end up in an OOPs during
-skl_tplg_complete:
 
-[   26.553358] BUG: kernel NULL pointer dereference, address:
-0000000000000078
-[   26.561151] #PF: supervisor read access in kernel mode
-[   26.566897] #PF: error_code(0x0000) - not-present page
-[   26.572642] PGD 0 P4D 0
-[   26.575479] Oops: 0000 [#1] PREEMPT SMP PTI
-[   26.580158] CPU: 2 PID: 2082 Comm: udevd Tainted: G         C
-5.4.81 #4
-[   26.588232] Hardware name: HP Soraka/Soraka, BIOS
-Google_Soraka.10431.106.0 12/03/2019
-[   26.597082] RIP: 0010:skl_tplg_complete+0x70/0x144 [snd_soc_skl]
 
-Cc: <stable@vger.kernel.org>
-Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHL")
-Tested-by: Lukasz Majczak <lma@semihalf.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-v3: order local variables by length
+On 1/21/21 9:41 AM, Srinivas Kandagatla wrote:
+> 
+> 
+> On 21/01/2021 14:56, Pierre-Louis Bossart wrote:
+>>
+>>
+>>> Port allocations are something like this:
+>>>
+>>> RX: (Simple)
+>>> Port 1 -> HPH L/R
+>>> Port 2 -> CLASS H Amp
+>>> Port 3 -> COMP
+>>> Port 4 -> DSD.
+>>>
+>>> TX: (This get bit more complicated)
+>>> Port 1: PCM
+>>> Port 2: ADC 1 & 2
+>>> Port 3: ADC 3 & 4
+>>> Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
+>>> Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
+>>>
+>>> We handle the port allocation dynamically based on mixer and dapm 
+>>> widgets in my code! Also channel allocations are different for each 
+>>> function!
+>>
+>> Sorry, I am not following here. What is dynamic here and use-case 
+>> dependent? And is this a mapping on the master or the codec sides that 
+>> you want to modify?
+> 
+> [SLAVE]-------[MASTER]
+> NA-------------Port 1: PCM
+> Port 1---------Port 2: ADC 1 & 2
+> Port 2---------Port 3: ADC 3 & 4
+> Port 3---------Port 4: DMIC-0, DMIC-1, DIMC-2 , DMIC-3 and MBHC
+> Port 4---------Port 5: DMIC-4, DMIC-5, DMIC-6 and DMIC-7
+> 
+> 
+> Mapping is still static however Number of ports selection and channel 
+> mask will be dynamic here.
+> 
+> 
+> Example: for Headset MIC usecase we will be using Slv Port1, Slv Port3 
+> along with Mstr Port2 and Master Port4
+> 
+> Similarly for usecases like Digital MIC or other Analog MICs.
 
- sound/soc/intel/skylake/skl-topology.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Sorry, I must be thick here, but in my experience the choice of Digital 
+or analog mics is a hardware design level not a use-case one. Using ADC 
+1 & 2 at the same time as DMICs is very surprising to me. You'd have 
+different sensitivities/performance, not sure how you would combine the 
+results.
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ae466cd59292..ffd37aaecdf1 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3619,15 +3619,16 @@ static void skl_tplg_complete(struct snd_soc_component *component)
- 
- 	list_for_each_entry(dobj, &component->dobj_list, list) {
- 		struct snd_kcontrol *kcontrol = dobj->control.kcontrol;
--		struct soc_enum *se =
--			(struct soc_enum *)kcontrol->private_value;
--		char **texts = dobj->control.dtexts;
-+		struct soc_enum *se;
- 		char chan_text[4];
-+		char **texts;
- 
--		if (dobj->type != SND_SOC_DOBJ_ENUM ||
--		    dobj->control.kcontrol->put !=
--		    skl_tplg_multi_config_set_dmic)
-+		if (dobj->type != SND_SOC_DOBJ_ENUM || !kcontrol ||
-+		    kcontrol->put != skl_tplg_multi_config_set_dmic)
- 			continue;
-+
-+		se = (struct soc_enum *)kcontrol->private_value;
-+		texts = dobj->control.dtexts;
- 		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
- 
- 		for (i = 0; i < se->items; i++) {
--- 
-2.30.0.296.g2bfb1c46d8-goog
+I also don't see how a headset mic can both use Analog and digital, 
+unless we have a different definition of what a 'headset' is.
 
+>>>> Does this help and can you align on what Intel started with?
+>>>
+>>> Firstly, This is where the issue comes, if we go with the 
+>>> suggested(dai->id) solution, we would end up with a long list of 
+>>> dai-links with different combinations of both inputs/output 
+>>> connections and usecases. Again we have to deal with limited DSP 
+>>> resources too!
+>>>
+>>> Secondly, The check [1] in stream.c will not allow more than one 
+>>> master port config to be added to master runtime. Ex: RX Port 1, 2, 3 
+>>> is used for Headset Playback.
+>>
+>> I am confused here, we do have examples in existing codec drivers 
+>> where we use multiple ports for a single stream, e.g. for IV feedback 
+>> we use 2 ports.
+> 
+> Is this on multi_link? which is why it might be working for you.
+
+no, this is done at the codec driver level, which has no notion of 
+multi-link. we pass a port_config as a array of 2.
+
+> Currently we have below check in sdw_stream_add_master().
+> 
+> if (!bus->multi_link && stream->m_rt_count > 0) {
+>      dev_err(bus->dev, "Multilink not supported, link %d\n", bus->link_id);
+>      ret = -EINVAL;
+>      goto unlock;
+> }
+> 
+> If we have single master(like my case) and dai-links which have more 
+> then one port  will be calling  sdw_stream_add_master() for each port, 
+> so m_rt_count above check will fail for the second call!
+
+if you use multiple ports in a given master for the same stream, you 
+should have the m_rt_count == 1. That's a feature, not a bug.
+
+A port is not a stream... You cannot call sdw_stream_add_master() for 
+each port, that's not what the concept was. You allocate ONE master_rt 
+per master, and that master_rt deals with one or more ports - your choice.
+
+A 'stream' is an abstract data transport which can be split across 
+multiple masters/sales and for each master/slave use multiple ports.
+When calling sdw_stream_add_master/slave, you need to provide a 
+port_config/num_ports to state which ports will be used on that 
+master/slave when using the stream. That's how we e.g. deal with 4ch 
+streams that are handled by two ports on each side.
+
+To up-level a bit, the notion of 'stream' is actually very very similar 
+to the notion of dailink. And in fact, the 'stream' is actually created 
+for Intel in the dailink .startup callback, so I am quite in the dark on 
+what you are trying to accomplish.
