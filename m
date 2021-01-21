@@ -2,55 +2,63 @@ Return-Path: <SRS0=oBR+=GY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A6ADC433E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 22:31:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C377BC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 23:21:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC6DC23A56
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 22:31:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC6DC23A56
-Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 24E1F20769
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jan 2021 23:21:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 24E1F20769
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C41E193F;
-	Thu, 21 Jan 2021 23:30:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C41E193F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E770B1936;
+	Fri, 22 Jan 2021 00:20:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E770B1936
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611268263;
-	bh=AbmWnn2ruaLUE6yAN/XKZRRzBGtEXNGSqz9+dZK7Uhs=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1611271306;
+	bh=uPr7sxkNEzNgnF5JNan2RO8Rm2guGwhenLegO6UZ4fs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QCdWMUm+7pJ5oHIsHc1Ua51OwTn3Tcy40P2J7iRqPV3FeWF8lSFJqQ/cFxLP2DTsT
-	 eXcVb+NnGqraHs/xJq/VXrbqnFc6/FfMKqBlqa+0ZP7AepozIjoi8FsWABbpA572E+
-	 6DErRBIeJV+FgI/3d6KgZnHkCfCGmk5o5zHusbo8=
+	b=tgiPY/2/J/9Tdw+DYok57yj0sGBmeNL4EkD4x/FJ/doV21yIVsECxzHwJ9Mtr67cZ
+	 HTk1M9O9Smsm/JxweB8kOom7/N/5ZVlhbcBxqUPwatqwm3zLKzzRuZxhDAazqaKCI1
+	 ToCuwOBQ36c4/Xs33TjawpQlcZb5aTRP4wm4ON+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 869A9F80272;
-	Thu, 21 Jan 2021 23:30:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67A10F80255;
+	Fri, 22 Jan 2021 00:20:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 258B1F80272; Thu, 21 Jan 2021 23:30:06 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B3F01F80255
- for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 23:30:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3F01F80255
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1611268201369405031-webhooks-bot@alsa-project.org>
-References: <1611268201369405031-webhooks-bot@alsa-project.org>
-Subject: [Regression] Game "Rise of the Tomb Raider" crashes at launch
-Message-Id: <20210121223006.258B1F80272@alsa1.perex.cz>
-Date: Thu, 21 Jan 2021 23:30:06 +0100 (CET)
+ id 6AE22F80257; Fri, 22 Jan 2021 00:20:54 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8276FF80164
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 00:20:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8276FF80164
+Date: 22 Jan 2021 08:20:41 +0900
+X-IronPort-AV: E=Sophos;i="5.79,365,1602514800"; d="scan'208";a="69784950"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 22 Jan 2021 08:20:41 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 60D324134250;
+ Fri, 22 Jan 2021 08:20:41 +0900 (JST)
+Message-ID: <87bldhanow.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: duplicate line at samsung speyside driver
+In-Reply-To: <20210121122918.GA4588@sirena.org.uk>
+References: <87h7nb9buz.wl-kuninori.morimoto.gx@renesas.com>
+ <20210121122918.GA4588@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,9 +74,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #116 was edited from Oschowa:
 
-The the native linux version of the game "Rise of the Tomb Raider" crashes at launch when it doesn't detect a working pulseaudio server and it falls back to alsa-lib directly. This is a regression, the last working alsa-lib version is v1.2.1.2 and bisection yields 5ee5ef31b5ff3f as the first bad commit. The crash happens when using "real" alsa hardware drivers as well as when running on the pulseaudio-alsa or pipewire-alsa software plug. Happy to provide more info if i can.
+Hi Mark
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/116
-Repository URL: https://github.com/alsa-project/alsa-lib
+> > I noticed samsung speyside driver has duplicate line on audio_paths.
+> > I think it is typo or something...
+> 
+> Yes, that looks like a mistake.
+
+But I don't know what it should be.
+I hope someone fix it with below tag.
+
+	Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+
+Thank you for your help !!
+
+Best regards
+---
+Kuninori Morimoto
