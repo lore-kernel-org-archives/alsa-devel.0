@@ -2,112 +2,73 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 286E2C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:47:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE9BCC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 16:42:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9FB01221FF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:47:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9FB01221FF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 45EB523A84
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 16:42:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45EB523A84
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F8841F1E;
-	Fri, 22 Jan 2021 16:46:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F8841F1E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45BBD1614;
+	Fri, 22 Jan 2021 17:41:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45BBD1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611330433;
-	bh=BAcpmXRcuHZv36PsrGmN0zf/UNtioDrJS61cSFOn46A=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1611333718;
+	bh=C/geiDc2zIYRH4HMaZ2jFedLsrrWK3tEBTdTBYvj5uY=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SjmO1RDPy7tXU82C1Q0chlKFAIXZMqbJauXioqFg+g/F3msjiaPZZx+iIfODK7ZoW
-	 YFOsaqeohi2Nxlhz1UXIFObMu83cOOFGf7xXae5MS+7VtQXmr1EjcWb/7XMTXFPBIT
-	 h1fdsWP7VOifB2DpFwcfkgHthUNkXy2LD4GThrIU=
+	b=sLmpMiP+KLWmUVI6dI2Iv9y/BGSnU+BySBwzPOt5D4YOM2e7XUjIEArM9C2F6ZGpH
+	 9D4slyB1dCKmIWvWwHGaNkwksbom1fuRGQzMzma/LwKVz71uHWh73jMzPlUuKel/o3
+	 v3UK8l/vRYdF91HkRjTgDEqx0twqTJA8UkKbvn5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A933BF80164;
-	Fri, 22 Jan 2021 16:46:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2FB3F80166;
+	Fri, 22 Jan 2021 17:41:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5089FF8015B; Fri, 22 Jan 2021 16:46:21 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id AB9D8F8016E; Fri, 22 Jan 2021 17:41:05 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E7CFF8015B
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 16:46:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E7CFF8015B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="t2l/9z+E"
-Received: by mail-wm1-x336.google.com with SMTP id i63so4705712wma.4
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 07:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=6BJVBNYMAJnjXGQAp7Nl9aAWAa4hMHVCTub9r3HEuIs=;
- b=t2l/9z+E+Tiv3gbTjNXHfYhOgbJ8go4nblFHGfFlq1kW9fRXX9/PqfGVW7n1TxtD6P
- xdjzuoB9YDJ+Gp+ixZctAdMrW09FCsOlshd7bxoEWYE03cuv5OrQeyxqtEkbkiQRkc6I
- /M+ZPhQPcBwesVZbazRwMCOLWkOjLe64h3NLBS/POLjVo46YRkuQqa7660kH1W8ocuJQ
- hUEzE3lsFw1L51/ER7hRQOqFy8cOSfIavTedSrP4T26UtifIfcpCB2TXs6nYRm63VuBb
- vrvotGi7XMYbgzosLGkl21WL7IXCqtf+k8lE5VVhh1W50lIwPkDExRNTGZPtMXuLsVpD
- 5HNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=6BJVBNYMAJnjXGQAp7Nl9aAWAa4hMHVCTub9r3HEuIs=;
- b=H2zjMSbiS5dC+wsB3sLsWyD8l4iv10YsbHfQGPcf8jwRvDFyJWujVouOUuF8wMyIxn
- +1rPf3yGOk3bD6FOgCdsgzrCySsZ2QwjTJT+GPiRWBfoJiWsU+iurhGB9+BEUTQXl4Ov
- y2dFT0rJzPUW4eVxM7E0PUG+7kW2j1kX6zGFANRKSlYsCRz9QTifF9JtrVLb2KDOthJd
- 8z/tM0o7D08gX6uimlHQWu0uWWt6dcPI1/0qd86M+L7TZyYaSoTjzL4zcWNU8v/4IzWJ
- PvflF3bBuOYwl1a1z+p0vgWahWm1jIoeSJM9YrYAixJ0+hYE7BLmif+j+qvnYFO0L7wT
- d5QQ==
-X-Gm-Message-State: AOAM5322I8Z+1dHSXT4uhOrtQLOHfbvh/EydHsdmabPztlebOxgQ5wac
- eCUDLGfbxnQPqzc1evcrNzig8LKaG1HCzQ==
-X-Google-Smtp-Source: ABdhPJyFNpDKV7btmzNe492kbobgkiH71L8veh/Za9wqnSB3viv/K7LYABMcZgMPFHF3eTPqZ50V8g==
-X-Received: by 2002:a05:600c:414b:: with SMTP id
- h11mr4673219wmm.4.1611330377499; 
- Fri, 22 Jan 2021 07:46:17 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id n12sm13731221wrg.76.2021.01.22.07.46.16
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Fri, 22 Jan 2021 07:46:16 -0800 (PST)
-Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- vkoul@kernel.org, yung-chuan.liao@linux.intel.com
-References: <20210120180110.8357-1-srinivas.kandagatla@linaro.org>
- <20210120180110.8357-2-srinivas.kandagatla@linaro.org>
- <fcc1b199-644d-8c7f-5e8b-d12b0d9c9a04@linux.intel.com>
- <0a2bbbe5-821a-34dd-e893-fef42baaad2b@linaro.org>
- <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
- <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
- <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
- <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
- <eaf13d70-86fe-3e18-7a5a-4043f2d8a22d@linux.intel.com>
- <aaf34f07-5eed-3045-e4c6-dc9416689b20@linaro.org>
- <f960757f-ec8b-6d3f-f00e-27242c687926@linux.intel.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e962caa8-89c3-4a22-5932-4498c406e8f8@linaro.org>
-Date: Fri, 22 Jan 2021 15:46:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A94D1F80129
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 17:41:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A94D1F80129
+IronPort-SDR: 1cG8OoydoWGlODlbMGcGua6n08EBfJTTd6VGKBVLj3WAd84JPEoCXER/SvvlNlfV9k4wLRjgPx
+ JWd0Hwvgtkyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="158649861"
+X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; d="scan'208";a="158649861"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jan 2021 08:40:56 -0800
+IronPort-SDR: 5pxU+mVZNOVnvUXvnUwFOBkhp3hVbWG9a+ZCkzo1fjSzewKswqHZ10G0hsJxuSELuW4rDc2H5h
+ /f72YB8dzWWQ==
+X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; d="scan'208";a="400724151"
+Received: from tflint-mobl.amr.corp.intel.com (HELO
+ ovakana-MOBL1.amr.corp.intel.com) ([10.255.229.172])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jan 2021 08:40:56 -0800
+Message-ID: <9888b27b0dc9399861ecbee23d5d4ea0d844718c.camel@linux.intel.com>
+Subject: Re: Question about hdac_ext_link ref_count management
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 22 Jan 2021 08:40:55 -0800
+In-Reply-To: <s5h1red83ic.wl-tiwai@suse.de>
+References: <aca60b522335f3f916f9f8f204693365bfc32231.camel@linux.intel.com>
+ <s5h1red83ic.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <f960757f-ec8b-6d3f-f00e-27242c687926@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: gregkh@linuxfoundation.org, sanyog.r.kale@intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -123,65 +84,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 22/01/2021 15:32, Pierre-Louis Bossart wrote:
->>
->> Are you suggesting that we have dailink for each usecase like:
->>
->> "headset capture"
->> "Analog MIC1 capture"
->> "Analog MIC2 Capture"
->>
->> ...
->>
->> "Analog MIC4 Capture"
->>
->> ...
->>
->> "DMIC0 capture"
->> "DMIC1 Capture"
->> "DMIC2 Capture"
->>
->> ...
->>
->> "DMIC7 Capture"
->> ..
->> "Headset Playback"
->> "Ear Playback"
->> ..
->> "Aux Playback"
->> ...
->>
->> this is not really doable!
+On Fri, 2021-01-22 at 15:12 +0100, Takashi Iwai wrote:
+> On Fri, 22 Jan 2021 00:23:53 +0100,
+> Ranjani Sridharan wrote:
+> > Hi Takashi,
+> > 
+> > While exploring some power optimizations on Intel platforms, I
+> > noticed
+> > that the hdac_ext_link ref_count is incremented during codec probe
+> > in hdac_hda_codec_probe() and the ref_count is held until the codec
+> > device is removed. 
+> > 
+> > I was wondering if it would be possible to call the get/put for the
+> > hdac_ext_link in the codec runtime suspend/resume callbacks so that
+> > the
+> > link is powered up only when the link is in use. Are there any
+> > downsides to doing this? 
 > 
-> No, what I was saying is that you need to define multiple streams e.g.
-> - headset capture (configured with or without click suppression)
-> - mic capture (configured with AMICs or DMICs)
-> - playback (or possibly different endpoint specific streams depending on 
-> whether concurrency between endpoint is possible)
+> Wouldn't the  snd_hdac_ext_bus_link_power_up() / down() calls do the
+> runtime PM stuff?  Maybe we need to revisit those link power
+> management.  The ext stuff isn't well m
+> and, I'm afraid.
+Thanks, Takashi.
+It looks like snd_hdac_ext_bus_link_power_up/down() are only called
+during snd_hdac_ext_bus_link_get/put(). Actually, in my observation
+disabling the CORB/RIRB buffer DMAs is what saves us power and this is
+done only if snd_hdac_ext_bus_link_put() is called on all links.
+
 > 
-> if you change the configuration, you have to tear down the stream and 
-> reconfigure it - and for this we already have the required API and you 
-> can guarantee that the configuration for that stream is consistent 
-> between master and slave(s).
+> The get() and put() are obviously for fully enabling and disabling
+> the
+> device, hence it's not suitable for the runtime PM suspend/resume.
+> The power_up() / down() should be adjusted to fit with the runtime PM
+> call, if any.
 
-Yes, we make sure that new configuration is only applied before the 
-stream is started, and not in middle of already started stream.
-> 
->> All am saying is that codec can decide which ports it has to select 
->> based on mixer setting before the stream is setup/started. This 
->> updated mapping between slv port and master ports is passed as part of 
->> the port_config in sdw_stream_add_slave().
-> 
-> if you completely remove the stream and re-add it with updated 
-> configuration things should work.
+The only additional thing that snd_hdac_ext_bus_link_get/put() does on
+top of snd_hdac_ext_bus_link_power_up/down() is to stop the CORB/RIRB
+DMA when all the link ref_counts are 0. Do you think it is not
+advisable to stop the CORB/RIRB DMA during runtime PM?
 
-That's exactly what we do currently!
+Thanks,
+Ranjani
 
-The updated ports due to new configuration ex: for "mic capture" dailink 
-needs to be communicated from slave(codec) to master so that it can 
-allocate correct ports. That is what this patch is trying to do (share 
-current port map information).
-
---srini
