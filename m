@@ -2,75 +2,95 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67CD1C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 05:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CA5FC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 05:49:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDDA723122
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 05:27:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDDA723122
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id A6600239D1
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 05:49:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6600239D1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=endlessos.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B87411940;
-	Fri, 22 Jan 2021 06:26:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B87411940
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2899C1940;
+	Fri, 22 Jan 2021 06:48:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2899C1940
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611293252;
-	bh=UX7+HMUsZpJdU81APX2zHmnMKosf5Vsowq/SK1uyEQ0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bnx+xyMWnCYJ1sDvx5NrVAz/YTHOZD+481O1CGsQxnwMuAFJsbxai91tDoJYZN2VS
-	 KngFLTv7nxiVqEd9nswqh9RX991SD9r//Vk17LQOBcRntqMCkcKtukIUpDDFRPBar1
-	 mwV/5rBs4TVm2yq3SB0L2RQIsfAZnR9lz6rTn+Ik=
+	s=default; t=1611294584;
+	bh=gYRorHewYq9whYgEX7FUXIW9+OX6/PF7ztqN4ufg42Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LYR/tLiBLqWeGW3IWUkelH942sCWipqI7mkyhzRJrhD4Lmfpa2lTQ/QMsmnrDbS0L
+	 vNpyyMin/rtUuh97kOzobszUeC1yQJL0hk+PQX2JyIc73IyGtd4Xo9yaXfrxPZncOy
+	 NLYi3tACO1uaK4vuMcF2SYeUd9yyHlZwUOKgCJes=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB508F80166;
-	Fri, 22 Jan 2021 06:26:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CC9FF80166;
+	Fri, 22 Jan 2021 06:48:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0B69F8016E; Fri, 22 Jan 2021 06:26:38 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4EC35F8016E; Fri, 22 Jan 2021 06:48:52 +0100 (CET)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com
+ [IPv6:2607:f8b0:4864:20::536])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 185BDF80164
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 06:26:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 185BDF80164
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFB65F80164
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 06:48:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFB65F80164
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WFq05fx+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C902023122;
- Fri, 22 Jan 2021 05:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611293185;
- bh=UX7+HMUsZpJdU81APX2zHmnMKosf5Vsowq/SK1uyEQ0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=WFq05fx+JSBMMoISPxgjHxuiwb3DiYylih5P1SP9TexlIIgBHGzlfEEzDx7VWPP65
- Hr2ssce4Xx+JO1xJfoJmC8J4yjVlig1du7EDYY2FOYgil1MSv2e5K+35W/gMJtffui
- VTpqQ9WTFaMzSoYHJT359sTvVf+DQ42KYCFiluG1z2a7z6dAr9Lm+mvh9dXektEXaj
- 44t9aKyqx+uXev7Cdj2ajvYMQagO5Ty0a+FmO2RLavnSiSHlpbXFqplm9Ttkrwv+DY
- eqx8SSe5McjqTZs5AW8RitzC88r8eFgqrjj1PkcNwIm96snKiVa7zvIpqZDeSLHX4i
- /hi2AKE3XwG7w==
-Date: Fri, 22 Jan 2021 10:56:21 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/2] ASoC: SOF: SND_INTEL_DSP_CONFIG dependency
-Message-ID: <20210122052621.GI2771@vkoul-mobl>
-References: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
- <20210122005725.94163-3-pierre-louis.bossart@linux.intel.com>
+ dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org
+ header.b="odYmuytY"
+Received: by mail-pg1-x536.google.com with SMTP id 30so2965307pgr.6
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2021 21:48:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=endlessos.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=mpUv7BpGe97VvIuJXCpyMafCEF/2ASdyYXmAmRoiigA=;
+ b=odYmuytYpz1voPKzJ/dPbeeWfurHPYBTibVwl0y74lY8C7g1V4cuzxdAS8eh3Xmlxn
+ wGktiwm9XJe7fJw8vzAiZqm7q3MW2eJfwdE1q3iFs9bPX8PgDEmeVDCtYyR3Lkb8Rh1X
+ Qo8w0h+aklZCca+WP1zdB70lUtmf9ZZbC7Sa94RupgyuP2OSJO7BXTJuaD6tz+s6cZpD
+ Nbe6jlS6ToQcdSjjilobeHkUiSHm/b6xevaikJuLAzwFM331EfhuBTrDcpgNf5BPv7Tk
+ 8xB6rYsuQsP+yyM5o+3+iX8K6kxj90hm6bgyyfLH8xkRChlg9n5aqXnZmhW4RfMIoNrK
+ B16A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=mpUv7BpGe97VvIuJXCpyMafCEF/2ASdyYXmAmRoiigA=;
+ b=gYVMYqRlrHyn/7m9EOjmZygJLUDxCKRkseaB4xJFVimj3C5Mia6Xu98yfSozEVX5EW
+ ekwpRafKLztpmDy4I+w77GPLbOUep/Hx2a2gxx98yU5PCPXVsDjnnQ5yy3tJ5S6jBhs+
+ HBvNagxXj1Og/MReXn5T7BJCt/fSZDHpA8IDdswjoowsf7htXoH5v6EebbBFLTfcl3Iu
+ zNUiHxiCHa+l3ptDtLoRY587K5BPNNDPl8v3bVkPPp3z0h+GhxPAQEKXyhOr8S3G7cgZ
+ 6gixWRXxE5RJchC4ayDpsUD38CCtEei2lxJaw5u+LZUxZ6Hvs0lIYJkW5i9x5d3EvZ6w
+ xKHA==
+X-Gm-Message-State: AOAM533xtGfq3aFWqWsyvPoJSRlinJQDALbrKFCXgsiJJO9Wdndh0ytl
+ rWfnW2w//srdmMs2kJj/eKg53A==
+X-Google-Smtp-Source: ABdhPJxIGamgud5deMH7oQJJpOQfILtqLFBzrLaNURQdl/K3azp/yl9sgf3KwO0wZiRqfEjPwEGZNw==
+X-Received: by 2002:a63:520d:: with SMTP id g13mr3061728pgb.289.1611294518754; 
+ Thu, 21 Jan 2021 21:48:38 -0800 (PST)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw.
+ [123.204.46.122])
+ by smtp.googlemail.com with ESMTPSA id gg6sm12252779pjb.2.2021.01.21.21.48.36
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 21 Jan 2021 21:48:38 -0800 (PST)
+From: Jian-Hong Pan <jhp@endlessos.org>
+To: Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable headset of ASUS B1400CEPE with
+ ALC256
+Date: Fri, 22 Jan 2021 13:47:06 +0800
+Message-Id: <20210122054705.48804-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122005725.94163-3-pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, Arnd Bergmann <arnd@kernel.org>, alsa-devel@alsa-project.org,
- broonie@kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Jian-Hong Pan <jhp@endlessos.org>,
+ linux-kernel@vger.kernel.org, linux@endlessos.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,79 +106,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21-01-21, 18:57, Pierre-Louis Bossart wrote:
-> The sof-pci-dev driver fails to link when built into the kernel
-> and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
-> 
-> arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
-> sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
-> 
-> As a temporary fix, use IS_REACHABLE to prevent the problem from
-> happening. A more complete solution is to move this code to
-> Intel-specific parts, restructure the drivers and Kconfig as discussed
-> with Arnd Bergmann and Takashi Iwai.
-> 
-> Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  sound/soc/sof/sof-acpi-dev.c | 11 ++++++-----
->  sound/soc/sof/sof-pci-dev.c  | 10 ++++++----
->  2 files changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
-> index 2a369c2c6551..cc2e257087e4 100644
-> --- a/sound/soc/sof/sof-acpi-dev.c
-> +++ b/sound/soc/sof/sof-acpi-dev.c
-> @@ -131,12 +131,13 @@ static int sof_acpi_probe(struct platform_device *pdev)
->  	if (!id)
->  		return -ENODEV;
->  
-> -	ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
-> -	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
-> -		dev_dbg(dev, "SOF ACPI driver not selected, aborting probe\n");
-> -		return -ENODEV;
-> +	if (IS_REACHABLE(CONFIG_SND_INTEL_DSP_CONFIG)) {
-> +		ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
-> +		if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
-> +			dev_dbg(dev, "SOF ACPI driver not selected, aborting probe\n");
-> +			return -ENODEV;
-> +		}
+ASUS B1400CEPE laptop's headset audio is not enabled until
+ALC256_FIXUP_ASUS_HPE quirk is applied.
 
-should the else case be to continue, is the DSP not critical for the
-driver to work..?
+Here is the original pin node values:
 
->  	}
-> -
+0x12 0x40000000
+0x13 0x411111f0
+0x14 0x90170110
+0x18 0x411111f0
+0x19 0x411111f0
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1d 0x40461b45
+0x1e 0x411111f0
+0x21 0x04211020
 
-Seems unrelated change
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->  	dev_dbg(dev, "ACPI DSP detected");
->  
->  	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
-> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-> index 7757463bd81a..388772f9c4d2 100644
-> --- a/sound/soc/sof/sof-pci-dev.c
-> +++ b/sound/soc/sof/sof-pci-dev.c
-> @@ -346,10 +346,12 @@ static int sof_pci_probe(struct pci_dev *pci,
->  	const struct snd_sof_dsp_ops *ops;
->  	int ret;
->  
-> -	ret = snd_intel_dsp_driver_probe(pci);
-> -	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
-> -		dev_dbg(&pci->dev, "SOF PCI driver not selected, aborting probe\n");
-> -		return -ENODEV;
-> +	if (IS_REACHABLE(CONFIG_SND_INTEL_DSP_CONFIG)) {
-> +		ret = snd_intel_dsp_driver_probe(pci);
-> +		if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
-> +			dev_dbg(&pci->dev, "SOF PCI driver not selected, aborting probe\n");
-> +			return -ENODEV;
-> +		}
->  	}
->  	dev_dbg(&pci->dev, "PCI DSP detected");
->  
-> -- 
-> 2.25.1
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ed5b6b894dc1..290645516313 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8006,6 +8006,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x194e, "ASUS UX563FD", ALC294_FIXUP_ASUS_HPE),
++	SND_PCI_QUIRK(0x1043, 0x1982, "ASUS B1400CEPE", ALC256_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x19ce, "ASUS B9450FA", ALC294_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x19e1, "ASUS UX581LV", ALC295_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
 -- 
-~Vinod
+2.30.0
+
