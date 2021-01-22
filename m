@@ -2,56 +2,57 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00450C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 01:15:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD4BBC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 01:15:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF99322CAE
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 01:15:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF99322CAE
+	by mail.kernel.org (Postfix) with ESMTPS id DFB8E22CAE
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 01:15:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFB8E22CAE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 123A41A9A;
-	Fri, 22 Jan 2021 02:14:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 123A41A9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 006761A97;
+	Fri, 22 Jan 2021 02:14:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 006761A97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611278101;
-	bh=urSR+52DnY8+YBLWJukkpnmdFjrC2hfvCNSUI3pJsgM=;
+	s=default; t=1611278105;
+	bh=z++WJW7HcSObHS3V7V5hkCcUHTLAZx2yTO9ecrx96L8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=npWSTdQTzapcqKGxNkvg6Ab3UnOqGwdiWfk9dGN5p48m0mU2A9q6mH+uv0A8gxbij
-	 e04G3npInjqoZN2/ITv57arKAlHJTgNrIfGUDQDzRPbSMnwpoa8c9m8TecAjHTWlGS
-	 XplctYNcsc3kWYw1Ig9/U+tJpj2E4ya+L09a1JvU=
+	b=O4xKDOoM/Nt84uZBGs/IfwEg+AvgYqXQiv83oJeT5LZEWjG6hFg9s/vzn8vDe3lp/
+	 ER9X5oDNq/egwCWrTx8jhHQ7//VnCff0PWgvX81sREZAf+EvtyskNdTy6fyy3WxMUJ
+	 rqEbljaqQYMAHELpNHahGSOCFBgWzU/wHrttvkrQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1E5CF80272;
-	Fri, 22 Jan 2021 02:13:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 826ECF804BC;
+	Fri, 22 Jan 2021 02:13:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5E6DF80273; Fri, 22 Jan 2021 02:13:40 +0100 (CET)
+ id CEAB8F804C2; Fri, 22 Jan 2021 02:13:47 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 2BB13F8026A
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 02:13:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BB13F8026A
-Date: 22 Jan 2021 10:13:32 +0900
-X-IronPort-AV: E=Sophos;i="5.79,365,1602514800"; d="scan'208";a="69575676"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 22 Jan 2021 10:13:32 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 9A8DDF80273
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 02:13:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A8DDF80273
+Date: 22 Jan 2021 10:13:43 +0900
+X-IronPort-AV: E=Sophos;i="5.79,365,1602514800"; d="scan'208";a="69575702"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 22 Jan 2021 10:13:43 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 575C0418037D;
- Fri, 22 Jan 2021 10:13:32 +0900 (JST)
-Message-ID: <878s8laigt.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6FE45401AEA1;
+ Fri, 22 Jan 2021 10:13:43 +0900 (JST)
+Message-ID: <875z3paigi.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/5] ASoC: soc-pcm: tidyup pcm setting
+Subject: [PATCH 3/5] ASoC: soc-pcm: add soc_create_pcm() and simplify
+ soc_new_pcm()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87a6t1aihl.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,31 +75,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current soc_new_pcm() setups pcm randomly.
-This patch tidyup it.
+soc_new_pcm() implementation is very long / verbose / complex,
+thus, it is very difficult to read.
+If we read it carefully, we can notice that it is consisted by
+
+	int soc_new_pcm(...)
+	{
+		(1) judging playback/caputre part
+		(2) creating the PCM part
+		(3) setup pcm/rtd part
+	}
+
+This patch adds new soc_create_pcm() for (2) part
+and offload it from snd_pcm_new().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-pcm.c | 43 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 28 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 7079a301ec31..d5f1f653ec9b 100644
+index 46818b3319f6..10c5e0beecd8 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2760,8 +2760,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	else
- 		rtd->close_delayed_work_func = snd_soc_close_delayed_work;
+@@ -2719,18 +2719,12 @@ static int soc_get_playback_capture(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
  
--	pcm->nonatomic = rtd->dai_link->nonatomic;
- 	rtd->pcm = pcm;
-+	pcm->nonatomic = rtd->dai_link->nonatomic;
- 	pcm->private_data = rtd;
+-/* create a new pcm */
+-int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
++static int soc_create_pcm(struct snd_pcm **pcm,
++			  struct snd_soc_pcm_runtime *rtd,
++			  int playback, int capture, int num)
+ {
+-	struct snd_soc_component *component;
+-	struct snd_pcm *pcm;
+ 	char new_name[64];
+-	int ret = 0, playback = 0, capture = 0;
+-	int i;
+-
+-	ret = soc_get_playback_capture(rtd, &playback, &capture);
+-	if (ret < 0)
+-		return ret;
++	int ret;
  
- 	if (rtd->dai_link->no_pcm || rtd->dai_link->params) {
+ 	/* create the PCM */
+ 	if (rtd->dai_link->params) {
+@@ -2738,13 +2732,13 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			 rtd->dai_link->stream_name);
+ 
+ 		ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+-					   playback, capture, &pcm);
++					   playback, capture, pcm);
+ 	} else if (rtd->dai_link->no_pcm) {
+ 		snprintf(new_name, sizeof(new_name), "(%s)",
+ 			rtd->dai_link->stream_name);
+ 
+ 		ret = snd_pcm_new_internal(rtd->card->snd_card, new_name, num,
+-				playback, capture, &pcm);
++				playback, capture, pcm);
+ 	} else {
+ 		if (rtd->dai_link->dynamic)
+ 			snprintf(new_name, sizeof(new_name), "%s (*)",
+@@ -2756,7 +2750,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 				"multicodec" : asoc_rtd_to_codec(rtd, 0)->name, num);
+ 
+ 		ret = snd_pcm_new(rtd->card->snd_card, new_name, num, playback,
+-			capture, &pcm);
++			capture, pcm);
+ 	}
+ 	if (ret < 0) {
+ 		dev_err(rtd->card->dev, "ASoC: can't create pcm %s for dailink %s: %d\n",
+@@ -2765,6 +2759,25 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	}
+ 	dev_dbg(rtd->card->dev, "ASoC: registered pcm #%d %s\n",num, new_name);
+ 
++	return 0;
++}
++
++/* create a new pcm */
++int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
++{
++	struct snd_soc_component *component;
++	struct snd_pcm *pcm;
++	int ret = 0, playback = 0, capture = 0;
++	int i;
++
++	ret = soc_get_playback_capture(rtd, &playback, &capture);
++	if (ret < 0)
++		return ret;
++
++	ret = soc_create_pcm(&pcm, rtd, playback, capture, num);
++	if (ret < 0)
++		return ret;
++
+ 	/* DAPM dai link stream work */
+ 	if (rtd->dai_link->params)
+ 		rtd->close_delayed_work_func = codec2codec_close_delayed_work;
+@@ -2825,8 +2838,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 
+ 	ret = snd_soc_pcm_component_new(rtd);
+ 	if (ret < 0) {
+-		dev_err(rtd->dev, "ASoC: pcm %s constructor failed for dailink %s: %d\n",
+-			new_name, rtd->dai_link->name, ret);
++		dev_err(rtd->dev, "ASoC: pcm constructor failed for dailink %s: %d\n",
++			rtd->dai_link->name, ret);
+ 		return ret;
+ 	}
+ 
 -- 
 2.25.1
 
