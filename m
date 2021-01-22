@@ -7,68 +7,67 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FA0DC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 00:59:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5FCAC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 00:59:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58AE522CAE
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 00:59:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58AE522CAE
+	by mail.kernel.org (Postfix) with ESMTPS id 1813B22CAE
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 00:59:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1813B22CAE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6968B1A93;
-	Fri, 22 Jan 2021 01:58:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6968B1A93
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71A1B1A9B;
+	Fri, 22 Jan 2021 01:58:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71A1B1A9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611277181;
-	bh=Q+B0qrTbv1IwQ3bcAu7DN91+QWyGJHe3L6xITcHksCc=;
+	s=default; t=1611277188;
+	bh=CLOGYWMOlsgqJ1zuqSK65JOm8WjbIrD0BD+/A/YKzDo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xt5MCjNmYGhyLWeJP8IKSWKrFb4E0c4VLQQDytNh/5bPd7aJYVsqYgy2TrlhE6p/o
-	 7hsWzC+lMMqBp3FGXP2JKRMvJo5kLZalf6SwvbD1Xn9TBo6nsMCGVzEwwTYsEKPnRt
-	 WcYa3sqTFtzDdjEkh8hA0LHRFQhvpO7Kr7tBVLfc=
+	b=vuiVtzvmVC3mrMj1KNZCEQgHUbsd1TWjLvaD2pj4LG6igd5J/FAkjYP55DgROYOUd
+	 ErVjYq4GyvE7O1f9FFCwuLkMOFW/c5hdR2s9rOdyj/Srqp2qaRTmIeBmjqBkSvTdcZ
+	 mhmyKxWayAQmnB1wG/nqxzq2ZiFGxu48PrMQdU+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E4CEF804B2;
-	Fri, 22 Jan 2021 01:57:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 122B3F804CB;
+	Fri, 22 Jan 2021 01:58:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D25CDF80272; Fri, 22 Jan 2021 01:57:54 +0100 (CET)
+ id AE1CBF804BC; Fri, 22 Jan 2021 01:57:57 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33252F80162
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 01:57:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33252F80162
-IronPort-SDR: Vo/6unjVFht7g2hXi6ToCWxBwnrD2DDDuJWOavoTciogyew8jj0u/vD993e7nZw14zX3aNhaDO
- H1Vzjxcil7LA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="264190804"
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; d="scan'208";a="264190804"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E014F80255
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 01:57:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E014F80255
+IronPort-SDR: 7IdPzX1WTUvRGLq3ZtKXPuIuqTQOuEFrSPjv/CYOq/pBuFGtYex0OZ+a5cDzZbpKHScqFqB1Z+
+ nfB8cr9IEVzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="264190805"
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; d="scan'208";a="264190805"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jan 2021 16:57:41 -0800
-IronPort-SDR: f4of66wyfUTa0ziZLciE0QiVvISvv5P3dY66h9UfDiivgoyKMfOaRQxaBrbV5Izl5AyrfF7/MD
- JgoT46GjCfgQ==
-X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; d="scan'208";a="367126953"
+ 21 Jan 2021 16:57:42 -0800
+IronPort-SDR: v+KqZdMhu8lfJWyMzBL0QM/aTH/5r5sKF9b0LAt3NJ3Sxyk2PtJ4j6ionH6jgwLIMf65d3UD66
+ ITgLKO8qbyMg==
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; d="scan'208";a="367126954"
 Received: from seleedom-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.133.150])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jan 2021 16:57:40 -0800
+ 21 Jan 2021 16:57:41 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ASoC: SOF: Intel: soundwire: fix select/depend unmet
- dependencies
-Date: Thu, 21 Jan 2021 18:57:24 -0600
-Message-Id: <20210122005725.94163-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: SOF: SND_INTEL_DSP_CONFIG dependency
+Date: Thu, 21 Jan 2021 18:57:25 -0600
+Message-Id: <20210122005725.94163-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
 References: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Arnd Bergmann <arnd@kernel.org>, kernel test robot <lkp@intel.com>,
+Cc: Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
  tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  vkoul@kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,56 +85,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The LKP bot reports the following issue:
+The sof-pci-dev driver fails to link when built into the kernel
+and CONFIG_SND_INTEL_DSP_CONFIG is set to =m:
 
-WARNING: unmet direct dependencies detected for SOUNDWIRE_INTEL
-  Depends on [m]: SOUNDWIRE [=m] && ACPI [=y] && SND_SOC [=y]
-  Selected by [y]:
-  - SND_SOC_SOF_INTEL_SOUNDWIRE [=y] && SOUND [=y] && !UML &&
-  SND [=y] && SND_SOC [=y] && SND_SOC_SOF_TOPLEVEL [=y] &&
-  SND_SOC_SOF_INTEL_TOPLEVEL [=y] && SND_SOC_SOF_INTEL_PCI [=y]
+arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_pci_probe':
+sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
 
-This comes from having tristates being configured independently, when
-in practice the CONFIG_SOUNDWIRE needs to be aligned with the SOF
-choices: when the SOF code is compiled as built-in, the
-CONFIG_SOUNDWIRE also needs to be 'y'.
+As a temporary fix, use IS_REACHABLE to prevent the problem from
+happening. A more complete solution is to move this code to
+Intel-specific parts, restructure the drivers and Kconfig as discussed
+with Arnd Bergmann and Takashi Iwai.
 
-The easiest fix is to replace the 'depends' with a 'select' and have a
-single user selection to activate SoundWire on Intel platforms. This
-still allows regmap to be compiled independently as a module.
-
-This is just a temporary fix, the select/depend usage will be
-revisited and the SOF Kconfig re-organized, as suggested by Arnd
-Bergman.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: a115ab9b8b93e ('ASoC: SOF: Intel: add build support for SoundWire')
+Fixes: 82d9d54a6c0e ("ALSA: hda: add Intel DSP configuration / probe code")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sof/sof-acpi-dev.c | 11 ++++++-----
+ sound/soc/sof/sof-pci-dev.c  | 10 ++++++----
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index d306c370e5d1..4797a1cf8c80 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -355,7 +355,7 @@ config SND_SOC_SOF_HDA
+diff --git a/sound/soc/sof/sof-acpi-dev.c b/sound/soc/sof/sof-acpi-dev.c
+index 2a369c2c6551..cc2e257087e4 100644
+--- a/sound/soc/sof/sof-acpi-dev.c
++++ b/sound/soc/sof/sof-acpi-dev.c
+@@ -131,12 +131,13 @@ static int sof_acpi_probe(struct platform_device *pdev)
+ 	if (!id)
+ 		return -ENODEV;
  
- config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
- 	bool "SOF support for SoundWire"
--	depends on SOUNDWIRE && ACPI
-+	depends on ACPI
- 	help
- 	  This adds support for SoundWire with Sound Open Firmware
- 	  for Intel(R) platforms.
-@@ -371,6 +371,7 @@ config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
+-	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
+-		dev_dbg(dev, "SOF ACPI driver not selected, aborting probe\n");
+-		return -ENODEV;
++	if (IS_REACHABLE(CONFIG_SND_INTEL_DSP_CONFIG)) {
++		ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
++		if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
++			dev_dbg(dev, "SOF ACPI driver not selected, aborting probe\n");
++			return -ENODEV;
++		}
+ 	}
+-
+ 	dev_dbg(dev, "ACPI DSP detected");
  
- config SND_SOC_SOF_INTEL_SOUNDWIRE
- 	tristate
-+	select SOUNDWIRE
- 	select SOUNDWIRE_INTEL
- 	help
- 	  This option is not user-selectable but automagically handled by
+ 	sof_pdata = devm_kzalloc(dev, sizeof(*sof_pdata), GFP_KERNEL);
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 7757463bd81a..388772f9c4d2 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -346,10 +346,12 @@ static int sof_pci_probe(struct pci_dev *pci,
+ 	const struct snd_sof_dsp_ops *ops;
+ 	int ret;
+ 
+-	ret = snd_intel_dsp_driver_probe(pci);
+-	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
+-		dev_dbg(&pci->dev, "SOF PCI driver not selected, aborting probe\n");
+-		return -ENODEV;
++	if (IS_REACHABLE(CONFIG_SND_INTEL_DSP_CONFIG)) {
++		ret = snd_intel_dsp_driver_probe(pci);
++		if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
++			dev_dbg(&pci->dev, "SOF PCI driver not selected, aborting probe\n");
++			return -ENODEV;
++		}
+ 	}
+ 	dev_dbg(&pci->dev, "PCI DSP detected");
+ 
 -- 
 2.25.1
 
