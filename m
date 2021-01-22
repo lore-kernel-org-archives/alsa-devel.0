@@ -2,65 +2,63 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEFABC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 14:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E642AC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 14:13:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 550CE23A3A
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 14:05:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 550CE23A3A
+	by mail.kernel.org (Postfix) with ESMTPS id 0D73223A63
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 14:13:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0D73223A63
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63E4F1F04;
-	Fri, 22 Jan 2021 15:05:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63E4F1F04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 710BD1F01;
+	Fri, 22 Jan 2021 15:12:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 710BD1F01
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611324353;
-	bh=9s9u8rh/8MK1yTWqL5vsfQVvCpjOzjixRrb3qtgKibM=;
+	s=default; t=1611324787;
+	bh=iP2dlPgSQ0PMGGaouuTi8n2HcpfUi9h0BkGPXbLLFKM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r9xqQTkz3HYIgDeZSQpPbpbd7BZwOLesyW91pFMmdEy7d17t5i4hrXYEWl+/6yTcl
-	 19tnaCTFN9k6n22H4zYWPV/mzoX5SKGeNWk0Zh6HEwtCrGozyaO7RTUFmL0vAmxkgi
-	 uafWdvfHRsV3bkecMo3qmlSOfBOSCyXphnjg920k=
+	b=N6fTSqswSy/8QZxKj52SdOdvNBt2h9QJGBbPzLnfJmsFzPIvHQKIg9VtvlJpFHAuY
+	 AmipV0ChspINnB3MNjrGUW2QFqmBoNtyrV8KhPazVOhOp7tanVt5TFiVI0DJBExTNU
+	 Hp8a3s0EXrzeL11MwUm9LkKFnQIwG+UA0Y8ALyng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89CFBF80166;
-	Fri, 22 Jan 2021 15:05:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD4B0F80166;
+	Fri, 22 Jan 2021 15:12:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A529DF8016E; Fri, 22 Jan 2021 15:05:00 +0100 (CET)
+ id 5B656F80166; Fri, 22 Jan 2021 15:12:15 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06427F80129
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 15:04:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06427F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBF29F80164
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 15:12:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF29F80164
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0C53CAE53;
- Fri, 22 Jan 2021 14:04:57 +0000 (UTC)
-Date: Fri, 22 Jan 2021 15:04:56 +0100
-Message-ID: <s5h35yt83uf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id A7A4BB750;
+ Fri, 22 Jan 2021 14:12:11 +0000 (UTC)
+Date: Fri, 22 Jan 2021 15:12:11 +0100
+Message-ID: <s5h1red83ic.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: control: expand limitation on the number of
- user-defined control element set per card
-In-Reply-To: <20210122082032.103066-1-o-takashi@sakamocchi.jp>
-References: <20210122082032.103066-1-o-takashi@sakamocchi.jp>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: Re: Question about hdac_ext_link ref_count management
+In-Reply-To: <aca60b522335f3f916f9f8f204693365bfc32231.camel@linux.intel.com>
+References: <aca60b522335f3f916f9f8f204693365bfc32231.camel@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,129 +74,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 Jan 2021 09:20:32 +0100,
-Takashi Sakamoto wrote:
+On Fri, 22 Jan 2021 00:23:53 +0100,
+Ranjani Sridharan wrote:
 > 
-> ALSA control core allows usespace application to register control element
-> set by call of ioctl(2) with SNDRV_CTL_IOCTL_ELEM_ADD request. The added
-> control elements are called as 'user-defined'. Currently sound card has
-> limitation on the number of the user-defined control element set up
-> to 32.
+> Hi Takashi,
 > 
-> The limitation is inconvenient to drivers in ALSA firewire stack since
-> the drivers expect userspace applications to implement function to
-> control device functionalities such as mixing and routing. As the
-> userspace application, snd-firewire-ctl-services project starts:
-> https://github.com/alsa-project/snd-firewire-ctl-services/
+> While exploring some power optimizations on Intel platforms, I noticed
+> that the hdac_ext_link ref_count is incremented during codec probe
+> in hdac_hda_codec_probe() and the ref_count is held until the codec
+> device is removed. 
 > 
-> The project supports many devices supported by ALSA firewire stack. The
-> limitation is mostly good since routing and mixing controls can be
-> represented by control element set, which includes multiple control element
-> with the same parameters. Nevertheless, it's actually inconvenient to
-> device which has many varied functionalities. For example, plugin effect
-> such as channel strip and reverb has many parameters. For the case, many
-> control elements are required to configure the parameters and control
-> element set cannot aggregates them for the parameters. At present, the
-> implementations for below models requires more control element sets
-> than 32:
-> 
->  * snd-bebob-ctl-service
->    * Apogee Ensemble (31 sets for 34 elements)
->  * snd-dice-ctl-service
->    * TC Electronic Konnekt 24d (78 sets for 94 elements)
->    * TC Electronic Studio Konnekt 48 (98 sets for 114 elements)
->    * TC Electronic Konnekt Live (88 sets for 104 elements)
->    * TC Electronic Impact Twin (70 sets for 86 elements)
->    * Focusrite Liquid Saffire 56 (37 sets for 52 elements)
-> 
-> This commit expands the limitation according to requirement from the above
-> applications. As a result, userspace applications can add control element
-> sets up to 150 per sound card. It results in 154,200 user-defined control
-> elements as maximum since one control element set can include 1028 control
-> elements.
+> I was wondering if it would be possible to call the get/put for the
+> hdac_ext_link in the codec runtime suspend/resume callbacks so that the
+> link is powered up only when the link is in use. Are there any
+> downsides to doing this? 
 
-Thinking of this change again after reading your description, I find
-that a more flexible and safer approach would be to limit the number
-of total elements.  That is, count the number of items in each
-element, and set the max to (32 * MAX_CONTROL_COUNT).  This will keep
-the same max as the current implementation can achieve, while it
-allows more elements as long as they contain lower number of items.
+Wouldn't the  snd_hdac_ext_bus_link_power_up() / down() calls do the
+runtime PM stuff?  Maybe we need to revisit those link power
+management.  The ext stuff isn't well managed, I'm afraid.
 
-So, something like below (totally untested).
+The get() and put() are obviously for fully enabling and disabling the
+device, hence it's not suitable for the runtime PM suspend/resume.
+The power_up() / down() should be adjusted to fit with the runtime PM
+call, if any.
 
 
 thanks,
 
 Takashi
-
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -18,10 +18,11 @@
- #include <sound/info.h>
- #include <sound/control.h>
- 
--/* max number of user-defined controls */
--#define MAX_USER_CONTROLS	32
- #define MAX_CONTROL_COUNT	1028
- 
-+/* max number of user-defined controls */
-+#define MAX_USER_CONTROLS	(32 * MAX_CONTROL_COUNT)
-+
- struct snd_kctl_ioctl {
- 	struct list_head list;		/* list of all ioctls */
- 	snd_kctl_ioctl_func_t fioctl;
-@@ -520,6 +521,7 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
- 	struct snd_card *card = file->card;
- 	struct snd_kcontrol *kctl;
- 	int idx, ret;
-+	int count;
- 
- 	down_write(&card->controls_rwsem);
- 	kctl = snd_ctl_find_id(card, id);
-@@ -536,10 +538,11 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
- 			ret = -EBUSY;
- 			goto error;
- 		}
-+	count = kctl->count;
- 	ret = snd_ctl_remove(card, kctl);
- 	if (ret < 0)
- 		goto error;
--	card->user_ctl_count--;
-+	card->user_ctl_count -= count;
- error:
- 	up_write(&card->controls_rwsem);
- 	return ret;
-@@ -1435,18 +1438,18 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 			return err;
- 	}
- 
-+	/* Check the number of elements for this userspace control. */
-+	count = info->owner;
-+	if (count == 0)
-+		count = 1;
-+
- 	/*
- 	 * The number of userspace controls are counted control by control,
- 	 * not element by element.
- 	 */
--	if (card->user_ctl_count + 1 > MAX_USER_CONTROLS)
-+	if (card->user_ctl_count + count > MAX_USER_CONTROLS)
- 		return -ENOMEM;
- 
--	/* Check the number of elements for this userspace control. */
--	count = info->owner;
--	if (count == 0)
--		count = 1;
--
- 	/* Arrange access permissions if needed. */
- 	access = info->access;
- 	if (access == 0)
-@@ -1535,7 +1538,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	 * which locks the element.
- 	 */
- 
--	card->user_ctl_count++;
-+	card->user_ctl_count += count;
- 
-  unlock:
- 	up_write(&card->controls_rwsem);
