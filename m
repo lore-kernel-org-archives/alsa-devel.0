@@ -2,66 +2,70 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD93AC433E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:07:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA36C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:07:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 07C2122283
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:07:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 07C2122283
+	by mail.kernel.org (Postfix) with ESMTPS id 66C8D2376F
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:07:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 66C8D2376F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 286C71AA0;
-	Fri, 22 Jan 2021 08:06:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 286C71AA0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDF3C1A9E;
+	Fri, 22 Jan 2021 08:06:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF3C1A9E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611299255;
-	bh=tWKneUxYJkSM1u0rWOK1pKsWdt7p2csPClnmdcplUI0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EU9OEOFecjDj212HNnRJgwjn5yngoiItdsJbydO+VSVwh1j3erWXd1m8x/M7Whj3O
-	 2/pZwrml/hwGf72sUjwNVNNOWM+BfpnKZ/gYiDkXzIA3d5+bqKnkI9dn1ZgOOsv1Y3
-	 UnhXlvAwOEI8aI+8PIpZdzqzxtLi8pho0bc8RHiw=
+	s=default; t=1611299263;
+	bh=FWPWx1yHVOFiLmrZOj85zq0BTGEDdg41d/OOYa4a7d8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=q5ON1n5LdvSdeMX7Q+190UeYiPfshfhZzV0Rdma50xnrP3kBlhlN3bX/QyaEx9fPn
+	 kcNaHoEUtVenY8h3KIDeU+yNws84LpwE/oCh13HuemrZTFIEN2moErEXbMkomTl6Dq
+	 QjmB986JfTiTqyQDhQrkKzMqNsnJ3ZQGGJacWci0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A29EF8019D;
-	Fri, 22 Jan 2021 08:06:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BB22F8015B;
+	Fri, 22 Jan 2021 08:06:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8FF7F80218; Fri, 22 Jan 2021 08:06:42 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id DD6D8F804C3; Fri, 22 Jan 2021 08:06:50 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C6B3F80166
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 08:06:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C6B3F80166
-IronPort-SDR: TbHb1SnSX+1WYAXOWQU9VjHvYEiVGuOk69yaeq4ICPSM1PtWliD1Z3LqW2mnj4mgLl41TdFGD0
- PBDsIGcri0vw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="167079270"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="167079270"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07BDBF8015B
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 08:06:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07BDBF8015B
+IronPort-SDR: Z3CgDd2w1+boL0eLzmCtxdyPe09t0tgamEJ5aTPL5Jm7eZpMtoJtICsuEZj5kK/BW778YmGRVj
+ niUoYbw5EDpw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="158581041"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="158581041"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jan 2021 23:06:30 -0800
-IronPort-SDR: 7I9kylbZRSajNoXgdDKC9QMSqWPgHqgn1nduawS4rEEdTyaF+74oryPAQLfEFZFGB+j/W/Gq2s
- DdAaOaRhaFNw==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="427863354"
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Jan 2021 23:06:39 -0800
+IronPort-SDR: oYqTuGnPlx3bavlIO+RwvOPzYlc42hJh959xBd3+3VyxFKXpm6yRd3YV3vOmKocfIXsS/ucP/e
+ mhzYWoYMr2vA==
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="427863478"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jan 2021 23:06:27 -0800
+ 21 Jan 2021 23:06:36 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [RESEND PATCH v2 0/9] soundwire/regmap: use _no_pm routines
-Date: Fri, 22 Jan 2021 15:06:25 +0800
-Message-Id: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH v2 2/9] soundwire: bus: use sdw_write_no_pm when
+ setting the bus scale registers
+Date: Fri, 22 Jan 2021 15:06:27 +0800
+Message-Id: <20210122070634.12825-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
+References: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
 Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org, tiwai@suse.de,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  ranjani.sridharan@linux.intel.com, hui.wang@canonical.com, broonie@kernel.org,
@@ -82,47 +86,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 When a Slave device is resumed, it may resume the bus and restart the
-enumeration. And Slave drivers will wait for initialization_complete
-complete in their resume function, however initialization_complete will
-complete after sdw_update_slave_status function is finished and codec
-driver usually call some IO functions in the update_status callback
-function.
-It will become a deadlock if we use regular read/write routines during
-the resuming process.
+enumeration. During that process, we absolutely don't want to call
+regular read/write routines which will wait for the resume to
+complete, otherwise a deadlock occurs.
 
-This series touches both soundwire and regmap trees.
-commit fb5103f9d6ce ("regmap/SoundWire: sdw: add support for SoundWire 1.2 MBQ")
-is needed for soundwire tree to complie.
-On the other hands,
-commit 6e06a85556f9 ("soundwire: bus: add comments to explain interrupt loop filter")
-to
-commit 47b8520997a8 ("soundwire: bus: only clear valid DPN interrupts")
-are needed for regmap tree.
+This patch fixes the same problem as the previous one, but is split to
+make the life of linux-stable maintainers less painful.
 
-v2:
- - Separate commits according to maintainer's comments.
+Fixes: 29d158f90690 ('soundwire: bus: initialize bus clock base and scale registers')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Bard Liao (4):
-  soundwire: export sdw_write/read_no_pm functions
-  regmap: sdw: use _no_pm functions in regmap_read/write
-  regmap: sdw: use no_pm routines for SoundWire 1.2 MBQ
-  regmap: sdw-mbq: use MODULE_LICENSE("GPL")
-
-Pierre-Louis Bossart (5):
-  soundwire: bus: use sdw_update_no_pm when initializing a device
-  soundwire: bus: use sdw_write_no_pm when setting the bus scale
-    registers
-  soundwire: bus: use no_pm IO routines for all interrupt handling
-  soundwire: bus: fix confusion on device used by pm_runtime
-  soundwire: bus: clarify dev_err/dbg device references
-
- drivers/base/regmap/regmap-sdw-mbq.c |  10 +-
- drivers/base/regmap/regmap-sdw.c     |   4 +-
- drivers/soundwire/bus.c              | 136 +++++++++++++++------------
- include/linux/soundwire/sdw.h        |   2 +
- 4 files changed, 85 insertions(+), 67 deletions(-)
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 60c42508c6c6..b1830032b052 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1222,7 +1222,7 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
+ 	}
+ 	scale_index++;
+ 
+-	ret = sdw_write(slave, SDW_SCP_BUS_CLOCK_BASE, base);
++	ret = sdw_write_no_pm(slave, SDW_SCP_BUS_CLOCK_BASE, base);
+ 	if (ret < 0) {
+ 		dev_err(&slave->dev,
+ 			"SDW_SCP_BUS_CLOCK_BASE write failed:%d\n", ret);
+@@ -1230,13 +1230,13 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
+ 	}
+ 
+ 	/* initialize scale for both banks */
+-	ret = sdw_write(slave, SDW_SCP_BUSCLOCK_SCALE_B0, scale_index);
++	ret = sdw_write_no_pm(slave, SDW_SCP_BUSCLOCK_SCALE_B0, scale_index);
+ 	if (ret < 0) {
+ 		dev_err(&slave->dev,
+ 			"SDW_SCP_BUSCLOCK_SCALE_B0 write failed:%d\n", ret);
+ 		return ret;
+ 	}
+-	ret = sdw_write(slave, SDW_SCP_BUSCLOCK_SCALE_B1, scale_index);
++	ret = sdw_write_no_pm(slave, SDW_SCP_BUSCLOCK_SCALE_B1, scale_index);
+ 	if (ret < 0)
+ 		dev_err(&slave->dev,
+ 			"SDW_SCP_BUSCLOCK_SCALE_B1 write failed:%d\n", ret);
 -- 
 2.17.1
 
