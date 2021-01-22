@@ -7,61 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9387DC433E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D7E1C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:09:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C873B22283
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:09:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C873B22283
+	by mail.kernel.org (Postfix) with ESMTPS id 80ED62376F
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 07:09:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80ED62376F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2861D1AAE;
-	Fri, 22 Jan 2021 08:08:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2861D1AAE
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADB301AA0;
+	Fri, 22 Jan 2021 08:08:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADB301AA0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611299357;
-	bh=CYn5LKDR5x31RpzAFZ4UNGrqJBdXucnTc8Nv62JrtG0=;
+	s=default; t=1611299377;
+	bh=jVDr8fLhWq8DVW81JyycY3mpY0LWpghv3/pBrF+8Hos=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W1P+6uGwEMXJepO/rNoWi4GSJlNGF926F+tg5OfA/KrEPvNJXnNiRq2PiJ6ayITt3
-	 UdIBmemyXnZ2ZyxJy+o/IgB/rTtQ4xwUgjjDvLwPcuGOqqcLfvjsG6eotehwsqMNt1
-	 +lGYW8JKTblht1g4y8vDb9Pbeo1bx4t0SWRgeG9E=
+	b=upIZJu2Ia5e/YzF/broZHbPee8xUivog+ZFbpUwK1UBoJka/Bz7Ekqr+pY4L0XW/k
+	 +IozpfawvGxKalwRwSzfDdMIa2rwyA0MWKQzMaFhG22Kg19SxWsg3rTeqvWrUy7Pep
+	 5lmKo7BAJSGNoShTwzWCMiPKI+ZVxtYeL2UJPGzE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE6D0F8016E;
-	Fri, 22 Jan 2021 08:07:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAFEBF804E6;
+	Fri, 22 Jan 2021 08:07:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67BCFF804E1; Fri, 22 Jan 2021 08:06:58 +0100 (CET)
+ id B5D09F804E4; Fri, 22 Jan 2021 08:06:59 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF8CCF80218
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 08:06:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF8CCF80218
-IronPort-SDR: gzC+Cijl8XdlwD+ZoZMveReXLsXMfSwSR3lXGDmm4aQQ891oUKNrlyFausKwo3LDTksS9udAFE
- tNI8N3H2IuGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="158581058"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="158581058"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D5E3F80164
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 08:06:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D5E3F80164
+IronPort-SDR: 1+e/Z1Cn6G5Rwk5BmItDog/KGNqUwp3Fypuk7i6vdDGYrYtnHCaQ+pCGUH0ej0eR/6M0GZyv5g
+ r6D/BPCOf5bw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="158581067"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="158581067"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jan 2021 23:06:47 -0800
-IronPort-SDR: 5+xqaTfKRqBQE5/G3Lk4zCKtNvYZltNAHSXV6GS8QrpOMif/tAx43UuCqAYtSJajo+xpBDwHfp
- BOyc7ker88gw==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="427863586"
+ 21 Jan 2021 23:06:54 -0800
+IronPort-SDR: Oeh/QRjA2eDPsg2muUAmtHWmp9PQVsDibK4/sgcscq85QyGlW+CoDr4jfHkYHzM7eV0FsvytD7
+ zxLn7XSlb0GQ==
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; d="scan'208";a="427863709"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jan 2021 23:06:43 -0800
+ 21 Jan 2021 23:06:51 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [RESEND PATCH v2 4/9] soundwire: export sdw_write/read_no_pm functions
-Date: Fri, 22 Jan 2021 15:06:29 +0800
-Message-Id: <20210122070634.12825-5-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH v2 6/9] regmap: sdw: use no_pm routines for SoundWire
+ 1.2 MBQ
+Date: Fri, 22 Jan 2021 15:06:31 +0800
+Message-Id: <20210122070634.12825-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
 References: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
@@ -85,65 +86,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sdw_write_no_pm and sdw_read_no_pm are useful when we want to do IO
-without touching PM.
+Use no_pm versions for write and read.
 
-Fixes: 0231453bc08f ('soundwire: bus: add clock stop helpers')
-Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of
-read/write functions')
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 ---
- drivers/soundwire/bus.c       | 7 ++++---
- include/linux/soundwire/sdw.h | 2 ++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/base/regmap/regmap-sdw-mbq.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 86c339d77a39..4eaeeb4090f0 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -405,10 +405,11 @@ sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
- 	return sdw_transfer(slave->bus, &msg);
- }
- 
--static int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
-+int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
- {
- 	return sdw_nwrite_no_pm(slave, addr, 1, &value);
- }
-+EXPORT_SYMBOL(sdw_write_no_pm);
- 
- static int
- sdw_bread_no_pm(struct sdw_bus *bus, u16 dev_num, u32 addr)
-@@ -476,8 +477,7 @@ int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 val
- }
- EXPORT_SYMBOL(sdw_bwrite_no_pm_unlocked);
- 
--static int
--sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
-+int sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
- {
- 	u8 buf;
+diff --git a/drivers/base/regmap/regmap-sdw-mbq.c b/drivers/base/regmap/regmap-sdw-mbq.c
+index 8ce30650b97c..6675c3a4b829 100644
+--- a/drivers/base/regmap/regmap-sdw-mbq.c
++++ b/drivers/base/regmap/regmap-sdw-mbq.c
+@@ -15,11 +15,11 @@ static int regmap_sdw_mbq_write(void *context, unsigned int reg, unsigned int va
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
  	int ret;
-@@ -488,6 +488,7 @@ sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
- 	else
- 		return buf;
+ 
+-	ret = sdw_write(slave, SDW_SDCA_MBQ_CTL(reg), (val >> 8) & 0xff);
++	ret = sdw_write_no_pm(slave, SDW_SDCA_MBQ_CTL(reg), (val >> 8) & 0xff);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return sdw_write(slave, reg, val & 0xff);
++	return sdw_write_no_pm(slave, reg, val & 0xff);
  }
-+EXPORT_SYMBOL(sdw_read_no_pm);
  
- static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
- {
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index f0b01b728640..d08039d65825 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -1005,6 +1005,8 @@ int sdw_bus_exit_clk_stop(struct sdw_bus *bus);
+ static int regmap_sdw_mbq_read(void *context, unsigned int reg, unsigned int *val)
+@@ -29,11 +29,11 @@ static int regmap_sdw_mbq_read(void *context, unsigned int reg, unsigned int *va
+ 	int read0;
+ 	int read1;
  
- int sdw_read(struct sdw_slave *slave, u32 addr);
- int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
-+int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
-+int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
- int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
- int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+-	read0 = sdw_read(slave, reg);
++	read0 = sdw_read_no_pm(slave, reg);
+ 	if (read0 < 0)
+ 		return read0;
+ 
+-	read1 = sdw_read(slave, SDW_SDCA_MBQ_CTL(reg));
++	read1 = sdw_read_no_pm(slave, SDW_SDCA_MBQ_CTL(reg));
+ 	if (read1 < 0)
+ 		return read1;
  
 -- 
 2.17.1
