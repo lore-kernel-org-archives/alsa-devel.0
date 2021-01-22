@@ -2,65 +2,100 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8C1BC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:14:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D2BAC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:31:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 543C823AAC
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:14:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 543C823AAC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C51A623A84
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:31:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C51A623A84
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C4FA1F0D;
-	Fri, 22 Jan 2021 16:13:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C4FA1F0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B7CD1A9E;
+	Fri, 22 Jan 2021 16:30:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B7CD1A9E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611328462;
-	bh=cS4E6IF1cExmQT4Hqtk1ZwaYX59y9MCLubQHgPscSw0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611329487;
+	bh=Fpgojloro+7ODR3uWgIkpePN77JADiCxfMgzhMW7owU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r5y5NloqKjg0TyQwxG2xJEvRBZ3MS+H8sIgYn5LqnBh791UojebGTLW+cTIkmPA/+
-	 m1+YovAZqN6U7psuWX+Jaukqlo24Xkt3+3sWSLN0gHEK24V0OD5PFDwa9hvSObxV7e
-	 gcsoMs8FLo2WEZUPpT3LWZK5daZmsPCfqsM09v7c=
+	b=EcT4yLJKvWKLj48RHYQgymM9taeM0zQw+yzvWtm/EujBAZWPwpNDecOtdyZKj4jbc
+	 QqZDRJ+DLBkbPlro+CD0VEQawyHIbQb43g+ss4Rs3zvLsjlcbAPoobHvuwSNWEicTY
+	 muossKZPxArNBYgxdu69vcPu3noDSiVCAhbpXcYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 866B4F80166;
-	Fri, 22 Jan 2021 16:13:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9616DF8015B;
+	Fri, 22 Jan 2021 16:30:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B9E5F8016E; Fri, 22 Jan 2021 16:13:30 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 146B5F8016E; Fri, 22 Jan 2021 16:30:31 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C515F8015B
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 16:13:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C515F8015B
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DE97AAD17;
- Fri, 22 Jan 2021 15:13:26 +0000 (UTC)
-Date: Fri, 22 Jan 2021 16:13:26 +0100
-Message-ID: <s5hv9bp6m3t.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [RFC][PATCH v6 1/1] alsa: jack: implement software jack injection
- via debugfs
-In-Reply-To: <20210122141456.12460-2-hui.wang@canonical.com>
-References: <20210122141456.12460-1-hui.wang@canonical.com>
- <20210122141456.12460-2-hui.wang@canonical.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFCBCF80164
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 16:30:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFCBCF80164
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="CwbNrVfZ"
+Received: by mail-wm1-x334.google.com with SMTP id m2so4667468wmm.1
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 07:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=LV930647pP1SvbJIgtJfe/GQ7cAXZFwlra1UOU75jqY=;
+ b=CwbNrVfZbiO6IfNzDO7kkL/YiCj9C10K0Qp237DEcs0eriMx4WkZe+qwFubkWS/u68
+ i3iOZTXb62M9bzzdo8dThaEfd/3MHEf48rEcOGoIcpUQIKR1paZye8dnBC9bTN06lMQl
+ 7L1kQER09hJrubYaxx9ebFTbWWHtpG83/+TuE6jzoGD7iXvrkip+PkcDm4upBSR96Q2h
+ Nu6wZPjmBQ03/NXBrSgUyOlx+q5BYHJrBqzSFsynLBrFeeDUhfm3+wE9TnyYrGH6QQc9
+ LJ24hFKZaS/CiOIZFIybDDpB4MEjrKGM30Vard/j5IDO+nlB/7RMi4DOHJdTd2NaPxpU
+ +l7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=LV930647pP1SvbJIgtJfe/GQ7cAXZFwlra1UOU75jqY=;
+ b=RLr/UhSCSYDmoskXY8bl7YjaavEarUyJZp6LFX8+5bm8+d20zF085iB4JCuq0FxRg2
+ V4PV3utrMXTHCC4xZwNYDqMIpZMxiHfyAlT1FBDBKxjNhfxQD1RJp7hKRTV7KDCAJ1hT
+ VyTkSI89+JQ1Hzk+BdnFBXsiGYBttCqRrs8j/F9uUCv0cbaUd4SMmGisNjh2v3L/04yY
+ 6EChi0PEHan+CLid6Hz93MQCqRnkHuEB+0mqajgs3CMwvAj+NFmvcs8nsCkFXu6t6LoO
+ VQCoGS09zHzVRw0tEV+cGk1gZ4wnd8SH5xYcc9giK75t5wlDaW1RtwWT1xurbN/Rdj/E
+ 454Q==
+X-Gm-Message-State: AOAM531la7u9vrEaI3UL/IyEZ8MftX+RNGPdEtDd22UgNadpxw8xlIsw
+ yalt2pP0AQqOzPk1GGKcfYPLSg==
+X-Google-Smtp-Source: ABdhPJzuQfdWhBHcYC0rSHiPVQWHFUCoCkwb6hrtB3TWw9jyWxx5QyZIDnFmLYUebZv6IZEtOkW/1w==
+X-Received: by 2002:a7b:c3d3:: with SMTP id t19mr4456581wmj.151.1611329414971; 
+ Fri, 22 Jan 2021 07:30:14 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id c16sm12327087wrx.51.2021.01.22.07.30.13
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 22 Jan 2021 07:30:14 -0800 (PST)
+Subject: Re: [PATCH] drivers: slimbus: Fix word resposible -> responsible in
+ slimbus.h
+To: Bhaskar Chowdhury <unixbhaskar@gmail.com>, alsa-devel@alsa-project.org
+References: <20210120144006.3587856-1-unixbhaskar@gmail.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <6b95aff6-5faa-a3fb-c30e-a17252983e9d@linaro.org>
+Date: Fri, 22 Jan 2021 15:30:13 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210120144006.3587856-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: rdunlap@infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,147 +111,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 Jan 2021 15:14:56 +0100,
-Hui Wang wrote:
+
+
+On 20/01/2021 14:40, Bhaskar Chowdhury wrote:
+> s/resposible/responsible/
 > 
-> --- /dev/null
-> +++ b/Documentation/sound/designs/jack-injection.rst
-> @@ -0,0 +1,124 @@
-(snip)
-> +Explanation for the debugfs nodes:
-> +::
-> +
-> + - kctl_id, read-only, get jack_kctl->kctl's id
-> +   sound/card1/Headphone_Jack# cat kctl_id
-> +   Headphone Jack
-> +
-> + - mask_bits, read-only, get jack_kctl's supported events mask_bits
-> +   sound/card1/Headphone_Jack# cat mask_bits
-> +   0x0001 HEADPHONE(0x0001)
-> +
-> + - status, read-only, get jack_kctl's current status
-> +   headphone unplugged:
-> +   sound/card1/Headphone_Jack# cat status
-> +   Unplugged
-> +   headphone plugged:
-> +   sound/card1/Headphone_Jack# cat status
-> +   Plugged
-> +
-> + - type, read-only, get snd_jack's supported events type (all
-> +   supported events on the physical audio jack)
-> +   sound/card1/Headphone_Jack# cat type
-> +   0x7803 HEADPHONE(0x0001) MICROPHONE(0x0002) BTN_3(0x0800) BTN_2(0x1000) BTN_1(0x2000) BTN_0(0x4000)
-> +
-> + - sw_inject_enable, read-write, enable or disable injection
-> +   injection disabled:
-> +   sound/card1/Headphone_Jack# cat sw_inject_enable
-> +   Jack: Headphone Jack		Inject Enabled: 0
-> +   injection enabled:
-> +   sound/card1/Headphone_Jack# cat sw_inject_enable
-> +   Jack: Headphone Jack		Inject Enabled: 1
-> +   to enable jack injection:
-> +   sound/card1/Headphone_Jack# echo 1 > sw_inject_enable
-> +   to disable jack injection:
-> +   sound/card1/Headphone_Jack# echo 0 > sw_inject_enable
-> +
-> + - jackin_inject, write-only, inject plugin or plugout
-> +   to inject plugin:
-> +   sound/card1/Headphone_Jack# echo 1 > jackin_inject
-> +   to inject plugout:
-> +   sound/card1/Headphone_Jack# echo 0 > jackin_inject
-
-The lists could be better in a normal format, while only the examples
-with cat and echo should be in verbose format.
-
-> diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-> index d4554f376160..a9189f58dc56 100644
-> --- a/sound/core/Kconfig
-> +++ b/sound/core/Kconfig
-> @@ -38,6 +38,15 @@ config SND_JACK_INPUT_DEV
->  	depends on SND_JACK
->  	default y if INPUT=y || INPUT=SND
->  
-> +config SND_JACK_INJECTION_DEBUG
-> +	bool "Sound jack injection interface via debugfs"
-> +	depends on SND_JACK && DEBUG_FS
-
-Also, could depend on SND_DEBUG for consistency.
-
-> diff --git a/sound/core/init.c b/sound/core/init.c
-> index 75aec71c48a8..e7f7cfe1143b 100644
-> --- a/sound/core/init.c
-> +++ b/sound/core/init.c
-> @@ -13,6 +13,7 @@
->  #include <linux/time.h>
->  #include <linux/ctype.h>
->  #include <linux/pm.h>
-> +#include <linux/debugfs.h>
->  #include <linux/completion.h>
->  
->  #include <sound/core.h>
-> @@ -161,6 +162,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
->  {
->  	struct snd_card *card;
->  	int err;
-> +	char name[8];
->  
->  	if (snd_BUG_ON(!card_ret))
->  		return -EINVAL;
-> @@ -244,6 +246,10 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
->  		dev_err(parent, "unable to create card info\n");
->  		goto __error_ctl;
->  	}
-> +
-> +	sprintf(name, "card%d", idx);
-> +	card->debugfs_root = debugfs_create_dir(name, sound_debugfs_root);
-
-It's still an open question whether we want to create the debugfs
-always.  But I guess it's OK, we might want to add more stuff to
-debugfs later.  Or, it makes sense to create only if
-CONFIG_SND_DEBUG=y.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
 
 
-> +static ssize_t sw_inject_enable_write(struct file *file,
-> +				      const char __user *from, size_t count, loff_t *ppos)
-> +{
-> +	struct snd_jack_kctl *jack_kctl = file->private_data;
-> +	int ret, err;
-> +	unsigned long enable;
-> +	char buf[8] = { 0 };
-> +
-> +	if (count >= 8)
-> +		return -EINVAL;
-> +
-> +	ret = simple_write_to_buffer(buf, count, ppos, from, count);
 
-The simple_write_to_buffer() doesn't terminate the string by itself,
-hence you need to make sure the string termination before kstrtoul()
-call. e.g.  buf[sizeof(buf)-1] = 0;
+Applied thanks,
 
-And maybe it's easier to make a helper function to that, since it's
-called in multiple places.
-
-> +static int parse_mask_bits(unsigned int mask_bits, char *s)
-> +{
-> +	char buf[256];
-> +	int len, i;
-> +
-> +	len = scnprintf(buf, sizeof(buf), "0x%04x", mask_bits);
-> +
-> +	for (i = 0; i < 16; i++)
-> +		if (mask_bits & (1 << i))
-> +			len += scnprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
-> +					 " %s", jack_events_name[i]);
-> +
-> +	len += scnprintf(buf + strlen(buf), sizeof(buf) - strlen(buf), "\n");
-> +
-> +	strcpy(s, buf);
-
-You need to intermediate buffer if you do a full copy here...
-Just perform the string ops on s with a certain limit.
-Also, you can use strncat() or strlcat() for simplicity.
-
-
-thanks,
-
-Takashi
+--srini
+>   drivers/slimbus/slimbus.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
+> index 00a7f112574b..503e2a0200f5 100644
+> --- a/drivers/slimbus/slimbus.h
+> +++ b/drivers/slimbus/slimbus.h
+> @@ -368,7 +368,7 @@ struct slim_stream_runtime {
+>    * @get_laddr: It is possible that controller needs to set fixed logical
+>    *	address table and get_laddr can be used in that case so that controller
+>    *	can do this assignment. Use case is when the master is on the remote
+> - *	processor side, who is resposible for allocating laddr.
+> + *	processor side, who is responsible for allocating laddr.
+>    * @wakeup: This function pointer implements controller-specific procedure
+>    *	to wake it up from clock-pause. Framework will call this to bring
+>    *	the controller out of clock pause.
+> --
+> 2.30.0
+> 
