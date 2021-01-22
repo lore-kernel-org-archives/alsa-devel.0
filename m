@@ -2,109 +2,108 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2659DC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 21:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A4E9C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 21:34:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 486BA22EBE
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 21:18:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 486BA22EBE
+	by mail.kernel.org (Postfix) with ESMTPS id F2C9D20684
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 21:34:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2C9D20684
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D90E1754;
-	Fri, 22 Jan 2021 22:17:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D90E1754
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80C881F0D;
+	Fri, 22 Jan 2021 22:33:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80C881F0D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611350300;
-	bh=lHZ9mICmwxQU8e5NL/zv9KiVWzryOgP2QcdelgPRpW8=;
+	s=default; t=1611351244;
+	bh=/6iRAcXBJqbHwFOV/jgXsqfXBlPVN+eigrCT4SCsm78=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R0g/1Edc9l7y29RaF4QGjZxNYphBSos7YjpVK/VPyqndX5jOkvHN6Apb2wwW6tYnH
-	 F0vIF5ap7bhnBvH7vXfJFfDCS8nlOWPT1YFTaS/AeelTSDTZwR81F56yaTVZx8PQAE
-	 NgeeeiEfDnq/dExvfJi3hYNQhpQdtX6YhWWxkJQM=
+	b=ph8RpGO+MVPomjjUbkl+ve1VCqJNqMKupXg9RXnfE6Qx4b+IZZ3UuWrfgS2lD0WJj
+	 4sGyf/NFYe54u6q70te2gklYtcXj7Qj0ZPf+271jSo0hNN6SqnQe7ZBFQ5FRCq2jLj
+	 vHrvteowoC6T5HGLRPVv/K1QpWWFmv8X62ls2LM4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A842AF8015B;
-	Fri, 22 Jan 2021 22:17:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF75AF8015B;
+	Fri, 22 Jan 2021 22:33:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1C4EF8015B; Fri, 22 Jan 2021 22:17:26 +0100 (CET)
+ id C8683F8016E; Fri, 22 Jan 2021 22:33:11 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B6AFF8015B
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 22:17:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B6AFF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0676F8015B
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 22:33:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0676F8015B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="HVLxtBRU"
+ header.b="dW3r9yIl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1611350240;
+ s=mimecast20190719; t=1611351185;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=BDjPT9iPHhu8PUnABJf0D49/IjW21PMzqZx/2LRxvgE=;
- b=HVLxtBRUFigkm5eci38J1Fw6WJcM7sC8IsFwgrVVwsfrKotCGwsV1RZxRBP8SsWUjnnzvX
- T17nhS4fJ/0NVn1rbCFKxuET7rLQ6izUqBfk8kQiJIukPwnuMpFT3ONa5kjvsV3RkHUkVr
- f+pbopc/qQEapcLKXB8RVkX9Wnf8HOQ=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-I5Lc3WMKPHmOfOB_83AOXQ-1; Fri, 22 Jan 2021 16:17:18 -0500
-X-MC-Unique: I5Lc3WMKPHmOfOB_83AOXQ-1
-Received: by mail-ed1-f70.google.com with SMTP id w4so3543656edu.0
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 13:17:18 -0800 (PST)
+ bh=gvWX/CFGSihQRjsLbay3juv/HcaiKfTaRyJu5DpVCsw=;
+ b=dW3r9yIlR21ES0smtsA896nj6003YTofwag+UuRPWpou564q4B9TD4Bce2TEpIdjkDC9nf
+ eWeGdQnrPRCoMtu4hTTNSM7Qpk6BPoPY3wohQbMGJ6xs3HrQ9yTJF7nk4p+mYqjo42XDng
+ TblRYiyJcvcfEEJhu5Wn1kSc2kwldis=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-atBsXy1_OEi2JoxpR0PcvQ-1; Fri, 22 Jan 2021 16:33:03 -0500
+X-MC-Unique: atBsXy1_OEi2JoxpR0PcvQ-1
+Received: by mail-ej1-f71.google.com with SMTP id j14so2719473eja.15
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 13:33:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-language
  :content-transfer-encoding;
- bh=BDjPT9iPHhu8PUnABJf0D49/IjW21PMzqZx/2LRxvgE=;
- b=ro3aUsHaRks6p22c0dr0geeftRdVFo4TfidOIBTF8TbN5HN5dAuGlwrLCr1lmqVIgv
- UFYJgaeF2ikK080FlzO3oXYmxJT9cLyTTS7x2jJGhlyf8CqZDD11paHQuS6fWj5D8eVK
- kEMMSKK7ymeuLQ8UgZoYsYkCBtl/gJVAAt6ha4nST45zURRS3h1l49yHKijlCa2S4sJW
- lHeP4sAZZ1aLb7bZOo9cov1urj0J1uAQI89LzLpK80aFTFplGPrlAuHGq+V9Q8j5yj9X
- gqbgnA23ALgRmnrY3urqgooMjx/STeuPWjDQczPfPB3DqEzg6wMBYSG7N5wQnhQIx1kI
- cL3w==
-X-Gm-Message-State: AOAM530mw9ySg3X+OkOqgiiTiY70MwPr1IFHXYOpAx1zf1ABUxMxa+Ac
- 3h+gjWbgbLBrbqTtuiqN74cIsZMgxBdecih54RywkmIqHYVX8WwoATJ8qMGBAVa+SY/fu6F8PPm
- EGqQNE+X9/7K12YxxGCM0OC3aWAvdj0or2F7QkWYZG6ylVE3tzPdmTVFUkfnlQQHWVm9W+x1Xpz
- Q=
-X-Received: by 2002:a05:6402:3510:: with SMTP id
- b16mr1002119edd.242.1611350236983; 
- Fri, 22 Jan 2021 13:17:16 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw0hFVgHmuGiHHbKAqBXsmd3goO6RuIwjF4vltR2iPF94lLbwxkEF9o448HxKNY3lQl4eALlA==
-X-Received: by 2002:a05:6402:3510:: with SMTP id
- b16mr1002100edd.242.1611350236777; 
- Fri, 22 Jan 2021 13:17:16 -0800 (PST)
+ bh=gvWX/CFGSihQRjsLbay3juv/HcaiKfTaRyJu5DpVCsw=;
+ b=UVkIZha2bBsjrQq3r9nzd5Hz2rRoGcJXpjp+yvuuJUNWJXU7EcOihBEAjp+kQiOZdS
+ 303g1zlm1xkzm/kAaN93al2N746nweUkHKLu9b0uYTkwuYETEl1DzZwx8kJGjUKLFqIa
+ HK8/Jj77XuW9wTOxYPr+R6GTZNn0oKR1XBK0P00SINtK82PRl8Qg9EtzoUQWxXGcSFLz
+ GDujzBRvyObElgNmdLBNcic6kc6p/RNqyEQTpXOt0wcNP/LFBzIiz816VpAorcfUv3Ac
+ jJnDXY8kOjAfYPBP8cSzEWEHhvNnQ0+SKjZIBtVFb++yPH60d9yuRtIQJ1NZSI/l0LdU
+ kf6g==
+X-Gm-Message-State: AOAM532mDgx6YDgmylqlD4Xx/YMP1FSoiCIwNRvDLCANVq1m8WHkjBdj
+ RLPBqQac3LD4epNdQP6ZMIOnyC0hSwqGknQvi6RbHxWg8+OnE3r9jMCnLtphu+FUUdzvPwNv2z7
+ 7PegT0SMIHaQ65uiONnc2q0+PyTYOlPF2nXD6Iyu+jJARHm+oYVmSKGCgBSqT8NfyqMonf/rkmq
+ M=
+X-Received: by 2002:a17:906:52c1:: with SMTP id
+ w1mr4441170ejn.214.1611351182043; 
+ Fri, 22 Jan 2021 13:33:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz/FeHvpIwV/TbzHI/VBnHx0waeIY6CaKZcDNGJy7Ojizzfy6JS0vUHdP2Yo/HYZkvjr+TuSw==
+X-Received: by 2002:a17:906:52c1:: with SMTP id
+ w1mr4441148ejn.214.1611351181816; 
+ Fri, 22 Jan 2021 13:33:01 -0800 (PST)
 Received: from x1.localdomain
  (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl.
  [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
- by smtp.gmail.com with ESMTPSA id b26sm6380261eds.48.2021.01.22.13.17.14
+ by smtp.gmail.com with ESMTPSA id cf26sm2826989edb.14.2021.01.22.13.33.00
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 22 Jan 2021 13:17:15 -0800 (PST)
-Subject: Re: [PATCH v3 06/13] ASoC/extcon: arizona: Move arizona jack code to
- sound/soc/codecs/arizona-jack.c
+ Fri, 22 Jan 2021 13:33:01 -0800 (PST)
+Subject: Re: [PATCH v3 11/13] ASoC: arizona-jack: Cleanup logging
 To: Andy Shevchenko <andy.shevchenko@gmail.com>
 References: <20210122164107.361939-1-hdegoede@redhat.com>
- <20210122164107.361939-7-hdegoede@redhat.com>
- <CAHp75VedGzihYi1Ndjj4K4326pMrLtk3V7gi_rxteu5HaqWfEA@mail.gmail.com>
+ <20210122164107.361939-12-hdegoede@redhat.com>
+ <CAHp75VcP6NXn8gAze3B=b1m2sRZnrV=dL456D0QAGzON21etFQ@mail.gmail.com>
 From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <63f62136-8d19-c281-bbae-3e1e6b0fd4e3@redhat.com>
-Date: Fri, 22 Jan 2021 22:17:14 +0100
+Message-ID: <e5742738-dd83-e1df-1789-ab75761d7600@redhat.com>
+Date: Fri, 22 Jan 2021 22:33:00 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VedGzihYi1Ndjj4K4326pMrLtk3V7gi_rxteu5HaqWfEA@mail.gmail.com>
+In-Reply-To: <CAHp75VcP6NXn8gAze3B=b1m2sRZnrV=dL456D0QAGzON21etFQ@mail.gmail.com>
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
@@ -135,38 +134,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+HI,
 
-On 1/22/21 9:40 PM, Andy Shevchenko wrote:
+On 1/22/21 9:56 PM, Andy Shevchenko wrote:
 > On Fri, Jan 22, 2021 at 6:41 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >>
->> The jack handling for arizona codecs is being refactored so that it is
->> done directly by the codec drivers, instead of having an extcon-driver
->> bind to a separate "arizona-extcon" child-device for this.
+>> Cleanup the use of dev_foo functions used for logging:
 >>
->> drivers/mfd/arizona-core.c has already been updated to no longer
->> instantiate an "arizona-extcon" child-device for the arizona codecs.
->>
->> This means that the "arizona-extcon" driver is no longer useful
->> (there are no longer any devices for it to bind to).
->>
->> This commit drops the extcon Kconfig / Makefile bits and moves
->> drivers/extcon/extcon-arizona.c to sound/soc/codecs/arizona-jack.c .
->>
->> This is a preparation patch for converting the arizona extcon-driver into
->> a helper library for letting the arizona codec-drivers directly report jack
->> state through the standard sound/soc/soc-jack.c functions.
+>> 1. Many of these are unnecessarily split over multiple lines
+>> 2. Use dev_err_probe() in cases where we might get a -EPROBE_DEFERRED
+> 
+> s/RED$//
+
+Ack, will fix for v4.
+
+
+>>    return value
 > 
 > ...
 > 
->>  MAINTAINERS                                               | 1 -
+>> +               if (ret != 0)
 > 
->> -F:     drivers/extcon/extcon-arizona.c
-> 
-> Commit message doesn't shed a light if we need to move this actually
-> to another record in MAINTAINERS database.
+> Since you are touching it if (ret) would work already. Ditto for the
+> similar cases below.
 
-Ah, good call, yes we should. I'll fix this for v4.
+Ack.
+
+> ...
+> 
+>>         if (IS_ERR(info->micvdd)) {
+>>                 ret = PTR_ERR(info->micvdd);
+>> -               dev_err(arizona->dev, "Failed to get MICVDD: %d\n", ret);
+>> +               dev_err_probe(arizona->dev, ret, "getting MICVDD\n");
+>>                 return ret;
+>>         }
+> 
+> Seems like your first dev_err_probe use :-)
+
+Erm, nope. I did this on purpose.
+
+> Can be even more optimized, i.e.
+> 
+>   if (IS_ERR(info->micvdd))
+>     return dev_err_probe(arizona->dev, PTR_ERR(info->micvdd), "getting
+> MICVDD\n");
+
+Ok, so that works here, but I deliberately kept it as is because it does
+not work below and I wanted to be consistent.
+
+On second thought. That is not really a good reason, so I've
+made this a 1-lines as you suggest for v4.
+
+> 
+> ...
+> 
+>>                 if (IS_ERR(info->micd_pol_gpio)) {
+>>                         ret = PTR_ERR(info->micd_pol_gpio);
+>> -                       dev_err(arizona->dev,
+>> -                               "Failed to get microphone polarity GPIO: %d\n",
+>> -                               ret);
+>> +                       dev_err_probe(arizona->dev, ret, "getting microphone polarity GPIO\n");
+
+This new line is 96 chars as-is if I turn this into a one-liner it goes significantly
+over the 100 chars line-length limit.
+
+So I've kept this as is for v4.
 
 Regards,
 
