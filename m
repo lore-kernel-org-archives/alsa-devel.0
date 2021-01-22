@@ -2,61 +2,56 @@ Return-Path: <SRS0=81m9=GZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37A01C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 14:51:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C29BC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:07:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DFE1239EE
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 14:51:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DFE1239EE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 13C1323AA1
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jan 2021 15:07:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13C1323AA1
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9ADDD1F2B;
-	Fri, 22 Jan 2021 15:50:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9ADDD1F2B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4F121F0D;
+	Fri, 22 Jan 2021 16:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4F121F0D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611327095;
-	bh=r+EXsmiYavgGPrkFFSYrJPoY5Cgb2T8ndhYJkDxGGPs=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1611328053;
+	bh=eCKxG9sXtITf1wh4eW6yy0O1hLpTp96sPD91s5qaeeE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S+hAHaMy4uCth3eKx9C02acDBP3n8SNw5hkBBqz191ktlX6Rzgv6iQ0hkt+MRe4x/
-	 jnOXAXfcgrCracQ5MIppDbsacqd0CNj/2SDGsZp5NYQob2Vfsll80WP8YjbMwIGHFC
-	 d4jVjT6OyMv3DAYgBnum7eY44Fwb1iAMm5JlBzlk=
+	b=RUqfrteRJZ9DCGVhDd7D+H1iHpKkUJJd0Ru2CwgkXlkjxS8wHoYtewsqllI3dSDRJ
+	 TFPgZxPghd6AnmB/zk5k81BLq7vhVTZJsoNoOfyEve/fc0U1Dh7NE7ZkQYxI79XJUy
+	 WJc34kMciFHUNPokV6Fq8Mn43RIKEekzxZoVoV58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECE0BF804CB;
-	Fri, 22 Jan 2021 15:49:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37863F80129;
+	Fri, 22 Jan 2021 16:06:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8D06F80227; Fri, 22 Jan 2021 15:48:58 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5C6EF80166
- for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 15:48:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5C6EF80166
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 81D72AD17;
- Fri, 22 Jan 2021 14:48:45 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib 1/4] pcm: direct: Fix the missing appl_ptr update
-Date: Fri, 22 Jan 2021 15:48:39 +0100
-Message-Id: <20210122144842.8843-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210122144842.8843-1-tiwai@suse.de>
-References: <20210122144842.8843-1-tiwai@suse.de>
+ id 0948DF8016E; Fri, 22 Jan 2021 16:06:41 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id C48F4F80129
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2021 16:06:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C48F4F80129
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1611327992549335003-webhooks-bot@alsa-project.org>
+References: <1611327992549335003-webhooks-bot@alsa-project.org>
+Subject: Wrong binds configuration for dmix plugin causes segmentation fault
+ in alsa
+Message-Id: <20210122150642.0948DF8016E@alsa1.perex.cz>
+Date: Fri, 22 Jan 2021 16:06:41 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,59 +67,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A snd_pcm_status() call for the direct plugins receives the status
-from the slave PCM, but this doesn't contain a valid appl_ptr, since
-the slave PCM for the direct plugins is in a free-wheel mode, hence
-the appl_ptr is always zero.  This result in the inconsistent
-status->appl_ptr and pcm->appl.ptr, hitting the recently introduced
-assert() call.
+alsa-project/alsa-lib issue #117 was opened from elara-leitstellentechnik:
 
-Fix it by transferring the plugin's appl_ptr to the upper caller.
+On Debian buster I can get alsa to run into a segmentation fault with the following procedure:
+Configure dmix with two channels (binds) for a Mono device. (I am not sure that this is reproducible with any mono device, I tested with a Jabra LINK 230):
+```
+~$ cat .asoundrc  
+pcm."Jabra LINK 230" {  
+       type dmix  
+       ipc_key 1024  
+       slave.pcm "hw:2,0"  
+       bindings {  
+              0 0  
+             # The next line is the problematic line that triggers the segfault
+              1 1  
+       }  
+}  
+```
+Then when playing any sound file with e.g. mplayer and making it use the dmix device the following happens:
+```
+$ mplayer -ao alsa:device="Jabra LINK 230" /usr/share/sounds/alsa/Front_Left.wav
+MPlayer 1.3.0 (Debian), built with gcc-8 (C) 2000-2016 MPlayer Team
+do_connect: could not connect to socket
+connect: No such file or directory
+Failed to open LIRC support. You will not be able to use your remote control.
 
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1181194
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm_dmix.c   | 1 +
- src/pcm/pcm_dshare.c | 1 +
- src/pcm/pcm_dsnoop.c | 1 +
- 3 files changed, 3 insertions(+)
+Playing /usr/share/sounds/alsa/Front_Left.wav.
+libavformat version 58.20.100 (external)
+Mismatching header version 58.12.100
+Audio only file format detected.
+Load subtitles in /usr/share/sounds/alsa/
+==========================================================================
+Opening audio decoder: [pcm] Uncompressed PCM audio decoder
+AUDIO: 48000 Hz, 1 ch, s16le, 768.0 kbit/100.00% (ratio: 96000->96000)
+Selected audio codec: [pcm] afm: pcm (Uncompressed PCM)
+==========================================================================
+[AO_ALSA] alsa-lib: pcm_hw.c:1711:(snd_pcm_hw_open) open '/dev/snd/pcmC2D0p' failed (-77): File descriptor in bad state
+AO: [alsa] 48000Hz 2ch s16le (2 bytes per sample)
+Video: no video
+Starting playback...
 
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index be2675aff0f3..d8495065d5d7 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -495,6 +495,7 @@ static int snd_pcm_dmix_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- 	}
- 
- 	status->state = snd_pcm_dmix_state(pcm);
-+	status->appl_ptr = *pcm->appl.ptr; /* slave PCM doesn't set appl_ptr */
- 	status->trigger_tstamp = dmix->trigger_tstamp;
- 	status->avail = snd_pcm_mmap_playback_avail(pcm);
- 	status->avail_max = status->avail > dmix->avail_max ? status->avail : dmix->avail_max;
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 10243013714d..dccb137be253 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -243,6 +243,7 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- 		break;
- 	}
- 	status->state = snd_pcm_dshare_state(pcm);
-+	status->appl_ptr = *pcm->appl.ptr; /* slave PCM doesn't set appl_ptr */
- 	status->trigger_tstamp = dshare->trigger_tstamp;
- 	status->avail = snd_pcm_mmap_playback_avail(pcm);
- 	status->avail_max = status->avail > dshare->avail_max ? status->avail : dshare->avail_max;
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index c6e8cd279b53..695bf4aa340e 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -193,6 +193,7 @@ static int snd_pcm_dsnoop_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- 	snd_pcm_status(dsnoop->spcm, status);
- 	state = snd_pcm_state(dsnoop->spcm);
- 	status->state = state == SND_PCM_STATE_RUNNING ? dsnoop->state : state;
-+	status->appl_ptr = *pcm->appl.ptr; /* slave PCM doesn't set appl_ptr */
- 	status->trigger_tstamp = dsnoop->trigger_tstamp;
- 	status->avail = snd_pcm_mmap_capture_avail(pcm);
- 	status->avail_max = status->avail > dsnoop->avail_max ? status->avail : dsnoop->avail_max;
--- 
-2.26.2
 
+MPlayer interrupted by signal 11 in module: play_audio
+- MPlayer crashed by bad usage of CPU/FPU/RAM.
+  Recompile MPlayer with --enable-debug and make a 'gdb' backtrace and
+  disassembly. Details in DOCS/HTML/en/bugreports_what.html#bugreports_crash.
+ [ This binary of MPlayer in Debian is currently compiled with
+   '--enable-debug'; the debugging symbols are in the package
+   'mplayer-dbgsym'.]
+```
+I appreciate that configuring two bindings for a single-channel audio device is an error, but I am not sure that this justifies a segfault. 
+Here is some more information I have been able to extract using gdb:
+
+```
+~$ gdb --args mplayer -ao alsa:device="Jabra LINK 230" /usr/share/sounds/alsa/Front_Left.wav
+GNU gdb (Debian 8.2.1-2+b3) 8.2.1
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from mplayer...Reading symbols from /usr/lib/debug/.build-id/3a/9816e9d363979a4f76e6cb809a33dffda67d05.debug...done.
+done.
+(gdb) run
+Starting program: /usr/bin/mplayer -ao alsa:device=Jabra\ LINK\ 230 /usr/share/sounds/alsa/Front_Left.wav
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+MPlayer 1.3.0 (Debian), built with gcc-8 (C) 2000-2016 MPlayer Team
+do_connect: could not connect to socket
+connect: No such file or directory
+Failed to open LIRC support. You will not be able to use your remote control.
+
+Playing /usr/share/sounds/alsa/Front_Left.wav.
+libavformat version 58.20.100 (external)
+Mismatching header version 58.12.100
+Audio only file format detected.
+Load subtitles in /usr/share/sounds/alsa/
+==========================================================================
+Opening audio decoder: [pcm] Uncompressed PCM audio decoder
+AUDIO: 48000 Hz, 1 ch, s16le, 768.0 kbit/100.00% (ratio: 96000->96000)
+Selected audio codec: [pcm] afm: pcm (Uncompressed PCM)
+==========================================================================
+[AO_ALSA] alsa-lib: pcm_hw.c:1711:(snd_pcm_hw_open) open '/dev/snd/pcmC2D0p' failed (-77): File descriptor in bad state
+AO: [alsa] 48000Hz 2ch s16le (2 bytes per sample)
+Video: no video
+Starting playback...
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7a09b76 in mix_areas_16_smp (size=4160473088, size@entry=17424, dst=0x555555aa9510, src=0xde020109, sum=0x21fe0f3c, dst_step=2, src_step=4, sum_step=8) at pcm_dmix_x86_64.h:48
+48	pcm_dmix_x86_64.h: No such file or directory.
+(gdb) where
+#0  0x00007ffff7a09b76 in mix_areas_16_smp (size=4160473088, size@entry=17424, dst=0x555555aa9510, src=0xde020109, sum=0x21fe0f3c, dst_step=2, src_step=4, sum_step=8) at pcm_dmix_x86_64.h:48
+#1  0x00007ffff7a0ba1c in mix_areas (size=17424, dst_ofs=576, src_ofs=0, dst_areas=0x555555a927f0, src_areas=0x7fffe88b3000, dmix=0x555555a929e0) at pcm_dmix.c:215
+#2  snd_pcm_dmix_sync_area (pcm=pcm@entry=0x555555a94850) at pcm_dmix.c:382
+#3  0x00007ffff7a0bdfa in snd_pcm_dmix_start (pcm=0x555555a94850) at pcm_dmix.c:619
+#4  0x00007ffff79d8b4a in __snd_pcm_start (pcm=0x555555a94850, pcm=0x555555a94850) at pcm_local.h:434
+#5  snd1_pcm_write_areas (pcm=pcm@entry=0x555555a94850, areas=areas@entry=0x7fffffffcfd0, offset=offset@entry=0, size=<optimized out>, size@entry=18000, func=func@entry=0x7ffff79e46c0 <snd_pcm_mmap_write_areas>) at pcm.c:7421
+#6  0x00007ffff79e4b01 in snd_pcm_mmap_writei (pcm=0x555555a94850, buffer=<optimized out>, size=18000) at pcm_mmap.c:153
+#7  0x00005555556242f8 in play (data=0x555555ac4f70, len=<optimized out>, flags=<optimized out>) at libao2/ao_alsa.c:812
+#8  0x000055555560bbab in fill_audio_out_buffers () at mplayer.c:2212
+#9  main (argc=<optimized out>, argv=<optimized out>) at mplayer.c:3794
+(gdb) 
+
+```
+To me this looks like the segfault is triggered in pcm_dmix_x86_64.h:48 so I believe it is an alsa problem rather than a problem with mplayer.
+I hope this makes sense. If I can support with further information please let me know.
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/117
+Repository URL: https://github.com/alsa-project/alsa-lib
