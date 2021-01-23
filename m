@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20D94C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96AA2C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BD1723B04
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BD1723B04
+	by mail.kernel.org (Postfix) with ESMTPS id 1145D23B08
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1145D23B08
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3554F1B08;
-	Sat, 23 Jan 2021 13:15:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3554F1B08
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5C0B1B0A;
+	Sat, 23 Jan 2021 13:16:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5C0B1B0A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611404204;
-	bh=yxgPs1kcwoOkomQHbK/G7nhjbC4CAOJSbCB5sYOB9F8=;
+	s=default; t=1611404217;
+	bh=oC7yXvoZi5qjytJ1GG5H3sx55at5q5MXvjm+kqT0DnI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fX54xltxHNVM819YKPh4vKRrxrAgof1YJt6qPLazAEj9Lig8BOITi7H2c5rHcAQR6
-	 KifghVmNtyZdaAQH74vfpwM8Gx/5q/Q2IF7lToMF7tNDcu2o8UO6EMBqwoYv7NAO3t
-	 Aj0yTliLBhCEl8ueoc8myrx/xW7xx6/a/Rli6MmI=
+	b=BkOQtmaBg1/sbUqqWIeC6tEjoiIT2sC+/Ro6w/Fy5X5BPRVogaY9MhOmmUDXxNo6m
+	 VakYF6KaIPckuZX5ZOA5Pv+wHHyW1C6e3diqDeCG67gDfi2kJnNanEws8T4gUoG/6N
+	 DhiML8z3AezKCfHDXFTdjVUTILp11tkkxsTqm7tM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D51F0F804E0;
-	Sat, 23 Jan 2021 13:13:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6D7EF804E6;
+	Sat, 23 Jan 2021 13:13:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F437F800FD; Sat, 23 Jan 2021 13:13:41 +0100 (CET)
+ id 9B173F804D6; Sat, 23 Jan 2021 13:13:46 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49785F804C3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67A28F804BD
  for <alsa-devel@alsa-project.org>; Sat, 23 Jan 2021 13:13:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49785F804C3
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67A28F804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="CsJU1L7z"
+ header.b="Rov/RYrl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
  s=mimecast20190719; t=1611404015;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=lFXYvyZ0CLcvB3R48S1XXO1n1GmYgmgWHpO6/q9B+/s=;
- b=CsJU1L7z69EpuE6zhquarLMnKlwqivUk6R8ULhcgMjUlV83QC3NhltCxCP6VXRpzFqqluF
- f6Dl74yKkjwZGRoXJBkdSVPs+5tnnsf62xp83sfg0ahO8/+8EELs7XrfzwSzVPg6Y39//T
- UXWLuaFisQFUvIRU7NDeU3ioQxWkxV4=
+ bh=h5X1cgAM/DzaQIFfxQG1LSHMJaNn26Co1JziKy7U1FM=;
+ b=Rov/RYrlqw6PltoQgdM6ZWS8VbQtgzd/C9F0CP+jasotI6R+ECSkOvCBJBGK9V6nViRgcF
+ IJOQVnJmmfB/neoKanfEa8e/+4NfMh+Lc31om2sCsCmVV9VZ68GrcqADSoCi8Ip5yCVOEa
+ UhCDdvWdbqaWI6iLCuXszEeQS6lfjZY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-91UtL8GSMf6hEMYN07eiTA-1; Sat, 23 Jan 2021 07:13:33 -0500
-X-MC-Unique: 91UtL8GSMf6hEMYN07eiTA-1
+ us-mta-567-pBemKfxgMFuH_FsivK_d7Q-1; Sat, 23 Jan 2021 07:13:31 -0500
+X-MC-Unique: pBemKfxgMFuH_FsivK_d7Q-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
  [10.5.11.11])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0736910054FF;
- Sat, 23 Jan 2021 12:13:32 +0000 (UTC)
-Received: from x1.localdomain (ovpn-112-82.ams2.redhat.com [10.36.112.82])
- by smtp.corp.redhat.com (Postfix) with ESMTP id D6BF8189B8;
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90B4E10051A7;
  Sat, 23 Jan 2021 12:13:29 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-82.ams2.redhat.com [10.36.112.82])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 581E419C95;
+ Sat, 23 Jan 2021 12:13:27 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v4 06/13] ASoC/extcon: arizona: Move arizona jack code to
- sound/soc/codecs/arizona-jack.c
-Date: Sat, 23 Jan 2021 13:13:06 +0100
-Message-Id: <20210123121313.79530-7-hdegoede@redhat.com>
+Subject: [PATCH v4 05/13] extcon: arizona: Always use pm_runtime_get_sync()
+ when we need the device to be awake
+Date: Sat, 23 Jan 2021 13:13:05 +0100
+Message-Id: <20210123121313.79530-6-hdegoede@redhat.com>
 In-Reply-To: <20210123121313.79530-1-hdegoede@redhat.com>
 References: <20210123121313.79530-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -104,97 +104,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The jack handling for arizona codecs is being refactored so that it is
-done directly by the codec drivers, instead of having an extcon-driver
-bind to a separate "arizona-extcon" child-device for this.
+Before this commit the extcon-arizona code was mixing pm_runtime_get()
+and pm_runtime_get_sync() in different places.
 
-drivers/mfd/arizona-core.c has already been updated to no longer
-instantiate an "arizona-extcon" child-device for the arizona codecs.
+In all places where pm_runtime_get[_sync]() is called, the code
+makes use of the device immediately after the call.
+This means that we should always use pm_runtime_get_sync().
 
-This means that the "arizona-extcon" driver is no longer useful
-(there are no longer any devices for it to bind to).
-
-This commit drops the extcon Kconfig / Makefile bits and moves
-drivers/extcon/extcon-arizona.c to sound/soc/codecs/arizona-jack.c .
-
-This is a preparation patch for converting the arizona extcon-driver into
-a helper library for letting the arizona codec-drivers directly report jack
-state through the standard sound/soc/soc-jack.c functions.
-
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-Changes in v4:
-- Add sound/soc/codecs/arizona-jack.c to the WOLFSON MICROELECTRONICS DRIVERS
-  MAINTAINERS section
-
 Changes in v3:
-- Fold the 2 separate patches to add a copy of extcon-arizona.c as
-  sound/soc/codecs/arizona-jack.c and the follow up patch to remove the
-  extcon driver into 1 patch simply moving the extcon driver code.
+- This is a new patch in v3 of this patch-set
 ---
- MAINTAINERS                                               | 3 +--
- drivers/extcon/Kconfig                                    | 8 --------
- drivers/extcon/Makefile                                   | 1 -
- .../extcon-arizona.c => sound/soc/codecs/arizona-jack.c   | 0
- 4 files changed, 1 insertion(+), 11 deletions(-)
- rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (100%)
+ drivers/extcon/extcon-arizona.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 036a03c794de..873817694fd2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19249,7 +19249,6 @@ F:	Documentation/devicetree/bindings/sound/wlf,arizona.yaml
- F:	Documentation/hwmon/wm83??.rst
- F:	arch/arm/mach-s3c/mach-crag6410*
- F:	drivers/clk/clk-wm83*.c
--F:	drivers/extcon/extcon-arizona.c
- F:	drivers/gpio/gpio-*wm*.c
- F:	drivers/gpio/gpio-arizona.c
- F:	drivers/hwmon/wm83??-hwmon.c
-@@ -19273,7 +19272,7 @@ F:	include/linux/mfd/wm8400*
- F:	include/linux/regulator/arizona*
- F:	include/linux/wm97xx.h
- F:	include/sound/wm????.h
--F:	sound/soc/codecs/arizona.?
-+F:	sound/soc/codecs/arizona*
- F:	sound/soc/codecs/cs47l24*
- F:	sound/soc/codecs/wm*
+diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
+index 72d23b15108c..56d2ce05de50 100644
+--- a/drivers/extcon/extcon-arizona.c
++++ b/drivers/extcon/extcon-arizona.c
+@@ -290,7 +290,7 @@ static void arizona_start_mic(struct arizona_extcon_info *info)
+ 	unsigned int mode;
  
-diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
-index af58ebca2bf6..e3db936becfd 100644
---- a/drivers/extcon/Kconfig
-+++ b/drivers/extcon/Kconfig
-@@ -21,14 +21,6 @@ config EXTCON_ADC_JACK
- 	help
- 	  Say Y here to enable extcon device driver based on ADC values.
+ 	/* Microphone detection can't use idle mode */
+-	pm_runtime_get(info->dev);
++	pm_runtime_get_sync(info->dev);
  
--config EXTCON_ARIZONA
--	tristate "Wolfson Arizona EXTCON support"
--	depends on MFD_ARIZONA && INPUT && SND_SOC
--	help
--	  Say Y here to enable support for external accessory detection
--	  with Wolfson Arizona devices. These are audio CODECs with
--	  advanced audio accessory detection support.
--
- config EXTCON_AXP288
- 	tristate "X-Power AXP288 EXTCON support"
- 	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI
-diff --git a/drivers/extcon/Makefile b/drivers/extcon/Makefile
-index fe10a1b7d18b..1b390d934ca9 100644
---- a/drivers/extcon/Makefile
-+++ b/drivers/extcon/Makefile
-@@ -6,7 +6,6 @@
- obj-$(CONFIG_EXTCON)		+= extcon-core.o
- extcon-core-objs		+= extcon.o devres.o
- obj-$(CONFIG_EXTCON_ADC_JACK)	+= extcon-adc-jack.o
--obj-$(CONFIG_EXTCON_ARIZONA)	+= extcon-arizona.o
- obj-$(CONFIG_EXTCON_AXP288)	+= extcon-axp288.o
- obj-$(CONFIG_EXTCON_FSA9480)	+= extcon-fsa9480.o
- obj-$(CONFIG_EXTCON_GPIO)	+= extcon-gpio.o
-diff --git a/drivers/extcon/extcon-arizona.c b/sound/soc/codecs/arizona-jack.c
-similarity index 100%
-rename from drivers/extcon/extcon-arizona.c
-rename to sound/soc/codecs/arizona-jack.c
+ 	if (info->detecting) {
+ 		ret = regulator_allow_bypass(info->micvdd, false);
+@@ -695,7 +695,7 @@ static void arizona_identify_headphone(struct arizona_extcon_info *info)
+ 	dev_dbg(arizona->dev, "Starting HPDET\n");
+ 
+ 	/* Make sure we keep the device enabled during the measurement */
+-	pm_runtime_get(info->dev);
++	pm_runtime_get_sync(info->dev);
+ 
+ 	info->hpdet_active = true;
+ 
 -- 
 2.29.2
 
