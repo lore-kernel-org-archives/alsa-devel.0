@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D1E1C433E6
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20D94C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D517C23B04
-	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D517C23B04
+	by mail.kernel.org (Postfix) with ESMTPS id 8BD1723B04
+	for <alsa-devel@archiver.kernel.org>; Sat, 23 Jan 2021 12:16:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BD1723B04
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D70F1ED7;
-	Sat, 23 Jan 2021 13:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D70F1ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3554F1B08;
+	Sat, 23 Jan 2021 13:15:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3554F1B08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611404168;
-	bh=aoWXklYQTeCxxI8hoR8Nlhk70c2nHHkki4zsv0ZYVwQ=;
+	s=default; t=1611404204;
+	bh=yxgPs1kcwoOkomQHbK/G7nhjbC4CAOJSbCB5sYOB9F8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A53zex8Stjy+tWCeJN8boq8BBXYPhL1Tla2KTBrbCVXGhgMRgNRcTey34NPLP5JR4
-	 tRdFyDXUhKANDcMC5m/Z81um6aR/Xm4na1nIRBEnUS8fOYsBzS2JaKCOcbpcIluXma
-	 edUSNMpRtmlvuGVTeOYAMHWZIp+RAuhZ7DfJ4vs4=
+	b=fX54xltxHNVM819YKPh4vKRrxrAgof1YJt6qPLazAEj9Lig8BOITi7H2c5rHcAQR6
+	 KifghVmNtyZdaAQH74vfpwM8Gx/5q/Q2IF7lToMF7tNDcu2o8UO6EMBqwoYv7NAO3t
+	 Aj0yTliLBhCEl8ueoc8myrx/xW7xx6/a/Rli6MmI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 148E7F804D8;
+	by alsa1.perex.cz (Postfix) with ESMTP id D51F0F804E0;
 	Sat, 23 Jan 2021 13:13:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08DEDF804D8; Sat, 23 Jan 2021 13:13:42 +0100 (CET)
+ id 0F437F800FD; Sat, 23 Jan 2021 13:13:41 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28289F804B2
- for <alsa-devel@alsa-project.org>; Sat, 23 Jan 2021 13:13:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28289F804B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49785F804C3
+ for <alsa-devel@alsa-project.org>; Sat, 23 Jan 2021 13:13:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49785F804C3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="a+JZkj9P"
+ header.b="CsJU1L7z"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1611404011;
+ s=mimecast20190719; t=1611404015;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=www6MexSVUEbc0LeWPO4UbvkjxCqTT9CBJi8I/PSmvc=;
- b=a+JZkj9PXUn2vI1I0LL1Bpz6q0Dq8GvXrZaFj5WTZxaYuWIKs7gqbLt0+sDo5N0cHY2XHf
- +i42qmkgl+k1zl5m23QBrhXe1Uofcx0oZhD5ScpuG4TNHCnxasgvLMp9cFaIiZTC7aHCC0
- raXGTOBq/KMg3szMbEWMcnXdOGXvX6c=
+ bh=lFXYvyZ0CLcvB3R48S1XXO1n1GmYgmgWHpO6/q9B+/s=;
+ b=CsJU1L7z69EpuE6zhquarLMnKlwqivUk6R8ULhcgMjUlV83QC3NhltCxCP6VXRpzFqqluF
+ f6Dl74yKkjwZGRoXJBkdSVPs+5tnnsf62xp83sfg0ahO8/+8EELs7XrfzwSzVPg6Y39//T
+ UXWLuaFisQFUvIRU7NDeU3ioQxWkxV4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-eMptoEOfMYS4yX3BpSnHfw-1; Sat, 23 Jan 2021 07:13:26 -0500
-X-MC-Unique: eMptoEOfMYS4yX3BpSnHfw-1
+ us-mta-458-91UtL8GSMf6hEMYN07eiTA-1; Sat, 23 Jan 2021 07:13:33 -0500
+X-MC-Unique: 91UtL8GSMf6hEMYN07eiTA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
  [10.5.11.11])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83266E74F;
- Sat, 23 Jan 2021 12:13:24 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0736910054FF;
+ Sat, 23 Jan 2021 12:13:32 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-82.ams2.redhat.com [10.36.112.82])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 4D206189B8;
- Sat, 23 Jan 2021 12:13:22 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id D6BF8189B8;
+ Sat, 23 Jan 2021 12:13:29 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v4 03/13] extcon: arizona: Fix various races on driver unbind
-Date: Sat, 23 Jan 2021 13:13:03 +0100
-Message-Id: <20210123121313.79530-4-hdegoede@redhat.com>
+Subject: [PATCH v4 06/13] ASoC/extcon: arizona: Move arizona jack code to
+ sound/soc/codecs/arizona-jack.c
+Date: Sat, 23 Jan 2021 13:13:06 +0100
+Message-Id: <20210123121313.79530-7-hdegoede@redhat.com>
 In-Reply-To: <20210123121313.79530-1-hdegoede@redhat.com>
 References: <20210123121313.79530-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,122 +104,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We must free/disable all interrupts and cancel all pending works
-before doing further cleanup.
+The jack handling for arizona codecs is being refactored so that it is
+done directly by the codec drivers, instead of having an extcon-driver
+bind to a separate "arizona-extcon" child-device for this.
 
-Before this commit arizona_extcon_remove() was doing several
-register writes to shut things down before disabling the IRQs
-and it was cancelling only 1 of the 3 different works used.
+drivers/mfd/arizona-core.c has already been updated to no longer
+instantiate an "arizona-extcon" child-device for the arizona codecs.
 
-Move all the register-writes shutting things down to after
-the disabling of the IRQs and add the 2 missing
-cancel_delayed_work_sync() calls.
+This means that the "arizona-extcon" driver is no longer useful
+(there are no longer any devices for it to bind to).
 
-This fixes various possible races on driver unbind. One of which
-would always trigger on devices using the mic-clamp feature for
-jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
-done before disabling the IRQs, causing:
-1. arizona_jackdet() to run
-2. detect a jack being inserted (clamp disabled means jack inserted)
-3. call arizona_start_mic() which:
-3.1 Enables the MICVDD regulator
-3.2 takes a pm_runtime_reference
+This commit drops the extcon Kconfig / Makefile bits and moves
+drivers/extcon/extcon-arizona.c to sound/soc/codecs/arizona-jack.c .
 
-And this was all happening after the ARIZONA_MICD_ENA bit clearing,
-which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
-update was being done after the ARIZONA_MICD_ENA bit clearing.
+This is a preparation patch for converting the arizona extcon-driver into
+a helper library for letting the arizona codec-drivers directly report jack
+state through the standard sound/soc/soc-jack.c functions.
 
-So this means that arizona_extcon_remove() would exit with
-1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
-
-MICVDD still being enabled caused the following oops when the
-regulator is released by the devm framework:
-
-[ 2850.745757] ------------[ cut here ]------------
-[ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
-[ 2850.745835] Modules linked in: extcon_arizona ...
-...
-[ 2850.746909] Call Trace:
-[ 2850.746932]  regulator_put+0x2d/0x40
-[ 2850.746946]  release_nodes+0x22a/0x260
-[ 2850.746984]  __device_release_driver+0x190/0x240
-[ 2850.747002]  driver_detach+0xd4/0x120
-...
-[ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
-
-Note this oops is just one of various theoretically possible races caused
-by the wrong ordering inside arizona_extcon_remove(), this fixes the
-ordering fixing all possible races, including the reported oops.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/extcon/extcon-arizona.c | 40 +++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+Changes in v4:
+- Add sound/soc/codecs/arizona-jack.c to the WOLFSON MICROELECTRONICS DRIVERS
+  MAINTAINERS section
 
-diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index f7ef247de46a..76aacbac5869 100644
---- a/drivers/extcon/extcon-arizona.c
-+++ b/drivers/extcon/extcon-arizona.c
-@@ -1760,25 +1760,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	bool change;
- 	int ret;
+Changes in v3:
+- Fold the 2 separate patches to add a copy of extcon-arizona.c as
+  sound/soc/codecs/arizona-jack.c and the follow up patch to remove the
+  extcon driver into 1 patch simply moving the extcon driver code.
+---
+ MAINTAINERS                                               | 3 +--
+ drivers/extcon/Kconfig                                    | 8 --------
+ drivers/extcon/Makefile                                   | 1 -
+ .../extcon-arizona.c => sound/soc/codecs/arizona-jack.c   | 0
+ 4 files changed, 1 insertion(+), 11 deletions(-)
+ rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (100%)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 036a03c794de..873817694fd2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19249,7 +19249,6 @@ F:	Documentation/devicetree/bindings/sound/wlf,arizona.yaml
+ F:	Documentation/hwmon/wm83??.rst
+ F:	arch/arm/mach-s3c/mach-crag6410*
+ F:	drivers/clk/clk-wm83*.c
+-F:	drivers/extcon/extcon-arizona.c
+ F:	drivers/gpio/gpio-*wm*.c
+ F:	drivers/gpio/gpio-arizona.c
+ F:	drivers/hwmon/wm83??-hwmon.c
+@@ -19273,7 +19272,7 @@ F:	include/linux/mfd/wm8400*
+ F:	include/linux/regulator/arizona*
+ F:	include/linux/wm97xx.h
+ F:	include/sound/wm????.h
+-F:	sound/soc/codecs/arizona.?
++F:	sound/soc/codecs/arizona*
+ F:	sound/soc/codecs/cs47l24*
+ F:	sound/soc/codecs/wm*
  
--	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
--				       ARIZONA_MICD_ENA, 0,
--				       &change);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
--			ret);
--	} else if (change) {
--		regulator_disable(info->micvdd);
--		pm_runtime_put(info->dev);
--	}
--
--	gpiod_put(info->micd_pol_gpio);
--
--	pm_runtime_disable(&pdev->dev);
--
--	regmap_update_bits(arizona->regmap,
--			   ARIZONA_MICD_CLAMP_CONTROL,
--			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
--
- 	if (info->micd_clamp) {
- 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
- 		jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
-@@ -1794,10 +1775,31 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	arizona_free_irq(arizona, jack_irq_rise, info);
- 	arizona_free_irq(arizona, jack_irq_fall, info);
- 	cancel_delayed_work_sync(&info->hpdet_work);
-+	cancel_delayed_work_sync(&info->micd_detect_work);
-+	cancel_delayed_work_sync(&info->micd_timeout_work);
-+
-+	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
-+				       ARIZONA_MICD_ENA, 0,
-+				       &change);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
-+			ret);
-+	} else if (change) {
-+		regulator_disable(info->micvdd);
-+		pm_runtime_put(info->dev);
-+	}
-+
-+	regmap_update_bits(arizona->regmap,
-+			   ARIZONA_MICD_CLAMP_CONTROL,
-+			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
- 	regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
- 			   ARIZONA_JD1_ENA, 0);
- 	arizona_clk32k_disable(arizona);
+diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
+index af58ebca2bf6..e3db936becfd 100644
+--- a/drivers/extcon/Kconfig
++++ b/drivers/extcon/Kconfig
+@@ -21,14 +21,6 @@ config EXTCON_ADC_JACK
+ 	help
+ 	  Say Y here to enable extcon device driver based on ADC values.
  
-+	gpiod_put(info->micd_pol_gpio);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
- 	return 0;
- }
- 
+-config EXTCON_ARIZONA
+-	tristate "Wolfson Arizona EXTCON support"
+-	depends on MFD_ARIZONA && INPUT && SND_SOC
+-	help
+-	  Say Y here to enable support for external accessory detection
+-	  with Wolfson Arizona devices. These are audio CODECs with
+-	  advanced audio accessory detection support.
+-
+ config EXTCON_AXP288
+ 	tristate "X-Power AXP288 EXTCON support"
+ 	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI
+diff --git a/drivers/extcon/Makefile b/drivers/extcon/Makefile
+index fe10a1b7d18b..1b390d934ca9 100644
+--- a/drivers/extcon/Makefile
++++ b/drivers/extcon/Makefile
+@@ -6,7 +6,6 @@
+ obj-$(CONFIG_EXTCON)		+= extcon-core.o
+ extcon-core-objs		+= extcon.o devres.o
+ obj-$(CONFIG_EXTCON_ADC_JACK)	+= extcon-adc-jack.o
+-obj-$(CONFIG_EXTCON_ARIZONA)	+= extcon-arizona.o
+ obj-$(CONFIG_EXTCON_AXP288)	+= extcon-axp288.o
+ obj-$(CONFIG_EXTCON_FSA9480)	+= extcon-fsa9480.o
+ obj-$(CONFIG_EXTCON_GPIO)	+= extcon-gpio.o
+diff --git a/drivers/extcon/extcon-arizona.c b/sound/soc/codecs/arizona-jack.c
+similarity index 100%
+rename from drivers/extcon/extcon-arizona.c
+rename to sound/soc/codecs/arizona-jack.c
 -- 
 2.29.2
 
