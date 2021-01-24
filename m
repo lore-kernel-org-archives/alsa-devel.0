@@ -2,65 +2,98 @@ Return-Path: <SRS0=viVi=G3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C1E3C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Jan 2021 18:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51A43C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Jan 2021 19:55:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72C8922252
-	for <alsa-devel@archiver.kernel.org>; Sun, 24 Jan 2021 18:43:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72C8922252
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=base.nu
+	by mail.kernel.org (Postfix) with ESMTPS id 59D4222A84
+	for <alsa-devel@archiver.kernel.org>; Sun, 24 Jan 2021 19:55:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59D4222A84
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B0861678;
-	Sun, 24 Jan 2021 19:42:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B0861678
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB4F9185C;
+	Sun, 24 Jan 2021 20:54:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB4F9185C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611513797;
-	bh=HrFMC5zGuY9W24pZ8WDJ0EkARdQBDBGe7wX+cpjaqag=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=I7supq2apv7GiNvJsRmPA27PAD4iNbhyS2IV8Z6dZhv9hoWLw8YAWxhZoJFvCghCh
-	 01xonoPwnidhbu+xtySfiWdiHl3ZmQvnsjAIma7h5pX5FMIcYESd7ks0YxRxtDHguc
-	 8oCWZWKAp9lJ5TowvuBHc80TJaGxHgc/ksOaHNr8=
+	s=default; t=1611518103;
+	bh=9qDjjuC5ILTQz4ZOZPLOor7RhYdirpCAOAMuMwNjneM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dkQqAKAoOnR2vpyquEhtbmtdWUptD8YbXSbfeRU5yDppz+JM4ok+i7wnB0zVeZ45X
+	 Rd+PKGYeyhKHMD+o7YF1N8Gx6cuXLu74Sw5LRLyf9ruumtSihl9/irwINrUDWvJkW8
+	 cFRsecXiSYyEjxkVfV2vwpBqEBnDRO9I+9rNb7VE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2573F80114;
-	Sun, 24 Jan 2021 19:42:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51B69F8012D;
+	Sun, 24 Jan 2021 20:54:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C94D5F8015B; Sun, 24 Jan 2021 19:42:23 +0100 (CET)
-Received: from hellmouth.base.nu (hellmouth.base.nu [192.248.168.186])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BE97FF8015B; Sun, 24 Jan 2021 20:54:11 +0100 (CET)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
+ [IPv6:2607:f8b0:4864:20::62a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64D56F80114
- for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2021 19:42:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64D56F80114
-Received: from baphomet.hell (<unknown> [192.168.179.1])
- by hellmouth.base.nu (OpenSMTPD) with ESMTP id 488fcaa4;
- Sun, 24 Jan 2021 18:42:14 +0000 (UTC)
-Received: from baphomet.hell (localhost.hell [127.0.0.1])
- by baphomet.hell (OpenSMTPD) with ESMTP id b0eac8eb;
- Sun, 24 Jan 2021 18:42:13 +0000 (GMT)
-Received: from base.nu ([192.168.178.2]) by baphomet.hell with ESMTPSA
- id UZy1EIW/DWCJfgEAnQSWfg
- (envelope-from <livvy@base.nu>); Sun, 24 Jan 2021 18:42:13 +0000
-Date: Sun, 24 Jan 2021 18:42:09 +0000
-From: Olivia Mackintosh <livvy@base.nu>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ALSA: usb-audio: Re-add sample rate quirk for Pioneer
- DJM-750
-Message-ID: <20210124184209.x2bf42wtild4v6fb@base.nu>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB292F8012D
+ for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2021 20:54:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB292F8012D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="JCV5O1pS"
+Received: by mail-pl1-x62a.google.com with SMTP id j21so1682245pls.7
+ for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2021 11:54:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Ltb649fO8RUvDMlMxNJBpTVqk8j9NP6KsJDcg7ev6Y4=;
+ b=JCV5O1pSwqZq2AVnFfiH+vbw0ZzxLViHrbzqAmhlg+AhbLd5UtFp+2y6R+M4oXRV8h
+ JmGcdYDUaOclT4744iIAHXZkeoHsVjRT8wzXE2wVrZqbl0H7r5WwmrDLCCCN3l4m3G+n
+ WKENMKmvh6ymZpV/8sxlcDADbKpefc4esxNhK/dMcW7Dl7DL0gV3F4tJY9uhXDGH5Dgv
+ 22l0hM6O+nCQLHxxKqqb73AvXRqHA1JAEBa1GJqFKOUhSWDQf/QtOW4DL6xLAsf1NSWj
+ zbRjdTljsrBqgqEegVtL2ayIiat612CrON95QQ7BvfK6htck5N8/ubyCnbSw7uJSv584
+ mc5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Ltb649fO8RUvDMlMxNJBpTVqk8j9NP6KsJDcg7ev6Y4=;
+ b=lCcLbzTxs9j9+GuQZz3VnmDZsYbbdmNP6wWT2cKWbeer2uegTjddlYXgCCXs6uO9h2
+ Y2Qqpz1tvm4p1h3KS8xPVfgVtN/Q7ZJ528TzxYzOnALJccid5y8sybCKqKuSnl1Zngfj
+ /GIwrIne0Q6MYpYxsCnI4cZqHKj2/2Qp/Dosv0emSl6FMOwfgG9VFqlj8YklIxhCNA06
+ vz7WMV0DeOUAhoTDCYrNzZfpaHjvCkXHjaMq8F+Cqft7R/ZP0bpBEwetEzvASrutXeOU
+ usBCXstXCwOgbjgByY2VDodCmiKCC4x8Qw1iuLtJFThXH0MKuhtd8bLpMaNyXA6WC6UC
+ fcSQ==
+X-Gm-Message-State: AOAM532CZ/5sQ9tNRWAuZIVC4Xm56t/p+6CAYXYR0Ob+dyceuT44wfRo
+ AIv0IaLVYrCwRZx7le16GukoA2EH5ELsmzHOAvA=
+X-Google-Smtp-Source: ABdhPJyMzqMWlIbM4YtmLGbSwyxu6flhf4uZBdMdVYvQFXtEBXf9gl/dVML1kArVb+Ps05sGDr/raz3bpxU8rzwpE7A=
+X-Received: by 2002:a17:902:b190:b029:df:fff2:c345 with SMTP id
+ s16-20020a170902b190b02900dffff2c345mr2435989plr.17.1611518044950; Sun, 24
+ Jan 2021 11:54:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: dmitry@d-systems.ee, franta-linux@frantovo.cz
+References: <20210123121313.79530-1-hdegoede@redhat.com>
+ <20210123121720.79863-1-hdegoede@redhat.com>
+ <20210123121720.79863-2-hdegoede@redhat.com>
+In-Reply-To: <20210123121720.79863-2-hdegoede@redhat.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sun, 24 Jan 2021 21:53:48 +0200
+Message-ID: <CAHp75VdOhXMBb9t8GEA3qrjyuRzNSXFZ--QuaVMUAaNh-=DnGA@mail.gmail.com>
+Subject: Re: [PATCH v4 11/13] ASoC: arizona-jack: Cleanup logging
+To: Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,59 +109,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Re-add the sample-rate quirk originally implemented by Dmitry
-Panchenko for the DJM-900NXS2 but for the DJM-750.  This commit only
-adds it again for the DJM-750 since I can only verify that it is
-absolutely required for this device. Other models may need this patch
-but I'm hesitant to add them as I cannot test.
+On Sat, Jan 23, 2021 at 2:17 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Cleanup the use of dev_foo functions used for logging:
+>
+> 1. Many of these are unnecessarily split over multiple lines
+> 2. Use dev_err_probe() in cases where we might get a -EPROBE_DEFER
+>    return value
 
-The 'wIndex' is passed literally in the function call as we cannot
-derive this from 'fmt->sync_ep' due to it not being set.  We can change
-this if and when we revisit implicit FB.
+...
 
-Signed-off-by: Olivia Mackintosh <livvy@base.nu>
----
- sound/usb/quirks.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+>                 if (IS_ERR(info->micd_pol_gpio)) {
+>                         ret = PTR_ERR(info->micd_pol_gpio);
+> -                       dev_err(arizona->dev,
+> -                               "Failed to get microphone polarity GPIO: %d\n",
+> -                               ret);
+> +                       dev_err_probe(arizona->dev, ret, "getting microphone polarity GPIO\n");
+>                         return ret;
+>                 }
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index e196e364cef1..b49a66f863f3 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1470,6 +1470,23 @@ static void set_format_emu_quirk(struct snd_usb_substream *subs,
- 	subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ? 4 : 0;
- }
- 
-+static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
-+					u16 windex)
-+{
-+	unsigned int cur_rate = subs->data_endpoint->cur_rate;
-+	u8 sr[3];
-+	// Convert to little endian
-+	sr[0] = cur_rate&0xff;
-+	sr[1] = (cur_rate>>8)&0xff;
-+	sr[2] = (cur_rate>>16)&0xff;
-+	usb_set_interface(subs->dev, 0, 1);
-+	// we should derive windex from fmt-sync_ep but it's not set
-+	snd_usb_ctl_msg(subs->stream->chip->dev,
-+		usb_rcvctrlpipe(subs->stream->chip->dev, 0),
-+		0x01, 0x22, 0x0100, windex, &sr, 0x0003);
-+	return 0;
-+}
-+
- void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 			      const struct audioformat *fmt)
- {
-@@ -1483,6 +1500,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	case USB_ID(0x534d, 0x2109): /* MacroSilicon MS2109 */
- 		subs->stream_offset_adj = 2;
- 		break;
-+	case USB_ID(0x08e4, 0x017f): /* Pioneer DJM-750 */
-+		pioneer_djm_set_format_quirk(subs, 0x0086);
-+		break;
- 	}
- }
- 
+I still think that using dev_err_probe() naturally, i.e. as a part of
+the return statement is better.
+
 -- 
-2.30.0
-
+With Best Regards,
+Andy Shevchenko
