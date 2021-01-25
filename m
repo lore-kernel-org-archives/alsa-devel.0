@@ -2,76 +2,73 @@ Return-Path: <SRS0=LtCP=G4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B2A9C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08C18C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 711532310A
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 711532310A
+	by mail.kernel.org (Postfix) with ESMTPS id 5DB9D22D04
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DB9D22D04
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 962701841;
-	Mon, 25 Jan 2021 15:19:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 962701841
+	by alsa0.perex.cz (Postfix) with ESMTPS id B270E1820;
+	Mon, 25 Jan 2021 15:19:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B270E1820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611584399;
-	bh=fYsDyTpc8wvz0Dpsy9WED60vadF1MFuzJBzxnFx4l/o=;
+	s=default; t=1611584403;
+	bh=xLBycEasdGGeULBGkQh0Rit5QIdl3CS1v02e1Ehui+M=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RjDNx5n24CITuR1EpwN94mrtv5LKNTGJO6w3lXCBLMTc5fNvnwL0z/zNA1T8myam0
-	 TVDqQvgyIhiFSG836SRaUAeWr5eCyeEkR2nh61l/ArznLJSc7sHWmvyfo1mSv6jto/
-	 5QFk9YNyCdlRHXasSNRswi1yHtnWeZf1EZpjnMco=
+	b=awdAj34WLRdTukh+zzJe0OTisbmOBTygFmwezHnh8we1unZAjwAUPeMkgJjUCT/0H
+	 rNSw+fSl06CxMPMG8E/wUV6doJ1VVqzsQekl7Y6nA0qJ3/fGqVCsyAU5w1fyiAusV0
+	 dHPfXMXgUGEZgJS7H8kviGhu5jRB/m5WOKA1h7ZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C3EEF8025F;
-	Mon, 25 Jan 2021 15:18:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05632F8028B;
+	Mon, 25 Jan 2021 15:18:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DACB0F80278; Mon, 25 Jan 2021 15:18:13 +0100 (CET)
+ id 5E6E1F804B1; Mon, 25 Jan 2021 15:18:18 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B59AF8014D
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 15:18:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B59AF8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C071CF8027B
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 15:18:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C071CF8027B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VU5DBXcg"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BE5E2145D;
- Mon, 25 Jan 2021 14:18:08 +0000 (UTC)
+ header.b="UjWcm/lW"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 995DB2145D;
+ Mon, 25 Jan 2021 14:18:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611584288;
- bh=fYsDyTpc8wvz0Dpsy9WED60vadF1MFuzJBzxnFx4l/o=;
+ s=k20201202; t=1611584294;
+ bh=xLBycEasdGGeULBGkQh0Rit5QIdl3CS1v02e1Ehui+M=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=VU5DBXcgejgroRHtoasGaXEd2Zp5RMXHS9BM0TcazQ0xIVDpRn2rlk5jwmgq426Hv
- X66sWbhGmdOZDichRZAg5orRlt76yhU9REv7z5ihYzW8w9MAjKnX3w9fWj3A7j722Z
- KJiQTyt6aEK5yQ4lCZhF0+pIXdspllTBjHw1raSFDtSAXqzxEvkctVzNVtwVpn5NZ0
- VZqYPSnL+HLjnLvQs9sr8NZ3d/FVCIjq9hv5S6HVzkSmaesnsqekNx0IT/WmgLyu63
- L2hsbtdJev4HiVlO1Rgm5okpVFVcm56Lwb50Ev0PE/YCFqnWQI6X4TqzlTYhYJdGyp
- ymk5Zx+Y/blag==
+ b=UjWcm/lW8nR2vkJSq6rXwyOJ0ESe8BCGXpBx9b9MTmjlpmL2Yvd1yywU/p3LrL+Yb
+ Oi4N2rJQR4qY2t5aVP4NKZ8Tu9Ulko8ekV0yWcA3uAzmWbmOxVSG509QN8g0+fYr5s
+ QCY4zWtgkZlum5ycoUqyI8JuVjd/qffYOR1x/hTWeIUJTr5I6APIzDiOTIv9/CzNHy
+ qmN/Q01JkIPtGUDGoxYDerkAmARs65AtiRpOJzdUw4sGWlEDrtmv0UYxVyjjzw2NWE
+ Xnse/fouQuQtLMXSgCKbf1coz1laFSUX+kHMayxxjrcx8kEsKyHq5jS7zSl3PqEEQm
+ 67/2H0JCQHhMw==
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20210125081117.814488-1-kai.vehmanen@linux.intel.com>
-References: <20210125081117.814488-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw: set proper flags for Dell TGL-H SKU
- 0A5E
-Message-Id: <161158424212.32959.6636308393612395831.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
+References: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: partial fix to Kconfig issues
+Message-Id: <161158424213.32959.2931023496403408589.b4-ty@kernel.org>
 Date: Mon, 25 Jan 2021 14:17:22 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>, cezary.rojewski@intel.com,
- yang.jie@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, Hui Wang <hui.wang@canonical.com>,
- Bard Liao <bard.liao@intel.com>
+Cc: tiwai@suse.de, Arnd Bergmann <arnd@kernel.org>, vkoul@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,9 +84,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Jan 2021 10:11:17 +0200, Kai Vehmanen wrote:
-> Add flag "SOF_RT711_JD_SRC_JD2", flag "SOF_RT715_DAI_ID_FIX"
-> and "SOF_SDW_FOUR_SPK" to the Dell TGL-H based SKU "0A5E".
+On Thu, 21 Jan 2021 18:57:23 -0600, Pierre-Louis Bossart wrote:
+> We've had several reports of broken dependencies. The 'right' fix is
+> to revisit the module dependencies as suggested by Arnd Bergmann. This
+> is WIP at https://github.com/thesofproject/linux/pull/2683. Since this
+> is taking longer than expected, I am only sharing quick fixes for now.
+> 
+> Pierre-Louis Bossart (2):
+>   ASoC: SOF: Intel: soundwire: fix select/depend unmet dependencies
+>   ASoC: SOF: SND_INTEL_DSP_CONFIG dependency
+> 
+> [...]
 
 Applied to
 
@@ -97,8 +102,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_sdw: set proper flags for Dell TGL-H SKU 0A5E
-      commit: 9ad9bc59dde106e56dd59ce2bec7c1b08e1f0eb4
+[1/2] ASoC: SOF: Intel: soundwire: fix select/depend unmet dependencies
+      commit: bd9038faa9d7f162b47e1577e35ec5eac39f9d90
+[2/2] ASoC: SOF: SND_INTEL_DSP_CONFIG dependency
+      commit: 8a3fea95fab14dd19487d1e499eee3b3d1050d70
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
