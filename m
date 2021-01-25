@@ -2,73 +2,79 @@ Return-Path: <SRS0=LtCP=G4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08C18C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37454C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DB9D22D04
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DB9D22D04
+	by mail.kernel.org (Postfix) with ESMTPS id 41A3323103
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 14:20:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41A3323103
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B270E1820;
-	Mon, 25 Jan 2021 15:19:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B270E1820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66B3E1853;
+	Mon, 25 Jan 2021 15:19:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66B3E1853
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611584403;
-	bh=xLBycEasdGGeULBGkQh0Rit5QIdl3CS1v02e1Ehui+M=;
+	s=default; t=1611584440;
+	bh=35Q3CaKANlTL19K6ltM5nGI9OOiOXEEyad3cWZFbNe0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=awdAj34WLRdTukh+zzJe0OTisbmOBTygFmwezHnh8we1unZAjwAUPeMkgJjUCT/0H
-	 rNSw+fSl06CxMPMG8E/wUV6doJ1VVqzsQekl7Y6nA0qJ3/fGqVCsyAU5w1fyiAusV0
-	 dHPfXMXgUGEZgJS7H8kviGhu5jRB/m5WOKA1h7ZM=
+	b=f2XUABw9hOPPNFT/FBO1n2MuwXVplEVZCawxk5420wtbTvLLLGGdKYJkpeGpDiZVP
+	 4FpBmik2t8+uy05DHHfBTplKDlaxSAD33FPpszfhaB0VE/2oIIvGlrS00mcMpohKAQ
+	 zdrWIS+b2CJm0YQWJE4MBCe4bpfGqUxgehyvCYZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05632F8028B;
-	Mon, 25 Jan 2021 15:18:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2358F804CA;
+	Mon, 25 Jan 2021 15:18:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E6E1F804B1; Mon, 25 Jan 2021 15:18:18 +0100 (CET)
+ id C097FF804CB; Mon, 25 Jan 2021 15:18:23 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C071CF8027B
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 15:18:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C071CF8027B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FC8AF804B1
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 15:18:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FC8AF804B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UjWcm/lW"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 995DB2145D;
- Mon, 25 Jan 2021 14:18:13 +0000 (UTC)
+ header.b="mjw2spSV"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E26AC22C9E;
+ Mon, 25 Jan 2021 14:18:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611584294;
- bh=xLBycEasdGGeULBGkQh0Rit5QIdl3CS1v02e1Ehui+M=;
+ s=k20201202; t=1611584299;
+ bh=35Q3CaKANlTL19K6ltM5nGI9OOiOXEEyad3cWZFbNe0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=UjWcm/lW8nR2vkJSq6rXwyOJ0ESe8BCGXpBx9b9MTmjlpmL2Yvd1yywU/p3LrL+Yb
- Oi4N2rJQR4qY2t5aVP4NKZ8Tu9Ulko8ekV0yWcA3uAzmWbmOxVSG509QN8g0+fYr5s
- QCY4zWtgkZlum5ycoUqyI8JuVjd/qffYOR1x/hTWeIUJTr5I6APIzDiOTIv9/CzNHy
- qmN/Q01JkIPtGUDGoxYDerkAmARs65AtiRpOJzdUw4sGWlEDrtmv0UYxVyjjzw2NWE
- Xnse/fouQuQtLMXSgCKbf1coz1laFSUX+kHMayxxjrcx8kEsKyHq5jS7zSl3PqEEQm
- 67/2H0JCQHhMw==
+ b=mjw2spSVLdANHVo/BAQzwM+JuOW3RddidDKYwbhyCykINkjmbX4Xl7X5cEMfOUGld
+ jX4rtMLczpZX5ijn7hKpOUKk/fS49x9+hsbX/bBtu6v53Mb4ZhDK+wi+q8C9sdSx5X
+ idRAGfk+ikWhg4cZswxj4+Q9vU0t+Kr93C4MBuVVS6eiN7OWZsLHicVUFJ9nh1uw2D
+ LOkokRZRTNo5R6q8IO91vWT/SQWhGWWzsTQtO4Tz3tJbAPHB3ZSv6gyKHhT8iaZWiu
+ tog0qsyL9vk2BUfaMa1/FxJW3LiLaZ29qmcSMaJoqm8X6EmejLcawV2+5QmbhvROc+
+ ksMci1tm77pHg==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
-References: <20210122005725.94163-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: partial fix to Kconfig issues
-Message-Id: <161158424213.32959.2931023496403408589.b4-ty@kernel.org>
+To: Eliot Blennerhassett <eliot@blennerhassett.gen.nz>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <ce650f47-4ff6-e486-7846-cc3d033f3601@blennerhassett.gen.nz>
+References: <935820c1-0c96-6c85-26e7-ce0b741737dc@blennerhassett.gen.nz>
+ <20210120190759.GH6794@sirena.org.uk>
+ <84e36db4-b78d-de1b-3575-62b19035ea43@blennerhassett.gen.nz>
+ <ce650f47-4ff6-e486-7846-cc3d033f3601@blennerhassett.gen.nz>
+Subject: Re: [PATCH] ASoC: ak4458: correct reset polarity
+Message-Id: <161158424213.32959.11328598571672763596.b4-ty@kernel.org>
 Date: Mon, 25 Jan 2021 14:17:22 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Arnd Bergmann <arnd@kernel.org>, vkoul@kernel.org
+Cc: daniel.baluta@nxp.com, kuninori.morimoto.gx@renesas.com,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,17 +90,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Jan 2021 18:57:23 -0600, Pierre-Louis Bossart wrote:
-> We've had several reports of broken dependencies. The 'right' fix is
-> to revisit the module dependencies as suggested by Arnd Bergmann. This
-> is WIP at https://github.com/thesofproject/linux/pull/2683. Since this
-> is taking longer than expected, I am only sharing quick fixes for now.
-> 
-> Pierre-Louis Bossart (2):
->   ASoC: SOF: Intel: soundwire: fix select/depend unmet dependencies
->   ASoC: SOF: SND_INTEL_DSP_CONFIG dependency
-> 
-> [...]
+On Fri, 22 Jan 2021 21:27:08 +1300, Eliot Blennerhassett wrote:
+> Reset (aka power off) happens when the reset gpio is made active.
+> Change function name to ak4458_reset to match devicetree property "reset-gpios"
 
 Applied to
 
@@ -102,10 +100,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: Intel: soundwire: fix select/depend unmet dependencies
-      commit: bd9038faa9d7f162b47e1577e35ec5eac39f9d90
-[2/2] ASoC: SOF: SND_INTEL_DSP_CONFIG dependency
-      commit: 8a3fea95fab14dd19487d1e499eee3b3d1050d70
+[1/1] ASoC: ak4458: correct reset polarity
+      commit: e953daeb68b1abd8a7d44902786349fdeef5c297
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
