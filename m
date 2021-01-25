@@ -7,68 +7,71 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7B31C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 07:10:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD81C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 07:10:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D7DF22581
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 07:10:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D7DF22581
+	by mail.kernel.org (Postfix) with ESMTPS id 1D29922C9C
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 07:10:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D29922C9C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 888D11867;
-	Mon, 25 Jan 2021 08:09:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 888D11867
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74A271871;
+	Mon, 25 Jan 2021 08:09:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74A271871
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611558619;
-	bh=kTnkeKm801xKvS/Oy76DLLKF+3G/+lhuFHZdu/tt0LM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bhx0zvhWEVZLm+OEhaA7+RPMX2K+NPFMEaJtLND1NolnEnQCMQXVy81sduk+Ml4PN
-	 oWo+3CVAavea9dyZH/a3rQP/bhjJB7U4A5so28TWLHrve07KB0zweulcq0+ohIAUbE
-	 mkH59lc8RG3jDV78HV4E/IRnW96iCASB03rhMczo=
+	s=default; t=1611558623;
+	bh=c6y2xFRNs/glxUJNYmbDYP5PJH7iCcOMo9ijZs4rGQI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=LWUAj40y3qKReLOoFmlYaC0be+hAa2dGUZuOpBp0ZhNVLZLgqr93dICmpwKL294+G
+	 /4cp05Igiym5ekC1JwwUpXvJAWUcdOQRchuGnCCPo9EwCg1PtqqVMy6b2ZkAJnD4Vu
+	 PqGD4BrmWdhQwZCesz54/THvuCyvRyJAQObcVjh4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17F34F80269;
-	Mon, 25 Jan 2021 08:08:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB978F8012D;
+	Mon, 25 Jan 2021 08:08:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F437F80218; Mon, 25 Jan 2021 08:08:30 +0100 (CET)
+ id 927C8F8028B; Mon, 25 Jan 2021 08:08:35 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25833F8012D
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 08:08:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25833F8012D
-IronPort-SDR: tdUMIOKq5xii6TVuDmc2OxQj8BKFudREG1efABSfiHrN92wrlDlTdpZOl7hqUre9bvaF3aJV/q
- 06swgwOdJUGQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="264497709"
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; d="scan'208";a="264497709"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AB97F80130
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 08:08:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AB97F80130
+IronPort-SDR: YaupjcGtrihzTT2WS5W9jbDnh6/WZTrmo3idxRQvQR756fM6L34wSCxY308xzCjXiKqbJ2JDuS
+ rfTlzhTnNQCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="264497717"
+X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; d="scan'208";a="264497717"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jan 2021 23:08:15 -0800
-IronPort-SDR: LRTdaIMMBsh7obF7owSO1V3aACAzUooqC3eFzPDqn+fIozuWVExn2gdf6ozcB/KY4W+Y8oYxsB
- 0ytdGo0nLW7A==
+ 24 Jan 2021 23:08:21 -0800
+IronPort-SDR: KmBjNn8066C3NiYJdCML3+YpxcRkVU9vD1Wjm+XVNN1S8WukBZz+6XBnu9+DTr1MPP8CiSnCtP
+ DAbS9FBvnckw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; d="scan'208";a="429154793"
+X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; d="scan'208";a="429154832"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga001.jf.intel.com with ESMTP; 24 Jan 2021 23:08:13 -0800
+ by orsmga001.jf.intel.com with ESMTP; 24 Jan 2021 23:08:19 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 1/3] ASoC: SOF: allow soundwire use desc->default_fw_filename
-Date: Mon, 25 Jan 2021 09:04:58 +0200
-Message-Id: <20210125070500.807474-1-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: adl: remove sof_fw_filename setting in ADL
+ snd_soc_acpi_mach
+Date: Mon, 25 Jan 2021 09:05:00 +0200
+Message-Id: <20210125070500.807474-3-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210125070500.807474-1-kai.vehmanen@linux.intel.com>
+References: <20210125070500.807474-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com, Bard Liao <bard.liao@intel.com>
+Cc: Libin Yang <libin.yang@intel.com>, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +89,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Libin Yang <libin.yang@intel.com>
 
-The old code always uses sof_fw_filename in struct snd_soc_acpi_mach
-as the firmware name. However, firmware name should depend on the platform
-instead of the machine. For example, different machines may use the same
-soundwire link topology, but they are using the different firmware. In this
-case, it's hard to determine in struct snd_soc_acpi_mach which firmware it
-should use.
+ADL will use sof-adl-s.ri if it is ADL-S platform. So let's use
+the default_fw_filename in pdata->desc for the ADL FW filename.
 
 Signed-off-by: Libin Yang <libin.yang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/intel/common/soc-acpi-intel-adl-match.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 7e703ce22fcd..d99a552eea53 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1169,7 +1169,10 @@ static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
- 			mach->mach_params.links = mach->links;
- 			mach->mach_params.link_mask = mach->link_mask;
- 			mach->mach_params.platform = dev_name(sdev->dev);
--			pdata->fw_filename = mach->sof_fw_filename;
-+			if (mach->sof_fw_filename)
-+				pdata->fw_filename = mach->sof_fw_filename;
-+			else
-+				pdata->fw_filename = pdata->desc->default_fw_filename;
- 			pdata->tplg_filename = mach->sof_tplg_filename;
- 		} else {
- 			dev_info(sdev->dev,
+diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+index 06b233d63b73..0aca340ebc25 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+@@ -44,7 +44,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_sdw_machines[] = {
+ 		.link_mask = 0x1, /* link0 required */
+ 		.links = adl_rvp,
+ 		.drv_name = "sof_sdw",
+-		.sof_fw_filename = "sof-adl.ri",
+ 		.sof_tplg_filename = "sof-adl-rt711.tplg",
+ 	},
+ 	{},
 -- 
 2.29.2
 
