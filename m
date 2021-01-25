@@ -7,55 +7,55 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 377E3C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 13:52:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE615C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 13:53:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1644622C9E
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 13:52:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1644622C9E
+	by mail.kernel.org (Postfix) with ESMTPS id C21AD22B3B
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jan 2021 13:53:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C21AD22B3B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CF9317C1;
-	Mon, 25 Jan 2021 14:51:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CF9317C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FB1C183E;
+	Mon, 25 Jan 2021 14:52:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FB1C183E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611582735;
-	bh=REgw/X0yVEvDjCCbWpmwN9MgJnt0GzLPsyPnWRQ3XCo=;
+	s=default; t=1611582786;
+	bh=12HCCC9tDENGEqnYiPLNlR3E6CONRL7yWeZQrJ8o9Lw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M9gPSOtbBsvMKkt4pL4ZVWcZwbFb7Xk6IGTR5yhsv6UZETglVMqiNr9ljG+wizmwX
-	 d/Q3pHB90k09nIO84SivSugPySOXTuD3gRa83QC/eHLCwK3Q31I+Yc3MHNcvJBNK0Y
-	 zc6xzOorbS+J/hYWNTp9PhhKgEh/0RQgfXL8MOEI=
+	b=e6/zKaDet0SDAYtUgj6bwA3icWhTVhM6rBS+reSxsDqeEe4M4sZRxqXJP7FieDsKg
+	 zL9skgo0/f90KkEKPIvil/s0/NgTC0JoPD5mw/po0ECwkuVf2+8nvVxNw95e94gV9t
+	 qMHk+JSNIxFNTeYTial0wOckfFJWVCTeD3Qy9Ymg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCD61F8014D;
-	Mon, 25 Jan 2021 14:51:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99EB6F80218;
+	Mon, 25 Jan 2021 14:51:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2EF3EF80259; Mon, 25 Jan 2021 14:51:24 +0100 (CET)
+ id 3F32BF80269; Mon, 25 Jan 2021 14:51:33 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE3E7F8014D
- for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 14:51:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE3E7F8014D
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5B47F80218
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2021 14:51:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5B47F80218
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2457DAAC6;
- Mon, 25 Jan 2021 13:51:20 +0000 (UTC)
-Date: Mon, 25 Jan 2021 14:51:19 +0100
-Message-ID: <s5him7l3z1k.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 8C56FB7B7;
+ Mon, 25 Jan 2021 13:51:30 +0000 (UTC)
+Date: Mon, 25 Jan 2021 14:51:30 +0100
+Message-ID: <s5hh7n53z19.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 1/2] ALSA: oxfw: remove an unnecessary condition in
+Subject: Re: [PATCH v2 2/2] ALSA: fireface: remove unnecessary condition in
  hwdep_read()
-In-Reply-To: <YA6ntkBxT/4DJ4YK@mwanda>
+In-Reply-To: <YA6n6I8EcNAO5ZFs@mwanda>
 References: <20210122071354.GI20820@kadam>
-	<YA6ntkBxT/4DJ4YK@mwanda>
+	<YA6n6I8EcNAO5ZFs@mwanda>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -80,17 +80,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Jan 2021 12:12:54 +0100,
+On Mon, 25 Jan 2021 12:13:44 +0100,
 Dan Carpenter wrote:
 > 
-> Smatch complains that "count" isn't clamped properly and
-> "oxfw->dev_lock_changed" is false then it leads to an information
-> leak.  But it turns out that "oxfw->dev_lock_changed" is always
-> set and the condition can be removed.
+> Smatch complains that "count" is not clamped when "ff->dev_lock_changed"
+> and it leads to an information leak.  Fortunately, that's not actually
+> possible and the condition can be deleted.
 > 
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
-> v2: this version just removes the condition
+> v2: just delet the condition
 
 Applied now.  Thanks.
 
