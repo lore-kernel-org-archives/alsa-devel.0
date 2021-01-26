@@ -2,70 +2,102 @@ Return-Path: <SRS0=d1MO=G5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FFA1C4332D
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 14:12:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CC8BC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 15:01:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B7A5A22D04
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 14:12:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7A5A22D04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2C249230FC
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 15:01:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2C249230FC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D564B179F;
-	Tue, 26 Jan 2021 15:11:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D564B179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AB8417A2;
+	Tue, 26 Jan 2021 16:00:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AB8417A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611670359;
-	bh=vFmGhE1X/mQX857WwaXC2J2n7KyhqBxBIGJ9ADSK5Kc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1611673265;
+	bh=5PPoqIyCpJtL/ek+tU9+EyocWfpZVKR5Q6N/JZNTSoc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=isykp0Se4IF1D/v+VZNKb6ukC+S3mxQjgJr+z1dbxHzslkOlnVORvum08XkSsczfQ
-	 um/5EshApG6B9XmiYY6BQBzUUFvlgukafpyULrJEO55otMuCJ4hWlMm56F86ok3Un2
-	 vLyIyP+c/F6CnLlPfo1GjmJ7Qg3s7QarakQIXNaE=
+	b=FsH/X4/o7jgR3gadY5Iin/54bEmq6cuohq3DxTdINnzCZ3ezmne5pw3qTfcR9CigN
+	 xYmkO/vOB+A5TCssI7CfSOD0auv+7Nusx0zilSIW+HVQtEruJYqKH7jnlmUry876Jj
+	 TKap6zP56x/i4wlcDrB5P/jfNeXCmw8W31nLCPsE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FA09F80158;
-	Tue, 26 Jan 2021 15:11:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1848F80158;
+	Tue, 26 Jan 2021 16:00:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E35C2F8015B; Tue, 26 Jan 2021 15:11:46 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 04598F8015B; Tue, 26 Jan 2021 16:00:09 +0100 (CET)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C09AF80108
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 15:11:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C09AF80108
-Received: from [123.112.69.135] (helo=[192.168.0.106])
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1l4P4I-0000Vp-6I; Tue, 26 Jan 2021 14:11:42 +0000
-Subject: Re: [PATCH v8 1/1] alsa: jack: implement software jack injection via
- debugfs
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-References: <20210126074530.4450-1-hui.wang@canonical.com>
- <20210126074530.4450-2-hui.wang@canonical.com>
- <alpine.DEB.2.22.394.2101261338340.864696@eliteleevi.tm.intel.com>
-From: Hui Wang <hui.wang@canonical.com>
-Message-ID: <5b03573b-ed07-7e8a-8dcb-9ed2a35193d9@canonical.com>
-Date: Tue, 26 Jan 2021 22:11:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B82AF8011C
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 15:59:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B82AF8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="CJW5k+g5"
+Received: by mail-lf1-x135.google.com with SMTP id v24so23112923lfr.7
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 06:59:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=5PPoqIyCpJtL/ek+tU9+EyocWfpZVKR5Q6N/JZNTSoc=;
+ b=CJW5k+g5rrW0iG7J1Vqjf7EeICvtVMaqQr4Mrssy80eRmciKqXrKNu2x10XtIpUMjd
+ 2Q9fD9jJF+Yiw/QHFgpLarnnoC9HGqb7+JqNxEgSc6ULWHrPbJmfwNrJC6HhunyJagtg
+ X99euSfrluWSS5ypVzSO5NDMQXTO+CUmJuikTOK8ZdbxbZzpn8/jxBjqRW7InmA6noQy
+ kVpakp5prj7msQgdbf5j7iuW6hQhykXGedscqJrv+7qvBclJSxgfLk7uWbofhgk5yXoC
+ HYVsH6NmMWQ2xYCfoGIVnVCnWAy7NrLg+zu14JIFrJsRVJ3PouFzyRQeh8veAj9pmYVy
+ LVrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=5PPoqIyCpJtL/ek+tU9+EyocWfpZVKR5Q6N/JZNTSoc=;
+ b=uFuIzswj1L+tfF3hHtrqGQFBKxHXF4BoD4MLSn+Fuijq1VDrC6wSrBTxuSAgRAxxIH
+ vUbB1s0Q3imVhldLFHWtz09BEuWqStQM2KBNrnfX7JCnj9+X6kIWV5EsENRXJaZCfk5Y
+ 1OMsWrwfzLG3eMMnIGVhg481E+EiRc21oZcCRZCEhgtk71qp9ab9jZG6a3+YUe+WqSO/
+ Z9JpXUMBKcP9zbONRW/1JGdvFOqJAeGdtDIaTKCFVzfN0bnIkfE2vVvKMSX+VLHWqDjH
+ 0m1veyehQxfoyuR7vOMpj0P9JKo/KfedXFI9bIb9XK7eWlYEiY7RsYMocjtx7P0YUGjO
+ 2yzQ==
+X-Gm-Message-State: AOAM532C3CNdw8apsAe+S9cd9Fjxxvb9N88NkO/E6MWiLO3NV8+4VEU5
+ 0znW31ehr6CE55xgNZlBx+oLybEpVuHJQ+KzHLQMEQ==
+X-Google-Smtp-Source: ABdhPJw+UEQhd8vKQIGL6NeYSPSicxlz7dsriKTU3lH8LHsu7n43H+WLi/pKgx8+e/k/qqhhJKe1LW7Bfg9MZUXVmL8=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr2785470lfj.465.1611673197037; 
+ Tue, 26 Jan 2021 06:59:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2101261338340.864696@eliteleevi.tm.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+References: <20210126132531.2084711-1-robert.foss@linaro.org>
+In-Reply-To: <20210126132531.2084711-1-robert.foss@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 26 Jan 2021 15:59:46 +0100
+Message-ID: <CACRpkdYPY3HxpWHMp08477z62PBYEjCKWpw3Uf0SQ7VHVB3jdw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: pinctrl: pinctrl-microchip-sgpio: Fix
+ dt_binding_check warning
+To: Robert Foss <robert.foss@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Steen Hegelund <Steen.Hegelund@microchip.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, jiaxin.yu@mediatek.com,
+ Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+ shane.chien@mediatek.com, Rob Herring <robh+dt@kernel.org>,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Lars Povlsen <lars.povlsen@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,36 +113,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Jan 26, 2021 at 2:26 PM Robert Foss <robert.foss@linaro.org> wrote:
 
-On 1/26/21 7:46 PM, Kai Vehmanen wrote:
-> Hi,
+> Silence indentation level warning reported by dt_binding_check in
+> order to reduce noise during routine checks.
 >
-> I gave this v8 series another review and did some actual testing with the
-> patchset and looking good. Caching the hw status is a nice addition and
-> the new underscore-replaced names look better than the early versions.
+> $ make dt_binding_check
+> mt8192-mt6359-rt1015-rt5682.yaml:10:4: [warning] wrong indentation:
+> expected 2 but found 3 (indentation)
 >
-> Only some very minor comments to the code:
->
-> On Tue, 26 Jan 2021, Hui Wang wrote:
->
->>   static void snd_jack_kctl_add(struct snd_jack *jack, struct snd_jack_kctl *jack_kctl)
->>   {
->> +	jack_kctl->jack = jack;
->>   	list_add_tail(&jack_kctl->list, &jack->kctl_list);
->> +	if (!strstr(jack_kctl->kctl->id.name, "Phantom"))
->> +		snd_jack_debugfs_add_inject_node(jack, jack_kctl);
->>   }
-> This comparison is now done even if injection is disabled at build time.
-> Maybe better to have this check on injection side? Or even not filter
-> Phantom jacks at all and leave this for user-space to tackle?
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 
-So far there is no requirement to create injection interface for Phantom 
-jacks, if users need Phantom jacks interface in future, we could add 
-them then. Here I will move the comparison on injection side.
+I already have a fix for this in my tree, thanks anyway!
 
-Thanks,
-
-Hui.
-
->
-> Br, Kai
+Yours,
+Linus Walleij
