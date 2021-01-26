@@ -2,65 +2,67 @@ Return-Path: <SRS0=d1MO=G5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CBB6C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 05:49:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC524C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 06:32:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1B614206FA
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 05:49:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B614206FA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 323E322B3B
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 06:32:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 323E322B3B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E43D217B5;
-	Tue, 26 Jan 2021 06:48:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E43D217B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id A81F617B3;
+	Tue, 26 Jan 2021 07:31:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A81F617B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611640186;
-	bh=gEalmXNM1g5ccgQk7FnpawHlXE4W0cptxm4RGveUz6w=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YImEdD2EkhP6rnCoHrHRpGA+LQp8CSDpQYXMlimxJsN9ktcgVqeiKtRkdT2c3Yr8W
-	 UWoexvLL4GVuIyFd3QFZ9Ue29c1VYw+7AeXf+nfIyjB8+Ev3A8HmnaIOX4+BhP5a+t
-	 qaVSKhajaWZSoLZlzEZ9DKliwdFQljJnoru8ghy4=
+	s=default; t=1611642765;
+	bh=++5DRZnksITkq8tFiEJSxVP3igFqPVbroonLER0BOZ0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Vbt/xdrNRrb5719q9tfE3lMePRuHcowRHLy4xqdfTg9YIe/abnOnpA0JL8iKbLBdg
+	 1gVP3URN3kY+1X8sip3t6+nTlb9pn0IoXNxJZtBJ4t+5zyyVLaklSXtlb49hrLzEun
+	 9Dk6hgUWsVGM859twQwhdzS64nGUu66uiDEqPweA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 659B9F80158;
-	Tue, 26 Jan 2021 06:48:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B800EF80108;
+	Tue, 26 Jan 2021 07:31:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B03E2F8015B; Tue, 26 Jan 2021 06:48:53 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id ED471F8015B; Tue, 26 Jan 2021 07:31:52 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83886F80130
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 06:48:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83886F80130
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3BC741A0168;
- Tue, 26 Jan 2021 06:48:46 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E33541A0C31;
- Tue, 26 Jan 2021 06:48:43 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AF022402F0;
- Tue, 26 Jan 2021 06:48:40 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lars@metafoo.de, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dmaengine_pcm: add peripheral configuration
-Date: Tue, 26 Jan 2021 13:38:16 +0800
-Message-Id: <1611639496-4616-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id C74E9F80108
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 07:31:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C74E9F80108
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id C0D7FAEAC;
+ Tue, 26 Jan 2021 06:31:45 +0000 (UTC)
+Date: Tue, 26 Jan 2021 07:31:45 +0100
+Message-ID: <s5hlfcg2oq6.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: bebob: remove an unnecessary condition in
+ hwdep_read()
+In-Reply-To: <20210125140208.26318-1-o-takashi@sakamocchi.jp>
+References: <20210125140208.26318-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,56 +78,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit e7bbb7acabf4 ("dmaengine: add peripheral configuration")
-adds peripheral configuration for dma_slave_config.
+On Mon, 25 Jan 2021 15:02:08 +0100,
+Takashi Sakamoto wrote:
+> 
+> Drivers in ALSA firewire stack supports eventing to userspace
+> applications via ALSA hwdep interface. All of the drivers supports stream
+> lock events. Some of them supports their unique events according to
+> specification of target device.
+> 
+> ALSA bebob driver supports the stream lock event only. In the case, it's
+> enough to check condition only in loop with process blocking. However,
+> current implementation check it again after breaking the loop.
+> 
+> This commit removes the redundant check.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reported-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-This configuration is useful for some audio peripherals, for
-example, the peripheral supports multi fifos, we can
-let the DMA know which fifos are selected. So also add
-this configuration for snd_dmaengine_dai_dma_data.
+Thanks, applied now.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- include/sound/dmaengine_pcm.h | 5 +++++
- sound/core/pcm_dmaengine.c    | 2 ++
- 2 files changed, 7 insertions(+)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index 8c5e38180fb0..96666efddb39 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -66,6 +66,9 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
-  * @chan_name: Custom channel name to use when requesting DMA channel.
-  * @fifo_size: FIFO size of the DAI controller in bytes
-  * @flags: PCM_DAI flags, only SND_DMAENGINE_PCM_DAI_FLAG_PACK for now
-+ * @peripheral_config: peripheral configuration for programming peripheral
-+ * for dmaengine transfer
-+ * @peripheral_size: peripheral configuration buffer size
-  */
- struct snd_dmaengine_dai_dma_data {
- 	dma_addr_t addr;
-@@ -76,6 +79,8 @@ struct snd_dmaengine_dai_dma_data {
- 	const char *chan_name;
- 	unsigned int fifo_size;
- 	unsigned int flags;
-+	void *peripheral_config;
-+	size_t peripheral_size;
- };
- 
- void snd_dmaengine_pcm_set_config_from_dai_data(
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 4d0e8fe535a1..1fc2fa077574 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -125,6 +125,8 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
- 	}
- 
- 	slave_config->slave_id = dma_data->slave_id;
-+	slave_config->peripheral_config = dma_data->peripheral_config;
-+	slave_config->peripheral_size = dma_data->peripheral_size;
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
- 
--- 
-2.27.0
-
+Takashi
