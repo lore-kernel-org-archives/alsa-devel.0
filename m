@@ -2,95 +2,78 @@ Return-Path: <SRS0=d1MO=G5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98585C433E6
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 17:19:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 579CFC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 20:24:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 172FE23118
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 17:19:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 172FE23118
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8E48922255
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 20:24:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E48922255
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AD8B17AC;
-	Tue, 26 Jan 2021 18:19:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AD8B17AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 022F91729;
+	Tue, 26 Jan 2021 21:23:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 022F91729
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611681591;
-	bh=fmxClVeVaR1akR/RDTs5f3lIIYaiPV+fZkPIVpJlLUI=;
+	s=default; t=1611692664;
+	bh=+EsghCNbKfoMSubSdhekrk7Lexni+2yNl926lkdHUas=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=tQjpKSeUk45GEEn5MxGxIv24BsEjsfGoGjZaxHm9rCDYHn+G0OWXI+Pgw6l00cgSg
-	 aHIYl5lfOqw3fQ1Nvaq85wS20msswKfBKmRMPuGFgBM0wga1Xi1jJLI+apYxrVY7qG
-	 7VcjGXoQp23GQVBH6IId4b+w2la/Hz+FBUeRBLXk=
+	b=oyOX+El91XL9uMA1ddUqjfk77OPRGgtMT5orNVNtVnsx2Nu0wzhljOqrFEdfwmHJv
+	 xBrk4jshqwrBOHYPJJXh9BrcajCAblXor7/OAap526b6xy9fkUyqMf5UF3N9slGcKL
+	 rU9do8Y6Iqwbsg86IWdXFcGSpeR6v8X5YtNF+Czc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C399DF8011C;
-	Tue, 26 Jan 2021 18:18:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D43BF80158;
+	Tue, 26 Jan 2021 21:23:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE945F801ED; Tue, 26 Jan 2021 18:18:07 +0100 (CET)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9F26CF8015B; Tue, 26 Jan 2021 21:23:31 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B92FAF8011C
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 18:17:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B92FAF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A0D2F80108
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 21:23:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A0D2F80108
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Cp91oKUP"
-Received: by mail-wm1-x32b.google.com with SMTP id u14so3430424wmq.4
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 09:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=5oZwAs5jCwM5rUFoGrWthIvQJwNmDYK0KvJ2Ndn+HsM=;
- b=Cp91oKUP1tX+yAlvX9OrtyrtPje0Wobzs4UtSdUeNxDmEB9Ex9kKbG5v+lVbzUhmqI
- Nu47q1PRX5EQW1VKSsk2C3jHPAhSNGxn1CF/ahi9dGS2V2/m8DQ6vJ8jbL3elSfnFmvH
- TFeuoGf+jOcpaK2WUWXBXLijUWchUmqJKPSFxiu7V+Q/XHR6afbTooh+yOjRgUkIN9hB
- MgtcDR9UfKN4O7aVi1elNxLKY4ZKe1VsVs4mJgzaGP6TbG81tuSsWBggeHR/2haUyTLu
- eQb7J56zv+kY8D52EZYOyiDDgElfZ40wXkGSETJ6FDxktUb8QTPxWQ4oRrGtZZ+jesFq
- 6uZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=5oZwAs5jCwM5rUFoGrWthIvQJwNmDYK0KvJ2Ndn+HsM=;
- b=fKuxacHcaqj8qckGI7RwD5LlUDGARJlDquLJL7Zoi5IIp4xGLqXbV1sBQ+UoO0znFw
- 99/i5MeTIbFsb11sVc7eCVkO+r7Tg+QJ/4DB6VxNLkHP1uJRx6b4Y8kRt+eY/dV0LVHb
- MGebTjc8vGWj228redu4opEyklwVMwdq/+Pg9RkTXfPOEuyQXeQARa/12BTT6AXEiweF
- W2g1Xr/MPznONZvww3c8wO0GwGcXLDOOHsNTwlj7RY9gJ5XgvR+QczvITBi7nK7+u3tI
- NLEYeeV2Si2r0agUDDByVDrc0995UL4jItztthyDfYrWgzLiSjZL3oKTcH9hKcjqhs1Q
- DgpQ==
-X-Gm-Message-State: AOAM533IAZvwWAgEoInz5EyZCrzr8yNt6YkiXWDIVnAfJVaelzNQPq+n
- WArLbUGP2BclXaT2ZJFSvG0TAA==
-X-Google-Smtp-Source: ABdhPJxjzhd4m765kvrf9puMDcTM4rkJyWs9c9NmoD0a9K9WDqvgpZ7n0ROVbkrEXHlC0OppmlqlPQ==
-X-Received: by 2002:a1c:25c2:: with SMTP id l185mr695835wml.62.1611681473362; 
- Tue, 26 Jan 2021 09:17:53 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id d85sm5059157wmd.2.2021.01.26.09.17.51
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 26 Jan 2021 09:17:52 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v2 1/2] ASoC: soc-component: add
- snd_soc_component_read/write_field()
-Date: Tue, 26 Jan 2021 17:17:48 +0000
-Message-Id: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qwRjUfaK"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F2B122241;
+ Tue, 26 Jan 2021 20:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1611692602;
+ bh=+EsghCNbKfoMSubSdhekrk7Lexni+2yNl926lkdHUas=;
+ h=From:To:Cc:Subject:Date:From;
+ b=qwRjUfaK417oQM28DFY8h3Ud1rcErIYR4T7Bmp0ZdAgKa8w/gXoTZIhygR/b+QPRG
+ ThnmNkLq6RievbT9icGV7yrwEj9kslvhrvzHMBIAe+3azHatZ+o54YYVY/VFvQvBG1
+ 2gntQ3GiBy8pF00YTQQcx72bZ9S7TkTNnBSvI0+t+3R2q4faV0Vu9DS2TNjfCIy/sl
+ BN+RCQ+4b7QG2hM1TNlRmNed7E7oQyQNG8sJnffJFrhym128OmaPciCSTCDWH32zBb
+ eAWcDx0UiTtUizZXKQiyM8Yvcav5WB15Ojw/VbEQ8Gjnt6a25MtgXar7j9Ql1PQyCB
+ tvzORGfjCd4Jg==
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Corentin Chary <corentin.chary@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ACPI: Test for ACPI_SUCCESS rather than !ACPI_FAILURE
+Date: Tue, 26 Jan 2021 14:23:17 -0600
+Message-Id: <20210126202317.2914080-1-helgaas@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-hwmon@vger.kernel.org, alsa-devel@alsa-project.org,
+ acpi4asus-user@lists.sourceforge.net, amd-gfx@lists.freedesktop.org,
+ linux-spi@vger.kernel.org, linux-acpi@vger.kernel.org,
+ Bjorn Helgaas <bhelgaas@google.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,130 +89,159 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It's often the case that we would write or read a particular field
-in register. With the current soc_component apis, reading a particular
-field in register would involve first read the register and then
-perform shift operations.
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-Ex:
-to read from a field mask of 0xf0
+The double negative makes it hard to read "if (!ACPI_FAILURE(status))".
+Replace it with "if (ACPI_SUCCESS(status))".
 
-	val = snd_soc_component_read(component, reg);
-	field = ((val & 0xf0) >> 0x4);
-
-This is sometimes prone to errors and code become less readable!
-
-With this new api we could just do
-	field = snd_soc_component_read_field(component, reg, 0xf0);
-
-this makes it bit simple, easy to write and less error prone!
-
-This also applies to writing!
-
-There are various places in kernel which provides such field interfaces
-however soc_component seems to be missing this.
-
-This patch is inspired by FIELD_GET/FIELD_PREP macros in include/linux/bitfield.h
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
 
-Changes since v1:
-	- removed open coding and call read and update_bits
-	- made soc_component_field_shift an inline function
+This isn't really an ACPI patch, but I'm sending it to you, Rafael, since
+it seems easier to just apply these all at once.  But I'd be happy to split
+them up into individual patches if you'd rather.
 
- include/sound/soc-component.h |  6 ++++
- sound/soc/soc-component.c     | 53 +++++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 0bce41fefd30..5b47768222b7 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -353,6 +353,12 @@ int snd_soc_component_test_bits(struct snd_soc_component *component,
- 				unsigned int reg, unsigned int mask,
- 				unsigned int value);
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c | 4 ++--
+ drivers/gpu/drm/radeon/radeon_bios.c     | 4 ++--
+ drivers/hwmon/acpi_power_meter.c         | 4 ++--
+ drivers/platform/x86/asus-laptop.c       | 6 +++---
+ drivers/spi/spi.c                        | 2 +-
+ sound/pci/hda/hda_intel.c                | 4 ++--
+ 6 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c
+index 6333cada1e09..055f600eeed8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c
+@@ -291,7 +291,7 @@ static bool amdgpu_atrm_get_bios(struct amdgpu_device *adev)
+ 			continue;
  
-+unsigned int snd_soc_component_read_field(struct snd_soc_component *component,
-+					  unsigned int reg, unsigned int mask);
-+int snd_soc_component_write_field(struct snd_soc_component *component,
-+				  unsigned int reg, unsigned int mask,
-+				  unsigned int val);
-+
- /* component wide operations */
- int snd_soc_component_set_sysclk(struct snd_soc_component *component,
- 				 int clk_id, int source,
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 760523382f3c..361a79d655e3 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -34,6 +34,18 @@ static inline int _soc_component_ret(struct snd_soc_component *component,
- 	return ret;
- }
+ 		status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
+-		if (!ACPI_FAILURE(status)) {
++		if (ACPI_SUCCESS(status)) {
+ 			found = true;
+ 			break;
+ 		}
+@@ -304,7 +304,7 @@ static bool amdgpu_atrm_get_bios(struct amdgpu_device *adev)
+ 				continue;
  
-+static inline int soc_component_field_shift(struct snd_soc_component *component,
-+					    unsigned int mask)
-+{
-+	if (!mask) {
-+		dev_err(component->dev,	"ASoC: error field mask is zero for %s\n",
-+			component->name);
-+		return 0;
-+	}
-+
-+	return (__builtin_ffs(mask) - 1);
-+}
-+
- /*
-  * We might want to check substream by using list.
-  * In such case, we can update these macros.
-@@ -839,6 +851,47 @@ int snd_soc_component_update_bits_async(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL_GPL(snd_soc_component_update_bits_async);
+ 			status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
+-			if (!ACPI_FAILURE(status)) {
++			if (ACPI_SUCCESS(status)) {
+ 				found = true;
+ 				break;
+ 			}
+diff --git a/drivers/gpu/drm/radeon/radeon_bios.c b/drivers/gpu/drm/radeon/radeon_bios.c
+index bb29cf02974d..43bbbfd6ade8 100644
+--- a/drivers/gpu/drm/radeon/radeon_bios.c
++++ b/drivers/gpu/drm/radeon/radeon_bios.c
+@@ -205,7 +205,7 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
+ 			continue;
  
-+/**
-+ * snd_soc_component_read_field() - Read register field value
-+ * @component: Component to read from
-+ * @reg: Register to read
-+ * @mask: mask of the register field
-+ *
-+ * Return: read value of register field.
-+ */
-+unsigned int snd_soc_component_read_field(struct snd_soc_component *component,
-+					  unsigned int reg, unsigned int mask)
-+{
-+	unsigned int val;
-+
-+	val = snd_soc_component_read(component, reg);
-+
-+	val = (val & mask) >> soc_component_field_shift(component, mask);
-+
-+	return val;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_read_field);
-+
-+/**
-+ * snd_soc_component_write_field() - write to register field
-+ * @component: Component to write to
-+ * @reg: Register to write
-+ * @mask: mask of the register field to update
-+ * @val: value of the field to write
-+ *
-+ * Return: 1 for change, otherwise 0.
-+ */
-+int snd_soc_component_write_field(struct snd_soc_component *component,
-+				  unsigned int reg, unsigned int mask,
-+				  unsigned int val)
-+{
-+
-+	val = (val << soc_component_field_shift(component, mask)) & mask;
-+
-+	return snd_soc_component_update_bits(component, reg, mask, val);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_component_write_field);
-+
- /**
-  * snd_soc_component_async_complete() - Ensure asynchronous I/O has completed
-  * @component: Component for which to wait
+ 		status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
+-		if (!ACPI_FAILURE(status)) {
++		if (ACPI_SUCCESS(status)) {
+ 			found = true;
+ 			break;
+ 		}
+@@ -218,7 +218,7 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
+ 				continue;
+ 
+ 			status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
+-			if (!ACPI_FAILURE(status)) {
++			if (ACPI_SUCCESS(status)) {
+ 				found = true;
+ 				break;
+ 			}
+diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
+index 848718ab7312..7d3ddcba34ce 100644
+--- a/drivers/hwmon/acpi_power_meter.c
++++ b/drivers/hwmon/acpi_power_meter.c
+@@ -161,7 +161,7 @@ static ssize_t set_avg_interval(struct device *dev,
+ 	mutex_lock(&resource->lock);
+ 	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_PAI",
+ 				       &args, &data);
+-	if (!ACPI_FAILURE(status))
++	if (ACPI_SUCCESS(status))
+ 		resource->avg_interval = temp;
+ 	mutex_unlock(&resource->lock);
+ 
+@@ -232,7 +232,7 @@ static ssize_t set_cap(struct device *dev, struct device_attribute *devattr,
+ 	mutex_lock(&resource->lock);
+ 	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_SHL",
+ 				       &args, &data);
+-	if (!ACPI_FAILURE(status))
++	if (ACPI_SUCCESS(status))
+ 		resource->cap = temp;
+ 	mutex_unlock(&resource->lock);
+ 
+diff --git a/drivers/platform/x86/asus-laptop.c b/drivers/platform/x86/asus-laptop.c
+index 0edafe687fa9..bfea656e910c 100644
+--- a/drivers/platform/x86/asus-laptop.c
++++ b/drivers/platform/x86/asus-laptop.c
+@@ -861,7 +861,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 * The significance of others is yet to be found.
+ 	 */
+ 	rv = acpi_evaluate_integer(asus->handle, "SFUN", NULL, &temp);
+-	if (!ACPI_FAILURE(rv))
++	if (ACPI_SUCCESS(rv))
+ 		len += sprintf(page + len, "SFUN value         : %#x\n",
+ 			       (uint) temp);
+ 	/*
+@@ -873,7 +873,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 * takes several seconds to run on some systems.
+ 	 */
+ 	rv = acpi_evaluate_integer(asus->handle, "HWRS", NULL, &temp);
+-	if (!ACPI_FAILURE(rv))
++	if (ACPI_SUCCESS(rv))
+ 		len += sprintf(page + len, "HWRS value         : %#x\n",
+ 			       (uint) temp);
+ 	/*
+@@ -884,7 +884,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 * silently ignored.
+ 	 */
+ 	rv = acpi_evaluate_integer(asus->handle, "ASYM", NULL, &temp);
+-	if (!ACPI_FAILURE(rv))
++	if (ACPI_SUCCESS(rv))
+ 		len += sprintf(page + len, "ASYM value         : %#x\n",
+ 			       (uint) temp);
+ 	if (asus->dsdt_info) {
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 720ab34784c1..801d8b499788 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2210,7 +2210,7 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
+ 		return AE_OK;
+ 
+ 	if (!lookup.max_speed_hz &&
+-	    !ACPI_FAILURE(acpi_get_parent(adev->handle, &parent_handle)) &&
++	    ACPI_SUCCESS(acpi_get_parent(adev->handle, &parent_handle)) &&
+ 	    ACPI_HANDLE(ctlr->dev.parent) == parent_handle) {
+ 		/* Apple does not use _CRS but nested devices for SPI slaves */
+ 		acpi_spi_parse_apple_properties(adev, &lookup);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 770ad25f1907..fe8049cd2765 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1444,7 +1444,7 @@ static bool atpx_present(void)
+ 		dhandle = ACPI_HANDLE(&pdev->dev);
+ 		if (dhandle) {
+ 			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
+-			if (!ACPI_FAILURE(status)) {
++			if (ACPI_SUCCESS(status)) {
+ 				pci_dev_put(pdev);
+ 				return true;
+ 			}
+@@ -1454,7 +1454,7 @@ static bool atpx_present(void)
+ 		dhandle = ACPI_HANDLE(&pdev->dev);
+ 		if (dhandle) {
+ 			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
+-			if (!ACPI_FAILURE(status)) {
++			if (ACPI_SUCCESS(status)) {
+ 				pci_dev_put(pdev);
+ 				return true;
+ 			}
 -- 
-2.21.0
+2.25.1
 
