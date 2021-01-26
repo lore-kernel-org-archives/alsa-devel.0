@@ -7,70 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34EFCC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 01:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CBB6C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 05:49:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F16522DD6
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 01:53:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F16522DD6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1B614206FA
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 05:49:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B614206FA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD06717CD;
-	Tue, 26 Jan 2021 02:52:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD06717CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E43D217B5;
+	Tue, 26 Jan 2021 06:48:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E43D217B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611626016;
-	bh=Upu5JtGBTPIu8a8Nvf/B7wsdHgSfV0tYiyfRuHdsiL0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=e5L4PDCkDx9r9qOW5e1R9v9Lo5NXzuAxCRWrSFLpX7eQgM92LO/iz3i1zt5+frGzQ
-	 Xwhgux+2YvXUfQOOQ6Kgs8nTTom8d42TXnSbYT3P/D5c4pN4bNVLqH38Ja77Ci20Fm
-	 WRlArnaW6yuSVCWQ80/W4sw7iPTwDPZV4rYDq9sM=
+	s=default; t=1611640186;
+	bh=gEalmXNM1g5ccgQk7FnpawHlXE4W0cptxm4RGveUz6w=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=YImEdD2EkhP6rnCoHrHRpGA+LQp8CSDpQYXMlimxJsN9ktcgVqeiKtRkdT2c3Yr8W
+	 UWoexvLL4GVuIyFd3QFZ9Ue29c1VYw+7AeXf+nfIyjB8+Ev3A8HmnaIOX4+BhP5a+t
+	 qaVSKhajaWZSoLZlzEZ9DKliwdFQljJnoru8ghy4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDA3DF80278;
-	Tue, 26 Jan 2021 02:51:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 659B9F80158;
+	Tue, 26 Jan 2021 06:48:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF97BF80260; Tue, 26 Jan 2021 02:51:51 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id B03E2F8015B; Tue, 26 Jan 2021 06:48:53 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DB24F80130
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 02:51:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB24F80130
-IronPort-SDR: Pr37ADQXJEtk9HtofT3wVRvw8WoAHVKlZyY8F9/Z+5w4HgpL2Keo1h6AiaECDRMlVvxChnEuuE
- k98nLh/ia2qA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="159610096"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; d="scan'208";a="159610096"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2021 17:51:39 -0800
-IronPort-SDR: PsuMSi6nHuF40t+aNcAemAanN1HPD3WZJ/BeV6YNQTIYopTQLcGn4Z3bKcg5mOI6G/SnvFEtdp
- JSumL4N986iA==
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; d="scan'208";a="356564916"
-Received: from sugatabx-mobl.amr.corp.intel.com (HELO
- rsridh-mobl1.localdomain) ([10.212.73.120])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2021 17:51:39 -0800
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: SOF: Intel: hda: Enable DMI L1 for trace
-Date: Mon, 25 Jan 2021 17:51:30 -0800
-Message-Id: <20210126015130.1023840-3-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126015130.1023840-1-ranjani.sridharan@linux.intel.com>
-References: <20210126015130.1023840-1-ranjani.sridharan@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, tiwai@suse.com,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83886F80130
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 06:48:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83886F80130
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3BC741A0168;
+ Tue, 26 Jan 2021 06:48:46 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E33541A0C31;
+ Tue, 26 Jan 2021 06:48:43 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AF022402F0;
+ Tue, 26 Jan 2021 06:48:40 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lars@metafoo.de, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dmaengine_pcm: add peripheral configuration
+Date: Tue, 26 Jan 2021 13:38:16 +0800
+Message-Id: <1611639496-4616-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,31 +76,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Enabling DMI L1 for capture streams could result in xruns during
-pause/release. As pause/release is not a valid scenario for trace,
-we can safely enable DMI L1 for it.
+The commit e7bbb7acabf4 ("dmaengine: add peripheral configuration")
+adds peripheral configuration for dma_slave_config.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+This configuration is useful for some audio peripherals, for
+example, the peripheral supports multi fifos, we can
+let the DMA know which fifos are selected. So also add
+this configuration for snd_dmaengine_dai_dma_data.
+
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/sof/intel/hda-trace.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/dmaengine_pcm.h | 5 +++++
+ sound/core/pcm_dmaengine.c    | 2 ++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-trace.c b/sound/soc/sof/intel/hda-trace.c
-index ca869038e909..81d76d3debc6 100644
---- a/sound/soc/sof/intel/hda-trace.c
-+++ b/sound/soc/sof/intel/hda-trace.c
-@@ -42,7 +42,8 @@ int hda_dsp_trace_init(struct snd_sof_dev *sdev, u32 *stream_tag)
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
- 	int ret;
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 8c5e38180fb0..96666efddb39 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -66,6 +66,9 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
+  * @chan_name: Custom channel name to use when requesting DMA channel.
+  * @fifo_size: FIFO size of the DAI controller in bytes
+  * @flags: PCM_DAI flags, only SND_DMAENGINE_PCM_DAI_FLAG_PACK for now
++ * @peripheral_config: peripheral configuration for programming peripheral
++ * for dmaengine transfer
++ * @peripheral_size: peripheral configuration buffer size
+  */
+ struct snd_dmaengine_dai_dma_data {
+ 	dma_addr_t addr;
+@@ -76,6 +79,8 @@ struct snd_dmaengine_dai_dma_data {
+ 	const char *chan_name;
+ 	unsigned int fifo_size;
+ 	unsigned int flags;
++	void *peripheral_config;
++	size_t peripheral_size;
+ };
  
--	hda->dtrace_stream = hda_dsp_stream_get(sdev, SNDRV_PCM_STREAM_CAPTURE, 0);
-+	hda->dtrace_stream = hda_dsp_stream_get(sdev, SNDRV_PCM_STREAM_CAPTURE,
-+						SOF_HDA_STREAM_DMI_L1_COMPATIBLE);
+ void snd_dmaengine_pcm_set_config_from_dai_data(
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 4d0e8fe535a1..1fc2fa077574 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -125,6 +125,8 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+ 	}
  
- 	if (!hda->dtrace_stream) {
- 		dev_err(sdev->dev,
+ 	slave_config->slave_id = dma_data->slave_id;
++	slave_config->peripheral_config = dma_data->peripheral_config;
++	slave_config->peripheral_size = dma_data->peripheral_size;
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
+ 
 -- 
-2.25.1
+2.27.0
 
