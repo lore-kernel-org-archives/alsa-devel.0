@@ -2,74 +2,98 @@ Return-Path: <SRS0=d1MO=G5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A66B7C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 17:03:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E00AC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 17:18:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 29F83229C9
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 17:03:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29F83229C9
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 147CD2083E
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 17:18:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 147CD2083E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07A9C1793;
-	Tue, 26 Jan 2021 18:02:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07A9C1793
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54E9C1776;
+	Tue, 26 Jan 2021 18:18:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54E9C1776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611680623;
-	bh=Pfu3+467n9femplK8DDe6a+kBnJ5bI/TddQrlnbuvBk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611681535;
+	bh=CbbIzrizcoPfQ5IG3j31n+bUwb19ahKPr9uM2AMKlxk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VC6Dj5xChfNxF98+VpHPtp0Z+JUYr5x94uFaws6s3CuM/4ja0vGHJ/yxCw2NbBBNA
-	 wvptJtBf+cQlU3DWay+m1hh0urh6sbJ+Zx1knu81duejO5e109SDi8WoXbNUlleqX1
-	 GFv8HdXYUYBZQjt9VLcWXGkfSdEoaQTCrNOAm0GA=
+	b=GVrvEYrX/hp29Sfwl7DkLKSo4MwpErAAV4xyr2YGa9EAbECNFlN7GoptUS3Ltm4nv
+	 oAm+X7CQ4Lb6c+P1s47SkpqvwleUToYLmONNjH67wSvTyJ5cXpzh3x3ffsUd/oFTI/
+	 cSIlhg95sh5VrQ58gOmXN3YMEZBV1/C2CKLdjfUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08D38F80158;
-	Tue, 26 Jan 2021 18:02:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAF46F80158;
+	Tue, 26 Jan 2021 18:18:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE5B8F8015B; Tue, 26 Jan 2021 18:02:49 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 53F39F801D8; Tue, 26 Jan 2021 18:18:02 +0100 (CET)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A2B6F80130
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 18:02:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A2B6F80130
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E9A12AD18;
- Tue, 26 Jan 2021 17:02:37 +0000 (UTC)
-Date: Tue, 26 Jan 2021 18:02:37 +0100
-Message-ID: <s5htur3zl5e.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: control: expand limitation on the number of
- user-defined control element set per card
-In-Reply-To: <s5hy2gfzm4f.wl-tiwai@suse.de>
-References: <20210122082032.103066-1-o-takashi@sakamocchi.jp>
- <s5h35yt83uf.wl-tiwai@suse.de>
- <20210123031025.GA118864@workstation>
- <s5h8s8k6mtf.wl-tiwai@suse.de>
- <20210124055225.GA132211@workstation>
- <s5ho8he6ah4.wl-tiwai@suse.de>
- <20210125005619.GA137024@workstation>
- <s5hft2p5w89.wl-tiwai@suse.de> <s5h7dnz1yik.wl-tiwai@suse.de>
- <48c7c194-dca6-a951-d47a-633def33c2cc@perex.cz>
- <s5hy2gfzm4f.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03AD2F80130
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 18:17:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03AD2F80130
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="UrYxoL4b"
+Received: by mail-wr1-x435.google.com with SMTP id g10so17328210wrx.1
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 09:17:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=cT55FABjLyu7dYc21lezhM1CvuGo2h6vplhaEe339cE=;
+ b=UrYxoL4bOuXbkBcX9ePhc8k8BPcc/yvXG1VfCgvCgAy890BWkO00nH6rgoiwfwQwTX
+ DvPRS7YhWByG7S3rA+tICwFjLS+sTSrdTF71wK5Hzfp42cm3EsSXas5ymUZ2uh6lo+8Z
+ 7TWsp9MWnlBrLaVEg5Q3VkXPm0dVLEmmFgUQFX8jveeaYYh9bdRldgxVOYOarVRY/QVF
+ gAl3mU9nCw13QqpFp3zv873OdPXzfBz/Q/HtKcC5KGRVbZXSG5R2AX2aVcuUBRTYeEof
+ b2X+sX5uyKAMxDclaXoi/eG2bEN047ah7GFcNwND6tdxmuTeDoyTYftQyLxU3JJvXKpX
+ Hpkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=cT55FABjLyu7dYc21lezhM1CvuGo2h6vplhaEe339cE=;
+ b=GIO4KPSB4ZXJQI2rvzK3tW8Oc7Fd1V6wPoRtJocXE53nm/BioFefTG/sNdl9MGalBt
+ DoLdvG0ASuDLIcCZv1Zv/TI6gmfZDqFR5llVx1AqPFWBW6lXuB4Po/p8Q07capecd/TK
+ dXXYH6YsDSDkMUqFrpEbltld0f6KZ0ObD7reZ9hB1m89hdU/9Iy9jcxVz29MUPU/Vjm2
+ 2X4/9cvQLnceFhTyaNUsU1F8qFQ4VCMM2Pj2E9SruFa5xkluT6CjVrajDfZoIB/lNdQf
+ g1BOglv7EVB0lJyUcJ7IfKKuJ8InN9Xl6k6RBbodtKBXmwGDFk55wVWURGVTwTy4GaID
+ QvAQ==
+X-Gm-Message-State: AOAM531UdtNGVG9npFKArltmdc7E6BRRtcO5lkPC53H6p5RF5xglftsY
+ Gdz6YiMLpu81e7NasjMSQTfbaQ==
+X-Google-Smtp-Source: ABdhPJwJLWztaGlItJcs76IMIRt4n37A8r9MNfHcyLGL/hS8T+o/0x5gVr8KcwSyEzfd2QZ0rXMvxQ==
+X-Received: by 2002:a5d:6787:: with SMTP id v7mr7455707wru.286.1611681474840; 
+ Tue, 26 Jan 2021 09:17:54 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id d85sm5059157wmd.2.2021.01.26.09.17.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 26 Jan 2021 09:17:54 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH v2 2/2] ASoC: codecs: lpass-wsa-macro: make use of
+ snd_soc_component_read_field()
+Date: Tue, 26 Jan 2021 17:17:49 +0000
+Message-Id: <20210126171749.1863-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
+References: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,291 +109,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Jan 2021 17:41:36 +0100,
-Takashi Iwai wrote:
-> 
-> On Tue, 26 Jan 2021 17:25:24 +0100,
-> Jaroslav Kysela wrote:
-> > 
-> > Dne 26. 01. 21 v 16:57 Takashi Iwai napsal(a):
-> > 
-> > > @@ -1226,11 +1227,18 @@ struct user_element {
-> > >  	struct snd_card *card;
-> > >  	char *elem_data;		/* element data */
-> > >  	unsigned long elem_data_size;	/* size of element data in bytes */
-> > > +	size_t alloc_size;		/* allocated size */
-> > 
-> > I think that introduction of this new member is not required. The allocated
-> > size can be easily computed at runtime (function).
-> 
-> True.  OTOH, I thought this addition would be error-prone.
-> 
-> > > @@ -1397,6 +1414,7 @@ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
-> > >  
-> > >  	ue->priv_data = names;
-> > >  	ue->info.value.enumerated.names_ptr = 0;
-> > > +	ue->alloc_size += buf_len;
-> > 
-> > The buf_len variable is the remaining count. The
-> > ue->info.value.enumerated.names_length already contains allocated bytes. This
-> > code can be elimited if alloc_size is not introduced.
-> 
-> Oh yeah, that's a wrong count.
+Make use of snd_soc_component_read_field() to make the code more readable!
 
-The v2 patch is below.
-
-
-thanks,
-
-Takashi
-
--- 8< --
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2] ALSA: control: Add memory consumption limit to user
- controls
-
-ALSA control interface allows users to add arbitrary control elements
-(called "user controls" or "user elements"), and its resource usage is
-limited just by the max number of control sets (currently 32).  This
-limit, however, is quite loose: each allocation of control set may
-have 1028 elements, and each element may have up to 512 bytes of value
-data.  Moreover, each control set may contain the enum strings and TLV
-data, which can be up to 64kB and 128kB, respectively.  Totally, the
-whole memory consumption may go over 38MB -- it's quite large, and
-we'd rather like to reduce the size.
-
-OTOH, there have been other requests even to increase the max number
-of user elements; e.g. FireWire stack require the more user controls,
-hence we want to raise the bar, too.
-
-For satisfying both requirements, this patch changes the management of
-user controls: instead of setting the upper limit of the number of
-user controls, we check the actual memory allocation size and set the
-upper limit of the total allocation in bytes.  As long as the memory
-consumption stays below the limit, more user controls are allowed than
-the current limit 32.  At the same time, we set the lower limit (8MB)
-as default than the current theoretical limit, in order to lower the
-risk of DoS.
-
-As a compromise for lowering the default limit, now the actual memory
-limit is defined as a module option, max_user_ctl, so that user can
-increase/decrease the limit if really needed, too.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
-v1->v2: Drop alloc_size field from user_element, calculate at private_free
+ sound/soc/codecs/lpass-wsa-macro.c | 43 ++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
 
- include/sound/core.h |  2 +-
- sound/core/control.c | 73 ++++++++++++++++++++++++++++++--------------
- 2 files changed, 51 insertions(+), 24 deletions(-)
-
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 0462c577d7a3..a21b14451810 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -100,7 +100,7 @@ struct snd_card {
- 	struct rw_semaphore controls_rwsem;	/* controls list lock */
- 	rwlock_t ctl_files_rwlock;	/* ctl_files list lock */
- 	int controls_count;		/* count of all controls */
--	int user_ctl_count;		/* count of all user controls */
-+	size_t user_ctl_alloc_size;	/* current memory allocation by user controls */
- 	struct list_head controls;	/* all controls for this card */
- 	struct list_head ctl_files;	/* active control files */
- 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 5165741a8400..1a9a3115e4a3 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -7,6 +7,7 @@
- #include <linux/threads.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-+#include <linux/moduleparam.h>
- #include <linux/slab.h>
- #include <linux/vmalloc.h>
- #include <linux/time.h>
-@@ -18,10 +19,13 @@
- #include <sound/info.h>
- #include <sound/control.h>
- 
--/* max number of user-defined controls */
--#define MAX_USER_CONTROLS	32
- #define MAX_CONTROL_COUNT	1028
- 
-+/* Max allocation size for user controls */
-+static int max_user_ctl_alloc_size = 8 * 1024 * 1024;
-+module_param_named(max_user_ctl, max_user_ctl_alloc_size, int, 0444);
-+MODULE_PARM_DESC(max_user_ctl, "Max allocation size for user controls");
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 25f1df214ca5..5ebcd935ba89 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -40,9 +40,11 @@
+ #define CDC_WSA_TOP_I2S_CLK			(0x00A4)
+ #define CDC_WSA_TOP_I2S_RESET			(0x00A8)
+ #define CDC_WSA_RX_INP_MUX_RX_INT0_CFG0		(0x0100)
+-#define CDC_WSA_RX_INTX_1_MIX_INP2_SEL_MASK	GENMASK(5, 3)
+-#define CDC_WSA_RX_INTX_2_SEL_MASK		GENMASK(2, 0)
++#define CDC_WSA_RX_INTX_1_MIX_INP0_SEL_MASK	GENMASK(2, 0)
++#define CDC_WSA_RX_INTX_1_MIX_INP1_SEL_MASK	GENMASK(5, 3)
+ #define CDC_WSA_RX_INP_MUX_RX_INT0_CFG1		(0x0104)
++#define CDC_WSA_RX_INTX_2_SEL_MASK		GENMASK(2, 0)
++#define CDC_WSA_RX_INTX_1_MIX_INP2_SEL_MASK	GENMASK(5, 3)
+ #define CDC_WSA_RX_INP_MUX_RX_INT1_CFG0		(0x0108)
+ #define CDC_WSA_RX_INP_MUX_RX_INT1_CFG1		(0x010C)
+ #define CDC_WSA_RX_INP_MUX_RX_MIX_CFG0		(0x0110)
+@@ -229,8 +231,6 @@
+ #define NUM_INTERPOLATORS 2
+ #define WSA_NUM_CLKS_MAX	5
+ #define WSA_MACRO_MCLK_FREQ 19200000
+-#define WSA_MACRO_MUX_INP_SHFT 0x3
+-#define WSA_MACRO_MUX_INP_MASK1 0x07
+ #define WSA_MACRO_MUX_INP_MASK2 0x38
+ #define WSA_MACRO_MUX_CFG_OFFSET 0x8
+ #define WSA_MACRO_MUX_CFG1_OFFSET 0x4
+@@ -843,7 +843,6 @@ static int wsa_macro_set_prim_interpolator_rate(struct snd_soc_dai *dai,
+ 	u32 j, port;
+ 	u16 int_mux_cfg0, int_mux_cfg1;
+ 	u16 int_fs_reg;
+-	u8 int_mux_cfg0_val, int_mux_cfg1_val;
+ 	u8 inp0_sel, inp1_sel, inp2_sel;
+ 	struct snd_soc_component *component = dai->component;
+ 	struct wsa_macro *wsa = snd_soc_component_get_drvdata(component);
+@@ -865,15 +864,13 @@ static int wsa_macro_set_prim_interpolator_rate(struct snd_soc_dai *dai,
+ 		 */
+ 		for (j = 0; j < NUM_INTERPOLATORS; j++) {
+ 			int_mux_cfg1 = int_mux_cfg0 + WSA_MACRO_MUX_CFG1_OFFSET;
+-			int_mux_cfg0_val = snd_soc_component_read(component,
+-								  int_mux_cfg0);
+-			int_mux_cfg1_val = snd_soc_component_read(component,
+-								  int_mux_cfg1);
+-			inp0_sel = int_mux_cfg0_val & WSA_MACRO_MUX_INP_MASK1;
+-			inp1_sel = (int_mux_cfg0_val >> WSA_MACRO_MUX_INP_SHFT) &
+-						WSA_MACRO_MUX_INP_MASK1;
+-			inp2_sel = (int_mux_cfg1_val >> WSA_MACRO_MUX_INP_SHFT) &
+-						WSA_MACRO_MUX_INP_MASK1;
++			inp0_sel = snd_soc_component_read_field(component, int_mux_cfg0, 
++								CDC_WSA_RX_INTX_1_MIX_INP0_SEL_MASK);
++			inp1_sel = snd_soc_component_read_field(component, int_mux_cfg0, 
++								CDC_WSA_RX_INTX_1_MIX_INP1_SEL_MASK);
++			inp2_sel = snd_soc_component_read_field(component, int_mux_cfg1,
++								CDC_WSA_RX_INTX_1_MIX_INP2_SEL_MASK);
 +
- struct snd_kctl_ioctl {
- 	struct list_head list;		/* list of all ioctls */
- 	snd_kctl_ioctl_func_t fioctl;
-@@ -537,9 +541,6 @@ static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
- 			goto error;
- 		}
- 	ret = snd_ctl_remove(card, kctl);
--	if (ret < 0)
--		goto error;
--	card->user_ctl_count--;
- error:
- 	up_write(&card->controls_rwsem);
- 	return ret;
-@@ -1231,6 +1232,12 @@ struct user_element {
- 	void *priv_data;		/* private data (like strings for enumerated type) */
- };
+ 			if ((inp0_sel == int_1_mix1_inp + INTn_1_INP_SEL_RX0) ||
+ 			    (inp1_sel == int_1_mix1_inp + INTn_1_INP_SEL_RX0) ||
+ 			    (inp2_sel == int_1_mix1_inp + INTn_1_INP_SEL_RX0)) {
+@@ -912,9 +909,9 @@ static int wsa_macro_set_mix_interpolator_rate(struct snd_soc_dai *dai,
  
-+/* check whether the addition (in bytes) of user ctl element may overflow the limit */
-+static bool user_elem_overflow(struct snd_card *card, ssize_t add)
-+{
-+	return (ssize_t)card->user_ctl_alloc_size + add >= max_user_ctl_alloc_size;
-+}
+ 		int_mux_cfg1 = CDC_WSA_RX_INP_MUX_RX_INT0_CFG1;
+ 		for (j = 0; j < NUM_INTERPOLATORS; j++) {
+-			int_mux_cfg1_val = snd_soc_component_read(component,
+-							int_mux_cfg1) &
+-							WSA_MACRO_MUX_INP_MASK1;
++			int_mux_cfg1_val = snd_soc_component_read_field(component, int_mux_cfg1,
++									CDC_WSA_RX_INTX_2_SEL_MASK);
 +
- static int snd_ctl_elem_user_info(struct snd_kcontrol *kcontrol,
- 				  struct snd_ctl_elem_info *uinfo)
+ 			if (int_mux_cfg1_val == int_2_inp + INTn_2_INP_SEL_RX0) {
+ 				int_fs_reg = CDC_WSA_RX0_RX_PATH_MIX_CTL +
+ 					WSA_MACRO_RX_PATH_OFFSET * j;
+@@ -1410,25 +1407,25 @@ static bool wsa_macro_adie_lb(struct snd_soc_component *component,
+ 			      int interp_idx)
  {
-@@ -1309,6 +1316,10 @@ static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
- 	if (size > 1024 * 128)	/* sane value */
- 		return -EINVAL;
+ 	u16 int_mux_cfg0,  int_mux_cfg1;
+-	u8 int_mux_cfg0_val, int_mux_cfg1_val;
+ 	u8 int_n_inp0, int_n_inp1, int_n_inp2;
  
-+	/* does the TLV size change cause overflow? */
-+	if (user_elem_overflow(ue->card, (ssize_t)(size - ue->tlv_data_size)))
-+		return -ENOMEM;
-+
- 	container = vmemdup_user(buf, size);
- 	if (IS_ERR(container))
- 		return PTR_ERR(container);
-@@ -1326,11 +1337,15 @@ static int replace_user_tlv(struct snd_kcontrol *kctl, unsigned int __user *buf,
- 		for (i = 0; i < kctl->count; ++i)
- 			kctl->vd[i].access |= SNDRV_CTL_ELEM_ACCESS_TLV_READ;
- 		mask = SNDRV_CTL_EVENT_MASK_INFO;
-+	} else {
-+		ue->card->user_ctl_alloc_size -= ue->tlv_data_size;
-+		ue->tlv_data_size = 0;
-+		kvfree(ue->tlv_data);
- 	}
+ 	int_mux_cfg0 = CDC_WSA_RX_INP_MUX_RX_INT0_CFG0 + interp_idx * 8;
+ 	int_mux_cfg1 = int_mux_cfg0 + 4;
+-	int_mux_cfg0_val = snd_soc_component_read(component, int_mux_cfg0);
+-	int_mux_cfg1_val = snd_soc_component_read(component, int_mux_cfg1);
  
--	kvfree(ue->tlv_data);
- 	ue->tlv_data = container;
- 	ue->tlv_data_size = size;
-+	ue->card->user_ctl_alloc_size += size; /* decremented at private_free */
+-	int_n_inp0 = int_mux_cfg0_val & 0x0F;
++	int_n_inp0 = snd_soc_component_read_field(component, int_mux_cfg0,
++						  CDC_WSA_RX_INTX_1_MIX_INP0_SEL_MASK);
+ 	if (int_n_inp0 == INTn_1_INP_SEL_DEC0 ||
+ 		int_n_inp0 == INTn_1_INP_SEL_DEC1)
+ 		return true;
  
- 	mask |= SNDRV_CTL_EVENT_MASK_TLV;
- 	for (i = 0; i < kctl->count; ++i) {
-@@ -1374,16 +1389,17 @@ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
- 	unsigned int i;
- 	const uintptr_t user_ptrval = ue->info.value.enumerated.names_ptr;
+-	int_n_inp1 = int_mux_cfg0_val >> 4;
++	int_n_inp1 = snd_soc_component_read_field(component, int_mux_cfg0,
++						  CDC_WSA_RX_INTX_1_MIX_INP1_SEL_MASK);
+ 	if (int_n_inp1 == INTn_1_INP_SEL_DEC0 ||
+ 		int_n_inp1 == INTn_1_INP_SEL_DEC1)
+ 		return true;
  
--	if (ue->info.value.enumerated.names_length > 64 * 1024)
-+	buf_len = ue->info.value.enumerated.names_length;
-+	if (buf_len > 64 * 1024)
- 		return -EINVAL;
- 
--	names = vmemdup_user((const void __user *)user_ptrval,
--		ue->info.value.enumerated.names_length);
-+	if (user_elem_overflow(ue->card, buf_len))
-+		return -ENOMEM;
-+	names = vmemdup_user((const void __user *)user_ptrval, buf_len);
- 	if (IS_ERR(names))
- 		return PTR_ERR(names);
- 
- 	/* check that there are enough valid names */
--	buf_len = ue->info.value.enumerated.names_length;
- 	p = names;
- 	for (i = 0; i < ue->info.value.enumerated.items; ++i) {
- 		name_len = strnlen(p, buf_len);
-@@ -1397,14 +1413,26 @@ static int snd_ctl_elem_init_enum_names(struct user_element *ue)
- 
- 	ue->priv_data = names;
- 	ue->info.value.enumerated.names_ptr = 0;
-+	/* increment the allocation size; decremented again at private_free */
-+	ue->card->user_ctl_alloc_size += ue->info.value.enumerated.names_length;
- 
- 	return 0;
- }
- 
-+#define user_elem_size(size, count) \
-+	(sizeof(struct user_element) + (size) * count)
-+
- static void snd_ctl_elem_user_free(struct snd_kcontrol *kcontrol)
- {
- 	struct user_element *ue = kcontrol->private_data;
- 
-+	/* decrement the allocation size */
-+	ue->card->user_ctl_alloc_size -= user_elem_size(ue->elem_data_size,
-+							kcontrol->count);
-+	ue->card->user_ctl_alloc_size -= ue->tlv_data_size;
-+	if (ue->priv_data)
-+		ue->card->user_ctl_alloc_size -= ue->info.value.enumerated.names_length;
-+
- 	kvfree(ue->tlv_data);
- 	kvfree(ue->priv_data);
- 	kfree(ue);
-@@ -1418,6 +1446,7 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	unsigned int count;
- 	unsigned int access;
- 	long private_size;
-+	size_t alloc_size;
- 	struct user_element *ue;
- 	unsigned int offset;
- 	int err;
-@@ -1435,13 +1464,6 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 			return err;
- 	}
- 
--	/*
--	 * The number of userspace controls are counted control by control,
--	 * not element by element.
--	 */
--	if (card->user_ctl_count + 1 > MAX_USER_CONTROLS)
--		return -ENOMEM;
--
- 	/* Check the number of elements for this userspace control. */
- 	count = info->owner;
- 	if (count == 0)
-@@ -1472,6 +1494,11 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	if (info->count < 1)
- 		return -EINVAL;
- 	private_size = value_sizes[info->type] * info->count;
-+	alloc_size = user_elem_size(private_size, count);
-+
-+	/* Check the memory allocation limit */
-+	if (user_elem_overflow(card, alloc_size))
-+		return -ENOMEM;
- 
- 	/*
- 	 * Keep memory object for this userspace control. After passing this
-@@ -1483,16 +1510,18 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	if (err < 0)
- 		return err;
- 	memcpy(&kctl->id, &info->id, sizeof(kctl->id));
--	kctl->private_data = kzalloc(sizeof(struct user_element) + private_size * count,
--				     GFP_KERNEL);
--	if (kctl->private_data == NULL) {
-+	ue = kzalloc(alloc_size, GFP_KERNEL);
-+	if (!ue) {
- 		kfree(kctl);
- 		return -ENOMEM;
- 	}
-+	kctl->private_data = ue;
- 	kctl->private_free = snd_ctl_elem_user_free;
- 
-+	/* increment the allocated size; decremented again at private_free */
-+	card->user_ctl_alloc_size += alloc_size;
-+
- 	/* Set private data for this userspace control. */
--	ue = (struct user_element *)kctl->private_data;
- 	ue->card = card;
- 	ue->info = *info;
- 	ue->info.access = 0;
-@@ -1535,8 +1564,6 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
- 	 * which locks the element.
- 	 */
- 
--	card->user_ctl_count++;
--
-  unlock:
- 	up_write(&card->controls_rwsem);
- 	return err;
+-	int_n_inp2 = int_mux_cfg1_val >> 4;
++	int_n_inp2 = snd_soc_component_read_field(component, int_mux_cfg1,
++						  CDC_WSA_RX_INTX_1_MIX_INP2_SEL_MASK);
+ 	if (int_n_inp2 == INTn_1_INP_SEL_DEC0 ||
+ 		int_n_inp2 == INTn_1_INP_SEL_DEC1)
+ 		return true;
 -- 
-2.26.2
+2.21.0
 
