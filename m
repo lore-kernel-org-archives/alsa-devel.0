@@ -6,64 +6,63 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EA79C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:36:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08DBFC43381
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:36:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A89F564DA3
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:36:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A89F564DA3
+	by mail.kernel.org (Postfix) with ESMTPS id 3C04364DA0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:36:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3C04364DA0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA4D17C0;
-	Wed, 27 Jan 2021 18:19:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA4D17C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43B1A176C;
+	Wed, 27 Jan 2021 18:17:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43B1A176C
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E835CF804FB;
-	Wed, 27 Jan 2021 18:15:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF059F804E3;
+	Wed, 27 Jan 2021 18:14:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 907AFF804FC; Wed, 27 Jan 2021 18:15:12 +0100 (CET)
+ id 0142AF804E4; Wed, 27 Jan 2021 18:14:56 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FB42F804F1
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:15:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FB42F804F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D0F0F804E2
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:14:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D0F0F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VmdYE3Ec"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D54B64DAA;
- Wed, 27 Jan 2021 17:15:08 +0000 (UTC)
+ header.b="FzYOUCiw"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0218664DA9;
+ Wed, 27 Jan 2021 17:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611767708;
- bh=7Bwdds1A7Ya9EavPRY3Dg0/JfA4W6X/EzcuglwAkaXE=;
+ s=k20201202; t=1611767692;
+ bh=i0LRGpjxwnOHsyf3tncOoZPkW+4nHkElcB9K4VCx58w=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=VmdYE3EcEkZ2HBWlGAnqCNP5ZivmoL1Wl1nwbiRXu0JR8M5q2IW/pd7k2WEeQ15rk
- 12I8Z1X0ZgJePuwUkb7pj5Sh5zigVAxEBG64jlYVyY7evqB6bmXl5Znazrmo4VEZdc
- kOoDIeP0I9FE8B9iOLCAKI8uDaYUdqw4SVD/FTNok/1GsEq1xQe1UU6bglHJ9VD8r4
- i4jAE/TTLeEPqRm99fNINHPz32vKEp404+zxoGbxFE3U7CPM0qm4lXZQdGUDLiTXI8
- TulnOwH/tSEH91JCJWFtN3JELL0h9NdFVxpHTgKDfi7hOlmnHmAOwlN0RGMyl7QkRL
- mGZ5bo6RH1VqA==
+ b=FzYOUCiwfCw42LS1HBQRpq1gHSjYeSemSC19d6fgmdWYPqvCeJG6B+Y9IwBhmbrgF
+ 6ExdCiwDzeuE+3XYOY1Q7PUfmntq9dp+WDh8aBb3x5V0byZvqnspSw6TNCpRE4hyx5
+ 7eq/O4N28ViFmt4Ry2BI2fRPfqI6qr6Z3npFWErfUJ1UZDTIYUd4nGZVeiTFXszx/L
+ SDam2OQ1psNJwtvLJxULa61aSTCEmq7cRrKs+YCYDb/dxQOrAQrr2/tMIll3p7RAhx
+ TxFMZ8yusgnLy79hXwD9y9I24d+SIBQlc3+UimxK8/JFNpmFlEj3whBHHXivbY10zs
+ hcIbGLyNoG49Q==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20210125070500.807474-1-kai.vehmanen@linux.intel.com>
-References: <20210125070500.807474-1-kai.vehmanen@linux.intel.com>
-Subject: Re: (subset) [PATCH 1/3] ASoC: SOF: allow soundwire use
- desc->default_fw_filename
-Message-Id: <161176762855.34530.7838015493249241498.b4-ty@kernel.org>
+In-Reply-To: <20210127122358.1014458-1-kai.vehmanen@linux.intel.com>
+References: <20210127122358.1014458-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: add a pointer to download repo in case FW
+ request fails
+Message-Id: <161176762854.34530.2494973195992218973.b4-ty@kernel.org>
 Date: Wed, 27 Jan 2021 17:13:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
- Bard Liao <bard.liao@intel.com>
+Cc: lgirdwood@gmail.com, Marc Herbert <marc.herbert@intel.com>,
+ pierre-louis.bossart@linux.intel.com, Bruce Perens <bruce@perens.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +78,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Jan 2021 09:04:58 +0200, Kai Vehmanen wrote:
-> The old code always uses sof_fw_filename in struct snd_soc_acpi_mach
-> as the firmware name. However, firmware name should depend on the platform
-> instead of the machine. For example, different machines may use the same
-> soundwire link topology, but they are using the different firmware. In this
-> case, it's hard to determine in struct snd_soc_acpi_mach which firmware it
-> should use.
+On Wed, 27 Jan 2021 14:23:58 +0200, Kai Vehmanen wrote:
+> The SOF firmware and topology files are not distributed via
+> linux-firmware. To help debugging cases where correct firmware is
+> not installed, print a pointer to the official upstream repository
+> for Sound Open Firmware releases.
 
 Applied to
 
@@ -93,10 +90,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: allow soundwire use desc->default_fw_filename
-      commit: 7da99ef9757a3dd6e66a9b4854c5e58cd65a0b9a
-[2/3] ASoC: Intel: tgl: remove sof_fw_filename set for tgl_3_in_1_default
-      commit: 3d14932527ff09517f052e54e7c25d676120b33a
+[1/1] ASoC: SOF: add a pointer to download repo in case FW request fails
+      commit: 89e641ae647a4ebc1d608fd56f331a4f4886da5f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
