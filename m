@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
 	DKIM_SIGNED,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 94EFEC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:41:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03CACC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:41:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B6D2664D9E
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:41:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6D2664D9E
+	by mail.kernel.org (Postfix) with ESMTPS id 58CC464DAB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:41:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58CC464DAB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (unknown [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D9F61729;
-	Wed, 27 Jan 2021 18:15:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D9F61729
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4DAC168C;
+	Wed, 27 Jan 2021 18:16:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4DAC168C
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7550F800E9;
-	Wed, 27 Jan 2021 18:14:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9278F8027B;
+	Wed, 27 Jan 2021 18:14:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97541F80277; Wed, 27 Jan 2021 18:14:41 +0100 (CET)
+ id EF9C3F804B4; Wed, 27 Jan 2021 18:14:46 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0225F800F0
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:14:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0225F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8CD2F80277
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:14:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8CD2F80277
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AtlSoqmt"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 074EA64DA4;
- Wed, 27 Jan 2021 17:14:35 +0000 (UTC)
+ header.b="a2eZC37R"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59E2A64DA3;
+ Wed, 27 Jan 2021 17:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611767676;
- bh=1m++LiMxr6/GeKxBb1e6vmPpJo9MAanwj2boIbNLQAQ=;
+ s=k20201202; t=1611767681;
+ bh=KfMAz50ku1hSQxDGlnAcZgG3Vy0gGC7yAETGfIwSWC0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=AtlSoqmt+c8VQOzssp+UyYTJJve8656Jk5lDqWkZTUh20iVnJ3OFsnOFFucmzXAxO
- iDo9GOI5c5C/HOEZvbn19lUarHWRUjfiYG8TGLNJA7cWaHaHdPxsjcmQSrevoPt2Je
- Wi13p+hPWFroldv7IJ5QoAbEh19UrgvwuEZeXw7+8R7yelYPRbyzYNJidd5nj5dOHw
- Y2orMCptR7Gx+pfGkqifzzr9OCJmuDFP20ojB+d/zYK8oVbmTcTmW/agzK8qstR9cq
- dn9MZr0KZYVKvJemG+1c3KIR0tCLccsNWPq6cfnrDBGYLCSwZOa589tI+VRh5hM7ux
- QaPGtc9w7pWXw==
+ b=a2eZC37R5jymFfqbRXOdEFon44/G7IMOC2uicMbU7EzmZmqoPi3XyT4m29BzVzUOE
+ 4/EfdNb72iddErFWAIQD78QuTX79Zu7XUaqy2fyNxsi45Ug+9WX3U8AW17+B5lZTRE
+ MaZpyuo6cGbD6IA8BVUABJtOVENXdxF+NiXrBteqU46cJzh0tujtZOQ4PAEgNWsO7f
+ zo4oxu8SfWSc5D8HMdWSomwJF+ZEYl3O7LEsJYVepXA9FFa1MCe0K2XzaLJmHzwaEA
+ 9Wef/E0ZmXOqAYptOVpfFXEMTXx8qvzlhAw2EumK+7BaqaZu0kmpIWzZp4MCawkZug
+ J07Q2JhRkgaDw==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
-References: <20210126171749.1863-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 1/2] ASoC: soc-component: add
- snd_soc_component_read/write_field()
-Message-Id: <161176762855.34530.6617138298808888904.b4-ty@kernel.org>
+To: Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Bjorn Helgaas <helgaas@kernel.org>,
+ Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20210126212023.2921168-1-helgaas@kernel.org>
+References: <20210126212023.2921168-1-helgaas@kernel.org>
+Subject: Re: [PATCH] ASoC: q6asm: fix 'physical' typos
+Message-Id: <161176762854.34530.4993148289685566134.b4-ty@kernel.org>
 Date: Wed, 27 Jan 2021 17:13:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: vkoul@kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Cc: Bjorn Helgaas <bhelgaas@google.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,16 +76,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Jan 2021 17:17:48 +0000, Srinivas Kandagatla wrote:
-> It's often the case that we would write or read a particular field
-> in register. With the current soc_component apis, reading a particular
-> field in register would involve first read the register and then
-> perform shift operations.
-> 
-> Ex:
-> to read from a field mask of 0xf0
-> 
-> [...]
+On Tue, 26 Jan 2021 15:20:23 -0600, Bjorn Helgaas wrote:
+> Fix misspellings of "physical".
 
 Applied to
 
@@ -93,10 +85,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: soc-component: add snd_soc_component_read/write_field()
-      commit: 1da0b9899abdbc7103d3ec6b1a888efda41dbb59
-[2/2] ASoC: codecs: lpass-wsa-macro: make use of snd_soc_component_read_field()
-      commit: 7db4c4cd767e5c2418e7892c6b2f06982d34369a
+[1/1] ASoC: q6asm: fix 'physical' typos
+      commit: 9fd5599a9b2618b315983d8a097e6dead640f55c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
