@@ -2,91 +2,72 @@ Return-Path: <SRS0=72a4=G6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D9FBC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 06:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0BF2C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 06:51:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECF1620679
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 06:32:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECF1620679
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1842A20734
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 06:51:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1842A20734
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41FBA1758;
-	Wed, 27 Jan 2021 07:31:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41FBA1758
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75250175A;
+	Wed, 27 Jan 2021 07:51:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75250175A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611729146;
-	bh=zaYL2haVuNYWSikF5LjWRz0vWX1QILzOVY9qPRC4EqY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vmTAMfC3yo+ATzZs69prOEvpCdsdEzzmPES92DGhCYAiEiW2M/vP5VfV1my+7RQBG
-	 +opJOqSGzCf7JajdB0SSD+zzopw6aPzHkpb9h2ra/Tt+6JsQ1/noB6cG7U/zQZ3UwG
-	 j+OP3iaV4lHjduN0WLA67agLf0U/8N9Y8KJxEkAA=
+	s=default; t=1611730315;
+	bh=dNjw4tU+8RKceJFuM2vYmXfsXf4T5ZYhV+9J+es89h8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Mym7dTSlMFSLUxAgE5PJRdKkVKcZvPWAD6rtDEfDLuzAApVEAAsSFVi2jVbwBYNi0
+	 q5QlfmqE3l/zUDFMUOVyW12t0/2Gwkkb835EIlDEoPW5Yxf7rLyNJ4BZU4ML3quGa0
+	 mO3SmfFzclFCYSNMoIhqLRGHjfCN1Y6qELrmVT/4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC064F800E9;
-	Wed, 27 Jan 2021 07:31:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3D30F80218;
+	Wed, 27 Jan 2021 07:51:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B76BF80277; Wed, 27 Jan 2021 07:31:30 +0100 (CET)
-Received: from m42-8.mailgun.net (m42-8.mailgun.net [69.72.42.8])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 29F5FF80259; Wed, 27 Jan 2021 07:51:03 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B344F800F0
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 07:31:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B344F800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mg.codeaurora.org
- header.i=@mg.codeaurora.org header.b="Olo04ErP"
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
- q=dns/txt; 
- s=smtp; t=1611729073; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=1AlCbGcXQpcDuIl+9znSO2VU+lh46j8cRnkxvcuFTtU=;
- b=Olo04ErPfKKGnzzhziJy2m77YzmfbBvTo4TMm/iRVJ1cDZ0+eBIaBde8LWVUgGNT4fM0cZd9
- J75RqFcx0lGS/2rlpUlO+Aj4qgEvS4YctQLrp0V7x2OilLoFJ8u6+kfJZPXktz2PD1IZsTXv
- oksJjr5nuMR+aW7dcqAW9y+70RM=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 601108aabdcf468287a902f6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 27 Jan 2021 06:31:06
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
- id 1C022C433CA; Wed, 27 Jan 2021 06:31:06 +0000 (UTC)
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: srivasam)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 28861C433C6;
- Wed, 27 Jan 2021 06:31:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 28861C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
- spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To: agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
- bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: qcom: lpass-cpu: Remove bit clock state check
-Date: Wed, 27 Jan 2021 12:00:38 +0530
-Message-Id: <20210127063038.1399-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 446EAF8011C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 07:50:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 446EAF8011C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id DBE44AF2B;
+ Wed, 27 Jan 2021 06:50:55 +0000 (UTC)
+Date: Wed, 27 Jan 2021 07:50:55 +0100
+Message-ID: <s5hk0ryzxdc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH] ACPI: Test for ACPI_SUCCESS rather than !ACPI_FAILURE
+In-Reply-To: <20210126202317.2914080-1-helgaas@kernel.org>
+References: <20210126202317.2914080-1-helgaas@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-hwmon@vger.kernel.org, alsa-devel@alsa-project.org,
+ Jean Delvare <jdelvare@suse.com>, acpi4asus-user@lists.sourceforge.net,
+ "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>,
+ amd-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Corentin Chary <corentin.chary@gmail.com>,
+ Alex Deucher <alexander.deucher@amd.com>, linux-spi@vger.kernel.org,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+ Guenter Roeck <linux@roeck-us.net>, Len Brown <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,97 +83,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No need of BCLK state maintenance from driver side as
-clock_enable and clk_disable API's maintaing state counter.
+On Tue, 26 Jan 2021 21:23:17 +0100,
+Bjorn Helgaas wrote:
+> 
+> From: Bjorn Helgaas <bhelgaas@google.com>
+> 
+> The double negative makes it hard to read "if (!ACPI_FAILURE(status))".
+> Replace it with "if (ACPI_SUCCESS(status))".
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+> 
+> This isn't really an ACPI patch, but I'm sending it to you, Rafael, since
+> it seems easier to just apply these all at once.  But I'd be happy to split
+> them up into individual patches if you'd rather.
+> 
+> 
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c | 4 ++--
+>  drivers/gpu/drm/radeon/radeon_bios.c     | 4 ++--
+>  drivers/hwmon/acpi_power_meter.c         | 4 ++--
+>  drivers/platform/x86/asus-laptop.c       | 6 +++---
+>  drivers/spi/spi.c                        | 2 +-
+>  sound/pci/hda/hda_intel.c                | 4 ++--
 
-One of the major issue was spotted when Headset jack inserted
-while playback continues, due to same PCM device node opens twice
-for playaback/capture and closes once for capture and playback continues.
+For the sound/*:
+Acked-by: Takashi Iwai <tiwai@suse.de>
 
-It can resolve the errors in such scenarios.
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
- sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
- sound/soc/qcom/lpass.h           |  1 -
- 3 files changed, 8 insertions(+), 18 deletions(-)
+thanks,
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index ae8efbc89af2..a669202e0001 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
- 
--		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
--			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
--			if (ret) {
--				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
--				clk_disable(drvdata->mi2s_osr_clk[id]);
--				return ret;
--			}
--			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
-+		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-+		if (ret) {
-+			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-+			clk_disable(drvdata->mi2s_osr_clk[id]);
-+			return ret;
- 		}
--
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-@@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		if (ret)
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
--		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
--			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
--			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
--		}
-+
-+		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
-+
- 		break;
- 	}
- 
-@@ -861,7 +856,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
- 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
- 		}
--		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
- 	}
- 
- 	/* Allocation for i2sctl regmap fields */
-diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-index 405542832e99..c8e1d75340b2 100644
---- a/sound/soc/qcom/lpass-lpaif-reg.h
-+++ b/sound/soc/qcom/lpass-lpaif-reg.h
-@@ -60,9 +60,6 @@
- #define LPAIF_I2SCTL_BITWIDTH_24	1
- #define LPAIF_I2SCTL_BITWIDTH_32	2
- 
--#define LPAIF_BIT_CLK_DISABLE		0
--#define LPAIF_BIT_CLK_ENABLE		1
--
- #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
- #define LPAIF_DMACTL_RESET_STATE	0x00200000
- 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 2d68af0da34d..83b2e08ade06 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -68,7 +68,6 @@ struct lpass_data {
- 	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	int hdmi_port_enable;
--	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
- 
- 	/* low-power audio interface (LPAIF) registers */
- 	void __iomem *lpaif;
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Takashi
