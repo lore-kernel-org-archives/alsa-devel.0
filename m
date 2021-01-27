@@ -2,65 +2,88 @@ Return-Path: <SRS0=72a4=G6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03CACC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:41:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD987C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:45:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58CC464DAB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:41:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58CC464DAB
+	by mail.kernel.org (Postfix) with ESMTPS id 3D28364DAB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:45:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D28364DAB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
-Received: from alsa1.perex.cz (unknown [207.180.221.201])
+Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A4DAC168C;
-	Wed, 27 Jan 2021 18:16:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4DAC168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 704D5166D;
+	Wed, 27 Jan 2021 18:44:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 704D5166D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
+	s=default; t=1611769515;
+	bh=X/FC8zvlyuwwtmd81t+5h/jO+fwtZ0GRqEHN1bQJdC0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=EOUUmE9WkWfF1mXFkEFix4/MBOM+qODHART7V8lYD+HrUPN3KMM1fpIVP227SVt6P
+	 dr+sY+Pbb8/f0iObxEqnbcEtFM/+OKP21C3wOEGSVkBbsZIHGUxF4o6vaAft2uO0FM
+	 1p712gQOQvoI5ZYGUDVnTD3ANkEpwfdSaPiWIZio=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9278F8027B;
-	Wed, 27 Jan 2021 18:14:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE26FF800E9;
+	Wed, 27 Jan 2021 18:44:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF9C3F804B4; Wed, 27 Jan 2021 18:14:46 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 740E8F80259; Wed, 27 Jan 2021 18:44:23 +0100 (CET)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com
+ [209.85.210.52])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8CD2F80277
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:14:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8CD2F80277
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a2eZC37R"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59E2A64DA3;
- Wed, 27 Jan 2021 17:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611767681;
- bh=KfMAz50ku1hSQxDGlnAcZgG3Vy0gGC7yAETGfIwSWC0=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=a2eZC37R5jymFfqbRXOdEFon44/G7IMOC2uicMbU7EzmZmqoPi3XyT4m29BzVzUOE
- 4/EfdNb72iddErFWAIQD78QuTX79Zu7XUaqy2fyNxsi45Ug+9WX3U8AW17+B5lZTRE
- MaZpyuo6cGbD6IA8BVUABJtOVENXdxF+NiXrBteqU46cJzh0tujtZOQ4PAEgNWsO7f
- zo4oxu8SfWSc5D8HMdWSomwJF+ZEYl3O7LEsJYVepXA9FFa1MCe0K2XzaLJmHzwaEA
- 9Wef/E0ZmXOqAYptOVpfFXEMTXx8qvzlhAw2EumK+7BaqaZu0kmpIWzZp4MCawkZug
- J07Q2JhRkgaDw==
-From: Mark Brown <broonie@kernel.org>
-To: Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Bjorn Helgaas <helgaas@kernel.org>,
- Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20210126212023.2921168-1-helgaas@kernel.org>
-References: <20210126212023.2921168-1-helgaas@kernel.org>
-Subject: Re: [PATCH] ASoC: q6asm: fix 'physical' typos
-Message-Id: <161176762854.34530.4993148289685566134.b4-ty@kernel.org>
-Date: Wed, 27 Jan 2021 17:13:48 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0A34F800E9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:44:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0A34F800E9
+Received: by mail-ot1-f52.google.com with SMTP id k8so2491167otr.8
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 09:44:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=iHVRlfV9EQu4gPj5dVenKguyA2U2WXu41Z7MOBH2q+k=;
+ b=d4O1iMLfFxDVFxCqijpz8aRGDDMASprLprtqakPOmZ5UWn0ESnMiLYuVsqClLnopfN
+ aX14DVDP9tRNitqBghwLhOCWTu8ukPX16MebrDBE2fALf/vyBVLdjZ2VTwZmkl4bRc4C
+ sQDWhAsgqzz5ZKhCqpNBazvCZJC11gD+pwwO/lbFeN5JUQljprBOtJpLbrKaqZJ1SpZ5
+ 1ssEDRpvwXXebylKdXoEtShqU7ePFRGbKEcX9Pd3To6ZTg7gjOqip8zlthAOI8NE2l2T
+ gHRB6x20tg5vVvns55Csg/3RWfSy+YEcK1SgERRIkEAQI4bniUPvBV5r9tGdrO20xK1y
+ f0wg==
+X-Gm-Message-State: AOAM531viSyv2pgzxeah0jvfUVZHzbFNqEz+sCh0dL80cuHACDxUPfS+
+ ddLS3ITq4yxwo+XU5QqbmDLqgslh8JNs+1Gftm0=
+X-Google-Smtp-Source: ABdhPJx3wpBSkXPSpXDG6M0ltMbmguxQMImznzdVeAu1VT6FKAr93J3QfMztoWACmNnTeM4RMvDtc7yrOgIFRwkLX6w=
+X-Received: by 2002:a05:6830:2313:: with SMTP id
+ u19mr8675107ote.321.1611769458811; 
+ Wed, 27 Jan 2021 09:44:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Bjorn Helgaas <bhelgaas@google.com>, alsa-devel@alsa-project.org
+References: <CAJZ5v0ir4=urUviCR_4N96revWZkHVDyNNUiaJ3jjGzpX8zLVQ@mail.gmail.com>
+ <20210127160650.GA2991034@bjorn-Precision-5520>
+In-Reply-To: <20210127160650.GA2991034@bjorn-Precision-5520>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 27 Jan 2021 18:44:07 +0100
+Message-ID: <CAJZ5v0gmP2QBmMWkdVaGy+j6+FFPH6VGfRMU9ncz6m4BhBPgFA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Test for ACPI_SUCCESS rather than !ACPI_FAILURE
+To: Bjorn Helgaas <helgaas@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-hwmon@vger.kernel.org,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, Jean Delvare <jdelvare@suse.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, acpi4asus-user@lists.sourceforge.net,
+ "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>,
+ amd-gfx list <amd-gfx@lists.freedesktop.org>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Corentin Chary <corentin.chary@gmail.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ linux-spi <linux-spi@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Guenter Roeck <linux@roeck-us.net>, Len Brown <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,33 +99,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Jan 2021 15:20:23 -0600, Bjorn Helgaas wrote:
-> Fix misspellings of "physical".
+On Wed, Jan 27, 2021 at 5:06 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Wed, Jan 27, 2021 at 04:44:02PM +0100, Rafael J. Wysocki wrote:
+> > On Wed, Jan 27, 2021 at 4:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
+> > > On Tue, Jan 26, 2021 at 02:23:17PM -0600, Bjorn Helgaas wrote:
+> > > > From: Bjorn Helgaas <bhelgaas@google.com>
+> > > >
+> > > > The double negative makes it hard to read "if (!ACPI_FAILURE(status))".
+> > > > Replace it with "if (ACPI_SUCCESS(status))".
+> > > >
+> > > > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > ---
+> > > >
+> > > > This isn't really an ACPI patch, but I'm sending it to you, Rafael, since
+> > > > it seems easier to just apply these all at once.  But I'd be happy to split
+> > > > them up into individual patches if you'd rather.
+> > >
+> > > Thanks, everybody.  Rafael, I'll just merge this via my tree to avoid
+> > > burdening you.
+> >
+> > It may conflict with some janitorial stuff I'm doing, though, so
+> > unless you've already applied it, I'd prefer to take it via the ACPI
+> > tree.
+>
+> No problem, it's all yours!
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: q6asm: fix 'physical' typos
-      commit: 9fd5599a9b2618b315983d8a097e6dead640f55c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Applied as 5.12 material with the ACKs, thanks!
