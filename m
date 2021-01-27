@@ -2,74 +2,101 @@ Return-Path: <SRS0=72a4=G6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C93C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA49EC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 19:20:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C338601FB
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 17:51:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C338601FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 288FB64DC5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 19:20:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 288FB64DC5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 829A4112;
-	Wed, 27 Jan 2021 18:14:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 829A4112
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A5AC16CF;
+	Wed, 27 Jan 2021 20:19:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A5AC16CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611767731;
-	bh=0D1p4kLLLDUuI0gaZLyKN31QQyNwo7NbDHp7WCui4NU=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1611775215;
+	bh=WmTmSJyvMNMEsxUfXorZvamTtfHyuaHjFj26Pjyvxgg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fsg+V/6XB3yxNsFb3MVxAkXkfSee0gmGa5edxdDs+Zv5gSLXd/eNsgvI+VxEBWm84
-	 YWFCYeEnQ/H3yatxdYWvjCJ5fOcZk1hgqRI+iHo5mKmZY/l7vsr8aPE//2kHkzx9Uu
-	 MqHikdRlcOYMjgPeULncx6GT7839tvadEa6mOQto=
+	b=HO3XQ1u4B8m+m5rBsth57jFQe8EbzW1O6+JBKpci/qNckxfPbJBXHKELMF4O6WpJq
+	 R8YFA4dG36j9b41RwnXGb3WAyGozQVVWYy2LwLQGnUJV69Gwl9KMJ7GjrUlxFlClns
+	 1JIJ3+c4YmHt7sZ9aODlOg+x2PSdcpGLi/Bh2Ryc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D562F80259;
-	Wed, 27 Jan 2021 18:14:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0C4DF800F0;
+	Wed, 27 Jan 2021 20:19:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7523DF80259; Wed, 27 Jan 2021 18:14:38 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 954F3F80259; Wed, 27 Jan 2021 20:19:23 +0100 (CET)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03DC7F800E9
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 18:14:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03DC7F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 50BA2F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 20:19:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50BA2F800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lQR7gdJI"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9B464DA1;
- Wed, 27 Jan 2021 17:14:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611767671;
- bh=0D1p4kLLLDUuI0gaZLyKN31QQyNwo7NbDHp7WCui4NU=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lQR7gdJIctgvlDOV6X1Xgbt1wEqkrBRE8wbnCLLlBYMJW6SMCRsJ+M7Fwc++n8leN
- 37xaUbaMPTqs1ZweR7B0+xqEplhSNQ64jAc+lTfFwqjXqKNefXBgge1V4Zz16mPznJ
- kKjYN763WjV/s+Xbprp8rQ+pDO80KDuF1aQZ0XeEQ9FWNeh3m7ni48W6KikMnSUmp4
- SdB+Lf3Bu/umNi3Q0uy+otdxtin5i4Kzn2TV1AioAC8yS7kPTv/zIMdz24T/Ni52V2
- MEyzuGQfOR8d8AXQbXMA2pjYNK6ZceQSzlSrBDmYdMEQiPe3AQ9wiwoJ3K0oHa3p3i
- fh4EXXpu02low==
-From: Mark Brown <broonie@kernel.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210127020737.1088960-1-ranjani.sridharan@linux.intel.com>
-References: <20210127020737.1088960-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH v2 0/2] ASoC: SOF: Intel: hda: Enable DMI L1 for power
- savings
-Message-Id: <161176762854.34530.12970775587911345676.b4-ty@kernel.org>
-Date: Wed, 27 Jan 2021 17:13:48 +0000
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="B7uVylQ4"
+Received: by mail-wm1-x32a.google.com with SMTP id o10so3901970wmc.1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 11:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=WmTmSJyvMNMEsxUfXorZvamTtfHyuaHjFj26Pjyvxgg=;
+ b=B7uVylQ4lWkmgSEe8GWJf1WCvdQR/UkeEDDPlC+SkfwO9jgFMoHL9DQ1Q4MvMkpBlV
+ qdNXepVzwR1lj8z9hIAWbQdWYXDELgnVAvpvciskVcarC9cWy4W5Pii+eYZBBtRnWhox
+ Vvc8T9Yf5br5KXAgnDTiu7xr4Qm1BIKjHyLtvS3hePk8RLMZem3ohq4U8oRce3XGIIkQ
+ 6a7y/kdk1YzLh/fe58BMrm9EuFOoXUR6UG45FqICGgfJqPL5mbwtRXPAAPnWPoCSnI7n
+ FAbvsq4XdnxPCy8doFkQEXsdYPdX+RvEenPc/swndBYjiHLMLYlyA5OPPSrrgn2Dw1tK
+ 5p3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=WmTmSJyvMNMEsxUfXorZvamTtfHyuaHjFj26Pjyvxgg=;
+ b=hIcevXbngMr6JS1sWw50hliPQNCt7v3LLXqWoV/iA6PNm0ZjF51CoECIVH8jn9MI6/
+ ZnFNV+0tYGHKIxunAxtu8sn7JXaVi019hbArVKvcK+u2tIb3Vo7H0vv7hmE8ZGhuFtgD
+ ueCZP6o7gzjkNLXLfC3X/LZJzfsJ7F9crs80kp/0aBtVFk6j6agUWE1SaPtPkLHqtkwp
+ 4OIJ9IjEY5V0u5ZGsrk/FaQ2TlxywMJ13x2GagteMdDXze1FlLRJEj1ZWtsibOh/VzpX
+ 2Rf2+HjVfA+jX60fvHz/vUYAyZhSTr3SvGOQJfkbx3ruYRHU/wJdJOQtCt2TMg7Vmlqw
+ EgtQ==
+X-Gm-Message-State: AOAM5306OL4+MoLQk5WusOb2uDj9b4eUrRBhbjYuaLgCY00o6yC7gZmU
+ XaD8oibpkWxYZHMTHcDxROTOXrWwwbiLEae1R3c=
+X-Google-Smtp-Source: ABdhPJwjVss4T/I/Wvjp4U+yLwODJcxV8/S0Q16ivTYKxPBelNOC8XdFXHFlIPDJtsRRyLJG/KAN8Tp6hizIIr+sLI8=
+X-Received: by 2002:a1c:2905:: with SMTP id p5mr5413653wmp.156.1611775152973; 
+ Wed, 27 Jan 2021 11:19:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.com, sathyanarayana.nujella@intel.com
+References: <CA+GA0_sPC3rp5K4qwZm-u+W1C=+2Y2p-dbF4DMdHkKaTpeKKkg@mail.gmail.com>
+ <CAJZ5v0iapmc8ywuySwexwTagKr89Hj7TPXkAvd_HXMhdLoyyQQ@mail.gmail.com>
+ <1f0f7273-597e-cdf0-87d1-908e56c13133@linux.intel.com>
+ <CA+GA0_v3JUWS3G3=R4XuQ=OW91cpwiBP1Rp=uzYOF8c9TUJ46w@mail.gmail.com>
+ <CA+GA0_sCdowanpZmg==c+xVqqNxG5whLGsKHaCfSmpERBhqMzA@mail.gmail.com>
+ <1dc2639a-ecbc-c554-eaf6-930256dcda96@linux.intel.com>
+In-Reply-To: <1dc2639a-ecbc-c554-eaf6-930256dcda96@linux.intel.com>
+From: =?UTF-8?Q?Marcin_=C5=9Alusarz?= <marcin.slusarz@gmail.com>
+Date: Wed, 27 Jan 2021 20:18:58 +0100
+Message-ID: <CA+GA0_sZm2pqOfA3LsNQowb930QS_g5CiCCGthzsS=vAjB9Rjg@mail.gmail.com>
+Subject: Re: Crash in acpi_ns_validate_handle triggered by soundwire on Linux
+ 5.10
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Len Brown <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,42 +112,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Jan 2021 18:07:35 -0800, Ranjani Sridharan wrote:
-> This series includes 2 patches that enable DMI L1 for D0I3-compatible
-> streams and trace DMA stream to maximise power savings on Intel
-> HDA platforms.
-> 
-> v2 changes:
-> FIx compilation error when probes feature is enabled in SOF Kconfig.
-> 
-> [...]
+=C5=9Br., 27 sty 2021 o 18:28 Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
+> > Weird, I can't reproduce this problem with my self-compiled kernel :/
+> > I don't even see soundwire modules loaded in. Manually loading them of =
+course
+> > doesn't do much.
+> >
+> > Previously I could boot into the "faulty" kernel by using "recovery mod=
+e", but
+> > I can't do that anymore - it crashes too.
+> >
+> > Maybe there's some kind of race and this bug depends on some specific
+> > ordering of events?
+>
+> missing Kconfig?
+> You need CONFIG_SOUNDWIRE and CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE
+> selected to enter this sdw_intel_acpi_scan() routine.
 
-Applied to
+It was a PEBKAC, but a slightly different one. I won't bore you with
+(embarrassing) details ;).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+I reproduced the problem, tested both your and Rafael's patches
+and the kernel still crashes, with the same stack trace.
+(Yes, I'm sure I booted the right kernel :)
 
-Thanks!
-
-[1/2] ASoC: SOF: Intel: hda: enable DMI L1 for D0i3-compatible streams
-      commit: 89a400bdeb129dbc7e1c8ad2151cc8141a619709
-[2/2] ASoC: SOF: Intel: hda: Enable DMI L1 for trace
-      commit: 6e0210763024ac43c5716dc873065ce5069edbf0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Why "recovery mode" stopped working (or worked previously) is still a myste=
+ry.
