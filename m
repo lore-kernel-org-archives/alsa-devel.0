@@ -2,79 +2,81 @@ Return-Path: <SRS0=72a4=G6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48781C4332B
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 15:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45BD4C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 15:23:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9E19F20771
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 15:15:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E19F20771
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EFE312079A
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 15:23:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFE312079A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4195E1654;
-	Wed, 27 Jan 2021 16:14:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4195E1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id D382F171C;
+	Wed, 27 Jan 2021 16:22:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D382F171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611760526;
-	bh=QaPVMJ55Woky6vB/wYPKCBW4NE2Q5KUxpMC9S+DbOMc=;
-	h=Date:From:To:Subject:In-Reply-To:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=tVEDeac82Nt6DAYyUIlC0Sdx0GdLlPJfDCgAdZzuC5ZAFBLADpsZeoaE6nppN9woI
-	 sLvzIsqv6jFqSsXwbX7WfC4DGL7455+MJXGM5l0BKUFThOKPMrgtlQ19kliPNYJ48b
-	 m8w8kQI9gtG2/GSz3Oph9RWDq/c8JpIqejUeCcjI=
+	s=default; t=1611760994;
+	bh=rRQCtxLS3p35RloIwxmToiL5jdTgvypnDqnrAAyzef0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=R/dUDlKEVsGyqQ8VgFxUOTTkw6zTjhvCkJ4ZsFKPKEbzPhkYNo/af7R0/HJ0cEuqB
+	 KrlRWvA5DhHxQmq9Dn4MC2zHcK3C1LSVmHkDbItT8QqSTYpYmvvfiZCbljT+cpJONY
+	 r6bXvsurCSHSQJXsyklKHqixdqW/9Sw8AU2XhP58=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB383F80218;
-	Wed, 27 Jan 2021 16:14:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55240F80218;
+	Wed, 27 Jan 2021 16:22:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3FBAF80259; Wed, 27 Jan 2021 16:14:34 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6C2BAF80259; Wed, 27 Jan 2021 16:22:22 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07C8AF800E9
- for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 16:14:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07C8AF800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LzNKm65A"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 472BD20780;
- Wed, 27 Jan 2021 15:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611760468;
- bh=QaPVMJ55Woky6vB/wYPKCBW4NE2Q5KUxpMC9S+DbOMc=;
- h=Date:From:To:Cc:Subject:In-Reply-To:From;
- b=LzNKm65Ab/0fw2RvZxwqe/ok+ZOiV+4a+ybOS+9EqDQxM0H1ain2ZUcstP8y9ddCH
- 0P76ThHE4rEMz5kESYlmOLcJPhVQCmNAEEG8ERZhIWbuPd4Hd+QDMt4G8yWFx0MFoe
- W+abVZkkNSvYo9XBe2x4v2jFDMxZL7n02YHllw85V9m3U/KqSXwI7Qr70l5Ht7Mh7x
- IKvUISXp0noXnGqltK1kX+C0UpiEZ1TrMPVQdYyE7Q76gnv4KWp7DNbJBDZ2NlaB9K
- n/pMn70eT80SCiKc9ahJznSGLOKM+1v9Gm2gA+vCtvwdmS03af99TBBX9YMPlaTMMe
- /FY+z4ADbuROQ==
-Date: Wed, 27 Jan 2021 09:14:26 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>,
- Alex Deucher <alexander.deucher@amd.com>,
- Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Corentin Chary <corentin.chary@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ACPI: Test for ACPI_SUCCESS rather than !ACPI_FAILURE
-Message-ID: <20210127151426.GA2984275@bjorn-Precision-5520>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DCE06F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 16:22:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DCE06F800F0
+IronPort-SDR: fnotB/hgWoe+rTkeL06+/8mPMAVXT6Fuo/5Qns91c7O2HeIdffVgB6ojsBQ3r4NvQYCbtWf0fJ
+ v5cyXY170dCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="180227835"
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; d="scan'208";a="180227835"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2021 07:22:12 -0800
+IronPort-SDR: kgjPlbuVitWjt9XnqWcoyhwRgj12MpPB+Ksc51ZdAnzxZ7zwx5k7yY+PpHem4mNyYbNf/+K+yE
+ z+Jcnj91Pi6A==
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; d="scan'208";a="430131658"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.1.157])
+ ([10.213.1.157])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2021 07:22:08 -0800
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Compile when any configuration is
+ selected
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+References: <20210125115441.10383-1-cezary.rojewski@intel.com>
+ <CAAd53p4fycxLn6y0WpaMWvWkN8EwmT216b40DavttfshN_GMRg@mail.gmail.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <324dc8a5-c4d3-6ebf-c8e9-6321d6c93dab@intel.com>
+Date: Wed, 27 Jan 2021 16:22:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126202317.2914080-1-helgaas@kernel.org>
-Cc: linux-hwmon@vger.kernel.org, alsa-devel@alsa-project.org,
- acpi4asus-user@lists.sourceforge.net, amd-gfx@lists.freedesktop.org,
- linux-spi@vger.kernel.org, linux-acpi@vger.kernel.org,
- Bjorn Helgaas <bhelgaas@google.com>
+In-Reply-To: <CAAd53p4fycxLn6y0WpaMWvWkN8EwmT216b40DavttfshN_GMRg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,162 +92,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 26, 2021 at 02:23:17PM -0600, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
+On 2021-01-27 9:03 AM, Kai-Heng Feng wrote:
+> On Mon, Jan 25, 2021 at 7:55 PM Cezary Rojewski
+> <cezary.rojewski@intel.com> wrote:
+>>
+>> Skylake is dependent on SND_SOC_INTEL_SKYLAKE (aka "all SST platforms")
+>> whereas selecting specific configuration such as KBL-only will not
+>> cause driver code to compile. Switch to SND_SOC_INTEL_SKYLAKE_COMMON
+>> dependency so selecting any configuration causes the driver to be built.
+>>
+>> Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>> Suggested-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+>> Fixes: 35bc99aaa1a3 ("ASoC: Intel: Skylake: Add more platform granularity")
+>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 > 
-> The double negative makes it hard to read "if (!ACPI_FAILURE(status))".
-> Replace it with "if (ACPI_SUCCESS(status))".
+> Still not working:
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1902457/comments/66
 > 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> ---
-> 
-> This isn't really an ACPI patch, but I'm sending it to you, Rafael, since
-> it seems easier to just apply these all at once.  But I'd be happy to split
-> them up into individual patches if you'd rather.
 
-Thanks, everybody.  Rafael, I'll just merge this via my tree to avoid
-burdening you.
+Hello,
 
->  drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c | 4 ++--
->  drivers/gpu/drm/radeon/radeon_bios.c     | 4 ++--
->  drivers/hwmon/acpi_power_meter.c         | 4 ++--
->  drivers/platform/x86/asus-laptop.c       | 6 +++---
->  drivers/spi/spi.c                        | 2 +-
->  sound/pci/hda/hda_intel.c                | 4 ++--
->  6 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c
-> index 6333cada1e09..055f600eeed8 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c
-> @@ -291,7 +291,7 @@ static bool amdgpu_atrm_get_bios(struct amdgpu_device *adev)
->  			continue;
->  
->  		status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
-> -		if (!ACPI_FAILURE(status)) {
-> +		if (ACPI_SUCCESS(status)) {
->  			found = true;
->  			break;
->  		}
-> @@ -304,7 +304,7 @@ static bool amdgpu_atrm_get_bios(struct amdgpu_device *adev)
->  				continue;
->  
->  			status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
-> -			if (!ACPI_FAILURE(status)) {
-> +			if (ACPI_SUCCESS(status)) {
->  				found = true;
->  				break;
->  			}
-> diff --git a/drivers/gpu/drm/radeon/radeon_bios.c b/drivers/gpu/drm/radeon/radeon_bios.c
-> index bb29cf02974d..43bbbfd6ade8 100644
-> --- a/drivers/gpu/drm/radeon/radeon_bios.c
-> +++ b/drivers/gpu/drm/radeon/radeon_bios.c
-> @@ -205,7 +205,7 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
->  			continue;
->  
->  		status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
-> -		if (!ACPI_FAILURE(status)) {
-> +		if (ACPI_SUCCESS(status)) {
->  			found = true;
->  			break;
->  		}
-> @@ -218,7 +218,7 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
->  				continue;
->  
->  			status = acpi_get_handle(dhandle, "ATRM", &atrm_handle);
-> -			if (!ACPI_FAILURE(status)) {
-> +			if (ACPI_SUCCESS(status)) {
->  				found = true;
->  				break;
->  			}
-> diff --git a/drivers/hwmon/acpi_power_meter.c b/drivers/hwmon/acpi_power_meter.c
-> index 848718ab7312..7d3ddcba34ce 100644
-> --- a/drivers/hwmon/acpi_power_meter.c
-> +++ b/drivers/hwmon/acpi_power_meter.c
-> @@ -161,7 +161,7 @@ static ssize_t set_avg_interval(struct device *dev,
->  	mutex_lock(&resource->lock);
->  	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_PAI",
->  				       &args, &data);
-> -	if (!ACPI_FAILURE(status))
-> +	if (ACPI_SUCCESS(status))
->  		resource->avg_interval = temp;
->  	mutex_unlock(&resource->lock);
->  
-> @@ -232,7 +232,7 @@ static ssize_t set_cap(struct device *dev, struct device_attribute *devattr,
->  	mutex_lock(&resource->lock);
->  	status = acpi_evaluate_integer(resource->acpi_dev->handle, "_SHL",
->  				       &args, &data);
-> -	if (!ACPI_FAILURE(status))
-> +	if (ACPI_SUCCESS(status))
->  		resource->cap = temp;
->  	mutex_unlock(&resource->lock);
->  
-> diff --git a/drivers/platform/x86/asus-laptop.c b/drivers/platform/x86/asus-laptop.c
-> index 0edafe687fa9..bfea656e910c 100644
-> --- a/drivers/platform/x86/asus-laptop.c
-> +++ b/drivers/platform/x86/asus-laptop.c
-> @@ -861,7 +861,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 * The significance of others is yet to be found.
->  	 */
->  	rv = acpi_evaluate_integer(asus->handle, "SFUN", NULL, &temp);
-> -	if (!ACPI_FAILURE(rv))
-> +	if (ACPI_SUCCESS(rv))
->  		len += sprintf(page + len, "SFUN value         : %#x\n",
->  			       (uint) temp);
->  	/*
-> @@ -873,7 +873,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 * takes several seconds to run on some systems.
->  	 */
->  	rv = acpi_evaluate_integer(asus->handle, "HWRS", NULL, &temp);
-> -	if (!ACPI_FAILURE(rv))
-> +	if (ACPI_SUCCESS(rv))
->  		len += sprintf(page + len, "HWRS value         : %#x\n",
->  			       (uint) temp);
->  	/*
-> @@ -884,7 +884,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 * silently ignored.
->  	 */
->  	rv = acpi_evaluate_integer(asus->handle, "ASYM", NULL, &temp);
-> -	if (!ACPI_FAILURE(rv))
-> +	if (ACPI_SUCCESS(rv))
->  		len += sprintf(page + len, "ASYM value         : %#x\n",
->  			       (uint) temp);
->  	if (asus->dsdt_info) {
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index 720ab34784c1..801d8b499788 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -2210,7 +2210,7 @@ static acpi_status acpi_register_spi_device(struct spi_controller *ctlr,
->  		return AE_OK;
->  
->  	if (!lookup.max_speed_hz &&
-> -	    !ACPI_FAILURE(acpi_get_parent(adev->handle, &parent_handle)) &&
-> +	    ACPI_SUCCESS(acpi_get_parent(adev->handle, &parent_handle)) &&
->  	    ACPI_HANDLE(ctlr->dev.parent) == parent_handle) {
->  		/* Apple does not use _CRS but nested devices for SPI slaves */
->  		acpi_spi_parse_apple_properties(adev, &lookup);
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 770ad25f1907..fe8049cd2765 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1444,7 +1444,7 @@ static bool atpx_present(void)
->  		dhandle = ACPI_HANDLE(&pdev->dev);
->  		if (dhandle) {
->  			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
-> -			if (!ACPI_FAILURE(status)) {
-> +			if (ACPI_SUCCESS(status)) {
->  				pci_dev_put(pdev);
->  				return true;
->  			}
-> @@ -1454,7 +1454,7 @@ static bool atpx_present(void)
->  		dhandle = ACPI_HANDLE(&pdev->dev);
->  		if (dhandle) {
->  			status = acpi_get_handle(dhandle, "ATPX", &atpx_handle);
-> -			if (!ACPI_FAILURE(status)) {
-> +			if (ACPI_SUCCESS(status)) {
->  				pci_dev_put(pdev);
->  				return true;
->  			}
-> -- 
-> 2.25.1
-> 
+Thanks for your reply Kai-Heng.
+I believe you're relating to completely different issue than the one 
+this very patch is targeting.
+
+ From the logs you've provided one can see that snd_soc_skl did attempt 
+to probe() so the code compiled just fine. Again, compilation issue is 
+the one I've addressed here. While we're here, I'd appreciate kconfig 
+being provided along dmesg file. Logs alone do not show the entire 
+picture, unfortunately.
+
+In regard to missing sound, (looks like we're talking about HDA dsp + 
+DMIC configuration) kconfig mentioned above will be required. Pretty 
+sure HDAudio support for skylake-driver is not enabled on your machine 
+and thus driver exists probe() early without registering any sound card.
+
+Regards,
+Czarek
