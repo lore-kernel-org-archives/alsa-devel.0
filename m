@@ -1,74 +1,77 @@
-Return-Path: <SRS0=d1MO=G5=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=72a4=G6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A48BBC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 21:21:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64931C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 01:46:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 882E222240
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jan 2021 21:21:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 882E222240
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 999402054F
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jan 2021 01:46:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 999402054F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3685E1710;
-	Tue, 26 Jan 2021 22:20:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3685E1710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C4861757;
+	Wed, 27 Jan 2021 02:45:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C4861757
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611696087;
-	bh=9OjtP0DIc/CCEucNkZDeEY4Efwk+TJzw7kAlZSR8d7Y=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qa13IZ+oUnfHtG68axG5waKdcdjSu8q4yU7PBL3dC7Hqlc3L/rOIKdoXGrb6aklVv
-	 e9ZvV9MVU85cwtpYxdrv2rWnhmRTk25pfcDqDFDAdEAtiiU4ucI7onoBv56DFr/DcW
-	 OkpUoDBqBd0pmZJYRx1e7CNnmdeIIiemMudw8KlI=
+	s=default; t=1611711989;
+	bh=QCMhHWRkEazXwveGrg2WFHGznZkISBzg3LHloH43pHg=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sinnMUkToeOrTehihyPxXJQnwDqMrrEZKPk+l6XXvTm12tC/z6k3e/5e5kOQIufX+
+	 kvSMF47buCLSyacKTNtCVTwd0RMts6wCciuAq73vaoRQvLDISRUTtns28cta4kulDa
+	 hWJg9hv7J0W87dZDu4yLS2cHEScEnO1hQeutRWP0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95C17F80158;
-	Tue, 26 Jan 2021 22:20:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 774F5F80158;
+	Wed, 27 Jan 2021 02:45:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 023E0F80158; Tue, 26 Jan 2021 22:20:34 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1AF6FF8015B; Wed, 27 Jan 2021 02:45:37 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A59E1F8011C
- for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2021 22:20:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A59E1F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EOpDSe6S"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B7622240;
- Tue, 26 Jan 2021 21:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611696028;
- bh=9OjtP0DIc/CCEucNkZDeEY4Efwk+TJzw7kAlZSR8d7Y=;
- h=From:To:Cc:Subject:Date:From;
- b=EOpDSe6SsgvSSsQxpqwxDcm8oG2MzJOj3VVvo2GfeLqo0/2pevZ7Qw/OoDahSEhxe
- 6Lf3WM84cJI1JxZ1S5mO97iSDEHjetNoIlU5+M1eZVZ8uOWMeYlNuWbFQcohilmBkY
- 8O4z6jC8cgn7DeNRH2qul5/TrrgzeRQwl7vd9FIAH4lFXJ4FNbfhjoWFD/wdYPu1PO
- mPgizZHHcWDf0cbJcdZyh2BJiL+h/qNAp3cUskMNGZYvPZNet2CsduM8VTR5C8pE8Q
- v5f9imc++R+RGt8qBhk/zxS4bbNsXoQWWHXf8bogise8Vn1vF9JIXbK/rHzikKAKJf
- 4w8s+zMRsWjlQ==
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Patrick Lai <plai@codeaurora.org>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: q6asm: fix 'physical' typos
-Date: Tue, 26 Jan 2021 15:20:23 -0600
-Message-Id: <20210126212023.2921168-1-helgaas@kernel.org>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 066CEF8011C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2021 02:45:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 066CEF8011C
+IronPort-SDR: 7sVw4kjigM1tZvuxDZQRq2Vgk+7ceAiFLIyMs1yMEciB8lsXvNjLDHPRZuWcla1AF7Js/6hf7X
+ uZZyAnZjrxQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="264824234"
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; d="scan'208";a="264824234"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jan 2021 17:45:20 -0800
+IronPort-SDR: Kfsl6iHhANdfI89KNyycECUcKTJtXlipMCvsrutIx7L8IkdeLdySyDe7dwbgP7+gjUig7tKRuz
+ P773VvZrdhIg==
+X-IronPort-AV: E=Sophos;i="5.79,378,1602572400"; d="scan'208";a="472968850"
+Received: from laurafux-mobl.amr.corp.intel.com ([10.254.96.47])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jan 2021 17:45:19 -0800
+Message-ID: <38171d9c2cc6093676490cb0a9cf3123251fe1c0.camel@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: Intel: hda: enable DMI L1 for
+ D0i3-compatible streams
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Date: Tue, 26 Jan 2021 17:45:18 -0800
+In-Reply-To: <20210126015130.1023840-2-ranjani.sridharan@linux.intel.com>
+References: <20210126015130.1023840-1-ranjani.sridharan@linux.intel.com>
+ <20210126015130.1023840-2-ranjani.sridharan@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Bjorn Helgaas <bhelgaas@google.com>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 7bit
+Cc: broonie@kernel.org, tiwai@suse.com,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,28 +87,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+On Mon, 2021-01-25 at 17:51 -0800, Ranjani Sridharan wrote:
+> DMI L1 entry is currently disabled whenever any capture stream is
+> opened to prevent xruns during pause/release. But, in
+> order to maximise power savings for the wake-on-voice usecase,
+> DMI L1 entry should be enabled for D0i3-compatible capture streams.
+> Introduce a new field, flags in struct sof_intel_hda_stream
+> that stores whether a stream is dmi_l1_compatible. All playback
+> streams,
+> and D0i3-compatible capture streams are DMI L1 compatible.
+> 
+> Reviewed-by: Pierre-Louis Bossart <
+> pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> ---
+>  sound/soc/sof/intel/hda-compress.c |  2 +-
+>  sound/soc/sof/intel/hda-loader.c   |  2 +-
+>  sound/soc/sof/intel/hda-pcm.c      | 16 ++++++++++++-
+>  sound/soc/sof/intel/hda-stream.c   | 38 +++++++++++++++++-----------
+> --
+>  sound/soc/sof/intel/hda-trace.c    |  3 +--
+>  sound/soc/sof/intel/hda.h          |  6 ++++-
+>  6 files changed, 45 insertions(+), 22 deletions(-)
+> 
+> diff --git a/sound/soc/sof/intel/hda-compress.c
+> b/sound/soc/sof/intel/hda-compress.c
+> index 53c08034fa22..7899004df8d1 100644
+> --- a/sound/soc/sof/intel/hda-compress.c
+> +++ b/sound/soc/sof/intel/hda-compress.c
+> @@ -25,7 +25,7 @@ int hda_probe_compr_assign(struct snd_sof_dev
+> *sdev,
+>  {
+>  	struct hdac_ext_stream *stream;
+>  
+> -	stream = hda_dsp_stream_get(sdev, cstream->direction);
+> +	stream = hda_dsp_stream_get(sdev, cstream->direction, 0)
+Hi Mark,
 
-Fix misspellings of "physical".
+Sorry, this wont build with the probes feature enabled in Kconfig
+because of the missing semicolon. I will post v2 soon.
 
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- sound/soc/qcom/qdsp6/q6asm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index a6618efe22f2..36bf8bd4edd7 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -491,7 +491,7 @@ static int __q6asm_memory_map_regions(struct audio_client *ac, int dir,
-  *
-  * @dir: direction of audio stream
-  * @ac: audio client instanace
-- * @phys: physcial address that needs mapping.
-+ * @phys: physical address that needs mapping.
-  * @period_sz: audio period size
-  * @periods: number of periods
-  *
--- 
-2.25.1
+Thanks,
+Ranjani
 
