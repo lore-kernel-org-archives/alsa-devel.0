@@ -7,62 +7,61 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24A8EC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 09:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E431C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 09:44:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94DAD6146D
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 09:44:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94DAD6146D
+	by mail.kernel.org (Postfix) with ESMTPS id 7A29E64DBD
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 09:44:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A29E64DBD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 543F916CE;
-	Thu, 28 Jan 2021 10:43:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 543F916CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7544616D5;
+	Thu, 28 Jan 2021 10:43:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7544616D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611827044;
-	bh=8kaa2ndUsFhVpN5iTWzB/kA4ylvQKAFjTrpdxUcRKj4=;
+	s=default; t=1611827048;
+	bh=EqTGHD/06oipX4/r37yNO/YP8B7VLST05ehDQ3GCGVM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aMKSyduCxtE6PdbAg9AT5fHmyRytHrz80cJzN62GHxrJqgeCT2tPCJlsbwf6DlJKW
-	 0fu7OhiFVy8pDCOf19GNTTI8y7ohguCjh6uXGn2IyfwYZ8/HYI10wssCDLpQRPRH60
-	 EJ2ZYunNMqm2zY0aMuxGMae+CVFbr/kfYZ9rwoCg=
+	b=k+qJCI/y5D7lA4N/WG5kQTQPhFVvYZs7DiQpqdob996pUpwiwR3DtUjBj1gou92Mh
+	 MQmM6W+DKsAAv2VntRz2YCA4arh8/NOwO1NS81g8+oRaVsRR1F6aKgSJ7xlVssYZsK
+	 OJxvgoE4bOTjYgMS2salw8YZKA0WvCORG14hMnkA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18AEBF8015B;
-	Thu, 28 Jan 2021 10:42:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95403F804B4;
+	Thu, 28 Jan 2021 10:42:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBF1DF80217; Thu, 28 Jan 2021 10:42:26 +0100 (CET)
+ id 1CCE1F804B4; Thu, 28 Jan 2021 10:42:34 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A980F800BE
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 10:42:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A980F800BE
-IronPort-SDR: 3Q/GF5BKIUwzdp+uF6A7osz1mxek9gQA1eKpt4m8ssiaYLtw4SUsileeAJIdB2hM7cazbL3xYH
- +7+uZi+FSxDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159380104"
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; d="scan'208";a="159380104"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64B44F800D1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 10:42:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64B44F800D1
+IronPort-SDR: s+cxjNKTJiggTwDQ1/3qw1bzxQDWnglhgrdNmZISfGpapzKcW6lCOXkjKcsWNXgP1uvgypuoTn
+ WoisYFlz4B3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="159380107"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; d="scan'208";a="159380107"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Jan 2021 01:42:15 -0800
-IronPort-SDR: vIwQ3wcRIx+UICeWmNv37ZBHdVjK9ddaHhTfUeH/drfTOzefyEEm/9p9jsrBuNxX5KDGsbBOs5
- MsqO4iXsTiQg==
+ 28 Jan 2021 01:42:17 -0800
+IronPort-SDR: lQuo2dZficsUZlHYsEz1TWAHinL/g8oYhdJc43cZq0fvJDEFGOBKliaknSQVbkoB4CW2LPIUTq
+ 8oWIK7kG/5Tw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; d="scan'208";a="369789112"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; d="scan'208";a="369789123"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga002.jf.intel.com with ESMTP; 28 Jan 2021 01:42:13 -0800
+ by orsmga002.jf.intel.com with ESMTP; 28 Jan 2021 01:42:15 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 1/5] ASoC: SOF: Intel: hda: use snd_sof_dsp_core_power_up/down
- API
-Date: Thu, 28 Jan 2021 11:38:46 +0200
-Message-Id: <20210128093850.1041387-2-kai.vehmanen@linux.intel.com>
+Subject: [PATCH 2/5] ASoC: SOF: Intel: hda-loader: keep init cores alive
+Date: Thu, 28 Jan 2021 11:38:47 +0200
+Message-Id: <20210128093850.1041387-3-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210128093850.1041387-1-kai.vehmanen@linux.intel.com>
 References: <20210128093850.1041387-1-kai.vehmanen@linux.intel.com>
@@ -88,58 +87,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-To implement common logic in SOF core, core power up/down flows should
-use common SOF API and not directly use low-level platform specific
-helper functions.
+init_core_mask should be the available cores mask after fw boot. So we
+should keep not core 0 but init cores alive.
 
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dsp.c    | 2 +-
- sound/soc/sof/intel/hda-loader.c | 2 +-
- sound/soc/sof/intel/hda.c        | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-loader.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 2b001151fe37..4fe4175179d4 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -624,7 +624,7 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
- #endif
- 
- 	/* power down DSP */
--	ret = hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
-+	ret = snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask);
- 	if (ret < 0) {
- 		dev_err(sdev->dev,
- 			"error: failed to power down core during suspend\n");
 diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 365a79fc7081..4b2ab351e2cc 100644
+index 4b2ab351e2cc..07b73fe3c5e5 100644
 --- a/sound/soc/sof/intel/hda-loader.c
 +++ b/sound/soc/sof/intel/hda-loader.c
-@@ -183,7 +183,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 		flags |= SOF_DBG_DUMP_FORCE_ERR_LEVEL;
+@@ -147,8 +147,9 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
+ 				       chip->ipc_ack_mask,
+ 				       chip->ipc_ack_mask);
  
- 	hda_dsp_dump(sdev, flags);
--	hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
-+	snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask);
- 
- 	return ret;
- }
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 7e703ce22fcd..d57d484a42d1 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -928,7 +928,7 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 
- 	/* disable cores */
- 	if (chip)
--		hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
-+		snd_sof_dsp_core_power_down(sdev, chip->host_managed_cores_mask);
- 
- 	/* disable DSP */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
+-	/* step 5: power down corex */
+-	ret = hda_dsp_core_power_down(sdev, chip->host_managed_cores_mask & ~(BIT(0)));
++	/* step 5: power down cores that are no longer needed */
++	ret = hda_dsp_core_power_down(sdev, chip->host_managed_cores_mask &
++				      ~(chip->init_core_mask));
+ 	if (ret < 0) {
+ 		if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
+ 			dev_err(sdev->dev,
 -- 
 2.29.2
 
