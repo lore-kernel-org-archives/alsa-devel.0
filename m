@@ -2,73 +2,76 @@ Return-Path: <SRS0=P7Dr=G7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6401C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 20:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F5E4C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 20:56:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45F6464DD6
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 20:56:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45F6464DD6
+	by mail.kernel.org (Postfix) with ESMTPS id 290D764DE5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 20:56:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 290D764DE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 585DF1695;
-	Thu, 28 Jan 2021 21:55:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 585DF1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7FCE016AD;
+	Thu, 28 Jan 2021 21:56:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FCE016AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611867407;
-	bh=1tbtuFQkxbc4ZnV8cTnHuV1+0RiZFgiK3PLGpUTpqzY=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1611867411;
+	bh=1Q3JBbzrKlWRCyGG2/vnKM+0MChylTS66CNfZCbA83s=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QsyMZJZyj9OTzXyRR36DtnvA0FZifKJ7bl0ImhYbl5upvldJgno0nQqGhAJk4QfWn
-	 4ZxMtRrga/NxZM8u2/nfUod8e8Xoqrx4PPscB6zPBl9EwON3Wz+M3jid+w+B8gXM0X
-	 Gsz8dtw2mrHohAtyb5keIUThjIQFkokQWpvHdHFw=
+	b=lGA8aCNBUkOuWUFU2PUYn7jI9OubSCchjwk8Y3jvmmftSHXWz5Eb6yLUinA4CGF+3
+	 FH/Hgis68IhpAJau1y3FXs0WojvyUKxEjZaOhB/wJKPZu3XNIhQQN0oE/FSbgncdcR
+	 EfaX+fjLTFThaNNEy0fc/mZ0r1ANQxP3Y7+mkOGM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F12CF801ED;
-	Thu, 28 Jan 2021 21:55:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 970EEF80217;
+	Thu, 28 Jan 2021 21:55:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5F7EF80217; Thu, 28 Jan 2021 21:55:28 +0100 (CET)
+ id 4F18BF80217; Thu, 28 Jan 2021 21:55:31 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3A69F8015B
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 21:55:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3A69F8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC6CBF800D1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 21:55:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC6CBF800D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="T8GRz5W4"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F41F64DD6;
- Thu, 28 Jan 2021 20:55:20 +0000 (UTC)
+ header.b="W2AmedK8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB9964DDB;
+ Thu, 28 Jan 2021 20:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611867321;
- bh=1tbtuFQkxbc4ZnV8cTnHuV1+0RiZFgiK3PLGpUTpqzY=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=T8GRz5W47Ps3HktkyrIxm0ogPUgwEeF57co8nvyKTuWV4GLA6SuVYJfOCAfUz7lkP
- 37fR6EkachvJP8xeJNwWF3ZsMNpTcIMPX/nIbQx6GRgIGeDguB5vKcdC60fq7BZDa5
- Vpxn8N+ZDSIza/Syw4SKvrGRlaf4jDAhFet+sfTR5lZclHYTkDwhUh7TZH1EkF736V
- fFoVrogFxTQ27HHzICx2jY2t69R1xzJRC2v7+ZtDTnqsBJM/eD+1ezxg5xurdyjA/5
- YN0OfrUeCl6ZYKIPJ1zY7eHkGrAn5/DF31FCAQU6so5jspaToAaceVSqsGMO/0vp6K
- Y2fKp+tR1XUFA==
+ s=k20201202; t=1611867326;
+ bh=1Q3JBbzrKlWRCyGG2/vnKM+0MChylTS66CNfZCbA83s=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=W2AmedK8qteza6t210CV/04DlkSh4wmuXEyHvn4+d6/UTDb61kzk9dk14593RdgV4
+ qtMMwcvtaDyY0uXkqcu95Gef2utD3hbfV/CPk+chhWQGJEbdjgNrc7ZNm/jMSXQDpM
+ ZCEoQAwZE6OglIFrQ6G1n/uVfSHfGQaC+vAGYZsUEt/nf+LYbAn0XyzleKxVkGcSLe
+ 2kEC4PXDzBeDDalioxGRjR2BE/RVIaGpSpj5sg14PAXienTIlTCaIbmHTKIMZIFlog
+ mXrVlnMqAaRtMgMbifNMncXHgvbADwA36ARZn1eLqpIbd4YLlxipUWhaX/nred/guT
+ +SGS1DMIBqUzw==
 From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20210128093850.1041387-1-kai.vehmanen@linux.intel.com>
-References: <20210128093850.1041387-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 0/5] ASoC: SOF: use common code for DSP core pm
-Message-Id: <161186727763.43763.5863459561857832758.b4-ty@kernel.org>
+To: bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
+ tiwai@suse.com, srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+ perex@perex.cz, devicetree@vger.kernel.org,
+ Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+ linux-kernel@vger.kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+In-Reply-To: <20210127151824.8929-1-srivasam@codeaurora.org>
+References: <20210127151824.8929-1-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2] ASoC: qcom: lpass-cpu: Remove bit clock state check
+Message-Id: <161186727762.43763.16675933644941230011.b4-ty@kernel.org>
 Date: Thu, 28 Jan 2021 20:54:37 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +87,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 28 Jan 2021 11:38:45 +0200, Kai Vehmanen wrote:
-> Series to refactor the DSP core management:
->  - move tracking of powered up DSP cores to common SOF code
->  - add logic filter unnecessary power actions
->  - modify existing implementations to use common code
->    whenever DSP cores are powered, so the state in common
->    code stays in sync
+On Wed, 27 Jan 2021 20:48:24 +0530, Srinivasa Rao Mandadapu wrote:
+> No need of BCLK state maintenance from driver side as
+> clock_enable and clk_disable API's maintaing state counter.
+> 
+> One of the major issue was spotted when Headset jack inserted
+> while playback continues, due to same PCM device node opens twice
+> for playaback/capture and closes once for capture and playback continues.
 > 
 > [...]
 
@@ -100,16 +103,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: SOF: Intel: hda: use snd_sof_dsp_core_power_up/down API
-      commit: f6c246eacb62977dea5c9c65ac6fb4921cad5bcd
-[2/5] ASoC: SOF: Intel: hda-loader: keep init cores alive
-      commit: cedd502d18b5b7a913fa13fa18a037cc51b1798d
-[3/5] ASoC: SOF: update dsp core power status in common APIs
-      commit: 42077f08b3f1ba891dca1f8f479810f16b7d6cbd
-[4/5] ASoC: SOF: Filter out unneeded core power up/downs
-      commit: 30876e2a06f35b525dc71f94dfc3c6f329e55a28
-[5/5] ASoC: SOF: intel: hda-loader: use snd_sof_dsp_core_power_down/up APIs
-      commit: 92c6ec606cd12c16091b70442da536bdeddb1f7f
+[1/1] ASoC: qcom: lpass-cpu: Remove bit clock state check
+      commit: 6c28377b7114d04cf82eedffe9dcc8fa66ecec48
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
