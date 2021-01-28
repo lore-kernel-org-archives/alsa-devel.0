@@ -2,75 +2,68 @@ Return-Path: <SRS0=P7Dr=G7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ACC5C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 20:57:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA65CC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 23:12:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E137264DD6
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 20:57:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E137264DD6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 5CCA464DEF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 23:12:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5CCA464DEF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E0D916D0;
-	Thu, 28 Jan 2021 21:56:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E0D916D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8B94847;
+	Fri, 29 Jan 2021 00:11:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8B94847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611867464;
-	bh=jkweb2pifxzJp7sxiZtI+a9pMzcdV4TWy+OrK9mpB+s=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1611875533;
+	bh=3VHDu33OWae8YkS0mka+zsm6XcCeZueJ37MKEnKw/4M=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G5rJTzLkmrmjmwmZYdt1GyD+BYXy28ASys75p2lkcs2sBJs1ziv/LwqcW9ZBlaq/i
-	 ew4di7SHL6V24yomeYNm40HS7rwQeRwES6580HrbiJ3JNDY+J2KoWgITpz2xD35021
-	 N9KLHLVqZv6RIAA5wtrH/Bcb9TI7Kgw5bmU52fac=
+	b=DfB1shh/eINa5IMv5fV6PE48RhfxyzhXZK3yNG6GB8QdXrqb48vG48ZwCTp2/7f2q
+	 WNFEkcmRjIbOKA0Ay8xUqgXgvRO7dabSjHKhs0OVyL7xyQUzR7brxO+JZ/6gmr6cUo
+	 RXPEWMt+WJoWkfEEDs+zQ22h3mSkL9DGGDdwaS0Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EDDCF804E3;
-	Thu, 28 Jan 2021 21:55:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44205F80158;
+	Fri, 29 Jan 2021 00:11:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88F64F804E4; Thu, 28 Jan 2021 21:55:41 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AEACF804D8
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 21:55:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AEACF804D8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RAISmF8u"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3AED64DE6;
- Thu, 28 Jan 2021 20:55:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1611867337;
- bh=jkweb2pifxzJp7sxiZtI+a9pMzcdV4TWy+OrK9mpB+s=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=RAISmF8uxQBlSMPz2frkN9fJy7JnEbtczh7+3ZYhkUcl/K3/3/GBeXJYr+OqGL+DN
- G9VyoTdG9Bxo6JZgwKzAqpWn27MDhNPAXwYfLQo/FQ0ITticnmZrVZQ9ge2pr59GcG
- +HPMP2RhkFxgtdJGZ5pqcNreN3hZKqJpgHeVmDuqzwVDYdB54885yLGLNxWVmCBj2K
- zs4zn5n3eCxLcAUL8G1yNhqdygahBy9vwd35U3GqWUC/9dZQyHcyONdk0lnGi0ZphY
- eeQzmX0GWSJF7eqNEo2ATclqw2GmV7ipCqXTdV/mKDyR7MHZ7qtwuYZ75tL79D/UKS
- TR1Adicld3lSA==
-From: Mark Brown <broonie@kernel.org>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
-In-Reply-To: <20210128105751.1049837-1-kai.vehmanen@linux.intel.com>
-References: <20210128105751.1049837-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: remove duplicate MODULE_LICENSE/DESCRIPTION
- tags
-Message-Id: <161186727762.43763.10625910430337104529.b4-ty@kernel.org>
-Date: Thu, 28 Jan 2021 20:54:37 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
- yang.jie@linux.intel.com, Rander Wang <rander.wang@linux.intel.com>,
- lgirdwood@gmail.com
+ id 2415BF8015B; Fri, 29 Jan 2021 00:11:22 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9F790F800D1
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 00:11:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F790F800D1
+Date: 29 Jan 2021 08:11:08 +0900
+X-IronPort-AV: E=Sophos;i="5.79,383,1602514800"; d="scan'208";a="70616151"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 29 Jan 2021 08:11:08 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 344594137918;
+ Fri, 29 Jan 2021 08:11:08 +0900 (JST)
+Message-ID: <87o8h8irzv.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCHv2] ASoC: audio-graph-card: Add audio mixer for Motorola
+ mdm6600
+In-Reply-To: <20210128105230.GA21134@duo.ucw.cz>
+References: <20210128105230.GA21134@duo.ucw.cz>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, phone-devel@vger.kernel.org, tony@atomide.com,
+ Merlijn Wajer <merlijn@wizzup.org>, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, peter.ujfalusi@ti.com,
+ Mark Brown <broonie@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ "Arthur D." <spinal.by@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,35 +79,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 28 Jan 2021 12:57:51 +0200, Kai Vehmanen wrote:
-> The snd-soc-acpi-intel-match has duplicate module tags for all
-> platforms separately. Remove all but one and save some storage
-> space and cleanup modinfo output.
 
-Applied to
+Hi Pavel
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> motmdm.c handles audio configuration on "gsmtty2"; it needs to know
+> whether we are in call or not; that part is in motmdm-state.c and
+> listens on "gsmtty1".
+> 
+> To configure Alsamixer for voice calls do for example:
+>     
+> Speaker Right -> Voice
+> Call Noise Cancellation -> Unmute
+> Call Output -> Speakerphone
+> Call -> 100
+> Mic2 -> 40
+> Left -> Mic 2
+> Voice -> 55
+> Mic2 -> 40
+> Left -> Mic 2
+> 
+> Tony wrote original version using custom interface to n_gsm, Pavel
+> switched it to plain serdev and split it to two drivers to be easier
+> to debug and understand. Credit is Tony's, bugs are probably Pavel's.
+>     
+> Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> Co-authored-by: Tony Lindgren <tony@atomide.com>
+> ---
 
-Thanks!
+This is not a big deal, but the this patch is not
+directly related to audio-graph-card.
+Including it on Subject is confusable.
 
-[1/1] ASoC: Intel: remove duplicate MODULE_LICENSE/DESCRIPTION tags
-      commit: 1fc96dc29c3ba342915c3a935c9d177f8f420d03
+Thank you for your help !!
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Best regards
+---
+Kuninori Morimoto
