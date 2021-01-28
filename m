@@ -2,66 +2,90 @@ Return-Path: <SRS0=P7Dr=G7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 154CBC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 11:28:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 504DCC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 12:14:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D949264D9F
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 11:28:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D949264D9F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
+	by mail.kernel.org (Postfix) with ESMTPS id CA6C864DD8
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jan 2021 12:14:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA6C864DD8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3197A16BB;
-	Thu, 28 Jan 2021 12:27:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3197A16BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC6B16BB;
+	Thu, 28 Jan 2021 13:13:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC6B16BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611833317;
-	bh=pKfK3oFDLdUDZKA58TXdpKMp6coON408HLxMQ7IIot4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=D0lXQmprEAuoOmhi52Yz682pa9H8qpwp1I9xrL2E+UCUxy6f4MLTlliewFunm6Ub7
-	 fTiITJs76/dEmG18KDonBcJ/9J9w5fSYbpfDRic/VtwPgOuBffTrpTBwHRuTbmTPrj
-	 hkJ+5ZCGDb6djn77px7TP9ilDD7/O32mrjscSg5M=
+	s=default; t=1611836077;
+	bh=4QS9VyFgOdbIuvpQ/e4NOhfiy7Xwy+bSfYy4FVoPA1c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DB3ubuHlGzb2VW1qnP0x5Y19mTDyH3YIdC0m042snN/zodVHN6+P2fyrYrQMh8X8q
+	 vGqLyFdnfYDRG+0r4OW4VLqD6wOW2uqfAjghOb+7Pok0wZLMui5LyJt+3TL0RP04J5
+	 I5oLBRFOIfRSnmORbgP7Clz8hVnyLJlR5ZZltF5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A33F8F80158;
-	Thu, 28 Jan 2021 12:27:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7874AF80158;
+	Thu, 28 Jan 2021 13:13:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C6E8F8015B; Thu, 28 Jan 2021 12:27:45 +0100 (CET)
-Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com
- [221.176.66.80])
- by alsa1.perex.cz (Postfix) with ESMTP id 8E1B1F800E9
- for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 12:27:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E1B1F800E9
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by
- rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee760129f8fe10-38bc6;
- Thu, 28 Jan 2021 19:27:11 +0800 (CST)
-X-RM-TRANSID: 2ee760129f8fe10-38bc6
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
- by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee560129f8be3a-d290f;
- Thu, 28 Jan 2021 19:27:11 +0800 (CST)
-X-RM-TRANSID: 2ee560129f8be3a-d290f
-From: Tang Bin <tangbin@cmss.chinamobile.com>
-To: broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
- Xiubo.Lee@gmail.com, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH] ASoC: fsl_spdif: Utilize the defined parameter to clear code
-Date: Thu, 28 Jan 2021 19:27:14 +0800
-Message-Id: <20210128112714.16324-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+ id BC693F8015B; Thu, 28 Jan 2021 13:13:44 +0100 (CET)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com
+ [209.85.210.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3880BF800D1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 13:13:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3880BF800D1
+Received: by mail-ot1-f47.google.com with SMTP id a109so4952358otc.1
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2021 04:13:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=leU8VciL8Sfk5N5n4djrK54HMGnZksKQmyftuwmWArY=;
+ b=ktML+NPBm58vBG/53ZvbiIrhv7uY17ITIUjyi/zJd9SJkyADHx+UGFSvOSvvAbEP8G
+ rv1OeztzBJrseOgkfgoEp/1P7Cc60jsFjOoUohCWNvE4F013xmNKn3nCwMioMFzHg72f
+ o3l62sP851j+jrzirvU5VhSK/3SF8zHHVeP0If7UeoHRNHEPLLMfuA2RUKLgf6/kl1JN
+ 67rXKPSp4PiBYIQcIeLKm4ERWU+UIfgfy0S3Lkhze5r0J9M8ALC2/5htnSX/294yVEyx
+ qoXHysGXuHyWSgMGtJ35+Jr9xOcRq0nR20yMzIMyNES0YgKlINZL2C8M2bOEQyhwxciD
+ ww9Q==
+X-Gm-Message-State: AOAM5336ssGbxu0rV56a6q9TnPYUjpBOT8/Vg92OcFQdwp+4Wq0ibQ7i
+ +bQCkvI1xv/GGdzri1MOxuU0Xl2bzbwCr0QbPxc=
+X-Google-Smtp-Source: ABdhPJx2vQ8p3H5bitImynt4e/gbgRKyCHtUWDjUBujdpIbTAh/pIdNIrc3FJVhtc5MsZGI87rzVZyc3rk0dRxog9cI=
+X-Received: by 2002:a05:6830:2313:: with SMTP id
+ u19mr11380809ote.321.1611836015446; 
+ Thu, 28 Jan 2021 04:13:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Tang Bin <tangbin@cmss.chinamobile.com>
+References: <CA+GA0_sPC3rp5K4qwZm-u+W1C=+2Y2p-dbF4DMdHkKaTpeKKkg@mail.gmail.com>
+ <CAJZ5v0iapmc8ywuySwexwTagKr89Hj7TPXkAvd_HXMhdLoyyQQ@mail.gmail.com>
+ <1f0f7273-597e-cdf0-87d1-908e56c13133@linux.intel.com>
+ <CA+GA0_v3JUWS3G3=R4XuQ=OW91cpwiBP1Rp=uzYOF8c9TUJ46w@mail.gmail.com>
+ <CA+GA0_sCdowanpZmg==c+xVqqNxG5whLGsKHaCfSmpERBhqMzA@mail.gmail.com>
+ <1dc2639a-ecbc-c554-eaf6-930256dcda96@linux.intel.com>
+ <CA+GA0_sZm2pqOfA3LsNQowb930QS_g5CiCCGthzsS=vAjB9Rjg@mail.gmail.com>
+In-Reply-To: <CA+GA0_sZm2pqOfA3LsNQowb930QS_g5CiCCGthzsS=vAjB9Rjg@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 28 Jan 2021 13:13:24 +0100
+Message-ID: <CAJZ5v0h+Kwn5u293QO+H2rfGx-ZMBr18tMCLB7jHKHWWRaovOw@mail.gmail.com>
+Subject: Re: Crash in acpi_ns_validate_handle triggered by soundwire on Linux
+ 5.10
+To: =?UTF-8?Q?Marcin_=C5=9Alusarz?= <marcin.slusarz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Erik Kaneda <erik.kaneda@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Len Brown <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,47 +101,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Utilize the defined parameter 'dev' to make the code cleaner.
+On Wed, Jan 27, 2021 at 8:19 PM Marcin =C5=9Alusarz <marcin.slusarz@gmail.c=
+om> wrote:
+>
+> =C5=9Br., 27 sty 2021 o 18:28 Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
+> > > Weird, I can't reproduce this problem with my self-compiled kernel :/
+> > > I don't even see soundwire modules loaded in. Manually loading them o=
+f course
+> > > doesn't do much.
+> > >
+> > > Previously I could boot into the "faulty" kernel by using "recovery m=
+ode", but
+> > > I can't do that anymore - it crashes too.
+> > >
+> > > Maybe there's some kind of race and this bug depends on some specific
+> > > ordering of events?
+> >
+> > missing Kconfig?
+> > You need CONFIG_SOUNDWIRE and CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE
+> > selected to enter this sdw_intel_acpi_scan() routine.
+>
+> It was a PEBKAC, but a slightly different one. I won't bore you with
+> (embarrassing) details ;).
+>
+> I reproduced the problem, tested both your and Rafael's patches
+> and the kernel still crashes, with the same stack trace.
+> (Yes, I'm sure I booted the right kernel :)
+>
+> Why "recovery mode" stopped working (or worked previously) is still a mys=
+tery.
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- sound/soc/fsl/fsl_spdif.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+So for clarity, you've tried this:
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 455f96908..b6d5563df 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1215,7 +1215,7 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 
- 	for (i = 0; i < STC_TXCLK_SRC_MAX; i++) {
- 		sprintf(tmp, "rxtx%d", i);
--		clk = devm_clk_get(&pdev->dev, tmp);
-+		clk = devm_clk_get(dev, tmp);
- 		if (IS_ERR(clk)) {
- 			dev_err(dev, "no rxtx%d clock in devicetree\n", i);
- 			return PTR_ERR(clk);
-@@ -1237,14 +1237,14 @@ static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 			break;
- 	}
- 
--	dev_dbg(&pdev->dev, "use rxtx%d as tx clock source for %dHz sample rate\n",
-+	dev_dbg(dev, "use rxtx%d as tx clock source for %dHz sample rate\n",
- 			spdif_priv->txclk_src[index], rate[index]);
--	dev_dbg(&pdev->dev, "use txclk df %d for %dHz sample rate\n",
-+	dev_dbg(dev, "use txclk df %d for %dHz sample rate\n",
- 			spdif_priv->txclk_df[index], rate[index]);
- 	if (clk_is_match(spdif_priv->txclk[index], spdif_priv->sysclk))
--		dev_dbg(&pdev->dev, "use sysclk df %d for %dHz sample rate\n",
-+		dev_dbg(dev, "use sysclk df %d for %dHz sample rate\n",
- 				spdif_priv->sysclk_df[index], rate[index]);
--	dev_dbg(&pdev->dev, "the best rate for %dHz sample rate is %dHz\n",
-+	dev_dbg(dev, "the best rate for %dHz sample rate is %dHz\n",
- 			rate[index], spdif_priv->txrate[index]);
- 
- 	return 0;
--- 
-2.20.1.windows.1
+static int snd_intel_dsp_check_soundwire(struct pci_dev *pci)
+{
+    struct sdw_intel_acpi_info info;
+    acpi_handle handle;
+    int ret;
 
+    handle =3D ACPI_HANDLE(&pci->dev);
+    if (!handle)
+        return -ENODEV;
 
+and it has not made a difference?
 
+And the relevant part of the trace is:
+
+RIP: 0010:acpi_ns_validate_handle+0x1a/0x23
+Code: 00 48 83 c4 10 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 1f 44 00 00
+48 8d 57 ff 48 89 f8 48 83 fa fd 76 08 48 8b 05 0c b8 67 01 c3 <80> 7f
+08 0f 74 02 31 c0 c3 0f 1f 44 00 00 48 8b 3d f6 b7 67 01 e8
+RSP: 0000:ffffc388807c7b20 EFLAGS: 00010213
+RAX: 0000000000000048 RBX: ffffc388807c7b70 RCX: 0000000000000000
+RDX: 0000000000000047 RSI: 0000000000000246 RDI: 0000000000000048
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffffc0f5f4d1 R11: ffffffff8f0cb268 R12: 0000000000001001
+R13: ffffffff8e33b160 R14: 0000000000000048 R15: 0000000000000000
+FS:  00007f24548288c0(0000) GS:ffff9f781fb80000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000050 CR3: 0000000106158004 CR4: 0000000000770ee0
+PKRU: 55555554
+Call Trace:
+ acpi_get_data_full+0x4d/0x92
+ acpi_bus_get_device+0x1f/0x40
+ sdw_intel_acpi_scan+0x59/0x230 [soundwire_intel]
+ ? strstr+0x22/0x60
+ ? dmi_matches+0x76/0xe0
+ snd_intel_dsp_driver_probe.cold+0xaf/0x163 [snd_intel_dspcfg]
+ azx_probe+0x7a/0x970 [snd_hda_intel]
+ local_pci_probe+0x42/0x80
+ ? _cond_resched+0x16/0x40
+ pci_device_probe+0xfd/0x1b0
+
+so it looks like we got to sdw_intel_acpi_scan() with a non-NULL, but
+otherwise invalid parent_handle which then was passed to
+acpi_bus_get_device().  Subsequently it got to acpi_get_data_full()
+and acpi_ns_validate_handle() that crashed, because it tried to
+dereference it via ACPI_GET_DESCRIPTOR_TYPE().
+
+To debug it further, can you please modify
+snd_intel_dsp_check_soundwire() to read like this:
+
+static int snd_intel_dsp_check_soundwire(struct pci_dev *pci)
+{
+    struct sdw_intel_acpi_info info;
+    struct acpi_device *adev =3D NULL;
+    acpi_handle handle;
+    int ret;
+
+    handle =3D ACPI_HANDLE(&pci->dev);
+    if (!handle)
+        return -ENODEV;
+
+    if (acpi_bus_get_device(handle, &adev))
+        return -ENODEV;
+
+and see what happens then?
