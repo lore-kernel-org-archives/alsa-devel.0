@@ -7,80 +7,80 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73DC3C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 18:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF1DC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 18:30:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A3E6464E04
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 18:30:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A3E6464E04
+	by mail.kernel.org (Postfix) with ESMTPS id 61A2564E09
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 18:30:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61A2564E09
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E02E116B2;
-	Fri, 29 Jan 2021 19:29:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E02E116B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF99316B9;
+	Fri, 29 Jan 2021 19:29:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF99316B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611945030;
-	bh=klxT2hmc/eg8LavDlqrmh3FQWw+ug2p3vjdHa9EbHnw=;
+	s=default; t=1611945040;
+	bh=mY/mk5nVbHT8O6sDGdf485yOOyb5o7IcUSGfAPzkQTU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BSjSEKho9XvrDYZE7JWqC65sNxFx7DTH/ILYYssnOidQkr9N0qP2qC1TzNY+DXted
-	 vTqOnCrB9XSTgPWv0a5Ek+v4cMnmLopK0Qu8uKWePcNColCl7A8gG934Bvj/CKWKaX
-	 HN2O76XkSWo9ev3JHkH+8A05fC67p7bx06iksEZM=
+	b=voKxmZ05cU9dwjaNgIhk2glptWSmlj+6MBWs8anULKxGuu04nhQk7PoyctiqEaEt5
+	 RBKnlwCcIblSyrGTCyk/Birnc3RTwVK45rwU51fo1IR1We8xzCvtdmiL6P3KYViUvF
+	 xVf1/w6div0wWSQIfwO7dzSckwXAXF7ieiDMj244=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A11CF804CA;
-	Fri, 29 Jan 2021 19:28:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FD7FF804D8;
+	Fri, 29 Jan 2021 19:28:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4685EF8026B; Fri, 29 Jan 2021 19:28:13 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 2E6B9F80277; Fri, 29 Jan 2021 19:28:15 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E435F80218
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 19:28:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E435F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id 224A1F800EB
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 19:28:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 224A1F800EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="Vdm2wo8T"
+ header.b="nHr8zObC"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B601453b10000>; Fri, 29 Jan 2021 10:28:01 -0800
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B601453b90000>; Fri, 29 Jan 2021 10:28:09 -0800
 Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
  (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
- 2021 18:28:00 +0000
+ 2021 18:28:09 +0000
 Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
  (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 29 Jan 2021 18:27:57 +0000
+ Transport; Fri, 29 Jan 2021 18:28:05 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <thierry.reding@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
  <lgirdwood@gmail.com>
-Subject: [PATCH v2 2/9] ASoC: dt-bindings: tegra: Add iommus property to Tegra
- graph card
-Date: Fri, 29 Jan 2021 23:57:39 +0530
-Message-ID: <1611944866-29373-3-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v2 4/9] ASoC: rt5659: Add Kconfig prompt
+Date: Fri, 29 Jan 2021 23:57:41 +0530
+Message-ID: <1611944866-29373-5-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611944866-29373-1-git-send-email-spujar@nvidia.com>
 References: <1611944866-29373-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1611944881; bh=SLGxbjmqkghCiCzoXbOehlvqpU26zswcFn4UUR9CvHU=;
+ t=1611944889; bh=F/BW7PY5izzMMJY0fLuFBv2E9jr38z5576WRI7J2fI4=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=Vdm2wo8TGuiqC5cW4j6CpLghBGKZHWnI4DWJ7A6UJfEg1/KENZZ/JFJwuyPdyjp2I
- cR+6dBWBwRO8sUshxpIe9zOfvBC31eCBQfdqKJj0uMfN4aiLbrqioFAsxVNqxWk1Dj
- aOLnN4+bUBzdVFgZBuas+M9uFDYvBbLmyTufhqq9f1JKRiSRSIsVTC2God55vRPoBq
- AUdBOsG+CM8GuftbrOEiybM9nxS7D8iCkNlIZa8VB/b9qXske8w0/m0bhPOFHDNzJ/
- 9vuqguEW+thyZQyOusd2icT+SP1gI3M+mVfHdEyvVbwkSZCAFQ59YWJwvXez94eO4g
- +/Ea75IRdqW9w==
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
- jonathanh@nvidia.com, sharadg@nvidia.com, linux-tegra@vger.kernel.org
+ b=nHr8zObCaCY6pG1yyuNQjsFsK4HACEtNZlOEi+9wFF+5YeulwGrvqumXM3dKSTu0y
+ j8dKgOt7hm7jV0t2JGxZLGbW2fk4n2srPAlwHhuT081rRHLsafHByHjj7/C/wIYNYs
+ yA2wbM5gUG1OgNMmNu+cVxW/cwgpef2vTQCYrRc7z3SOQpfQZ6uqevHEgDopyRmrch
+ SwDmps+lFqyyJZvXoqm/wn4AsuYA+mf9E8Z6uui/pmRtSxlYzo3MI3IjYiNQi+Pr3F
+ G8BYUSrzzt9omitztdGp+x9Npznp6J2S5rdRImZHJnVWIfIZKNtqqOGTp8lVHuEAi3
+ US7ukp7XQzn4A==
+Cc: Oder Chiou <oder_chiou@realtek.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ Sameer Pujar <spujar@nvidia.com>, jonathanh@nvidia.com, sharadg@nvidia.com,
+ linux-tegra@vger.kernel.org, Bard Liao <bardliao@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,28 +96,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Document 'iommus' property for APE (Audio Processing Engine) sound
-card.
+Add tristate prompt to allow codec selection.
 
+Cc: Oder Chiou <oder_chiou@realtek.com>
+Cc: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- .../devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml       | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-index fc271f6..2499709 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.yaml
-@@ -45,6 +45,9 @@ properties:
-     minItems: 1
-     maxItems: 3
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 9bf6bfd..df34b3b 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1162,7 +1162,7 @@ config SND_SOC_RT5651
+ 	depends on I2C
  
-+  iommus:
-+    maxItems: 1
-+
- required:
-   - clocks
-   - clock-names
+ config SND_SOC_RT5659
+-	tristate
++	tristate "Realtek RT5658/RT5659 Codec"
+ 	depends on I2C
+ 
+ config SND_SOC_RT5660
 -- 
 2.7.4
 
