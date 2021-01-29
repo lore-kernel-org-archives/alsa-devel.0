@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3AE1C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 14:10:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DEBAC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 15:07:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8689D64DF1
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 14:10:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8689D64DF1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lesniak-it.de
+	by mail.kernel.org (Postfix) with ESMTPS id 2B43664E05
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 15:07:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B43664E05
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECD7C1698;
-	Fri, 29 Jan 2021 15:09:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECD7C1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F1831695;
+	Fri, 29 Jan 2021 16:06:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F1831695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611929419;
-	bh=jqf5NP6+C8qJ1zuKJEY+vN4WF0Up1r+QO+6Mwei4RH8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611932833;
+	bh=bZgRBtaTOyBeAbcRdx3Qxm8kDJoPQ7Dx+if80n35l4g=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eVxbwZN3y8U2oBLj38cgaem1J/ZsNiJ9u4BtEHO06m9cdswhcZSn1haFAe0YHUDwo
-	 CD/5km5O5lxGoBKOH6NYEnQy+tepnc6+Wl+g7XNLQYobvtxZgOveWlgODT4F/lxRWF
-	 vOrjhfk4wKlr8oyo1P6X58fr17yIj2aiCo+/DrBY=
+	b=RVw6XslkD272HZFKJwi+niUJDuAYkNSC8OqdxZh2KSmbp87oglMzMnfDMbRacLyWi
+	 kWDUYhe/fbIeIG4BWlL4S0fr8+yikeAozUg+m3z7vCH6tbfS03M+WWbsiSyfgGt3gC
+	 6tQbgD1D/nSCzgF/+4Smtn4k7KKkSNdLsQvYjgdg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53ABFF80218;
-	Fri, 29 Jan 2021 15:09:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08D2EF80218;
+	Fri, 29 Jan 2021 16:06:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6510F800EB; Fri, 29 Jan 2021 15:09:26 +0100 (CET)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B29A3F80259; Fri, 29 Jan 2021 16:06:20 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 867F6F800EB
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 15:09:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 867F6F800EB
-Received: from artex.localnet ([109.250.135.230]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MVvCn-1lVA5i39QD-00RpwH; Fri, 29 Jan 2021 15:09:11 +0100
-From: Fabian Lesniak <fabian@lesniak-it.de>
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>,
- Olivia Mackintosh <livvy@base.nu>
-Subject: Re: [PATCH] ALSA: usb-audio: Add DJM750 to Pioneer mixer quirk
-Date: Fri, 29 Jan 2021 15:09:11 +0100
-Message-ID: <3031135.XsSY7s2paC@artex>
-In-Reply-To: <20210128160338.dac4vrj7wjiykcxm@base.nu>
-References: <20210128160338.dac4vrj7wjiykcxm@base.nu>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Provags-ID: V03:K1:YYvVnsgfRLKq7XDM62myh7fEkGtIPmVR+TABatSQSAb7ulqNqJ2
- 9SRg6t0Zxo8iUH5XWQLW2hIPoOS0yj2cnlqv4kazLoeg9Te/cB/uHNJrOq01GpNOND/Y+SM
- FovkY4ptPBsPqLdqKECvgsmwyJ82cyNrJuD5TOkiidZvKxN7QMxKuyVJkZUg7SiS6I6RgmY
- kquBeWUZQ3ke2Hfwn189A==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bp7o8bYOGZE=:K3Biv2i1E6nP6ZrJS/Z0CS
- oMB6tP1rrN7lhJ9v99tH66L4AIByxZgpWOHhs6FqTmEn0q89eQOpMYetYTJKfYfby76qHenie
- AQu3cLWKVQeVWWs1uDNzu0WGiWYYxRm6E4e5gGFq1JkFr4EcVmi2pzYCYf4gtrzdFRnegWMaV
- AuOmTiJnqZFIyFDFEpO0XG9nNZpUcoRlx3/WHGqQ36ykDSmWeukZjQmarixiwJQ9ou4n5IRBG
- aGkYjghxCe0BFpWB8xyjkhOZkyciZVlFup7/ncNNjFQ1/Lnh3met+/us+HdKBOLmKzg/rHpQ/
- +6pLe68XLwhIdYoNyVlNQHBpZ8+k/3EpUFaJQxVFbTqrZW/TfLcrCmRR+rRcMKMJ8d9oTknBP
- NPrUOmFCfmrBZnhnSELzDqPEZM7vB6IkmYjHi+Dklgj/VQhoSV0QTxTMf3xlqgW2GnaA33QCt
- lAjxS3U75g==
-Cc: =?utf-8?B?RnJhbnRp77+977+9ZWsgS3Xvv73vv71lcmE=?= <franta-linux@frantovo.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4A2AF80130
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 16:06:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4A2AF80130
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 0E9CEABD6;
+ Fri, 29 Jan 2021 15:06:14 +0000 (UTC)
+Date: Fri, 29 Jan 2021 16:06:13 +0100
+Message-ID: <s5hsg6jlr4q.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Michael Catanzaro <mcatanzaro@redhat.com>
+Subject: Re: [REGRESSION] "ALSA: HDA: Early Forbid of runtime PM" broke my
+ laptop's internal audio
+In-Reply-To: <U3BPNQ.P8Q6LYEGXHB5@redhat.com>
+References: <EM1ONQ.OL5CFJTBEBBW@redhat.com>
+ <BY5PR11MB430713319F12454CF71A1E73FDB99@BY5PR11MB4307.namprd11.prod.outlook.com>
+ <U3BPNQ.P8Q6LYEGXHB5@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, "N, Harshapriya" <harshapriya.n@intel.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ kai.vehmanen@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,51 +79,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Olivia,
+On Fri, 29 Jan 2021 16:02:18 +0100,
+Michael Catanzaro wrote:
+> 
+> 
+> Thanks, I'll attach the requested information (dmesg and alsa-info.sh)
+> to https://bugzilla.redhat.com/show_bug.cgi?id=1918933. I see codec
+> info is included in the alsa-info.sh.
+> 
+> On Fri, Jan 29, 2021 at 1:37 am, "N, Harshapriya"
+> <harshapriya.n@intel.com> wrote:
+> >> Does reverting just this patch fix the issue you are seeing?
+> 
+> I would expect so, but I didn't actually check, so I'll do another
+> build now to find out for sure.
 
-perfect time for this patch since I'm currently working on similar quirks for
-the DJM-900NXS2 model. I will stick to your method for now. I do have some
-minor comments below.
-
-In general, I'm wondering whether it is a good way to implement more and more
-Pioneer devices in such a hard coded way. mixer_quirks.c already has >3k LOC,
-and the 900NXS2 support will add at least 100 more if written in the same
-scheme. It may be good to either dynamically create controls depending on the
-model or move pioneer support to an extra file. I'd like to hear what Takashi
-thinks about that.
-
-Cheers
-Fabian
-
-> +static const struct snd_pioneer_djm_device snd_pioneer_djm_devices[] = {
-> +	{ .name = "DJM-250Mk2", .controls = snd_pioneer_djm250mk2_option_groups, .ncontrols = 7},
-> +	{ .name = "DJM-750", .controls = snd_pioneer_djm750_option_groups, .ncontrols = 5}
-> +};
-These fixed values for ncontrols can easily be overlooked, consider ARRAY_SIZE
-instead. Maybe introduce a macro similar to snd_pioneer_djm_option_group_item.
-
-> +	const struct snd_pioneer_djm_device device = snd_pioneer_djm_devices[device_idx];
-This makes a local copy, which can be avoided by using a pointer instead:
-const struct snd_pioneer_djm_device *device = &snd_pioneer_djm_devices[device_idx];
-
-> usb_mixer_interface *mixer, u1 err = snd_usb_ctl_msg(
->  		mixer->chip->dev, usb_sndctrlpipe(mixer->chip->dev, 0),
->  		USB_REQ_SET_FEATURE,
-> -		USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-> -		snd_pioneer_djm_option_groups[group].options[value].wValue,
-> -		snd_pioneer_djm_option_groups[group].options[value].wIndex,
-> +		USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-> device.controls[group].options[value].wValue,
-> +		device.controls[group].options[value].wIndex,
->  		NULL, 0);
-Rather keep these arguments aligned.
-
-> -		err = snd_pioneer_djm_controls_create(mixer);
-> +		err = snd_pioneer_djm_controls_create(mixer, 0x00);
-> +		break;
-> +	case USB_ID(0x08e4, 0x017f): /* Pioneer DJ DJM-750 */
-> +		err = snd_pioneer_djm_controls_create(mixer, 0x01);
->  		break;
-I'd introduce defines for the different models instead of raw values.
+Could you try the latest Linus tree?  I guess now it works, supposing
+it's a runtime PM issue of the VIA codecs for Clevo machines.
 
 
+Takashi
