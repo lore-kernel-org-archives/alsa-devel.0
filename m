@@ -2,99 +2,93 @@ Return-Path: <SRS0=iLk1=HA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48703C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:36:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6E39C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 18:19:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C09C164E09
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:36:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C09C164E09
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7932C64E08
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 18:19:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7932C64E08
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5206316C7;
-	Fri, 29 Jan 2021 18:35:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5206316C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF51C167D;
+	Fri, 29 Jan 2021 19:18:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF51C167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611941788;
-	bh=hXrjwHOB5+FbD/F2YvYexS3oIcYUC845RMpZdoW8AeM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1611944384;
+	bh=1umby2kmyXbE/MHkdQr+TcOmzTHFEWaLSCnRCMjTvvI=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JL3L/BRgk81r1YM0xhMpoepASYwnZQEu6Un3ugCKapxC2uwaEjqx9IwL25pJ/PDaF
-	 AxQ1uBg91CkxBvWxz0wTD1WPr9YV8ot+KsCSibjdgzL2x6X6yCHb8foJHEIlHhkn0J
-	 +XBi158PdCvQjvH1BBjnXHfzck4ooRag2YbXzlO0=
+	b=Lrs+dNCv6ovcjowUpvZxnrqPMx+k+KfgkkBF6u3WnJdUtTa/Az9kkMsCkRsuyXnxf
+	 yI6aXHCnrKQfIkceJZwJFbli0cGwYr5wKFWVFiqOxD5e8c8DBvTPbTisUVCp2bFt+y
+	 bRYVZsUsIGI1nlS5GWLq07BYKCIfk/vZnD0m0oog=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0790F804EC;
-	Fri, 29 Jan 2021 18:33:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45D51F80130;
+	Fri, 29 Jan 2021 19:18:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 683BCF804CB; Fri, 29 Jan 2021 18:33:11 +0100 (CET)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4231DF80259; Fri, 29 Jan 2021 19:18:51 +0100 (CET)
+Received: from hqnvemgate25.nvidia.com (hqnvemgate25.nvidia.com
+ [216.228.121.64])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1017FF804D2
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 18:33:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1017FF804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24A18F80130
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 19:18:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24A18F80130
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="I3pg9tfL"
-Received: by mail-wm1-x32b.google.com with SMTP id y187so7809832wmd.3
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 09:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=eONmBCImMt12oRSP39RxbUr8Npi7ApzTyCqDK+i9RD4=;
- b=I3pg9tfLnTHfjB2H0AIKW/Sy2XzgCDvoebmNiJAxjzvE84bV+3IVDhFWh7xjv/BHwE
- a4N7DEV9M1285ElbyqbZZVo1nOaibXGfVJVKX1oJ29h600KK/VD6orbi8rKA/DVIXo8t
- /hTV/0LBmFWB+8vE4PM1D7YUBHvHgH0bOWKIxnlEbzlMl6M455aBBAUkZkp/UMRh1uuz
- tigaQ4VoODJ7Uvu96qi1JajZgStNH9buqm3A2C2PvwSLQGRI/lQjSCzvPrqepqfkSeBI
- QRA8OyqheqLFYa0j0N/erYU9g9q7Oeu8AL1TZt7qIj7GivpC9YyjHlLUI84+hmeoeLdm
- SaPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=eONmBCImMt12oRSP39RxbUr8Npi7ApzTyCqDK+i9RD4=;
- b=X9WTeLKq0WB7+MTFvuRdcTmqKi+GYnyE+LzabR0sneZByxeu6DJRBj32Uy+74jeLWK
- nYBqYZ6u/7s5EltKg2kP73PEK/HEH+ZMxQuyUSCnfrHczsY1LLghXuXPrANvSKffZd0l
- WC9CJwiUORyPaPjgwimRh8U+z3i158DB5ImHN81IXEbpPp36FcvTiCm3kNOFZ6p0EKb5
- loyUDzyMj57NHvOs0YSrufhCDjs5JOMJ1y63Znsm/Mci26bpUFlrpGbtldTuonPCX/0s
- s2sfH+7FOBGoKXvV9mQV0GymuRblSJ/ZKio5d+Bl2uev+1vx1l5hIJMOtbzzRpbjFT/3
- BSCA==
-X-Gm-Message-State: AOAM531J4tBDofwkD5yfS/EOTt61rdkUirOB/qgbfF44wgyvpyOVK7Xn
- Klob18mkkpd7JIOtN5NaNF4Spw==
-X-Google-Smtp-Source: ABdhPJxi3zNFX7lDhzWQF3xuka/mdUMJ2B/LfYFZGdOvLMOEwSnE4U5Xz/11texoMUiaiMkOYjSt6Q==
-X-Received: by 2002:a05:600c:27d1:: with SMTP id
- l17mr4816004wmb.18.1611941579861; 
- Fri, 29 Jan 2021 09:32:59 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h18sm13202294wru.65.2021.01.29.09.32.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 29 Jan 2021 09:32:59 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Subject: [PATCH 4/6] soundwire: qcom: start the clock during initialization
-Date: Fri, 29 Jan 2021 17:32:46 +0000
-Message-Id: <20210129173248.5941-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="XR7AIYlZ"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B601451800001>; Fri, 29 Jan 2021 10:18:40 -0800
+Received: from DRHQMAIL105.nvidia.com (10.27.9.14) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
+ 2021 18:18:39 +0000
+Received: from [10.25.100.162] (172.20.145.6) by DRHQMAIL105.nvidia.com
+ (10.27.9.14) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 29 Jan
+ 2021 18:18:35 +0000
+Subject: Re: [PATCH] ASoC: tegra: SND_SOC_TEGRA_AUDIO_GRAPH_CARD should depend
+ on SND_SOC_TEGRA
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>
+References: <20210129125915.2652952-1-geert+renesas@glider.be>
+From: Sameer Pujar <spujar@nvidia.com>
+Message-ID: <43fbd512-3689-21b7-8d74-3257cb65d520@nvidia.com>
+Date: Fri, 29 Jan 2021 23:48:31 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com
+In-Reply-To: <20210129125915.2652952-1-geert+renesas@glider.be>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL105.nvidia.com (10.27.9.14)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1611944320; bh=RII+q9JAnVamdrcIkQvXr9aEi7U2AFuj/1dXm5fvuvM=;
+ h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+ MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+ Content-Language:X-Originating-IP:X-ClientProxiedBy;
+ b=XR7AIYlZFAA1hCaVNfeSw44OuVwUPB/Y9TK4MAhluHrQleKST6w+85ceU1jQOuCHl
+ 05jztXaH29EbgHbNwDkH84frbHXrjCrZ5ZCd9SHbDCmoFMh0lJ1JKMTZoeYnA4vzab
+ bQwsR9Cf0OwE4wiiLREP+BbB3qLDDikwr5J4A9RxidUBpvx+ymr4AzcnyanuR77o9c
+ F4/KLo/0S8Ok6Rz9FBY/Kg/urCJ8cGg5wHQybwJEv7VA9rBlw4Lpfg0UKGMV0lyOux
+ NB0z7ecqU+HV/ity5EpnjObYwG5bS42bYxoLkv7F5ZW0G8KWf0KLiLuoYmQNtuvOtj
+ jRoSlEUvA0oOA==
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,34 +104,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Start the clock during initialization.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 3669bac11a32..83df15d83935 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -47,6 +47,8 @@
- #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
- #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
- #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
-+#define SWRM_MCP_BUS_CTRL					0x1044
-+#define SWRM_MCP_BUS_CLK_START					BIT(1)
- #define SWRM_MCP_CFG_ADDR					0x1048
- #define SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK		GENMASK(21, 17)
- #define SWRM_DEF_CMD_NO_PINGS					0x1f
-@@ -345,6 +347,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	u32p_replace_bits(&val, SWRM_DEF_CMD_NO_PINGS, SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK);
- 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
- 
-+	ctrl->reg_write(ctrl, SWRM_MCP_BUS_CTRL, SWRM_MCP_BUS_CLK_START);
- 	/* Configure number of retries of a read/write cmd */
- 	if (ctrl->version_major == 1 && ctrl->version_minor >= 5 &&
- 	    ctrl->version_step >= 1) {
--- 
-2.21.0
+On 1/29/2021 6:29 PM, Geert Uytterhoeven wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> Audio Graph Card based Tegra driver is only useful on NVIDIA Tegra SoCs.
+> Hence add a dependency on SND_SOC_TEGRA, to prevent asking the user
+> about this driver when configuring a kernel without Tegra sound support.
+>
+> Wrap all Tegra sound config options inside a big if/endif block, instead
+> of just adding the dependency to the single config option that does not
+> have it yet, to preventing similar future mistakes.
+>
+> Fixes: 202e2f7745437aa5 ("ASoC: tegra: Add audio graph based card driver")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>   sound/soc/tegra/Kconfig | 33 +++++++++++++--------------------
+>   1 file changed, 13 insertions(+), 20 deletions(-)
+>
 
+Acked-by: Sameer Pujar <spujar@nvidia.com>
