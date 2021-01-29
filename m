@@ -2,108 +2,95 @@ Return-Path: <SRS0=iLk1=HA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C89EEC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:30:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30CC6C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:33:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9CBE64E04
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:30:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9CBE64E04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id ED54D64E05
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:33:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED54D64E05
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 279DE829;
-	Fri, 29 Jan 2021 18:29:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 279DE829
+	by alsa0.perex.cz (Postfix) with ESMTPS id E636B1654;
+	Fri, 29 Jan 2021 18:33:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E636B1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611941439;
-	bh=o6W8a4N2PWdiL0MIBXXMjCaT18XZOAOsBps9lKs1LWo=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HOxrdyWPo9zgUew5Xf32j2tQYSN3IX7/wrCU4vVWZiLLCE0GMJLiqs4phvgFvKhdu
-	 jL3yzladQ7JNIPyNv8MiOWd9pCbBFcLzTOGnTB0YA+VZC/uHV5jSa65NX1kFaqSPKf
-	 HF6VoLDZovZZs5TkIYvwit7gh53LdNQyLIHXsNEQ=
+	s=default; t=1611941634;
+	bh=HhHHWvWMn31ZnD0zFrN+PhrzQGUCfMDcdsOIHQ/Yv9c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aKSSF5hXsahDydjIR+xCo1yWb+AWo5y0X1Uo/I0nqRw9pLElL+DCpfNU/KEswtC4d
+	 1BJEmUTSnR4vgN+NbYtM5mkssEsHOxOsmmrkHx0veCXTYQjYN1fXTZDNiJV63AC6MF
+	 5flqln6sb0H/5VcT2U5Vs+Bat2FlNFRJ3Xy57cW0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1FB76F80218;
-	Fri, 29 Jan 2021 18:29:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50E90F80218;
+	Fri, 29 Jan 2021 18:33:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E3C2F80130; Fri, 29 Jan 2021 18:28:57 +0100 (CET)
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
- [IPv6:2607:f8b0:4864:20::62f])
+ id D231FF8025F; Fri, 29 Jan 2021 18:33:01 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF928F800EB
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 18:28:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF928F800EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7063AF80130
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 18:32:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7063AF80130
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="E5Eq5LjE"
-Received: by mail-pl1-x62f.google.com with SMTP id h15so5583590pli.8
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 09:28:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=i4YXa9+oUVNsluWZqNeovQVGehxzdePq9D0BS8DMKkI=;
- b=E5Eq5LjEJ+KIvRT+gUvCHdCqXHtL+2IBSs2+2T3BN1qup9kTDA7YByXqA0IL8aQCA/
- x+qK5yuFPe/j7VNGh/QciE3y4YK9+JTq2zA/52IfvaA57pBXYpLG9pIlJOL+F582OtUt
- 20ueM+D5WkPieuuGVSmqiY4PacI3HgmgXys73AnadyATMeI+VHwG3X2GuMCLu0SS7jzZ
- CZTTKAPH2VNFMRlxapHzPj8c6nE4qPns+rxkJjZGRng1F2/FeP93J2MU7snAR1TgkMv9
- 7c1y15pcyyISmV2BiGhVPS9pOzjyT3SH9uvK9Rr9hMfI0X2gM8eIeIlIkzyBcMc+Ul3w
- pB/A==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="q31UQwg+"
+Received: by mail-wm1-x32e.google.com with SMTP id 190so7443268wmz.0
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 09:32:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=aez8PVObRInISJ18DKfgcQIQqvuy67+Y7a5HFxY8OU8=;
+ b=q31UQwg+6sm7u+A6JNafUr/fYxe0Gf76aDsTPUG312pq+ILyrsJ+6A1dmC8ce4giMo
+ Va5+A5WUZEA4AR1hRSGUkngBHBFzs+e4GkCi0VJKzSXKf7eK/ZT6kcS3AxrbsUY+DYcZ
+ WI2hJ3WV6FZ8iHk2jCgEoK1Z4o8b2w7gUcbAMTM9udjcsEi4WEueNEmfgwMHmqhkO0bn
+ XzaLnqfPKQtN5ED9PUAfFkPZIn1URMjNPn3iBuOW2YvmMnfrfnWWzwGgeskjItfgSguD
+ Sf0Ylue9pfE3sCBqlH6qtj0qybVg8X/cp66iFSuoIcAGEcARWLgrC8+Rl9wN1EvNg9RC
+ WrIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=i4YXa9+oUVNsluWZqNeovQVGehxzdePq9D0BS8DMKkI=;
- b=q+wh3i+0SYiJnFU5OahVb0N2oYmmTYGmGGVCk0rabxwvFxgvYVB+6AD44+lqq1BMFB
- WoqfuhKvjuHu2bFxSSLTFVdJTqJR5xC+v37taW5Dz9GNpX7H4xIiCDvG127VUhhw2yRc
- mY1pw8bXNHyAi4LRaWwAqrwM+IYyPBCXIraR1zqa7j3uALnlU6IY43RGFLx/TsovaYVJ
- V9AHBrTi6muO0HOLTIp5fxMWtRrHH9M/42zSr96+v28Ps0GOl6lCs94/HooGjLfuytXe
- ibkEaZFXsw+CRRIrJCNw7k6C9BtALi7r3xr5je3jBRIg6/Z41P/CwmJkC0GwqVqf8Si4
- sZhg==
-X-Gm-Message-State: AOAM530dBSw5q4Vc40DhZu8Qla10trJMZ0DtfX7fsmF2l3xg8+g2dbNJ
- g9fQlE+8nF1jcj+mUK7CQaE=
-X-Google-Smtp-Source: ABdhPJwpob9XLa+enm1Bvj+AMTD2zpUuszy1UGCflSG1OYghuF+vKjPh09cWTnrk+73gxOglOxlNWg==
-X-Received: by 2002:a17:90a:4bc7:: with SMTP id
- u7mr5447970pjl.51.1611941323248; 
- Fri, 29 Jan 2021 09:28:43 -0800 (PST)
-Received: from [10.25.100.162] ([202.164.25.5])
- by smtp.gmail.com with ESMTPSA id w186sm9110790pfc.182.2021.01.29.09.28.39
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 29 Jan 2021 09:28:42 -0800 (PST)
-Subject: Re: [PATCH 4/8] ASoC: tegra: Select SND_SOC_RT5659
-To: Mark Brown <broonie@kernel.org>
-References: <1611920470-24225-1-git-send-email-spujar@nvidia.com>
- <1611920470-24225-5-git-send-email-spujar@nvidia.com>
- <20210129124454.GB4560@sirena.org.uk>
- <d6cb9252-246e-d6c7-7500-5f1d1823325c@nvidia.com>
- <20210129154858.GE4560@sirena.org.uk>
- <a5a8df4b-21d1-0a12-df7d-9e94c353e2b5@gmail.com>
- <20210129171954.GF4560@sirena.org.uk>
-From: Sameer Pujar <dev.spujar@gmail.com>
-Message-ID: <2f7e3949-e6b9-6940-94a4-6c1cea3b8db0@gmail.com>
-Date: Fri, 29 Jan 2021 22:58:37 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=aez8PVObRInISJ18DKfgcQIQqvuy67+Y7a5HFxY8OU8=;
+ b=geHMSaPNwcOIyCzDk0AwfgptMhPnsp5MekZaBFDs/JG4YBBurQ+5aL/ad2iGYUXqjS
+ zLQA5sabG0fVLjdTjGfXn6OvgP8gwQ7mAq7l1967nLj+vDOa2xrF+Pag5XCisHIBHH7f
+ 4alYoMfhvrKS0DBKyTJGmf1grfyi5MeXfAjvrAsvMc0DBLxGDIaNaVCtEUbL+j3TP5Qd
+ aNUiwixiFiprb0pSAraOZk4GlSxxvA5OhZAdS4uLpPqowmMd2gurAAZmYdGMxk17MBvK
+ H++mgj9BJ3oMdCCsh6riay6no3aXAnq+gElh3VUSb8PU5rfYIYOyN8fBDGtsK/lbrb0G
+ BWQQ==
+X-Gm-Message-State: AOAM531HhF0Admyo1P102i59w1nxgMyz4pRDyN85JJAGrLrKnWxV7zvv
+ Q6KQhQl6FWvqdBZ6G6pvsa107Q==
+X-Google-Smtp-Source: ABdhPJwvt027/229+3L3Oa99agF/XUe7Ir5dIww1gH0PGuykMQJVIuF4H4uqchf2EyNEh76OgYUC/g==
+X-Received: by 2002:a1c:5456:: with SMTP id p22mr4835322wmi.81.1611941573612; 
+ Fri, 29 Jan 2021 09:32:53 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id h18sm13202294wru.65.2021.01.29.09.32.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 29 Jan 2021 09:32:52 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: vkoul@kernel.org
+Subject: [PATCH 0/6] soundwire: qcom: various improvements
+Date: Fri, 29 Jan 2021 17:32:42 +0000
+Message-Id: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20210129171954.GF4560@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
- lgirdwood@gmail.com, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
- robh+dt@kernel.org, thierry.reding@gmail.com, sharadg@nvidia.com
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,33 +106,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+During testing SoundWire controller on SM8250 MTP, we found
+few issues like all the interrupts are not handled,
+all transport parameters are not read from device tree.
 
+Other major issue was register read/writes which was interrupt based
+was an overhead and puts lot of limitation on context it can be used from.
 
-On 1/29/2021 10:49 PM, Mark Brown wrote:
-> On Fri, Jan 29, 2021 at 10:15:51PM +0530, Sameer Pujar wrote:
->> On 1/29/2021 9:18 PM, Mark Brown wrote:
->>> If the user wants a given CODEC driver then they should enable that
->>> driver.
->> Above card driver is intended to be used on multiple platforms. DT has
->> already a way for user to describe the CODEC connection required for
->> specific platform. So idea is enable these CODECs from driver point of view
->> for this card driver and platform DT can use what is required. Also the
->> CODEC driver will be a loadable module here.
-> No, you're missing the point of a generic driver here.  This will mean
-> that if someone wants to build the driver into the kernel for their
-> embedded board they will be forced to build in every CODEC driver
-> someone has decided might be used with this generic driver, and even if
-> they're building things modular someone trying to cut down the size of
-> their kernel images is going to at least have to spend time building
-> CODEC drivers they don't want to use.  Distributions should just select
-> all the CODEC drivers that are available in Kconfig, people configuring
-> for a particular target audience should be able to build only the
-> drivers they know they need.
+So this patchset add various improvements to the existing driver
+to address above issues.
 
-OK, will drop this in v2. Thank you for details.
+Tested it on SM8250 MTP with 2x WSA881x speakers, HeadPhones on
+WCD938x via lpass-rx-macro and Analog MICs via lpass-tx-macro.
+Also tested on DragonBoard DB845c with 2xWSA881x speakers.
 
->
->> If above does not seem fine, alternatively can I just enable CODEC config
->> independently from defconfig?
-> Yes.
+Srinivas Kandagatla (6):
+  soundwire: qcom: add support to missing transport params
+  soundwire: qcom: extract version field
+  soundwire: qcom: set continue execution flag for ignored commands
+  soundwire: qcom: start the clock during initialization
+  soundwire: qcom: update register read/write routine
+  soundwire: qcom: add support to new interrupts
+
+ drivers/soundwire/qcom.c | 471 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 366 insertions(+), 105 deletions(-)
+
+-- 
+2.21.0
 
