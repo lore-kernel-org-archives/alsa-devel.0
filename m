@@ -2,106 +2,83 @@ Return-Path: <SRS0=iLk1=HA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D0A1C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 16:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38ABCC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:21:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1F0E764E04
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 16:46:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F0E764E04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9E04E64E00
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jan 2021 17:21:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9E04E64E00
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 749EA16A5;
-	Fri, 29 Jan 2021 17:46:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 749EA16A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57693845;
+	Fri, 29 Jan 2021 18:20:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57693845
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1611938816;
-	bh=ib36RgZ13UIdMTX8E+PdCxq4XoseUNd7o/h3aO76288=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1611940897;
+	bh=M4l2ojUapuvN/VXGlbHUv4kuoAzQj+JnzANoaLnU+Qo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qa9H/V+BVY37glExqdfl/43/sbEI68aSwV/xx/o7ZhJEbyXAju/+HyPBAWRPAHpWJ
-	 Ax5fsXY2fhMODZwXRTkkMRbmZa+eytzlDS8MDFP1qRSsz761eZHTG4dft5pc/Z4bBg
-	 vd0AYaZt+uz9c3RiuFaDBbarjUBimg+ucN+iRePA=
+	b=ODZneSKnB6YRQHAl9csflP+dFxmJJEvzQmw7U1EgdHDyz3ZUYK8XBWnAVFwB9lqZs
+	 ezRJYDsurtX26HrXdcFCW61tSlW/NG405DibzvONyjyBpGBRKwkB4Z9cUFMx/Yt4I3
+	 PPt99uuoa7iCPw3JK1zfoD+HJu03Mlpg+MU1bATs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC223F80218;
-	Fri, 29 Jan 2021 17:46:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA8D1F80218;
+	Fri, 29 Jan 2021 18:20:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 656E9F80259; Fri, 29 Jan 2021 17:46:04 +0100 (CET)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
- [IPv6:2607:f8b0:4864:20::1035])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B67CDF80259; Fri, 29 Jan 2021 18:20:44 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C134F800E9
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 17:45:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C134F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B6D0F800EB
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 18:20:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6D0F800EB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="MXicy9RM"
-Received: by mail-pj1-x1035.google.com with SMTP id g15so6668550pjd.2
- for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2021 08:45:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-transfer-encoding:content-language;
- bh=ueX9Um5yYkNpG5ArDobqaS76e8j9PN3Jhag3IDVGSqo=;
- b=MXicy9RMRZXaAEs82DEwpCjoa87oxUSwaCjSgZSBNDy5p+ZAqEORXYjYos7z+2w5i3
- za67Yk84MaWfVjnbeR7oWVbiunMBvUPvV8JiXyeVa/1BY58uHh+onL3WANB8dKMPintZ
- w3HpzwiGdH+sPMCo1anYTvnNlPhETp2guHoMIH9LKMY03ZBpCD5bMePsUE6xu9IIglG3
- jPE5dC7sh5D6W+jnamDULEiNy1pLHfWwq3R/DtBwHHSUOoDeC4vbG5/8O3qhj7bHLfVM
- +D/bmPOyNAKUC9dFMqRAHfNu317gbcC31D5bCLo/V82wNtdyV9I+uubHTq+wT6J8i2nx
- tnxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-transfer-encoding
- :content-language;
- bh=ueX9Um5yYkNpG5ArDobqaS76e8j9PN3Jhag3IDVGSqo=;
- b=CIdTGj8ff9mhMDtLRWQGYrpq05ZIJzevtg9vFdyIjm4GaZWgPcd6foWFrerpTUPbQM
- zDcLhJPaJcM88gXOvSKQFBtncX1T3fyHfCH7h9pUgNLnDobHhbeiTY+FdkpJi1THixDZ
- VskmhCrEtpZ6AMzRInSAdhk1EiHbWqC1x44HrBBnYQcuAXIieIHg6DIHxvvMFlPPfLLY
- NeFtAr1lszlRmyApz2rSxKIR/Y0l2wb2fKq/dWOt1T5bw29pfpvFBvKscCBoM/h9pUei
- 2/cHD4qBDcQI7Ok+9eg72HPAyRDIgI9BBkCGgKq1V1mrvbsMyMBodLEnIpqqbOK3gZ7k
- H3Aw==
-X-Gm-Message-State: AOAM532F1+ER7qq6Q2FwEeztnLBP81VJa4cFrhK7TIkx4Ir3yaE9UOAS
- uaFooBBzwoqIPkRRavry8N0=
-X-Google-Smtp-Source: ABdhPJz2lT0niz+OSrRLRJ+zNW5FyO5kAwLT8XnILiwK0qAefHPYttQUoqZpl7fWqOndnn2x7+uewQ==
-X-Received: by 2002:a17:90a:b703:: with SMTP id
- l3mr5148638pjr.60.1611938757741; 
- Fri, 29 Jan 2021 08:45:57 -0800 (PST)
-Received: from [10.25.100.162] ([202.164.25.5])
- by smtp.gmail.com with ESMTPSA id y4sm8660611pji.34.2021.01.29.08.45.53
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 29 Jan 2021 08:45:56 -0800 (PST)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="FcYytULX"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61FD064D92;
+ Fri, 29 Jan 2021 17:20:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1611940838;
+ bh=M4l2ojUapuvN/VXGlbHUv4kuoAzQj+JnzANoaLnU+Qo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=FcYytULX0Hd0ewUGFrdV16DNvp6Tq93jny0mZuMRbamhA6c6wDZ6zV/5tdTHBqA72
+ T/zjIoI6OzoWTS3xHe7hAbDhzmN3prb13mWdgpeW4xaJcFCiFqc+TeetrrHRa6mOkw
+ OJvTC5FvilF6xdmqVqbGlQ1f7AnOANvyFt+2+g5mTpe6NAROjWEeLprM0cT//7Lqj7
+ 3PBlWQq/VygYKFVmNhxIn3pw0KOTupkMpw3+/2aE2rdACTsvmLvHcB8n4pu0fuPqco
+ ulzOOh3GNNf1NxsVBULhbRDzK6NmjEveIVb3Hnj1byIxjNQrrEYGq2o87Q0KvKHR/L
+ N9Z94KNDNwQRw==
+Date: Fri, 29 Jan 2021 17:19:54 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sameer Pujar <dev.spujar@gmail.com>
 Subject: Re: [PATCH 4/8] ASoC: tegra: Select SND_SOC_RT5659
-To: Mark Brown <broonie@kernel.org>, Sameer Pujar <spujar@nvidia.com>
+Message-ID: <20210129171954.GF4560@sirena.org.uk>
 References: <1611920470-24225-1-git-send-email-spujar@nvidia.com>
  <1611920470-24225-5-git-send-email-spujar@nvidia.com>
  <20210129124454.GB4560@sirena.org.uk>
  <d6cb9252-246e-d6c7-7500-5f1d1823325c@nvidia.com>
  <20210129154858.GE4560@sirena.org.uk>
-From: Sameer Pujar <dev.spujar@gmail.com>
-Message-ID: <a5a8df4b-21d1-0a12-df7d-9e94c353e2b5@gmail.com>
-Date: Fri, 29 Jan 2021 22:15:51 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ <a5a8df4b-21d1-0a12-df7d-9e94c353e2b5@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210129154858.GE4560@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Mjqg7Yu+0hL22rav"
+Content-Disposition: inline
+In-Reply-To: <a5a8df4b-21d1-0a12-df7d-9e94c353e2b5@gmail.com>
+X-Cookie: One organism, one vote.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, jonathanh@nvidia.com,
- linux-tegra@vger.kernel.org, robh+dt@kernel.org, thierry.reding@gmail.com,
- sharadg@nvidia.com
+ kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
+ lgirdwood@gmail.com, jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+ robh+dt@kernel.org, thierry.reding@gmail.com, sharadg@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,23 +95,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--Mjqg7Yu+0hL22rav
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 1/29/2021 9:18 PM, Mark Brown wrote:
-> On Fri, Jan 29, 2021 at 09:02:52PM +0530, Sameer Pujar wrote:
->> On 1/29/2021 6:14 PM, Mark Brown wrote:
->>> This is a generic device, not something specific to Jetson, why force
->>> on a driver that may not be required on other boards using this driver?
->> Yes specific boards using 'SND_SOC_TEGRA_AUDIO_GRAPH_CARD' may require
->> 'SND_SOC_RT5659'. But there is no platform specific config. Is there a
->> better way to enable config 'SND_SOC_RT5659' conditionally?
-> If the user wants a given CODEC driver then they should enable that
-> driver.
+On Fri, Jan 29, 2021 at 10:15:51PM +0530, Sameer Pujar wrote:
+> On 1/29/2021 9:18 PM, Mark Brown wrote:
 
-Above card driver is intended to be used on multiple platforms. DT has 
-already a way for user to describe the CODEC connection required for 
-specific platform. So idea is enable these CODECs from driver point of 
-view for this card driver and platform DT can use what is required. Also 
-the CODEC driver will be a loadable module here.
+> > If the user wants a given CODEC driver then they should enable that
+> > driver.
 
-If above does not seem fine, alternatively can I just enable CODEC 
-config independently from defconfig?
+> Above card driver is intended to be used on multiple platforms. DT has
+> already a way for user to describe the CODEC connection required for
+> specific platform. So idea is enable these CODECs from driver point of view
+> for this card driver and platform DT can use what is required. Also the
+> CODEC driver will be a loadable module here.
+
+No, you're missing the point of a generic driver here.  This will mean
+that if someone wants to build the driver into the kernel for their
+embedded board they will be forced to build in every CODEC driver
+someone has decided might be used with this generic driver, and even if
+they're building things modular someone trying to cut down the size of
+their kernel images is going to at least have to spend time building
+CODEC drivers they don't want to use.  Distributions should just select
+all the CODEC drivers that are available in Kconfig, people configuring
+for a particular target audience should be able to build only the
+drivers they know they need.
+
+> If above does not seem fine, alternatively can I just enable CODEC config
+> independently from defconfig?
+
+Yes.
+
+--Mjqg7Yu+0hL22rav
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAUQ7kACgkQJNaLcl1U
+h9DANQf+PROWHs2fTqzdCFXsDS7dAd4O8nrdk9LLUm8fg5eKGVlqY0qrPvovzQ3Y
+fVLwxRArhcUuSPC58FQZN6PSmjt+HC8skdhs+HEdU+KhPm96lyUw6GV7GjawhA/8
+98C6JA/W7Fqu33ol8+CO/6kWbSmPqGRc3logvkttnmQiODnLE2UkloK19wnmDs3X
+ROa9+u33KfgFu2SDO7WvQpMDTHeWPlz8nFGubaTRLFFpDL7fMGuB+5b01PKIkiiE
+cbJgQpA3cLr1stksinduG6A8ZOhM/pXzz4ChhPuzpdbOxD6CG1LirUtgrpqoASHf
+8++ozxE5aUjxzU7uGimtmQ+lul865w==
+=P2v6
+-----END PGP SIGNATURE-----
+
+--Mjqg7Yu+0hL22rav--
