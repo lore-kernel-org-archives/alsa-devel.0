@@ -4,96 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5093C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Jan 2021 15:41:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1D7DC433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Jan 2021 18:27:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5E19364E18
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Jan 2021 15:41:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5E19364E18
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 589D764E13
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Jan 2021 18:27:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 589D764E13
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30B1A1755;
-	Sat, 30 Jan 2021 16:40:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30B1A1755
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8D4D1763;
+	Sat, 30 Jan 2021 19:26:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8D4D1763
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612021293;
-	bh=Rn1JwvfIJ8+emT53N0pWz2SeYzr13rjKVdYE3RSQaM8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612031268;
+	bh=dLl+UrTHIMKKR+PiuMmdWh0bHf4JleUUNNTG4M1q6vU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZvimehwI94I1/ztUEQZ78ckjWrXGdX9OAcjLF4toaqeGDZ73tWmVtQGchQ17iVFHy
-	 xw5mBy19kaSNkIu98qlB4YuTwkdF2+xGnabFOu3r6QsKL+pAUW0LjsaUf0fRggLaKT
-	 8h2TX24KyR29CX3ow2LO0cAN2fq7+/ufhqqls85A=
+	b=b79qpvDPwJxWglCAhX6xrkBDFprgzSPDpAlQCQ/eH33/ufCvvIBZruldXNKTPBdAs
+	 QEkTOGgtwJJ9xeZMhZRLBF+vV2TiDB0Z4BvYSvNADyj++PuVeN5qgABFaQB3qkt6pN
+	 /Iw+qxnwGSNbP26yPV62PrGD/81FjKwZtns7fl9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1DCBF80143;
-	Sat, 30 Jan 2021 16:40:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32A14F800E9;
+	Sat, 30 Jan 2021 19:26:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30AB8F8015B; Sat, 30 Jan 2021 16:40:41 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A1FDFF80143; Sat, 30 Jan 2021 19:26:46 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9463AF80143
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2021 16:40:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9463AF80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61745F80143
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2021 19:26:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61745F80143
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ML+vAnMg"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 10UFcP5g019246; Sat, 30 Jan 2021 09:40:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=/lnEmValmQ7Y9KsRET+FL5rf0WEEAzclRUoqWcNcwAs=;
- b=ML+vAnMghRRPyPTuzLQn8Agh7DkJmjsaUfqbdNVt0u1LmQPS3Qss7cslGxEfUpwJAbuI
- AIbxrW8vOc3cTDSu8/RHtpDRTWXio9/eW27JVMEarVzF1d8ec09kAB6f3SAtNTejkwOh
- zX/EvpE0M70pqLAardP9ofehrINY/oWtztbupLGYUbtOyrNNXrO0JtvAYlnPriN2kk5W
- Vym5Occd993B/dYpZH3y3rHJw2L/ZS9LIHUB4QHRomtY2huBJ4oLAwLKLFbdEUjKNlGY
- J9+x5f2o3gFFf19m9topJifSC/2tamH3JfUM9zgRmN1GRcDIpKxrjQuHinNq7JFJGYNq FQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 36d4rtg6c4-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sat, 30 Jan 2021 09:40:37 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Sat, 30 Jan
- 2021 15:40:35 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Sat, 30 Jan 2021 15:40:35 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 95EEC11CC;
- Sat, 30 Jan 2021 15:40:35 +0000 (UTC)
-Date: Sat, 30 Jan 2021 15:40:35 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Hans de Goede <hdegoede@redhat.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="OD3m7H1N"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1612031197;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=bMLhJaveBRc7lRWdxOIflNe79Y1svj3iInUTQFcS9uE=;
+ b=OD3m7H1NBnvHcumRIjc9KD39/s+hJ8zeqCxQUaOp5Cow2BsqUuRgSGgsguxqQs7Roy7q4M
+ Gubrf4Z4beMw1NFcYBFK10WUducWrGHwRgwb+YwRGz27xXDxg08v512lCxcGIldvajkU1p
+ axmEFQUIKhQ7QqxgpjRPj6uiAqriNF8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-491-2c9NGJSNM3Kn-ITukK0qFw-1; Sat, 30 Jan 2021 13:26:35 -0500
+X-MC-Unique: 2c9NGJSNM3Kn-ITukK0qFw-1
+Received: by mail-ed1-f70.google.com with SMTP id j11so6231520edy.20
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2021 10:26:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=bMLhJaveBRc7lRWdxOIflNe79Y1svj3iInUTQFcS9uE=;
+ b=AC9tfyVWYQNYT/yaVMJAmk59YFnkfovqVFevrEeW68tCFU2+vWkh98BbsBtwd++xtl
+ 2xWau9YSpFV2CJdutBf1ZDhlEI3ulFo/rhg3RFC/2rYlQ3bJVPF+90cY3qHyBYvLp1Fs
+ xMQKZrfkUtpNlwGhVMnPeToGXUi28RvaY/uMCpOKI/RSGYMws9K/5RjIRhmnmLul2CcV
+ reX+fkN+kQXy5+spT/OiHOP+aLabjccqJQfWKsPCkbh3xt0HRtaRjOgcZLb1PKwDUnTu
+ TxKAJTZgm94OtMUSJ7Ib4jyGEc4O6ha17XNRz8GMHRpXOCv1wjKtZCHnUchlsTnUTLza
+ oEpA==
+X-Gm-Message-State: AOAM530OqOuQIZllhRw8+ePvzKlDy0XY0WMYbND/bPO/u8m1yLuiGyiI
+ ns1vgcAqKtp+1waAO9kf+nJ5/UDo8oOwGep1zAN/IaU/g+DQNMD6Db6JdIeaYb/ekHld+k2hF/F
+ ko8gwXpiu5xWl2E3XAHGInZ9s5vGRq9dyNnThcNQjJL02HzFFgkGKSert5/vteauJGafjFZ4x6f
+ U=
+X-Received: by 2002:a17:906:198b:: with SMTP id
+ g11mr10120207ejd.536.1612031194175; 
+ Sat, 30 Jan 2021 10:26:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyewTalC1oL45I+R9G5vtqxAb67qhsr7XziI+556v3UJy3kBbvg9uZD1OFoMYXNzL2Gs8xDYQ==
+X-Received: by 2002:a17:906:198b:: with SMTP id
+ g11mr10120189ejd.536.1612031193998; 
+ Sat, 30 Jan 2021 10:26:33 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+ by smtp.gmail.com with ESMTPSA id y1sm584061edq.26.2021.01.30.10.26.33
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 30 Jan 2021 10:26:33 -0800 (PST)
 Subject: Re: [PATCH v4 13/13] ASoC: Intel: bytcr_wm5102: Add jack detect
  support
-Message-ID: <20210130154035.GX106851@ediswmail.ad.cirrus.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
 References: <20210123121313.79530-1-hdegoede@redhat.com>
  <20210123121720.79863-1-hdegoede@redhat.com>
  <20210123121720.79863-4-hdegoede@redhat.com>
+ <20210130154035.GX106851@ediswmail.ad.cirrus.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9492d03c-2198-1298-b15c-944b2cdd7876@redhat.com>
+Date: Sat, 30 Jan 2021 19:26:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210123121720.79863-4-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- priorityscore=1501 mlxscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101300086
+In-Reply-To: <20210130154035.GX106851@ediswmail.ad.cirrus.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
  patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
@@ -115,37 +134,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Jan 23, 2021 at 01:17:20PM +0100, Hans de Goede wrote:
-> Add jack detect support by creating a jack and calling
-> snd_soc_component_set_jack to register the created jack
-> with the codec.
+Hi,
+
+On 1/30/21 4:40 PM, Charles Keepax wrote:
+> On Sat, Jan 23, 2021 at 01:17:20PM +0100, Hans de Goede wrote:
+>> Add jack detect support by creating a jack and calling
+>> snd_soc_component_set_jack to register the created jack
+>> with the codec.
+>>
+>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>> +static struct snd_soc_jack_pin byt_wm5102_pins[] = {
+>> +	{
+>> +		.pin	= "Headphone",
+>> +		.mask	= SND_JACK_HEADPHONE,
+>> +	},
+>> +	{
+>> +		.pin	= "Headset Mic",
+>> +		.mask	= SND_JACK_MICROPHONE,
+>> +	},
+>> +};
+>> +
 > 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> +static struct snd_soc_jack_pin byt_wm5102_pins[] = {
-> +	{
-> +		.pin	= "Headphone",
-> +		.mask	= SND_JACK_HEADPHONE,
-> +	},
-> +	{
-> +		.pin	= "Headset Mic",
-> +		.mask	= SND_JACK_MICROPHONE,
-> +	},
-> +};
-> +
+> This patch looks fine to me, but I did have one small question.
+> What is the thinking behind punting this to the machine driver?
+> 
+> I guess you can not register it if there is no jack present
+> on the board, or if you have multiple jacks name them
+> meaningfully. Although I sort of feel like those applied to
+> the old extcon approach that just internally registered all
+> the interfaces.
 
-This patch looks fine to me, but I did have one small question.
-What is the thinking behind punting this to the machine driver?
+To be honest I'm not 100% sure why this is done this way,
+this is how *all* ASoC drivers do it (AFAICT).
 
-I guess you can not register it if there is no jack present
-on the board, or if you have multiple jacks name them
-meaningfully. Although I sort of feel like those applied to
-the old extcon approach that just internally registered all
-the interfaces.
+I think it is done this way because of 2 reasons:
 
-But to be clear not asking for any changes just more about trying
-to refine my understanding of things.
+1. The pins controlled by the jack are what for lack of
+a better word I call "end-point" pins. And these get
+registered by the machine-driver, so to make sure that
+the names match it makes sense to also declare the
+snd_soc_jack_pin array in the machine-driver.
+For example the "Headphone" pin is a widget registered
+by the machine driver as:
 
-Thanks,
-Charles
+        SND_SOC_DAPM_HP("Headphone", NULL),
+
+2. Probe ordering, the jack gets attached to the card and
+when the coded driver's probe function runs the card does
+not exist yet. But I think that could be worked around by
+doing things in the component-probe function.
+
+Regards,
+
+Hans
+
