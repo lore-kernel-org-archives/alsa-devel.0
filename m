@@ -2,90 +2,94 @@ Return-Path: <SRS0=qoKp=HC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CE3DC433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 00:14:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25A6FC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 00:15:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 779B664E15
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 00:14:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 779B664E15
+	by mail.kernel.org (Postfix) with ESMTPS id EA57964E17
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 00:15:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA57964E17
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 030D6175A;
-	Sun, 31 Jan 2021 01:13:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 030D6175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDF071766;
+	Sun, 31 Jan 2021 01:14:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDF071766
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612052057;
-	bh=xJ0iGDQw1D2wj6UNx9gkJLrAByGWLZgknB3ivM4r6Cs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EejWLYwSkKqttDwctN6PlXkZC8WFqG+Q+zFuYPy42J3vNIyOapIKz2yHlgHHvRygd
-	 b+Xs1/urFy1KjM5CO3TGkDQGYv7KY6LBitQi2n/rgxDH/upEOeccn88qsMVdX1wvfS
-	 HHa1T+Ighm1j91n+a5GG5gSe9GZRpKgPY96AmtSg=
+	s=default; t=1612052107;
+	bh=FYBClFVODkmK5At+DBGbTm1eUTvqwZHVh/lb5Sd0sbA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Igm+CSq0SQBY2Bj57oZ+SRZkgfIdTQC9d6soc0671Kc3GvT7MCYO183F3sOXGczQm
+	 GhoyeneFJ7Ks9OpmfTlQeKJrzSKXBmT1TVjk9gUQAt1MDrXDcgSAlcxznJb/UYAVbG
+	 rsyQrtipWlTpjjEB08iWU/YGjFp72QJuOGVhGRvA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86275F80158;
-	Sun, 31 Jan 2021 01:13:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0554F801ED;
+	Sun, 31 Jan 2021 01:13:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE2C8F801ED; Sun, 31 Jan 2021 01:12:58 +0100 (CET)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
+ id F1806F801D8; Sun, 31 Jan 2021 01:12:59 +0100 (CET)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
+ [IPv6:2a00:1450:4864:20::233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 337D5F80143
- for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 01:12:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 337D5F80143
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0EFDF8015B
+ for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 01:12:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0EFDF8015B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="sYFfAQxs"
-Received: by mail-lf1-x130.google.com with SMTP id u25so17745473lfc.2
- for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2021 16:12:54 -0800 (PST)
+ header.b="N0Vw6MDT"
+Received: by mail-lj1-x233.google.com with SMTP id r14so15044210ljc.2
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2021 16:12:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=MQhP8eD8DaUVEdOJdM5E7OMw7FrTyZO6tdMoNlRzA5U=;
- b=sYFfAQxsoTC49Rlqs6y5EXQpiTeknGNAYT8hiHx7fEwpMsmQ6k2njNgAeBZp28Yn1t
- Do42/MyMbEdDiGiBMATiK8ZRrQaG27v516VvQALMmKm5nOCemDoQK2vrL2izpqLZ937b
- /sLF9F/MEt1CBj7ZozjW3WNCz7ome8xZ7/dPkwDcpweY+1AWs1kvrfw+iDx4+qyU+rqC
- hN56K+QlR9Hx6B+I2J6K/hzWjncF8kXTDz58hS+CHH3VZqLWj8cSY2H9h69zhKOp/56T
- MRjMIc4knkoIsaI87iGa9pOmnCio60D333FYtd2kSspPd/Fpp7w87/OEPWV1X2Vbjz+Q
- VdvA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=batmuya7co49qkeSt7rrFXuUKreU4NnJ2KEEv73JYWE=;
+ b=N0Vw6MDTg3MmEUEM+hsk5w+E42bPcuteYfxeiCXtQlJhfysYBf6F1bwNX6K2/ol9lr
+ B0dvXiBwRWcYze3Z8zbQLJWoiqu2tcI48i/Hprge8E/0JSEwXILtznma+VmymPNiqkM7
+ IXlLDS86Hkhup1wFZEchkUUFQQlHDfH9oadUWwQD/VhYSMrBGHZzx3/3UH1Vl6CcL7Qd
+ CIo9JoTeTwUJubikMXXp1EeDoBPogYAbJ7e99aeXUJjvsK3fR2NVQIZXXEdBiKmwcFDp
+ CHVz2APc8Y3Q5/w6ZOIOpsNNcqWXJe6SDNurmfiJEcoyhE2CzzTyAkDXsQkUFnMq8Zea
+ rZBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=MQhP8eD8DaUVEdOJdM5E7OMw7FrTyZO6tdMoNlRzA5U=;
- b=F98kab1S2e/baDI6nXVEbhW/WYGm2L84+xxgGjnfIApBIxkAq/Bl+DMS6qfNRaOaZ+
- XIDw3yOO2SnB/h8DK3/S0yCGJqVyfIHfueS50l2fWYgBR2qMLficCx0R/mGVzisTMxgB
- yFPxRtYjv3X/FJCez/7k3ADzth9t6GbrIfkDJ4jpoRLnKktwkbwDkyAyvOGq+rJCmAzg
- 0eoapPSozpyCHjmntCS76JcYci9ehIdcPkfXOph1QQDjFPkU3tp+hd1FU/eSLrZcH8QP
- mcKE04N4DH+NvL65PvEJMITRKj0haX00biOcxKPfjc4wKnNNo3Cz8tfpbLsRlvfaeJQV
- BOdQ==
-X-Gm-Message-State: AOAM533yXTgDqQaFFO/BKAws/Uf1XcSW9GqaHLMnJyLW2kS2ZMvha2bV
- G2I6vc4crVdOdemKq8yfHFc=
-X-Google-Smtp-Source: ABdhPJxDlcB+JAsLzS+r+RYiFQzSQTx48+aXya8sc/tHfZj4f3URdOOn9/cCbW0W//3Cuwj+0QRpsQ==
-X-Received: by 2002:ac2:5f41:: with SMTP id 1mr5563045lfz.65.1612051968840;
- Sat, 30 Jan 2021 16:12:48 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=batmuya7co49qkeSt7rrFXuUKreU4NnJ2KEEv73JYWE=;
+ b=XiSh6VhYVIZaqfJ6vx/sCkTW4xatrpKXStyMDu/V5PMjivGdUeEJvG3v5Pn/HfMIEE
+ 7PXc8OtMuY/6uRtfk5VmH4sqdbT8UB6j6bPFkkPUuglb3wKn23UJUwiRYMgD04R55QKf
+ 7k1lbTda04KqyxTUl7ERlwNni1ZXPCXmDY3ty5uCgTcsNdieHCYJJmCAmHzoirwZZZYP
+ LLLacjBDTk5yp6+tdFJHdnOBsznH/P0k/WjIGy0MSgt9b+MKVXkWCoEPK3ugH+W/O9g0
+ aqnng2PIOMb3ALdf+0S+/rfKeJI1hHpOV09a6XsxUFKFBD5eg+YVexxtGVpGZLxOc9Cp
+ PmUQ==
+X-Gm-Message-State: AOAM530Wo4JQqEzAO60bQGutpTmjSHM0vvoa1rka7obFbgK6JEG7gzU2
+ KPthl9K4Gkq3OpsRDaVPtrw=
+X-Google-Smtp-Source: ABdhPJzqdfGT0I5FjeX+bddT2YdZRIrkK9noae0FfxIJ5yXOyUWdWRzU5toIGWdCbQFzZHTJ6XJRSg==
+X-Received: by 2002:a2e:86d0:: with SMTP id n16mr6250660ljj.51.1612051970975; 
+ Sat, 30 Jan 2021 16:12:50 -0800 (PST)
 Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se.
  [158.174.22.164])
- by smtp.gmail.com with ESMTPSA id t2sm2503716lfl.141.2021.01.30.16.12.47
+ by smtp.gmail.com with ESMTPSA id t2sm2503716lfl.141.2021.01.30.16.12.49
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 30 Jan 2021 16:12:48 -0800 (PST)
+ Sat, 30 Jan 2021 16:12:50 -0800 (PST)
 From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 0/2] ALSA: Constify static attribute_group structs
-Date: Sun, 31 Jan 2021 01:12:39 +0100
-Message-Id: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
+Subject: [PATCH 2/2] ALSA: hda: Constify static attribute_group
+Date: Sun, 31 Jan 2021 01:12:41 +0100
+Message-Id: <20210131001241.2278-3-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
+References: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
@@ -105,17 +109,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Constify two static attribute_group structs that are never modified.
-These two were the only static non-const ones in sound/.
+The only usage of hdac_dev_attr_group is to put its address in an array
+of pointers to const attribute_group structs. Make it const to allow the
+compiler to put it in read-only memory.
 
-Rikard Falkeborn (2):
-  ALSA: ac97: Constify static struct attribute_group
-  ALSA: hda: Constify static attribute_group
-
- sound/ac97/bus.c       | 2 +-
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
  sound/hda/hdac_sysfs.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
+index e56e83325903..0d7771fca9f0 100644
+--- a/sound/hda/hdac_sysfs.c
++++ b/sound/hda/hdac_sysfs.c
+@@ -66,7 +66,7 @@ static struct attribute *hdac_dev_attrs[] = {
+ 	NULL
+ };
+ 
+-static struct attribute_group hdac_dev_attr_group = {
++static const struct attribute_group hdac_dev_attr_group = {
+ 	.attrs	= hdac_dev_attrs,
+ };
+ 
 -- 
 2.30.0
 
