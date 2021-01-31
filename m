@@ -7,54 +7,54 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCB24C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 08:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A9DDC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 08:52:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8A5A64E09
-	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 08:51:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8A5A64E09
+	by mail.kernel.org (Postfix) with ESMTPS id D70E464E09
+	for <alsa-devel@archiver.kernel.org>; Sun, 31 Jan 2021 08:52:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D70E464E09
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69CCB1738;
-	Sun, 31 Jan 2021 09:50:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69CCB1738
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55459176A;
+	Sun, 31 Jan 2021 09:51:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55459176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612083102;
-	bh=/U0vGGgdjgdQQT7e5X2OQgK9iPy7viSKokdYeKZm21U=;
+	s=default; t=1612083153;
+	bh=gEnyH7tghKf2QPrAkBg1QODr8ctMN17Qjsj5lJ2RHYM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O4AzgTg36BftYhCNEOz81nCQsxNSBnZMU4lIbaBCjqfMvPW6MiNF0Rkt58UkAI398
-	 TYd3D7ZgZEhzuxMKsftPOTpJjzZbaQPk9zjMERNceEwg0HYtJfbRx0Oh78/rqiuxWu
-	 ghdg5CYMQa6fDcU3X1us8YZTQhHSNLqNoGWmGB5c=
+	b=hIn9M/fi2tZ0TD40+aFPsY/i5n0K9hQ3yUdnGhHuqufKOA7MbYYXvGvL9Hbb3coXB
+	 sgvf0BJvFyvPbgqR5hVLPE8eJbvTeHYfY/VhNptEC7mE5JrcklrS/H02CnlmZ2AauG
+	 sjKT0QvVh/5DZf5EV+dr2iI9AX7RgWdZEh80fXvM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0D97F8016E;
-	Sun, 31 Jan 2021 09:50:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A87BDF80171;
+	Sun, 31 Jan 2021 09:50:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C52EF80171; Sun, 31 Jan 2021 09:50:49 +0100 (CET)
+ id 3477AF8016E; Sun, 31 Jan 2021 09:50:51 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB43CF800E9
- for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 09:50:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB43CF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7CFFF8015A
+ for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 09:50:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7CFFF8015A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3129FAC97;
- Sun, 31 Jan 2021 08:50:38 +0000 (UTC)
-Date: Sun, 31 Jan 2021 09:50:38 +0100
-Message-ID: <s5hlfc9jxr5.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 64849ACB0;
+ Sun, 31 Jan 2021 08:50:48 +0000 (UTC)
+Date: Sun, 31 Jan 2021 09:50:48 +0100
+Message-ID: <s5hk0rtjxqv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: ac97: Constify static struct attribute_group
-In-Reply-To: <20210131001241.2278-2-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: hda: Constify static attribute_group
+In-Reply-To: <20210131001241.2278-3-rikard.falkeborn@gmail.com>
 References: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
- <20210131001241.2278-2-rikard.falkeborn@gmail.com>
+ <20210131001241.2278-3-rikard.falkeborn@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,12 +77,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 31 Jan 2021 01:12:40 +0100,
+On Sun, 31 Jan 2021 01:12:41 +0100,
 Rikard Falkeborn wrote:
 > 
-> The only usage of ac97_adapter_attr_group is to put its address in an
-> array of pointers to const attribute_group structs. Make it const to
-> allow the compiler to put it in read-only memory.
+> The only usage of hdac_dev_attr_group is to put its address in an array
+> of pointers to const attribute_group structs. Make it const to allow the
+> compiler to put it in read-only memory.
 > 
 > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
