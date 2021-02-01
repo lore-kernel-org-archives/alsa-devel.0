@@ -2,95 +2,77 @@ Return-Path: <SRS0=YhdC=HD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AFA9C433E9
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:15:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD7D4C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:47:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4178C64DA5
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:15:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4178C64DA5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 670B364EA9
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:47:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 670B364EA9
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75DBF825;
-	Mon,  1 Feb 2021 17:14:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75DBF825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EB7C1723;
+	Mon,  1 Feb 2021 17:46:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EB7C1723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612196133;
-	bh=BrQayajtL3u72xR2CaytuwIPhm8So/3+Chmm23mxLHw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mvyEU4gVL3wgT3C1RPP9786cYLCPoOflyLx9BAEh9IYZGTrWi68RbQozVUYjNVEBE
-	 LKDRDAEGCkVNlXRvuBMw0YeM7FZYB9y+VsV4lucUcXYWD2b9N2Bw8BinhtrL8w5Wvy
-	 dacRJTF+MSX8eKajUu9yICpAQGVqbWyT+QTSIr08=
+	s=default; t=1612198050;
+	bh=8FymX8TzgPanqDpwQ4nGQ8xwWxsgizKGDMfRwHbAds8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=P+6rpsdZFPSNnvR4r1dPPAnZgBlEvXHTN1InR2RfwG2hagBhuICOGOisRatZePuHL
+	 1RQeKOBQ81ciS+4u21gPnbzCrKV/oTgld/94T4UGWQadMTUit9TDcv7I2mKUE85BJf
+	 nTQrOV/+I//ChKA7qLheP9Vx6LKKAPuP1cZegSdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02E2FF80152;
-	Mon,  1 Feb 2021 17:14:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E79FF80153;
+	Mon,  1 Feb 2021 17:46:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1159F80153; Mon,  1 Feb 2021 17:14:41 +0100 (CET)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7FE1FF800E2; Mon,  1 Feb 2021 17:46:37 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C19AF80151
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 17:14:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C19AF80151
+ by alsa1.perex.cz (Postfix) with ESMTPS id 736E9F800E9
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 17:46:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 736E9F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="x7vVGDj9"
-Received: by mail-wr1-x435.google.com with SMTP id a1so17216455wrq.6
- for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2021 08:14:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=9Sc8HrNbNzr7EkYfVerEBW1a3Yr6pb0g+SBRh2dP5aU=;
- b=x7vVGDj9TzIFhACvAUd9rk5AXnb/M228ghcnXZmSzBJKDz2374Uc1YSYsxdfgD36KP
- HHEIswk3DhRZmcwxRnFbexKg5of/3SVR0o/B08AH8hJZBLDWhlvg6/TMrRDFXwEQZLxH
- vniI5qIRDhsPeCAmf5pYiBNtm1Fqs12nKJuzXur/Vt6PjQujIvXJku41G1JnagpjjVGv
- FdBwFk+i0OPJrT8bTLDlvDfPq54aZj0bTc1sYjpzc6vdxt0usLVYCo4GJVbgZ13qLfyU
- wahBfFCF2I2MqVHtM8Sxcko+3oqmgjwfFWkfR84PQf8a5QP0wqzjIAbmydStExc9JTLC
- W07A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=9Sc8HrNbNzr7EkYfVerEBW1a3Yr6pb0g+SBRh2dP5aU=;
- b=mFIiX+IoTy7BMloS9D3p5j5yeyjy5g6l+BmFHXs76fS7E5ZT/jkC2+ouBTWRwZIF3/
- kQhdMU+kavs4xiEcfk+uD+NDusDDREUS80XIgLYLP/Or/O1es8Aj1NKIKDrF4n6et65E
- HY2EWld+ID5yObT/H0qxh4NGt2w3NtduhxSKAdz6SkwtsSnfyxu7noYmwiBGwPW8SzM0
- SOQIWpB4pwGQyv1Uznf1W5bdFjgpBa5d5+wJyw8rOTjKjVNUZ1xZVOrqnF42MyXq8d/n
- 9oPPMmPeTQ0f0/73lun5KEiDETSbPk4iz8ejq73kctDLbgyZLeCZA1+krGOpO12+C8F4
- 8pWA==
-X-Gm-Message-State: AOAM5313vh7VI2BQZLcioykAhIzybD0ZH5Y0+ja4etHg5MqWr0zHVrKi
- hD8xAyQ7S8ASFbrL2BiBUXl/cA==
-X-Google-Smtp-Source: ABdhPJw2qAboWdH9n62YQqAACUMGCNBbJj9wAfkZ0ZfVXEnfnDod78K0LfB+QPJ6f6FNxXDRVrX7yw==
-X-Received: by 2002:a05:6000:1249:: with SMTP id
- j9mr19487793wrx.307.1612196074682; 
- Mon, 01 Feb 2021 08:14:34 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id k131sm22226533wmb.37.2021.02.01.08.14.33
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Feb 2021 08:14:33 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH] ASoC: codecs: add missing max_register in regmap config
-Date: Mon,  1 Feb 2021 16:14:29 +0000
-Message-Id: <20210201161429.28060-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="jOIZG+ud"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BB3E60234;
+ Mon,  1 Feb 2021 16:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1612197987;
+ bh=8FymX8TzgPanqDpwQ4nGQ8xwWxsgizKGDMfRwHbAds8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=jOIZG+ud19ueb/yic+HQ3uKPwGHk8hA8UupCnQKRJOZGBvfK6GabCZPDfqI1R8SD4
+ F+4WbKMMVSJG8HJINLnTlsxUAqPkdzpeWQFluiwnvwEN/c56Tw6JMDFJjISQV0AVJW
+ /s+kmPogixFNy9UQXTwXwpmNrIEDO8zMsEGjjRCCppTfCx+YUEcJ9iMspSnedB5nmm
+ T0hThMIqSZOspra2rT6/eThGjni/HEO7cweKXcegAmhJSpuhDY5hP5Ft17OOjZ08iK
+ 4weaVdljUTUGtahwrl3hQ9i26qd1jn+7aLfq5GPlQo5/g/9ALJJfLmzzNM6hbVmxUY
+ Vv4V1TRUUDTCg==
+From: Mark Brown <broonie@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20210201093128.1226603-1-kai.vehmanen@linux.intel.com>
+References: <20210201093128.1226603-1-kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: topology: Prevent NULL pointer dereference
+ with no TLV
+Message-Id: <161219793995.46194.16146700113091709353.b4-ty@kernel.org>
+Date: Mon, 01 Feb 2021 16:45:39 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ daniel.baluta@nxp.com, pierre-louis.bossart@linux.intel.com,
+ lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+ Paul Olaru <paul.olaru@oss.nxp.com>, yung-chuan.liao@linux.intel.com,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,45 +88,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For some reason setting max_register was missed from regmap_config.
-Without this cat /sys/kernel/debug/regmap/sdw:0:217:2010:0:1/range
-actually throws below Warning.
+On Mon, 1 Feb 2021 11:31:28 +0200, Kai Vehmanen wrote:
+> When there is no TLV data in topology, extracting the TLV data
+> could result in a NULL pointer exception. Prevent this by making
+> sure that the TLV data exists before extracting it.
 
-WARNING: CPU: 7 PID: 540 at drivers/base/regmap/regmap-debugfs.c:160
- regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
-...
-Call trace:
- regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
- regmap_reg_ranges_read_file+0xc0/0x2e0
- full_proxy_read+0x64/0x98
- vfs_read+0xa8/0x1e0
- ksys_read+0x6c/0x100
- __arm64_sys_read+0x1c/0x28
- el0_svc_common.constprop.3+0x6c/0x190
- do_el0_svc+0x24/0x90
- el0_svc+0x14/0x20
- el0_sync_handler+0x90/0xb8
- el0_sync+0x158/0x180
-...
+Applied to
 
-Fixes: a0aab9e1404a ("ASoC: codecs: add wsa881x amplifier support")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/codecs/wsa881x.c | 1 +
- 1 file changed, 1 insertion(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index 4530b74f5921..db87e07b11c9 100644
---- a/sound/soc/codecs/wsa881x.c
-+++ b/sound/soc/codecs/wsa881x.c
-@@ -640,6 +640,7 @@ static struct regmap_config wsa881x_regmap_config = {
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_RBTREE,
- 	.reg_defaults = wsa881x_defaults,
-+	.max_register = WSA881X_SPKR_STATUS3,
- 	.num_reg_defaults = ARRAY_SIZE(wsa881x_defaults),
- 	.volatile_reg = wsa881x_volatile_register,
- 	.readable_reg = wsa881x_readable_register,
--- 
-2.21.0
+Thanks!
 
+[1/1] ASoC: SOF: topology: Prevent NULL pointer dereference with no TLV
+      commit: 941d3f0d7e9ffcbee1efeb6f07fa5fc5ef8347ff
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
