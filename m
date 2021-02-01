@@ -2,71 +2,74 @@ Return-Path: <SRS0=YhdC=HD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59007C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 10:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FB29C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 10:43:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8DA6C64E94
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 10:42:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8DA6C64E94
+	by mail.kernel.org (Postfix) with ESMTPS id EC6BD64DD8
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 10:43:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC6BD64DD8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFDBE1768;
-	Mon,  1 Feb 2021 11:41:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFDBE1768
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B709171D;
+	Mon,  1 Feb 2021 11:42:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B709171D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612176167;
-	bh=TVANGH7ZETuH0LoK/AHXwSPPc/+hi8n0Z9uIpWL3w74=;
+	s=default; t=1612176214;
+	bh=jMGFVom3o9SisYFVYliXyOSgOs0PraIR76dQsjdWD4U=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JdCJnxhNhqbjQyD/QGPpnzEfuZNAxxuu1+cHmeyvHahhF2jeNY0ZAMq9uBmRM9qZ1
-	 zMscENhPU8DfoH7XrkCSwNALt6vlgmGGvXxB9jcipcYiPaJm4GoKLE+p5BAxUrnmUr
-	 fHmY9OFlF+8zTJi55BbXtgAxbqSNRnsCBEPcmGPI=
+	b=JVStGpfXUU2ZKJbbafv5T4hV7930yRt6sHo7oS1dsSFQLlVqn5fNfXNjKXtI64koL
+	 gXTUFfN4KUbZZNLjVIfDOKFgcB8tk/Kj9KqYX+CoeAqpgZ0mBBXjqwt7NFI7oFWdaw
+	 dQCDZuiUg9uuP1yrNB7ALxKKcC4kvANw9TVVhx0E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31A5BF80151;
-	Mon,  1 Feb 2021 11:41:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC909F80152;
+	Mon,  1 Feb 2021 11:42:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B835EF80156; Mon,  1 Feb 2021 11:41:13 +0100 (CET)
+ id 0FD68F80155; Mon,  1 Feb 2021 11:42:42 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82B2DF80151
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 11:41:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82B2DF80151
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAD0CF80152
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 11:42:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAD0CF80152
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="J3EiX6nD"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0468E64E9D;
- Mon,  1 Feb 2021 10:41:08 +0000 (UTC)
+ header.b="cVTJQwwh"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0905864DD8;
+ Mon,  1 Feb 2021 10:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612176070;
- bh=TVANGH7ZETuH0LoK/AHXwSPPc/+hi8n0Z9uIpWL3w74=;
+ s=k20201202; t=1612176154;
+ bh=jMGFVom3o9SisYFVYliXyOSgOs0PraIR76dQsjdWD4U=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=J3EiX6nD+2WLy/6GybVaI4EEP2tYQg/LS0DNglkkgN750mbUtPx90ocGsYqB+lMZr
- +t8GYcMHa+0QVVDkW/4hiB81+5nhh4xFDnyZw8ErFDDLlR0ygauzj+JoUicT9c4sdn
- JKzDnJbRWq20UY/gWoL1maVy8/uoHxifhC5DFey/uX+YrX+5VjqvK+0ftgyXhdAG5a
- zDAhUNDeCLQW/oKNf4qpzYK2NPtOWSIOa/LpQwjx4/ff7jpYzZ9+wGtGJ/h/SaKYsD
- XA3pK1yZv6gn1LJCefMRttTgQMGKJXTiScRc8V0i+kaaT2NTvOa1sO0dWIjyYgiM7A
- 2e5UNWcEv+XmA==
-Date: Mon, 1 Feb 2021 16:11:05 +0530
+ b=cVTJQwwhar+cPS71ncFP3tPnD5B+l6r0zNy4ecVf1qbRwkvrlWytYsEC+Tl3M7/w8
+ 1zMJQKIKzzQE+W2sRnAx5w6ebr7s52li9qWsfnM/9AtTFkBo/2yTgSroAoaU2gYGQ/
+ KTIe33lSR+X/LXJ7RgAPTFDhFUrbhTEi8PJt3bUBcSzzkOZMBGVZc0a+tzui427Dxi
+ D369kDe0/92oXxy4qOP0HPDOBoHbSJplkh79Uk9RZCC5kv4DiknSElKud6SQeqCdh/
+ c2q+t58lGdAnG/c1L0KFVX+CZ77drW9MgN85KVEdFSbLV9xv/+62An7HHCGWDTxXTi
+ nHHBaHncbeTLg==
+Date: Mon, 1 Feb 2021 16:12:29 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire: return earlier if no slave is attached
-Message-ID: <20210201104105.GX2771@vkoul-mobl>
-References: <20210126085439.4349-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 2/3] soundwire: intel: add
+ SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH quirk
+Message-ID: <20210201104229.GY2771@vkoul-mobl>
+References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
+ <20210126083746.3238-3-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126085439.4349-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20210126083746.3238-3-yung-chuan.liao@linux.intel.com>
 Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
  gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
  ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
@@ -87,15 +90,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 26-01-21, 16:54, Bard Liao wrote:
-> From: Chao Song <chao.song@linux.intel.com>
+On 26-01-21, 16:37, Bard Liao wrote:
+> There is nothing we can do to handle the bus clash interrupt before
+> interrupt mask is enabled.
 > 
-> If there is no slave attached to soundwire bus, we
-> can return earlier from sdw_bus_prep_clk_stop() and
-> sdw_bus_exit_clk_stop(), this saves a redundant value
-> check.
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/intel.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index a2d5cdaa9998..f7ba1a77a1df 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -1286,6 +1286,8 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+>  	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
+>  		prop->hw_disabled = true;
+>  
+> +	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH;
 
-Applied, thanks
+Should this not be last 'enabling' the quirk patch in series :)
 
 -- 
 ~Vinod
