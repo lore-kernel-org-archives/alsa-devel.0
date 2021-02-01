@@ -6,53 +6,53 @@ X-Spam-Status: No, score=-2.3 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
 	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
 	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC810C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 13:23:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BFA1C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 13:24:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5FD5D64E7A
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 13:23:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5FD5D64E7A
+	by mail.kernel.org (Postfix) with ESMTPS id CC5F564DFA
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 13:24:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CC5F564DFA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C64B174F;
-	Mon,  1 Feb 2021 14:22:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C64B174F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12C28176F;
+	Mon,  1 Feb 2021 14:23:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12C28176F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612185794;
-	bh=mfbZjjzIAFWNGMr9Zj8ai+w12yiniSPUYxdjXUKHiEw=;
+	s=default; t=1612185854;
+	bh=aHAirYDxmZXKVLyJRdwckR5LNVirgvRWwtX2frtWzL0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HPC1ot8J+BleugTDWl8vsILf5bqi95lvXgQLq/AHLbNjdIgKy9y54Ib8cGFrM/y/K
-	 P0p24DDckHmzF/FE5cz9SJy4A4VNYV+HIF0fHjKKCqOVs1HENqd3TNQJl2x7rioO5S
-	 s9uZ0H/DrcECqWpGQLR/LyYtaYpGugSgiJRWaHVU=
+	b=QcuZ6SlngiIHpeOk2LfEmsh9U3RYcH10KLpiMVuRjHQooayrrHrNNSskRYNzuxSwt
+	 wdikkjjAuIPZfYCG9mvGy1DjNDybGN9AwYWMY5mv7joocs9topj4GgvPSiPSr4Dpic
+	 AkhIKoCQtQ1Thv6e9MkxhQIhMqSas5gSEVaANxWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E72AFF800E2;
-	Mon,  1 Feb 2021 14:22:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DBA6F80155;
+	Mon,  1 Feb 2021 14:23:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3BE7F80153; Mon,  1 Feb 2021 14:22:21 +0100 (CET)
+ id EF5C2F80156; Mon,  1 Feb 2021 14:23:21 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB0C2F800E2
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 14:22:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB0C2F800E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E63F8F80151
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 14:23:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E63F8F80151
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 046A0AB92;
- Mon,  1 Feb 2021 13:22:11 +0000 (UTC)
-Date: Mon, 01 Feb 2021 14:22:10 +0100
-Message-ID: <s5hlfc7j531.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 93A1BAB92;
+ Mon,  1 Feb 2021 13:23:16 +0000 (UTC)
+Date: Mon, 01 Feb 2021 14:23:16 +0100
+Message-ID: <s5hk0rrj517.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [bug report] ALSA: rawmidi: Avoid racy info ioctl via ctl device
-In-Reply-To: <YBf6NOKafgp8XfDZ@mwanda>
-References: <YBf6NOKafgp8XfDZ@mwanda>
+Subject: Re: [bug report] ALSA: seq: Use no intrruptible mutex_lock
+In-Reply-To: <YBf+arIyZvfQkDbP@mwanda>
+References: <YBf+arIyZvfQkDbP@mwanda>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -74,22 +74,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 01 Feb 2021 13:55:16 +0100,
+On Mon, 01 Feb 2021 14:13:14 +0100,
 Dan Carpenter wrote:
 > 
 > Hello Takashi Iwai,
 > 
-> The patch c1cfd9025cc3: "ALSA: rawmidi: Avoid racy info ioctl via ctl
-> device" from Dec 14, 2017, leads to the following static checker
-> warning:
+> The patch 04702e8d0092: "ALSA: seq: Use no intrruptible mutex_lock"
+> from Aug 1, 2018, leads to the following static checker warning:
 > 
-> 	sound/core/rawmidi.c:651 snd_rawmidi_info_select()
+> 	sound/core/seq/seq_clientmgr.c:2194 snd_seq_create_kernel_client()
 > 	warn: called with lock held.  '&register_mutex'
 > 
 > sound/core/seq/seq_midi.c
+>    294          if (ports > (256 / SNDRV_RAWMIDI_DEVICES))
+>    295                  ports = 256 / SNDRV_RAWMIDI_DEVICES;
+>    296  
 >    297          mutex_lock(&register_mutex);
 >                            ^^^^^^^^^^^^^^^
-> Holding this lock.
+> Holding lock
 > 
 >    298          client = synths[card->number];
 >    299          if (client == NULL) {
@@ -102,6 +104,9 @@ Dan Carpenter wrote:
 >    306                  }
 >    307                  client->seq_client =
 >    308                          snd_seq_create_kernel_client(
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Deadlock
+> 
 >    309                                  card, 0, "%s", card->shortname[0] ?
 >    310                                  (const char *)card->shortname : "External MIDI");
 >    311                  if (client->seq_client < 0) {
@@ -111,59 +116,11 @@ Dan Carpenter wrote:
 >    315                          return -ENOMEM;
 >    316                  }
 >    317          }
->    318  
->    319          msynth = kcalloc(ports, sizeof(struct seq_midisynth), GFP_KERNEL);
->    320          port = kmalloc(sizeof(*port), GFP_KERNEL);
->    321          if (msynth == NULL || port == NULL)
->    322                  goto __nomem;
->    323  
->    324          for (p = 0; p < ports; p++) {
->    325                  ms = &msynth[p];
->    326  
->    327                  if (snd_seq_midisynth_new(ms, card, device, p) < 0)
->    328                          goto __nomem;
->    329  
->    330                  /* declare port */
->    331                  memset(port, 0, sizeof(*port));
->    332                  port->addr.client = client->seq_client;
->    333                  port->addr.port = device * (256 / SNDRV_RAWMIDI_DEVICES) + p;
->    334                  port->flags = SNDRV_SEQ_PORT_FLG_GIVEN_PORT;
->    335                  memset(info, 0, sizeof(*info));
->    336                  info->device = device;
->    337                  if (p < output_count)
->    338                          info->stream = SNDRV_RAWMIDI_STREAM_OUTPUT;
->    339                  else
->    340                          info->stream = SNDRV_RAWMIDI_STREAM_INPUT;
->    341                  info->subdevice = p;
->    342                  if (snd_rawmidi_info_select(card, info) >= 0)
->                             ^^^^^^^^^^^^^^^^^^^^^^^
-> We can't call this function when we're holding the lock or it leads to
-> a deadlock.
 
-Those two register_mutex are different ones; i.e. both are local static
-variables, hence its scope is only for rawmidi.c and seq_client.c,
-hence they can't conflict with each other.
-
-Or am I missing something else?
+Again, both register_mutex are different instances, where both are
+local static variables, hence they can't conflict with each other.
 
 
 thanks,
 
 Takashi
-
-
-> Before the patch, we used to rely on the callers to take
-> the lock before calling snd_rawmidi_info_select() but the patch moved
-> the lock inside the function.
-> 
->    343                          strcpy(port->name, info->subname);
->    344                  if (! port->name[0]) {
->    345                          if (info->name[0]) {
->    346                                  if (ports > 1)
->    347                                          snprintf(port->name, sizeof(port->name), "%s-%u", info->name, p);
->    348                                  else
->    349                                          snprintf(port->name, sizeof(port->name), "%s", info->name);
-> 
-> regards,
-> dan carpenter
-> 
