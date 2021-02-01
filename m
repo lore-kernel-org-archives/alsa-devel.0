@@ -6,73 +6,71 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB38FC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:48:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3916CC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:49:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0052464EAB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:48:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0052464EAB
+	by mail.kernel.org (Postfix) with ESMTPS id 2B93564DE3
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:49:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B93564DE3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 389611770;
-	Mon,  1 Feb 2021 17:47:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 389611770
+	by alsa0.perex.cz (Postfix) with ESMTPS id 587A21773;
+	Mon,  1 Feb 2021 17:48:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 587A21773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612198105;
-	bh=BYN4P1D4rCCkAfn2duFYF1Tx4dpo/sxwz9GZpqd6Qlw=;
+	s=default; t=1612198144;
+	bh=j9hC3Db3nfPN7oz+V2moYoDKkQqj5CZszG4PUDCe7yo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MGtRvba85vYXw0jUem2SIjpuTaEUaB8/nY7Zb7+qGTIIxHgMnMybH4Ysh4YjTf64/
-	 wAHlGHqmeYgfSRE0sH5FGNDN5eYRzYoT1qoUbI8HzzJ84ceI70ivbuA7QLw7iNHwae
-	 OvKHDi28szS4cF6uCMDsE2UJRd16ZbcDs+JG6WFM=
+	b=XCWk2mE+zweAw4WYs0M22oICM/U2ak2L0L+hS6D8Ny9EDRti18k9PNmP4csmZ+lJi
+	 Mp/i6w7TpV/agzFCtwc+zpvmugfuEY07e2OZjPE5Et4d/IGTiE2Wvx43bAA9uPEhII
+	 LGkkIPIvXBbWoY5L6uXGgt3tGP/gQOK4xdNphJPo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68A9BF800E9;
-	Mon,  1 Feb 2021 17:46:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E495FF80224;
+	Mon,  1 Feb 2021 17:46:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B6B4F80224; Mon,  1 Feb 2021 17:46:41 +0100 (CET)
+ id E7C40F8023C; Mon,  1 Feb 2021 17:46:45 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6516CF800E2
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 17:46:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6516CF800E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A33FBF80224
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 17:46:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A33FBF80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DZ+iSaq9"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D75164DE3;
- Mon,  1 Feb 2021 16:46:36 +0000 (UTC)
+ header.b="DRWI2OfY"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3133A60234;
+ Mon,  1 Feb 2021 16:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612197996;
- bh=BYN4P1D4rCCkAfn2duFYF1Tx4dpo/sxwz9GZpqd6Qlw=;
+ s=k20201202; t=1612198001;
+ bh=j9hC3Db3nfPN7oz+V2moYoDKkQqj5CZszG4PUDCe7yo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=DZ+iSaq96VTB8qAtZSWN49K2u7fgM7Lr9aFt108RTS6WIxrnf95RSPs8WwZE+l3CA
- HPVcZg5aC7TmWnRNRiEbdFWUNqgejuF2HzjaCWAKUj79KIjqoSYuSd00AMXGImeeWX
- 58UGCE/sn7pXy3yyskgkZNqq73YjlfrdLjRIC3nJhEGUPsEM9b4czxM2LBn5H54NU+
- FF1HuOO8550hbJI3b+PdNP2iOdn5sLohVtcGl58Q2IccN6n6fbjilBZYaDnAN/qxe7
- ZBvHvaOPeDJ5MM67nOrsWL2oibk/d5yLKr8m0hjEzUfAfgE7kLz8lqAehjTQXuoPZ2
- Rhwylk+veJkXg==
+ b=DRWI2OfYdkae8cwpgnSYLd4REIg5apAq3rLMTUqyT5BV7E4KDr+nKps2rqnwZalcU
+ Fe6fV3C8MJzMb0UIM59KCUMvi5O903LBTPVPW1CcWd4Z2Zqf32xmivtIrnLJecSDkY
+ qGCdPSFuAX3eOa2MHIEQnst4s1s7xoTXQFAdq3zdxx5EnDTNdhsnwq8+uVLaEAi8pl
+ Rkt7ISSUEfQ2oUQGfAnKaBgqjUmDAUeuGyqHOOi24LX1uDXO+fv2WuRrKODAEbPYXs
+ jcH/tDBDtoRLsPWr9OzpztKU9ZngXLqul2+u2Zm6zaPANYqVwzBNUUOY9PZaI1oZsj
+ keiykiLA9ELsQ==
 From: Mark Brown <broonie@kernel.org>
-To: Jonathan Hunter <jonathanh@nvidia.com>, Takashi Iwai <tiwai@suse.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Sameer Pujar <spujar@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20210129125915.2652952-1-geert+renesas@glider.be>
-References: <20210129125915.2652952-1-geert+renesas@glider.be>
-Subject: Re: [PATCH] ASoC: tegra: SND_SOC_TEGRA_AUDIO_GRAPH_CARD should depend
- on SND_SOC_TEGRA
-Message-Id: <161219793994.46194.18131030130174715049.b4-ty@kernel.org>
+To: Tony Lindgren <tony@atomide.com>, Pavel Machek <pavel@ucw.cz>,
+ Sebastian Reichel <sre@kernel.org>, Merlijn Wajer <merlijn@wizzup.org>,
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20210123172945.3958622-1-sre@kernel.org>
+References: <YAqOSg2z24NpjKDh@mwanda> <20210123172945.3958622-1-sre@kernel.org>
+Subject: Re: [PATCHv1] ASoC: cpcap: fix microphone timeslot mask
+Message-Id: <161219793995.46194.11902730498139607577.b4-ty@kernel.org>
 Date: Mon, 01 Feb 2021 16:45:39 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,14 +86,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 29 Jan 2021 13:59:15 +0100, Geert Uytterhoeven wrote:
-> Audio Graph Card based Tegra driver is only useful on NVIDIA Tegra SoCs.
-> Hence add a dependency on SND_SOC_TEGRA, to prevent asking the user
-> about this driver when configuring a kernel without Tegra sound support.
+On Sat, 23 Jan 2021 18:29:45 +0100, Sebastian Reichel wrote:
+> The correct mask is 0x1f8 (Bit 3-8), but due to missing BIT() 0xf (Bit
+> 0-3) was set instead. This means setting of CPCAP_BIT_MIC1_RX_TIMESLOT0
+> (Bit 3) still worked (part of both masks). On the other hand the code
+> does not properly clear the other MIC timeslot bits. I think this
+> is not a problem, since they are probably initialized to 0 and not
+> touched by the driver anywhere else. But the mask also contains some
+> wrong bits, that will be cleared. Bit 0 (CPCAP_BIT_SMB_CDC) should be
+> safe, since the driver enforces it to be 0 anyways.
 > 
-> Wrap all Tegra sound config options inside a big if/endif block, instead
-> of just adding the dependency to the single config option that does not
-> have it yet, to preventing similar future mistakes.
+> [...]
 
 Applied to
 
@@ -103,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tegra: SND_SOC_TEGRA_AUDIO_GRAPH_CARD should depend on SND_SOC_TEGRA
-      commit: e86caa011c80507783e5975bca1458f28c1d2b8c
+[1/1] ASoC: cpcap: fix microphone timeslot mask
+      commit: de5bfae2fd962a9da99f56382305ec7966a604b9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
