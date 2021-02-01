@@ -2,126 +2,80 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FORGED_YAHOO_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB8AFC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40CB8C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:04:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC41F64F60
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:03:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC41F64F60
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=yahoo.com
+	by mail.kernel.org (Postfix) with ESMTPS id 2F5DC64E30
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:04:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F5DC64E30
+Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=protonmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 173B71750;
-	Wed,  3 Feb 2021 08:02:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 173B71750
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E0B11761;
+	Wed,  3 Feb 2021 08:03:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E0B11761
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612335800;
-	bh=U0ptZIZMNHXhVaHgOJVRORqg6JfBtEyCQFz04bNl33Q=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1612335840;
+	bh=YZxCn3WEj6avIEJLa8gwYbXCCcMXF45NS57qNiMfEKg=;
+	h=Date:To:From:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=pJfqqvsH8Qb/O4nTQ0cCRY5V81kAnqV6n/MMjqkSI4n3GiJ49Giy2zqgPx7mjgjFo
-	 gMaVJ/Ov569JzHQ1DcJE1YGzq556jGUuiD81R36DcmdlJ/qz31th+Ug60ucn4NLVQv
-	 cGcgJNwe0laLanUUhQXpmze97dzuqpLD1zShrhKw=
+	 Reply-To:From;
+	b=I21zTuKwMk9cU0LzKkv/m6VFykpF3RzwEjl76t+TFmjaRvPDQcunrubc0X7QNoUad
+	 S147UPTxtgTHUKd7FnjsQyAucasaeSZOFO2HSw4Hr0I/6bn+j8lEZRzWDY95tEmyXj
+	 l6pIUPRfy7oeHTUk13zam9Q68aTnlYMJ48xG7P+0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0484AF8025C;
-	Wed,  3 Feb 2021 08:01:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11A24F8026B;
+	Wed,  3 Feb 2021 08:01:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0399EF801F7; Sun, 31 Jan 2021 19:43:51 +0100 (CET)
-Received: from sonic307-33.consmr.mail.ir2.yahoo.com
- (sonic307-33.consmr.mail.ir2.yahoo.com [87.248.110.58])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id BC419F80224; Mon,  1 Feb 2021 05:25:12 +0100 (CET)
+Received: from mail2.protonmail.ch (mail2.protonmail.ch [185.70.40.22])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C463F80134
- for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 19:43:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C463F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67CCDF800E9
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 05:25:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67CCDF800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com
- header.b="KXap4eYp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1612118622; bh=HED36otJ1FDmy1kTm9+uyg74Y9oUBveqzS05JACSswM=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To;
- b=KXap4eYpevZgXItO7zGkTCblWpHNWuElojRMPtJnHL3p3bm8S3yRsqSI00LQeFNEu+tvVDcCRBZBO8LsRozRf9InZmNnYCDaxpSN10WTnDbGAhsnlVGUe15Gly7IdUMOchRXsEfiRs2D8GrlJplC94NHw+ELS9j9DF6yK7qhWp4hCJYbAFN4QKR+0meDiDdjbFI5r9FL00879N7XauCmzxf2TdF/M6FiyNiklZ/SNky0fd+xqvalmh+A+HGT/i6oMK662LgJ4oemiwdCnVSneFJpVRcVHSnMJ0npcmRT+pykHTQOWQmSlNijW9YzkRxQufYMmSZPmz5OWS7u4ZUssQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048;
- t=1612118622; bh=etEnedHCrevszpnIzMbKC29nbRn1eujlQMjFlZKsIg+=;
- h=From:To:Subject:Date:From:Subject:Reply-To;
- b=UUNd3m393W3O/ZWq99wEDkwc0xW0Rnrtl0JEfQzVGuNX7rAtZGeQwidFJqmXAof7QP8xMzZiQTft46q2RSKkQdG0Eb/t60UNUTstgR9k4YbdxmP6OFdtSCDxQfveH6Gmy8Pg2J39DOPFnz5baxkclBFVfvXOg7pnxxHQSBmlXZ5cqpf1VgJm7x1/0vshj2naLFR7dY2DnkYwXPQONbNeFxueQ5EhI31CHrRJznCDdfmVDsoVE/FYanMgloFT69mzcrPFaYe20nFZHG/BBIvaJs6WFk5pKshjf6rUsEOarys6kgVtWDjJnFE3N58qryv3RhDEivCw/T2CInVA8CuK0Q==
-X-YMail-OSG: EOw8iTAVM1kH284NKfAZmyoo.dNfuo1IjDhKhfRvQaRvI_pNleNOLSBdItadwkz
- rSXObsK0MS882408X4DJGMjs1GRNNwTePSCIjOANdIiPwBVuo6x51vuOXPWr.Ui.V7YZA._lvAvn
- c1VuC1OEcwwFrrz9t_J5AIeecaOfIZmy3WZw6G8p3Ooes4bbpYQ1Tzdk3tX2X0pd0ibHB7CG8Dil
- p7cvHDaFuXNiMNbG9USU2sA0nbrxG47EQNfiymboHZwCCLIGh17qATatNvI0TL4ujF9Ve7dcJIO7
- focxtk31x0PwmCwm9a4fXKv.PWMXNzRqRnPpN1tLUhiMv8qcc1M0r6FHEDK3DjlPEPgCUacWJPK7
- t9e8oA_g43jnzGJTda3zKX0TCJrIygwQ0kzzYWVnk36VZkbzkn32VAukmZC88UnkltSW.dpLbaMl
- H2HTp0AdS7bgMukh_YawwhhJZkNG_Q.oUSVDDy4gJuQ6sHIH_bukYqeAPTksvQO6brESk._9s9kk
- d8fjQ8DPm.tYlsQ0HKA9Hazo_Ao1yR1kzzMdwXtwTqGbUc_KD_SrXu7hbJ4h8Bch7SkpnlpfnQ4N
- .9WTTh6pnKUJJXgGxzd_XysowwBDrgROOWc44QPgfFEV16QUMpDJngSJxtVd.gwGckr7vhtLCttb
- WhtSniO3maA4oNPKwKlg3sK7Ko3CBrifG_nGmCMIt29N8z5evoPT3JPq2wmEEWA4lhr4pMdGTmVx
- VgAZJWp2ODAcG0JdfxkeEs0oVUtwHxkWMRM5IdSMJySeczNLzl0CbckbqWZ92Vo8QBC4ZPqepxSH
- hbdFvl5ezyRi3.7cjGM6ZmRF8fWYwpItW8hZlMpElk8OBzZ0.FQe7vBRkkK9TSstv.i8zq7W_YIj
- CUBAwsb2pAu5mTvdKW3VMYlI8OfhoFTj4WRj26VroWgJBUEYKPDXvr2bYf6XycDMj5Or4cDC4itF
- zSwKp0BTXlyvP0l06Ijyh_7yh3C8amMlV_RqiPo56mP_ac_eKm4FB7b9Gtu.rQrSO4yWJzWblZ97
- A1u8c0ms3ig6taSHC93pcX801SA2j7uyWIK6akU2foWrGe1_11Ita4IZiOd4goZbAkbl5NM4CdHQ
- qm8ICd2AbwdAt0BWhoovm452OUjwh.BMcCS758ZJND1guZPF4M4SwBEuAB6OQ6Eq6GcQwVn4YN4f
- Xv.N9l1eK8v_UbyX.EteddAd41nHuGq6qg_ZoJE2mniRUIEEjaaiuWbqtsnaG.S0Goke9FBYyple
- T70ccETw3HtCxUG4QyX4N3EGkEZRAR3mWzu9GCI2lf49Mg2U7HQ7ugSM_v2WoNbGzgK5e4ROUaaT
- 3ZOPtArRb3nZTkV.dIbnXkqmDEfR5VTEuvzPWiEyhAOBrlCfo6ENbiEhHR7n4JQOL9qURvC1bLDN
- zNL0_HaqzZw3spzQcR5kr4g_X.NP1yStCaRMcc5JvpCMHx9kzFErdoGzUjIkvuDwzewyEF4lc3ec
- skMcq4cwa01dmMaDl1zoTwojvHSl.xQT7DUEwVTfYnRel12ljt_jVdOeSCkEzRpvfeAihf.gcjVA
- Rw4R1QfTFChXJiIyhSRRGXcm6GbZ7Mbv1LZE4ZdQ.HslmIaMjWIZQgvFsDWxcBteUMRO75BTV9sd
- hSsh2c2CJalorGJCouSgNzcbSTjcj5tdLh5_Y_oP1jon5.zLNL8EXgLosCeM8ZOnCcoNMDeUouHp
- TvFZU6Ejf.ufUQyDlO7kUcyVS38z8mifsHRhATXUWP_RA0aY_mgqY3g0ox4XTVtx4PdFt8RKOBYz
- X_zqXLysyd1lakKzDnxPzHk0utHdhCVO7nlnGmVoWJ2AtPHjwG_9n.0t0xw3dPGZ_L1p61foFneq
- L9gOm4cupKdfTtr_JrAIEIVXywZ8zjYrZzbjL3IiaKuPC9_3j05C3KhBLCyCTEEEa.fhpViXSHGx
- ynq6rKaJqETbuvDdlLtWQwS3nnT7ObnUs7.W5R_i2w833br1Uw9txiFI4F9rlGxvAkzsfNiONi8i
- aU8KNYr4EC1AWeK0OhYeamLGMEZhnZIbJQID66XgJN29Fxh7Ws1TpBx.lKFpLYJWmgixcJ_gnNuB
- QsrfaLElH4B8pf8UsiHtaDCUawibbexNPx2Gu1br7KcgEwqiwbBnYA6I.iS8XRZCYemUog_RbU3w
- LrE2tPGCWBQkD5V0.qw8Z.SHYmhGgd_Iet20PkrQoyyIskd.TBeQ2xxb4mTtw08_Eydb8vYYmsGN
- EulIonfmK4NNUddypGclvX2WExfqjMbI3nnjbs9TBSajRkGyG.xNmUVpRJ3NAnyttI6murGoDoOM
- p7DghzMpCa59ZhFRqd7b95XnCwLxu9uhVk7zxpuD81wD7.deVqfSDNRYEPirRRzDxobsHrhb0nHc
- FBP.a57_4nihr8sbjFusCOqIICAG6QA0diJSBvEw9EEHHfvCi3tdPUwBkvCuuG80NyRTV_aKns8z
- prRHQSbTmzab7zIX0GnAJyT_M1VbduHGMT8TX.BdBY7rowSHUQNFudM8I9Hn4yVrhpLZmy9QvJ39
- thUXRUDRfxh9hj4f7UfeRYfmjy3yFekPvUEPH6LfS8nhQWLMp_kZuzscwMxvT7Q8AWCM_X763GGB
- BKfXHmjCy.lAmkz76MWUTnEN4ndJSMMUNK0sAhDZr1vyoVfMSWAvlOu5eWS7OHopTK8eECZRuit2
- bIY7_W.KAvS3Hr1HZhLeRKG1N3PcWLbTEjvpuo0BoAGpCmqgpe7nEUh400lESOXmu6ljvvQZi8oY
- 6KrCD1HKyTAmfqsqNWpUUDVKiMGcqAD.A0RnR76uDDzhUtetRrM0mUUpeoTbWjjpjAASbbMjgdff
- ZFR16CmiKqu.x6fEnyIO9.Wtv4oML6hjvIW6arj.xTa1BDuOqvCF69HUSRgMYG6JVysotnm6FeBB
- v94XvflnruW0us9lXj.ca_6DTR6lO54hGVewtcCtPFeKlggEuf8At9ME9rkXU2oRcFu27W4yeZ57
- vdzZUZnK8SduQJfcv7LybRFq7xG0-
-Received: from sonic.gate.mail.ne1.yahoo.com by
- sonic307.consmr.mail.ir2.yahoo.com with HTTP; Sun, 31 Jan 2021 18:43:42 +0000
-Received: by smtp407.mail.ir2.yahoo.com (VZM Hermes SMTP Server) with ESMTPA
- ID e16a2e904335ed9f41206b782293961f; 
- Sun, 31 Jan 2021 18:41:41 +0000 (UTC)
-From: Ion Agorria <AG0RRIA@yahoo.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>,
- Svyatoslav Ryhel <clamor95@gmail.com>, Ion Agorria <ion@agorria.com>,
- Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH v1 2/2] ASoC: tegra: Add RT5631 machine driver
-Date: Sun, 31 Jan 2021 19:41:01 +0100
-Message-Id: <20210131184101.651486-3-AG0RRIA@yahoo.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210131184101.651486-1-AG0RRIA@yahoo.com>
-References: <20210131184101.651486-1-AG0RRIA@yahoo.com>
+ dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com
+ header.b="QJps2d/U"
+Date: Mon, 01 Feb 2021 04:24:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+ s=protonmail; t=1612153500;
+ bh=Zb7ULZT7e66rly2USppGm7Xzx2fnacIRQRjSbtzMRNk=;
+ h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+ b=QJps2d/UT/K6V3FVJKgq1sL2ySKj1557bsXooFjaT12HgN74NcR8/GcQB3MzcHU7U
+ IUJzePEIXuxL8YmxCFCAtcMdrAUu0dIM8JJhCyXprRdUFPbaaASmT0VKuL7dsVgPqd
+ 117T2VTY7KWM1gNW/nZF3aOy0HD/uOpGrvxqOIgY=
+To: Takashi Iwai <tiwai@suse.de>
+From: Erich Ritz <erich.public@protonmail.com>
+Subject: Re: [REGRESSION] "ALSA: HDA: Early Forbid of runtime PM" broke my
+ laptop's internal audio
+Message-ID: <CJr5txskJyVLQIDd7L6WNNMBMJ3eQEltNH7Y_yJ_r2X8aflHnfGHT9_Mpuznx8iDgfAu03gs9aIqVO7gXbRp4WCL--tXZAUajwyo_Eet5Os=@protonmail.com>
+In-Reply-To: <s5hft2jlnt4.wl-tiwai@suse.de>
+References: <EM1ONQ.OL5CFJTBEBBW@redhat.com>
+ <BY5PR11MB430713319F12454CF71A1E73FDB99@BY5PR11MB4307.namprd11.prod.outlook.com>
+ <U3BPNQ.P8Q6LYEGXHB5@redhat.com> <s5hsg6jlr4q.wl-tiwai@suse.de>
+ <9ACPNQ.AF32G3OJNPHA3@redhat.com> <IECPNQ.0TZXZXWOZX8L2@redhat.com>
+ <8CEPNQ.GAG87LR8RI871@redhat.com> <s5hft2jlnt4.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Wed, 03 Feb 2021 08:01:31 +0100
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailman-Approved-At: Wed, 03 Feb 2021 08:01:30 +0100
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "N,
+ Harshapriya" <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "kai.vehmanen@intel.com" <kai.vehmanen@intel.com>,
+ Michael Catanzaro <mcatanzaro@redhat.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -134,330 +88,133 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Reply-To: Erich Ritz <erich.public@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Svyatoslav Ryhel <clamor95@gmail.com>
+On Friday, January 29, 2021 9:17 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-Add Tegra ASoC driver for Realtek ALC5631/RT5631 codec. The RT5631
-codec is found on devices like ASUS Transformer TF201, TF700T and other
-Tegra-based Android tablets.
+> On Fri, 29 Jan 2021 17:12:08 +0100,
+> Michael Catanzaro wrote:
+>
+> > On Fri, Jan 29, 2021 at 9:30 am, Michael Catanzaro
+> > mcatanzaro@redhat.com wrote:
+> >
+> > > OK, I found "ALSA: hda/via: Apply the workaround generically for
+> > > Clevo machines" which was just merged yesterday. So I will test
+> > > again to find out.
+> >
+> > Hi Takashi, hi Harsha,
+> > I can confirm that the problem is fixed by this commit:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D4961167bf7482944ca09a6f71263b9e47f949851
+>
+> Thanks, good to hear.
+>
+> Then I think we can drop the entry from power_save_denylist in
+> hda_intel.c. Could you try that it still works with the patch below?
+>
+> thanks,
+>
+> Takashi
+>
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -2217,8 +2217,6 @@ static const struct snd_pci_quirk power_save_denyli=
+st[] =3D {
+> /* https://bugzilla.redhat.com/show_bug.cgi?id=3D1525104 /
+> SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
+> / https://bugzilla.redhat.com/show_bug.cgi?id=3D1525104 */
+>
+> -   SND_PCI_QUIRK(0x1558, 0x6504, "Clevo W65_67SB", 0),
+> -   /* https://bugzilla.redhat.com/show_bug.cgi?id=3D1525104 /
+>     SND_PCI_QUIRK(0x1028, 0x0497, "Dell Precision T3600", 0),
+>     / https://bugzilla.redhat.com/show_bug.cgi?id=3D1525104 /
+>     / Note the P55A-UD3 and Z87-D3HP share the subsys id for the HDA dev =
+*/
 
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
-Signed-off-by: Ion Agorria <ion@agorria.com>
----
- sound/soc/tegra/Kconfig        |   8 +
- sound/soc/tegra/Makefile       |   2 +
- sound/soc/tegra/tegra_rt5631.c | 261 +++++++++++++++++++++++++++++++++
- 3 files changed, 271 insertions(+)
- create mode 100644 sound/soc/tegra/tegra_rt5631.c
+For me applying patch 4961167bf7482944ca09a6f71263b9e47f949851 on top of 5.=
+10.12 fixes audio, but the above quoted patch applied to 5.10.12 does NOT f=
+ix audio.  What I mean by fixes:
+Audio works normally on 5.4.94, and on 5.10.12 with patch 4961167 applied.
+I hear no audio from the laptop speakers on 5.10.12 and 5.10.12 with the ab=
+ove quoted patch applied.  Opening pavucontrol shows a graphical response i=
+n the meter, but no audio is heard from the speakers.  I did not test plugg=
+ing in headphones and did not test audio over HDMI.
 
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index acaf7339168d..449a858f155d 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -126,6 +126,14 @@ config SND_SOC_TEGRA_AUDIO_GRAPH_CARD
- 	  few things for Tegra audio. Most of the code is re-used from
- 	  audio graph driver and the same DT bindings are used.
- 
-+config SND_SOC_TEGRA_RT5631
-+	tristate "SoC Audio support for Tegra boards using an RT5631 codec"
-+	depends on SND_SOC_TEGRA && I2C && GPIOLIB
-+	select SND_SOC_RT5631
-+	help
-+	  Say Y or M here if you want to add support for SoC audio on Tegra
-+	  boards using the RT5631 codec, such as Transformer.
-+
- config SND_SOC_TEGRA_RT5640
- 	tristate "SoC Audio support for Tegra boards using an RT5640 codec"
- 	depends on SND_SOC_TEGRA && I2C && GPIOLIB
-diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
-index af0b9889306c..11debfc03bc4 100644
---- a/sound/soc/tegra/Makefile
-+++ b/sound/soc/tegra/Makefile
-@@ -29,6 +29,7 @@ obj-$(CONFIG_SND_SOC_TEGRA186_DSPK) += snd-soc-tegra186-dspk.o
- obj-$(CONFIG_SND_SOC_TEGRA210_ADMAIF) += snd-soc-tegra210-admaif.o
- 
- # Tegra machine Support
-+snd-soc-tegra-rt5631-objs := tegra_rt5631.o
- snd-soc-tegra-rt5640-objs := tegra_rt5640.o
- snd-soc-tegra-rt5677-objs := tegra_rt5677.o
- snd-soc-tegra-wm8753-objs := tegra_wm8753.o
-@@ -41,6 +42,7 @@ snd-soc-tegra-max98090-objs := tegra_max98090.o
- snd-soc-tegra-sgtl5000-objs := tegra_sgtl5000.o
- snd-soc-tegra-audio-graph-card-objs := tegra_audio_graph_card.o
- 
-+obj-$(CONFIG_SND_SOC_TEGRA_RT5631) += snd-soc-tegra-rt5631.o
- obj-$(CONFIG_SND_SOC_TEGRA_RT5640) += snd-soc-tegra-rt5640.o
- obj-$(CONFIG_SND_SOC_TEGRA_RT5677) += snd-soc-tegra-rt5677.o
- obj-$(CONFIG_SND_SOC_TEGRA_WM8753) += snd-soc-tegra-wm8753.o
-diff --git a/sound/soc/tegra/tegra_rt5631.c b/sound/soc/tegra/tegra_rt5631.c
-new file mode 100644
-index 000000000000..9034f48bcb26
---- /dev/null
-+++ b/sound/soc/tegra/tegra_rt5631.c
-@@ -0,0 +1,261 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * tegra_rt5631.c - Tegra machine ASoC driver for boards using RT5631 codec.
-+ *
-+ * Copyright (c) 2020, Svyatoslav Ryhel and Ion Agorria
-+ *
-+ * Based on code copyright/by:
-+ *
-+ * Copyright (c) 2012, NVIDIA CORPORATION.  All rights reserved.
-+ * Author: Stephen Warren <swarren@nvidia.com>
-+ */
-+
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include "tegra_asoc_utils.h"
-+
-+#include "../codecs/rt5631.h"
-+
-+struct tegra_rt5631 {
-+	struct tegra_asoc_utils_data util_data;
-+	struct gpio_desc *gpiod_hp_mute;
-+	struct gpio_desc *gpiod_hp_det;
-+};
-+
-+static int tegra_rt5631_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_card *card = rtd->card;
-+	struct tegra_rt5631 *machine = snd_soc_card_get_drvdata(card);
-+	unsigned int srate, mclk;
-+	int err;
-+
-+	srate = params_rate(params);
-+	switch (srate) {
-+	case 64000:
-+	case 88200:
-+	case 96000:
-+		mclk = 128 * srate;
-+		break;
-+	default:
-+		mclk = 256 * srate;
-+		break;
-+	}
-+	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
-+	while (mclk < 6000000)
-+		mclk *= 2;
-+
-+	err = tegra_asoc_utils_set_rate(&machine->util_data, srate, mclk);
-+	if (err < 0) {
-+		dev_err(card->dev, "Can't configure clocks\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk, SND_SOC_CLOCK_IN);
-+	if (err < 0) {
-+		dev_err(card->dev, "codec_dai clock not set\n");
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops tegra_rt5631_ops = {
-+	.hw_params = tegra_rt5631_hw_params,
-+};
-+
-+static struct snd_soc_jack tegra_rt5631_hp_jack;
-+
-+static struct snd_soc_jack_pin tegra_rt5631_hp_jack_pins[] = {
-+	{
-+		.pin = "Headphone Jack",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+};
-+
-+static struct snd_soc_jack_gpio tegra_rt5631_hp_jack_gpio = {
-+	.name = "Headphone detection",
-+	.report = SND_JACK_HEADPHONE,
-+	.debounce_time = 150,
-+};
-+
-+static int tegra_rt5631_event_hp(struct snd_soc_dapm_widget *w,
-+				 struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct tegra_rt5631 *machine = snd_soc_card_get_drvdata(card);
-+
-+	gpiod_set_value_cansleep(machine->gpiod_hp_mute,
-+				 !SND_SOC_DAPM_EVENT_ON(event));
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget tegra_rt5631_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Int Spk", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", tegra_rt5631_event_hp),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_MIC("Int Mic", NULL),
-+};
-+
-+static const struct snd_kcontrol_new tegra_rt5631_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Int Spk"),
-+	SOC_DAPM_PIN_SWITCH("Int Mic"),
-+};
-+
-+static int tegra_rt5631_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct tegra_rt5631 *machine = snd_soc_card_get_drvdata(rtd->card);
-+	int ret;
-+
-+	ret = snd_soc_card_jack_new(rtd->card, "Headphone Jack",
-+				    SND_JACK_HEADPHONE,
-+				    &tegra_rt5631_hp_jack,
-+				    tegra_rt5631_hp_jack_pins,
-+				    ARRAY_SIZE(tegra_rt5631_hp_jack_pins));
-+	if (ret) {
-+		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (machine->gpiod_hp_det) {
-+		tegra_rt5631_hp_jack_gpio.desc = machine->gpiod_hp_det;
-+
-+		ret = snd_soc_jack_add_gpios(&tegra_rt5631_hp_jack, 1,
-+					     &tegra_rt5631_hp_jack_gpio);
-+		if (ret)
-+			dev_err(rtd->dev, "Jack GPIOs not added: %d\n", ret);
-+	}
-+
-+	return 0;
-+}
-+
-+SND_SOC_DAILINK_DEFS(hifi,
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()),
-+	DAILINK_COMP_ARRAY(COMP_CODEC(NULL, "rt5631-hifi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
-+static struct snd_soc_dai_link tegra_rt5631_dai = {
-+	.name = "RT5631",
-+	.stream_name = "RT5631 PCM",
-+	.init = tegra_rt5631_init,
-+	.ops = &tegra_rt5631_ops,
-+	.dai_fmt = SND_SOC_DAIFMT_I2S |
-+		   SND_SOC_DAIFMT_NB_NF |
-+		   SND_SOC_DAIFMT_CBS_CFS,
-+	SND_SOC_DAILINK_REG(hifi),
-+};
-+
-+static struct snd_soc_card snd_soc_tegra_rt5631 = {
-+	.name = "tegra-rt5631",
-+	.owner = THIS_MODULE,
-+	.dai_link = &tegra_rt5631_dai,
-+	.num_links = 1,
-+	.controls = tegra_rt5631_controls,
-+	.num_controls = ARRAY_SIZE(tegra_rt5631_controls),
-+	.dapm_widgets = tegra_rt5631_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tegra_rt5631_dapm_widgets),
-+	.fully_routed = true,
-+};
-+
-+static int tegra_rt5631_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = &snd_soc_tegra_rt5631;
-+	struct device_node *np_codec, *np_i2s;
-+	struct tegra_rt5631 *machine;
-+	struct gpio_desc *gpiod;
-+	int ret;
-+
-+	machine = devm_kzalloc(&pdev->dev, sizeof(*machine), GFP_KERNEL);
-+	if (!machine)
-+		return -ENOMEM;
-+
-+	card->dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(card, machine);
-+
-+	gpiod = devm_gpiod_get_optional(&pdev->dev, "nvidia,hp-mute",
-+					GPIOD_OUT_HIGH);
-+	if (IS_ERR(gpiod))
-+		return PTR_ERR(gpiod);
-+
-+	machine->gpiod_hp_mute = gpiod;
-+
-+	gpiod = devm_gpiod_get_optional(&pdev->dev, "nvidia,hp-det",
-+					GPIOD_IN);
-+	if (IS_ERR(gpiod))
-+		return PTR_ERR(gpiod);
-+
-+	machine->gpiod_hp_det = gpiod;
-+
-+	ret = snd_soc_of_parse_card_name(card, "nvidia,model");
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "nvidia,audio-routing");
-+	if (ret)
-+		return ret;
-+
-+	np_codec = of_parse_phandle(pdev->dev.of_node, "nvidia,audio-codec", 0);
-+	if (!np_codec) {
-+		dev_err(&pdev->dev,
-+			"Property 'nvidia,audio-codec' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	np_i2s = of_parse_phandle(pdev->dev.of_node, "nvidia,i2s-controller", 0);
-+	if (!np_i2s) {
-+		dev_err(&pdev->dev,
-+			"Property 'nvidia,i2s-controller' missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	tegra_rt5631_dai.cpus->of_node = np_i2s;
-+	tegra_rt5631_dai.codecs->of_node = np_codec;
-+	tegra_rt5631_dai.platforms->of_node = np_i2s;
-+
-+	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = devm_snd_soc_register_card(&pdev->dev, card);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id tegra_rt5631_of_match[] = {
-+	{ .compatible = "nvidia,tegra-audio-rt5631", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, tegra_rt5631_of_match);
-+
-+static struct platform_driver tegra_rt5631_driver = {
-+	.driver = {
-+		.name = "tegra-snd-rt5631",
-+		.pm = &snd_soc_pm_ops,
-+		.of_match_table = tegra_rt5631_of_match,
-+	},
-+	.probe = tegra_rt5631_probe,
-+};
-+module_platform_driver(tegra_rt5631_driver);
-+
-+MODULE_DESCRIPTION("Tegra+RT5631 machine ASoC driver");
-+MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
-+MODULE_AUTHOR("Svyatoslav Ryhel <clamor95@gmail.com>");
-+MODULE_AUTHOR("Ion Agorria <ion@agorria.com>");
-+MODULE_LICENSE("GPL");
--- 
-2.26.2
+I have a System76 Gazelle Pro 7 (gazp7).
 
+# lspci -s "00:1b" -vv
+00:1b.0 Audio device: Intel Corporation 7 Series/C210 Series Chipset Family=
+ High Definition Audio Controller (rev 04)
+        Subsystem: CLEVO/KAPOK Computer 7 Series/C210 Series Chipset Family=
+ High Definition Audio Controller
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-=
+ Stepping- SERR- FastB2B- DisINTx+
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <T=
+Abort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 36
+        Region 0: Memory at f7e10000 (64-bit, non-prefetchable) [size=3D16K=
+]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D55mA PME(D0+,D1-,D=
+2-,D3hot+,D3cold+)
+                Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D0 PME-
+        Capabilities: [60] MSI: Enable+ Count=3D1/1 Maskable- 64bit+
+                Address: 00000000fee003b8  Data: 0000
+        Capabilities: [70] Express (v1) Root Complex Integrated Endpoint, M=
+SI 00
+                DevCap: MaxPayload 128 bytes, PhantFunc 0
+                        ExtTag- RBE-
+                DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsup=
+ported-
+                        RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
+                        MaxPayload 128 bytes, MaxReadReq 128 bytes
+                DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr+ Tr=
+ansPend-
+        Capabilities: [100 v1] Virtual Channel
+                Caps:   LPEVC=3D0 RefClk=3D100ns PATEntryBits=3D1
+                Arb:    Fixed- WRR32- WRR64- WRR128-
+                Ctrl:   ArbSelect=3DFixed
+                Status: InProgress-
+                VC0:    Caps:   PATOffset=3D00 MaxTimeSlots=3D1 RejSnoopTra=
+ns-
+                        Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR25=
+6-
+                        Ctrl:   Enable+ ID=3D0 ArbSelect=3DFixed TC/VC=3D01
+                        Status: NegoPending- InProgress-
+                VC1:    Caps:   PATOffset=3D00 MaxTimeSlots=3D1 RejSnoopTra=
+ns-
+                        Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR25=
+6-
+                        Ctrl:   Enable+ ID=3D1 ArbSelect=3DFixed TC/VC=3D22
+                        Status: NegoPending- InProgress-
+        Capabilities: [130 v1] Root Complex Link
+                Desc:   PortNumber=3D0f ComponentID=3D00 EltType=3DConfig
+                Link0:  Desc:   TargetPort=3D00 TargetComponent=3D00 AssocR=
+CRB- LinkType=3DMemMapped LinkValid+
+                        Addr:   00000000fed1c000
+        Kernel driver in use: snd_hda_intel
+        Kernel modules: snd_hda_intel
+
+And on kernel 5.4.94:
+# dmesg | grep hda
+[   21.307684] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops i915_aud=
+io_component_bind_ops [i915])
+[   21.493303] snd_hda_codec_via hdaudioC0D0: autoconfig for VT1802: line_o=
+uts=3D1 (0x24/0x0/0x0/0x0/0x0) type:speaker
+[   21.493306] snd_hda_codec_via hdaudioC0D0:    speaker_outs=3D0 (0x0/0x0/=
+0x0/0x0/0x0)
+[   21.493309] snd_hda_codec_via hdaudioC0D0:    hp_outs=3D1 (0x25/0x0/0x0/=
+0x0/0x0)
+[   21.493310] snd_hda_codec_via hdaudioC0D0:    mono: mono_out=3D0x0
+[   21.493312] snd_hda_codec_via hdaudioC0D0:    inputs:
+[   21.493315] snd_hda_codec_via hdaudioC0D0:      Mic=3D0x2b
+[   21.493317] snd_hda_codec_via hdaudioC0D0:      Internal Mic=3D0x29
+
+
+Apologies if this is noise.  I haven't been able to find if 4961167bf748294=
+4ca09a6f71263b9e47f949851 is queued up for the next stable release of 5.10.
+
+Erich
