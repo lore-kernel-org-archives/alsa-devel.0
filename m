@@ -6,71 +6,69 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3916CC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C533CC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:49:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B93564DE3
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:49:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B93564DE3
+	by mail.kernel.org (Postfix) with ESMTPS id E4B5264EAA
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Feb 2021 16:49:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4B5264EAA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 587A21773;
-	Mon,  1 Feb 2021 17:48:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 587A21773
+	by alsa0.perex.cz (Postfix) with ESMTPS id 076CC177B;
+	Mon,  1 Feb 2021 17:48:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 076CC177B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612198144;
-	bh=j9hC3Db3nfPN7oz+V2moYoDKkQqj5CZszG4PUDCe7yo=;
+	s=default; t=1612198154;
+	bh=3ZSShGaHD21VoaeFlggx+0UQjYQByAjimh392hgvzhY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XCWk2mE+zweAw4WYs0M22oICM/U2ak2L0L+hS6D8Ny9EDRti18k9PNmP4csmZ+lJi
-	 Mp/i6w7TpV/agzFCtwc+zpvmugfuEY07e2OZjPE5Et4d/IGTiE2Wvx43bAA9uPEhII
-	 LGkkIPIvXBbWoY5L6uXGgt3tGP/gQOK4xdNphJPo=
+	b=OHM8VWDZ43DFrbEn6kvI0UFVgRZQXboLjLOJ2xVSIk5rtquPtgAW6LWD50SFjm+yF
+	 w0woGYBCEXKsqZCWmm9CrGFK8POs0wmul2y4fskdAonjRCXc12orGF24aebKgaq4wN
+	 MudnBj/FcKDUW1Bgd1rmUSFK7WRdlS7JitaZ2eRs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E495FF80224;
-	Mon,  1 Feb 2021 17:46:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99006F8025C;
+	Mon,  1 Feb 2021 17:46:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7C40F8023C; Mon,  1 Feb 2021 17:46:45 +0100 (CET)
+ id 56C38F8025D; Mon,  1 Feb 2021 17:46:50 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A33FBF80224
- for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 17:46:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A33FBF80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 146E5F8023B
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 17:46:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 146E5F8023B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DRWI2OfY"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3133A60234;
- Mon,  1 Feb 2021 16:46:41 +0000 (UTC)
+ header.b="aCjyPqcf"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17DAB64EA8;
+ Mon,  1 Feb 2021 16:46:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612198001;
- bh=j9hC3Db3nfPN7oz+V2moYoDKkQqj5CZszG4PUDCe7yo=;
+ s=k20201202; t=1612198006;
+ bh=3ZSShGaHD21VoaeFlggx+0UQjYQByAjimh392hgvzhY=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=DRWI2OfYdkae8cwpgnSYLd4REIg5apAq3rLMTUqyT5BV7E4KDr+nKps2rqnwZalcU
- Fe6fV3C8MJzMb0UIM59KCUMvi5O903LBTPVPW1CcWd4Z2Zqf32xmivtIrnLJecSDkY
- qGCdPSFuAX3eOa2MHIEQnst4s1s7xoTXQFAdq3zdxx5EnDTNdhsnwq8+uVLaEAi8pl
- Rkt7ISSUEfQ2oUQGfAnKaBgqjUmDAUeuGyqHOOi24LX1uDXO+fv2WuRrKODAEbPYXs
- jcH/tDBDtoRLsPWr9OzpztKU9ZngXLqul2+u2Zm6zaPANYqVwzBNUUOY9PZaI1oZsj
- keiykiLA9ELsQ==
+ b=aCjyPqcfr4ofpETKztXWpYbTGn+/khEH/aQpmzyVz+YL0YwbX4QRAqpuLKlBZSGq3
+ IEY6IaslC+Yr/QbSksCQ0O/P2xP3N0EKCSwCSSbyHK9Yw2Yt5fTjCJ94fJNjZMDlTo
+ iIA2UohPVL1mg1ao8grbmS5lXDfWAkVDCuq6Fvy47PH0rKh04+HnLVccoSoVRNoUt8
+ AhEOdUEpHdgW+meyYLP3LrQRjGewbO8+Cmna6m8HUvcVUqsyTI38SQ4CaYwmCYfrws
+ UOc3l7GwaRQw5Bd0lYRXmioc/Ugns3D3zRGi8pKmrB4O7G4uXSw5kQQi7ncDOH6rZR
+ ZMc5ZIUy0MBuw==
 From: Mark Brown <broonie@kernel.org>
-To: Tony Lindgren <tony@atomide.com>, Pavel Machek <pavel@ucw.cz>,
- Sebastian Reichel <sre@kernel.org>, Merlijn Wajer <merlijn@wizzup.org>,
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20210123172945.3958622-1-sre@kernel.org>
-References: <YAqOSg2z24NpjKDh@mwanda> <20210123172945.3958622-1-sre@kernel.org>
-Subject: Re: [PATCHv1] ASoC: cpcap: fix microphone timeslot mask
-Message-Id: <161219793995.46194.11902730498139607577.b4-ty@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210201161429.28060-1-srinivas.kandagatla@linaro.org>
+References: <20210201161429.28060-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: codecs: add missing max_register in regmap config
+Message-Id: <161219793996.46194.10385575485346385646.b4-ty@kernel.org>
 Date: Mon, 01 Feb 2021 16:45:39 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Dan Carpenter <dan.carpenter@oracle.com>
+Cc: vkoul@kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,17 +84,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 23 Jan 2021 18:29:45 +0100, Sebastian Reichel wrote:
-> The correct mask is 0x1f8 (Bit 3-8), but due to missing BIT() 0xf (Bit
-> 0-3) was set instead. This means setting of CPCAP_BIT_MIC1_RX_TIMESLOT0
-> (Bit 3) still worked (part of both masks). On the other hand the code
-> does not properly clear the other MIC timeslot bits. I think this
-> is not a problem, since they are probably initialized to 0 and not
-> touched by the driver anywhere else. But the mask also contains some
-> wrong bits, that will be cleared. Bit 0 (CPCAP_BIT_SMB_CDC) should be
-> safe, since the driver enforces it to be 0 anyways.
+On Mon, 1 Feb 2021 16:14:29 +0000, Srinivas Kandagatla wrote:
+> For some reason setting max_register was missed from regmap_config.
+> Without this cat /sys/kernel/debug/regmap/sdw:0:217:2010:0:1/range
+> actually throws below Warning.
 > 
-> [...]
+> WARNING: CPU: 7 PID: 540 at drivers/base/regmap/regmap-debugfs.c:160
+>  regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
+> ...
+> Call trace:
+>  regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
+>  regmap_reg_ranges_read_file+0xc0/0x2e0
+>  full_proxy_read+0x64/0x98
+>  vfs_read+0xa8/0x1e0
+>  ksys_read+0x6c/0x100
+>  __arm64_sys_read+0x1c/0x28
+>  el0_svc_common.constprop.3+0x6c/0x190
+>  do_el0_svc+0x24/0x90
+>  el0_svc+0x14/0x20
+>  el0_sync_handler+0x90/0xb8
+>  el0_sync+0x158/0x180
+> ...
 
 Applied to
 
@@ -104,8 +112,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cpcap: fix microphone timeslot mask
-      commit: de5bfae2fd962a9da99f56382305ec7966a604b9
+[1/1] ASoC: codecs: add missing max_register in regmap config
+      commit: e8820dbddbcad7e91daacf7d42a49d1d04a4e489
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
