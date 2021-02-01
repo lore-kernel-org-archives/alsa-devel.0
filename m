@@ -2,101 +2,107 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DFE54C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:04:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B0BC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:05:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 352C764F58
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:04:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 352C764F58
+	by mail.kernel.org (Postfix) with ESMTPS id 3520A64F58
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:05:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3520A64F58
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B29B0177A;
-	Wed,  3 Feb 2021 08:04:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B29B0177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC2E1715;
+	Wed,  3 Feb 2021 08:04:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC2E1715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612335896;
-	bh=eeRnU4E/k90/N288U8XddXLnbW7FcTzRgv149kB+Woo=;
-	h=To:From:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bUAvt7/OzgdDouhlCNt6pUg1S/PZcB5vSVXNfpzmID/tlGGX9ZS2cU6tSEbBYbWvf
-	 8Vq9hR/zmVJDn2dUOjvWaGh8pxfcLwC/+kttlqAnVg/G2qyYt5H6XKzQVCqSJVFhLY
-	 aUugEpBKeJOcdtlz2nUmnD28Qad1OKFp4eVBi4jk=
+	s=default; t=1612335934;
+	bh=LSOf52fYVkRSTBnFd1bzbRQabsHF+Uvth8ycHG9rZjk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SOY0x+UHQco1xixC8/N12m8aV2U4BxlCWFUojmxmqnAmjdst31OkEqTLq9DlJfllS
+	 lJQrPOn/kLNsTkcKuHl0TkJfvGw7Z7oXu6ZLa7k/a93WB8ofmw85foolo4j/fj4HrT
+	 fX9NVO0tZlshjdN0YZ7Yi4wk6JAi5LCBoZmnC7ho=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FA80F802DF;
+	by alsa1.perex.cz (Postfix) with ESMTP id F0473F8032C;
 	Wed,  3 Feb 2021 08:01:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2122F80171; Sun, 31 Jan 2021 22:37:37 +0100 (CET)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
+ id 24B3FF80153; Mon,  1 Feb 2021 14:50:20 +0100 (CET)
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
+ [IPv6:2a00:1450:4864:20::62f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8FEEF80134
- for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 22:37:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8FEEF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE051F800E9
+ for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2021 14:50:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE051F800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="rzoxAZoZ"
-Received: by mail-ej1-x62b.google.com with SMTP id l9so21291324ejx.3
- for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2021 13:37:34 -0800 (PST)
+ header.b="eWRTVL2P"
+Received: by mail-ej1-x62f.google.com with SMTP id rv9so24415123ejb.13
+ for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2021 05:50:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=to:from:subject:message-id:date:user-agent:mime-version
- :content-transfer-encoding:content-language;
- bh=kzNgrLo0S0Xm+AmIJlf3M/B5PGHGJ7ATVnXnZ+GlxR4=;
- b=rzoxAZoZWYzahdjy2NmsOYh9wDU5k8AEdZs6/9iDSZnB9xQkW/U3/PcPiE8ElJpYyy
- XXJBiVBoe8vjOwJs7ugmnDrGPkvlQkDiOB4IkvjzeNFsV6GD4wW++2ErN+7XvdiMBbY0
- W0yiWvfdFWJk2auw4RdEDku1DB4rOriaoouiIeLu4K43M62r/0M80gbjYmxP1MU4emP/
- lxstctFn6ogBHweLETgA4bYK8zdtC5VXUf9+GJCzi7M6ePo8SpjBj7tIropBaKR7kPWt
- gYD3STwhxr8UN26yYi4wtIWCON8Az1U9v2NytWIb3bGfe5udHgMh7es9KIo5JeMUvMV9
- JSVw==
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-transfer-encoding:content-language;
+ bh=Y1Df4LH+Y0zoxGq21LHpxb87caJes3LsQhEeQ5x8tjc=;
+ b=eWRTVL2PTxrv9ifRtXYVY9KhWlY5z661QDYqwSuBGRR2jvyYJP8WFWkuEsUdFsc5/H
+ nZsX47YRnnvbQOObSp+Rq9YxoiABJNQQVgRWiBvFYTPQO8IxjI4wXpJMFrQHvLhhMuuw
+ 8sseVzDNU0xTpE0ZU2JacXMzI9NQ5R/pyPHAH/zIFsKAAZ2W3LNsqY5Nv/x7h5LHfyYD
+ FXeIK195qCVaQejkVP3B+3KCY0GwRyfCtixYuNbkKk+xWYA5c05oRuLZ+jfQeWKYjG0I
+ 5/8O69ztkRGy0z8VoREh0EAgwhU4Z+DXnRC12ffP8fCvOoL+brCYbjtsXnQ4JWhQ9Jiq
+ w4Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:to:from:subject:message-id:date:user-agent
- :mime-version:content-transfer-encoding:content-language;
- bh=kzNgrLo0S0Xm+AmIJlf3M/B5PGHGJ7ATVnXnZ+GlxR4=;
- b=L3YY+8BZopaRXWqHuhwasVFUGVUY3a6EmtEh1Vhiu4nhef/ghHpZj4e0eQiAnkJQXb
- IC4nSQBMiiATR3eQOxKssftqdkF4o03mIlXXzLj4uRRuWOaWc57E0cwYuQYcqF54Bsad
- Pw7Ar/IKG7SEG677eamxS5vIgLJn/MHZpN2m4A03JKuwkWqXIJXEb2VN1DO0vFYXb/W3
- xYEQrb3TWLj2TwLRKAalQ7s/zQTSZA6rvhjYXf5TvSQ3rwy3R1CojauN7ZBIPALYp4Gj
- FhTfz8p7wAiowrs7uG8cnEzozuB68YptKJL2jqEG53JBMpEynjqULXmKwSBMuLzpZxX+
- ksBg==
-X-Gm-Message-State: AOAM531gGU7NRxBqDYVUuLHI/R+/98XGsF1anlbEJwD4vuGeMBLTlaY8
- HNJ96ca6oGZRstq7NACgsaYZJ0SnnsB4uQ==
-X-Google-Smtp-Source: ABdhPJxrEx3KlM9y6aspDLDHI5MAmoCjBnlSMzvoyNPQz1vSymhqbHGr5h1wcKgJW+LmHL/bgk64fQ==
-X-Received: by 2002:a17:906:d189:: with SMTP id
- c9mr15133236ejz.36.1612129053804; 
- Sun, 31 Jan 2021 13:37:33 -0800 (PST)
-Received: from ?IPv6:2a02:8388:1987:9380:e014:2d28:da71:9d35?
- (2a02-8388-1987-9380-e014-2d28-da71-9d35.cable.dynamic.v6.surfer.at.
- [2a02:8388:1987:9380:e014:2d28:da71:9d35])
- by smtp.gmail.com with ESMTPSA id f13sm7027697ejf.42.2021.01.31.13.37.32
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding
+ :content-language;
+ bh=Y1Df4LH+Y0zoxGq21LHpxb87caJes3LsQhEeQ5x8tjc=;
+ b=VTEkEDnjyHJflzV3GtNhIi/qYSRayJQm62TvglBhTeRjBaAFo+6YWQY4JyXZHaw0R9
+ BPngrQgJ247czV84dLgakApRB/sfpjGiflBcXA9sleWdwF5iUBEoMMY4jWn08O/pJy4C
+ GOYKQP9sDT91n+buIGg2cc2jakJHfi8Scuri4GTwWGUL88C4ZiQRJwqT1PBqQZWmCQXD
+ 5DlqcdATwa/WodcHHazJEw7XbqyCGX7Pdu8j6dGkYnBAEdWM5eyvo6Ls3QFFAP8ZJkS0
+ yoWT3qfpXcUPY0w1+2LtKw9L1x838jIutDFaGtcToXjGjEb0vH8TIBQWnITjwUBFFwqg
+ KjVw==
+X-Gm-Message-State: AOAM532nkh/r24QDTiBLjoBYARF5zzAtVK1lxjLCSVqFsbYIksCM/rYv
+ LwL3+VSX6e6DgPedDjnJCrv0IrQ+xQF8VM0V
+X-Google-Smtp-Source: ABdhPJwYSwNS0rkmoEnrEo07Qipp4tKUsRaOc4tDPlCjPgXUTQ2D/Ep85EkSVhhGAwX7Te3gxhGMVQ==
+X-Received: by 2002:a17:906:bfcc:: with SMTP id
+ us12mr17590331ejb.163.1612187410028; 
+ Mon, 01 Feb 2021 05:50:10 -0800 (PST)
+Received: from ?IPv6:2a02:8388:1987:9380:198d:5d8b:d8f:7b56?
+ (2a02-8388-1987-9380-198d-5d8b-0d8f-7b56.cable.dynamic.v6.surfer.at.
+ [2a02:8388:1987:9380:198d:5d8b:d8f:7b56])
+ by smtp.gmail.com with ESMTPSA id i90sm845613edi.52.2021.02.01.05.50.08
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 31 Jan 2021 13:37:33 -0800 (PST)
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Romain Perier <romain.perier@gmail.com>,
- Colin Ian King <colin.king@canonical.com>, Allen Pais
- <allen.lkml@gmail.com>, alsa-devel@alsa-project.org
+ Mon, 01 Feb 2021 05:50:09 -0800 (PST)
+Subject: Re: [PATCH] sound: pci/rme9652 - implement and expose controls for
+ output
+To: Takashi Iwai <tiwai@suse.de>
+References: <3cd2889a-e71a-aa3f-e79a-d11a4833c581@gmail.com>
+ <s5h35ygji0q.wl-tiwai@suse.de>
 From: fassl <superfassl@gmail.com>
-Subject: [PATCH] sound: pci/rme9652 - implement and expose controls for output
-Message-ID: <3cd2889a-e71a-aa3f-e79a-d11a4833c581@gmail.com>
-Date: Sun, 31 Jan 2021 22:37:32 +0100
+Message-ID: <730e7f87-6e6c-77cf-c6cf-2baf23bd1f4c@gmail.com>
+Date: Mon, 1 Feb 2021 14:50:08 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <s5h35ygji0q.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Mailman-Approved-At: Wed, 03 Feb 2021 08:01:31 +0100
+Cc: alsa-devel@alsa-project.org, Allen Pais <allen.lkml@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Colin Ian King <colin.king@canonical.com>,
+ Romain Perier <romain.perier@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,144 +118,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From 980aa253c17d233966e05a43f3611693e2e02040 Mon Sep 17 00:00:00 2001
-From: Jasmin Fazlic <superfassl@gmail.com>
-Date: Sun, 31 Jan 2021 22:17:22 +0100
-Subject: [PATCH] sound: pci/rme9652 - implement and expose controls for output
- loopback
+On 01.02.21 09:42, Takashi Iwai wrote:
 
-- so far only tested and enabled for RME HDSP9632
+> snd_ctl_new() can be used for allocating the multiple instances in one
+> kcontrol.  If the kctl object is created in this way, you'd just need
+> to change your code to retrieve the kctl index via
+> snd_ctl_get_ioff() instead of referring to kctl->index directly.
+>
+Hi, thanks for the response. snd_ctl_new() is static and unexported,
+should I provide this patch (below) as well? And if so, together with
+this one or separately?
 
-Signed-off-by: Jasmin Fazlic <superfassl@gmail.com>
----
- sound/pci/rme9652/hdsp.c | 85 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 84 insertions(+), 1 deletion(-)
+Thanks, best regards
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index cea53a878c36..7e832a502cea 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -469,6 +469,7 @@ struct hdsp {
-     unsigned char          qs_out_channels;
-     unsigned char         ds_out_channels;
-     unsigned char         ss_out_channels;
-+    u32                   io_loopback;          /* output loopback channel states*/
- 
-     struct snd_dma_buffer capture_dma_buf;
-     struct snd_dma_buffer playback_dma_buf;
-@@ -3253,6 +3254,71 @@ static const struct snd_kcontrol_new snd_hdsp_96xx_aeb =
-             HDSP_AnalogExtensionBoard);
- static struct snd_kcontrol_new snd_hdsp_adat_sync_check = HDSP_ADAT_SYNC_CHECK;
- 
-+
-+static bool hdsp_loopback_get(struct hdsp *const hdsp, const u8 channel)
-+{
-+    return hdsp->io_loopback & (1 << channel);
-+}
-+
-+static int hdsp_loopback_set(struct hdsp *const hdsp, const u8 channel, const bool enable)
-+{
-+    if (hdsp_loopback_get(hdsp, channel) == enable)
-+        return 0;
-+
-+    hdsp->io_loopback ^= (1 << channel);
-+
-+    hdsp_write(hdsp, HDSP_inputEnable + (4 * (hdsp->max_channels + channel)), enable);
-+
-+    return 1;
-+}
-+
-+static int snd_hdsp_loopback_info(struct snd_kcontrol *const kcontrol,
-+                  struct snd_ctl_elem_info *const uinfo)
-+{
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+    uinfo->count = 1;
-+    uinfo->value.integer.min = 0;
-+    uinfo->value.integer.max = 1;
-+    return 0;
-+}
-+
-+static int snd_hdsp_loopback_get(struct snd_kcontrol *const kcontrol,
-+                 struct snd_ctl_elem_value *const ucontrol)
-+{
-+    struct hdsp *const hdsp = snd_kcontrol_chip(kcontrol);
-+    const u8 channel = kcontrol->id.index;
-+
-+    if (channel >= hdsp->max_channels)
-+        return -ENOENT;
-+
-+    ucontrol->value.integer.value[0] = hdsp_loopback_get(hdsp, channel);
-+
-+    return 0;
-+}
-+
-+static int snd_hdsp_loopback_put(struct snd_kcontrol *const kcontrol,
-+                 struct snd_ctl_elem_value *const ucontrol)
-+{
-+    struct hdsp *const hdsp = snd_kcontrol_chip(kcontrol);
-+    const u8 channel = ucontrol->id.index;
-+    const bool enable = ucontrol->value.integer.value[0] & 1;
-+
-+    if (channel >= hdsp->max_channels)
-+        return -ENOENT;
-+
-+    return hdsp_loopback_set(hdsp, channel, enable);
-+}
-+
-+static struct snd_kcontrol_new snd_hdsp_loopback_control = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_HWDEP,
-+    .name = "Output Loopback",
-+    .index = 0,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .info = snd_hdsp_loopback_info,
-+    .get = snd_hdsp_loopback_get,
-+    .put = snd_hdsp_loopback_put
-+};
-+
- static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
- {
-     unsigned int idx;
-@@ -3297,6 +3363,17 @@ static int snd_hdsp_create_controls(struct snd_card *card, struct hdsp *hdsp)
-         }
-     }
- 
-+    /* Output loopback controls for H9632 cards */
-+    if (hdsp->io_type == H9632) {
-+        for (idx = 0; idx < hdsp->max_channels; idx++) {
-+            snd_hdsp_loopback_control.index = idx;
-+            kctl = snd_ctl_new1(&snd_hdsp_loopback_control, hdsp);
-+            err = snd_ctl_add(card, kctl);
-+            if (err < 0)
-+                return err;
-+        }
-+    }
-+
-     /* AEB control for H96xx card */
-     if (hdsp->io_type == H9632 || hdsp->io_type == H9652) {
-         if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_hdsp_96xx_aeb, hdsp))) < 0)
-@@ -4956,7 +5033,7 @@ static int snd_hdsp_enable_io (struct hdsp *hdsp)
- 
- static void snd_hdsp_initialize_channels(struct hdsp *hdsp)
- {
--    int status, aebi_channels, aebo_channels;
-+    int status, aebi_channels, aebo_channels, i;
- 
-     switch (hdsp->io_type) {
-     case Digiface:
-@@ -4983,6 +5060,12 @@ static void snd_hdsp_initialize_channels(struct hdsp *hdsp)
-         hdsp->ss_out_channels = H9632_SS_CHANNELS+aebo_channels;
-         hdsp->ds_out_channels = H9632_DS_CHANNELS+aebo_channels;
-         hdsp->qs_out_channels = H9632_QS_CHANNELS+aebo_channels;
-+        /* Disable loopback of output channels, as the set function
-+         * only sets on a change we fake all bits (channels) as enabled.
-+         */
-+        hdsp->io_loopback = 0xffffffff;
-+        for (i = 0; i < hdsp->max_channels; ++i)
-+            hdsp_loopback_set(hdsp, i, false);
-         break;
- 
-     case Multiface:
--- 
-2.27.0
 
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 77d9fa10812d..a5920090fdca 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -116,6 +116,7 @@ typedef int (*snd_kctl_ioctl_func_t) (struct snd_card * card,
+ 
+ void snd_ctl_notify(struct snd_card * card, unsigned int mask, struct snd_ctl_elem_id * id);
+ 
++int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count, unsigned int access, struct snd_ctl_file *file);
+ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new * kcontrolnew, void * private_data);
+ void snd_ctl_free_one(struct snd_kcontrol * kcontrol);
+ int snd_ctl_add(struct snd_card * card, struct snd_kcontrol * kcontrol);
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 3b44378b9dec..066288218b81 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -194,7 +194,7 @@ EXPORT_SYMBOL(snd_ctl_notify);
+  *
+  * Return: 0 on success, error code on failure
+  */
+-static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
++int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
+                       unsigned int access, struct snd_ctl_file *file)
+ {
+        unsigned int idx;
+@@ -214,6 +214,7 @@ static int snd_ctl_new(struct snd_kcontrol **kctl, unsigned int count,
+ 
+        return 0;
+ }
++EXPORT_SYMBOL(snd_ctl_new);
 
