@@ -3,72 +3,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PULL_REQUEST,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF849C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:07:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08D64C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:07:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 14AF264F5D
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:07:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14AF264F5D
+	by mail.kernel.org (Postfix) with ESMTPS id 297EE64F4A
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:07:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 297EE64F4A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4024317A3;
-	Wed,  3 Feb 2021 08:06:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4024317A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5C9B17AC;
+	Wed,  3 Feb 2021 08:06:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5C9B17AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612336037;
-	bh=Ry3wVCsb5+xVqegI0K0HPYFkAp81pmL6+r4Gy6FTjrk=;
+	s=default; t=1612336050;
+	bh=I7XUsonqxQL8RESwXupVbnx7AClY5Fb908IyfnxQUTc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qWwfOkQzQjj61uokFfzPj20xSkBCJz7VaBXLRrdPu7TnDF3Ir1sgF2lX+T/YW1Xce
-	 GiekDXeeeRy9SBhHr1y1503L/vZHStbiMqCgHnCflH6/fo5tzXiIvLO2ylYqFZ+MX8
-	 ELzKnSZ80BGzTiVQAX5LJgcUaHgqo1SDj8y8uvMM=
+	b=Si/n9+8yvhVDpRbCCfyNtkYOjb57ViNHIT6WXHhMHjgzXkei+dcHxrimxxoljZEvr
+	 t45FpMgFn8tyoEXQP6dHfat4lmWL1vVeC8nohZ7m6lYHkzeO9sQ+e1niqY+Tgo3AhP
+	 AxiH3dqDC0IMqXXsua582f+LHmm1wiGG7OnCF8Zs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D0BDF804E4;
-	Wed,  3 Feb 2021 08:01:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81E1AF804EB;
+	Wed,  3 Feb 2021 08:01:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 157CBF80171; Tue,  2 Feb 2021 20:43:41 +0100 (CET)
+ id 87015F80171; Tue,  2 Feb 2021 22:35:30 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5804EF80109
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 20:43:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5804EF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27A91F8013C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 22:35:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27A91F8013C
 Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <ukl@pengutronix.de>)
- id 1l71a4-0002fO-D0; Tue, 02 Feb 2021 20:43:20 +0100
+ id 1l73KK-0005G0-0Y; Tue, 02 Feb 2021 22:35:12 +0100
 Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
  (envelope-from <ukl@pengutronix.de>)
- id 1l71Zv-0004SH-BD; Tue, 02 Feb 2021 20:43:11 +0100
-Date: Tue, 2 Feb 2021 20:43:08 +0100
+ id 1l73KD-000359-6W; Tue, 02 Feb 2021 22:35:05 +0100
+Date: Tue, 2 Feb 2021 22:35:02 +0100
 From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Russell King <linux+pull@armlinux.org.uk>,
  Mathieu Poirier <mathieu.poirier@linaro.org>,
  Suzuki K Poulose <suzuki.poulose@arm.com>,
  Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
- Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH] mailbox: arm_mhuv2: make remove callback return void
-Message-ID: <20210202194308.jm66vblqjwr5wo6v@pengutronix.de>
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <20210202213502.ya4luwvklbte72sz@pengutronix.de>
 References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
  <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="agbwdn2ioogiuabj"
+ protocol="application/pgp-signature"; boundary="iy6nspqtdtxt6xyd"
 Content-Disposition: inline
 In-Reply-To: <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
 X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
@@ -81,12 +78,10 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, kvm@vger.kernel.org,
  David Airlie <airlied@linux.ie>, Linus Walleij <linus.walleij@linaro.org>,
  alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- Eric Anholt <eric@anholt.net>,
- Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig.org@pengutronix.de>,
- linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
- Jiri Slaby <jirislaby@kernel.org>, linux-stm32@st-md-mailman.stormreply.com,
- linux-watchdog@vger.kernel.org, linux-rtc@vger.kernel.org,
- Herbert Xu <herbert@gondor.apana.org.au>,
+ Eric Anholt <eric@anholt.net>, linux-i2c@vger.kernel.org,
+ linux-spi@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-watchdog@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
  linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
@@ -121,75 +116,111 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---agbwdn2ioogiuabj
+--iy6nspqtdtxt6xyd
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-My build tests failed to catch that amba driver that would have needed
-adaption in commit 3fd269e74f2f ("amba: Make the remove callback return
-void"). Change the remove function to make the driver build again.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 3fd269e74f2f ("amba: Make the remove callback return void")
-Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
----
 Hello,
 
-I guess I missed that driver during rebase as it was only introduced in
-the last merge window. Sorry for that.
+On Tue, Feb 02, 2021 at 02:53:50PM +0100, Uwe Kleine-K=F6nig wrote:
+> the following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e=
+5e:
+>=20
+>   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+>=20
+> are available in the Git repository at:
+>=20
+>   https://git.pengutronix.de/git/ukl/linux tags/amba-make-remove-return-v=
+oid
+>=20
+> for you to fetch changes up to f170b59fedd733b92f58c4d7c8357fbf7601d623:
+>=20
+>   amba: Make use of bus_type functions (2021-02-02 14:26:02 +0100)
+>=20
+> I expect this tag to be merged by Russell King as amba maintainer and by
+> Mathieu Poirier (or Greg Kroah-Hartman?) for coresight as there are some
+> pending conflicting changes. These are not hard to resolve but also
+> non-trivial. Tell me if you need assistance for resolving, also if it's o=
+nly a
+> second pair of eyes to judge your resolution.
 
-I'm unsure what is the right thing to do now. Should I redo the pull
-request (with this patch squashed into 3fd269e74f2f)? Or do we just
-apply this patch on top?
+Alternatively to my additional patch sent earlier today I prepared a v2
+tag at
 
-FTR, the test robot report is at https://lore.kernel.org/r/202102030343.D9j=
-1wukx-lkp@intel.com
+  https://git.pengutronix.de/git/ukl/linux tags/amba-make-remove-return-voi=
+d-v2
+
+with the build fix squashed in. Iff you prefer and both Russell and Greg
+agree to pull this one instead of the (implicit) v1 we can maybe prevent
+introducing this build regression in mainline. Please coordinate among
+you two. And sorry again for breaking the build.
 
 Best regards
 Uwe
 
- drivers/mailbox/arm_mhuv2.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+PS: The range-diff between the original
+tags/amba-make-remove-return-void and
+tags/amba-make-remove-return-void-v2 is:
 
-diff --git a/drivers/mailbox/arm_mhuv2.c b/drivers/mailbox/arm_mhuv2.c
-index 67fb10885bb4..6cf1991a5c9c 100644
---- a/drivers/mailbox/arm_mhuv2.c
-+++ b/drivers/mailbox/arm_mhuv2.c
-@@ -1095,14 +1095,12 @@ static int mhuv2_probe(struct amba_device *adev, co=
-nst struct amba_id *id)
- 	return ret;
- }
-=20
--static int mhuv2_remove(struct amba_device *adev)
-+static void mhuv2_remove(struct amba_device *adev)
- {
- 	struct mhuv2 *mhu =3D amba_get_drvdata(adev);
-=20
- 	if (mhu->frame =3D=3D SENDER_FRAME)
- 		writel_relaxed(0x0, &mhu->send->access_request);
--
--	return 0;
- }
-=20
- static struct amba_id mhuv2_ids[] =3D {
+1:  3fd269e74f2f ! 1:  481963c91284 amba: Make the remove callback return v=
+oid
+    @@ Commit message
+         Acked-by: Vladimir Zapolskiy <vz@mleia.com> # for memory/pl172
+         Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+         Link: https://lore.kernel.org/r/20210126165835.687514-5-u.kleine-k=
+oenig@pengutronix.de
+    +    [ukleinek: squashed in a build fix for drivers/mailbox/arm_mhuv2.c]
+         Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+    =20
+      ## drivers/amba/bus.c ##
+    @@ drivers/input/serio/ambakmi.c: static int amba_kmi_remove(struct amb=
+a_device *de
+     =20
+      static int __maybe_unused amba_kmi_resume(struct device *dev)
+    =20
+    + ## drivers/mailbox/arm_mhuv2.c ##
+    +@@ drivers/mailbox/arm_mhuv2.c: static int mhuv2_probe(struct amba_dev=
+ice *adev, const struct amba_id *id)
+    +   return ret;
+    + }
+    +=20
+    +-static int mhuv2_remove(struct amba_device *adev)
+    ++static void mhuv2_remove(struct amba_device *adev)
+    + {
+    +   struct mhuv2 *mhu =3D amba_get_drvdata(adev);
+    +=20
+    +   if (mhu->frame =3D=3D SENDER_FRAME)
+    +           writel_relaxed(0x0, &mhu->send->access_request);
+    +-
+    +-  return 0;
+    + }
+    +=20
+    + static struct amba_id mhuv2_ids[] =3D {
+    +
+      ## drivers/memory/pl172.c ##
+     @@ drivers/memory/pl172.c: static int pl172_probe(struct amba_device *=
+adev, const struct amba_id *id)
+        return ret;
+2:  f170b59fedd7 =3D 2:  f30d22a7bfab amba: Make use of bus_type functions
+
 --=20
-2.29.2
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-
---agbwdn2ioogiuabj
+--iy6nspqtdtxt6xyd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAZq0gACgkQwfwUeK3K
-7AnvFwf/Vj/2rwm/LS2yBZgC9lI9lbNS7MDRNAth1Fq2eWp2ByCbKHdpRnFCokp/
-Bk350ppjYY61jBRAG9ts8T+mrfwcHD9fjOamGLqhCRg9sdwC29T72vxVbt7p8j5g
-ZMPgB1Cs1n56eeobyale3SG5V9DncI0cu9gr5q/s09YI0qZfLfd4oVj2M1AJd8x0
-FzlgEPrVQadxZxqVmFogIFepwe6xmpjPmBFLn6XK3RB6tQjamSqXd3XUYYy9DkAj
-Xt57rSlMAYgF69pHmEcEVcPdGOw3YwImELrFdBhM7GfXjxIiYI4VjKH1Z05hG/Bx
-KkEiVe0iL1vI9eSQ6l5bCY9dNdIxEg==
-=S1EL
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAZxYMACgkQwfwUeK3K
+7AnuCggAjiQbE+eiwx7Lq2dUAxw0U6bgjFY/EXIcLCMbTPjdEffSVExAzMT3cTCy
+zISJDI3QF315/RleMFcnEXrXJl7Ft8SkoEvZfheNfz5JmPu8jPIEUp5giooDmpBi
+TV/LqBdE+wmy+J7byBdoH8Chvg9RR52u6aJFyj8nzwAoqj/+YiSYcB2nsMtr962B
+GLNq7i0h7Lj0cZxGVTsh75QuVSyK7yedx7gS4F5wUURJpSa5LzeeWAboWgARpg+M
+/BIWHX1CAs2JGZQqzJF2hffd/HZhQCWJlgTa1x92sg2Ic62K+ufwdsHlo87Wuo42
+N6jvYIoY/t/LHHL+3zxpfxM1yFao+A==
+=lf3x
 -----END PGP SIGNATURE-----
 
---agbwdn2ioogiuabj--
+--iy6nspqtdtxt6xyd--
