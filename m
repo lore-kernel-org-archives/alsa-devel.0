@@ -2,66 +2,90 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEAD1C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 20:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFF78C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:42:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DC2D764E45
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 20:34:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC2D764E45
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 914F564F91
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:42:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 914F564F91
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bertschiettecatte.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C8621728;
-	Tue,  2 Feb 2021 21:34:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C8621728
+	by alsa0.perex.cz (Postfix) with ESMTPS id 142501728;
+	Tue,  2 Feb 2021 23:41:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 142501728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612298094;
-	bh=I3JYaN7uIHJMZuDgph/fyBT5vaUzmwXNxt2sinzi6uI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1612305763;
+	bh=lSb1uwzTZJXs1RkgvVBa8Wju3zbDnYhWA5Y4hFLBaw4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JbywzNuhZB2jovC1ytOMfyENs4ISd6ha1mLWwlNDZydWAhS45fckdK59WyT4qb3bC
-	 +Xshl8ZLNzVb51ainHDQnohkiibUwwsTLhRXxbBn2KWUNNTn3T6vla3Zsvaj1kXpiQ
-	 6zfP19R5jmrwy4nKxTESH2H37jiiHB/ITwmiC7S8=
+	b=YZakb+EfZzJnBKJxDV97kjzcNhFBmIgZQdgpLsfJsYW0zxSZTRYSmqxh9cVKLX+lT
+	 3uk24crvDOquT87QwRIuwSTd1K0aKEgNu4gPSztw9Q3xf8bmXO01h7zuODdjZFmizm
+	 gqBkTVRimRp/n6vRVv2mmS79kW/1tZkwnmHI0RUo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C931EF8013C;
-	Tue,  2 Feb 2021 21:34:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75D8EF80152;
+	Tue,  2 Feb 2021 23:41:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B727AF80171; Tue,  2 Feb 2021 21:34:01 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2367EF80171; Tue,  2 Feb 2021 23:41:50 +0100 (CET)
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com
+ [IPv6:2607:f8b0:4864:20::b35])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04EC8F8013C
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 21:33:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04EC8F8013C
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 44B55AC55;
- Tue,  2 Feb 2021 20:33:53 +0000 (UTC)
-Date: Tue, 02 Feb 2021 21:33:53 +0100
-Message-ID: <s5ha6smciq6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Peter Allen <peter.allenm@gmail.com>
-Subject: Re: Nux Mighty Plug USB - no clock source
-In-Reply-To: <CAHa6N62V2PiZZFNpxELwPgJrxoDOa-6Byw6Oj8xwBrmFRjDzuw@mail.gmail.com>
-References: <CAHa6N62-YS++jM3O8E1dSY9eCcg6P0uW-X9xOusX96_DGVhS-A@mail.gmail.com>
- <s5h4kivj26x.wl-tiwai@suse.de>
- <CAHa6N62V2PiZZFNpxELwPgJrxoDOa-6Byw6Oj8xwBrmFRjDzuw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 122CCF800E1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 23:41:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 122CCF800E1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=bertschiettecatte-com.20150623.gappssmtp.com
+ header.i=@bertschiettecatte-com.20150623.gappssmtp.com header.b="AuqYfzQs"
+Received: by mail-yb1-xb35.google.com with SMTP id r2so4522051ybk.11
+ for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 14:41:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bertschiettecatte-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=lSb1uwzTZJXs1RkgvVBa8Wju3zbDnYhWA5Y4hFLBaw4=;
+ b=AuqYfzQsbNX60/pt2IeFGN5BiTVwfZOPQ54n1IdyPa9OeC8wAGsglpKSvkd2nANl8R
+ FPCzGEGuK4OOkZ/SHZwP1RwcGj4hprUBiZP3VIKKVRofpYO5/z2zYYzpZRrjJNZessvV
+ mMOgvhBGXww0wkX7z8AJo0ie6b/iH8Dhvb2nO8U9kg6bIgDLVhFR8F9D+/MkdPt9gygu
+ oXOHWb393K41g40fMHq0wtsadViN4bGUBwkp5B2yCanw1lM8sKXqtMJIsgVpqp7Y+I6H
+ aGfDCr0Zysd71kBrLSpqdiKYQ2OAcIL/45vVI/NDZXfNwbXGygZvbWQZH/N1JU3iSaWH
+ xmwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=lSb1uwzTZJXs1RkgvVBa8Wju3zbDnYhWA5Y4hFLBaw4=;
+ b=adA6Xchp4sQSnmRKCi7gJF16WUFHdqtJDlCnKgrd+rxet35NY6nAq8gnb6c34wV/6f
+ wKLlGLcV4jL/6ZnqDHSuoXzUIQ0OBpZKPCsdUo/NRa1cRkS8hUZP0pnXeP4lgl+W1OUV
+ ygxV+Akh6r4BUIUF0IRl6ZE+XNputjexWfkp0uc+xDrgTM3vCDmKCMWjZgDccjwQ2wKF
+ wmRzVRDjRnmKdCt/IBdiCjhcohQ2FVQcYYuL7FkH2DxfZ3GAeCG15fyveIJB720gWnNP
+ 7yCCY4ip4v5rZrQiXqR6fZpWatABdeUXkYvTsIhkfhZJitkOysawTVeY8f9mvNwNTUAH
+ +YBA==
+X-Gm-Message-State: AOAM531ye56VX2RdKWjt2QIFLZuG/P11M/CJJwaWOefsc9jrUoEKNkX8
+ nXMPmx7IrPCNV51UJ8oHMQm2glVFu/92fOFKFfB1Tw==
+X-Google-Smtp-Source: ABdhPJw61FX3Y7AvBBmYyxCog2lk3h8rO2i35a2DBEqIPCG9v/37HFgCPKZO0NF3BjO5/0n9g6+96OmkpdqQBIOXLXU=
+X-Received: by 2002:a25:6190:: with SMTP id v138mr267315ybb.36.1612305700503; 
+ Tue, 02 Feb 2021 14:41:40 -0800 (PST)
+MIME-Version: 1.0
+References: <CALd3UbT7DcXSmLO2VEDReY5aft5shpeEBS_wg7bWpoC6Q3qxzQ@mail.gmail.com>
+ <9b19b22c-b096-2ba9-8323-5d3fd9a9ef49@ivitera.com>
+ <CALd3UbQjJL194sJMy0nrjx6J7RZ3L44hm4OH4dffhpmSNNBaGA@mail.gmail.com>
+ <4321a2f2-28e4-32a2-c590-90eeaec35682@ivitera.com>
+In-Reply-To: <4321a2f2-28e4-32a2-c590-90eeaec35682@ivitera.com>
+From: Bert Schiettecatte <bert@bertschiettecatte.com>
+Date: Tue, 2 Feb 2021 14:41:29 -0800
+Message-ID: <CALd3UbQeRKU_cdkAfC_JN++qjfDoBtWQ8+T_4mgp0Z3L7C=2bg@mail.gmail.com>
+Subject: Re: question about ALSA devices not showing up in buildroot build
+To: Pavel Hofman <pavel.hofman@ivitera.com>
+Content-Type: text/plain; charset="UTF-8"
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -78,76 +102,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Feb 2021 19:52:57 +0100,
-Peter Allen wrote:
-> 
-> Thank you for taking the time to look at this.
-> I've tried your latest 5.12 branch, and sure enough it works perfectly without
-> any problems. 
-> So I'm really happy. Thank you!
+Hi Pavel
 
-Good to hear!
+> Sometimes strace has been of help to me, to see which file is being
+> tried to open:
+> strace aplay -L 2>&1 | grep 'open('
 
+you can see the output before grepping here - https://pastebin.com/Nh3v6P4c
 
-Takashi
-
-> 
-> Pete
-> 
-> On Mon, 1 Feb 2021, 14:24 Takashi Iwai, <tiwai@suse.de> wrote:
-> 
->     On Sat, 30 Jan 2021 09:30:50 +0100,
->     Peter Allen wrote:
->     >
->     > I have a NUX Mighty Plug guitar effects which has a USB Audio interface.
->     > Unfortunately it doesn't work in Linux, and I'd love to fix it.
->     > It gets registered with Alsa, except it ends up without any valid sample
->     > rates (by the look of it due to a buggy clock source descriptor).
->     >
->     > This is on Ubuntu-Studio 20.04 LTS _Focal Fossa with kernel
->     > 5.4.0-62-lowlatency
->     > on a HP Omen 15 with i5-7300HQ
->     >
->     > I don't know what I'm doing (but did a little module development rather
->     a
->     > long time ago in the 2.2 days :-)) Help is  greatly appreciated.
->     >
->     > When plugged in I get:
->     > [12476.413792] usb 1-1: New USB device found, idVendor=1fc9,
->     > idProduct=8260, bcdDevice= 1.00
->     > [12476.413797] usb 1-1: New USB device strings: Mfr=1, Product=2,
->     > SerialNumber=3
->     > [12476.413800] usb 1-1: Product: MIGHTY PLUG USB
->     > [12476.413804] usb 1-1: Manufacturer: NUX
->     > [12476.413807] usb 1-1: SerialNumber: 2007151403
->     > [12476.444988] usb 1-1: __uac_clock_find_source(): selector reported
->     > illegal value, id 40, ret 0
->     > [12476.444992] usb 1-1: parse_audio_format_rates_v2v3(): unable to find
->     > clock source (clock -22)
->     > [12476.445413] usb 1-1: __uac_clock_find_source(): selector reported
->     > illegal value, id 40, ret 0
->     > [12476.445479] usb 1-1: __uac_clock_find_source(): selector reported
->     > illegal value, id 40, ret 0
->     > [12476.447095] usb 1-1: __uac_clock_find_source(): selector reported
->     > illegal value, id 40, ret 0
->     > [12476.447098] usb 1-1: parse_audio_format_rates_v2v3(): unable to find
->     > clock source (clock -22)
->     > [12476.447459] usb 1-1: __uac_clock_find_source(): selector reported
->     > illegal value, id 40, ret 0
->     > [12476.447684] usb 1-1: __uac_clock_find_source(): selector reported
->     > illegal value, id 40, ret 0
->     > [12476.450397] usbcore: registered new interface driver snd-usb-audio
->    
->     This might be covered by the recent fixes for 5.12 kernel, found in
->     for-next branch of my sound git tree.
->       git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
->    
->     Also, as both playback and capture streams are ASYNC, those might be
->     supposed to be running in the implicit feedback.  With the very latest
->     kernel, this can be enabled via implicit_fb=1 module option.  If this
->     works better, we can set up a static quirk table entry for the device,
->     too.
-> 
->     Takashi
-> 
-> 
+Thanks
+Bert
