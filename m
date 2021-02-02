@@ -2,63 +2,71 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77403C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 09:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB6E5C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 09:37:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 418B564F09
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 09:33:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 418B564F09
+	by mail.kernel.org (Postfix) with ESMTPS id 7037364D99
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 09:37:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7037364D99
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96D151753;
-	Tue,  2 Feb 2021 10:32:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96D151753
+	by alsa0.perex.cz (Postfix) with ESMTPS id A049E175F;
+	Tue,  2 Feb 2021 10:36:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A049E175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612258401;
-	bh=sHFzF51ya6XtjiWO5/63rHnfNvqcCaOwaSBd2b3ftxo=;
+	s=default; t=1612258630;
+	bh=SsQQiv3maV4P+oCCcj7fLZHIW94jxWuKnJq8vTajpVU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e2/+6u2N3EqJ9ZPi2qjjM04iu0OrE9fgHGQU2pklKy6Ru1DEwPzmmuXzjKyzLkwaf
-	 VO3j6UoIeofVD8RqeDKZMle5Ezic81bFu0cawUD5ZZfVYOoEkBRpkPV7Qn6cPIb8Ow
-	 BJnlJeDgV6jt8NixXg46trlH7fRUwBS2/a1gMSGM=
+	b=Hw1WpQb6Mbg57jRGd5gs7BtHIdwxIPQQK83m4TtuTpqkDOM8OylUMyUyA3KvC6Phi
+	 kN42Zdemx/rQDeyKozjUZnmIIGzkVJWxZgtjdz5sfJ56tpvt9uzpWmlgMwxsV5yYv4
+	 ydzRMncDW9IA/tDbaK3FBgCwoET3gK1vy+W7BUxI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A80CF80152;
-	Tue,  2 Feb 2021 10:32:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AFC0F80152;
+	Tue,  2 Feb 2021 10:36:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9224F80171; Tue,  2 Feb 2021 10:32:29 +0100 (CET)
+ id 30751F80171; Tue,  2 Feb 2021 10:36:18 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80738F8013C
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 10:32:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80738F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 440F0F8013C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 10:36:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 440F0F8013C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 60320B07B;
- Tue,  2 Feb 2021 09:32:26 +0000 (UTC)
-Date: Tue, 02 Feb 2021 10:32:26 +0100
-Message-ID: <s5hh7mug6hh.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id DAE7FB179;
+ Tue,  2 Feb 2021 09:36:13 +0000 (UTC)
+Date: Tue, 02 Feb 2021 10:36:13 +0100
+Message-ID: <s5heehyg6b6.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pshou <pshou@realtek.com>
-Subject: Re: add one Advantech  SSID in the ALC886
-In-Reply-To: <e62c5058957f48d8b8953e97135ff108@realtek.com>
-References: <e62c5058957f48d8b8953e97135ff108@realtek.com>
+To: fassl <superfassl@gmail.com>
+Subject: Re: [PATCH] sound: pci/rme9652 - implement and expose controls for
+ output
+In-Reply-To: <95cb3117-e85a-51a6-c2ce-bf736e70fc4c@gmail.com>
+References: <3cd2889a-e71a-aa3f-e79a-d11a4833c581@gmail.com>
+ <s5h35ygji0q.wl-tiwai@suse.de>
+ <730e7f87-6e6c-77cf-c6cf-2baf23bd1f4c@gmail.com>
+ <s5heehzj3ox.wl-tiwai@suse.de>
+ <95cb3117-e85a-51a6-c2ce-bf736e70fc4c@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Allen Pais <allen.lkml@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Colin Ian King <colin.king@canonical.com>,
+ Romain Perier <romain.perier@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,20 +82,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Feb 2021 01:30:43 +0100,
-Pshou wrote:
+On Mon, 01 Feb 2021 15:28:52 +0100,
+fassl wrote:
 > 
-> Hi Alsa-devel ML:
+> >From a9072f701f945ba00c42f612e85830395d81450d Mon Sep 17 00:00:00 2001
+> From: Jasmin Fazlic <superfassl@gmail.com>
+> Date: Sun, 31 Jan 2021 22:17:22 +0100
+> Subject: [PATCH] sound: pci/rme9652 - hardware output loopback
 > 
-> Can you help me add some source code to patch_realtek.c?
+> Output loopback is a feature where you can record what you hear.
+> The HDSP series of the RME interfaces provides this functionality
+> at the hardware level and this patch exposes controls to enable or
+> disable it per output (playback) channel.
 > 
-> Add one Advantech SSID in the alc886.
+> This probably works on other cards but due to a lack of hardware
+> it is only tested and enabled for the HDSP9632 card with this patch.
 > 
-> Best regards
+> Should this patch be accepted a separate patch will be posted to
+> https://github.com/alsa-project/alsa-tools/tree/master/hdspmixer
+> which adds "LPBK" buttons to each ouput in the playback strip for
+> the user to be able to control this feature from the user land.
+> Users from Windows tool TotalMixFX should be familiar with this.
 > 
-> Pshou
+> Signed-off-by: Jasmin Fazlic <superfassl@gmail.com>
 
-Thanks, applied now.
+Thanks, applied now with a slight modification of subject and a typo
+correction in the patch description (it's always good to run
+checkpatch once before submission :)
 
 
 Takashi
