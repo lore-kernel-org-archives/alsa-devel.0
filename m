@@ -2,65 +2,63 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B6EBC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 11:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15E40C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 11:42:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B544664EC1
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 11:38:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B544664EC1
+	by mail.kernel.org (Postfix) with ESMTPS id 2E1B264DB1
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 11:42:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E1B264DB1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54E521742;
-	Tue,  2 Feb 2021 12:37:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54E521742
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80AAA16F8;
+	Tue,  2 Feb 2021 12:41:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80AAA16F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612265891;
-	bh=hpMo86wgyuDzhFsaC4k8n6XiYaP3isKNVJQoadnR3TU=;
+	s=default; t=1612266119;
+	bh=d6HgYraXA04A2OM6b2qXcrZzNuMFP8C+rS+pPmG1pFE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T0U94LFejypvRJjTxGRLpEeiINpJxLxEkHYUuXoNXbA5SchBbxnrZ13XUoA+Wtb1m
-	 XzGMNR2zjNwUc7YB1lWrDVSFcIavFwCoTzGi0hIDhiW7IFYaoKxnO9LRT/jhu5UyG+
-	 J3R3r9dtixV9WuVddfnZrSGrvTvQBVTwVjHF/vbY=
+	b=FD+HaDh4rmrl9gZDB84tx1tm9kRKbJ6bXcXL8L1h2OkQ5pqXXjsByRyMVnfM1KQOH
+	 NDe+XuCM/winbySx0efKJouI4bEPnsTSv+Po+gg2cR1gf8uUwE38e+k63w/Py44eXs
+	 fU5IGWrt0qjd8ftwksiPvaqqL6j4RTLESb0gO8Cw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBDCDF80152;
-	Tue,  2 Feb 2021 12:37:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC9FDF8013C;
+	Tue,  2 Feb 2021 12:41:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB113F80171; Tue,  2 Feb 2021 12:37:19 +0100 (CET)
+ id 492F0F80171; Tue,  2 Feb 2021 12:41:08 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B873CF80109
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 12:37:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B873CF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5343F8013C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 12:41:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5343F8013C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id F2B46AD37;
- Tue,  2 Feb 2021 11:37:12 +0000 (UTC)
-Date: Tue, 02 Feb 2021 12:37:12 +0100
-Message-ID: <s5h5z3ag0pj.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B67ADAD6A;
+ Tue,  2 Feb 2021 11:41:04 +0000 (UTC)
+Date: Tue, 02 Feb 2021 12:41:04 +0100
+Message-ID: <s5h4kiug0j3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Fabian Lesniak <fabian@lesniak-it.de>
-Subject: Re: [PATCH] ALSA: usb-audio: add mixer quirks for Pioneer DJM-900NXS2
-In-Reply-To: <20210201212248.54364-1-fabian@lesniak-it.de>
-References: <20210201212248.54364-1-fabian@lesniak-it.de>
+To: Olivia Mackintosh <livvy@base.nu>
+Subject: Re: [PATCH 1/2] ALSA: usb-audio: Add DJM450 to Pioneer format quirk
+In-Reply-To: <20210202000237.z2hxauysouuf3ice@base.nu>
+References: <20210202000237.z2hxauysouuf3ice@base.nu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Olivia Mackintosh <livvy@base.nu>,
- =?UTF-8?B?RnJhbnRpxaFlayBLdcSNZXJh?= <franta-linux@frantovo.cz>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,24 +74,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 01 Feb 2021 22:22:47 +0100,
-Fabian Lesniak wrote:
+On Tue, 02 Feb 2021 01:02:37 +0100,
+Olivia Mackintosh wrote:
 > 
-> This commit adds mixer quirks for the Pioneer DJM-900NXS2 mixer. This
-> device has 6 capture channels, 5 of them allow setting the signal
-> source. This adds controls for these, similar to the DJM-250Mk2.
-> However, playpack channels are not controllable via software like on the
-> 250Mk2, as they can only be set manually on the mixing console.
-> Read-only controls showing the currently selected playback channels are
-> omitted.
-> 
-> This patch is built on top of the DJM750 mixer quirk support and
-> requires it to be applied first.
-> 
-> Signed-off-by: Fabian Lesniak <fabian@lesniak-it.de>
+> Like the DJM-750, ensure that the format control message is passed to
+> the device when opening a stream. It seems as though fmt->sync_ep is not
+> always set when this function is called hence the passing of the value
+> at the call site. If this can be fixed, fmt->sync_up should be used as
+> the wvalue.
 
-Which tree / branch is this patch based on?  It doesn't seem applying
-cleanly either on for-linus or for-next branch.
+Could you give your Signed-off-by line?
+
+> +static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
+> +					u16 windex)
+> +{
+> +	unsigned int cur_rate = subs->data_endpoint->cur_rate;
+> +	u8 sr[3];
+> +	// Convert to little endian
+> +	sr[0] = cur_rate&0xff;
+> +	sr[1] = (cur_rate>>8)&0xff;
+> +	sr[2] = (cur_rate>>16)&0xff;
+
+Better to have some appropriate spaces around operators.
+
+Also, instead of open-code, you can use cpu_to_le32() and pass its
+pointer, too.
 
 
 thanks,
