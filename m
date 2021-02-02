@@ -2,81 +2,76 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA800C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:29:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80F99C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:31:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26B0764E2A
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:29:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26B0764E2A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id EF5C064F4D
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:31:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF5C064F4D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA1891784;
-	Tue,  2 Feb 2021 18:28:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA1891784
+	by alsa0.perex.cz (Postfix) with ESMTPS id E08D7176A;
+	Tue,  2 Feb 2021 18:31:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E08D7176A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612286982;
-	bh=zm1MPrUhj1UuLRrU9gqRLjVl10m31WM8jmwUzJLj+GE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1612287111;
+	bh=MsYWS5fR84takhXK5ZPtutS06RculY3MNRJAjqjwzAo=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DZpqgzdX6ZitxmWLaDJ7CXElN04iJY2q9uVEym77Z/4jt7B3zibM/mUnJevQ+4TUj
-	 Jd6r2X7HS9q9/LNyREeeX//s4GsPGZH+YWIR15NJD/EYISpM/AZmHT8r0mGIQphkoJ
-	 0ZEwRbN/Xd7ZFesadfss52Qmm05XCmToxNrIuLlo=
+	b=YfrbHev/ukz+4iELePv9OxoSiBZmVFBEy9km3k6PtjguzUZQd1pzSnn5Jigs2Zauv
+	 dblTvkSCkeCxkkpZyoQGIELQh0N3LxrO6RXTcx0TUImIbjS/i8is/zAPp0SROOs33B
+	 LdVItQmJ4/z3k0jXjXgxuifAb1kAN5+3fzEfqcWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 170E2F80246;
-	Tue,  2 Feb 2021 18:28:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 699D5F80171;
+	Tue,  2 Feb 2021 18:31:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0900F8023B; Tue,  2 Feb 2021 18:27:56 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D5526F80171; Tue,  2 Feb 2021 18:30:58 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3D8BF80152
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:27:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3D8BF80152
-IronPort-SDR: vddZnQgG/NA9GBbN6GJjRga7lMO/ebn/rAEFZapCVuAa4Z8TZkvIWucPmBR2dkNbyRo9rXPt9i
- RYx2LwivBvSQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="265726531"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; d="scan'208";a="265726531"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2021 09:27:49 -0800
-IronPort-SDR: HfFg+VQ4ZEeKVhk/vhJsVfeAKKZst4btROqlGQgAxTN89jRrSMDa05gehdk5qY7c3sM6Pdt7KB
- cpNrvBd+eG1A==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; d="scan'208";a="370798503"
-Received: from ncruzgar-mobl.amr.corp.intel.com (HELO [10.212.75.122])
- ([10.212.75.122])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2021 09:27:48 -0800
-Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
- <5c69ed09-60be-2f3d-ed25-f6dbfcb9d62f@linux.intel.com>
- <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
- <b87758d0-5862-3b4e-5a90-7b27d0c78d0d@linux.intel.com>
- <4e3ebb99-5647-f71c-1256-a2c55bd9995f@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <25ca91d5-4492-34f8-46df-4cb53c3a0b1b@linux.intel.com>
-Date: Tue, 2 Feb 2021 10:58:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE962F80109
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:30:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE962F80109
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Laas/WDE"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01DE564ECE;
+ Tue,  2 Feb 2021 17:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1612287047;
+ bh=MsYWS5fR84takhXK5ZPtutS06RculY3MNRJAjqjwzAo=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Laas/WDEqIz1PIDtsTH4GdAnfy1yrBNddu0b36XRjEio7LT1P7BhfX4gvVnb9wPPc
+ A+lGtedCxIzhaWtltzzzWVon4e3FD/SIWXyJq0Rw6xZ3kKrzqVjIxsr82f2fMVN2vP
+ 0SwFYEVtn2at8vnfhT4onKoZ6ZO2vubtrB1kLyexgSbxO9ffLe4nNRTUOooWYlD4jd
+ q/eKGMpT/urUV8NAwaZjo68CvH1/Z5KKivObsx/E37G0vqSdCXLWTChBiwMJL36F4x
+ Nd9UlIO5Zj3+LVHT6ZlXR/c3c+8IZQa4mXfGmh3GkDZ4wyzyr99gmX4WnuyXXZUmRt
+ rdRIspXmhkQNA==
+From: Mark Brown <broonie@kernel.org>
+To: perex@perex.cz, tiwai@suse.com, timur@kernel.org,
+ Tang Bin <tangbin@cmss.chinamobile.com>, Xiubo.Lee@gmail.com,
+ nicoleotsuka@gmail.com, lgirdwood@gmail.com
+In-Reply-To: <20210128112714.16324-1-tangbin@cmss.chinamobile.com>
+References: <20210128112714.16324-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Utilize the defined parameter to clear
+ code
+Message-Id: <161228699993.35075.10104623503101493059.b4-ty@kernel.org>
+Date: Tue, 02 Feb 2021 17:29:59 +0000
 MIME-Version: 1.0
-In-Reply-To: <4e3ebb99-5647-f71c-1256-a2c55bd9995f@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,31 +87,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 28 Jan 2021 19:27:14 +0800, Tang Bin wrote:
+> Utilize the defined parameter 'dev' to make the code cleaner.
 
->>>>> generates interrupt after it successfully finishes. This is really
->>>>> overhead, limiting and not really necessary unless we are doing
->>>>> something special.
->>>>>
->>>>> We can simply read/write the fifo that should also give exactly
->>>>> what we need! This will also allow to read/write registers in
->>>>> interrupt context, which was not possible with the special
->>>>> command approach.
->>>>
->>>> This is really unclear, sorry.
->>>
->>> If read/writes are waiting for an interrupt, it becomes difficult to 
->>> read or write to any registers from same interrupt handler!
->>
->> Well, yes, you need to handle the complete() at a lower level than the 
->> code that initiates the transactions otherwise you self-deadlock.
->>
->> IIRC in the Intel initial code, the complete was in the handler and 
->> the register IOs in the thread.
->>
-> Yes, we did the same in previous version of the code, however with this 
-> patch reading/writing fifo directly without need of completion should 
-> remove that need of another thread!
+Applied to
 
-Right, but you'll also write-off some command/control efficiency by 
-either sleeping too much before checking the status, or sleeping too 
-little and reading status from a transaction that's not finished.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: fsl_spdif: Utilize the defined parameter to clear code
+      commit: 68be8ed6a4622d4eb6cf7632bc7cb78464c83c78
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
