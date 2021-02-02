@@ -2,68 +2,59 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54440C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:57:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CF5CC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:58:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 289C464F6A
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:57:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 289C464F6A
+	by mail.kernel.org (Postfix) with ESMTPS id 4FD8664F65
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:58:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FD8664F65
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 273AA1728;
-	Tue,  2 Feb 2021 23:57:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 273AA1728
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72285174F;
+	Tue,  2 Feb 2021 23:57:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72285174F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612306673;
-	bh=ZvLorEGRwsuGbTByJ21baHYlG6ZPw1pWMVYR3NoGAJE=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jS+HU1pNtpU3X3xtrShMc1GTgJzEKiaVegROvfGIOCxGHVPd39F+L8MWv9uq5cmsw
-	 FgWtzer83YkdTxYHjm/uYPqIk7vf65MgFTV443NdmBWFCdg9uqQljEA3Oo+4Lh9bui
-	 +equn1IQuIUp46SZ8fy4tiAvRIE+cfkuTycKjizo=
+	s=default; t=1612306727;
+	bh=MYemdnRDN6BsPw3FWs73fOj4QDozXJLKzMDUNTVBr0U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lXsBEZ9Un/PbyFxCFH0GOkWxkGvb2EwJfPofZb7fbRgutCsVPqrX/8tZXUZKylASK
+	 tNzdLQse2Koj3Z6+P3+jx87jHDVDZ1qqoRr3ZRni0faYV2rHPPnmxAkImGcgLl1Kta
+	 S0WJr5EED30jfa742gQcbSMrGcx/9nEfh3+lY5bo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2AEFF80171;
-	Tue,  2 Feb 2021 23:57:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E131CF8025C;
+	Tue,  2 Feb 2021 23:57:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF6B0F80152; Tue,  2 Feb 2021 23:57:00 +0100 (CET)
+ id DA3AAF8025D; Tue,  2 Feb 2021 23:57:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42525F800E1
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 23:56:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42525F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D915EF8013C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 23:56:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D915EF8013C
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B35FAAC41;
- Tue,  2 Feb 2021 22:56:53 +0000 (UTC)
-Date: Tue, 02 Feb 2021 23:56:53 +0100
-Message-ID: <s5h4kiucc3u.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 86EC2ACAC;
+ Tue,  2 Feb 2021 22:56:59 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: Oops with "ALSA: jack: implement software jack injection via
- debugfs"
-In-Reply-To: <161230605343.29124.4948122167882588203@build.alporthouse.com>
-References: <161228343605.1150.8862281636043446562@build.alporthouse.com>
- <s5h4kiue7q4.wl-tiwai@suse.de>
- <161230605343.29124.4948122167882588203@build.alporthouse.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: core: Fix the debugfs removal at snd_card_free()
+Date: Tue,  2 Feb 2021 23:56:29 +0100
+Message-Id: <20210202225629.1965-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Hui Wang <hui.wang@canonical.com>, Chris Wilson <chris@chris-wilson.co.uk>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,30 +70,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Feb 2021 23:47:33 +0100,
-Chris Wilson wrote:
-> 
-> Quoting Takashi Iwai (2021-02-02 16:48:35)
-> > On Tue, 02 Feb 2021 17:30:36 +0100,
-> > Chris Wilson wrote:
-> > > 
-> > > commit 2d670ea2bd53 ("ALSA: jack: implement software jack injection via
-> > > debugfs") is causing issues for our CI as we see a use-after-free on
-> > > module unload (on all machines):
-> > > 
-> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9715/fi-skl-6700k2/pstore0-1612277467_Oops_1.txt
-> > 
-> > Could you try the patch below?  The unload test was completely
-> > forgotten.
-> 
-> This took longer than it deserved,
-> https://patchwork.freedesktop.org/series/86597/
-> 
-> The oops is fixed.
-> 
-> Tested-by: Chris Wilson <chris@chris-wilson.co.uk>
+The commit 2d670ea2bd53 ("ALSA: jack: implement software jack
+injection via debugfs") introduced a debugfs root for each sound card
+object.  The debugfs entry gets removed at the card removal, too, but
+it turned out that debugfs_remove() is called at a wrong place; it's
+after the card object gets freed, hence it leads to use-after-free.
 
-Thanks!  I'm going to queue the fix before reaching to linux-next.
+Fix it by moving the debugfs_remove() at the right place, the
+destructor of the card device.
 
+Fixes: 2d670ea2bd53 ("ALSA: jack: implement software jack injection via debugfs")
+Reported-and-tested-by: Chris Wilson <chris@chris-wilson.co.uk>
+Link: https://lore.kernel.org/r/161228343605.1150.8862281636043446562@build.alporthouse.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/init.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Takashi
+diff --git a/sound/core/init.c b/sound/core/init.c
+index d4e78b176793..84b573e9c1f9 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -487,6 +487,10 @@ static int snd_card_do_free(struct snd_card *card)
+ 		dev_warn(card->dev, "unable to free card info\n");
+ 		/* Not fatal error */
+ 	}
++#ifdef CONFIG_SND_DEBUG
++	debugfs_remove(card->debugfs_root);
++	card->debugfs_root = NULL;
++#endif
+ 	if (card->release_completion)
+ 		complete(card->release_completion);
+ 	kfree(card);
+@@ -537,11 +541,6 @@ int snd_card_free(struct snd_card *card)
+ 	/* wait, until all devices are ready for the free operation */
+ 	wait_for_completion(&released);
+ 
+-#ifdef CONFIG_SND_DEBUG
+-	debugfs_remove(card->debugfs_root);
+-	card->debugfs_root = NULL;
+-#endif
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL(snd_card_free);
+-- 
+2.26.2
+
