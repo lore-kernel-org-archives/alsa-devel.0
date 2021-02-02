@@ -2,114 +2,104 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3CB3C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:06:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43A40C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:06:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F407464E30
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:06:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F407464E30
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=armlinux.org.uk
+	by mail.kernel.org (Postfix) with ESMTPS id B7B1064E30
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 07:06:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7B1064E30
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 453F21753;
-	Wed,  3 Feb 2021 08:05:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 453F21753
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37B311787;
+	Wed,  3 Feb 2021 08:05:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37B311787
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612335978;
-	bh=9GbNFehuteFeIT5fF6QkyC+1HcIm09JnHLAS74L7CAs=;
+	s=default; t=1612335991;
+	bh=4Smv+IgTSCIf8ce+xBhjejYOmhHvFqlFrol0roSVQus=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ngg5p0r49WiS3dtHra6FwfvaSgkT6NxKu/7l8WbWpjPK3b/xm5GvrbUUPR0YtR0Jp
-	 JKq8q8u8dVqzI2VkhWHkuE8JQY1KRC1kwvUjHHS/feIexZmBaj7MmX2b1rumbo8B7Q
-	 4eN6g0LFfimrJvmMVCm0YDXe0jv4tAUdW1y/yeLE=
+	b=LQ10KkwcERzQ5/RcltN9l9Bla0/TdBs2g0EBYSYOIZSHO3x5vTgbmLzRkq0pN96F7
+	 m0eVeGuSdQwM0eYxvoUx74vEOXauxnKHATT1UQeUH5ahAQxwrXUBZkD4N7WSPrwEOC
+	 qk0cxX7SUq210bl8NeEuZ5/zC6Biys8QHg0Hs9sI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B682EF80430;
-	Wed,  3 Feb 2021 08:01:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 816C9F804D8;
+	Wed,  3 Feb 2021 08:01:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBE89F80171; Tue,  2 Feb 2021 11:51:16 +0100 (CET)
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
- [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+ id 36C82F8023B; Tue,  2 Feb 2021 14:54:21 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11334F80109
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 11:51:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11334F80109
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk
- header.b="wg2o6QP/"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
- Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
- Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
- List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=QUFoL1M4pevTeMyLwnDogHEMlQrHMZssskb6wG1LFcA=; b=wg2o6QP/gHbhqBuIhn1RZoUGj
- 2iHotGU7ufXkLAWPw4UwYFPNHzUu8ddsLF6ZH7DAZK9ibPxZPao37pY3QUiSj2kNvPg18QoU3RIbp
- SB9YdTsgzRp09KPTWE899TVtBN6b7+9uCVpM084z3RB+393ttTKlzy9IbXmuACxRaE7AQP1axErmx
- 9bdLyqL5Tzp+2AR1s8H8Ra8HKPn+VaEgvK7MKLCh/WvBYIcLxWRrMqhYn6+wAR7lOhqYiExSBYnla
- 2ZSGKUuSlOCD0mvUg9A5mz9A1bzzWPt0jeQ/XhpyrV3IGp6JHZ9fsbmIMsvJ8Mev9a6w8QLTZD9/a
- CRpSMItzA==;
-Received: from shell.armlinux.org.uk
- ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38176)
- by pandora.armlinux.org.uk with esmtpsa
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D7CDF80152
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 14:54:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D7CDF80152
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <linux@armlinux.org.uk>)
- id 1l6tFN-0004FH-LS; Tue, 02 Feb 2021 10:49:25 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
- (envelope-from <linux@shell.armlinux.org.uk>)
- id 1l6tFE-0002yZ-0J; Tue, 02 Feb 2021 10:49:16 +0000
-Date: Tue, 2 Feb 2021 10:49:15 +0000
-From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v3 0/5] amba: minor fix and various cleanups
-Message-ID: <20210202104915.GK1463@shell.armlinux.org.uk>
+ (envelope-from <ukl@pengutronix.de>)
+ id 1l6w82-0000fW-TE; Tue, 02 Feb 2021 14:54:02 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1l6w7u-0006bW-5D; Tue, 02 Feb 2021 14:53:54 +0100
+Date: Tue, 2 Feb 2021 14:53:50 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Russell King <linux+pull@armlinux.org.uk>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
+Message-ID: <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
 References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ofqcafd7fzy3m7fk"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
 X-Mailman-Approved-At: Wed, 03 Feb 2021 08:01:31 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Cornelia Huck <cohuck@redhat.com>,
+Cc: linux-fbdev@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
  kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
- Linus Walleij <linus.walleij@linaro.org>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org,
  dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
- Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig.org@pengutronix.de>,
- linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
- Jiri Slaby <jirislaby@kernel.org>, linux-stm32@st-md-mailman.stormreply.com,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig.org@pengutronix.de>,
+ linux-i2c@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+ linux-stm32@st-md-mailman.stormreply.com,
  Alexandre Torgue <alexandre.torgue@st.com>, linux-rtc@vger.kernel.org,
- Herbert Xu <herbert@gondor.apana.org.au>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Takashi Iwai <tiwai@suse.com>,
  Krzysztof Kozlowski <krzk@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
  linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>, Mike Leach <mike.leach@linaro.org>,
- Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, coresight@lists.linaro.org,
- Vladimir Zapolskiy <vz@mleia.com>, Eric Auger <eric.auger@redhat.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Guenter Roeck <linux@roeck-us.net>,
+ Mike Leach <mike.leach@linaro.org>, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, Alessandro Zummo <a.zummo@towertech.it>,
+ coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+ Eric Auger <eric.auger@redhat.com>,
  Alex Williamson <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>,
- linux-fbdev@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+ Matt Mackall <mpm@selenic.com>, Daniel Vetter <daniel@ffwll.ch>,
  Dan Williams <dan.j.williams@intel.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org, Alessandro Zummo <a.zummo@towertech.it>,
- linux-watchdog@vger.kernel.org, Mathieu Poirier <mathieu.poirier@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
  Vinod Koul <vkoul@kernel.org>, linux-crypto@vger.kernel.org,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Leo Yan <leo.yan@linaro.org>,
- dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
+ kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,39 +115,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 26, 2021 at 05:58:30PM +0100, Uwe Kleine-König wrote:
-> From: Uwe Kleine-König <u.kleine-koenig.org@pengutronix.de
-> 
-> Hello,
-> 
-> Changes since v2 sent with Message-Id:
-> 20201124133139.3072124-1-uwe@kleine-koenig.org:
-> 
->  - Rebase to v5.11-rc1 (which resulted in a few conflicts in
->    drivers/hwtracing).
->  - Add various Acks.
->  - Send to more maintainers directly (which I think is one of the
->    reasons why there are so few Acks).
-> 
-> For my taste patch 4 needs some more acks (drivers/char/hw_random,
-> drivers/dma, drivers/gpu/drm/pl111, drivers/i2c, drivers/mmc,
-> drivers/vfio, drivers/watchdog and sound/arm have no maintainer feedback
-> yet).
-> 
-> My suggestion is to let this series go in via Russell King (who cares
-> for amba). Once enough Acks are there I can also provide a tag for
-> merging into different trees. Just tell me if you prefer this solution.
-> 
-> Would be great if this could make it for v5.12, but I'm aware it's
-> already late in the v5.11 cycle so it might have to wait for v5.13.
 
-I think you need to have a 6th patch which moves the
-probe/remove/shutdown methods into the bus_type - if you're setting
-them for every struct device_driver, then there's no point doing that
-and they may as well be in the bus_type.
+--ofqcafd7fzy3m7fk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Apart from that, it looks good.
+Hello,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+the following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  https://git.pengutronix.de/git/ukl/linux tags/amba-make-remove-return-void
+
+for you to fetch changes up to f170b59fedd733b92f58c4d7c8357fbf7601d623:
+
+  amba: Make use of bus_type functions (2021-02-02 14:26:02 +0100)
+
+I expect this tag to be merged by Russell King as amba maintainer and by
+Mathieu Poirier (or Greg Kroah-Hartman?) for coresight as there are some
+pending conflicting changes. These are not hard to resolve but also
+non-trivial. Tell me if you need assistance for resolving, also if it's onl=
+y a
+second pair of eyes to judge your resolution.
+
+Best regards,
+Uwe
+
+----------------------------------------------------------------
+Tag for adaptions to struct amba_driver::remove changing prototype
+
+----------------------------------------------------------------
+Uwe Kleine-K=F6nig (5):
+      amba: Fix resource leak for drivers without .remove
+      amba: reorder functions
+      vfio: platform: simplify device removal
+      amba: Make the remove callback return void
+      amba: Make use of bus_type functions
+
+ drivers/amba/bus.c                                 | 234 +++++++++++++++++=
+++++++++++++++++------------------------------
+ drivers/char/hw_random/nomadik-rng.c               |   3 +-
+ drivers/dma/pl330.c                                |   3 +-
+ drivers/gpu/drm/pl111/pl111_drv.c                  |   4 +-
+ drivers/hwtracing/coresight/coresight-catu.c       |   3 +-
+ drivers/hwtracing/coresight/coresight-cpu-debug.c  |   4 +-
+ drivers/hwtracing/coresight/coresight-cti-core.c   |   4 +-
+ drivers/hwtracing/coresight/coresight-etb10.c      |   4 +-
+ drivers/hwtracing/coresight/coresight-etm3x-core.c |   4 +-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c |   4 +-
+ drivers/hwtracing/coresight/coresight-funnel.c     |   4 +-
+ drivers/hwtracing/coresight/coresight-replicator.c |   4 +-
+ drivers/hwtracing/coresight/coresight-stm.c        |   4 +-
+ drivers/hwtracing/coresight/coresight-tmc-core.c   |   4 +-
+ drivers/hwtracing/coresight/coresight-tpiu.c       |   4 +-
+ drivers/i2c/busses/i2c-nomadik.c                   |   4 +-
+ drivers/input/serio/ambakmi.c                      |   3 +-
+ drivers/memory/pl172.c                             |   4 +-
+ drivers/memory/pl353-smc.c                         |   4 +-
+ drivers/mmc/host/mmci.c                            |   4 +-
+ drivers/rtc/rtc-pl030.c                            |   4 +-
+ drivers/rtc/rtc-pl031.c                            |   4 +-
+ drivers/spi/spi-pl022.c                            |   5 +-
+ drivers/tty/serial/amba-pl010.c                    |   4 +-
+ drivers/tty/serial/amba-pl011.c                    |   3 +-
+ drivers/vfio/platform/vfio_amba.c                  |  15 ++--
+ drivers/video/fbdev/amba-clcd.c                    |   4 +-
+ drivers/watchdog/sp805_wdt.c                       |   4 +-
+ include/linux/amba/bus.h                           |   2 +-
+ sound/arm/aaci.c                                   |   4 +-
+ 30 files changed, 157 insertions(+), 198 deletions(-)
+
+
+
+--ofqcafd7fzy3m7fk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAZWWsACgkQwfwUeK3K
+7AnMhQgAhyeAx45pa3ebR9ymvzFG1Knp32GwFPlyLYw03yZzLsNR5n+d0kvDNZ1l
+vNIrU0g5WSS1SUWhs+m3WDRIcTlCHcgc3yoCKltLSNWiPXie9G9BZ0815b0gomXY
+eBSKiHZg/Ie8WhIspQcl0IA0P/2nOmTXF8qJx3CFow5WowriUutdf7n1ycTDq86a
+18Xpf2lW+esLut8MHM/98aHJUl6Jkj5PYfQfjgORIXKwNmNDltuK6lwvUU+pw+Vr
+0bDYXdXlaKLkNtSYYHSbDrKALiQccxhXYPg404KZV3FIHpOxKlq6im8hsFHWOOlu
+n9j2wq/tpGso23vYKdErmsE3GDncuQ==
+=P/zp
+-----END PGP SIGNATURE-----
+
+--ofqcafd7fzy3m7fk--
