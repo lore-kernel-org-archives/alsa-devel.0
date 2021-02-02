@@ -2,109 +2,84 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.4 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E51C9C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 16:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DE75C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:01:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D35864F7E
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 16:58:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D35864F7E
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3F30D64E40
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:01:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F30D64E40
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=bertschiettecatte.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A25FB172F;
-	Tue,  2 Feb 2021 17:57:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25FB172F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3F5A174F;
+	Tue,  2 Feb 2021 18:00:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3F5A174F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612285129;
-	bh=itWR1yuZCOd5wbdqyF+Qv2/jyc5kRLJwLtPxrn2Ea/U=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=j4q5e93g5LObG6sqk06GNfTQENm2plgM5ou7LNtQSOJH4zmVMr4DhZepBc6gR8QFy
-	 PB0PRwo0E7NX4YaRagUccd3liTY1BcQpxXodjr36ZA0fKi9V8HcPvdXaDqTwuu6EYB
-	 hBLUuHuOb26/J2CO3Le80xl8QNMNXOwMIfQ3dAjQ=
+	s=default; t=1612285306;
+	bh=165+5jtQ5b5YtPfHLV0SRhCeHvf4Omhrorun1CeJg30=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tdIax5LXhdzJiBpZsMrPOxe/bBiZid3tHZ3k55z2jGNrLpz7o12hebPqqwwKkiB1b
+	 4vJtNNQqmqvkYtwJ8gLnmhoSLG83pouA3/zry7wAJ95Dq6UtIyhkG6x173rYJOWLHl
+	 xGh99eObpmm9ZOz8apCnbWgGpSYjwY7DWGxzph74=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D52DF80152;
-	Tue,  2 Feb 2021 17:57:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BF0AF80152;
+	Tue,  2 Feb 2021 18:00:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A24FF80171; Tue,  2 Feb 2021 17:57:57 +0100 (CET)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
+ id B849AF80171; Tue,  2 Feb 2021 18:00:54 +0100 (CET)
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com
+ [IPv6:2607:f8b0:4864:20::b2d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EA3EF80109
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 17:57:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EA3EF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDE72F80109
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:00:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDE72F80109
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="lbpqq56s"
-Received: by mail-lf1-x130.google.com with SMTP id f1so28978028lfu.3
- for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 08:57:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=nwpPlS9MjT737XxxcrUZtECdOnIxemsu+NrondIvc+8=;
- b=lbpqq56s6LvejvAeOwCQmGbMeFB+iKVoCg4snZ1Ev8Jqxtb3K9240iD4L17QHxadTO
- XMIgeiSMoq+oGmO78p/lVO4YlEkfbu87ioa/GOgsE+K3ye98v3fPQgpffsAoDPlCw6kd
- BUHwJHWM6etsUBjZenEmUzMbl1wwTsbL7ZVHzLQtfod9chYgEi+wEkijo8bMAW5TC3Eh
- w9RCVQ4bdAfz3YeGlI2Yv39d1vtO2ZeipPdSURbWrloWKK/aNANcJYm57Q+dK33JaHoK
- F4tJerPMfNMwQtFBlY0A2Utuj6dHxabR8wTYAbWF/vciPB/skI+UE43D/cG8IiuKzI6C
- MDlA==
+ dkim=pass (2048-bit key) header.d=bertschiettecatte-com.20150623.gappssmtp.com
+ header.i=@bertschiettecatte-com.20150623.gappssmtp.com header.b="vWLd7JK9"
+Received: by mail-yb1-xb2d.google.com with SMTP id m76so14364964ybf.0
+ for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 09:00:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=bertschiettecatte-com.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=165+5jtQ5b5YtPfHLV0SRhCeHvf4Omhrorun1CeJg30=;
+ b=vWLd7JK9ItxTuqdZlpWd7NU+CzrOHkUSE7SKk/0p6n3bqlGYhi9A19vBtmZYjCod61
+ jpkt+KzFmXGaGnDcYRVdXkUfVOqXmSN0oITb0g2s1RtPXIkdB4Hv7DBLaT+tqeU7o9NU
+ CyLxfWPrk0/wTTXzI4dFg9YtNPuQX8Lmg0hvw5jmNvF6rm5xMKrdmMvwVQFKOEi9o81m
+ IKz7okVpCqtXbnsoQFcK53utZ/ho2pkPrjn8VTVcVTRf9w4RPRhZQf8KSyJoVSkn0FTX
+ HntUPrhvKPe7d1DaVomLMbC7DKRkeC8OmQGgf/bUx4JsykQYvfb0jguzsHDhIaDM0fwl
+ tsgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=nwpPlS9MjT737XxxcrUZtECdOnIxemsu+NrondIvc+8=;
- b=PeWFKZVVDY9x8Vbo6hu1CqF4DInxr2jCmtLH6Kru8q3CaV9mpYI9letiPcG6jIzm6y
- pwyQ7vlX4tczZNiAkFr3Qcyod+rIVbVvVAE3BhyACgigYmrHEMQ2cG0SZc3Jm9R16bmN
- LhHI9JqALrnYwxWPONf6GvxmCQeX/+gHEqgSjCyv6ghQeqDDU8J64mHEb2Td2EWvqn7y
- m6/5IkGNUkQxkAJpIlDTdrxrFyMuGt6cggjFp61pjkiUnrdHWcFI/UTqKDo4spmqiy0k
- E/oEvSMLSPRoF/hna1VTjW1uuZFT11GqK6+48lPtjsJmtO/kDnmNEJVOhcKiW4pT6F2W
- /JfQ==
-X-Gm-Message-State: AOAM5302ASUPuuJ33h4r2Rs/gei4pdtRHJLT94B6ft5l2FnfzhoIDn49
- L6LhMv+ZGBmEIeyEpTxpxPA=
-X-Google-Smtp-Source: ABdhPJylGmwbmiAU0xzI+fDP1qXJu7D4drYkzhizCth3IZP0qIWWEH8U+ZpYlF3q69KQJEaXekafWw==
-X-Received: by 2002:a19:e43:: with SMTP id 64mr11085733lfo.642.1612285063231; 
- Tue, 02 Feb 2021 08:57:43 -0800 (PST)
-Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6?
- ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
- by smtp.googlemail.com with ESMTPSA id c6sm3366314lfc.11.2021.02.02.08.57.41
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 02 Feb 2021 08:57:42 -0800 (PST)
-Subject: Re: [PATCH v1 2/2] ASoC: tegra: Add RT5631 machine driver
-To: Jon Hunter <jonathanh@nvidia.com>, Ion Agorria <AG0RRIA@yahoo.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>,
- Svyatoslav Ryhel <clamor95@gmail.com>, Ion Agorria <ion@agorria.com>
-References: <20210131184101.651486-1-AG0RRIA@yahoo.com>
- <20210131184101.651486-3-AG0RRIA@yahoo.com>
- <7f4eb8f7-215e-ab3d-fcef-9243037cf246@nvidia.com>
- <8d0bc6f3-45ce-565d-d80f-b50fb75e7c55@gmail.com>
- <51571ec9-780b-ba71-c81d-dd01ebcefbb8@nvidia.com>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <fc0d7a20-f5ef-e8b4-6be8-ac9879399023@gmail.com>
-Date: Tue, 2 Feb 2021 19:57:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=165+5jtQ5b5YtPfHLV0SRhCeHvf4Omhrorun1CeJg30=;
+ b=Euq8aNQZdXPL6i7xQ2Dckc2yeRfM3+mlbmWZh4RVEcmezkDs3bnBUHIhI1iMqFnwSx
+ VfaE2AX5NMuVtNj7ceiP5k4wvijgb6qaJYsf9GHMI8UnJeVun+sZi595JpdrAj87T34x
+ nwbpnExkd26/uPADf6ds5yI1KUiKa5SofY+32Iz7E3Q0iiOv9RpgwV5FyS0SA/mjJG9k
+ qbPM+0tdQ1ZGHeBDNxgPpuJ7LaGoardCwj5iUXyQ17xIUJkSXYN4RfFGuG15CQZ8V5GD
+ /nQhxvXCLn0xMgqo1OnG5ovw1HI0Laz4pXeqhOHN7hNdb+w06LRjX2yD+/xby7TJ4drb
+ ytEg==
+X-Gm-Message-State: AOAM533x7GeklQNHgFpDHvtdOnXHzCTB2Guxwc0vqJ22lpMbRmv7vAFf
+ xewiivT02bbmzS5PesupV5K5qWYHx3RhCFu8jyA9kVptT08=
+X-Google-Smtp-Source: ABdhPJwqDYJOKf7yNYz19r2QsxO9DXfYy0BBt5zxDJsfLxy8dDI5sL9M1aCUGFZEJaVhsoLpr88LcVHjqGixn57tsfA=
+X-Received: by 2002:a25:31c3:: with SMTP id
+ x186mr32357767ybx.500.1612285242815; 
+ Tue, 02 Feb 2021 09:00:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <51571ec9-780b-ba71-c81d-dd01ebcefbb8@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Bert Schiettecatte <bert@bertschiettecatte.com>
+Date: Tue, 2 Feb 2021 09:00:31 -0800
+Message-ID: <CALd3UbT7DcXSmLO2VEDReY5aft5shpeEBS_wg7bWpoC6Q3qxzQ@mail.gmail.com>
+Subject: question about ALSA devices not showing up in buildroot build
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -120,39 +95,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-02.02.2021 19:24, Jon Hunter пишет:
-> 
-> On 02/02/2021 15:25, Dmitry Osipenko wrote:
->> 02.02.2021 16:22, Jon Hunter пишет:
->>> So this is very similar to tegra_rt5677, is it not possible to support
->>> both codecs with the same machine driver?
->>
->> These codecs require individual configurations and those
->> "../codecs/rt5631.h" and  "../codecs/rt5677.h" aren't compatible at a
->> quick glance.
-> 
-> Right but not all of that is needed. What is actually needed from the
-> header files?
-
-I recall that some downstream drivers were doing some special
-programming of codecs. This is not relevant to the current upstream
-drivers, but potentially it may become needed and then that single
-driver could become unmanageable.
-
->> The tegra_rt5677 also uses outdated GPIO API and etc. Hence the new
->> driver should be a better base anyways.
-> 
-> Sounds like a good time to update it :-)
-> 
->> Overall it shouldn't worth time and effort trying to squeeze these
->> drivers into a single one, IMO.
-> 
-> Not sure I agree when these drivers appear to be 90% the same.
-
-Of course we could try, but I suggest that it should be done separately
-from this series. Certainly it will take a lot of extra effort and this
-series isn't about improving older drivers, it's about enabling h/w
-support for the RT5631 codec.
-
-It shouldn't be a problem to switch to the common machine driver later
-on if this driver will turn out to be feasible.
+Hi all
+I am working on getting my ALSA machine driver and codecs working. I
+ported over my code which was based on 4.11, and I'm using 5.9.12 at
+the moment. At first sight everything seems to be working, but the hw:
+, plughw: etc devices are missing and when I list the PCMs with
+acrecord -L, I don't see any, even though arecord -l does show the
+card. I am using buildroot for my rootfs. So I am wondering if this is
+an issue with incorrectly defining the structs in my driver code, or
+if this is an issue with missing package in my buildroot config, or if
+this is due to a missing configuration file for ALSA in the rootfs.
+Previously I was using an off the shelf linaro rootfs when I was still
+on kernel version 4.11, and there the PCMs were showing up correctly
+and I could see the multiple devices such as hw:, plughw:, dmix: etc.
+Thanks!
+Bert
