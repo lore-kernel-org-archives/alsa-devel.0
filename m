@@ -2,67 +2,58 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2750FC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 08:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98BCDC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 09:28:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF00364ECB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 08:28:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF00364ECB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id CAFE764F59
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 09:28:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAFE764F59
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E53D5177A;
-	Tue,  2 Feb 2021 09:27:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E53D5177A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3698F172F;
+	Tue,  2 Feb 2021 10:27:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3698F172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612254503;
-	bh=DLI8Vpb9PBpK1EyYhAELryyv3Lj7ghBtM/MXTR1K1OI=;
-	h=Subject:From:To:References:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZkSeKJ5bY/D3X/eZ2N8pqSp+n7pt06PRl11ybM/1lgzKJg9SX80hV7xkyqWC9Xozt
-	 WG+14mgIR/ZhFRNHQkiM6Dkh9AGNBUeknvQnQ/fsbs3EfZ8rqg++q9+Xt5vgZlp+6E
-	 gUX0odBcIauSHycTzuDQgpRK1DDO5muWer5vYGhU=
+	s=default; t=1612258125;
+	bh=PCa++kbWWWcJ806KpSMTQM8HOSmvGsr9GQoE8jmjVsg=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=p+AKQ+ZnlgQGQG+0l3q5TkA0/MwJXfGuvR9evOoBMyIu1I4P78ntaT8yR/io3KhB8
+	 VyqvVbiDFY19EiacSlWYM3IsPoXsKutnN9H+exutzaaoD71vFQBgfBXNYyk6NENP2r
+	 0Q2MaXeEHTLvfT0X3KJkPK8cvth3r2+hxLGI5WPw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C9B6F80152;
-	Tue,  2 Feb 2021 09:27:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD080F80152;
+	Tue,  2 Feb 2021 10:27:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE3D5F80171; Tue,  2 Feb 2021 09:27:31 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 927CBF80171; Tue,  2 Feb 2021 10:27:52 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B27D9F8013C
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 09:27:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B27D9F8013C
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37]
- helo=[192.168.43.28]) by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1l6r1u-0002uy-7o; Tue, 02 Feb 2021 08:27:22 +0000
-Subject: Re: [PATCH v9 0/1] audio jack software injection
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz,
- kai.vehmanen@linux.intel.com
-References: <20210127085639.74954-1-hui.wang@canonical.com>
-Message-ID: <338f0318-aa8b-d031-a27e-4e0d924dc94b@canonical.com>
-Date: Tue, 2 Feb 2021 16:27:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AC78F8013C
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 10:27:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AC78F8013C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7931CB171
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 09:27:45 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda: Drop power save deny list entry for Clevo W65_67SB
+Date: Tue,  2 Feb 2021 10:27:44 +0100
+Message-Id: <20210202092744.20321-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210127085639.74954-1-hui.wang@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,94 +69,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Takashi,
+As the runtime PM issue was addressed by the recent fix 4961167bf748
+("ALSA: hda/via: Apply the workaround generically for Clevo machines")
+for VIA codecs, we need no longer to keep the Clevo device off from
+the power saving as default.  Drop the deny list entry accordingly.
 
-When you have time, please take a look at the v9 patch.
+Depends: 4961167bf748 ("ALSA: hda/via: Apply the workaround generically for Clevo machines")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks,
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 5a50d3a46445..ef1f3aabc4a3 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2221,8 +2221,6 @@ static const struct snd_pci_quirk power_save_denylist[] = {
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+ 	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+-	SND_PCI_QUIRK(0x1558, 0x6504, "Clevo W65_67SB", 0),
+-	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+ 	SND_PCI_QUIRK(0x1028, 0x0497, "Dell Precision T3600", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+ 	/* Note the P55A-UD3 and Z87-D3HP share the subsys id for the HDA dev */
+-- 
+2.26.2
 
-Hui.
-
-On 1/27/21 4:56 PM, Hui Wang wrote:
-> the changes in the v9:
->   - move the "Phantom" jack comparison into the snd_jack_debugfs_add_inject_node(),
->     then the comparison is only executed when SND_JACK_INJECTION_DEBUG is enabled.
->
-> the changes in the v8:
->   - change "for (i = 0; i < strlen(tname); i++)" to "for (i = 0; tname[i]; i++)"
->   - use CONFIG_SND_DEBUG to wrap some debugfs variable and struct members.
->
-> the changes in the v7:
->   - change the format of the last part in jack-injection.rst
->   - add dependence SND_DEBUG in the Kconfig
->   - create debugfs_mount_dir/sound and debugfs_mount_dir/sound/cardN only SND_DEBUG is enabled
->   - change simple_write_to_buffer(buf, count, ppos, from, count) to
->     simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, from, count)
->   - rewrite the function parse_mask_bits() according to v6's comment
->
-> the changes in the v6:
->   - use the sizeof(buf) to replace the digits in the scnprintf
->   - squash the document patch into the 0001-xxx.patch.
->
->
-> the changes in the v5:
->   - add a Kconfig to enable/disable the jack injection feature
->   - replace all kzalloc with local char[] in the debugfs fops
->   - replace the chars of !isalnum() to '_' for the jack folder's name
->   - squash all .c files patches into one patch
->   - add a document to explain jack injection, for easier review, put
->     the document in a standalone patch. If needed, will squash this
->     patch to the previous one.
->   
->
-> the changes in the v4:
->   - change the sound-core to sound and change the sound_core_debugfs_root
->     to sound_debugfs_root in the 0001-xxx.patch
->   - change kzalloc/kfree to kvzalloc/kvfree in the debugfs fops for
->     0001-xxx.patch and 0003-xxx.patch
->   - And if needed, I could squash 4 patches into 1 patch before merging.
->
-> the changes in the v3 (for easy to review, divide change into 4 patches):
->   - address the comment about the snd_jack_report() and _snd_jack_report(),
->     the v2 design is hard to understand and is hard to review, in the v3,
->     separate the jack_report to snd_jack_report() and snd_jack_inject_report(),
->     hw jack events call snd_jack_report() as before, if a jack contains multi
->     jack_kctl and the jack_kctl's sw_inject is enabled, the status and the
->     related input-dev's events will not be reproted. The injection events call
->     snd_jack_inject_report(). This change is squashed to 0001-xxx.patch,  the
->     rest part of 0001-xxx.patch is same as v2.
->
->   - address the comment about folders'name in the 0002-xxx.patch, so far, drop
->     the '/', ',', '=' and ' ' from the folders' name.
->
->   - address the comment about adding more debugfs nodes in the 0003-xxx.patch,
->     it adds kctl_id, mask_bits, status and type.
->
->   - address the comment about save-n-restore jack's hw status in the
->     0004-xxx.patch, adding a hw_status_cache and save the last reported jack
->     hw event, once the sw_inject is disabled, will restore all jack_kctl's
->     state under the same snd_jack with hw_status_cache.
-> [snip]
->
->
-> the changes in the V2:
->   - using debugfs instead of sysfs
->   - using jack_ctrl to create a folder instead of snd_jack, since ASoC drivers
->     could create multi jack_ctrls within a snd_jack
->   - create a folder for each jack_ctrl instead for all jack_ctrls
-> [ snip ]
->
-> Hui Wang (1):
->    alsa: jack: implement software jack injection via debugfs
->
->   Documentation/sound/designs/index.rst         |   1 +
->   .../sound/designs/jack-injection.rst          | 166 ++++++++++
->   include/sound/core.h                          |   6 +
->   include/sound/jack.h                          |   1 +
->   sound/core/Kconfig                            |   9 +
->   sound/core/init.c                             |  16 +
->   sound/core/jack.c                             | 304 +++++++++++++++++-
->   sound/core/sound.c                            |  13 +
->   8 files changed, 512 insertions(+), 4 deletions(-)
->   create mode 100644 Documentation/sound/designs/jack-injection.rst
->
