@@ -2,79 +2,63 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.3 required=3.0 tests=BAYES_00,BIGNUM_EMAILS,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 556CAC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 08:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E17AC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 08:19:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAAE964EE9
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 08:13:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAAE964EE9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
+	by mail.kernel.org (Postfix) with ESMTPS id DC26764F05
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 08:19:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DC26764F05
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 604101774;
-	Tue,  2 Feb 2021 09:12:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 604101774
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4F711776;
+	Tue,  2 Feb 2021 09:18:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4F711776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612253611;
-	bh=SdbfCq6OO7kXXsjlO6G/ccKzfpcaIE1PianSX5xM2Ow=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1612253988;
+	bh=PEeFuU+xnkESS4hEWpmClBpcQPsDxt8CmW29cD/tK0o=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eJigctW9LnILPWJEw53tuSHv1/kEp/rRBO3O/Y+Wk8NmAd9D9vOl+2G+XUFLy6j0S
-	 q1dJWmXyzjSzO2quZflBdhibxBAB2mEgUpbCas3CTJVzZUk1g09dtttDi9Fx5oC7Jd
-	 7zx1E1+wvp+oFvGxU76Sr5SVSUl66mBaoudjdyNI=
+	b=pppdCJZN0unBQ77BGuOf89y1rFNFBhBovzMk4XpRWIUnaWXMFmkyk+aaphvO9FAkt
+	 mt+t7h6SQ68iH90j3bGoQPGtMLbY67IzC9TGgwBvo0CvNDwMjgTWQY3aA/6KIiPEJI
+	 zV/OKTDtgCJPsGjMon0onsc25HlOSvDtXT/QJF/Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9176F8013C;
-	Tue,  2 Feb 2021 09:12:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FA2FF800E1;
+	Tue,  2 Feb 2021 09:18:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21F5DF80171; Tue,  2 Feb 2021 09:12:39 +0100 (CET)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0FF08F80171; Tue,  2 Feb 2021 09:18:57 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F055BF8013C
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 09:12:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F055BF8013C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="eNL6GGdq"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1612253554;
- x=1643789554; h=subject:to:cc:references:from:message-id:date:
- mime-version:in-reply-to:content-transfer-encoding;
- bh=JomFmvAcqxcgt+Zf459veOHN7JFBnYNS2auowOkKYUQ=;
- b=eNL6GGdqcYbTgD8njStrVKlt7np0SPZUEkqtPqdKNIsD7hFlAC3PRfTg
- CoGOqph3F4K5khb7VMmK2Z1j36EgyTHcIpUR3sKuF+uhL85VckhpavvfU
- B5K1qCKMrwWJsBWk97wuiMnJMaDCydzfejgXRuac4lJqX8bSoTiEGMcLc
- OL9VlvDLH5Q+vruzsrkq+wqelX1P48NE1RFs8NUU32gnewnudhGH2pdDb
- yZQYzhoGVSP+woKKjNs30wwbvj4k97JY93YHZmJph9F5PrBR5xEJsi+Y3
- oOS13U7TZTk1u/xIwahrbMNHHR3qOjRBT9pjuVmbH9ANBsk3oK9KYaodi g==;
-Subject: Re: [PATCH] Add support to expose controls of ladspa plugin
-To: Jaroslav Kysela <perex@perex.cz>, Camel Guo <Camel.Guo@axis.com>
-References: <20210201150352.6342-1-camel.guo@axis.com>
- <c94055e4-20f0-f4d5-8aa2-26d99fa30486@perex.cz>
-From: Camel Guo <camelg@axis.com>
-Message-ID: <23722bcd-a592-662b-2179-a0c607117a96@axis.com>
-Date: Tue, 2 Feb 2021 09:12:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <c94055e4-20f0-f4d5-8aa2-26d99fa30486@perex.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: XBOX04.axis.com (10.0.5.18) To xbox06.axis.com (10.0.15.176)
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E1F3F800E1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 09:18:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E1F3F800E1
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id D7BFFAD57;
+ Tue,  2 Feb 2021 08:18:50 +0000 (UTC)
+Date: Tue, 02 Feb 2021 09:18:50 +0100
+Message-ID: <s5htuqug9w5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [bug report] potential deadlock in snd_emu10k1_voice_alloc()
+In-Reply-To: <YBjpeGqqiEYLaNyx@mwanda>
+References: <YBjpeGqqiEYLaNyx@mwanda>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,44 +74,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 2/1/21 4:32 PM, Jaroslav Kysela wrote:
-> Dne 01. 02. 21 v 16:03 Camel Guo napsal(a):
->> From: Camel Guo <camelg@axis.com>
->> 
->> In order for external software components to adjust ladspa plugin
->> dynamically, this commit adds an option to exposes the control array of
->> input control ports of a ladspa plugin to a file, through which any
->> applications with proper permission can control this plugin.
+On Tue, 02 Feb 2021 06:56:08 +0100,
+Dan Carpenter wrote:
 > 
-> It looks like a pure hack (although the implementation is interesting). The
-> controls may be exposed via the ctl (control) API like we do in
-> src/pcm/pcm_softvol.c for example. The floats can be mapped to integer64 
-> or we
-> may discuss to add the float type to the control API elements.
-
-If there are not so many input controls of a ladspa plugin, I think it 
-is okay to implement it like pcm_softvol.c. But the problem is that some 
-plugins might have more than 100 input controls. For every input 
-control, there will be a system call ioctl in order to get its value. 
-This will make performance really bad. If a ladspa plugin like this 
-needs to support per-channel control, that will make it even worst.
-
-But with shared memory like this, it will become a pure memory read, 
-this will make performance acceptable.
-
-Another benefit of exposing ladspa control array to shared memory  is 
-that it makes it possible for any algorithms to connect with these 
-ladspa plugins. The ladspa control array is basically a float-array, 
-which is exactly the input, output of lots of machine learning, deep 
-learning algorithm. Imagine an algorithm listening to the audio stream 
-automatically applies privacy masks on audio stream to mask human voice 
-via ladspa plugins.
-
+> Hello ALSA devs,
 > 
->                                                  Jaroslav
+> The patch 1da177e4c3f4: "Linux-2.6.12-rc2" from Apr 16, 2005, leads
+> to the following static checker warning:
 > 
-> -- 
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> 	sound/pci/emu10k1/voice.c:112 snd_emu10k1_voice_alloc()
+> 	warn: called with lock held.  '&emu->voice_lock'
+> 
+> sound/pci/emu10k1/voice.c
+>    101  int snd_emu10k1_voice_alloc(struct snd_emu10k1 *emu, int type, int number,
+>    102                              struct snd_emu10k1_voice **rvoice)
+>    103  {
+>    104          unsigned long flags;
+>    105          int result;
+>    106  
+>    107          if (snd_BUG_ON(!rvoice))
+>    108                  return -EINVAL;
+>    109          if (snd_BUG_ON(!number))
+>    110                  return -EINVAL;
+>    111  
+>    112          spin_lock_irqsave(&emu->voice_lock, flags);
+>                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> This lock is already held in the caller.
+> 
+>    113          for (;;) {
+>    114                  result = voice_alloc(emu, type, number, rvoice);
+>    115                  if (result == 0 || type == EMU10K1_SYNTH || type == EMU10K1_MIDI)
+>    116                          break;
+>    117  
+>    118                  /* free a voice from synth */
+>    119                  if (emu->get_synth_voice) {
+> 
+> The call tree is:
+> 
+> 	 snd_emux_note_on()
+> 		takes the lock: spin_lock_irqsave(&emu->voice_lock, flags);
+> 		calls vp = emu->ops.get_voice(emu, port);
+> 	   --> get_voice()
+> 		--> snd_emu10k1_voice_alloc()
+
+This report looks like a false-positive, too.
+Both are from different structs, one is from struct snd_emu10k1 and
+another is struct snd_emux.
+
+
+thanks,
+
+Takashi
