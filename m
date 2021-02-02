@@ -2,100 +2,88 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9835C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:14:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21CF4C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:21:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D89564ECE
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:14:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D89564ECE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 59AA264E22
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:21:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 59AA264E22
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A35A175C;
-	Tue,  2 Feb 2021 18:14:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A35A175C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94C7B1728;
+	Tue,  2 Feb 2021 18:20:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94C7B1728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612286094;
-	bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
-	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
+	s=default; t=1612286480;
+	bh=wxsPL5JkRIBGpS3q84i0+uWrEBsTUallVlLW6FnphHo=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lf/8YVRP2G/gRl0/5+G6JCHkRt0l04QIxK+j0h787Uzuy87wsT7/6TiRSV/CSJoG3
-	 61yCRHBNxgs9iDDmzwCOjAE5KC0OrRhPEeE8HodZ5v9xVvX5kF+Y+DhiqKUOHXDuW5
-	 SwpwzRQpfALnt6QV3ibPu28earZ++xqOfH+++MV8=
+	b=n8RXMmYaChVaNeDfCWVL/O4y0MnaGw+KQtKOBNTFdgOLx5iAaBHh1b6UguSm5I1lN
+	 DZxHU3BqS5JBgdj+CHNXUU12LARwSjOt/4c9waY96+7IwJA0nJJd9gBpHDafqiJYuN
+	 2/PFwFasdYOSY44gKe2hogYrXy5DvFROmq4kzThM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6B38F80152;
-	Tue,  2 Feb 2021 18:14:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DF4DF800E1;
+	Tue,  2 Feb 2021 18:20:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99C73F80171; Tue,  2 Feb 2021 18:14:02 +0100 (CET)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
- [IPv6:2607:f8b0:4864:20::635])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D3192F80171; Tue,  2 Feb 2021 18:20:27 +0100 (CET)
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73A48F800E1
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:13:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73A48F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F86FF800E1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:20:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F86FF800E1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="diRSFPRy"
-Received: by mail-pl1-x635.google.com with SMTP id x9so6934921plb.5
- for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 09:13:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:content-transfer-encoding:in-reply-to:references
- :subject:from:cc:to:date:message-id:user-agent;
- bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
- b=diRSFPRygD49Poc/JZ4AusskfpBz3SaZRrJbDOY2fzcR5LXqQZkKd93tiH5mFnVm+c
- l1os581Ds05eO63iyR7OnzGQMv2TCaYRXhmgGXRHMgUlySvwd30gJYp/5SmK4zxMQ/r3
- vIwgooy/K8jXDGjVec6xdrGb/eVPIVdbTEm8A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:content-transfer-encoding
- :in-reply-to:references:subject:from:cc:to:date:message-id
- :user-agent;
- bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
- b=S80CQtXirLMX93zwfXy3PqNia0zIpg+OtB9igNf0k9ZYm7jaYVh1HRCZPk5mkdX3DX
- 76cuDwzIpTbPH3CXvioYMg4oD0p9rs6LJxsokvx0qIUgEftRjpNY4hDXzAwOmLIInGWA
- Ca4CLORMYjX+xM1uCIbK3ir61maRjY8PRGXiYCwJbUDthaj+XnSou6LoCOdO2qmDn4Gt
- i4w8tynY5A4CzfS8NQFoYCpTvcN352vrUQn1xmr/ie5kIk04yWebUyjNTW9JcbdNyHvu
- Gse+AEtaXfKa4Natsy4mtoZax5jwI0650I7iKI6Ht0okHiV6W5PWPRoD4m7g0LeFvRUS
- lJig==
-X-Gm-Message-State: AOAM5321fSOcCl74+HWdQhi1chcAhGmE+s8ntWL8uuoZs7+VPZLyhhz8
- 2lXU+hGMVvaD4HHWO3wYz8oQyw==
-X-Google-Smtp-Source: ABdhPJxEYEQvyqydvkJ+XYVfnYzEhjQ5pqGLkN0GNmAahlnaTN7GjhaapXRizG0V3QW8Ky6mrCbAVQ==
-X-Received: by 2002:a17:902:d4d0:b029:df:d246:ca81 with SMTP id
- o16-20020a170902d4d0b02900dfd246ca81mr23826450plg.58.1612286029370; 
- Tue, 02 Feb 2021 09:13:49 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3571:bd6e:ee19:b59f])
- by smtp.gmail.com with ESMTPSA id c17sm21839493pfi.88.2021.02.02.09.13.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Feb 2021 09:13:48 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="DT2d0Wl1"; 
+ dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
+ header.b="BvWa5Jyf"
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id 4C20DA188BD0F;
+ Tue,  2 Feb 2021 18:20:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1612286420; bh=wxsPL5JkRIBGpS3q84i0+uWrEBsTUallVlLW6FnphHo=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=DT2d0Wl1LaFzpLY7iQItFdSatYowvEg7fT71DQZhbpkc/1DGgMmcrH5kmtaERyoI2
+ 9DECvNt5Yr8wP8/kztGu1MQuDruZ8uzUmn6O/KO2hIWH0N+QgNOUodpyYwO8FQqJAM
+ xkTrG96FglxbP6SjPoeBT1wPbpR79ZxEhIGLa7jU=
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 0iDKDeOTy2TG; Tue,  2 Feb 2021 18:20:14 +0100 (CET)
+Received: from [192.168.105.119] (ip28.insite.cz [81.0.237.28])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id 7C796A188BD0C;
+ Tue,  2 Feb 2021 18:20:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+ t=1612286414; bh=wxsPL5JkRIBGpS3q84i0+uWrEBsTUallVlLW6FnphHo=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=BvWa5JyfQZ9s50NDyPDqeYuxHLwD3IvxiQfJWNfy32nJczUx6aZNZVuablMhvaqXW
+ UIZEUE5uDnnmBHhAFqS01MO9yqJdAtBkbS9yc0e/w4JU8wfzw6Hgb4jphursaOXnoe
+ M+iUsNsLTDmz7TV9qoXOPOird4vPYGYcIebgMp4Y=
+Subject: Re: question about ALSA devices not showing up in buildroot build
+To: Bert Schiettecatte <bert@bertschiettecatte.com>,
+ alsa-devel@alsa-project.org
+References: <CALd3UbT7DcXSmLO2VEDReY5aft5shpeEBS_wg7bWpoC6Q3qxzQ@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Message-ID: <9b19b22c-b096-2ba9-8323-5d3fd9a9ef49@ivitera.com>
+Date: Tue, 2 Feb 2021 18:20:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210202062727.22469-1-srivasam@codeaurora.org>
-References: <20210202062727.22469-1-srivasam@codeaurora.org>
-Subject: Re: [PATCH] ASoC: qcom: Fix typo error in HDMI regmap config callbacks
-From: Stephen Boyd <swboyd@chromium.org>
-To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
- alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org,
- lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
- robh+dt@kernel.org, rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
- tiwai@suse.com
-Date: Tue, 02 Feb 2021 09:13:47 -0800
-Message-ID: <161228602729.76967.7642340787963440028@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
-Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+In-Reply-To: <CALd3UbT7DcXSmLO2VEDReY5aft5shpeEBS_wg7bWpoC6Q3qxzQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,27 +99,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2021-02-01 22:27:27)
-> Had a typo in lpass platform driver that resulted in crash
-> during suspend/resume with an HDMI dongle connected.
->=20
-> The regmap read/write/volatile regesters validation callbacks in lpass-cpu
-> were using MI2S rdma_channels count instead of hdmi_rdma_channels.
->=20
-> This typo error causing to read registers from the regmap beyond the leng=
-th
-> of the mapping created by ioremap().
->=20
-> This fix avoids the need for reducing number hdmi_rdma_channels,
-> which is done in
-> commit 7dfe20ee92f6 ("ASoC: qcom: Fix number of HDMI RDMA channels on sc7=
-180").
-> So reverting the same.
->=20
-> Fixes: 7cb37b7bd0d3c ("ASoC: qcom: Add support for lpass hdmi driver")
->=20
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
+Hi Bert,
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+Dne 02. 02. 21 v 18:00 Bert Schiettecatte napsal(a):
+> Hi all
+> I am working on getting my ALSA machine driver and codecs working. I
+> ported over my code which was based on 4.11, and I'm using 5.9.12 at
+> the moment. At first sight everything seems to be working, but the hw:
+> , plughw: etc devices are missing and when I list the PCMs with
+> acrecord -L, I don't see any, even though arecord -l does show the
+> card. I am using buildroot for my rootfs. So I am wondering if this is
+> an issue with incorrectly defining the structs in my driver code, or
+> if this is an issue with missing package in my buildroot config, or if
+> this is due to a missing configuration file for ALSA in the rootfs.
+> Previously I was using an off the shelf linaro rootfs when I was still
+> on kernel version 4.11, and there the PCMs were showing up correctly
+> and I could see the multiple devices such as hw:, plughw:, dmix: etc.
+
+Do you have the /usr/share/alsa configs?
+
+Pavel.
