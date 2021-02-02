@@ -2,85 +2,100 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A4ACC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:02:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9835C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:14:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5929A64E40
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:02:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5929A64E40
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6D89564ECE
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 17:14:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D89564ECE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81CE61774;
-	Tue,  2 Feb 2021 18:01:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81CE61774
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A35A175C;
+	Tue,  2 Feb 2021 18:14:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A35A175C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612285359;
-	bh=2fSQyZ1WwQMOhHMDn+OXb0hQdFVNjom2QI2jlsjZH+c=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612286094;
+	bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
+	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZmyfCMwiAYq6VWkFd6w1Ca8PDwJNFvkZ8Pe0672Wtetfoy5bDKHbMXV+DTmbhpk0F
-	 Je2ftzgoR3muH+wh+5P8k+NbQytEbPDuRZa6fmv1bTqXLGQ40C98EGwjrqBb2J+2MN
-	 pAU/DccNd/yeiIv40KzetmqBHzhAietZ+jnP+hrk=
+	b=lf/8YVRP2G/gRl0/5+G6JCHkRt0l04QIxK+j0h787Uzuy87wsT7/6TiRSV/CSJoG3
+	 61yCRHBNxgs9iDDmzwCOjAE5KC0OrRhPEeE8HodZ5v9xVvX5kF+Y+DhiqKUOHXDuW5
+	 SwpwzRQpfALnt6QV3ibPu28earZ++xqOfH+++MV8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 156BFF801F7;
-	Tue,  2 Feb 2021 18:01:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6B38F80152;
+	Tue,  2 Feb 2021 18:14:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88C45F8021C; Tue,  2 Feb 2021 18:01:47 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 99C73F80171; Tue,  2 Feb 2021 18:14:02 +0100 (CET)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
+ [IPv6:2607:f8b0:4864:20::635])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE4F6F801F7
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:01:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE4F6F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73A48F800E1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 18:13:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73A48F800E1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hBnSneqP"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 920B464E08;
- Tue,  2 Feb 2021 17:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612285297;
- bh=2fSQyZ1WwQMOhHMDn+OXb0hQdFVNjom2QI2jlsjZH+c=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hBnSneqPCbcn4MDYUjXnlwCTeaC/3qf7ky/i9cIkSa2sLWIm9llZQeOlDCOjtvew1
- uz+qMMCmkOpFnamO0juf94Lm4quU+vhWHoOJ4r6CN3z0A9RrRFcovtAzWXWLjOPqh0
- /s7VHQmP61+1iinWR+nN07sVuP4nyxEq3daoUQ7POdgIfTUx4CSspCN2l5Y6NGBK2V
- UrCOLGGlKA/HXW4Uetqk4wuZ1jB/jDisIp4trWiXLXzK+RjF4SLQt2SZ+9kIW11J6C
- GV1moa9zw0lW5M1oI0yfkzkQTJjPNP+yQbkt8H/OcdFjZt0Mg1eChqehOsqmnvetYf
- n4bVXEPOsApRg==
-Date: Tue, 2 Feb 2021 17:00:49 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v1 2/2] ASoC: tegra: Add RT5631 machine driver
-Message-ID: <20210202170049.GE5154@sirena.org.uk>
-References: <20210131184101.651486-1-AG0RRIA@yahoo.com>
- <20210131184101.651486-3-AG0RRIA@yahoo.com>
- <7f4eb8f7-215e-ab3d-fcef-9243037cf246@nvidia.com>
- <8d0bc6f3-45ce-565d-d80f-b50fb75e7c55@gmail.com>
- <51571ec9-780b-ba71-c81d-dd01ebcefbb8@nvidia.com>
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="diRSFPRy"
+Received: by mail-pl1-x635.google.com with SMTP id x9so6934921plb.5
+ for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 09:13:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:content-transfer-encoding:in-reply-to:references
+ :subject:from:cc:to:date:message-id:user-agent;
+ bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
+ b=diRSFPRygD49Poc/JZ4AusskfpBz3SaZRrJbDOY2fzcR5LXqQZkKd93tiH5mFnVm+c
+ l1os581Ds05eO63iyR7OnzGQMv2TCaYRXhmgGXRHMgUlySvwd30gJYp/5SmK4zxMQ/r3
+ vIwgooy/K8jXDGjVec6xdrGb/eVPIVdbTEm8A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:content-transfer-encoding
+ :in-reply-to:references:subject:from:cc:to:date:message-id
+ :user-agent;
+ bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
+ b=S80CQtXirLMX93zwfXy3PqNia0zIpg+OtB9igNf0k9ZYm7jaYVh1HRCZPk5mkdX3DX
+ 76cuDwzIpTbPH3CXvioYMg4oD0p9rs6LJxsokvx0qIUgEftRjpNY4hDXzAwOmLIInGWA
+ Ca4CLORMYjX+xM1uCIbK3ir61maRjY8PRGXiYCwJbUDthaj+XnSou6LoCOdO2qmDn4Gt
+ i4w8tynY5A4CzfS8NQFoYCpTvcN352vrUQn1xmr/ie5kIk04yWebUyjNTW9JcbdNyHvu
+ Gse+AEtaXfKa4Natsy4mtoZax5jwI0650I7iKI6Ht0okHiV6W5PWPRoD4m7g0LeFvRUS
+ lJig==
+X-Gm-Message-State: AOAM5321fSOcCl74+HWdQhi1chcAhGmE+s8ntWL8uuoZs7+VPZLyhhz8
+ 2lXU+hGMVvaD4HHWO3wYz8oQyw==
+X-Google-Smtp-Source: ABdhPJxEYEQvyqydvkJ+XYVfnYzEhjQ5pqGLkN0GNmAahlnaTN7GjhaapXRizG0V3QW8Ky6mrCbAVQ==
+X-Received: by 2002:a17:902:d4d0:b029:df:d246:ca81 with SMTP id
+ o16-20020a170902d4d0b02900dfd246ca81mr23826450plg.58.1612286029370; 
+ Tue, 02 Feb 2021 09:13:49 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3571:bd6e:ee19:b59f])
+ by smtp.gmail.com with ESMTPSA id c17sm21839493pfi.88.2021.02.02.09.13.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 02 Feb 2021 09:13:48 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="GxcwvYAGnODwn7V8"
-Content-Disposition: inline
-In-Reply-To: <51571ec9-780b-ba71-c81d-dd01ebcefbb8@nvidia.com>
-X-Cookie: Only God can make random selections.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephen Warren <swarren@nvidia.com>, Ion Agorria <AG0RRIA@yahoo.com>,
- linux-kernel@vger.kernel.org, Svyatoslav Ryhel <clamor95@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
- Ion Agorria <ion@agorria.com>, linux-tegra@vger.kernel.org,
- Dmitry Osipenko <digetx@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210202062727.22469-1-srivasam@codeaurora.org>
+References: <20210202062727.22469-1-srivasam@codeaurora.org>
+Subject: Re: [PATCH] ASoC: qcom: Fix typo error in HDMI regmap config callbacks
+From: Stephen Boyd <swboyd@chromium.org>
+To: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>, agross@kernel.org,
+ alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ bjorn.andersson@linaro.org, broonie@kernel.org, devicetree@vger.kernel.org,
+ lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
+ robh+dt@kernel.org, rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+ tiwai@suse.com
+Date: Tue, 02 Feb 2021 09:13:47 -0800
+Message-ID: <161228602729.76967.7642340787963440028@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
+Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,56 +111,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Quoting Srinivasa Rao Mandadapu (2021-02-01 22:27:27)
+> Had a typo in lpass platform driver that resulted in crash
+> during suspend/resume with an HDMI dongle connected.
+>=20
+> The regmap read/write/volatile regesters validation callbacks in lpass-cpu
+> were using MI2S rdma_channels count instead of hdmi_rdma_channels.
+>=20
+> This typo error causing to read registers from the regmap beyond the leng=
+th
+> of the mapping created by ioremap().
+>=20
+> This fix avoids the need for reducing number hdmi_rdma_channels,
+> which is done in
+> commit 7dfe20ee92f6 ("ASoC: qcom: Fix number of HDMI RDMA channels on sc7=
+180").
+> So reverting the same.
+>=20
+> Fixes: 7cb37b7bd0d3c ("ASoC: qcom: Add support for lpass hdmi driver")
+>=20
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
 
---GxcwvYAGnODwn7V8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Feb 02, 2021 at 04:24:31PM +0000, Jon Hunter wrote:
-> On 02/02/2021 15:25, Dmitry Osipenko wrote:
-
-> > These codecs require individual configurations and those
-> > "../codecs/rt5631.h" and  "../codecs/rt5677.h" aren't compatible at a
-> > quick glance.
-
-> Right but not all of that is needed. What is actually needed from the
-> header files?
-
-Right, and if it's just a case of having a different hw_params() or
-something then the majority of the driver could be shared with just a
-few bits being handled differently.
-
-> > The tegra_rt5677 also uses outdated GPIO API and etc. Hence the new
-> > driver should be a better base anyways.
-
-> Sounds like a good time to update it :-)
-
-Yeah.
-
-> > Overall it shouldn't worth time and effort trying to squeeze these
-> > drivers into a single one, IMO.
-
-> Not sure I agree when these drivers appear to be 90% the same.
-
-It's certainly worth considering - given that it's the same silicon
-vendor working with the same SoC vendor's reference designs it seems
-likely that things will look pretty similar at the system integration
-level.  It's possible that it's more trouble than it's worth but it'd be
-good to have a more concrete understanding of why.
-
---GxcwvYAGnODwn7V8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAZhUAACgkQJNaLcl1U
-h9Br/AgAhxDJhXD92Ou/rbXrbVCd+giU1RLOL08mfRERugF5Ne5z4JmWhbHxgh17
-iNAtHsuofQ+vFiHBD+gyGdKDpcJPI1PBoVFmU480078igsYqvZnPaZ6zwdhoRKOf
-D9Sp1czdSfnNiIR+Ug8y5yjnsTUt/c4qCfjZWa/vvGuw8VQ6hALooYvAnkrZoFZi
-VEKHvYgNgUOqRnIOqdPg5NVqX0dEndIpIQcN+3kV5Yu0xwdi9EFv2dSXp29kye8w
-PPdeIP3YTwr9g/AuTKRuSABzvWjVIacsMBfN1osWjX4PflCz96f0lBtqvhJi4qEV
-4OE3cy3Aen4lJJXG13rcFEESBokpzA==
-=6RSX
------END PGP SIGNATURE-----
-
---GxcwvYAGnODwn7V8--
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
