@@ -7,60 +7,61 @@ X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 868F0C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54440C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:57:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2FAD764F67
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:48:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2FAD764F67
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=chris-wilson.co.uk
+	by mail.kernel.org (Postfix) with ESMTPS id 289C464F6A
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 22:57:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 289C464F6A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF4E41728;
-	Tue,  2 Feb 2021 23:47:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF4E41728
+	by alsa0.perex.cz (Postfix) with ESMTPS id 273AA1728;
+	Tue,  2 Feb 2021 23:57:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 273AA1728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612306116;
-	bh=GcTF9UO4H7YXXBEpXe5/Q5EpCuJoCjqvI2+h9aq5pa4=;
-	h=In-Reply-To:References:Subject:From:To:Date:Cc:List-Id:
+	s=default; t=1612306673;
+	bh=ZvLorEGRwsuGbTByJ21baHYlG6ZPw1pWMVYR3NoGAJE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=liIGCxzF6pHjDDNugKMfLYmRL0jDITOCMNGO4+jxjjD6SgArHtzFKjPmufqzXhHY5
-	 bWk77w2lkh12WYzXcZIvCQfHuCzJB2QvK5Qle0NwWmTxQFtKB7BahLzv3qIDXeCSBN
-	 bqPWws7dsNHaFCozWi17ijXlWtQUS3yHwlYyxuno=
+	b=jS+HU1pNtpU3X3xtrShMc1GTgJzEKiaVegROvfGIOCxGHVPd39F+L8MWv9uq5cmsw
+	 FgWtzer83YkdTxYHjm/uYPqIk7vf65MgFTV443NdmBWFCdg9uqQljEA3Oo+4Lh9bui
+	 +equn1IQuIUp46SZ8fy4tiAvRIE+cfkuTycKjizo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AE6DF80152;
-	Tue,  2 Feb 2021 23:47:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2AEFF80171;
+	Tue,  2 Feb 2021 23:57:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49B70F80171; Tue,  2 Feb 2021 23:47:44 +0100 (CET)
-Received: from fireflyinternet.com (unknown [77.68.26.236])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EF6B0F80152; Tue,  2 Feb 2021 23:57:00 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6913DF800E1
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 23:47:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6913DF800E1
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS))
- x-ip-name=78.156.65.138; 
-Received: from localhost (unverified [78.156.65.138]) 
- by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id
- 23777703-1500050 for multiple; Tue, 02 Feb 2021 22:47:32 +0000
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <s5h4kiue7q4.wl-tiwai@suse.de>
-References: <161228343605.1150.8862281636043446562@build.alporthouse.com>
- <s5h4kiue7q4.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42525F800E1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 23:56:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42525F800E1
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id B35FAAC41;
+ Tue,  2 Feb 2021 22:56:53 +0000 (UTC)
+Date: Tue, 02 Feb 2021 23:56:53 +0100
+Message-ID: <s5h4kiucc3u.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chris Wilson <chris@chris-wilson.co.uk>
 Subject: Re: Oops with "ALSA: jack: implement software jack injection via
  debugfs"
-From: Chris Wilson <chris@chris-wilson.co.uk>
-To: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 02 Feb 2021 22:47:33 +0000
-Message-ID: <161230605343.29124.4948122167882588203@build.alporthouse.com>
-User-Agent: alot/0.9
+In-Reply-To: <161230605343.29124.4948122167882588203@build.alporthouse.com>
+References: <161228343605.1150.8862281636043446562@build.alporthouse.com>
+ <s5h4kiue7q4.wl-tiwai@suse.de>
+ <161230605343.29124.4948122167882588203@build.alporthouse.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -78,24 +79,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Takashi Iwai (2021-02-02 16:48:35)
-> On Tue, 02 Feb 2021 17:30:36 +0100,
-> Chris Wilson wrote:
-> >=20
-> > commit 2d670ea2bd53 ("ALSA: jack: implement software jack injection via
-> > debugfs") is causing issues for our CI as we see a use-after-free on
-> > module unload (on all machines):
-> >=20
-> > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9715/fi-skl-6700k2/psto=
-re0-1612277467_Oops_1.txt
->=20
-> Could you try the patch below?  The unload test was completely
-> forgotten.
+On Tue, 02 Feb 2021 23:47:33 +0100,
+Chris Wilson wrote:
+> 
+> Quoting Takashi Iwai (2021-02-02 16:48:35)
+> > On Tue, 02 Feb 2021 17:30:36 +0100,
+> > Chris Wilson wrote:
+> > > 
+> > > commit 2d670ea2bd53 ("ALSA: jack: implement software jack injection via
+> > > debugfs") is causing issues for our CI as we see a use-after-free on
+> > > module unload (on all machines):
+> > > 
+> > > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9715/fi-skl-6700k2/pstore0-1612277467_Oops_1.txt
+> > 
+> > Could you try the patch below?  The unload test was completely
+> > forgotten.
+> 
+> This took longer than it deserved,
+> https://patchwork.freedesktop.org/series/86597/
+> 
+> The oops is fixed.
+> 
+> Tested-by: Chris Wilson <chris@chris-wilson.co.uk>
 
-This took longer than it deserved,
-https://patchwork.freedesktop.org/series/86597/
+Thanks!  I'm going to queue the fix before reaching to linux-next.
 
-The oops is fixed.
 
-Tested-by: Chris Wilson <chris@chris-wilson.co.uk>
--Chris
+Takashi
