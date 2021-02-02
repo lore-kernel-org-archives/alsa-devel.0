@@ -2,90 +2,78 @@ Return-Path: <SRS0=BHSX=HE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A0FDC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 18:58:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5295DC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 19:47:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7B71B64F5D
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 18:58:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B71B64F5D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ivitera.com
+	by mail.kernel.org (Postfix) with ESMTPS id B6FBC64F5E
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Feb 2021 19:47:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B6FBC64F5E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 995D2177F;
-	Tue,  2 Feb 2021 19:57:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 995D2177F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 392221721;
+	Tue,  2 Feb 2021 20:46:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 392221721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612292299;
-	bh=HZkVdOswZY+dY33ZU0SYRXcIeIllvJsFNWLCqkuhJ8w=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1612295218;
+	bh=4Mkdjv4G7JeJ/iD581jGhKsEVRSe+mirdACqHR36tUc=;
+	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OgylHsbo8QplhsA/sy3FgkJFk/4zO7dItswAuJ281OG7yfChdN4wKKGHEJO/FNB7+
-	 EUifDBrLL/38952u127aprYJsq1GAJI3cRsqGKwMCOoGHY3bFLGop/5mIzqUSSPS50
-	 ly0N0zRbWFY62qIP85eo2EQU+GtJY/R0YVqXkwCI=
+	b=VmMBsVHTw5bfHKJA4POTYw67Vn+OnAKftO9M5C+z2kSqFH6H8lg4lPSCNe276w9UH
+	 KUUgxc6TwvIXZ348HUAlIex1nN9Z0DcDhkHcv4EaxLUDnF1eqNNv7pHf3BusKkvwG5
+	 UAneQbVnkNcF4fwiZLNrdgzR1BpDb1dxAWdorr0Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19F10F80152;
-	Tue,  2 Feb 2021 19:57:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59598F80152;
+	Tue,  2 Feb 2021 20:46:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0B24F80171; Tue,  2 Feb 2021 19:57:27 +0100 (CET)
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id E010CF80171; Tue,  2 Feb 2021 20:46:05 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC4FCF8013C
- for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 19:57:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC4FCF8013C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="L/2S0sar"; 
- dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com
- header.b="lKgDPLRY"
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 91F6FA188563C;
- Tue,  2 Feb 2021 19:57:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1612292240; bh=HZkVdOswZY+dY33ZU0SYRXcIeIllvJsFNWLCqkuhJ8w=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=L/2S0saro3zu1tnY1Yh7kkmhNX4nIljNM1TkSk2Ct7lhqGwGfZK81cnPdVaSKUOdZ
- C1k4/1dz7FIoZDTdfwUrlas0NvFT4GRvW+PokIb66mYB+dtEgEg/ojfllfPsn5WYsa
- GNhLN5ee4cFq8P+DBcO8FTNIjPi7lZ54F8NWhUiw=
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id eAjbOzpxpuWh; Tue,  2 Feb 2021 19:57:15 +0100 (CET)
-Received: from [192.168.105.119] (ip28.insite.cz [81.0.237.28])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 32310A1875E3B;
- Tue,  2 Feb 2021 19:57:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
- t=1612292235; bh=HZkVdOswZY+dY33ZU0SYRXcIeIllvJsFNWLCqkuhJ8w=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=lKgDPLRYC8Vg+m06viQZoz9xr3puYL86rCrKSB2GDAq3Gwl2WZUKUMFREuYDi6Oue
- xVG6nbKqvPGbIA28nH6EYf8wX/G6kYMiDgOnQMJXUJ4iL7FEYQvz+cEL66/qaGu/rW
- Xhch6XcuIT9su77PpspUH4wZsVDlpiOSfDWfWjW4=
-Subject: Re: question about ALSA devices not showing up in buildroot build
-To: Bert Schiettecatte <bert@bertschiettecatte.com>
-References: <CALd3UbT7DcXSmLO2VEDReY5aft5shpeEBS_wg7bWpoC6Q3qxzQ@mail.gmail.com>
- <9b19b22c-b096-2ba9-8323-5d3fd9a9ef49@ivitera.com>
- <CALd3UbQjJL194sJMy0nrjx6J7RZ3L44hm4OH4dffhpmSNNBaGA@mail.gmail.com>
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Message-ID: <4321a2f2-28e4-32a2-c590-90eeaec35682@ivitera.com>
-Date: Tue, 2 Feb 2021 19:57:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DA83F80109
+ for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2021 20:45:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DA83F80109
+IronPort-SDR: 0ulElppIr2ZrIOQZqxDOa7khMW59YFyS5zEilR5fypDcoXIBLrb4aXuzMDwDYMUHBSiugY3xj2
+ xUY45bSsUd9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="199853851"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; d="scan'208";a="199853851"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Feb 2021 11:45:53 -0800
+IronPort-SDR: h64eDiPIfkkv7OpD8OQKQZpYmVajOC/dG56z7nCYbFdh1SCCd1nA7Es8LgOGHqeKXpFzHjSqUW
+ y3hAHWLu3JVQ==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; d="scan'208";a="372087794"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.24.26])
+ ([10.213.24.26])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Feb 2021 11:45:50 -0800
+Subject: Re: [PATCH] ASoC: Intel: catpt: remove unneeded semicolon
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz
+References: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
+ <fb3dd21b-dde6-d9f7-e497-a443f60e7493@intel.com>
+Message-ID: <adc3a883-a268-c3a9-b53b-c2ac96ca03db@intel.com>
+Date: Tue, 2 Feb 2021 20:45:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <CALd3UbQjJL194sJMy0nrjx6J7RZ3L44hm4OH4dffhpmSNNBaGA@mail.gmail.com>
+In-Reply-To: <fb3dd21b-dde6-d9f7-e497-a443f60e7493@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ yang.jie@linux.intel.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ liam.r.girdwood@linux.intel.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,29 +89,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 02. 02. 21 v 19:32 Bert Schiettecatte napsal(a):
-> Hi Pavel
->> Do you have the /usr/share/alsa configs?
+On 2021-02-01 10:03 PM, Cezary Rojewski wrote:
+> On 2021-02-01 9:01 AM, Yang Li wrote:
+>> Eliminate the following coccicheck warning:
+>> ./sound/soc/intel/catpt/pcm.c:355:2-3: Unneeded semicolon
+>>
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>> ---
+>>   sound/soc/intel/catpt/pcm.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+>> index e5d54bb..88a0879 100644
+>> --- a/sound/soc/intel/catpt/pcm.c
+>> +++ b/sound/soc/intel/catpt/pcm.c
+>> @@ -352,7 +352,7 @@ static int catpt_dai_apply_usettings(struct 
+>> snd_soc_dai *dai,
+>>           break;
+>>       default:
+>>           return 0;
+>> -    };
+>> +    }
+>>       list_for_each_entry(pos, &component->card->snd_card->controls, 
+>> list) {
+>>           if (pos->private_data == component &&
+>>
 > 
-> [root@rockchip:/usr/share/alsa]# ls -las
->       1 drwxr-xr-x    6 root     root          1024 Dec 21  2020 .
->       1 drwxr-xr-x   24 root     root          1024 Jan 23  2021 ..
->      10 -rw-r--r--    1 root     root          9876 Dec 21  2020 alsa.conf
->       2 drwxr-xr-x    2 root     root          2048 Dec 21  2020 cards
->       1 drwxr-xr-x    2 root     root          1024 Dec 21  2020 init
->       1 drwxr-xr-x    2 root     root          1024 Dec 21  2020 pcm
->       1 drwxr-xr-x    2 root     root          1024 Dec 21  2020 speaker-test
-> [root@rockchip:/usr/share/alsa]#
+> Hello Yang,
+> 
+> Your patch is much appreciated.
+> 
+> I noticed that more mistakes such as this have been made in the code. 
+> Could you please also update switch-statements in other parts of catpt 
+> (from what I've found, pcm.c has 2 occurrences while loader.c has 1)?
 > 
 
-Sometimes strace has been of help to me, to see which file is being 
-tried to open:
+I see now. Patch [1] provided the fixes already but optimization of mine 
+[2] done later, overridden part of it. In that case, there's nothing 
+else to be done.
 
-strace aplay -L 2>&1 | grep 'open('
+Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-The PCM devices are defined in the pcm/ and cards/ configs, with help of 
-/usr/share/alsa/cards/aliases.conf . Maybe for your new driver no config 
-is being used, but I think even an unknown card should have the very 
-basic PCM devices defined.
+Regards,
+Czarek
 
-Pavel.
+
+[1]: https://lore.kernel.org/r/20201101171943.2305030-1-trix@redhat.com
+[2]: 
+https://lore.kernel.org/r/20201116133332.8530-4-cezary.rojewski@intel.com
