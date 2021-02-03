@@ -2,89 +2,87 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4C9DC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 03:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59195C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 03:24:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BCF064E42
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 03:24:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BCF064E42
+	by mail.kernel.org (Postfix) with ESMTPS id BD5AA64F6C
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 03:24:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD5AA64F6C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F1941730;
-	Wed,  3 Feb 2021 04:23:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F1941730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C15B1750;
+	Wed,  3 Feb 2021 04:23:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C15B1750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612322639;
-	bh=17oODYzlq8I/zUoUfh9MoZHpUzQfqXQTChy3SsiQ9wc=;
+	s=default; t=1612322644;
+	bh=09fjbfART3fxbCJXcr01J0uZ+umlEByl7aPlAtdNkbQ=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kPIgLcotSMp9EuTF74Bt1Oz6XFS5ke/zaDuxGUHzHlvX8rqjQ4gxwu0oxl1F1GcBS
-	 IIaVzJ3ILfj1Gw/JK8e4C0F4ePoVX4sejm+LC8LPH5UELVeL6c93iNA1gqSo9KvlpE
-	 VSpz4ji588h+H2Q4e6bqBBUROR0S4aA8PogZJPdg=
+	b=q0UnTf1XSZWD/IAd3O9VuJuQGZW8aC2jupRR5iPcZCMmgFHf9+ElqI24pP9dXZ8Z+
+	 6DdmDf0ZMj8PWEebnlUNYzi5NisDC0BfPkR4OnAhhKFqpF9xaWbWp4FAEDCuoEzItG
+	 Op/DDoz8XyCnMLvEBdDo4kU6RFGeXzqnj+QyLtqk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C5B8F8015A;
+	by alsa1.perex.cz (Postfix) with ESMTP id CA314F8025C;
 	Wed,  3 Feb 2021 04:22:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49EDBF8023A; Wed,  3 Feb 2021 04:22:18 +0100 (CET)
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com
- [IPv6:2607:f8b0:4864:20::f49])
+ id CF209F80224; Wed,  3 Feb 2021 04:22:19 +0100 (CET)
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com
+ [IPv6:2607:f8b0:4864:20::849])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1A17F80156
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 04:22:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1A17F80156
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE316F8013C
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 04:22:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE316F8013C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="cJ6T3gbU"
-Received: by mail-qv1-xf49.google.com with SMTP id ew14so16651252qvb.21
- for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 19:22:12 -0800 (PST)
+ header.b="COESOUHp"
+Received: by mail-qt1-x849.google.com with SMTP id j14so16043538qtv.3
+ for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2021 19:22:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
  h=sender:date:in-reply-to:message-id:mime-version:references:subject
- :from:to:cc; bh=qfger17i24S9J1Qv4GPO/hsXEdqSKK2LFoE3W97GT80=;
- b=cJ6T3gbUA4kluvu/+MOPr92jD+9tBSLxn46hZhfaclcNlA1b00qEAyRdNDCr7+Ou3s
- uavwGTSJPE6zJAaARxiz3NQg0FtY1NBIVaqINIJ8RzCBnMNvhTfi6HqNgK9l4piiQ0Wh
- 1TVimS4cfxkleRNXIMlIdmomFhGIo/SFk7G9lYQ3ezvZON6cjfNQkv4aKDziGNJNb7vZ
- +s5X0G4DF983XBRlYNz+FY7sVaQoQKRg78VXZXUPMqnHkJ+EnA0ZU5p+Uhjg2fDP34Xe
- 1d/DymZdQzJ0qxTCrNHg0Q0STBgk5yJRGocqocvIRyy0MmU8gz6BpzAs4/NGcCt9tTgM
- Aajw==
+ :from:to:cc; bh=u2Iqq872P7p/YU4FllDin0kiXJhazvea/L0CppZ6PYM=;
+ b=COESOUHpwIoP4LIPzl61yrHlk8gapzkAlKa7MFi0NpK78Gl6ALBkFvuSoi3WBvwhH2
+ Dm9uqqRgSaFpyPKk5ZZl0NDtw9tk2GXHBvdX0M/L//dxxQaizppVwLPwKHDENjOiCZXK
+ HrWwpBhQjogQ2fZfIPnJAVS1qC43DiasHtjPzVIsquaGUxmRg9mDtzIYCMFAI2GfWLiO
+ M7kN8WWihvXkj87Pq8UEs2a2fp2pIJUH4oljIv9bzJdo4hmnmHV8KHVQ/6TDgIJLhapL
+ neG/rhmpqxT78Ov0NRPnqMgZYAuGVSKQVjTlYlw5EMGteaoysts/HDtRMsSMWPE/TWZX
+ ppIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=qfger17i24S9J1Qv4GPO/hsXEdqSKK2LFoE3W97GT80=;
- b=c224xV0wksJ7fiBcJy8W41qlJzNWlPVzpku99m+HzPER+0pgf33cfkuWfdIUmOak80
- xUmiuOAOG3AMsAEi/4VJ+4C+LXSurZ0hK9sEFkTWsag6KfuFVmPnxLEOO/YijLNZL5nN
- bJU8pz1enW/ZIdnyVmIGShX88j90h8Vfk/u9oXf1h6Fm4lqRmBmMTCU4cN9sf9lMYyKH
- 08Rn/Py2LJy9beMrGXzxmnou8SFqoZJG1tGYrEJPJbC5tjhvHSY5jt37RKEHk7SjW349
- vOR4cKVkBLeQHmVDfT1YngnvNcaXW0A/Y/Y39tuprtcc/msX2jdmyCxIChJmS2QRQ6b3
- Zq9A==
-X-Gm-Message-State: AOAM5328zfrVEVoNRkdZPsPFGUtzaxGw5YE2rDWR1oF0Q3+rXl2O/zYS
- 5/elqz7SfPq8S08w+VjOriKPyfxQOlB0
-X-Google-Smtp-Source: ABdhPJyIkHXFLh6VM2GQSqGoytETeu5FtJrZf0hrkPL2VKJ/phtXq54v54IZGTnC91h1Jr767Yi4yn281ucM
+ bh=u2Iqq872P7p/YU4FllDin0kiXJhazvea/L0CppZ6PYM=;
+ b=BykExzygrAat/RFlKU8R7baQF75aqckW4SxBrCecRrkxED/4jAGBN/NCDTDjkGetF1
+ q5sMxCbx7nN6ReKH5PUcNT7kQc5gyC3/YbuXn3jg8PR7vg6lqup4RKjP4GrhhTegX2CD
+ Onn7isZ8gs6HqOzeTQCGkL+qy6atiERDdW91EMeRo4NcFYvDfiiGCqSXcstuEUcR6nkb
+ YHSMythQLINJat8VOqTK8OCtq/d3mTs4FLERrV8+62nKRkpbRjSYtskLYPvzbjNi2xvG
+ LuKfDnGKTp06BO4xV9f6PsLuyrEMSMfPkpfH4tWq8l6iHOjXNlIHk4DikgBfImlzTjBA
+ No+w==
+X-Gm-Message-State: AOAM530PuX5kgZjiybTs+x1VtaASEI0DG3vF84nQouZipeYaq6qQqq8d
+ uGAmrwVXImf8lts/4J6hepStgOKlekvY
+X-Google-Smtp-Source: ABdhPJy+gSTj31iBZMaMhA+kjwrZkTDmRU0J0RVYiVZ0La7A+VI/hmptiFIywE1Jw7Sx1LbjNT7FfBBL/Wo5
 X-Received: from tzungbi-z840.tpe.corp.google.com
  ([2401:fa00:1:b:dc88:dd2b:a03:4076])
- (user=tzungbi job=sendgmr) by 2002:a0c:f986:: with SMTP id
- t6mr1184475qvn.15.1612322531664; Tue, 02 Feb 2021 19:22:11 -0800 (PST)
-Date: Wed,  3 Feb 2021 11:21:59 +0800
+ (user=tzungbi job=sendgmr) by 2002:ad4:5bc8:: with SMTP id
+ t8mr1222680qvt.36.1612322535414; Tue, 02 Feb 2021 19:22:15 -0800 (PST)
+Date: Wed,  3 Feb 2021 11:22:00 +0800
 In-Reply-To: <20210203032201.2882158-1-tzungbi@google.com>
-Message-Id: <20210203032201.2882158-2-tzungbi@google.com>
+Message-Id: <20210203032201.2882158-3-tzungbi@google.com>
 Mime-Version: 1.0
 References: <20210203032201.2882158-1-tzungbi@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 1/3] ASoC: mediatek: mt8192-mt6359: use
- asoc_substream_to_rtd()
+Subject: [PATCH v3 2/3] ASoC: mediatek: mt8192: use asoc_substream_to_rtd()
 From: Tzung-Bi Shih <tzungbi@google.com>
 To: broonie@kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -108,34 +106,25 @@ Uses asoc_substream_to_rtd() helper.
 
 Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/mediatek/mt8192/mt8192-afe-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index c368236d8a3a..d2ebf3b6e359 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -39,7 +39,7 @@ struct mt8192_mt6359_priv {
- static int mt8192_rt1015_i2s_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+index e7fec2d75e3d..7a1724f5ff4c 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
++++ b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+@@ -42,7 +42,7 @@ static const struct snd_pcm_hardware mt8192_afe_hardware = {
+ static int mt8192_memif_fs(struct snd_pcm_substream *substream,
+ 			   unsigned int rate)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai;
-@@ -74,7 +74,7 @@ static int mt8192_rt1015_i2s_hw_params(struct snd_pcm_substream *substream,
- static int mt8192_rt5682_i2s_hw_params(struct snd_pcm_substream *substream,
- 				       struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-@@ -362,7 +362,7 @@ static int mt8192_i2s_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- static int
- mt8192_mt6359_rt1015_rt5682_cap1_startup(struct snd_pcm_substream *substream)
+ 	struct snd_soc_component *component =
+ 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+ 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+@@ -59,7 +59,7 @@ static int mt8192_get_dai_fs(struct mtk_base_afe *afe,
+ 
+ static int mt8192_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
  {
 -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
