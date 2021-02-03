@@ -2,61 +2,103 @@ Return-Path: <SRS0=kwE8=HI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4845C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:40:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C2AC433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:40:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A2AD64E57
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:40:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A2AD64E57
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id A853E64E52
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:40:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A853E64E52
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B11E71687;
-	Sat,  6 Feb 2021 21:39:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B11E71687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38F551679;
+	Sat,  6 Feb 2021 21:39:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38F551679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612644004;
-	bh=lFng05FcrUTQESII0Gav2YsvjniRvZaVxdTlgp2WrtQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1612644044;
+	bh=TNYsIqwuD2ldAont+QKhpBPqWvaxxwtlyJwZAPI2Yko=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UtUAILEpkcQQPEKD5L3qDz56dkXIQA6ew3mhK/DlvGhq2jxS9iyeicBqdM2wynpG8
-	 wgNhBGDCHGL8jeP2Vk4EKl5FFMoky+zESwZ7sUraF1FscYYKkjybpwkmKDI1LsLkzu
-	 5tNQ2w8YTQ/v2dWMSb1RGcpLVBpFpSFpe6sBTdlA=
+	b=Bds/vjWkQpLQMhql8+Hem1sZm1ndkywhGHmkRPGn877GEZO1eV434zk/WJPnX/Chl
+	 LLXJO2yzH5ZsGj6KVSgf53vb6xgNBeO16eCd5eL1eNvkjtY+0eipzr+f+ykM2SbEcs
+	 u963AXR7MbNFC+pmgoWdbsFscot8KyiBC0Pn6ovE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F16BF802C8;
-	Sat,  6 Feb 2021 21:37:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08C9AF801F7;
+	Sat,  6 Feb 2021 21:39:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE002F8026B; Sat,  6 Feb 2021 21:37:35 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id EA2DAF8015A; Wed,  3 Feb 2021 08:55:47 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91931F80139
- for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 21:37:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91931F80139
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1D635AE3C
- for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 20:37:26 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ALSA: pcm: Don't call sync_stop if it hasn't been stopped
-Date: Sat,  6 Feb 2021 21:36:55 +0100
-Message-Id: <20210206203656.15959-4-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210206203656.15959-1-tiwai@suse.de>
-References: <20210206203656.15959-1-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88A0FF80154
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 08:55:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88A0FF80154
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1l7CrV-0000mf-2a; Wed, 03 Feb 2021 08:46:05 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1l7CrM-0005LW-0J; Wed, 03 Feb 2021 08:45:56 +0100
+Date: Wed, 3 Feb 2021 08:45:55 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Subject: Re: [PATCH v3 0/5] amba: minor fix and various cleanups
+Message-ID: <20210203074555.tusulu3iqg5wgxeb@pengutronix.de>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202104915.GK1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="nnu6wqtgppbbywlf"
+Content-Disposition: inline
+In-Reply-To: <20210202104915.GK1463@shell.armlinux.org.uk>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+X-Mailman-Approved-At: Sat, 06 Feb 2021 21:39:08 +0100
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, kvm@vger.kernel.org,
+ David Airlie <airlied@linux.ie>, Linus Walleij <linus.walleij@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org,
+ Eric Anholt <eric@anholt.net>,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig.org@pengutronix.de>,
+ linux-i2c@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-watchdog@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ Krzysztof Kozlowski <krzk@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>, Mike Leach <mike.leach@linaro.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@st.com>, Arnd Bergmann <arnd@arndb.de>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, linux-kernel@vger.kernel.org,
+ coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+ Eric Auger <eric.auger@redhat.com>,
+ Alex Williamson <alex.williamson@redhat.com>, Mark Brown <broonie@kernel.org>,
+ linux-fbdev@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org, Alessandro Zummo <a.zummo@towertech.it>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Cornelia Huck <cohuck@redhat.com>, linux-mmc@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-spi@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, linux-crypto@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, Leo Yan <leo.yan@linaro.org>,
+ dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,45 +114,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The PCM stop operation sets the stop_operating flag for indicating the
-sync_stop post-process.  This flag is, however, set unconditionally
-even if the PCM trigger weren't issued.  This may lead to
-inconsistency in the driver side.
 
-Correct the code to set stop_operating flag only after the trigger
-STOP is actually called.
+--nnu6wqtgppbbywlf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 1e850beea278 ("ALSA: pcm: Add the support for sync-stop operation")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hello,
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index cbbdb75c66ea..0ae2475465ab 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1421,8 +1421,10 @@ static int snd_pcm_do_stop(struct snd_pcm_substream *substream,
- 			   snd_pcm_state_t state)
- {
- 	if (substream->runtime->trigger_master == substream &&
--	    snd_pcm_running(substream))
-+	    snd_pcm_running(substream)) {
- 		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
-+		substream->runtime->stop_operating = true;
-+	}
- 	return 0; /* unconditonally stop all substreams */
- }
- 
-@@ -1435,7 +1437,6 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream,
- 		runtime->status->state = state;
- 		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTOP);
- 	}
--	runtime->stop_operating = true;
- 	wake_up(&runtime->sleep);
- 	wake_up(&runtime->tsleep);
- }
--- 
-2.26.2
+we already talked about this via irc, but for the record and the benefit
+of others:
 
+On Tue, Feb 02, 2021 at 10:49:15AM +0000, Russell King - ARM Linux admin wr=
+ote:
+> I think you need to have a 6th patch which moves the
+> probe/remove/shutdown methods into the bus_type - if you're setting
+> them for every struct device_driver, then there's no point doing that
+> and they may as well be in the bus_type.
+
+This is implemented in patch 5 already.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--nnu6wqtgppbbywlf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAaVLAACgkQwfwUeK3K
+7AlQLgf+P1DKYj6OELp8rvge2qlgjLziflPm/vmYKoER7GP62xMAt1jHBWvMgDLx
+SQfCWfc7aNauEmrPFy3TDOyu3SrNFjDVRf3DfOGZ+VpYmmtyUJihjezhbbhpysK5
+Pchia3IjZ0wVWPBC0mb8a1o5w1GQ7l49/QaVZ6buVR+RoNYiKGFdiKcEc8JB+c19
+s2ksv2HXH9eB66fQ+yNQY7W2lNiK98iTc0txk+lhP2wRnFXHPMgqQhFb3j2wt7Or
+ix27mqEX40GyAOv+Xmam2NtjLRM5WD4zflnasEKvxQoa0Qe0mpR6aSKIotUmM4yi
+oNcARpnSdJUwDrfHL0GDd9ksOomPMA==
+=r9/H
+-----END PGP SIGNATURE-----
+
+--nnu6wqtgppbbywlf--
