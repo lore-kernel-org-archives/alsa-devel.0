@@ -2,74 +2,108 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70D81C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 21:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A605DC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 21:43:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64F4464F43
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 21:09:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64F4464F43
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 3BC3C64F5F
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 21:43:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BC3C64F5F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79EFE1750;
-	Wed,  3 Feb 2021 22:08:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79EFE1750
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC17516EC;
+	Wed,  3 Feb 2021 22:42:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC17516EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612386587;
-	bh=X++DCBsFSqm6GeJb1wRNId0elKmC5l4WSOzoH81rAEM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1612388607;
+	bh=GhHrFvN7r5X8mQ7I/mLCF9BMVsYdCamR5NRwQyKIQTg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p5llNlKnms1krM7evRomXGgAmM0cKv3uqdRkxLY9xCmOnLcfGgZwuJ5VZ/LxYNwaf
-	 Y0+nWZPUPMa4fu/GLqMepubAtZ3QHy89Jjb2Q9QJivip6Yl1fqPSa0CjtuQyuhzvo9
-	 tBbwCC+DCABcNpKTAOrDzxF59pfh3XG7tfD8gjHU=
+	b=U70DGoX++gS9DNXR0bo8oJ2hNTNjXJVeI+cjXx4mPJNXXnkJguF0CQLx49dQgnlsR
+	 DEtN6P6jqphgRwBXxxLp0yQSLu+WHKQ9orE1CPus0dwXYvcs11WXvlyDRPfKfS/bcb
+	 mdfRxOGVAliBwK/QpXmC3Sw2xQJkrAS4+Q5QgBss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7E5FF801DB;
-	Wed,  3 Feb 2021 22:08:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B196F8013C;
+	Wed,  3 Feb 2021 22:42:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CB12F8016E; Wed,  3 Feb 2021 22:08:06 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1BABBF8015A; Wed,  3 Feb 2021 22:42:35 +0100 (CET)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83605F80155
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 22:08:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83605F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9C8CF8013C
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 22:42:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9C8CF8013C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QaQAXbGf"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A107764F43;
- Wed,  3 Feb 2021 21:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612386481;
- bh=X++DCBsFSqm6GeJb1wRNId0elKmC5l4WSOzoH81rAEM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QaQAXbGfBGb9PwLBEzZlSrCPhUdHjbS2TMJH8Al8LdQbQ7PFBZNIURyoumzdyzlm6
- pUQzdcNQLP6QA1xSG6xQULbo70o0DUC79qzDY+YIkz08JZV5u7zFjRHxVamzS+r0ri
- hrtObF9Nr2HSwP15JXnUgcJdgM0raFLeVuXCnMNsU/2SQS5PayRx+9JQNLGNGWNi6d
- T4qpVObWgNMM1c5jl5tCa578bfGQGM9bOlDJEgWLz6ngWoW9ivMnblA0yD8HCRbFTh
- s/OcTtCax+bzRSikwcco7k+MqYGhvJSPCux3Jx/yxBXDIB+VmvqPXXLU4yYX8qK94J
- EtR3C83/LHB2A==
-From: Mark Brown <broonie@kernel.org>
-To: Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz
-In-Reply-To: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: Intel: catpt: remove unneeded semicolon
-Message-Id: <161238642667.34424.5355030176481154960.b4-ty@kernel.org>
-Date: Wed, 03 Feb 2021 21:07:06 +0000
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Jt3eshR6"
+Received: by mail-lj1-x234.google.com with SMTP id a17so876959ljq.2
+ for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2021 13:42:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=kGfWwvJGFe5MnbxnWxw8m85yVGSi7i3eo7HdmO414+I=;
+ b=Jt3eshR6Cb65RBKKS7bJSkJwBKNbwaWYZF1yG6Unr1PpsgtzzIDhAOryZkRSpwlIas
+ N46UmYuQOQmqKeoPISXsdrMfTPyEWVkG+J1BPCIN98mg8dy688bOCCzoJoysTzCizx78
+ /O6GW5L5LNbCviwy3iJNCfMijC1iN58ouqMnlFtdK2IKBFk3QY6oOPvl+ZokSCoDu0Ta
+ fY3QWrAwtTMdI/UzjgoLKQKhvpSSo5v9oPjILTGTshJMcWauQ01ivqgSLyIfqo+tkq8Y
+ HFH4SxhaUjKINuYKX7MuSloUQxUB8uTUkelfNKFSNMbdn+ClxpW3Tz2eqiSsK0CrmIZO
+ uOGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=kGfWwvJGFe5MnbxnWxw8m85yVGSi7i3eo7HdmO414+I=;
+ b=tBjpFZyWLWxq47gMOy+dXok+FJurqA+cnSLmMJUqmE2aWVENwMJRDHwEq8zd9DvtQi
+ haWlgHrXzgbyrco007fPP/uchwrfsdKOWdR/kU5XQ5QXtUndw9T7FVnTR3ILpL87vchE
+ xKwbiyjxFk6Apq9Xui5SZ+G+viuOy5oQjUfPFDik/iDxWTnDEuT8k9169YtFtNKhOlLv
+ /y+evgIocjZ2ghb3WkCwDqJItDy6dwg8erVp214NbMqkIT72f90jKmKXJIJI/q5D9C8t
+ 4gRwtJDeTsfUcIk5epZ+kuYa9IjUtBMqnDxkFelPQTlm7nf9o313Ea3o4d7YdrAZ6A6r
+ GKbQ==
+X-Gm-Message-State: AOAM533VgU54vkSB5+xDZJVrGrEXfjRq0zX0CBNxHo3JqhG5UqlCqrMq
+ SxJaz3Ai/vf7ur8Uexf7RQk=
+X-Google-Smtp-Source: ABdhPJwM9zMCbOUxbaZ2qjIu4vzLHjQlv3PhkGbm1yCJZzlYIfR2HUYhnjIfNGnWeZEdg8F7YgY8Iw==
+X-Received: by 2002:a2e:b17c:: with SMTP id a28mr2794523ljm.189.1612388546509; 
+ Wed, 03 Feb 2021 13:42:26 -0800 (PST)
+Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6?
+ ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
+ by smtp.googlemail.com with ESMTPSA id a16sm382539lji.52.2021.02.03.13.42.25
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 03 Feb 2021 13:42:25 -0800 (PST)
+Subject: Re: [PATCH v1 0/2] ASoC: tegra: Add RT5631 machine driver
+To: Jon Hunter <jonathanh@nvidia.com>, Ion Agorria <AG0RRIA@yahoo.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Stephen Warren <swarren@nvidia.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>,
+ Svyatoslav Ryhel <clamor95@gmail.com>, Ion Agorria <ion@agorria.com>
+References: <20210131184101.651486-1-AG0RRIA.ref@yahoo.com>
+ <20210131184101.651486-1-AG0RRIA@yahoo.com>
+ <82a3375e-6105-875c-3332-33fcf2c0f785@nvidia.com>
+From: Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a9874e27-8d5c-c784-ee16-5e7b2607b058@gmail.com>
+Date: Thu, 4 Feb 2021 00:42:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <82a3375e-6105-875c-3332-33fcf2c0f785@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
- alsa-devel@alsa-project.org, yang.jie@linux.intel.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, liam.r.girdwood@linux.intel.com
+Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,34 +119,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 1 Feb 2021 16:01:21 +0800, Yang Li wrote:
-> Eliminate the following coccicheck warning:
-> ./sound/soc/intel/catpt/pcm.c:355:2-3: Unneeded semicolon
+02.02.2021 16:23, Jon Hunter пишет:
+> 
+> On 31/01/2021 18:40, Ion Agorria wrote:
+>> From: Ion Agorria <ion@agorria.com>
+>>
+>> Adds support for Tegra SoC devices with RT5631 sound codec.
+>> Playback to speakers, headphones and internal mic recording works.
+>>
+>> This driver is used for ASUS Transformer TF201, TF700T and others
+>> Tegra based devices containing RT5631.
+>>
+>> Svyatoslav Ryhel (2):
+>>   ASoC: dt-bindings: tegra: Add binding for RT5631
+>>   ASoC: tegra: Add RT5631 machine driver
+>>
+>>  .../sound/nvidia,tegra-audio-rt5631.yaml      | 134 +++++++++
+>>  sound/soc/tegra/Kconfig                       |   8 +
+>>  sound/soc/tegra/Makefile                      |   2 +
+>>  sound/soc/tegra/tegra_rt5631.c                | 261 ++++++++++++++++++
+>>  4 files changed, 405 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
+>>  create mode 100644 sound/soc/tegra/tegra_rt5631.c
+> 
+> 
+> I don't see any user of this driver included. Any reason why?
 
-Applied to
+They should come a bit later. The TF201/300T device-trees should be in a
+good state already, we just need to finalize them for upstream and send out.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: Intel: catpt: remove unneeded semicolon
-      commit: e01a03db74a88084fb91a4ff18bb8d47a1e12f62
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+IIUC, the audio codec and dock station drivers are the most noticeable
+missing parts in upsteam kernel. Ion and Svyatoslav should be able to
+clarify the state of the devices in a more details.
