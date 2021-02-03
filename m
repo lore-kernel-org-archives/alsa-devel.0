@@ -2,68 +2,59 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F58C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 22:34:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59CA3C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 23:51:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B09E64F60
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 22:34:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B09E64F60
+	by mail.kernel.org (Postfix) with ESMTPS id 0479364F61
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 23:51:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0479364F61
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69C3216F8;
-	Wed,  3 Feb 2021 23:33:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69C3216F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B10E615E0;
+	Thu,  4 Feb 2021 00:50:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B10E615E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612391677;
-	bh=9n8+cy7ccbTnqn0Nwdsb9yibmXS8Zsyf2cHwIABW2BI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iy5mHCnKUdLEPteW5o6NbFQDlQWM+Ytzp59E5LISrp9x+7adAunfdI2je1gfMdwLM
-	 7l8+XQz+UyCLybnFG05BnVRPRGcpqiafPEfNIfRPusa2e6Cog3+mV0qgscQzt8/Sd4
-	 jU3DxoOwzCukP5jQSkJAtU+VYy3kzE0XfQxtRoyc=
+	s=default; t=1612396271;
+	bh=J9gFiCA8G4DAwziqPm0ZBWOz+8kjMJ3/bnYHvGOsed0=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=umY8RM4zIYfbn+xsC7emR9yVvNMfrDlBLn1D10+AOCOVMDGk/WH4BZftNl0tM6FPO
+	 y3Tgh3Of6hF0HlQ1g0fA9Otktb5v4w+Nu0XbMMfHYl9XV18GNOo0Xikzzbyr35qNZD
+	 p2WQYX7KcCOp2aaR5PTA1pGQilw7UPxQA/ZhBlKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00C54F80155;
-	Wed,  3 Feb 2021 23:33:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29D73F80155;
+	Thu,  4 Feb 2021 00:50:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA69CF8015A; Wed,  3 Feb 2021 23:33:44 +0100 (CET)
+ id 6FBF9F8015A; Thu,  4 Feb 2021 00:50:18 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AE234F80155
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 23:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE234F80155
-Date: 04 Feb 2021 07:33:37 +0900
-X-IronPort-AV: E=Sophos;i="5.79,399,1602514800"; d="scan'208";a="71248370"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 04 Feb 2021 07:33:37 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id EAF87F80155
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 00:50:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAF87F80155
+Date: 04 Feb 2021 08:50:05 +0900
+X-IronPort-AV: E=Sophos;i="5.79,399,1602514800"; d="scan'208";a="71254142"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 04 Feb 2021 08:50:05 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9CCBC400F4EC;
- Thu,  4 Feb 2021 07:33:37 +0900 (JST)
-Message-ID: <87y2g494b0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2F7694136354;
+ Thu,  4 Feb 2021 08:50:05 +0900 (JST)
+Message-ID: <87tuqs90rl.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: audio-graph: Export graph_remove() function
-In-Reply-To: <20210203172415.GH4880@sirena.org.uk>
-References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
- <1612368575-25991-2-git-send-email-spujar@nvidia.com>
- <20210203161951.GG4880@sirena.org.uk>
- <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
- <20210203172415.GH4880@sirena.org.uk>
+Subject: [PATCH 0/3] ASoC: soc-pcm: add soc_pcm_hw_update_xxx()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,24 +71,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Mark
 
-> > > > +int graph_remove(struct platform_device *pdev);
-> 
-> > > I think this needs better namespacing if it's going to be exported.
-> 
-> > audio_graph_remove() can be a better choice?
-> 
-> Yeah, that looks reasonable.
+These adds soc_pcm_hw_update_xxx() and cleanup soc-pcm.c
 
-Nice naming I think.
-In such case,  update also graph_parse_of() is nice idea for me.
+Kuninori Morimoto (3):
+  ASoC: soc-pcm: add soc_pcm_hw_update_rate()
+  ASoC: soc-pcm: add soc_pcm_hw_update_chan()
+  ASoC: soc-pcm: add soc_pcm_hw_update_format()
 
-	- int graph_parse_of(...)
-	+ int audio_graph_parse_of()
+ sound/soc/soc-pcm.c | 112 ++++++++++++++++++++++----------------------
+ 1 file changed, 56 insertions(+), 56 deletions(-)
 
-Thank you for your help !!
+-- 
+2.25.1
 
-Best regards
----
-Kuninori Morimoto
