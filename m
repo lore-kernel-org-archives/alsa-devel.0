@@ -2,56 +2,60 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59CA3C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 23:51:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94BA3C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 23:52:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0479364F61
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 23:51:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0479364F61
+	by mail.kernel.org (Postfix) with ESMTPS id DFDC064E50
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 23:52:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFDC064E50
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B10E615E0;
-	Thu,  4 Feb 2021 00:50:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B10E615E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F6551715;
+	Thu,  4 Feb 2021 00:51:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F6551715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612396271;
-	bh=J9gFiCA8G4DAwziqPm0ZBWOz+8kjMJ3/bnYHvGOsed0=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=umY8RM4zIYfbn+xsC7emR9yVvNMfrDlBLn1D10+AOCOVMDGk/WH4BZftNl0tM6FPO
-	 y3Tgh3Of6hF0HlQ1g0fA9Otktb5v4w+Nu0XbMMfHYl9XV18GNOo0Xikzzbyr35qNZD
-	 p2WQYX7KcCOp2aaR5PTA1pGQilw7UPxQA/ZhBlKc=
+	s=default; t=1612396322;
+	bh=haBkhwtYw3nGPKNU6pYwP7rpAsHu1dq675SC6LE2Rqs=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pSC0PKIPfO44+604ZAvNvQpc59VGOD5RdfJx/OOdfWXCrcdS3El4zwoklJPJ5Vajk
+	 JkMKKdS6V4VGwIEUnOSGPX3mvRUzCsHV4+tzWVIrtQr322j9nSqoL0MMqeEUoWj292
+	 GQNY1amJ+IEn3AfpeAPh8co0q0BCiS2uVUgG01KA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29D73F80155;
-	Thu,  4 Feb 2021 00:50:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 542A3F801DB;
+	Thu,  4 Feb 2021 00:50:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FBF9F8015A; Thu,  4 Feb 2021 00:50:18 +0100 (CET)
+ id B1D3DF8021D; Thu,  4 Feb 2021 00:50:39 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id EAF87F80155
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 00:50:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAF87F80155
-Date: 04 Feb 2021 08:50:05 +0900
-X-IronPort-AV: E=Sophos;i="5.79,399,1602514800"; d="scan'208";a="71254142"
+ by alsa1.perex.cz (Postfix) with ESMTP id 80310F80156
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 00:50:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80310F80156
+Date: 04 Feb 2021 08:50:31 +0900
+X-IronPort-AV: E=Sophos;i="5.79,399,1602514800"; d="scan'208";a="71254175"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 04 Feb 2021 08:50:05 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 04 Feb 2021 08:50:31 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2F7694136354;
- Thu,  4 Feb 2021 08:50:05 +0900 (JST)
-Message-ID: <87tuqs90rl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 523E0400FC3E;
+ Thu,  4 Feb 2021 08:50:31 +0900 (JST)
+Message-ID: <87sg6c90qv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/3] ASoC: soc-pcm: add soc_pcm_hw_update_xxx()
+Subject: [PATCH 1/3] ASoC: soc-pcm: add soc_pcm_hw_update_rate()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87tuqs90rl.wl-kuninori.morimoto.gx@renesas.com>
+References: <87tuqs90rl.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -71,18 +75,137 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These adds soc_pcm_hw_update_xxx() and cleanup soc-pcm.c
+To update hw, we need to follow setting order
 
-Kuninori Morimoto (3):
-  ASoC: soc-pcm: add soc_pcm_hw_update_rate()
-  ASoC: soc-pcm: add soc_pcm_hw_update_chan()
-  ASoC: soc-pcm: add soc_pcm_hw_update_format()
+	1) set hw->rates
+	2) call snd_pcm_limit_hw_rates()
+	3) update hw->rate_min/max
 
- sound/soc/soc-pcm.c | 112 ++++++++++++++++++++++----------------------
- 1 file changed, 56 insertions(+), 56 deletions(-)
+To avoid random settings, this patch adds new soc_pcm_hw_update_rate()
+and share updating code.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 56 ++++++++++++++++++++++-----------------------
+ 1 file changed, 27 insertions(+), 29 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b79f064887d4..eb5b220b189a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -473,6 +473,26 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+ 	soc_pcm_set_msb(substream, cpu_bits);
+ }
+ 
++static void soc_pcm_hw_init(struct snd_pcm_hardware *hw)
++{
++	hw->rates		= UINT_MAX;
++	hw->rate_min		= 0;
++	hw->rate_max		= UINT_MAX;
++}
++
++static void soc_pcm_hw_update_rate(struct snd_pcm_hardware *hw,
++				   struct snd_soc_pcm_stream *p)
++{
++	hw->rates = snd_pcm_rate_mask_intersect(hw->rates, p->rates);
++
++	/* setup hw->rate_min/max via hw->rates first */
++	snd_pcm_hw_limit_rates(hw);
++
++	/* update hw->rate_min/max by snd_soc_pcm_stream */
++	hw->rate_min = max(hw->rate_min, p->rate_min);
++	hw->rate_max = min_not_zero(hw->rate_max, p->rate_max);
++}
++
+ /**
+  * snd_soc_runtime_calc_hw() - Calculate hw limits for a PCM stream
+  * @rtd: ASoC PCM runtime
+@@ -491,12 +511,11 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
+ 	struct snd_soc_pcm_stream *cpu_stream;
+ 	unsigned int chan_min = 0, chan_max = UINT_MAX;
+ 	unsigned int cpu_chan_min = 0, cpu_chan_max = UINT_MAX;
+-	unsigned int rate_min = 0, rate_max = UINT_MAX;
+-	unsigned int cpu_rate_min = 0, cpu_rate_max = UINT_MAX;
+-	unsigned int rates = UINT_MAX, cpu_rates = UINT_MAX;
+ 	u64 formats = ULLONG_MAX;
+ 	int i;
+ 
++	soc_pcm_hw_init(hw);
++
+ 	/* first calculate min/max only for CPUs in the DAI link */
+ 	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
+ 
+@@ -513,11 +532,8 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
+ 
+ 		cpu_chan_min = max(cpu_chan_min, cpu_stream->channels_min);
+ 		cpu_chan_max = min(cpu_chan_max, cpu_stream->channels_max);
+-		cpu_rate_min = max(cpu_rate_min, cpu_stream->rate_min);
+-		cpu_rate_max = min_not_zero(cpu_rate_max, cpu_stream->rate_max);
++		soc_pcm_hw_update_rate(hw, cpu_stream);
+ 		formats &= cpu_stream->formats;
+-		cpu_rates = snd_pcm_rate_mask_intersect(cpu_stream->rates,
+-							cpu_rates);
+ 	}
+ 
+ 	/* second calculate min/max only for CODECs in the DAI link */
+@@ -536,10 +552,8 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
+ 
+ 		chan_min = max(chan_min, codec_stream->channels_min);
+ 		chan_max = min(chan_max, codec_stream->channels_max);
+-		rate_min = max(rate_min, codec_stream->rate_min);
+-		rate_max = min_not_zero(rate_max, codec_stream->rate_max);
++		soc_pcm_hw_update_rate(hw, codec_stream);
+ 		formats &= codec_stream->formats;
+-		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
+ 	}
+ 
+ 	/* Verify both a valid CPU DAI and a valid CODEC DAI were found */
+@@ -560,14 +574,6 @@ int snd_soc_runtime_calc_hw(struct snd_soc_pcm_runtime *rtd,
+ 	hw->channels_min = max(chan_min, cpu_chan_min);
+ 	hw->channels_max = min(chan_max, cpu_chan_max);
+ 	hw->formats = formats;
+-	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_rates);
+-
+-	snd_pcm_hw_limit_rates(hw);
+-
+-	hw->rate_min = max(hw->rate_min, cpu_rate_min);
+-	hw->rate_min = max(hw->rate_min, rate_min);
+-	hw->rate_max = min_not_zero(hw->rate_max, cpu_rate_max);
+-	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
+ 
+ 	return 0;
+ }
+@@ -1514,12 +1520,9 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
+ 				 struct snd_soc_pcm_stream *stream)
+ {
+-	runtime->hw.rates = stream->rates;
+-
+-	snd_pcm_limit_hw_rates(runtime);
++	struct snd_pcm_hardware *hw = &runtime->hw;
+ 
+-	runtime->hw.rate_min = stream->rate_min;
+-	runtime->hw.rate_max = min_not_zero(stream->rate_max, UINT_MAX);
++	soc_pcm_hw_update_rate(hw, stream);
+ 	runtime->hw.channels_min = stream->channels_min;
+ 	runtime->hw.channels_max = stream->channels_max;
+ 	if (runtime->hw.formats)
+@@ -1651,12 +1654,7 @@ static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
+ 
+ 			pcm = snd_soc_dai_get_pcm_stream(dai, stream);
+ 
+-			hw->rates = snd_pcm_rate_mask_intersect(hw->rates, pcm->rates);
+-
+-			snd_pcm_limit_hw_rates(runtime);
+-
+-			hw->rate_min = max(hw->rate_min, pcm->rate_min);
+-			hw->rate_max = min_not_zero(hw->rate_max, pcm->rate_max);
++			soc_pcm_hw_update_rate(hw, pcm);
+ 		}
+ 	}
+ }
 -- 
 2.25.1
 
