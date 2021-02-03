@@ -2,80 +2,86 @@ Return-Path: <SRS0=phwE=HF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 911A0C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:26:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04F3BC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:35:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EA3B364FA2
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:26:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA3B364FA2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EE62364E40
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:35:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE62364E40
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC66B1706;
-	Wed,  3 Feb 2021 18:25:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC66B1706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19DCF1706;
+	Wed,  3 Feb 2021 18:34:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19DCF1706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612373162;
-	bh=/yhI2spPcVGMBVmOZvUkwECDxBhVNdZcA9Cpql60alQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612373715;
+	bh=KWqKqt2f1goILVaLW6keSi7a8xmdBlxaTpcjEM7focg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DOX1Nhl0EriuVBBYIPp2yThPpi5dYFegFYwgH9t6lxTjtElv7Qk2+E2OBAME/x50l
-	 HzJBvtAaamViu4Q+ri+IN3mtuw7ZYxRxgwiCYB6FBMUw2IuBzn2gjpf5GMGazWs1ub
-	 2BKojq1wRqSW+W0b1J7iLQXMnY6KWPCJfzbkQ+tY=
+	b=UgPZvLfw4QdIBcv4lgKic2EXcN/t2ZhrTZRNNUAPUNnNHwBo3vfjV9+zphZZRc6uz
+	 YSxR2YlL9ZyPLFYu9oeAkXuijgdQzVb4EYH3MUT0lecGQukC0blCNHiU/e042Gni9Q
+	 krJtXdpAaIBmasvxGKNEgV3nt0qc2stpCROw5T7E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04C11F80156;
-	Wed,  3 Feb 2021 18:25:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89512F80156;
+	Wed,  3 Feb 2021 18:34:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41526F8015A; Wed,  3 Feb 2021 18:25:10 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B174CF8015A; Wed,  3 Feb 2021 18:34:23 +0100 (CET)
+Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E102FF80154
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 18:25:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E102FF80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF332F80155
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 18:34:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF332F80155
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q5Psc9RE"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B16764F68;
- Wed,  3 Feb 2021 17:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612373104;
- bh=/yhI2spPcVGMBVmOZvUkwECDxBhVNdZcA9Cpql60alQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=q5Psc9RErW69hu2Tr1n6s+KkTUj4xSf0zHcNvDJdxOyrw2F+Ipb905Dw68xwg+Dgc
- MEV6TVp32DMji47F1WpFteX8ZGBp1IGmR618GmlHPSrzDCYEkiftCGGJrSv0G27gN7
- A9QHaPGatDcFj+TvMcu19I/IEb+Ir6zRkuXUSgJScgaIbS7pKL2C4Er1G4c8vTrC9n
- C676XaaTFguU4XtUWtn1fWuiVSmw7RVsZLByOKsuwhkjiMv6hUC9GE1BC/lZv6ao8y
- ZhTt2fUOJ/l3dIieaH9J1oc9yMqPzu1Y5ctN9/LaFRZw+387zMPWzuow+pTOPdr8EX
- tehoZ7/GrxRSg==
-Date: Wed, 3 Feb 2021 17:24:15 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-Subject: Re: Re: [PATCH 1/2] ASoC: audio-graph: Export graph_remove() function
-Message-ID: <20210203172415.GH4880@sirena.org.uk>
-References: <1612368575-25991-1-git-send-email-spujar@nvidia.com>
- <1612368575-25991-2-git-send-email-spujar@nvidia.com>
- <20210203161951.GG4880@sirena.org.uk>
- <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
+ dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
+ header.b="ZS9V4YZ7"
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
+ [127.0.0.1])
+ by mx1.opensynergy.com (Proxmox) with ESMTP id DEDB2A15A4;
+ Wed,  3 Feb 2021 18:34:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ h=cc:cc:content-transfer-encoding:content-type:content-type
+ :date:from:from:in-reply-to:message-id:mime-version:references
+ :reply-to:subject:subject:to:to; s=srmailgate02; bh=6JriUFT4K4Gw
+ YTQBWmEFwOKzOJIBhwKv+n4I3Bk9mZ4=; b=ZS9V4YZ72FWVi7jLDWcSYcAxKf+E
+ q4/rbVgU+kTQKo0+HohUXRP4aRJctXkwRTS7slZVNXGVKEiK9xYezJH9qleb++ty
+ JDcfELO4n6iMqRMMd0uR7JoH2qOXonsSXmUprzdqEdYgcb9UJ5qN8waT3PmM2XPN
+ dlUUlFCn3FynQI2qXzqEURdH7WoJ1zk7yMy89/tIPNhS8TiZERrSlg8ybV0LKvN4
+ OLsmqvjaD56VsoWRsLLSzTwfxCW8IgfMgG9uVJemr/v2fqHOTROjmkg4MgFGNlYR
+ JULqEYM8W+YWDNKrq+WzFkkvkBm5hy9haTBbLVTHCkGRzuKehKmn9ICG+w==
+Subject: Re: [virtio-dev] Re: [PATCH v2 2/9] ALSA: virtio: add virtio sound
+ driver
+To: Takashi Iwai <tiwai@suse.de>
+References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com>
+ <20210124165408.1122868-3-anton.yakovlev@opensynergy.com>
+ <8754dae8-114-6383-510-de2ba9dc4fa@intel.com>
+ <52f71ac6-3ec7-2884-7a64-1995f416d20a@opensynergy.com>
+ <s5h35yd9jf0.wl-tiwai@suse.de>
+From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <fb4808e7-28d6-996e-02fc-c63d0e1d8221@opensynergy.com>
+Date: Wed, 3 Feb 2021 18:34:12 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ZYOWEO2dMm2Af3e3"
-Content-Disposition: inline
-In-Reply-To: <64b65aaf-9971-e071-5d52-02286fe0cacc@nvidia.com>
-X-Cookie: Who was that masked man?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+In-Reply-To: <s5h35yd9jf0.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,36 +97,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Takashi,
 
---ZYOWEO2dMm2Af3e3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Feb 03, 2021 at 10:09:01PM +0530, Sameer Pujar wrote:
-> On 2/3/2021 9:49 PM, Mark Brown wrote:
-> > On Wed, Feb 03, 2021 at 09:39:34PM +0530, Sameer Pujar wrote:
+On 03.02.2021 17:59, Takashi Iwai wrote:
+> On Tue, 02 Feb 2021 00:18:09 +0100,
+> Anton Yakovlev wrote:
+>>>> +/**
+>>>> + * virtsnd_reset_fn() - Kernel worker's function to reset the device.
+>>>> + * @work: Reset device work.
+>>>> + *
+>>>> + * Context: Process context.
+>>>> + */
+>>>> +static void virtsnd_reset_fn(struct work_struct *work)
+>>>> +{
+>>>> +     struct virtio_snd *snd =
+>>>> +             container_of(work, struct virtio_snd, reset_work);
+>>>> +     struct virtio_device *vdev = snd->vdev;
+>>>> +     struct device *dev = &vdev->dev;
+>>>> +     int rc;
+>>>> +
+>>>> +     dev_info(dev, "sound device needs reset\n");
+>>>> +
+>>>> +     /*
+>>>> +      * It seems that the only way to properly reset the device is to
+>>>> remove
+>>>> +      * and re-create the ALSA sound card device.
+>>>> +      *
+>>>> +      * Also resetting the device involves a number of steps with
+>>>> setting the
+>>>> +      * status bits described in the virtio specification. And the
+>>>> easiest
+>>>> +      * way to get everything right is to use the virtio bus interface.
+>>>> +      */
+>>>> +     rc = dev->bus->remove(dev);
+>>>> +     if (rc)
+>>>> +             dev_warn(dev, "bus->remove() failed: %d", rc);
+>>>> +
+>>>> +     rc = dev->bus->probe(dev);
+>>>> +     if (rc)
+>>>> +             dev_err(dev, "bus->probe() failed: %d", rc);
+>>>
+>>> This looks very suspicious to me. Wondering what ALSA maintainers
+>> will say
+>>> to this.
+>>
+>> I'm also wondering what the virtio people have to say. This part is a
+>> purely virtio specific thing. And since none of the existing virtio
+>> drivers processes the request to reset the device, it is not clear what
+>> is the best way to proceed here. For this reason, the most
+>> straightforward and simple solution was chosen.
+> 
+> What is this "reset" actually supposed to do?  Reconfguring
+> everything, or changing only certain parameters, devices, whatever?
 
-> > > +int graph_remove(struct platform_device *pdev);
+It means bringing this particular device to its initial state.
 
-> > I think this needs better namespacing if it's going to be exported.
+After that, the driver can re-read the configurations from the device
+and reconfigure everything.
 
-> audio_graph_remove() can be a better choice?
 
-Yeah, that looks reasonable.
+> thanks,
+> 
+> Takashi
+> 
 
---ZYOWEO2dMm2Af3e3
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+Anton Yakovlev
+Senior Software Engineer
 
------BEGIN PGP SIGNATURE-----
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAa3D8ACgkQJNaLcl1U
-h9DgsQf9GzN3MtpiKxC9z9VC6D/VDCcjNVKfBH4n8AsORm22h3JUl7Y5j1VQE1aO
-feY09SDZ/Xyfu868hB3PC2NhljwRUkkA0s8gnCTMvgprT08OjHZDqzi0nQd2Z0BH
-2V5vO7RgGB0jFXEWwIvFM0AqtcufWjUUDKnlbVGSi/rbOrQCiT6zoUC3BJmGmQLP
-DVPeklIGLqLzbwu+OkWzp0ZImxtonyE07PDnuek2MaH/41HoBRbPRrzfgREgzTt3
-+QSL8GQecG+2Ia0+4LnCy7g528weLNEFB7HDBtqx4SGMct1lD7xhWTPM89sxNq65
-fIRzGZOE8p1RYsstGe04kKxpHBxB4g==
-=qMSx
------END PGP SIGNATURE-----
-
---ZYOWEO2dMm2Af3e3--
