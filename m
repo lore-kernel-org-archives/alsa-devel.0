@@ -6,77 +6,64 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04F3BC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C26CC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:40:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EE62364E40
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:35:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EE62364E40
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8054464F8C
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Feb 2021 17:40:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8054464F8C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19DCF1706;
-	Wed,  3 Feb 2021 18:34:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19DCF1706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70EC21715;
+	Wed,  3 Feb 2021 18:40:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70EC21715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612373715;
-	bh=KWqKqt2f1goILVaLW6keSi7a8xmdBlxaTpcjEM7focg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1612374056;
+	bh=FatQ0pIhtB28FO7hfV5uF/5Ard/WmPVK/yYeL5mvqgk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UgPZvLfw4QdIBcv4lgKic2EXcN/t2ZhrTZRNNUAPUNnNHwBo3vfjV9+zphZZRc6uz
-	 YSxR2YlL9ZyPLFYu9oeAkXuijgdQzVb4EYH3MUT0lecGQukC0blCNHiU/e042Gni9Q
-	 krJtXdpAaIBmasvxGKNEgV3nt0qc2stpCROw5T7E=
+	b=aheS1S5B/hmNk6GJE1mgX/HKuQTY4T3vFFVOgR7vA2ueJYjYuwIKoYf/4f7vbiU6A
+	 fzasiRR6iYJZsziGB5S5vFPA0z9eeNLWL7igPRHJhOOUealCbMBL2Bvlr84Tq6CLrA
+	 Hh66eigWTUk+HIxCQaumZY1zYGtdEa4RWYpSZcwM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89512F80156;
-	Wed,  3 Feb 2021 18:34:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E610FF80155;
+	Wed,  3 Feb 2021 18:40:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B174CF8015A; Wed,  3 Feb 2021 18:34:23 +0100 (CET)
-Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 07376F8015A; Wed,  3 Feb 2021 18:40:03 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF332F80155
- for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 18:34:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF332F80155
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
- header.b="ZS9V4YZ7"
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
- [127.0.0.1])
- by mx1.opensynergy.com (Proxmox) with ESMTP id DEDB2A15A4;
- Wed,  3 Feb 2021 18:34:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- h=cc:cc:content-transfer-encoding:content-type:content-type
- :date:from:from:in-reply-to:message-id:mime-version:references
- :reply-to:subject:subject:to:to; s=srmailgate02; bh=6JriUFT4K4Gw
- YTQBWmEFwOKzOJIBhwKv+n4I3Bk9mZ4=; b=ZS9V4YZ72FWVi7jLDWcSYcAxKf+E
- q4/rbVgU+kTQKo0+HohUXRP4aRJctXkwRTS7slZVNXGVKEiK9xYezJH9qleb++ty
- JDcfELO4n6iMqRMMd0uR7JoH2qOXonsSXmUprzdqEdYgcb9UJ5qN8waT3PmM2XPN
- dlUUlFCn3FynQI2qXzqEURdH7WoJ1zk7yMy89/tIPNhS8TiZERrSlg8ybV0LKvN4
- OLsmqvjaD56VsoWRsLLSzTwfxCW8IgfMgG9uVJemr/v2fqHOTROjmkg4MgFGNlYR
- JULqEYM8W+YWDNKrq+WzFkkvkBm5hy9haTBbLVTHCkGRzuKehKmn9ICG+w==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41F91F8013C
+ for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2021 18:40:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41F91F8013C
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id A736EACB7;
+ Wed,  3 Feb 2021 17:39:59 +0000 (UTC)
+Date: Wed, 03 Feb 2021 18:39:59 +0100
+Message-ID: <s5hy2g582z4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
 Subject: Re: [virtio-dev] Re: [PATCH v2 2/9] ALSA: virtio: add virtio sound
  driver
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <fb4808e7-28d6-996e-02fc-c63d0e1d8221@opensynergy.com>
 References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com>
  <20210124165408.1122868-3-anton.yakovlev@opensynergy.com>
  <8754dae8-114-6383-510-de2ba9dc4fa@intel.com>
  <52f71ac6-3ec7-2884-7a64-1995f416d20a@opensynergy.com>
  <s5h35yd9jf0.wl-tiwai@suse.de>
-From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <fb4808e7-28d6-996e-02fc-c63d0e1d8221@opensynergy.com>
-Date: Wed, 3 Feb 2021 18:34:12 +0100
-MIME-Version: 1.0
-In-Reply-To: <s5h35yd9jf0.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+ <fb4808e7-28d6-996e-02fc-c63d0e1d8221@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
  Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
@@ -97,75 +84,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Takashi,
-
-
-On 03.02.2021 17:59, Takashi Iwai wrote:
-> On Tue, 02 Feb 2021 00:18:09 +0100,
-> Anton Yakovlev wrote:
->>>> +/**
->>>> + * virtsnd_reset_fn() - Kernel worker's function to reset the device.
->>>> + * @work: Reset device work.
->>>> + *
->>>> + * Context: Process context.
->>>> + */
->>>> +static void virtsnd_reset_fn(struct work_struct *work)
->>>> +{
->>>> +     struct virtio_snd *snd =
->>>> +             container_of(work, struct virtio_snd, reset_work);
->>>> +     struct virtio_device *vdev = snd->vdev;
->>>> +     struct device *dev = &vdev->dev;
->>>> +     int rc;
->>>> +
->>>> +     dev_info(dev, "sound device needs reset\n");
->>>> +
->>>> +     /*
->>>> +      * It seems that the only way to properly reset the device is to
->>>> remove
->>>> +      * and re-create the ALSA sound card device.
->>>> +      *
->>>> +      * Also resetting the device involves a number of steps with
->>>> setting the
->>>> +      * status bits described in the virtio specification. And the
->>>> easiest
->>>> +      * way to get everything right is to use the virtio bus interface.
->>>> +      */
->>>> +     rc = dev->bus->remove(dev);
->>>> +     if (rc)
->>>> +             dev_warn(dev, "bus->remove() failed: %d", rc);
->>>> +
->>>> +     rc = dev->bus->probe(dev);
->>>> +     if (rc)
->>>> +             dev_err(dev, "bus->probe() failed: %d", rc);
->>>
->>> This looks very suspicious to me. Wondering what ALSA maintainers
->> will say
->>> to this.
->>
->> I'm also wondering what the virtio people have to say. This part is a
->> purely virtio specific thing. And since none of the existing virtio
->> drivers processes the request to reset the device, it is not clear what
->> is the best way to proceed here. For this reason, the most
->> straightforward and simple solution was chosen.
+On Wed, 03 Feb 2021 18:34:12 +0100,
+Anton Yakovlev wrote:
 > 
-> What is this "reset" actually supposed to do?  Reconfguring
-> everything, or changing only certain parameters, devices, whatever?
-
-It means bringing this particular device to its initial state.
-
-After that, the driver can re-read the configurations from the device
-and reconfigure everything.
-
-
-> thanks,
+> Hi Takashi,
 > 
-> Takashi
 > 
+> On 03.02.2021 17:59, Takashi Iwai wrote:
+> > On Tue, 02 Feb 2021 00:18:09 +0100,
+> > Anton Yakovlev wrote:
+> >>>> +/**
+> >>>> + * virtsnd_reset_fn() - Kernel worker's function to reset the device.
+> >>>> + * @work: Reset device work.
+> >>>> + *
+> >>>> + * Context: Process context.
+> >>>> + */
+> >>>> +static void virtsnd_reset_fn(struct work_struct *work)
+> >>>> +{
+> >>>> +     struct virtio_snd *snd =
+> >>>> +             container_of(work, struct virtio_snd, reset_work);
+> >>>> +     struct virtio_device *vdev = snd->vdev;
+> >>>> +     struct device *dev = &vdev->dev;
+> >>>> +     int rc;
+> >>>> +
+> >>>> +     dev_info(dev, "sound device needs reset\n");
+> >>>> +
+> >>>> +     /*
+> >>>> +      * It seems that the only way to properly reset the device is to
+> >>>> remove
+> >>>> +      * and re-create the ALSA sound card device.
+> >>>> +      *
+> >>>> +      * Also resetting the device involves a number of steps with
+> >>>> setting the
+> >>>> +      * status bits described in the virtio specification. And the
+> >>>> easiest
+> >>>> +      * way to get everything right is to use the virtio bus interface.
+> >>>> +      */
+> >>>> +     rc = dev->bus->remove(dev);
+> >>>> +     if (rc)
+> >>>> +             dev_warn(dev, "bus->remove() failed: %d", rc);
+> >>>> +
+> >>>> +     rc = dev->bus->probe(dev);
+> >>>> +     if (rc)
+> >>>> +             dev_err(dev, "bus->probe() failed: %d", rc);
+> >>>
+> >>> This looks very suspicious to me. Wondering what ALSA maintainers
+> >> will say
+> >>> to this.
+> >>
+> >> I'm also wondering what the virtio people have to say. This part is a
+> >> purely virtio specific thing. And since none of the existing virtio
+> >> drivers processes the request to reset the device, it is not clear what
+> >> is the best way to proceed here. For this reason, the most
+> >> straightforward and simple solution was chosen.
+> >
+> > What is this "reset" actually supposed to do?  Reconfguring
+> > everything, or changing only certain parameters, devices, whatever?
+> 
+> It means bringing this particular device to its initial state.
+> 
+> After that, the driver can re-read the configurations from the device
+> and reconfigure everything.
 
--- 
-Anton Yakovlev
-Senior Software Engineer
+So all running processes have to be finished before starting
+resetting?  It sounds indeed like a complete device re-binding, and if
+so, doing with the proper dev_*() API might be saner than the brute
+force bus->remove() and bus->probe() calls...
 
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
 
+thanks,
+
+Takashi
