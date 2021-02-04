@@ -2,103 +2,68 @@ Return-Path: <SRS0=grW5=HG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CEDFC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 13:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A4F4C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 14:05:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9319B64DC4
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 13:58:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9319B64DC4
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id AB72E64F51
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 14:05:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AB72E64F51
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26B161706;
-	Thu,  4 Feb 2021 14:57:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26B161706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CD5116D9;
+	Thu,  4 Feb 2021 15:04:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CD5116D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612447079;
-	bh=RVxdmQ8XGLcyY3bvsXcMlq/mzNR1J3rKA5Rum2aWOj4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612447544;
+	bh=q1RXq/wlIkpMqTVZQiS8l3WecNymckD/sXqm01W4Niw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uoGGypoItU/N2UiGY9Y8KiUSmYfzl7TRSgb4cDtM53WjkeQkhzH0KYYWudSy7qTQm
-	 MFCLj2XnepEdu9oJeAd6NmuTV1eRCKWJcSPv4zG6Xze52fckmfoF4E/UQGAX94q65u
-	 Oqhm93eFdvCLW5EG6+IAdKJw8DiQxpjquSz/fnLM=
+	b=eZos6xRD7Mu2FUQ5HLRzELEAHgDlyGlpyDwCqViHeu5j2MKfv8h5Lf+lJ0pjwEs9C
+	 XhjNAXG6M0RNK269fU6FDGHoDntt4xLhrWShjmReltuoFtxuOPqQLHIemdwAogfqot
+	 m9O3Te8DOclyTsmeP1tU63/Kb28MtA0aQpURha1k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C06ADF80264;
-	Thu,  4 Feb 2021 14:56:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 979E9F80139;
+	Thu,  4 Feb 2021 15:04:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C4B2F80277; Thu,  4 Feb 2021 14:56:35 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C5137F80171; Thu,  4 Feb 2021 15:04:51 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5FA7F80264
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 14:56:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5FA7F80264
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="i5tL/xmN"
-Received: by mail-wm1-x329.google.com with SMTP id l12so3205000wmq.2
- for <alsa-devel@alsa-project.org>; Thu, 04 Feb 2021 05:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=PIhCp8il47YAvxqad9wdbokygqezWUysVvDAkwwnuTQ=;
- b=i5tL/xmNo+KoC4L+J++aT8o9sf0W4gpJ5zTnyIyHO8lfutg+zYLMGr72A2HPstt5ki
- DvBUkuAa0qhUwXb30x6BNaI06P1ROgBYC3Xzp6ovgfbZbqKQGVQHuMz5BkDDRHR7XE/u
- P7YFaJoeJ1OFtsLOZ8U5JgvO3zgSHfxNggH3cD7cuu2gaUBMmbQY/DXZK5x0r9cpX5Od
- i5sFKtVA7sm+QXyr711m6l0lEt4yiaFWzArLzqx4zsy14fu/R1fjwdqQVehbMnjI/3vJ
- RbsqDCJdDmMGGtQ+0pkPkJeL5Z9QYIwyUfzOoTiiBLrxaeeloIJ6meDfX36ZuFhzhp+/
- L3Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=PIhCp8il47YAvxqad9wdbokygqezWUysVvDAkwwnuTQ=;
- b=Ju3bQe/S1n3q77t78yzNAVTL+WWQAnyfyKVDRHTtVKkYDpQ5dnk1WUWVGR9A4QENQp
- j7j8WAlHJoCVHWlpEkERAxAzHiotCefL21cPMf89VvCCO7BM2EHHkcK1hBhE484SFp2J
- rCQgZpNfdTetdhcEB+iVBuzfQIPoMDQuTv7SKDr9+LVbbYLQ2W4gvIO1kjKztBJ3cfBG
- ph7foXU8N3L+cozo2pHXxg/2+IYIUthx17Hev2hVoh1MC02IJs4cw1krTD5Cb0AU6C9N
- VbLpKFL1gPgtO7w8EWwmzUi/VANy16XwSExk3jcZs8s6alD3zCMSLvWWXibY3r4kOyAW
- IIYw==
-X-Gm-Message-State: AOAM532Bvo5Vhr+67fmrJYJXingmDT0gSleJMyk4h+RjdNeFlEJ7uI3Y
- AcY1+wzoM+mO6s6yzaM2idAcCQ==
-X-Google-Smtp-Source: ABdhPJzxt85Icg/KGkiKBlSAEikhPnZG1noHL4jUI+b++S85sT5D34hbYN70ykTecBBOWTCPRwpAgA==
-X-Received: by 2002:a1c:7e4e:: with SMTP id z75mr7686696wmc.168.1612446990254; 
- Thu, 04 Feb 2021 05:56:30 -0800 (PST)
-Received: from dell ([91.110.221.188])
- by smtp.gmail.com with ESMTPSA id r13sm6788058wmh.9.2021.02.04.05.56.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Feb 2021 05:56:29 -0800 (PST)
-Date: Thu, 4 Feb 2021 13:56:27 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v4 5/5] ASoC: Intel: bytcr_wm5102: Add machine driver for
- BYT/WM5102
-Message-ID: <20210204135627.GM2789116@dell>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-6-hdegoede@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210120214957.140232-6-hdegoede@redhat.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ACA66F80152
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 15:04:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACA66F80152
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id EC830AD24;
+ Thu,  4 Feb 2021 14:04:43 +0000 (UTC)
+Date: Thu, 04 Feb 2021 15:04:43 +0100
+Message-ID: <s5h4kis6i9w.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [RFC PATCH] ALSA: hda: call ext hda codec link up/down if
+ available
+In-Reply-To: <alpine.DEB.2.22.394.2102041239160.864696@eliteleevi.tm.intel.com>
+References: <20210204075821.1503539-1-kai.vehmanen@linux.intel.com>
+ <alpine.DEB.2.22.394.2102040959490.864696@eliteleevi.tm.intel.com>
+ <s5hzh0k6vpn.wl-tiwai@suse.de>
+ <alpine.DEB.2.22.394.2102041239160.864696@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,62 +79,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Jan 2021, Hans de Goede wrote:
+On Thu, 04 Feb 2021 11:42:20 +0100,
+Kai Vehmanen wrote:
+> 
+> Hey,
+> 
+> On Thu, 4 Feb 2021, Takashi Iwai wrote:
+> 
+> > On Thu, 04 Feb 2021 09:07:09 +0100, Kai Vehmanen wrote:
+> > > Takashi and others, this patch is a follow-up to the earlier thread about 
+> > > hdac link management:
+> > > https://mailman.alsa-project.org/pipermail/alsa-devel/2021-January/179715.html
+> > > 
+> > > We have absolutely no calls from sound/pci/hda/ to hdaudio_ext.h before
+> > > this patch, so I'm wondering if this is the right approach to take. 
+> > 
+> > An obvious drawback by this patch is that it'll make the hda-ext code
+> > always loaded whenever it's enabled, no matter whether it's really
+> > used or not.
+> > 
+> > Maybe adding a new callback (link) in hdac_bus_ops can help?
+> 
+> hmm, that's true. Let me try adding a separate callback and resend for 
+> review. That will look cleaner in hda_codec.c.
 
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> Add a new ASoc Machine driver for Intel Baytrail platforms with a
-> Wolfson Microelectronics WM5102 codec.
-> 
-> This is based on a past contributions [1] from Paulo Sergio Travaglia
-> <pstglia@gmail.com> based on the Levono kernel [2] combined with
-> insights in things like the speaker GPIO from the android-x86 android
-> port for the Lenovo Yoga Tablet 2 1051F/L [3].
-> 
-> [1] https://patchwork.kernel.org/project/alsa-devel/patch/593313f5.3636c80a.50e05.47e9@mx.google.com/
-> [2] https://github.com/lenovo-yt2-dev/android_kernel_lenovo_baytrail/blob/cm-12.1/sound/soc/intel/board/byt_bl_wm5102.c
-> [3] https://github.com/Kitsune2222/Android_Yoga_Tablet_2-1051F_Kernel
-> 
-> The original machine driver from the Android ports was a crude modified
-> copy of bytcr_rt5640.c adjusted to work with the WM5102 codec.
-> This version has been extensively reworked to:
-> 
-> 1. Remove all rt5640 related quirk handling. to the best of my knowledge
-> this setup is only used on the Lenovo Yoga Tablet 2 series (8, 10 and 13
-> inch models) which all use the same setup. So there is no need to deal
-> with all the variations with which we need to deal on rt5640 boards.
-> 
-> 2. Rework clock handling, properly turn off the FLL and the platform-clock
-> when they are no longer necessary and don't reconfigure the FLL
-> unnecessarily when it is already running. This fixes a number of:
-> "Timed out waiting for lock" warnings being logged.
-> 
-> 3. Add the GPIO controlled Speaker-VDD regulator as a DAPM_SUPPLY
-> 
-> This only adds the machine driver and ACPI hooks, the BYT-CR detection
-> quirk which these devices need will be added in a separate patch.
-> 
-> BugLink: https://github.com/thesofproject/linux/issues/2485
-> Co-authored-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changes in v2:
-> - Drop unnecessary configuring of OPCLK
-> - Fix error-msg when setting the SYSCLK fails
-> ---
->  sound/soc/intel/boards/Kconfig                |  12 +
->  sound/soc/intel/boards/Makefile               |   2 +
->  sound/soc/intel/boards/bytcr_wm5102.c         | 465 ++++++++++++++++++
->  .../intel/common/soc-acpi-intel-byt-match.c   |  16 +
->  4 files changed, 495 insertions(+)
->  create mode 100644 sound/soc/intel/boards/bytcr_wm5102.c
+Thanks.
 
-Applied, thanks.
+BTW, one more thing: the code link up/down isn't always paired.  It's
+a bit map and only holding states.  For example, in hda_codec.c, the
+link power down may happen conditionally marked in
+hda_codec_runtime_suspend() while the resume always marks the link
+power up.  So you'd need to check the bitmap change to perform the
+refcount up/down in the hda-ext side.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+
+Takashi
