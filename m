@@ -7,79 +7,81 @@ X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8237CC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:42:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DEAFDC433E0
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:42:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B9C2364E55
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:42:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B9C2364E55
+	by mail.kernel.org (Postfix) with ESMTPS id CD03A64E52
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:42:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD03A64E52
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=armlinux.org.uk
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27B1785D;
-	Sat,  6 Feb 2021 21:41:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27B1785D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E3611698;
+	Sat,  6 Feb 2021 21:41:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E3611698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612644133;
-	bh=mnA61jIo8yueRxkJGkEH8eeB5/8lWvD1JWNWzoS3Asw=;
+	s=default; t=1612644147;
+	bh=qf0BDzm4MTBSdcM47YvvqeKZpPzndzvDAP3ODNo+qts=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mT61NB19bNOcJhpNBq8Pmrv3r5V3jxMXK53HGkLkyYZ87aBfaIaTkq7T/hCSDXMZS
-	 /+hpDbDLzdBudQkseV54+8kRQr0S7j/BidCNkMZSZy3FwH0mifMLPehbM/vw9MQMAr
-	 ocwU7NEqFmYipM3c7deuUUWoOZHEezuAWUETE9iw=
+	b=s8vWGIbZ8jEf5uImELF1ykF/PsD0OVWlKarw1Z2noYHsoH33QAMYU0NiJUBVm6/p6
+	 bASJUM3QqPLLgMsprg5PWBzt6R0xni8gKjaQ6OzGlqe+NYv+MJrQSm4/CKc87NLDCr
+	 KD5BzJ9B6H3NupQzp1LAas3EnpBYsaHA53oDTgDk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3421BF8032D;
-	Sat,  6 Feb 2021 21:39:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10EE4F8028B;
+	Sat,  6 Feb 2021 21:39:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42701F80171; Thu,  4 Feb 2021 17:52:57 +0100 (CET)
+ id DB7DCF80171; Thu,  4 Feb 2021 18:00:04 +0100 (CET)
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk
  [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B54FF80154
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 17:52:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B54FF80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0384F80152
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 17:59:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0384F80152
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk
- header.b="VTPukyRs"
+ header.b="PWpDFRnC"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
  MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
  Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
  Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
  List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=rU7kGtAV6x4h9PYVWyoXz+PtjR1Ekd/aEUlrk7YawjA=; b=VTPukyRsHKDa6AiBC7g1A33pB
- SwzVRoY12CgfihopuGU84sVuVRYsUfiv6b3Emwm8BDSGMl47NJ4gm0qIsiqAwyM3pSwTIf2l6vha2
- cDzPmBjk1ljXfebW71uB6xJtMeptgxH+fOQ7FkYaFWun/B6T1rfINwGd+rlb8M/Klezy3l/ReCdrv
- V0d4qDQKYRRMYic1iTAdlcZh5yvqjMKyuvjs8Wsy37fKFKVUMlPg8hW+P5sXiwO/tuao+vtETwe0A
- yHWeGg7btn+Meuk+vfx/5ICUUCrM+vrThjyBDk8k7p21ma/Hklw+jYC+vHctVDNhR+i6P6uievpnI
- PK8/XvaQg==;
+ bh=wbVme97LTyZtZvghkEGRoTiuc1SViBhjvsMeN4jw9jo=; b=PWpDFRnC/pQI+UGrPjtu0HbEN
+ L43RKr1nxKtBjtMtRi4xXHxwvekb3ibhraif6lER0dky75uQXrGFEXQG6NhjCA1fCxUTz+ddAydTm
+ bKGNXkikKkpPPxYKlnRpcmercjWMc157NMyq5VGBlktOBU4v01FOUgoDwrAz/6rmXKc3s5uGItTGb
+ dNZ/w+Dn4u+hez+MLEwKJ4lcAEjJtpMn+NmpWK3E6iHfHaP25TIOZvIkmdEqS/QgEh2MDEP2cCleD
+ QaNVcBSlDNa3dxdHeD+0ZqIiVN2POoOv7P4kP6Hmp/WoLdRJMDuQzDE1oihQUuFsLZjY16MLN5oha
+ hd1Wb2fKg==;
 Received: from shell.armlinux.org.uk
- ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39164)
+ ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39166)
  by pandora.armlinux.org.uk with esmtpsa
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <linux@armlinux.org.uk>)
- id 1l7hrw-0006on-3V; Thu, 04 Feb 2021 16:52:36 +0000
+ id 1l7hyz-0006q2-Je; Thu, 04 Feb 2021 16:59:53 +0000
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
  (envelope-from <linux@shell.armlinux.org.uk>)
- id 1l7hrk-0005Ka-VR; Thu, 04 Feb 2021 16:52:24 +0000
-Date: Thu, 4 Feb 2021 16:52:24 +0000
+ id 1l7hyx-0005Kk-Sm; Thu, 04 Feb 2021 16:59:51 +0000
+Date: Thu, 4 Feb 2021 16:59:51 +0000
 From: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
-Message-ID: <20210204165224.GA1463@shell.armlinux.org.uk>
+Message-ID: <20210204165951.GB1463@shell.armlinux.org.uk>
 References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
  <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
  <YBlcTXlxemmC2lgr@kroah.com>
+ <20210204165224.GA1463@shell.armlinux.org.uk>
+ <YBwnUrQqlAz2LDPI@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBlcTXlxemmC2lgr@kroah.com>
+In-Reply-To: <YBwnUrQqlAz2LDPI@kroah.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Mailman-Approved-At: Sat, 06 Feb 2021 21:39:08 +0100
 Cc: linux-fbdev@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
@@ -127,15 +129,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
-> I'm glad to take this through my char/misc tree, as that's where the
-> other coresight changes flow through.  So if no one else objects, I will
-> do so...
+On Thu, Feb 04, 2021 at 05:56:50PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Feb 04, 2021 at 04:52:24PM +0000, Russell King - ARM Linux admin wrote:
+> > On Tue, Feb 02, 2021 at 03:06:05PM +0100, Greg Kroah-Hartman wrote:
+> > > I'm glad to take this through my char/misc tree, as that's where the
+> > > other coresight changes flow through.  So if no one else objects, I will
+> > > do so...
+> > 
+> > Greg, did you end up pulling this after all? If not, Uwe produced a v2.
+> > I haven't merged v2 yet as I don't know what you've done.
+> 
+> I thought you merged this?
 
-Greg, did you end up pulling this after all? If not, Uwe produced a v2.
-I haven't merged v2 yet as I don't know what you've done.
+I took v1, and put it in a branch I've promised in the past not to
+rebase/rewind. Uwe is now asking for me to take a v2 or apply a patch
+on top.
 
-Thanks.
+The only reason to produce an "immutable" branch is if it's the basis
+for some dependent work and you need that branch merged into other
+people's trees... so the whole "lets produce a v2" is really odd
+workflow... I'm confused about what I should do, and who has to be
+informed which option I take.
+
+I'm rather lost here too.
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
