@@ -2,70 +2,75 @@ Return-Path: <SRS0=grW5=HG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E118EC433E9
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 08:02:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D1F3C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 08:11:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4420664F5E
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 08:02:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4420664F5E
+	by mail.kernel.org (Postfix) with ESMTPS id B23BD64F51
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 08:11:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B23BD64F51
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2959850;
-	Thu,  4 Feb 2021 09:02:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2959850
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2AA916DA;
+	Thu,  4 Feb 2021 09:10:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2AA916DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612425771;
-	bh=mD9ZtCBjK1egn18CAU/5HgK1JBNyDih37Qs+LDo0vOA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tt8iMB+jrPdvprAUCgkU60772Ax5xwgxudRIlohFzOKi0WhELCJQoC1Lpz2H3DGZk
-	 7e2fdiyRvyceo1DyuwT9WdfS7yupMrjmDzLLXqviRaEWmgkFfmHGE5NnTCf6i8ExmF
-	 BPqA1Xuo0ULAflI4WjrkQCBZ+YRqgHQIB+c/NvTM=
+	s=default; t=1612426304;
+	bh=mf/uNcoTSBZ4Vsp2F0lP+BHPd3Rf1N2SnJG+jZs4P74=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rF7PswZN58cCJClkDOP5WtdAcTgl8Xur2WCBmgcjicSCGg8W/qZPei8dwzrJ9dTCI
+	 UPFC16/iVXfshjQ/FdUAbOtPIO7PHG4OjRwnADKuSGrCY/c/jliy6QtvXSyMxFkwON
+	 Sr/aYu3Ceyn9oHO/znxvWNXRaDNcdM7Z4fGLAGwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2C0EF80155;
-	Thu,  4 Feb 2021 09:02:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A54BF80152;
+	Thu,  4 Feb 2021 09:10:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5823F80171; Thu,  4 Feb 2021 09:01:58 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 44106F80171; Thu,  4 Feb 2021 09:10:53 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97085F80154
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 09:01:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97085F80154
-IronPort-SDR: 6E29vD5W+i30QHfI8Zn0esp5eGj62rjPbf2TCpCeF57jB08bomo/NJG5sqdw8lcyQPzP1jxLQp
- 7O2irIxTBjTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="180418405"
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; d="scan'208";a="180418405"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Feb 2021 00:01:45 -0800
-IronPort-SDR: WNUEGNjfAzUStkn+vEt4Q1wTe81hRLvFlg7+MMQtI5Whl/J/qtC7OIVb+Pug5zAySamvl2GllP
- BISN7e39d7ww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; d="scan'208";a="372300345"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72A6BF80152
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 09:10:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72A6BF80152
+IronPort-SDR: XAkfK+JcjKm6QrQM7z/0a6ZYebqwtxn/x5Rr6OTRlQ6bkEMY/IhmWR0cgZBxfa3Htda7yhTp+U
+ NP0BOHZLes5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9884"; a="160951757"
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; d="scan'208";a="160951757"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2021 00:10:42 -0800
+IronPort-SDR: NfLR8mfPDOXy32QEIlZVYoK8/MoOeiuCDSoYbE65Ej7zG7LrQGTHulPZOhI5B+zLeNwSfL/+b5
+ Y9OkDeENunEw==
+X-IronPort-AV: E=Sophos;i="5.79,400,1602572400"; d="scan'208";a="508057996"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga008.fm.intel.com with ESMTP; 04 Feb 2021 00:01:44 -0800
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2021 00:10:41 -0800
+Date: Thu, 4 Feb 2021 10:07:09 +0200 (EET)
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [RFC PATCH] ALSA: hda: call ext hda codec link up/down if available
-Date: Thu,  4 Feb 2021 09:58:21 +0200
-Message-Id: <20210204075821.1503539-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [RFC PATCH] ALSA: hda: call ext hda codec link up/down if
+ available
+In-Reply-To: <20210204075821.1503539-1-kai.vehmanen@linux.intel.com>
+Message-ID: <alpine.DEB.2.22.394.2102040959490.864696@eliteleevi.tm.intel.com>
+References: <20210204075821.1503539-1-kai.vehmanen@linux.intel.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- kai.vehmanen@linux.intel.com
+Content-Type: text/plain; charset=US-ASCII
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,133 +86,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The extended HDA bus (hdac_ext) provides interfaces for more
-fine-grained control of individual links than what plain HDA provides
-for. Links can be powered off when they are not used and if all
-links are released, controller can shut down the command DMA.
+Hi,
 
-These interfaces are currently not used by common HDA codec drivers.
-When a HDA codec is runtime suspended, it calls snd_hdac_codec_link_down(),
-but there is no link to the HDA extended bus, and links are shut down
-only when all codecs are suspended.
+On Thu, 4 Feb 2021, Kai Vehmanen wrote:
+> To support more fine-grained control of link power, this patch
+> implements new helper functions for codec drivers to turn codec links
+> up and down. The HDA common suspend/resume code is modified to use
+> the new functions. This allows to fully reuse the driver code both
+> for plain and extended HDA controllers.
 
-To support more fine-grained control of link power, this patch
-implements new helper functions for codec drivers to turn codec links
-up and down. The HDA common suspend/resume code is modified to use
-the new functions. This allows to fully reuse the driver code both
-for plain and extended HDA controllers.
+Takashi and others, this patch is a follow-up to the earlier thread about 
+hdac link management:
+https://mailman.alsa-project.org/pipermail/alsa-devel/2021-January/179715.html
 
-For compatibility, code reverts to plain HDA implementation if HDA
-extended bus is disabled in the kernel build, or if the controller is
-a plain HDA one.
+We have absolutely no calls from sound/pci/hda/ to hdaudio_ext.h before
+this patch, so I'm wondering if this is the right approach to take. 
 
-Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/sound/hdaudio_ext.h         | 15 +++++++++++++++
- sound/hda/ext/hdac_ext_controller.c | 28 ++++++++++++++++++++++++++++
- sound/pci/hda/hda_codec.c           |  5 +++--
- 3 files changed, 46 insertions(+), 2 deletions(-)
+It does seem to be the natural path forward and mimics what was done in 
+e.g. hdac_hdmi. But we want to keep reusing driver code for all HDA 
+implementations, so adding hdac-ext support to codec drivers seem like the 
+best path.
 
-NOTES:
- - RFC status due to new usage of hdaudio_ext.h
- - Not fully tested! Validation still ongoing...
-
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index 7abf74c1c474..151922fa3c1e 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -131,6 +131,21 @@ void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
- int snd_hdac_ext_bus_link_get(struct hdac_bus *bus, struct hdac_ext_link *link);
- int snd_hdac_ext_bus_link_put(struct hdac_bus *bus, struct hdac_ext_link *link);
- 
-+#if IS_ENABLED(CONFIG_SND_HDA_EXT_CORE)
-+void snd_hdac_ext_codec_link_up(struct hdac_device *codec);
-+void snd_hdac_ext_codec_link_down(struct hdac_device *codec);
-+#else
-+static inline void snd_hdac_ext_codec_link_up(struct hdac_device *codec)
-+{
-+	snd_hdac_codec_link_up(codec);
-+}
-+
-+static inline void snd_hdac_ext_codec_link_down(struct hdac_device *codec)
-+{
-+	snd_hdac_codec_link_down(codec);
-+}
-+#endif
-+
- /* update register macro */
- #define snd_hdac_updatel(addr, reg, mask, val)		\
- 	writel(((readl(addr + reg) & ~(mask)) | (val)), \
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index b0c0ef824d7d..fd03b5d3a10e 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -332,3 +332,31 @@ int snd_hdac_ext_bus_link_put(struct hdac_bus *bus,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_put);
-+
-+void snd_hdac_ext_codec_link_up(struct hdac_device *codec)
-+{
-+	snd_hdac_codec_link_up(codec);
-+
-+	if (codec->type == HDA_DEV_ASOC) {
-+		const char *devname = dev_name(&codec->dev);
-+		struct hdac_ext_link *hlink =
-+			snd_hdac_ext_bus_get_link(codec->bus, devname);
-+		if (hlink)
-+			snd_hdac_ext_bus_link_get(codec->bus, hlink);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_codec_link_up);
-+
-+void snd_hdac_ext_codec_link_down(struct hdac_device *codec)
-+{
-+	snd_hdac_codec_link_down(codec);
-+
-+	if (codec->type == HDA_DEV_ASOC) {
-+		const char *devname = dev_name(&codec->dev);
-+		struct hdac_ext_link *hlink =
-+			snd_hdac_ext_bus_get_link(codec->bus, devname);
-+		if (hlink)
-+			snd_hdac_ext_bus_link_put(codec->bus, hlink);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_ext_codec_link_down);
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 9b755062d841..6113f787b494 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -14,6 +14,7 @@
- #include <linux/pm_runtime.h>
- #include <sound/core.h>
- #include <sound/hda_codec.h>
-+#include <sound/hdaudio_ext.h>
- #include <sound/asoundef.h>
- #include <sound/tlv.h>
- #include <sound/initval.h>
-@@ -2948,7 +2949,7 @@ static int hda_codec_runtime_suspend(struct device *dev)
- 	if (codec->link_down_at_suspend ||
- 	    (codec_has_clkstop(codec) && codec_has_epss(codec) &&
- 	     (state & AC_PWRST_CLK_STOP_OK)))
--		snd_hdac_codec_link_down(&codec->core);
-+		snd_hdac_ext_codec_link_down(&codec->core);
- 	codec_display_power(codec, false);
- 	return 0;
- }
-@@ -2962,7 +2963,7 @@ static int hda_codec_runtime_resume(struct device *dev)
- 		return 0;
- 
- 	codec_display_power(codec, true);
--	snd_hdac_codec_link_up(&codec->core);
-+	snd_hdac_ext_codec_link_up(&codec->core);
- 	hda_call_codec_resume(codec);
- 	pm_runtime_mark_last_busy(dev);
- 	return 0;
-
-base-commit: 307cfa506ef4e6d7fe9430e513db2353925fb440
--- 
-2.29.2
-
+Br, Kai
