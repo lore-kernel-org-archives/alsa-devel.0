@@ -2,99 +2,80 @@ Return-Path: <SRS0=grW5=HG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D77F5C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 15:05:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FE97C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 15:10:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6044664DBA
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 15:05:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6044664DBA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 600FF64D99
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 15:10:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 600FF64D99
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15AD41658;
-	Thu,  4 Feb 2021 16:05:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15AD41658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C48A1658;
+	Thu,  4 Feb 2021 16:10:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C48A1658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612451156;
-	bh=VcOgdJFGTG+IFtL7ztkCvv/9NV8deY9WTGBtzZQPRmk=;
+	s=default; t=1612451454;
+	bh=7BSaK+ZjIjpF5DSdO5dB49yuTQ484kyKnlv7VuEFaec=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tQms1egfXLnugvilaEuz905/AzgGp/jlQEIdjlNDvPHtoY/iirxsfESLV8b1D3xsn
-	 gY/rn089JfScObMYvkjeK6HLkGSD8SovtyjcDF1k32X4Mp4daE+s3ZEig9LH0wHICP
-	 JkGFH1k8kaQ1HCPcNShd4OD1/ZE6D0WMCZyx/3ZU=
+	b=qfiWJ9xLxCoMRClcw3NK9bEU7FKy9O8UzY6bjb25X/Vzse7o9dyWZ1klYvCq/PWcS
+	 PpQYdEFIv9/of82Vf7AAv25YP+9w6v0O/5YaLibeh4fJVCwnNZwtEMiY7mgfpZ+Eqm
+	 QGA2XYFGBfwYDtqObqkGSvv682/CCdl+7VxohbV0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80056F80155;
-	Thu,  4 Feb 2021 16:05:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DEC54F80155;
+	Thu,  4 Feb 2021 16:10:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88E53F80171; Thu,  4 Feb 2021 16:05:03 +0100 (CET)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A6ABEF80154; Thu,  4 Feb 2021 16:10:00 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1334F80154
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 16:04:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1334F80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56BF9F80154
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 16:09:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56BF9F80154
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="umCRXHSv"
-Received: by mail-wr1-x429.google.com with SMTP id v15so3900864wrx.4
- for <alsa-devel@alsa-project.org>; Thu, 04 Feb 2021 07:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:content-transfer-encoding:in-reply-to;
- bh=iSl2Rcu9DFOJsdwvIuhfSkBsJm6uHIoCbqyE3izD8Ns=;
- b=umCRXHSvpM7g937dntndearYQJY+mUu/ZaxSaUl7Kw/eejgvhdIGVagmnDa1JXv7b0
- iyHPzn4TorRo/SVQTHOLsfCi3aZ1LzQVx0HEN3mePSg0QA3tlEyvaO98nhd03THsTV1N
- /P4OjKNA6tluuP9M5InIi0qkEtYjYHvL4h+HJ7ZERViE8kNDgClo6n6Aza2RTetjsa8r
- IikDheckgcbGLjHB7p3MSTNHi0TdIJfRtxtzzf0RrW/84Kaiq1jVnFebNMxDkb5eqNzh
- wemy/rmFEgFZz2OK2rNAh8SYApsd08VKGjD/C6gtkvxKwL5SRldh5IXUbcIwWvI+dxYG
- 2LTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:content-transfer-encoding
- :in-reply-to;
- bh=iSl2Rcu9DFOJsdwvIuhfSkBsJm6uHIoCbqyE3izD8Ns=;
- b=ZqY5cP7uzPwWQRp2jY/aepljKrlLMmKpTGSe4qSL67Xf85p8pTZW1d6UkXEqNrFFo2
- 5kQpuCVC9tHElDRbfD8b3uKR5bQkkofyR4iie8C7Lur7J2liIVxE+MBdE21sFNb81ydp
- ZVvuiw5W1TxOLVsOBzHkNSLZGbmtPsNU5miChvJcBM5/WLxQFcAye2aAALL+tadybzV4
- P3c1t67HNcYqFPGEC7/hI7/bX+Az+UnqM2RIIOFEiupDEq8v6BTGqmJgpRTDXbXQERuO
- exwy8akKI4qJCarwlrmlTIvOkNzM8CcQjz/+LckezyOyWOswehZSmEgiyB4U+ykWyGXE
- mr1Q==
-X-Gm-Message-State: AOAM5337D/InNjCvkN9YTzoPW9WvWdewWm44Ro8OjVadRlVrX30ZGEjP
- JBktrqRyMjxX/FanbdH/GlOKww==
-X-Google-Smtp-Source: ABdhPJzl01vkDs21Nl6eEVqqiXRHlolXUpJeugF2RjwAGsrJOyOZzOm6wNCOL3Ygcx9Ez8et69Y/7w==
-X-Received: by 2002:a5d:4492:: with SMTP id j18mr9738199wrq.403.1612451098383; 
- Thu, 04 Feb 2021 07:04:58 -0800 (PST)
-Received: from dell ([91.110.221.188])
- by smtp.gmail.com with ESMTPSA id d23sm6335346wmd.11.2021.02.04.07.04.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 04 Feb 2021 07:04:57 -0800 (PST)
-Date: Thu, 4 Feb 2021 15:04:56 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to
- soc_intel_is_byt_cr()
-Message-ID: <20210204150456.GN2789116@dell>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="laHm4bRm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B1F664F43;
+ Thu,  4 Feb 2021 15:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1612451394;
+ bh=7BSaK+ZjIjpF5DSdO5dB49yuTQ484kyKnlv7VuEFaec=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=laHm4bRmvrJPYpkgTiWfZ/xHuz8b/6RAlI/QbuAn8MH9IrrGeM/CQSX8Q3wceniXw
+ FRvkTjp3kg+0uwyvSeFOpCGPJC0hTh5wkjhc+kxFLZVkRXz10vptQ7oBOjKgzFgh3J
+ 9NLmdWdsqJY3dB04c1JOPPtqwnj3AqxRB6zpX1zdKpwcfxgGAuU2aan84JPMpWfDVE
+ tII+z0gKG3+mPI/vlH1yKbKFf5A2WWk8y5As6mPS6D4cNti+61He5S7qqkr+DY39Qv
+ UJzxkOLuwLZd7u8TXDiJQAV0LWp1AneJ+eRxmRLbU/VPGHg6LJaKvtUH0nlttdIjhh
+ 2DIII7KjpLb4A==
+Date: Thu, 4 Feb 2021 15:09:04 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail boards
+ with WM5102 codec
+Message-ID: <20210204150904.GD4288@sirena.org.uk>
 References: <20210120214957.140232-1-hdegoede@redhat.com>
- <20210120214957.140232-5-hdegoede@redhat.com>
- <20210204135616.GL2789116@dell>
- <20210204140515.GC4288@sirena.org.uk>
+ <249f1a7c-048e-d255-d860-68a97a0092c8@redhat.com>
+ <20210204105748.GD2789116@dell>
+ <7f53dede-946e-c38e-e871-3df1119f1faf@redhat.com>
+ <20210204124335.GA4288@sirena.org.uk>
+ <20210204134606.GH2789116@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210204140515.GC4288@sirena.org.uk>
+In-Reply-To: <20210204134606.GH2789116@dell>
+X-Cookie: Truth can wait
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
  patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
@@ -117,25 +98,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 04 Feb 2021, Mark Brown wrote:
 
-> On Thu, Feb 04, 2021 at 01:56:16PM +0000, Lee Jones wrote:
-> 
-> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> > Applied, thanks.
-> 
-> While we we were just having a discussion about what to do about this
-> stuff...
+--fXStkuK2IQBfcDe+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-We were?
+On Thu, Feb 04, 2021 at 01:46:06PM +0000, Lee Jones wrote:
+> On Thu, 04 Feb 2021, Mark Brown wrote:
 
-This set has all the Acks we need to proceed.  What's blocking?
+> > The usual pattern here is that the MFD patches get merged and then I
+> > pull a shared branch in for any dependencies - at this point the series
+> > is now on the backlog of serieses where I'm waiting for the MFD to sort
+> > itself out before I really look at it again.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> I tend to push patches awaiting Acks to the back of the queue.
+
+> Stalemate.
+
+I'm only going to ack things if I expect to see them applied via another
+tree, that's generally what an ack means from a maintainer.  Especially
+with ASoC where we keep on having subsystem wide changes quite often I'm
+not likely to do that for things like new drivers unless it's very clear
+what the timelines are.
+
+It would be enormously helpful to get the bits of the core MFDs that
+create dependencies committed while the rest of the series is still in
+process, as well as allowing things to be applied it also helps with
+knowing if the dependencies are stable.
+
+--fXStkuK2IQBfcDe+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAcDg8ACgkQJNaLcl1U
+h9DAUAf9HROtNJ38LsxGRnoLdtz5m9eyu/zq4B961taC1T6LQlGBOqTIF1MlCVyf
+8M5rdGI3N3kYlBTOvMspE0E34KWOA9IWE5CreCl9xxcZiNm0kLQtJtN3dmVBVESX
+90LWORwSt7+ezT4SvMZCL7wBe13BCjQJORYfGKJxsm+rA2qNIiyijfnVOa52tyVQ
+s/LbwZduYcSQXQxv24xgYhwOujAARjOxBlxhp+MedmeDWOzSWwflGyD9urxhjKiE
+0+oP8NRzbv+/LCyCPKKoqbWGGQx05ce5VUCgHLIehczCfX7p/kR0QekpUBYx2rCL
+1OWHZgvIArbJD/MpWfiqfcPUEgZVvA==
+=prQV
+-----END PGP SIGNATURE-----
+
+--fXStkuK2IQBfcDe+--
