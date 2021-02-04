@@ -7,69 +7,69 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 231A6C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 11:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B271C43381
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 11:27:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 547B764F46
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 11:27:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 547B764F46
+	by mail.kernel.org (Postfix) with ESMTPS id 7B2F164F43
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 11:27:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B2F164F43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D51E1750;
-	Thu,  4 Feb 2021 12:26:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D51E1750
+	by alsa0.perex.cz (Postfix) with ESMTPS id E09D016B2;
+	Thu,  4 Feb 2021 12:27:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E09D016B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612438067;
-	bh=w0QQRxMFg+Q0vOOd3i8ckp6/rUxjnahlAYOmMzlCE9o=;
+	s=default; t=1612438075;
+	bh=WoLGxeHedY65EgiiNpWbVv/80n+kSuSOGxWKdo7l9Bg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BFcto+y/uppcDF5nLQjX7M/zEQyg1yaAbmO6DcMgyvGqPcAoB4dDolBGEa+2xzk5/
-	 ztbRIVNKwYAc0nNn2/Naga85GrsTgwZDDvvBi/FH7lnm360SgKabc9K7BYLqgEsDa0
-	 pvUgRgmUWSsAQVw5sghdMrrRcLPZryQNRwSPAk74=
+	b=G4dfCUqUOB3f1KmTMBtAJez4UibOyNLDySP8pIGvLFHptFU/bWrnlEy4Bp19kAdd1
+	 Q6327FvmFluCTfIZHTFvd4MhSOFgor8ht5bpMRYJf3fjJpe3ANjm/faUKC0q8rf6qO
+	 GbMB916YAOVPiaeNEBSLX0gwog7hUl7rYj56v6H0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D59ABF80275;
-	Thu,  4 Feb 2021 12:25:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1946F802A0;
+	Thu,  4 Feb 2021 12:25:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A775DF80275; Thu,  4 Feb 2021 12:25:28 +0100 (CET)
+ id 54AF3F802A0; Thu,  4 Feb 2021 12:25:30 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C0E8F8025B
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 12:25:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C0E8F8025B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8A6FF8025B
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 12:25:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8A6FF8025B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="imjBsrPR"
+ header.b="bE8DkGvr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1612437925;
+ s=mimecast20190719; t=1612437926;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ibMKkkjJ0CpUI3z8Vn0UcSNjZJ4emdTs0Sc6nvWYsEA=;
- b=imjBsrPRNjrKvbZTeRGmGNrORMIFZpAhcheUWKj6CWKn9jhkjW5/s0Egjf4p5XBbJx4RiA
- WIrvmAOu2DoAed6/u8Jeq9tBo4zQ8r2GRKoX71hkCzVZPTPBSyIoPc0AwN/CJcSeU/1KrX
- /+fQAsNDz+pOkovXyPSsPNYLInk3J6M=
+ bh=XSSv/cvHQku1Gh6c6/+OkvTHC43scQr7nzlxM4hYCrU=;
+ b=bE8DkGvrRHxGJeH1erz1mp0+uSK0GhayqzIh/X3Xcun6i0DKOC5okykJsHUOgYnM+RN7Q0
+ ThR820kSwpxT56xsmJmQ06fYi+kt6J2GIZNmlSdz4iWzkM+JCQcue1+YYJi/1UKfBihbL4
+ e99C8u45TIjj6GzQ0jz5FQosZd5f0m4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-HjO_7p3jNPq6iLK3vGBMQQ-1; Thu, 04 Feb 2021 06:25:21 -0500
-X-MC-Unique: HjO_7p3jNPq6iLK3vGBMQQ-1
+ us-mta-252-fqfIdvteOu6Ayk4TtwNMig-1; Thu, 04 Feb 2021 06:25:25 -0500
+X-MC-Unique: fqfIdvteOu6Ayk4TtwNMig-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B9CD107ACC7;
- Thu,  4 Feb 2021 11:25:19 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 565B01020C22;
+ Thu,  4 Feb 2021 11:25:23 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-112.ams2.redhat.com [10.36.112.112])
- by smtp.corp.redhat.com (Postfix) with ESMTP id D00445D762;
- Thu,  4 Feb 2021 11:25:15 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id C3FAD5D762;
+ Thu,  4 Feb 2021 11:25:20 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Chanwoo Choi <cw00.choi@samsung.com>,
@@ -77,10 +77,10 @@ To: Lee Jones <lee.jones@linaro.org>, MyungJoo Ham <myungjoo.ham@samsung.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Jie Yang <yang.jie@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v4 resend 03/13] extcon: arizona: Fix various races on driver
- unbind
-Date: Thu,  4 Feb 2021 12:24:52 +0100
-Message-Id: <20210204112502.88362-4-hdegoede@redhat.com>
+Subject: [PATCH v4 resend 04/13] extcon: arizona: Fix flags parameter to the
+ gpiod_get("wlf, micd-pol") call
+Date: Thu,  4 Feb 2021 12:24:53 +0100
+Message-Id: <20210204112502.88362-5-hdegoede@redhat.com>
 In-Reply-To: <20210204112502.88362-1-hdegoede@redhat.com>
 References: <20210204112502.88362-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -105,123 +105,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We must free/disable all interrupts and cancel all pending works
-before doing further cleanup.
-
-Before this commit arizona_extcon_remove() was doing several
-register writes to shut things down before disabling the IRQs
-and it was cancelling only 1 of the 3 different works used.
-
-Move all the register-writes shutting things down to after
-the disabling of the IRQs and add the 2 missing
-cancel_delayed_work_sync() calls.
-
-This fixes various possible races on driver unbind. One of which
-would always trigger on devices using the mic-clamp feature for
-jack detection. The ARIZONA_MICD_CLAMP_MODE_MASK update was
-done before disabling the IRQs, causing:
-1. arizona_jackdet() to run
-2. detect a jack being inserted (clamp disabled means jack inserted)
-3. call arizona_start_mic() which:
-3.1 Enables the MICVDD regulator
-3.2 takes a pm_runtime_reference
-
-And this was all happening after the ARIZONA_MICD_ENA bit clearing,
-which would undo 3.1 and 3.2 because the ARIZONA_MICD_CLAMP_MODE_MASK
-update was being done after the ARIZONA_MICD_ENA bit clearing.
-
-So this means that arizona_extcon_remove() would exit with
-1. MICVDD enabled and 2. The pm_runtime_reference being unbalanced.
-
-MICVDD still being enabled caused the following oops when the
-regulator is released by the devm framework:
-
-[ 2850.745757] ------------[ cut here ]------------
-[ 2850.745827] WARNING: CPU: 2 PID: 2098 at drivers/regulator/core.c:2123 _regulator_put.part.0+0x19f/0x1b0
-[ 2850.745835] Modules linked in: extcon_arizona ...
-...
-[ 2850.746909] Call Trace:
-[ 2850.746932]  regulator_put+0x2d/0x40
-[ 2850.746946]  release_nodes+0x22a/0x260
-[ 2850.746984]  __device_release_driver+0x190/0x240
-[ 2850.747002]  driver_detach+0xd4/0x120
-...
-[ 2850.747337] ---[ end trace f455dfd7abd9781f ]---
-
-Note this oops is just one of various theoretically possible races caused
-by the wrong ordering inside arizona_extcon_remove(), this fixes the
-ordering fixing all possible races, including the reported oops.
+The initial value of the GPIO should match the info->micd_modes[0].gpio
+value. arizona_extcon_probe() already stores the necessary flag in a
+mode variable, but instead of passing mode as flags to the gpiod_get()
+it was using a hardcoded GPIOD_OUT_LOW.
 
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/extcon/extcon-arizona.c | 40 +++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 19 deletions(-)
+ drivers/extcon/extcon-arizona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/extcon/extcon-arizona.c b/drivers/extcon/extcon-arizona.c
-index f7ef247de46a..76aacbac5869 100644
+index 76aacbac5869..72d23b15108c 100644
 --- a/drivers/extcon/extcon-arizona.c
 +++ b/drivers/extcon/extcon-arizona.c
-@@ -1760,25 +1760,6 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	bool change;
- 	int ret;
- 
--	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
--				       ARIZONA_MICD_ENA, 0,
--				       &change);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
--			ret);
--	} else if (change) {
--		regulator_disable(info->micvdd);
--		pm_runtime_put(info->dev);
--	}
--
--	gpiod_put(info->micd_pol_gpio);
--
--	pm_runtime_disable(&pdev->dev);
--
--	regmap_update_bits(arizona->regmap,
--			   ARIZONA_MICD_CLAMP_CONTROL,
--			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
--
- 	if (info->micd_clamp) {
- 		jack_irq_rise = ARIZONA_IRQ_MICD_CLAMP_RISE;
- 		jack_irq_fall = ARIZONA_IRQ_MICD_CLAMP_FALL;
-@@ -1794,10 +1775,31 @@ static int arizona_extcon_remove(struct platform_device *pdev)
- 	arizona_free_irq(arizona, jack_irq_rise, info);
- 	arizona_free_irq(arizona, jack_irq_fall, info);
- 	cancel_delayed_work_sync(&info->hpdet_work);
-+	cancel_delayed_work_sync(&info->micd_detect_work);
-+	cancel_delayed_work_sync(&info->micd_timeout_work);
-+
-+	ret = regmap_update_bits_check(arizona->regmap, ARIZONA_MIC_DETECT_1,
-+				       ARIZONA_MICD_ENA, 0,
-+				       &change);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Failed to disable micd on remove: %d\n",
-+			ret);
-+	} else if (change) {
-+		regulator_disable(info->micvdd);
-+		pm_runtime_put(info->dev);
-+	}
-+
-+	regmap_update_bits(arizona->regmap,
-+			   ARIZONA_MICD_CLAMP_CONTROL,
-+			   ARIZONA_MICD_CLAMP_MODE_MASK, 0);
- 	regmap_update_bits(arizona->regmap, ARIZONA_JACK_DETECT_ANALOGUE,
- 			   ARIZONA_JD1_ENA, 0);
- 	arizona_clk32k_disable(arizona);
- 
-+	gpiod_put(info->micd_pol_gpio);
-+
-+	pm_runtime_disable(&pdev->dev);
-+
- 	return 0;
- }
- 
+@@ -1510,7 +1510,7 @@ static int arizona_extcon_probe(struct platform_device *pdev)
+ 		 */
+ 		info->micd_pol_gpio = gpiod_get_optional(arizona->dev,
+ 							 "wlf,micd-pol",
+-							 GPIOD_OUT_LOW);
++							 mode);
+ 		if (IS_ERR(info->micd_pol_gpio)) {
+ 			ret = PTR_ERR(info->micd_pol_gpio);
+ 			dev_err(arizona->dev,
 -- 
 2.29.2
 
