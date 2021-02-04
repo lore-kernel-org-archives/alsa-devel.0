@@ -2,72 +2,74 @@ Return-Path: <SRS0=grW5=HG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9133EC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 19:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F006C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 20:19:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE29364F51
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 19:55:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE29364F51
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 2281864F59
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 20:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2281864F59
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DCC201657;
-	Thu,  4 Feb 2021 20:54:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCC201657
+	by alsa0.perex.cz (Postfix) with ESMTPS id A732D9F6;
+	Thu,  4 Feb 2021 21:18:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A732D9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612468538;
-	bh=kDTNwURjXa+HbA3VIp6+/0PYSmTxLywhEjY+tj3zJDA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WGD3bc4KGHOB9Z/L3pK1mei9rYRFdzHW9dtBtmFBUeB5w3SylXuzuIKnfemi3OdJp
-	 otx+/d8VFbmhy0pFkJqVr9IwJgoMBs3TdioZpHLXWiA7I1x/lBVheZhZTdori51B0D
-	 CgaQ8g1aC4xSzDjCjQMx6BPy0pCsf1rfDNk3CDAg=
+	s=default; t=1612469936;
+	bh=bQzS2Vt4mUgMD9F9OzoeLekam34qyfUm5woXicV/TQ0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=asEhmVKlqeQEopLcJJSAKjG2hMMiBDPkWDHqA9Eu8I6AZetZxOJPfSULbOwk2uyZ1
+	 OgGWT0nYZSmE8UoeaBn3Rijp9fJJAi+lPNvR0PD7K/a4e96TaQJxdq/lYY36IN6kBS
+	 PAgVRJu5iEpMvwp1yW0alw5mCmFFnWXIrxwQUF7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65B56F80155;
-	Thu,  4 Feb 2021 20:54:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE74BF8023C;
+	Thu,  4 Feb 2021 21:18:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14B15F80171; Thu,  4 Feb 2021 20:54:46 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 26162F8023E; Thu,  4 Feb 2021 21:18:04 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98015F80154
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 20:54:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98015F80154
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OQb+pLUS"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2C1164F53;
- Thu,  4 Feb 2021 19:54:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612468481;
- bh=kDTNwURjXa+HbA3VIp6+/0PYSmTxLywhEjY+tj3zJDA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OQb+pLUS6MMf+ML/spK7AkKa5EOFof76snhOORIBeOMV6UmIPXPShpUn6pJ2Qw4s3
- TLJDgScLQXNMTnLzSoMoPlJlsPlCWkzq1SsuQZP2H5VA7rSHKxBvCpPHbvNDZq4bTF
- WDlgmMOiWJPpi3lYnzaPH/qFcFx9RIICDWmzoZ4bd7weaa+ABnR47b+J98KYSkvkcB
- h3Qg9Mdjyf26zsOwAjD7EX5YCOqIZIM9IfuL+gduvVVmy97wiC/p2Hw50KUmqh+riO
- N2XwkPNXS4AVuRYg/wnUYSt4QtPLg7ffMpcbs7iEluuVEr9PqB+8ZZvAvDNQKbAiRx
- NTgBHGh8TFLIQ==
-From: Mark Brown <broonie@kernel.org>
-To: Tzung-Bi Shih <tzungbi@google.com>
-In-Reply-To: <20210203032201.2882158-1-tzungbi@google.com>
-References: <20210203032201.2882158-1-tzungbi@google.com>
-Subject: Re: [PATCH v3 0/3] ASoC: mediatek: mt8192: apply some cleanup
-Message-Id: <161246842661.26209.3136480726887018002.b4-ty@kernel.org>
-Date: Thu, 04 Feb 2021 19:53:46 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFF70F80155
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 21:17:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF70F80155
+IronPort-SDR: ovMABy+1sFPJHRnBPnKWcmopRAoFtEWDy44SJB1zY0fmWU4uZwGxrJuiEAaN0r78tw+xj/wo8V
+ s31WCMGnHUCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177817697"
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; d="scan'208";a="177817697"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2021 12:17:53 -0800
+IronPort-SDR: 3uLAJzm6SrQvhPCfatIM0mYtAHMWyT5X8z4n8s2+PiaH4z8GPJjHAE/7mI1Jaku3Yv/WIecPcg
+ Fo+MUDs+DErw==
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; d="scan'208";a="373011113"
+Received: from jdasilva-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.209.66.22])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Feb 2021 12:17:51 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	Shuming Fan <shumingf@realtek.com>
+Subject: [PATCH 0/4] ASoC: codecs: Realtek/SoundWire: fix remove/suspend issues
+Date: Thu,  4 Feb 2021 14:17:35 -0600
+Message-Id: <20210204201739.25206-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
+ tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ vkoul@kernel.org, broonie@kernel.org,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,44 +85,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 3 Feb 2021 11:21:58 +0800, Tzung-Bi Shih wrote:
-> The 1st and 2nd patch refactor to use asoc_substream_to_rtd().
-> 
-> The 3rd patch simplifies ops of Capture1 DAI link.
-> 
-> Changes from v2[1]:
-> - Fix typo in 3rd patch's title, s/simply/simplify/.
-> 
-> [...]
+These issues and fixes were identified during our module load/unload
+and suspend/resume stress tests.
 
-Applied to
+Bard Liao (1):
+  ASoC: rt5682: do nothing in rt5682_suspend/resume in sdw mode
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Pierre-Louis Bossart (3):
+  ASoC: rt700-sdw: use cancel_work_sync() in .remove as well as .suspend
+  ASoC: rt711-sdw: use cancel_work_sync() for .remove
+  ASoC: rt5682-sdw: cancel_work_sync() in .remove and .suspend
 
-Thanks!
+ sound/soc/codecs/rt5682-sdw.c | 4 +++-
+ sound/soc/codecs/rt5682.c     | 6 ++++++
+ sound/soc/codecs/rt700-sdw.c  | 4 ++--
+ sound/soc/codecs/rt711-sdw.c  | 4 ++--
+ 4 files changed, 13 insertions(+), 5 deletions(-)
 
-[1/3] ASoC: mediatek: mt8192-mt6359: use asoc_substream_to_rtd()
-      commit: 8e59cf943fa7402f008de4b444beb0c5280317bc
-[2/3] ASoC: mediatek: mt8192: use asoc_substream_to_rtd()
-      commit: 0840706d6c61658e51f42762c5b4f211b7596535
-[3/3] ASoC: mediatek: mt8192-mt6359: simplify ops for Capture1 DAI link
-      commit: 4cceb42f4f401463b70d9e69c4771212707c51a8
+-- 
+2.25.1
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
