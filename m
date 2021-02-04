@@ -7,62 +7,63 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32BF0C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 20:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 492D8C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 20:20:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3480F64DDE
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 20:20:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3480F64DDE
+	by mail.kernel.org (Postfix) with ESMTPS id 7198F64DDE
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Feb 2021 20:20:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7198F64DDE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC4CE166C;
-	Thu,  4 Feb 2021 21:19:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC4CE166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBFF8167E;
+	Thu,  4 Feb 2021 21:19:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBFF8167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612470032;
-	bh=Bhay9fnIM9OoXzQ5YoY5B69chNdX6c26VnJgD31QRUg=;
+	s=default; t=1612470041;
+	bh=3BpM0EYwD/30Mvg/plfYXRYweXZe1Qk+gsbkuhOgoL4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oY0wBO4dhYKkmS82eDi2r0HNpZq55Pd3Mhh9/0+HYu5ZvX9Bd4FceWHLIypGkHhUq
-	 fdeUqBC3mIEbn54bpPmWFGLSRnVLQDJwgVBT9h5X4TyZ8jBB9g2jRcZEiqPBaYBEF5
-	 gFn2HEOWogDB3UdMnTXtM1iIRqf7nsntkUzY/TYw=
+	b=kcadH683Wg3mUuh8LT0BqhrKEcsYaDOMZPwveHQIyVIF3nqLftHq434tAIYqGMxl7
+	 4p9daB8qAmzaw3CdkGoSWW3B1OLO5adjhnvuq4rQ41Zoql+h5IwJHWQbyWEn6YATpo
+	 WTm5oRgnyeySvq3aLb6PgHfn+pJpQEZxUvEWqsTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 932F9F80275;
-	Thu,  4 Feb 2021 21:18:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50A64F8021C;
+	Thu,  4 Feb 2021 21:18:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A51A8F80139; Thu,  4 Feb 2021 21:18:08 +0100 (CET)
+ id E5EC3F802C8; Thu,  4 Feb 2021 21:18:12 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CA04F80171
- for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 21:18:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CA04F80171
-IronPort-SDR: bKS7x8Ydbs1tENXlpHQXG8UiyVRi+NMmyMugg7XOplD0i/J1NqNbM+j2eey6rzb2zRWQZv1lsr
- wHP7f8UlrULA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177817707"
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; d="scan'208";a="177817707"
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5996F8021C
+ for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2021 21:18:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5996F8021C
+IronPort-SDR: xyiqWARy3J1jYYQTnYmwVXsDeZmaIthX9QcXDFZhfunNKNskrZEJwiFwl6P+um43kSxKmSnYv9
+ 2eQVoUnE67yw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9885"; a="177817717"
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; d="scan'208";a="177817717"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Feb 2021 12:17:56 -0800
-IronPort-SDR: MvcHAM+M9X8PTH0eZUPeDLXw6weck1sehTncpTGMwvKorsKwji1PwoIPmrpn/rYqshHeWSLQEf
- cCP6XzIcVxDw==
-X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; d="scan'208";a="373011132"
+ 04 Feb 2021 12:17:59 -0800
+IronPort-SDR: +/UFy7d4h8A8BowIS+SnOWjbT+HjuHaFNhvG3/800Rereqk8n9ajfvWnzvc6efvw4VWt5wHyon
+ W3RuAT9xBmNw==
+X-IronPort-AV: E=Sophos;i="5.81,153,1610438400"; d="scan'208";a="373011159"
 Received: from jdasilva-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.66.22])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Feb 2021 12:17:54 -0800
+ 04 Feb 2021 12:17:57 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	Shuming Fan <shumingf@realtek.com>
-Subject: [PATCH 2/4] ASoC: rt711-sdw: use cancel_work_sync() for .remove
-Date: Thu,  4 Feb 2021 14:17:37 -0600
-Message-Id: <20210204201739.25206-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: rt5682: do nothing in rt5682_suspend/resume in sdw
+ mode
+Date: Thu,  4 Feb 2021 14:17:39 -0600
+Message-Id: <20210204201739.25206-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210204201739.25206-1-pierre-louis.bossart@linux.intel.com>
 References: <20210204201739.25206-1-pierre-louis.bossart@linux.intel.com>
@@ -88,34 +89,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Make sure the workqueues are not running after the .remove() callback,
-which can lead to timeout errors.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-A previous fix to use cancel_work_sync was applied for the suspend
-case but the remove case is missing
+regcache sync will be done in sdw device suspend/resume functions.
+And we have different jack detection mechanism for SoundWire.
 
-Fixes: 501ef013390b ('ASoC: rt711: wait for the delayed work to finish when the system suspends')
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
 ---
- sound/soc/codecs/rt711-sdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5682.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index 756c0ada3b31..2beb4286d997 100644
---- a/sound/soc/codecs/rt711-sdw.c
-+++ b/sound/soc/codecs/rt711-sdw.c
-@@ -463,8 +463,8 @@ static int rt711_sdw_remove(struct sdw_slave *slave)
- 	struct rt711_priv *rt711 = dev_get_drvdata(&slave->dev);
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 185906d6d4e0..b306ac4b9b2e 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2910,6 +2910,9 @@ static int rt5682_suspend(struct snd_soc_component *component)
+ {
+ 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
  
- 	if (rt711 && rt711->hw_init) {
--		cancel_delayed_work(&rt711->jack_detect_work);
--		cancel_delayed_work(&rt711->jack_btn_check_work);
-+		cancel_delayed_work_sync(&rt711->jack_detect_work);
-+		cancel_delayed_work_sync(&rt711->jack_btn_check_work);
- 		cancel_work_sync(&rt711->calibration_work);
- 	}
++	if (rt5682->is_sdw)
++		return 0;
++
+ 	regcache_cache_only(rt5682->regmap, true);
+ 	regcache_mark_dirty(rt5682->regmap);
+ 	return 0;
+@@ -2919,6 +2922,9 @@ static int rt5682_resume(struct snd_soc_component *component)
+ {
+ 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
+ 
++	if (rt5682->is_sdw)
++		return 0;
++
+ 	regcache_cache_only(rt5682->regmap, false);
+ 	regcache_sync(rt5682->regmap);
  
 -- 
 2.25.1
