@@ -2,77 +2,66 @@ Return-Path: <SRS0=mf2d=HH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40AD0C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 21:53:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7FE5C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 22:19:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5C76E64F51
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 21:53:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C76E64F51
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=lesniak-it.de
+	by mail.kernel.org (Postfix) with ESMTPS id 32B0364F9F
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 22:19:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32B0364F9F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D32D5167B;
-	Fri,  5 Feb 2021 22:52:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D32D5167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC3D11657;
+	Fri,  5 Feb 2021 23:18:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC3D11657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612561992;
-	bh=roRwl5iM2h8zwbhexG7aGor4JFLqz2q68j3zoWU9KOg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1612563559;
+	bh=o4JxAeomWAW56tG120XG/YznvdJJXyG3FHyW7yBJL6s=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f0zp0tUd+2YUBaQEsNkI+zki76X1YEpHFTxw6UQa42jLgQiRaUgmfE0E1OC/5LuPZ
-	 AjTGEu3s+QxqCgMKde5E1w8BcTAA5sUvf+/OPqkUtU7cJ/ua9+B9LH1+ihxjaiurYC
-	 UJmCIjpzKTzapm5pxJsGhmSdMtuY2/g8k0LDwDZc=
+	b=TLYWKvjTP2Z6zMBCiZuPKG9QLkcFHf7uBCULV4BvTeLYqmC4dwaTd9Jb4j+0/7z3f
+	 2ofwjLEz+EZnfyVnCdYGUJlqRMId5R37fFguo8ZitreCPWrtCSQYKuga0wbeG5+Dbd
+	 G5uU03OxOYOnWnVIqAj3sUSJcypah8g8Y7mrrxvI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7315FF801DB;
-	Fri,  5 Feb 2021 22:51:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64585F80156;
+	Fri,  5 Feb 2021 23:18:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 483AAF8015A; Fri,  5 Feb 2021 22:51:31 +0100 (CET)
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 20F39F8015A; Fri,  5 Feb 2021 23:18:28 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58858F800C0
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2021 22:51:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58858F800C0
-Received: from artex.itiv.kit.edu ([89.244.177.100]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MgNpJ-1lZkaY2ClT-00hso7; Fri, 05 Feb 2021 22:51:17 +0100
-From: Fabian Lesniak <fabian@lesniak-it.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/1] ALSA: usb-audio: add mixer quirks for Pioneer
- DJM-900NXS2
-Date: Fri,  5 Feb 2021 22:51:16 +0100
-Message-Id: <20210205215116.258724-2-fabian@lesniak-it.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210205215116.258724-1-fabian@lesniak-it.de>
-References: <s5h1rdyfz3f.wl-tiwai@suse.de>
- <20210205215116.258724-1-fabian@lesniak-it.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:rGDflf8NOljT8SmEqpn4XI2YSRi1ISoGwNvYFTei3sN0g4Vqgj5
- dKhcGZB5qdiYC+GtKn5yZ+yln8I7eRSKbHtQIPVLhW11xA0I/QwdEl3cBLpSmNWKOLhgOHL
- Y+67w/GiDM2U0wpE2y8WNXGdndcTDQB8Vv8CvkmX2cL4TzAABVI1yOS2IM0MgYmMARD1byp
- gu9Ztg9HlwYWKwnpaQfew==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RpXS25mTvWY=:XS4gkbSHtRPeN/oC1DN3gn
- T0rQsApTzZ9qlycSekcffrequ4m/YEFraTc6Ba/wbKyl5haY2OZ0mYAyIlcKXprNa4f9M+e7+
- 6WOZQK+NgjqN044KFlLTzPhFuXwHwQGTGvNMl9EbP6qJJ9ho2hFFh4nga3SxCvay1hLwOClLX
- 9w7kmtgDXxV8DV3683xnp48vWNf1SF4QfzGKeNz1B2L606qXmceBWHB3cGzR/Cl4shtlyaJbh
- ASchdwBrdit61pYLsxuXrGHWBzqsqWf0UmalVoQXKelDW5tq0DT5AjNeMf5bnGYcxRePO8e7i
- gAOTCSEKDOlkvOFXxi6Ps+VTOlovde7HxthpsU4cXT674cZTmLJz1OFiI+nSimUkH0ndSuAZi
- M6qdEhaHNiWOC49twB6id9zss1yiil3FuZ5yI4f2uhtgTX8C84fAD46fOtack2KshWogueD3O
- 0TwhMxMxdw==
-Cc: Takashi Iwai <tiwai@suse.de>, Olivia Mackintosh <livvy@base.nu>,
- =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>,
- Fabian Lesniak <fabian@lesniak-it.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B35EEF800C0
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2021 23:18:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B35EEF800C0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id B38B2AEBD;
+ Fri,  5 Feb 2021 22:18:17 +0000 (UTC)
+Date: Fri, 05 Feb 2021 23:18:17 +0100
+Message-ID: <s5hwnvm17me.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Olivia Mackintosh <livvy@base.nu>
+Subject: Re: [PATCH v4 1/1] ALSA: usb-audio: Add DJM750 to Pioneer mixer quirk
+In-Reply-To: <20210205184256.10201-2-livvy@base.nu>
+References: <s5h35yb5xip.wl-tiwai@suse.de>
+ <20210205184256.10201-1-livvy@base.nu>
+ <20210205184256.10201-2-livvy@base.nu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Fabian Lesniak <fabian@lesniak-it.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,109 +77,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit adds mixer quirks for the Pioneer DJM-900NXS2 mixer. This
-device has 6 capture channels, 5 of them allow setting the signal
-source. This adds controls for these, similar to the DJM-250Mk2.
-However, playpack channels are not controllable via software like on the
-250Mk2, as they can only be set manually on the mixing console.
-Read-only controls showing the currently selected playback channels are
-omitted.
+On Fri, 05 Feb 2021 19:42:56 +0100,
+Olivia Mackintosh wrote:
+> 
+> This allows for N different devices to use the pioneer mixer quirk for
+> setting capture/record type and recording level. The impementation has
+> not changed much with the exception of an additional mask on
+> private_value to allow storing of a device index:
+> 	DEVICE MASK	0xff000000
+> 	GROUP_MASK	0x00ff0000
+> 	VALUE_MASK	0x0000ffff
+> 
+> This could be improved by changing the arrays of wValues for each
+> channel to contain named definitions (e.g. SND_DJM_CAP_LINE). It would
+> improve readability and perhaps would allow using the same array for
+> multiple channels. The channel number can be specified on the control
+> next to the wIndex.
+> 
+> Feedback is very much appreciated as I'm not the most proficient C
+> programmer but am learning as I go.
+> 
+> Signed-off-by: Olivia Mackintosh <livvy@base.nu>
 
-Signed-off-by: Fabian Lesniak <fabian@lesniak-it.de>
----
- sound/usb/mixer_quirks.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+Thanks, applied now.
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 9d0ac2aa9044..08873d2afe4d 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -2618,6 +2618,7 @@ static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)
- // Capture types
- #define SND_DJM_CAP_LINE	0x00
- #define SND_DJM_CAP_CDLINE	0x01
-+#define SND_DJM_CAP_DIGITAL	0x02
- #define SND_DJM_CAP_PHONO	0x03
- #define SND_DJM_CAP_PFADER	0x06
- #define SND_DJM_CAP_XFADERA	0x07
-@@ -2628,6 +2629,8 @@ static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)
- #define SND_DJM_CAP_NONE	0x0f
- #define SND_DJM_CAP_CH1PFADER	0x11
- #define SND_DJM_CAP_CH2PFADER	0x12
-+#define SND_DJM_CAP_CH3PFADER	0x13
-+#define SND_DJM_CAP_CH4PFADER	0x14
- 
- // Playback types
- #define SND_DJM_PB_CH1		0x00
-@@ -2648,6 +2651,7 @@ static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)
- // device table index
- #define SND_DJM_250MK2_IDX	0x0
- #define SND_DJM_750_IDX		0x1
-+#define SND_DJM_900NXS2_IDX	0x2
- 
- 
- #define SND_DJM_CTL(_name, suffix, _default_value, _windex) { \
-@@ -2692,6 +2696,7 @@ static const char *snd_djm_get_label_cap(u16 wvalue)
- 	switch (wvalue & 0x00ff) {
- 	case SND_DJM_CAP_LINE:		return "Control Tone LINE";
- 	case SND_DJM_CAP_CDLINE:	return "Control Tone CD/LINE";
-+	case SND_DJM_CAP_DIGITAL:	return "Control Tone DIGITAL";
- 	case SND_DJM_CAP_PHONO:		return "Control Tone PHONO";
- 	case SND_DJM_CAP_PFADER:	return "Post Fader";
- 	case SND_DJM_CAP_XFADERA:	return "Cross Fader A";
-@@ -2702,6 +2707,8 @@ static const char *snd_djm_get_label_cap(u16 wvalue)
- 	case SND_DJM_CAP_NONE:		return "None";
- 	case SND_DJM_CAP_CH1PFADER:	return "Post Fader Ch1";
- 	case SND_DJM_CAP_CH2PFADER:	return "Post Fader Ch2";
-+	case SND_DJM_CAP_CH3PFADER:	return "Post Fader Ch3";
-+	case SND_DJM_CAP_CH4PFADER:	return "Post Fader Ch4";
- 	default:			return NULL;
- 	}
- };
-@@ -2774,9 +2781,32 @@ static const struct snd_djm_ctl snd_djm_ctls_750[] = {
- };
- 
- 
-+// DJM-900NXS2
-+static const u16 snd_djm_opts_900nxs2_cap1[] = {
-+	0x0100, 0x0102, 0x0103, 0x0106, 0x0107, 0x0108, 0x0109, 0x010a };
-+static const u16 snd_djm_opts_900nxs2_cap2[] = {
-+	0x0200, 0x0202, 0x0203, 0x0206, 0x0207, 0x0208, 0x0209, 0x020a };
-+static const u16 snd_djm_opts_900nxs2_cap3[] = {
-+	0x0300, 0x0302, 0x0303, 0x0306, 0x0307, 0x0308, 0x0309, 0x030a };
-+static const u16 snd_djm_opts_900nxs2_cap4[] = {
-+	0x0400, 0x0402, 0x0403, 0x0406, 0x0407, 0x0408, 0x0409, 0x040a };
-+static const u16 snd_djm_opts_900nxs2_cap5[] = {
-+	0x0507, 0x0508, 0x0509, 0x050a, 0x0511, 0x0512, 0x0513, 0x0514 };
-+
-+static const struct snd_djm_ctl snd_djm_ctls_900nxs2[] = {
-+	SND_DJM_CTL("Capture Level", cap_level, 0, SND_DJM_WINDEX_CAPLVL),
-+	SND_DJM_CTL("Ch1 Input",   900nxs2_cap1, 2, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch2 Input",   900nxs2_cap2, 2, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch3 Input",   900nxs2_cap3, 2, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch4 Input",   900nxs2_cap4, 2, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch5 Input",   900nxs2_cap5, 3, SND_DJM_WINDEX_CAP)
-+};
-+
-+
- static const struct snd_djm_device snd_djm_devices[] = {
- 	SND_DJM_DEVICE(250mk2),
--	SND_DJM_DEVICE(750)
-+	SND_DJM_DEVICE(750),
-+	SND_DJM_DEVICE(900nxs2)
- };
- 
- 
-@@ -3015,6 +3045,9 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 	case USB_ID(0x08e4, 0x017f): /* Pioneer DJ DJM-750 */
- 		err = snd_djm_controls_create(mixer, SND_DJM_750_IDX);
- 		break;
-+	case USB_ID(0x2b73, 0x000a): /* Pioneer DJ DJM-900NXS2 */
-+		err = snd_djm_controls_create(mixer, SND_DJM_900NXS2_IDX);
-+		break;
- 	}
- 
- 	return err;
--- 
-2.30.0
 
+Takashi
