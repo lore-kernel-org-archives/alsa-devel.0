@@ -2,60 +2,109 @@ Return-Path: <SRS0=mf2d=HH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABF5BC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 08:30:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DC3BC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 08:35:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 61DBA64DA5
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 08:30:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61DBA64DA5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C851C64E24
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Feb 2021 08:35:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C851C64E24
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE7E11614;
-	Fri,  5 Feb 2021 09:29:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE7E11614
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAAE51657;
+	Fri,  5 Feb 2021 09:34:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAAE51657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612513841;
-	bh=WWV3TamaBOLKIKq1enjfciEXdUiLUXWxTQj7Hc7b2Xo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WkGCiuYCU9Kev6/HQpNLzESYJT4qmJ/i2BAIvCLQ0OfHEtgQ9g+a8qPlUT2t6E9ev
-	 7dVS6c9pT+uLinhdbME8FkH12rudECA1USPwQv2vR493+NSJpQ2EQbnAEe9Geg31WA
-	 ZtFzntxIYEuthh9Fg9m9IYLS3M4j8HuQ62gOuBBA=
+	s=default; t=1612514119;
+	bh=sgpuer02uct1M0Uf7jmui3+iWOIQSgppouxj7yCfZnM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Cf5qsBxe7iJ7nLyejpf++WhERTxyQP+5oXfj9WvzFRdekm1Yt081sMojQp+UY8i0O
+	 RpXbBDk4EIcwYPcOQJkzcbWMGTFAxZt6JPFOjVeKVmLC7rN7iJEgNwpi43rBG7ti9k
+	 T+6AVhFlJUhmlFi7M3vgHHP2hMscGwJTh6NhXelQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB5D1F800C0;
-	Fri,  5 Feb 2021 09:29:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33E27F80156;
+	Fri,  5 Feb 2021 09:34:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C132F8015A; Fri,  5 Feb 2021 09:29:06 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 75810F8015A; Fri,  5 Feb 2021 09:34:27 +0100 (CET)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07342F80139
- for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2021 09:28:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07342F80139
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A6E1CACBA;
- Fri,  5 Feb 2021 08:28:38 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Correct document for
- snd_usb_endpoint_free_all()
-Date: Fri,  5 Feb 2021 09:28:37 +0100
-Message-Id: <20210205082837.6327-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57926F80139
+ for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2021 09:34:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57926F80139
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="CTDnrnQM"
+Received: by mail-wm1-x330.google.com with SMTP id m1so5223370wml.2
+ for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2021 00:34:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:content-transfer-encoding:in-reply-to;
+ bh=HHfAd0jRqxl9Kf+Um9ET57/jEyDsj3IKhyTUCMrpEZU=;
+ b=CTDnrnQM7qmmnnZvHQPCdGrpgM/joh0kwHoiGqQN3K7HvYA5M7wPDDJeovg1fl+Zn2
+ 3Lg94szTZ7VrXAb0CgkcbqrHYOmhX5e12lNNCCE7ruWJ/UitZthWhS4y+S0hHkJKgH/T
+ A7vIFAbEgka0i9LYWguUIC9rfUWMJ9t0EvwrnQqhcKTA+BI7Kw/LQC5370GUt0VQGlIf
+ yZR6fO37+siVbiu2souUX3kW/rF9LLfDyDCJwypUCF/83EyJhjW2WQD4On0uVzdZamND
+ 5sHNemVh2o/ASn78BzXK/PoYo1VQq16aCqCHlQB7EFwvCQ4N2G8IM0OkTyqwyuKwuLim
+ mong==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=HHfAd0jRqxl9Kf+Um9ET57/jEyDsj3IKhyTUCMrpEZU=;
+ b=NHqIO/RgGEa1wdYPdljTPhebiGnYdAgMGNEbYc2TQA0af62VaE70obP0Lbs/dbrk2Y
+ J09zK6BMaqVvZ3X3Zef0QZsxgqfYkQFtqBPZhLx+y5KivoFx+CoPbLJmBi8LkP9KioO5
+ BDwWHWVNXgWvmEfZ3zGKc7YFyXld3TcTLH1gcrJZVX+XsNRjfE/6Ywf8NcYSfZ5kPlSB
+ xcCSpTdA9JTAdHlUpKsKawakGHfOtSk1BsyYcRUuN72VzFpTcsU5mysVhWAt2b2XLgqt
+ FGUxgKetlo+mm08CwNPe4hZf+oSxs6nsW+eqAi9DceoCOlOYkuut5cXQwjDYda8kziXc
+ ZuxQ==
+X-Gm-Message-State: AOAM532RsSVhWNjwRgyVijLqNlh/v9LKW+8WJhDUQFqrGn3ExuvxMYUd
+ nzTj0oiW2gvoy5B1Vhtl8as3jw==
+X-Google-Smtp-Source: ABdhPJz17JjsWyci4e4xB1qYeMq8I1U9C4tvNzbHDmfHrivo4QRg3R2AccWKsjN6ESqU/VF+NvlE4g==
+X-Received: by 2002:a1c:7c17:: with SMTP id x23mr2616892wmc.65.1612514058703; 
+ Fri, 05 Feb 2021 00:34:18 -0800 (PST)
+Received: from dell ([91.110.221.188])
+ by smtp.gmail.com with ESMTPSA id u4sm10921969wrr.37.2021.02.05.00.34.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 05 Feb 2021 00:34:18 -0800 (PST)
+Date: Fri, 5 Feb 2021 08:34:16 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 4/5] ASoC: Intel: Add DMI quirk table to
+ soc_intel_is_byt_cr()
+Message-ID: <20210205083416.GR2789116@dell>
+References: <20210120214957.140232-1-hdegoede@redhat.com>
+ <20210120214957.140232-5-hdegoede@redhat.com>
+ <20210204135616.GL2789116@dell>
+ <20210204140515.GC4288@sirena.org.uk>
+ <20210204150456.GN2789116@dell>
+ <20210204151139.GE4288@sirena.org.uk>
+ <20210204154058.GP2789116@dell>
+ <20210204194213.GG4288@sirena.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210204194213.GG4288@sirena.org.uk>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,30 +120,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The kerndoc comment for the new function snd_usb_endpoint_free_all()
-had a typo wrt the argument name.  Fix it.
+On Thu, 04 Feb 2021, Mark Brown wrote:
 
-Fixes: 00272c61827e ("ALSA: usb-audio: Avoid unnecessary interface re-setup")
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/endpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Thu, Feb 04, 2021 at 03:40:58PM +0000, Lee Jones wrote:
+> > On Thu, 04 Feb 2021, Mark Brown wrote:
+> > > On Thu, Feb 04, 2021 at 03:04:56PM +0000, Lee Jones wrote:
+> 
+> > > > This set has all the Acks we need to proceed.  What's blocking?
+> 
+> > > There's the subsystem maintainer...
+> 
+> > I assume that was a question and you meant "where's"?
+> 
+> > Pierre is listed as the Maintainer.
+> 
+> I'm fairly sure you can see what I meant here and why there might be a
+> concern.
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 8e568823c992..4d1c678a0d80 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1451,7 +1451,7 @@ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep)
- 
- /**
-  * snd_usb_endpoint_free_all: Free the resources of an snd_usb_endpoint
-- * @card: The chip
-+ * @chip: The chip
-  *
-  * This free all endpoints and those resources
-  */
+So that should be a Reviewed-by and not an Acked-by then.  That's fine.
+
+What do you want to happen with this set then?
+
+You want it broken up?
+
 -- 
-2.26.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
