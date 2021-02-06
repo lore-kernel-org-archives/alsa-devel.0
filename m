@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2771C433E0
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:32:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EB5F0C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:33:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF42F64E35
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:32:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF42F64E35
+	by mail.kernel.org (Postfix) with ESMTPS id 03FED64E31
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:33:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03FED64E31
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DEC7852;
-	Sat,  6 Feb 2021 21:31:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DEC7852
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCC3315E4;
+	Sat,  6 Feb 2021 21:32:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCC3315E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612643538;
-	bh=r3FCG85BpSmXiWFdR6hJk3n8pX5drRMVg1/2IRXfq80=;
+	s=default; t=1612643590;
+	bh=zQ5uppxn7ygkgdocOZoS+mDOCl+e61vgreAmsr/kBjQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=by35lHe/XvBr+nq/w8s9zQaheqCBbz3MUNzMa3Fna7aP9KC0h0FbZtF8BtWUNC4gZ
-	 PkKFnwPUJEeorxKOLkrl4CvOaRddJFlaufGcYMrBFIcGvJstbye8pHdirKAKJIMlV2
-	 nyVgjDoY7nSiHBzSmr9AU+ljBjsGCfG9ghfaf2w8=
+	b=KpeYYfGuPwJ8Bp9+mx+MP+PKdLsykXfHbDG9a0e69QcPKLtutZEK9H2WWRSciL48h
+	 cRA+dWJe/BiOTAPbkxATEbCYxRztU7D/PyvICX3DgtMpPg6Crz349dOE8gsWn0zD7A
+	 X+YG0oi7smXT13aMTtr1zpaR1sG6kaFdonvTaIdc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E812DF80095;
-	Sat,  6 Feb 2021 21:31:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 063ABF8021C;
+	Sat,  6 Feb 2021 21:31:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B743DF80254; Sat,  6 Feb 2021 21:31:17 +0100 (CET)
+ id C72FEF80095; Sat,  6 Feb 2021 21:31:17 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F33CF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 313F4F801F7
  for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 21:30:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F33CF80171
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 313F4F801F7
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DC90CAFF9
+ by mx2.suse.de (Postfix) with ESMTP id CA39AAC43
  for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 20:30:53 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ALSA: usb-audio: Don't avoid stopping the stream at
- disconnection
-Date: Sat,  6 Feb 2021 21:30:52 +0100
-Message-Id: <20210206203052.15606-4-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: usb-audio: Handle invalid running state at
+ releasing EP
+Date: Sat,  6 Feb 2021 21:30:50 +0100
+Message-Id: <20210206203052.15606-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210206203052.15606-1-tiwai@suse.de>
 References: <20210206203052.15606-1-tiwai@suse.de>
@@ -73,50 +73,147 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the later patch, we're going to issue the PCM sync_stop calls at
-disconnection.  But currently the USB-audio driver can't handle it
-because it has a check of shutdown flag for stopping the URBs.  This
-is basically superfluous (the stopping URBs are safe at disconnection
-state), so let's drop the check.
+When we stop an endpoint in release_urbs(), it ignores the
+inconsistent endpoint state and tries to release the resources.
+This shouldn't happen in theory, but it's still safer to abort the
+release and let the caller proper error handling.
 
-Fixes: dc5eafe7787c ("ALSA: usb-audio: Support PCM sync_stop")
+Also, stop_and_unlink_urbs() called from release_urbs() does two step
+works, and it's more straightforward to split this to two functions
+again, so that the call from the PCM trigger won't take the path with
+sleeping.
+
+This patch modifies the EP management code to adapt two points above.
+
+Fixes: d0f09d1e4a88 ("ALSA: usb-audio: Refactoring endpoint URB deactivation")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c | 3 ---
- sound/usb/pcm.c      | 5 +----
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ sound/usb/endpoint.c | 40 +++++++++++++++++++++-------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 4390075b2c6f..102d53515a76 100644
+index 4d1c678a0d80..e102c024c21f 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -890,9 +890,6 @@ static int stop_urbs(struct snd_usb_endpoint *ep, bool force)
+@@ -868,24 +868,22 @@ void snd_usb_endpoint_sync_pending_stop(struct snd_usb_endpoint *ep)
+ }
+ 
+ /*
+- * Stop and unlink active urbs.
++ * Stop active urbs
+  *
+- * This function checks and clears EP_FLAG_RUNNING state.
+- * When @wait_sync is set, it waits until all pending URBs are killed.
++ * This function moves the EP to STOPPING state if it's being RUNNING.
+  */
+-static int stop_and_unlink_urbs(struct snd_usb_endpoint *ep, bool force,
+-				bool wait_sync)
++static int stop_urbs(struct snd_usb_endpoint *ep, bool force)
  {
  	unsigned int i;
  
--	if (!force && atomic_read(&ep->chip->shutdown)) /* to be sure... */
--		return -EBADFD;
--
- 	if (!force && atomic_read(&ep->running))
+ 	if (!force && atomic_read(&ep->chip->shutdown)) /* to be sure... */
+ 		return -EBADFD;
+ 
+-	if (atomic_read(&ep->running))
++	if (!force && atomic_read(&ep->running))
  		return -EBUSY;
  
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index dcadf8f164b2..bf5a0f3c1fad 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -270,10 +270,7 @@ static int snd_usb_pcm_sync_stop(struct snd_pcm_substream *substream)
- {
- 	struct snd_usb_substream *subs = substream->runtime->private_data;
+ 	if (!test_and_clear_bit(EP_FLAG_RUNNING, &ep->flags))
+-		goto out;
++		return 0;
  
--	if (!snd_usb_lock_shutdown(subs->stream->chip)) {
--		sync_pending_stops(subs);
--		snd_usb_unlock_shutdown(subs->stream->chip);
--	}
-+	sync_pending_stops(subs);
+ 	set_bit(EP_FLAG_STOPPING, &ep->flags);
+ 	INIT_LIST_HEAD(&ep->ready_playback_urbs);
+@@ -901,24 +899,25 @@ static int stop_and_unlink_urbs(struct snd_usb_endpoint *ep, bool force,
+ 		}
+ 	}
+ 
+- out:
+-	if (wait_sync)
+-		return wait_clear_urbs(ep);
  	return 0;
  }
  
+ /*
+  * release an endpoint's urbs
+  */
+-static void release_urbs(struct snd_usb_endpoint *ep, int force)
++static int release_urbs(struct snd_usb_endpoint *ep, bool force)
+ {
+-	int i;
++	int i, err;
+ 
+ 	/* route incoming urbs to nirvana */
+ 	snd_usb_endpoint_set_callback(ep, NULL, NULL, NULL);
+ 
+-	/* stop urbs */
+-	stop_and_unlink_urbs(ep, force, true);
++	/* stop and unlink urbs */
++	err = stop_urbs(ep, force);
++	if (err)
++		return err;
++
++	wait_clear_urbs(ep);
+ 
+ 	for (i = 0; i < ep->nurbs; i++)
+ 		release_urb_ctx(&ep->urb[i]);
+@@ -928,6 +927,7 @@ static void release_urbs(struct snd_usb_endpoint *ep, int force)
+ 
+ 	ep->syncbuf = NULL;
+ 	ep->nurbs = 0;
++	return 0;
+ }
+ 
+ /*
+@@ -1118,7 +1118,7 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
+ 	return 0;
+ 
+ out_of_memory:
+-	release_urbs(ep, 0);
++	release_urbs(ep, false);
+ 	return -ENOMEM;
+ }
+ 
+@@ -1162,7 +1162,7 @@ static int sync_ep_set_params(struct snd_usb_endpoint *ep)
+ 	return 0;
+ 
+ out_of_memory:
+-	release_urbs(ep, 0);
++	release_urbs(ep, false);
+ 	return -ENOMEM;
+ }
+ 
+@@ -1180,7 +1180,9 @@ static int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+ 	int err;
+ 
+ 	/* release old buffers, if any */
+-	release_urbs(ep, 0);
++	err = release_urbs(ep, false);
++	if (err < 0)
++		return err;
+ 
+ 	ep->datainterval = fmt->datainterval;
+ 	ep->maxpacksize = fmt->maxpacksize;
+@@ -1433,7 +1435,7 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+ 		WRITE_ONCE(ep->sync_source->sync_sink, NULL);
+ 
+ 	if (!atomic_dec_return(&ep->running))
+-		stop_and_unlink_urbs(ep, false, false);
++		stop_urbs(ep, false);
+ }
+ 
+ /**
+@@ -1446,7 +1448,7 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
+  */
+ void snd_usb_endpoint_release(struct snd_usb_endpoint *ep)
+ {
+-	release_urbs(ep, 1);
++	release_urbs(ep, true);
+ }
+ 
+ /**
 -- 
 2.26.2
 
