@@ -2,67 +2,61 @@ Return-Path: <SRS0=kwE8=HI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 844D3C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 07:49:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F218C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 08:15:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B267164F8C
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 07:49:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B267164F8C
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 0596B64F06
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 08:15:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0596B64F06
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 513F09F6;
-	Sat,  6 Feb 2021 08:48:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 513F09F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id AACD8950;
+	Sat,  6 Feb 2021 09:14:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AACD8950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612597750;
-	bh=tmQo9klM/8oT4CT0Wx1m2y/qmbxsxlJSXIgIjz6n1BA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rKUv+3Wxf3MKoMgIzgzH3x1Xb812X0iGZWQbfrhHhdmS0W1DjfscSjPxkg5Vl6YWs
-	 8obTa9LSBSX4Uyp6pzpMtqhFnWzL9vxg129LFvYAstcIHq4+ycanH+WYfk4R5cbim6
-	 iifGPN1WHrr1iuZ93WtL7Ei+KN8n+Ck2i4hwGW/I=
+	s=default; t=1612599298;
+	bh=mkQ6hNKM0Khatw9PEZmb65ULmElMVGxJQn2zQmqffDI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FAZD6uBEzrqqeF0tjAmlhik6wuCf7GMVyhB4r9c6AcYT628eo+rloEmik2E8iC4qi
+	 7D4r+0DZbZH/TWuCXG0+1ZHJtMS5OQsgU9HHVs5Rp5BmKzTsZBT/TsLF17XwzBh5c/
+	 sR80qFXc2ZWPuiSon/PMZ3Flvbr1Q0TYgcf/rcxk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 981DBF80155;
-	Sat,  6 Feb 2021 08:48:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C49D8F80155;
+	Sat,  6 Feb 2021 09:14:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA125F80171; Sat,  6 Feb 2021 08:48:14 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13DAEF80139
- for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 08:48:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13DAEF80139
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id ACDDBACB0;
- Sat,  6 Feb 2021 07:48:05 +0000 (UTC)
-Date: Sat, 06 Feb 2021 08:48:05 +0100
-Message-ID: <s5hpn1d1vt6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hillf Danton <hdanton@sina.com>
+ id DF6C9F80171; Sat,  6 Feb 2021 09:14:02 +0100 (CET)
+Received: from r3-22.sinamail.sina.com.cn (r3-22.sinamail.sina.com.cn
+ [202.108.3.22]) by alsa1.perex.cz (Postfix) with SMTP id 5A570F80139
+ for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 09:13:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A570F80139
+Received: from unknown (HELO localhost.localdomain)([114.246.224.195])
+ by sina.com (172.16.97.32) with ESMTP
+ id 601E4FB60002BAE3; Sat, 6 Feb 2021 16:13:50 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+X-SMAIL-MID: 385812628791
+From: Hillf Danton <hdanton@sina.com>
+To: tiwai@suse.de
 Subject: Re: BUG: KASAN: use-after-free in snd_complete_urb+0x109e/0x1740
  [snd_usb_audio] (5.11-rc6)
-In-Reply-To: <20210206054533.120-1-hdanton@sina.com>
-References: <CABXGCsOposU1A_HavA_jmtkJMKhDZgh5m1b_YJK1Es5wyE-hZw@mail.gmail.com>
- <20210206054533.120-1-hdanton@sina.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
- alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, zonque@gmail.com
+Date: Sat,  6 Feb 2021 16:13:33 +0800
+Message-Id: <20210206081333.7472-1-hdanton@sina.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Hillf Danton <hdanton@sina.com>, alsa-devel@alsa-project.org,
+ linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ zonque@gmail.com, Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,57 +72,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 06 Feb 2021 06:45:32 +0100,
-Hillf Danton wrote:
+On Sat, 6 Feb 2021 Takashi Iwai wrote:
+> > Due to the reconnecting key word mentioned, no fix to
+> > d0f09d1e4a88 ("ALSA: usb-audio: Refactoring endpoint URB deactivation")
+> > will be added.
+> > 
+> > What is added is to capture EP_FLAG_STOPPING and remove the one
+> > second wait limit if the reconnecting acts may make it easier to
+> > repro the uaf. The diff is only for idea show.
 > 
-> Due to the reconnecting key word mentioned, no fix to
-> d0f09d1e4a88 ("ALSA: usb-audio: Refactoring endpoint URB deactivation")
-> will be added.
+> If my understanding is right, this won't change.  The problem is
+> rather the lack of this function call itself, i.e. the missing
+> synchronization for the stream stop.
+
+Thanks for taking a look at it.
 > 
-> What is added is to capture EP_FLAG_STOPPING and remove the one
-> second wait limit if the reconnecting acts may make it easier to
-> repro the uaf. The diff is only for idea show.
+> It worked casually in the past because the endpoint resource is
+> released at a later point that is after all streams are really closed.
+> Now it's released earlier and hitting the UAF.
 
-If my understanding is right, this won't change.  The problem is
-rather the lack of this function call itself, i.e. the missing
-synchronization for the stream stop.
+And add it if I dont misread you.
 
-It worked casually in the past because the endpoint resource is
-released at a later point that is after all streams are really closed.
-Now it's released earlier and hitting the UAF.
+Hillf
 
-
-Takashi
-
-> 
-> --- a/sound/usb/endpoint.c
-> +++ b/sound/usb/endpoint.c
-> @@ -832,24 +832,14 @@ void snd_usb_endpoint_suspend(struct snd
->   */
->  static int wait_clear_urbs(struct snd_usb_endpoint *ep)
->  {
-> -	unsigned long end_time = jiffies + msecs_to_jiffies(1000);
-> -	int alive;
-> -
-> -	if (!test_bit(EP_FLAG_STOPPING, &ep->flags))
-> -		return 0;
-> -
-> +	WARN_ON_ONCE(!test_bit(EP_FLAG_STOPPING, &ep->flags));
->  	do {
-> -		alive = bitmap_weight(&ep->active_mask, ep->nurbs);
-> -		if (!alive)
-> +		if (!bitmap_weight(&ep->active_mask, ep->nurbs))
->  			break;
->  
->  		schedule_timeout_uninterruptible(1);
-> -	} while (time_before(jiffies, end_time));
-> +	} while (1);
->  
-> -	if (alive)
-> -		usb_audio_err(ep->chip,
-> -			"timeout: still %d active urbs on EP #%x\n",
-> -			alive, ep->ep_num);
->  	clear_bit(EP_FLAG_STOPPING, &ep->flags);
->  
->  	ep->sync_sink = NULL;
-> 
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -832,24 +832,14 @@ void snd_usb_endpoint_suspend(struct snd
+  */
+ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
+ {
+-	unsigned long end_time = jiffies + msecs_to_jiffies(1000);
+-	int alive;
+-
+-	if (!test_bit(EP_FLAG_STOPPING, &ep->flags))
+-		return 0;
+-
++	WARN_ON_ONCE(!test_bit(EP_FLAG_STOPPING, &ep->flags));
+ 	do {
+-		alive = bitmap_weight(&ep->active_mask, ep->nurbs);
+-		if (!alive)
++		if (!bitmap_weight(&ep->active_mask, ep->nurbs))
+ 			break;
+ 
+ 		schedule_timeout_uninterruptible(1);
+-	} while (time_before(jiffies, end_time));
++	} while (1);
+ 
+-	if (alive)
+-		usb_audio_err(ep->chip,
+-			"timeout: still %d active urbs on EP #%x\n",
+-			alive, ep->ep_num);
+ 	clear_bit(EP_FLAG_STOPPING, &ep->flags);
+ 
+ 	ep->sync_sink = NULL;
+@@ -1433,7 +1423,7 @@ void snd_usb_endpoint_stop(struct snd_us
+ 		WRITE_ONCE(ep->sync_source->sync_sink, NULL);
+ 
+ 	if (!atomic_dec_return(&ep->running))
+-		stop_and_unlink_urbs(ep, false, false);
++		stop_and_unlink_urbs(ep, false, true);
+ }
+ 
+ /**
