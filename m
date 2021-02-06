@@ -2,69 +2,64 @@ Return-Path: <SRS0=kwE8=HI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04F12C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 12:20:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D51BC433E0
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 12:25:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9422B64EC1
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 12:20:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9422B64EC1
+	by mail.kernel.org (Postfix) with ESMTPS id DE1E564ECA
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 12:25:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DE1E564ECA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28312886;
-	Sat,  6 Feb 2021 13:19:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28312886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 897DA3E;
+	Sat,  6 Feb 2021 13:24:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 897DA3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612614013;
-	bh=2F759q7U6DP1tllZRYtSpqfkOas2sLj3q3EEoA8+4oc=;
+	s=default; t=1612614335;
+	bh=6ggV7UUyR7xtVT4bw4VT5qp7/+leYxa398vFoJYbX94=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SX4EBk51w8kPDFyG+m8az/2yKTCsdhg6bLWPUNFPqxQaA5TUNsK+bgYMKNae/gnXH
-	 UxtOM63atElqRDTCOqpH6gwK+3lp82B8HsUjAHbgVfHnKb1F6LBfE/G1ltuRBmRO06
-	 HEXeVmVqb1TJOaptqJJJ6ST6JsTwCA4nh8N6PDww=
+	b=CfH5NOGOwyFwT2lG0DI1D930viYg25WhhGN7GO6eH8jNwDYPLJapRvY6QcRoKSWpw
+	 Hgb2/i+aaZKka37+TpQs4j0Zo4ccd3xPhks0RSDGwurbbgSKlnuI+JNiYpxf7qz7Sb
+	 H3KPvO7kfiJ/PRogZv07Cwk8RoZxsRtZEYAOf0gg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3D0CF800B8;
-	Sat,  6 Feb 2021 13:19:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0EAD9F80155;
+	Sat,  6 Feb 2021 13:24:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFAD5F80171; Sat,  6 Feb 2021 13:19:20 +0100 (CET)
+ id 80389F80155; Sat,  6 Feb 2021 13:24:43 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26DB1F800B8
- for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 13:19:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26DB1F800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D7FFF800B8
+ for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 13:24:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D7FFF800B8
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C3EC0ACB7;
- Sat,  6 Feb 2021 12:19:11 +0000 (UTC)
-Date: Sat, 06 Feb 2021 13:19:11 +0100
-Message-ID: <s5hczxd1j9c.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B5960AEBA;
+ Sat,  6 Feb 2021 12:24:38 +0000 (UTC)
+Date: Sat, 06 Feb 2021 13:24:38 +0100
+Message-ID: <s5hblcx1j09.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Subject: Re: BUG: KASAN: use-after-free in snd_complete_urb+0x109e/0x1740
- [snd_usb_audio] (5.11-rc6)
-In-Reply-To: <s5hlfc11tx8.wl-tiwai@suse.de>
-References: <CABXGCsOposU1A_HavA_jmtkJMKhDZgh5m1b_YJK1Es5wyE-hZw@mail.gmail.com>
- <20210206054533.120-1-hdanton@sina.com>
- <s5hpn1d1vt6.wl-tiwai@suse.de> <s5hlfc11tx8.wl-tiwai@suse.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v2 0/3] ALSA: hda: add link_power op to hdac_bus_ops
+In-Reply-To: <20210205184630.1938761-1-kai.vehmanen@linux.intel.com>
+References: <20210205184630.1938761-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Hillf Danton <hdanton@sina.com>, linux-usb@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
- zonque@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,46 +75,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 06 Feb 2021 09:28:51 +0100,
-Takashi Iwai wrote:
+On Fri, 05 Feb 2021 19:46:27 +0100,
+Kai Vehmanen wrote:
 > 
-> On Sat, 06 Feb 2021 08:48:05 +0100,
-> Takashi Iwai wrote:
-> > 
-> > On Sat, 06 Feb 2021 06:45:32 +0100,
-> > Hillf Danton wrote:
-> > > 
-> > > Due to the reconnecting key word mentioned, no fix to
-> > > d0f09d1e4a88 ("ALSA: usb-audio: Refactoring endpoint URB deactivation")
-> > > will be added.
-> > > 
-> > > What is added is to capture EP_FLAG_STOPPING and remove the one
-> > > second wait limit if the reconnecting acts may make it easier to
-> > > repro the uaf. The diff is only for idea show.
-> > 
-> > If my understanding is right, this won't change.  The problem is
-> > rather the lack of this function call itself, i.e. the missing
-> > synchronization for the stream stop.
-> > 
-> > It worked casually in the past because the endpoint resource is
-> > released at a later point that is after all streams are really closed.
-> > Now it's released earlier and hitting the UAF.
+> Here's the 2nd iteration of the patch to improve link management
+> granularity between controllers using HDA extended bus and HDA
+> codec drivers.
 > 
-> ... and reading the code in a closer look, my guess was also wrong.
-> The sync should have happened in snd_usb_endpoint_release(), and this
-> didn't change for quite some time.  So my previous fix won't be
-> effective, too, I'm afraid.  (And Hilif's patch won't help, either; if
-> it's effective, there must have been a timeout error in the original
-> case.)
+> Based on feedback to V1, this now adds a new link_power op.
+> This allows to decouple HDA codec drivers from the hdac_ext core.
 > 
-> That said, I don't think this is a newly introduced regression, and
-> race the condition could be in a hairy detail.
+> I also included two patches to SOF to show how this interface is
+> used in SOF.
 > 
-> Mikhail, can you reproduce this bug reliably?
+> Kai Vehmanen (3):
+>   ALSA: hda: add link_power op to hdac_bus_ops
+>   ASoC: SOF: Intel: hda: use hdac_ext fine-grained link management
+>   ASoC: SOF: Intel: hda: release display power at link_power
 
-And if you can reproduce the problem, please try the
-topic/pcm-sync-stop-fixes branch of my sound git tree
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+The patch set looks good to me.  If Mark can give an ack, I'll merge
+them through my tree later.
 
+
+thanks,
 
 Takashi
