@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2DE6C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:39:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4845C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:40:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4FCAC64E55
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:39:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FCAC64E55
+	by mail.kernel.org (Postfix) with ESMTPS id 2A2AD64E57
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Feb 2021 20:40:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A2AD64E57
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B18FD167E;
-	Sat,  6 Feb 2021 21:39:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B18FD167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B11E71687;
+	Sat,  6 Feb 2021 21:39:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B11E71687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612643996;
-	bh=QOnpIPmwnSuImfarM4vLZGN+HcfVIbKHQ1hSlGq8whY=;
+	s=default; t=1612644004;
+	bh=lFng05FcrUTQESII0Gav2YsvjniRvZaVxdTlgp2WrtQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f/M94MPlBfOc/E7digEW4AXZbK/CIHAlr0+umgWRU6ms96MsFTHKw3hUlT4AiSLQ7
-	 /rraSHzKv4Eer2RA6g+TTZzY80e1oAR4CIbQCaabqZeOQW/YlaLYYfmcOvQDOiu1iY
-	 8FejrFAJfYM0GsB3WSzCc1pUZrFyVfLy+6zkkqNQ=
+	b=UtUAILEpkcQQPEKD5L3qDz56dkXIQA6ew3mhK/DlvGhq2jxS9iyeicBqdM2wynpG8
+	 wgNhBGDCHGL8jeP2Vk4EKl5FFMoky+zESwZ7sUraF1FscYYKkjybpwkmKDI1LsLkzu
+	 5tNQ2w8YTQ/v2dWMSb1RGcpLVBpFpSFpe6sBTdlA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C1DAF80277;
-	Sat,  6 Feb 2021 21:37:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F16BF802C8;
+	Sat,  6 Feb 2021 21:37:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48654F80264; Sat,  6 Feb 2021 21:37:35 +0100 (CET)
+ id AE002F8026B; Sat,  6 Feb 2021 21:37:35 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9EEEDF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91931F80139
  for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 21:37:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EEEDF80171
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91931F80139
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 19D13ACD4
+ by mx2.suse.de (Postfix) with ESMTP id 1D635AE3C
  for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2021 20:37:26 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ALSA: pcm: Call sync_stop at disconnection
-Date: Sat,  6 Feb 2021 21:36:53 +0100
-Message-Id: <20210206203656.15959-2-tiwai@suse.de>
+Subject: [PATCH 3/4] ALSA: pcm: Don't call sync_stop if it hasn't been stopped
+Date: Sat,  6 Feb 2021 21:36:55 +0100
+Message-Id: <20210206203656.15959-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210206203656.15959-1-tiwai@suse.de>
 References: <20210206203656.15959-1-tiwai@suse.de>
@@ -72,135 +72,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The PCM core should perform the sync for the pending stop operations
-at disconnection.  Otherwise it may lead to unexpected access.
+The PCM stop operation sets the stop_operating flag for indicating the
+sync_stop post-process.  This flag is, however, set unconditionally
+even if the PCM trigger weren't issued.  This may lead to
+inconsistency in the driver side.
 
-Currently the old user of sync_stop, USB-audio driver, has its own
-sync, so this isn't needed, but it's better to guarantee the sync in
-the PCM core level.
-
-This patch adds the missing sync_stop call at PCM disconnection
-callback.  It also assures the IRQ sync if it's specified in the
-card.  snd_pcm_sync_stop() is slightly modified to be called also for
-any PCM substream object now.
+Correct the code to set stop_operating flag only after the trigger
+STOP is actually called.
 
 Fixes: 1e850beea278 ("ALSA: pcm: Add the support for sync-stop operation")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/init.c       |  4 ++++
- sound/core/pcm.c        |  4 ++++
- sound/core/pcm_local.h  |  1 +
- sound/core/pcm_native.c | 16 ++++++++--------
- 4 files changed, 17 insertions(+), 8 deletions(-)
+ sound/core/pcm_native.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 84b573e9c1f9..45f4b01de23f 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -15,6 +15,7 @@
- #include <linux/pm.h>
- #include <linux/debugfs.h>
- #include <linux/completion.h>
-+#include <linux/interrupt.h>
- 
- #include <sound/core.h>
- #include <sound/control.h>
-@@ -426,6 +427,9 @@ int snd_card_disconnect(struct snd_card *card)
- 	/* notify all devices that we are disconnected */
- 	snd_device_disconnect_all(card);
- 
-+	if (card->sync_irq > 0)
-+		synchronize_irq(card->sync_irq);
-+
- 	snd_info_card_disconnect(card);
- 	if (card->registered) {
- 		device_del(&card->card_dev);
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index e5947281e5fc..50eb29fcdfe7 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -1111,6 +1111,10 @@ static int snd_pcm_dev_disconnect(struct snd_device *device)
- 		}
- 	}
- 
-+	for (cidx = 0; cidx < 2; cidx++)
-+		for (substream = pcm->streams[cidx].substream; substream; substream = substream->next)
-+			snd_pcm_sync_stop(substream, false);
-+
- 	pcm_call_notify(pcm, n_disconnect);
- 	for (cidx = 0; cidx < 2; cidx++) {
- 		snd_unregister_device(&pcm->streams[cidx].dev);
-diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
-index 17a1a5d87098..b3e8be5aeafb 100644
---- a/sound/core/pcm_local.h
-+++ b/sound/core/pcm_local.h
-@@ -63,6 +63,7 @@ static inline void snd_pcm_timer_done(struct snd_pcm_substream *substream) {}
- 
- void __snd_pcm_xrun(struct snd_pcm_substream *substream);
- void snd_pcm_group_init(struct snd_pcm_group *group);
-+void snd_pcm_sync_stop(struct snd_pcm_substream *substream, bool sync_irq);
- 
- #ifdef CONFIG_SND_DMA_SGBUF
- struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream,
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 893c2abb2f63..1f5acf08cdcd 100644
+index cbbdb75c66ea..0ae2475465ab 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -583,13 +583,13 @@ static inline void snd_pcm_timer_notify(struct snd_pcm_substream *substream,
- #endif
+@@ -1421,8 +1421,10 @@ static int snd_pcm_do_stop(struct snd_pcm_substream *substream,
+ 			   snd_pcm_state_t state)
+ {
+ 	if (substream->runtime->trigger_master == substream &&
+-	    snd_pcm_running(substream))
++	    snd_pcm_running(substream)) {
+ 		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
++		substream->runtime->stop_operating = true;
++	}
+ 	return 0; /* unconditonally stop all substreams */
  }
  
--static void snd_pcm_sync_stop(struct snd_pcm_substream *substream)
-+void snd_pcm_sync_stop(struct snd_pcm_substream *substream, bool sync_irq)
- {
--	if (substream->runtime->stop_operating) {
-+	if (substream->runtime && substream->runtime->stop_operating) {
- 		substream->runtime->stop_operating = false;
--		if (substream->ops->sync_stop)
-+		if (substream->ops && substream->ops->sync_stop)
- 			substream->ops->sync_stop(substream);
--		else if (substream->pcm->card->sync_irq > 0)
-+		else if (sync_irq && substream->pcm->card->sync_irq > 0)
- 			synchronize_irq(substream->pcm->card->sync_irq);
+@@ -1435,7 +1437,6 @@ static void snd_pcm_post_stop(struct snd_pcm_substream *substream,
+ 		runtime->status->state = state;
+ 		snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MSTOP);
  	}
+-	runtime->stop_operating = true;
+ 	wake_up(&runtime->sleep);
+ 	wake_up(&runtime->tsleep);
  }
-@@ -686,7 +686,7 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 		if (atomic_read(&substream->mmap_count))
- 			return -EBADFD;
- 
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- 
- 	params->rmask = ~0U;
- 	err = snd_pcm_hw_refine(substream, params);
-@@ -809,7 +809,7 @@ static int do_hw_free(struct snd_pcm_substream *substream)
- {
- 	int result = 0;
- 
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- 	if (substream->ops->hw_free)
- 		result = substream->ops->hw_free(substream);
- 	if (substream->managed_buffer_alloc)
-@@ -1736,7 +1736,7 @@ static void snd_pcm_post_resume(struct snd_pcm_substream *substream,
- 	snd_pcm_trigger_tstamp(substream);
- 	runtime->status->state = runtime->status->suspended_state;
- 	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- }
- 
- static const struct action_ops snd_pcm_action_resume = {
-@@ -1866,7 +1866,7 @@ static int snd_pcm_do_prepare(struct snd_pcm_substream *substream,
- 			      snd_pcm_state_t state)
- {
- 	int err;
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- 	err = substream->ops->prepare(substream);
- 	if (err < 0)
- 		return err;
 -- 
 2.26.2
 
