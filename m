@@ -2,64 +2,64 @@ Return-Path: <SRS0=N3b0=HJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36131C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 08:14:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2FA9C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 08:50:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88B4D64E8C
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 08:14:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88B4D64E8C
+	by mail.kernel.org (Postfix) with ESMTPS id 61D4B64E33
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 08:50:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 61D4B64E33
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25AD39F6;
-	Sun,  7 Feb 2021 09:13:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25AD39F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23C0F9F6;
+	Sun,  7 Feb 2021 09:49:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23C0F9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612685658;
-	bh=syGlIsnQxE0YhrtTBQGVoeucMx+aVZBzyeAV8y50oyU=;
+	s=default; t=1612687830;
+	bh=KkhqjLE3Em0vEqBnvyk1kmy9YAQWcMnLuDrs6bO0pyU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fm5jOONRLarDh0dT1g0GVaGKQSjH5rhiLfDcnpTVu5TZem5Hwh1BpJImn3qUJvGfX
-	 cu9yi+mhEmhQXttYhfyuZzikEC1LQdoCPe10gZobnSaLPFgUvIsjvREza/aoOIBYfC
-	 EexB3Rzz7Cri4OzwIlbpHgV9Ttn31qrEB3E4BjE8=
+	b=a/Y25MJOGOv+GB1GGflhBHEjNwnpRp0mCCbnIFdQ2M/Ix0/ysP0GSHqDF+nD8s3DF
+	 V28uSLiX6B5Jqk/B8TDGD7KBO5HzGNHhd0Qe/d0/QGjmQyxGk38YLSiEQtRYTsaFm8
+	 Izy7Al95YjK6oKpWdKfHOMc4FaBfrjt4cgrK0Xdk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97D93F8016B;
-	Sun,  7 Feb 2021 09:13:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88596F8016B;
+	Sun,  7 Feb 2021 09:49:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B984F801D5; Sun,  7 Feb 2021 09:13:23 +0100 (CET)
+ id 81217F801D5; Sun,  7 Feb 2021 09:49:37 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FC5DF80139
- for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2021 09:13:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FC5DF80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B39AF80139
+ for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2021 09:49:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B39AF80139
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DE5D1AC88;
- Sun,  7 Feb 2021 08:13:18 +0000 (UTC)
-Date: Sun, 07 Feb 2021 09:13:18 +0100
-Message-ID: <s5hv9b4z469.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id CB172AEA3;
+ Sun,  7 Feb 2021 08:49:26 +0000 (UTC)
+Date: Sun, 07 Feb 2021 09:49:26 +0100
+Message-ID: <s5hr1lsz2i1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: fassl <superfassl@gmail.com>
-Subject: Re: [PATCH] alsa-tools/hdspmixer: enhance preset save and add
- hardware ouput loopback buttons
-In-Reply-To: <2e9bb0b8-ee14-9dc9-1bd8-ecffca3982ac@gmail.com>
-References: <2e9bb0b8-ee14-9dc9-1bd8-ecffca3982ac@gmail.com>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] ALSA: pci: Assign boolean values to a bool variable
+In-Reply-To: <1612681361-63404-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1612681361-63404-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,23 +75,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 04 Feb 2021 17:17:52 +0100,
-fassl wrote:
+On Sun, 07 Feb 2021 08:02:41 +0100,
+Jiapeng Chong wrote:
 > 
-> >From 3c887b31fa57ca3004c2eaf0ee5abc0b3f94da70 Mon Sep 17 00:00:00 2001
-> From: Jasmin Fazlic <superfassl@gmail.com>
-> Date: Thu, 4 Feb 2021 15:58:33 +0100
-> Subject: [PATCH 1/2] alsa-tools/hdspmixer: enhance saving of presets
+> Fix the following coccicheck warnings:
+> 
+> ./sound/pci/azt3328.c:2451:2-16: WARNING: Assignment of 0/1 to bool
+> variable.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Could you submit in the way with one patch per mail?
-At best, use git-send-email with a cover letter.
+Thanks, applied.
 
-And, basically for this kind of extension, the only thing to be really
-cared is about the compatibility with old kernels.  That is, the
-program must run fine with an old kernel without your change in hdsp
-driver as well as other rme/hdsp devices to work as it was.
-
-
-thanks,
 
 Takashi
