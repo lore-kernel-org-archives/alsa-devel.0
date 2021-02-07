@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 37C41C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 10:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8812C433E6
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 10:38:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A312D64E49
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 10:38:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A312D64E49
+	by mail.kernel.org (Postfix) with ESMTPS id 243E164E44
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 10:38:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 243E164E44
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34823168B;
-	Sun,  7 Feb 2021 11:37:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34823168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8D43168E;
+	Sun,  7 Feb 2021 11:37:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8D43168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612694293;
-	bh=iAhg8jGXMrHs/UNKkJ+jQay89hP84VWOIXO9MlqaNjA=;
+	s=default; t=1612694300;
+	bh=2J/rQEJd12ONydtpn7RMAjjLX4Ppa8lb/kY/oJ9iwk4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UosZWWB0d8M5vq6NA9KQJjs2RGeqMukZX3TIjRbVIxIDhe8Jz0+vTuZvnHtGlb8Io
-	 MjrixSPNAtjUDPzhPK+C3OQyzCKW7Af3x59f/C4rZtujEsousHuTnfIdm3dxi+q7gK
-	 72nnvvWQDK4ZcajyjNi6pzFdbETG/2tdaTvjUt0k=
+	b=RrR57bzzHTqXHFHyEphwLuMgaWPIeIO4Imujsg4Wq+SJjb3NvaijEDAwfTdVM1uEh
+	 qfTJZ3eV90VM9jleAJiuroCeakkmNBSEfNiAY3zznwzn4YWJ6FOGSWTEFzbuiI1CMw
+	 Nx88tRkbQfaTFSasrHpBt/PEV3YeU4YXZ6KkOpKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEDA4F802C8;
-	Sun,  7 Feb 2021 11:35:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76899F802DB;
+	Sun,  7 Feb 2021 11:36:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B7F9F8027C; Sun,  7 Feb 2021 11:35:47 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id AF6ADF8028B; Sun,  7 Feb 2021 11:35:49 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA1EEF801EB
- for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2021 11:35:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA1EEF801EB
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E28C31A195E;
- Sun,  7 Feb 2021 11:35:31 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88097F8025F
+ for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2021 11:35:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88097F8025F
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1117C2019AE;
+ Sun,  7 Feb 2021 11:35:40 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BB4C71A03DA;
- Sun,  7 Feb 2021 11:35:26 +0100 (CET)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F3B0C200E28;
+ Sun,  7 Feb 2021 11:35:34 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 404094028B;
- Sun,  7 Feb 2021 11:35:20 +0100 (CET)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2980640326;
+ Sun,  7 Feb 2021 11:35:25 +0100 (CET)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
  devicetree@vger.kernel.org
-Subject: [PATCH v2 3/7] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
- rpmsg cpu dai driver
-Date: Sun,  7 Feb 2021 18:23:51 +0800
-Message-Id: <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v2 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
+ rpmsg machine driver
+Date: Sun,  7 Feb 2021 18:23:55 +0800
+Message-Id: <1612693435-31418-8-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
@@ -83,30 +83,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
-for getting the user's configuration from device tree and configure the
-clocks which is used by Cortex-M core. So in this document define the
-needed property.
+Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
+core. The Cortex-M core will control the audio interface, DMA and audio
+codec, setup the pipeline, the audio driver on Cortex-A core side is just
+to communitcate with M core, it is a virtual sound card and don't touch
+the hardware.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+ .../bindings/sound/imx-audio-rpmsg.yaml       | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+diff --git a/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
 new file mode 100644
-index 000000000000..2d3ce10d42fc
+index 000000000000..b941aeb80678
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-@@ -0,0 +1,80 @@
++++ b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
+@@ -0,0 +1,48 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
++$id: http://devicetree.org/schemas/sound/imx-audio-rpmsg.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: NXP Audio RPMSG CPU DAI Controller
++title: NXP i.MX audio complex with rpmsg
 +
 +maintainers:
 +  - Shengjiu Wang <shengjiu.wang@nxp.com>
@@ -114,71 +115,39 @@ index 000000000000..2d3ce10d42fc
 +properties:
 +  compatible:
 +    enum:
-+      - fsl,imx7ulp-rpmsg
-+      - fsl,imx8mn-rpmsg
-+      - fsl,imx8mm-rpmsg
-+      - fsl,imx8mp-rpmsg
++      - fsl,imx-audio-rpmsg
 +
-+  clocks:
-+    items:
-+      - description: Peripheral clock for register access
-+      - description: Master clock
-+      - description: DMA clock for DMA register access
-+      - description: Parent clock for multiple of 8kHz sample rates
-+      - description: Parent clock for multiple of 11kHz sample rates
-+    minItems: 5
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
 +
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: mclk
-+      - const: dma
-+      - const: pll8k
-+      - const: pll11k
-+    minItems: 5
++  audio-cpu:
++    description: The phandle of an CPU DAI controller
 +
-+  power-domains:
-+    maxItems: 1
++  rpmsg-out:
++    description: |
++      This is a boolean property. If present, the transmitting function
++      will be enabled,
 +
-+  fsl,audioindex:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: instance index for rpmsg image
-+
-+  fsl,version:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: rpmsg image version index
-+
-+  fsl,buffer-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: pre allocate dma buffer size
-+
-+  fsl,enable-lpa:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: enable low power audio path.
-+
-+  fsl,codec-type:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Sometimes the codec is registered by
-+                 driver not the device tree, this items
-+                 can be used to distinguish codecs
++  rpmsg-in:
++    description: |
++      This is a boolean property. If present, the receiving function
++      will be enabled.
 +
 +required:
 +  - compatible
-+  - fsl,audioindex
-+  - fsl,version
-+  - fsl,buffer-size
++  - model
++  - audio-cpu
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    rpmsg_audio: rpmsg_audio {
-+        compatible = "fsl,imx8mn-rpmsg";
-+        fsl,audioindex = <0> ;
-+        fsl,version = <2>;
-+        fsl,buffer-size = <0x6000000>;
-+        fsl,enable-lpa;
-+        status = "okay";
++    sound-rpmsg {
++        compatible = "fsl,imx-audio-rpmsg";
++        model = "ak4497-audio";
++        audio-cpu = <&rpmsg_audio>;
++        rpmsg-out;
 +    };
 -- 
 2.27.0
