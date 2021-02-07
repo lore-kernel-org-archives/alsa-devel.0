@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A998C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 17:39:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1F98C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 17:39:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6112064DEB
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 17:39:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6112064DEB
+	by mail.kernel.org (Postfix) with ESMTPS id 245F664DEB
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Feb 2021 17:39:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 245F664DEB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 822F91681;
-	Sun,  7 Feb 2021 18:38:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 822F91681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 967931682;
+	Sun,  7 Feb 2021 18:38:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967931682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612719540;
-	bh=fP8lNR7g3GoXhGIQVeC7yQDbIMani4ZPA9FA1nTV57U=;
+	s=default; t=1612719545;
+	bh=EyOw1MVks+HfQlbZ2OiU5YUEmTkg3PUw3LDX6ZnV9JY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tt3Av5OxtS8qF1vfajaVHWKgl9I9kg/Rzu5ZbVGJB945b/CKw+SdvxFyJPBHqDB9H
-	 /3xAA3JuJ4gz6KDZMir/OC6dm7gpGF+rK9Js7w/BvBWhUg0fZU3629b3Np8sBotLzX
-	 r2zhecBosVDtXvrKSeQZ0azTd9Q+J6SaDjNoWk+w=
+	b=kW3voLnXHs55whSmxQ3Cy+xxYf813MFsyS7g1a1Hwg//vWSd7iSNRpeWddnYUw8IX
+	 q5eMalkeBeCa7ZHdKyo+f5iFqTOaRLyKYPoIQUO23vYWfZvbDWvS3FPW26rpeNmcKP
+	 YA3QXHkxMjHAbvJWkGU3Ing5XyUaOVEd+7g95iEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0848F80259;
-	Sun,  7 Feb 2021 18:37:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B58A5F80275;
+	Sun,  7 Feb 2021 18:37:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A680F8025F; Sun,  7 Feb 2021 18:37:20 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 9E1ABF80277; Sun,  7 Feb 2021 18:37:26 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0FD4F80139
- for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2021 18:37:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0FD4F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41025F801EB
+ for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2021 18:37:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41025F801EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="TUMbdtqc"
+ header.b="gU9qYH07"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B602025470002>; Sun, 07 Feb 2021 09:37:11 -0800
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B6020254a0000>; Sun, 07 Feb 2021 09:37:14 -0800
 Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 7 Feb
- 2021 17:37:10 +0000
+ 2021 17:37:14 +0000
 Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
  (172.20.187.18) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Sun, 7 Feb 2021 17:37:08 +0000
+ Transport; Sun, 7 Feb 2021 17:37:11 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>
-Subject: [PATCH v3 1/2] ASoC: audio-graph: Rename functions needed for export
-Date: Sun, 7 Feb 2021 23:06:57 +0530
-Message-ID: <1612719418-5858-2-git-send-email-spujar@nvidia.com>
+Subject: [PATCH v3 2/2] ASoC: tegra: Add driver remove() callback
+Date: Sun, 7 Feb 2021 23:06:58 +0530
+Message-ID: <1612719418-5858-3-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612719418-5858-1-git-send-email-spujar@nvidia.com>
 References: <1612719418-5858-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1612719431; bh=QNOEKARjC18l+zl2o4mNJlCfnihZnl9yHW4AuVCikCc=;
+ t=1612719434; bh=KVg63vf5VvqvH+XrCPWnE0FONvvdchylgE/elPzsp7U=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=TUMbdtqcIQ1x4CyaenmKFhySINP4EE5esWR76/Ys/Jz5x3wZHLntAur8gMdVGvEnB
- HStAPgD29wPnSWR+1blusi5zPucGUBGvPLtr51GKuldKm34zvSAVM5u7Bj0jQRi5dO
- LCx87tCEXHEjiDFRRxOKozF+DV6VUR1EIYOikEO/1PqttJMmIZ1TuLJ8RtRgUNqVkl
- 0m4T62s9X5Fmi7c8DvI9Wc/Epu5vG/7wKWeGqvjb99Zjtvws4W75/C6leUJTWBiTa1
- jQCkXFT8SzbeUlfd0gzKaN/9kWZINQxMyFPz/oOrPV4CIC6Y/G2HG8/lE8IJtmpm2x
- 9mxtVkAeV/u9w==
+ b=gU9qYH07cR0wRn/KNECToKq50Rk2cxEOgfyYQeXfUHZl1zTBQ0wEzHyixn5fK6FMb
+ 3Qmv2jfFPinbTQwkooqkZW4h4BmHoLzpos/etMIg5BhQZD2YRJxsO6vzB7/zLC5Q1M
+ O6SZEsEE7LwsVpzmUFDlv14xRMBMGvz8hvBT6z2l3aU0BvNnApdWYXViMzz8D6Z1N8
+ 6RAX9IBcjlDar3oJGQHG2BfZDSng13e2Pr39chHd0KDHHqyV4qVuEsQhCC30seJYNm
+ nUD19eWlaQUbQGImaS5ZiTe/nv8NgF34+WDWE3ZjJn/SFKvrHHFA0OqapVqpKd6+MB
+ vO/ZEZ6jLuG/g==
 Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
  Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
  jonathanh@nvidia.com, sharadg@nvidia.com, thierry.reding@gmail.com,
@@ -95,142 +95,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Following functions are renamed for a better global visibility.
-  graph_card_probe() --> audio_graph_card_probe()
-  graph_parse_of()   --> audio_graph_parse_of()
-  graph_remove()     --> audio_graph_remove() [exported as well]
+There is cleanup required, related to release of phandles, during driver
+removal and hence point remove callback to audio_graph_remove().
 
-The references of these are updated in audio graph and Tegra audio
-graph card drivers.
-
+Fixes: 202e2f774543 ("ASoC: tegra: Add audio graph based card driver")
+Depends-on: "ASoC: audio-graph: Rename functions needed for export"
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/graph_card.h               |  6 ++++--
- sound/soc/generic/audio-graph-card.c     | 17 +++++++++--------
- sound/soc/tegra/tegra_audio_graph_card.c |  6 +++---
- 3 files changed, 16 insertions(+), 13 deletions(-)
+ sound/soc/tegra/tegra_audio_graph_card.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/graph_card.h b/include/sound/graph_card.h
-index bbb5a13..0137844 100644
---- a/include/sound/graph_card.h
-+++ b/include/sound/graph_card.h
-@@ -9,8 +9,10 @@
- 
- #include <sound/simple_card_utils.h>
- 
--int graph_card_probe(struct snd_soc_card *card);
-+int audio_graph_card_probe(struct snd_soc_card *card);
- 
--int graph_parse_of(struct asoc_simple_priv *priv, struct device *dev);
-+int audio_graph_parse_of(struct asoc_simple_priv *priv, struct device *dev);
-+
-+int audio_graph_remove(struct platform_device *pdev);
- 
- #endif /* __GRAPH_CARD_H */
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 16a04a6..8c5cdcd 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -532,7 +532,7 @@ static int graph_for_each_link(struct asoc_simple_priv *priv,
- static void graph_get_dais_count(struct asoc_simple_priv *priv,
- 				 struct link_info *li);
- 
--int graph_parse_of(struct asoc_simple_priv *priv, struct device *dev)
-+int audio_graph_parse_of(struct asoc_simple_priv *priv, struct device *dev)
- {
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	struct link_info li;
-@@ -608,7 +608,7 @@ int graph_parse_of(struct asoc_simple_priv *priv, struct device *dev)
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(graph_parse_of);
-+EXPORT_SYMBOL_GPL(audio_graph_parse_of);
- 
- static int graph_count_noml(struct asoc_simple_priv *priv,
- 			    struct device_node *cpu_ep,
-@@ -705,7 +705,7 @@ static void graph_get_dais_count(struct asoc_simple_priv *priv,
- 		li->link, li->dais, li->conf);
- }
- 
--int graph_card_probe(struct snd_soc_card *card)
-+int audio_graph_card_probe(struct snd_soc_card *card)
- {
- 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
- 	int ret;
-@@ -720,7 +720,7 @@ int graph_card_probe(struct snd_soc_card *card)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(graph_card_probe);
-+EXPORT_SYMBOL_GPL(audio_graph_card_probe);
- 
- static int graph_probe(struct platform_device *pdev)
- {
-@@ -736,20 +736,21 @@ static int graph_probe(struct platform_device *pdev)
- 	card = simple_priv_to_card(priv);
- 	card->dapm_widgets	= graph_dapm_widgets;
- 	card->num_dapm_widgets	= ARRAY_SIZE(graph_dapm_widgets);
--	card->probe		= graph_card_probe;
-+	card->probe		= audio_graph_card_probe;
- 
- 	if (of_device_get_match_data(dev))
- 		priv->dpcm_selectable = 1;
- 
--	return graph_parse_of(priv, dev);
-+	return audio_graph_parse_of(priv, dev);
- }
- 
--static int graph_remove(struct platform_device *pdev)
-+int audio_graph_remove(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
- 
- 	return asoc_simple_clean_reference(card);
- }
-+EXPORT_SYMBOL_GPL(audio_graph_remove);
- 
- static const struct of_device_id graph_of_match[] = {
- 	{ .compatible = "audio-graph-card", },
-@@ -766,7 +767,7 @@ static struct platform_driver graph_card = {
- 		.of_match_table = graph_of_match,
- 	},
- 	.probe = graph_probe,
--	.remove = graph_remove,
-+	.remove = audio_graph_remove,
- };
- module_platform_driver(graph_card);
- 
 diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
-index 9e43f16..121e572 100644
+index 121e572..ddedf18 100644
 --- a/sound/soc/tegra/tegra_audio_graph_card.c
 +++ b/sound/soc/tegra/tegra_audio_graph_card.c
-@@ -184,7 +184,7 @@ static int tegra_audio_graph_card_probe(struct snd_soc_card *card)
- 		return PTR_ERR(priv->clk_plla_out0);
- 	}
+@@ -2,7 +2,7 @@
+ //
+ // tegra_audio_graph_card.c - Audio Graph based Tegra Machine Driver
+ //
+-// Copyright (c) 2020 NVIDIA CORPORATION.  All rights reserved.
++// Copyright (c) 2020-2021 NVIDIA CORPORATION.  All rights reserved.
  
--	return graph_card_probe(card);
-+	return audio_graph_card_probe(card);
- }
+ #include <linux/math64.h>
+ #include <linux/module.h>
+@@ -243,6 +243,7 @@ static struct platform_driver tegra_audio_graph_card = {
+ 		.of_match_table = graph_of_tegra_match,
+ 	},
+ 	.probe = tegra_audio_graph_probe,
++	.remove = audio_graph_remove,
+ };
+ module_platform_driver(tegra_audio_graph_card);
  
- static int tegra_audio_graph_probe(struct platform_device *pdev)
-@@ -201,12 +201,12 @@ static int tegra_audio_graph_probe(struct platform_device *pdev)
- 
- 	card->probe = tegra_audio_graph_card_probe;
- 
--	/* graph_parse_of() depends on below */
-+	/* audio_graph_parse_of() depends on below */
- 	card->component_chaining = 1;
- 	priv->simple.ops = &tegra_audio_graph_ops;
- 	priv->simple.force_dpcm = 1;
- 
--	return graph_parse_of(&priv->simple, dev);
-+	return audio_graph_parse_of(&priv->simple, dev);
- }
- 
- static const struct tegra_audio_cdata tegra210_data = {
 -- 
 2.7.4
 
