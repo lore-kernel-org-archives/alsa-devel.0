@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4E43C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 14:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 221D4C433E6
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 15:00:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C85B564E0B
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 14:58:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C85B564E0B
+	by mail.kernel.org (Postfix) with ESMTPS id 693CA64E0B
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 15:00:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 693CA64E0B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54BC71671;
-	Mon,  8 Feb 2021 15:58:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54BC71671
+	by alsa0.perex.cz (Postfix) with ESMTPS id C04B21688;
+	Mon,  8 Feb 2021 15:59:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C04B21688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612796337;
-	bh=0QJk896T/vv8N669Ao4+nRhF455B7xI5HQSl6+N5vRU=;
+	s=default; t=1612796421;
+	bh=XKq5gs4y4NCOU8hpxNH6WOfA38Bhg3zsQ0jbfj5NCrE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Az10FOYx/PMmouibsNNrvadyNr/b20nfDU0hdesFpTRBpl2snt0Faz+b7Y3Qy6Ul6
-	 gigxTToCMJYjGMqi7OjqJ+zsq+MjtwZbJCLkw0mKmO45mvxDnNmlNyhmMc3Cp5lJ+w
-	 mkDDs/dxio/4eYww5mTyG2jKy2j+r8ZwEAg/bjFU=
+	b=idLtKdhziGV09GzKL+27ozsw2uLCrK7KGYhY8FZ4XyE7JvTwRCUskokm2+SIcheX+
+	 b7zGNvpZMNImuHecC+dPbwAqy93vCRmMytO8xdzxc1b7/dvUH/QW3dIqEnEzy2lk66
+	 7wRQKbY6JYitH+H20B3C/1G2r+GJpi/ey1NLQkk8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0B7CF80165;
-	Mon,  8 Feb 2021 15:58:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22202F80169;
+	Mon,  8 Feb 2021 15:59:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79052F80169; Mon,  8 Feb 2021 15:58:04 +0100 (CET)
+ id 94A15F8022B; Mon,  8 Feb 2021 15:59:29 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FE92F80114
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 15:58:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FE92F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B2A7F80114
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 15:59:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B2A7F80114
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9156DAEDD;
- Mon,  8 Feb 2021 14:58:00 +0000 (UTC)
-Date: Mon, 08 Feb 2021 15:58:00 +0100
-Message-ID: <s5hlfbyy5c7.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 29565ADCA;
+ Mon,  8 Feb 2021 14:59:23 +0000 (UTC)
+Date: Mon, 08 Feb 2021 15:59:22 +0100
+Message-ID: <s5hk0riy59x.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/3] ALSA: hda: add link_power op to hdac_bus_ops
-In-Reply-To: <20210208111120.GB8645@sirena.org.uk>
-References: <20210205184630.1938761-1-kai.vehmanen@linux.intel.com>
- <s5hblcx1j09.wl-tiwai@suse.de>
- <20210208111120.GB8645@sirena.org.uk>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: fireface: fix to parse sync status register of
+ latter protocol
+In-Reply-To: <20210207154736.229551-1-o-takashi@sakamocchi.jp>
+References: <20210207154736.229551-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,25 +76,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 08 Feb 2021 12:11:20 +0100,
-Mark Brown wrote:
+On Sun, 07 Feb 2021 16:47:36 +0100,
+Takashi Sakamoto wrote:
 > 
-> On Sat, Feb 06, 2021 at 01:24:38PM +0100, Takashi Iwai wrote:
-> > Kai Vehmanen wrote:
+> Fireface UCX, UFX, and FF802 are categorized for latter protocol of the
+> series. Current support for FF802 (and UFX) includes failure to parse
+> sync status register and results in EIO.
 > 
-> > > Kai Vehmanen (3):
-> > >   ALSA: hda: add link_power op to hdac_bus_ops
-> > >   ASoC: SOF: Intel: hda: use hdac_ext fine-grained link management
-> > >   ASoC: SOF: Intel: hda: release display power at link_power
+> Further investigation figures out that the content of register differs
+> depending on models. This commit adds tables specific to FF802 and UFX
+> to fix it.
 > 
-> > The patch set looks good to me.  If Mark can give an ack, I'll merge
-> > them through my tree later.
-> 
-> Yeah, looks good to me too
-> 
-> Acked-by: Mark Brown <broonie@kernel.org>
+> Fixes: 062bb452b078b ("ALSA: fireface: add support for RME FireFace 802")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-OK, thanks.  Now I applied all three patches to for-next branch.
+Thanks, applied now.
 
 
 Takashi
