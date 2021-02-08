@@ -2,75 +2,80 @@ Return-Path: <SRS0=8vjL=HK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA31C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E732CC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:54:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D784764E82
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:40:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D784764E82
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 76A3F64E8A
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:54:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76A3F64E8A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3F5582C;
-	Mon,  8 Feb 2021 18:39:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3F5582C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A27F167A;
+	Mon,  8 Feb 2021 18:53:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A27F167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612806048;
-	bh=A8qWd0AM2ozCYSzaQPYfVvrJjjYzNdJy3NikUCIUtkM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uR6fr2A4db+CEzObMrhQLvI4VyIaKBtB3Bch38MtbWu9z9ZH2kZWmqiOIBFqXF/8A
-	 EeiYiRekPgk/ptZgcEBIiZ7C6FSfRbX4ZqscKyaaNRAkkTFI0v8UiuK2CLOS/X0hvU
-	 uettBEh31pxyNTxwpA4yOP69/7vtRE0gYUgfaumI=
+	s=default; t=1612806858;
+	bh=44IGlSmiNO/ptXxnKcy68XxNRgV7v3IbiKamvOEVin4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TLJCXQhHEcBEWDbGoG3ZApG8+yooUvejjq0EL2bqRGlbKEhh9IP98gn2sS45qFEC6
+	 6/+o83F6LAly10zERngggTKIcwgCH9m9bvf6cHilkTu2lYID5XDPglxrl6fYMq090b
+	 tim+dY7oyfczmfH+7RZk9sbnIrgMXfMc6lCdNtwk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E0B2F80169;
-	Mon,  8 Feb 2021 18:39:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4291F80169;
+	Mon,  8 Feb 2021 18:53:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09975F8022B; Mon,  8 Feb 2021 18:39:55 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0AA93F8022B; Mon,  8 Feb 2021 18:53:26 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56FACF8013A
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 18:39:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56FACF8013A
-IronPort-SDR: zaeioLkKZPgzC7wPnxCr/ENPt5PgnmPWUfZkoWdT1q3n5k+f8YSiQL+NSXKxs1u///CewxuRMy
- 6qcNSDsUxj7A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181817131"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; d="scan'208";a="181817131"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2021 09:39:38 -0800
-IronPort-SDR: S5qT3yvQzWsI8juRV6TWAQZOm3V4PbAeFHI4TlTTZ3WD7yBRea3F/heuv8soYuu8sNeIDxn0TG
- jBzm2uLlJpYA==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; d="scan'208";a="361496648"
-Received: from ecohen10-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.251.10.178])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2021 09:39:37 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [RFC PATCH] soundwire: bus: use correct driver name in error messages
-Date: Mon,  8 Feb 2021 11:39:29 -0600
-Message-Id: <20210208173929.8328-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E9CDF80165
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 18:53:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E9CDF80165
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="OeXaoUKn"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 185EE64E88;
+ Mon,  8 Feb 2021 17:53:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1612806800;
+ bh=44IGlSmiNO/ptXxnKcy68XxNRgV7v3IbiKamvOEVin4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=OeXaoUKnOrSetN5gaNi/WfUvJWgwfbvr+KsrKvlHtTiBYUNjbQnTYhuSFW4lu+3Xx
+ GkuQOB0io1DWeRMwX/6g4UYr/fQ/7y5fBuoiHvO45mneO64+3foNaS/pc27NTOe5t4
+ 78ym1uJK93sapCAmhzbWtLvooSDh1eD1JBvo2BCEa5ksYKYxvj/GAqvP1vMICDD0/7
+ qiHNoN23jFayd7xaYj2uZrVodC4nbVfFboUugYMsKf3tyLyd3oKBgyyd37YoEKiMVP
+ z1E9WiAjMf/VHwwpFBKS8kwcR74PWeqKMJodFIN/0wdKJ5rbgFEfG7jHZgEwAIELoA
+ y1pVTnL0rQd1Q==
+Date: Mon, 8 Feb 2021 17:52:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: rt1316: Add RT1316 SDCA vendor-specific driver
+Message-ID: <20210208175228.GJ8645@sirena.org.uk>
+References: <20210208090432.1078-1-shumingf@realtek.com>
+ <20210208122337.GE8645@sirena.org.uk>
+ <9eff4f09-b127-5912-f62f-ed1e48db2e36@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>, tiwai@suse.de,
- gregkh@linuxfoundation.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="J2uG6jHjFLimDtBY"
+Content-Disposition: inline
+In-Reply-To: <9eff4f09-b127-5912-f62f-ed1e48db2e36@linux.intel.com>
+X-Cookie: You will triumph over your enemy.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, lgirdwood@gmail.com, derek.fang@realtek.com,
+ flove@realtek.com, shumingf@realtek.com, bard.liao@intel.com,
+ pierre-louis.bossart@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,65 +91,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-None of the existing codec drivers set the sdw_driver.name, but
-instead set sdw_driver.driver.name.
 
-This leads to error messages such as
-[   23.935355] rt700 sdw:2:25d:700:0: Probe of (null) failed: -19
+--J2uG6jHjFLimDtBY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-We could remove this sdw_driver.name if it doesn't have any
-purpose. This patch only suggests using the proper indirection.
+On Mon, Feb 08, 2021 at 09:26:10AM -0600, Pierre-Louis Bossart wrote:
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- drivers/soundwire/bus_type.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+> > > +	rt1316->rx_mask = rx_mask;
+> > > +	rt1316->slots = slots;
+> > > +	/* slot_width is not used since it's irrelevant for SoundWire */
 
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 575b9bad99d5..893296f3fe39 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -82,6 +82,7 @@ static int sdw_drv_probe(struct device *dev)
- 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
- 	const struct sdw_device_id *id;
-+	const char *name;
- 	int ret;
- 
- 	/*
-@@ -108,7 +109,10 @@ static int sdw_drv_probe(struct device *dev)
- 
- 	ret = drv->probe(slave, id);
- 	if (ret) {
--		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-+		name = drv->name;
-+		if (!name)
-+			name = drv->driver.name;
-+		dev_err(dev, "Probe of %s failed: %d\n", name, ret);
- 		dev_pm_domain_detach(dev, false);
- 		return ret;
- 	}
-@@ -174,11 +178,16 @@ static void sdw_drv_shutdown(struct device *dev)
-  */
- int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
- {
-+	const char *name;
-+
- 	drv->driver.bus = &sdw_bus_type;
- 
- 	if (!drv->probe) {
--		pr_err("driver %s didn't provide SDW probe routine\n",
--		       drv->name);
-+		name = drv->name;
-+		if (!name)
-+			name = drv->driver.name;
-+
-+		pr_err("driver %s didn't provide SDW probe routine\n", name);
- 		return -EINVAL;
- 	}
- 
--- 
-2.25.1
+> > I wouldn't expect to see any TDM stuff at all for SoundWire?  I do see
+> > some crept through though :/
 
+> We only use the mask information to let codecs/amplifiers know which
+> channels they need to pick in a stream. This is useful e.g. when we have two
+> (or more) amplifiers on the same link, and you want to tell amplifierA to
+> use ch0 and amplifierB to use ch1.
+
+...
+
+> In most cases though all amplifiers on Intel-based solutions extract the
+> same information, and the output will be dynamically selected based on
+> kcontrol information. This is easier to use for e.g. orientation and posture
+> changes.
+
+Right, this was my expectation for how this would work - dynamic control
+at runtime so you can do stuff like that rather than a more static setup
+like slot assignment is normally..
+
+--J2uG6jHjFLimDtBY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAhelsACgkQJNaLcl1U
+h9Drkgf+IZlqP3iFcqju4pXleyZRjU0S9YMzJ6G4aIHG/QdrhwMQ8l2GuS3HBsdx
+Xt92mFMLbaRAeyzNn/RUjDqiWPsrkvxJgfUZFMi+bsCNbFyrJ9UY8yeXHkh01ipy
+5KlOsCecjA/GXd0txJzPg9RnV9oiujloSal/aEWnFRsgdUqc+RPhkW7ctDJX6ypw
+eVHTTQjOebUUjQ77sxk6oTbySFt4le7qCOwFhQe7zA+vlgwBmTVJZBB6S4dLXvdU
+9GE2ZoXj4m+dYPjTnpmZhl3yM7PHGt3X7lq8az+ML72sshJpYOlIX0HsHE0RoL69
+Zyr4Iwttaw/xyyMFl7Obw7ivckkQ2w==
+=CyV9
+-----END PGP SIGNATURE-----
+
+--J2uG6jHjFLimDtBY--
