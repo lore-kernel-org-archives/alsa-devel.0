@@ -7,71 +7,72 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87E7DC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 23:38:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75427C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 23:38:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E18B964E7B
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 23:38:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E18B964E7B
+	by mail.kernel.org (Postfix) with ESMTPS id CD33464E77
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 23:38:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD33464E77
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1705216BB;
-	Tue,  9 Feb 2021 00:37:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1705216BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F19816AD;
+	Tue,  9 Feb 2021 00:37:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F19816AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612827499;
-	bh=snat7hi7BUIlkzw1dOpJLDWwyKA3Jqf2HgEkg1OaW5w=;
+	s=default; t=1612827527;
+	bh=xcNgneQIdKZdcaLKzyXrjvSyOTBYn11Es72zYbTHb1g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tgxjy5z2otvgfXeFFauHHeJqxIwwvklwKw8zLfKiTySTFOufwc9pKxst42ZLDXcdQ
-	 vLdeL/ZnYv4DJbLBqKOuuvgHaacz1LKCxX/K0Wz7JNQ2/fqlsJUnJG7XbtxfthsRax
-	 gvrLsw2cL/8ni0xl2L9cwsuGT5I1febNncAKikwM=
+	b=eJMeytQuewJ/lmBS+bpiLYp5rG32Ft9kCFeo9dEpqEmp4qu4No5wwS+0RUzhbx8jG
+	 TMiGJDFpyEj1azOe4meM5HUgPNEYfnzQzBCWZsW4fi3oU7uYL6sHVToVoV9KWgLw8U
+	 DHTS8Na79PWIBNjfYfgIhrWCNJ7MdRZahA2m2GWU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E3D6F804D1;
-	Tue,  9 Feb 2021 00:34:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8002BF804DA;
+	Tue,  9 Feb 2021 00:34:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C9F3F80423; Tue,  9 Feb 2021 00:34:16 +0100 (CET)
+ id 97430F8032D; Tue,  9 Feb 2021 00:34:16 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A31DF8027C
- for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2021 00:34:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A31DF8027C
-IronPort-SDR: Vex0EAEJjhkHbvG0i9trD11bLCyZAGicwZffcUpITQw3edZT3V7HNnAjLcSNbkHOBhIqTG1SE5
- 60e4vmJm11iA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="168923515"
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; d="scan'208";a="168923515"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 256F5F80114
+ for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2021 00:34:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 256F5F80114
+IronPort-SDR: DGVAIUd+Nz3iKrcz42EKTEAiHkGeKdPlVR9Q98QQm8beMVbK1NrLCG8+PCUMZ5/tBYyXffIBrb
+ 90I5xJL/vD/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="168923524"
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; d="scan'208";a="168923524"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2021 15:33:58 -0800
-IronPort-SDR: QhMFDHO0RVpoKItRrg0AcEplACJMjr8wmkBNrjldKe9nRuS+ZEsNcxeafYm094dR7YreMn004L
- tFl/w1o38y1Q==
-X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; d="scan'208";a="374741361"
+ 08 Feb 2021 15:33:59 -0800
+IronPort-SDR: i/6AHL8NIbg6WS/6N8hLteCcKSaVhRWwEzeIe2yd5ln2GHWyraTzUBBYQ1TeW7Fi/AehWaag4c
+ ho0b58Ez9u2w==
+X-IronPort-AV: E=Sophos;i="5.81,163,1610438400"; d="scan'208";a="374741369"
 Received: from pmane-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.145.183])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2021 15:33:57 -0800
+ 08 Feb 2021 15:33:58 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 09/11] ASoC: SOF: Intel: detect DMIC number in SoundWire
- mixed config
-Date: Mon,  8 Feb 2021 17:33:34 -0600
-Message-Id: <20210208233336.59449-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 11/11] ASoC: SOF: Intel: hda: add dev_dbg() when DMIC
+ number is overridden
+Date: Mon,  8 Feb 2021 17:33:36 -0600
+Message-Id: <20210208233336.59449-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210208233336.59449-1-pierre-louis.bossart@linux.intel.com>
 References: <20210208233336.59449-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+ Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,246 +88,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The pinmux allows for 2 SoundWire links to be enabled along with
-DMICs. This was the default configuration on the TGL-RVP.
+It's useful for debug and system integration to show cases where we
+ignore the number of microphones reported by NHLT.
 
-One issue with this configuration is that we don't have a means to
-automatically detect how many DMICs are used, which in turn requires
-the user to manually rename the topology file required on a platform.
-
-This was borderline acceptable for Intel RVPs, but now that this
-configuration is present in HP devices we need to automate the
-process.
-
-This patch makes use of the NHLT information and will pass the DMIC
-number to the machine driver as a parameter. A follow-up patch will
-expose the DMIC number to userspace/UCM with the configuration strings.
-
-The Google devices do make use of DMICs instead of SoundWire link 2
-and 3, but their topology is unique enough that they do not need any
-NHTL support or topology renaming.
-
+Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 133 ++++++++++++++++++++++++--------------
- 1 file changed, 85 insertions(+), 48 deletions(-)
+ sound/soc/sof/intel/hda.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 2279e30c9245..4f7de3d12292 100644
+index e8094be6bfc6..0dc3a8c0f5e3 100644
 --- a/sound/soc/sof/intel/hda.c
 +++ b/sound/soc/sof/intel/hda.c
-@@ -285,11 +285,13 @@ static char *hda_model;
- module_param(hda_model, charp, 0444);
- MODULE_PARM_DESC(hda_model, "Use the given HDA board model.");
+@@ -564,8 +564,12 @@ static int dmic_topology_fixup(struct snd_sof_dev *sdev,
+ 	dmic_num = check_nhlt_dmic(sdev);
  
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
- static int hda_dmic_num = -1;
- module_param_named(dmic_num, hda_dmic_num, int, 0444);
- MODULE_PARM_DESC(dmic_num, "SOF HDA DMIC number");
-+#endif
- 
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- static bool hda_codec_use_common_hdmi = IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI);
- module_param_named(use_common_hdmi, hda_codec_use_common_hdmi, bool, 0444);
- MODULE_PARM_DESC(use_common_hdmi, "SOF HDA use common HDMI codec driver");
-@@ -505,7 +507,7 @@ static int hda_init(struct snd_sof_dev *sdev)
- 	return ret;
- }
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
- 
- static int check_nhlt_dmic(struct snd_sof_dev *sdev)
- {
-@@ -548,6 +550,53 @@ static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
- 	return tplg_filename;
- }
- 
-+static int dmic_topology_fixup(struct snd_sof_dev *sdev,
-+			       const char **tplg_filename,
-+			       const char *idisp_str,
-+			       int *dmic_found)
-+{
-+	const char *default_tplg_filename = *tplg_filename;
-+	const char *fixed_tplg_filename;
-+	const char *dmic_str;
-+	int dmic_num;
-+
-+	/* first check NHLT for DMICs */
-+	dmic_num = check_nhlt_dmic(sdev);
-+
-+	/* allow for module parameter override */
-+	if (hda_dmic_num != -1)
-+		dmic_num = hda_dmic_num;
-+
-+	switch (dmic_num) {
-+	case 1:
-+		dmic_str = "-1ch";
-+		break;
-+	case 2:
-+		dmic_str = "-2ch";
-+		break;
-+	case 3:
-+		dmic_str = "-3ch";
-+		break;
-+	case 4:
-+		dmic_str = "-4ch";
-+		break;
-+	default:
-+		dmic_num = 0;
-+		dmic_str = "";
-+		break;
+ 	/* allow for module parameter override */
+-	if (hda_dmic_num != -1)
++	if (hda_dmic_num != -1) {
++		dev_dbg(sdev->dev,
++			"overriding DMICs detected in NHLT tables %d by kernel param %d\n",
++			dmic_num, hda_dmic_num);
+ 		dmic_num = hda_dmic_num;
 +	}
-+
-+	fixed_tplg_filename = fixup_tplg_name(sdev, default_tplg_filename,
-+					      idisp_str, dmic_str);
-+	if (!fixed_tplg_filename)
-+		return -ENOMEM;
-+
-+	dev_info(sdev->dev, "DMICs detected in NHLT tables: %d\n", dmic_num);
-+	*dmic_found = dmic_num;
-+	*tplg_filename = fixed_tplg_filename;
-+
-+	return 0;
-+}
- #endif
  
- static int hda_init_caps(struct snd_sof_dev *sdev)
-@@ -913,9 +962,9 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- 	struct snd_sof_pdata *pdata = sdev->pdata;
- 	const char *tplg_filename;
- 	const char *idisp_str;
--	const char *dmic_str;
- 	int dmic_num = 0;
- 	int codec_num = 0;
-+	int ret;
- 	int i;
- 
- 	/* codec detection */
-@@ -940,10 +989,6 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- 		if (!pdata->machine && codec_num <= 2) {
- 			hda_mach = snd_soc_acpi_intel_hda_machines;
- 
--			/* topology: use the info from hda_machines */
--			pdata->tplg_filename =
--				hda_mach->sof_tplg_filename;
--
- 			dev_info(bus->dev, "using HDA machine driver %s now\n",
- 				 hda_mach->drv_name);
- 
-@@ -952,42 +997,13 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- 			else
- 				idisp_str = "";
- 
--			/* first check NHLT for DMICs */
--			dmic_num = check_nhlt_dmic(sdev);
--
--			/* allow for module parameter override */
--			if (hda_dmic_num != -1)
--				dmic_num = hda_dmic_num;
--
--			switch (dmic_num) {
--			case 1:
--				dmic_str = "-1ch";
--				break;
--			case 2:
--				dmic_str = "-2ch";
--				break;
--			case 3:
--				dmic_str = "-3ch";
--				break;
--			case 4:
--				dmic_str = "-4ch";
--				break;
--			default:
--				dmic_num = 0;
--				dmic_str = "";
--				break;
--			}
--
--			tplg_filename = pdata->tplg_filename;
--			tplg_filename = fixup_tplg_name(sdev, tplg_filename,
--							idisp_str, dmic_str);
--			if (!tplg_filename)
--				return -EINVAL;
--
--			dev_info(bus->dev,
--				 "DMICs detected in NHLT tables: %d\n",
--				 dmic_num);
-+			/* topology: use the info from hda_machines */
-+			tplg_filename = hda_mach->sof_tplg_filename;
-+			ret = dmic_topology_fixup(sdev, &tplg_filename, idisp_str, &dmic_num);
-+			if (ret < 0)
-+				return ret;
- 
-+			hda_mach->mach_params.dmic_num = dmic_num;
- 			pdata->machine = hda_mach;
- 			pdata->tplg_filename = tplg_filename;
- 		}
-@@ -999,7 +1015,6 @@ static int hda_generic_machine_select(struct snd_sof_dev *sdev)
- 			&pdata->machine->mach_params;
- 		mach_params->codec_mask = bus->codec_mask;
- 		mach_params->common_hdmi_codec_drv = hda_codec_use_common_hdmi;
--		mach_params->dmic_num = dmic_num;
- 	}
- 
- 	return 0;
-@@ -1094,7 +1109,6 @@ static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_pdata *pdata = sdev->pdata;
- 	const struct snd_soc_acpi_link_adr *link;
--	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct snd_soc_acpi_mach *mach;
- 	struct sof_intel_hda_dev *hdev;
- 	u32 link_mask;
-@@ -1142,10 +1156,8 @@ static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
- 				break;
- 		}
- 		if (mach && mach->link_mask) {
--			dev_dbg(bus->dev,
--				"SoundWire machine driver %s topology %s\n",
--				mach->drv_name,
--				mach->sof_tplg_filename);
-+			int dmic_num = 0;
-+
- 			pdata->machine = mach;
- 			mach->mach_params.links = mach->links;
- 			mach->mach_params.link_mask = mach->link_mask;
-@@ -1155,6 +1167,31 @@ static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
- 			else
- 				pdata->fw_filename = pdata->desc->default_fw_filename;
- 			pdata->tplg_filename = mach->sof_tplg_filename;
-+
-+			/*
-+			 * DMICs use up to 4 pins and are typically pin-muxed with SoundWire
-+			 * link 2 and 3, thus we only try to enable dmics if all conditions
-+			 * are true:
-+			 * a) link 2 and 3 are not used by SoundWire
-+			 * b) the NHLT table reports the presence of microphones
-+			 */
-+			if (!(mach->link_mask & GENMASK(3, 2))) {
-+				const char *tplg_filename = mach->sof_tplg_filename;
-+				int ret;
-+
-+				ret = dmic_topology_fixup(sdev, &tplg_filename, "", &dmic_num);
-+
-+				if (ret < 0)
-+					return ret;
-+
-+				pdata->tplg_filename = tplg_filename;
-+			}
-+			mach->mach_params.dmic_num = dmic_num;
-+
-+			dev_dbg(sdev->dev,
-+				"SoundWire machine driver %s topology %s\n",
-+				mach->drv_name,
-+				pdata->tplg_filename);
- 		} else {
- 			dev_info(sdev->dev,
- 				 "No SoundWire machine driver found\n");
+ 	switch (dmic_num) {
+ 	case 1:
 -- 
 2.25.1
 
