@@ -2,74 +2,75 @@ Return-Path: <SRS0=8vjL=HK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11EA6C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:02:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCA31C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:40:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF82964DD4
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:02:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF82964DD4
+	by mail.kernel.org (Postfix) with ESMTPS id D784764E82
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 17:40:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D784764E82
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3A25167A;
-	Mon,  8 Feb 2021 18:01:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3A25167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3F5582C;
+	Mon,  8 Feb 2021 18:39:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3F5582C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612803734;
-	bh=+w0qPtGxdvmVWmwR36CSRHJHHm3un57b5rX+06n8cIg=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=q7dUtVekiIL0PMVJiaWpZqQHQsA91WAT4S1D8iHjkNaew+7iZma6TPWln7jPRRleS
-	 DG5uBuaLSG2xlKAPq7ma9i3myPDhRdtNBbexUEPZqMqhaNuJPeSfJG/kecVCokbDj+
-	 3UcnuFaPKU5jZw8G/ZA7epbnGIBxZ9FLiSNmeoFo=
+	s=default; t=1612806048;
+	bh=A8qWd0AM2ozCYSzaQPYfVvrJjjYzNdJy3NikUCIUtkM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uR6fr2A4db+CEzObMrhQLvI4VyIaKBtB3Bch38MtbWu9z9ZH2kZWmqiOIBFqXF/8A
+	 EeiYiRekPgk/ptZgcEBIiZ7C6FSfRbX4ZqscKyaaNRAkkTFI0v8UiuK2CLOS/X0hvU
+	 uettBEh31pxyNTxwpA4yOP69/7vtRE0gYUgfaumI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50107F80114;
-	Mon,  8 Feb 2021 18:01:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E0B2F80169;
+	Mon,  8 Feb 2021 18:39:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91C9BF8022B; Mon,  8 Feb 2021 18:01:22 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 09975F8022B; Mon,  8 Feb 2021 18:39:55 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66996F80114
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 18:01:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66996F80114
-IronPort-SDR: 7zEFGQsMZDWaehiJsonoB3AMDFBL6ATCeNM8FGZdiWwRkT4VljdZdMCWWpaxr6Hlm7BDGSknx5
- Bvk5CiDOzy5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181889369"
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; d="scan'208";a="181889369"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2021 09:00:54 -0800
-IronPort-SDR: e172RgawyF8MNPBLQJNIVlHA9bsoueloVs7zoJD2JKCwfCcp3Gm31dm13vy8il3b/5e7yFIY9u
- 3v5SelH390nQ==
-X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; d="scan'208";a="377841336"
-Received: from shuklaa2-mobl.amr.corp.intel.com ([10.209.44.136])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Feb 2021 09:00:53 -0800
-Message-ID: <6c54f750caf141bc7984b245857a3e13bcd13238.camel@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: SOF: debug: Fix a potential issue on string
- buffer termination
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org, 
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com, 
- broonie@kernel.org
-Date: Mon, 08 Feb 2021 09:00:53 -0800
-In-Reply-To: <20210208103857.75705-1-hui.wang@canonical.com>
-References: <20210208103857.75705-1-hui.wang@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56FACF8013A
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 18:39:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56FACF8013A
+IronPort-SDR: zaeioLkKZPgzC7wPnxCr/ENPt5PgnmPWUfZkoWdT1q3n5k+f8YSiQL+NSXKxs1u///CewxuRMy
+ 6qcNSDsUxj7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9889"; a="181817131"
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; d="scan'208";a="181817131"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Feb 2021 09:39:38 -0800
+IronPort-SDR: S5qT3yvQzWsI8juRV6TWAQZOm3V4PbAeFHI4TlTTZ3WD7yBRea3F/heuv8soYuu8sNeIDxn0TG
+ jBzm2uLlJpYA==
+X-IronPort-AV: E=Sophos;i="5.81,162,1610438400"; d="scan'208";a="361496648"
+Received: from ecohen10-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.251.10.178])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Feb 2021 09:39:37 -0800
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [RFC PATCH] soundwire: bus: use correct driver name in error messages
+Date: Mon,  8 Feb 2021 11:39:29 -0600
+Message-Id: <20210208173929.8328-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>, tiwai@suse.de,
+ gregkh@linuxfoundation.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,37 +86,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 2021-02-08 at 18:38 +0800, Hui Wang wrote:
-> The function simple_write_to_buffer() doesn't add string termination
-> at the end of buf, we need to handle it on our own. This change
-> refers
-> to the function tokenize_input() in debug.c and the function
-> sof_dfsentry_trace_filter_write() in trace.c.
-> 
-> Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for
-> IPC flood test")
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
-> ---
->  sound/soc/sof/debug.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-> index 30213a1beaaa..715a374b33cf 100644
-> --- a/sound/soc/sof/debug.c
-> +++ b/sound/soc/sof/debug.c
-> @@ -352,7 +352,7 @@ static ssize_t sof_dfsentry_write(struct file
-> *file, const char __user *buffer,
->  	char *string;
->  	int ret;
->  
-> -	string = kzalloc(count, GFP_KERNEL);
-> +	string = kzalloc(count+1, GFP_KERNEL);
->  	if (!string)
->  		return -ENOMEM;
->  
-LGTM except that may be checkpatch would complain about the spaces
-missing around the + sign.
+None of the existing codec drivers set the sdw_driver.name, but
+instead set sdw_driver.driver.name.
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+This leads to error messages such as
+[   23.935355] rt700 sdw:2:25d:700:0: Probe of (null) failed: -19
+
+We could remove this sdw_driver.name if it doesn't have any
+purpose. This patch only suggests using the proper indirection.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ drivers/soundwire/bus_type.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
+index 575b9bad99d5..893296f3fe39 100644
+--- a/drivers/soundwire/bus_type.c
++++ b/drivers/soundwire/bus_type.c
+@@ -82,6 +82,7 @@ static int sdw_drv_probe(struct device *dev)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
+ 	const struct sdw_device_id *id;
++	const char *name;
+ 	int ret;
+ 
+ 	/*
+@@ -108,7 +109,10 @@ static int sdw_drv_probe(struct device *dev)
+ 
+ 	ret = drv->probe(slave, id);
+ 	if (ret) {
+-		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
++		name = drv->name;
++		if (!name)
++			name = drv->driver.name;
++		dev_err(dev, "Probe of %s failed: %d\n", name, ret);
+ 		dev_pm_domain_detach(dev, false);
+ 		return ret;
+ 	}
+@@ -174,11 +178,16 @@ static void sdw_drv_shutdown(struct device *dev)
+  */
+ int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
+ {
++	const char *name;
++
+ 	drv->driver.bus = &sdw_bus_type;
+ 
+ 	if (!drv->probe) {
+-		pr_err("driver %s didn't provide SDW probe routine\n",
+-		       drv->name);
++		name = drv->name;
++		if (!name)
++			name = drv->driver.name;
++
++		pr_err("driver %s didn't provide SDW probe routine\n", name);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.25.1
 
