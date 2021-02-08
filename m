@@ -2,76 +2,65 @@ Return-Path: <SRS0=8vjL=HK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13CE7C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 16:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21F5DC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 16:34:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D467964E87
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 16:18:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D467964E87
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id BCAC564E8F
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 16:34:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BCAC564E8F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35A2B1696;
-	Mon,  8 Feb 2021 17:18:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35A2B1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 480171676;
+	Mon,  8 Feb 2021 17:33:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 480171676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612801134;
-	bh=AHxAjaRM9Rp/UTfNCHhLRgGM9Vx4g7k9LhbRdSnhI5s=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1612802040;
+	bh=Uzev0ALhE4ZFJmh/d8jaQEzlm2VEaJRB7FhxMA3TBCY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=THfmCw8n2H/rpqST593jyR2/IvsbXlfDtwNg1eh+ctxL329asikapx4qmBhl7d9Jp
-	 F5aiNvuqNDDMvoTNeffCw/QVySz97uyN2RQCLr7KcO/DVDITIcGfVBVMbhgiYXuqvL
-	 Y3T/WYOcoKsMAeayOy4Tg0tsR8etx/1ipJll1cQ4=
+	b=nCSi0eY2Q+5aYMImN3Dx11cvNT+dd2hjcawGu1aCtoxAptkDKkulRI/t4aoI4WHXG
+	 0SpJXRZuxXSo3vjnEuPlmdgmDNrUy7ilY3dZY3TmprRjLOALDufoAWifaMwafeBvVn
+	 fAO1GMnP25hEKL+BO8Ak9cOV/jdGs886NDFreZr4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 674B0F8027B;
-	Mon,  8 Feb 2021 17:17:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF609F80169;
+	Mon,  8 Feb 2021 17:33:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 869A6F8027C; Mon,  8 Feb 2021 17:17:42 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id A68D4F8022B; Mon,  8 Feb 2021 17:33:07 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5D2BF80277
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 17:17:39 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id DD6E4A0040;
- Mon,  8 Feb 2021 17:17:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz DD6E4A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1612801053; bh=m7SIBkKLsazEHy7ONU3dwueRp1h2KiM8SslMSe7Ljys=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=B4DJ6vX2xp9YIw5yAoWNy2YhMIUfgn0RcCi1v2Zzb8IosyUUzwGuplXgtdM5o6GkM
- zjiaAlSw4o2AP3Z7VdA+QsJ/YhEtZbyih8SY1kow9EFFFxax0m2vnDsz/HgHyguOuL
- 1pm37TrZTkFzZh6Ffontn2GJK39E7mogSW3u6gD0=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon,  8 Feb 2021 17:17:29 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5A5BF80165
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 17:33:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5A5BF80165
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id CF2D6AB98;
+ Mon,  8 Feb 2021 16:33:02 +0000 (UTC)
+Date: Mon, 08 Feb 2021 17:33:02 +0100
+Message-ID: <s5h5z32y0xt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH] [RFC] ALSA: control - add generic LED API to sound core
  routines
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <3bc1b151-68ce-8408-aff1-aeba2e6fe4c3@perex.cz>
 References: <20210207201157.869972-1-perex@perex.cz>
  <s5him72y4q0.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <3bc1b151-68ce-8408-aff1-aeba2e6fe4c3@perex.cz>
-Date: Mon, 8 Feb 2021 17:17:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <s5him72y4q0.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <3bc1b151-68ce-8408-aff1-aeba2e6fe4c3@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Hans de Goede <hdegoede@redhat.com>,
  ALSA development <alsa-devel@alsa-project.org>,
  Perry Yuan <Perry.Yuan@dell.com>
@@ -90,67 +79,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 08. 02. 21 v 16:11 Takashi Iwai napsal(a):
-> On Sun, 07 Feb 2021 21:11:57 +0100,
-> Jaroslav Kysela wrote:
->>
->> [DO NOT MERGE!]
->> [This is just an early proposal for comments]
->> [The code is not tested / debugged]
->>
->> The recent laptops have usually two LEDs assigned to reflect
->> the speaker and microphone mute state. This implementation
->> adds a tiny layer on top of the control API which calculates
->> the state for those LEDs using the driver callbacks.
->>
->> Two new access flags are introduced to describe the controls
->> which affects the audio path settings (an easy path for drivers).
->>
->> The LED resource can be shared with multiple sound cards with
->> this code. The user space controls may be added to the state
->> chain, too.
->>
->> This code should replace the LED code in the HDA driver and
->> add a possibility to easy extend the other drivers (ASoC
->> codecs etc.).
+On Mon, 08 Feb 2021 17:17:29 +0100,
+Jaroslav Kysela wrote:
 > 
-> Having a common helper in the ALSA core sounds like a good way to go.
+> Dne 08. 02. 21 v 16:11 Takashi Iwai napsal(a):
+> > On Sun, 07 Feb 2021 21:11:57 +0100,
+> > Jaroslav Kysela wrote:
+> >>
+> >> [DO NOT MERGE!]
+> >> [This is just an early proposal for comments]
+> >> [The code is not tested / debugged]
+> >>
+> >> The recent laptops have usually two LEDs assigned to reflect
+> >> the speaker and microphone mute state. This implementation
+> >> adds a tiny layer on top of the control API which calculates
+> >> the state for those LEDs using the driver callbacks.
+> >>
+> >> Two new access flags are introduced to describe the controls
+> >> which affects the audio path settings (an easy path for drivers).
+> >>
+> >> The LED resource can be shared with multiple sound cards with
+> >> this code. The user space controls may be added to the state
+> >> chain, too.
+> >>
+> >> This code should replace the LED code in the HDA driver and
+> >> add a possibility to easy extend the other drivers (ASoC
+> >> codecs etc.).
+> > 
+> > Having a common helper in the ALSA core sounds like a good way to go.
+> > 
+> > My slight concern is that this will end up having the dependency on
+> > LEDS stuff unconditionally when CONFIG_SND_LED=y.
 > 
-> My slight concern is that this will end up having the dependency on
-> LEDS stuff unconditionally when CONFIG_SND_LED=y.
+> You probably mean that the LEDs subsystem is activated even if we don't have
+> audio LED class driver connected, right?
 
-You probably mean that the LEDs subsystem is activated even if we don't have
-audio LED class driver connected, right?
+Yes.
 
-I think that the HDA way (select conditionally the LED code) in the low-level
-driver Kconfig is good, but I'm open for any other suggestions.
+> I think that the HDA way (select conditionally the LED code) in the low-level
+> driver Kconfig is good, but I'm open for any other suggestions.
 
-> Also, are those new access flags exposed to user-space intentionally,
-> so that user-space gets some information?
+Well, in the case of HD-audio, it's only for HD-audio.  But with this
+change, LEDS class will be always loaded on distro kernels no matter
+which sound driver is actually used.
 
-Yes, it's one benefit, the second benefit is that we can create user space
-controls for hardware which does not have any switch / volume controls for the
-given path.
+I guess we can split the LED-support code to another module?
+The problem would be the registration from the control core.  The
+other parts look already isolated enough.
 
-An example is the AMD ACP bridge with the simple digital microphones. We can
-use alsa-lib's softvol plugin to control the volume for this and it would be
-nice to mark this user space control with the mic mute LED flag.
 
-> Last but not least: I'm not sure whether we should limit to only two
-> LEDs (mic and spk).  I'm afraid that there will be more LEDs in
-> future; people love decorations :)
+> > Also, are those new access flags exposed to user-space intentionally,
+> > so that user-space gets some information?
+> 
+> Yes, it's one benefit, the second benefit is that we can create user space
+> controls for hardware which does not have any switch / volume controls for the
+> given path.
+> 
+> An example is the AMD ACP bridge with the simple digital microphones. We can
+> use alsa-lib's softvol plugin to control the volume for this and it would be
+> nice to mark this user space control with the mic mute LED flag.
 
-We have some more free bits in the access field. If the LED count will
-increase in future for the standard hardware, we should reconsider the
-implementation (info callback or so).
+OK, makes sense.
 
-Perhaps, it may be clever to reserve three bits from the access flags now (to
-create a three bit value not a mask). In this case, we can carry information
-for 7 LED types (assuming that one control element can be assigned only to one
-LED type).
 
-					Jaroslav
+> > Last but not least: I'm not sure whether we should limit to only two
+> > LEDs (mic and spk).  I'm afraid that there will be more LEDs in
+> > future; people love decorations :)
+> 
+> We have some more free bits in the access field. If the LED count will
+> increase in future for the standard hardware, we should reconsider the
+> implementation (info callback or so).
+> 
+> Perhaps, it may be clever to reserve three bits from the access flags now (to
+> create a three bit value not a mask). In this case, we can carry information
+> for 7 LED types (assuming that one control element can be assigned only to one
+> LED type).
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Sounds like a good idea.  I guess 4 types would suffice for now.
+
+
+thanks,
+
+Takashi
