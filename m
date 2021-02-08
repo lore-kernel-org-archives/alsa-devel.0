@@ -2,63 +2,69 @@ Return-Path: <SRS0=8vjL=HK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B9FFC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 10:40:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07135C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 11:03:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AFEBC64E85
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 10:40:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFEBC64E85
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3382F64E54
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 11:03:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3382F64E54
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 633C084D;
-	Mon,  8 Feb 2021 11:39:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 633C084D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2E2C1671;
+	Mon,  8 Feb 2021 12:02:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2E2C1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612780848;
-	bh=BOeLx7P4EtPp2FM/1ElyLoeHPEQgmQ2eQG3De2GaisE=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=a2ygSTWkDLCX/FVHeVE4op26D0QDNAslCTkhyGqPFSbXjgXI98q1Lg7WFjlSjMzRo
-	 CKS+mp28rqPakFEZczqPpAtoAHnh41OtW+TlvP0dYtCjw8HXJyoqsVpREBnSzOsp+6
-	 beLPaFrYrTHu1XBylQXfFG/sz7pyBt/niLES3+vQ=
+	s=default; t=1612782189;
+	bh=oT/gU3oinRY1u+kKMnztshfJkr9TlHVGMqSWxaSfIfw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=T5ynV6sLkTGPyzMtswXwvDka29lLdID89kgQCdGNxN8zOqWjSYkEc9c2nI24lFC76
+	 dpOHpUIxDLi7yn+JqiAkEn+ux6T/EWrzhxK3Pbm7Es+uV2CikjHic4WOvZ5qDvcr3i
+	 aYdQkfztiu6GVyHbBDiRXDkXM9x+T7oGrAXtMaHc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF8E8F80169;
-	Mon,  8 Feb 2021 11:39:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C4D5F80169;
+	Mon,  8 Feb 2021 12:02:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E3C9F8022B; Mon,  8 Feb 2021 11:39:56 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 27F7DF8022B; Mon,  8 Feb 2021 12:02:17 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B405DF80114
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 11:39:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B405DF80114
-Received: from [123.112.66.2] (helo=localhost.localdomain)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1l93xL-0007NY-28; Mon, 08 Feb 2021 10:39:47 +0000
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- broonie@kernel.org
-Subject: [PATCH v2] ASoC: SOF: debug: Fix a potential issue on string buffer
- termination
-Date: Mon,  8 Feb 2021 18:38:57 +0800
-Message-Id: <20210208103857.75705-1-hui.wang@canonical.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82177F80114
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 12:02:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82177F80114
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 9A499AC6E;
+ Mon,  8 Feb 2021 11:02:13 +0000 (UTC)
+Date: Mon, 08 Feb 2021 12:02:13 +0100
+Message-ID: <s5hy2fyyg96.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 1/2] ALSA: hda: intel-dsp-config: Add FLAG_BYT_FIRST /
+ _SECOND defines
+In-Reply-To: <5d6241f2-8df2-8de2-b437-804566e62e25@redhat.com>
+References: <20210208093800.62099-1-hdegoede@redhat.com>
+ <s5ha6sezxil.wl-tiwai@suse.de>
+ <5d6241f2-8df2-8de2-b437-804566e62e25@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,31 +80,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The function simple_write_to_buffer() doesn't add string termination
-at the end of buf, we need to handle it on our own. This change refers
-to the function tokenize_input() in debug.c and the function
-sof_dfsentry_trace_filter_write() in trace.c.
+On Mon, 08 Feb 2021 11:24:53 +0100,
+Hans de Goede wrote:
+> 
+> Hi,
+> 
+> On 2/8/21 11:04 AM, Takashi Iwai wrote:
+> > On Mon, 08 Feb 2021 10:37:59 +0100,
+> > Hans de Goede wrote:
+> >>
+> >> Instead of hardcording the SST driver having the highest prio, add
+> >> FLAG_BYT_FIRST and FLAG_BYT_SECOND defines, which get set like this
+> >> when both drivers are enabled:
+> >>
+> >> 	#define FLAG_BYT_FIRST               FLAG_SST
+> >> 	#define FLAG_BYT_SECOND              FLAG_SOF
+> >>
+> >> And when only 1 driver is enabled then FLAG_BYT_FIRST gets set to
+> >> the flag for that driver.
+> >>
+> >> This is a preparation patch for making which driver is preferred
+> >> configurable through Kconfig.
+> >>
+> >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> > 
+> > I find the idea is fine, but the ifdef conditions become too complex
+> > after this change.  It took minutes to check whether the ifdef changes
+> > are really correct for me :)
+> 
+> I understand but...
+> 
+> > So, it'd be appreciated if this can be re-designed and simplified...
+> 
+> This was actually the cleanest which I could come up with, well maybe not the
+> cleanest, but the most "do not repeat yourself" option.
+> 
+> The alternative would be something like this:
+> 
+> static const struct config_entry acpi_config_table[] = {
+> /* BayTrail */
+> #ifdef CONFIG_SND_INTEL_BYT_PREFER_SOF /* implies both drivers are enabled */
+>         {
+>                 .flags = FLAG_SOF,
+>                 .acpi_hid = "80860F28",
+>         },
+>         {
+>                 .flags = FLAG_SST,
+>                 .acpi_hid = "80860F28",
+>         },
+> #else
+> #if IS_ENABLED(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM_ACPI)
+>         {
+>                 .flags = FLAG_SST,
+>                 .acpi_hid = "80860F28",
+>         },
+> #endif
+> #if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL
+>         {
+>                 .flags = FLAG_SOF,
+>                 .acpi_hid = "80860F28",
+>         },
+> #endif
+> #endif
+> 
+> With the same thing repeating for the Cherry Trail case, now that
+> I actually have written this out I guess it is not too bad, but it
+> does mean repeating all the BYT/CHT entries once, visually
+> leading to 4 extra entries (but the #ifdef #else #endif
+> will always include only 2/4 for each of BYT and CHT.
+> 
+> If you like this better I can do a v2 with this approach, that
+> would also reduce the set to a single patch.
 
-Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for IPC flood test")
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/soc/sof/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If I understand correctly, we don't need to have two entries since the
+first matching always wins.
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 30213a1beaaa..715a374b33cf 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -352,7 +352,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	char *string;
- 	int ret;
+So it could be something like below?
+
+
+thanks,
+
+Takashi
+
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -26,6 +26,12 @@ MODULE_PARM_DESC(dsp_driver, "Force the DSP driver for Intel DSP (0=auto, 1=lega
+ #define FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE (FLAG_SOF_ONLY_IF_DMIC | \
+ 					    FLAG_SOF_ONLY_IF_SOUNDWIRE)
  
--	string = kzalloc(count, GFP_KERNEL);
-+	string = kzalloc(count+1, GFP_KERNEL);
- 	if (!string)
- 		return -ENOMEM;
- 
--- 
-2.25.1
++#if IS_ENABLED(CONFIG_SND_SOC_PREFER_SOF_BAYTRAIL)
++#define FLAG_SST_OR_SOF_BYT		FLAG_SOF
++#else
++#define FLAG_SST_OR_SOF_BYT		FLAG_SST
++#endif
++
+ struct config_entry {
+ 	u32 flags;
+ 	u16 device;
+@@ -459,28 +465,18 @@ EXPORT_SYMBOL_GPL(snd_intel_dsp_driver_probe);
+  */
+ static const struct config_entry acpi_config_table[] = {
+ /* BayTrail */
+-#if IS_ENABLED(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM_ACPI)
++#if IS_ENABLED(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM_ACPI) || \
++    IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+ 	{
+-		.flags = FLAG_SST,
+-		.acpi_hid = "80860F28",
+-	},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+-	{
+-		.flags = FLAG_SOF,
++		.flags = FLAG_SST_OR_SOF_BYT,
+ 		.acpi_hid = "80860F28",
+ 	},
+ #endif
+ /* CherryTrail */
+-#if IS_ENABLED(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM_ACPI)
++#if IS_ENABLED(CONFIG_SND_SST_ATOM_HIFI2_PLATFORM_ACPI) || \
++    IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+ 	{
+-		.flags = FLAG_SST,
+-		.acpi_hid = "808622A8",
+-	},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_BAYTRAIL)
+-	{
+-		.flags = FLAG_SOF,
++		.flags = FLAG_SST_OR_SOF_BYT,
+ 		.acpi_hid = "808622A8",
+ 	},
+ #endif
 
+
+
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
