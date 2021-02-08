@@ -2,79 +2,74 @@ Return-Path: <SRS0=8vjL=HK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6508C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0EC77C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:42:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7294F64E74
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:42:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7294F64E74
+	by mail.kernel.org (Postfix) with ESMTPS id 6BEB964E6B
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:42:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6BEB964E6B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1601169E;
-	Mon,  8 Feb 2021 19:41:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1601169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3324169C;
+	Mon,  8 Feb 2021 19:41:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3324169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612809738;
-	bh=5IBhQ7c3BzKenFcsQ0x87dAwNhuhz1U+iCIXHPWQyxM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1612809748;
+	bh=E4dVr+ba/8pFyDzHXiNkLmJYvxNx/LW8NoDwcK0pMdA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h3ozPbj5Zpjmx3kjX9rZTs3VHaTtVupII53NFrxJQy7T6jeVbHaxRtoQY43oT0+ID
-	 92mEoU5zRJ5o0ltq70pWwzxOIffpkN0HmvtkleI0hEGuu4vYGDp1IDVekZicll8WCT
-	 pDhY2fIt5Zqn9KMt0Urui7H0ubYnwJSq4oniUJ9w=
+	b=BdKHuCtIi1oIUsTl0KWAOTTltqMKbb64autRuZfKN8YnIitsbKr0Lt+CThM72n4zc
+	 mlHH5+yej4kTQ5lk7WXcc8E1EDl1bf2RfH57Ab2LAQQq0NWieco9/hO8Z1YAD8fH7B
+	 XJiVY+FFZZxM8yLk2xt22o0XBUjheSot5KB8htxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1CB2F802DF;
-	Mon,  8 Feb 2021 19:39:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8766AF802E3;
+	Mon,  8 Feb 2021 19:39:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05E7BF802E0; Mon,  8 Feb 2021 19:39:34 +0100 (CET)
+ id 7491AF8032B; Mon,  8 Feb 2021 19:39:41 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CEE6F802DB
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 19:39:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CEE6F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A0A7F802DB
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 19:39:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A0A7F802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VU2VcT7T"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C962F64E6C;
- Mon,  8 Feb 2021 18:39:28 +0000 (UTC)
+ header.b="PTU9OX4v"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C0764E6F;
+ Mon,  8 Feb 2021 18:39:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612809569;
- bh=5IBhQ7c3BzKenFcsQ0x87dAwNhuhz1U+iCIXHPWQyxM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=VU2VcT7TaDO3lBZ+GiDsY1XzFCoiEFRHjkWoyS5jY75bIxBkybh+BXvUmZR3aQexr
- i5/tDc4C08lpVQ6qJWPmzIg4cjhfZuowj47xMC1wkaV05c6mSTupTFN+IhSfIq/Fxs
- DTHkE4k3cBun8UqU0mmmDvlDQnYIlVSOO2GOv7tK9/Vm4Rn0BKHp881myK23Y9NMei
- l3AEJUcKYtBlrfOvjaQaiQTiwBDnVk0YqrwCylJf9hABDBIkCsKohzRxg5NrC4XZjH
- AoCt9qt7JjwtYz2JujdAeicrUJLpNmVH2b1xvTDhsrbIsP6duqD3JfJ4xw26EKb6Ct
- BqF7FZYwICdcQ==
+ s=k20201202; t=1612809576;
+ bh=E4dVr+ba/8pFyDzHXiNkLmJYvxNx/LW8NoDwcK0pMdA=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=PTU9OX4vVNfvZpgSBApuHncY1cXfM7CCqFi8jb7Nour5cpaziZVa7cN+CnHhtqiLk
+ RJNFqrmWrp1is7FRVHyDMRHh8rr77jnEBoRfEBoKgLrWK+OMkxbr7KHiKUQqxl0D2/
+ 9mjfoZhoterAXtdTgRE66funU3378eY8Xhje5tDLLa+mlEhx3BSnYarvBKHHDXXL5T
+ Bcu5KdVbWpaZgxUiZN6Xm4MUW7T29JMuUoci2q6O5Tdz5YSiNY7iijt+RDUjPDgKUG
+ jtekqMJDsQzD09/bzLWYX3yM5rGd2FBrWB7NXxXBTLDT+0aTfThHdGcbszoVya4DkJ
+ K37kKc4jIkJfw==
 From: Mark Brown <broonie@kernel.org>
-To: Lee Jones <lee.jones@linaro.org>, Jie Yang <yang.jie@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20210120214957.140232-1-hdegoede@redhat.com>
-References: <20210120214957.140232-1-hdegoede@redhat.com>
-Subject: Re: (subset) [PATCH v4 0/5] MFD/ASoC: Add support for Intel Bay Trail
- boards with WM5102 codec
-Message-Id: <161280948306.10741.6212553639750410303.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ Hui Wang <hui.wang@canonical.com>
+In-Reply-To: <20210208103857.75705-1-hui.wang@canonical.com>
+References: <20210208103857.75705-1-hui.wang@canonical.com>
+Subject: Re: [PATCH v2] ASoC: SOF: debug: Fix a potential issue on string
+ buffer termination
+Message-Id: <161280948305.10741.11899846666720938987.b4-ty@kernel.org>
 Date: Mon, 08 Feb 2021 18:38:03 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,19 +85,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Jan 2021 22:49:52 +0100, Hans de Goede wrote:
-> Here is v4 of my series to add support for Intel Bay Trail based devices
-> which use a WM5102 codec for audio output/input.
-> 
-> This was developed and tested on a Lenovo Yoga Tablet 1051L.
-> 
-> The MFD and ASoC parts do not have any build-time dependencies
-> on each other. But the follow-up jack-detect series does have
-> patches depending on each-other and on this series. So IMHO it
-> would be best if this entire series would be merged through the
-> MFD tree to make merging the follow-up series easier.
-> 
-> [...]
+On Mon, 8 Feb 2021 18:38:57 +0800, Hui Wang wrote:
+> The function simple_write_to_buffer() doesn't add string termination
+> at the end of buf, we need to handle it on our own. This change refers
+> to the function tokenize_input() in debug.c and the function
+> sof_dfsentry_trace_filter_write() in trace.c.
 
 Applied to
 
@@ -110,10 +97,8 @@ Applied to
 
 Thanks!
 
-[4/5] ASoC: Intel: Add DMI quirk table to soc_intel_is_byt_cr()
-      commit: 8ade6d8b02b1ead741bd4f6c42921035caab6560
-[5/5] ASoC: Intel: bytcr_wm5102: Add machine driver for BYT/WM5102
-      commit: 9a87fc1e061900e81ab13d823e85012a78849244
+[1/1] ASoC: SOF: debug: Fix a potential issue on string buffer termination
+      commit: 9037c3bde65d339017ef41d81cb58069ffc321d4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
