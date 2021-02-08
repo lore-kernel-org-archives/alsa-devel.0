@@ -2,79 +2,66 @@ Return-Path: <SRS0=8vjL=HK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2531C433E6
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 15:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F908C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 15:12:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9E4064EC9
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 15:05:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9E4064EC9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 01F0564E84
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 15:12:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01F0564E84
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A09071671;
-	Mon,  8 Feb 2021 16:05:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A09071671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28D1A1675;
+	Mon,  8 Feb 2021 16:11:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28D1A1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612796753;
-	bh=SdhQPOxHBaOxP7uB+n1WhqFyjom2B/zd3rQI/1wC7gI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612797134;
+	bh=if69GtE1FFPFevazuFY0ODQmBE5vGUoevVks8ZfrkWc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YEEV1iOpJcdN24MDjVmIQLkELyktHcWRmq1O71awGB2TiY16HNDOcrCle/WgszSOp
-	 TUuHaGbZjMOxI3gVAOSh0gaTwFNM3oypAUWd//LAabWZOx4ZR9htLLsEBTcmotdlE9
-	 aMudgZLVs2pOPGFX5IVoGBE+kCEoAe8TWzA7oDCA=
+	b=eJ0LjEwLk0t1gxw9+hJIe6o1dDKhbBQuOY3wLUY/nDyURXqRwOHBC8umgWnDbqfJB
+	 Atm+DzwEqe48a2KVzQ2NEsZKa1aVbyQsvdWwTDfYXMJkHlNBFrxpr90rwEJMTfzwIH
+	 nhLeIQUVmfC6S8Vr+DhX2ka79veRQEeRmKTt2J1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCAEDF80165;
-	Mon,  8 Feb 2021 16:05:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA3FCF80114;
+	Mon,  8 Feb 2021 16:11:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D47FF80169; Mon,  8 Feb 2021 16:05:00 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id D622EF80169; Mon,  8 Feb 2021 16:11:22 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C835CF8013A
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 16:04:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C835CF8013A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cntU4YDJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F4464EE0;
- Mon,  8 Feb 2021 15:04:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612796693;
- bh=SdhQPOxHBaOxP7uB+n1WhqFyjom2B/zd3rQI/1wC7gI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cntU4YDJiKilcC/iJrm8DtaeF5WeQp6wTyF0Xb/xLcgHVlU9/SQzLVipEptry/07C
- 8ZM9IQvouzh+DcCN006qwUcgB+Rd1VtM0wAj2S3QTAq12ANP6ZopXvLmMg6eecvPk4
- NncFMHtV++/nkfq08EHGyS1IXQgqulSDe3VZag8pZUjbZi0h1MOxOB3NLPpx6azDtK
- 7B5h5I7CV92SGe7bpfpqDYQk6szH87iVQqqKwINwnLSz5hXv0ZdKYXaD+dga4aVuHa
- Z3XIFr7mMKrJuka2MUTdnIbJHgqcNS2k3yYVzA6aRGskZlOCEmrL2GtA9Hs/3V8oYg
- 00EB+/V/ssFVA==
-Date: Mon, 8 Feb 2021 20:34:49 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND PATCH v2 0/9] soundwire/regmap: use _no_pm routines
-Message-ID: <20210208150449.GF879029@vkoul-mobl.Dlink>
-References: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
- <20210206102644.GN2656@vkoul-mobl.Dlink>
- <20210208125032.GF8645@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208125032.GF8645@sirena.org.uk>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
- srinivas.kandagatla@linaro.org, jank@cadence.com, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59213F80114
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 16:11:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59213F80114
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 6A0FCAF4C;
+ Mon,  8 Feb 2021 15:11:19 +0000 (UTC)
+Date: Mon, 08 Feb 2021 16:11:19 +0100
+Message-ID: <s5him72y4q0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] [RFC] ALSA: control - add generic LED API to sound core
+ routines
+In-Reply-To: <20210207201157.869972-1-perex@perex.cz>
+References: <20210207201157.869972-1-perex@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Hans de Goede <hdegoede@redhat.com>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Perry Yuan <Perry.Yuan@dell.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,19 +77,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Mark,
-
-On 08-02-21, 12:50, Mark Brown wrote:
-> On Sat, Feb 06, 2021 at 03:56:44PM +0530, Vinod Koul wrote:
+On Sun, 07 Feb 2021 21:11:57 +0100,
+Jaroslav Kysela wrote:
 > 
-> > Applied all sdw patches, thanks
+> [DO NOT MERGE!]
+> [This is just an early proposal for comments]
+> [The code is not tested / debugged]
 > 
-> Is there a tag I can pull the new APIs from?
+> The recent laptops have usually two LEDs assigned to reflect
+> the speaker and microphone mute state. This implementation
+> adds a tiny layer on top of the control API which calculates
+> the state for those LEDs using the driver callbacks.
+> 
+> Two new access flags are introduced to describe the controls
+> which affects the audio path settings (an easy path for drivers).
+> 
+> The LED resource can be shared with multiple sound cards with
+> this code. The user space controls may be added to the state
+> chain, too.
+> 
+> This code should replace the LED code in the HDA driver and
+> add a possibility to easy extend the other drivers (ASoC
+> codecs etc.).
 
-Yes, please pull from below:
+Having a common helper in the ALSA core sounds like a good way to go.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-5.12-rc1
+My slight concern is that this will end up having the dependency on
+LEDS stuff unconditionally when CONFIG_SND_LED=y.
 
-Thanks
--- 
-~Vinod
+Also, are those new access flags exposed to user-space intentionally,
+so that user-space gets some information?
+
+Last but not least: I'm not sure whether we should limit to only two
+LEDs (mic and spk).  I'm afraid that there will be more LEDs in
+future; people love decorations :)
+
+
+thanks,
+
+Takashi
