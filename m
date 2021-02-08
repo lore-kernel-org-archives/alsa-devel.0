@@ -4,72 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4190C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E950DC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:40:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E462964E6B
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:40:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E462964E6B
+	by mail.kernel.org (Postfix) with ESMTPS id D943E64E60
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Feb 2021 18:40:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D943E64E60
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55ECF169F;
-	Mon,  8 Feb 2021 19:39:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55ECF169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 569031699;
+	Mon,  8 Feb 2021 19:40:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 569031699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612809647;
-	bh=9TTZZw3q3O0A2iUkVrd4u4Jlc4Pb1l3noBBoy0LEpaw=;
+	s=default; t=1612809652;
+	bh=a6Ptbno+MD4MJkCP5JROC9r9dgS4dLXVT5U1LzXU2K8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lKQe9iNV6q4XuRxRqt5vT0p4s+LSEqNyI1hq9VPn+XxFS5Ssu/4QHlZzaenUW+KtU
-	 8ehhBFLNv0pb1clISogWb1bjBF+dYWyPSyQGMceZ9wHIYrjrAWv6utrmSyTlSKhaI/
-	 e2zk8lxK3pXuEgUJEhcR5Jyc0GSNpbWgTC/i7PS0=
+	b=DGF1j9oBZqaOHonydKK31GRUyvxkeskPZcrXdhW9o/mxuNhD6lPiQCPcl/IYI9IWE
+	 JqFunj1T9Rju1wCTyR5NlMd4/83j4IUHJth18CP+EkQBG2+i+ASPo1lbAF8a+hj68L
+	 8HMJHGhxn8jiSxu+7DSG1eyftL6U9ECpmNpWnAys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2CB5F80240;
-	Mon,  8 Feb 2021 19:39:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE8E6F80277;
+	Mon,  8 Feb 2021 19:39:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97505F80114; Mon,  8 Feb 2021 19:39:06 +0100 (CET)
+ id 2FF5CF80278; Mon,  8 Feb 2021 19:39:13 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03635F80114
- for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 19:39:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03635F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id AED34F80264
+ for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2021 19:39:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AED34F80264
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Cx6cgD2K"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CDDC64E60;
- Mon,  8 Feb 2021 18:39:01 +0000 (UTC)
+ header.b="DrdjHGMl"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B11B64E6B;
+ Mon,  8 Feb 2021 18:39:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612809542;
- bh=9TTZZw3q3O0A2iUkVrd4u4Jlc4Pb1l3noBBoy0LEpaw=;
+ s=k20201202; t=1612809549;
+ bh=a6Ptbno+MD4MJkCP5JROC9r9dgS4dLXVT5U1LzXU2K8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Cx6cgD2Kad0MvzutSRSHnzVG0fwkxSbaj+4rIzLxmT1URrxpx9OsIVD1dZX67YK5T
- k9rr66QXY2zR4XghypCugiVHR9SQN9T+ihs4kallg2tq/+7XYKFnzIwKxDZiXmxD26
- Tsil81WRa6e3FLRgg1ByN+qjPbFJjQf1GnLe7nOGLeqpFgDwxyVrJWMKfr6mTbHpNU
- niwC2WE8wVxvSjp4Lid9ucWPmKLHw6op1ALmJJuTXbiYeXXwYv9ecinXgdsWqrr5oe
- lbliZNk8KP6+Jc9zOt+OAeS1MRrdEgYjPjDBzwen3CVkTFkgm8TF6duhgvF99xPEL5
- VUxlYjBmRvu9w==
+ b=DrdjHGMlDZ7KEg0stxWAiPUIPT7KpXdwrcVe8Y6ePZOg4slZiriGtUxGjdHzSBIci
+ 1yMQgmHOSThRAm4dWfDTqSHOhOrx0IRfe6Na4Hw5ayP3/oeEfp//Kzp6qKokQWITqy
+ Su3tRZ4ZqIjQJxASR57+aEk8SIGvsuK1m+nSH50giyZRxuKZks4SbxMM5ICaA3Shx6
+ ccZ7PRLFvsS60+kFjGdtBPlaKxe2MKPLRbDT0pqh8FaeIYCMOPoxV5Fc2h1xZ+Dt+p
+ MoYWFtygtgj7wtlxJ8KQwgBTtJjfgXjYFqlNJy04iJ4OyuFxqPU2FClB47PDdLsXIv
+ 5Y6SMOGBL/q3w==
 From: Mark Brown <broonie@kernel.org>
-To: Sameer Pujar <spujar@nvidia.com>
-In-Reply-To: <1612719418-5858-1-git-send-email-spujar@nvidia.com>
-References: <1612719418-5858-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v3 0/2] Rename audio graph export functions
-Message-Id: <161280948305.10741.16503179975301818382.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20210205171428.2344210-1-ranjani.sridharan@linux.intel.com>
+References: <20210205171428.2344210-1-ranjani.sridharan@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: rt5682: Fix panic in rt5682_jack_detect_handler
+ happening during system shutdown
+Message-Id: <161280948305.10741.4495678195653704904.b4-ty@kernel.org>
 Date: Mon, 08 Feb 2021 18:38:03 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com,
- linux-tegra@vger.kernel.org, thierry.reding@gmail.com, sharadg@nvidia.com
+Cc: Shuming Fan <shumingf@realtek.com>, tiwai@suse.de,
+ Jairaj Arava <jairaj.arava@intel.com>,
+ Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,16 +88,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 7 Feb 2021 23:06:56 +0530, Sameer Pujar wrote:
-> This series renames exported functions from audio graph for a better
-> global visibility. In doing so update the references in audio graph
-> and Tegra audio graph card drivers.
+On Fri, 5 Feb 2021 09:14:28 -0800, Ranjani Sridharan wrote:
+> During Coldboot stress tests, system encountered the following panic.
+> Panic logs depicts rt5682_i2c_shutdown() happened first and then later
+> jack detect handler workqueue function triggered.
+> This situation causes panic as rt5682_i2c_shutdown() resets codec.
+> Fix this panic by cancelling all jack detection delayed work.
 > 
-> 
-> Changelog
-> =========
-> 
-> [...]
+> Panic log:
+> [   20.936124] sof_pci_shutdown
+> [   20.940248] snd_sof_device_shutdown
+> [   20.945023] snd_sof_shutdown
+> [   21.126849] rt5682_i2c_shutdown
+> [   21.286053] rt5682_jack_detect_handler
+> [   21.291235] BUG: kernel NULL pointer dereference, address: 000000000000037c
+> [   21.299302] #PF: supervisor read access in kernel mode
+> [   21.305254] #PF: error_code(0x0000) - not-present page
+> [   21.311218] PGD 0 P4D 0
+> [   21.314155] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [   21.319206] CPU: 2 PID: 123 Comm: kworker/2:3 Tainted: G     U            5.4.68 #10
+> [   21.333687] ACPI: Preparing to enter system sleep state S5
+> [   21.337669] Workqueue: events_power_efficient rt5682_jack_detect_handler [snd_soc_rt5682]
+> [   21.337671] RIP: 0010:rt5682_jack_detect_handler+0x6c/0x279 [snd_soc_rt5682]
 
 Applied to
 
@@ -102,10 +117,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: audio-graph: Rename functions needed for export
-      commit: 6e4ea8aace02479186b3fdaab48d7acfe06d8715
-[2/2] ASoC: tegra: Add driver remove() callback
-      commit: 0d7475d2a5a90127a2f87961b99bcd8f95694dd9
+[1/1] ASoC: rt5682: Fix panic in rt5682_jack_detect_handler happening during system shutdown
+      commit: 45a2702ce10993eda7a5b12690294782d565519c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
