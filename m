@@ -2,86 +2,79 @@ Return-Path: <SRS0=Hwo1=HL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58B0BC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Feb 2021 22:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BEA5FC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Feb 2021 23:33:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A872A64DE7
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Feb 2021 22:31:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A872A64DE7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 60DD9601FF
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Feb 2021 23:33:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60DD9601FF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 068C216C3;
-	Tue,  9 Feb 2021 23:30:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 068C216C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7C421688;
+	Wed, 10 Feb 2021 00:32:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7C421688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612909903;
-	bh=aElboiqUnwR60IIieAwxZ0/UogaCICdYpqt/BDC5xaQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612913583;
+	bh=811rKjInQqM21PeYFQOEaN1C1w+cYXlfG0x+V6tDNUA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cb+b5G7H/hVIOa9V88wUUeukEWzEsG2EtNJCFPp51aIpqyiP9zsmx8vCZCJ70ljjN
-	 R9/TLwAHZrXge5/RDEseoQKFFDPQZHHnwt/xR/oNyIbzUebxLst7MceC3jY/9Kywb3
-	 FxI4fdupwSI6BpqqhR8ndwZHQOnPekyQmflwsMJ8=
+	b=Xdm7MO/jBbOqia35gQCykFTr5ZFvpKvqUx4PLZQIICboKhJhGqhwkrJXH+lABL2u+
+	 MoeqRpI8YRjBhSP+EHs+5p+ym0fcEGP3VktH2qgEQqS79mx8Ggm/HoIVc09oz6cCzm
+	 VNg0Gegy2uGNcGw3eOYkuaJQ1EgvNO3/5S2Z43cA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89524F8016B;
-	Tue,  9 Feb 2021 23:30:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BEB6F8016B;
+	Wed, 10 Feb 2021 00:32:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D126F80259; Tue,  9 Feb 2021 23:30:51 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 03607F801D5; Wed, 10 Feb 2021 00:32:12 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66417F8016B
- for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2021 23:30:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66417F8016B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BKFMhqjR"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F26A64DCF;
- Tue,  9 Feb 2021 22:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612909845;
- bh=aElboiqUnwR60IIieAwxZ0/UogaCICdYpqt/BDC5xaQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=BKFMhqjRdwMrFoFFLkOj2yPtqpuqDT/GMWk+myP7cSptzE+Er4bomoT8tCrcpQCfk
- uHtrZFcQYPbUh4e649w5HEj9scECzBRpVwwqEcylAxQorsP39a76Th42S/+9wtbrYT
- sX/dgfaYhvMT1fW/ay7NRhiqzmKc235luf6B+ocqTQ9qNuoJZb54vmJ1kG792QuYEH
- z0V8030k94Ht4PSKt96eINydx2ReggFZT2PxWEo0rMwcAbhpPFV6ZhzkH2wtY9+f6G
- 04LNghwVNW/tjlGCktHNoj3g80Moh7fyFzpZeSyY4X661b4tpC+v4Md3fu75wB+PDR
- wyw3Iy2cgtwOQ==
-Date: Tue, 9 Feb 2021 22:29:53 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio
- base on rpmsg
-Message-ID: <20210209222953.GF4916@sirena.org.uk>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
- <20210208115112.GD8645@sirena.org.uk>
- <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E865F8013A
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 00:31:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E865F8013A
+IronPort-SDR: YNxPEvClJ6g4Hq55BPTKU1yxABZXFEJLT5eUX6MxOLWmHhU6A6bJ8SwYFqr6BRcKMQ+ArXeTLZ
+ 3+rZdj0i0Bgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="182041296"
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; d="scan'208";a="182041296"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Feb 2021 15:05:18 -0800
+IronPort-SDR: a6arwtBDVlPnid9+/2ah9wjbZszzK/zJLS0ONW6THj5ne4QAa+B8fBY/tZKS6ShOMB874XtM2k
+ fczV6phvdBYw==
+X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; d="scan'208";a="510117583"
+Received: from muncuer-mobl1.amr.corp.intel.com (HELO [10.209.127.55])
+ ([10.209.127.55])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Feb 2021 15:05:17 -0800
+Subject: Re: [PATCH] ASoC: soc-pcm: change error message to debug message
+To: Mark Brown <broonie@kernel.org>
+References: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
+ <b7f5442d-ad21-eb8a-7d90-7a8207320541@linux.intel.com>
+ <20210209222331.GD4916@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a3cac294-4562-3042-7118-f013d6e4300b@linux.intel.com>
+Date: Tue, 9 Feb 2021 17:05:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="7cm2iqirTL37Ot+N"
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com>
-X-Cookie: Put your trust in those who are worthy.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <20210209222331.GD4916@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, linux-kernel@vger.kernel.org,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,34 +91,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---7cm2iqirTL37Ot+N
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Feb 09, 2021 at 05:16:16PM +0800, Shengjiu Wang wrote:
-> On Mon, Feb 8, 2021 at 7:53 PM Mark Brown <broonie@kernel.org> wrote:
+On 2/9/21 4:23 PM, Mark Brown wrote:
+> On Mon, Feb 08, 2021 at 09:06:44AM -0600, Pierre-Louis Bossart wrote:
+> 
+>> If you demote this to dev_dbg, we'll have to ask every single user who
+>> reports 'sound is broken' to enable dynamic debug traces. I really don't see
+>> the benefit, this is a clear case of 'fail big and fail early', partly
+>> concealing the problem doesn't make it go away but harder to diagnose.
+> 
+> Don't you also get the same information out of the DAPM debugfs or did
+> I misread where the error is generated from?
 
-> > hw_params() can be called multiple times and there's no need for it to
-> > be balanced with hw_free(), I'd move this to a different callback (DAPM
-> > should work well).
+I re-checked and I will back-pedal on my comment. I confused this error 
+message with the classic "ASoC: no backend DAIs enabled for %s".
 
-> Which callback should I use? Is there an example?
+I didn't find a single occurrence of this "ASoC: no BE found for %s" in 
+any bug report or Google search.
 
-Like I say I'd actually recommend moving this control to DAPM.
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
---7cm2iqirTL37Ot+N
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAjDOAACgkQJNaLcl1U
-h9BfxAf/fm751rk1InZcdQUy/P0JjMUL41sYCGQ90Gg1k2R3RCuWuoeTeCO0a0Yb
-l474cbyVRak4jHTNNgBjRryRcKW9r/NvV+WOdVVUKdVRJ+PpL3VzFLu0nSll9vDg
-aF/J74dcRx2+yj/+Ey8kDwbANEmjGKHdYd9NuJcPcPk+owkE9h0h48n4DpuFucQj
-O7anqyPPxnh1mW/gKSE1Sn0f8MhSWelw+xdX5PlWrMw/gbuW+OyAhwt1DyOMgakW
-xooN5vm0ALYQtVOM1RnKsKta5TDZjlRkI6Zkv4mojbihSKV/rxTju0sLoblIQ/Ju
-0jO/4lAwVhqvokUPYs1HmRwF9Sat4A==
-=1sE+
------END PGP SIGNATURE-----
-
---7cm2iqirTL37Ot+N--
