@@ -2,84 +2,74 @@ Return-Path: <SRS0=/2j+=HM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81FBDC433E6
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:00:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA38CC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:13:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DF2AF64EDC
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:00:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DF2AF64EDC
+	by mail.kernel.org (Postfix) with ESMTPS id C7E1364EDF
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:13:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7E1364EDF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4266916EE;
-	Wed, 10 Feb 2021 20:59:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4266916EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAE2B16D2;
+	Wed, 10 Feb 2021 21:12:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAE2B16D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612987223;
-	bh=yotLEcGqG4o9p/LhknZqAEAAlocilxMM2VuWnnlXcAo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1612988011;
+	bh=legv85L9BeD8k/5bfUXE36He7OpHk4dozEpujnu4mUs=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sh7XHAfLerbF56QQ3STpfrqmOnD5zMZk7wkmOIsSpvXLm9Jx+ETeYp7SB/SXudLiF
-	 s3WJCiyuc0EJFrT9fqpRWMD0NrAkIqDMfMDkAFX7Jo0VKF9ZrOimQpAtOppIXsU+6p
-	 kqG3CSHsFJ3nkxGyfTSI16RMySH0BibSLcvyi2Ks=
+	b=HMZuJLNaRHVVuz1pbsLkFxlBRs0n6EjBo0Zcwk+GjdMxvQwZpmO3JWVSGDTesDDJX
+	 t1bQCwh1djz8q8j6ee9uxCCJ7nYCSRRZbL4Iy+gLhiS9we+63dDWFeIRNakrOlsRP0
+	 hhunk+8h1+bKKbtS4SVlNoL2l2bF/qo4yYSADzDs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0476EF8027C;
-	Wed, 10 Feb 2021 20:59:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B464F8022B;
+	Wed, 10 Feb 2021 21:12:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D286F80290; Wed, 10 Feb 2021 20:59:16 +0100 (CET)
+ id A08AEF8022B; Wed, 10 Feb 2021 21:12:38 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F9A7F8027C
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 20:59:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F9A7F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63F39F8010D
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:12:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63F39F8010D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VY3Fx8Ax"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01A2464EE8;
- Wed, 10 Feb 2021 19:59:10 +0000 (UTC)
+ header.b="vMz29qoB"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AD4E64E35;
+ Wed, 10 Feb 2021 20:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612987151;
- bh=yotLEcGqG4o9p/LhknZqAEAAlocilxMM2VuWnnlXcAo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=VY3Fx8Axy6qYPDQfoT/+5uPBVEJ7OfzNGjWHVLDrFeQ+Lrsf9tog5NgVBnEj3v2zS
- 3O9mYB2GZI4YzS1P/C79LyAWNDHqKvXEGB9M6HpwY719sNi0U5t6RJTBTnz2hbGfvX
- VoVe8bWmXxa0kNtLH6n0VLi6TxJiKg9FWbpGxkPCuog5D8y9EjcZcIjzlkmnDPjFII
- uyRPi/f9QfXFduhgkOb+SxbHQ68v4xZfkJ2hfAc0rVIwqc16c8RFpXVSSGACMcfqf8
- V2ViuRebMBtoqZESRIcpdXGufdLZgyNQGVsXOH3vVxizHL+k/beTrdt3rylI841shn
- 0fIBW1eqFq8TA==
-Date: Wed, 10 Feb 2021 19:58:18 +0000
+ s=k20201202; t=1612987948;
+ bh=legv85L9BeD8k/5bfUXE36He7OpHk4dozEpujnu4mUs=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=vMz29qoB1UYmDZCSbaLpabECsvBWkrIUJa1PtorIN2NOuUEhRginDM2AEy9QIElrO
+ chEiLlkLNuZkzo4SrH5RpkgjCbkyGnaGVGemjuiuewDYxiTfsT98spnpKkZzAzi+3+
+ pfO1zgf/xqmG9U4sSnzJWUcN42w0mWcSVS3v1jA54GuOvUGoaaDy4yLxlo90v9FJPh
+ TTFkI9DhNyWjjkXHn8tzbdFVqX4/wPO1qYcjyZMtjXMfsYpNsAbAvyg7KtX4ZlZsd/
+ D1HMe+HoG7vurDlz2fdbVsiMJkVnPruEg2z53S1QQeZQdh3sA2ziG8zLXKXXEF7Dmr
+ gYr1S0Admz6dA==
 From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RESEND PATCH v2 0/9] soundwire/regmap: use _no_pm routines
-Message-ID: <20210210195818.GH4748@sirena.org.uk>
-References: <20210122070634.12825-1-yung-chuan.liao@linux.intel.com>
- <20210206102644.GN2656@vkoul-mobl.Dlink>
- <20210208125032.GF8645@sirena.org.uk>
- <20210208150449.GF879029@vkoul-mobl.Dlink>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20210208233336.59449-1-pierre-louis.bossart@linux.intel.com>
+References: <20210208233336.59449-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 00/11] ASoC: SOF/Intel/SoundWire: add missing quirks
+ and DMIC support
+Message-Id: <161298789618.5497.9445247068272286223.b4-ty@kernel.org>
+Date: Wed, 10 Feb 2021 20:11:36 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="54u2kuW9sGWg/X+X"
-Content-Disposition: inline
-In-Reply-To: <20210208150449.GF879029@vkoul-mobl.Dlink>
-X-Cookie: Are we live or on tape?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
- srinivas.kandagatla@linaro.org, jank@cadence.com, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,39 +85,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 8 Feb 2021 17:33:25 -0600, Pierre-Louis Bossart wrote:
+> HP Spectre x360 convertible devices rely on a mixed SoundWire+DMIC
+> configuration which wasn't well supported. This lead to the discovery
+> that we missed the TGL_HDMI quirk on a number of Dell devices, the
+> addition of DMIC autodetection (based on NHLT tables), the addition of
+> new component strings needed by UCM, and work-arounds due to
+> problematic DSDT tables.
+> 
+> [...]
 
---54u2kuW9sGWg/X+X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Mon, Feb 08, 2021 at 08:34:49PM +0530, Vinod Koul wrote:
-> On 08-02-21, 12:50, Mark Brown wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> > Is there a tag I can pull the new APIs from?
+Thanks!
 
-> Yes, please pull from below:
+[01/11] ASoC: Intel: sof_sdw: reorganize quirks by generation
+        commit: 3d09cf8d0d791a41a75123e135f604d59f4aa870
+[02/11] ASoC: Intel: sof-sdw: indent and add quirks consistently
+        commit: 8caf37e2be761688c396c609880936a807af490f
+[03/11] ASoC: Intel: sof_sdw: add quirk for HP Spectre x360 convertible
+        commit: d92e279dee56b4b65c1af21f972413f172a9734a
+[04/11] ASoC: Intel: sof_sdw: add mic:dmic and cfg-mics component strings
+        commit: 209b0b0d8d5a469a2892ad51cb448811d00b4ff4
+[05/11] ASoC: Intel: sof_sdw: detect DMIC number based on mach params
+        commit: f88dcb9b98d3f86ead04d2453475267910448bb8
+[06/11] ASoC: intel: sof_sdw: add trace for dai links
+        commit: 3827b7ca399245e609b3ca717550b0638d1f69cd
+[07/11] ASoC: Intel: soc-acpi: add ACPI matching table for HP Spectre x360
+        commit: 717a8fdd150c495cc202880cf6955294c7acae4f
+[08/11] ASoC: SOF: Intel: SoundWire: refine ACPI match
+        commit: 6f5d506d7ff1d9b1ffac0130f2958b9da41175f4
+[09/11] ASoC: SOF: Intel: detect DMIC number in SoundWire mixed config
+        commit: 7aecf59770920cce5ff6e94b3809574364178126
+[10/11] ASoC: SOF: Intel: HDA: don't keep a temporary variable
+        commit: b9088535e1021f11500f8417598b6af1f381f7dc
+[11/11] ASoC: SOF: Intel: hda: add dev_dbg() when DMIC number is overridden
+        commit: 026370cb5bd7ef7999bc4379ab89ffd7a73874f2
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/soundwire-5.12-rc1
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Ah, that's the entire Soundwire pull request including driver updates -
-that's a bit more than is ideal.  Instead if you want to pull in the
-regmap bits that might be easier:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---54u2kuW9sGWg/X+X
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAkOtkACgkQJNaLcl1U
-h9Ch7gf+J3prwtpV3pK+bGdjWYr84An0eWZC4w6aGqSBDE81NkRyrG/sebd9QTNg
-KBL484vGu14FNBahCz6dq0G71yaHKw4bjZS5FqG/FX/zEYhKj5iscF7NUUbOeY5N
-DPsi9vNxsPH4NHztjSa+vd9/U0liZcvch2rtMa71V3sjmyCQ1xs9OQXZ4GUqTv3L
-5ng+TqKTMKHTbpL2ZJEtVFE+sxpi6NxrqSdj2sWdVoSi1oIviorn8P7nvcesboVJ
-PS3mx7KrkOiB4Yuwu70YjSeGb5GVuOcOW2M4NaGmLrbOGYbiiFzcxbEvz+Wmjbq8
-tv6VwcGIsoPZ1kTtWESzzI4K0eCjRA==
-=LVnK
------END PGP SIGNATURE-----
-
---54u2kuW9sGWg/X+X--
+Thanks,
+Mark
