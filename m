@@ -2,71 +2,70 @@ Return-Path: <SRS0=/2j+=HM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E74CEC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 11:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B44CC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 11:27:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 255C764E32
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 11:17:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 255C764E32
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6EBA064E2A
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 11:27:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EBA064E2A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1107716CE;
-	Wed, 10 Feb 2021 12:16:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1107716CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A961016CE;
+	Wed, 10 Feb 2021 12:26:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A961016CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612955864;
-	bh=upzE0haZDPgU2kVrnp2imat+dpEn5SWNkPUCuDT/Pc0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fNu5cAYoujre7S0WeylABNlNHUJcdSOllKVaWKWJUrYshKZQHBZt6TKa0At2C3xY+
-	 PqQslUkDLgWfTm/p9DMexDvifAGXIBX7inAX6lf3qpFhoVwOq9MALcdkHSSuozK22m
-	 LIHeWefLLX3roi0+c842sKacaeD5xADwTAsKjieM=
+	s=default; t=1612956444;
+	bh=yiEOeutAwah17LpKAJCd0bCXWUIVIqQ5DI3b77YOaqA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sc5aAToe2AGytTG/I/dHXiXpjf5RM3jHTedgoFuF6ukp12X99GfJDfEJg0rSbXSu+
+	 P+KFebmQY2KFKWLCOhuK3mgqNo2bSDf7EFLiQ8TrxDMC8HEcDA3CVqqEZeWpfA9wDq
+	 zAoCHddTubVLlymw6GHLnfBX5uYLIBFls4NjFwZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9114DF80169;
-	Wed, 10 Feb 2021 12:16:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BA59F80169;
+	Wed, 10 Feb 2021 12:26:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F7D3F8022B; Wed, 10 Feb 2021 12:16:52 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 38A48F8022B; Wed, 10 Feb 2021 12:26:32 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B094EF80165
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 12:16:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B094EF80165
-IronPort-SDR: ruCGZnawclYXc7nUtUDOq7rBgS4NJ54JKE9jyYEKV+ug3ehJdo8N2J5oq652qKtZ758AkiL7w+
- I7FYIbOnBMgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="243545676"
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; d="scan'208";a="243545676"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Feb 2021 03:16:37 -0800
-IronPort-SDR: fA0USBW3sJBtJj9NciIQOmff9MbKXWXoslurslo6XyxTfe612fzQ2c4fCNzP6R9g/iGAWC+TVH
- k6vFZWCijefg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,168,1610438400"; d="scan'208";a="421012810"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga002.fm.intel.com with ESMTP; 10 Feb 2021 03:16:35 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [PATCH] ALSA: hda: intel-dsp-config: add Alder Lake support
-Date: Wed, 10 Feb 2021 13:13:10 +0200
-Message-Id: <20210210111310.2227417-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Xiuli Pan <xiuli.pan@intel.com>, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C877F80165
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 12:26:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C877F80165
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 0935FAD57;
+ Wed, 10 Feb 2021 11:26:26 +0000 (UTC)
+Date: Wed, 10 Feb 2021 12:26:24 +0100
+Message-ID: <s5htuqki2ov.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] [RFC] ALSA: control - add generic LED API to sound core
+ routines
+In-Reply-To: <20210208223443.GA258185@workstation>
+References: <20210207201157.869972-1-perex@perex.cz>
+ <s5him72y4q0.wl-tiwai@suse.de>
+ <3bc1b151-68ce-8408-aff1-aeba2e6fe4c3@perex.cz>
+ <s5h5z32y0xt.wl-tiwai@suse.de>
+ <20210208223443.GA258185@workstation>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Hans de Goede <hdegoede@redhat.com>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Perry Yuan <Perry.Yuan@dell.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,47 +81,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add rules to select SOF driver for Alder Lake systems if a digital
-microphone or SoundWire codecs are present in the system. This is
-following same rules as for older Tiger Lake systems.
+On Mon, 08 Feb 2021 23:34:43 +0100,
+Takashi Sakamoto wrote:
+> 
+> Hi,
+> 
+> On Mon, Feb 08, 2021 at 05:33:02PM +0100, Takashi Iwai wrote:
+> > > > Also, are those new access flags exposed to user-space intentionally,
+> > > > so that user-space gets some information?
+> > > 
+> > > Yes, it's one benefit, the second benefit is that we can create user space
+> > > controls for hardware which does not have any switch / volume controls for the
+> > > given path.
+> > > 
+> > > An example is the AMD ACP bridge with the simple digital microphones. We can
+> > > use alsa-lib's softvol plugin to control the volume for this and it would be
+> > > nice to mark this user space control with the mic mute LED flag.
+> > 
+> > OK, makes sense.
+> 
+> I have a concern about the usage of access flag for such kind of
+> hardware specific stuffs (LED dedicated to specific audio control)
+> since it's not enough hardware abstraction.
+> 
+> In my opinion, for the case, developers for in-kernel driver tend to use
+> specific name for control elements (or prefix/suffix of the name). Adding
+> new access flags for it seems to be overengineering against the original
+> purpose.
+> 
+> 
+> The patch itself includes some remarkable ideas that:
+>  - introduction of association between control elements
+>  - analyzing current status of the association (then operate LEDs)
+>  - communication to userspace stuffs about the association
+> 
+> (here I carefully avoid usage of word 'topology'.)
+> 
+> The association itself seems to be useful when cooperating use case manager
+> of alsa-lib. I guess that the kind of framework designed for the association
+> is preferable instead of the patch tight-coupled to LED stuffs.
+> (And some subsystem already attempts to implement such framework into kernel
+> land, e.g. media controller devices in media subsystem.)
+> 
+> 
+> In another side, I guess that the reason to supply the association to
+> kernel land is to use 'ledtrig_audio_set()' kernel API. If userspace
+> stuffs find target LEDs and operate them via userspace interface,
+> the association could be in userspace. I think it better to investigate
+> for the direction since I can imagine that the introduction of association
+> to kernel land brings much codes into kernel land to support wide-variety
+> of hardware (and going to be obsoleted according to lifetime of actual
+> hardware sooner or later).
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Xiuli Pan <xiuli.pan@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/hda/intel-dsp-config.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Sakamoto-san's comments made me reconsidering of the situation again.
+The user-space access like via sysfs was my original idea when the mic
+mute LED issue came up for AMD ACP driver in the past.  One problem is
+the permission.  The r/w control over sysfs is for root, and we want
+for a normal user.  This might be solvable via loginctl or such and
+adding the dynamic permission via ACL.  I didn't investigate enough
+yet.
 
-NOTES:
- - PCI id 0x51c8 is not yet in tiwai/master, but it's in Mark's 
-   tree added with patch "ASoC: SOF: Intel: initial support to AlderLake-P"
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 68bb977c6a37..d1eb9d34993a 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -321,6 +321,18 @@ static const struct config_entry config_table[] = {
- 	},
- #endif
- 
-+/* Alder Lake */
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-+		.device = 0x7ad0,
-+	},
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
-+		.device = 0x51c8,
-+	},
-+#endif
-+
- };
- 
- static const struct config_entry *snd_intel_dsp_find_config
-
-base-commit: fbd0a1d723513f82c9521c363e93967618517bb8
--- 
-2.29.2
-
+Takashi
