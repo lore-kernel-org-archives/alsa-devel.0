@@ -2,70 +2,80 @@ Return-Path: <SRS0=/2j+=HM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B44CC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 11:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0606C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 12:07:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EBA064E2A
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 11:27:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EBA064E2A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 004ED64E40
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 12:07:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 004ED64E40
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A961016CE;
-	Wed, 10 Feb 2021 12:26:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A961016CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90CEC16C2;
+	Wed, 10 Feb 2021 13:06:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90CEC16C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612956444;
-	bh=yiEOeutAwah17LpKAJCd0bCXWUIVIqQ5DI3b77YOaqA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1612958851;
+	bh=p19qhdgBIKwdOoKdjZSMaJR2mGa2MLtrRkyT9XrlJ/4=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sc5aAToe2AGytTG/I/dHXiXpjf5RM3jHTedgoFuF6ukp12X99GfJDfEJg0rSbXSu+
-	 P+KFebmQY2KFKWLCOhuK3mgqNo2bSDf7EFLiQ8TrxDMC8HEcDA3CVqqEZeWpfA9wDq
-	 zAoCHddTubVLlymw6GHLnfBX5uYLIBFls4NjFwZ4=
+	b=eyT35RLIQG7R/SbIhnCbNi7PM9S+EM8tjkhcIIoXjZnjXUi6DAa9nWxSEJXsjsZOE
+	 S+VIGgEF/Wum1VVewi1FmPCwLcc0LC/n9S4GLt6AiKwUlhLTfHTSpeQORT7p1R5Xwz
+	 OHP/5GcqWMngN/v2mj1wgX2j4ljdh+v1kl0OT/Ek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BA59F80169;
-	Wed, 10 Feb 2021 12:26:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0732F800F1;
+	Wed, 10 Feb 2021 13:06:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38A48F8022B; Wed, 10 Feb 2021 12:26:32 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id BF966F8022B; Wed, 10 Feb 2021 13:06:38 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C877F80165
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 12:26:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C877F80165
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0935FAD57;
- Wed, 10 Feb 2021 11:26:26 +0000 (UTC)
-Date: Wed, 10 Feb 2021 12:26:24 +0100
-Message-ID: <s5htuqki2ov.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7138FF800F1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 13:06:29 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 597EBA003F;
+ Wed, 10 Feb 2021 13:06:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 597EBA003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1612958789; bh=6CKi6awuC4mqOly0xuEsZjMUkQZCeOMWjH+jPQnhTrs=;
+ h=Subject:To:References:From:Date:In-Reply-To:From;
+ b=catjFxjYyN70Nnm4fqfyU9GA9LZ2AjRwruKPQM3JcR+UjgpbL68xc+zVjS9+33D8J
+ M4reyqzYVLnRMOA5QgdR/sQv9+LyWzlO6mgRjXOiepzsugxDralMgbzcShaWyhRuHs
+ OAWWASCtL6ZYAadON3VbtnO+vJ5xQ+Cw/mQJkxaE=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 10 Feb 2021 13:06:25 +0100 (CET)
 Subject: Re: [PATCH] [RFC] ALSA: control - add generic LED API to sound core
  routines
-In-Reply-To: <20210208223443.GA258185@workstation>
+To: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Perry Yuan <Perry.Yuan@dell.com>
 References: <20210207201157.869972-1-perex@perex.cz>
  <s5him72y4q0.wl-tiwai@suse.de>
  <3bc1b151-68ce-8408-aff1-aeba2e6fe4c3@perex.cz>
- <s5h5z32y0xt.wl-tiwai@suse.de>
- <20210208223443.GA258185@workstation>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Hans de Goede <hdegoede@redhat.com>,
- ALSA development <alsa-devel@alsa-project.org>,
- Perry Yuan <Perry.Yuan@dell.com>
+ <s5h5z32y0xt.wl-tiwai@suse.de> <20210208223443.GA258185@workstation>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <55b6d51e-6138-9ecf-fe55-c50f61d97a77@perex.cz>
+Date: Wed, 10 Feb 2021 13:06:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210208223443.GA258185@workstation>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,24 +91,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 08 Feb 2021 23:34:43 +0100,
-Takashi Sakamoto wrote:
-> 
+Dne 08. 02. 21 v 23:34 Takashi Sakamoto napsal(a):
 > Hi,
 > 
 > On Mon, Feb 08, 2021 at 05:33:02PM +0100, Takashi Iwai wrote:
-> > > > Also, are those new access flags exposed to user-space intentionally,
-> > > > so that user-space gets some information?
-> > > 
-> > > Yes, it's one benefit, the second benefit is that we can create user space
-> > > controls for hardware which does not have any switch / volume controls for the
-> > > given path.
-> > > 
-> > > An example is the AMD ACP bridge with the simple digital microphones. We can
-> > > use alsa-lib's softvol plugin to control the volume for this and it would be
-> > > nice to mark this user space control with the mic mute LED flag.
-> > 
-> > OK, makes sense.
+>>>> Also, are those new access flags exposed to user-space intentionally,
+>>>> so that user-space gets some information?
+>>>
+>>> Yes, it's one benefit, the second benefit is that we can create user space
+>>> controls for hardware which does not have any switch / volume controls for the
+>>> given path.
+>>>
+>>> An example is the AMD ACP bridge with the simple digital microphones. We can
+>>> use alsa-lib's softvol plugin to control the volume for this and it would be
+>>> nice to mark this user space control with the mic mute LED flag.
+>>
+>> OK, makes sense.
 > 
 > I have a concern about the usage of access flag for such kind of
 > hardware specific stuffs (LED dedicated to specific audio control)
@@ -108,8 +116,11 @@ Takashi Sakamoto wrote:
 > specific name for control elements (or prefix/suffix of the name). Adding
 > new access flags for it seems to be overengineering against the original
 > purpose.
-> 
-> 
+
+Unfortunately, the ASoC drivers do not take care about any abstract naming.
+They mostly follow hw (codec) register naming from datasheets. So this rule is
+no longer true.
+
 > The patch itself includes some remarkable ideas that:
 >  - introduction of association between control elements
 >  - analyzing current status of the association (then operate LEDs)
@@ -133,13 +144,31 @@ Takashi Sakamoto wrote:
 > of hardware (and going to be obsoleted according to lifetime of actual
 > hardware sooner or later).
 
-Sakamoto-san's comments made me reconsidering of the situation again.
-The user-space access like via sysfs was my original idea when the mic
-mute LED issue came up for AMD ACP driver in the past.  One problem is
-the permission.  The r/w control over sysfs is for root, and we want
-for a normal user.  This might be solvable via loginctl or such and
-adding the dynamic permission via ACL.  I didn't investigate enough
-yet.
+My goal is to:
 
+1) reduce the code required to the LED support in the drivers
+2) handle security - see the Takashi follow up; for very secure
+   kernel configurations, the user space (non-root) should not "touch" the
+   LED settings at all to have the right feedback; also UCM is a bit
+   another layer on top of the other APIs
 
-Takashi
+The user space solution was already a bit denied when the LED support was
+added to the HDA driver (we can see the similarity for the vmaster code which
+is another layer in the control code etc.).
+
+I almost finished the complete implementation in the separate kernel module
+and the current snd.ko (control) code has minimal modifications just to
+redirect the necessary things to make the LED layer operational. It seems that
+we can save the code in the HDA driver and we can do really light changes in
+other drivers (set flags and do module load) just to get LED working without
+any user space intervention.
+
+If we come with another framework or solution in the future, we can remove
+this layer (it's just one small file / module). At least, we will have marked
+(the new access flags) the related controls / drivers / hardware.
+
+				Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
