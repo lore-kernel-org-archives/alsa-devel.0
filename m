@@ -6,65 +6,64 @@ X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA38CC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C44C8C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:14:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7E1364EDF
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:13:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7E1364EDF
+	by mail.kernel.org (Postfix) with ESMTPS id 19F8564EE5
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:14:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 19F8564EE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAE2B16D2;
-	Wed, 10 Feb 2021 21:12:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAE2B16D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B8D916E5;
+	Wed, 10 Feb 2021 21:13:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B8D916E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612988011;
-	bh=legv85L9BeD8k/5bfUXE36He7OpHk4dozEpujnu4mUs=;
+	s=default; t=1612988062;
+	bh=hMm//IaVgh+GxgjcDmzibqoGksuAmp+uhzD4AZx43yk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HMZuJLNaRHVVuz1pbsLkFxlBRs0n6EjBo0Zcwk+GjdMxvQwZpmO3JWVSGDTesDDJX
-	 t1bQCwh1djz8q8j6ee9uxCCJ7nYCSRRZbL4Iy+gLhiS9we+63dDWFeIRNakrOlsRP0
-	 hhunk+8h1+bKKbtS4SVlNoL2l2bF/qo4yYSADzDs=
+	b=SC2wX2mGt7/Pni6gp30LS+x/RPE45SZm+CmRHtz0W85Eftmc69xtSapNrap6Im0Az
+	 Awmpcjk9pELe5XH3cBXPPQI+8Kagv334PxH6i2m9s1q9Lk9XS84AizOPa+7keQOO9G
+	 0ENbiVzY69c7+p0f3ngOHJ18/+RYejOMwGh7e23w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B464F8022B;
-	Wed, 10 Feb 2021 21:12:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0FD7F80240;
+	Wed, 10 Feb 2021 21:12:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A08AEF8022B; Wed, 10 Feb 2021 21:12:38 +0100 (CET)
+ id E9AD6F800F1; Wed, 10 Feb 2021 21:12:38 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63F39F8010D
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:12:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63F39F8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68BEBF800F1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:12:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68BEBF800F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vMz29qoB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AD4E64E35;
- Wed, 10 Feb 2021 20:12:28 +0000 (UTC)
+ header.b="JT/lR9gv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D359C64EDF;
+ Wed, 10 Feb 2021 20:12:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612987948;
- bh=legv85L9BeD8k/5bfUXE36He7OpHk4dozEpujnu4mUs=;
+ s=k20201202; t=1612987953;
+ bh=hMm//IaVgh+GxgjcDmzibqoGksuAmp+uhzD4AZx43yk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=vMz29qoB1UYmDZCSbaLpabECsvBWkrIUJa1PtorIN2NOuUEhRginDM2AEy9QIElrO
- chEiLlkLNuZkzo4SrH5RpkgjCbkyGnaGVGemjuiuewDYxiTfsT98spnpKkZzAzi+3+
- pfO1zgf/xqmG9U4sSnzJWUcN42w0mWcSVS3v1jA54GuOvUGoaaDy4yLxlo90v9FJPh
- TTFkI9DhNyWjjkXHn8tzbdFVqX4/wPO1qYcjyZMtjXMfsYpNsAbAvyg7KtX4ZlZsd/
- D1HMe+HoG7vurDlz2fdbVsiMJkVnPruEg2z53S1QQeZQdh3sA2ziG8zLXKXXEF7Dmr
- gYr1S0Admz6dA==
+ b=JT/lR9gvdEOZctq1JxB0+bPgGreYE0YWVPtFeH7Csh8uAyVJ7nnDN57JBA/8qUsJK
+ e5R0orR2Us7opEiTQb2Q7mmAqUhhM+64ACbIQTloJP4HTSXoUQ98MuQHpCYlWX7Rsb
+ /3V0NXdTtbVBSHlwj17ctIyPVXPFAAdCAX5/51sxoLmYaOpu1iKfeO8sK70HnXcz5Q
+ WJgiB3jf+sHcefj1XlWl53YGYQCo8NHsXq+elMDtx7RedUzGOOxCVXuTajYyJtMHbd
+ 5SwhLgsnI2FcZxf8NX951QFDGHgbJCZT3h3GwwcQae1F0LWd6HfNL99IWnPT1mXHSj
+ mbz9SihfEv/PA==
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-In-Reply-To: <20210208233336.59449-1-pierre-louis.bossart@linux.intel.com>
-References: <20210208233336.59449-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 00/11] ASoC: SOF/Intel/SoundWire: add missing quirks
- and DMIC support
-Message-Id: <161298789618.5497.9445247068272286223.b4-ty@kernel.org>
+In-Reply-To: <20210208232149.58899-1-pierre-louis.bossart@linux.intel.com>
+References: <20210208232149.58899-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/5] ASoC: SOF: cleanups
+Message-Id: <161298789618.5497.7329014289938073399.b4-ty@kernel.org>
 Date: Wed, 10 Feb 2021 20:11:36 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -85,13 +84,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 8 Feb 2021 17:33:25 -0600, Pierre-Louis Bossart wrote:
-> HP Spectre x360 convertible devices rely on a mixed SoundWire+DMIC
-> configuration which wasn't well supported. This lead to the discovery
-> that we missed the TGL_HDMI quirk on a number of Dell devices, the
-> addition of DMIC autodetection (based on NHLT tables), the addition of
-> new component strings needed by UCM, and work-arounds due to
-> problematic DSDT tables.
+On Mon, 8 Feb 2021 17:21:44 -0600, Pierre-Louis Bossart wrote:
+> Minor cleanups for error formats, missing cases, useless functions and
+> simplifications.
+> 
+> Curtis Malainey (2):
+>   ASoC: SOF: add missing pm debug
+>   ASoC: SOF: fix string format for errors
 > 
 > [...]
 
@@ -101,28 +100,16 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: Intel: sof_sdw: reorganize quirks by generation
-        commit: 3d09cf8d0d791a41a75123e135f604d59f4aa870
-[02/11] ASoC: Intel: sof-sdw: indent and add quirks consistently
-        commit: 8caf37e2be761688c396c609880936a807af490f
-[03/11] ASoC: Intel: sof_sdw: add quirk for HP Spectre x360 convertible
-        commit: d92e279dee56b4b65c1af21f972413f172a9734a
-[04/11] ASoC: Intel: sof_sdw: add mic:dmic and cfg-mics component strings
-        commit: 209b0b0d8d5a469a2892ad51cb448811d00b4ff4
-[05/11] ASoC: Intel: sof_sdw: detect DMIC number based on mach params
-        commit: f88dcb9b98d3f86ead04d2453475267910448bb8
-[06/11] ASoC: intel: sof_sdw: add trace for dai links
-        commit: 3827b7ca399245e609b3ca717550b0638d1f69cd
-[07/11] ASoC: Intel: soc-acpi: add ACPI matching table for HP Spectre x360
-        commit: 717a8fdd150c495cc202880cf6955294c7acae4f
-[08/11] ASoC: SOF: Intel: SoundWire: refine ACPI match
-        commit: 6f5d506d7ff1d9b1ffac0130f2958b9da41175f4
-[09/11] ASoC: SOF: Intel: detect DMIC number in SoundWire mixed config
-        commit: 7aecf59770920cce5ff6e94b3809574364178126
-[10/11] ASoC: SOF: Intel: HDA: don't keep a temporary variable
-        commit: b9088535e1021f11500f8417598b6af1f381f7dc
-[11/11] ASoC: SOF: Intel: hda: add dev_dbg() when DMIC number is overridden
-        commit: 026370cb5bd7ef7999bc4379ab89ffd7a73874f2
+[1/5] ASoC: SOF: add missing pm debug
+      commit: a8f50cd9be7cc4c57f29c1390568225ebee90eda
+[2/5] ASoC: SOF: fix string format for errors
+      commit: ce1f55bac5534aa518e26b94728173ee45f91a8c
+[3/5] ASoC: SOF: remove unused functions
+      commit: 3be46fa21088740ae5790d84b882e5a3c98fce41
+[4/5] ASoC: SOF: HDA: (cosmetic) simplify hda_dsp_d0i3_work()
+      commit: f1bb023525fd654121f18f6e2587eeee84c9db04
+[5/5] ASoC: SOF: ext_manifest: use explicit number for elem_type
+      commit: cc11626dd9f894d93ed15d78b04452ca9acbb52b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
