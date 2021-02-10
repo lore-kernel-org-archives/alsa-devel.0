@@ -2,74 +2,88 @@ Return-Path: <SRS0=/2j+=HM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56D80C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:16:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF4E5C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:18:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B0EE64EDC
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:16:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B0EE64EDC
+	by mail.kernel.org (Postfix) with ESMTPS id 8727564EDF
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:18:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8727564EDF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3859316F1;
-	Wed, 10 Feb 2021 21:15:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3859316F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10B8816D6;
+	Wed, 10 Feb 2021 21:17:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10B8816D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612988204;
-	bh=X1HRLSAszGkdh3lATQv2bUw4+cXGSG1p7K0xQqLcPVQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1612988279;
+	bh=Je2EyyVhKU9RXjNW2+robtMD3iUlSjTIN5+XmKbcuFQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=syhr3J7l2FdjevDz3gseXn1iXXlagrm/TrMCICzOuTyCpMyBpYIQfkPmPF34Lx35C
-	 OvBSgTR9M1xZvMqRcExyGxK6tNBGPk89GmViQdyRijBjjrXq8qjEDLTLJ34hYayPYV
-	 Iwq/BgRQOI6wO5B10fCdeLQBlQcWjSKy/tc42CNM=
+	b=hrlewqMXA9+yCmvAVDkpgAKDKwqmvHp4nWhDziInWY2SQHmzF+lU/p6UN+984rNPl
+	 lVT9RlwV9+hI5Af05fWA+rRaVnPSL7LVDxWasYbdAVdJgMrTotGNfgXn2DSNluxz+p
+	 4zo9eJcsWqsz9SguIZEO/MT6iUDYpERWXGsnjxok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96B1BF804AC;
-	Wed, 10 Feb 2021 21:13:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85009F80169;
+	Wed, 10 Feb 2021 21:17:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3F83F80425; Wed, 10 Feb 2021 21:13:04 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 838FCF800F1; Wed, 10 Feb 2021 21:17:06 +0100 (CET)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com
+ [209.85.210.52])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6196CF8032C
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:13:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6196CF8032C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kichIqBA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CD0064EDC;
- Wed, 10 Feb 2021 20:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612987981;
- bh=X1HRLSAszGkdh3lATQv2bUw4+cXGSG1p7K0xQqLcPVQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kichIqBALhDsjjfsuHw/7+1oC5X/Xe9S++IbFUZj+tjABCDPHhDuWsYjQesJOoxbs
- W4iJSp6PneJ531YjKLljn3RTFfOAUaatnXicv2yXS/LirEB2z7TOR9yj5roNDuL2+E
- 8O+3k8APhfnEw3kx7MCjOSCrLpP+QMIU6HZNqBSJzfe6wJzTfm93f10s9kxTmNLdtT
- JFyAYWOqpfj3AUN3X3wYoPxgz5PV7/iAcprzIHOZzC8AGKhWSCciLdSxhl0ozAxCn4
- 6bjLz8csQAbm/z7wJuzqx6I2+/SDoX8GuicuYpz8ol1t2h5PtWgewbjorRpby68oKI
- YY9H10wwnUQGg==
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210208231853.58761-1-pierre-louis.bossart@linux.intel.com>
-References: <20210208231853.58761-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: sof-pci-dev: add missing Up-Extreme quirk
-Message-Id: <161298789618.5497.6307898886080250053.b4-ty@kernel.org>
-Date: Wed, 10 Feb 2021 20:11:36 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEDD1F800F1
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:16:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEDD1F800F1
+Received: by mail-ot1-f52.google.com with SMTP id e4so3049485ote.5
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 12:16:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=ZXsyAUgNpQ7MKm5gpNUdWcFNxxOrvuvI1ZTaGnmXF78=;
+ b=W2mqQPzTBDVVTaObr1euLO4E729pMwTxuz6AdzGPxee4r/knUjiEc7oY+Qr0iSgqXD
+ WGQDWsCH+CVNFBLJXQHDPDAk50sIoqpY7zoAIHx8s2o2hdYpHcvMurhKFXxKJzrvlsA9
+ +xjpjpzOomUkWG6FEVCoyUFk6it8mzf1v68rUl2SIlvQtIm9Vwb4v35mvWj/NWk+m6Q+
+ d983NoaUgGmUP/XW6KE4VcR2B4V5RE4lXsIaIb2Tff0GTlYmpebRE0jo+mTJuS9n1Fnr
+ jHxVsROGWUrpl3nPxFoGu9kxZR15ubYiH3f4dzwMLp1+B/QT78T6fnUiohgMutB3mYM3
+ VqGg==
+X-Gm-Message-State: AOAM533W+dMfhZ+WzwwkZKXm41x7w+GTAYwutXtCodEqrrKSg5mE43TF
+ 0Gk/Bvjb1DCKH8ZF1/uOWA==
+X-Google-Smtp-Source: ABdhPJwUOUeHGJSiGCowqI6v+JsevRF/BUPkVWmYhpXW5eZR8ZqZRK8RdpUyMIAkkbbMnorumr+sNA==
+X-Received: by 2002:a9d:3625:: with SMTP id w34mr3405528otb.330.1612988218236; 
+ Wed, 10 Feb 2021 12:16:58 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id e17sm614219otf.32.2021.02.10.12.16.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 10 Feb 2021 12:16:57 -0800 (PST)
+Received: (nullmailer pid 2686353 invoked by uid 1000);
+ Wed, 10 Feb 2021 20:16:56 -0000
+Date: Wed, 10 Feb 2021 14:16:56 -0600
+From: Rob Herring <robh@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v4 1/7] ASoC: qcom: dt-bindings: add bindings for lpass
+ rx macro codec
+Message-ID: <20210210201656.GA2686235@robh.at.kernel.org>
+References: <20210210093055.18350-1-srinivas.kandagatla@linaro.org>
+ <20210210093055.18350-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <bard.liao@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210210093055.18350-2-srinivas.kandagatla@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,35 +99,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 8 Feb 2021 17:18:53 -0600, Pierre-Louis Bossart wrote:
-> The UpExtreme board supports the community key and was missed in
-> previous contributions. Add it to make sure the open firmware is
-> picked by default without needing a symlink on the target.
+On Wed, 10 Feb 2021 09:30:49 +0000, Srinivas Kandagatla wrote:
+> This binding is for LPASS has internal codec RX macro which is
+> for connecting with SoundWire RX codecs like WCD938x.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/sound/qcom,lpass-rx-macro.yaml   | 62 +++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
+> 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: SOF: sof-pci-dev: add missing Up-Extreme quirk
-      commit: bd8036eb15263a720b8f846861c180b27d050a09
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Rob Herring <robh@kernel.org>
