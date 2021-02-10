@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35BD8C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56FB8C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:16:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A5EBF64E35
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:15:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A5EBF64E35
+	by mail.kernel.org (Postfix) with ESMTPS id 7D38364EDC
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Feb 2021 20:16:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D38364EDC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF3D816ED;
-	Wed, 10 Feb 2021 21:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF3D816ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 216C216F3;
+	Wed, 10 Feb 2021 21:15:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 216C216F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1612988154;
-	bh=A1kfeid37u/WoghoCf3KlbXDtZBhqUtPSmHssGj2l1o=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1612988172;
+	bh=/XJ14EvYFvze96WUDGqDMMRLgcue6gHSY9hj6HJUWE4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QdNAkwsa4NGKJG+l/9tDcP0hEaOeBO0nbVTE+gWIAM5AgYt77Pv8GMKdc9wCF3B8q
-	 EQfPDjhiT6ZYY7o1tWQqOUBgVSXkxGWDfBmpBX0FvIAcVPYTjGrhU1qPkCGHKRFwPy
-	 BBM7oLfukFDkZmHB0wxkmpOt4jOrFsk07gLdSb5s=
+	b=KjLP4PFJBlq5tCS8IrumrvD3YrNlhVLozfAu1lQMvGbDvCQlpdItOLnzWIJsBr8xp
+	 l/I2wjsqYMCevRwcYaFaicXK2QH0eUiIEgMTusAJYmN/ls2IEvj6gSFDa7USZ8MhJK
+	 8JEr6AtqIaiyV2Wtega+gvYuElKLi7tbqWfNL+8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40F6BF802E2;
-	Wed, 10 Feb 2021 21:12:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35E3FF8042F;
+	Wed, 10 Feb 2021 21:13:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00359F802E3; Wed, 10 Feb 2021 21:12:55 +0100 (CET)
+ id 1B30FF8032D; Wed, 10 Feb 2021 21:13:01 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 872B7F802DB
- for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:12:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 872B7F802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6056EF8032B
+ for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2021 21:12:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6056EF8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gWRI06Lb"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A75E64E35;
- Wed, 10 Feb 2021 20:12:51 +0000 (UTC)
+ header.b="mJl5Nuhk"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02BCC64EDC;
+ Wed, 10 Feb 2021 20:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1612987971;
- bh=A1kfeid37u/WoghoCf3KlbXDtZBhqUtPSmHssGj2l1o=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=gWRI06LbIY4Y9owVVJzg+VEE5MbfUNK7IQFZkaXaHcItOAwZ2owqix+ohjZ9x3T7k
- ueQ+MlvYznZKJqradn9SF8QN38BE50uqid03xxx7jwPyMEZe30/4e95zDwhgM0N/GQ
- jYo0YDNqgnj8qOULqF3Yrk2lMtaA7gGbjeI//QqsEL/9LQYKXiygfumARn4jppoDus
- BvVm8Vhj4NXzZTmjmwGFLxpQNW7ej9xfMGZzX5tz+PZf8IWYzpALOGIrfXb+t6Mphx
- BMUW0PC9gwY4cMnwDrtNv6UmqrOpwauJ7wvWd6xj8i+LU4pjfRS920PrqVWkGEK2SL
- 4+tg5bONLdifg==
+ s=k20201202; t=1612987976;
+ bh=/XJ14EvYFvze96WUDGqDMMRLgcue6gHSY9hj6HJUWE4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mJl5NuhkwTJ82MwVgVgAVPJddW5+XDODUieeJTvSFgGmkCkAVRjPjpEBdj/aKs1yq
+ Ud6R1JjDTZPK3d6edok2D/apkH6PifVeWUtLokkq6EZkPALjUPFbpHqStYiGL0D3GA
+ /t9rl+Yjnd982U1jbcw6B+5yAZ/Qy0Cw65lLXCMqi0K0hJrPlDugrLb7v0SedoyH/e
+ EJPAo6ft9mmuSTv9iu6ZVkx05RmzTt8sY953OFVk2RVmPb4K3nmYYxI5fc/zEe5pO7
+ GgQwVlDo5uiWXYLXAH8YDbFF69cNdAu/haACXoyLRzEEkhWd+WKioBwjD6LhojIlr5
+ LrvESy8uxpmLQ==
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, Shengjiu Wang <shengjiu.wang@nxp.com>, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
-In-Reply-To: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1612771965-5776-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: change error message to debug message
-Message-Id: <161298789619.5497.10810235891247531439.b4-ty@kernel.org>
+To: Tzung-Bi Shih <tzungbi@google.com>
+In-Reply-To: <20210125062003.1221810-1-tzungbi@google.com>
+References: <20210125062003.1221810-1-tzungbi@google.com>
+Subject: Re: [PATCH v2 0/3] ASoC: mediatek: mt8192: apply some cleanup
+Message-Id: <161298789619.5497.4062987580680565020.b4-ty@kernel.org>
 Date: Wed, 10 Feb 2021 20:11:36 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,9 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 8 Feb 2021 16:12:45 +0800, Shengjiu Wang wrote:
-> This log message should be a debug message, because it
-> doesn't return directly but continue next loop.
+On Mon, 25 Jan 2021 14:20:00 +0800, Tzung-Bi Shih wrote:
+> The series applies after [1].
+> 
+> The 1st and 2nd patch refactor to use asoc_substream_to_rtd().  Just
+> realized there is such a helper for the purpose.
+> 
+> The 3rd patch simplies ops of Capture1 DAI link.
+> 
+> [...]
 
 Applied to
 
@@ -93,8 +99,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-pcm: change error message to debug message
-      commit: b6eabd247db8bb2d013fb9a9451ecb04a44ee58f
+[1/3] ASoC: mediatek: mt8192-mt6359: use asoc_substream_to_rtd()
+      commit: 8e59cf943fa7402f008de4b444beb0c5280317bc
+[2/3] ASoC: mediatek: mt8192: use asoc_substream_to_rtd()
+      commit: 0840706d6c61658e51f42762c5b4f211b7596535
+[3/3] ASoC: mediatek: mt8192-mt6359: simply ops for Capture1 DAI link
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
