@@ -2,74 +2,74 @@ Return-Path: <SRS0=wAKr=HN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5035AC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Feb 2021 15:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BDE3C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Feb 2021 15:41:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 411A064EAA
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Feb 2021 15:40:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 411A064EAA
+	by mail.kernel.org (Postfix) with ESMTPS id 7BDD964EB9
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Feb 2021 15:41:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BDD964EB9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E588D16F0;
-	Thu, 11 Feb 2021 16:39:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E588D16F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCB421705;
+	Thu, 11 Feb 2021 16:40:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCB421705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613058033;
-	bh=LsU6IY0XMvB35GCkDSTyQJjmM/Iv44ftFdEgZbsQGzo=;
+	s=default; t=1613058083;
+	bh=WkhNi8ol3f1VI1S+4Gsf371AiJwJ79gqlKtzjzdXMUA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qYCeG+WEtB/eAzIca25lsOQ8hAGfroCC25WtizMAx0wgdvIPb7xfjmVY3rTFn6Vee
-	 iiBkDHla3TsSq0hL+7/HKTGEvcPyZmiDlfUHs9uzc8q/yw6sC1cFbopbyj1hW3cgkB
-	 Sk4zkvqB/mNm6kgdMjezGV8/4sFKDbtvwfB8AX6g=
+	b=VXjWWZLra0kqst662pOj52SpExj9j9cM0Nd/pOt4dP8a5oXtZRlXdgJ8iLudexUVz
+	 hN5s7MljuOlKaRA3Rgp/IO0RsIcc9x/6Tzwo0rrkXKQA/HTy1jEZFiEuKSSjFoSA5p
+	 2IwhZHHRcsWNkwEjfolCFz3M7rYS3azfrgd+Av6c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61690F8016B;
-	Thu, 11 Feb 2021 16:39:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7C00F801EC;
+	Thu, 11 Feb 2021 16:39:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18370F801D5; Thu, 11 Feb 2021 16:39:41 +0100 (CET)
+ id B614BF8025F; Thu, 11 Feb 2021 16:39:44 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C98E5F80165
- for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2021 16:39:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C98E5F80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B593F801EC
+ for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2021 16:39:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B593F801EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="I7qwTeL2"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 081C364E8B;
- Thu, 11 Feb 2021 15:39:33 +0000 (UTC)
+ header.b="JkknHSnZ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D53A864E8A;
+ Thu, 11 Feb 2021 15:39:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1613057974;
- bh=LsU6IY0XMvB35GCkDSTyQJjmM/Iv44ftFdEgZbsQGzo=;
+ s=k20201202; t=1613057980;
+ bh=WkhNi8ol3f1VI1S+4Gsf371AiJwJ79gqlKtzjzdXMUA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=I7qwTeL246KJjiI9qrbAo9OfDiaTLtBfHqWRmF2UDaKuNvQEw9HVa7/O/o3V6hDUg
- hZnsF92tW2J10kdBGkX2roF1PUo6he4vxFVy0TeCfor8ebJmn8eWLFvkYEEw6Iyp11
- kZv7qNqcPx+x/J/KohqG00KEIgN4MVZQFTurAfapkryRBv+fby5VEQ/dr//X4gUMAR
- +I4g3c7ur4ZR6BED1N9Ht9LmD1FjeCbUWf46mT2mq6i4c9Dto5xSXqMX/+yvE7LyW4
- ph80WGB4yrsLIAzmlHXdNcmmni9ZDFI8eOisSrysMlFQen4l5lwNiWp3xYvlEKc+ZF
- MrMeiGpGY9YKQ==
+ b=JkknHSnZybPCBxcOILruAYK5wW9P5YV3XE/aWCQ3Wtd0GrsNhk9pRgH8ZUksmoAdC
+ MCV7CJtO4USAGKEqO7pfZNvjRsoh4amQYycd6fpLhsLrv84ORSbOt711/oEYtOUDv/
+ P89h8UE53rLYviDDI1WxHviiQHWH8mnusX15/aIhnjd1uY7Jt7uL/lWLr1GWGla+OW
+ F2s0Vw0tL9MKeFnQP6NqGs1cOhoaSf3jYcox6fxY6tscTJkyZ1szjlxNhuavfKV9MH
+ DiYPqTD+q50y8xyQtvLkAnmIKNeGIFLKabwknGXHYOyc4n8zhIaTc1aiFD2jAOeJU0
+ FGqHwT1DXsOnQ==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210211122735.5691-1-srinivas.kandagatla@linaro.org>
-References: <20210211122735.5691-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 0/7] ASoC: codecs: add support for LPASS Codec TX and
- RX macros
-Message-Id: <161305792123.12370.16328158570413320155.b4-ty@kernel.org>
+To: Sameer Pujar <spujar@nvidia.com>, thierry.reding@gmail.com, robh@kernel.org
+In-Reply-To: <1612939421-19900-1-git-send-email-spujar@nvidia.com>
+References: <1612939421-19900-1-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH 0/3] Use clocks property in a device node
+Message-Id: <161305792123.12370.8611418623618908867.b4-ty@kernel.org>
 Date: Thu, 11 Feb 2021 15:38:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+ jonathanh@nvidia.com, linux-tegra@vger.kernel.org, sharadg@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,15 +85,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 11 Feb 2021 12:27:28 +0000, Srinivas Kandagatla wrote:
-> This patchset adds support for two Codec Macro blocks(TX and RX) available in
-> Qualcomm LPASS (Low Power Audio SubSystem).
+On Wed, 10 Feb 2021 12:13:38 +0530, Sameer Pujar wrote:
+> It is recommended to not specifiy clocks property in an endpoint subnode.
+> This series moves clocks to device node.
 > 
-> There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
-> has specific connectivity like WSA Macros are intended to connect
-> to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
-> and TX/RX for Analog codecs via SoundWire like other WCD938x Codecs to provide
-> headphone/ear/lineout/amic/dmic etc ..
+> However after moving the clocks to device node, the audio playback or
+> capture fails. The specified clock is not actually getting enabled and
+> hence the failure is seen. There seems to be a bug in simple-card-utils.c
+> where clock handle is not assigned when parsing clocks from device node.
 > 
 > [...]
 
@@ -103,20 +102,12 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: qcom: dt-bindings: add bindings for lpass rx macro codec
-      commit: f133de9e32374841c5ed1ad5cf18ed14098a0f4c
-[2/7] ASoC: codecs: lpass-rx-macro: add support for lpass rx macro
-      commit: af3d54b99764f0bdd83fcbd1895d23b83f8276be
-[3/7] ASoC: codecs: lpass-rx-macro: add dapm widgets and route
-      commit: 4f692926f562ff48abfcca6b16f36ff8d57473b6
-[4/7] ASoC: codecs: lpass-rx-macro: add iir widgets
-      commit: f3ce6f3c9a994d3fa5057cadfaa1d883e0d938fa
-[5/7] ASoC: qcom: dt-bindings: add bindings for lpass tx macro codec
-      commit: ca955cc980afc066a380567e371480634e48eb7e
-[6/7] ASoC: codecs: lpass-tx-macro: add support for lpass tx macro
-      commit: c39667ddcfc516fee084e449179d54430a558298
-[7/7] ASoC: codecs: lpass-tx-macro: add dapm widgets and route
-      commit: d207bdea0ca9efde321ff142e9b9f2ef73f9cdf5
+[1/3] ASoC: simple-card-utils: Fix device module clock
+      commit: 1e30f642cf2939bbdac82ea0dd3071232670b5ab
+[2/3] Revert "ASoC: audio-graph-card: Add clocks property to endpoint node"
+      commit: 0be0f142b8323378df6358c36dd15494134f5b94
+[3/3] arm64: tegra: Move clocks from RT5658 endpoint to device node
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
