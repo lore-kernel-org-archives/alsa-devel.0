@@ -2,77 +2,66 @@ Return-Path: <SRS0=tzFk=HO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.4 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B156EC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 10:33:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1C55C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 12:30:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E5EC364E6B
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 10:33:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5EC364E6B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 3856C64E08
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 12:30:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3856C64E08
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91A1216DA;
-	Fri, 12 Feb 2021 11:32:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91A1216DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D49A516D4;
+	Fri, 12 Feb 2021 13:29:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D49A516D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613126023;
-	bh=pamgSW4qVwXSanYK+Eo4qSUKYlNojhR4zL7rHaz5DSU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1613133011;
+	bh=ud/yVBp+1GgTj1a//oDQXDnsK6EM3xyIKKiuQ/hSIvo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f+AkcvdHmns/+yvq/XlY0Od2f1MqgZv+cnr55JMboOOainkonHJQ3T8HhCYnIZQW8
-	 boQMlELkS02i6D8ZTjwDnx4O4h43cF7S5wQVJ1nbwEfUE9SyQen2W4hZ8TvCkQJd2P
-	 vfX3b9+qIykrqUmCD8Ja2qtnBZMxniDuH3rrBbis=
+	b=gAuWXWZ/6QTyYNVokuYVLl8HhodN2PP1INnHkhZzgOjFtXQRQfOKxwwn7A9ygBRN+
+	 rBuWRpvh+XlHrIKy1+qYtD8JEsqM2Mml4eaMX3rCY0Z06NckgrrpjypI1FAiQ1at2c
+	 2Fv/LivVndOxrgfWl+eTp78XFRZNb5OwAuCt0yZs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 276B1F8016C;
-	Fri, 12 Feb 2021 11:32:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A2BCF8016C;
+	Fri, 12 Feb 2021 13:29:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 304ECF8022B; Fri, 12 Feb 2021 11:32:51 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id DBDE9F8022B; Fri, 12 Feb 2021 13:29:06 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A7F0F8010D
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2021 11:32:43 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 79E0DA003F;
- Fri, 12 Feb 2021 11:32:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 79E0DA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1613125962; bh=Beqe2uAo7W0PKEuGoNT33hqWJ0W4LCs4S/fgTnPprOc=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=pTuUNJL1olzLlf/oPDdxqKifkn9um26YqrZlpmJ8pXegtT732WPXaBmFzx1T8E2I6
- uptmQ0V2zpuYm0plWkIRJsYsRr0EZOjDwidvCPwCe/4SYY5tk893WDvfbqPl9xMyE7
- t+LZ93F0D7JowSb3rmG4Da02B1f40RKUu+/gcPUw=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 12 Feb 2021 11:32:38 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7330CF8010D
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2021 13:28:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7330CF8010D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id EB12BAC90;
+ Fri, 12 Feb 2021 12:28:48 +0000 (UTC)
+Date: Fri, 12 Feb 2021 13:28:48 +0100
+Message-ID: <s5hwnvdcvwf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH 0/5] ALSA: control - add generic LED trigger code
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <b1bc4135-25b9-26aa-323d-23bea15e164c@perex.cz>
 References: <20210211111400.1131020-1-perex@perex.cz>
  <s5h1rdmfrvo.wl-tiwai@suse.de>
  <3c84c275-0c62-d2f4-38ad-be6accb3b159@perex.cz>
  <s5hblcpej13.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <b1bc4135-25b9-26aa-323d-23bea15e164c@perex.cz>
-Date: Fri, 12 Feb 2021 11:32:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <s5hblcpej13.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <b1bc4135-25b9-26aa-323d-23bea15e164c@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: Hans de Goede <hdegoede@redhat.com>,
  ALSA development <alsa-devel@alsa-project.org>,
  Perry Yuan <Perry.Yuan@dell.com>
@@ -91,74 +80,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 12. 02. 21 v 10:23 Takashi Iwai napsal(a):
-> On Thu, 11 Feb 2021 18:53:20 +0100,
-> Jaroslav Kysela wrote:
->>
->> Dne 11. 02. 21 v 18:15 Takashi Iwai napsal(a):
->>
->>>> Jaroslav Kysela (5):
->>>>   ALSA: control - introduce snd_ctl_notify_one() helper
->>>>   ALSA: control - add layer registration routines
->>>>   ALSA: control - add generic LED trigger module as the new control
->>>>     layer
->>>>   ALSA: HDA - remove the custom implementation for the audio LED trigger
->>>>   ALSA: control - add sysfs support to the LED trigger module
->>
->>> One thing I still miss from the picture is how to deal with the case
->>> like AMD ACP.  It has no mixer control to bundle with the LED trigger.
->>> Your idea is to make a (dummy) user element and tie the LED trigger
->>> with it?
->>
->> Yes, the user-space code which guarantee the silence stream should create an
->> user space control with the appropriate LED group access bits. The alsa-lib's
->> softvol PCM plugin can do this silencing for example.
+On Fri, 12 Feb 2021 11:32:38 +0100,
+Jaroslav Kysela wrote:
 > 
-> What control would it create?  In the case of softvol, it's a volume
-> control that really changes the volume.  For the mute LED, it's a
-> control turn on/off the mute?  If so, I wonder what makes better than
-> creating it from the kernel driver.  (Of course, we can list up like
-> "flexibility", etc, but it has a flip side of "complexity" and
-> "fragility"...)
-
-The current code handles both switch / volume for the marked control (assuming
-that the minimal value - usually zero - is full mute). And actually, there are
-snd_pcm_areas_silence() calls in the softvol plugin, so we know that the PCM
-stream is not passed to the application at this point.
-
-Condition:
-
-      if (info.type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-          info.type == SNDRV_CTL_ELEM_TYPE_INTEGER)
-          ... value.value.integer.value[i] != info.value.integer.min
-
-The softvol plugin may be extended to add the mute switch control, of course.
-
->>> Another slight concern is the possible regression: by moving the
->>> mute-LED mode enum stuff into the sysfs, user will get
->>> incompatibilities after the kernel update.  And it's not that trivial
->>> to change the sysfs entry as default for each user.
->>> It needs some detailed documentation or some temporary workaround
->>> (e.g. keep providing the controls for now but warns if the value is
->>> changed from the default value via the controls).
->>
->> I don't think that we have a user space application which is using those
->> controls (Pulseaudio or so..) in an abstract way. I think that it's really
->> minor issue. We should probably concentrate for the main designed purpose
->> (notify about the mute / silent state) and handle those add-on features as an
->> experimental stuff.
+> Dne 12. 02. 21 v 10:23 Takashi Iwai napsal(a):
+> > On Thu, 11 Feb 2021 18:53:20 +0100,
+> > Jaroslav Kysela wrote:
+> >>
+> >> Dne 11. 02. 21 v 18:15 Takashi Iwai napsal(a):
+> >>
+> >>>> Jaroslav Kysela (5):
+> >>>>   ALSA: control - introduce snd_ctl_notify_one() helper
+> >>>>   ALSA: control - add layer registration routines
+> >>>>   ALSA: control - add generic LED trigger module as the new control
+> >>>>     layer
+> >>>>   ALSA: HDA - remove the custom implementation for the audio LED trigger
+> >>>>   ALSA: control - add sysfs support to the LED trigger module
+> >>
+> >>> One thing I still miss from the picture is how to deal with the case
+> >>> like AMD ACP.  It has no mixer control to bundle with the LED trigger.
+> >>> Your idea is to make a (dummy) user element and tie the LED trigger
+> >>> with it?
+> >>
+> >> Yes, the user-space code which guarantee the silence stream should create an
+> >> user space control with the appropriate LED group access bits. The alsa-lib's
+> >> softvol PCM plugin can do this silencing for example.
+> > 
+> > What control would it create?  In the case of softvol, it's a volume
+> > control that really changes the volume.  For the mute LED, it's a
+> > control turn on/off the mute?  If so, I wonder what makes better than
+> > creating it from the kernel driver.  (Of course, we can list up like
+> > "flexibility", etc, but it has a flip side of "complexity" and
+> > "fragility"...)
 > 
-> I'm sure that there are users of the reverse mic-mute LED ("follow
-> capture" mode); the feature was added because of the explicit request
-> from my colleague, and this mode works no matter whether ALSA native
-> or PA is used.
-I see. It looks like a corner case. The proposed sysfs based code is also user
-space independent. The issue with the HDA code is that it's card based, but
-the system wide LEDs should not be tied to one sound card. We are seeing that
-the hardware designers became very creative :-)
+> The current code handles both switch / volume for the marked control (assuming
+> that the minimal value - usually zero - is full mute). And actually, there are
+> snd_pcm_areas_silence() calls in the softvol plugin, so we know that the PCM
+> stream is not passed to the application at this point.
+> 
+> Condition:
+> 
+>       if (info.type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
+>           info.type == SNDRV_CTL_ELEM_TYPE_INTEGER)
+>           ... value.value.integer.value[i] != info.value.integer.min
+> 
+> The softvol plugin may be extended to add the mute switch control, of course.
 
-						Jaroslav
+Well, my question was what kind of mixer control will be added at all,
+although the chip does neither volume nor mute function.  Would we add
+a fake volume/switch like softvol, or would we add rather a control
+that is directly tied with the LED state?
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+> >>> Another slight concern is the possible regression: by moving the
+> >>> mute-LED mode enum stuff into the sysfs, user will get
+> >>> incompatibilities after the kernel update.  And it's not that trivial
+> >>> to change the sysfs entry as default for each user.
+> >>> It needs some detailed documentation or some temporary workaround
+> >>> (e.g. keep providing the controls for now but warns if the value is
+> >>> changed from the default value via the controls).
+> >>
+> >> I don't think that we have a user space application which is using those
+> >> controls (Pulseaudio or so..) in an abstract way. I think that it's really
+> >> minor issue. We should probably concentrate for the main designed purpose
+> >> (notify about the mute / silent state) and handle those add-on features as an
+> >> experimental stuff.
+> > 
+> > I'm sure that there are users of the reverse mic-mute LED ("follow
+> > capture" mode); the feature was added because of the explicit request
+> > from my colleague, and this mode works no matter whether ALSA native
+> > or PA is used.
+> I see. It looks like a corner case. The proposed sysfs based code is also user
+> space independent. The issue with the HDA code is that it's card based, but
+> the system wide LEDs should not be tied to one sound card. We are seeing that
+> the hardware designers became very creative :-)
+
+Heh, the flexiblity of the existing LED subsystem is already allowing
+to be creative, although I haven't seen much exotic usage in the
+reality (maybe the exception is the blinking at panic; IIRC, there is
+Morse code conversion, too? :)
+
+
+Takashi
