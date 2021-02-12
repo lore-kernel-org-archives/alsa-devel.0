@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF714C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 17:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E0FBC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 17:21:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D979764E02
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 17:17:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D979764E02
+	by mail.kernel.org (Postfix) with ESMTPS id 9F7AC64E56
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Feb 2021 17:21:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F7AC64E56
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A84716DB;
-	Fri, 12 Feb 2021 18:16:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A84716DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id D48AC16DA;
+	Fri, 12 Feb 2021 18:20:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D48AC16DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613150238;
-	bh=rguKO6UtNYjjK1ViBl/179wTA3fKM9A40QES1Ugl0kc=;
+	s=default; t=1613150491;
+	bh=hdSI45zWuub97JxpU2ycsxtISSQZNnmPlefwgo3+bXM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XSHNvOvANfKI3H81y03yNC85A8uabSlxBfCJ7aQpqtu6RaG0tHwsUHJmynW2Rz4Be
-	 MKCPqmlCn9DkPDD1U/6GpRiqjbw+oUYHi3Rd1b5mvD8lOY+8++u3ZjfgGeFSxYmkhd
-	 0ATleJAWbea2F6S1lk4uz202/+SzGKrESKZ1ytpU=
+	b=cERAWWUtSVMENi7TVLCpxtn23xMGZmH0jx8vI0wTJmL87LAVTjqMmm8nJsLURzNMg
+	 QfIOwR4HH+ilUqsSFC5z8AltQ43F7onMpCk0PGd9ule2OzKygEvh9f0c73rdBBQ7ZL
+	 wMCU04SCnJJN0Lb9bE7lifNOj+77J/GwkgUWZkaQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2756AF8014D;
-	Fri, 12 Feb 2021 18:16:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52A67F8014D;
+	Fri, 12 Feb 2021 18:20:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79DF3F8022B; Fri, 12 Feb 2021 18:16:25 +0100 (CET)
+ id AEE15F8010D; Fri, 12 Feb 2021 18:20:39 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 90049F8014D
- for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2021 18:16:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90049F8014D
+ by alsa1.perex.cz (Postfix) with ESMTP id A68C4F8010D
+ for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2021 18:20:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A68C4F8010D
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1613150178323998928-webhooks-bot@alsa-project.org>
-References: <1613150178323998928-webhooks-bot@alsa-project.org>
-Subject: Bass speaker is off on yoga slim 7i 15 (7-15ITL)
-Message-Id: <20210212171625.79DF3F8022B@alsa1.perex.cz>
-Date: Fri, 12 Feb 2021 18:16:25 +0100 (CET)
+In-Reply-To: <1613150429019525051-webhooks-bot@alsa-project.org>
+References: <1613150429019525051-webhooks-bot@alsa-project.org>
+Subject: Bass speaker is off on yoga slim 7i 15 (Yoga Slim 7-15ITL05)
+Message-Id: <20210212172039.AEE15F8010D@alsa1.perex.cz>
+Date: Fri, 12 Feb 2021 18:20:39 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #83 was opened from juliusvonkohout:
+alsa-project/alsa-ucm-conf issue #83 was edited from juliusvonkohout:
 
 Alsainfo: http://alsa-project.org/db/?f=673e04313fa931831176ed3f50a9af1c9206395e
 
