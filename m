@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A391AC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Feb 2021 10:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB72EC433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Feb 2021 10:21:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE43F64E3D
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Feb 2021 10:21:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE43F64E3D
+	by mail.kernel.org (Postfix) with ESMTPS id D982C64DB1
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Feb 2021 10:21:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D982C64DB1
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=inria.fr
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EE8916F6;
-	Sat, 13 Feb 2021 11:20:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EE8916F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5578C16F0;
+	Sat, 13 Feb 2021 11:20:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5578C16F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613211662;
-	bh=ipog7sYMHUoieObPmoI2GtbNnG3kRjO3ys2+oFidVTI=;
+	s=default; t=1613211667;
+	bh=bJF+ACufcXrrAU8NJ4ecvu6SLGonA9tORuaY/8cRvMc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b3pPVoGYk+wkEg2cAdkck4I8rBAsGn0O4pmgqqt+4sHEMN2BRa4CfdqZ9v6TDCvR9
-	 PYrjKPB0bOlbtYfxWFrEslxCHNZIhKfHr0rUpbmUYPDGPdgxMI6Ti4bXLrommRfaV/
-	 p1lhaYVxkCZG8HCHgOH3S3oXKjI5Pr58j6yK/Riw=
+	b=U5jYgtPzwnELlliihJ//Q7hokPmWUjhAdIjP5kdcNt62tdoBhALPHfebXtcIEuRNz
+	 1PVnjb1+x3hrFVQbGOzfW/xiueG7OWMa/jUaW1Ch+AGSart6Ox54YAalbMIyLcmiUp
+	 Rme7BPdPwyCDdgqdSwSL/o5o7ipLhWZhn+Bds1v4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAE8CF8014B;
-	Sat, 13 Feb 2021 11:19:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75820F8028D;
+	Sat, 13 Feb 2021 11:19:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EE49F8028B; Sat, 13 Feb 2021 11:19:22 +0100 (CET)
+ id C14D7F80290; Sat, 13 Feb 2021 11:19:24 +0100 (CET)
 Received: from mail3-relais-sop.national.inria.fr
  (mail3-relais-sop.national.inria.fr [192.134.164.104])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFB1FF8014B
- for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 11:19:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFB1FF8014B
-X-IronPort-AV: E=Sophos;i="5.81,175,1610406000"; d="scan'208";a="372960477"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95279F801D5
+ for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 11:19:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95279F801D5
+X-IronPort-AV: E=Sophos;i="5.81,175,1610406000"; d="scan'208";a="372960478"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-SHA;
  13 Feb 2021 11:19:14 +0100
 From: Julia Lawall <Julia.Lawall@inria.fr>
-To: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH 1/4] ASoC: mmp-sspa: drop unneeded snd_soc_dai_set_drvdata
-Date: Sat, 13 Feb 2021 11:19:04 +0100
-Message-Id: <20210213101907.1318496-2-Julia.Lawall@inria.fr>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 2/4] ASoC: mxs-saif: drop unneeded snd_soc_dai_set_drvdata
+Date: Sat, 13 Feb 2021 11:19:05 +0100
+Message-Id: <20210213101907.1318496-3-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210213101907.1318496-1-Julia.Lawall@inria.fr>
 References: <20210213101907.1318496-1-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Mark Brown <broonie@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-arm-kernel@lists.infradead.org
+ Fabio Estevam <festevam@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,22 +99,35 @@ expression x,y,e;
 -	snd_soc_dai_set_drvdata(y,x);
 // </smpl>
 
+In this case, the whole probe function then does nothing, so drop it.
+
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- sound/soc/pxa/mmp-sspa.c |    1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/mxs/mxs-saif.c |   10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index 4803972ee655..7e39210a0b38 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -330,7 +330,6 @@ static int mmp_sspa_probe(struct snd_soc_dai *dai)
- 				&sspa->playback_dma_data,
- 				&sspa->capture_dma_data);
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 07f8cf9980e3..6a2d24d48964 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -642,18 +642,8 @@ static const struct snd_soc_dai_ops mxs_saif_dai_ops = {
+ 	.set_fmt = mxs_saif_set_dai_fmt,
+ };
  
--	snd_soc_dai_set_drvdata(dai, sspa);
- 	return 0;
- }
- 
+-static int mxs_saif_dai_probe(struct snd_soc_dai *dai)
+-{
+-	struct mxs_saif *saif = dev_get_drvdata(dai->dev);
+-
+-	snd_soc_dai_set_drvdata(dai, saif);
+-
+-	return 0;
+-}
+-
+ static struct snd_soc_dai_driver mxs_saif_dai = {
+ 	.name = "mxs-saif",
+-	.probe = mxs_saif_dai_probe,
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
 
