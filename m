@@ -8,85 +8,85 @@ X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
 	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22546C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 06:44:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D6DC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 06:44:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F9CE64E4E
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 06:44:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F9CE64E4E
+	by mail.kernel.org (Postfix) with ESMTPS id AFF8B601FE
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 06:44:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AFF8B601FE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3F4D168C;
-	Sun, 14 Feb 2021 07:43:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3F4D168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A702116A6;
+	Sun, 14 Feb 2021 07:44:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A702116A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613285043;
+	s=default; t=1613285094;
 	bh=+ray0VqT4sTjatzI2a/mNQLcXRRFiHsp/U/vSMV39gE=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pTViDGuW5WSaJ/4mFGMg+Dxle30R5w2cktNTVR82DwhezqTnRuJcQq0u1PXnxOa46
-	 HG5vqVhy+8Kgg5pRNMOjTS/CMGdCOP62dbRu45vWmNIzvGu8tRkw4vuX87YQ6gf1Ku
-	 fv0e3vGZCrH9kbEfrlyULYmxAQI65VHSbA+rD88w=
+	b=dJOs7se4QKdeMce+zRh2HDvLX/A18koqakZAHWSbnySkegwba3GHjVDUTWh74nM45
+	 /vk6xwyd7L6fAlSMLEwlSUHKtg2ttR1tDYDQsCK8PwTfU6G3BfBbhhS84UdelgOtsP
+	 6Yg3Q2RGKE3N5gyVuj6ZFcnO4FVbO9hCiNF1g/Kg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 452ABF80127;
-	Sun, 14 Feb 2021 07:43:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19AA2F8016E;
+	Sun, 14 Feb 2021 07:43:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14558F80155; Sun, 14 Feb 2021 07:43:12 +0100 (CET)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+ id 366F0F801DB; Sun, 14 Feb 2021 07:43:30 +0100 (CET)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD58FF800F0
- for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2021 07:43:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD58FF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 561C3F8015A
+ for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2021 07:43:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 561C3F8015A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="lONEfYJP"
-Received: by mail-wm1-x32a.google.com with SMTP id h67so36704wmh.1
- for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 22:43:07 -0800 (PST)
+ header.b="h/mDIbri"
+Received: by mail-wr1-x42b.google.com with SMTP id l12so4843859wry.2
+ for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 22:43:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=subject:to:cc:references:from:message-id:date:user-agent
  :mime-version:in-reply-to:content-transfer-encoding;
  bh=aUQN0SZkwCC+2sHkMRBo4eVveaM2m59ClyPi/TCSgJI=;
- b=lONEfYJPUrLz5RDAOZS2qSR+fbN2nlHvin68WfMaf3E1IJ6M+G1Z555jS9N+iasaNg
- /Tb06GEyFyOySORkE3gJcvZDr8Bjg8W5Yf3uklS7Sz5MTc9uMjsn6a/TBwzoCLs7eDEu
- 7K+gkflquhfbVj3SMqZxT5V895G8rCuSZU0O7jgJHeT/pukTeFrsVARPWOytTUpVjcAa
- YlTmMFNqpJrihrpuUbyq3n2Cs5DB2Xs4235iMQJVkezstXUe1ikd612BSYn+32wgzF31
- 9Zc4dLs6ITH8eqBVO8m8Ng7mNvNTog73Codg88VC3xA4dq0E69wbLBjJ5NfgJEWwIFPj
- zG8g==
+ b=h/mDIbriPlQZGWb9Eb+iLQ2zUlvMmcy9awHJpqDHlnzTnWOsQH0vqNZO0tg7gvYlh3
+ h1HoSIjmKogwHw8RFpjBJ7uocWEfbdZjB1koiQq6K76Qh8VztTJUIE0XDc3dVr3bDXvB
+ Qvr8BMnXtxJCREViPxKu4XP4vecJXZaj9I0dv1Nn/mzvM8XGc91//KKyg9RTyvDAYjgj
+ iqDAUkXf4jncjNS8Pqr9fGbDuFGrAssQYNlIR/K8zW7W+rL9+EEmKdg0yCPavKc30FCK
+ GPt3DR3382ijOTCvAEqAyCDomOVT6W889vWolxIP2H+Saoq5w9y1TvNITlaZ/TnqXhPK
+ mJgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:subject:to:cc:references:from:message-id:date
  :user-agent:mime-version:in-reply-to:content-transfer-encoding;
  bh=aUQN0SZkwCC+2sHkMRBo4eVveaM2m59ClyPi/TCSgJI=;
- b=kwbuhKtHGu43HCvSA9ubC5vV2phOK5gmx7GpdK2mSySMN181aCu1WKEzGc2fsvjI1Z
- QBZ57/FkwjMUhFVZWcsG4XK/B/VR+Z0FSYRrQPusTZHxBPGCb/S0lq9RT2iYU/uec/Oo
- hkOX29mtNiZSrBK45DMfttjB7F55NzTx9t+8z2Qe8pKIgXGD4u6HRyY+Hp2BGOLtDp7O
- bBOPr62bVogvWbD+761eNSZw/mZu6Q3IpUSUuu6j6SK8CgdgfWzFKZl+rnwekZ3dXD59
- qyGS/7w+RmI28hbE+k1agEUtM+5FX6Au6P+wkA0/wR1D+ebmtOckrdv24hWvIQcY5Pjf
- mq2A==
-X-Gm-Message-State: AOAM531KlaIiUcIlivSJRsagRgGOccSsCMHYeTdgN6Hcf/IaIfNyO5c5
- hpo+eIpB9ukItiGeIc6FtiI=
-X-Google-Smtp-Source: ABdhPJxUwqq6xODqw/+vkq1hdQjPuAD84Fy0EPAcABxWLmYvuBqPgDfL8/4lq97lUQETtqDhXSwU8g==
-X-Received: by 2002:a7b:c355:: with SMTP id l21mr9283477wmj.61.1613284982503; 
- Sat, 13 Feb 2021 22:43:02 -0800 (PST)
+ b=Awa72lwgeiYEQV6Z5yi2+tMxYQmuSsSNQ8o/61gzy7GltqdX9w+w44vqfZVnWSjFam
+ +0N24UhUqqFxfoCnTwtleK8O0rHgE5UOi8eV16kkxNg5NyYGZfL2we7bnVmTxcq004UN
+ EXOHdF305YOX0yGIKkENyRZo8eA64X3rk4J4dr+SrtxiQoFjYhno9qC7RFj+f8E2+fWa
+ 6FzJqmGzxmzMjYVJuw6mrTw0PQxNjn2pfjzPLrJWjBQ2byBO64HIFhEZ3goH1NeHNzE/
+ YbGMX6WPPkERdtrS60T4rwK/EGwnqeYDrf2Tfg/b3i3DjTp1CK4EoQBimwoU6qVivuX+
+ /98g==
+X-Gm-Message-State: AOAM530IheYGf0A2z4z/VdK1eiWn10fBVQpo50UNPaswRzKsW5XVPXBJ
+ n/bISlYL87JALpzNmYfPn9M=
+X-Google-Smtp-Source: ABdhPJzLImN7rJllYpBrWPP1f3SYUf5vt7xMMJv7VCxJ7SlRdTVlcugQRaTGfUIvH4oKVMuw12jVhg==
+X-Received: by 2002:a5d:4849:: with SMTP id n9mr12536800wrs.159.1613285001726; 
+ Sat, 13 Feb 2021 22:43:21 -0800 (PST)
 Received: from [0.0.0.0] ([2a01:4f8:c17:e10a::1])
- by smtp.gmail.com with ESMTPSA id f14sm20469280wmc.32.2021.02.13.22.42.57
+ by smtp.gmail.com with ESMTPSA id z15sm4013712wrs.72.2021.02.13.22.43.17
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 13 Feb 2021 22:43:02 -0800 (PST)
+ Sat, 13 Feb 2021 22:43:21 -0800 (PST)
 Subject: Re: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
 To: Mark Brown <broonie@kernel.org>, Perry Yuan <Perry.Yuan@dell.com>
 References: <20210112171814.5404-1-Perry_Yuan@Dell.com>
  <20210112175406.GF4646@sirena.org.uk>
 From: Perry Yuan <perry979106@gmail.com>
-Message-ID: <6d705d1e-9fe2-86fa-4c6a-270bf6039a3f@gmail.com>
-Date: Sun, 14 Feb 2021 14:42:51 +0800
+Message-ID: <43507ba7-74b8-2d18-57ca-271f89a752de@gmail.com>
+Date: Sun, 14 Feb 2021 14:43:10 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
