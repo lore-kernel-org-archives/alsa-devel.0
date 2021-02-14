@@ -1,82 +1,101 @@
-Return-Path: <SRS0=f0FX=HP=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=fPON=HQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07539C433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Feb 2021 19:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22546C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 06:44:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D14C64DDA
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Feb 2021 19:03:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D14C64DDA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=izotope.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4F9CE64E4E
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 06:44:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F9CE64E4E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A084B1692;
-	Sat, 13 Feb 2021 20:02:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A084B1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3F4D168C;
+	Sun, 14 Feb 2021 07:43:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3F4D168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613243007;
-	bh=hJCxOzsBAtSkblsT/YIOieRg+F36SSwIPXatrZFK/ns=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iU4xn/tMDI8Sg6wsXo0EiGqSSVw7YglxvMJ4kkoGPi23aky9uG7u8QGPQK3LQah+/
-	 fAH8IAAX6fqLYtmc4aZtgvYHobm12q7+DcbhvNTJ9yoYFrbvc3AHspwCuVJ0qlPbAw
-	 iJxr61rbKdAlTjDcszbf9ujapm1Ny4dnT2wL9jpQ=
+	s=default; t=1613285043;
+	bh=+ray0VqT4sTjatzI2a/mNQLcXRRFiHsp/U/vSMV39gE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pTViDGuW5WSaJ/4mFGMg+Dxle30R5w2cktNTVR82DwhezqTnRuJcQq0u1PXnxOa46
+	 HG5vqVhy+8Kgg5pRNMOjTS/CMGdCOP62dbRu45vWmNIzvGu8tRkw4vuX87YQ6gf1Ku
+	 fv0e3vGZCrH9kbEfrlyULYmxAQI65VHSbA+rD88w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19B6CF8016B;
-	Sat, 13 Feb 2021 20:02:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 452ABF80127;
+	Sun, 14 Feb 2021 07:43:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C661EF801D5; Sat, 13 Feb 2021 20:02:35 +0100 (CET)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
- [IPv6:2a00:1450:4864:20::135])
+ id 14558F80155; Sun, 14 Feb 2021 07:43:12 +0100 (CET)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43DF3F80087
- for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 20:02:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43DF3F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD58FF800F0
+ for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2021 07:43:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD58FF800F0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=izotope.com header.i=@izotope.com
- header.b="a1YG0Pvk"
-Received: by mail-lf1-x135.google.com with SMTP id v5so4309468lft.13
- for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 11:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=izotope.com; s=google;
- h=mime-version:from:date:message-id:subject:to;
- bh=51eRBltOVNHL92G3weDICUbgo0MLN4yygREnAhajsac=;
- b=a1YG0PvkjkRGHJcJuoUx3Jzfxb3Wc/6QZzBS+Qu/eqKEpe+1O2ErW4IDb5/yRHPl7h
- thjoMmsya1zzbpttBVgk6OfNmrdbESWryFTV+UfrQkQYzpXt5VJH4ivky8xSMygs7VxT
- jxF4MeEMUNGAfJWFLoVPKRcsyV/hxFWm9d0e0=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="lONEfYJP"
+Received: by mail-wm1-x32a.google.com with SMTP id h67so36704wmh.1
+ for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2021 22:43:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-transfer-encoding;
+ bh=aUQN0SZkwCC+2sHkMRBo4eVveaM2m59ClyPi/TCSgJI=;
+ b=lONEfYJPUrLz5RDAOZS2qSR+fbN2nlHvin68WfMaf3E1IJ6M+G1Z555jS9N+iasaNg
+ /Tb06GEyFyOySORkE3gJcvZDr8Bjg8W5Yf3uklS7Sz5MTc9uMjsn6a/TBwzoCLs7eDEu
+ 7K+gkflquhfbVj3SMqZxT5V895G8rCuSZU0O7jgJHeT/pukTeFrsVARPWOytTUpVjcAa
+ YlTmMFNqpJrihrpuUbyq3n2Cs5DB2Xs4235iMQJVkezstXUe1ikd612BSYn+32wgzF31
+ 9Zc4dLs6ITH8eqBVO8m8Ng7mNvNTog73Codg88VC3xA4dq0E69wbLBjJ5NfgJEWwIFPj
+ zG8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=51eRBltOVNHL92G3weDICUbgo0MLN4yygREnAhajsac=;
- b=a+sz8s6+FHO2rGOoDciI8t0/DOZMYnr2tC1tTac0imSxKwA0XQ0noHngp5ssf9aP99
- G7n7ZXrKB0/ibmZl83DmcfFsXpC75aJwl+3/uvi0c5366IvTux6OB0KajCgVjXYbHOh5
- n+ePOql1SS9o0SK6tcfGheXXRET/OM4eroW6pDQOMh6aYpOhswPMOpqujLApEokBKzxH
- SfAsAexHjh3jclmHZy6eIToTkxXGiFP49GPJik+YrQuBtKTydQP3+S3YdCSE4pYAIXvL
- C4Owo6pnEKYpiCH66gaeo4vRSceMcKkgFMnQ6pyGjW6tkHPiLriexFDtQeK6X7ZQAn3u
- FLgA==
-X-Gm-Message-State: AOAM530K0iUeDlk33W+IEynV+bhaKswlYry8M5ZFQ8E+NgKCq/6DpvGg
- o7p1k8u0Fd7kW5FLe14WN6iQ85sLaVVBLn/C/zHdlwXcyVTHVA==
-X-Google-Smtp-Source: ABdhPJykZ7aXknOPaiqgP3h6BnIz0tEsYwMzvHHOj+BtWGd7T1B8TO7INMjeIjxoFUyLgtqt7d22v3TxPFrG9d/db+g=
-X-Received: by 2002:ac2:43d6:: with SMTP id u22mr4368109lfl.247.1613242945152; 
- Sat, 13 Feb 2021 11:02:25 -0800 (PST)
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+ bh=aUQN0SZkwCC+2sHkMRBo4eVveaM2m59ClyPi/TCSgJI=;
+ b=kwbuhKtHGu43HCvSA9ubC5vV2phOK5gmx7GpdK2mSySMN181aCu1WKEzGc2fsvjI1Z
+ QBZ57/FkwjMUhFVZWcsG4XK/B/VR+Z0FSYRrQPusTZHxBPGCb/S0lq9RT2iYU/uec/Oo
+ hkOX29mtNiZSrBK45DMfttjB7F55NzTx9t+8z2Qe8pKIgXGD4u6HRyY+Hp2BGOLtDp7O
+ bBOPr62bVogvWbD+761eNSZw/mZu6Q3IpUSUuu6j6SK8CgdgfWzFKZl+rnwekZ3dXD59
+ qyGS/7w+RmI28hbE+k1agEUtM+5FX6Au6P+wkA0/wR1D+ebmtOckrdv24hWvIQcY5Pjf
+ mq2A==
+X-Gm-Message-State: AOAM531KlaIiUcIlivSJRsagRgGOccSsCMHYeTdgN6Hcf/IaIfNyO5c5
+ hpo+eIpB9ukItiGeIc6FtiI=
+X-Google-Smtp-Source: ABdhPJxUwqq6xODqw/+vkq1hdQjPuAD84Fy0EPAcABxWLmYvuBqPgDfL8/4lq97lUQETtqDhXSwU8g==
+X-Received: by 2002:a7b:c355:: with SMTP id l21mr9283477wmj.61.1613284982503; 
+ Sat, 13 Feb 2021 22:43:02 -0800 (PST)
+Received: from [0.0.0.0] ([2a01:4f8:c17:e10a::1])
+ by smtp.gmail.com with ESMTPSA id f14sm20469280wmc.32.2021.02.13.22.42.57
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 13 Feb 2021 22:43:02 -0800 (PST)
+Subject: Re: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
+To: Mark Brown <broonie@kernel.org>, Perry Yuan <Perry.Yuan@dell.com>
+References: <20210112171814.5404-1-Perry_Yuan@Dell.com>
+ <20210112175406.GF4646@sirena.org.uk>
+From: Perry Yuan <perry979106@gmail.com>
+Message-ID: <6d705d1e-9fe2-86fa-4c6a-270bf6039a3f@gmail.com>
+Date: Sun, 14 Feb 2021 14:42:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-From: Matt Campbell <mcampbell@izotope.com>
-Date: Sat, 13 Feb 2021 14:02:13 -0500
-Message-ID: <CAMDowVUiR4TN9pthhpQzy+Z+MVRR8t9T3vb5r+nsdVCeFpOmeA@mail.gmail.com>
-Subject: mixer controls not updating when changed in another process for ASoC
- aux devices
-To: alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+In-Reply-To: <20210112175406.GF4646@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, mgross@linux.intel.com,
+ Mario.Limonciello@dell.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ tiwai@suse.com, platform-driver-x86@vger.kernel.org, hdegoede@redhat.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,39 +111,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-I am using the snd-soc-simple-card driver to glue together a DAI, Codec,
-and a few aux devices that have custom drivers for pre-amp control. When I
-have two instances of alsamixer open and change the output control (a
-control  that is part of the main Codec driver) that change immediately
-shows in the second instance of alsamixer. However, when changing any of
-the controls that come from an aux device, these changes do not show up in
-the second instance. Exiting and re-launching the second alsamixer will
-then show the changes. I would expect these controls to behave the same as
-the main codec master output level with immediate update in all instances.
+Hi Mark:
+Thanks for your review.
 
-I'm speculating that the aux devices might be treated differently in a way
-that is causing the unexpected behavior. I haven't been able to identify
-anything through a few hours of code inspection, but I'm far from an expert
-on the internals of ASoC. I'm hoping someone on this list might be able to
-confirm or deny that suspicion and possibly help me get to the bottom of
-this.
+On 2021/1/13 1:54, Mark Brown wrote:
+> On Wed, Jan 13, 2021 at 01:18:14AM +0800, Perry Yuan wrote:
+> 
+>> Some new Dell system is going to support audio internal micphone
+>> privacy setting from hardware level with micmute led state changing
+>> When micmute hotkey pressed by user, soft mute will need to be enabled
+>> firstly in case of pop noise, and codec driver need to react to mic
+>> mute event to EC(embedded controller) notifying that SW mute is completed
+>> Then EC will do the hardware mute physically within the timeout reached
+> 
+>> This patch allow codec rt715 driver to ack EC when micmute key pressed
+>> through this micphone led control interface like hda_generic provided
+>> ACPI method defined in dell-privacy micmute led trigger will be called
+>> for notifying the EC that software mute has been completed
+> 
+> It feels like there's an abstraction problem here with this being hard
+> coded in a specific CODEC driver.
+> 
+>>   #include <linux/soundwire/sdw.h>
+>> @@ -244,6 +245,7 @@ static int rt715_sdca_get_volsw(struct snd_kcontrol *kcontrol,
+>>   	unsigned int max = mc->max;
+>>   	int val;
+>>   
+>> +	pr_err("++++++rt715_sdca_get_volsw++\n");
+>>   	val = snd_soc_component_read(component, mc->reg);
+>>   	if (val < 0)
+>>   		return -EINVAL;
+> 
+> This shouldn't be in the patch.
+Removed in V4, I forget to clear this debug code
+> 
+>> @@ -287,6 +291,18 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+>>   			return err;
+>>   	}
+>>   
+>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>> +	/* dell privacy LED trigger state changed by muted/unmute switch */
+>> +	if (mc->invert) {
+>> +		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
+>> +			rt715->micmute_led = LED_OFF;
+>> +		} else {
+>> +			rt715->micmute_led = LED_ON;
+>> +		}
+>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
+>> +	}
+>> +#endif
+>> +
+> 
+> This doesn't look good.  There's nothing Dell specific here, and nothing
+> about this is conditional on any sort of runtime detection of Dell
+> systems, it's not obvious why this is conditional on DELL_PRIVACY or why
+> we only report the state if the control is inverted.
+> 
+I will remove the CONFIG_DELL_PRIVACY from V4 patch and allow it to run 
+if CONFIG_DELL_PRIVACY is not set, the result will be a no-op.
+> I'm also not convinced that it's a good idea to set the mute LED if only
+> one channel in a stereo microphone is muted, that seems likely to lead
+> to surprising behaviour for users.
+> 
+https://github.com/thesofproject/linux/pull/2660#discussion_r555480210
+There is a discussion for the channel mute changing behavior.
+If the anyone of value[0] or value[1] is 1, it means mic is NOT muted
+The muted state will be LED_ON state need to set.
 
- A few other possibly relevant details:
-* This happens both with snd-soc-simple-driver and a different custom
-in-house platform driver that uses aux devs.
-* I am on an older version of the kernel (4.14.2). I scanned logs between
-the head of master and that version for ASoC changes and nothing popped out
-to me as relevant.
-* The aux dev causing this is an in-house driver for the THAT 5xx3 series
-of pre-amplifier controller that we intend to upstream. I'm happy to share
-code from that if it helps.
+> TBH I don't understand why this isn't being done in generic code.
+> 
+>> +	bool micmute_led;
+> 
+> What is this for, it never seems to be read except for in the function
+> where it's set?
+> 
 
-Best,
-~Matt
--- 
-Matthew Campbell
-Principal Engineer
-mcampbell@izotope.com
+I have moved this part code to the local definition of 
+rt715_set_amp_gain_put and removed from rt715_priv.
+new code will be like this in V4.
 
-iZotope, Inc.
-www.izotope.com
+@@ -88,6 +89,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol 
+*kcontrol,
+                 RT715_SET_GAIN_MIX_ADC2_L};
+         unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
+         unsigned int read_ll, read_rl, i, j, loop_cnt;
++       bool micmute_led;
+
