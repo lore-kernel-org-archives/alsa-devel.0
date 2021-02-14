@@ -6,64 +6,63 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4F8CC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 23:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F021C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 23:26:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 38B1F64DCE
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 23:22:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 38B1F64DCE
+	by mail.kernel.org (Postfix) with ESMTPS id 6D60764DCC
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Feb 2021 23:26:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D60764DCC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4E2E1680;
-	Mon, 15 Feb 2021 00:22:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4E2E1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 005131680;
+	Mon, 15 Feb 2021 00:25:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 005131680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613344974;
-	bh=8sNxC4Go4OYyM9/Zg9bKH7lingT4N6Xxy3G8JXSvEdg=;
+	s=default; t=1613345207;
+	bh=o7JnDtK6PTw3pn3OIZjL2Hftz1Xug7i6yO6vpYMhDs0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q+r77dMpyWgpRt1P5CO+W+mYcBznu63fsGx6i4pPoGqXpRRDjR6AgeLwIDYxBCehs
-	 HnYfnTK+4ekCoJJmC+bKv20JteVTk7DEB0V075jhiRTr/D5NODoy36VKtpX8YI0LAs
-	 7r/YW8mXQlJO7zZJLOMvH7oq6KAECiQtriaZ8yQQ=
+	b=CYkvq+i11daI2aClLW0CxMO2NoVH2FlB7grsD7Up+wPbi/uVrIIQIU/Gr2Qo2gg/h
+	 8gS0FzjTWlOv0RuOQCUyAELWnUh97/FX1c6NgOsSIR+UhlaFOmd3zHyVkHX6T3o+AP
+	 dg2p2ibLdJpqX8nXiE+pdAgjiYTMXyZyTvDtv18A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5268AF80127;
-	Mon, 15 Feb 2021 00:22:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 713FFF80127;
+	Mon, 15 Feb 2021 00:25:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 628AAF80155; Mon, 15 Feb 2021 00:22:02 +0100 (CET)
+ id 11C94F800C1; Mon, 15 Feb 2021 00:25:45 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 24F9DF800F0
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 00:21:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24F9DF800F0
-Date: 15 Feb 2021 08:21:48 +0900
-X-IronPort-AV: E=Sophos;i="5.81,179,1610377200"; d="scan'208";a="72058016"
+ by alsa1.perex.cz (Postfix) with ESMTP id 6B788F800C1
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 00:25:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B788F800C1
+Date: 15 Feb 2021 08:25:35 +0900
+X-IronPort-AV: E=Sophos;i="5.81,179,1610377200"; d="scan'208";a="72058223"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 15 Feb 2021 08:21:48 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Feb 2021 08:25:35 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E931741085C8;
- Mon, 15 Feb 2021 08:21:47 +0900 (JST)
-Message-ID: <87r1li44ms.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 905354108E47;
+ Mon, 15 Feb 2021 08:25:35 +0900 (JST)
+Message-ID: <87pn1244gg.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 2/3] ASoC: soc-pcm: add soc_pcm_hw_update_chan()
-In-Reply-To: <alpine.DEB.2.22.394.2102142311050.864696@eliteleevi.tm.intel.com>
-References: <87tuqs90rl.wl-kuninori.morimoto.gx@renesas.com>
- <87r1lw90oo.wl-kuninori.morimoto.gx@renesas.com>
- <62f03ec8-7b9c-4550-d63d-cc50693e62fa@linux.intel.com>
- <alpine.DEB.2.22.394.2102142311050.864696@eliteleevi.tm.intel.com>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+In-Reply-To: <93c9d656-8379-b463-e724-e48ce486c17d@nvidia.com>
+References: <1612939421-19900-1-git-send-email-spujar@nvidia.com>
+ <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <87im6y5fv8.wl-kuninori.morimoto.gx@renesas.com>
+ <93c9d656-8379-b463-e724-e48ce486c17d@nvidia.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Bard liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
+ broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,24 +79,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi
+Hi Sameer
 
-> > > We have soc_pcm_hw_update_rate() now.
-> > > This patch creates same function for chan.
-> > 
-> > This patch seems to break all SOF platforms. I tested manually to try and
-> > reproduce the CI results and it's indeed not so good:
+> >          /*
+> >           * Parse dai->sysclk come from "clocks = <&xxx>"
+> >           * (if system has common clock)
+> >           *  or "system-clock-frequency = <xxx>"
+> >           *  or device's module clock.
+> >           */
 > 
-> ouch -- I think this will impact also non-SOF platforms.
-> 
-> The new helper functions seem all correct, but the problem would seem to 
-> be in the dpcm_init_runtime_hw() as some of the inputs are not initialized 
-> as expected here. I'll try to send a fixup patch asap. In case 5.11 is 
-> released later today, this regression needs to be fixed for first 5.12 
-> pull req.
+> Yes, this can be rephrased now.
 
-Oops, thank you for your help,
-and sorry for my noisy patch.
+Thanks.
+It is not a big-deal. no streass :)
+
+> > And also, this patch has too many unneeded exchange,
+> > thus it was difficult to read for me.
+> > I think it can be simply like this ?
+> > It is understandable what it want to do.
+> 
+> I think the patch does exactly the same thing as what you are
+> suggesting below. Am I missing anything?
+
+Yes, it is 100% same, but is simple patch.
+I wanted to tell was it is easy to read/understand.
+Your patch is already applied, so nothing we can do now ;)
+
+
+Thank you for your help !!
 
 Best regards
 ---
