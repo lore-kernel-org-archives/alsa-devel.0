@@ -2,92 +2,83 @@ Return-Path: <SRS0=nH8J=HR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B867EC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 14:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82699C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 15:15:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2801F64DDA
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 14:26:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2801F64DDA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6EA0D64D9F
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 15:15:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EA0D64D9F
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91622167F;
-	Mon, 15 Feb 2021 15:25:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91622167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2756B15F2;
+	Mon, 15 Feb 2021 16:14:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2756B15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613399166;
-	bh=Y4mnOGdIkOVRxnY93hzkh0SfycjLfBvgIuVQL7RR+PE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=r5gYKJUkErFkZbGau5plIP29Zsq5J2P/cw5SHMGvB4yQ58WKP8Z6hnvHci7Xl09uZ
-	 eJ3sVNybJuFarMcurzlh+QsT4huvAu2ij52p4iwvOU0++SJKFTsD/jNjag+REfD2vv
-	 dkrZbc84Ti6cBzFrZCpOkJS0FG+0lX4ziczaV2+c=
+	s=default; t=1613402125;
+	bh=2z65OkD2NDFN8mknRyKCEpSUFU6OpYjSiC3Z0kKToUQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=moaBBjue7iW/S520vWrf0C9COSRF/PSk+hw0CDLggCFBTdSta02cihTIkNrVKG6r8
+	 4Ltz0sxGlhxxWYQ2RFZDIFw8Ios3hTP2MNg/Z4NkS1n+Ixg4rnjWXkELCqTNk4f6Fz
+	 IsQgHMQq6vRmbCQe5GJVSmP766U4kncloTvSQglo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C867CF80276;
-	Mon, 15 Feb 2021 15:24:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A13DFF800C1;
+	Mon, 15 Feb 2021 16:14:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68C66F80276; Mon, 15 Feb 2021 15:24:33 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1DC0F8026C
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 15:24:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1DC0F8026C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="JgAInm3g"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1613399068;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=UitcAp3cUgKvV5y0duzcVJhUzRv8UhpNliTD04Wz0Jc=;
- b=JgAInm3guFr8Ab3+rO5yhRSOE9x6w5G1MTxCK/r7etQLfKGpdVgk8CopVDCkgrmz/6Tn/8
- Ru5IFCQEAvgE37XV6o9jPEgvgz17nV5K8oC3I3pq7ZIs61BpGnOUqZinfVN+Q48lsi43+i
- NFHVU3yjTfT6NKJ44+fHGt2hQEkLRRE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-c23LJxQhP625gBafVx4-pg-1; Mon, 15 Feb 2021 09:24:24 -0500
-X-MC-Unique: c23LJxQhP625gBafVx4-pg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
- [10.5.11.23])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5729980196E;
- Mon, 15 Feb 2021 14:24:23 +0000 (UTC)
-Received: from x1.localdomain (ovpn-115-74.ams2.redhat.com [10.36.115.74])
- by smtp.corp.redhat.com (Postfix) with ESMTP id C233519719;
- Mon, 15 Feb 2021 14:24:21 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Oder Chiou <oder_chiou@realtek.com>
-Subject: [RFC 1/2] ASoC: Add new SOC_DOUBLE*_ACCESS() macros
-Date: Mon, 15 Feb 2021 15:24:18 +0100
-Message-Id: <20210215142419.308651-2-hdegoede@redhat.com>
-In-Reply-To: <20210215142419.308651-1-hdegoede@redhat.com>
-References: <20210215142419.308651-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Bard Liao <bard.liao@intel.com>
+ id 67F3BF80258; Mon, 15 Feb 2021 16:14:32 +0100 (CET)
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net
+ (zg8tmty1ljiyny4xntqumjca.icoremail.net [165.227.154.27])
+ by alsa1.perex.cz (Postfix) with SMTP id 38368F80089
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 16:14:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38368F80089
+Received: from localhost.localdomain (unknown [183.202.157.205])
+ by mail-app4 (Coremail) with SMTP id cS_KCgBHTz+3jypgdfp8AQ--.38031S4;
+ Mon, 15 Feb 2021 23:14:07 +0800 (CST)
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+To: dinghao.liu@zju.edu.cn,
+	kjlu@umn.edu
+Subject: [PATCH] ASoC: Intel: Skylake: Fix missing check in skl_pcm_trigger
+Date: Mon, 15 Feb 2021 23:13:54 +0800
+Message-Id: <20210215151356.15252-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBHTz+3jypgdfp8AQ--.38031S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1fZr43ZFyxGw17uFy5twb_yoWfArgEgw
+ 4DWw1rXryUur4Fgr12kr43CF47Zrs7ZFn7KFy5trs0vry3Gr95G3WDury7u3yxWw4Fqa4j
+ 93ZFqrZrCay8ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUbVAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+ 6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+ A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+ Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+ 0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+ jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+ 1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+ n2IY04v7MxkIecxEwVAFwVW5WwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+ W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+ 1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+ IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+ 0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+ VjvjDU0xZFpf9x0JUsZ23UUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0RBlZdtSal9AAAsR
+Cc: Julia Lawall <Julia.Lawall@inria.fr>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Tom Rix <trix@redhat.com>, Takashi Iwai <tiwai@suse.com>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,85 +94,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add 3 new SOC_DOUBLE*_ACCESS() macros:
+When cmd == SNDRV_PCM_TRIGGER_STOP, we should also check
+the return value of skl_decoupled_trigger() just like what
+we have done in case SNDRV_PCM_TRIGGER_PAUSE_RELEASE.
 
-SOC_DOUBLE_ACCESS()
-SOC_DOUBLE_EXT_ACCESS()
-SOC_DOUBLE_TLV_ACCESS()
-
-These work the same as their non _ACCESS postfixed counter-parts,
-with an extra argument that allows specifying extra access flags.
-
-This is meant to be used with the new SNDRV_CTL_ELEM_ACCESS_*_LED flags.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- include/sound/soc.h | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3fa6c40a63b7..0136650466f3 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -100,12 +100,15 @@
- 		{.reg = xreg, .rreg = xreg, .shift = xshift, \
- 		 .rshift = xshift, .min = xmin, .max = xmax, \
- 		 .platform_max = xmax, .invert = xinvert} }
--#define SOC_DOUBLE(xname, reg, shift_left, shift_right, max, invert) \
-+#define SOC_DOUBLE_ACCESS(xname, reg, shift_left, shift_right, max, invert, elem_access) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | (elem_access),\
- 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
- 	.put = snd_soc_put_volsw, \
- 	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
- 					  max, invert, 0) }
-+#define SOC_DOUBLE(xname, reg, shift_left, shift_right, max, invert) \
-+	SOC_DOUBLE_ACCESS(xname, reg, shift_left, shift_right, max, invert, 0)
- #define SOC_DOUBLE_STS(xname, reg, shift_left, shift_right, max, invert) \
- {									\
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),		\
-@@ -127,15 +130,19 @@
- 	.get = snd_soc_get_volsw_range, .put = snd_soc_put_volsw_range, \
- 	.private_value = SOC_DOUBLE_R_RANGE_VALUE(reg_left, reg_right, \
- 					    xshift, xmin, xmax, xinvert) }
--#define SOC_DOUBLE_TLV(xname, reg, shift_left, shift_right, max, invert, tlv_array) \
-+#define SOC_DOUBLE_TLV_ACCESS(xname, reg, shift_left, shift_right, max, invert, \
-+			      tlv_array, elem_access) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
--		 SNDRV_CTL_ELEM_ACCESS_READWRITE,\
-+		 SNDRV_CTL_ELEM_ACCESS_READWRITE |\
-+		 (elem_access),\
- 	.tlv.p = (tlv_array), \
- 	.info = snd_soc_info_volsw, .get = snd_soc_get_volsw, \
- 	.put = snd_soc_put_volsw, \
- 	.private_value = SOC_DOUBLE_VALUE(reg, shift_left, shift_right, \
- 					  max, invert, 0) }
-+#define SOC_DOUBLE_TLV(xname, reg, shift_left, shift_right, max, invert, tlv_array) \
-+	SOC_DOUBLE_TLV_ACCESS(xname, reg, shift_left, shift_right, max, invert, tlv_array, 0)
- #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
- 	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
-@@ -225,13 +232,18 @@
- 	.info = snd_soc_info_volsw, \
- 	.get = xhandler_get, .put = xhandler_put, \
- 	.private_value = SOC_SINGLE_VALUE(xreg, xshift, xmax, xinvert, 0) }
--#define SOC_DOUBLE_EXT(xname, reg, shift_left, shift_right, max, invert,\
-+#define SOC_DOUBLE_EXT_ACCESS(xname, reg, shift_left, shift_right, max, invert, elem_access,\
- 	 xhandler_get, xhandler_put) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname),\
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | (elem_access),\
- 	.info = snd_soc_info_volsw, \
- 	.get = xhandler_get, .put = xhandler_put, \
- 	.private_value = \
- 		SOC_DOUBLE_VALUE(reg, shift_left, shift_right, max, invert, 0) }
-+#define SOC_DOUBLE_EXT(xname, reg, shift_left, shift_right, max, invert,\
-+		       xhandler_get, xhandler_put) \
-+	SOC_DOUBLE_EXT_ACCESS(xname, reg, shift_left, shift_right, max, invert, 0,\
-+			      xhandler_get, xhandler_put)
- #define SOC_DOUBLE_R_EXT(xname, reg_left, reg_right, xshift, xmax, xinvert,\
- 	 xhandler_get, xhandler_put) \
- {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index b1ca64d2f7ea..a5b1f333a500 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -516,6 +516,9 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			return ret;
+ 
+ 		ret = skl_decoupled_trigger(substream, cmd);
++		if (ret < 0)
++			return ret;
++
+ 		if ((cmd == SNDRV_PCM_TRIGGER_SUSPEND) && !w->ignore_suspend) {
+ 			/* save the dpib and lpib positions */
+ 			stream->dpib = readl(bus->remap_addr +
 -- 
-2.30.1
+2.17.1
 
