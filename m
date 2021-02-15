@@ -2,77 +2,82 @@ Return-Path: <SRS0=nH8J=HR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB32C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 14:25:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C628C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 14:25:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB9AC64DE0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 14:25:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB9AC64DE0
+	by mail.kernel.org (Postfix) with ESMTPS id BE4D964DE0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 14:25:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE4D964DE0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 434191695;
-	Mon, 15 Feb 2021 15:24:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 434191695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 534021696;
+	Mon, 15 Feb 2021 15:24:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 534021696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613399123;
-	bh=zES7JVFI55A43I6bjbUYUfdiy8HvbFj32DH9YQpAwOE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=maGnEqn25nARC5urMBepHjQpffCfTft0omWwKXoOOkeL334si8qWooqt1YI9VQys+
-	 WnTrJnPvb1Pxvy62PBOzahWMp41b6XaPvyy3k/0W2JogKCzveSlrgGcBN7Ks863sU/
-	 fCzRzuVmQaEPcukhJq3NZK4Cwd2h/T+Osc7QFiJw=
+	s=default; t=1613399131;
+	bh=+FSbl6/rj0FR/+2qQLp1JrGKZwImAXL3gGOBnQGpe7w=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bleFpkTwngzOPblVHAFtNHfIUjbxWssosLrSd97DMnL/pYxkmiGZ+uXjn91sp7DG6
+	 4CpWn5zW7d1v2gIlmt033HKkf6/Eb/LqCQd1HaH+uF/8MHPKNnHW6PK2VdT8rCRGZf
+	 GqOaNcffSy+8zg4EMQdWzeWh90fRtDqSQFPc7NzQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7020FF80268;
-	Mon, 15 Feb 2021 15:24:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76BB3F800C1;
+	Mon, 15 Feb 2021 15:24:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21830F8025B; Mon, 15 Feb 2021 15:24:28 +0100 (CET)
+ id 1B0D0F8028B; Mon, 15 Feb 2021 15:24:32 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABCC1F80089
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 15:24:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABCC1F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBFC4F80089
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 15:24:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBFC4F80089
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="IAmPWkkg"
+ header.b="Hspr7Rep"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1613399064;
+ s=mimecast20190719; t=1613399067;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=uSRutKAX0LVpk5x4JBxPT+okz1ZiEiZRDIswNu92C7A=;
- b=IAmPWkkgmxF68aQ+oNGy/UCVAyWCt+eK9lmX3i7iIZ7ZSimVlptbfr1PUmeBVGhziE7TO1
- sL19f2N1JUqGBXBPTf5VZamXL2+O7I/nd0IchFBm+qbzGPwqAsp61OCCGC3DwRcmdBqRzT
- esHZrTleZRL4rUTTTwTz3wWR3f3Yzdo=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=DJXuEU5RYWYd6rDFLPZR3jVgPWGSvaYx2Us0eEUxZEc=;
+ b=Hspr7ReppJI8NBc2QM7hYYq47O/B+zDO6MZiyX1JBQLcHqbzaOxxtFXB/cit4HLj12KXv/
+ TeLZSirQqF43HXMRwVU06UBRp3tikGnJRIK+lszs42WxBsA7aJtj84ZcA8QDblhfjVrOjz
+ ZGi0Vdd/Ecyc1+mfQvdl/Il231vsNSc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-Q1-yNy8DPfiYBNHxR0aDmQ-1; Mon, 15 Feb 2021 09:24:23 -0500
-X-MC-Unique: Q1-yNy8DPfiYBNHxR0aDmQ-1
+ us-mta-556-5tlD9RYWOWmh72xUs0varw-1; Mon, 15 Feb 2021 09:24:26 -0500
+X-MC-Unique: 5tlD9RYWOWmh72xUs0varw-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C47A1966320;
- Mon, 15 Feb 2021 14:24:21 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 301B2107ACC7;
+ Mon, 15 Feb 2021 14:24:25 +0000 (UTC)
 Received: from x1.localdomain (ovpn-115-74.ams2.redhat.com [10.36.115.74])
- by smtp.corp.redhat.com (Postfix) with ESMTP id E4F8517A9E;
- Mon, 15 Feb 2021 14:24:19 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 9D90AE150;
+ Mon, 15 Feb 2021 14:24:23 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Oder Chiou <oder_chiou@realtek.com>
-Subject: [RFC 0/2] ASoC: rt5670: Add LED trigger support
-Date: Mon, 15 Feb 2021 15:24:17 +0100
-Message-Id: <20210215142419.308651-1-hdegoede@redhat.com>
+Subject: [RFC 2/2] ASoC: rt5670: Add LED trigger support
+Date: Mon, 15 Feb 2021 15:24:19 +0100
+Message-Id: <20210215142419.308651-3-hdegoede@redhat.com>
+In-Reply-To: <20210215142419.308651-1-hdegoede@redhat.com>
+References: <20210215142419.308651-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Authentication-Results: relay.mimecast.com;
@@ -98,31 +103,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi All,
+Add support for controlling a speaker and/or microphone mute LED through
+LED triggers using the new generic LED trigger module.
 
-This series applies on top of the:
-"[PATCH 0/4] ASoC: rt5670: Various kcontrol fixes"
-series which I just send out;
-
-And it also requires the:
-"[PATCH 0/5] ALSA: control - add generic LED trigger code"
-from Jaroslav. This second requirement is still being discussed /
-reviewed, which is why I split out these 2 patches into a separate
-RFC patch series.
-
-Regards,
-
-Hans
-
-
-Hans de Goede (2):
-  ASoC: Add new SOC_DOUBLE*_ACCESS() macros
-  ASoC: rt5670: Add LED trigger support
-
- include/sound/soc.h       | 20 ++++++++++++++++----
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
  sound/soc/codecs/rt5670.c | 10 +++++++---
- 2 files changed, 23 insertions(+), 7 deletions(-)
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index feab15d0686a..9233710e3a4f 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -690,7 +690,8 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
+ 	/* DAC Digital Volume */
+ 	SOC_DOUBLE("DAC2 Playback Switch", RT5670_DAC_CTRL,
+ 		RT5670_M_DAC_L2_VOL_SFT, RT5670_M_DAC_R2_VOL_SFT, 1, 1),
+-	SOC_DOUBLE_EXT("DAC1 Playback Switch", SND_SOC_NOPM, 0, 1, 1, 0,
++	SOC_DOUBLE_EXT_ACCESS("DAC1 Playback Switch", SND_SOC_NOPM, 0, 1, 1, 0,
++			SNDRV_CTL_ELEM_ACCESS_SPK_LED,
+ 			rt5670_dac1_playback_switch_get, rt5670_dac1_playback_switch_put),
+ 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5670_DAC1_DIG_VOL,
+ 			RT5670_L_VOL_SFT, RT5670_R_VOL_SFT,
+@@ -708,8 +709,9 @@ static const struct snd_kcontrol_new rt5670_snd_controls[] = {
+ 			RT5670_INL_VOL_SFT, RT5670_INR_VOL_SFT,
+ 			31, 1, in_vol_tlv),
+ 	/* ADC Digital Volume Control */
+-	SOC_DOUBLE("ADC Capture Switch", RT5670_STO1_ADC_DIG_VOL,
+-		RT5670_L_MUTE_SFT, RT5670_R_MUTE_SFT, 1, 1),
++	SOC_DOUBLE_ACCESS("ADC Capture Switch", RT5670_STO1_ADC_DIG_VOL,
++			  RT5670_L_MUTE_SFT, RT5670_R_MUTE_SFT, 1, 1,
++			  SNDRV_CTL_ELEM_ACCESS_MIC_LED),
+ 	SOC_DOUBLE_TLV("ADC Capture Volume", RT5670_STO1_ADC_DIG_VOL,
+ 			RT5670_L_VOL_SFT, RT5670_R_VOL_SFT,
+ 			127, 0, adc_vol_tlv),
+@@ -3253,6 +3255,8 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 
+ 	}
+ 
++	snd_ctl_led_request();
++
+ 	pm_runtime_enable(&i2c->dev);
+ 	pm_request_idle(&i2c->dev);
+ 
 -- 
 2.30.1
 
