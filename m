@@ -2,71 +2,58 @@ Return-Path: <SRS0=nH8J=HR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D47FDC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 07:51:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 994ACC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 08:26:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0662264DA8
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 07:51:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0662264DA8
+	by mail.kernel.org (Postfix) with ESMTPS id 97A6B64E6D
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Feb 2021 08:26:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97A6B64E6D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67D10852;
-	Mon, 15 Feb 2021 08:50:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67D10852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DA70851;
+	Mon, 15 Feb 2021 09:25:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DA70851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613375499;
-	bh=i05zNNxypP9gnRDqaYwF25tiMAbgdB926GKmH2e4HDw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fI2xSjH2ACGssxRK1mSTwZXCeLCeYP8DQEMwQfe5vHZwpatV2Y8F8TNZ/JKsIGIh0
-	 igr7DymSBzEPAjlSyXZT80K5dpPtRnc82jQn3fhxIfyk8vm3nw5T0ldei80ehs26MZ
-	 tQXjgR6AZgmFR+Wbwdl4Xgf1N3tQE9n/VnjvjZsQ=
+	s=default; t=1613377605;
+	bh=8jTgEPPurPyg2ENeMqFJX+Eo6VxWG3q7fYqRAssCWKs=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jmJ5V8v2MdsomNj3djqqXgi9WGFR0RydvBmVUP+rJLCWxVDyK+ZDZN0FPX9MLfvy8
+	 Q9Qn92fWFrvaAcWi6Q/8NTDPQruMKRyquxPCTBsD8DsKxKycXuZqRtfYiFwYRvHxY+
+	 O0tPc/Cgk8QfFOk2cyN7p5ehgPf8ctu8+G+aBtWk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5B10F8020B;
-	Mon, 15 Feb 2021 08:50:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81A7EF8020B;
+	Mon, 15 Feb 2021 09:25:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0300F80258; Mon, 15 Feb 2021 08:50:47 +0100 (CET)
+ id 53370F80258; Mon, 15 Feb 2021 09:25:53 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E6DCF80089
- for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 08:50:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E6DCF80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40B92F800AE
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 09:25:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40B92F800AE
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 18999AE03;
- Mon, 15 Feb 2021 07:50:37 +0000 (UTC)
-Date: Mon, 15 Feb 2021 08:50:36 +0100
-Message-ID: <s5him6tbwhf.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 77966AD78
+ for <alsa-devel@alsa-project.org>; Mon, 15 Feb 2021 08:25:41 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/5] ALSA: control - add generic LED trigger code
-In-Reply-To: <15cd340d-6359-b0fd-d4b1-8aa8c3563bf8@perex.cz>
-References: <20210211111400.1131020-1-perex@perex.cz>
- <s5h1rdmfrvo.wl-tiwai@suse.de>
- <3c84c275-0c62-d2f4-38ad-be6accb3b159@perex.cz>
- <s5hblcpej13.wl-tiwai@suse.de>
- <b1bc4135-25b9-26aa-323d-23bea15e164c@perex.cz>
- <s5hwnvdcvwf.wl-tiwai@suse.de>
- <15cd340d-6359-b0fd-d4b1-8aa8c3563bf8@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Hans de Goede <hdegoede@redhat.com>,
- ALSA development <alsa-devel@alsa-project.org>,
- Perry Yuan <Perry.Yuan@dell.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Quirk for HP Spectre x360 14 amp setup
+Date: Mon, 15 Feb 2021 09:25:40 +0100
+Message-Id: <20210215082540.4520-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,94 +69,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 14 Feb 2021 19:55:21 +0100,
-Jaroslav Kysela wrote:
-> 
-> Dne 12. 02. 21 v 13:28 Takashi Iwai napsal(a):
-> > On Fri, 12 Feb 2021 11:32:38 +0100,
-> > Jaroslav Kysela wrote:
-> >>
-> >> Dne 12. 02. 21 v 10:23 Takashi Iwai napsal(a):
-> >>> On Thu, 11 Feb 2021 18:53:20 +0100,
-> >>> Jaroslav Kysela wrote:
-> >>>>
-> >>>> Dne 11. 02. 21 v 18:15 Takashi Iwai napsal(a):
-> >>>>
-> >>>>>> Jaroslav Kysela (5):
-> >>>>>>   ALSA: control - introduce snd_ctl_notify_one() helper
-> >>>>>>   ALSA: control - add layer registration routines
-> >>>>>>   ALSA: control - add generic LED trigger module as the new control
-> >>>>>>     layer
-> >>>>>>   ALSA: HDA - remove the custom implementation for the audio LED trigger
-> >>>>>>   ALSA: control - add sysfs support to the LED trigger module
-> >>>>
-> >>>>> One thing I still miss from the picture is how to deal with the case
-> >>>>> like AMD ACP.  It has no mixer control to bundle with the LED trigger.
-> >>>>> Your idea is to make a (dummy) user element and tie the LED trigger
-> >>>>> with it?
-> >>>>
-> >>>> Yes, the user-space code which guarantee the silence stream should create an
-> >>>> user space control with the appropriate LED group access bits. The alsa-lib's
-> >>>> softvol PCM plugin can do this silencing for example.
-> >>>
-> >>> What control would it create?  In the case of softvol, it's a volume
-> >>> control that really changes the volume.  For the mute LED, it's a
-> >>> control turn on/off the mute?  If so, I wonder what makes better than
-> >>> creating it from the kernel driver.  (Of course, we can list up like
-> >>> "flexibility", etc, but it has a flip side of "complexity" and
-> >>> "fragility"...)
-> >>
-> >> The current code handles both switch / volume for the marked control (assuming
-> >> that the minimal value - usually zero - is full mute). And actually, there are
-> >> snd_pcm_areas_silence() calls in the softvol plugin, so we know that the PCM
-> >> stream is not passed to the application at this point.
-> >>
-> >> Condition:
-> >>
-> >>       if (info.type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-> >>           info.type == SNDRV_CTL_ELEM_TYPE_INTEGER)
-> >>           ... value.value.integer.value[i] != info.value.integer.min
-> >>
-> >> The softvol plugin may be extended to add the mute switch control, of course.
-> > 
-> > Well, my question was what kind of mixer control will be added at all,
-> > although the chip does neither volume nor mute function.  Would we add
-> > a fake volume/switch like softvol, or would we add rather a control
-> > that is directly tied with the LED state?
-> 
-> I don't understand your question. If the user space marks the own vol/sw
-> control with the LED group, then it's tied with the LED state. I believe that
-> the control should be created in the code which make sure that the PCM stream
-> is silenced (like alsa-lib's softvol plugin).
+HP Spectre x360 14 model (PCI SSID 103c:87f7) seems requiring a unique
+setup for its external amp: the GPIO0 needs to be toggled on and off
+shortly at each device initialization via runtime PM.
 
-The softvol (or similar effect) is to be ignored by PA, as it's not
-suitable with the timer-scheduled type of PCM streaming.  So the
-control shouldn't have any actual effect of PCM stream itself but
-merely for controlling the LED state.  If that's the case, it
-shouldn't be named like "XXX Switch" or "XXX Volume", but it's a
-control like "Mic Mute LED Status" -- and ironically, that's a kind of
-thing we didn't want to take in the kernel side implementation...
+This patch implements that workaround as well as the model option
+string, so that users with other devices may try the same workaround
+more easily.
 
-That said, I see the value of a generic code for the LED control that
-is tied with the existing volume/switch; there is already such an
-implementation in HD-audio, and applying to the other drivers makes
-sense.  OTOH, for the case for AMD ACP, I'm still not sure what's the
-best way.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210633
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 52907506e16e..1927605f0f7e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4291,6 +4291,28 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
+ 	}
+ }
+ 
++/* HP Spectre x360 14 model needs a unique workaround for enabling the amp;
++ * it needs to toggle the GPIO0 once on and off at each time (bko#210633)
++ */
++static void alc245_fixup_hp_x360_amp(struct hda_codec *codec,
++				     const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		spec->gpio_mask |= 0x01;
++		spec->gpio_dir |= 0x01;
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		/* need to toggle GPIO to enable the amp */
++		alc_update_gpio_data(codec, 0x01, true);
++		msleep(100);
++		alc_update_gpio_data(codec, 0x01, false);
++		break;
++	}
++}
++
+ static void alc_update_coef_led(struct hda_codec *codec,
+ 				struct alc_coef_led *led,
+ 				bool polarity, bool on)
+@@ -6277,6 +6299,7 @@ enum {
+ 	ALC280_FIXUP_HP_DOCK_PINS,
+ 	ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED,
+ 	ALC280_FIXUP_HP_9480M,
++	ALC245_FIXUP_HP_X360_AMP,
+ 	ALC288_FIXUP_DELL_HEADSET_MODE,
+ 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 	ALC288_FIXUP_DELL_XPS_13,
+@@ -6982,6 +7005,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc280_fixup_hp_9480m,
+ 	},
++	[ALC245_FIXUP_HP_X360_AMP] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc245_fixup_hp_x360_amp,
++	},
+ 	[ALC288_FIXUP_DELL_HEADSET_MODE] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_headset_mode_dell_alc288,
+@@ -7996,6 +8023,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+@@ -8368,6 +8396,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-samsung-headphone"},
+ 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
+ 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
++	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
+ 	{}
+ };
+ #define ALC225_STANDARD_PINS \
+-- 
+2.26.2
 
-thanks,
-
-Takashi
-
-
-
-
-Takashi
-
-> 
-> 						Jaroslav
-> 
-> -- 
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-> 
