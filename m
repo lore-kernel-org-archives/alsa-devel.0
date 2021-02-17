@@ -2,91 +2,93 @@ Return-Path: <SRS0=bkJA=HT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23345C43381
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 21:50:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFC8CC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 21:53:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52E0864E7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 21:50:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52E0864E7A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id 561B964E5F
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 21:53:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 561B964E5F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3CB21654;
-	Wed, 17 Feb 2021 22:49:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3CB21654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9939B1657;
+	Wed, 17 Feb 2021 22:52:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9939B1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613598627;
-	bh=pDndI/od1H3KQgPwpgbBTfuDYBwvVr/AtxDoRtZPhAs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=p0Sott6cQ5+A7PeJN7gk/MlrMbOc0MaA62dQKxmDWszL4OBDxkr0axJuP2HnQ+mxt
-	 eTpHD3K/d+TLpBlkBaP/B6lOBcYthdn6YoOLo13KwVxnAAKCAnVEUu3UD15wbHxs7z
-	 6KRCKeGc2AQqompQOWvAepfh8TA3P8IG8i0scjRQ=
+	s=default; t=1613598786;
+	bh=lhBoGY7enjnZ4RBMXhRw6bW+8AVQLGtmjtY1z85F54E=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=T7dodR9PqkO+mdPyhTLEM5FKsYrJl1aOxeyLZRNeSMX6e+9p2cXrQjB71dN3yLIcv
+	 B3PkMhUC8cQfXEqBPAVqRC4lqV/aH6QydJMEaCRUbj+RKi2klBRlqG3D7DLmlWC7vd
+	 0wchpaXwbhUnqgx62IvKQ2g+Rp94EIHotXAMOZJE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6446AF8020B;
-	Wed, 17 Feb 2021 22:49:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AB50F8020B;
+	Wed, 17 Feb 2021 22:52:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00CEFF80258; Wed, 17 Feb 2021 22:49:33 +0100 (CET)
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com
- [IPv6:2607:f8b0:4864:20::1034])
+ id 2437FF80258; Wed, 17 Feb 2021 22:52:14 +0100 (CET)
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com
+ [IPv6:2607:f8b0:4864:20::72f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77E90F800D0
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 22:49:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77E90F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10143F800D0
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 22:52:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10143F800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="nAFVvg8M"
-Received: by mail-pj1-x1034.google.com with SMTP id l18so104639pji.3
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 13:49:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=J2IdJVh7hg1dJBeP75OoiAa+KfwLLFykVFFZkuB1avE=;
- b=nAFVvg8MIqA37aUAWaHXhyuMRFYkEtpA5HXz3eUabG+TkKHg8MDcKSNeTXykWPwrgq
- KRAznP4uu4jDof5kATJvKJPV0DoAeSwKo5JcFJKcl3O5p70a+g1y5nGMQE7UBy9xyEPh
- RC7TFwVmXTnfNjw51UKQU2mJgwzonFLA+3R4g=
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="tYZe8OJU"
+Received: by mail-qk1-x72f.google.com with SMTP id 81so183319qkf.4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 13:52:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=gPp6BCwPwx8BaXvkN0btUeoVM1kHJFwJfsOcaM7RBVo=;
+ b=tYZe8OJUCuY6YjcY5qaxI0qYMbFv+dNlNQSTyvmDmXgWVpakLLZq69QfqObAp2gSAV
+ QEtRd0Rqtpr4ShuUH2K5I1WrnUuOFi/OZp5CdSSNvt/CHgx0ANPq5ztrf79DXJF39CUj
+ jskK+RoE4ZDTEKXZ3gg3OMIKqfJo7I0vI1hwE81xWqRon5tEpbW/HFjrzVK/V/hw0aWP
+ m++a3Y6oGkAgOuriF1tleUTtjpPj2bIcHCkLFGEZgOZYvMV1dBLgMT8IMuYrepryzZ8o
+ bQXHcrclz2bBQm6w8BaNAswio+bKRMbQu0RQNuSKdZSu9i8zdx9HNfftQCDroS2Aw7At
+ WZAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=J2IdJVh7hg1dJBeP75OoiAa+KfwLLFykVFFZkuB1avE=;
- b=AtYrcWi19AH0evllHGputSM2FGI+J943aYSwtvxW59n4obMSbeH3SiL79Hnoa5P+Kf
- ktDSoltoy/2Tc3L1wVfmXpyo9mNU/vXSW3BGn1qam8wiVGPjFdIHUmQezHfncLRb9shm
- G4Vl7TClM8XPS/5AOx3YVo/K9aCJcZE/dlUUzIAebz2u2oOQaKrmf/McDmBpVAum/mxC
- BzmcJRUnfaGRTV891emG9SFUnBee/au6LFLWm/EVMjVizx+WNk6sdtGcYNxLjFvnBsl+
- mgblPAcziHLMTC8i6PlaMeRrVoZE25kDY/QoShgIG7Iiv8l2ImEAp9JOY23BIn4EGkPn
- KCkA==
-X-Gm-Message-State: AOAM5326FGQ/W6QIAsDgKu5jimHE4CGesCFvpoOSsFF2hAPZ+qFoZLZi
- rXur9wcDhMrI+5nrYOLBTvwd2dbcCD5J
-X-Google-Smtp-Source: ABdhPJzKEX0WZPtDJEumY9YKDJDNgsvxC2CaiACplEJcXdKK/B4Y6WfuXBAByYE68fsZ6DC+wBOmWg==
-X-Received: by 2002:a17:90b:948:: with SMTP id dw8mr809579pjb.17.1613598564606; 
- Wed, 17 Feb 2021 13:49:24 -0800 (PST)
-Received: from localhost ([2620:15c:202:201:98ea:92f1:8f94:77f3])
- by smtp.gmail.com with UTF8SMTPSA id 194sm3261835pfu.165.2021.02.17.13.49.23
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 17 Feb 2021 13:49:24 -0800 (PST)
-From: Curtis Malainey <cujomalainey@chromium.org>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: rt5682: remove jack detect delay
-Date: Wed, 17 Feb 2021 13:49:14 -0800
-Message-Id: <20210217214914.700751-1-cujomalainey@chromium.org>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=gPp6BCwPwx8BaXvkN0btUeoVM1kHJFwJfsOcaM7RBVo=;
+ b=O+E2WglfyOZI8zzTJE39UWVmXlxSkJMU7NPQfkKB2N20QNUEQlgXAZQudsP8BBhAEE
+ wKGapK3UdVdu+fNjJC373k/fbo0ubR4cq2hJNkr9+2w/VT1UGRM6PUyiAHXt/OI/9r9y
+ NaspFguaZw/u+v9lIrMjX3aVrgG4AZmJdrSrqqVO65lm24DlTQE7SgbLeRbRIcEx17jN
+ 5PSq5UhUBLPthPNes78HMOEPPmhi1cRGrloFrcZvwfKV3OaGfp7anWfRcCacW63Ih+Hk
+ Y5EaYSHgKZXPqkpYIT+XYQOk0BdVn77rBGOZRpXsmVPfnYIvV/ve31uavZ4XyYK0UGI4
+ sOeQ==
+X-Gm-Message-State: AOAM5326kjJqMjnecqBoTX6gNRUriyMOJ5oZTtyoMfnz6iMONJRlMSTy
+ BfFlQamiRnngyTlrQrxoRUGCL4twbF/Qc3NWDfqGSA==
+X-Google-Smtp-Source: ABdhPJyi9K6EC9xEgp7qNa+2ZKLBjYmMUQIYdwovuWElqxh/q5JgtQoNH0o9+OF3N5+2/YlKQNQKCQ5CYTtErLt4YWU=
+X-Received: by 2002:ae9:edc9:: with SMTP id c192mr1365188qkg.36.1613598725263; 
+ Wed, 17 Feb 2021 13:52:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, Takashi Iwai <tiwai@suse.com>,
+References: <20210217214914.700751-1-cujomalainey@chromium.org>
+In-Reply-To: <20210217214914.700751-1-cujomalainey@chromium.org>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Wed, 17 Feb 2021 13:51:53 -0800
+Message-ID: <CAOReqxj=sCSdtd47n+VprG5g8-weybg0ThZ6tBLxprxi6==RDw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: rt5682: remove jack detect delay
+To: Curtis Malainey <cujomalainey@chromium.org>, "Arava,
+ Jairaj" <jairaj.arava@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+ ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Shuming Fan <shumingf@realtek.com>,
- Curtis Malainey <cujomalainey@chromium.org>,
  Bard liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -103,31 +105,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is a 250ms delay on the jack detect interrupt currently, this
-delay is observable to users who are using inline controls. It can also
-mask multiple presses which is a negative experience.
+Hello Realtek
++Arava, Jairaj <jairaj.arava@intel.com>
 
-Cc: Bard liao <yung-chuan.liao@linux.intel.com>
-Cc: Shuming Fan <shumingf@realtek.com>
+On Wed, Feb 17, 2021 at 1:49 PM Curtis Malainey <cujomalainey@chromium.org>
+wrote:
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
----
- sound/soc/codecs/rt5682-i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> There is a 250ms delay on the jack detect interrupt currently, this
+> delay is observable to users who are using inline controls. It can also
+> mask multiple presses which is a negative experience.
+>
+> Cc: Bard liao <yung-chuan.liao@linux.intel.com>
+> Cc: Shuming Fan <shumingf@realtek.com>
+>
+> Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
+> ---
+>  sound/soc/codecs/rt5682-i2c.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+> index 93c1603b42f1..b15c3e7d1f59 100644
+> --- a/sound/soc/codecs/rt5682-i2c.c
+> +++ b/sound/soc/codecs/rt5682-i2c.c
+> @@ -78,7 +78,7 @@ static irqreturn_t rt5682_irq(int irq, void *data)
+>         struct rt5682_priv *rt5682 = data;
+>
+>         mod_delayed_work(system_power_efficient_wq,
+> -               &rt5682->jack_detect_work, msecs_to_jiffies(250));
+> +               &rt5682->jack_detect_work, 0);
+>
+>
+This change is posted to start a discussion as to the purpose of this
+delay, we are seeing noticeable UI delay and button masking. Is there an
+electro/mechanical purpose to it? If not I think I should post a V2 to
+remove the workqueue since this is a threaded irq. Please advise, thanks.
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 93c1603b42f1..b15c3e7d1f59 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -78,7 +78,7 @@ static irqreturn_t rt5682_irq(int irq, void *data)
- 	struct rt5682_priv *rt5682 = data;
- 
- 	mod_delayed_work(system_power_efficient_wq,
--		&rt5682->jack_detect_work, msecs_to_jiffies(250));
-+		&rt5682->jack_detect_work, 0);
- 
- 	return IRQ_HANDLED;
- }
--- 
-2.30.0.478.g8a0d178c01-goog
 
+>         return IRQ_HANDLED;
+>  }
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
+>
