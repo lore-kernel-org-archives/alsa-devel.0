@@ -2,71 +2,105 @@ Return-Path: <SRS0=bkJA=HT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-4.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CED7C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 07:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B993AC433E6
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 12:49:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DA6164E04
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 07:30:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DA6164E04
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 11D5564E4A
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 12:49:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11D5564E4A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B96171616;
-	Wed, 17 Feb 2021 08:29:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B96171616
+	by alsa0.perex.cz (Postfix) with ESMTPS id A469F15E2;
+	Wed, 17 Feb 2021 13:48:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A469F15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613547041;
-	bh=NDfHFHQZLCVzCeHpLnTYwID4lnrYNWOISImyGG8P3zg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1613566140;
+	bh=ZjC/UubO4oeX/p8Q80zL9oTH48n4U2Jjnd8RfR3aVmo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rNMfJb/5LWPdAIuVNr1Ig5YXy2zTXyd2cSOxwH9lU1XdFS+hSF/rcj/xtYLpI4mmN
-	 CfQrLbB5HcVTjvFqizMUWxDLzUD2L0snR+NseKOY8bgzJquTTDpakzPBRsTCmiCDns
-	 NoZT83tSkwqxpzXTKObh0M+LmBuv8m9FhUGhxzU0=
+	b=sDqKHJqd8kXAtjHCetJJPXoTS0y13mn9DmnIRMaumeyV3cATQbF5v9FB+kqBC6Zrv
+	 7YGxyKUxZzSUh15KVMK7UDNo/HM7lf5hYFl5L6rknFG0SuzcJBOyFFHeMsx17mIre6
+	 0j+k4vrFLJp0EkEiJbQ/vcB/UuZKz7U36drNkkdI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F02BEF8020B;
-	Wed, 17 Feb 2021 08:29:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33AF3F8020B;
+	Wed, 17 Feb 2021 13:48:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67CB4F80258; Wed, 17 Feb 2021 08:29:23 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 79DADF80258; Wed, 17 Feb 2021 13:48:08 +0100 (CET)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com
+ [IPv6:2607:f8b0:4864:20::632])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A62DF800E9
- for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 08:29:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A62DF800E9
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6EDB0AF42;
- Wed, 17 Feb 2021 07:29:03 +0000 (UTC)
-Date: Wed, 17 Feb 2021 08:29:02 +0100
-Message-ID: <s5heehf5f0h.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Gyeongtaek Lee" <gt82.lee@samsung.com>
-Subject: Re: [PATCH v4 1/1] ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
-In-Reply-To: <1773638882.61613536382796.JavaMail.epsvc@epcpadp4>
-References: <CGME20210217043150epcas2p3d7776bc10dc822875cc23b3e721658b6@epcas2p3.samsung.com>
- <1773638882.61613536382796.JavaMail.epsvc@epcpadp4>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com,
- 'Kuninori Morimoto' <kuninori.morimoto.gx@renesas.com>, kimty@samsung.com,
- lgirdwood@gmail.com,
- 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, hmseo@samsung.com, cpgs@samsung.com,
- donggyun.ko@samsung.com, s47.kang@samsung.com, pilsun.jang@samsung.com,
- tkjung@samsung.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3240EF800D0
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 13:48:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3240EF800D0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="DzngJu7Z"
+Received: by mail-pl1-x632.google.com with SMTP id f8so5766733plg.5
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 04:48:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-transfer-encoding;
+ bh=LxFn4W9o9jOzv9KLzMHQXyxirKKlLx5EMaZ9RsITOuw=;
+ b=DzngJu7Z6z0/+kWv251zZ4GEzpARMockZt/9+QoKi5MQQtIJ+Y0umbS8cDEkpyOmfw
+ ust/Kiuu4JyHc4DrgnrYRTx33vMhPnjXlD5m+tFjFIM6TDOubmyumNbqrhprZ9PK0y5x
+ D+E5p3IPfUC23iiACIODUi+NBXs35cdUu9w/OYlSxnbGgHUph2wNx0AxPQENgw6L1/Cm
+ ReRRr6F9A1k2w25Vx4AxCdH7nF/fSu+oD7eGReffZTF6rzN7K6K4Gy8awLP7SsgeNqxq
+ ylpvMnwqKpHrFmriMWbrTFK+ut8aiSKcDi7kIlHnRRnAfyn3xuheT6yQYRpcPjCHwbE/
+ 4V6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+ bh=LxFn4W9o9jOzv9KLzMHQXyxirKKlLx5EMaZ9RsITOuw=;
+ b=EpACh/Bv8VJFN8DhZLJL2KoKf0slbsAz5LqLyBsMxhnCzy60NzRErUwg+7Iep3GYOq
+ LIaRepD3kHWkyVNONurilVQ5FX91iNxLzro5GtTrReZLOIG0Ar2OBxRuSH+ORn3MnEEG
+ qIpbPUCBY+dwL12+hZjn8j74aJbAbM7bUN+nxCqvAlCF0IvGMoKsDZEx5QnBxRnTHYZx
+ f/eo0SyRY13jnSUM3LF2gM87cUc1C/IwXnVxXnsbX+K5a54bjfuBj8jYDUKxsPwToZUJ
+ Roa/F+rR8x9Wqi1Dak00MG1E2WFOOXI5ZzL3IzHVbXyK7FlZIWB47UaQ75ruTzMLSa6k
+ 4x6w==
+X-Gm-Message-State: AOAM5316zRgr5vb/xyBykcxiCdpVcCnSo3KCGg4yKUQobuqRR1fZOLCR
+ lI+DNZk3iiD1tGv1nBbEq0s=
+X-Google-Smtp-Source: ABdhPJzja9YOfu921M8CWphegsgmA9y9BsmyYOmipRer8O9IXuclHZHnGiUjpqUjW0uuVCoGFT8YNw==
+X-Received: by 2002:a17:902:bcc6:b029:e3:f95:6da5 with SMTP id
+ o6-20020a170902bcc6b02900e30f956da5mr24612328pls.6.1613566081427; 
+ Wed, 17 Feb 2021 04:48:01 -0800 (PST)
+Received: from [0.0.0.0] ([2605:52c0:2:4a5::])
+ by smtp.gmail.com with ESMTPSA id i1sm2322259pjd.37.2021.02.17.04.47.58
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 17 Feb 2021 04:48:01 -0800 (PST)
+Subject: Re: [PATCH v3 1/3] platform/x86: dell-privacy: Add support for Dell
+ hardware privacy
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Perry Yuan <Perry.Yuan@dell.com>, oder_chiou@realtek.com, perex@perex.cz,
+ tiwai@suse.com, hdegoede@redhat.com, mgross@linux.intel.com
+References: <20210112171723.19484-1-Perry_Yuan@Dell.com>
+ <bf048701-4e6b-ad18-1a73-8bca5c922425@linux.intel.com>
+ <79277bf2-3c9e-8b66-47a9-b926a2576f7f@gmail.com>
+ <31982e8d-3b0d-7187-8798-900f95d876ee@linux.intel.com>
+From: Perry Yuan <perry979106@gmail.com>
+Message-ID: <e66d8098-beb6-1299-20aa-42cfe13882f6@gmail.com>
+Date: Wed, 17 Feb 2021 20:47:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <31982e8d-3b0d-7187-8798-900f95d876ee@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mario.Limonciello@dell.com,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ platform-driver-x86@vger.kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,224 +116,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Feb 2021 05:31:49 +0100,
-Gyeongtaek Lee wrote:
+Hi Pierre:
+On 2021/2/16 22:56, Pierre-Louis Bossart wrote:
 > 
-> If stop by underrun and DPCM BE disconnection is run simultaneously,
-> data abort can be occurred by the sequence below.
+>>>> +static const struct acpi_device_id privacy_acpi_device_ids[] = {
+>>>> +    {"PNP0C09", 0},
+>>>> +    { },
+>>>> +};
+>>>> +MODULE_DEVICE_TABLE(acpi, privacy_acpi_device_ids);
+>>>> +
+>>>> +static struct platform_driver dell_privacy_platform_drv = {
+>>>> +    .driver = {
+>>>> +        .name = PRIVACY_PLATFORM_NAME,
+>>>> +        .acpi_match_table = ACPI_PTR(privacy_acpi_device_ids),
+>>>> +    },
+>>>
+>>> no .probe?
+>> Originally i added the probe here, but it cause the driver  .probe 
+>> called twice. after i use platform_driver_probe to register the driver 
+>> loading process, the duplicated probe issue resolved.
+>>
+>> I
+>>>
+>>>> +    .remove = dell_privacy_acpi_remove,
+>>>> +};
+>>>> +
+>>>> +int __init dell_privacy_acpi_init(void)
+>>>> +{
+>>>> +    int err;
+>>>> +    struct platform_device *pdev;
+>>>> +    int privacy_capable = wmi_has_guid(DELL_PRIVACY_GUID);
+>>>> +
+>>>> +    if (!wmi_has_guid(DELL_PRIVACY_GUID))
+>>>> +        return -ENODEV;
+>>>> +
+>>>> +    privacy_acpi = kzalloc(sizeof(*privacy_acpi), GFP_KERNEL);
+>>>> +    if (!privacy_acpi)
+>>>> +        return -ENOMEM;
+>>>> +
+>>>> +    pdev = platform_device_register_simple(
+>>>> +            PRIVACY_PLATFORM_NAME, PLATFORM_DEVID_NONE, NULL, 0);
+>>>> +    if (IS_ERR(pdev)) {
+>>>> +        err = PTR_ERR(pdev);
+>>>> +        goto pdev_err;
+>>>> +    }
+>>>> +    err = platform_driver_probe(&dell_privacy_platform_drv,
+>>>> +            dell_privacy_acpi_probe);
+>>>> +    if (err)
+>>>> +        goto pdrv_err;
+>>>
+>>> why is the probe done here? Put differently, what prevents you from 
+>>> using a 'normal' platform driver, and do the leds_setup in the .probe()?
+>> At first ,I used the normal platform driver framework, however tt 
+>> cause the driver  .probe called twice. after i use 
+>> platform_driver_probe to register the driver loading process, the 
+>> duplicated probe issue resolved.
 > 
-> CPU0					CPU1
-> dpcm_be_dai_trigger():			dpcm_be_disconnect():
+> This sounds very odd...
 > 
-> for_each_dpcm_be(fe, stream, dpcm) {
+> this looks like a conflict with the ACPI subsystem finding a device and 
+> probing the driver that's associated with the PNP0C09 HID, and then this 
+> module __init  creating a device manually which leads to a second probe
 > 
-> 					spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> 					list_del(&dpcm->list_be);
-> 					list_del(&dpcm->list_fe);
-> 					spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-> 					kfree(dpcm);
-> 
-> struct snd_soc_pcm_runtime *be = dpcm->be; <-- Accessing freed memory
-> 
-> To prevent this situation, dpcm_lock should be acquired during
-> iteration of dpcm list in dpcm_be_dai_trigger().
+> Neither the platform_device_register_simple() nor 
+> platform_driver_probe() seem necessary?Because this privacy acpi driver file has dependency on the ec handle, 
+so i want to determine if the driver can be loaded basing on the EC ID 
+PNP0C09 matching.
 
-I don't think we can apply spin lock there blindly.  There is
-non-atomic PCM that must not take a spin lock there, too.
+So far,It works well for me to register the privacy driver with  the 
+register sequence.
+Dose it hurt to keep current registering process with 
+platform_driver_probe used?
 
-
-thanks,
-
-Takashi
-
-> 
-> Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-> Cc: stable@vger.kernel.org
-> ---
->  sound/soc/soc-pcm.c | 62 ++++++++++++++++++++++++++++++++-------------
->  1 file changed, 44 insertions(+), 18 deletions(-)
-> 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index ee51dc7fd893..718f6b3a309a 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -2074,12 +2074,17 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
->  	return ret;
->  }
->  
-> +static int dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
-> +		struct snd_soc_pcm_runtime *be, int stream);
-> +
->  int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  			       int cmd)
->  {
->  	struct snd_soc_dpcm *dpcm;
-> +	unsigned long flags;
->  	int ret = 0;
->  
-> +	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
->  	for_each_dpcm_be(fe, stream, dpcm) {
->  
->  		struct snd_soc_pcm_runtime *be = dpcm->be;
-> @@ -2102,7 +2107,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  
->  			ret = soc_pcm_trigger(be_substream, cmd);
->  			if (ret)
-> -				return ret;
-> +				break;
->  
->  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
->  			break;
-> @@ -2112,7 +2117,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  
->  			ret = soc_pcm_trigger(be_substream, cmd);
->  			if (ret)
-> -				return ret;
-> +				break;
->  
->  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
->  			break;
-> @@ -2122,7 +2127,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  
->  			ret = soc_pcm_trigger(be_substream, cmd);
->  			if (ret)
-> -				return ret;
-> +				break;
->  
->  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
->  			break;
-> @@ -2131,12 +2136,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
->  				continue;
->  
-> -			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-> +			if (!dpcm_can_be_free_stop(fe, be, stream))
->  				continue;
->  
->  			ret = soc_pcm_trigger(be_substream, cmd);
->  			if (ret)
-> -				return ret;
-> +				break;
->  
->  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
->  			break;
-> @@ -2144,12 +2149,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
->  				continue;
->  
-> -			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-> +			if (!dpcm_can_be_free_stop(fe, be, stream))
->  				continue;
->  
->  			ret = soc_pcm_trigger(be_substream, cmd);
->  			if (ret)
-> -				return ret;
-> +				break;
->  
->  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
->  			break;
-> @@ -2157,17 +2162,20 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
->  			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
->  				continue;
->  
-> -			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
-> +			if (!dpcm_can_be_free_stop(fe, be, stream))
->  				continue;
->  
->  			ret = soc_pcm_trigger(be_substream, cmd);
->  			if (ret)
-> -				return ret;
-> +				break;
->  
->  			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
->  			break;
->  		}
-> +		if (ret)
-> +			break;
->  	}
-> +	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
->  
->  	return ret;
->  }
-> @@ -2905,10 +2913,9 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
->  	struct snd_soc_dpcm *dpcm;
->  	int state;
->  	int ret = 1;
-> -	unsigned long flags;
->  	int i;
->  
-> -	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> +	lockdep_assert_held(&fe->card->dpcm_lock);
->  	for_each_dpcm_fe(be, stream, dpcm) {
->  
->  		if (dpcm->fe == fe)
-> @@ -2922,17 +2929,12 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
->  			}
->  		}
->  	}
-> -	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
->  
->  	/* it's safe to do this BE DAI */
->  	return ret;
->  }
->  
-> -/*
-> - * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
-> - * are not running, paused or suspended for the specified stream direction.
-> - */
-> -int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
-> +static int dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
->  		struct snd_soc_pcm_runtime *be, int stream)
->  {
->  	const enum snd_soc_dpcm_state state[] = {
-> @@ -2943,6 +2945,23 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
->  
->  	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
->  }
-> +
-> +/*
-> + * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
-> + * are not running, paused or suspended for the specified stream direction.
-> + */
-> +int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
-> +		struct snd_soc_pcm_runtime *be, int stream)
-> +{
-> +	unsigned long flags;
-> +	int ret;
-> +
-> +	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> +	ret =  dpcm_can_be_free_stop(fe, be, stream);
-> +	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-> +
-> +	return ret;
-> +}
->  EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
->  
->  /*
-> @@ -2952,6 +2971,9 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
->  int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
->  		struct snd_soc_pcm_runtime *be, int stream)
->  {
-> +	unsigned long flags;
-> +	int ret;
-> +
->  	const enum snd_soc_dpcm_state state[] = {
->  		SND_SOC_DPCM_STATE_START,
->  		SND_SOC_DPCM_STATE_PAUSED,
-> @@ -2959,6 +2981,10 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
->  		SND_SOC_DPCM_STATE_PREPARE,
->  	};
->  
-> -	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
-> +	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-> +	ret = snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
-> +	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
-> +
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
-> -- 
-> 2.21.0
-> 
-> 
-> 
+Perry
