@@ -1,80 +1,126 @@
-Return-Path: <SRS0=ZdwS=HS=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=bkJA=HT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C9FC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Feb 2021 21:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 407CAC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 04:34:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C23F864E2B
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Feb 2021 21:50:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C23F864E2B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7286064E04
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Feb 2021 04:34:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7286064E04
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41BEB836;
-	Tue, 16 Feb 2021 22:49:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41BEB836
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0E76820;
+	Wed, 17 Feb 2021 05:33:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0E76820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613512226;
-	bh=rMh2yQssa1ZuVWx6wKjT2Z1bLN0ix5jYGrVZQzok9u4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oUmpjyznSQbE8jCUbjn83BVdnQmyu+6uF9hQ1XardCwmPTXm6dgnuHwIxm0+vTv+o
-	 bphkyMYybEzdYd4pWHbt5gvKVQWI5YK7G/AG2dKlsjLLd1OmlW2HbyiZAh3d4GVnD6
-	 kJZVE/430fFdS7oTu6DLofLuP4nQ0DvhV+Qmeo8A=
+	s=default; t=1613536453;
+	bh=dC2gnEIodNUQyu9YnGwuziFGy4WLBnmNBNkt09gyQmo=;
+	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=Ik8tqCxFmllLbCyXMSl01BAi6wRtny9I1bwMQjRbn8Cw9M6xT+8IY9BulD/X7/V9t
+	 ahgzWH8h7NM4Kf7tuMc8+KwHtGNLcS2Fz/xKtCRfpBJj8SGAZuhUzPzwpR/sQNFpHp
+	 r8LFlbMbvgtY3XxUQ3wTUx3n95aBOGJcCN43g4/s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8F86F80155;
-	Tue, 16 Feb 2021 22:49:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54BC7F8020B;
+	Wed, 17 Feb 2021 05:33:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AA47F8015A; Tue, 16 Feb 2021 22:49:34 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6BCF9F8025B; Wed, 17 Feb 2021 05:33:19 +0100 (CET)
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AA2CF800AE
- for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2021 22:49:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AA2CF800AE
-IronPort-SDR: ZkAhTOYP2+ZwdaOGD6lkysKkSh8Qcc6V89ClDFmM1z2EWUNkWWE1hcVJEyhJROeS6gw6zpvrXl
- 2OFvu7hKMtyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="182250791"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="182250791"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 13:49:22 -0800
-IronPort-SDR: idvmN0o0Gm/hkCk+K6uAnGrm7eO1+yFDhAPwsuknGLy3E2uTJYtll5Q6W4O2DhHBf+f1436gD0
- Rqkusp2IMkTg==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; d="scan'208";a="424867341"
-Received: from agsarwar-mobl1.amr.corp.intel.com (HELO [10.209.13.197])
- ([10.209.13.197])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Feb 2021 13:49:21 -0800
-Subject: Re: [PATCH 0/4] ASoC: Intel: bytcr_rt5640: Add quirks for 4 more
- tablet / 2-in-1 models
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-References: <20210216213555.36555-1-hdegoede@redhat.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <aa350a8d-863f-45bf-9ed4-8d26f0342959@linux.intel.com>
-Date: Tue, 16 Feb 2021 15:49:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id CDD8DF800D0
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 05:33:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDD8DF800D0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="ZKX8YHRl"
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+ by mailout1.samsung.com (KnoxPortal) with ESMTP id
+ 20210217043303epoutp01cbe4c52919c34fec64dd3ecab8b5a19b~kbsq9pLX-0915309153epoutp01C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2021 04:33:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
+ 20210217043303epoutp01cbe4c52919c34fec64dd3ecab8b5a19b~kbsq9pLX-0915309153epoutp01C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1613536383;
+ bh=j0zPIE9VLJips+SzjmrFyntDWnbu0Pb7RhYqpoNPrDU=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=ZKX8YHRlniwqcxbsd7rg1Xewy7Ty6bSQhE/h8yML5RrkbGaYLs25Z+U5EHPqI4NwZ
+ U+OP/O1GOl1YqZc8wlkXtizWhkf7Xrw7CJWIasdPqC2kY5sp1NEH+NmXXTb+YNgF66
+ xlnH3uVEYohHbWhGun8CbRVkAMuXW+C4saJGB4OM=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+ epcas3p2.samsung.com (KnoxPortal) with ESMTP id
+ 20210217043302epcas3p2941fd5cab93ab522b812414695abbe30~kbsqTjVV61570015700epcas3p2S;
+ Wed, 17 Feb 2021 04:33:02 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp1.localdomain
+ (Postfix) with ESMTP id 4DgQ1p5k5lz4x9Q7; Wed, 17 Feb 2021 04:33:02 +0000
+ (GMT)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+ 20210217043150epcas2p3d7776bc10dc822875cc23b3e721658b6~kbrmlC5ze3152231522epcas2p3G;
+ Wed, 17 Feb 2021 04:31:50 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20210217043150epsmtrp113194e519fff72ca5890283c16d3c5f0~kbrmkDlm91879118791epsmtrp1E;
+ Wed, 17 Feb 2021 04:31:50 +0000 (GMT)
+X-AuditID: b6c32a2a-73fff70000002229-c4-602c9c35410d
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+ epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ DB.B9.08745.53C9C206; Wed, 17 Feb 2021 13:31:49 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip2.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20210217043149epsmtip22a95ef2269cc91bf4563b851be59d921~kbrmVDRSS0095300953epsmtip2E;
+ Wed, 17 Feb 2021 04:31:49 +0000 (GMT)
+From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+To: "'Kuninori Morimoto'" <kuninori.morimoto.gx@renesas.com>,
+ <broonie@kernel.org>, <cpgs@samsung.com>
+Subject: [PATCH v4 1/1] ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
+Date: Wed, 17 Feb 2021 13:31:49 +0900
+Message-ID: <1773638882.61613536382796.JavaMail.epsvc@epcpadp4>
 MIME-Version: 1.0
-In-Reply-To: <20210216213555.36555-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Bard Liao <bard.liao@intel.com>
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdcE5c6CHkH9aWF0S1+un2AizJ94RA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsWy7bCSvK7pHJ0Eg5+vbCyuXDzEZDH14RM2
+ i5eHNC3u/jC3mLGtm8Wi8d4ENovVV7cwWbw6vIvR4tuVDiaLX/+fMVkcvbiYyaLhbjO7xcvN
+ b5gsjjROYXLg89jwuYnNY+esu+wem1Z1snnMOxno8e3MRBaPvi2rGD02n64OYI/isklJzcks
+ Sy3St0vgylh9uoOtYJdhxfKpJ9kbGL+qdzFyckgImEjsuLODqYuRi0NIYAejxLwPe1ghEhIS
+ H+afYYewhSXutxxhhSh6zihx9fNeRpAEm4CuxJd7d5hBbBGBLImX/+8ygxQxC7xjkrj6awUT
+ SEJYwEvi+d33YDaLgKrEgz9rwKbyClhKbJ22gw3CFpQ4OfMJC4jNLKAt0fuwlRHClpfY/nYO
+ M8QVChI/ny4DuoIDaJmexNRlvhAlIhKzO9uYJzAKzkIyaRaSSbOQTJqFpGUBI8sqRsnUguLc
+ 9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgmNPS2sG4Z9UHvUOMTByMhxglOJiVRHjZP2slCPGm
+ JFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cBU8E3vpaVJ0cbN
+ S/45c7odOTAh4fSqEyXrb9UplkvMrJt84az2M84kPtMOhe2rT983KDkv/n/GDNXXy++c7ls7
+ fUHqjtflykGbWu4onNvE48jw7HZbc1a+re+R5CQJE9ajVZPZw+t699d+2btzczvfqyu7jkw9
+ pprwTTUjKI/T3qbhyIkQ64Ka0A+dJuadn35xnd/Ww1Ljc0Y8Luj0tRbZ7ccjfK56T722863U
+ Xmk9zivflqn57VU6qdGRvLs1OlcmQsN+/rT5L/I5TeZLbLn+ep+9BHPQ5RmOG6bsk7z3+XfX
+ jdLLnjaX/ErmJmrpO2t0OxYe5om6VT9f4+fmx+/WGt09/eexbPmVL4fFvlZvVmIpzkg01GIu
+ Kk4EAC9fw5goAwAA
+X-CMS-MailID: 20210217043150epcas2p3d7776bc10dc822875cc23b3e721658b6
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210217043150epcas2p3d7776bc10dc822875cc23b3e721658b6
+References: <CGME20210217043150epcas2p3d7776bc10dc822875cc23b3e721658b6@epcas2p3.samsung.com>
+Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, 'Takashi
+ Iwai' <tiwai@suse.de>,
+ 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
+ lgirdwood@gmail.com, kimty@samsung.com, donggyun.ko@samsung.com,
+ hmseo@samsung.com, cpgs@samsung.com, s47.kang@samsung.com,
+ pilsun.jang@samsung.com, tkjung@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,31 +136,212 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+If stop by underrun and DPCM BE disconnection is run simultaneously,
+data abort can be occurred by the sequence below.
+
+CPU0					CPU1
+dpcm_be_dai_trigger():			dpcm_be_disconnect():
+
+for_each_dpcm_be(fe, stream, dpcm) {
+
+					spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+					list_del(&dpcm->list_be);
+					list_del(&dpcm->list_fe);
+					spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+					kfree(dpcm);
+
+struct snd_soc_pcm_runtime *be = dpcm->be; <-- Accessing freed memory
+
+To prevent this situation, dpcm_lock should be acquired during
+iteration of dpcm list in dpcm_be_dai_trigger().
+
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/soc-pcm.c | 62 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 18 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index ee51dc7fd893..718f6b3a309a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2074,12 +2074,17 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static int dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++		struct snd_soc_pcm_runtime *be, int stream);
++
+ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			       int cmd)
+ {
+ 	struct snd_soc_dpcm *dpcm;
++	unsigned long flags;
+ 	int ret = 0;
+ 
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+ 	for_each_dpcm_be(fe, stream, dpcm) {
+ 
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
+@@ -2102,7 +2107,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2112,7 +2117,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2122,7 +2127,7 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_START;
+ 			break;
+@@ -2131,12 +2136,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_PAUSED))
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (!dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 			break;
+@@ -2144,12 +2149,12 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (!dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_SUSPEND;
+ 			break;
+@@ -2157,17 +2162,20 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
+ 			if (be->dpcm[stream].state != SND_SOC_DPCM_STATE_START)
+ 				continue;
+ 
+-			if (!snd_soc_dpcm_can_be_free_stop(fe, be, stream))
++			if (!dpcm_can_be_free_stop(fe, be, stream))
+ 				continue;
+ 
+ 			ret = soc_pcm_trigger(be_substream, cmd);
+ 			if (ret)
+-				return ret;
++				break;
+ 
+ 			be->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
+ 			break;
+ 		}
++		if (ret)
++			break;
+ 	}
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	return ret;
+ }
+@@ -2905,10 +2913,9 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+ 	struct snd_soc_dpcm *dpcm;
+ 	int state;
+ 	int ret = 1;
+-	unsigned long flags;
+ 	int i;
+ 
+-	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	lockdep_assert_held(&fe->card->dpcm_lock);
+ 	for_each_dpcm_fe(be, stream, dpcm) {
+ 
+ 		if (dpcm->fe == fe)
+@@ -2922,17 +2929,12 @@ static int snd_soc_dpcm_check_state(struct snd_soc_pcm_runtime *fe,
+ 			}
+ 		}
+ 	}
+-	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
+ 	/* it's safe to do this BE DAI */
+ 	return ret;
+ }
+ 
+-/*
+- * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
+- * are not running, paused or suspended for the specified stream direction.
+- */
+-int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++static int dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
+ 	const enum snd_soc_dpcm_state state[] = {
+@@ -2943,6 +2945,23 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
+ 
+ 	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
+ }
++
++/*
++ * We can only hw_free, stop, pause or suspend a BE DAI if any of it's FE
++ * are not running, paused or suspended for the specified stream direction.
++ */
++int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
++		struct snd_soc_pcm_runtime *be, int stream)
++{
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	ret =  dpcm_can_be_free_stop(fe, be, stream);
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ 
+ /*
+@@ -2952,6 +2971,9 @@ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_free_stop);
+ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		struct snd_soc_pcm_runtime *be, int stream)
+ {
++	unsigned long flags;
++	int ret;
++
+ 	const enum snd_soc_dpcm_state state[] = {
+ 		SND_SOC_DPCM_STATE_START,
+ 		SND_SOC_DPCM_STATE_PAUSED,
+@@ -2959,6 +2981,10 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ 		SND_SOC_DPCM_STATE_PREPARE,
+ 	};
+ 
+-	return snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
++	ret = snd_soc_dpcm_check_state(fe, be, stream, state, ARRAY_SIZE(state));
++	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
+-- 
+2.21.0
 
 
-On 2/16/21 3:35 PM, Hans de Goede wrote:
-> Hi All,
-> 
-> Here is a patch series adding quirks with device-specific settings for
-> 4 more tablet / 2-in-1 models.
 
-Some of those 2014 devices will soon be collector items ;-)
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> Hans de Goede (4):
->    ASoC: Intel: bytcr_rt5640: Add quirk for the Estar Beauty HD MID 7316R tablet
->    ASoC: Intel: bytcr_rt5640: Add quirk for the Voyo Winpad A15 tablet
->    ASoC: Intel: bytcr_rt5651: Add quirk for the Jumper EZpad 7 tablet
->    ASoC: Intel: bytcr_rt5640: Add quirk for the Acer One S1002 tablet
-> 
->   sound/soc/intel/boards/bytcr_rt5640.c | 37 +++++++++++++++++++++++++++
->   sound/soc/intel/boards/bytcr_rt5651.c | 13 ++++++++++
->   2 files changed, 50 insertions(+)
-> 
