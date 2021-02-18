@@ -2,66 +2,69 @@ Return-Path: <SRS0=3Kie=HU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAA66C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE02EC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:21:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 287F464EB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:20:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 287F464EB9
+	by mail.kernel.org (Postfix) with ESMTPS id 026E864E77
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:21:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 026E864E77
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A006826;
-	Thu, 18 Feb 2021 23:19:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A006826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69976823;
+	Thu, 18 Feb 2021 23:20:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69976823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613686835;
-	bh=bbYSTMBUFyVPOd8MBtWw7cgtsLuY2iDZcxIybJVXIvk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gb5gAb92wNWp17UZl34KYWCcDxrtYImzzVJnbkOrEjq/ccquQJ3boU+N8VftsEbIz
-	 QcBFoZPhsjXaLl7X25y+JvRTHr1rY6U0esH+cCdZfT7ShmiMHXk7Zv+e3jTTCQ8z0b
-	 Z9DIfvqaw1BKV05BkZAJ7QuvNcw2woqfJzG6tpQg=
+	s=default; t=1613686886;
+	bh=cCDPexjSxgV8jedos0RjEzWGa560mKm+TwPhHaAMUKA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dGi6mbFiPxcI1a9mX38OhfbfhQrPkImUHbtevOU3SF7n72d8qgo2bjCRLnuhleYCn
+	 oBU+XaitCONIBSMOksEovkgsJ7wsLPXEz1kfZinS8t56HYhclAfy/d4oXUQdPXtoiA
+	 gMFoTgWvAdLH2FQOWcZjd7Rzn8DxkAxYGcoqM0DM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6F1DF8016E;
-	Thu, 18 Feb 2021 23:19:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16EC4F80155;
+	Thu, 18 Feb 2021 23:19:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 334C7F8015A; Thu, 18 Feb 2021 23:19:43 +0100 (CET)
+ id E4509F802A9; Thu, 18 Feb 2021 23:19:48 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED9E4F800E9
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:19:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9E4F800E9
-IronPort-SDR: akfwyRtefzH3IE9TGMEy4wHd4xSEktbBrOJQR6TSVbPX0SRa0sOba9bBJr7TmSJ+bGjQTSwiKJ
- lvF4Ej+oqH9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170801473"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="170801473"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6920F800D0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:19:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6920F800D0
+IronPort-SDR: 2ovfFZYuwzNN+yMxckNJhzi0kCdTW2L9picXSKY/CSFxysPwOPLI+If4RDS3dLoul03Wb2CpNy
+ yEPNA6TUl75A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170801477"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="170801477"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:19:34 -0800
-IronPort-SDR: OxDC2ktLve1iPMvbTRNRQu4+tsMRWYW03gtQysxii7VhEcJD2GaazHynRjq43DvWXZ9U+mg/y7
- c7t7NvU3SVIQ==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="581441979"
+ 18 Feb 2021 14:19:35 -0800
+IronPort-SDR: Z9741Z7+GihoCOXgl4qAS7MzYaqxliAGSBvrk6BUde8G1/DXttdrYjWf4Lgg3HKg9Ud624DpEY
+ VeRK8t2eMB4Q==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="581441981"
 Received: from tphilli1-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.64.38])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  18 Feb 2021 14:19:34 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/6] ASoC: core: remove cppcheck warnings
-Date: Thu, 18 Feb 2021 16:19:15 -0600
-Message-Id: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/6] ASoC: soc-ops: remove useless assignment
+Date: Thu, 18 Feb 2021 16:19:16 -0600
+Message-Id: <20210218221921.88991-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
+References: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
@@ -81,23 +84,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is the first batch of cleanups to make cppcheck more usable,
-currently we have way too many warnings that drown real issues.
+cppcheck warning:
 
-Pierre-Louis Bossart (6):
-  ASoC: soc-ops: remove useless assignment
-  ASoC: soc-pcm: remove redundant assignment
-  ASoC: soc-pcm: remove shadowing variable
-  ASoC: soc-pcm: add error log
-  ASoC: soc-topology: clarify expression
-  ASoC: generic: simple-card-utils: remove useless assignment
+sound/soc/soc-ops.c:410:35: style: Variable 'val2' is assigned a value
+that is never used. [unreadVariable]
+ unsigned int val, val_mask, val2 = 0;
+                                  ^
 
- sound/soc/generic/simple-card-utils.c |  2 +-
- sound/soc/soc-ops.c                   |  2 +-
- sound/soc/soc-pcm.c                   |  4 ++--
- sound/soc/soc-topology.c              | 16 ++++++++--------
- 4 files changed, 12 insertions(+), 12 deletions(-)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/soc-ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 10f48827bb0e..58527247df83 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -407,7 +407,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+ 	int min = mc->min;
+ 	unsigned int mask = (1U << (fls(min + max) - 1)) - 1;
+ 	int err = 0;
+-	unsigned int val, val_mask, val2 = 0;
++	unsigned int val, val_mask, val2;
+ 
+ 	val_mask = mask << shift;
+ 	val = (ucontrol->value.integer.value[0] + min) & mask;
 -- 
 2.25.1
 
