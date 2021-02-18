@@ -7,61 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C44D6C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:22:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 154E8C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:22:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E0A464EBD
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:22:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E0A464EBD
+	by mail.kernel.org (Postfix) with ESMTPS id 6687564E77
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:22:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6687564E77
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A26DF1665;
-	Thu, 18 Feb 2021 23:21:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A26DF1665
+	by alsa0.perex.cz (Postfix) with ESMTPS id CAF62165D;
+	Thu, 18 Feb 2021 23:21:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAF62165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613686935;
-	bh=xXns3d9QowgJVn6VXx0dKyQeh9/V76Iu3fbsMRmuuR0=;
+	s=default; t=1613686942;
+	bh=nSj+671JNaZUziyvM5ett3/nv+AL9O2psGwEPcD0oNo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Tv/o2P6y1Q3KWP2PZdD/t1odDaYvsRKvhFkuaBvAZ6NHo0dMHY6d8GhZGQzLJFdqS
-	 ACGa86w4bEwjNkPXlkelxz/Eqjj86ZhziZu9IrNbgrp+iAU6IdMvQ/paPZazEzo8/a
-	 8OilyXF6KP1nOzHYiO4ZbhbCKOE7FF27RdpUpTJg=
+	b=HyAS8C+j2jII/pWkFPcEYHzfiEKJ1+LvWvfu7/68r9t9jDx7pOHtKGB0yeyUKQsy4
+	 GCZgFDOSb8TtDzjs7C0MvkWEwhAM5EKs+67zCl/5fT+yEMEa7QXcmnzfAKD1h8eH7C
+	 JB1cHcSx3X2sQ6/fS0YZAoA6yT0AAlqPOAFeFCZI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92667F802E0;
-	Thu, 18 Feb 2021 23:19:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7918F8032B;
+	Thu, 18 Feb 2021 23:19:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F723F802C4; Thu, 18 Feb 2021 23:19:51 +0100 (CET)
+ id 24FE1F802C4; Thu, 18 Feb 2021 23:19:52 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AA2AF8020C
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:19:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AA2AF8020C
-IronPort-SDR: vwKg3jtXwux6utyfYIxJgegEruE4TpP0G8mbrMap3gT76IpbvbPxmCdIyz57OqmGlkCej+vonl
- U23QHDyMeqOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170801487"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="170801487"
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1A13F80275
+ for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:19:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1A13F80275
+IronPort-SDR: T+JKSprEKiHpmFy9BFgS6KIPINy7Ty33Yhtq0yaSdwCD2sztlLM50zF8yIw8QmcJrsdMPdZdk/
+ Nc/46PtyKI5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170801506"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="170801506"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:19:36 -0800
-IronPort-SDR: WGZQPpwNKoxUiIaxBZbH4EkkwLHx64ED+6IZvSN55oHBh4Q5vvBzv/YB5tGht6epy49/TXB171
- obx7wsDbt5qw==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="581441985"
+ 18 Feb 2021 14:19:39 -0800
+IronPort-SDR: 9WMWu5N24h2XVGHgVWT07CYsbDRp+0K25Py2kHVEJxkeZ341f8x8MwUhWteba8Q8Dcor4ITxh7
+ uiVT/Vw4oT4w==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="581441997"
 Received: from tphilli1-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.64.38])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:19:36 -0800
+ 18 Feb 2021 14:19:39 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/6] ASoC: soc-pcm: remove shadowing variable
-Date: Thu, 18 Feb 2021 16:19:18 -0600
-Message-Id: <20210218221921.88991-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/6] ASoC: generic: simple-card-utils: remove useless
+ assignment
+Date: Thu, 18 Feb 2021 16:19:21 -0600
+Message-Id: <20210218221921.88991-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
 References: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
@@ -86,36 +87,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 cppcheck warning:
 
-sound/soc/soc-pcm.c:1718:7: style: Local variable 'i' shadows outer
-variable [shadowVariable]
-  int i;
-      ^
-sound/soc/soc-pcm.c:1696:6: note: Shadowed declaration
- int i;
-     ^
-sound/soc/soc-pcm.c:1718:7: note: Shadow variable
-  int i;
-      ^
-
-the second variable seems totally unnecessary.
+sound/soc/generic/simple-card-utils.c:258:10: style: Variable 'ret' is
+assigned a value that is never used. [unreadVariable]
+ int ret = 0;
+         ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/generic/simple-card-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 12fd10a6c190..705fb2d548a9 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1718,7 +1718,6 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 			snd_soc_dpcm_get_substream(be, stream);
- 		struct snd_soc_pcm_runtime *rtd;
- 		struct snd_soc_dai *dai;
--		int i;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index ab31045cfc95..06c2512b6f2d 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -254,7 +254,7 @@ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
+ 	struct simple_dai_props *dai_props =
+ 		simple_priv_to_props(priv, rtd->num);
+ 	unsigned int mclk, mclk_fs = 0;
+-	int ret = 0;
++	int ret;
  
- 		/* A backend may not have the requested substream */
- 		if (!be_substream)
+ 	if (dai_props->mclk_fs)
+ 		mclk_fs = dai_props->mclk_fs;
 -- 
 2.25.1
 
