@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F762C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:34:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF091C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:35:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AE4B64EB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:34:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AE4B64EB9
+	by mail.kernel.org (Postfix) with ESMTPS id 2A8BB64EB9
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:35:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A8BB64EB9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FF509F6;
-	Thu, 18 Feb 2021 23:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FF509F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6027166E;
+	Thu, 18 Feb 2021 23:34:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6027166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613687682;
-	bh=A2uGarlMSyDQ6ZoGrxQiT5WyjcTX5kCsdoAt8N/v5v8=;
+	s=default; t=1613687705;
+	bh=vwBNrlzHMaJuoEUheDlD5yindgWjyN5jaJDmk/gXzwo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H1YR32kUV+QSWugcQxJmVrHZam/qDIY0vD8M4sLsm2+oGP1UnPBF9vpxzeZlBPokg
-	 CSYkLd0P0/aFsCRqbikRfxe0Y1y7sLAzGZTL2VrKnmoybpzg2oOZUQyh9o79miI23Y
-	 ZuMxaE9oaFTsd+/TR1Ms2MI5JuA3LFOjhdKFofSc=
+	b=oanVMX17Dv1GLYLHaGz80Nx+InD4DRwqcOPGkk/5kJe98jrHW+8SsiUtHuUtyNxm3
+	 dhX8RvFsVAvQA1IsB3PNFhVjq87G1siVfavf4yWBe/37IT9U9ZCN0PKJY/xxdSCfwE
+	 QsY21vqIzz1ItB8gNuyCoPu/aUvW8x0ExjxIRcTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65D00F804AD;
-	Thu, 18 Feb 2021 23:30:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 307FAF804E0;
+	Thu, 18 Feb 2021 23:30:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF7C6F8015A; Thu, 18 Feb 2021 23:30:00 +0100 (CET)
+ id 22DE4F800D0; Thu, 18 Feb 2021 23:30:01 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2159AF80275
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:29:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2159AF80275
-IronPort-SDR: ibcccN5dgsa6sePZh2yCApyi1qMM7aqVA+JdujC8tMz5otd2bbCpHmoJq02u53LqK7zfU2rPC+
- KDdvi84Chu8Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="182875670"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="182875670"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C080F80229
+ for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:29:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C080F80229
+IronPort-SDR: fuv9TP+duesVPKgB8FcKMeEAtxli5C8McWzdCsNXT9vambHF1cmipTOsCc2/a9EqLfZiSduOpv
+ 12UPHH452oRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="182875641"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="182875641"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:29:45 -0800
-IronPort-SDR: hBsyFSNwA20LgdDw3zo99OyynS1XAo3wFx5yfeRKToVAqTQ4qGIdg6vwRoWmXhrUt5067F+e7F
- FYmKdQsJwQJg==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="364990853"
+ 18 Feb 2021 14:29:40 -0800
+IronPort-SDR: fys6WBFy949YwjDXlifXQim9E4e/UVf6/UhPTmQnLKwUjnHWieVLxQgp8R/s1q2E+6gw6+WD2o
+ MBwUgZVYT+Ag==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="364990840"
 Received: from tphilli1-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.64.38])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:29:42 -0800
+ 18 Feb 2021 14:29:39 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/10] ASoC: wcd934x: remove useless return
-Date: Thu, 18 Feb 2021 16:29:15 -0600
-Message-Id: <20210218222916.89809-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/10] ASoC: qcom: q6asm: align function prototypes
+Date: Thu, 18 Feb 2021 16:29:12 -0600
+Message-Id: <20210218222916.89809-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210218222916.89809-1-pierre-louis.bossart@linux.intel.com>
 References: <20210218222916.89809-1-pierre-louis.bossart@linux.intel.com>
@@ -85,40 +85,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+cppcheck warnings:
 
-sound/soc/codecs/wcd934x.c:1571:9: warning: Identical condition and
-return expression 'ret', return value is always 0
-[identicalConditionAfterEarlyExit]
- return ret;
-        ^
-sound/soc/codecs/wcd934x.c:1568:6: note: If condition 'ret' is true,
-the function will return/exit
- if (ret)
-     ^
-sound/soc/codecs/wcd934x.c:1571:9: note: Returning identical
-expression 'ret'
- return ret;
-        ^
+sound/soc/qcom/qdsp6/q6asm.c:502:16: style:inconclusive: Function
+'q6asm_map_memory_regions' argument 4 names different: declaration
+'bufsz' definition 'period_sz'. [funcArgNamesDifferent]
+        size_t period_sz, unsigned int periods)
+               ^
+sound/soc/qcom/qdsp6/q6asm.h:150:16: note: Function
+'q6asm_map_memory_regions' argument 4 names different: declaration
+'bufsz' definition 'period_sz'.
+        size_t bufsz, unsigned int bufcnt);
+               ^
+sound/soc/qcom/qdsp6/q6asm.c:502:16: note: Function
+'q6asm_map_memory_regions' argument 4 names different: declaration
+'bufsz' definition 'period_sz'.
+        size_t period_sz, unsigned int periods)
+               ^
+sound/soc/qcom/qdsp6/q6asm.c:502:40: style:inconclusive: Function
+'q6asm_map_memory_regions' argument 5 names different: declaration
+'bufcnt' definition 'periods'. [funcArgNamesDifferent]
+        size_t period_sz, unsigned int periods)
+                                       ^
+sound/soc/qcom/qdsp6/q6asm.h:150:36: note: Function
+'q6asm_map_memory_regions' argument 5 names different: declaration
+'bufcnt' definition 'periods'.
+        size_t bufsz, unsigned int bufcnt);
+                                   ^
+sound/soc/qcom/qdsp6/q6asm.c:502:40: note: Function
+'q6asm_map_memory_regions' argument 5 names different: declaration
+'bufcnt' definition 'periods'.
+        size_t period_sz, unsigned int periods)
+                                       ^
+sound/soc/qcom/qdsp6/q6asm.c:823:47: style:inconclusive: Function
+'q6asm_get_session_id' argument 1 names different: declaration 'ac'
+definition 'c'. [funcArgNamesDifferent]
+int q6asm_get_session_id(struct audio_client *c)
+                                              ^
+sound/soc/qcom/qdsp6/q6asm.h:146:47: note: Function
+'q6asm_get_session_id' argument 1 names different: declaration 'ac'
+definition 'c'.
+int q6asm_get_session_id(struct audio_client *ac);
+                                              ^
+sound/soc/qcom/qdsp6/q6asm.c:823:47: note: Function
+'q6asm_get_session_id' argument 1 names different: declaration 'ac'
+definition 'c'.
+int q6asm_get_session_id(struct audio_client *c)
+                                              ^
+sound/soc/qcom/qdsp6/q6asm.c:1573:52: style:inconclusive: Function
+'q6asm_write_async' argument 6 names different: declaration 'flags'
+definition 'wflags'. [funcArgNamesDifferent]
+        uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags)
+                                                   ^
+sound/soc/qcom/qdsp6/q6asm.h:100:52: note: Function
+'q6asm_write_async' argument 6 names different: declaration 'flags'
+definition 'wflags'.
+        uint32_t msw_ts, uint32_t lsw_ts, uint32_t flags);
+                                                   ^
+sound/soc/qcom/qdsp6/q6asm.c:1573:52: note: Function
+'q6asm_write_async' argument 6 names different: declaration 'flags'
+definition 'wflags'.
+        uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags)
+                                                   ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/wcd934x.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-index 40f682f5dab8..d461a3747b4d 100644
---- a/sound/soc/codecs/wcd934x.c
-+++ b/sound/soc/codecs/wcd934x.c
-@@ -1565,8 +1565,6 @@ static int wcd934x_set_interpolator_rate(struct snd_soc_dai *dai,
- 		return ret;
- 	ret = wcd934x_set_mix_interpolator_rate(dai, (u8)rate_val,
- 						sample_rate);
--	if (ret)
--		return ret;
- 
- 	return ret;
- }
+diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
+index 82e584aa534f..394604c34943 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.h
++++ b/sound/soc/qcom/qdsp6/q6asm.h
+@@ -97,7 +97,7 @@ struct audio_client *q6asm_audio_client_alloc(struct device *dev,
+ 					      int session_id, int perf_mode);
+ void q6asm_audio_client_free(struct audio_client *ac);
+ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
+-		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t flags);
++		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags);
+ int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
+ 		     uint32_t format, u32 codec_profile,
+ 		     uint16_t bits_per_sample, bool is_gapless);
+@@ -143,10 +143,10 @@ int q6asm_stream_remove_trailing_silence(struct audio_client *ac,
+ 					 uint32_t trailing_samples);
+ int q6asm_cmd(struct audio_client *ac, uint32_t stream_id,  int cmd);
+ int q6asm_cmd_nowait(struct audio_client *ac, uint32_t stream_id,  int cmd);
+-int q6asm_get_session_id(struct audio_client *ac);
++int q6asm_get_session_id(struct audio_client *c);
+ int q6asm_map_memory_regions(unsigned int dir,
+ 			     struct audio_client *ac,
+ 			     phys_addr_t phys,
+-			     size_t bufsz, unsigned int bufcnt);
++			     size_t period_sz, unsigned int periods);
+ int q6asm_unmap_memory_regions(unsigned int dir, struct audio_client *ac);
+ #endif /* __Q6_ASM_H__ */
 -- 
 2.25.1
 
