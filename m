@@ -2,74 +2,70 @@ Return-Path: <SRS0=G6+L=HV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55379C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:21:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 032F4C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:31:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C423964EAF
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:21:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C423964EAF
+	by mail.kernel.org (Postfix) with ESMTPS id ECDF664E28
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:31:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECDF664E28
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 454BC166F;
-	Sat, 20 Feb 2021 00:20:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 454BC166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78DE71664;
+	Sat, 20 Feb 2021 00:30:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78DE71664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613776862;
-	bh=R13ooe3Bbj6tsQxvx3dWjVbs/Esr9VID2g3m/OBqHRQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dqtTZ9/9Q3KsUq3MSrIOzBGO3VMweVA5SBT9DmpsX/K8V124PIuBCoFQKN/kzzgCW
-	 w9IBguoZA9Mq7caUmz3ZBZ0WPC2rVmlo8eZmlzamq6Ees1MXYaKqA65mzJJNS18D1M
-	 EKgVd3DzqSc2jAzJhSFQJks83Pc3ks6VbCReOI0M=
+	s=default; t=1613777487;
+	bh=I1Kj1Sx8wGaVB5ZzKQEVYLtvlOn0Bc3enlDcupSw27A=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NRM0lqQwwLMR7YmDkkJr//ajIY9d6DRhLUGjNRE3zQPgOySfwB0/87Y2aLu3hdYFa
+	 sb2++eUP5sxD923GRALHsa/7Soyeb5+tDbnts2awnaqHr60BzijlWLWQQg6snH2yBz
+	 qPT8BLjrBpkCmw4jKOUNpa7QDx17gxffQrU3cc4c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2491F8049C;
-	Sat, 20 Feb 2021 00:17:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0623F80268;
+	Sat, 20 Feb 2021 00:30:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3200F802DB; Sat, 20 Feb 2021 00:17:05 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 6754DF8025B; Sat, 20 Feb 2021 00:30:34 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44E8EF800C7
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44E8EF800C7
-IronPort-SDR: H7MGEbaXJX//aw6oU/WqWx7RnMJkk4oNpuF4lLsNA87mx2vZh4hNiI5sU2sXYMY9pdh7rPEbVY
- iUxdGqMsM0zA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="181436681"
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="181436681"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:16:50 -0800
-IronPort-SDR: 0Pq2TbEvYOtVH5RDtU64/b2G0VQv870Cetp2TFS4JuH9gGDEcohDiiXVDM2k13wx2GCJAuojKn
- +F0+VtjWrQ7Q==
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329802"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BD9AF8013F
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:30:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BD9AF8013F
+IronPort-SDR: vwM9hrYyjpK9AqvbX7tM8yzqiRvVeVLpxV3g5JSxfoajpiSQaEJbUFgUDH+Ckrs4XJtantIPIh
+ u5RQ6k0ch9Cg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="203293671"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="203293671"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2021 15:30:28 -0800
+IronPort-SDR: TrHNNv7iDNk62UGLpf2z4P8cz0reDsrFq64yr1q4UKtVPP238GZCi00TNPDTX8WCnLtWTHDmTJ
+ m0uF6Jh1hwNw==
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="496662564"
 Received: from lkwerake-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.153.34])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:16:49 -0800
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2021 15:30:27 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 8/8] ASoC: sh: siu_pcm: remove unused variable
-Date: Fri, 19 Feb 2021 17:16:35 -0600
-Message-Id: <20210219231635.5749-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/9] ASoC: fsl: remove cppcheck warnings
+Date: Fri, 19 Feb 2021 17:29:28 -0600
+Message-Id: <20210219232937.6440-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
-References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,40 +81,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+Nothing critical and no functional changes.
 
-sound/soc/sh/siu_pcm.c:225:8: style: Variable 'virt' is assigned a
-value that is never used. [unreadVariable]
+The only change that needs attention if the 'fsl_ssi: remove
+unnecessary tests' patch, where variables are to zero, then tested to
+set register fields. Either the tests are indeed redundant or the
+entire programming sequence is incorrect.
 
-  virt = PERIOD_OFFSET(rt->dma_area,
-       ^
+Pierre-Louis Bossart (9):
+  ASoC: fsl: fsl_asrc: remove useless assignment
+  ASoC: fsl: fsl_dma: remove unused variable
+  ASoC: fsl: fsl_easrc: remove useless assignments
+  ASoC: fsl: fsl_esai: clarify expression
+  ASoC: fsl: fsl_ssi: remove unnecessary tests
+  ASoC: fsl: imx-hdmi: remove unused structure members
+  ASoC: fsl: mpc5200: signed parameter in snprintf format
+  ASoC: fsl: mpc8610: remove useless assignment
+  ASoC: fsl: p1022_ds: remove useless assignment
 
-It's not clear what this variable was needed for, remove it.
+ sound/soc/fsl/fsl_asrc.c     | 2 +-
+ sound/soc/fsl/fsl_dma.c      | 3 ---
+ sound/soc/fsl/fsl_easrc.c    | 6 +++---
+ sound/soc/fsl/fsl_esai.c     | 2 +-
+ sound/soc/fsl/fsl_ssi.c      | 5 ++---
+ sound/soc/fsl/imx-hdmi.c     | 4 ----
+ sound/soc/fsl/mpc5200_dma.c  | 2 +-
+ sound/soc/fsl/mpc8610_hpcd.c | 2 +-
+ sound/soc/fsl/p1022_ds.c     | 2 +-
+ 9 files changed, 10 insertions(+), 18 deletions(-)
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sh/siu_pcm.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index 6496300f73a9..0a8a3c314a73 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -217,14 +217,10 @@ static void siu_io_work(struct work_struct *work)
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		dma_addr_t buff;
- 		size_t count;
--		u8 *virt;
- 
- 		buff = (dma_addr_t)PERIOD_OFFSET(rt->dma_addr,
- 						siu_stream->cur_period,
- 						siu_stream->period_bytes);
--		virt = PERIOD_OFFSET(rt->dma_area,
--				     siu_stream->cur_period,
--				     siu_stream->period_bytes);
- 		count = siu_stream->period_bytes;
- 
- 		/* DMA transfer start */
 -- 
 2.25.1
 
