@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB5C4C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09A4CC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4097E64EB3
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4097E64EB3
+	by mail.kernel.org (Postfix) with ESMTPS id 6850B64E28
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6850B64E28
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 916041663;
-	Sat, 20 Feb 2021 00:19:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 916041663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C6101684;
+	Sat, 20 Feb 2021 00:19:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C6101684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613776806;
-	bh=ZxZziS8QtHC2lv3ncWuYz3t/8s5Bd88ti8xl9wnBLbQ=;
+	s=default; t=1613776817;
+	bh=+VLhexHm9NqPLI+21bpwA/ckh215C9wBv1HqOKzXPNg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VrPMxCMgy1mX5o5A+CJEEFDWeeFy33x3E4TttEWoWIUq6Cx1c/7H6XCQxtC+N2DxV
-	 Zn/8gxkf4zFyW4n/cvmHuHY5S1CjVQHQT3UhzwhS23xvmLHSD3a8+jEy1a1VY9JiNA
-	 JoEgWaFs1We2/PkLs4zXdXk+thcc4KNeZApNF1SU=
+	b=e4IlyZeD/xuH6IwnbIwFnWyFSn0H1Wnx/uKc+AMJrPcYeVwauNp9elUFVWTdzbmlb
+	 1cgvno9N1un2QtC5C0Psv+EQ+O+1lB2Y9DuFwjeB6nB9742MKFOPPI/b9nIULzs+aN
+	 o77wDe9PcLgjCcjmOTMgnvFiiIGYOdRiLFDpDaAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE141F802E2;
-	Sat, 20 Feb 2021 00:17:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87B8FF8032D;
+	Sat, 20 Feb 2021 00:17:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41B0FF802DB; Sat, 20 Feb 2021 00:17:04 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id D7233F802DF; Sat, 20 Feb 2021 00:17:04 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9996EF8028B
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9996EF8028B
-IronPort-SDR: SqqYqXoB3r/d1JmHU5QgWqlPX0m8ft023oKze0Axyit2RIMatgay9dmIQF1ttOdLp5BUOgxwIA
- PHXUHwfLchXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="181436680"
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="181436680"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25838F80277
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25838F80277
+IronPort-SDR: pVe+a1TlrxNkwCuwrpvkNHvMg6Xbg42Jf8evON0vjlXtYZGotWkL6iOVCTi1v5qLpwkBTvYE9p
+ Ssr/TQVkg46w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="203290908"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="203290908"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:16:49 -0800
-IronPort-SDR: ked4nAhb2iZbFcp31ISCC7y/TrdxZpZ0sSUqXKm7m/aSp4jUFV9I6P2WfMzhx0AMbpUgMb3agq
- b3IaH9aGFgqQ==
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329800"
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2021 15:16:48 -0800
+IronPort-SDR: QdoHRIejxFxi+zl+qSrXLkkXWpyCfV9aM0uRz4RrRKUC1GDoH54DC10hGF+tUfeMMqp+CIBbuG
+ XkCFNfgdj+OA==
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329792"
 Received: from lkwerake-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.153.34])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:16:48 -0800
+ 19 Feb 2021 15:16:47 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 7/8] ASoC: sh: siu_pcm: remove useless assignment
-Date: Fri, 19 Feb 2021 17:16:34 -0600
-Message-Id: <20210219231635.5749-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/8] ASoC: sh: rcar: core: rename shadowing variables
+Date: Fri, 19 Feb 2021 17:16:31 -0600
+Message-Id: <20210219231635.5749-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
 References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
@@ -85,39 +85,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+cppcheck warnings:
 
-sound/soc/sh/siu_pcm.c:375:5: style: Redundant initialization for
-'rt'. The initialized value is overwritten before it is
-read. [redundantInitialization]
+sound/soc/sh/rcar/core.c:1369:22: style: Local variable 'rdai' shadows
+outer variable [shadowVariable]
+    struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
+                     ^
+sound/soc/sh/rcar/core.c:1338:19: note: Shadowed declaration
+ struct rsnd_dai *rdai;
+                  ^
+sound/soc/sh/rcar/core.c:1369:22: note: Shadow variable
+    struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
+                     ^
+sound/soc/sh/rcar/core.c:1380:22: style: Local variable 'rdai' shadows
+outer variable [shadowVariable]
+    struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
+                     ^
+sound/soc/sh/rcar/core.c:1338:19: note: Shadowed declaration
+ struct rsnd_dai *rdai;
+                  ^
+sound/soc/sh/rcar/core.c:1380:22: note: Shadow variable
+    struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
 
- rt = siu_stream->substream->runtime;
-    ^
-sound/soc/sh/siu_pcm.c:366:30: note: rt is initialized
- struct snd_pcm_runtime  *rt = ss->runtime;
-                             ^
-sound/soc/sh/siu_pcm.c:375:5: note: rt is overwritten
- rt = siu_stream->substream->runtime;
-    ^
+use a different name at lower scope.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sh/siu_pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
-index 4785886df4f0..6496300f73a9 100644
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -363,7 +363,7 @@ static int siu_pcm_prepare(struct snd_soc_component *component,
- 	struct siu_info *info = siu_i2s_data;
- 	struct siu_port *port_info = siu_port_info(ss);
- 	struct device *dev = ss->pcm->card->dev;
--	struct snd_pcm_runtime 	*rt = ss->runtime;
-+	struct snd_pcm_runtime *rt;
- 	struct siu_stream *siu_stream;
- 	snd_pcm_sframes_t xfer_cnt;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index b1a75509851a..817eea79e0d2 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1366,10 +1366,10 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
+ 		for_each_endpoint_of_node(dai_node, dai_np) {
+ 			__rsnd_dai_probe(priv, dai_np, dai_i);
+ 			if (rsnd_is_gen3(priv)) {
+-				struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
++				struct rsnd_dai *dai = rsnd_rdai_get(priv, dai_i);
  
+-				rsnd_parse_connect_graph(priv, &rdai->playback, dai_np);
+-				rsnd_parse_connect_graph(priv, &rdai->capture,  dai_np);
++				rsnd_parse_connect_graph(priv, &dai->playback, dai_np);
++				rsnd_parse_connect_graph(priv, &dai->capture,  dai_np);
+ 			}
+ 			dai_i++;
+ 		}
+@@ -1377,10 +1377,10 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
+ 		for_each_child_of_node(dai_node, dai_np) {
+ 			__rsnd_dai_probe(priv, dai_np, dai_i);
+ 			if (rsnd_is_gen3(priv)) {
+-				struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
++				struct rsnd_dai *dai = rsnd_rdai_get(priv, dai_i);
+ 
+-				rsnd_parse_connect_simple(priv, &rdai->playback, dai_np);
+-				rsnd_parse_connect_simple(priv, &rdai->capture,  dai_np);
++				rsnd_parse_connect_simple(priv, &dai->playback, dai_np);
++				rsnd_parse_connect_simple(priv, &dai->capture,  dai_np);
+ 			}
+ 			dai_i++;
+ 		}
 -- 
 2.25.1
 
