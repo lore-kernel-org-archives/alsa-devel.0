@@ -1,75 +1,95 @@
-Return-Path: <SRS0=3Kie=HU=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=G6+L=HV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF091C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:35:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F201C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 02:56:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2A8BB64EB9
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Feb 2021 22:35:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2A8BB64EB9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6206364ED5
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 02:56:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6206364ED5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6027166E;
-	Thu, 18 Feb 2021 23:34:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6027166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E94119F6;
+	Fri, 19 Feb 2021 03:55:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E94119F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613687705;
-	bh=vwBNrlzHMaJuoEUheDlD5yindgWjyN5jaJDmk/gXzwo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1613703379;
+	bh=SXsmOxSrWmXM0bUxFvRmWQLOnN33ooEOiTdg5Q4odMY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oanVMX17Dv1GLYLHaGz80Nx+InD4DRwqcOPGkk/5kJe98jrHW+8SsiUtHuUtyNxm3
-	 dhX8RvFsVAvQA1IsB3PNFhVjq87G1siVfavf4yWBe/37IT9U9ZCN0PKJY/xxdSCfwE
-	 QsY21vqIzz1ItB8gNuyCoPu/aUvW8x0ExjxIRcTk=
+	b=pojii25CCMirxwtCB/ejD1zSJ3KHl//r8iKX9kLEolS+I6WEjvKJvxNruBkeZRZHG
+	 r2QaCy3V7noEpB7I5ZXxrcgkr7i8kTDSBkVeKa4XTZFseJkFdBrTi3SdMFtf7MKFj/
+	 kYD7F+pY093YMfcm24MXgXCh4VZ4Bz4PLfWJOHEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 307FAF804E0;
-	Thu, 18 Feb 2021 23:30:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59492F801F5;
+	Fri, 19 Feb 2021 03:55:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22DE4F800D0; Thu, 18 Feb 2021 23:30:01 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7ACD0F8020B; Fri, 19 Feb 2021 03:55:26 +0100 (CET)
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com
+ [IPv6:2607:f8b0:4864:20::82b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C080F80229
- for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 23:29:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C080F80229
-IronPort-SDR: fuv9TP+duesVPKgB8FcKMeEAtxli5C8McWzdCsNXT9vambHF1cmipTOsCc2/a9EqLfZiSduOpv
- 12UPHH452oRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="182875641"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="182875641"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:29:40 -0800
-IronPort-SDR: fys6WBFy949YwjDXlifXQim9E4e/UVf6/UhPTmQnLKwUjnHWieVLxQgp8R/s1q2E+6gw6+WD2o
- MBwUgZVYT+Ag==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; d="scan'208";a="364990840"
-Received: from tphilli1-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.64.38])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Feb 2021 14:29:39 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 06/10] ASoC: qcom: q6asm: align function prototypes
-Date: Thu, 18 Feb 2021 16:29:12 -0600
-Message-Id: <20210218222916.89809-7-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210218222916.89809-1-pierre-louis.bossart@linux.intel.com>
-References: <20210218222916.89809-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2890EF800C7
+ for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2021 03:55:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2890EF800C7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="T9m4M0v6"
+Received: by mail-qt1-x82b.google.com with SMTP id z32so3023105qtd.8
+ for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2021 18:55:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=SXsmOxSrWmXM0bUxFvRmWQLOnN33ooEOiTdg5Q4odMY=;
+ b=T9m4M0v6mgpazSKltohLQcr/rW2NVMDggJ9g7GjsFF5db/b/UD8GTSpkyyiUTiYHFx
+ 294r5LAPbTZq+k5w2AzHMYawZNdI5UNoCHjqQW8megt0Tgf5wJCkMZUPUwVM3T9uaMGx
+ DtI3QmKYKSwNJd352lPSW977nrZ2/+dorI+oqXKNaptw8XyAPC6HH76AFNX2HPTCDhXs
+ ISPjUsKmFmutcOAW7lLwuyTNVY29gw48KKcIDz5knGxq/KqmnNQrV1OPRQOJXHW5lIL2
+ ueN7CATQXXhsPk5lmwrIN8c26laAoBrvMjoNh7onl9BDiH9JXMUaS00AlheL6dBowevE
+ nl1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=SXsmOxSrWmXM0bUxFvRmWQLOnN33ooEOiTdg5Q4odMY=;
+ b=DjRm4HscPJl0lMc6b+2Prqf5HNOD1WqmR4XxNp/j+avCwIqtsDFSFaNdgy6BtuspYC
+ I8RWGt9+UFazDSf5/ZkqUOOGcxFBvdeSPAHy1tIfKPzO6q2+2YWxWLsenlBAl0TYlq4k
+ EpYaPv5de6Pk6nR3whFoXT3OIlvzWRqm2k/ba0vlRAuOH/UwklnjAcSauXMlQRW4LzfJ
+ Vy83A+9a/bVT0lOmfWH5c5aX9YaAhSzEOv0DTtD8TMQqQtextTw8KD5W7JGqvbIBfHZq
+ HCG87m0uV9DpyjxiX/uXJHDqi4zDw3hlCv2gQu5VQ7mnNeolM0yjK3kYWXpzxgTPT+Hs
+ qqww==
+X-Gm-Message-State: AOAM532WUlRBp7VGAXeO/ka8z9nSnjjXS/TQg4JodPqMdCLI//7GhMt5
+ GsuKtWV1mc6l973EA1lVBp8crcfG0EjsWc61gWM=
+X-Google-Smtp-Source: ABdhPJxnUPVrdQEXZoI7sU2dVS1zAsmq96FAtT1sSw/T4+c3+v+d1GNYLgBwSnlkydQR6I+VIEWLFIKtHhXMcLeaJ2A=
+X-Received: by 2002:ac8:6f06:: with SMTP id g6mr7127305qtv.360.1613703318340; 
+ Thu, 18 Feb 2021 18:55:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, vkoul@kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+References: <1612756287-4601-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1612756287-4601-1-git-send-email-tiantao6@hisilicon.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 19 Feb 2021 10:55:07 +0800
+Message-ID: <CAA+D8AOcKx0k355DhV5jYGhLAoQyG31u+ezz0zDqZQnJHKj84Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: imx-hdmi: no need to set .owner when using
+ module_platform_driver
+To: Tian Tao <tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, linuxppc-dev@lists.ozlabs.org,
+ s.hauer@pengutronix.de, Takashi Iwai <tiwai@suse.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,100 +105,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warnings:
+On Thu, Feb 11, 2021 at 5:21 PM Tian Tao <tiantao6@hisilicon.com> wrote:
+>
+> the module_platform_driver will call platform_driver_register.
+> and It will set the .owner to THIS_MODULE
+>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-sound/soc/qcom/qdsp6/q6asm.c:502:16: style:inconclusive: Function
-'q6asm_map_memory_regions' argument 4 names different: declaration
-'bufsz' definition 'period_sz'. [funcArgNamesDifferent]
-        size_t period_sz, unsigned int periods)
-               ^
-sound/soc/qcom/qdsp6/q6asm.h:150:16: note: Function
-'q6asm_map_memory_regions' argument 4 names different: declaration
-'bufsz' definition 'period_sz'.
-        size_t bufsz, unsigned int bufcnt);
-               ^
-sound/soc/qcom/qdsp6/q6asm.c:502:16: note: Function
-'q6asm_map_memory_regions' argument 4 names different: declaration
-'bufsz' definition 'period_sz'.
-        size_t period_sz, unsigned int periods)
-               ^
-sound/soc/qcom/qdsp6/q6asm.c:502:40: style:inconclusive: Function
-'q6asm_map_memory_regions' argument 5 names different: declaration
-'bufcnt' definition 'periods'. [funcArgNamesDifferent]
-        size_t period_sz, unsigned int periods)
-                                       ^
-sound/soc/qcom/qdsp6/q6asm.h:150:36: note: Function
-'q6asm_map_memory_regions' argument 5 names different: declaration
-'bufcnt' definition 'periods'.
-        size_t bufsz, unsigned int bufcnt);
-                                   ^
-sound/soc/qcom/qdsp6/q6asm.c:502:40: note: Function
-'q6asm_map_memory_regions' argument 5 names different: declaration
-'bufcnt' definition 'periods'.
-        size_t period_sz, unsigned int periods)
-                                       ^
-sound/soc/qcom/qdsp6/q6asm.c:823:47: style:inconclusive: Function
-'q6asm_get_session_id' argument 1 names different: declaration 'ac'
-definition 'c'. [funcArgNamesDifferent]
-int q6asm_get_session_id(struct audio_client *c)
-                                              ^
-sound/soc/qcom/qdsp6/q6asm.h:146:47: note: Function
-'q6asm_get_session_id' argument 1 names different: declaration 'ac'
-definition 'c'.
-int q6asm_get_session_id(struct audio_client *ac);
-                                              ^
-sound/soc/qcom/qdsp6/q6asm.c:823:47: note: Function
-'q6asm_get_session_id' argument 1 names different: declaration 'ac'
-definition 'c'.
-int q6asm_get_session_id(struct audio_client *c)
-                                              ^
-sound/soc/qcom/qdsp6/q6asm.c:1573:52: style:inconclusive: Function
-'q6asm_write_async' argument 6 names different: declaration 'flags'
-definition 'wflags'. [funcArgNamesDifferent]
-        uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags)
-                                                   ^
-sound/soc/qcom/qdsp6/q6asm.h:100:52: note: Function
-'q6asm_write_async' argument 6 names different: declaration 'flags'
-definition 'wflags'.
-        uint32_t msw_ts, uint32_t lsw_ts, uint32_t flags);
-                                                   ^
-sound/soc/qcom/qdsp6/q6asm.c:1573:52: note: Function
-'q6asm_write_async' argument 6 names different: declaration 'flags'
-definition 'wflags'.
-        uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags)
-                                                   ^
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/qcom/qdsp6/q6asm.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index 82e584aa534f..394604c34943 100644
---- a/sound/soc/qcom/qdsp6/q6asm.h
-+++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -97,7 +97,7 @@ struct audio_client *q6asm_audio_client_alloc(struct device *dev,
- 					      int session_id, int perf_mode);
- void q6asm_audio_client_free(struct audio_client *ac);
- int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
--		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t flags);
-+		      uint32_t msw_ts, uint32_t lsw_ts, uint32_t wflags);
- int q6asm_open_write(struct audio_client *ac, uint32_t stream_id,
- 		     uint32_t format, u32 codec_profile,
- 		     uint16_t bits_per_sample, bool is_gapless);
-@@ -143,10 +143,10 @@ int q6asm_stream_remove_trailing_silence(struct audio_client *ac,
- 					 uint32_t trailing_samples);
- int q6asm_cmd(struct audio_client *ac, uint32_t stream_id,  int cmd);
- int q6asm_cmd_nowait(struct audio_client *ac, uint32_t stream_id,  int cmd);
--int q6asm_get_session_id(struct audio_client *ac);
-+int q6asm_get_session_id(struct audio_client *c);
- int q6asm_map_memory_regions(unsigned int dir,
- 			     struct audio_client *ac,
- 			     phys_addr_t phys,
--			     size_t bufsz, unsigned int bufcnt);
-+			     size_t period_sz, unsigned int periods);
- int q6asm_unmap_memory_regions(unsigned int dir, struct audio_client *ac);
- #endif /* __Q6_ASM_H__ */
--- 
-2.25.1
-
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
