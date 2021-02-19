@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D212C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:19:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB5C4C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 834B664E92
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:19:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 834B664E92
+	by mail.kernel.org (Postfix) with ESMTPS id 4097E64EB3
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4097E64EB3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BBA21696;
-	Sat, 20 Feb 2021 00:18:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BBA21696
+	by alsa0.perex.cz (Postfix) with ESMTPS id 916041663;
+	Sat, 20 Feb 2021 00:19:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 916041663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613776768;
-	bh=2Tg9Ur5gLX6OEvub2FjbrVZWblWJXQa0yd4L0eBIKJs=;
+	s=default; t=1613776806;
+	bh=ZxZziS8QtHC2lv3ncWuYz3t/8s5Bd88ti8xl9wnBLbQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FmNTXwLlpldbs67+svW42o41LUPXRmbb7ef5ZaxbQezGah82ZNBSbEj+ILM/RbSgD
-	 bmUhgZK2fAmSf0VGJjEyq5cL/XyvEPXeMA+Fxq2JMmO+9OjdepKmDCkwyKU/T90bqI
-	 mWTEKkQa9/ZTiac/WurNocxfL2MDSnMTJnu5KMPU=
+	b=VrPMxCMgy1mX5o5A+CJEEFDWeeFy33x3E4TttEWoWIUq6Cx1c/7H6XCQxtC+N2DxV
+	 Zn/8gxkf4zFyW4n/cvmHuHY5S1CjVQHQT3UhzwhS23xvmLHSD3a8+jEy1a1VY9JiNA
+	 JoEgWaFs1We2/PkLs4zXdXk+thcc4KNeZApNF1SU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F39EFF802DB;
-	Sat, 20 Feb 2021 00:17:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE141F802E2;
+	Sat, 20 Feb 2021 00:17:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3431F802E0; Sat, 20 Feb 2021 00:17:03 +0100 (CET)
+ id 41B0FF802DB; Sat, 20 Feb 2021 00:17:04 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DF46F8026C
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DF46F8026C
-IronPort-SDR: pvcBK0vVps43KXn/W04+DeT0VBqig2vDiw+xjNxQPS0lKy7x3u2cpaXO4TMRTYym0clfV22sJx
- 8x5UJB0tQUJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="181436679"
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="181436679"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9996EF8028B
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9996EF8028B
+IronPort-SDR: SqqYqXoB3r/d1JmHU5QgWqlPX0m8ft023oKze0Axyit2RIMatgay9dmIQF1ttOdLp5BUOgxwIA
+ PHXUHwfLchXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="181436680"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="181436680"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  19 Feb 2021 15:16:49 -0800
-IronPort-SDR: Sy6FnqPnnvbXqdEgeQ4pySWTxw1MemS+B+X3yoI7ikwleB6vt/RdBImOY54leyCPORNVoXUhVo
- 69faFWJSU4pQ==
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329796"
+IronPort-SDR: ked4nAhb2iZbFcp31ISCC7y/TrdxZpZ0sSUqXKm7m/aSp4jUFV9I6P2WfMzhx0AMbpUgMb3agq
+ b3IaH9aGFgqQ==
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329800"
 Received: from lkwerake-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.153.34])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  19 Feb 2021 15:16:48 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/8] ASoC: sh: rcar: ssi: remove redundant assignment
-Date: Fri, 19 Feb 2021 17:16:33 -0600
-Message-Id: <20210219231635.5749-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/8] ASoC: sh: siu_pcm: remove useless assignment
+Date: Fri, 19 Feb 2021 17:16:34 -0600
+Message-Id: <20210219231635.5749-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
 References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
@@ -87,35 +87,37 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 cppcheck warning:
 
-sound/soc/sh/rcar/ssi.c:403:6: style: Redundant initialization for
-'wsr'. The initialized value is overwritten before it is
+sound/soc/sh/siu_pcm.c:375:5: style: Redundant initialization for
+'rt'. The initialized value is overwritten before it is
 read. [redundantInitialization]
- wsr = ssi->wsr;
-     ^
-sound/soc/sh/rcar/ssi.c:372:11: note: wsr is initialized
- u32 wsr  = ssi->wsr;
-          ^
-sound/soc/sh/rcar/ssi.c:403:6: note: wsr is overwritten
- wsr = ssi->wsr;
-     ^
+
+ rt = siu_stream->substream->runtime;
+    ^
+sound/soc/sh/siu_pcm.c:366:30: note: rt is initialized
+ struct snd_pcm_runtime  *rt = ss->runtime;
+                             ^
+sound/soc/sh/siu_pcm.c:375:5: note: rt is overwritten
+ rt = siu_stream->substream->runtime;
+    ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sh/rcar/ssi.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/sh/siu_pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d0ded427a836..659b25992ff2 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -400,7 +400,6 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	 * see
- 	 *	rsnd_ssiu_init_gen2()
- 	 */
--	wsr = ssi->wsr;
- 	if (is_tdm || is_tdm_split) {
- 		wsr	|= WS_MODE;
- 		cr_own	|= CHNL_8;
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index 4785886df4f0..6496300f73a9 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -363,7 +363,7 @@ static int siu_pcm_prepare(struct snd_soc_component *component,
+ 	struct siu_info *info = siu_i2s_data;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	struct device *dev = ss->pcm->card->dev;
+-	struct snd_pcm_runtime 	*rt = ss->runtime;
++	struct snd_pcm_runtime *rt;
+ 	struct siu_stream *siu_stream;
+ 	snd_pcm_sframes_t xfer_cnt;
+ 
 -- 
 2.25.1
 
