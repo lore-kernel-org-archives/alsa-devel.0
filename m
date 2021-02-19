@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB8BEC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55379C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:21:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 320BF64EB3
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:20:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 320BF64EB3
+	by mail.kernel.org (Postfix) with ESMTPS id C423964EAF
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:21:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C423964EAF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B39571682;
-	Sat, 20 Feb 2021 00:19:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B39571682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 454BC166F;
+	Sat, 20 Feb 2021 00:20:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 454BC166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613776849;
-	bh=RXzRrS8+MRiulGZC1krS40z/KWqRLP9gnBWiV4XRZB4=;
+	s=default; t=1613776862;
+	bh=R13ooe3Bbj6tsQxvx3dWjVbs/Esr9VID2g3m/OBqHRQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p9+jhn83VWsleOaKMX58Qbe8Jco628NN4FdlAr3fa6bI5taArvYmYedoFKXglvBxx
-	 OdtUSlj1OCjeJTkm5EVgTXs7Fkt3dtTXXtS/BDDOkPonpvLrQ8YmzoxZyCg83H7nl1
-	 eU9pAkgdvpVziB75uGeTc4CKGoYuqQSstIvV9Vqs=
+	b=dqtTZ9/9Q3KsUq3MSrIOzBGO3VMweVA5SBT9DmpsX/K8V124PIuBCoFQKN/kzzgCW
+	 w9IBguoZA9Mq7caUmz3ZBZ0WPC2rVmlo8eZmlzamq6Ees1MXYaKqA65mzJJNS18D1M
+	 EKgVd3DzqSc2jAzJhSFQJks83Pc3ks6VbCReOI0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4041CF8042F;
+	by alsa1.perex.cz (Postfix) with ESMTP id F2491F8049C;
 	Sat, 20 Feb 2021 00:17:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0DC8F8025B; Sat, 20 Feb 2021 00:17:04 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id F3200F802DB; Sat, 20 Feb 2021 00:17:05 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48D7DF8025B
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48D7DF8025B
-IronPort-SDR: d+XvrgE6+JA7k4lF4asyOaJSwcEThquLPZyuMbrMeAG1vhCZqM9UhlhHtaMav13XnHyivqYysv
- BjWoKpnVndzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="203290903"
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="203290903"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44E8EF800C7
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:16:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44E8EF800C7
+IronPort-SDR: H7MGEbaXJX//aw6oU/WqWx7RnMJkk4oNpuF4lLsNA87mx2vZh4hNiI5sU2sXYMY9pdh7rPEbVY
+ iUxdGqMsM0zA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="181436681"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="181436681"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:16:46 -0800
-IronPort-SDR: 3Vyh+b56L2wFYOqJ7+IpBlJ+c/MPgmrxYkRJS/nEl80YIm3lxh2dQ89V/MIPmkqEYnGjDpu96D
- lh73KywpMEBA==
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329783"
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Feb 2021 15:16:50 -0800
+IronPort-SDR: 0Pq2TbEvYOtVH5RDtU64/b2G0VQv870Cetp2TFS4JuH9gGDEcohDiiXVDM2k13wx2GCJAuojKn
+ +F0+VtjWrQ7Q==
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="420329802"
 Received: from lkwerake-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.153.34])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:16:45 -0800
+ 19 Feb 2021 15:16:49 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/8] ASoC: sh: rcar: align function prototypes
-Date: Fri, 19 Feb 2021 17:16:29 -0600
-Message-Id: <20210219231635.5749-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 8/8] ASoC: sh: siu_pcm: remove unused variable
+Date: Fri, 19 Feb 2021 17:16:35 -0600
+Message-Id: <20210219231635.5749-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
 References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
@@ -85,81 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warnings:
+cppcheck warning:
 
-sound/soc/sh/rcar/adg.c:208:51: style:inconclusive: Function
-'rsnd_adg_set_cmd_timsel_gen2' argument 1 names different: declaration
-'mod' definition 'cmd_mod'. [funcArgNamesDifferent]
-int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
-                                                  ^
-sound/soc/sh/rcar/rsnd.h:608:51: note: Function
-'rsnd_adg_set_cmd_timsel_gen2' argument 1 names different: declaration
-'mod' definition 'cmd_mod'.
-int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *mod,
-                                                  ^
-sound/soc/sh/rcar/adg.c:208:51: note: Function
-'rsnd_adg_set_cmd_timsel_gen2' argument 1 names different: declaration
-'mod' definition 'cmd_mod'.
-int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
-                                                  ^
-sound/soc/sh/rcar/adg.c:322:44: style:inconclusive: Function
-'rsnd_adg_ssi_clk_stop' argument 1 names different: declaration 'mod'
-definition 'ssi_mod'. [funcArgNamesDifferent]
-int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod)
-                                           ^
-sound/soc/sh/rcar/rsnd.h:600:44: note: Function
-'rsnd_adg_ssi_clk_stop' argument 1 names different: declaration 'mod'
-definition 'ssi_mod'.
-int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod);
-                                           ^
-sound/soc/sh/rcar/adg.c:322:44: note: Function 'rsnd_adg_ssi_clk_stop'
-argument 1 names different: declaration 'mod' definition 'ssi_mod'.
-int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod)
-                                           ^
-sound/soc/sh/rcar/adg.c:329:49: style:inconclusive: Function
-'rsnd_adg_ssi_clk_try_start' argument 1 names different: declaration
-'mod' definition 'ssi_mod'. [funcArgNamesDifferent]
-int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
-                                                ^
-sound/soc/sh/rcar/rsnd.h:601:49: note: Function
-'rsnd_adg_ssi_clk_try_start' argument 1 names different: declaration
-'mod' definition 'ssi_mod'.
-int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
-                                                ^
-sound/soc/sh/rcar/adg.c:329:49: note: Function
-'rsnd_adg_ssi_clk_try_start' argument 1 names different: declaration
-'mod' definition 'ssi_mod'.
-int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
-                                                ^
+sound/soc/sh/siu_pcm.c:225:8: style: Variable 'virt' is assigned a
+value that is never used. [unreadVariable]
+
+  virt = PERIOD_OFFSET(rt->dma_area,
+       ^
+
+It's not clear what this variable was needed for, remove it.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sh/rcar/rsnd.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sh/siu_pcm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 6b519370fd64..1255a85151db 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -597,15 +597,15 @@ phys_addr_t rsnd_gen_get_phy_addr(struct rsnd_priv *priv, int reg_id);
-  *	R-Car ADG
-  */
- int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate);
--int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod);
--int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
-+int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod);
-+int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate);
- int rsnd_adg_probe(struct rsnd_priv *priv);
- void rsnd_adg_remove(struct rsnd_priv *priv);
- int rsnd_adg_set_src_timesel_gen2(struct rsnd_mod *src_mod,
- 				  struct rsnd_dai_stream *io,
- 				  unsigned int in_rate,
- 				  unsigned int out_rate);
--int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *mod,
-+int rsnd_adg_set_cmd_timsel_gen2(struct rsnd_mod *cmd_mod,
- 				 struct rsnd_dai_stream *io);
- #define rsnd_adg_clk_enable(priv)	rsnd_adg_clk_control(priv, 1)
- #define rsnd_adg_clk_disable(priv)	rsnd_adg_clk_control(priv, 0)
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index 6496300f73a9..0a8a3c314a73 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -217,14 +217,10 @@ static void siu_io_work(struct work_struct *work)
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		dma_addr_t buff;
+ 		size_t count;
+-		u8 *virt;
+ 
+ 		buff = (dma_addr_t)PERIOD_OFFSET(rt->dma_addr,
+ 						siu_stream->cur_period,
+ 						siu_stream->period_bytes);
+-		virt = PERIOD_OFFSET(rt->dma_area,
+-				     siu_stream->cur_period,
+-				     siu_stream->period_bytes);
+ 		count = siu_stream->period_bytes;
+ 
+ 		/* DMA transfer start */
 -- 
 2.25.1
 
