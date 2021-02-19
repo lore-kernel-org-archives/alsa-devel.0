@@ -2,75 +2,55 @@ Return-Path: <SRS0=G6+L=HV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC24CC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC7A0C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:53:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1BE7464E57
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:35:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1BE7464E57
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4A8EB64EC7
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Feb 2021 23:53:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A8EB64EC7
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BC1416A2;
-	Sat, 20 Feb 2021 00:34:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BC1416A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22C0C1662;
+	Sat, 20 Feb 2021 00:52:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C0C1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613777724;
-	bh=5RDwQGUI/eMrMrFckM8jT6M6eMY9ox9qBW6KDM4MOd0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1613778813;
+	bh=/r1rJVqB8/LN1nHheftFxJIosf4eljuH9LZ8BHYzd0I=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U9RE/A6xLv1gVRjJmnrY9ir1/hhJKAyxhJbMfi7kBso7O6tJzs68S8o/rU/VsCDHH
-	 eTpvhH7nSf13EF9r3dD0s8uo3hI0DnLXVt+riAo9Jv9WcfLge7I42+AmWdOEoDLx9U
-	 RhWS3FjB4ulGrh0CJqhQH5nPkMIDOKlLzNpQRp3E=
+	b=Kqmxo+khdRQtf3L3uxpGI80JYdQ1HqIE4QLYGrlt902N8jSeKcNWYWxHNLJoMm1Tl
+	 1i63Q2tbMWXbZQZq3M95CnOI4t7z63lEAbEjUww59DEUzc6WFE8ZplTH3ifjkuoi/C
+	 C4BB24pItVOpT290qZ8h/xeo8kvVhs2RkULZlXWM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9431F804DA;
-	Sat, 20 Feb 2021 00:30:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A04C8F8013F;
+	Sat, 20 Feb 2021 00:52:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F3B1F8032B; Sat, 20 Feb 2021 00:30:47 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36EE3F802DB
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:30:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36EE3F802DB
-IronPort-SDR: x+D4w+82FqhvvcNJTRfXSBYw0HfTQUtggJMm5nw1ocAJAjI3jSphDCjEJWyg+2ZMRHsozT86kh
- y4Z9RCppRiKA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="203293785"
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="203293785"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:30:43 -0800
-IronPort-SDR: dT45sHu2X3+mJ0Y8yJGnJ4gyUitGJ7bd42wGlG7xUAQ8b7qp6h+D1kkACJk3ZwjIO/QBlT1W9r
- 83Gsf+AkKRMw==
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; d="scan'208";a="496662912"
-Received: from lkwerake-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.251.153.34])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Feb 2021 15:30:42 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 9/9] ASoC: fsl: p1022_ds: remove useless assignment
-Date: Fri, 19 Feb 2021 17:29:37 -0600
-Message-Id: <20210219232937.6440-10-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210219232937.6440-1-pierre-louis.bossart@linux.intel.com>
-References: <20210219232937.6440-1-pierre-louis.bossart@linux.intel.com>
+ id CBB73F8020B; Sat, 20 Feb 2021 00:52:41 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8BADAF8013F
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 00:52:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BADAF8013F
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1613778752188235044-webhooks-bot@alsa-project.org>
+References: <1613778752188235044-webhooks-bot@alsa-project.org>
+Subject: What is the semantics of snd_pcm_hw_params_any?
+Message-Id: <20210219235241.CBB73F8020B@alsa1.perex.cz>
+Date: Sat, 20 Feb 2021 00:52:41 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,38 +66,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+alsa-project/alsa-lib issue #119 was opened from jpalus:
 
-sound/soc/fsl/p1022_ds.c:344:6: style: Redundant initialization for
-'ret'. The initialized value is overwritten before it is
-read. [redundantInitialization]
- ret = fsl_asoc_get_dma_channel(np, "fsl,playback-dma", &mdata->dai[0],
-     ^
-sound/soc/fsl/p1022_ds.c:203:10: note: ret is initialized
- int ret = -ENODEV;
-         ^
-sound/soc/fsl/p1022_ds.c:344:6: note: ret is overwritten
- ret = fsl_asoc_get_dma_channel(np, "fsl,playback-dma", &mdata->dai[0],
-     ^
+It is not really a bug report but rather a request for clarification in attempt to figure out who is to blame for incorrect pulseaudio behavior.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/fsl/p1022_ds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've got two different cards -- one internal and one USB -- which behave quite differently for this simple high level code:
+```
+snd_pcm_open()
+snd_pcm_hw_params_any()
+iterate snd_pcm_hw_params_test_rate() to check for supported rates
+snd_pcm_hw_params_set_rate_near(44100)
+snd_pcm_hw_params()
+snd_pcm_hw_params_any()
+iterate snd_pcm_hw_params_test_rate() to check for supported rates
+```
 
-diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-index ac68d2238045..317c767b0099 100644
---- a/sound/soc/fsl/p1022_ds.c
-+++ b/sound/soc/fsl/p1022_ds.c
-@@ -200,7 +200,7 @@ static int p1022_ds_probe(struct platform_device *pdev)
- 	struct device_node *codec_np = NULL;
- 	struct machine_data *mdata;
- 	struct snd_soc_dai_link_component *comp;
--	int ret = -ENODEV;
-+	int ret;
- 	const char *sprop;
- 	const u32 *iprop;
- 
--- 
-2.25.1
+In essence supported sample rates are queried twice, always with snd_pcm_hw_params_any() before them, but separated by snd_pcm_hw_params_set_rate_near().
 
+Now with internal card both iterations report 7 supported rates while for USB first iteration reports 4 rates and second only one (44100). Is that expected or is snd_pcm_hw_params_any() supposed to provide configuration which would result in all rates reported again?
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/119
+Repository URL: https://github.com/alsa-project/alsa-lib
