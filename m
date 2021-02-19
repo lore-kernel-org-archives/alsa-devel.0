@@ -2,121 +2,125 @@ Return-Path: <SRS0=dMuI=H3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 88378C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 11:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C1BC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 11:31:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D27B464F11
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 11:30:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D27B464F11
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id CD49564F10
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 11:31:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD49564F10
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41C2E16A4;
-	Thu, 25 Feb 2021 12:29:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41C2E16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33ED71655;
+	Thu, 25 Feb 2021 12:30:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33ED71655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614252647;
-	bh=h9rTv1EErYulsutc4VpD5Hy6xXNeL4UzoWw1B14Og+A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1614252675;
+	bh=pRGPxa6uJnsylOqYX8vFwhXfA7xc6RP6yx6yt2A5tsI=;
+	h=Resent-From:Resent-Date:Resent-To:Date:From:To:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X86Rng7+VEiuCDSeumB2i4L2y/MroiARxc/jqC6uL/TQhH4IswlNSRLXfMEeJnbPi
-	 gopEWUSGAfiKMsYRn45a/vXGgmhuU+oCYhiIVk0LdCY9Qdq69H5zmj7c3vgogeqgLn
-	 C14vlZ88DnZGbQGqpcyeR3L6qtqznj00cx5VXRDI=
+	b=Eb+htQPNeThrXbtoluGZ3Fi6aAsPijE9YtDSnc1BVzBiKqqpFBFei2WibMQSVHSDA
+	 q8sX9zImRgIGh7iBIdregHsnQz9PeUtCvE5f9eGfjQu//bxQNM6ygiR3TdTzvTV50v
+	 1ZABpVbykCdz6ZuYFowU1YTKmPJWTSkaXniPENC8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDC2BF804E0;
-	Thu, 25 Feb 2021 12:25:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84B4AF804E1;
+	Thu, 25 Feb 2021 12:25:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41860F8016A; Tue, 23 Feb 2021 10:31:40 +0100 (CET)
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com
- [IPv6:2607:f8b0:4864:20::329])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 53BF4F8016A; Tue, 23 Feb 2021 14:38:59 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D980BF800B4
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 10:31:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D980BF800B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74746F800B4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 14:38:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74746F800B4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="swbR//Pf"
-Received: by mail-ot1-x329.google.com with SMTP id c16so14955978otp.0
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 01:31:30 -0800 (PST)
+ header.b="Ektf93CV"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BF0964E3F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 13:38:47 +0000 (UTC)
+Authentication-Results: mail.kernel.org;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Ektf93CV"
+Resent-From: Mark Brown <broonie@sirena.org.uk>
+Resent-Date: Tue, 23 Feb 2021 13:37:46 +0000
+Resent-Message-ID: <20210223133746.GE5116@sirena.org.uk>
+Resent-To: alsa-devel@alsa-project.org
+Envelope-to: broonie@sirena.co.uk
+Delivery-date: Fri, 19 Feb 2021 18:33:18 +0000
+Received: from mail.kernel.org ([198.145.29.99])
+ by cassiel.sirena.org.uk with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+ (Exim 4.92)
+ (envelope-from <SRS0=h+af=HV=gmail.com=benjaminjrood@kernel.org>)
+ id 1lDAaa-0002dN-Kt
+ for broonie@sirena.co.uk; Fri, 19 Feb 2021 18:33:18 +0000
+Received: by mail.kernel.org (Postfix)
+ id B689864DA8; Fri, 19 Feb 2021 18:33:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7C9AE64E77
+ for <broonie@kernel.org>; Fri, 19 Feb 2021 18:33:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C9AE64E77
+Authentication-Results: mail.kernel.org;
+ dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: mail.kernel.org;
+ spf=pass smtp.mailfrom=benjaminjrood@gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id s6so5965654otk.4
+ for <broonie@kernel.org>; Fri, 19 Feb 2021 10:33:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=DVFCa2/tt2H+LD0hRmA62OWnetDkcRuJ237RaPObmX8=;
- b=swbR//PfErd8XhgqzDSvvUK5jzVq9I8ZOx5107KVbKYg6OqJq5hU9Y7+FdR1SBeUja
- XJmX1+I6H5AglonFmbvrr81dNBwM3QnXE4EuG7TJWhIi/6FE1+8He3sEPJbO4INmoKra
- 9iOMcrz+CTsosmGPpFBUPjF+flTGoUO7NFRfH/pMaTjMhY28cNzYuNdI2H+2agFc87TG
- NNcg1BKrJzAhg+GQMv7+q2S3lhDlcToJGSD5Pj4TUA/3WGlfjh98Gwmyxaz51z2EFPhd
- TSDFq9glzNWUmQSNEfoHH4rl6gUgulaH0LvJ5akCuSta4YkpTYqMt9yAEiC7zavZGd35
- C9qg==
+ h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+ bh=gVv/M4Oq8e2QfT2eQdy440bb814x4Sa5+QSDh3bEVno=;
+ b=Ektf93CVsiWT+xjniWY+UZyLF5lwTJBITYvEHkBMWktvpsp+LnX31ou6n8U10bVro4
+ fOhUlL2xgxTXdkd4ojgyEjm7/GoDVRqPRyXXUQdLpw+TR4gkMCx3HVOpmNRhvcGBf+sq
+ IOZzlKZ6Nk8bhDNV8YGuYxf5uFGf0uJ+Dtf4CcIc77cR7l0Q/qX7dStjZp1QDhL1QoeL
+ 8DDotPwQfahcqLqmk+iirJEbQvZgcXbEgHhEkF6hWCNmrS1Sg90lwAIjBEZWdmAjNSra
+ aA/rN0C1W3z4PHAoRqtCTd4phiFcbwTmxH+OYD14sjUM7LL/wRX9Dau4DQw1wWQeKccL
+ +4DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=DVFCa2/tt2H+LD0hRmA62OWnetDkcRuJ237RaPObmX8=;
- b=g7uRH5PHe/Jlq4bLrfAVuamhtjDK0aDa8HbU8ArcK0ngJfXq9H6susS8sGGtFv2j7/
- jjJPDs4mRqcS3igkGPiIjtb/VJTyBThCuOs1eD4fKpNFZtI3WLRZMR+iA4cZLw2nwd5+
- 4EjptEWJYA+o2uRtf1ejfB3eHlrfN2xpGvtbw5Be5l+RLAD8vfv93D6cmd/rk7Eo8ox3
- 2aXdMY8NZFEti+RUbHpxaMoaOGcZgWo/TxbHK705yCkC6klnt36rsgwC7I9DQWLP3wuu
- VbrUGBP4gV025TCcqbpJLFsX9aB/5TOWvy1V5OwezCYklRnXxX/GLlgKE0yE/smu3i8D
- xHGA==
-X-Gm-Message-State: AOAM531ziUem/yD9uBPEgXFEjWbVpVEn6ckOQIZSYHyCcvpFXg5r7Ije
- LPO41Nqn7d2k7Xg54rzcTzIVqbe3R3IrnZ4UldY=
-X-Google-Smtp-Source: ABdhPJw119jqyynvn6i6tP3tXQai/RxjO4NuMQBdVlW9Zg6eOFuI0kMlNL/nUCHjxtta9WlCiGOPHrcAz/7jkLcfzHw=
-X-Received: by 2002:a9d:67cb:: with SMTP id c11mr19768599otn.290.1614072687320; 
- Tue, 23 Feb 2021 01:31:27 -0800 (PST)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition;
+ bh=gVv/M4Oq8e2QfT2eQdy440bb814x4Sa5+QSDh3bEVno=;
+ b=TgS/C9Y/XO3ZJ1xrmV5VOSnDuVIawh0MxyqSnjuFyPV5TKR/tjguG2il5ZpN5lLKfN
+ I+7JoQVxxiReJs+cCbQ2W0D2hqz/7ygPfeyVHO8TxG1/pEVnaozqapfeAo9uust0twRw
+ 94s8uz/zVG0Z90iuMmjyApryqLs+y6ZR7288trxs01WTar3EUUg0rY/zQHrvrkHElN1Q
+ eL7gUqW9yCPWSLJARna3UYJoJJa13tacTdq4W19Ydm8C9rURrzw/CkI7rOInL+jDTVCZ
+ H9IScu8tk6DoKCYwKiybiwejxlwr16J4X1ARrv6cF/e0ZIi5vxvpUE6dTfC1u20JSVQT
+ 2fSQ==
+X-Gm-Message-State: AOAM5314MlNeVoOXcOXCCOd9chwTOS00MBmnabIR6oFPNC36yEsPolSI
+ v8AnFXpH9/mTVmdFKgJj+8oY8Wu6sSx0Bw==
+X-Google-Smtp-Source: ABdhPJybj/7eHosX5Gekj2qgFzPoZfrotYtPyVCuEVE62QMl+kW/nuRnl7gLZOwGt7Qt8cQFONIJEA==
+X-Received: by 2002:a9d:369:: with SMTP id 96mr7780581otv.137.1613759593772;
+ Fri, 19 Feb 2021 10:33:13 -0800 (PST)
+Received: from ubuntu-dev (rrcs-72-45-242-2.nys.biz.rr.com. [72.45.242.2])
+ by smtp.gmail.com with ESMTPSA id w10sm1869214ote.29.2021.02.19.10.33.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 19 Feb 2021 10:33:13 -0800 (PST)
+Date: Fri, 19 Feb 2021 13:33:08 -0500
+From: Benjamin Rood <benjaminjrood@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Message-ID: <20210219183308.GA2117@ubuntu-dev>
 MIME-Version: 1.0
-References: <20210222151231.22572-1-romain.perier@gmail.com>
- <936bcf5e-2006-7643-7804-9efa318b3e2b@linuxfoundation.org>
-In-Reply-To: <936bcf5e-2006-7643-7804-9efa318b3e2b@linuxfoundation.org>
-From: Romain Perier <romain.perier@gmail.com>
-Date: Tue, 23 Feb 2021 10:31:15 +0100
-Message-ID: <CABgxDoLZKbrzghbp09kraEsk0iLzn7B0BEQWmZcdrXwmOu_MKw@mail.gmail.com>
-Subject: Re: [PATCH 00/20] Manual replacement of all strlcpy in favor of
- strscpy
-To: Shuah Khan <skhan@linuxfoundation.org>
-X-Mailman-Approved-At: Thu, 25 Feb 2021 12:25:31 +0100
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, target-devel@vger.kernel.org,
- Kernel Hardening <kernel-hardening@lists.openwall.com>,
- Valentina Manea <valentina.manea.m@gmail.com>,
- Mimi Zohar <zohar@linux.ibm.com>, "J. Bruce Fields" <bfields@fieldses.org>,
- netdev <netdev@vger.kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Jiri Slaby <jirislaby@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- linux-watchdog@vger.kernel.org, linux-s390@vger.kernel.org,
- Benjamin Block <bblock@linux.ibm.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, linux-scsi@vger.kernel.org,
- Shuah Khan <shuah@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Christian Borntraeger <borntraeger@de.ibm.com>, Ingo Molnar <mingo@redhat.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Guenter Roeck <linux@roeck-us.net>,
- linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Heiko Carstens <hca@linux.ibm.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Steven Rostedt <rostedt@goodmis.org>, linaro-mm-sig@lists.linaro.org,
- linux-m68k@lists.linux-m68k.org, dri-devel@lists.freedesktop.org,
- Jiri Pirko <jiri@nvidia.com>, cgroups@vger.kernel.org,
- Wim Van Sebroeck <wim@linux-watchdog.org>, linux-integrity@vger.kernel.org,
- linux-hwmon@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
- linux-nfs@vger.kernel.org, "Martin K. Petersen" <martin.petersen@oracle.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, "David S. Miller" <davem@davemloft.net>,
- Chuck Lever <chuck.lever@oracle.com>,
- Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, linux-crypto@vger.kernel.org,
- Jessica Yu <jeyu@kernel.org>, Tejun Heo <tj@kernel.org>,
- Steffen Maier <maier@linux.ibm.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SA-Exim-Connect-IP: 198.145.29.99
+X-SA-Exim-Mail-From: SRS0=h+af=HV=gmail.com=benjaminjrood@kernel.org
+Subject: [PATCH] ASoC: sgtl5000: set DAP_AVC_CTRL register to correct default
+ value on probe
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: No (on cassiel.sirena.org.uk); Unknown failure
+X-TUID: cW9SUew4e6Ck
+X-Mailman-Approved-At: Thu, 25 Feb 2021 12:25:30 +0100
+Cc: alsa-devel@alsa-project.org, dmacdonald@curbellmedical.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,32 +136,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Le lun. 22 f=C3=A9vr. 2021 =C3=A0 17:36, Shuah Khan <skhan@linuxfoundation.=
-org> a
-=C3=A9crit :
+According to the SGTL5000 datasheet [1], the DAP_AVC_CTRL register has
+the following bit field definitions:
 
->
-> Cool. A quick check shows me 1031 strscpy() calls with no return
-> checks. All or some of these probably need to be reviewed and add
-> return checks. Is this something that is in the plan to address as
-> part of this work?
->
-> thanks,
-> -- Shuah
->
+| BITS  | FIELD       | RW | RESET | DEFINITION                        |
+| 15    | RSVD        | RO | 0x0   | Reserved                          |
+| 14    | RSVD        | RW | 0x1   | Reserved                          |
+| 13:12 | MAX_GAIN    | RW | 0x1   | Max Gain of AVC in expander mode  |
+| 11:10 | RSVD        | RO | 0x0   | Reserved                          |
+| 9:8   | LBI_RESP    | RW | 0x1   | Integrator Response               |
+| 7:6   | RSVD        | RO | 0x0   | Reserved                          |
+| 5     | HARD_LMT_EN | RW | 0x0   | Enable hard limiter mode          |
+| 4:1   | RSVD        | RO | 0x0   | Reserved                          |
+| 0     | EN          | RW | 0x0   | Enable/Disable AVC                |
 
-Hi,
+The original default value written to the DAP_AVC_CTRL register during
+sgtl5000_i2c_probe() was 0x0510.  This would incorrectly write values to
+bits 4 and 10, which are defined as RESERVED.  It would also not set
+bits 12 and 14 to their correct RESET values of 0x1, and instead set
+them to 0x0.  While the DAP_AVC module is effectively disabled because
+the EN bit is 0, this default value is still writing invalid values to
+registers that are marked as read-only and RESERVED as well as not
+setting bits 12 and 14 to their correct default values as defined by the
+datasheet.
 
-Initially, what we planned with Kees is to firstly replace all calls with
-error handling codes (like this series does),
-and then replace all other simple calls (without error handling). However,
-we can also start a discussion about this topic, all suggestions are
-welcome.
+The correct value that should be written to the DAP_AVC_CTRL register is
+0x5100, which configures the register bits to the default values defined
+by the datasheet, and prevents any writes to bits defined as
+'read-only'.  Generally speaking, it is best practice to NOT attempt to
+write values to registers/bits defined as RESERVED, as it generally
+produces unwanted/undefined behavior, or errors.
 
-I am not sure that it does make sense to check all returns code in all
-cases (for example in arch/alpha/kernel/setup.c, there are a ton of other
-examples in the kernel). But a general review (as you suggest), would make
-sense.
+Also, all credit for this patch should go to my colleague Dan MacDonald
+<dmacdonald@curbellmedical.com> for finding this error in the first
+place.
 
-Regards,
-Romain
+[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+
+Signed-off-by: Benjamin Rood <benjaminjrood@gmail.com>
+---
+ sound/soc/codecs/sgtl5000.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 4d6ff8114622..4c0e87e22b97 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -71,7 +71,7 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_DAP_EQ_BASS_BAND4,		0x002f },
+ 	{ SGTL5000_DAP_MAIN_CHAN,		0x8000 },
+ 	{ SGTL5000_DAP_MIX_CHAN,		0x0000 },
+-	{ SGTL5000_DAP_AVC_CTRL,		0x0510 },
++	{ SGTL5000_DAP_AVC_CTRL,		0x5100 },
+ 	{ SGTL5000_DAP_AVC_THRESHOLD,		0x1473 },
+ 	{ SGTL5000_DAP_AVC_ATTACK,		0x0028 },
+ 	{ SGTL5000_DAP_AVC_DECAY,		0x0050 },
+-- 
+2.25.1
+
