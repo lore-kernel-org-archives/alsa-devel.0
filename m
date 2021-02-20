@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A88A1C433E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 Feb 2021 16:34:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43101C433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 Feb 2021 16:34:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0575164ED7
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 Feb 2021 16:34:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0575164ED7
+	by mail.kernel.org (Postfix) with ESMTPS id A355964ED7
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 Feb 2021 16:34:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A355964ED7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C5181671;
-	Sat, 20 Feb 2021 17:33:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C5181671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18A441679;
+	Sat, 20 Feb 2021 17:33:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A441679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613838850;
-	bh=NUnoDA2ls7PwWFaepPwTH6PBzwVuIgcpyRz5f9q7Hpk=;
+	s=default; t=1613838855;
+	bh=eQyHO5GdPVm8tpcTdC2KcENugFbFuLgTP40t2fpDd8I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xgh/chyixikkJvchRLk0X118/KUGVTEczN17ubG7UFZhVW1DY6HcFHRMcUHzsnDKf
-	 /plFx9bbm0UwRvE7kReo5Kej9s1IMhcGCsNFYA3Atao8xXUn0LP4XUFazvGZ6rgIJK
-	 x2oSiy229AyZBndShUlNL2tqIoJox78nQRb+gbP8=
+	b=JaMhvZxIO8VGR4cDtMiSCf/esGdnO2kdltnoGAg1t6S5cOjSo/fC5m/aqtu3x8Hoo
+	 pK+hcEtw4aemnfDIsF0qv9D2au/Y9b8mF54zxyt8CBBBrR3v0+KOF1LiI+8Cs8gsSC
+	 7hnHIgH1J1RvIWVI4P5kvPyk3UGH0ERsafgbJ3Gk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B56E5F801DB;
-	Sat, 20 Feb 2021 17:32:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AA86F80229;
+	Sat, 20 Feb 2021 17:32:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8216F80260; Sat, 20 Feb 2021 17:32:30 +0100 (CET)
+ id 0A17EF801DB; Sat, 20 Feb 2021 17:32:32 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1508DF8016E
- for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 17:32:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1508DF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01617F8020C
+ for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2021 17:32:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01617F8020C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="UtwaFKt+"
+ header.b="PD1DxZfM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
  s=mimecast20190719; t=1613838746;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=WhMG8x2Y9+zAbxFa8WeeiJJ9q6pmNxG6wm/onpeMyVQ=;
- b=UtwaFKt++GdFTQwQU2+HsgeIXu4Ci8TSBOSkPkEMvgFCsKYwfaISF4Z+mB0Zd8aGk+jBuM
- VtEvfXlptNsS1cBqUrx0I3VACiTkNbdEtMCy3J3Dc5mxS5T6RuTjFvTkwip174B8SmX3ly
- CULuIevYsfsw4PqDVzuBd3EUT16/SlI=
+ bh=c7VKymmQZ3Xc4Y43PAd9Aaj3siwoR45oU3rmUaaB60g=;
+ b=PD1DxZfM7tZLIMxMz86cI91Abyk8TIKcdHG2iNcsihZp+I5aj6DJiZNCFI+WW7QDXbxgQM
+ 9U8+9cAaQftN80HQmDJJ5Qf//i7QZ+VUL3NTOlVT2EziiEJSBgJkDRn3j23ZwZ5CK/aiBp
+ 66lcEMlPItkm5kxUF508ikeyG5+gZic=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-CRAw_weDMyGhi0NyZIEkHg-1; Sat, 20 Feb 2021 11:32:22 -0500
-X-MC-Unique: CRAw_weDMyGhi0NyZIEkHg-1
+ us-mta-322-rlc8v1FOOriW0BrgrUb_VA-1; Sat, 20 Feb 2021 11:32:24 -0500
+X-MC-Unique: rlc8v1FOOriW0BrgrUb_VA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
  [10.5.11.11])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A01C518449FA;
- Sat, 20 Feb 2021 16:32:21 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3300A80402C;
+ Sat, 20 Feb 2021 16:32:23 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-29.ams2.redhat.com [10.36.112.29])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 4C0076064B;
- Sat, 20 Feb 2021 16:32:17 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id E72AD6062F;
+ Sat, 20 Feb 2021 16:32:21 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jiri Kosina <jikos@kernel.org>,
  Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH 2/3] HID: elan: Set default_trigger-s for the mute LED
-Date: Sat, 20 Feb 2021 17:32:10 +0100
-Message-Id: <20210220163211.323178-2-hdegoede@redhat.com>
+Subject: [PATCH 3/3] HID: elan: Remove elan_mute_led_get_brigtness()
+Date: Sat, 20 Feb 2021 17:32:11 +0100
+Message-Id: <20210220163211.323178-3-hdegoede@redhat.com>
 In-Reply-To: <20210220163211.323178-1-hdegoede@redhat.com>
 References: <20210220163211.323178-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -98,29 +98,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The mute LED should be automatically turned on/off based
-on the audio-cards mixer settings.
+The led_classdev already contains a cached value of the last set
+brightness, the brightness_get callback is only meant for LED drivers
+which can read back the actual / current brightness from the hardware.
 
-Add the standardized default-trigger name for this, so that the alsa
-code can turn the LED on/off as appropriate (on supported audio cards).
+Since elan_mute_led_get_brigtness() just returns the last set value
+it does not add any functionality, so we can just remove it.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/hid/hid-elan.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-elan.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
 diff --git a/drivers/hid/hid-elan.c b/drivers/hid/hid-elan.c
-index 71740988a3f6..6958649ece22 100644
+index 6958649ece22..f1ac0443ee67 100644
 --- a/drivers/hid/hid-elan.c
 +++ b/drivers/hid/hid-elan.c
-@@ -460,6 +460,7 @@ static int elan_init_mute_led(struct hid_device *hdev)
- 	struct led_classdev *mute_led = &drvdata->mute_led;
+@@ -410,15 +410,6 @@ static int elan_start_multitouch(struct hid_device *hdev)
+ 	return 0;
+ }
+ 
+-static enum led_brightness elan_mute_led_get_brigtness(struct led_classdev *led_cdev)
+-{
+-	struct device *dev = led_cdev->dev->parent;
+-	struct hid_device *hdev = to_hid_device(dev);
+-	struct elan_drvdata *drvdata = hid_get_drvdata(hdev);
+-
+-	return drvdata->mute_led_state;
+-}
+-
+ static int elan_mute_led_set_brigtness(struct led_classdev *led_cdev,
+ 				       enum led_brightness value)
+ {
+@@ -461,7 +452,6 @@ static int elan_init_mute_led(struct hid_device *hdev)
  
  	mute_led->name = "elan:red:mute";
-+	mute_led->default_trigger = "audio-mute";
- 	mute_led->brightness_get = elan_mute_led_get_brigtness;
+ 	mute_led->default_trigger = "audio-mute";
+-	mute_led->brightness_get = elan_mute_led_get_brigtness;
  	mute_led->brightness_set_blocking = elan_mute_led_set_brigtness;
  	mute_led->max_brightness = LED_ON;
+ 	mute_led->flags = LED_HW_PLUGGABLE;
 -- 
 2.30.1
 
