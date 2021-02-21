@@ -7,77 +7,76 @@ X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB4BDC433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 21 Feb 2021 11:05:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE89AC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 21 Feb 2021 11:12:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4903664E24
-	for <alsa-devel@archiver.kernel.org>; Sun, 21 Feb 2021 11:05:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4903664E24
+	by mail.kernel.org (Postfix) with ESMTPS id 26C7A64E43
+	for <alsa-devel@archiver.kernel.org>; Sun, 21 Feb 2021 11:11:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26C7A64E43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E8991667;
-	Sun, 21 Feb 2021 12:04:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E8991667
+	by alsa0.perex.cz (Postfix) with ESMTPS id 326941667;
+	Sun, 21 Feb 2021 12:11:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 326941667
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613905507;
-	bh=19YL9I239qVJsl0oLWYW1RwHZDiR5XCOKdNUFtc7pis=;
+	s=default; t=1613905917;
+	bh=o6O6etVb0ua9Z9ooJdmBYNxeniZIwyzauEKUU+jH9NU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u+XuOtaAmtpM3uZuSY2BAv0s6/iVvcqn1QDMdG0MXcIKPDTZzdSJGve/pxmkRF8sF
-	 g+RFOi1lT8vYftwuNHFNUSHGl9EnPZ1C7ymTRJl22HeL5Z+In6iw5FjGeMToiAdjub
-	 JDDvfr21UG8kGkAKl+3rvhYtMUGb5bFILr7wFJMY=
+	b=DiXsZLwRuRoGhfGa75aeKtcX1EWmypuP7ZqoMgWO0tryJyJaOuRZFTewGEmounD90
+	 whXCXqDvSrQKp8n0sL3QrzucmpiEIPDg5J5pQHExSoz/w+ISjvUDczwr49I7Y3tPcZ
+	 aFggeTgXdISCVg58+YbZQ6uHwf8B8Ndv1xCfsXo4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00AF6F80167;
-	Sun, 21 Feb 2021 12:04:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CD8EF80082;
+	Sun, 21 Feb 2021 12:11:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9ABD4F80082; Sun, 21 Feb 2021 12:04:15 +0100 (CET)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com
- [209.85.128.46])
+ id 7631BF8016A; Sun, 21 Feb 2021 12:11:04 +0100 (CET)
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com
+ [209.85.221.45])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8395BF80082
- for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2021 12:04:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8395BF80082
-Received: by mail-wm1-f46.google.com with SMTP id x16so10868327wmk.3
- for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2021 03:04:07 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E18AF80082
+ for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2021 12:10:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E18AF80082
+Received: by mail-wr1-f45.google.com with SMTP id v15so15946715wrx.4
+ for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2021 03:10:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:date:from:to:cc:subject:message-id:references
  :mime-version:content-disposition:in-reply-to;
- bh=Fv1MGWHAHRfBei1NggEG7/yOVNuAnlJ9QR7t+JYrDik=;
- b=jR5gm4qhxCjHfdHmC9DNOK2s2NUgny32ECrbQbw2hK3xbX/9bdw03M/qHIhbMoaZzI
- +6bKqWGGp/Bux18IPK17dbrJlZEWJKQuFnrjD9zewMkg6mQFz4WgesJX3BtbcMbbVat0
- U1GC4EdayIpSWKGIJ+aMUD+X9Gq3XcgSZ3v8VZBrN4hwFPoE4IdoVRD0Lj+aYUx8Wwa0
- u7qdinSMHSrZGOWEIhRQgXmYbYj0yJP18E6ATuhVw/Ufy1K6gIOQl9bFE8xCRT9hA5OI
- jGaUn4fy6P2OkiMhQHZaoFJ0g34NAJHs4yMRh30nvQmNKkFnK3wK7VbfWtMYsdhaxW0N
- c/bA==
-X-Gm-Message-State: AOAM533oNpIi3U8KG6zV0IYppNIgDEYdu0syfYpxWj/Vl9JIB+OrxaCV
- TR2hHiSEbN7Wue6WHYpwRx8=
-X-Google-Smtp-Source: ABdhPJyfyWbkmJZfzYi4GbygYNWRV3xqEarldc+RWQBO7zsz8sC3/IvDrHIcF+QxhheKeSWN4r8VGg==
-X-Received: by 2002:a05:600c:3550:: with SMTP id
- i16mr14685603wmq.170.1613905447170; 
- Sun, 21 Feb 2021 03:04:07 -0800 (PST)
+ bh=LbHdf4FHIsdZFUVygYMz08Mm+lb/gyE7AdetIvz4dHs=;
+ b=grxGRaBjxXkTJ9H+A/T/imXY/2yPm5+qWRhYE3vdGSFTMwX59hy88NJOTRYvd7R1QB
+ jeB1P6bY7SX0mnhpV45Q65mXyB9hx15fBDcQ6zK539oDSoBwX3DEPOPUGp6AHbyMV+Cu
+ UNp3myA5/iKeUUjVqkosJpFhMZQxh2rQ9caEAy9ynylJ94LdNWiS294yuxamxDcXQlKP
+ mJzH09x2/mqvcwUbTdl9ArUQ80jtJysByBvZwjKzA7KbKCiVKG0QqTy2F2ISiwk9jYor
+ o15NeUloQF606Kl88NlBD7yBXXsErxScSQYv4mRn53HlPTuzNLvi01CsE0osuoIlBzzn
+ l5Dg==
+X-Gm-Message-State: AOAM530vYMWwesYt99GI4BESizZIgEt6dWW228OBclbI6gWYTza7N8Wy
+ /Y6kFT/7T4MgsjDatvixoL0=
+X-Google-Smtp-Source: ABdhPJyp7ZOSzVoPEXiAEV/O4+nPSApdj3sYfmU7g1iWrLA05aRvCOr3DZFlcSFoIR3GAAp9J2cPow==
+X-Received: by 2002:a5d:6c66:: with SMTP id r6mr16895275wrz.86.1613905857468; 
+ Sun, 21 Feb 2021 03:10:57 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
- by smtp.googlemail.com with ESMTPSA id c12sm12750191wru.71.2021.02.21.03.04.06
+ by smtp.googlemail.com with ESMTPSA id c2sm24293784wrx.70.2021.02.21.03.10.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 21 Feb 2021 03:04:06 -0800 (PST)
-Date: Sun, 21 Feb 2021 12:04:04 +0100
+ Sun, 21 Feb 2021 03:10:56 -0800 (PST)
+Date: Sun, 21 Feb 2021 12:10:55 +0100
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 4/6] ASoC: samsung: snow: remove useless test
-Message-ID: <20210221110404.lx34nuac4gjtbzz2@kozik-lap>
+Subject: Re: [PATCH 5/6] ASoC: samsung: tm2_wm5110: check of_parse return value
+Message-ID: <20210221111055.nfzr5nzvskdc3jyq@kozik-lap>
 References: <20210219230918.5058-1-pierre-louis.bossart@linux.intel.com>
- <20210219230918.5058-5-pierre-louis.bossart@linux.intel.com>
+ <20210219230918.5058-6-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210219230918.5058-5-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210219230918.5058-6-pierre-louis.bossart@linux.intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -94,30 +93,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Feb 19, 2021 at 05:09:16PM -0600, Pierre-Louis Bossart wrote:
+On Fri, Feb 19, 2021 at 05:09:17PM -0600, Pierre-Louis Bossart wrote:
 > cppcheck warning:
 > 
-> sound/soc/samsung/snow.c:112:2: style:inconclusive: Found duplicate
-> branches for 'if' and 'else'. [duplicateBranch]
->  if (rtd->num_codecs > 1)
->  ^
-> sound/soc/samsung/snow.c:114:2: note: Found duplicate branches for
-> 'if' and 'else'.
->  else
->  ^
-> sound/soc/samsung/snow.c:112:2: note: Found duplicate branches for
-> 'if' and 'else'.
->  if (rtd->num_codecs > 1)
->  ^
+> sound/soc/samsung/tm2_wm5110.c:605:6: style: Variable 'ret' is
+> reassigned a value before the old one has been
+> used. [redundantAssignment]
+>  ret = devm_snd_soc_register_component(dev, &tm2_component,
+>      ^
+> sound/soc/samsung/tm2_wm5110.c:554:7: note: ret is assigned
+>   ret = of_parse_phandle_with_args(dev->of_node, "i2s-controller",
+>       ^
+> sound/soc/samsung/tm2_wm5110.c:605:6: note: ret is overwritten
+>  ret = devm_snd_soc_register_component(dev, &tm2_component,
+>      ^
+> 
+> it seems wise to first test the return value before checking if the
+> returned argument is not null?
+
+Actually this is real bug. The args is a stack variable, so it could
+have junk (uninitialized) therefore args.np could have a non-NULL and
+random value even though property was missing. Later could trigger
+invalid pointer dereference.
+
+  Fixes: 8d1513cef51a ("ASoC: samsung: Add support for HDMI audio on TM2 board")
+  Cc: <stable@vger.kernel.org>
+
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > ---
->  sound/soc/samsung/snow.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  sound/soc/samsung/tm2_wm5110.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+> index 9300fef9bf26..da6204248f82 100644
+> --- a/sound/soc/samsung/tm2_wm5110.c
+> +++ b/sound/soc/samsung/tm2_wm5110.c
+> @@ -553,7 +553,7 @@ static int tm2_probe(struct platform_device *pdev)
+>  
+>  		ret = of_parse_phandle_with_args(dev->of_node, "i2s-controller",
+>  						 cells_name, i, &args);
+> -		if (!args.np) {
+> +		if (ret || !args.np) {
 
-Fixes: 7de6b6bc1a58 ("ASoC: samsung: use asoc_rtd_to_cpu() / asoc_rtd_to_codec() macro for DAI pointer")
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Only "if (ret)" because args.np won't be initialized on errors.
 
 Best regards,
 Krzysztof
