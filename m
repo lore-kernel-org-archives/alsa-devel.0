@@ -2,55 +2,55 @@ Return-Path: <SRS0=rOcL=HY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D348BC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 00:49:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C55C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 00:49:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4808764DC3
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 00:49:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4808764DC3
+	by mail.kernel.org (Postfix) with ESMTPS id 8986164EB2
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 00:49:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8986164EB2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD83E1694;
-	Mon, 22 Feb 2021 01:48:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD83E1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F1031681;
+	Mon, 22 Feb 2021 01:48:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F1031681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613954948;
-	bh=MlcZ/J9EeynPafU3AKphZIWMBkl3BfjXLTCbm187rI4=;
+	s=default; t=1613954987;
+	bh=U/tOzPrElU/+NcQo8RGp5xSL5HsLdN90oajQTwBV0Cw=;
 	h=Date:From:Subject:To:References:Cc:List-Id:List-Unsubscribe:
 	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=vU4wqg/EH2TkdT+RZ6rbJjOsyXk4mr/OtsyUzD6M8P48aUByAkkSowa4uZ+KRNVHc
-	 8rjUPW/6JU68nSfqWCdgmIOrEf2g61MXittLLeguQXI97tNBLAFF5p8/Yx2Ep/4NzG
-	 N027C5jDhfl9pU/PFCvaw2g8P4XU4Dy9Afx7353U=
+	b=Zuwl23E+oA0kwltt3O+6TqNFeL4F1G0PR35DqYgZT80eEpQlpYIwgYmcjx5CJQLEv
+	 3a9WEugJwuaTahYlOxk7f/1t3P4PoFv70kD+/U10LHYKIk1ySNGjRj5KHaUVZiySAV
+	 J1KOqT0osrOjQY8VldtawrbQ/WhFwL4dvzBp8/qk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B386CF8032D;
-	Mon, 22 Feb 2021 01:47:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57129F80425;
+	Mon, 22 Feb 2021 01:47:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9C1CF80082; Mon, 22 Feb 2021 01:47:45 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 4E62DF80152
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 01:47:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E62DF80152
-Date: 22 Feb 2021 09:47:36 +0900
-X-IronPort-AV: E=Sophos;i="5.81,195,1610377200"; d="scan'208";a="72727543"
+ id 4CD20F802DF; Mon, 22 Feb 2021 01:47:48 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6762FF80082
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 01:47:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6762FF80082
+Date: 22 Feb 2021 09:47:34 +0900
+X-IronPort-AV: E=Sophos;i="5.81,195,1610377200"; d="scan'208";a="72970823"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 22 Feb 2021 09:47:36 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 22 Feb 2021 09:47:34 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A8EDB4142FE0;
- Mon, 22 Feb 2021 09:47:36 +0900 (JST)
-Message-ID: <87mtvxvsgn.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 589EF4142FE0;
+ Mon, 22 Feb 2021 09:47:32 +0900 (JST)
+Message-ID: <87o8gdvsgr.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 5/5] ASoC: soc-pcm: unpack dpcm_set_fe_runtime()
+Subject: [PATCH 4/5] ASoC: soc-pcm: add dpcm_runtime_setup()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 References: <87tuq5vsin.wl-kuninori.morimoto.gx@renesas.com>
@@ -96,55 +96,82 @@ and setups BE by dpcm_runtime_merge_xxx() (= Y).
 		...
 (X)		dpcm_runtime_setup_fe(...);
 
- ^		dpcm_runtime_setup_be_format(...);
-(Y)		dpcm_runtime_setup_be_chan(...);
- v		dpcm_runtime_setup_be_rate(...);
+ ^		dpcm_runtime_merge_format(...);
+(Y)		dpcm_runtime_merge_chan(...);
+ v		dpcm_runtime_merge_rate(...);
 	}
 
 These means that the function which is called as xxx_fe_xxx()
 is setups both FE and BE. This is confusable and can be hot bed for bug.
 
-Now dpcm_set_fe_runtime() (= B) is simple enough and confusable naming,
-let's unpack it at dpcm_fe_dai_startup().
+This patch renames unclear dpcm_runtime_merge_xxx() (= Y) to
+more clear dpcm_runtime_setup_be_xxx().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ sound/soc/soc-pcm.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 7fc7e3e24444..511c9218308a 100644
+index 066218f1f075..7fc7e3e24444 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1678,15 +1678,6 @@ static void dpcm_runtime_setup_be_rate(struct snd_pcm_substream *substream)
+@@ -1556,10 +1556,10 @@ static void dpcm_runtime_setup_fe(struct snd_pcm_substream *substream)
+ 
+ }
+ 
+-static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
+-				      struct snd_pcm_runtime *runtime)
++static void dpcm_runtime_setup_be_format(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
+ 	struct snd_soc_dpcm *dpcm;
+ 	struct snd_soc_dai *dai;
+@@ -1593,10 +1593,10 @@ static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
  	}
  }
  
--static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
--{
--	dpcm_runtime_setup_fe(substream);
--
--	dpcm_runtime_setup_be_format(substream);
--	dpcm_runtime_setup_be_chan(substream);
--	dpcm_runtime_setup_be_rate(substream);
--}
--
- static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 			       int stream)
+-static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
+-				    struct snd_pcm_runtime *runtime)
++static void dpcm_runtime_setup_be_chan(struct snd_pcm_substream *substream)
  {
-@@ -1766,7 +1757,11 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
+ 	struct snd_soc_dpcm *dpcm;
+ 	int stream = substream->stream;
+@@ -1641,10 +1641,10 @@ static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
+ 	}
+ }
  
- 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
+-static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
+-				    struct snd_pcm_runtime *runtime)
++static void dpcm_runtime_setup_be_rate(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = asoc_substream_to_rtd(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
+ 	struct snd_soc_dpcm *dpcm;
+ 	int stream = substream->stream;
+@@ -1680,13 +1680,11 @@ static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
  
--	dpcm_set_fe_runtime(fe_substream);
-+	dpcm_runtime_setup_fe(fe_substream);
-+
-+	dpcm_runtime_setup_be_format(fe_substream);
-+	dpcm_runtime_setup_be_chan(fe_substream);
-+	dpcm_runtime_setup_be_rate(fe_substream);
+ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
+ {
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-
+ 	dpcm_runtime_setup_fe(substream);
  
- 	ret = dpcm_apply_symmetry(fe_substream, stream);
- 	if (ret < 0)
+-	dpcm_runtime_merge_format(substream, runtime);
+-	dpcm_runtime_merge_chan(substream, runtime);
+-	dpcm_runtime_merge_rate(substream, runtime);
++	dpcm_runtime_setup_be_format(substream);
++	dpcm_runtime_setup_be_chan(substream);
++	dpcm_runtime_setup_be_rate(substream);
+ }
+ 
+ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
 -- 
 2.25.1
 
