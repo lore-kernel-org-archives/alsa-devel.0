@@ -2,90 +2,96 @@ Return-Path: <SRS0=rOcL=HY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 789CDC4332E
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 13:48:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E55AAC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 15:05:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 52D9564E76
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 13:48:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52D9564E76
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 675F864E25
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 15:05:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 675F864E25
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BDC0950;
-	Mon, 22 Feb 2021 14:47:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BDC0950
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD6531662;
+	Mon, 22 Feb 2021 16:04:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD6531662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614001728;
-	bh=XCrkV1b4eW72wlwlFGJM+fGMWXYsc1qnWdLhx0MpYXA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1614006321;
+	bh=2BqNgs+e2CVx06A6bIz0yGhZKTu8f/qI/ccf/+LYpmM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NubR9X7GGTvFcXUXeE94nqoJDgbS+h2bCbwctP4jdyj3r+/FC0BXyJUJwH/23VqyN
-	 v1BLeH8rEBC3CC4dQvPBgenkJsha17pE2Tt0+XFUyWous40pIIOuRYl1sKr/vOW2GM
-	 wJkiXeQi9IoXqKPM2Lc8sdIrxxF+ANOV4jJ+tEec=
+	b=C7KDmSIHjOWBFQrwMkacBWSO0uljUocBH6qXGXt5Fc8+9geN/EiFhQK75FlzdzoVG
+	 Y0H2IcRVBKSSJ3CpAnkgDRm9pnyvDzFnk1Xpmpgxz7qYZBc49E8u84lHmJ0cCpOVLg
+	 KY2S6ANcba3ZfNz7bv8HNcfVfWFjciyWhA472sRg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14901F80279;
-	Mon, 22 Feb 2021 14:47:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4054DF80082;
+	Mon, 22 Feb 2021 16:04:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E305F8027C; Mon, 22 Feb 2021 14:47:56 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 31FB4F8025E; Mon, 22 Feb 2021 16:04:29 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F483F80129
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 14:47:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F483F80129
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MRbFZS3O"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CC5E64E5C;
- Mon, 22 Feb 2021 13:47:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614001671;
- bh=XCrkV1b4eW72wlwlFGJM+fGMWXYsc1qnWdLhx0MpYXA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=MRbFZS3OzDUIDA+H5IZtI3RLtcop6I2kCgE8NHwvesNuNTcxgFWAlnvExVji+Girz
- qTrlBNa2NslOXgqEQNL9JiyAaiyfZpZNel8U8+7MtljhsXM4DHZPZr6H32QRnLTbs6
- L+R9SGvOpmZlHPtVbS07qYjuThmsLXhc0duuZ/lFL9bxKR5aX7lYo1cwu3H+eaY9ZL
- iQY+/oulgHQRZa6O5vElhThVZSwgXjOuoB091GAcDvu50eJba1/JIYHRBtWmBaO8v9
- GyBJu2jqHDGtSvxzmEwiqYLMZ1fzeJgQAlck0TpXkHcx6R38yamNKmiXqbDHRjw1Q/
- mi9ZPSUOXRCFQ==
-Date: Mon, 22 Feb 2021 13:46:50 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio
- base on rpmsg
-Message-ID: <20210222134650.GD6127@sirena.org.uk>
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com>
- <20210208115112.GD8645@sirena.org.uk>
- <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com>
- <20210209222953.GF4916@sirena.org.uk>
- <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
- <20210210153808.GB4748@sirena.org.uk>
- <CAA+D8ANdqd2W6xvwFuuk=YqUGCfuXCFzwO7tkhuGwzPRgA_A4g@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52CD5F80154
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 16:04:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52CD5F80154
+Received: from mail-lj1-f200.google.com ([209.85.208.200])
+ by youngberry.canonical.com with esmtps
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>) id 1lECl2-0006oT-RE
+ for alsa-devel@alsa-project.org; Mon, 22 Feb 2021 15:04:20 +0000
+Received: by mail-lj1-f200.google.com with SMTP id t8so13293216lji.1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 07:04:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=2BqNgs+e2CVx06A6bIz0yGhZKTu8f/qI/ccf/+LYpmM=;
+ b=f4cLOa2VlL4KciZQilX8KKU18GFZFblxW7vXlucMqxQh1OMnqACMBM0ptmCy38Ydr5
+ vo39gWOohKGD6JQ/cVXmIHMac3lFMaNNvZpDZJPG4MzYPzE3ngx5PRKz6SbzheuD/KIZ
+ OJz9auRzwwRj5IvZLOtWPCMel6IGtqZJbmzJHGNIYZEC7GAlBSOpexEwD3i8yctzbAWM
+ fWdnimqDaN2FzzOsswgaX/oUqTSJ/XAWMLSoWLm3yThA7kIAdlNJvcrNyFk5ERAow9yp
+ aC5pX9VALzG1aBijHBR+YS7iyjAz3sZN4ojR94FRVQuiMnecM9xDgAQpeWLR0uSrNSxB
+ aQAw==
+X-Gm-Message-State: AOAM531TTTakKjE74Pn9b7fv5zTipwVADGZ3zVc8Zul/EVZ4jmLLZplj
+ IxObcpAIcushE+exvRES0kmxOi/XP8Q11sddKBTtHlCRPi8TskipfUIyh5oBRHJLGk0P5TSR1c8
+ Yao8otOJ1rUR26NWHBCt/9mm21CWd1Y25BEfNBUtSQCuf3O08yyAswSXH
+X-Received: by 2002:a19:6d09:: with SMTP id i9mr13608917lfc.425.1614006260261; 
+ Mon, 22 Feb 2021 07:04:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzVTARM9XPEOkojVA6GHQKPMLAFOjmypsoSObX9VQ8oZvKBtvhMhl2ZWOK+kEhq+alH20jef8GkBMyqfgkt8Z4=
+X-Received: by 2002:a19:6d09:: with SMTP id i9mr13608891lfc.425.1614006259561; 
+ Mon, 22 Feb 2021 07:04:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="cQXOx3fnlpmgJsTP"
-Content-Disposition: inline
-In-Reply-To: <CAA+D8ANdqd2W6xvwFuuk=YqUGCfuXCFzwO7tkhuGwzPRgA_A4g@mail.gmail.com>
-X-Cookie: A motion to adjourn is always in order.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linuxppc-dev@lists.ozlabs.org
+References: <20210125115441.10383-1-cezary.rojewski@intel.com>
+ <CAAd53p4fycxLn6y0WpaMWvWkN8EwmT216b40DavttfshN_GMRg@mail.gmail.com>
+ <324dc8a5-c4d3-6ebf-c8e9-6321d6c93dab@intel.com>
+ <CAAd53p4gqyuFPWX55fnPGHORXXf58++ZRMH9WFYp+QwS1=xDJQ@mail.gmail.com>
+ <181c989f-7a4d-3cdd-11be-7378dbc9502c@intel.com>
+ <5e970d19-9544-50fe-f140-b66245418c6e@intel.com>
+ <CAAd53p4srH6NFwcyUCBnLj=MS8-YBvA9CPjMbcryGgi5CmUUHw@mail.gmail.com>
+ <2c93bf65-4996-08c6-5be1-da4b9966e168@intel.com>
+ <f20e5e2b-3761-5e13-3166-5f026d088aa1@intel.com>
+In-Reply-To: <f20e5e2b-3761-5e13-3166-5f026d088aa1@intel.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Mon, 22 Feb 2021 23:04:08 +0800
+Message-ID: <CAAd53p6ZyuAzNJWLyONkbFndSRF2HBLn=6HLzb5RUShCmNWdVQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Compile when any configuration is
+ selected
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,33 +107,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Cezary,
 
---cQXOx3fnlpmgJsTP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Feb 15, 2021 at 11:43 PM Cezary Rojewski
+<cezary.rojewski@intel.com> wrote:
+>
+> On 2021-02-07 3:49 PM, Cezary Rojewski wrote:
+> >
+> > On 2021-02-02 1:41 PM, Kai-Heng Feng wrote:
+> >> On Tue, Feb 2, 2021 at 6:56 PM Cezary Rojewski
+> >> <cezary.rojewski@intel.com> wrote:
+>
+> ...
+>
+> >> Commit cc2d025a81a9 ("ASoC: Intel: Skylake: Update description for
+> >> HDaudio kconfig") removed "DEPRECATED" from the
+> >> SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC, does that mean the option is safe
+> >> and should be enabled in downstream distros?
+> >
+> > Skylake driver - sound/soc/intel/skylake - is your only option if you
+> > want to enable HDA (dsp) + DMIC configuration on SPT platforms
+> > (skl/kbl/kbl-r/aml/cml-s).
+>
+> Hello Kai-Heng,
+>
+> I'd like to close the compilation issue which this patch is addressing.
+> Could you confirm that the presented change fixes the issue on your end?
 
-On Thu, Feb 18, 2021 at 03:57:11PM +0800, Shengjiu Wang wrote:
+No, the SST regression is not fixed.
+However, it's not the scope of this patch, which is to fix a different issue.
 
-> Can I add a flag:
-> "rpmsg->mclk_streams & BIT(substream->stream)"
-> for avoiding multiple calls of hw_params function before enabling
-> clock?
+So please proceed to merge the patch. We can discuss the SST
+regression in other thread.
 
-Yes, if you do local refcounting that'd avoid the issue.
+Kai-Heng
 
---cQXOx3fnlpmgJsTP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAztckACgkQJNaLcl1U
-h9B2Ygf+N5kwNgpqApDIfReFqtqLtqQXDeHRtyJUp2Mw/FBKGxRIZtSpFboDMi5J
-VXujKz7xY9csIA8KyCOStwamXxGesJy0uWUdrjX1Et/X4YYUXtDc+F6hUB1zaB7v
-6xEPPINxm87gd/m1j2qeCKA8yVqdLLuZRBLIYvhzr5xzZhN5q5brqie2sHaxjysF
-GeuG0uiWiLDUn/+KJAN1MNnnk3zrGR6oD8C8ZL1IZhT10oxYuK8M/wxlWMXC0JbE
-fxxUD9Aau8k0ezS5VQquzWRTjZAC4utv/F4N6DBK1FCv3My0aM69mL4BL5a0mUji
-tAkM5F9xNM+F83iGENlGypDkiCgd8g==
-=kbni
------END PGP SIGNATURE-----
-
---cQXOx3fnlpmgJsTP--
+>
+> Regards,
+> Czarek
