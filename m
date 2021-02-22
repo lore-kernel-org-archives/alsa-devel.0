@@ -2,78 +2,73 @@ Return-Path: <SRS0=rOcL=HY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AD94C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 20:41:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D824C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 21:34:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 10AC064E32
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 20:40:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10AC064E32
+	by mail.kernel.org (Postfix) with ESMTPS id EEFFD64E4A
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 21:34:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EEFFD64E4A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7B67950;
-	Mon, 22 Feb 2021 21:40:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7B67950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95BD115E0;
+	Mon, 22 Feb 2021 22:33:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95BD115E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614026457;
-	bh=ghmGdZCW1rwRFidhZCC6CYoVYZU694/md2AvoE3pUak=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1614029665;
+	bh=KPw1p2Df5ULTir8YpcDNyO2I6BZIlzSxIXh3Hnuyu1Q=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HXdlgmIZsS1DDXp2c1RQbI/v/OX0+U0Jh422aKLfw/9PIJaZnimdOUpl/uFmNJmUi
-	 eROIu526fY2EN5GoxZdZtZF6ZLiJ/j2GLQxyV47R9MkSJqydsg9W5Db2p8SIyHfWse
-	 fwk+8E+ep5X15WyCpSBRz7z/5SZWMxF0+dS5rmSI=
+	b=s9J1VlstnINyliDYswsokd9EuU42YV6ZIwVAF360uUYN/DNoZvZv1kpRIzecPAqqf
+	 h/oTjFN8+exyvcS6NqsRd88jPd+lzXYt3/FGWOvkRN1QPp2h/Ul5Vl1oZ8eYiXIc/C
+	 c4kuPWTkt6Du9y5M74kTaUjrs/blCiVpsvp3ykrQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17F1AF80154;
-	Mon, 22 Feb 2021 21:40:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F7E8F80234;
+	Mon, 22 Feb 2021 22:33:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA7CEF8016C; Mon, 22 Feb 2021 21:40:05 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 428A0F8026F; Mon, 22 Feb 2021 22:33:33 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AE78F800CE
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 21:40:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AE78F800CE
-IronPort-SDR: tmh3UFR1M9eqwzuzFd8XitcEdo2uNdz80ro5m2SMSKJkoCl6nv0CVE0nTsWF2LiVIP+HIXxFzn
- 8P5YK7bNFXgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="163799922"
-X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; d="scan'208";a="163799922"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2021 12:39:55 -0800
-IronPort-SDR: 7RrYhDI6iQ6R8mYw9lW/5bEKPpCe26gvCzDezll27AuQkBhJM6W6NlE1JFHjmC5xrTXUaiZYOd
- 39xrjH2ikjsA==
-X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; d="scan'208";a="403205156"
-Received: from aaslanpx-mobl.amr.corp.intel.com (HELO [10.209.48.58])
- ([10.209.48.58])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Feb 2021 12:39:55 -0800
-Subject: Re: (subset) [PATCH 0/6] ASoC: samsung: remove cppcheck warnings
-To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>
-References: <20210219230918.5058-1-pierre-louis.bossart@linux.intel.com>
- <161401004266.2538.5738460015320431431.b4-ty@kernel.org>
- <CAJKOXPe6LZuuL0ntPAEwudEtMcGreBLMHzBFg5jw_3=DpG8KVA@mail.gmail.com>
- <20210222201929.GF6127@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E713FF80154
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 22:33:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E713FF80154
+IronPort-SDR: vFrMrDcR8r8ELN/SBDk7QP4J6XNe075DzEOKeFEzuXH4dyfx6wwZGYs+3Mk3jU92alJVdaYss7
+ iH1c9S9TnSLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="172256614"
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; d="scan'208";a="172256614"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Feb 2021 13:33:22 -0800
+IronPort-SDR: UFEy7pKuZZ/kjU+JvFkd6oQC9cCvSzUyVog3KC+NJ0uebBqK44hHPoowIvgXOpsEpICXL8pTQ5
+ ZrNOlFurdPoQ==
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; d="scan'208";a="423270729"
+Received: from sspurohi-mobl1.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.54.136])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Feb 2021 13:33:19 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <bde347e4-bbe3-889a-e0b8-8e2db827802a@linux.intel.com>
-Date: Mon, 22 Feb 2021 14:39:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2 6/6] ASoC: samsung: tm2_wm5510: remove shadowed variable
+Date: Mon, 22 Feb 2021 15:33:06 -0600
+Message-Id: <20210222213306.22654-7-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210222213306.22654-1-pierre-louis.bossart@linux.intel.com>
+References: <20210222213306.22654-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210222201929.GF6127@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, broonie@kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,18 +84,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+cppcheck warning:
 
+sound/soc/samsung/tm2_wm5110.c:552:26: style: Local variable 'args'
+shadows outer variable [shadowVariable]
+  struct of_phandle_args args;
+                         ^
+sound/soc/samsung/tm2_wm5110.c:504:25: note: Shadowed declaration
+ struct of_phandle_args args;
+                        ^
+sound/soc/samsung/tm2_wm5110.c:552:26: note: Shadow variable
+  struct of_phandle_args args;
+                         ^
+Move the top-level variable to the lower scope where it's needed.
 
-On 2/22/21 2:19 PM, Mark Brown wrote:
-> On Mon, Feb 22, 2021 at 06:31:15PM +0100, Krzysztof Kozlowski wrote:
-> 
->> Hmmm, I had comments about this one so it should not have been
->> applied. The check if (ret || !args.np) is still not good (or
->> confusing) because args is an uninitialized stack value.
-> 
-> Ah, I saw the "this is actually a fix CC stable" bit, the bit saying
-> there were issues was hidden - it looked like you'd just not deleted
-> context.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/samsung/tm2_wm5110.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-If you give me about an hour, I can resend a v2 series that includes 
-Krzysztof's tags and provides the correct fix for this patch5.
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index 125e07f65d2b..84c2c63d5a87 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -501,7 +501,6 @@ static int tm2_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct snd_soc_card *card = &tm2_card;
+ 	struct tm2_machine_priv *priv;
+-	struct of_phandle_args args;
+ 	struct snd_soc_dai_link *dai_link;
+ 	int num_codecs, ret, i;
+ 
+@@ -585,6 +584,8 @@ static int tm2_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (num_codecs > 1) {
++		struct of_phandle_args args;
++
+ 		/* HDMI DAI link (I2S1) */
+ 		i = card->num_links - 1;
+ 
+-- 
+2.25.1
+
