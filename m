@@ -2,68 +2,75 @@ Return-Path: <SRS0=rOcL=HY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D1ABBC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 08:53:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FE64C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 09:02:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDBA464DD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 08:53:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDBA464DD3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7319A64E61
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 09:02:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7319A64E61
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F19D1667;
-	Mon, 22 Feb 2021 09:52:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F19D1667
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4EC0166A;
+	Mon, 22 Feb 2021 10:01:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4EC0166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613984011;
-	bh=80XVqyS1GeDJKM+wRSyTCDPJS+poXNv6IjXaV89xGys=;
+	s=default; t=1613984532;
+	bh=rNJMR3CmZLVgkCB8B5/GwTIlQLRbfyS+dkBR0Yb877k=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ZWSXXYlHXRM9bDaDbVC65YOLHzUzf1OiRdUgTbgaRM2l60P03ZMgcuwHgMPWrQJaM
-	 wGyMSn+WcmkYxYLO7jwaIaSOocNDZy3dkEAsOYNAoUYfBTuQs8IpmnQaoWmw+41Pej
-	 UaOs2yObCo3pERoHTQjSMLfvR2AkiBbQrj8rz0Kc=
+	b=ksbLbg52+RzU0w3NPx2QMP6QxfVDyIaN5bVixfpaPBwHkgR7X+r+TSd9SFdwhELz+
+	 4lDp16bwvMuavvpLBXVjR6jlY6ms2rZfNPW9puSM0uITBWiekm/AzBXDKvH9EhAhIB
+	 ImBNNEQ+7afXK8HqW+9T7tqLStkIDGv/hbYsUWoU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAB08F80129;
-	Mon, 22 Feb 2021 09:52:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E738F80249;
+	Mon, 22 Feb 2021 10:01:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60F4CF8025E; Mon, 22 Feb 2021 09:52:38 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 2825EF8026F; Mon, 22 Feb 2021 10:01:21 +0100 (CET)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE421F80129
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 09:52:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE421F80129
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id ABE4B20032D;
- Mon, 22 Feb 2021 09:52:30 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5B90E20028F;
- Mon, 22 Feb 2021 09:52:25 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A070F40281;
- Mon, 22 Feb 2021 09:52:18 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_sai: Add pm qos cpu latency support
-Date: Mon, 22 Feb 2021 16:40:20 +0800
-Message-Id: <1613983220-5373-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CD66F80249
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 10:01:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CD66F80249
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 11M915eyC005500,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+ by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 11M915eyC005500
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 22 Feb 2021 17:01:05 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 22 Feb 2021 17:01:04 +0800
+From: <jack.yu@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH 1/2] ASoC: rt1015: fix i2c communication error
+Date: Mon, 22 Feb 2021 17:00:56 +0800
+Message-ID: <20210222090057.29532-1-jack.yu@realtek.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
+ alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
+ kenny_chen@realtek.com, derek.fang@realtek.com,
+ allen.cheng@lcfc.corp-partner.google.com, shumingf@realtek.com,
+ peter.chuang@lcfc.corp-partner.google.com, flove@realtek.com,
+ sunshine.chao@lcfc.corp-partner.google.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,117 +86,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On SoCs such as i.MX7ULP, cpuidle has some levels which
-may disable system/bus clocks, so need to add pm_qos to
-prevent cpuidle from entering low level idles and make sure
-system/bus clocks are enabled when sai is active.
+From: Jack Yu <jack.yu@realtek.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Remove 0x100 cache re-sync to solve i2c communication error.
+
+Signed-off-by: Jack Yu <jack.yu@realtek.com>
 ---
- sound/soc/fsl/fsl_sai.c | 12 ++++++++++++
- sound/soc/fsl/fsl_sai.h |  4 ++++
- 2 files changed, 16 insertions(+)
+ sound/soc/codecs/rt1015.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 5e65b456d3e2..a22679dea578 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-+#include <linux/pm_qos.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-@@ -1177,6 +1178,7 @@ static const struct fsl_sai_soc_data fsl_sai_vf610_data = {
- 	.fifo_depth = 32,
- 	.reg_offset = 0,
- 	.mclk0_is_mclk1 = false,
-+	.flags = 0,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
-@@ -1185,6 +1187,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx6sx_data = {
- 	.fifo_depth = 32,
- 	.reg_offset = 0,
- 	.mclk0_is_mclk1 = true,
-+	.flags = 0,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
-@@ -1193,6 +1196,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx7ulp_data = {
- 	.fifo_depth = 16,
- 	.reg_offset = 8,
- 	.mclk0_is_mclk1 = false,
-+	.flags = PMQOS_CPU_LATENCY,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
-@@ -1201,6 +1205,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx8mq_data = {
- 	.fifo_depth = 128,
- 	.reg_offset = 8,
- 	.mclk0_is_mclk1 = false,
-+	.flags = 0,
- };
- 
- static const struct fsl_sai_soc_data fsl_sai_imx8qm_data = {
-@@ -1209,6 +1214,7 @@ static const struct fsl_sai_soc_data fsl_sai_imx8qm_data = {
- 	.fifo_depth = 64,
- 	.reg_offset = 0,
- 	.mclk0_is_mclk1 = false,
-+	.flags = 0,
- };
- 
- static const struct of_device_id fsl_sai_ids[] = {
-@@ -1235,6 +1241,9 @@ static int fsl_sai_runtime_suspend(struct device *dev)
- 
- 	clk_disable_unprepare(sai->bus_clk);
- 
-+	if (sai->soc_data->flags & PMQOS_CPU_LATENCY)
-+		cpu_latency_qos_remove_request(&sai->pm_qos_req);
-+
- 	regcache_cache_only(sai->regmap, true);
- 
- 	return 0;
-@@ -1264,6 +1273,9 @@ static int fsl_sai_runtime_resume(struct device *dev)
- 			goto disable_tx_clk;
- 	}
- 
-+	if (sai->soc_data->flags & PMQOS_CPU_LATENCY)
-+		cpu_latency_qos_add_request(&sai->pm_qos_req, 0);
-+
- 	regcache_cache_only(sai->regmap, false);
- 	regcache_mark_dirty(sai->regmap);
- 	regmap_write(sai->regmap, FSL_SAI_TCSR(ofs), FSL_SAI_CSR_SR);
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index ff2619f1b214..bc60030967dd 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -216,12 +216,15 @@
- #define FSL_SAI_MAXBURST_TX 6
- #define FSL_SAI_MAXBURST_RX 6
- 
-+#define PMQOS_CPU_LATENCY   BIT(0)
-+
- struct fsl_sai_soc_data {
- 	bool use_imx_pcm;
- 	bool use_edma;
- 	bool mclk0_is_mclk1;
- 	unsigned int fifo_depth;
- 	unsigned int reg_offset;
-+	unsigned int flags;
- };
- 
- /**
-@@ -273,6 +276,7 @@ struct fsl_sai {
- 	struct snd_dmaengine_dai_dma_data dma_params_tx;
- 	struct fsl_sai_verid verid;
- 	struct fsl_sai_param param;
-+	struct pm_qos_request pm_qos_req;
- };
- 
- #define TX 1
+diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
+index 37b5795b00d1..90767490af82 100644
+--- a/sound/soc/codecs/rt1015.c
++++ b/sound/soc/codecs/rt1015.c
+@@ -209,6 +209,7 @@ static bool rt1015_volatile_register(struct device *dev, unsigned int reg)
+ 	case RT1015_VENDOR_ID:
+ 	case RT1015_DEVICE_ID:
+ 	case RT1015_PRO_ALT:
++	case RT1015_MAN_I2C:
+ 	case RT1015_DAC3:
+ 	case RT1015_VBAT_TEST_OUT1:
+ 	case RT1015_VBAT_TEST_OUT2:
 -- 
-2.27.0
+2.29.0
 
