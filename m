@@ -1,64 +1,60 @@
-Return-Path: <SRS0=DIAL=HX=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=rOcL=HY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2965C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 21 Feb 2021 23:33:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DF3CC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 00:47:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D53564DEC
-	for <alsa-devel@archiver.kernel.org>; Sun, 21 Feb 2021 23:33:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D53564DEC
+	by mail.kernel.org (Postfix) with ESMTPS id 9951A64ED6
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 00:47:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9951A64ED6
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A623165E;
-	Mon, 22 Feb 2021 00:32:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A623165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27281165D;
+	Mon, 22 Feb 2021 01:46:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27281165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613950406;
-	bh=2uU5C/9ihy4JtW+i4PPjy7pHfw7wzlwrIUtwcjO9oO8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AEbY7BGdjVqmIPpWQTxa324rHAXxFNwUij4Spv0uiUCmzR1zgf/ml0IkSiCEn5DzJ
-	 N4QMDy3zyJhFVieBImYf7Nu0DG+AviXcGu2UXWpLY67e5wGT/wH0RuapQobGxkxbUm
-	 PX2QZUaYuc+UeW/KyqYZL+t9L4b3ziW6mMcVm9vQ=
+	s=default; t=1613954845;
+	bh=BW6Q3BDDBAR2VgwJ0b3LLemsaQ2XehGeXQKABSIJkc0=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aOoCz6Cfa5hmh6Rybf+21oUvNeOiKBnYXmpLxnT7WgN3FfBcN0gGpN7sD1xpIzqZb
+	 wAHBS6nI//UJ2HbNdOogGM7EPNu1MPXuMa1PGAPeD09/mQR1aMAJFakmVjSTroyRBE
+	 831We3esizZTA8ZLzc/AHtu6chCRa7hPgPsQeJMM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDDBBF80167;
-	Mon, 22 Feb 2021 00:32:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E55BF80082;
+	Mon, 22 Feb 2021 01:46:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA1ECF8016A; Mon, 22 Feb 2021 00:32:34 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id D84BBF80082
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 00:32:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D84BBF80082
-Date: 22 Feb 2021 08:32:23 +0900
-X-IronPort-AV: E=Sophos;i="5.81,195,1610377200"; d="scan'208";a="72962556"
+ id CFD6DF8016A; Mon, 22 Feb 2021 01:46:32 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 3EB2DF80152
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 01:46:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EB2DF80152
+Date: 22 Feb 2021 09:46:24 +0900
+X-IronPort-AV: E=Sophos;i="5.81,195,1610377200"; d="scan'208";a="72727429"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 22 Feb 2021 08:32:23 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 22 Feb 2021 09:46:24 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id A144F412C70B;
- Mon, 22 Feb 2021 08:32:23 +0900 (JST)
-Message-ID: <87v9alvvy0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A36EF4142DFD;
+ Mon, 22 Feb 2021 09:46:24 +0900 (JST)
+Message-ID: <87tuq5vsin.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/8] ASoC: sh: remove cppcheck warnings
-In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
-References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/5] soc-pcm: tidyup snd_pcm_hardware setup for FE/BE
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,29 +71,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis
+Hi Mark
 
-Thank you for your patches.
+These patches tidyup snd_pcm_hardware setup for FE/BE.
+[1/5] changes behavior, but I think it is bug-fix.
 
-> No functional changes except for patch 4 where a missing error check
-> was added for consistency.
-> 
-> Pierre-Louis Bossart (8):
->   ASoC: sh: dma-sh7760: remove unused variable
->   ASoC: sh: rcar: align function prototypes
->   ASoC: sh: rcar: simplify return
->   ASoC: sh: rcar: core: rename shadowing variables
->   ASoC: sh: rcar: ctu: add  missing error check
->   ASoC: sh: rcar: ssi: remove redundant assignment
->   ASoC: sh: siu_pcm: remove useless assignment
->   ASoC: sh: siu_pcm: remove unused variable
+Kuninori Morimoto (5):
+  ASoC: soc-pcm: remove strange format storing
+  ASoC: soc-pcm: unpack dpcm_init_runtime_hw()
+  ASoC: soc-pcm: add dpcm_runtime_setup_fe()
+  ASoC: soc-pcm: add dpcm_runtime_setup()
+  ASoC: soc-pcm: unpack dpcm_set_fe_runtime()
 
-Except [4/8] patch,
+ sound/soc/soc-pcm.c | 79 +++++++++++++++++++++------------------------
+ 1 file changed, 36 insertions(+), 43 deletions(-)
 
-	Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+-- 
+2.25.1
 
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
