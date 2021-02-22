@@ -2,67 +2,81 @@ Return-Path: <SRS0=rOcL=HY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA4AC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 09:23:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DC31C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 13:37:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F1D0601FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 09:22:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F1D0601FE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7837964E5C
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Feb 2021 13:37:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7837964E5C
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7170D166B;
-	Mon, 22 Feb 2021 10:22:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7170D166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 079C71662;
+	Mon, 22 Feb 2021 14:36:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 079C71662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1613985778;
-	bh=jn82ZOvqcQdblByyinFmx50MjnGyYhmvLqu118jl3HU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Nk5ycPjqTJubhvBLgzoK1GuV7y29twq+saTSffF6h2RaiMwnMDU1IoAS3HRBAlHak
-	 y851r9II7RmDzEhP1OveeWLdjz1qzvAAxK8kqg86VOg+H4BxZzi1R7IdVdeEodmy2a
-	 Qhgligs8gtWGuPJHT9/KD2yIgy02kDhbW2nbZ3Y8=
+	s=default; t=1614001065;
+	bh=+O27eJDZwjcVdJwa5wWcdOfD0/quVptVXSXmwSEWZ+Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=eDkzUWifgpK9frKH1uxjZz78FPcl/dvIA5dM52sLr53yy9qa0TaDRNKesgVGXKL8T
+	 ygAfVN+SXwA435uzpMSpeE2eo/4m0rbCdqUVN0ywXQzpQSuTtvvWo9jza9VtPJuFHb
+	 Yt2sWJwnBS21CIi+xryfC6Ve8l7aNGyQ2/GpLZu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05573F80154;
-	Mon, 22 Feb 2021 10:22:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BD11F80249;
+	Mon, 22 Feb 2021 14:36:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB2E1F8025E; Mon, 22 Feb 2021 10:22:06 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 21014F8025E; Mon, 22 Feb 2021 14:36:52 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DC1FF80154
- for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 10:21:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DC1FF80154
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2F5781A020C;
- Mon, 22 Feb 2021 10:21:58 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DB1F51A0050;
- Mon, 22 Feb 2021 10:21:52 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2C98240291;
- Mon, 22 Feb 2021 10:21:46 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_xcvr: move reset assert into runtime_resume
-Date: Mon, 22 Feb 2021 17:09:50 +0800
-Message-Id: <1613984990-5534-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E0AFF80129
+ for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2021 14:36:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E0AFF80129
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gqF5xZWn"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F2164E44;
+ Mon, 22 Feb 2021 13:36:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1614001006;
+ bh=+O27eJDZwjcVdJwa5wWcdOfD0/quVptVXSXmwSEWZ+Q=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gqF5xZWniGaLaPBAtjq+fZJpX1To+HK1o4DqoAcU2CDoVv951eS/3BDrbrS6kfflO
+ yCLscR6k3ar1g283eQ2gCIVzRwN6xKBRXxvkfihfJ1RPQozVZ3yBOpeqP43aZQzeXQ
+ qY/trWfOU86LAzGScOjmC2cOGmPXFKQDTz4TDaoOXBnvzH+NwbWBh0INKDtkODN/tx
+ pWqfbmMhlXhDwWCgfVlDBv8LGC4U9/G28WVOuaMaLG0Pj5on7JhErdSlZY+2WnrK7a
+ sttWcRMa9UcwPumtJSBGVzbslHYWCYMqqa2+AYOvHSCr8KTCcNnun1fGQin5PRLceu
+ 6mUL5VxaXt5NA==
+Date: Mon, 22 Feb 2021 13:35:44 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v2] ASoC: rt1316: Add RT1316 SDCA vendor-specific driver
+Message-ID: <20210222133544.GA6127@sirena.org.uk>
+References: <20210218091208.28734-1-shumingf@realtek.com>
+ <350ee43a-af99-bb8e-60d3-2a0dc561cb45@perex.cz>
+ <84ce7570-b5c7-d89d-7d65-a391c3b65f93@linux.intel.com>
+ <37e136a7-01de-412a-6527-e3b6b6038de1@perex.cz>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Disposition: inline
+In-Reply-To: <37e136a7-01de-412a-6527-e3b6b6038de1@perex.cz>
+X-Cookie: A motion to adjourn is always in order.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ lgirdwood@gmail.com, derek.fang@realtek.com, bard.liao@intel.com,
+ shumingf@realtek.com, flove@realtek.com, pierre-louis.bossart@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,46 +92,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Viorel Suman <viorel.suman@nxp.com>
 
-Move reset assert into runtime_resume since we
-cannot rely on reset assert state when the device
-is put out from suspend.
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_xcvr.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On Sat, Feb 20, 2021 at 06:55:06PM +0100, Jaroslav Kysela wrote:
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index dd228b421e2c..4857e0df8681 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -1243,10 +1243,6 @@ static __maybe_unused int fsl_xcvr_runtime_suspend(struct device *dev)
- 	if (ret < 0)
- 		dev_err(dev, "Failed to assert M0+ core: %d\n", ret);
- 
--	ret = reset_control_assert(xcvr->reset);
--	if (ret < 0)
--		dev_err(dev, "Failed to assert M0+ reset: %d\n", ret);
--
- 	regcache_cache_only(xcvr->regmap, true);
- 
- 	clk_disable_unprepare(xcvr->spba_clk);
-@@ -1262,6 +1258,12 @@ static __maybe_unused int fsl_xcvr_runtime_resume(struct device *dev)
- 	struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
- 	int ret;
- 
-+	ret = reset_control_assert(xcvr->reset);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to assert M0+ reset: %d\n", ret);
-+		return ret;
-+	}
-+
- 	ret = clk_prepare_enable(xcvr->ipg_clk);
- 	if (ret) {
- 		dev_err(dev, "failed to start IPG clock.\n");
--- 
-2.27.0
+> The problem with ASoC tree is that many of those controls are not suppose=
+d to
+> be configured/used by the end user, but in UCM or other higher level layer
+> configuration, because they're a part of the hw/driver setup.
 
+> I think that we should classify those controls so the standard user space
+> tools can hide them, but it's another problem.
+
+Well, as has been discussed in the past ideally ALSA would have a
+mechanism for exposing topology information and userspace would have
+some chance of picking which controls make sense for use on non-trivial
+hardware.  The particular set of controls that it makes sense to adjust
+=66rom userspace is going to vary depending on the use case, it's not
+something that can be decided in the kernel.
+
+--vtzGhvizbBRQ85DL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAzszAACgkQJNaLcl1U
+h9AMBQf/WGPjzaxsZPvEn8GqencTawGQftyWnpeIfFSJRVlBWily6X7w+ilVTJRR
+5R3Q9V9KbfuVNB/sN20bY2rMIG8hLm/MdGuCqwT9B6u5X1oz10j1R4OTyJw90dCS
+rlOyMPRYoSG85Ls0oreV5y4FhYLyxDrt4DIU7dmZ52v5DHR94xdUc1pcpG7p3+Ky
+NJpdv+yh/uY6nHwpmPKt1rNq/lrxj2iA/mszphFhcJgE/hKYNtNfx8rtv0Brvd/H
+1EComI/LyN31ihx4FgAl8BLc5sQoqrbHYxGFJUAMlUEe6BVRJDT91CQplWf5ZBOG
++0ADWyYANxHqykhPDgAmIT5HUlIhiw==
+=7a0q
+-----END PGP SIGNATURE-----
+
+--vtzGhvizbBRQ85DL--
