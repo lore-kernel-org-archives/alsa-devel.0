@@ -7,56 +7,57 @@ X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20469C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AD4C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:05:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C786264E02
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:05:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C786264E02
+	by mail.kernel.org (Postfix) with ESMTPS id 0531D64E32
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:05:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0531D64E32
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ucw.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 466121661;
-	Tue, 23 Feb 2021 10:04:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 466121661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B86D1688;
+	Tue, 23 Feb 2021 10:04:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B86D1688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614071128;
-	bh=b0dOE9tWsUgUZqfzic1sbmsquBy90+SWhSVjP1vt+C0=;
+	s=default; t=1614071137;
+	bh=/ue0e0N+gl+aI7CKDMfSaVtUiY1tKVjwoDvB600enxA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m3u9ZpkUyTTRDfa4dUCNtPKFVQBDfy0SlA8f5CaazaGN5y7rZQFIGFB8rjcy28n+z
-	 M7yYSWZo3hRtY3ELey2YSwzY1f1pATx568hysscquwjpm3ddlKE0tQK+W+X2heyJaa
-	 F5VikpXzf4xWaedDpObU3A8cnEs4RS1G1fHNeYUI=
+	b=Fw/oRiEbpYe4ODduQJ5EAV8rjZbmVmwxFvJNsy7rErBe6lE5fO+fb1/4eow+LVI62
+	 hAk7qC4JSo80ywDiVVywajmKkG+bqSex4u8jgtkaDKkbSgIQDGBSmk9ZtcjZu6UPoS
+	 09G/J5VVuNuYEwB1nv+Yghc9+x/MubJ3akagVYAk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D69E4F801F5;
-	Tue, 23 Feb 2021 10:04:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB312F8028B;
+	Tue, 23 Feb 2021 10:04:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C8CDF8026C; Tue, 23 Feb 2021 10:04:01 +0100 (CET)
+ id 07CD5F802A9; Tue, 23 Feb 2021 10:04:29 +0100 (CET)
 Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47D1CF8016A
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 10:03:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47D1CF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFC8BF8026C
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 10:04:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFC8BF8026C
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id 166441C0B85; Tue, 23 Feb 2021 10:03:58 +0100 (CET)
-Date: Tue, 23 Feb 2021 10:03:56 +0100
+ id 7C15A1C0B82; Tue, 23 Feb 2021 10:04:19 +0100 (CET)
+Date: Tue, 23 Feb 2021 10:04:18 +0100
 From: Pavel Machek <pavel@ucw.cz>
 To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v3 5/7] HID: lenovo: Set LEDs max_brightness value
-Message-ID: <20210223090356.GE9750@amd>
+Subject: Re: [PATCH v3 7/7] HID: lenovo: Set default_triggers for the mute
+ and micmute LEDs
+Message-ID: <20210223090418.GF9750@amd>
 References: <20210221112005.102116-1-hdegoede@redhat.com>
- <20210221112005.102116-6-hdegoede@redhat.com>
+ <20210221112005.102116-8-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="fWddYNRDgTk9wQGZ"
+ protocol="application/pgp-signature"; boundary="DO5DiztRLs659m5i"
 Content-Disposition: inline
-In-Reply-To: <20210221112005.102116-6-hdegoede@redhat.com>
+In-Reply-To: <20210221112005.102116-8-hdegoede@redhat.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Cc: Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
  alsa-devel@alsa-project.org, Jiri Kosina <jikos@kernel.org>,
@@ -78,32 +79,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---fWddYNRDgTk9wQGZ
-Content-Type: text/plain; charset=us-ascii
+--DO5DiztRLs659m5i
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun 2021-02-21 12:20:03, Hans de Goede wrote:
-> The LEDs can only by turned on/off, so max_brightness should be set to 1.
-> Without this the max_brightness sysfs-attribute will report 255 which is
-> wrong.
+On Sun 2021-02-21 12:20:05, Hans de Goede wrote:
+> The mute and mic-mute LEDs should be automatically turned on/off based
+> on the audio-card's mixer settings.
 >=20
+> Add the standardized default-trigger names for this, so that the alsa
+> code can turn the LEDs on/off as appropriate (on supported audio cards).
+>=20
+> This brings the mute/mic-mute LED support inline with the thinkpad_acpi
+> support for the same LEDs in keyboards directly connected to the
+> laptop's embedded-controller.
+>=20
+> Reviewed-by: Marek Beh=FAn <kabel@kernel.org>
 > Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
 Acked-by: Pavel Machek <pavel@ucw.cz>
 
 --=20
 http://www.livejournal.com/~pavelmachek
 
---fWddYNRDgTk9wQGZ
+--DO5DiztRLs659m5i
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmA0xPwACgkQMOfwapXb+vIxAACfcF/s3KwvdZ56OjVFvgOKfyaq
-z9kAnA2/Ex7AO7WwInsgtlZEjZlGyxU4
-=NTxy
+iEYEARECAAYFAmA0xRIACgkQMOfwapXb+vLvdwCeIGz9/rtuJzodaElzSwGR9fZu
+Sk8AoLKq4LA0y2K9UTtNXmameN5/XWKP
+=iQA0
 -----END PGP SIGNATURE-----
 
---fWddYNRDgTk9wQGZ--
+--DO5DiztRLs659m5i--
