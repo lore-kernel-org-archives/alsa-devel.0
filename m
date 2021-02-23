@@ -7,81 +7,81 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5125FC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0BB9C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:22:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B041D64EC1
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:22:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B041D64EC1
+	by mail.kernel.org (Postfix) with ESMTPS id 5B6DA64E6B
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:22:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B6DA64E6B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DD3D168C;
-	Tue, 23 Feb 2021 19:21:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DD3D168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFE6A1675;
+	Tue, 23 Feb 2021 19:21:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFE6A1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614104523;
-	bh=MEjpyHn2CDjnPfxkT2wEky1s6pdVTEwsRbTZKg0ovic=;
+	s=default; t=1614104556;
+	bh=dK2vWaZOPK17Lmr+m9zk2hLho0FOToHeXM48kxb1z+g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uc5Ns5+SB3sqgg2+7ED1TBY34GlXzCFStQQV0zoan3h5033sqP593zpz1lH6cYieX
-	 2Q3zTFoW6ARTGBD6oBo+/FsOfPpna+2H4C9tewCYqAXcJOfs++/2fDH1xZLMEcTpm5
-	 Y14ewwXoiN9uMuL0/XNyvS2j1wPCoHOfQLhPow+w=
+	b=TjZUrsyD28d+xSY5Cl06kmfeF2rEDtwyEWScmovdBMdqKoEZADzfb2lAWPTZCgI0P
+	 yH+D6cnBeSW8Ta1RbKNx3s4yay9xjpaHjpNh1gwNe6XdTQ7gDAnSsiCoxe6iw1TVEY
+	 lKe3Zd2rkASvX3V0nNjKdpCa0ArXEfiC0aIboYg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 807B7F802E2;
-	Tue, 23 Feb 2021 19:20:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5402FF8032B;
+	Tue, 23 Feb 2021 19:20:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E783EF802E2; Tue, 23 Feb 2021 19:20:13 +0100 (CET)
+ id 46747F802E3; Tue, 23 Feb 2021 19:20:15 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 137F0F8026C
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 19:20:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 137F0F8026C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8BBE3F8016A
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 19:20:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BBE3F8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="moeu9QX0"
+ header.b="Ak6LHrxK"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1614104412; x=1645640412;
+ t=1614104409; x=1645640409;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=MEjpyHn2CDjnPfxkT2wEky1s6pdVTEwsRbTZKg0ovic=;
- b=moeu9QX0n9rxxmdHztk1SfFQ+M1ZohPrcN/Ys0jk1UF2bmvIxRm/Ze2U
- x1+pIM2kA1wW1OY2Une++jkHNKnBefmIKVmkc5iXGrK2jzame95rtqEg2
- cYi2VuEPRvz2Kz2t+ff0rMs9AQE2Vl68HXdHUu94Pbp13Ix0CC8WW40uY
- Man02nU7ziCXhq2GZvw2xuTG1vVLN1zXSwM/zc2Q2wU0L3WS1V6vFVmLn
- 2fYiw7VAL0vRvIMuvP1fIxo/dy4YNkL+R3kKGB7se1bK1uOcZggRKO5Fq
- f6CRBP+rJ9cGDQkOAwpqz4DSxtveWqO0piuctG8WqAT/C9S9zS4TB3dR6 Q==;
-IronPort-SDR: rI5ETHQBkcWabJ2Bw7Ta9hW/E3dXsL1sV3yEBAiOVxZI0gvmhAz5cB4y1tdYEfMvApi+F58fVg
- mioJ1+7V7MDv/obCGqJ+LKvWxExfygRdwhXZmTmaHdtlr1j+2x84dU8FLFtZvjcyC38Ao9CpTX
- dTMcVYbWdfDCYBG+YHGpr2L8zpAyP+DZWg5EAXy2ulM8RcZcZhS8hycIgQPM+94VRcF01Ehmw9
- vhLASOJXO0L6HnwYdKuqYbKSowvuyaPTkkzZYkQ59Yv7qJbPXYHF+gZ86MWVqNRmX5fFEC0S7e
- rU4=
-X-IronPort-AV: E=Sophos;i="5.81,200,1610434800"; d="scan'208";a="104869134"
+ bh=dK2vWaZOPK17Lmr+m9zk2hLho0FOToHeXM48kxb1z+g=;
+ b=Ak6LHrxKqocRpTiiDiAvi/IwbXJGRIIpafQFDlf/bSuCY873WhIg9bh4
+ a4Eg677ELuWd14RTcr5jVxwb43LoxTRISsBi2VEXuCFFMpFPYHTh8Yjde
+ 47O+PYDiOuf2+7SXs8mO2b8TaYhN3Uf2GV+ZYe/+oSoc+Lsja42d5Dq98
+ huNm7Gjo8+xsIcGS0FHwQNB1MHDqYk0kE4Hk+Dst7efGkka/KUPXG0TIQ
+ fXMLU41hRdp+brvw73f/IS7bMJzejXI2E+xxOlghi+Tf9ZI7pIOSmJmMb
+ sZ1HSqDcqwrEi7BzQfpw8uGRfL5B535hg3+lFeVT6WzKFAFW44l7/MAE+ w==;
+IronPort-SDR: XRqINWKwEni1gFHvuFusQPJ5tKXsUJwg64SGAqj/xrKSgTYR/xp3trJMVEnaMMgMA8KHdQ9CaD
+ UztH6MH4+WSXi1vlTCgsroCBDJUKO8ZJuIg8zvSLT0gcnsLTEMh76eae7SWMloGo+UOTBebOD6
+ BOqLS3792upr6s6TKLLIAfocTWnoUDpOwvdkPCXRSx4MrrKPxpvN/QEd6ZaUPVfrFehhjaJNjF
+ qbi/JkfZ8H/jDNb0J3QU1S+nfDwwWA3YrmjNS8KfZSjCRPuzu2tTNTtD6ukNYqfYQm9niDLX6M
+ dOA=
+X-IronPort-AV: E=Sophos;i="5.81,200,1610434800"; d="scan'208";a="107691056"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 23 Feb 2021 11:20:08 -0700
+ by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 23 Feb 2021 11:20:05 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 11:20:08 -0700
+ 15.1.1979.3; Tue, 23 Feb 2021 11:20:04 -0700
 Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 23 Feb 2021 11:20:05 -0700
+ 15.1.1979.3 via Frontend Transport; Tue, 23 Feb 2021 11:20:01 -0700
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 3/7] ASoC: mchp-i2s-mcc: Add compatible for SAMA7G5
-Date: Tue, 23 Feb 2021 20:19:25 +0200
-Message-ID: <20210223181929.444640-4-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 2/7] dt-bindings: mchp,i2s-mcc: Add SAMA7G5 to binding
+Date: Tue, 23 Feb 2021 20:19:24 +0200
+Message-ID: <20210223181929.444640-3-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210223181929.444640-1-codrin.ciubotariu@microchip.com>
 References: <20210223181929.444640-1-codrin.ciubotariu@microchip.com>
@@ -107,49 +107,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Microchip's new SAMA7G5 includes an updated I2S-MCC compatible with the
-previous version found on SAM9X60. The new controller includes 8 (4 * 2)
-input and output data pins for up to 8 channels for I2S and Left-Justified
-formats.
+SAMA7G5 includes an updated version of the I2S-MCC driver, that includes
+3 more DIN/DOUT pin pairs for multi-channel.
 
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- sound/soc/atmel/Kconfig        | 3 +++
- sound/soc/atmel/mchp-i2s-mcc.c | 3 +++
- 2 files changed, 6 insertions(+)
+ Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 9fe9471f4514..ec04e3386bc0 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -127,10 +127,13 @@ config SND_MCHP_SOC_I2S_MCC
- 	  Say Y or M if you want to add support for I2S Multi-Channel ASoC
- 	  driver on the following Microchip platforms:
- 	  - sam9x60
-+	  - sama7g5
+diff --git a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
+index 79445f5f2804..a8a73f3ed473 100644
+--- a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
++++ b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
+@@ -15,13 +15,18 @@ description:
+   multi-channel audio codecs. It consists of a receiver, a transmitter and a
+   common clock generator that can be enabled separately to provide Adapter,
+   Client or Controller modes with receiver and/or transmitter active.
++  On later I2SMCC versions (starting with Microchip's SAMA7G5) I2S
++  multi-channel is supported by using multiple data pins, output and
++  input, without TDM.
  
- 	  The I2SMCC complies with the Inter-IC Sound (I2S) bus specification
- 	  and supports a Time Division Multiplexed (TDM) interface with
- 	  external multi-channel audio codecs.
-+	  Starting with sama7g5, I2S and Left-Justified multi-channel is
-+	  supported by using multiple data pins, output and input, without TDM.
+ properties:
+   "#sound-dai-cells":
+     const: 0
  
- config SND_MCHP_SOC_SPDIFTX
- 	tristate "Microchip ASoC driver for boards using S/PDIF TX"
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 6d5ae18f8b38..0ee01383e307 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -873,6 +873,9 @@ static const struct of_device_id mchp_i2s_mcc_dt_ids[] = {
- 	{
- 		.compatible = "microchip,sam9x60-i2smcc",
- 	},
-+	{
-+		.compatible = "microchip,sama7g5-i2smcc",
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mchp_i2s_mcc_dt_ids);
+   compatible:
+-    const: microchip,sam9x60-i2smcc
++    enum:
++      - microchip,sam9x60-i2smcc
++      - microchip,sama7g5-i2smcc
+ 
+   reg:
+     maxItems: 1
 -- 
 2.27.0
 
