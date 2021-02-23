@@ -2,87 +2,87 @@ Return-Path: <SRS0=nXTK=HZ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47B9BC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:23:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10472C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:24:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F30064E61
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:23:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F30064E61
+	by mail.kernel.org (Postfix) with ESMTPS id 6388464E2E
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 18:24:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6388464E2E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20D6D16A0;
-	Tue, 23 Feb 2021 19:22:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20D6D16A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE8A11678;
+	Tue, 23 Feb 2021 19:23:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE8A11678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614104610;
-	bh=84j7/78rR9j49AoWteswWe25XyPzYeNSKwnQ095gk3g=;
+	s=default; t=1614104650;
+	bh=4kGp25rN986OLP0bFictYfqxryE9sLtl4aZrQGj5oeI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CfQyNC5pkBtBJK3VAdJVSfKjXQbBo4fQnYUIWUQUxMcOYc/JpaE3NI/6EO58U3RUV
-	 EwOJhZHbFsCa9KA9X6v4Rd47+PTPqJkVrm4alZi1uWHWNbMVPvzuJIGc9kG0rTtazf
-	 xkeDFkZxQMvx0+OGm/HH3L4NE9j8wG+3uLqb1A6A=
+	b=SZFS0r/X5Mq6AkJL2hS32BFpjAX8pOUhNiPsGlrxrU5NvuFdUv5qr4enhP7LNuaxc
+	 YmrVxoUbCyB8RDKCsewIeV+qtfeIupWP3ceH/5pX6zQVccEkqtv8XCkPKSkHXV7bSn
+	 5MYQgliy2Au49nTuPKrH3mYd0p6h8z0ZKyd5i+9g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E21AEF8049C;
-	Tue, 23 Feb 2021 19:20:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98C20F804D8;
+	Tue, 23 Feb 2021 19:20:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF60CF80475; Tue, 23 Feb 2021 19:20:22 +0100 (CET)
+ id 6796AF804D8; Tue, 23 Feb 2021 19:20:34 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.153.233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3522F80430
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 19:20:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3522F80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D66EF8042F
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 19:20:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D66EF8042F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="mGKkvrAj"
+ header.b="tLgMvr1A"
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1614104421; x=1645640421;
+ t=1614104428; x=1645640428;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=84j7/78rR9j49AoWteswWe25XyPzYeNSKwnQ095gk3g=;
- b=mGKkvrAjCAUhv3X4B1P9Fe6VCVK86aEOVcRakQXsuY8hjdBEYacUjWG3
- HQlD/mfmfLGUvub4TF8Dk3+SSmBMS0Z29cd1TUqjwJV1wOikzSxagxKqw
- NqRBRHTKOzuS/kTIo0LC96MAEY+22el5GArqzK/3ccTiHuMoZFLwu//qZ
- 0vtvAQMz0IPWGx1pdpklOnz9rPNNlrWF89BQ7XuJPeXC/DzY+9wqWY/5s
- PuqbBuptpLeOhkkgbxfqnt06GGwdkj9MkZjoRt3EOieWQbq0NMKxXa0q7
- xC2GL0FXxD77fy8P8SI+P3ZrF9v162ipAr+yeCy475KQtViMQCrrvtRwN A==;
-IronPort-SDR: OMtCRUgrXv/RNqU6mV4ks+b8ag4aX4ymCli0/qKPvIsf6bX4q/eUGZrL3EFQS79iKq7k09h3ru
- B0U6onQLonRsePINzpsqeyZYpAsyXGgwI9cQ9ObeWZTRBUJ8JwOMsm6naaq7FrkjMpqSr8Ygib
- HHfw1/LCXMpL1WpIW/9ww2RGpDcDO6oRthFfe1o0XV94YwMZPRuTKq6R9w6sxZK1TmAYsLVD81
- h71Lf1iLwPDVQd72ZhXg5kh5SLLCaFQQHznvHCuGREIyBaFTZ/DwO2oh5PRh0WT8etLBApyPj1
- 7TM=
-X-IronPort-AV: E=Sophos;i="5.81,200,1610434800"; d="scan'208";a="110827460"
+ bh=4kGp25rN986OLP0bFictYfqxryE9sLtl4aZrQGj5oeI=;
+ b=tLgMvr1AmVKlQ7PWhIM9z+mRvMQ/abBupRZQnEHV126VMD7TjhNfby01
+ STKjLtFoXIsZTwnOCxhX9IISuQE+xgHAqjfJvKDQWwwCp+YQgcrenLSr9
+ BuaJogDmPFHTYeQx9IOLsydmfJebNHGDYBSywtT9Dr8Rb6FX/vyCQ+2YR
+ DpKRvMWs0yFpkt1jXgMCyDd2jN9YSbX5SK0n5sSRUaC4v4zf7l60E/8Uf
+ ccZOLggPwVOWcmYxvhxhscK+XPyivV4WAvyBONzwRJ+AzHeadhKtP7oGs
+ iDmeNaGCTgLw403gQSO+ugoKXxS2O1HetrtnNPELsNsXnL48+y45CMl8A Q==;
+IronPort-SDR: xNJ1cAdDV7RT/feJnq1zWZLa5DYiimloTe5fxNGtdcR9eNEQJgajEESAsjQt6Pi2iAg4E+qoZ5
+ oQ6+zvCf/cujlaZLvyDyeUJnn6S5X7aLD3DMi/vg5KooW3kN5vF48mI6KIeVdliLJxXG306Z0I
+ nqliGIegQnUUD57i/aD4fjdPiD+eOn8GR0oRAXagVkEWFjtyX99Mn7+2nZshrC5PLxzk17D2ES
+ OLyRdSs+ZnLr2rGlZW3zRYyocPIiOCRd/nGOOoNAfc9v7BMH9OH02nZNspwt7Frz4ZxRHcBGzW
+ /Y4=
+X-IronPort-AV: E=Sophos;i="5.81,200,1610434800"; d="scan'208";a="116310923"
 Received: from smtpout.microchip.com (HELO email.microchip.com)
  ([198.175.253.82])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 23 Feb 2021 11:20:16 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 23 Feb 2021 11:20:26 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 11:20:15 -0700
+ 15.1.1979.3; Tue, 23 Feb 2021 11:20:22 -0700
 Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 23 Feb 2021 11:20:12 -0700
+ 15.1.1979.3 via Frontend Transport; Tue, 23 Feb 2021 11:20:19 -0700
 From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
  <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 5/7] dt-bindings: mchp,
- i2s-mcc: Add property to specify pin pair for TDM
-Date: Tue, 23 Feb 2021 20:19:27 +0200
-Message-ID: <20210223181929.444640-6-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 7/7] ASoC: mchp-i2s-mcc: Add FIFOs support
+Date: Tue, 23 Feb 2021 20:19:29 +0200
+Message-ID: <20210223181929.444640-8-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210223181929.444640-1-codrin.ciubotariu@microchip.com>
 References: <20210223181929.444640-1-codrin.ciubotariu@microchip.com>
@@ -108,46 +108,188 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SAMA7G5's I2S-MCC has 4 pairs of DIN/DOUT pins. Since TDM only uses a
-single pair of pins for synchronous capture and playback, the controller
-needs to be told which of the pair is connected. This can be mentioned
-using the new "microchip,tdm-data-pair" property. The property is optional,
-needed only if TDM is used, and if it's missing DIN/DOUT 0 pins will be
-used by default.
+I2S-MCC found on SAMA7G5 includes 2 FIFOs (capture and playback). When
+FIFOs are enabled, bits I2SMCC_ISRA.TXLRDYx and I2SMCC_ISRA.TXRRDYx must
+not be used. Bits I2SMCC_ISRB.TXFFRDY and I2SMCC_ISRB.RXFFRDY must be used
+instead.
 
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- .../devicetree/bindings/sound/mchp,i2s-mcc.yaml | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/atmel/mchp-i2s-mcc.c | 76 +++++++++++++++++++++++++---------
+ 1 file changed, 56 insertions(+), 20 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-index a8a73f3ed473..0481315cb5f2 100644
---- a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-+++ b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-@@ -57,6 +57,23 @@ properties:
-       - const: tx
-       - const: rx
+diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
+index 3d13efb11444..f951fa0f39fd 100644
+--- a/sound/soc/atmel/mchp-i2s-mcc.c
++++ b/sound/soc/atmel/mchp-i2s-mcc.c
+@@ -176,7 +176,7 @@
+  */
+ #define MCHP_I2SMCC_MRB_CRAMODE_REGULAR		(1 << 0)
  
-+  microchip,tdm-data-pair:
-+    description:
-+      Represents the DIN/DOUT pair pins that are used to receive/send
-+      TDM data. It is optional and it is only needed if the controller
-+      uses the TDM mode.
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    enum: [0, 1, 2, 3]
-+    default: 0
+-#define MCHP_I2SMCC_MRB_FIFOEN			BIT(1)
++#define MCHP_I2SMCC_MRB_FIFOEN			BIT(4)
+ 
+ #define MCHP_I2SMCC_MRB_DMACHUNK_MASK		GENMASK(9, 8)
+ #define MCHP_I2SMCC_MRB_DMACHUNK(no_words) \
+@@ -230,6 +230,7 @@ static const struct regmap_config mchp_i2s_mcc_regmap_config = {
+ 
+ struct mchp_i2s_mcc_soc_data {
+ 	unsigned int	data_pin_pair_num;
++	bool		has_fifo;
+ };
+ 
+ struct mchp_i2s_mcc_dev {
+@@ -257,7 +258,7 @@ struct mchp_i2s_mcc_dev {
+ static irqreturn_t mchp_i2s_mcc_interrupt(int irq, void *dev_id)
+ {
+ 	struct mchp_i2s_mcc_dev *dev = dev_id;
+-	u32 sra, imra, srb, imrb, pendinga, pendingb, idra = 0;
++	u32 sra, imra, srb, imrb, pendinga, pendingb, idra = 0, idrb = 0;
+ 	irqreturn_t ret = IRQ_NONE;
+ 
+ 	regmap_read(dev->regmap, MCHP_I2SMCC_IMRA, &imra);
+@@ -275,24 +276,36 @@ static irqreturn_t mchp_i2s_mcc_interrupt(int irq, void *dev_id)
+ 	 * Tx/Rx ready interrupts are enabled when stopping only, to assure
+ 	 * availability and to disable clocks if necessary
+ 	 */
+-	idra |= pendinga & (MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels) |
+-			    MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
+-	if (idra)
++	if (dev->soc->has_fifo) {
++		idrb |= pendingb & (MCHP_I2SMCC_INT_TXFFRDY |
++				    MCHP_I2SMCC_INT_RXFFRDY);
++	} else {
++		idra |= pendinga & (MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels) |
++				    MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
++	}
++	if (idra || idrb)
+ 		ret = IRQ_HANDLED;
+ 
+-	if ((imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) &&
+-	    (imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) ==
+-	    (idra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels))) {
++	if ((!dev->soc->has_fifo &&
++	     (imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) &&
++	     (imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) ==
++	     (idra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels))) ||
++	    (dev->soc->has_fifo && imrb & MCHP_I2SMCC_INT_TXFFRDY)) {
+ 		dev->tx_rdy = 1;
+ 		wake_up_interruptible(&dev->wq_txrdy);
+ 	}
+-	if ((imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) &&
+-	    (imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) ==
+-	    (idra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels))) {
++	if ((!dev->soc->has_fifo &&
++	     (imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) &&
++	     (imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) ==
++	     (idra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels))) ||
++	    (dev->soc->has_fifo && imrb & MCHP_I2SMCC_INT_RXFFRDY)) {
+ 		dev->rx_rdy = 1;
+ 		wake_up_interruptible(&dev->wq_rxrdy);
+ 	}
+-	regmap_write(dev->regmap, MCHP_I2SMCC_IDRA, idra);
++	if (dev->soc->has_fifo)
++		regmap_write(dev->regmap, MCHP_I2SMCC_IDRB, idrb);
++	else
++		regmap_write(dev->regmap, MCHP_I2SMCC_IDRA, idra);
+ 
+ 	return ret;
+ }
+@@ -664,6 +677,10 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
++	/* enable FIFO if available */
++	if (dev->soc->has_fifo)
++		mrb |= MCHP_I2SMCC_MRB_FIFOEN;
 +
-+if:
-+  properties:
-+    compatible:
-+      const: microchip,sam9x60-i2smcc
-+then:
-+  properties:
-+    microchip,tdm-data-pair: false
+ 	/*
+ 	 * If we are already running, the wanted setup must be
+ 	 * the same with the one that's currently ongoing
+@@ -726,8 +743,13 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		if (err == 0) {
+ 			dev_warn_once(dev->dev,
+ 				      "Timeout waiting for Tx ready\n");
+-			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
+-				     MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels));
++			if (dev->soc->has_fifo)
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRB,
++					     MCHP_I2SMCC_INT_TXFFRDY);
++			else
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
++					     MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels));
 +
- required:
-   - "#sound-dai-cells"
-   - compatible
+ 			dev->tx_rdy = 1;
+ 		}
+ 	} else {
+@@ -737,8 +759,12 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		if (err == 0) {
+ 			dev_warn_once(dev->dev,
+ 				      "Timeout waiting for Rx ready\n");
+-			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
+-				     MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
++			if (dev->soc->has_fifo)
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRB,
++					     MCHP_I2SMCC_INT_RXFFRDY);
++			else
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
++					     MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
+ 			dev->rx_rdy = 1;
+ 		}
+ 	}
+@@ -765,7 +791,7 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct mchp_i2s_mcc_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	bool is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	u32 cr = 0;
+-	u32 iera = 0;
++	u32 iera = 0, ierb = 0;
+ 	u32 sr;
+ 	int err;
+ 
+@@ -789,7 +815,10 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			 * Enable Tx Ready interrupts on all channels
+ 			 * to assure all data is sent
+ 			 */
+-			iera = MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels);
++			if (dev->soc->has_fifo)
++				ierb = MCHP_I2SMCC_INT_TXFFRDY;
++			else
++				iera = MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels);
+ 		} else if (!is_playback && (sr & MCHP_I2SMCC_SR_RXEN)) {
+ 			cr = MCHP_I2SMCC_CR_RXDIS;
+ 			dev->rx_rdy = 0;
+@@ -797,7 +826,10 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			 * Enable Rx Ready interrupts on all channels
+ 			 * to assure all data is received
+ 			 */
+-			iera = MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels);
++			if (dev->soc->has_fifo)
++				ierb = MCHP_I2SMCC_INT_RXFFRDY;
++			else
++				iera = MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels);
+ 		}
+ 		break;
+ 	default:
+@@ -815,7 +847,10 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		}
+ 	}
+ 
+-	regmap_write(dev->regmap, MCHP_I2SMCC_IERA, iera);
++	if (dev->soc->has_fifo)
++		regmap_write(dev->regmap, MCHP_I2SMCC_IERB, ierb);
++	else
++		regmap_write(dev->regmap, MCHP_I2SMCC_IERA, iera);
+ 	regmap_write(dev->regmap, MCHP_I2SMCC_CR, cr);
+ 
+ 	return 0;
+@@ -903,6 +938,7 @@ static struct mchp_i2s_mcc_soc_data mchp_i2s_mcc_sam9x60 = {
+ 
+ static struct mchp_i2s_mcc_soc_data mchp_i2s_mcc_sama7g5 = {
+ 	.data_pin_pair_num = 4,
++	.has_fifo = true,
+ };
+ 
+ static const struct of_device_id mchp_i2s_mcc_dt_ids[] = {
 -- 
 2.27.0
 
