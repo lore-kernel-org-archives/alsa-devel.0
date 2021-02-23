@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C88F2C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 04:00:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23E98C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 04:27:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 440B164E4B
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 03:59:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 440B164E4B
+	by mail.kernel.org (Postfix) with ESMTPS id 2794F64E57
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 04:27:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2794F64E57
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60F391660;
-	Tue, 23 Feb 2021 04:59:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60F391660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93CFE1660;
+	Tue, 23 Feb 2021 05:26:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93CFE1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614052796;
-	bh=QZk08T+WwEOfWGNkUSC00dQ0BrzX5SMjcgfE1UjC4Cc=;
+	s=default; t=1614054447;
+	bh=1EoENt0yFo+uzHEpBdkCwiyz1bNn1B/3S+TJlTSZYOE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UXA0qS93uFy5juTLNnuDY+h1RmEC3LfltXW6SNUHbpIxXa+aLVxqAk/MTCAK4NfPv
-	 fEi7OBBj2ArA3p2uaSOcvWQnFggeLbmcRDZntgIjqM65aBavyYJxRea3CoEJa0EUZD
-	 oNiyvQnL/u1/JY9HR7y6+nJqVPIDKfKepTm1zGoE=
+	b=VlHwiD/8D5P2vGt7G67/ktbg1PJmDEKtuATMTPCl3g/6BPO1SPtQCtnChp7qKQgDj
+	 Kesn8EpD6g0RsXboCqEJUtut3UtouXU58Fra/yz4v9EWTEDswQvk3kqiaBto/ptjIw
+	 npvoVhqKdF1KJ6O6nXuILPcNvfU9MFC6xbuTG+70=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0B52F80169;
-	Tue, 23 Feb 2021 04:59:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5440F80169;
+	Tue, 23 Feb 2021 05:26:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8AB5F8016A; Tue, 23 Feb 2021 04:59:03 +0100 (CET)
+ id 1CC31F8016A; Tue, 23 Feb 2021 05:26:35 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 30817F80167
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 04:58:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30817F80167
+ by alsa1.perex.cz (Postfix) with ESMTP id 554CAF800B4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 05:26:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 554CAF800B4
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1614052736368413925-webhooks-bot@alsa-project.org>
-References: <1614052736368413925-webhooks-bot@alsa-project.org>
+In-Reply-To: <1614054387144099951-webhooks-bot@alsa-project.org>
+References: <1614054387144099951-webhooks-bot@alsa-project.org>
 Subject: yoga 9i bottom speakers do not work
-Message-Id: <20210223035903.D8AB5F8016A@alsa1.perex.cz>
-Date: Tue, 23 Feb 2021 04:59:03 +0100 (CET)
+Message-Id: <20210223042635.1CC31F8016A@alsa1.perex.cz>
+Date: Tue, 23 Feb 2021 05:26:35 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,11 +66,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #120 was opened from zany130:
+alsa-project/alsa-lib issue #120 was edited from zany130:
 
 this might be the same issue as the c940 and legion 7i not sure, but the soundbar works but the bottom speakers don't
 
 https://linux-hardware.org/?probe=1f0bdc3a66
+
+I was trying to get the ALSA Information Script running and the script uploaded but it wasn't connecting so here is the file
+[alsa-info.txt](https://github.com/alsa-project/alsa-lib/files/6026794/alsa-info.txt)
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/120
 Repository URL: https://github.com/alsa-project/alsa-lib
