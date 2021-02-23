@@ -3,59 +3,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BAF66C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:10:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FD99C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:10:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 11D9164E58
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:10:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11D9164E58
+	by mail.kernel.org (Postfix) with ESMTPS id C187864E57
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Feb 2021 09:10:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C187864E57
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=ucw.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DA9E166A;
-	Tue, 23 Feb 2021 10:09:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DA9E166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38E241661;
+	Tue, 23 Feb 2021 10:09:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38E241661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614071417;
-	bh=v9oK5AYIW0bCAUYS7sfWumc+DV4BeD7IJ/ilKineoPM=;
+	s=default; t=1614071425;
+	bh=hH/eaGl75Uy6mIlS+NgUILRRkfj/cuFLN5jprTN73M4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KFRuPnuBoXITZr+Ma24t+oF8dqLUqddi2t7Qj8Q3PQd+UGgPw2CtHYPadTeBqXUfc
-	 SWrEFKwPqdQsdMH34G5HyJ5AA31VqM6ihMbhGC8hPDtxmRXbi2fAD8H0hlkMZSvAzp
-	 fj+cCfH4Dvz/3QCfOC7C20cNMKwIM8nr+XH6WRqM=
+	b=bF8LFFSsNagSVRRRZWojtsd46w2PYht5JUc9CVVafkGDrq0u1XbkcfdYSjk2FERl0
+	 /78HM6yHrPdrySTLdDCCJIXXeos05s9Cxt+N1e5An7OnTfEdQNBHO/5usZ6531dIji
+	 +S8Y4nhix3DNE6uaTrgpqWaOBct+ZsByQQLkjVKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 206D3F80169;
-	Tue, 23 Feb 2021 10:08:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6BA5F80167;
+	Tue, 23 Feb 2021 10:09:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52ADFF802D2; Tue, 23 Feb 2021 10:08:36 +0100 (CET)
+ id DA1F0F8016A; Tue, 23 Feb 2021 10:09:28 +0100 (CET)
 Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1511F80169
- for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 10:08:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1511F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98603F800B4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2021 10:09:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98603F800B4
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
- id BF5921C0B7F; Tue, 23 Feb 2021 10:08:26 +0100 (CET)
-Date: Tue, 23 Feb 2021 10:08:25 +0100
+ id 66BB61C0B82; Tue, 23 Feb 2021 10:09:24 +0100 (CET)
+Date: Tue, 23 Feb 2021 10:09:23 +0100
 From: Pavel Machek <pavel@ucw.cz>
 To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2 0/3] HID: elan: Mute LED handling fixes and improvements
-Message-ID: <20210223090825.GG9750@amd>
+Subject: Re: [PATCH v2 3/3] HID: elan: Remove elan_mute_led_get_brigtness()
+Message-ID: <20210223090923.GH9750@amd>
 References: <20210221113029.103703-1-hdegoede@redhat.com>
+ <20210221113029.103703-4-hdegoede@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="j2AXaZ4YhVcLc+PQ"
+ protocol="application/pgp-signature"; boundary="FUaywKC54iCcLzqT"
 Content-Disposition: inline
-In-Reply-To: <20210221113029.103703-1-hdegoede@redhat.com>
+In-Reply-To: <20210221113029.103703-4-hdegoede@redhat.com>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Cc: Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
  alsa-devel@alsa-project.org, Jiri Kosina <jikos@kernel.org>,
@@ -77,39 +78,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---j2AXaZ4YhVcLc+PQ
-Content-Type: text/plain; charset=iso-8859-1
+--FUaywKC54iCcLzqT
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi!
 
-> Here is v2 of my series with mute LED handling fixes and improvements
-> for the hid-elan driver.
->=20
-> New in v2:
-> - Add Marek Beh=FAn's Reviewed-by to all patches,thank you for all the
->   reviews Marek.
-> - Improve error handling in patch 1/3 to return -EIO when ret !=3D 3 and =
->=3D 0
+> @@ -461,7 +452,6 @@ static int elan_init_mute_led(struct hid_device *hdev)
+> =20
+>  	mute_led->name =3D "elan:red:mute";
 
-Series:
+This probably should not have "elan" prefix.
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
+Best regards,
+							Pavel
 
 --=20
 http://www.livejournal.com/~pavelmachek
 
---j2AXaZ4YhVcLc+PQ
+--FUaywKC54iCcLzqT
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iEYEARECAAYFAmA0xgkACgkQMOfwapXb+vJeEACfSNHriy6LUB+JawGv3uQFe8ut
-4ckAn3oJ2ickVL3tHFHxBT+CwaHJ7S0I
-=SMl5
+iEYEARECAAYFAmA0xkMACgkQMOfwapXb+vLLDQCgnvhE8J5fS8jikkY55qtXJkYw
+zboAnRezbsT3WS58xznd5y82Z/QCZPs+
+=cani
 -----END PGP SIGNATURE-----
 
---j2AXaZ4YhVcLc+PQ--
+--FUaywKC54iCcLzqT--
