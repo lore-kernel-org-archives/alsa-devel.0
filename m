@@ -2,62 +2,68 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90B52C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 09:39:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A1CFC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 09:50:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7404F64EBB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 09:39:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7404F64EBB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id CF45664DE7
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 09:50:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CF45664DE7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A18891662;
-	Wed, 24 Feb 2021 10:38:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A18891662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6914D167C;
+	Wed, 24 Feb 2021 10:50:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6914D167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614159551;
-	bh=y5PnI625qPjDGQpTzMttzhnkbPMTuRTZD6S6UofjvN0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614160255;
+	bh=ipBCU7T58F4qOUfsiocebhVV8TKNDYDNSavvSztO+v4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vP3egw7smWvWkX93vmgdRd3kEevrwQscqdYWRAT5LVCPtrgPhyn/ZthEf3Knj8ySk
-	 Ic2PfLr0hhlpEHTu/Gj4E8aU2nx9Qydc/Yb9VEQHn6jknkmxxkSxKwMBVezba9GiSS
-	 xwdj7EcCrFUoJipBD4G8Iawv1N5QgrefwG6CyQ2g=
+	b=l0bRb/fDqYE3kVpv0GX+wy/FLGGKqbiAbTECobS3pOlVwYn/6SpPk31V4mhZbeLLq
+	 Ppxm6nWnWO4im+kO/xfH+xu9ikJtUzkM33nIK1qwcu/usM5rb07EWs+cpsAq693dPZ
+	 ijLvRVvH8uWl/1XnbSrCtsXPtF6B4H1WHUah8E2s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EA57F80161;
-	Wed, 24 Feb 2021 10:38:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA865F80161;
+	Wed, 24 Feb 2021 10:50:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D39AF8016C; Wed, 24 Feb 2021 10:38:19 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 60DF7F8016C; Wed, 24 Feb 2021 10:50:02 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B15FFF80159
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 10:38:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B15FFF80159
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E96FFAE05;
- Wed, 24 Feb 2021 09:38:15 +0000 (UTC)
-Date: Wed, 24 Feb 2021 10:38:15 +0100
-Message-ID: <s5h1rd5u7p4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31DEBF80159
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 10:49:53 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 51897A003F;
+ Wed, 24 Feb 2021 10:49:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 51897A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1614160188; bh=vZsoMfwJNw5zdKSqYCZ7qnWA+KwdY3LpAvrfRL3Jgmo=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=2lG39rH31kfj0GtNlri/pyS82FkiYtMTjs3aa4L50rAJsX5G0QoTsK9cfPty7Gc20
+ bkD96xU22Eu3Zbs0X3wI6U1fqAv+/BKREXYxzkRA76gFd1rBcuW/44+SQN7wg/zYCV
+ yzngEklH6j/Wb2+vW/OtZSmXuA022BL1vMbnmaes=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 24 Feb 2021 10:49:41 +0100 (CET)
 Subject: Re: [RFC 2/2] ASoC: rt5670: Add LED trigger support
-In-Reply-To: <4574088a-4676-131a-0065-499a516f80ae@perex.cz>
+To: Takashi Iwai <tiwai@suse.de>
 References: <20210215142419.308651-1-hdegoede@redhat.com>
  <20210215142419.308651-3-hdegoede@redhat.com>
  <20210223134506.GF5116@sirena.org.uk>
  <578b1ee3-f426-c5b5-bc78-5a91108ebdc8@redhat.com>
- <20210223140930.GH5116@sirena.org.uk>
- <s5h8s7evp8p.wl-tiwai@suse.de>
+ <20210223140930.GH5116@sirena.org.uk> <s5h8s7evp8p.wl-tiwai@suse.de>
  <fc28d535-87a7-fbfd-89c7-992a537606bc@perex.cz>
  <s5hv9aiu55y.wl-tiwai@suse.de>
  <5c6a21c1-7107-3351-25be-c007b0b946d3@perex.cz>
@@ -65,11 +71,17 @@ References: <20210215142419.308651-1-hdegoede@redhat.com>
  <776b4ad9-2612-b08a-cb76-c3e1ce02388a@perex.cz>
  <s5h8s7du9tn.wl-tiwai@suse.de>
  <4574088a-4676-131a-0065-499a516f80ae@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5h1rd5u7p4.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <03068e15-2157-3ae6-ffd6-7ec315bb49a3@perex.cz>
+Date: Wed, 24 Feb 2021 10:49:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <s5h1rd5u7p4.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
  Liam Girdwood <lgirdwood@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
  Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>
@@ -88,90 +100,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Feb 2021 10:27:13 +0100,
-Jaroslav Kysela wrote:
-> 
-> Dne 24. 02. 21 v 9:52 Takashi Iwai napsal(a):
-> > On Wed, 24 Feb 2021 09:14:41 +0100,
-> > Jaroslav Kysela wrote:
-> >>
-> >> Dne 24. 02. 21 v 8:12 Takashi Iwai napsal(a):
-> >>> On Tue, 23 Feb 2021 21:56:16 +0100,
-> >>> Jaroslav Kysela wrote:
-> >>>>
-> >>>> Dne 23. 02. 21 v 17:20 Takashi Iwai napsal(a):
-> >>>>>>> Of course, this implementation would make the integration much easier,
-> >>>>>>> and that's a big benefit.  So I have a mixed feeling and not decided
-> >>>>>>> yet whether we should go for it right now...
-> >>>>>>
-> >>>>>> I think that we can reconsider the LED handling implementation later, when
-> >>>>>> someone brings something better on the table.
-> >>>>>
-> >>>>> What worried me is the plan to expose this capability to user-space.
-> >>>>> If it's only a kernel-internal, we can fix it in the kernel and
-> >>>>> nothing else broken, but if it's a part of API, that's not easy.
-> >>>>>
-> >>>>> So, if any, I'd like to avoid exposing to the user-space at first.
-> >>>>> (But then it comes to the question how to deal with a case like AMD
-> >>>>> ACP...)
-> >>>>
-> >>>> I tried to propose a complete solution and the ACP was one strong reason for
-> >>>> this kernel / user space API. So without the user space support, it's just
-> >>>> a half solution for known issues.
-> >>>>
-> >>>> Frankly, I don't see any drawback or a problem even if we remove this API
-> >>>> later.
-> >>>
-> >>> Removing the user-space API is absolutely no-go.  The only exception
-> >>> would be either the case really no one uses it or it's too buggy and
-> >>> unfixable.
-> >>
-> >> This is a special case. Even if those LED bits are ignored by kernel in
-> >> future, we expect to be replaced with another layer. Thus the functionality
-> >> must be retained.
-> > 
-> > Well, we cannot know whether the replacement really happens or
-> > happened, and hence we never kill the old one.  That's the problem.
-> > 
-> >>>> The LED group bits are just informal for the user space and it's
-> >>>> expected to create the user controls tied to this LED functionality only in
-> >>>> alsa-lib/plugins at the moment. The kernel may return an error when the user
-> >>>> space tries to set those new bits when the API is deprecated and I believe
-> >>>> that the hardware design faults like AMD ACP (without the hardware mute) are rare.
-> >>>
-> >>> The experience tells us that users are creative enough to (ab)use a
-> >>> new ABI in any unexpected ways, and we have no control for it.  So
-> >>> it's not about how alsa-lib is implemented but rather how ABI could be
-> >>> abused :)
-> >>
-> >> Ok, I don't have other ideas. I don't agree with your argumentation for this
-> >> particular case, where the functionality is marginal. Ideally, the AMD driver
-> >> may be recoded to use double-buffering and software mute switch, so we should
-> >> handle everything in the kernel space.
-> > 
-> > My argument is that we're trying to add too much freedom just for this
-> > "marginal" problem.  Honestly speaking, I would feel rather more
-> > comfortable if it were a kernel control element that just does trigger
-> > the LED like the original patch from AMD guys.  Then you cannot do
-> > much wrong.  OTOH, creating a virtual capture switch and let alsa-lib
-> > handling the software mute, while PA should ignores the soft-mute but
-> 
-> We can force the softvol even if PA set the skip flag for this particular PCM
-> stream.
-> 
-> > dealing only with the assigned mute LED...  Sounds too complex to me.
-> 
-> It seems that you misunderstood the number of issues which my code is trying
-> to resolve:
-> 
-> 1) set LED based on state from multiple cards (so you cannot trigger LED
-> inside single driver / single control element); we need one arbiter; this is
-> the main argument
-> 2) unifies the audio LED interface
-> 3) reduce the hardware driver code
+Dne 24. 02. 21 v 10:38 Takashi Iwai napsal(a):
 
-Those purposes are all fine.  But they don't need to be exposed for
-user controls that can be abused.  That's the very concern.
+>> It seems that you misunderstood the number of issues which my code is trying
+>> to resolve:
+>>
+>> 1) set LED based on state from multiple cards (so you cannot trigger LED
+>> inside single driver / single control element); we need one arbiter; this is
+>> the main argument
+>> 2) unifies the audio LED interface
+>> 3) reduce the hardware driver code
+> 
+> Those purposes are all fine.  But they don't need to be exposed for
+> user controls that can be abused.  That's the very concern.
 
+So, how to handle this feature for AMD ACP without PA / PipeWire modifications?
 
-Takashi
+And if we add an user space channel to the audio LED arbiter code, how it
+differs from my proposed control API extension? We have already locking
+mechanism for the user control element to one task, so it's possible to create
+safe user space implementation (depending on the standard task priviledges) on
+demand even with my proposal.
+
+Could you elaborate the abuse you mean? Three bits?
+
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
