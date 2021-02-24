@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8336C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58C56C433E6
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:53:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC4C464F57
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:53:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC4C464F57
+	by mail.kernel.org (Postfix) with ESMTPS id 266F464F62
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:53:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 266F464F62
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 527EE1686;
-	Wed, 24 Feb 2021 13:52:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 527EE1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4913B1697;
+	Wed, 24 Feb 2021 13:52:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4913B1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614171185;
-	bh=8tIIqAiRssqDzxyVd3JiVa562bUcOromW+z5y6e2r6I=;
+	s=default; t=1614171201;
+	bh=kzVKGCQ6HF9WnYSw5/VgvvEwufPow9Ok0gOs9lYLebE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hoXleuLU1xOXvuVAHgyVg7ZfOvsxzp5LxlF+NU8BT34FgS7nKw50h2zKlr2EzjgOr
-	 YeZz6+YxdgGLnIf/9DOWl4TwMnlTKrzhYt4It6UZLUq93i5mjn1jAZVYyMuOhSTEtC
-	 VFwH6LdcVtKBaqgbNwzAxCPnt1GAb1DCOAC4DZAo=
+	b=NDRKHcWq+BPXw59hHa1xv9tH9CJegUaJUXj8fKnPBjddlXLNafKBGP2W9EH2j8SJD
+	 otCZSHA81OWlz5zRj061HbGokNSHicJxwbgGB0oWcJriBSxW3+Olon8S+S+E3mac+E
+	 +wd5PjYb8jbZdFRlJNdCkoZ31Qtt7R9bI0Ax/Q9w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD6DAF8022B;
-	Wed, 24 Feb 2021 13:51:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D48CF802E2;
+	Wed, 24 Feb 2021 13:51:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FDCBF80129; Wed, 24 Feb 2021 13:51:22 +0100 (CET)
+ id CD9F3F802E3; Wed, 24 Feb 2021 13:51:35 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7633F800F2
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:51:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7633F800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9527F802A9
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:51:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9527F802A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ln0/T+bj"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1762964F0E;
- Wed, 24 Feb 2021 12:51:11 +0000 (UTC)
+ header.b="KQGmbzbs"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7239164F20;
+ Wed, 24 Feb 2021 12:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614171072;
- bh=8tIIqAiRssqDzxyVd3JiVa562bUcOromW+z5y6e2r6I=;
+ s=k20201202; t=1614171091;
+ bh=kzVKGCQ6HF9WnYSw5/VgvvEwufPow9Ok0gOs9lYLebE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ln0/T+bjYycb4PkCzFXBnReoVuNto9UTuR+iEt/PTMMh+71wZkIiEpeLuWWA1n0OZ
- ejFkoE6dG2pSEAu/KDxV45Gife3lUGinWjSCwdmf3nHSaFVgWw5XejgyfW1xGJersh
- moUG9sICKZtapgpiOj4uMhKW9O9Qe1S4XvjAnrmWWY/nlnPxw+L/WQa5wdpyMHLgAT
- TNsecEpZe2cT8rKeCGzbdsaWG2VovUYwUAy5ZIYOzwj3JE12ZXYW1IQxGYKRw/5stU
- W1UtEW1wVxErc6Y+h8atPOcmxUhUaZ8j1rPipLE01UcPY3Jg4ul8Y3CR6PUwOLr79Z
- n29mmQJ2lcrZw==
+ b=KQGmbzbstksFVe/E123NUpPNzQpD+y906dAKo44KvrllHYPZEUWpTmws/YGaCNPhq
+ qbMAoQ9qdD40XCjDPZ9urnQwQSUT86fE0R0LMr0bScDR0EtR2qxyq4T9GRwm8HyAoc
+ 5NbaeoM6iq1dr3rbq6GL9Ly0+ya9YOAUbSr+ZW75KSiAN3yswzEt13P9Ebd59wl4U4
+ 20jlGMOlJtOPhmFnFY51S6TRUJsFdH+F2RfrT+wsr5PdT/6TIuXmnBVP6qOxt+qFvf
+ 5rpcQu4keu3XClFWBx2dmtXqB0P2YmlNBVzQNBljMxQg/irhgpmiuV+B4jyta/kfnZ
+ R4yvebFPSgEfw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 33/67] ASoC: Intel: bytcr_rt5640: Add new
- BYT_RT5640_NO_SPEAKERS quirk-flag
-Date: Wed, 24 Feb 2021 07:49:51 -0500
-Message-Id: <20210224125026.481804-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 48/67] ALSA: usb-audio: Add DJM-450 to the quirks
+ table
+Date: Wed, 24 Feb 2021 07:50:06 -0500
+Message-Id: <20210224125026.481804-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210224125026.481804-1-sashal@kernel.org>
 References: <20210224125026.481804-1-sashal@kernel.org>
@@ -72,10 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Rasmus Porsager <rasmus@beat.dk>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Olivia Mackintosh <livvy@base.nu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,104 +89,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Olivia Mackintosh <livvy@base.nu>
 
-[ Upstream commit 1851ccf9e155b2a6f6cca1a7bd49325f5efbd5d2 ]
+[ Upstream commit 9119e5661eab2c56a96b936cde49c6740dc49ff9 ]
 
-Some devices, like mini PCs/media/top-set boxes do not have any speakers
-at all, an example of the is the Mele PCG03 Mini PC.
+As with most Pioneer devices, the device descriptor is vendor specific
+and as such, the number of channels, the PCM format, endpoints and
+sample rate need to be specified. This device has 8 inputs and 8 outputs
+and a sample rate of 48000 only. The PCM format is S24_3LE like other
+devices.
 
-Add a new BYT_RT5640_NO_SPEAKERS quirk-flag which when sets does not add
-speaker routes and modifies the components and the (optional) long_name
-strings to reflect that there are no speakers.
+There seems to be an appetite for reducing duplication amongs these
+Pioneer patches but again, I feel this is a step to be taken after
+support has been added as it's not completely clear where the
+commonalities are.
 
-Cc: Rasmus Porsager <rasmus@beat.dk>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210109210119.159032-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Olivia Mackintosh <livvy@base.nu>
+Link: https://lore.kernel.org/r/20210202134225.3217-3-livvy@base.nu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ sound/usb/quirks-table.h | 57 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 5520d7c800196..dce2df30d4c5b 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -71,6 +71,7 @@ enum {
- #define BYT_RT5640_SSP0_AIF2		BIT(21)
- #define BYT_RT5640_MCLK_EN		BIT(22)
- #define BYT_RT5640_MCLK_25MHZ		BIT(23)
-+#define BYT_RT5640_NO_SPEAKERS		BIT(24)
- 
- #define BYTCR_INPUT_DEFAULTS				\
- 	(BYT_RT5640_IN3_MAP |				\
-@@ -132,6 +133,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk JD_NOT_INV enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER)
- 		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
-+	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS)
-+		dev_info(dev, "quirk NO_SPEAKERS enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC)
- 		dev_info(dev, "quirk DIFF_MIC enabled\n");
- 	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
-@@ -946,7 +949,7 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_mono_spk_map,
- 					ARRAY_SIZE(byt_rt5640_mono_spk_map));
--	} else {
-+	} else if (!(byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS)) {
- 		ret = snd_soc_dapm_add_routes(&card->dapm,
- 					byt_rt5640_stereo_spk_map,
- 					ARRAY_SIZE(byt_rt5640_stereo_spk_map));
-@@ -1188,6 +1191,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	static const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
-+	__maybe_unused const char *spk_type;
- 	const struct dmi_system_id *dmi_id;
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-@@ -1196,7 +1200,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	bool sof_parent;
- 	int ret_val = 0;
- 	int dai_index = 0;
--	int i;
-+	int i, cfg_spk;
- 
- 	is_bytcr = false;
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-@@ -1335,16 +1339,24 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 93d55cd1a5a4c..1165a5ac60f22 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3817,6 +3817,63 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
  		}
  	}
- 
-+	if (byt_rt5640_quirk & BYT_RT5640_NO_SPEAKERS) {
-+		cfg_spk = 0;
-+		spk_type = "none";
-+	} else if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) {
-+		cfg_spk = 1;
-+		spk_type = "mono";
-+	} else {
-+		cfg_spk = 2;
-+		spk_type = "stereo";
+ },
++{
++	/*
++	 * Pioneer DJ DJM-450
++	 * PCM is 8 channels out @ 48 fixed (endpoint 0x01)
++	 * and 8 channels in @ 48 fixed (endpoint 0x82).
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x2b73, 0x0013),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8, // outputs
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 48000 }
++					}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8, // inputs
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x82,
++					.ep_idx = 1,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						USB_ENDPOINT_SYNC_ASYNC|
++						USB_ENDPOINT_USAGE_IMPLICIT_FB,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 48000 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
 +	}
-+
- 	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
--		 "cfg-spk:%s cfg-mic:%s",
--		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ? "1" : "2",
-+		 "cfg-spk:%d cfg-mic:%s", cfg_spk,
- 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
- 	byt_rt5640_card.components = byt_rt5640_components;
- #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
- 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
--		 "bytcr-rt5640-%s-spk-%s-mic",
--		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
--			"mono" : "stereo",
-+		 "bytcr-rt5640-%s-spk-%s-mic", spk_type,
- 		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
- 	byt_rt5640_card.long_name = byt_rt5640_long_name;
- #endif
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+ #undef USB_AUDIO_DEVICE
 -- 
 2.27.0
 
