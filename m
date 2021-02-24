@@ -2,67 +2,67 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEE12C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 986D5C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:59:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A95864ECF
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:58:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A95864ECF
+	by mail.kernel.org (Postfix) with ESMTPS id AC9BA64ECF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:59:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC9BA64ECF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E9595950;
-	Wed, 24 Feb 2021 08:57:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E9595950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E90E167E;
+	Wed, 24 Feb 2021 08:58:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E90E167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614153509;
-	bh=kIkouKXsZgjxF/o65a/G1l/mV8WJrbjozZYFEJDL69A=;
+	s=default; t=1614153563;
+	bh=dNyuh5FrFn1GwIEgqGOyrjI/ZZrQo7ntDDLcdBW/Qto=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nJmeQtLeNWVizFhFUeDLBTsKp/i3MZMTG+X53mZkMeVaDCwFQdFm0LNS/SctkhXEj
-	 bx6CepyNYiVX0FGjMtYEKqq44pF9IzsAWv1hMMmJUIiRdGQJQQ5tZoHb9hq191tatr
-	 B09M0ts5Wgs3DKJLGPxozxoo/BZdp0vHmtsZ5ohI=
+	b=kupcGzAYWOd/0lSoKN6VKeXjhZ8ozJ80/wqxY9rarPGV9D2KkkpEDT0bXAaP/8oFe
+	 QjoPZPfR/qlCs1qWbk79f5SVmPIiqzVNQVqDXNnOfPXslxrTZT2XeN1vbpM52/xMtR
+	 slOu1aFnoQXB2U496/Z1w3pZtOTUokF0EmpKJHWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A450F80161;
-	Wed, 24 Feb 2021 08:57:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F2E1F80159;
+	Wed, 24 Feb 2021 08:58:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFFA0F8016C; Wed, 24 Feb 2021 08:57:36 +0100 (CET)
+ id 5B66BF8022D; Wed, 24 Feb 2021 08:58:30 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 415A5F80129
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 08:57:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 415A5F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7C94F80159
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 08:58:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7C94F80159
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 267D1AD2B;
- Wed, 24 Feb 2021 07:57:29 +0000 (UTC)
-Date: Wed, 24 Feb 2021 08:57:28 +0100
-Message-ID: <s5hczwpucd3.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 9189EAD2B;
+ Wed, 24 Feb 2021 07:58:23 +0000 (UTC)
+Date: Wed, 24 Feb 2021 08:58:23 +0100
+Message-ID: <s5hblc9ucbk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: George Harker <george@george-graphics.co.uk>
-Subject: Re: [PATCH] sound/usb generate midi streaming substream names from
- jack names
-In-Reply-To: <20210221094333.30499-1-george@george-graphics.co.uk>
-References: <20210221094148.30447-1-george@george-graphics.co.uk>
- <20210221094333.30499-1-george@george-graphics.co.uk>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2] leds: trigger: audio: Add an activate callback to
+ ensure the initial brightness is set
+In-Reply-To: <20210221115208.105203-1-hdegoede@redhat.com>
+References: <20210221115208.105203-1-hdegoede@redhat.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, alsa-devel@alsa-project.org,
+ linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,29 +78,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 21 Feb 2021 10:43:32 +0100,
-George Harker wrote:
+On Sun, 21 Feb 2021 12:52:08 +0100,
+Hans de Goede wrote:
 > 
-> A number of devices have named substreams which are hard to remember /
-> decypher from <device> MIDI n names.  Eg. Korg puts a pass through on
-> one substream and iConnectivity devices name the connections.
+> Some 2-in-1s with a detachable (USB) keyboard(dock) have mute-LEDs in
+> the speaker- and/or mic-mute keys on the keyboard.
 > 
-> This makes it easier to connect to the correct device.  Devices which
-> handle naming through quirks are unaffected by this change.
+> Examples of this are the Lenovo Thinkpad10 tablet (with its USB kbd-dock)
+> and the HP x2 10 series.
 > 
-> Addresses TODO comment in sound/usb/midi.c
+> The detachable nature of these keyboards means that the keyboard and
+> thus the mute LEDs may show up after the user (or userspace restoring
+> old mixer settings) has muted the speaker and/or mic.
 > 
-> Signed-off-by: George Harker <george@george-graphics.co.uk>
+> Current LED-class devices with a default_trigger of "audio-mute" or
+> "audio-micmute" initialize the brightness member of led_classdev with
+> ledtrig_audio_get() before registering the LED.
+> 
+> This makes the software state after attaching the keyboard match the
+> actual audio mute state, e.g. cat /sys/class/leds/foo/brightness will
+> show the right value.
+> 
+> But before this commit nothing was actually calling the led_classdev's
+> brightness_set[_blocking] callback so the value returned by
+> ledtrig_audio_get() was never actually being sent to the hw, leading
+> to the mute LEDs staying in their default power-on state, after
+> attaching the keyboard, even if ledtrig_audio_get() returned a different
+> state.
+> 
+> This could be fixed by having the individual LED drivers call
+> brightness_set[_blocking] themselves after registering the LED,
+> but this really is something which should be done by a led-trigger
+> activate callback.
+> 
+> Add an activate callback for this, fixing the issue of the
+> mute LEDs being out of sync after (re)attaching the keyboard.
+> 
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Fixes: faa2541f5b1a ("leds: trigger: Introduce audio mute LED trigger")
+> Reviewed-by: Marek Behún <kabel@kernel.org>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+> Changes in v2:
+> - Fix a couple of grammar errors in the commit-message
+> - Add Marek's Reviewed-by (thank you)
 
-The code changes look almost OK, but could you try the following?
+Looks good to me, thanks!
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-- Split the patch: one for rewriting with the structs in
-  linux/usb/midi.h, another for adding the MIDI device name support
-
-- Try to avoid magic numbers: a few places should be replaced with
-  sizeof() or ARRAY_SIZE().
-
-
-thanks,
 
 Takashi
+
+> ---
+>  drivers/leds/trigger/ledtrig-audio.c | 37 ++++++++++++++++++++++------
+>  1 file changed, 29 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/leds/trigger/ledtrig-audio.c b/drivers/leds/trigger/ledtrig-audio.c
+> index f76621e88482..c6b437e6369b 100644
+> --- a/drivers/leds/trigger/ledtrig-audio.c
+> +++ b/drivers/leds/trigger/ledtrig-audio.c
+> @@ -6,10 +6,33 @@
+>  #include <linux/kernel.h>
+>  #include <linux/leds.h>
+>  #include <linux/module.h>
+> +#include "../leds.h"
+>  
+> -static struct led_trigger *ledtrig_audio[NUM_AUDIO_LEDS];
+>  static enum led_brightness audio_state[NUM_AUDIO_LEDS];
+>  
+> +static int ledtrig_audio_mute_activate(struct led_classdev *led_cdev)
+> +{
+> +	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MUTE]);
+> +	return 0;
+> +}
+> +
+> +static int ledtrig_audio_micmute_activate(struct led_classdev *led_cdev)
+> +{
+> +	led_set_brightness_nosleep(led_cdev, audio_state[LED_AUDIO_MICMUTE]);
+> +	return 0;
+> +}
+> +
+> +static struct led_trigger ledtrig_audio[NUM_AUDIO_LEDS] = {
+> +	[LED_AUDIO_MUTE] = {
+> +		.name     = "audio-mute",
+> +		.activate = ledtrig_audio_mute_activate,
+> +	},
+> +	[LED_AUDIO_MICMUTE] = {
+> +		.name     = "audio-micmute",
+> +		.activate = ledtrig_audio_micmute_activate,
+> +	},
+> +};
+> +
+>  enum led_brightness ledtrig_audio_get(enum led_audio type)
+>  {
+>  	return audio_state[type];
+> @@ -19,24 +42,22 @@ EXPORT_SYMBOL_GPL(ledtrig_audio_get);
+>  void ledtrig_audio_set(enum led_audio type, enum led_brightness state)
+>  {
+>  	audio_state[type] = state;
+> -	led_trigger_event(ledtrig_audio[type], state);
+> +	led_trigger_event(&ledtrig_audio[type], state);
+>  }
+>  EXPORT_SYMBOL_GPL(ledtrig_audio_set);
+>  
+>  static int __init ledtrig_audio_init(void)
+>  {
+> -	led_trigger_register_simple("audio-mute",
+> -				    &ledtrig_audio[LED_AUDIO_MUTE]);
+> -	led_trigger_register_simple("audio-micmute",
+> -				    &ledtrig_audio[LED_AUDIO_MICMUTE]);
+> +	led_trigger_register(&ledtrig_audio[LED_AUDIO_MUTE]);
+> +	led_trigger_register(&ledtrig_audio[LED_AUDIO_MICMUTE]);
+>  	return 0;
+>  }
+>  module_init(ledtrig_audio_init);
+>  
+>  static void __exit ledtrig_audio_exit(void)
+>  {
+> -	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MUTE]);
+> -	led_trigger_unregister_simple(ledtrig_audio[LED_AUDIO_MICMUTE]);
+> +	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MUTE]);
+> +	led_trigger_unregister(&ledtrig_audio[LED_AUDIO_MICMUTE]);
+>  }
+>  module_exit(ledtrig_audio_exit);
+>  
+> -- 
+> 2.30.1
+> 
