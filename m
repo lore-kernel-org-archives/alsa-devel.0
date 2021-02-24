@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D617C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:53:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C977C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:54:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 68A9364F0C
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:53:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 68A9364F0C
+	by mail.kernel.org (Postfix) with ESMTPS id 916DD64F0C
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:54:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 916DD64F0C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6FFF1679;
-	Wed, 24 Feb 2021 13:53:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6FFF1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDF371689;
+	Wed, 24 Feb 2021 13:53:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDF371689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614171235;
-	bh=38Pu3wu3c7i+stw295uGqMWQuud9FpmztFKPE6KWWvo=;
+	s=default; t=1614171242;
+	bh=UcHg/Dv0cv5MjX11LSzuItK7fmfEFvA5gy4oMj1tj4U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LRwULUcpGKGNwU44YeP+sHDAroHwi0S9q1MmgrW1rWWZBf4VO/VBrKByjzSZCnK/I
-	 fE++2vJhNOLHhoCeej1j5vT5/ut+ROYH9xjdyWQKe7QtloBntqd8ol+ASmTsGDoBu+
-	 6bShCGScdf3/n0V1KHR4ois7g1BDZ0TOMa22S3vE=
+	b=uDqZV7V/3u6aP0UjDm0bjkQ475aP+DCKsUPzwUTySqs7BqqQKFWSUIVJ2EaSwJVxj
+	 ECDMpTowbHuQBljoGBloJOa8eAforHD94sOoSf6tltJxgs6h/G0AUjsU2VC/qUXnsz
+	 T44GWqBiDQUze6phpg/BOch2Gp5V93ER+RRgIgX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DA4AF802E0;
-	Wed, 24 Feb 2021 13:51:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6ED6CF80424;
+	Wed, 24 Feb 2021 13:51:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C122CF802E7; Wed, 24 Feb 2021 13:51:37 +0100 (CET)
+ id 2F71BF80425; Wed, 24 Feb 2021 13:51:41 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AADC8F802DF
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:51:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AADC8F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60193F802E7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:51:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60193F802E7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="n0ULOPrf"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4839164F24;
- Wed, 24 Feb 2021 12:51:29 +0000 (UTC)
+ header.b="duFireQu"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B776A64F23;
+ Wed, 24 Feb 2021 12:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614171090;
- bh=38Pu3wu3c7i+stw295uGqMWQuud9FpmztFKPE6KWWvo=;
+ s=k20201202; t=1614171096;
+ bh=UcHg/Dv0cv5MjX11LSzuItK7fmfEFvA5gy4oMj1tj4U=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=n0ULOPrfl4kXEYuGZYvxxDbT36G67SqnL9lOx0FnX/YbxflEqSa7faCtJLfMYf5oh
- bw5Cu9Bax/GU+qTFyX+9n2sN4mS1bd8c+fuHmwDyJONaWvbITlN/Nie615dSb4k6dR
- rtxDi3/+Lm2GPHRwwJfwzK040Y5bPhcFaguJNtkUE+hBgwXuwv8NJ4GxKoPzmTrNR/
- ODAdODUlZumlCNGcBJG1EfmJmaMgqwLM/cId74RCS4k35rXr5ads5r7wJGE4iqzRqy
- SgrXnRq6r1EhkwfC1R8URucgy/8qeGQObQgPI1rDnHwQ7a/DT35pmrj5BCJfvrk3Sh
- 24rXRJXxzqC8A==
+ b=duFireQuatVkZESEc12WlYKtT8mYtLv/HwRH12+PTMulX4arzjQ9wkj2QMRUL216b
+ MRHOuO60ZjprRIDG3OAK1doZ16FYoQN5ywkAXulbDheLIMwX1X2xADrpTULJMrq63M
+ jMvPgNrYSTMfD+RIcH4D7Bq0dttmySOaUuGx6Omej+G+aK5317HjHvB/tPAaKZ23et
+ LsbhQA5XeZ/8a6cSDJlknDd+raut7ujMcen2IhKRYGyKkPb99dZRCXWH+p1lFVx0+K
+ 84Wa6RpCZzfgAivCyzcs80RJvO5LA41Z0oDqpAgPWTavg3hY1xgpV58hWx20djHVSc
+ 8nKXdmVgW8+UQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 47/67] ALSA: usb-audio: Add DJM450 to Pioneer
- format quirk
-Date: Wed, 24 Feb 2021 07:50:05 -0500
-Message-Id: <20210224125026.481804-47-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 52/67] ASoC: Intel: Add DMI quirk table to
+ soc_intel_is_byt_cr()
+Date: Wed, 24 Feb 2021 07:50:10 -0500
+Message-Id: <20210224125026.481804-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210224125026.481804-1-sashal@kernel.org>
 References: <20210224125026.481804-1-sashal@kernel.org>
@@ -72,8 +72,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Olivia Mackintosh <livvy@base.nu>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,66 +91,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Olivia Mackintosh <livvy@base.nu>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 3b85f5fc75d564a9eb4171dcb6b8687b080cd4d5 ]
+[ Upstream commit 8ade6d8b02b1ead741bd4f6c42921035caab6560 ]
 
-Like the DJM-750, ensure that the format control message is passed to
-the device when opening a stream. It seems as though fmt->sync_ep is not
-always set when this function is called hence the passing of the value
-at the call site. If this can be fixed, fmt->sync_up should be used as
-the wvalue.
+Some Bay Trail systems:
+1. Use a non CR version of the Bay Trail SoC
+2. Contain at least 6 interrupt resources so that the
+   platform_get_resource(pdev, IORESOURCE_IRQ, 5) check to workaround
+   non CR systems which list their IPC IRQ at index 0 despite being
+   non CR does not work
+3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
 
-There doesn't seem to be a "cpu_to_le24" type function defined hence for
-the open code but I did see a similar thing done in Bluez lib. Perhaps
-we can get these definitions defined in byteorder.h. See hci_cpu_to_le24
-in include/net/bluetooth/hci.h:2543 for similar usage.
+Add a DMI quirk table to check for the few known models with this issue,
+so that the right IPC IRQ index is used on these systems.
 
-Signed-off-by: Olivia Mackintosh <livvy@base.nu>
-Link: https://lore.kernel.org/r/20210202134225.3217-2-livvy@base.nu
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210120214957.140232-5-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/quirks.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ sound/soc/intel/common/soc-intel-quirks.h | 25 +++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index e196e364cef19..9ba4682ebc482 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1470,6 +1470,23 @@ static void set_format_emu_quirk(struct snd_usb_substream *subs,
- 	subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ? 4 : 0;
- }
+diff --git a/sound/soc/intel/common/soc-intel-quirks.h b/sound/soc/intel/common/soc-intel-quirks.h
+index b07df3059926d..a93987ab7f4d7 100644
+--- a/sound/soc/intel/common/soc-intel-quirks.h
++++ b/sound/soc/intel/common/soc-intel-quirks.h
+@@ -11,6 +11,7 @@
  
-+static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
-+					u16 windex)
-+{
-+	unsigned int cur_rate = subs->data_endpoint->cur_rate;
-+	u8 sr[3];
-+	// Convert to little endian
-+	sr[0] = cur_rate & 0xff;
-+	sr[1] = (cur_rate >> 8) & 0xff;
-+	sr[2] = (cur_rate >> 16) & 0xff;
-+	usb_set_interface(subs->dev, 0, 1);
-+	// we should derive windex from fmt-sync_ep but it's not set
-+	snd_usb_ctl_msg(subs->stream->chip->dev,
-+		usb_rcvctrlpipe(subs->stream->chip->dev, 0),
-+		0x01, 0x22, 0x0100, windex, &sr, 0x0003);
-+	return 0;
-+}
-+
- void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 			      const struct audioformat *fmt)
+ #if IS_ENABLED(CONFIG_X86)
+ 
++#include <linux/dmi.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ #include <asm/iosf_mbi.h>
+@@ -38,12 +39,36 @@ SOC_INTEL_IS_CPU(cml, KABYLAKE_L);
+ 
+ static inline bool soc_intel_is_byt_cr(struct platform_device *pdev)
  {
-@@ -1483,6 +1500,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	case USB_ID(0x534d, 0x2109): /* MacroSilicon MS2109 */
- 		subs->stream_offset_adj = 2;
- 		break;
-+	case USB_ID(0x2b73, 0x0013): /* Pioneer DJM-450 */
-+		pioneer_djm_set_format_quirk(subs, 0x0082);
-+		break;
- 	}
- }
++	/*
++	 * List of systems which:
++	 * 1. Use a non CR version of the Bay Trail SoC
++	 * 2. Contain at least 6 interrupt resources so that the
++	 *    platform_get_resource(pdev, IORESOURCE_IRQ, 5) check below
++	 *    succeeds
++	 * 3. Despite 1. and 2. still have their IPC IRQ at index 0 rather then 5
++	 *
++	 * This needs to be here so that it can be shared between the SST and
++	 * SOF drivers. We rely on the compiler to optimize this out in files
++	 * where soc_intel_is_byt_cr is not used.
++	 */
++	static const struct dmi_system_id force_bytcr_table[] = {
++		{	/* Lenovo Yoga Tablet 2 series */
++			.matches = {
++				DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++				DMI_MATCH(DMI_PRODUCT_FAMILY, "YOGATablet2"),
++			},
++		},
++		{}
++	};
+ 	struct device *dev = &pdev->dev;
+ 	int status = 0;
+ 
+ 	if (!soc_intel_is_byt())
+ 		return false;
+ 
++	if (dmi_check_system(force_bytcr_table))
++		return true;
++
+ 	if (iosf_mbi_available()) {
+ 		u32 bios_status;
  
 -- 
 2.27.0
