@@ -2,65 +2,73 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 724F1C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:12:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9E6BC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:13:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 93A9D64EC9
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:11:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 93A9D64EC9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id E2A7D64E79
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:13:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E2A7D64E79
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EAFF1662;
-	Wed, 24 Feb 2021 08:11:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EAFF1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29F331679;
+	Wed, 24 Feb 2021 08:12:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29F331679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614150718;
-	bh=IGZdmT4W6+vX6Fc7JkpYNKjpusKvMGKaeHxli1ZqFuc=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Xkq9kN+LHLAQs4wbt5asa5AW3K5CZ2KxPOHgTIZHqWN7wH0wPFXuHC3z2liXQqRlf
-	 m4FAcPMvgDhlq4HEIqxfPZnQxR5dvHCIJoeH2V9tiWhkxFTjmduUeDpnhSeZzy1jP5
-	 71lKmQLKx7HTYIllzqBVrBbBXDXpvfsLzXuLyR6g=
+	s=default; t=1614150780;
+	bh=CP7nCpTw9Bcn7WecRMOQs9J+P4anmYNqESJYKdgUa8E=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dVR9qgPK7n4NC+mAu2sR+9sLSTD1Fm759mY/6wbNeG5MgZ4OJelEkr5EKEo1UXrlt
+	 p88RbzTzo6cd1lCjVuDE5gUv4m/Kz5yzBw2t0a/NCcKCLQt0VOhKhbsIOyEboY21mS
+	 i+FNuntyBaYGGskcsAh6A5wfasUIYZtxtcvBdAxY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9343BF80161;
-	Wed, 24 Feb 2021 08:10:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B75E1F8016C;
+	Wed, 24 Feb 2021 08:12:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87CBFF80161; Wed, 24 Feb 2021 08:10:16 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 115E8F8022B; Wed, 24 Feb 2021 08:12:08 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33363F80161
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 08:10:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33363F80161
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 533AB1A0257;
- Wed, 24 Feb 2021 08:10:03 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DBC501A00AD;
- Wed, 24 Feb 2021 08:09:59 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id BD67740324;
- Wed, 24 Feb 2021 08:09:55 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ASoC: ak4458: Add MODULE_DEVICE_TABLE
-Date: Wed, 24 Feb 2021 14:57:51 +0800
-Message-Id: <1614149872-25510-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id B59AEF80161
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 08:12:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B59AEF80161
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 9509EAEA8;
+ Wed, 24 Feb 2021 07:12:04 +0000 (UTC)
+Date: Wed, 24 Feb 2021 08:12:04 +0100
+Message-ID: <s5hh7m2szwb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [RFC 2/2] ASoC: rt5670: Add LED trigger support
+In-Reply-To: <5c6a21c1-7107-3351-25be-c007b0b946d3@perex.cz>
+References: <20210215142419.308651-1-hdegoede@redhat.com>
+ <20210215142419.308651-3-hdegoede@redhat.com>
+ <20210223134506.GF5116@sirena.org.uk>
+ <578b1ee3-f426-c5b5-bc78-5a91108ebdc8@redhat.com>
+ <20210223140930.GH5116@sirena.org.uk>
+ <s5h8s7evp8p.wl-tiwai@suse.de>
+ <fc28d535-87a7-fbfd-89c7-992a537606bc@perex.cz>
+ <s5hv9aiu55y.wl-tiwai@suse.de>
+ <5c6a21c1-7107-3351-25be-c007b0b946d3@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,28 +84,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add missed MODULE_DEVICE_TABLE for the driver can be loaded
-automatically at boot.
+On Tue, 23 Feb 2021 21:56:16 +0100,
+Jaroslav Kysela wrote:
+> 
+> Dne 23. 02. 21 v 17:20 Takashi Iwai napsal(a):
+> >>> Of course, this implementation would make the integration much easier,
+> >>> and that's a big benefit.  So I have a mixed feeling and not decided
+> >>> yet whether we should go for it right now...
+> >>
+> >> I think that we can reconsider the LED handling implementation later, when
+> >> someone brings something better on the table.
+> > 
+> > What worried me is the plan to expose this capability to user-space.
+> > If it's only a kernel-internal, we can fix it in the kernel and
+> > nothing else broken, but if it's a part of API, that's not easy.
+> > 
+> > So, if any, I'd like to avoid exposing to the user-space at first.
+> > (But then it comes to the question how to deal with a case like AMD
+> > ACP...)
+> 
+> I tried to propose a complete solution and the ACP was one strong reason for
+> this kernel / user space API. So without the user space support, it's just
+> a half solution for known issues.
+> 
+> Frankly, I don't see any drawback or a problem even if we remove this API
+> later.
 
-Fixes: 08660086eff9 ("ASoC: ak4458: Add support for AK4458 DAC driver")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 1 +
- 1 file changed, 1 insertion(+)
+Removing the user-space API is absolutely no-go.  The only exception
+would be either the case really no one uses it or it's too buggy and
+unfixable.
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 472caad17012..85a1d00894a9 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -812,6 +812,7 @@ static const struct of_device_id ak4458_of_match[] = {
- 	{ .compatible = "asahi-kasei,ak4497", .data = &ak4497_drvdata},
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, ak4458_of_match);
- 
- static struct i2c_driver ak4458_i2c_driver = {
- 	.driver = {
--- 
-2.27.0
+> The LED group bits are just informal for the user space and it's
+> expected to create the user controls tied to this LED functionality only in
+> alsa-lib/plugins at the moment. The kernel may return an error when the user
+> space tries to set those new bits when the API is deprecated and I believe
+> that the hardware design faults like AMD ACP (without the hardware mute) are rare.
 
+The experience tells us that users are creative enough to (ab)use a
+new ABI in any unexpected ways, and we have no control for it.  So
+it's not about how alsa-lib is implemented but rather how ABI could be
+abused :)
+
+
+Takashi
