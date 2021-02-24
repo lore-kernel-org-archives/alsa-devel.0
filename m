@@ -2,95 +2,122 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F38C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 17:59:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBB3BC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 19:15:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A82C064ECE
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 17:58:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82C064ECE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 3191D60249
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 19:15:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3191D60249
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 357D1166A;
-	Wed, 24 Feb 2021 18:58:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 357D1166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A25161678;
+	Wed, 24 Feb 2021 20:14:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25161678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614189536;
-	bh=PWFdGHPsj1w5iTVQOO2XpbUTn4/QoLOAgRKgO4mmAgk=;
+	s=default; t=1614194117;
+	bh=EXve8CENrg9i/XGTXxs23i1VPPoc4YbqVmlEe/NcGcQ=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t5ER5Uy8+KnnFcZjESNYv2i3xfj7taJMz5tsEHI6JieEVI9Y7LhGpNUekHaqrFHEW
-	 jMga1bkjVF+1ryQR+d2/8rav9egcD9B6psnY6w4NZCQtUAfa/LdOEn9S/lJjZNmuV8
-	 ENRgfEhvm/RFd2xHvCYNqmHPrg/usphRlQXydoqc=
+	b=HKiymXJzGQfqOON3gi+fOuO+CwxcmgRWpKEvv+d2ftHWP/LLhApFxizQO3Xc99koY
+	 vp9l6H4KCNkuwz0hMdqdABKKS3ZaPpQy8O9YCKDtLeCkQQ6dAmEOUgkH6BEqYk2y+L
+	 jms1zkJb2jjt+gXDEObkKHfft+LPQAUEDWa94J1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F1BFF80129;
-	Wed, 24 Feb 2021 18:58:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 185B5F80161;
+	Wed, 24 Feb 2021 20:14:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F13AF80161; Wed, 24 Feb 2021 18:58:03 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 27649F8016C; Wed, 24 Feb 2021 20:14:25 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 645E9F80129
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 18:57:55 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id CD8EBA0040;
- Wed, 24 Feb 2021 18:57:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz CD8EBA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1614189469; bh=VUDsV98YQPhK0IRpcISL/MPX1gHQFJyWp45ADQQTES0=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=Ny1iKUUm29HuAGiF1V6VMdJ8EOlji0wpmgvPkVKTpML+dO8kzcbMmgOA+Q0DUyAJX
- UF4G6QhxKVftzkmbhUpj/z7E+g6f/vng8U8XaFTcHJqfu4IlBxK9CvAQ4Vwx4Uv8kh
- mNNQEB/p8nNklnijn2NKDHpp0WicVAzuetHP94dM=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 24 Feb 2021 18:57:42 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23357F80159
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 20:14:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23357F80159
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="Y+JPG/x8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1614194058;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YcBye9CSNzE9zyqeutPbhIiCj4Zf6g6fdgnNpBndS7g=;
+ b=Y+JPG/x8bpJi80E3mSSrCdl2rCNmRQvqv+Awu+rEEmEX+x5CcgKgEKt0RuKm2ZPrZRfuI0
+ xGNGv+dBu/qgLvntbBvOS9/htltaJcjY9cO9IyLsBwwGHvZcMxLgSVzdEThU9FobPg1K7u
+ PIDmCvefEG0Pjxt1FnhLTe+0QyNNRKI=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-POF4lF8tN_WeMxjxXipTpw-1; Wed, 24 Feb 2021 14:14:16 -0500
+X-MC-Unique: POF4lF8tN_WeMxjxXipTpw-1
+Received: by mail-ed1-f71.google.com with SMTP id p12so1421226edw.9
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 11:14:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=YcBye9CSNzE9zyqeutPbhIiCj4Zf6g6fdgnNpBndS7g=;
+ b=E7aJYsMlNq+LYq0ZAEHJDq/C/mjmBXtNF4f9917LZ1mHePxD8HxOW7HzA0SM4gKKnq
+ IwqrF9JH99TN0rUpihdkTEhE8QJQ+vmI/XQ+Q6fJKI4jnKcEnbUsonxZLWyMT0+HvXtw
+ thsbw6lbjx9RLya+5wqgKrrpHIoruJ8HTAMXR3KuWTgm/Bf91ea1sGJtHi/1njiK0yMf
+ 45/p21HJs+9hJdyP4mQ2dR/YPUCqsjC1Cj5TIVFFF2XhMBD2gCA3tNgACaeeijp4JHJF
+ TofkNlYiPPJkIbcq2rVbpYJxHVW9Me3jPY7yXJW9L9ya7dZ75xlZzdSM8KgMyUkNe0Ey
+ fEAg==
+X-Gm-Message-State: AOAM532IeXjHrkD4rfg/XjS+ydUUDokR5fVCsttLSIF15rum1so90OOq
+ AHJIsS98rSqizYfspWp7jmRnCKnbk07of5o4omqRK1Up35hwPIkv/zAAIUpMhI0PWg+WH33MyHs
+ OY3c0tYa2tNrHEeRvsSMjVZWf5net67U35U00e8r3pRExqTV9VMZF72Z+z+KY0ZGVRpw/SFWtS/
+ 4=
+X-Received: by 2002:a50:fc0e:: with SMTP id i14mr21513001edr.91.1614194055356; 
+ Wed, 24 Feb 2021 11:14:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzOhbibpA/GkGYempuwoZ+th4a2Ev09LFvR0cq0ItUVoPCds6F5Ts9FQ8g4L8bkdaGYlYqB0Q==
+X-Received: by 2002:a50:fc0e:: with SMTP id i14mr21512983edr.91.1614194055212; 
+ Wed, 24 Feb 2021 11:14:15 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+ by smtp.gmail.com with ESMTPSA id hr3sm1767083ejc.41.2021.02.24.11.14.13
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 24 Feb 2021 11:14:13 -0800 (PST)
 Subject: Re: [RFC 2/2] ASoC: rt5670: Add LED trigger support
-To: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
 References: <20210215142419.308651-1-hdegoede@redhat.com>
  <20210215142419.308651-3-hdegoede@redhat.com>
  <20210223134506.GF5116@sirena.org.uk>
  <578b1ee3-f426-c5b5-bc78-5a91108ebdc8@redhat.com>
  <20210223140930.GH5116@sirena.org.uk> <s5h8s7evp8p.wl-tiwai@suse.de>
  <fc28d535-87a7-fbfd-89c7-992a537606bc@perex.cz>
- <s5hv9aiu55y.wl-tiwai@suse.de>
- <5c6a21c1-7107-3351-25be-c007b0b946d3@perex.cz>
- <s5hh7m2szwb.wl-tiwai@suse.de>
- <776b4ad9-2612-b08a-cb76-c3e1ce02388a@perex.cz>
- <s5h8s7du9tn.wl-tiwai@suse.de>
- <4574088a-4676-131a-0065-499a516f80ae@perex.cz>
- <s5h1rd5u7p4.wl-tiwai@suse.de>
- <03068e15-2157-3ae6-ffd6-7ec315bb49a3@perex.cz>
- <s5hv9ahsqkj.wl-tiwai@suse.de>
- <e7de1dd2-199e-9e07-65a4-2a2eb2b46b49@perex.cz>
- <s5hsg5lsnbu.wl-tiwai@suse.de>
- <9c74e8de-769c-cd98-3944-85bd75bc840b@perex.cz>
- <s5hlfbdskmc.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <3c262ea6-2313-3af8-60ae-d59ae8be262d@perex.cz>
-Date: Wed, 24 Feb 2021 18:57:42 +0100
+ <20210223172055.GI5116@sirena.org.uk>
+ <fe2941de-02ce-9ed0-70ff-d7967aeecc44@redhat.com>
+ <20210224125927.GB4504@sirena.org.uk>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e47c7fa5-cb1a-f8a3-bfe4-1f6bca6a7d80@redhat.com>
+Date: Wed, 24 Feb 2021 20:14:12 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <s5hlfbdskmc.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210224125927.GB4504@sirena.org.uk>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>
+ Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,56 +133,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 24. 02. 21 v 13:42 Takashi Iwai napsal(a):
-> On Wed, 24 Feb 2021 13:08:55 +0100,
-> Jaroslav Kysela wrote:
->>
->> Dne 24. 02. 21 v 12:43 Takashi Iwai napsal(a):
->>
->>>>> So far, a user control is merely storing the value, let read/write via
->>>>> the control API.  That's all, and nothing wrong can happen just by
->>>>> that.  Now if it interacts with other subsystem...
->>>>>
->>>>> A more serious concern is rather the fragility of the setup; for
->>>>> enabling the mute LED control, you'd have to create a new user-space
->>>>> control, the function of the control has to be ignored by some
->>>>> application and some not, etc.  This has to be done on each machine
->>>>
->>>> You're using "ignore", but as I explained before, the user space switch will
->>>> be used in the whole chain:
->>>>
->>>> capture stream ->
->>>>   alsa-lib mute switch / silence PCM stream ->
->>>>   PA mute switch / silence PCM stream
->>>>
->>>> So PA can use this switch like the traditional hardware mute switch.
->>>
->>> Does it mean PA would work as of now without any change?  Or does it
->>> need patching?
->>
->> Yes, no PA modifications are required with my mechanism. The PA will just see
->> the new user space control - mute switch - created in alsa-lib - which will be
->> synced the internal PA path mute state like for the hardware mute
->> switch.
+Hi,
+
+On 2/24/21 1:59 PM, Mark Brown wrote:
+> On Tue, Feb 23, 2021 at 08:03:58PM +0100, Hans de Goede wrote:
+>> On 2/23/21 6:20 PM, Mark Brown wrote:
 > 
-> OK, but how would we create and manage the user control element?  And
-> why it has to be user control?
+>>> We already need ACPI and DMI quirks in the CODEC drivers anyway due to
+>>> the limitations of ACPI so it wouldn't be particularly surprising to
+>>> have stuff there.  OTOH this would fix things per machine while with
+>>> fancier hardware things might easily be flexible enough that there's
+>>> multiple choices that could be made depending on use case.
+> 
+>> I have a feeling from the discussion here that you would prefer this
+>> per model/machine option over the current patch which unconditionally
+>> sets the SNDRV_CTL_ELEM_ACCESS_SPK/MIC_LED flag on the main DAC/ADC
+>> mute controls ?
+> 
+>> So I believe that it would be best for me to respin this patch
+>> series moving to making this a per model/machine thing, correct?
+> 
+> Yes, we at least need to be able to do that even if we end up hard
+> coding it in some CODEC drivers as the device is inflexible.  There are
+> devices where the concept of "main DAC/ADC" just doesn't apply.
+> 
+>>> I'd be a lot more comfortable with ASoC having some runtime control for
+>>> overriding which controls get mapped, even if we try to pick defaults
+>>> with quirks.
+> 
+>> The drivers in question already allow overriding their quirks bitmap
+>> via a module-parameter.  If we are going to enable the mixer-element
+> 
+> I'm not a big fan of module parameters TBH, it's not great for
+> usability.
+> 
+>> And then the user can always override the settings using the quirk
+>> module parameter. This is not exactly runtime control, but IMHO it
+>> is close enough and anything else will just overcomplicate things.
+>> I'm aware of only 3 model 2-in-1s which need this and on those
+>> 3 the implementation is very straight forward.
+> 
+> The problem I was thinking of is the situation where there are multiple
+> options for the mute control in the hardware and it's a configuration
+> decision which one to use.
 
-The softvol or alsactl can create the user control element. The alsa-lib
-softvol plugin and PA can silence stream according the state.
+ATM we have no device where this situation happens, so I would prefer
+to cross that bridge when we come to it.
 
-I see your point to create this control in the kernel space, but any other
-name than "Mic Capture Switch" (in the ACP case) will be misleading for users,
-because the user-space does the appropriate real silencing job instead of hw.
+Regards,
 
-And if we create "Mic Capture Switch" in the kernel space, it may be
-misleading for applications (they can think that there's hardware mute control).
+Hans
 
-Perhaps, we can create "Mic Phantom Capture Switch" in kernel which may
-resolve both problems (no hw mute information + no user confusion).
-
-				Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
