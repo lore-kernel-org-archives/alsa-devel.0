@@ -2,98 +2,65 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E59AC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 21:22:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10348C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 23:14:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 78F8764F08
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 21:22:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78F8764F08
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 23FFD64EDD
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 23:14:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23FFD64EDD
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D7C80168C;
-	Wed, 24 Feb 2021 22:21:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7C80168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5BE14E;
+	Thu, 25 Feb 2021 00:13:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5BE14E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614201726;
-	bh=0i/88gbKn648dwprC9gVIJ1ExR43WHmwy+Dau0BKQWQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614208454;
+	bh=cOuVwUsF6cPjieg9RAY0FpUkhyh6Xftnp3qbYEXBzyg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rg4dgT3xJk/ivq7AWzSfd6kGrbgD3L66GozVVOxwGLMC41U1BSy8rBjeHDJe+mIqv
-	 cjR25twEt2V8Of17g2RLJwA4ALPfYkpA8QNRmO7QBS1Pcs3xWesluq61goaFYoYXVl
-	 Pzk2atVTWAUcrRzVaDdhOMu5vKaH5IIQ54ZbKTIg=
+	b=uK8bhyCPIylw1oCDN0EDmQIlS6DV+aRLF59SMOrDJhKjk7qpLuekUYU/e9Z+0MPkG
+	 YWYqlMreC0ZqrCbaKs0GkZWXIsJdhAIWvQsQU1gEu2mmc92KXYv9LsMjS0W/LhcHWg
+	 JqPpNt2iEdoRJkvM4Byv2G9ux2QTulgVI+Vh3cEc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCD8FF802E3;
-	Wed, 24 Feb 2021 22:19:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 474B6F80161;
+	Thu, 25 Feb 2021 00:13:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C40D0F802CA; Wed, 24 Feb 2021 22:19:38 +0100 (CET)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
- [IPv6:2a00:1450:4864:20::236])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62E84F8028B
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 22:19:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62E84F8028B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="rY1yV1Ai"
-Received: by mail-lj1-x236.google.com with SMTP id r23so4130153ljh.1
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:19:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=c5DfhNeAwwpzk7lWN1yZX9gxlgXcH020L1Zpko4icfU=;
- b=rY1yV1Ai7VAOwjIchhxUfiW8HVXTOFHY5DnR9H8zP+eRqagNAMjQYPGfHocaReUgXT
- 7fPrshHgVB0+Pn/XzRV1BrxiBf4xncSskLnIHDq2N9MaoFqM+NgIkncuaUbQGsU5MX+V
- R3fTyyKnFFSg1fvlU19X6fum4X/yZT7z38ftVh3R3ZbfqY3MGJ2uLpyE/JBs3MRV7l1b
- GnSEy+v6Stb9UDUH2ICCT+lRsMMFFfmyGRcik5gbTNi/+PywZ7w3wqZmsb/GgfyvSSD8
- bRpk5FQEcRio5K7jXIXS7Z5Xiu4Q2225vb1VgcOkYiePAFDXGLV50NeuYfEgpb8+B5SK
- JSmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=c5DfhNeAwwpzk7lWN1yZX9gxlgXcH020L1Zpko4icfU=;
- b=ZYgV7s/P1O9xInyqQtErKt60he6ij0mnmiFyzJIkFr5Ulgjem0eiq1CFEOeR4Ky7xL
- CpmfQIHYQOLRcyuQnb9+IJnHYHnolAVImeIO5DoqjgWY6WAmr2BYDgyRyl1WxQXeJFEG
- HZxnEgrko9R/dFZXFm6ZzYLOQPdq4NG7JI9wTofGDQLafrfwkVkmgXBa+O2nsauJDq57
- CKz5tYpGKpLroCbKzrWyNMbxca06m9ZdY7pJG+XKdBWehunO2aHkyGRNhQMAHCGE/gKN
- oGQxvMXblghLzruUO/eGdtbPuAXGe4SoCVog5eU+pd1qHx+UdFTZyBuM97nM9JszrNL7
- zP4A==
-X-Gm-Message-State: AOAM531JkGEXmyIe12pWeCCwBsF4fxZa/O82tIbzWTJtjuEcWBpg+OYm
- IymcUQql+/kGfXq6IexZxEI=
-X-Google-Smtp-Source: ABdhPJyR9BMQ7aExvBSaCCsIx3H0Jt1U9lYeloXAZJ9u96glq0dhBhN8B3JCTqcrdLKmD63SuRXarA==
-X-Received: by 2002:a2e:90d0:: with SMTP id o16mr15999620ljg.304.1614201567029; 
- Wed, 24 Feb 2021 13:19:27 -0800 (PST)
-Received: from localhost.localdomain (h-98-128-229-129.NA.cust.bahnhof.se.
- [98.128.229.129])
- by smtp.gmail.com with ESMTPSA id w26sm717116lfr.186.2021.02.24.13.19.26
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 24 Feb 2021 13:19:26 -0800 (PST)
-From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To: Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 2/4] ASoC: rt*: Constify static struct snd_soc_dai_ops
-Date: Wed, 24 Feb 2021 22:19:16 +0100
-Message-Id: <20210224211918.39109-3-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
-References: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>, linux-kernel@vger.kernel.org
+ id 8B889F8016C; Thu, 25 Feb 2021 00:13:22 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 341D8F80159
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 00:13:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 341D8F80159
+Date: 25 Feb 2021 08:13:12 +0900
+X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73054786"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 25 Feb 2021 08:13:12 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id E13E2400F79E;
+ Thu, 25 Feb 2021 08:13:12 +0900 (JST)
+Message-ID: <87r1l5rref.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 4/8] ASoC: sh: rcar: core: rename shadowing variables
+In-Reply-To: <03f560f1-2389-424d-5d4c-84e244baca1c@linux.intel.com>
+References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
+ <20210219231635.5749-5-pierre-louis.bossart@linux.intel.com>
+ <87wnv1vw6a.wl-kuninori.morimoto.gx@renesas.com>
+ <03f560f1-2389-424d-5d4c-84e244baca1c@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,98 +76,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The only usage of them is to assign their address to the ops field in
-the snd_soc_dai_driver struct, which is a pointer to const. Make them
-const to allow the compiler to put them in read-only memory.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Hi Pierre-Louis
+
+> >> sound/soc/sh/rcar/core.c:1369:22: style: Local variable 'rdai' shadows
+> >> outer variable [shadowVariable]
+> >>      struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
+> >>                       ^
+> > 
+> > I'm not 100% sure about this warning,
+> > but this path is overkill. Maybe below is enough ?
+> 
+> Hi Morimoto-san,
+> It might be better if we drop this patch from the series and have you
+> send the proper fix with my Reported-by tag.
+> Would that work for you?
+
+OK, thanks.
+Will do today
+
+Thank you for your help !!
+
+Best regards
 ---
- sound/soc/codecs/rt1015.c     | 2 +-
- sound/soc/codecs/rt1016.c     | 2 +-
- sound/soc/codecs/rt5682-sdw.c | 2 +-
- sound/soc/codecs/rt700.c      | 2 +-
- sound/soc/codecs/rt711.c      | 2 +-
- sound/soc/codecs/rt715.c      | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/rt1015.c b/sound/soc/codecs/rt1015.c
-index 844e4079d176..501cc45240b4 100644
---- a/sound/soc/codecs/rt1015.c
-+++ b/sound/soc/codecs/rt1015.c
-@@ -1028,7 +1028,7 @@ static void rt1015_remove(struct snd_soc_component *component)
- #define RT1015_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--static struct snd_soc_dai_ops rt1015_aif_dai_ops = {
-+static const struct snd_soc_dai_ops rt1015_aif_dai_ops = {
- 	.hw_params = rt1015_hw_params,
- 	.set_fmt = rt1015_set_dai_fmt,
- 	.set_tdm_slot = rt1015_set_tdm_slot,
-diff --git a/sound/soc/codecs/rt1016.c b/sound/soc/codecs/rt1016.c
-index a23d368ab4da..483375fc16ca 100644
---- a/sound/soc/codecs/rt1016.c
-+++ b/sound/soc/codecs/rt1016.c
-@@ -534,7 +534,7 @@ static void rt1016_remove(struct snd_soc_component *component)
- #define RT1016_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--static struct snd_soc_dai_ops rt1016_aif_dai_ops = {
-+static const struct snd_soc_dai_ops rt1016_aif_dai_ops = {
- 	.hw_params = rt1016_hw_params,
- 	.set_fmt = rt1016_set_dai_fmt,
- };
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index 0b7ac74e671d..5e097f776561 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -269,7 +269,7 @@ static int rt5682_sdw_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_dai_ops rt5682_sdw_ops = {
-+static const struct snd_soc_dai_ops rt5682_sdw_ops = {
- 	.hw_params	= rt5682_sdw_hw_params,
- 	.hw_free	= rt5682_sdw_hw_free,
- 	.set_sdw_stream	= rt5682_set_sdw_stream,
-diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index 66ec395dbbcd..01af9d9dd3ca 100644
---- a/sound/soc/codecs/rt700.c
-+++ b/sound/soc/codecs/rt700.c
-@@ -1002,7 +1002,7 @@ static int rt700_pcm_hw_free(struct snd_pcm_substream *substream,
- #define RT700_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--static struct snd_soc_dai_ops rt700_ops = {
-+static const struct snd_soc_dai_ops rt700_ops = {
- 	.hw_params	= rt700_pcm_hw_params,
- 	.hw_free	= rt700_pcm_hw_free,
- 	.set_sdw_stream	= rt700_set_sdw_stream,
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 85f744184a60..202bf6fbc5be 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -1048,7 +1048,7 @@ static int rt711_pcm_hw_free(struct snd_pcm_substream *substream,
- #define RT711_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--static struct snd_soc_dai_ops rt711_ops = {
-+static const struct snd_soc_dai_ops rt711_ops = {
- 	.hw_params	= rt711_pcm_hw_params,
- 	.hw_free	= rt711_pcm_hw_free,
- 	.set_sdw_stream	= rt711_set_sdw_stream,
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 9a7d393d424a..f419d001a3fb 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -683,7 +683,7 @@ static int rt715_pcm_hw_free(struct snd_pcm_substream *substream,
- #define RT715_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
- 
--static struct snd_soc_dai_ops rt715_ops = {
-+static const struct snd_soc_dai_ops rt715_ops = {
- 	.hw_params	= rt715_pcm_hw_params,
- 	.hw_free	= rt715_pcm_hw_free,
- 	.set_sdw_stream	= rt715_set_sdw_stream,
--- 
-2.30.1
-
+Kuninori Morimoto
