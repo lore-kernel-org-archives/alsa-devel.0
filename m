@@ -2,83 +2,78 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9931C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6243BC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:52:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B1F964ED1
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:43:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B1F964ED1
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 9624B64EF5
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 12:52:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9624B64EF5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7DC21678;
-	Wed, 24 Feb 2021 13:42:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7DC21678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 909E7166A;
+	Wed, 24 Feb 2021 13:51:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 909E7166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614170579;
-	bh=xfTxlYzdEE09ZOntkihlsvxYGk3n/DKyCiUKDmkxPtw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614171134;
+	bh=eC+l+dX1UHZJiw7ZvDmYGP8yI4S3LXklR7aJIz4whVQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q3/J76zGRuIzy2sj17QSIAXQ8JLhAk1vy94tw7bitpL8YLzYUSg6YNLBtIg3vgdu7
-	 4XmOmRLZ0TsklEROG5WPl4owwp5snLcs0GarSUGGK1kgKeR8CGY9LsmjYuN14mpuLu
-	 gZbufkkJtFGEN80ynNFfCpKijbH3NFsy37VlOnGU=
+	b=Lx4GxqeeAdzNFxb4/zE/uLOiW8DX5WG53N2skVjvxaIYFEgLyvoY+W6APxXJdzOqn
+	 Ny+L0WQKVaW7tLXuArL3m5T7ZibKcbuz+xNA7UbUGErggcZ6+I6I0Qe4mMHfDNr9TK
+	 gmul4owFbg6UiJfSd/0RedBEw5nm+x4Z1pwTT9BQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 432D4F80161;
-	Wed, 24 Feb 2021 13:42:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 175D4F80161;
+	Wed, 24 Feb 2021 13:51:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 344ECF8016C; Wed, 24 Feb 2021 13:42:07 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 272A4F8022D; Wed, 24 Feb 2021 13:51:22 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D56B5F80129
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:42:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D56B5F80129
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E7209AD5C;
- Wed, 24 Feb 2021 12:42:03 +0000 (UTC)
-Date: Wed, 24 Feb 2021 13:42:03 +0100
-Message-ID: <s5hlfbdskmc.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC 2/2] ASoC: rt5670: Add LED trigger support
-In-Reply-To: <9c74e8de-769c-cd98-3944-85bd75bc840b@perex.cz>
-References: <20210215142419.308651-1-hdegoede@redhat.com>
- <20210215142419.308651-3-hdegoede@redhat.com>
- <20210223134506.GF5116@sirena.org.uk>
- <578b1ee3-f426-c5b5-bc78-5a91108ebdc8@redhat.com>
- <20210223140930.GH5116@sirena.org.uk>
- <s5h8s7evp8p.wl-tiwai@suse.de>
- <fc28d535-87a7-fbfd-89c7-992a537606bc@perex.cz>
- <s5hv9aiu55y.wl-tiwai@suse.de>
- <5c6a21c1-7107-3351-25be-c007b0b946d3@perex.cz>
- <s5hh7m2szwb.wl-tiwai@suse.de>
- <776b4ad9-2612-b08a-cb76-c3e1ce02388a@perex.cz>
- <s5h8s7du9tn.wl-tiwai@suse.de>
- <4574088a-4676-131a-0065-499a516f80ae@perex.cz>
- <s5h1rd5u7p4.wl-tiwai@suse.de>
- <03068e15-2157-3ae6-ffd6-7ec315bb49a3@perex.cz>
- <s5hv9ahsqkj.wl-tiwai@suse.de>
- <e7de1dd2-199e-9e07-65a4-2a2eb2b46b49@perex.cz>
- <s5hsg5lsnbu.wl-tiwai@suse.de>
- <9c74e8de-769c-cd98-3944-85bd75bc840b@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <bard.liao@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA27DF80129
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 13:51:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA27DF80129
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="FOxzZ1u3"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7043D64F1C;
+ Wed, 24 Feb 2021 12:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1614171073;
+ bh=eC+l+dX1UHZJiw7ZvDmYGP8yI4S3LXklR7aJIz4whVQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=FOxzZ1u3jEl5Djhr7ixFPyqOXyF2vKOvKTiFHU3w0hGeDnVKxtBMCg3hwHj8QWPeZ
+ 8QYSxbDOjSngmaAe9xr3HVNui5yo4iiM1WSASPwrcyFCjJRN+95kzvCCWQAomsmHjr
+ KBdnXj2iztSdMoe+Nw2yvGeW1F1v6YvHzhe6FdZpdvq6tNtnrtV8z8sgocQc9exVjm
+ daDlBtzqR8w0eMnSYAQgVkfB2Y8XqOngKYrIVz1H6otIWCBhdJ1xRMV3MbnLU+lR4u
+ VOAvg5SgK2b5CemOMrL4kVxVlk44AocfA9vZrqUOhXMWldOUGTAXzQQoULEUsvCNp2
+ JW6DQ06WPatxA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 34/67] ALSA: usb-audio: Add support for Pioneer
+ DJM-750
+Date: Wed, 24 Feb 2021 07:49:52 -0500
+Message-Id: <20210224125026.481804-34-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210224125026.481804-1-sashal@kernel.org>
+References: <20210224125026.481804-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, Olivia Mackintosh <livvy@base.nu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,41 +89,112 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Feb 2021 13:08:55 +0100,
-Jaroslav Kysela wrote:
-> 
-> Dne 24. 02. 21 v 12:43 Takashi Iwai napsal(a):
-> 
-> >>> So far, a user control is merely storing the value, let read/write via
-> >>> the control API.  That's all, and nothing wrong can happen just by
-> >>> that.  Now if it interacts with other subsystem...
-> >>>
-> >>> A more serious concern is rather the fragility of the setup; for
-> >>> enabling the mute LED control, you'd have to create a new user-space
-> >>> control, the function of the control has to be ignored by some
-> >>> application and some not, etc.  This has to be done on each machine
-> >>
-> >> You're using "ignore", but as I explained before, the user space switch will
-> >> be used in the whole chain:
-> >>
-> >> capture stream ->
-> >>   alsa-lib mute switch / silence PCM stream ->
-> >>   PA mute switch / silence PCM stream
-> >>
-> >> So PA can use this switch like the traditional hardware mute switch.
-> > 
-> > Does it mean PA would work as of now without any change?  Or does it
-> > need patching?
-> 
-> Yes, no PA modifications are required with my mechanism. The PA will just see
-> the new user space control - mute switch - created in alsa-lib - which will be
-> synced the internal PA path mute state like for the hardware mute
-> switch.
+From: Olivia Mackintosh <livvy@base.nu>
 
-OK, but how would we create and manage the user control element?  And
-why it has to be user control?
+[ Upstream commit b952ac76a20bc0b23cd7e22de19fb407713238a3 ]
 
+This adds the Pioneer DJ DJM-750 to the quirks table and ensures
+skip_pioneer_sync_ep() is (also) called: this device uses the vendor
+ID of 0x08e4 (I'm not sure why they use multiple vendor IDs but many
+just like to be awkward it seems).
 
-thanks,
+Playback on all 8 channels works. I'll likely keep this working in the
+future and submit futher patches and improvements as necessary.
 
-Takashi
+Signed-off-by: Olivia Mackintosh <livvy@base.nu>
+Link: https://lore.kernel.org/r/20210118130621.77miiie47wp7mump@base.nu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/usb/implicit.c     |  3 +-
+ sound/usb/quirks-table.h | 60 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 62 insertions(+), 1 deletion(-)
+
+diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
+index 521cc846d9d9f..e7216d0b860d8 100644
+--- a/sound/usb/implicit.c
++++ b/sound/usb/implicit.c
+@@ -302,7 +302,8 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
+ 	/* Pioneer devices with vendor spec class */
+ 	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
+ 	    alts->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
+-	    USB_ID_VENDOR(chip->usb_id) == 0x2b73 /* Pioneer */) {
++	    (USB_ID_VENDOR(chip->usb_id) == 0x2b73 || /* Pioneer */
++	     USB_ID_VENDOR(chip->usb_id) == 0x08e4    /* Pioneer */)) {
+ 		if (skip_pioneer_sync_ep(chip, fmt, alts))
+ 			return 1;
+ 	}
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index c8a4bdf18207c..93d55cd1a5a4c 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -3757,6 +3757,66 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
+ 		}
+ 	}
+ },
++{
++	/*
++	 * Pioneer DJ DJM-750
++	 * 8 channels playback & 8 channels capture @ 44.1/48/96kHz S24LE
++	 */
++	USB_DEVICE_VENDOR_SPEC(0x08e4, 0x017f),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x05,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++					    USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_44100|
++						SNDRV_PCM_RATE_48000|
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 3,
++					.rate_table = (unsigned int[]) { 44100, 48000, 96000 }
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x86,
++					.ep_idx = 1,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC|
++						USB_ENDPOINT_SYNC_ASYNC|
++						USB_ENDPOINT_USAGE_IMPLICIT_FB,
++					.rates = SNDRV_PCM_RATE_44100|
++						SNDRV_PCM_RATE_48000|
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 3,
++					.rate_table = (unsigned int[]) { 44100, 48000, 96000 }
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ 
+ #undef USB_DEVICE_VENDOR_SPEC
+ #undef USB_AUDIO_DEVICE
+-- 
+2.27.0
+
