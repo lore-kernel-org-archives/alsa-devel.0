@@ -2,69 +2,68 @@ Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C97D3C433E9
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 02:33:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4839DC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:11:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3284564E02
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 02:33:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3284564E02
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id C1CAF64ECF
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 07:11:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1CAF64ECF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A6E0850;
-	Wed, 24 Feb 2021 03:32:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A6E0850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EF791675;
+	Wed, 24 Feb 2021 08:10:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EF791675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614133990;
-	bh=zjvslhGmlW2V7066YQiwNh+l8ipIkPA79ShXQ79bMs0=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1614150667;
+	bh=v5sa7IYuYUDVkE9BHwLR9nOy/6cs5m/Kxm7unsLbYlw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ak80otIXAKnWS7pDUU55Fry9AzX50YfKPScdFlh5rCCkWHiixTwlnoA+cnltXUHj1
-	 6vdZV5fdtVWNcezgKmNErCCtpFjeZsrPziChLtWLCbQf48WH60oM6HEYvcBEZ5RlZP
-	 A9XvpO0P2Pa7UIXFJXwGBqiqmAIZMiFd0dYZUTVc=
+	b=jzjmc9Q7RePR2blM+52uvISVTnghPpQrXnSdsNfwa5dyE0ZTPPAjcw2dLOolsS4Pm
+	 T9AxVKWRHQorour3Yo0p7KL+aMp4T79cD3rj5ddP6yMgWXmx2eRP000pLqbylkLEGa
+	 f3hKTwoZevhLxVhegHle/iZWFu1AgY/R2tV+6C6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AE95F80169;
-	Wed, 24 Feb 2021 03:32:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C427DF80129;
+	Wed, 24 Feb 2021 08:10:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DECAEF8016A; Wed, 24 Feb 2021 03:32:17 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 4385DF8022B; Wed, 24 Feb 2021 08:10:13 +0100 (CET)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FD1EF800B4
- for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 03:32:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FD1EF800B4
-Received: from [123.112.65.229] (helo=[192.168.0.106])
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <hui.wang@canonical.com>)
- id 1lEjyH-0003XE-Nr; Wed, 24 Feb 2021 02:32:14 +0000
-Subject: Re: [PATCH] ALSA: hda/hdmi: let new platforms assign the pcm slot
- dynamically
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-References: <20210223122205.233701-1-hui.wang@canonical.com>
- <alpine.DEB.2.22.394.2102231545050.864696@eliteleevi.tm.intel.com>
-From: Hui Wang <hui.wang@canonical.com>
-Message-ID: <3e125642-e94d-fb46-01d3-5b4f7e3cc8b7@canonical.com>
-Date: Wed, 24 Feb 2021 10:32:09 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2102231545050.864696@eliteleevi.tm.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34292F80129
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 08:10:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34292F80129
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 979E92003CE;
+ Wed, 24 Feb 2021 08:10:04 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1966120036F;
+ Wed, 24 Feb 2021 08:10:01 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8037140319;
+ Wed, 24 Feb 2021 08:09:56 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] ASoC: ak5558: Add MODULE_DEVICE_TABLE
+Date: Wed, 24 Feb 2021 14:57:52 +0800
+Message-Id: <1614149872-25510-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1614149872-25510-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1614149872-25510-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,58 +79,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add missed MODULE_DEVICE_TABLE for the driver can be loaded
+automatically at boot.
 
-On 2/23/21 10:14 PM, Kai Vehmanen wrote:
-> Hi,
->
-> thanks for the patch!
->
-> On Tue, 23 Feb 2021, Hui Wang wrote:
->
->> If the platform set the dyn_pcm_assign to true, it will call
->> hdmi_find_pcm_slot() to find a pcm slot when hdmi/dp monitor is
->> connected and need to create a pcm.
-> [...]
->> This change comes from the discussion between Takashi and
->> Kai Vehmanen. Please refer to:
->> https://github.com/alsa-project/alsa-lib/pull/118
-> I did propose to merge the alsa-lib change to give us a bit more time to
-> think about how this should be handled in kernel.
-That is not merged yet, and my PM was pushing me to find a solution, 
-then I wrote this patch.
->
-> While this patch certainly solves the problem of kernel picking ALSA PCMs,
-> which current alsa-lib cannot handle, it leaves us a bit halfway. We'd
-> create many PCMs that will never be used. And this change is a bit more
-> involved.
->
->> So far only intel_hsw_common_init() and patch_nvhdmi() set the
->> dyn_pcm_assign to true, here we let tgl platforms assign the pcm slot
->> dynamically first, if the driver runs for a period of time and there
->> is no regression reported, we could set no_fixed_assgin to true in
->> the intel_hsw_common_init(), and then set it to true in the
->> patch_nvhdmi().
-> Staged plan sounds good here, although I'd be fairly cautious with this.
-> People using Pulseaudio/Pipewire+UCM won't notice a thing, but I'm sure
-> there are people out there assuming a fixed "physical connector -> ALSA
-> PCM" mapping and not using UCM. Probably at least some way to opt-out
-> would be needed for older platforms.
->
->> +	if (port_num > 6)
->> +		spec->no_fixed_assign = true;
-> I think this is magic enough of a number to be defined separately along
-> with some documentation. So basicly user-space has a max limit of 8 now
-> and two PCMs are reserved for DP-MST, so that brings us to six, right?
-Yes, and also before the TGL, the max number of physical pins is 6 (icl).
->
-> This is somewhat arbitrary still. If we simply want to enable the mode for
-> TGL only, easier and cleaned would be to set this flag in
-> patch_i915_tgl_hdmi() directly.
+Fixes: 920884777480 ("ASoC: ak5558: Add support for AK5558 ADC driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/codecs/ak5558.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-OK, will consider it.
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 8a32b0139cb0..85bdd0534180 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -419,6 +419,7 @@ static const struct of_device_id ak5558_i2c_dt_ids[] __maybe_unused = {
+ 	{ .compatible = "asahi-kasei,ak5558"},
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, ak5558_i2c_dt_ids);
+ 
+ static struct i2c_driver ak5558_i2c_driver = {
+ 	.driver = {
+-- 
+2.27.0
 
-Thanks,
-
-Hui.
-
-> Br, Kai
