@@ -1,66 +1,62 @@
-Return-Path: <SRS0=BjaJ=H2=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=dMuI=H3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10348C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 23:14:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0111EC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:25:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 23FFD64EDD
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Feb 2021 23:14:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23FFD64EDD
+	by mail.kernel.org (Postfix) with ESMTPS id 3FFD464E05
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:25:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FFD464E05
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5BE14E;
-	Thu, 25 Feb 2021 00:13:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5BE14E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1D0211C;
+	Thu, 25 Feb 2021 01:24:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1D0211C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614208454;
-	bh=cOuVwUsF6cPjieg9RAY0FpUkhyh6Xftnp3qbYEXBzyg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uK8bhyCPIylw1oCDN0EDmQIlS6DV+aRLF59SMOrDJhKjk7qpLuekUYU/e9Z+0MPkG
-	 YWYqlMreC0ZqrCbaKs0GkZWXIsJdhAIWvQsQU1gEu2mmc92KXYv9LsMjS0W/LhcHWg
-	 JqPpNt2iEdoRJkvM4Byv2G9ux2QTulgVI+Vh3cEc=
+	s=default; t=1614212736;
+	bh=62wbbA8JTSgyYKJ8Fs57I98ls2izRluYmePPfOSWIBA=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tAQZ1pvaEn4LBdfE5L/6q5tUwYb/tFldl7JM9T/AAVHeb2M2za6PwPt4zm21h4SP7
+	 LK1olCB8VkL5/gJbyeIgpezqf/yNifYE3sb0j/q6moRae1GZ9NokJBmh91cFrlFlXt
+	 RB86CCgdrdnXUPg5XYlIk4ARhdk3UqqmFYyt2yXc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 474B6F80161;
-	Thu, 25 Feb 2021 00:13:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B69EF80161;
+	Thu, 25 Feb 2021 01:24:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B889F8016C; Thu, 25 Feb 2021 00:13:22 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 341D8F80159
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 00:13:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 341D8F80159
-Date: 25 Feb 2021 08:13:12 +0900
-X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73054786"
+ id 32E6EF8016C; Thu, 25 Feb 2021 01:24:44 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id AA92AF80129
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 01:24:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA92AF80129
+Date: 25 Feb 2021 09:24:34 +0900
+X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73307167"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 25 Feb 2021 08:13:12 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Feb 2021 09:24:34 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E13E2400F79E;
- Thu, 25 Feb 2021 08:13:12 +0900 (JST)
-Message-ID: <87r1l5rref.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D8CDD400F2AD;
+ Thu, 25 Feb 2021 09:24:34 +0900 (JST)
+Message-ID: <87mtvtro3h.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 4/8] ASoC: sh: rcar: core: rename shadowing variables
-In-Reply-To: <03f560f1-2389-424d-5d4c-84e244baca1c@linux.intel.com>
-References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
- <20210219231635.5749-5-pierre-louis.bossart@linux.intel.com>
- <87wnv1vw6a.wl-kuninori.morimoto.gx@renesas.com>
- <03f560f1-2389-424d-5d4c-84e244baca1c@linux.intel.com>
+Subject: [PATCH 0/5] ASoC: rsnd: cleanup ppcheck warning for Renesas sound
+ driver
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,26 +73,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Pierre-Louis
+Hi Mark, Pierre-Louis
 
-> >> sound/soc/sh/rcar/core.c:1369:22: style: Local variable 'rdai' shadows
-> >> outer variable [shadowVariable]
-> >>      struct rsnd_dai *rdai = rsnd_rdai_get(priv, dai_i);
-> >>                       ^
-> > 
-> > I'm not 100% sure about this warning,
-> > but this path is overkill. Maybe below is enough ?
-> 
-> Hi Morimoto-san,
-> It might be better if we drop this patch from the series and have you
-> send the proper fix with my Reported-by tag.
-> Would that work for you?
+These patches are based on below patch-set which from Pierre-Louis,
+and cleanup cppcheck warnings for Rensas sound driver.
+[3/5] has Reported-by Pierre-Louis tag.
 
-OK, thanks.
-Will do today
+	Subject: [PATCH 0/8] ASoC: sh: remove cppcheck warnings
+	Date: Fri, 19 Feb 2021 17:16:27 -0600
 
-Thank you for your help !!
+Kuninori Morimoto (5):
+  ASoC: rsnd: cleanup ppcheck warning for ssiu.c
+  ASoC: rsnd: cleanup ppcheck warning for ssi.c
+  ASoC: rsnd: cleanup ppcheck warning for core.c
+  ASoC: rsnd: cleanup ppcheck warning for cmd.c
+  ASoC: rsnd: cleanup ppcheck warning for adg.c
 
-Best regards
----
-Kuninori Morimoto
+ sound/soc/sh/rcar/adg.c  | 15 +++++++-------
+ sound/soc/sh/rcar/cmd.c  | 15 +++++++-------
+ sound/soc/sh/rcar/core.c | 32 +++++++++++++---------------
+ sound/soc/sh/rcar/ssi.c  | 45 ++++++++++++++++++++--------------------
+ sound/soc/sh/rcar/ssiu.c | 22 +++++++++++---------
+ 5 files changed, 64 insertions(+), 65 deletions(-)
+
+-- 
+2.25.1
+
