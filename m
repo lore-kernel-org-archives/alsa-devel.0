@@ -2,83 +2,84 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72B7FC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:45:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA30FC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:45:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 85DAE64DBA
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:45:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 85DAE64DBA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4272364D9F
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:45:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4272364D9F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34C05166D;
-	Mon,  1 Mar 2021 14:44:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34C05166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7895B167C;
+	Mon,  1 Mar 2021 14:44:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7895B167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614606330;
-	bh=gkbMvC82vIbJJ6FzwzwBA8HMrYIBip+t1XoKESN8vnU=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TTSv1BtieVkbpOVKF7RZUPyYFc7ZosRcXY4OoXJnYkdOIM3q36eWVS/ADND6eD4+O
-	 JQ/SSUsOtIk4ZHhg/6A9M/75+RMGbOJnGWTqgIriwLFxLiBW3Z/DhycnhnixtioFwO
-	 WtYK61ix2Noxi2zHh6hppFTSZvZrXPIQe4F7FcLc=
+	s=default; t=1614606332;
+	bh=Gob0C6PTjv1UhxE44gaMBrOGwljKgBub+P/jV+zgwZE=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=m95gEr/R5L9q+f1I6SmAg6EuAbDBiaWnqlV/5U9ryqIGbWmrJXDZAnCqogbAhcZU7
+	 u9vSPdLETnmBvPHDhdLj5ncosJ2ve8/pHeESTv6q2zeLEAG2+hTVqrVaVuHCurC9ct
+	 cD+8wXlaM4L/6xW7Ox6DYcPaWCJzeTmE7zrJs12g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2672F804D8;
-	Mon,  1 Mar 2021 11:03:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A719F8049C;
+	Mon,  1 Mar 2021 14:43:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC7EAF804D9; Mon,  1 Mar 2021 11:03:14 +0100 (CET)
-Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 28EEDF8016A; Thu, 25 Feb 2021 21:17:33 +0100 (CET)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43898F804D1
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 11:03:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43898F804D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DABFF800E4
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 21:17:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DABFF800E4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
- header.b="y+hHA5oy"
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
- [127.0.0.1])
- by mx1.opensynergy.com (Proxmox) with ESMTP id 84EF2A1344;
- Mon,  1 Mar 2021 11:03:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
- h=cc:cc:content-transfer-encoding:content-type:content-type
- :date:from:from:in-reply-to:message-id:mime-version:references
- :reply-to:subject:subject:to:to; s=srmailgate02; bh=TYThy1gXWt2N
- GLWZE4+BNvfDquT8rOEI1kVicn0HVsg=; b=y+hHA5oyvhs9pArzHttMuyoKdxP1
- Fwlbcir93mQ/6UUIuo+Ic+uw7QoZBRETjmBckBQT2dbKzSu1eTdQmrf8S6/mpmv7
- mMEIknuE/CU/jezBM/VLDdDgSqiCggLP8iPwWnLfGBPLAlIg8vdsqEjjrqn8p9wY
- yvZLGk+qhwhmzvATxARQSyAPebd142F+ve1d0HyZ+q09n4HzhZ/lRy/Lgwxj6wB/
- aBwAkiW6/G3XqPE4DgEWh5V5dpfd5LA6IfwyJhUnHfwIKObPXChG5vsWdjBNNV1h
- d7BogU8h562dy0T9lSWv6/M+agyifUWIv/XhelwNk/RYqwbsZ7QttVLNhg==
-Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume
- support
-To: Takashi Iwai <tiwai@suse.de>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
- <s5hpn0kjt31.wl-tiwai@suse.de>
-From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <54854cb9-99c3-4c05-3b43-f41d89a29aec@opensynergy.com>
-Date: Mon, 1 Mar 2021 11:03:04 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="kACaN+Zc"
+Received: by mail-ed1-x52d.google.com with SMTP id c23so2029519edr.13
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 12:17:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=Gob0C6PTjv1UhxE44gaMBrOGwljKgBub+P/jV+zgwZE=;
+ b=kACaN+ZcnZPBj5TGHirGsgR/kjALk2CA+U6QgoqGzQ1n0BKgXG6pMBWa+ml/1mi5pd
+ 52XUeCIRY47L/LGebznYSopf9dTReDio3bSHuo824KyRBs5u8s95pIt68u/tj/NPIo22
+ 5yCB7UArPHciKh1zNfAkUjyySsDL3RlT4up732C5do0m0iFdwWZYaeKNeJPuSjtB7YbV
+ Jd01tD/j2iYemiHTSvZZAwWOrLr28cdev0OqKgopDsx791XLRunZAcXkmIDvBThbWVnz
+ ZjJF+bvD5LX/81VZBc4iR9Noa3KCd7fAIx2Auix24jSg/CRY9hHPJITqtfOV+nRX/z+s
+ gDpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=Gob0C6PTjv1UhxE44gaMBrOGwljKgBub+P/jV+zgwZE=;
+ b=qTIXkAF0J7e4zYCMGfCZnP72jTse5R7kLgUajSvM+FDhUH7/OEPRrXMJB1/17BqRm0
+ ujBDuVEf0ELWFA5J9K6E+8Ca2GTl1lzePvkt13qMe/97Ob0DJBzzToWGw5hc/idPMLC/
+ qFOvZjtxdaU+q7vvG+wkfqMoMDWi2PMO3UCpm/HPg6u2j65Hrvn7QhdtgUko5m70S0Ax
+ duBTFHqTZZSKj6llX0UdhYWlwlBf8rH5AK4d8PIPOIIrYSy2do8Pe61fR+C2bxjqk8sW
+ X2kZNQDA9AtpdjlFbYnJvy75s77QQO5gv+gkmJn9fOA7+Ks5CGBP5hqfcnXd5MVJfuVY
+ WtOg==
+X-Gm-Message-State: AOAM5315K3t011Uh/ek7xy5eE7TQL/x66l1DEj7u0AqPePEWG9zeM4wx
+ 1K7OuzSg11mFWExSR1GCnQnZLFavbMDaU7rYwV8pPf7xKtXZDA==
+X-Google-Smtp-Source: ABdhPJwSwUSNeogiXJ0+uCfEBzNMFTCdZTN/05Enj3O8EDUvcy1LWdmZ305TdP9tniTEwi7fcKpHv0f3QEa4lYT2oPQ=
+X-Received: by 2002:aa7:c9cf:: with SMTP id i15mr4864770edt.296.1614284246462; 
+ Thu, 25 Feb 2021 12:17:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <s5hpn0kjt31.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
-Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org, "Michael S.
- Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
+From: Steven Skeard <stevenskeard@gmail.com>
+Date: Thu, 25 Feb 2021 15:16:50 -0500
+Message-ID: <CAHVejFyWtqdF-6XC0+Jk4vdZGJcTQNSfm9pMpqa4mT6o57Eedg@mail.gmail.com>
+Subject: Possible alsa bug around USB drivers
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 01 Mar 2021 14:43:21 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,122 +95,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 28.02.2021 13:05, Takashi Iwai wrote:
-> On Sat, 27 Feb 2021 09:59:56 +0100,
-> Anton Yakovlev wrote:
->>
->> All running PCM substreams are stopped on device suspend and restarted
->> on device resume.
->>
->> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
->> ---
->>   sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
->>   sound/virtio/virtio_pcm.c     |  1 +
->>   sound/virtio/virtio_pcm_ops.c | 41 ++++++++++++++++++++-----
->>   3 files changed, 90 insertions(+), 8 deletions(-)
->>
->> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
->> index 59455a562018..c7ae8801991d 100644
->> --- a/sound/virtio/virtio_card.c
->> +++ b/sound/virtio/virtio_card.c
->> @@ -323,6 +323,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
->>        kfree(snd->event_msgs);
->>   }
->>
->> +#ifdef CONFIG_PM_SLEEP
->> +/**
->> + * virtsnd_freeze() - Suspend device.
->> + * @vdev: VirtIO parent device.
->> + *
->> + * Context: Any context.
->> + * Return: 0 on success, -errno on failure.
->> + */
->> +static int virtsnd_freeze(struct virtio_device *vdev)
->> +{
->> +     struct virtio_snd *snd = vdev->priv;
->> +
->> +     virtsnd_ctl_msg_cancel_all(snd);
->> +
->> +     vdev->config->del_vqs(vdev);
->> +     vdev->config->reset(vdev);
->> +
->> +     kfree(snd->event_msgs);
->> +
->> +     /*
->> +      * If the virtsnd_restore() fails before re-allocating events, then we
->> +      * get a dangling pointer here.
->> +      */
->> +     snd->event_msgs = NULL;
->> +
->> +     return 0;
-> 
-> I suppose some cancel of inflight works is needed?
-> Ditto for the device removal, too.
+Hey all,
 
-It's not necessary here, since the device is reset and all of this are
-happened automatically. But in the device remove it makes sense also to
-disable events before calling snd_card_free(), since the device is still
-able to send notifications at that moment. Thanks!
+The last few weeks I've been plagued by inconsistent audio on my PopOS
+20.10 desktop. Sometimes on boot everything would be fine, but other
+times I would have no working audio and only dummy devices in the
+audio menus. I eventually found that if I specify the modprobe order
+so that the USB driver (eg. for my webcam) loads after the onboard
+motherboard driver, that audio will work consistently.
 
+Here are the related links:
+- Reddit thread where I posted the original problem and the solution:
+https://www.reddit.com/r/pop_os/comments/lmvbj3/audio_not_working_after_upgrading_computer/
+- A related thread where it sounds like an arch user has the same
+problem: https://bbs.archlinux.org/viewtopic.php?id=260373
+- The alsa info I uploaded while under the effects of the problem:
+http://alsa-project.org/db/?f=a23ccbb818fec6eaf08b032504eac5d5d8a30589
 
->> --- a/sound/virtio/virtio_pcm.c
->> +++ b/sound/virtio/virtio_pcm.c
->> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
->>                SNDRV_PCM_INFO_BATCH |
->>                SNDRV_PCM_INFO_BLOCK_TRANSFER |
->>                SNDRV_PCM_INFO_INTERLEAVED |
->> +             SNDRV_PCM_INFO_RESUME |
->>                SNDRV_PCM_INFO_PAUSE;
-> 
-> Actually you don't need to set SNDRV_PCM_INFO_RESUME.
-> This flag means that the driver supports the full resume procedure,
-> which isn't often the case; with this, the driver is supposed to
-> resume the stream exactly from the suspended position.
+I'm not really sure where this problem originated but I figured you
+guys might be able to point me in the right direction if it is not an
+alsa problem.
 
-If I understood you right, that's exactly how resume is implemented now
-in the driver. Although we fully restart substream on the device side,
-from an application point of view it is resumed exactly at the same
-position.
+I don't think I messed with the original alsa-base.conf but I suppose
+my memory could be failing me here. I'm not sure where this file comes
+from but I'm guessing it could be either a pop os, ubuntu, or alsa
+default configuration?
 
-
-> Most drivers don't set this but implement only the suspend-stop
-> action.  Then the application (or the sound backend) will re-setup the
-> stream and restart accordingly.
-
-And an application must be aware of such possible situation? Since I
-have no doubt in alsa-lib, but I don't think that for example tinyalsa
-can handle this right.
-
-
->> @@ -309,6 +318,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
->>        int rc;
->>
->>        switch (command) {
->> +     case SNDRV_PCM_TRIGGER_RESUME: {
->> +             /*
->> +              * We restart the substream by executing the standard command
->> +              * sequence.
->> +              */
->> +             rc = virtsnd_pcm_hw_params(substream, NULL);
->> +             if (rc)
->> +                     return rc;
->> +
->> +             rc = virtsnd_pcm_prepare(substream);
->> +             if (rc)
->> +                     return rc;
-> 
-> And this won't work at all unless nonatomic PCM ops.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-
--- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
-
+Thanks,
+Steven Skeard
