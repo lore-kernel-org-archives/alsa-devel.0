@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CDC2C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:26:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA1FDC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:26:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 764B064E05
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:26:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 764B064E05
+	by mail.kernel.org (Postfix) with ESMTPS id F2F3264F10
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:26:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2F3264F10
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 936F3166A;
-	Thu, 25 Feb 2021 01:25:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 936F3166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 651C71666;
+	Thu, 25 Feb 2021 01:25:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 651C71666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614212787;
-	bh=UQ5yKW1siL/y0gafQcIMNSSPfhIabuZFwmmIzhehADA=;
+	s=default; t=1614212792;
+	bh=Z8qLZXvrdVPrxtE719nfq5ByyayXJqNy7VBRdUNnR20=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MmSqfvTFikKT2U7kybuR3w9VpLFNklJhy8N5t3TV8yR6zygqrv7zEvSh9Cnn1ptdW
-	 m6gPhYv6a6dF+Fw8U6xFi1msMqqWqYmkXOqbs/hS3BmhhcKtZ5p/Oq6GrbLB1Umj+h
-	 izkBgcrM0NLod5FugsAd0zIPI+Hyd/+IiHxUruaQ=
+	b=LeDrIzHXNNBAbaKswKpQa7ccrXltQvELA/hsBt5pgJA9wilKnd7ptRy5fyZzLxNBc
+	 yRndU7UQ8W2U0VSyMHA68Orxb577Q+SgyEvHHhqsc+oPfpFDWgU0nDd2VNfpsJsbX3
+	 e0FY5EOU1GlaH4Q866Q1nFYNl608zFNKGdSXiKTA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E7CDF80234;
-	Thu, 25 Feb 2021 01:25:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7799F8016C;
+	Thu, 25 Feb 2021 01:25:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69FD1F80249; Thu, 25 Feb 2021 01:25:13 +0100 (CET)
+ id 8B3E3F8028D; Thu, 25 Feb 2021 01:25:16 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id CB6F7F800F2
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 01:25:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB6F7F800F2
-Date: 25 Feb 2021 09:25:02 +0900
-X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73307189"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Feb 2021 09:25:02 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 54271F8016C
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 01:25:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54271F8016C
+Date: 25 Feb 2021 09:25:08 +0900
+X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73307202"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 25 Feb 2021 09:25:08 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8D6C3400F2AD;
- Thu, 25 Feb 2021 09:25:02 +0900 (JST)
-Message-ID: <87lfbdro2p.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DC5ED412E071;
+ Thu, 25 Feb 2021 09:25:08 +0900 (JST)
+Message-ID: <87k0qxro2j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/5] ASoC: rsnd: cleanup ppcheck warning for ssiu.c
+Subject: [PATCH 2/5] ASoC: rsnd: cleanup ppcheck warning for ssi.c
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -80,111 +80,125 @@ From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 This patch cleanups below ppcheck warning.
 
-sound/soc/sh/rcar/ssiu.c:212:10: style: The scope of the variable 'shift' can be reduced. [variableScope]
-  int i, shift;
-         ^
-sound/soc/sh/rcar/ssiu.c:337:19: style: The scope of the variable 'mod' can be reduced. [variableScope]
+sound/soc/sh/rcar/ssi.c:170:19: style: The scope of the variable 'mod' can be reduced. [variableScope]
  struct rsnd_mod *mod;
                   ^
-sound/soc/sh/rcar/ssiu.c:362:22: style: The scope of the variable 'np' can be reduced. [variableScope]
- struct device_node *np;
-                     ^
-sound/soc/sh/rcar/ssiu.c:363:19: style: The scope of the variable 'mod' can be reduced. [variableScope]
- struct rsnd_mod *mod;
-                  ^
-sound/soc/sh/rcar/ssiu.c:366:6: style: The scope of the variable 'i' can be reduced. [variableScope]
+sound/soc/sh/rcar/ssi.c:535:6: style: The scope of the variable 'i' can be reduced. [variableScope]
  int i;
      ^
-sound/soc/sh/rcar/ssiu.c:397:13: style: The scope of the variable 'ret' can be reduced. [variableScope]
- int i, nr, ret;
-            ^
+sound/soc/sh/rcar/ssi.c:1212:19: style: The scope of the variable 'mod' can be reduced. [variableScope]
+ struct rsnd_mod *mod;
+                  ^
+sound/soc/sh/rcar/ssi.c:328:16: portability: Shifting signed 32-bit value by 31 bits is implementation-defined behaviour [shiftTooManyBitsSigned]
+ ssi->cr_clk = FORCE | rsnd_rdai_width_to_swl(rdai) |
+               ^
+sound/soc/sh/rcar/ssi.c:387:12: portability: Shifting signed 32-bit value by 31 bits is implementation-defined behaviour [shiftTooManyBitsSigned]
+ cr_own |= FORCE | rsnd_rdai_width_to_swl(rdai);
+           ^
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/rcar/ssiu.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ sound/soc/sh/rcar/ssi.c | 45 +++++++++++++++++++++--------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index f29bd72f3a26..852cdeedf7e9 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -209,7 +209,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 		struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
- 		struct rsnd_mod *pos;
- 		u32 val;
--		int i, shift;
-+		int i;
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 659b25992ff2..d071cec25f71 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -24,23 +24,23 @@
+ /*
+  * SSICR
+  */
+-#define	FORCE		(1 << 31)	/* Fixed */
+-#define	DMEN		(1 << 28)	/* DMA Enable */
+-#define	UIEN		(1 << 27)	/* Underflow Interrupt Enable */
+-#define	OIEN		(1 << 26)	/* Overflow Interrupt Enable */
+-#define	IIEN		(1 << 25)	/* Idle Mode Interrupt Enable */
+-#define	DIEN		(1 << 24)	/* Data Interrupt Enable */
+-#define	CHNL_4		(1 << 22)	/* Channels */
+-#define	CHNL_6		(2 << 22)	/* Channels */
+-#define	CHNL_8		(3 << 22)	/* Channels */
+-#define DWL_MASK	(7 << 19)	/* Data Word Length mask */
+-#define	DWL_8		(0 << 19)	/* Data Word Length */
+-#define	DWL_16		(1 << 19)	/* Data Word Length */
+-#define	DWL_18		(2 << 19)	/* Data Word Length */
+-#define	DWL_20		(3 << 19)	/* Data Word Length */
+-#define	DWL_22		(4 << 19)	/* Data Word Length */
+-#define	DWL_24		(5 << 19)	/* Data Word Length */
+-#define	DWL_32		(6 << 19)	/* Data Word Length */
++#define	FORCE		(1u << 31)	/* Fixed */
++#define	DMEN		(1u << 28)	/* DMA Enable */
++#define	UIEN		(1u << 27)	/* Underflow Interrupt Enable */
++#define	OIEN		(1u << 26)	/* Overflow Interrupt Enable */
++#define	IIEN		(1u << 25)	/* Idle Mode Interrupt Enable */
++#define	DIEN		(1u << 24)	/* Data Interrupt Enable */
++#define	CHNL_4		(1u << 22)	/* Channels */
++#define	CHNL_6		(2u << 22)	/* Channels */
++#define	CHNL_8		(3u << 22)	/* Channels */
++#define DWL_MASK	(7u << 19)	/* Data Word Length mask */
++#define	DWL_8		(0u << 19)	/* Data Word Length */
++#define	DWL_16		(1u << 19)	/* Data Word Length */
++#define	DWL_18		(2u << 19)	/* Data Word Length */
++#define	DWL_20		(3u << 19)	/* Data Word Length */
++#define	DWL_22		(4u << 19)	/* Data Word Length */
++#define	DWL_24		(5u << 19)	/* Data Word Length */
++#define	DWL_32		(6u << 19)	/* Data Word Length */
  
- 		i = rsnd_mod_id(ssi_mod);
+ /*
+  * System word length
+@@ -167,7 +167,6 @@ static void rsnd_ssi_status_check(struct rsnd_mod *mod,
  
-@@ -221,7 +221,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 			i;
- 
- 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
--			shift	= (i * 4) + 20;
-+			int shift = (i * 4) + 20;
-+
- 			val	= (val & ~(0xF << shift)) |
- 				rsnd_mod_id(pos) << shift;
- 		}
-@@ -334,7 +335,6 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
- 					       struct rsnd_dai_stream *io)
+ static u32 rsnd_ssi_multi_secondaries(struct rsnd_dai_stream *io)
  {
- 	struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
 -	struct rsnd_mod *mod;
- 	struct rsnd_ssiu *ssiu;
+ 	enum rsnd_mod_type types[] = {
+ 		RSND_MOD_SSIM1,
+ 		RSND_MOD_SSIM2,
+@@ -177,7 +176,8 @@ static u32 rsnd_ssi_multi_secondaries(struct rsnd_dai_stream *io)
+ 
+ 	mask = 0;
+ 	for (i = 0; i < ARRAY_SIZE(types); i++) {
+-		mod = rsnd_io_to_mod(io, types[i]);
++		struct rsnd_mod *mod = rsnd_io_to_mod(io, types[i]);
++
+ 		if (!mod)
+ 			continue;
+ 
+@@ -532,7 +532,6 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	int is_tdm, is_tdm_split;
+ 	int id = rsnd_mod_id(mod);
+-	int i;
+ 	u32 sys_int_enable = 0;
+ 
+ 	is_tdm		= rsnd_runtime_is_tdm(io);
+@@ -560,6 +559,8 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 
+ 	/* disable busif buffer over/under run interrupt. */
+ 	if (is_tdm || is_tdm_split) {
++		int i;
++
+ 		switch (id) {
+ 		case 0:
+ 		case 1:
+@@ -1209,7 +1210,6 @@ void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
+ 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
+ 	struct device_node *node;
+ 	struct device_node *np;
+-	struct rsnd_mod *mod;
  	int i;
  
-@@ -343,7 +343,7 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
+ 	node = rsnd_ssi_of_node(priv);
+@@ -1218,7 +1218,8 @@ void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
  
- 	/* select BUSIF0 */
- 	for_each_rsnd_ssiu(ssiu, priv, i) {
--		mod = rsnd_mod_get(ssiu);
-+		struct rsnd_mod *mod = rsnd_mod_get(ssiu);
- 
- 		if ((rsnd_mod_id(ssi_mod) == rsnd_mod_id(mod)) &&
- 		    (rsnd_mod_id_sub(mod) == 0)) {
-@@ -359,17 +359,17 @@ void rsnd_parse_connect_ssiu(struct rsnd_dai *rdai,
- {
- 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
- 	struct device_node *node = rsnd_ssiu_of_node(priv);
--	struct device_node *np;
--	struct rsnd_mod *mod;
- 	struct rsnd_dai_stream *io_p = &rdai->playback;
- 	struct rsnd_dai_stream *io_c = &rdai->capture;
--	int i;
- 
- 	/* use rcar_sound,ssiu if exist */
- 	if (node) {
--		i = 0;
-+		struct device_node *np;
-+		int i = 0;
+ 	i = 0;
+ 	for_each_child_of_node(node, np) {
+-		mod = rsnd_ssi_mod_get(priv, i);
++		struct rsnd_mod *mod = rsnd_ssi_mod_get(priv, i);
 +
- 		for_each_child_of_node(node, np) {
--			mod = rsnd_ssiu_mod_get(priv, i);
-+			struct rsnd_mod *mod = rsnd_ssiu_mod_get(priv, i);
-+
- 			if (np == playback)
- 				rsnd_dai_connect(mod, io_p, mod->type);
- 			if (np == capture)
-@@ -394,7 +394,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
- 	struct rsnd_ssiu *ssiu;
- 	struct rsnd_mod_ops *ops;
- 	const int *list = NULL;
--	int i, nr, ret;
-+	int i, nr;
- 
- 	/*
- 	 * Keep DT compatibility.
-@@ -441,6 +441,8 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
- 	}
- 
- 	for_each_rsnd_ssiu(ssiu, priv, i) {
-+		int ret;
-+
- 		if (node) {
- 			int j;
- 
+ 		if (np == playback)
+ 			rsnd_ssi_connect(mod, &rdai->playback);
+ 		if (np == capture)
 -- 
 2.25.1
 
