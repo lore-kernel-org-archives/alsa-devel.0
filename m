@@ -5,77 +5,78 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 08D7DC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99124C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:09:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3222464F49
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:08:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3222464F49
+	by mail.kernel.org (Postfix) with ESMTPS id E7AB164F37
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:09:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7AB164F37
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 711D5167B;
-	Thu, 25 Feb 2021 19:07:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 711D5167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31FCA167A;
+	Thu, 25 Feb 2021 19:08:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31FCA167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614276523;
-	bh=0OixokTkNsYzqJ/U0ZLZ9QuNMTXcVz7tvpIf8I+xz90=;
+	s=default; t=1614276560;
+	bh=epooql0FMpO3WipZpYM8q3+kN511KeDs0sQiMlQLkXY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f5RmqRa0NoaN475Z+Wpi/94XuglrkSQgyvqdERT8t3v1mP6Ewr5rurt/aW/6C7exw
-	 kM+Y4EHv/9TQXhFbdU0hCnwYX54CJqS4J5YpyNKOgmIFxwrRdmFIau6mPd//ruLtbl
-	 3SVPtvsJILbvAbR8DjltwU7+ONm7k7lWLY67YLqY=
+	b=O7TlXyLu/vPR6v1nPVmSGuCnLTR13O7sbIRuudvTRrlqt6IBSyj16jYanHEZJCr0/
+	 chutB9FplC3CYavu072evU5+kEP9X6q36pAC9UngEvm3Udwe8xVpf+5z2McJT3lkrF
+	 pt9+ttNOQFvwu2SdFVUE4Nb9/gynkU2tm1MQgJzU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7923AF802D2;
-	Thu, 25 Feb 2021 19:07:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80FD2F8032B;
+	Thu, 25 Feb 2021 19:07:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DA68F8032B; Thu, 25 Feb 2021 19:07:00 +0100 (CET)
+ id 9A055F802E3; Thu, 25 Feb 2021 19:07:00 +0100 (CET)
 Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
  [216.228.121.143])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA8BCF8028D
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 19:06:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA8BCF8028D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53C4BF802D2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 19:06:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53C4BF802D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="eIPcptow"
+ header.b="Qj6u+1Pv"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
  hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B6037e73a0000>; Thu, 25 Feb 2021 10:06:50 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
- 2021 18:06:49 +0000
+ id <B6037e7340001>; Thu, 25 Feb 2021 10:06:44 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
+ 2021 18:06:44 +0000
 Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Feb 2021 18:06:47 +0000
+ Transport; Thu, 25 Feb 2021 18:06:41 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh@kernel.org>
-Subject: [RFC PATCH 5/5] ASoC: simple-card-utils: Support pll configuration
-Date: Thu, 25 Feb 2021 23:36:04 +0530
-Message-ID: <1614276364-13655-6-git-send-email-spujar@nvidia.com>
+Subject: [RFC PATCH 3/5] ASoC: audio-graph-card: Add bindings for sysclk and
+ pll
+Date: Thu, 25 Feb 2021 23:36:02 +0530
+Message-ID: <1614276364-13655-4-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
 References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1614276410; bh=XsuTkaQjpknAbqXsocoOXCmvAkmPnsCYijQXi5ZJhAI=;
+ t=1614276404; bh=9ywFTvkZa5lV3oP3sSlaxK8fYTSk9Azn5gp12WflYbY=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=eIPcptowc7wdxHaMJXOyE5rvKtk5H4cdQCuLTxJhHu0zx6JhuPMQoUkLRTQYQsa6i
- NtMgHS1CCcugb4mCEz2fmDEl87MmB2YhYZnWELHmjNJBGW2wdsvRLvnqX8l8fynXK4
- MCyYN7FG1MkXM3aUmaNrGNvSAn7HCFVkPCh/HnaLzEc6NlQiWfs7WYs7BOxHgEhJTm
- 2UPZl+3IWd78mVlY40Yq3nvLPXlHe+ou6s4RO5oWmAmaRe8MgLonEVyjxxeX3epFqY
- H1Q/oYZH6s+v5l7v3oDnmLwV60meB5iSQMvG/yqfnvYZ+vUaMstOdMGjkPevNq4aNo
- nH9DHcqc7WI6g==
+ b=Qj6u+1PvzAC8CJJTxccDuj8mUtADkD1O1knBKonobjhCb55KhvR6Y4u1SL7K9D9HR
+ wga4vy8FOYy5+kqukd/ferK5IYIPCvoX+YgWS/BkqqLgQmgeAkH+hRJFjKoBLZbcrn
+ uF/TJl0UmXUKplNpKq9wQVnZF34dQ1s1PbK6h+1hI3QkOWrEG9DL17x+heAnwgTpY1
+ DLybd+5UkVt0NzFl7cmHe/5TEKHQDk7X93dGKxAhROS4aM7pa3HshhxwNN85Iu9KQm
+ MnLqzxFspfZZiJeQ+FR32RV9xQDzQGQvMq2VMTCLLaTR80arQqdSl+up4shNzfg583
+ cnYxLXWFtNvkg==
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com
@@ -94,288 +95,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some CPU/Codec DAI controllers may have an internal pll which can be
-used to source its clocking requirements. The ASoC core provides a DAI
-or component callback snd_soc_dai_set_pll() to configure this. But
-currently simple-card or audio-graph card drivers are not using this.
+ASoC core provides callbacks snd_soc_dai_set_sysclk() and
+snd_soc_dai_set_pll() for system clock (sysclk) and pll configurations
+respectively. Add bindings for flexible sysclk or pll configurations
+which can be driven from CPU/Codec DAI or endpoint subnode from DT.
+This in turn helps to avoid hard codings in driver and makes it more
+generic.
 
-To configure pll on DAI controller side, following optional DT properties
-can be used. These can be specified in CPU/Codec DAI or endpoint subnode.
-
- - pll-id               : DAI specific pll id.
-
- - pll-source           : DAI specific pll source. CPU/Codec DAI can
-                          specify the source that is used for pll
-                          reference.
-
- - pll-input-reference  : Depending on the given value, input frequency
-                          can be calculated at runtime. For example if
-                          I2S bit clock is used as reference, rate depends
-                          on the actual PCM parameters (rate, channels and
-                          bits) during an audio session. If a fixed rate is
-                          used, then "pll-input-frequency" can be used
-                          instead.
-
- - pll-output-reference : Depending on the given value, output frequency
-                          can be calculated at runtime. If output clock is
-                          used for MCLK purpose, then it may depend on
-                          "mclk-fs" scale factor. In such cases it needs to
-                          be calculated at runtime. If a fixed output
-                          frequency is needed, then "pll-output-frequency"
-                          can be used instead.
-
- - pll-input-frequency  : Specify fixed input frequency in Hz. This is
-                          checked only when "pll-input-reference" is not
-                          specified.
-
- - pll-output-frequency : Specify fixed output frequency in Hz. This is
-                          checked only when "pll-output-reference" is not
-                          specified.
-
-Usage examples with RT5658 Codec:
-
-  1. Use MCLK for Codec sysclk
-
-     codec-subnode {
-         mclk-fs = <256>;
-         system-clock-source = <RT5659_SCLK_S_MCLK>;
-     };
-
-     In above case, the sysclk source is set to MCLK and the sysclk rate
-     is set to 256 * fs, where fs is sampling rate of the stream.
-
-  2. Use Codec internal pll to derive Codec sysclk. The pll can use
-     SoC I2S bit clock (BCLK) as reference.
-
-     codec-subnode {
-         mclk-fs = <256>;
-
-         system-clock-source = <RT5659_SCLK_S_PLL1>;
-
-         pll-source = <RT5659_PLL1_S_BCLK1>;
-
-         /*
-          * SoC I2S BCLK as reference. Based on this pll input rate
-          * (sample rate * channels * bits) is calculated at runtime.
-          */
-         pll-input-reference = <2>;
-
-         /*
-          * pll will generate output rate based on MCLK, which is
-          * calculated at runtime as (mclk_fs * sample rate).
-          */
-         pll-output-reference = <1>; /* MCLK as output rate */
-     };
+Also add system-clock related bindings, "system-clock-direction-out"
+and "system-clock-frequency", which are already supported.
 
 Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Rob Herring <robh@kernel.org>
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- include/sound/simple_card_utils.h     |  33 ++++++++++
- sound/soc/generic/simple-card-utils.c | 114 ++++++++++++++++++++++++++++++++++
- 2 files changed, 147 insertions(+)
+ .../bindings/sound/audio-graph-port.yaml           | 71 ++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index e026bf2..0f937eb 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -16,11 +16,44 @@
- #define asoc_simple_init_mic(card, sjack, prefix) \
- 	asoc_simple_init_jack(card, sjack, 0, prefix, NULL)
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+index 766e910..4f50291 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
++++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
+@@ -71,6 +71,77 @@ properties:
+             description: CPU to Codec rate channels.
+             $ref: /schemas/types.yaml#/definitions/uint32
  
-+/*
-+ * External audio Codecs for their system clock (sysclk) may use one
-+ * of the following:
-+ *
-+ *   - MCLK provided by SoC (already "system-clock-frequency" or
-+ *     "mclk-fs" bindings exist)
-+ *
-+ *   - Codec internal PLL which can take reference from SoC audio
-+ *     interface bit clock (BCLK) and generate required sysclk for
-+ *     the Codec.
-+ *
-+ *   - Codec internal PLL taking reference from onboard crystal and
-+ *     generate required sysclk for the Codec.
-+ *
-+ * BCLK depends on PCM parameters (rate, channels and bits) and has
-+ * to be calculated at runtime. So is MCLK, sometimes it depends on
-+ * sample rate and a scaling factor. So whenever PLL is used for
-+ * sysclk, input and output references/rates need to be provided.
-+ *
-+ * Following macros can be used to setup input/output frequency
-+ * requirements for the PLL.
-+ */
++          system-clock-frequency:
++            description: |
++              Specify system clock (sysclk) frequency for CPU or Codec
++              component. Or if a clock is specified in the CPU or Codec
++              device node and a scaling factor is given with "mclk-fs",
++              sysclk will be calculated as a multiple of stream sample
++              rate and "mclk-fs". The rate is updated when stream starts.
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
-+#define SND_SOC_DAI_PLL_REF_FIXED		0
-+#define SND_SOC_DAI_PLL_REF_MCLK		(1 << 0)
-+#define SND_SOC_DAI_PLL_REF_BCLK		(1 << 1)
++          system-clock-direction-out:
++            description: |
++              Specifies clock direction as "out" on initialization. It
++              is useful for some CPUs with fixed clocks.
++            $ref: /schemas/types.yaml#/definitions/flag
 +
- struct asoc_simple_dai {
- 	const char *name;
- 	unsigned int sysclk;
- 	int sysclk_id;
- 	int sysclk_source;
-+	unsigned int pll_id;
-+	unsigned int pll_source;
-+	unsigned int pll_in_freq;
-+	unsigned int pll_out_freq;
-+	unsigned int pll_in_ref;
-+	unsigned int pll_out_ref;
- 	int clk_direction;
- 	int slots;
- 	int slot_width;
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index bbbf891..6bfde08 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -12,6 +12,7 @@
- #include <linux/of_gpio.h>
- #include <linux/of_graph.h>
- #include <sound/jack.h>
-+#include <sound/pcm_params.h>
- #include <sound/simple_card_utils.h>
- 
- void asoc_simple_convert_fixup(struct asoc_simple_data *data,
-@@ -190,6 +191,30 @@ int asoc_simple_parse_clk(struct device *dev,
- 
- 	of_property_read_u32(node, "system-clock-source", &simple_dai->sysclk_source);
- 
-+	of_property_read_u32(node, "pll-id", &simple_dai->pll_id);
++          system-clock-id:
++            description: |
++              CPU or Codec component may have multiple clocks. A specific
++              clock may have to be configured. In such cases the clock
++              ID needs to be specified.
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
-+	of_property_read_u32(node, "pll-source", &simple_dai->pll_source);
++          system-clock-source:
++            description: |
++              CPU or Codec component may have multiple sources for its
++              system clock (sysclk). In such cases the sysclk source
++              needs to be specified.
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
-+	if (of_property_read_u32(node, "pll-input-reference",
-+				 &simple_dai->pll_in_ref)) {
-+		/*
-+		 * Look for "pll-input-frequency" if no explicit reference
-+		 * is provided.
-+		 */
-+		of_property_read_u32(node, "pll-input-frequency",
-+				     &simple_dai->pll_in_freq);
-+	}
++          pll-id:
++            description: |
++              Specify PLL that needs to be configured. This is useful
++              when the CPU or Codec component has multiple PLLs.
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
-+	if (of_property_read_u32(node, "pll-output-reference",
-+				 &simple_dai->pll_out_ref)) {
-+		/*
-+		 * Look for "pll-output-frequency" if no explicit reference
-+		 * is provided.
-+		 */
-+		of_property_read_u32(node, "pll-output-frequency",
-+				     &simple_dai->pll_out_freq);
-+	}
++          pll-source:
++            description: |
++              When PLL has multiple reference clock sources, the exact
++              source needs to be specified for the required configuration.
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_parse_clk);
-@@ -217,6 +242,82 @@ static int asoc_simple_set_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
-+static int asoc_simple_enable_pll(struct snd_soc_dai *dai,
-+				  struct asoc_simple_dai *simple_dai,
-+				  struct snd_pcm_hw_params *params,
-+				  unsigned int mclk_fs)
-+{
-+	int ret;
++          pll-input-reference:
++            description: |
++              Specify how to calculate input frequency for the PLL.
++              Depending on the identifier, input frequency can be
++              calculated at runtime. For example if I2S bit clock is used
++              as reference, rate depends on actual PCM parameters (rate,
++              channels and bits) during an audio session. If a fixed rate
++              is used, then "pll-input-frequency" can be used instead.
++            $ref: /schemas/types.yaml#/definitions/uint32
++            const: 2
 +
-+	if (!simple_dai)
-+		return 0;
++          pll-input-frequency:
++            description: Specify fixed input frequency
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
-+	switch (simple_dai->pll_in_ref) {
-+	case SND_SOC_DAI_PLL_REF_FIXED:
-+		break;
-+	case SND_SOC_DAI_PLL_REF_MCLK:
-+		simple_dai->pll_in_freq = params_rate(params) * mclk_fs;
-+		break;
-+	case SND_SOC_DAI_PLL_REF_BCLK:
-+		simple_dai->pll_in_freq = params_rate(params) *
-+					  params_channels(params) *
-+					  params_width(params);
-+		break;
-+	default:
-+		dev_err(dai->dev, "pll input reference is invalid!\n");
-+		return -EINVAL;
-+	}
++          pll-output-reference:
++            description: |
++              Specify how to calculate output frequency for the PLL.
++              Depending on the identifier, output frequency can be
++              calculated at runtime. If output clock is used for MCLK purpose,
++              then it may depend on "mclk-fs" scale factor. In such cases it
++              needs to be calculated at runtime. If a fixed output frequency
++              is needed, then "pll-output-frequency" can be used instead.
++            $ref: /schemas/types.yaml#/definitions/uint32
++            const: 1
 +
-+	switch (simple_dai->pll_out_ref) {
-+	case SND_SOC_DAI_PLL_REF_FIXED:
-+		break;
-+	case SND_SOC_DAI_PLL_REF_MCLK:
-+		simple_dai->pll_out_freq = params_rate(params) * mclk_fs;
-+		break;
-+	case SND_SOC_DAI_PLL_REF_BCLK:
-+		simple_dai->pll_out_freq = params_rate(params) *
-+					   params_channels(params) *
-+					   params_width(params);
-+		break;
-+	default:
-+		dev_err(dai->dev, "pll output reference is invalid!\n");
-+		return -EINVAL;
-+	}
++          pll-output-frequency:
++            description: Specify fixed output frequency
++            $ref: /schemas/types.yaml#/definitions/uint32
 +
-+	if (!simple_dai->pll_in_freq && !simple_dai->pll_out_freq) {
-+		/* There is nothing to be configured */
-+		return 0;
-+	} else if ((!simple_dai->pll_in_freq && simple_dai->pll_out_freq) ||
-+		   (simple_dai->pll_in_freq && !simple_dai->pll_out_freq)) {
-+		dev_err(dai->dev, "Invalid pll input/output rates!\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(dai->dev,
-+		"pll config: id = %d, source = %d, in_freq = %u, out_freq = %u\n",
-+		simple_dai->pll_id, simple_dai->pll_source,
-+		simple_dai->pll_in_freq, simple_dai->pll_out_freq);
-+
-+	ret = snd_soc_dai_set_pll(dai, simple_dai->pll_id,
-+				  simple_dai->pll_source,
-+				  simple_dai->pll_in_freq,
-+				  simple_dai->pll_out_freq);
-+
-+	if (ret && ret != -ENOTSUPP)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int asoc_simple_disable_pll(struct snd_soc_dai *dai,
-+				   struct asoc_simple_dai *simple_dai)
-+{
-+	if (!simple_dai)
-+		return 0;
-+
-+	return snd_soc_dai_set_pll(dai, simple_dai->pll_id, 0, 0, 0);
-+}
-+
- int asoc_simple_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-@@ -252,6 +353,9 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream)
- 				       SND_SOC_CLOCK_OUT);
- 	}
- 
-+	asoc_simple_disable_pll(codec_dai, dai_props->codec_dai);
-+	asoc_simple_disable_pll(cpu_dai, dai_props->cpu_dai);
-+
- 	asoc_simple_clk_disable(dai_props->cpu_dai);
- 
- 	asoc_simple_clk_disable(dai_props->codec_dai);
-@@ -310,6 +414,16 @@ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
- 			return ret;
- 	}
- 
-+	ret = asoc_simple_enable_pll(codec_dai, dai_props->codec_dai, params,
-+				     mclk_fs);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = asoc_simple_enable_pll(cpu_dai, dai_props->cpu_dai, params,
-+				     mclk_fs);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_hw_params);
+   ports:
+     description: multi OF-Graph subnode
+     type: object
 -- 
 2.7.4
 
