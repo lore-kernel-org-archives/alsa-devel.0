@@ -2,72 +2,99 @@ Return-Path: <SRS0=dMuI=H3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E21D8C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 03:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9103CC433E6
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 03:11:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 437D764ECF
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 03:09:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 437D764ECF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0751664EBA
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 03:11:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0751664EBA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C00921679;
-	Thu, 25 Feb 2021 04:08:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C00921679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B2BC1666;
+	Thu, 25 Feb 2021 04:10:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B2BC1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614222575;
-	bh=e3w4T4Z9ZXbqzvwgpobO14/H9peGwBtDmymA9pxHpRk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1614222704;
+	bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hdER09SoRUaFTH+hmwKrkD8/cLl/bkPHj6hn+oz6eF6mP6EZ8suluMA9AtJ1baKrL
-	 qfXgnX2DFqxsnOwNNCRLU5lewpaUxLcOeOm5YSCRXGKyjMypFxdq2Bo70eFkL+x251
-	 mQ5b+u/+ydbi8si4T6RvhupyIfv9L8qMPHGYYjtg=
+	b=tv48G4HYKCYGynxjlrD0EegAXlrmOw5/zAnGmVHheC/0AVmJDHSfvHYYcSLCbTbrR
+	 w2SBuMEJLzdsRftPsiLjtEKuAWUXQkJ9+22rdi0awI51VNk9AfBlny/JgKn6aM0Z9v
+	 xfTtdAHrEbH5jlJ2dumCssYjUlqnP71/TMIdG928=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29A1CF804AF;
-	Thu, 25 Feb 2021 04:06:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0237CF80169;
+	Thu, 25 Feb 2021 04:10:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E81CF80278; Thu, 25 Feb 2021 04:06:06 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7EFA3F8016A; Thu, 25 Feb 2021 04:10:52 +0100 (CET)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5973CF8026C
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 04:05:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5973CF8026C
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 374EF1A05D3;
- Thu, 25 Feb 2021 04:05:26 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5EE241A0628;
- Thu, 25 Feb 2021 04:05:19 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 26AEE4032B;
- Thu, 25 Feb 2021 04:05:11 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
- devicetree@vger.kernel.org
-Subject: [PATCH v3 4/7] ASoC: imx-audio-rpmsg: Add rpmsg_driver for audio
- channel
-Date: Thu, 25 Feb 2021 10:52:40 +0800
-Message-Id: <1614221563-26822-5-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614221563-26822-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1614221563-26822-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48E26F800D2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 04:10:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48E26F800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="bH9vGPAt"
+Received: by mail-lf1-x12c.google.com with SMTP id d24so6341107lfs.8
+ for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2021 19:10:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
+ b=bH9vGPAt9TT8vyB02A3LusGmI+8chLo2PIYd/qdVnAoXcA4p9U8W5tREoMsyzsBZ4Z
+ Q9NWpJGzbzKuGHL8s6oMt0bLW3cEcmbC9NdcLISbdy921Vh/wsagj4AH++LZuIzRDEbT
+ /WeaCZUdRo1TnFila95eDP1Wh6V9uR/3XL/ldcc37WLU90lRiqTi5RA7028rpBzspYn0
+ uzW+qM+xaP557V5nIjT5QocjQY/t2x2za9ZZhZ52SkaDpq5OPJHeeJmMELdtjDXjttJT
+ B9WSVRITYzuXvO6JzTkJ79NxGhasXXQhMfU3k2UQOy3nrYfAVvhpTpohOVYNphQy7Wsl
+ Pj9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=EnWKtR8Gi6MBZCyGkt9dN20MUD2l2Ye826UGjeumL/M=;
+ b=kz1XQFo8E60PO5BR+C06DL/itmadbdMXFhLZkjT8HWghKeS79eMiSvTJlXAOebfYxA
+ GZ7rq1Hs9+I0WbRbqNsQ2yTe9UGd2vFNNilYn+Rjb+BNhkCveH+Qm8MniwrhoieSAhQG
+ HD/X+qYI9dwdaD8f0GBQWv81OlX8gwh+lV50b0yh9dtUYDkj0TQZ2L/tcEwXdTKkOZGY
+ SpOEcM2NPHMManmMQyX7Q1Q8miPutZCKHkYRT4l3oLfM2XayXoDAVVB5+nEQmx3bURAD
+ 91r9EjKAfmBzWpLytIittJJSccmxZVotMicPIQZaYAntbmp3J8SBP++0JjgoKZoMSseK
+ DKPA==
+X-Gm-Message-State: AOAM532Cardw/ug8OswzgU/tcYvT1A+SPUBMm8Owoxz9QYAkmbTd7U2X
+ 5T0XhvLZB65Er/hkyDYsousLuuYfu43/FfQe88U=
+X-Google-Smtp-Source: ABdhPJxCV+TqWtFTdMF/6bZM7j6af9TKwjCsqsLP5PqihQfPd5E2/w9l1zUzIOTZC6eXqdEZ1+/twFQLRzEl5p88ras=
+X-Received: by 2002:a19:4147:: with SMTP id o68mr691484lfa.295.1614222649170; 
+ Wed, 24 Feb 2021 19:10:49 -0800 (PST)
+MIME-Version: 1.0
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-4-git-send-email-shengjiu.wang@nxp.com>
+ <20210210221252.GA2885308@robh.at.kernel.org>
+ <CAA+D8APfd8trC8cFsT8k8G54nhrYDrwXxECx9RpDAgw3rco9DQ@mail.gmail.com>
+In-Reply-To: <CAA+D8APfd8trC8cFsT8k8G54nhrYDrwXxECx9RpDAgw3rco9DQ@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 25 Feb 2021 00:10:38 -0300
+Message-ID: <CAOMZO5D3HgVF6Gq6sFo7j7OJ63NVN--ZtmwZCoM7=dmmhVZchQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
+ rpmsg cpu dai driver
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Timur Tabi <timur@kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,204 +110,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This driver is used to accept the message from rpmsg audio
-channel, and if this driver is probed, it will help to register
-the platform driver, the platform driver will use this
-audio channel to send and receive message to and from Cortex-M
-core.
+On Thu, Feb 18, 2021 at 4:21 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/Kconfig           |   4 +
- sound/soc/fsl/Makefile          |   1 +
- sound/soc/fsl/imx-audio-rpmsg.c | 151 ++++++++++++++++++++++++++++++++
- 3 files changed, 156 insertions(+)
- create mode 100644 sound/soc/fsl/imx-audio-rpmsg.c
+> > rpmsg is a protocol. What's the h/w block?
+>
+> On Linux side this driver is a virtual driver, it is running
+> on Arm Cortex-A core. The h/w block is controlled by
+> another core (cortex-M core). so this driver actually
+> doesn't touch any hardware, it just does configuration
+> for rpmsg channel.
+> fsl,version: There are maybe different image running on M core, this
+> is the image version, different image has different function.
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index a688c3c2efbc..84d9f0f1f75b 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -126,6 +126,10 @@ config SND_SOC_IMX_PCM_DMA
- 	tristate
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 
-+config SND_SOC_IMX_AUDIO_RPMSG
-+	tristate
-+	depends on RPMSG
-+
- config SND_SOC_IMX_AUDMUX
- 	tristate "Digital Audio Mux module support"
- 	help
-diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
-index b63802f345cc..f08f3cd07ff5 100644
---- a/sound/soc/fsl/Makefile
-+++ b/sound/soc/fsl/Makefile
-@@ -60,6 +60,7 @@ obj-$(CONFIG_SND_SOC_IMX_AUDMUX) += snd-soc-imx-audmux.o
- 
- obj-$(CONFIG_SND_SOC_IMX_PCM_FIQ) += imx-pcm-fiq.o
- obj-$(CONFIG_SND_SOC_IMX_PCM_DMA) += imx-pcm-dma.o
-+obj-$(CONFIG_SND_SOC_IMX_AUDIO_RPMSG) += imx-audio-rpmsg.o
- 
- # i.MX Machine Support
- snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
-diff --git a/sound/soc/fsl/imx-audio-rpmsg.c b/sound/soc/fsl/imx-audio-rpmsg.c
-new file mode 100644
-index 000000000000..145edb1492b4
---- /dev/null
-+++ b/sound/soc/fsl/imx-audio-rpmsg.c
-@@ -0,0 +1,151 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright 2017-2020 NXP
-+
-+#include <linux/module.h>
-+#include <linux/rpmsg.h>
-+#include "imx-pcm-rpmsg.h"
-+
-+/*
-+ * struct imx_audio_rpmsg: private data
-+ *
-+ * @rpmsg_pdev: pointer of platform device
-+ */
-+struct imx_audio_rpmsg {
-+	struct platform_device *rpmsg_pdev;
-+};
-+
-+static int imx_audio_rpmsg_cb(struct rpmsg_device *rpdev, void *data, int len,
-+			      void *priv, u32 src)
-+{
-+	struct imx_audio_rpmsg *rpmsg = dev_get_drvdata(&rpdev->dev);
-+	struct rpmsg_info *info = platform_get_drvdata(rpmsg->rpmsg_pdev);
-+	struct rpmsg_r_msg *r_msg = (struct rpmsg_r_msg *)data;
-+	struct rpmsg_msg *msg;
-+	unsigned long flags;
-+
-+	dev_dbg(&rpdev->dev, "get from%d: cmd:%d. %d\n",
-+		src, r_msg->header.cmd, r_msg->param.resp);
-+
-+	switch (r_msg->header.type) {
-+	case MSG_TYPE_C:
-+		/* TYPE C is notification from M core */
-+		switch (r_msg->header.cmd) {
-+		case TX_PERIOD_DONE:
-+			spin_lock_irqsave(&info->lock[TX], flags);
-+			msg = &info->msg[TX_PERIOD_DONE + MSG_TYPE_A_NUM];
-+
-+			/*
-+			 * Low power mode: get the buffer pointer from
-+			 * receive msg.
-+			 */
-+			if (r_msg->header.major == 1 &&
-+			    r_msg->header.minor == 2)
-+				msg->r_msg.param.buffer_tail =
-+						r_msg->param.buffer_tail;
-+			else
-+				msg->r_msg.param.buffer_tail++;
-+
-+			msg->r_msg.param.buffer_tail %= info->num_period[TX];
-+			spin_unlock_irqrestore(&info->lock[TX], flags);
-+			info->callback[TX](info->callback_param[TX]);
-+			break;
-+		case RX_PERIOD_DONE:
-+			spin_lock_irqsave(&info->lock[RX], flags);
-+			msg = &info->msg[RX_PERIOD_DONE + MSG_TYPE_A_NUM];
-+
-+			if (r_msg->header.major == 1 &&
-+			    r_msg->header.minor == 2)
-+				msg->r_msg.param.buffer_tail =
-+						r_msg->param.buffer_tail;
-+			else
-+				msg->r_msg.param.buffer_tail++;
-+
-+			msg->r_msg.param.buffer_tail %= info->num_period[1];
-+			spin_unlock_irqrestore(&info->lock[RX], flags);
-+			info->callback[RX](info->callback_param[RX]);
-+			break;
-+		default:
-+			dev_warn(&rpdev->dev, "unknown msg command\n");
-+			break;
-+		}
-+		break;
-+	case MSG_TYPE_B:
-+		/* TYPE B is response msg */
-+		memcpy(&info->r_msg, r_msg, sizeof(struct rpmsg_r_msg));
-+		complete(&info->cmd_complete);
-+		break;
-+	default:
-+		dev_warn(&rpdev->dev, "unknown msg type\n");
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int imx_audio_rpmsg_probe(struct rpmsg_device *rpdev)
-+{
-+	struct imx_audio_rpmsg *data;
-+	int ret = 0;
-+
-+	dev_info(&rpdev->dev, "new channel: 0x%x -> 0x%x!\n",
-+		 rpdev->src, rpdev->dst);
-+
-+	data = devm_kzalloc(&rpdev->dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&rpdev->dev, data);
-+
-+	/* Register platform driver for rpmsg routine */
-+	data->rpmsg_pdev = platform_device_register_data(&rpdev->dev,
-+							 IMX_PCM_DRV_NAME,
-+							 PLATFORM_DEVID_NONE,
-+							 NULL, 0);
-+	if (IS_ERR(data->rpmsg_pdev)) {
-+		dev_err(&rpdev->dev, "failed to register rpmsg platform.\n");
-+		ret = PTR_ERR(data->rpmsg_pdev);
-+	}
-+
-+	return ret;
-+}
-+
-+static void imx_audio_rpmsg_remove(struct rpmsg_device *rpdev)
-+{
-+	struct imx_audio_rpmsg *data = dev_get_drvdata(&rpdev->dev);
-+
-+	if (data->rpmsg_pdev)
-+		platform_device_unregister(data->rpmsg_pdev);
-+
-+	dev_info(&rpdev->dev, "audio rpmsg driver is removed\n");
-+}
-+
-+static struct rpmsg_device_id imx_audio_rpmsg_id_table[] = {
-+	{ .name	= "rpmsg-audio-channel" },
-+	{ },
-+};
-+
-+static struct rpmsg_driver imx_audio_rpmsg_driver = {
-+	.drv.name	= "imx_audio_rpmsg",
-+	.drv.owner	= THIS_MODULE,
-+	.id_table	= imx_audio_rpmsg_id_table,
-+	.probe		= imx_audio_rpmsg_probe,
-+	.callback	= imx_audio_rpmsg_cb,
-+	.remove		= imx_audio_rpmsg_remove,
-+};
-+
-+static int __init imx_audio_rpmsg_init(void)
-+{
-+	return register_rpmsg_driver(&imx_audio_rpmsg_driver);
-+}
-+
-+static void __exit imx_audio_rpmsg_exit(void)
-+{
-+	unregister_rpmsg_driver(&imx_audio_rpmsg_driver);
-+}
-+module_init(imx_audio_rpmsg_init);
-+module_exit(imx_audio_rpmsg_exit);
-+
-+MODULE_DESCRIPTION("Freescale SoC Audio RPMSG interface");
-+MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
-+MODULE_ALIAS("platform:imx_audio_rpmsg");
-+MODULE_LICENSE("GPL v2");
--- 
-2.27.0
-
+To answer Rob's question: the hardware block that handles these
+messages is the Message Unit block.
