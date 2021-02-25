@@ -7,76 +7,75 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99124C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:09:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0034EC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:09:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E7AB164F37
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:09:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7AB164F37
+	by mail.kernel.org (Postfix) with ESMTPS id 3580A64F43
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 18:09:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3580A64F43
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31FCA167A;
-	Thu, 25 Feb 2021 19:08:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31FCA167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A54A31678;
+	Thu, 25 Feb 2021 19:08:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A54A31678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614276560;
-	bh=epooql0FMpO3WipZpYM8q3+kN511KeDs0sQiMlQLkXY=;
+	s=default; t=1614276568;
+	bh=e1F4ec6E26xk15wCTJhl2iA7eqh6+JfUCu69v74hnYM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O7TlXyLu/vPR6v1nPVmSGuCnLTR13O7sbIRuudvTRrlqt6IBSyj16jYanHEZJCr0/
-	 chutB9FplC3CYavu072evU5+kEP9X6q36pAC9UngEvm3Udwe8xVpf+5z2McJT3lkrF
-	 pt9+ttNOQFvwu2SdFVUE4Nb9/gynkU2tm1MQgJzU=
+	b=SyOaNFp6PF5T9lUV1P2IaA8fadsEtdyt9VD1Pj7n/hvV0MfWEWsFNqSIlKdFeDVTz
+	 dWCZYxmXrgAoh4rXn+YZKJYB8S+Cm/pxXvQd+OYAkMA8px4v06u4xn7e/y2wY+s96m
+	 tcuZ3wn4N2nkM43V1MV2f5uC02l4yb/UsBQJVBaM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80FD2F8032B;
-	Thu, 25 Feb 2021 19:07:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BBBDF80424;
+	Thu, 25 Feb 2021 19:07:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A055F802E3; Thu, 25 Feb 2021 19:07:00 +0100 (CET)
-Received: from hqnvemgate24.nvidia.com (hqnvemgate24.nvidia.com
- [216.228.121.143])
+ id 13B60F802E7; Thu, 25 Feb 2021 19:07:01 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53C4BF802D2
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 19:06:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53C4BF802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B797DF8016A
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 19:06:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B797DF8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
- header.b="Qj6u+1Pv"
+ header.b="PYB4WA43"
 Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
- hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
- id <B6037e7340001>; Thu, 25 Feb 2021 10:06:44 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
- 2021 18:06:44 +0000
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B6037e7370003>; Thu, 25 Feb 2021 10:06:47 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Feb
+ 2021 18:06:47 +0000
 Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Feb 2021 18:06:41 +0000
+ Transport; Thu, 25 Feb 2021 18:06:44 +0000
 From: Sameer Pujar <spujar@nvidia.com>
 To: <broonie@kernel.org>, <robh@kernel.org>
-Subject: [RFC PATCH 3/5] ASoC: audio-graph-card: Add bindings for sysclk and
- pll
-Date: Thu, 25 Feb 2021 23:36:02 +0530
-Message-ID: <1614276364-13655-4-git-send-email-spujar@nvidia.com>
+Subject: [RFC PATCH 4/5] ASoC: simple-card-utils: Parse sysclk id and source
+Date: Thu, 25 Feb 2021 23:36:03 +0530
+Message-ID: <1614276364-13655-5-git-send-email-spujar@nvidia.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
 References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
- t=1614276404; bh=9ywFTvkZa5lV3oP3sSlaxK8fYTSk9Azn5gp12WflYbY=;
+ t=1614276407; bh=mwv0iL7wxpU7XlL//gwVHh4+2YApnc4XsJirHhkJNpA=;
  h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
  References:MIME-Version:Content-Type;
- b=Qj6u+1PvzAC8CJJTxccDuj8mUtADkD1O1knBKonobjhCb55KhvR6Y4u1SL7K9D9HR
- wga4vy8FOYy5+kqukd/ferK5IYIPCvoX+YgWS/BkqqLgQmgeAkH+hRJFjKoBLZbcrn
- uF/TJl0UmXUKplNpKq9wQVnZF34dQ1s1PbK6h+1hI3QkOWrEG9DL17x+heAnwgTpY1
- DLybd+5UkVt0NzFl7cmHe/5TEKHQDk7X93dGKxAhROS4aM7pa3HshhxwNN85Iu9KQm
- MnLqzxFspfZZiJeQ+FR32RV9xQDzQGQvMq2VMTCLLaTR80arQqdSl+up4shNzfg583
- cnYxLXWFtNvkg==
+ b=PYB4WA43q0qnaPr4aU3hMpHrLKKLwajNV2ZlsKUXj+/3ZSnrnkCfjjONNXbe8n5wm
+ XDepulfmUviXMo/ZuCDmDgoP8X93+V2eFe3CZ7bj8NHe723zUuTu0UZoFalQEvVqdC
+ NQJLqBUDFA+QkySXkgdP2sHVtOpHn4xTnNALu2PlR3GOOPC47yXVOxgEUiWqyICzJC
+ n32gp1ghcRKuuJhLo1FT3HfZiWXhNJ0dd9hNIKOLA7Dm4NZtMMlM1bgYmL2+lu4jZz
+ qk+tnSQpkWfoZn5Wud9sy+bprZGTcuD48+m4LnN1DcgOHzjkqoQWKM8HYP+xFGXynL
+ 25S3GT2X97PkQ==
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
  linux-kernel@vger.kernel.org, jonathanh@nvidia.com
@@ -95,105 +94,151 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC core provides callbacks snd_soc_dai_set_sysclk() and
-snd_soc_dai_set_pll() for system clock (sysclk) and pll configurations
-respectively. Add bindings for flexible sysclk or pll configurations
-which can be driven from CPU/Codec DAI or endpoint subnode from DT.
-This in turn helps to avoid hard codings in driver and makes it more
-generic.
+Currently a default value of 0 is used for system clock (sysclk) source
+and id. This may not be the case always when a DAI supports multiple
+clocks and multiple sources for sysclk. A specific configuration may be
+needed depending on the platform.
 
-Also add system-clock related bindings, "system-clock-direction-out"
-and "system-clock-frequency", which are already supported.
+Use DT properties "system-clock-id" and "system-clock-source" from
+CPU/Codec DAI or endpoint subnode to explicitly mention about the sysclk
+id and source. The DAI callback can take necessary action depending on
+this. In doing so expose a helper function asoc_simple_set_sysclk() to
+setup the sysclk. This way configuration can be driven from DT and driver
+need not program specific values explicitly.
+
+For example, RT5658 Codec has multiple sources for MCLK. The exact source
+can be specified in Codec DAI or endpoint subnode in DT.
+
+  codec-subnode {
+      ...
+      system-clock-id = <...>;
+      system-clock-source = <...>;
+      ...
+  };
+
+The default sysclk id and source are 0 in the driver and hence nothing
+needs to be specified if default values are good enough.
 
 Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Rob Herring <robh@kernel.org>
 Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 ---
- .../bindings/sound/audio-graph-port.yaml           | 71 ++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ include/sound/simple_card_utils.h     |  2 ++
+ sound/soc/generic/simple-card-utils.c | 59 +++++++++++++++++++++++++----------
+ 2 files changed, 45 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-index 766e910..4f50291 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-@@ -71,6 +71,77 @@ properties:
-             description: CPU to Codec rate channels.
-             $ref: /schemas/types.yaml#/definitions/uint32
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index ba4a3e1..e026bf2 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -19,6 +19,8 @@
+ struct asoc_simple_dai {
+ 	const char *name;
+ 	unsigned int sysclk;
++	int sysclk_id;
++	int sysclk_source;
+ 	int clk_direction;
+ 	int slots;
+ 	int slot_width;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index f1012e9..bbbf891 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -186,10 +186,37 @@ int asoc_simple_parse_clk(struct device *dev,
+ 	if (of_property_read_bool(node, "system-clock-direction-out"))
+ 		simple_dai->clk_direction = SND_SOC_CLOCK_OUT;
  
-+          system-clock-frequency:
-+            description: |
-+              Specify system clock (sysclk) frequency for CPU or Codec
-+              component. Or if a clock is specified in the CPU or Codec
-+              device node and a scaling factor is given with "mclk-fs",
-+              sysclk will be calculated as a multiple of stream sample
-+              rate and "mclk-fs". The rate is updated when stream starts.
-+            $ref: /schemas/types.yaml#/definitions/uint32
++	of_property_read_u32(node, "system-clock-id", &simple_dai->sysclk_id);
 +
-+          system-clock-direction-out:
-+            description: |
-+              Specifies clock direction as "out" on initialization. It
-+              is useful for some CPUs with fixed clocks.
-+            $ref: /schemas/types.yaml#/definitions/flag
++	of_property_read_u32(node, "system-clock-source", &simple_dai->sysclk_source);
 +
-+          system-clock-id:
-+            description: |
-+              CPU or Codec component may have multiple clocks. A specific
-+              clock may have to be configured. In such cases the clock
-+              ID needs to be specified.
-+            $ref: /schemas/types.yaml#/definitions/uint32
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_parse_clk);
+ 
++static int asoc_simple_set_sysclk(struct snd_soc_dai *dai,
++				  struct asoc_simple_dai *simple_dai,
++				  unsigned int sysclk,
++				  int dir)
++{
++	int sysclk_id = 0, sysclk_source = 0;
++	int ret;
 +
-+          system-clock-source:
-+            description: |
-+              CPU or Codec component may have multiple sources for its
-+              system clock (sysclk). In such cases the sysclk source
-+              needs to be specified.
-+            $ref: /schemas/types.yaml#/definitions/uint32
++	if (simple_dai) {
++		sysclk_id = simple_dai->sysclk_id;
++		sysclk_source = simple_dai->sysclk_source;
++	}
 +
-+          pll-id:
-+            description: |
-+              Specify PLL that needs to be configured. This is useful
-+              when the CPU or Codec component has multiple PLLs.
-+            $ref: /schemas/types.yaml#/definitions/uint32
++	ret = snd_soc_dai_set_sysclk(dai, sysclk_id, sysclk_source, sysclk,
++				     dir);
++	if (ret && ret != -ENOTSUPP) {
++		dev_err(dai->dev, "set_sysclk error\n");
++		return ret;
++	}
 +
-+          pll-source:
-+            description: |
-+              When PLL has multiple reference clock sources, the exact
-+              source needs to be specified for the required configuration.
-+            $ref: /schemas/types.yaml#/definitions/uint32
++	return 0;
++}
 +
-+          pll-input-reference:
-+            description: |
-+              Specify how to calculate input frequency for the PLL.
-+              Depending on the identifier, input frequency can be
-+              calculated at runtime. For example if I2S bit clock is used
-+              as reference, rate depends on actual PCM parameters (rate,
-+              channels and bits) during an audio session. If a fixed rate
-+              is used, then "pll-input-frequency" can be used instead.
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            const: 2
+ int asoc_simple_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+@@ -219,8 +246,10 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream)
+ 		simple_priv_to_props(priv, rtd->num);
+ 
+ 	if (dai_props->mclk_fs) {
+-		snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0, SND_SOC_CLOCK_IN);
+-		snd_soc_dai_set_sysclk(cpu_dai, 0, 0, 0, SND_SOC_CLOCK_OUT);
++		asoc_simple_set_sysclk(codec_dai, dai_props->codec_dai, 0,
++				       SND_SOC_CLOCK_IN);
++		asoc_simple_set_sysclk(cpu_dai, dai_props->cpu_dai, 0,
++				       SND_SOC_CLOCK_OUT);
+ 	}
+ 
+ 	asoc_simple_clk_disable(dai_props->cpu_dai);
+@@ -270,19 +299,18 @@ int asoc_simple_hw_params(struct snd_pcm_substream *substream,
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		ret = snd_soc_dai_set_sysclk(codec_dai, 0, 0, mclk,
+-					     SND_SOC_CLOCK_IN);
+-		if (ret && ret != -ENOTSUPP)
+-			goto err;
++		ret = asoc_simple_set_sysclk(codec_dai, dai_props->codec_dai,
++					     mclk, SND_SOC_CLOCK_IN);
++		if (ret)
++			return ret;
+ 
+-		ret = snd_soc_dai_set_sysclk(cpu_dai, 0, 0, mclk,
+-					     SND_SOC_CLOCK_OUT);
+-		if (ret && ret != -ENOTSUPP)
+-			goto err;
++		ret = asoc_simple_set_sysclk(cpu_dai, dai_props->cpu_dai,
++					     mclk, SND_SOC_CLOCK_OUT);
++		if (ret)
++			return ret;
+ 	}
 +
-+          pll-input-frequency:
-+            description: Specify fixed input frequency
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+
-+          pll-output-reference:
-+            description: |
-+              Specify how to calculate output frequency for the PLL.
-+              Depending on the identifier, output frequency can be
-+              calculated at runtime. If output clock is used for MCLK purpose,
-+              then it may depend on "mclk-fs" scale factor. In such cases it
-+              needs to be calculated at runtime. If a fixed output frequency
-+              is needed, then "pll-output-frequency" can be used instead.
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            const: 1
-+
-+          pll-output-frequency:
-+            description: Specify fixed output frequency
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+
-   ports:
-     description: multi OF-Graph subnode
-     type: object
+ 	return 0;
+-err:
+-	return ret;
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_hw_params);
+ 
+@@ -307,12 +335,11 @@ static int asoc_simple_init_dai(struct snd_soc_dai *dai,
+ 		return 0;
+ 
+ 	if (simple_dai->sysclk) {
+-		ret = snd_soc_dai_set_sysclk(dai, 0, 0, simple_dai->sysclk,
++		ret = asoc_simple_set_sysclk(dai, simple_dai,
++					     simple_dai->sysclk,
+ 					     simple_dai->clk_direction);
+-		if (ret && ret != -ENOTSUPP) {
+-			dev_err(dai->dev, "simple-card: set_sysclk error\n");
++		if (ret)
+ 			return ret;
+-		}
+ 	}
+ 
+ 	if (simple_dai->slots) {
 -- 
 2.7.4
 
