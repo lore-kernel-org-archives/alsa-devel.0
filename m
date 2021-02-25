@@ -6,65 +6,77 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CBBDC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:09:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE83C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:15:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5695564F19
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:08:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5695564F19
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id F206264EC4
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:15:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F206264EC4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8C17167E;
-	Thu, 25 Feb 2021 13:08:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8C17167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17FEB167F;
+	Thu, 25 Feb 2021 13:14:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17FEB167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614254937;
-	bh=CIDixAW9cuWCd/GGddUPqJ7d4HsVTSIDyaTck9Q/u0c=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614255336;
+	bh=uFDgy+KoJ0VbtXjl8aAaApVtmL6eBmYsyrTZoYx4nMk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MRnt2Ys8o7lDzpJXnWOPJLEfc9krroeJghhBjUlINGCIV+rvayhunrhwq+zyX6t7O
-	 25ibyy4giKLYZgvHUoM27QXKOQvZuoTLhaRbfHRL1+7WUIHaCZFLbIJalx8dRN1a6T
-	 tP70GKwMdkERlftpyLY8pW4hLxA6lb9nqlIjUUEA=
+	b=JRWgEQs58yMIfBdfbDfXXP6Jm9WtijqcIwl3JWe9qyiL3MIKphNuU4w1ZqYUSxd1T
+	 whbNaycojjJuhjLsxt56rby++D8zsHCHb7hwOph1bFEOHljmAB5p9TPSk/RkeP53FL
+	 ZS0PJlgoO3P7ggnk6oicu0ulEMPLTBvyk1kRgh2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67817F80169;
-	Thu, 25 Feb 2021 13:08:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93F9BF800D2;
+	Thu, 25 Feb 2021 13:14:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00576F8016A; Thu, 25 Feb 2021 13:08:05 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E33B0F8016A; Thu, 25 Feb 2021 13:14:44 +0100 (CET)
+Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8343FF800D2
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 13:08:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8343FF800D2
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 939BFAC1D;
- Thu, 25 Feb 2021 12:08:02 +0000 (UTC)
-Date: Thu, 25 Feb 2021 13:08:02 +0100
-Message-ID: <s5hsg5kpcyl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Subject: Re: [PATCH v5 2/9] ALSA: virtio: add virtio sound driver
-In-Reply-To: <cea4164d-345e-393b-9328-731c2f874eb7@opensynergy.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72095F800D2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 13:14:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72095F800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
+ header.b="G84w91d1"
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
+ [127.0.0.1])
+ by mx1.opensynergy.com (Proxmox) with ESMTP id 44471A06F5;
+ Thu, 25 Feb 2021 13:14:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ h=cc:cc:content-transfer-encoding:content-type:content-type
+ :date:from:from:in-reply-to:message-id:mime-version:references
+ :reply-to:subject:subject:to:to; s=srmailgate02; bh=tsvHDlnqSzD6
+ yifbwIkb7LBXJuGwyXOyWV+yVzi4100=; b=G84w91d1T9lH3djLLcOGRc4cIZ4v
+ djJeKodpta0rHWo8XqOqFYCrvJR/pbd+e/0qggFRXzKFvmv7AmJ9z/AnGR4832KL
+ kzz1FeygLg0MA0XYDyZanT+CZ+tjorlXscycxAN176GW4aDD20q3pC7VMvRic6mR
+ ESw3CoT1Fa4X4oanD6fgCGeTu5LCc2kd5hcSCnTeLTqpFE+1PQNieX829jtJ6uRB
+ 3Hlf6df6K1Bfqt1UykpiGlc/Gh/nrHTKfxKI0f3G2KLP80afENBYh/hlHgb4ut0+
+ LNrWQyz1HiaBbzUl+UEQ0fPOpmJzckdPtwEAcoslNZBKfokyPCftiDPs2w==
+Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
+To: Takashi Iwai <tiwai@suse.de>
 References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
- <20210222153444.348390-3-anton.yakovlev@opensynergy.com>
- <s5h7dmwqvo4.wl-tiwai@suse.de>
- <cea4164d-345e-393b-9328-731c2f874eb7@opensynergy.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
- "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
- Jason Wang <jasowang@redhat.com>, Takashi Iwai <tiwai@suse.com>,
- virtualization@lists.linux-foundation.org
+ <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
+ <s5h35xkquvj.wl-tiwai@suse.de>
+From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
+Date: Thu, 25 Feb 2021 13:14:37 +0100
+MIME-Version: 1.0
+In-Reply-To: <s5h35xkquvj.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-02.open-synergy.com (10.26.10.22)
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org, "Michael S.
+ Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,24 +92,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Feb 2021 12:51:36 +0100,
-Anton Yakovlev wrote:
+On 25.02.2021 11:55, Takashi Iwai wrote:
+> On Mon, 22 Feb 2021 16:34:41 +0100,
+> Anton Yakovlev wrote:
+>> +static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
+>> +{
+>> +     struct virtio_pcm *vpcm = snd_pcm_substream_chip(substream);
+>> +     struct virtio_pcm_substream *vss = NULL;
+>> +
+>> +     if (vpcm) {
+>> +             switch (substream->stream) {
+>> +             case SNDRV_PCM_STREAM_PLAYBACK:
+>> +             case SNDRV_PCM_STREAM_CAPTURE: {
 > 
-> > Now I'm wondering whether it's safe to do that from this place.
-> > Basically device_reprobe() unbinds the device that releases the full
-> > resources once including the devm_* stuff.  And this work itself is in
-> > a part of devm allocated resource, so it'll be released there.  That
-> > said, we might hit use-after-free...  This needs to be verified.
+> The switch() here looks superfluous.  The substream->stream must be a
+> good value in the callback.  If any, you can put WARN_ON() there, but
+> I don't think it worth.
+
+At least it doesn't do any harm. If something really went wrong, we can
+check it right in the open callback, which is called the very first.
+
+
+>> +static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
+>> +                              struct snd_pcm_hw_params *hw_params)
+>> +{
+> ....
+>> +     return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
 > 
-> It's safe. Suicide kernel workers are funny but possible things. Since
-> the kernel itself (AFAIU) assumes such a situation and does not access
-> the worker structure after the callback function call.
+> We have the allocation, but...
+> 
+>> +static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
+>> +{
+>> +     return 0;
+> 
+> ... no release at hw_free()?
+> I know that the free is present in the allocator, but it's only for
+> re-allocation case, I suppose.
 
-Indeed, process_one_work() in workqueue.c assures no access to the
-work object after the callback.  Then this must be fine.  Good to
-know!
+When the substream stops, sync_ptr waits until the device has completed
+all pending messages. This wait can be interrupted either by a signal or
+due to a timeout. In this case, the device can still access messages
+even after calling hw_free(). It can also issue an interrupt, and the
+interrupt handler will also try to access message structures. Therefore,
+freeing of already allocated messages occurs either in hw_params() or in
+dev->release(), since there it is 100% safe.
 
 
-thanks,
+> thanks,
+> 
+> Takashi
+> 
 
-Takashi
+-- 
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
+
