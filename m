@@ -6,55 +6,54 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 871C7C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B06AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:56:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DFB764ECE
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:46:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DFB764ECE
+	by mail.kernel.org (Postfix) with ESMTPS id 5371964F0C
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:56:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5371964F0C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DE4B15DC;
-	Thu, 25 Feb 2021 11:45:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DE4B15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32E2215E0;
+	Thu, 25 Feb 2021 11:55:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32E2215E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614249980;
-	bh=ArnFgH+C+SxwP+na1L+3qJZNCRKmcRyqZHP0HILXOEs=;
+	s=default; t=1614250600;
+	bh=2TnYJBOF6GoyqenuvZqWVN6C7hHg+jTzWks/HX1kEXU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d0E9FCyLSUCbDDbR436vmp3QFdyWiM/cThmpwCSSQOdXTVUlJm3OESLarOomdvkxP
-	 AoUgXZsjFoLBql5vDeAwFN7e4P8NAagiDRlLXsXFs4OTNkdF2DWsq7Vx13eUh3SxS0
-	 x7KProMCKqUlHWnEdq0WKZJEZvyZud/X2u+fNkS0=
+	b=cXUabJiL5IKFdDQ22bqwobp8/wGBXFOiYXGYbrDXhGpAjqfnUYSx9vGzn+TK6aGDi
+	 cKwUnODf5h7tmax0BXIgRlRweLxxDIkzwdi13wa/Umqt6Zq3j6iqQx6ldBcPPP0NQ+
+	 vY6tI93BelHvDZmULgVdnDAaRB123qHiYfiZu69I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7CB5F80169;
-	Thu, 25 Feb 2021 11:45:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4A22F80169;
+	Thu, 25 Feb 2021 11:55:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F60CF8016A; Thu, 25 Feb 2021 11:45:27 +0100 (CET)
+ id 04BFEF8016A; Thu, 25 Feb 2021 11:55:48 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 099F5F800E4
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 11:45:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 099F5F800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id C551CF80159
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 11:55:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C551CF80159
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 8A550AC1D;
- Thu, 25 Feb 2021 10:45:24 +0000 (UTC)
-Date: Thu, 25 Feb 2021 11:45:24 +0100
-Message-ID: <s5h4ki0qvcr.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 64AF2ADF0;
+ Thu, 25 Feb 2021 10:55:44 +0000 (UTC)
+Date: Thu, 25 Feb 2021 11:55:44 +0100
+Message-ID: <s5h35xkquvj.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Subject: Re: [PATCH v5 5/9] ALSA: virtio: handling control and I/O messages
- for the PCM device
-In-Reply-To: <20210222153444.348390-6-anton.yakovlev@opensynergy.com>
+Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
+In-Reply-To: <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
 References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
- <20210222153444.348390-6-anton.yakovlev@opensynergy.com>
+ <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,34 +77,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Feb 2021 16:34:40 +0100,
+On Mon, 22 Feb 2021 16:34:41 +0100,
 Anton Yakovlev wrote:
-> 
-> +void virtsnd_pcm_event(struct virtio_snd *snd, struct virtio_snd_event *event)
+> +static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
 > +{
-> +	struct virtio_pcm_substream *vss;
-> +	u32 sid = le32_to_cpu(event->data);
+> +	struct virtio_pcm *vpcm = snd_pcm_substream_chip(substream);
+> +	struct virtio_pcm_substream *vss = NULL;
 > +
-> +	if (sid >= snd->nsubstreams)
-> +		return;
-> +
-> +	vss = &snd->substreams[sid];
-> +
-> +	switch (le32_to_cpu(event->hdr.code)) {
-> +	case VIRTIO_SND_EVT_PCM_PERIOD_ELAPSED:
-> +		/* TODO: deal with shmem elapsed period */
-> +		break;
-> +	case VIRTIO_SND_EVT_PCM_XRUN:
-> +		spin_lock(&vss->lock);
-> +		if (vss->xfer_enabled)
-> +			vss->xfer_xrun = true;
-> +		spin_unlock(&vss->lock);
+> +	if (vpcm) {
+> +		switch (substream->stream) {
+> +		case SNDRV_PCM_STREAM_PLAYBACK:
+> +		case SNDRV_PCM_STREAM_CAPTURE: {
 
-You can stop the stream at xrun, too.
+The switch() here looks superfluous.  The substream->stream must be a
+good value in the callback.  If any, you can put WARN_ON() there, but
+I don't think it worth.
 
-But it often messes up with the locking, so it's no mandatory
-implementation.  You seem to pass the xrun state at the pointer
-callback, and this should be enough for normal uses.
+> +static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
+> +				 struct snd_pcm_hw_params *hw_params)
+> +{
+....
+> +	return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
+
+We have the allocation, but...
+
+> +static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
+> +{
+> +	return 0;
+
+... no release at hw_free()?
+I know that the free is present in the allocator, but it's only for
+re-allocation case, I suppose.
 
 
 thanks,
