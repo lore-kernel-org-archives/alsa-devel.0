@@ -2,58 +2,61 @@ Return-Path: <SRS0=dMuI=H3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0111EC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:25:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CDC2C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:26:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3FFD464E05
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:25:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3FFD464E05
+	by mail.kernel.org (Postfix) with ESMTPS id 764B064E05
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 00:26:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 764B064E05
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1D0211C;
-	Thu, 25 Feb 2021 01:24:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1D0211C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 936F3166A;
+	Thu, 25 Feb 2021 01:25:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 936F3166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614212736;
-	bh=62wbbA8JTSgyYKJ8Fs57I98ls2izRluYmePPfOSWIBA=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tAQZ1pvaEn4LBdfE5L/6q5tUwYb/tFldl7JM9T/AAVHeb2M2za6PwPt4zm21h4SP7
-	 LK1olCB8VkL5/gJbyeIgpezqf/yNifYE3sb0j/q6moRae1GZ9NokJBmh91cFrlFlXt
-	 RB86CCgdrdnXUPg5XYlIk4ARhdk3UqqmFYyt2yXc=
+	s=default; t=1614212787;
+	bh=UQ5yKW1siL/y0gafQcIMNSSPfhIabuZFwmmIzhehADA=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MmSqfvTFikKT2U7kybuR3w9VpLFNklJhy8N5t3TV8yR6zygqrv7zEvSh9Cnn1ptdW
+	 m6gPhYv6a6dF+Fw8U6xFi1msMqqWqYmkXOqbs/hS3BmhhcKtZ5p/Oq6GrbLB1Umj+h
+	 izkBgcrM0NLod5FugsAd0zIPI+Hyd/+IiHxUruaQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B69EF80161;
-	Thu, 25 Feb 2021 01:24:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E7CDF80234;
+	Thu, 25 Feb 2021 01:25:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32E6EF8016C; Thu, 25 Feb 2021 01:24:44 +0100 (CET)
+ id 69FD1F80249; Thu, 25 Feb 2021 01:25:13 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id AA92AF80129
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 01:24:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA92AF80129
-Date: 25 Feb 2021 09:24:34 +0900
-X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73307167"
+ by alsa1.perex.cz (Postfix) with ESMTP id CB6F7F800F2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 01:25:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB6F7F800F2
+Date: 25 Feb 2021 09:25:02 +0900
+X-IronPort-AV: E=Sophos;i="5.81,203,1610377200"; d="scan'208";a="73307189"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 25 Feb 2021 09:24:34 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 25 Feb 2021 09:25:02 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id D8CDD400F2AD;
- Thu, 25 Feb 2021 09:24:34 +0900 (JST)
-Message-ID: <87mtvtro3h.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8D6C3400F2AD;
+ Thu, 25 Feb 2021 09:25:02 +0900 (JST)
+Message-ID: <87lfbdro2p.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/5] ASoC: rsnd: cleanup ppcheck warning for Renesas sound
- driver
+Subject: [PATCH 1/5] ASoC: rsnd: cleanup ppcheck warning for ssiu.c
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87mtvtro3h.wl-kuninori.morimoto.gx@renesas.com>
+References: <87mtvtro3h.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -73,29 +76,115 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark, Pierre-Louis
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-These patches are based on below patch-set which from Pierre-Louis,
-and cleanup cppcheck warnings for Rensas sound driver.
-[3/5] has Reported-by Pierre-Louis tag.
+This patch cleanups below ppcheck warning.
 
-	Subject: [PATCH 0/8] ASoC: sh: remove cppcheck warnings
-	Date: Fri, 19 Feb 2021 17:16:27 -0600
+sound/soc/sh/rcar/ssiu.c:212:10: style: The scope of the variable 'shift' can be reduced. [variableScope]
+  int i, shift;
+         ^
+sound/soc/sh/rcar/ssiu.c:337:19: style: The scope of the variable 'mod' can be reduced. [variableScope]
+ struct rsnd_mod *mod;
+                  ^
+sound/soc/sh/rcar/ssiu.c:362:22: style: The scope of the variable 'np' can be reduced. [variableScope]
+ struct device_node *np;
+                     ^
+sound/soc/sh/rcar/ssiu.c:363:19: style: The scope of the variable 'mod' can be reduced. [variableScope]
+ struct rsnd_mod *mod;
+                  ^
+sound/soc/sh/rcar/ssiu.c:366:6: style: The scope of the variable 'i' can be reduced. [variableScope]
+ int i;
+     ^
+sound/soc/sh/rcar/ssiu.c:397:13: style: The scope of the variable 'ret' can be reduced. [variableScope]
+ int i, nr, ret;
+            ^
 
-Kuninori Morimoto (5):
-  ASoC: rsnd: cleanup ppcheck warning for ssiu.c
-  ASoC: rsnd: cleanup ppcheck warning for ssi.c
-  ASoC: rsnd: cleanup ppcheck warning for core.c
-  ASoC: rsnd: cleanup ppcheck warning for cmd.c
-  ASoC: rsnd: cleanup ppcheck warning for adg.c
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/sh/rcar/ssiu.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
- sound/soc/sh/rcar/adg.c  | 15 +++++++-------
- sound/soc/sh/rcar/cmd.c  | 15 +++++++-------
- sound/soc/sh/rcar/core.c | 32 +++++++++++++---------------
- sound/soc/sh/rcar/ssi.c  | 45 ++++++++++++++++++++--------------------
- sound/soc/sh/rcar/ssiu.c | 22 +++++++++++---------
- 5 files changed, 64 insertions(+), 65 deletions(-)
-
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index f29bd72f3a26..852cdeedf7e9 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -209,7 +209,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 		struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
+ 		struct rsnd_mod *pos;
+ 		u32 val;
+-		int i, shift;
++		int i;
+ 
+ 		i = rsnd_mod_id(ssi_mod);
+ 
+@@ -221,7 +221,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 			i;
+ 
+ 		for_each_rsnd_mod_array(i, pos, io, rsnd_ssi_array) {
+-			shift	= (i * 4) + 20;
++			int shift = (i * 4) + 20;
++
+ 			val	= (val & ~(0xF << shift)) |
+ 				rsnd_mod_id(pos) << shift;
+ 		}
+@@ -334,7 +335,6 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
+ 					       struct rsnd_dai_stream *io)
+ {
+ 	struct rsnd_mod *ssi_mod = rsnd_io_to_mod_ssi(io);
+-	struct rsnd_mod *mod;
+ 	struct rsnd_ssiu *ssiu;
+ 	int i;
+ 
+@@ -343,7 +343,7 @@ static void rsnd_parse_connect_ssiu_compatible(struct rsnd_priv *priv,
+ 
+ 	/* select BUSIF0 */
+ 	for_each_rsnd_ssiu(ssiu, priv, i) {
+-		mod = rsnd_mod_get(ssiu);
++		struct rsnd_mod *mod = rsnd_mod_get(ssiu);
+ 
+ 		if ((rsnd_mod_id(ssi_mod) == rsnd_mod_id(mod)) &&
+ 		    (rsnd_mod_id_sub(mod) == 0)) {
+@@ -359,17 +359,17 @@ void rsnd_parse_connect_ssiu(struct rsnd_dai *rdai,
+ {
+ 	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
+ 	struct device_node *node = rsnd_ssiu_of_node(priv);
+-	struct device_node *np;
+-	struct rsnd_mod *mod;
+ 	struct rsnd_dai_stream *io_p = &rdai->playback;
+ 	struct rsnd_dai_stream *io_c = &rdai->capture;
+-	int i;
+ 
+ 	/* use rcar_sound,ssiu if exist */
+ 	if (node) {
+-		i = 0;
++		struct device_node *np;
++		int i = 0;
++
+ 		for_each_child_of_node(node, np) {
+-			mod = rsnd_ssiu_mod_get(priv, i);
++			struct rsnd_mod *mod = rsnd_ssiu_mod_get(priv, i);
++
+ 			if (np == playback)
+ 				rsnd_dai_connect(mod, io_p, mod->type);
+ 			if (np == capture)
+@@ -394,7 +394,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ 	struct rsnd_ssiu *ssiu;
+ 	struct rsnd_mod_ops *ops;
+ 	const int *list = NULL;
+-	int i, nr, ret;
++	int i, nr;
+ 
+ 	/*
+ 	 * Keep DT compatibility.
+@@ -441,6 +441,8 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ 	}
+ 
+ 	for_each_rsnd_ssiu(ssiu, priv, i) {
++		int ret;
++
+ 		if (node) {
+ 			int j;
+ 
 -- 
 2.25.1
 
