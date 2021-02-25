@@ -2,67 +2,68 @@ Return-Path: <SRS0=dMuI=H3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5D3BC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E7F3C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:52:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0F0264EDC
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:21:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0F0264EDC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id C16C764F14
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 12:52:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C16C764F14
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CD081686;
-	Thu, 25 Feb 2021 13:20:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CD081686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B678167C;
+	Thu, 25 Feb 2021 13:51:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B678167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614255709;
-	bh=arxq2M/NFIhShvN2HCvVjYMYjSdImztX7Dwu+k1EjH0=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=B5AJS4jreMejPcObYLOZdYfKodyZwuVCyxuPyneDhAaHHdiuipUoeOO3Rw22WzEtV
-	 7GJ/63fZNaDssvqlOMrq/qV/BJkWkbY+lwraKElKUucXjaJ7xNmrHU9IhIg64Et0zG
-	 qa4KSjcWothrTw14qfv1hAsLwiaWv4ITWqT3Z7ls=
+	s=default; t=1614257533;
+	bh=I4igTPjfuo8m48knJ5rHCIHtqOmzh0SviYq2JU9g2tc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Mpl8mlo3zkbRxq5qXhw8A5s2JBXctNuKGDg8wyK9w1Yp8c1W0zj6y/IUL2L8ZmBzH
+	 jqhYp3Qxhtz1cYzOguPQent/NhEwnZHT8baPxTVqAR3tutjWWHJU7f6K7AzCd/V0Wu
+	 KtHZmUSyrC3QOe3D1J0XHomEdeBu9SI9cLz5XEkA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E40BF80169;
-	Thu, 25 Feb 2021 13:20:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0719F80169;
+	Thu, 25 Feb 2021 13:51:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFF84F8016A; Thu, 25 Feb 2021 13:20:56 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 273D4F8016A; Thu, 25 Feb 2021 13:51:21 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD820F800E4
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 13:20:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD820F800E4
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 96293200C0F;
- Thu, 25 Feb 2021 13:20:48 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 51FFD200C38;
- Thu, 25 Feb 2021 13:20:43 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 97A4340291;
- Thu, 25 Feb 2021 13:20:36 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, stephan@gerhold.net,
- guennadi.liakhovetski@linux.intel.com, kai.vehmanen@linux.intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: simple-card: Add dummy dai support simple sound card
-Date: Thu, 25 Feb 2021 20:08:32 +0800
-Message-Id: <1614254912-15746-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A72EF800E4
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 13:51:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A72EF800E4
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id EC3DDAF5B;
+ Thu, 25 Feb 2021 12:51:16 +0000 (UTC)
+Date: Thu, 25 Feb 2021 13:51:16 +0100
+Message-ID: <s5hlfbcpayj.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
+In-Reply-To: <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
+References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
+ <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
+ <s5h35xkquvj.wl-tiwai@suse.de>
+ <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,48 +79,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If sound card doesn't need specific codec device, just
-dummy codec is enough, then we can link the dummy component
-directly.
+On Thu, 25 Feb 2021 13:14:37 +0100,
+Anton Yakovlev wrote:
+> 
+> On 25.02.2021 11:55, Takashi Iwai wrote:
+> > On Mon, 22 Feb 2021 16:34:41 +0100,
+> > Anton Yakovlev wrote:
+> >> +static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
+> >> +{
+> >> +     struct virtio_pcm *vpcm = snd_pcm_substream_chip(substream);
+> >> +     struct virtio_pcm_substream *vss = NULL;
+> >> +
+> >> +     if (vpcm) {
+> >> +             switch (substream->stream) {
+> >> +             case SNDRV_PCM_STREAM_PLAYBACK:
+> >> +             case SNDRV_PCM_STREAM_CAPTURE: {
+> >
+> > The switch() here looks superfluous.  The substream->stream must be a
+> > good value in the callback.  If any, you can put WARN_ON() there, but
+> > I don't think it worth.
+> 
+> At least it doesn't do any harm.
 
-In this case, user needs to specify below setting in
-devicetree. Previously the sound-dai is a node of codec,
-now we check if it is zero before parsing the node, zero
-means dummy component is specified.
+It does -- it makes the readability worse, and that's a very important
+point.
 
-	simple-audio-card,codec {
-		sound-dai = <0>;
-	};
+> >> +static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
+> >> +                              struct snd_pcm_hw_params *hw_params)
+> >> +{
+> > ....
+> >> +     return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
+> >
+> > We have the allocation, but...
+> >
+> >> +static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
+> >> +{
+> >> +     return 0;
+> >
+> > ... no release at hw_free()?
+> > I know that the free is present in the allocator, but it's only for
+> > re-allocation case, I suppose.
+> 
+> When the substream stops, sync_ptr waits until the device has completed
+> all pending messages. This wait can be interrupted either by a signal or
+> due to a timeout. In this case, the device can still access messages
+> even after calling hw_free(). It can also issue an interrupt, and the
+> interrupt handler will also try to access message structures. Therefore,
+> freeing of already allocated messages occurs either in hw_params() or in
+> dev->release(), since there it is 100% safe.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/generic/simple-card.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+OK, then it's worth to document it about this object lifecycle.
+The buffer management of this driver is fairly unique, so otherwise it
+confuses readers.
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index c262281bc64d..8b0cabd1bad1 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -34,10 +34,19 @@ static int asoc_simple_parse_dai(struct device_node *node,
- {
- 	struct of_phandle_args args;
- 	int ret;
-+	u32 val;
- 
- 	if (!node)
- 		return 0;
- 
-+	ret = of_property_read_u32(node, DAI, &val);
-+	if (val == 0) {
-+		dlc->of_node       = NULL;
-+		dlc->dai_name      = "snd-soc-dummy-dai";
-+		dlc->name          = "snd-soc-dummy";
-+		return 0;
-+	}
-+
- 	/*
- 	 * Get node via "sound-dai = <&phandle port>"
- 	 * it will be used as xxx_of_node on soc_bind_dai_link()
--- 
-2.27.0
 
+thanks,
+
+Takashi
