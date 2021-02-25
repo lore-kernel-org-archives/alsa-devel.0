@@ -6,54 +6,55 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E603C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:39:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A721C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:40:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B5EB64EC8
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:39:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B5EB64EC8
+	by mail.kernel.org (Postfix) with ESMTPS id 84E7F64EC8
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Feb 2021 10:40:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84E7F64EC8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD81415E0;
-	Thu, 25 Feb 2021 11:38:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD81415E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9286215E0;
+	Thu, 25 Feb 2021 11:40:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9286215E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614249575;
-	bh=JZShP9xlrOGEsa4tBIjljpA1Dr6p0Bz2E2jexihMFQY=;
+	s=default; t=1614249655;
+	bh=uohpTx07rpK5yTZ1/5Bmr8Z4RAOgpa3fD1DhWoaJRO4=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N7E1JEIHz+bn6lEhjfImK+7esL2XdHeh49gmqtBB44aN0+SbFE+FfSH8H5yB5xGfL
-	 lUB7+Dl8v8ZdYd99tJkMUDl6bhd5JGwzTxn6OsRhRA8GqKfg0ZaPLtfuYaNmFdNlq4
-	 RCTZnDfH+dn5S+f+08Z+AOE7h0oyUmF9IRIKFvoo=
+	b=eZBKaRhvkQN8opfCCBgO+u97+/hO44d8INTIg8lqgvAiBfx3IECtUz4UEnIsOkmNc
+	 7fwmJ11YfhPSOwETl5pbIdydsvQYGwE9ra4dz9wHrA1yD0s9aC4BGCfLIkND4Qn5dW
+	 sHmP68RHVr3TUbS1ADyRikTPMZ9ZqaLU5fk0E4bg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2851EF80159;
-	Thu, 25 Feb 2021 11:38:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EA29F8016A;
+	Thu, 25 Feb 2021 11:40:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A62EF8016A; Thu, 25 Feb 2021 11:38:43 +0100 (CET)
+ id 088E6F801F5; Thu, 25 Feb 2021 11:40:04 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F029F80159
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 11:38:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F029F80159
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B514F8016D
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 11:39:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B514F8016D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2AB1FAAAE;
- Thu, 25 Feb 2021 10:38:36 +0000 (UTC)
-Date: Thu, 25 Feb 2021 11:38:35 +0100
-Message-ID: <s5h7dmwqvo4.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2F4D5AD5C;
+ Thu, 25 Feb 2021 10:39:59 +0000 (UTC)
+Date: Thu, 25 Feb 2021 11:39:59 +0100
+Message-ID: <s5h5z2gqvls.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
 Subject: Re: [PATCH v5 2/9] ALSA: virtio: add virtio sound driver
-In-Reply-To: <20210222153444.348390-3-anton.yakovlev@opensynergy.com>
+In-Reply-To: <s5h7dmwqvo4.wl-tiwai@suse.de>
 References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
  <20210222153444.348390-3-anton.yakovlev@opensynergy.com>
+ <s5h7dmwqvo4.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,51 +79,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Feb 2021 16:34:37 +0100,
-Anton Yakovlev wrote:
-> +static int virtsnd_find_vqs(struct virtio_snd *snd)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	vq_callback_t *callbacks[VIRTIO_SND_VQ_MAX] = {
-> +		[VIRTIO_SND_VQ_EVENT] = virtsnd_event_notify_cb
-> +	};
-> +	const char *names[VIRTIO_SND_VQ_MAX] = {
+On Thu, 25 Feb 2021 11:38:35 +0100,
+Takashi Iwai wrote:
+> 
+> On Mon, 22 Feb 2021 16:34:37 +0100,
+> Anton Yakovlev wrote:
+> > +static int virtsnd_find_vqs(struct virtio_snd *snd)
+> > +{
+> > +	struct virtio_device *vdev = snd->vdev;
+> > +	vq_callback_t *callbacks[VIRTIO_SND_VQ_MAX] = {
+> > +		[VIRTIO_SND_VQ_EVENT] = virtsnd_event_notify_cb
+> > +	};
+> > +	const char *names[VIRTIO_SND_VQ_MAX] = {
+> 
+> Shouldn't be static?
 
-Shouldn't be static?
-Also it's often const char * const names[] = { ... }
-unless you overwrite something.
+Also callbacks[] should be static (and maybe const), I suppose.
 
-> +/**
-> + * virtsnd_reset_fn() - Kernel worker's function to reset the device.
-> + * @work: Reset device work.
-> + *
-> + * Context: Process context.
-> + */
-> +static void virtsnd_reset_fn(struct work_struct *work)
-> +{
-> +	struct virtio_snd *snd =
-> +		container_of(work, struct virtio_snd, reset_work);
-> +	struct virtio_device *vdev = snd->vdev;
-> +	struct device *dev = &vdev->dev;
-> +	int rc;
-> +
-> +	dev_info(dev, "sound device needs reset\n");
-> +
-> +	/*
-> +	 * It seems that the only way to properly reset the device is to remove
-> +	 * and re-create the ALSA sound card device.
-> +	 */
-> +	rc = device_reprobe(dev);
-> +	if (rc)
-> +		dev_err(dev, "failed to reprobe sound device: %d\n", rc);
-
-Now I'm wondering whether it's safe to do that from this place.
-Basically device_reprobe() unbinds the device that releases the full
-resources once including the devm_* stuff.  And this work itself is in
-a part of devm allocated resource, so it'll be released there.  That
-said, we might hit use-after-free...  This needs to be verified.
-
-
-thanks,
 
 Takashi
