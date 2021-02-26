@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8AE9C43381
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE7FCC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB85964F0E
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB85964F0E
+	by mail.kernel.org (Postfix) with ESMTPS id BA52F64E20
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA52F64E20
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4436C1662;
-	Fri, 26 Feb 2021 15:40:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4436C1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29F261680;
+	Fri, 26 Feb 2021 15:41:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29F261680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614350492;
-	bh=8I1pZMLzT7g3uIi8Tdz7bHdKJDHI57Ne+G6Iy/kS98Q=;
+	s=default; t=1614350510;
+	bh=iiaHnM2MsTvXQ+Wq9X5W8+XjcwQNiYnDfDdF6lOpA+U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kibO1cPHRZ9flocREavuaPIgKtkubd6pjhngbEiphmW75OzSHa/mAzEK5XXUcA+4H
-	 cY/njAW5tUZw/q/EBTuG9ZOUJVe7IwN+WgxDfUG6GIDGhPUTicRhdPMW58M3dIkunj
-	 BHgmT692PJ5qpTcugog9fkE829BB5/UosvxCBLeA=
+	b=PhBplwVCX8w6nflhmTYOpEmahToTVJCoFsJV798mbvkD82AZhsYkMDSZhzSa4h2+o
+	 vRUot44Fkv2x9V5vgqGq3QURGIbKZQiq0OBWuCglKKBlcdYmbfFgqXgUe0RScLPHLv
+	 CXQkL/DrrRuP1vkgnP64nC/GxtLlZxwUZE0bVnRY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C07FFF8032C;
-	Fri, 26 Feb 2021 15:38:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9600DF80431;
+	Fri, 26 Feb 2021 15:38:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07CF7F802E0; Fri, 26 Feb 2021 15:38:40 +0100 (CET)
+ id 99417F802E2; Fri, 26 Feb 2021 15:38:42 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA997F8016C
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 15:38:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA997F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B0C4F802CA
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 15:38:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B0C4F802CA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="CkuLTh4U"
+ header.b="GgZ0/BCH"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1614350316;
+ s=mimecast20190719; t=1614350317;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=db/O0GI+Fd2zObLf0mZVhSQcHXvdraAQssaAgMP0tbo=;
- b=CkuLTh4ULemBxyBN/O9riCyVKls1e2rvil9FQs7tSb39DKS3IReI+tW5Tl/bKBo0UzlOAI
- /NC2NVLFZ3AHnyTTJQgXt6mQXWofsj7SG4SGBW2X+9xYCKxgpXWWi9IxIaYe9F5bI+c2oe
- hOQfSjJwmV1tA0fsPYkfdLn55VFK+pU=
+ bh=KejlvcT1gOeSWvvdBwsaUIeKwwnwlqbeqQnR3mja/KA=;
+ b=GgZ0/BCH15tODcnURp6C6hcOjFw3WbgxNjghk+Om1tTs+K8dEmsN0y0RI+4pAlGzShEJWi
+ Pn8gcwDS7huEsCXkMW8aclAiOL5zNwdnecgoPm8QT6dHzBmMzOELRr5PQ0JMaxZajS9TSs
+ uxLfALqpolgmbIOuOdw6tU0XMW2Zp1A=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-SXErfc-yPuefjIlvrPZsMQ-1; Fri, 26 Feb 2021 09:38:31 -0500
-X-MC-Unique: SXErfc-yPuefjIlvrPZsMQ-1
+ us-mta-273-6dufz7FqNX-b-z9MV0qCUg-1; Fri, 26 Feb 2021 09:38:33 -0500
+X-MC-Unique: 6dufz7FqNX-b-z9MV0qCUg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
  [10.5.11.14])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 059B0107ACE6;
- Fri, 26 Feb 2021 14:38:30 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFB2110066F2;
+ Fri, 26 Feb 2021 14:38:31 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-36.ams2.redhat.com [10.36.112.36])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 69B0D5D9D2;
- Fri, 26 Feb 2021 14:38:28 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 4C9445D9E2;
+ Fri, 26 Feb 2021 14:38:30 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/5] ASoC: rt5640: Rename 'Mono DAC Playback Volume' to 'DAC2
- Playback Volume'
-Date: Fri, 26 Feb 2021 15:38:16 +0100
-Message-Id: <20210226143817.84287-5-hdegoede@redhat.com>
+Subject: [PATCH 5/5] ASoC: Intel: bytcr_rt5640: Add used AIF to the components
+ string
+Date: Fri, 26 Feb 2021 15:38:17 +0100
+Message-Id: <20210226143817.84287-6-hdegoede@redhat.com>
 In-Reply-To: <20210226143817.84287-1-hdegoede@redhat.com>
 References: <20210226143817.84287-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -106,65 +106,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rename 'Mono DAC Playback Volume' to 'DAC2 Playback Volume' and move it
-from rt5640_specific_snd_controls[] to rt5640_snd_controls[].
+Depending on which AIF is used the UCM profile needs to setup
+a different path through the rt5640's "Digital Mixer Path" graph.
 
-The RT5640_DAC2_DIG_VOL register controlled by this mixer-element has
-nothing to do with the Mono (Amplified) output which is only available
-on the ALC5640 chip and not on the ALC5642 chip.
+ATM the UCM profiles solve this by just enabling paths to the outputs /
+from the input from both AIF1 and AIF2 and then relying on the DAPM
+framework to power-down the parts of the graph connected to the
+unused AIF.
 
-The RT5640_DAC2_DIG_VOL volume-control is the main volume control for
-audio coming from the I2S2 / AIF2 input of the chip and as such is also
-available on the ALC5642.
+But in order to be able to use hardware-volumecontrol and to use
+the hardware mute controls, which are necessary for mute LED control,
+the UCM profiles need to know which AIF is actually being used.
 
-This commit results in the following userspace visible changes:
+Add a new "aif:1" or "aif:2" part to the component string to provide
+info about the used AIF to userspace / to the UCM profiles.
 
-1. On devices with an ACL5640 codec, the 'Mono DAC Playback Volume'
-control is renamed to 'DAC2 Playback Volume' allowing the alsa-lib
-mixer code to properly group it with the 'DAC2 Playback Switch' which
-is controlling the mute bits in the RT5640_DAC2_DIG_VOL register.
-
-Note the removal of the 'Mono DAC Playback Volume' is not an issue for
-userspace because the UCM profiles do not use it (the UCM profiles are
-shared betweent the 5640 and 5642 and only the 5640 had this control).
-
-2. On devices with an ACL5642 codec, there now will be a new
-'DAC2 Playback Volume', grouped with the 'DAC2 Playback Switch'
-
-Having a complete 'DAC2 Playback Volume' / 'DAC2 Playback Switch' pair
-on both variants will allow enabling hardware-volume control by
-setting the UCM PlaybackMasterElem to "DAC2" on devices where the
-I2S2/AIF2 interface of the codec is used.
+Note the size of byt_rt5640_components is not increased because the
+size of 32 chars already is big enough.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index c143ca174921..38cc3155bf25 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -450,6 +450,9 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
- 	/* DAC Digital Volume */
- 	SOC_DOUBLE("DAC2 Playback Switch", RT5640_DAC2_CTRL,
- 		RT5640_M_DAC_L2_VOL_SFT, RT5640_M_DAC_R2_VOL_SFT, 1, 1),
-+	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5640_DAC2_DIG_VOL,
-+			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
-+			175, 0, dac_vol_tlv),
- 	SOC_DOUBLE_EXT("DAC1 Playback Switch", SND_SOC_NOPM, 0, 1, 1, 0,
- 			rt5640_dac1_playback_switch_get, rt5640_dac1_playback_switch_put),
- 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5640_DAC1_DIG_VOL,
-@@ -495,9 +498,6 @@ static const struct snd_kcontrol_new rt5640_specific_snd_controls[] = {
- 	/* MONO Output Control */
- 	SOC_SINGLE("Mono Playback Switch", RT5640_MONO_OUT, RT5640_L_MUTE_SFT,
- 		1, 1),
--
--	SOC_DOUBLE_TLV("Mono DAC Playback Volume", RT5640_DAC2_DIG_VOL,
--		RT5640_L_VOL_SFT, RT5640_R_VOL_SFT, 175, 0, dac_vol_tlv),
- };
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 5d48cc359c3d..1f6a636571c2 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1252,6 +1252,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	int ret_val = 0;
+ 	int dai_index = 0;
+ 	int i, cfg_spk;
++	int aif;
  
- /**
+ 	is_bytcr = false;
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+@@ -1363,8 +1364,12 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	log_quirks(&pdev->dev);
+ 
+ 	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
+-	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
++	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+ 		byt_rt5640_dais[dai_index].codecs->dai_name = "rt5640-aif2";
++		aif = 2;
++	} else {
++		aif = 1;
++	}
+ 
+ 	if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
+ 	    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2))
+@@ -1402,8 +1407,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	snprintf(byt_rt5640_components, sizeof(byt_rt5640_components),
+-		 "cfg-spk:%d cfg-mic:%s", cfg_spk,
+-		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
++		 "cfg-spk:%d cfg-mic:%s aif:%d", cfg_spk,
++		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)], aif);
+ 	byt_rt5640_card.components = byt_rt5640_components;
+ #if !IS_ENABLED(CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES)
+ 	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
 -- 
 2.30.1
 
