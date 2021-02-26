@@ -7,82 +7,82 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02849C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 02:07:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 80EFEC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 03:26:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D6C4664EFA
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 02:07:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D6C4664EFA
+	by mail.kernel.org (Postfix) with ESMTPS id 94D7A64EE4
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 03:26:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94D7A64EE4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=endlessos.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 430401655;
-	Fri, 26 Feb 2021 03:06:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 430401655
+	by alsa0.perex.cz (Postfix) with ESMTPS id E057B9F6;
+	Fri, 26 Feb 2021 04:25:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E057B9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614305245;
-	bh=NZUOPTwdXWTQQwM0ZYsyAsW8pTQOXPOWVHps+KzIcc8=;
+	s=default; t=1614309987;
+	bh=QFb9xxR7oxhUl//uYHdzy3NAEYZuQyN4xwTIsYtbtfU=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nHBmkiSd8GgMRE6KqnDc8x7+QuJYSjMI0w242qVz7VmBM6QaxaUI8Do5cwkcVnWNM
-	 I/p4WUwMGF+MG4RpgdIJCv4zMUQ8UmpMuRm5MFuIe1WL07IQ0aXG5k6I71NUbo5HOd
-	 Kbk3xosdNh+x6PZ29QJQWyaKlvv8Hipf1uYftFzA=
+	b=DdT7VUkvyU0CikayPmM7D5ah8Qq+R1PkIx6mIf+kxZzyyMjhfl1GxtYiUkDpCVDoh
+	 mFlaR9ieZIB+vcnN4c9IU9whCwwyIXKSMnc51QvzYceOyFpwsDoaBqvge4BV4EXF1a
+	 y3Uh30guD7jD2ocmQ9EjuivBOZycjhpxZKgVWozk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB19BF801F5;
-	Fri, 26 Feb 2021 03:06:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 887A6F80161;
+	Fri, 26 Feb 2021 04:25:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 474A4F80245; Fri, 26 Feb 2021 03:06:09 +0100 (CET)
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com
- [IPv6:2607:f8b0:4864:20::231])
+ id F0708F8016C; Fri, 26 Feb 2021 04:25:30 +0100 (CET)
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com
+ [IPv6:2607:f8b0:4864:20::230])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D30CAF800E4
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 03:06:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D30CAF800E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38331F8012C
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 04:25:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38331F8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org
- header.b="hROQH+eH"
-Received: by mail-oi1-x231.google.com with SMTP id o3so8227322oic.8
- for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 18:06:02 -0800 (PST)
+ header.b="YBEth4sx"
+Received: by mail-oi1-x230.google.com with SMTP id l64so8392548oig.9
+ for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2021 19:25:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=endlessos.org; s=google;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
  :cc:content-transfer-encoding;
- bh=TEurnvnOY0UmTThAshzFygi7pp659PSVZrpUu3wFGLI=;
- b=hROQH+eH59ynw+jEXUoBS0nUrg2rlQn1mDsc21mT6SdgqHwCZ8nkfIH1gSD9P5zl5N
- r5Fv7JHPDEiGIWRF5ZoAXuW3Zwba1oQ6CU5A85a8kK9j2S0T7mBWJqsUyeryI+qGJASp
- eN4V/WX+nSc0ROtexYEksc8y58dZgp2LKBJ4iSNuItO60HpGked6tt1HuzLdyYd+p89s
- gScgX+CRPW7nsc/Zv93TbMt/TptyXcxmqQ59pGK/bBxC5J+dOuHv9knzVH/g7CRHOojl
- yzxGRv9c6RlrY2bvjbP/FyFR2gWZJrFxVATpMfweVuUziXUAxfWPIc9Aix2tUdXs17Ae
- HLDg==
+ bh=W+2l0NNpBq+Qnjv0WpsTeGDz60YASdGJlf+tLVmTgvc=;
+ b=YBEth4sxGYqBIiQCyhilVOJ0JbkCO+uF4haEck5ajsPJeO1K653m1fwAJIIUKNnAcw
+ GP40tWdbTPXJWPgr2DRhuW6hfpJlnOmZW66tNoO5SmWNJMlFWR0Haz4eKsbEQ5BCE8Dk
+ VT5zTXRfng+f6D85XHxT44YinDHOQ1PUNVqSKzI/K1gUEM6qQrDra0ZbOgL1Rokd6Xmh
+ Mry/8M2it6irfISUqz7VFA2/1YWDdT/CHJK3+VlpIf67pllwS4yplXlMJD/CZAFvoe5k
+ BC7M8A3+32ZCZI+JKBFlGEQQ4cSgCac90CkW3gDRDU0LHIjyDNSNuC7CLFobMgJxA1+H
+ jtyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc:content-transfer-encoding;
- bh=TEurnvnOY0UmTThAshzFygi7pp659PSVZrpUu3wFGLI=;
- b=dLcaXqMnEMmxRPGg8m+c3wi1zMzy/jbYnrpLe5b0RJnoNcYV6mp2l28X8TwSNw0lY5
- vulcRaaLy1EzmN95ZWiEIm0hXS8jVxnjY9Tlj3O6nW4Q/ipns6wpDJkmQpBkNVX0LiG3
- WpaXj5c5zqW8MBcAPU0nfDW7zKy0/tvoe8r5GbTFw/70RpJ+CnPp4h8zhgIINH6vvTOk
- JtGKM0+CRObVxAu7qdm4qUFWMrJlVwcTXijiiFOEvupSea9vqlNQ6cV1LnNrPIZ0+UqN
- TVZ2Gbpd6JV8jIzB4KpR4YK7+SKURSaFwsDZA9FJ2vNoAh1Nyr97s4OsgQVqJxeUvcvg
- zyTw==
-X-Gm-Message-State: AOAM530CryMW4kh8FzU1s1uqhP0J+AhdCdfCEYD/H+uP2frldeUc9upI
- PVDsq+Xu/AG0QGmk32NRwg0AYan6ptYxBOAK50rWew==
-X-Google-Smtp-Source: ABdhPJwLbdjjSEpA9tPDJIp0UgD57ayyTMBSweHYSzyH1GU8UUElIgexqisJ4ZVko/j3oM0sqm+3BBahbvZXbhoIN+U=
-X-Received: by 2002:a05:6808:1290:: with SMTP id
- a16mr541518oiw.161.1614305160603; 
- Thu, 25 Feb 2021 18:06:00 -0800 (PST)
+ bh=W+2l0NNpBq+Qnjv0WpsTeGDz60YASdGJlf+tLVmTgvc=;
+ b=gDgDN+FsOv7nBYFLDij1zCZIqmJ675sIdSCzCHK+1X9TIFrEodDJUVkRWHYlecn8Vf
+ EV0/hqCqzrbzA25HSdMVGYC0KjB2pzJuxZLSC1AhPFLX872yiUn/1GmNaHqH2EmGWK3N
+ B01X4RbjzJP5VVdkgs+nCJ2W3xw3z30/aIPUzVbvXPOJx20wNPqH26q0voTkKVDOqmNS
+ v6sbhMmOhNTb4fFWYxj3HZi1EfLcCmZwVXZMi2deAVniUoKmOVoqMonh+doYbYtbOuMM
+ dWQV0Suh1x7EA6HLoso7MHZX3acfRLNhzYnEK5jpw5XN4KnzzMFYrpgzdFekK3Vbk+qB
+ caWg==
+X-Gm-Message-State: AOAM530IKwcfiqKMZ771nBKssPipoMU8HXK/4BkoHX+WcIjrIi/EAjj5
+ rnvu0bhtBgJ49QWuK9Xvn2SNxlxMGSjDdlazLpa1bg==
+X-Google-Smtp-Source: ABdhPJzyPtTIygEci9voqgMTRuN7aTKS/Y81Rz0yzBJA8+Ro1Vcge868eFGrYey0gANcDwkMZ7o8GGM0OFL4UwhMXQo=
+X-Received: by 2002:aca:6289:: with SMTP id w131mr668302oib.69.1614309922143; 
+ Thu, 25 Feb 2021 19:25:22 -0800 (PST)
 MIME-Version: 1.0
 References: <20210226010440.8474-1-chris.chiu@canonical.com>
-In-Reply-To: <20210226010440.8474-1-chris.chiu@canonical.com>
+ <CAPpJ_ed1VqLQxcfdNobqWSkgtE7xrWKu8jK0U6jxWF1m3THdaA@mail.gmail.com>
+In-Reply-To: <CAPpJ_ed1VqLQxcfdNobqWSkgtE7xrWKu8jK0U6jxWF1m3THdaA@mail.gmail.com>
 From: Jian-Hong Pan <jhp@endlessos.org>
-Date: Fri, 26 Feb 2021 10:05:00 +0800
-Message-ID: <CAPpJ_ed1VqLQxcfdNobqWSkgtE7xrWKu8jK0U6jxWF1m3THdaA@mail.gmail.com>
+Date: Fri, 26 Feb 2021 11:24:21 +0800
+Message-ID: <CAPpJ_ee4SNWJ3Zh6kEe_aMYLL_8tbApfMK4pvs2m2GfmhJmZgA@mail.gmail.com>
 Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable headset mic of Acer SWIFT
  with ALC256
 To: chris.chiu@canonical.com
@@ -106,91 +106,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-<chris.chiu@canonical.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=8826=E6=97=A5 =E9=
-=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=889:04=E5=AF=AB=E9=81=93=EF=BC=9A
+Jian-Hong Pan <jhp@endlessos.org> =E6=96=BC 2021=E5=B9=B42=E6=9C=8826=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8810:05=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> From: Chris Chiu <chris.chiu@canonical.com>
+> <chris.chiu@canonical.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=8826=E6=97=A5 =
+=E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=889:04=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > From: Chris Chiu <chris.chiu@canonical.com>
+> >
+> > The Acer SWIFT Swift SF314-54/55 laptops with ALC256 cannot detect
+> > both the headset mic and the internal mic. Introduce new fixup
+> > to enable the jack sense and the headset mic. However, the internal
+> > mic actually connects to Intel SST audio. It still needs Intel SST
+> > support to make internal mic capture work.
+> >
+> > Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> > ---
+> >   v1 -> v2: remove unnecessary aamix fixup
+> >
+> >  sound/pci/hda/patch_realtek.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realte=
+k.c
+> > index 1927605f0f7e..4871507cd4bf 100644
+> > --- a/sound/pci/hda/patch_realtek.c
+> > +++ b/sound/pci/hda/patch_realtek.c
+> > @@ -6406,6 +6406,7 @@ enum {
+> >         ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
+> >         ALC282_FIXUP_ACER_DISABLE_LINEOUT,
+> >         ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
+> > +       ALC256_FIXUP_ACER_HEADSET_MIC,
+> >  };
+> >
+> >  static const struct hda_fixup alc269_fixups[] =3D {
+> > @@ -7853,6 +7854,16 @@ static const struct hda_fixup alc269_fixups[] =
+=3D {
+> >                 .chained =3D true,
+> >                 .chain_id =3D ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
+> >         },
+> > +       [ALC256_FIXUP_ACER_HEADSET_MIC] =3D {
+> > +               .type =3D HDA_FIXUP_PINS,
+> > +               .v.pins =3D (const struct hda_pintbl[]) {
+> > +                       { 0x19, 0x02a1113c }, /* use as headset mic, wi=
+thout its own jack detect */
+> > +                       { 0x1a, 0x90a1092f }, /* use as internal mic */
 >
-> The Acer SWIFT Swift SF314-54/55 laptops with ALC256 cannot detect
-> both the headset mic and the internal mic. Introduce new fixup
-> to enable the jack sense and the headset mic. However, the internal
-> mic actually connects to Intel SST audio. It still needs Intel SST
-> support to make internal mic capture work.
+> Since NID 0x1a is an internal DMIC, should this connection type be 0h?
+> Or, even the quirk of the internal DMIC is not needed for this case.
+> Because, it is Intel SST DMIC that does not connect to Realtek HDA
+> CODEC.  (Not sure for this one)
 >
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-> ---
->   v1 -> v2: remove unnecessary aamix fixup
->
->  sound/pci/hda/patch_realtek.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
-c
-> index 1927605f0f7e..4871507cd4bf 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6406,6 +6406,7 @@ enum {
->         ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
->         ALC282_FIXUP_ACER_DISABLE_LINEOUT,
->         ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
-> +       ALC256_FIXUP_ACER_HEADSET_MIC,
->  };
->
->  static const struct hda_fixup alc269_fixups[] =3D {
-> @@ -7853,6 +7854,16 @@ static const struct hda_fixup alc269_fixups[] =3D =
-{
->                 .chained =3D true,
->                 .chain_id =3D ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
->         },
-> +       [ALC256_FIXUP_ACER_HEADSET_MIC] =3D {
-> +               .type =3D HDA_FIXUP_PINS,
-> +               .v.pins =3D (const struct hda_pintbl[]) {
-> +                       { 0x19, 0x02a1113c }, /* use as headset mic, with=
-out its own jack detect */
-> +                       { 0x1a, 0x90a1092f }, /* use as internal mic */
+> The quirk of NID 0x19 is okay for me.
 
-Since NID 0x1a is an internal DMIC, should this connection type be 0h?
-Or, even the quirk of the internal DMIC is not needed for this case.
-Because, it is Intel SST DMIC that does not connect to Realtek HDA
-CODEC.  (Not sure for this one)
+After more discussion and test with Chris, found the NID 0x1a quirk is
+still needed.  Otherwise, the headset MIC 0x19 will not work any more.
 
-The quirk of NID 0x19 is okay for me.
+So, I ack the version 2 patch.
 
-BR,
-Jian-Hong Pan
+Acked-by: Jian-Hong Pan <jhp@endlessos.org>
 
-> +                       { }
-> +               },
-> +               .chained =3D true,
-> +               .chain_id =3D ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
-> +       },
->  };
->
->  static const struct snd_pci_quirk alc269_fixup_tbl[] =3D {
-> @@ -7879,9 +7890,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl=
-[] =3D {
->         SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_=
-FIXUP_PREDATOR_SPK),
->         SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_A=
-CER_VCOPPERBOX_PINS),
->         SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_FIX=
-UP_ACER_MIC_NO_PRESENCE),
-> +       SND_PCI_QUIRK(0x1025, 0x1269, "Acer SWIFT SF314-54", ALC256_FIXUP=
-_ACER_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
-> +       SND_PCI_QUIRK(0x1025, 0x129c, "Acer SWIFT SF314-55", ALC256_FIXUP=
-_ACER_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_F=
-IXUP_ACER_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_=
-FIXUP_ACER_HEADSET_MIC),
-> --
-> 2.20.1
->
+> > +                       { }
+> > +               },
+> > +               .chained =3D true,
+> > +               .chain_id =3D ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
+> > +       },
+> >  };
+> >
+> >  static const struct snd_pci_quirk alc269_fixup_tbl[] =3D {
+> > @@ -7879,9 +7890,11 @@ static const struct snd_pci_quirk alc269_fixup_t=
+bl[] =3D {
+> >         SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC29=
+9_FIXUP_PREDATOR_SPK),
+> >         SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP=
+_ACER_VCOPPERBOX_PINS),
+> >         SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_F=
+IXUP_ACER_MIC_NO_PRESENCE),
+> > +       SND_PCI_QUIRK(0x1025, 0x1269, "Acer SWIFT SF314-54", ALC256_FIX=
+UP_ACER_HEADSET_MIC),
+> >         SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIX=
+UP_ACER_AIO_HEADSET_MIC),
+> >         SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIX=
+UP_ACER_AIO_HEADSET_MIC),
+> >         SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIX=
+UP_ACER_AIO_HEADSET_MIC),
+> > +       SND_PCI_QUIRK(0x1025, 0x129c, "Acer SWIFT SF314-55", ALC256_FIX=
+UP_ACER_HEADSET_MIC),
+> >         SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIX=
+UP_ACER_AIO_HEADSET_MIC),
+> >         SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233=
+_FIXUP_ACER_HEADSET_MIC),
+> >         SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC25=
+5_FIXUP_ACER_HEADSET_MIC),
+> > --
+> > 2.20.1
+> >
