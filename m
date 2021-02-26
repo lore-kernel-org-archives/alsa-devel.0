@@ -7,75 +7,75 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB6B9C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:42:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12056C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:43:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DCB6764EF0
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:42:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DCB6764EF0
+	by mail.kernel.org (Postfix) with ESMTPS id A82DE64E4D
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:43:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82DE64E4D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D150E167F;
-	Fri, 26 Feb 2021 16:41:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D150E167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B90D168C;
+	Fri, 26 Feb 2021 16:42:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B90D168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614354149;
-	bh=TaKn+fr8LZrQI2znIDQkwH0pTdNa+gGuPIm3hOKrm+w=;
+	s=default; t=1614354196;
+	bh=t4GRXwpz+QsM5RIrjqipLQFfVIBgOxJgg3lCGEgsv3c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bVDRhby9PBSSc6LHN50izGnc2wz9bx0XEsFCQA8VcObrC/oYuyX3j50VL6CoBrjBt
-	 nbcID/EnvIhZSAp9KHsW/2jLfL6I6ADhnKLJ/DAcW0Je+0FCjhK77YP2tN8eqQqfMm
-	 3vLZN4lJF1xMNdIpv8jy2tdAGWdLdP5IroQVLWMU=
+	b=k73Ezb5lzz2rXCbuBBSf6ncHUONBBlND0YUh3gsnhILcMf/EV/d9xUD+urP4m/0Dz
+	 DKH/CpRz1a03JbGRrvMnBbmqkk9YXA3sAONuLrqUsg6WQCWeUqZqWGeNBmGkWKoVqH
+	 mp9VYrnPkAmAD5hCmoBijxpvVxhyI0lob2KfrzvI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5966F8016C;
-	Fri, 26 Feb 2021 16:40:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 160A2F8032B;
+	Fri, 26 Feb 2021 16:40:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11C32F802D2; Fri, 26 Feb 2021 16:40:45 +0100 (CET)
+ id 455A4F802E2; Fri, 26 Feb 2021 16:40:48 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9093F80161
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 16:40:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9093F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA882F8016C
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 16:40:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA882F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="GwH8sQOZ"
+ header.b="VnRO9IaS"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1614354035;
+ s=mimecast20190719; t=1614354034;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=d0VBWxWJNsaIisKDtr+Dd11Z7wHg8abuGX0PO11D6Yk=;
- b=GwH8sQOZXyierQ7CoPQfeMpO+/0g74qBgXn34wmxtZfQCE1H2dtcvYrz/Qsz9wxlOpTdBS
- zOJ/MYOQ3lTB6iaOI/qmAk6yA12IagV5Au6Hg33siZvlE7ofqRPxRvs7I01kv8C36qC57M
- nmeA14SQm5PTDYX6rz+17uXgzBx9ju8=
+ bh=461RKBm0rY9dqbC2WJLQm2UBN2yOxdhctKYoP7EIdUM=;
+ b=VnRO9IaSwk50x4YkatB0ZhuDVMSDGBlZcuoDUaNa80yMwx4OARY50R2qe8s0u7H3n3pmJb
+ W1jyUUNPO2+tVlXlZWrdcDvVVu9FHg6EXqGeesRGovaZt2aRGrTkMcnw8V2owCUIXLKA58
+ g6iZK2e8Xv4vhTUnYBpLrbFc+JY8JyI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-117-VmSzH3f0MBisb9-YPnpGpA-1; Fri, 26 Feb 2021 10:40:34 -0500
-X-MC-Unique: VmSzH3f0MBisb9-YPnpGpA-1
+ us-mta-247-gzld9M5yMv2BqroHNaxE6Q-1; Fri, 26 Feb 2021 10:40:32 -0500
+X-MC-Unique: gzld9M5yMv2BqroHNaxE6Q-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD4626D4E0;
- Fri, 26 Feb 2021 15:40:32 +0000 (UTC)
-Received: from x1.localdomain (ovpn-112-36.ams2.redhat.com [10.36.112.36])
- by smtp.corp.redhat.com (Postfix) with ESMTP id B88381050E;
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 731626D4E3;
  Fri, 26 Feb 2021 15:40:31 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-36.ams2.redhat.com [10.36.112.36])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 618251050E;
+ Fri, 26 Feb 2021 15:40:30 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf 3/8] codecs/rt5640: Cleanup: Move 'SPK MIX'
- setup to main EnableSequene
-Date: Fri, 26 Feb 2021 16:40:20 +0100
-Message-Id: <20210226154025.84828-4-hdegoede@redhat.com>
+Subject: [PATCH alsa-ucm-conf 2/8] codecs/rt5640: Cleanup: Initially disable
+ all inputs and outputs
+Date: Fri, 26 Feb 2021 16:40:19 +0100
+Message-Id: <20210226154025.84828-3-hdegoede@redhat.com>
 In-Reply-To: <20210226154025.84828-1-hdegoede@redhat.com>
 References: <20210226154025.84828-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -106,60 +106,116 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Cleanup: no functional changes intended.
 
-Do the 'SPK MIXL' / 'SPK MIXR' setup only once from the main
-EnableSequene, like we do for the 'OUT MIXL' / 'OUT MIXR' setup
-used by the headphones already.
+Disable all inputs and outputs from the main EnableSequence.
+
+This allows removing some weirdness from the individual input/output
+EnableSequences where they were turning controls for other inputs/outputs
+then themselves off.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- ucm2/codecs/rt5640/EnableSeq.conf   | 6 ++++--
- ucm2/codecs/rt5640/MonoSpeaker.conf | 2 --
- ucm2/codecs/rt5640/Speaker.conf     | 2 --
- 3 files changed, 4 insertions(+), 6 deletions(-)
+ ucm2/codecs/rt5640/EnableSeq.conf       | 21 +++++++++++++++++++++
+ ucm2/codecs/rt5640/HeadPhones.conf      |  1 -
+ ucm2/codecs/rt5640/IN1-InternalMic.conf |  2 --
+ ucm2/codecs/rt5640/IN3-InternalMic.conf |  2 --
+ ucm2/codecs/rt5640/MonoSpeaker.conf     |  1 -
+ ucm2/codecs/rt5640/Speaker.conf         |  1 -
+ 6 files changed, 21 insertions(+), 7 deletions(-)
 
 diff --git a/ucm2/codecs/rt5640/EnableSeq.conf b/ucm2/codecs/rt5640/EnableSeq.conf
-index 5dc7092..4a355a5 100644
+index 4754df7..5dc7092 100644
 --- a/ucm2/codecs/rt5640/EnableSeq.conf
 +++ b/ucm2/codecs/rt5640/EnableSeq.conf
-@@ -6,8 +6,10 @@ EnableSequence [
- 	cset "name='Stereo DAC MIXR DAC R1 Switch' on"
- 	cset "name='Stereo DAC MIXL DAC L2 Switch' on"
- 	cset "name='Stereo DAC MIXR DAC R2 Switch' on"
--	cset "name='OUT MIXL DAC L1 Switch'  on"
--	cset "name='OUT MIXR DAC R1 Switch'  on"
-+	cset "name='OUT MIXL DAC L1 Switch' on"
-+	cset "name='OUT MIXR DAC R1 Switch' on"
-+	cset "name='SPK MIXL DAC L1 Switch' on"
-+	cset "name='SPK MIXR DAC R1 Switch' on"
+@@ -48,6 +48,27 @@ EnableSequence [
+ 	cset "name='IN2 Boost' 1"
+ 	cset "name='IN3 Boost' 8"
  
- 	# uncomment for loopback mic->speakers
- 	# cset "name='SPOL MIX BST1 Switch' on"
++	# Start with all controls which are used by the individual
++	# input/output Enable/DisableSequences off
++
++	cset "name='RECMIXL BST1 Switch' off"
++	cset "name='RECMIXR BST1 Switch' off"
++	cset "name='RECMIXL BST2 Switch' off"
++	cset "name='RECMIXR BST2 Switch' off"
++	cset "name='RECMIXL BST3 Switch' off"
++	cset "name='RECMIXR BST3 Switch' off"
++
++	cset "name='Stereo ADC MIXL ADC1 Switch' off"
++	cset "name='Stereo ADC MIXR ADC1 Switch' off"
++	cset "name='Stereo ADC MIXL ADC2 Switch' off"
++	cset "name='Stereo ADC MIXR ADC2 Switch' off"
++	cset "name='Mono ADC MIXL ADC1 Switch' off"
++	cset "name='Mono ADC MIXR ADC1 Switch' off"
++	cset "name='Mono ADC MIXL ADC2 Switch' off"
++	cset "name='Mono ADC MIXR ADC2 Switch' off"
++
++	cset "name='Speaker Switch' off"
++	cset "name='Headphone Switch' off"
+ 	cset "name='Internal Mic Switch' off"
+ 	cset "name='Headset Mic Switch' off"
+ ]
+diff --git a/ucm2/codecs/rt5640/HeadPhones.conf b/ucm2/codecs/rt5640/HeadPhones.conf
+index a9e4d20..1f4316d 100644
+--- a/ucm2/codecs/rt5640/HeadPhones.conf
++++ b/ucm2/codecs/rt5640/HeadPhones.conf
+@@ -17,7 +17,6 @@ SectionDevice."Headphones" {
+  		cset "name='HPO MIX HPVOL Switch'  on"
+  		cset "name='Headphone Switch'  on"
+ 		cset "name='HP Channel Switch' on"
+- 		cset "name='Speaker Switch' off"
+ 		cset "name='HP L Playback Switch' on"
+ 		cset "name='HP R Playback Switch' on"
+ 		cset "name='HP Playback Volume' 29"
+diff --git a/ucm2/codecs/rt5640/IN1-InternalMic.conf b/ucm2/codecs/rt5640/IN1-InternalMic.conf
+index 260df90..d7c419e 100644
+--- a/ucm2/codecs/rt5640/IN1-InternalMic.conf
++++ b/ucm2/codecs/rt5640/IN1-InternalMic.conf
+@@ -10,8 +10,6 @@ SectionDevice."Mic" {
+ 
+ 		cset "name='RECMIXL BST1 Switch' on"
+ 		cset "name='RECMIXR BST1 Switch' on"
+-		cset "name='RECMIXL BST3 Switch' off"
+-		cset "name='RECMIXR BST3 Switch' off"
+ 
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' on"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' on"
+diff --git a/ucm2/codecs/rt5640/IN3-InternalMic.conf b/ucm2/codecs/rt5640/IN3-InternalMic.conf
+index ebd2b9c..3e330e6 100644
+--- a/ucm2/codecs/rt5640/IN3-InternalMic.conf
++++ b/ucm2/codecs/rt5640/IN3-InternalMic.conf
+@@ -8,8 +8,6 @@ SectionDevice."Mic" {
+ 	EnableSequence [
+ 		cset "name='Internal Mic Switch' on"
+ 
+-		cset "name='RECMIXL BST1 Switch' off"
+-		cset "name='RECMIXR BST1 Switch' off"
+ 		cset "name='RECMIXL BST3 Switch' on"
+ 		cset "name='RECMIXR BST3 Switch' on"
+ 
 diff --git a/ucm2/codecs/rt5640/MonoSpeaker.conf b/ucm2/codecs/rt5640/MonoSpeaker.conf
-index 5035c8d..654edc3 100644
+index 23cf34c..5035c8d 100644
 --- a/ucm2/codecs/rt5640/MonoSpeaker.conf
 +++ b/ucm2/codecs/rt5640/MonoSpeaker.conf
-@@ -6,8 +6,6 @@ SectionDevice."Speaker" {
- 	]
- 
- 	EnableSequence [
--		cset "name='SPK MIXL DAC L1 Switch' on"
--		cset "name='SPK MIXR DAC R1 Switch' on"
- 		cset "name='SPOL MIX SPKVOL L Switch' on"
- # for mono speaker we apply left on right
- #		cset "name='SPOR MIX SPKVOL R Switch' on"
+@@ -14,7 +14,6 @@ SectionDevice."Speaker" {
+ 		cset "name='SPOL MIX SPKVOL R Switch' on"
+ 		cset "name='Speaker Switch' on"
+ 		cset "name='Speaker Channel Switch' on"
+-		cset "name='Headphone Switch' off"
+ 		cset "name='Speaker L Playback Switch' on"
+ 		cset "name='Speaker R Playback Switch' on"
+ 		cset "name='Speaker Playback Volume' 35"
 diff --git a/ucm2/codecs/rt5640/Speaker.conf b/ucm2/codecs/rt5640/Speaker.conf
-index fd74994..3264cc3 100644
+index 422cfdf..fd74994 100644
 --- a/ucm2/codecs/rt5640/Speaker.conf
 +++ b/ucm2/codecs/rt5640/Speaker.conf
-@@ -6,8 +6,6 @@ SectionDevice."Speaker" {
- 	]
- 
- 	EnableSequence [
--		cset "name='SPK MIXL DAC L1 Switch' on"
--		cset "name='SPK MIXR DAC R1 Switch' on"
- 		cset "name='SPOL MIX SPKVOL L Switch' on"
- 		cset "name='SPOR MIX SPKVOL R Switch' on"
- 		# undo MonoSpeaker mixing of right channel to left speaker
+@@ -14,7 +14,6 @@ SectionDevice."Speaker" {
+ 		cset "name='SPOL MIX SPKVOL R Switch' off"
+ 		cset "name='Speaker Switch' on"
+ 		cset "name='Speaker Channel Switch' on"
+-		cset "name='Headphone Switch' off"
+ 		cset "name='Speaker L Playback Switch' on"
+ 		cset "name='Speaker R Playback Switch' on"
+ 		cset "name='Speaker Playback Volume' 35"
 -- 
 2.30.1
 
