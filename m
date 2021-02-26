@@ -5,86 +5,86 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24ABAC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 17:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 206EFC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 17:06:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79C9164F0E
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 17:06:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79C9164F0E
+	by mail.kernel.org (Postfix) with ESMTPS id 2097964DDA
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 17:06:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2097964DDA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF0901679;
-	Fri, 26 Feb 2021 18:05:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF0901679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 983DF1684;
+	Fri, 26 Feb 2021 18:05:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 983DF1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614359166;
-	bh=MCQfHMEndN2KJLq/RzkH5tUJURCq0lqVzek0x//QQQg=;
+	s=default; t=1614359201;
+	bh=DKKDRKXVRC311Hj/Kl0D3TmTV38CtEDug7xs1l/GH0s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U+QWKM38gX5i7twLsEWMW5m17g/hL91fpiwHTnvJmbpUP3kX+myzco/XizrYoQ7j2
-	 B1zV4ux9VIS6xZeIgEGcdRzF6caKAboRJrmsW6DY+LUuXeXJX2FZIycQOB+f29UXJS
-	 zkWnxbvQbvoiNEkZtHOeO86bTC3MeF9R7B2Wl+Ak=
+	b=Q8YtmY1GDyviR5IJDtSOmgXDMqmOKWXj+uPXRmKcY1+fSCK/2MHMtuUnV9Zs+DLs5
+	 g8zDsX02xZPmE4XtriNjRgPd1Z0uv1m4v4KnXreBA9NhXM65o1V7+YiFUmG7SEQsgi
+	 OfFomyCHsmBTb254kZxw6faj8NMsS4x+J657m8rM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD72EF802DF;
-	Fri, 26 Feb 2021 18:04:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8077DF8032B;
+	Fri, 26 Feb 2021 18:04:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FB27F802D2; Fri, 26 Feb 2021 18:04:19 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+ id 3BEE1F80234; Fri, 26 Feb 2021 18:04:20 +0100 (CET)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4764BF80234
+ by alsa1.perex.cz (Postfix) with ESMTPS id EBDE0F8012C
  for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 18:04:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4764BF80234
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBDE0F8012C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mCmKujyW"
-Received: by mail-wm1-x336.google.com with SMTP id u11so2270078wmq.5
+ header.b="l770UNXt"
+Received: by mail-wm1-x330.google.com with SMTP id n4so6985491wmq.3
  for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 09:04:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=HSGBCXrnmFpcu9xP5Fu7hsNHkO8470wY7hVrqUDHTAc=;
- b=mCmKujyWV4+5a493B2ZFwQYeR1S4UnXxLT86/P0wYWvxvK2pVK3rI4M5T5qfZAI1MK
- 2dxJ4HNje167kd5u7tpeZLxN3YupJAf7U2A5WhBb2tKfUzJdgPiLoszVKRA3blpodd76
- VUp5psDPVBtfVJ0ijxsIsXp4PTbgslSCAReGcdy0z7ijh4HY+OLrfLXChwouuLy2txma
- WY+4V4lF5qQfl5cAm0EZ6Uqp4KfZbBeI2+yCJmOrDC4JUzh7kuj95frYjWRqILEZPzFe
- skh4cTzjQfkzswDx1f9Mo0kpJ9lqW+Nn/EiEiToBVwb2X3AIEGD39Oypbw0ImLjKpln9
- meig==
+ bh=UFwBCm6HrJKHxscAt59AxdAYrvfQ1oAdw/JgYFUJbXY=;
+ b=l770UNXtFuPJoYAmuiZ45pNtSa0Xh65CavALPfvZSZz8KUtQlMoJbY92RvYw+PvxlH
+ xFUHRwN05sCSIaMt3iAZ2pmxJhKY84S9KsIz9/aeMaTKfKdtZIBAQLIdUM4ghmm95lJB
+ g8zTqZgLRU+Y2W3t4wPMr7ICsNmb3QSv7n/1jcT8LeDXy290uflmsIOgXffqSYnVOYAm
+ Ye4SGqQUdNW7w6vT98J0kwopl2IYhR8Ks1dz1mnlFb7RkyIKNLZLz2dQOIgyYeqt0h3d
+ K4FaHMR0aG3aTCCW5YVyrBFnHgpJq+2rtmQwiLPhb+sFVJdzsNqtkHd7Ss3mYGmHJ/a7
+ ZpjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=HSGBCXrnmFpcu9xP5Fu7hsNHkO8470wY7hVrqUDHTAc=;
- b=izsqtq4zpEJGEemSBSOFplbWKDemGai4Vb+fM/Va1IT3eIXVD+rrwbCAs81UuwBurq
- 2/WlSAPQLci4/abHgUdkSu8eGBJHhbXbVLUEcX8Hu9+9Rkna9CJR5Sev+4OIv0Anro6x
- WF+vuibCGSFhFkFZ9iOwa3dHIGayw2Khw1y7O7pznMrBUfQvTEOpOEQoBkdQNSeh7pl1
- o/dTM7EKHNvS164AXKpT+sI1pR961NvJ5qQJ/uxhl7Ll0bAxyTmZG3EpGGjjfHAB88Rn
- sD3XUlmQMSTJriGb6d+f/R60gFQugcizJDe7nl1iuzf8vu1Y6puiG3tDrC8QmpzghMIi
- DCOw==
-X-Gm-Message-State: AOAM533UHCMmIRp7wAtO6JQovrthxF2Wi+f0zF/w/wNUHF6dSNYigLMa
- XaEU320qHTlZtQrwh1YlPrZw61VyfryKzw==
-X-Google-Smtp-Source: ABdhPJw1bnUklU6l3SzESpOTeCGIfijBQDbl01b6ZyWLgaLOFxabRdBFxfHoI8mJcb9fmA7LQMi2uA==
-X-Received: by 2002:a1c:8005:: with SMTP id b5mr3842454wmd.130.1614359051501; 
- Fri, 26 Feb 2021 09:04:11 -0800 (PST)
+ bh=UFwBCm6HrJKHxscAt59AxdAYrvfQ1oAdw/JgYFUJbXY=;
+ b=TyBbq0XxrpGiC2VmQ8NUh/PjmWoqMaRDXY+9af81tlSZULpNqrGtnLf3TSwhjQjfRb
+ 8BqW6RlnCrzgrYL4snR2biPaK6ew7oZ1RwEBafF0nspn7JOs9Hfl2k0bTrOYpnawba/u
+ 9IK1VZ9o82VYlorSbg4fUJn9fgkwEzGQI7E2Kei3cdNvPapSa+IWsFSyxv4Wk+LiTueO
+ vNRo8UHzwXUpTXePQuMuCZMpJL68FFWU2ST5KmJ2J+IRpNshMFRd7PZpYsBSzeBGgki0
+ ou/wEL3i7hVrjs/okwK2RwHon3Eb2wKw4DgSHpxa58XNuGbGxm4tSOATFYqYLwD2DtEf
+ ReaA==
+X-Gm-Message-State: AOAM532mGSWL2C2hhxZcjRMxIAkNEB2xIoUUTrNb7pK8jX1Mj2TsL2tO
+ dQwgBQA9I8XJglH9tTwK8WOg8A==
+X-Google-Smtp-Source: ABdhPJyaWV4rGjsm+DtbdD0ua/bhu8nDmtycZVp8fJVqSHrTe2CJiv8Lz2q+1aZ3Do7PUcpfDbllUA==
+X-Received: by 2002:a7b:c442:: with SMTP id l2mr3908239wmi.34.1614359050443;
+ Fri, 26 Feb 2021 09:04:10 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id w13sm15962972wre.2.2021.02.26.09.04.10
+ by smtp.gmail.com with ESMTPSA id w13sm15962972wre.2.2021.02.26.09.04.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Feb 2021 09:04:11 -0800 (PST)
+ Fri, 26 Feb 2021 09:04:09 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
-Subject: [PATCH 3/3] soundwire: qcom: add clock stop via runtime pm support
-Date: Fri, 26 Feb 2021 17:02:50 +0000
-Message-Id: <20210226170250.9067-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/3] soundwire: qcom: add auto enumeration support
+Date: Fri, 26 Feb 2021 17:02:49 +0000
+Message-Id: <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
 References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
@@ -109,254 +109,169 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add Clock stop feature support using runtime PM.
+Qualcomm SoundWire controller supports Auto Enumeration of the
+devices within the IP. This patch enables support for this feature.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 103 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 96 insertions(+), 7 deletions(-)
+ drivers/soundwire/qcom.c | 84 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 78 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d90eba6a1e88..0cf8c5c724e2 100644
+index 8438f9812d7c..d90eba6a1e88 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -10,6 +10,7 @@
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/slimbus.h>
-@@ -19,6 +20,8 @@
- #include <sound/soc.h>
- #include "bus.h"
+@@ -57,6 +57,8 @@
+ #define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
+ #define SWRM_RD_FIFO_CMD_ID_MASK				GENMASK(11, 8)
+ #define SWRM_ENUMERATOR_CFG_ADDR				0x500
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_1(m)		(0x530 + 0x8 * (m))
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_2(m)   		(0x534 + 0x8 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
+ #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
+@@ -121,6 +123,7 @@ struct qcom_swrm_ctrl {
+ 	struct regmap *regmap;
+ 	void __iomem *mmio;
+ 	struct completion broadcast;
++	struct completion enumeration;
+ 	struct work_struct slave_work;
+ 	/* Port alloc/free lock */
+ 	struct mutex port_lock;
+@@ -143,6 +146,7 @@ struct qcom_swrm_ctrl {
+ 	enum sdw_slave_status status[SDW_MAX_DEVICES];
+ 	int (*reg_read)(struct qcom_swrm_ctrl *ctrl, int reg, u32 *val);
+ 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
++	u32 slave_status;
+ };
  
-+#define SWRM_COMP_SW_RESET					(0x008)
-+#define SWRM_COMP_STATUS					(0x014)
- #define SWRM_COMP_HW_VERSION					0x00
- #define SWRM_COMP_CFG_ADDR					0x04
- #define SWRM_COMP_CFG_IRQ_LEVEL_OR_PULSE_MSK			BIT(1)
-@@ -408,6 +411,9 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
- 			}
- 		}
+ struct qcom_swrm_data {
+@@ -342,6 +346,7 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	int i;
+ 
+ 	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	ctrl->slave_status = val;
+ 
+ 	for (i = 0; i < SDW_MAX_DEVICES; i++) {
+ 		u32 s;
+@@ -352,10 +357,66 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
  	}
-+	pm_runtime_get_sync(ctrl->dev);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
+ }
  
- 	complete(&ctrl->enumeration);
- 	return 0;
-@@ -421,6 +427,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
++static int qcom_swrm_get_n_device_status(struct qcom_swrm_ctrl *ctrl, int devnum)
++{
++	u32 val;
++
++	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	val = (val >> (devnum * SWRM_MCP_SLV_STATUS_SZ));
++	val &= SWRM_MCP_SLV_STATUS_MASK;
++
++	return val;
++}
++
++static int qcom_swrm_enumerate(struct sdw_bus *bus)
++{
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++	struct sdw_slave *slave, *_s;
++	struct sdw_slave_id id;
++	u32 val1, val2;
++	u64 addr;
++	int i;
++	char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
++
++	for (i = 1; i < (SDW_MAX_DEVICES + 1); i++) {
++		/*SCP_Devid5 - Devid 4*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
++
++		/*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
++
++		if (!val1 && !val2)
++			break;
++
++		addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
++			((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
++			((u64)buf1[0] << 40);
++
++		sdw_extract_slave_id(bus, addr, &id);
++		/* Now compare with entries */
++		list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
++			if (sdw_compare_devid(slave, id) == 0) {
++				u32 status = qcom_swrm_get_n_device_status(ctrl, i);
++				if (status == SDW_SLAVE_ATTACHED) {
++					slave->dev_num = i;
++					mutex_lock(&bus->bus_lock);
++					set_bit(i, bus->assigned);
++					mutex_unlock(&bus->bus_lock);
++
++				}
++				break;
++			}
++		}
++	}
++
++	complete(&ctrl->enumeration);
++	return 0;
++}
++
+ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ {
+ 	struct qcom_swrm_ctrl *swrm = dev_id;
+-	u32 value, intr_sts, intr_sts_masked;
++	u32 value, intr_sts, intr_sts_masked, slave_status;
+ 	u32 i;
  	u8 devnum = 0;
  	int ret = IRQ_HANDLED;
+@@ -382,10 +443,19 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ 				break;
+ 			case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
+ 			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
+-				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
++				dev_err_ratelimited(swrm->dev, "%s: SWR slave status changed\n",
+ 					__func__);
+-				qcom_swrm_get_device_status(swrm);
+-				sdw_handle_slave_status(&swrm->bus, swrm->status);
++				swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, &slave_status);
++				if (swrm->slave_status == slave_status) {
++					dev_err(swrm->dev, "Slave status not changed %x\n",
++						slave_status);
++					break;
++				} else {
++					dev_err(swrm->dev, "Slave status handle %x\n", slave_status);
++					qcom_swrm_get_device_status(swrm);
++					qcom_swrm_enumerate(&swrm->bus);
++					sdw_handle_slave_status(&swrm->bus, swrm->status);
++				}
+ 				break;
+ 			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+ 				dev_err_ratelimited(swrm->dev,
+@@ -472,8 +542,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
  
-+	clk_prepare_enable(swrm->hclk);
- 	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
- 	intr_sts_masked = intr_sts & swrm->intr_mask;
+ 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
  
-@@ -529,6 +536,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- 		intr_sts_masked = intr_sts & swrm->intr_mask;
- 	} while (intr_sts_masked);
+-	/* Disable Auto enumeration */
+-	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
++	/* Enable Auto enumeration */
++	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
  
-+	clk_disable_unprepare(swrm->hclk);
- 	return ret;
- }
- 
-@@ -587,6 +595,8 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
- 	int ret, i, len;
- 
-+	pm_runtime_get_sync(ctrl->dev);
-+
- 	if (msg->flags == SDW_MSG_FLAG_READ) {
- 		for (i = 0; i < msg->len;) {
- 			if ((msg->len - i) < QCOM_SWRM_MAX_RD_LEN)
-@@ -598,7 +608,7 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
- 							msg->addr + i, len,
- 						       &msg->buf[i]);
- 			if (ret)
--				return ret;
-+				goto done;
- 
- 			i = i + len;
- 		}
-@@ -607,12 +617,20 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
- 			ret = qcom_swrm_cmd_fifo_wr_cmd(ctrl, msg->buf[i],
- 							msg->dev_num,
- 						       msg->addr + i);
--			if (ret)
--				return SDW_CMD_IGNORED;
-+			if (ret) {
-+				ret = SDW_CMD_IGNORED;
-+				goto done;
-+			}
- 		}
+ 	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+ 	/* Mask soundwire interrupts */
+@@ -507,6 +577,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
+ 				SWRM_INTERRUPT_STATUS_RMSK);
  	}
- 
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+	pm_runtime_mark_last_busy(ctrl->dev);
- 	return SDW_CMD_OK;
-+done:
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+	return ret;
- }
- 
- static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
-@@ -620,13 +638,19 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
- 	u32 reg = SWRM_MCP_FRAME_CTRL_BANK_ADDR(bus->params.next_bank);
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
- 	u32 val;
-+	int ret;
- 
-+	pm_runtime_get_sync(ctrl->dev);
- 	ctrl->reg_read(ctrl, reg, &val);
- 
- 	u32p_replace_bits(&val, ctrl->cols_index, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
- 	u32p_replace_bits(&val, ctrl->rows_index, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
- 
--	return ctrl->reg_write(ctrl, reg, val);
-+	ret = ctrl->reg_write(ctrl, reg, val);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
-+	return ret;
- }
- 
- static int qcom_swrm_port_params(struct sdw_bus *bus,
-@@ -634,13 +658,18 @@ static int qcom_swrm_port_params(struct sdw_bus *bus,
- 				 unsigned int bank)
- {
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
-+	int ret = 0;
-+	pm_runtime_get_sync(ctrl->dev);
- 
- 	if (p_params->bps != SWR_INVALID_PARAM)
--		return ctrl->reg_write(ctrl,
-+		ret = ctrl->reg_write(ctrl,
- 				       SWRM_DP_BLOCK_CTRL_1(p_params->num),
- 				       p_params->bps - 1);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
- 
--	return 0;
-+
-+	return ret;
- }
- 
- static int qcom_swrm_transport_params(struct sdw_bus *bus,
-@@ -651,6 +680,7 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
- 	u32 value;
- 	int reg = SWRM_DP_PORT_CTRL_BANK((params->port_num), bank);
- 	int ret;
-+	pm_runtime_get_sync(ctrl->dev);
- 
- 	value = params->offset1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
- 	value |= params->offset2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
-@@ -685,6 +715,9 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
- 		reg = SWRM_DP_BLOCK_CTRL3_BANK(params->port_num, bank);
- 		ret = ctrl->reg_write(ctrl, reg, params->blk_pkg_mode);
- 	}
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
- 
- 	return ret;
- }
-@@ -696,6 +729,9 @@ static int qcom_swrm_port_enable(struct sdw_bus *bus,
- 	u32 reg = SWRM_DP_PORT_CTRL_BANK(enable_ch->port_num, bank);
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
- 	u32 val;
-+	int ret;
-+
-+	pm_runtime_get_sync(ctrl->dev);
- 
- 	ctrl->reg_read(ctrl, reg, &val);
- 
-@@ -704,7 +740,11 @@ static int qcom_swrm_port_enable(struct sdw_bus *bus,
- 	else
- 		val &= ~(0xff << SWRM_DP_PORT_CTRL_EN_CHAN_SHFT);
- 
--	return ctrl->reg_write(ctrl, reg, val);
-+	ret  = ctrl->reg_write(ctrl, reg, val);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
-+	return ret;
- }
- 
- static const struct sdw_master_port_ops qcom_swrm_port_ops = {
-@@ -1194,6 +1234,13 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
- 		 ctrl->version & 0xffff);
- 
-+	pm_runtime_set_autosuspend_delay(dev, 30000);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_mark_last_busy(dev);
-+
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
- 	return 0;
- 
- err_master_add:
-@@ -1214,6 +1261,47 @@ static int qcom_swrm_remove(struct platform_device *pdev)
++	ctrl->slave_status = 0;
  	return 0;
  }
  
-+static int swrm_runtime_resume(struct device *dev)
-+{
-+	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-+
-+	reinit_completion(&ctrl->enumeration);
-+	clk_prepare_enable(ctrl->hclk);
-+	ctrl->reg_write(ctrl, SWRM_COMP_SW_RESET, 0x01);
-+	qcom_swrm_get_device_status(ctrl);
-+	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
-+	qcom_swrm_init(ctrl);
-+	wait_for_completion_timeout(&ctrl->enumeration,
-+					msecs_to_jiffies(TIMEOUT_MS));
-+	usleep_range(100, 105);
-+
-+	pm_runtime_mark_last_busy(dev);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused swrm_runtime_suspend(struct device *dev)
-+{
-+	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-+
-+	/* Mask bus clash interrupt */
-+	ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-+	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
-+	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
-+	/* clock stop sequence */
-+	qcom_swrm_cmd_fifo_wr_cmd(ctrl, 0x2, 0xF, SDW_SCP_CTRL);
-+
-+	clk_disable_unprepare(ctrl->hclk);
-+
-+	usleep_range(100, 105);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops swrm_dev_pm_ops = {
-+	SET_RUNTIME_PM_OPS(swrm_runtime_suspend, swrm_runtime_resume, NULL)
-+};
-+
- static const struct of_device_id qcom_swrm_of_match[] = {
- 	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
- 	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
-@@ -1228,6 +1316,7 @@ static struct platform_driver qcom_swrm_driver = {
- 	.driver = {
- 		.name	= "qcom-soundwire",
- 		.of_match_table = qcom_swrm_of_match,
-+		.pm = &swrm_dev_pm_ops,
- 	}
- };
- module_platform_driver(qcom_swrm_driver);
+@@ -1068,6 +1139,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, ctrl);
+ 	mutex_init(&ctrl->port_lock);
+ 	init_completion(&ctrl->broadcast);
++	init_completion(&ctrl->enumeration);
+ 
+ 	ctrl->bus.ops = &qcom_swrm_ops;
+ 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
 -- 
 2.21.0
 
