@@ -7,77 +7,78 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A514C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8AE9C43381
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 72FE564EED
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 72FE564EED
+	by mail.kernel.org (Postfix) with ESMTPS id CB85964F0E
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 14:41:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB85964F0E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA145167B;
-	Fri, 26 Feb 2021 15:40:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA145167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4436C1662;
+	Fri, 26 Feb 2021 15:40:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4436C1662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614350460;
-	bh=FCcvSds6l6v3Xo4NuE+dx281IlpEbh3JwdkiUxhf894=;
+	s=default; t=1614350492;
+	bh=8I1pZMLzT7g3uIi8Tdz7bHdKJDHI57Ne+G6Iy/kS98Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O3eIhis9ADvxNSeHaiiXRHQXrfQrakmpPqJnT3G7s+gQVj9aJT5RLyd5QBGrzCBAg
-	 b7OwIqeNeovj37vXMGTu0xHKCskg9u7LCGWpQKX+v8Eid42cHOwvZ1pVG3bMrxeTBJ
-	 QoQ0vTgq3RgWth2x8/3BiPkazo5EIVwuFvdx+kIc=
+	b=kibO1cPHRZ9flocREavuaPIgKtkubd6pjhngbEiphmW75OzSHa/mAzEK5XXUcA+4H
+	 cY/njAW5tUZw/q/EBTuG9ZOUJVe7IwN+WgxDfUG6GIDGhPUTicRhdPMW58M3dIkunj
+	 BHgmT692PJ5qpTcugog9fkE829BB5/UosvxCBLeA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 859F4F8016C;
-	Fri, 26 Feb 2021 15:38:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C07FFF8032C;
+	Fri, 26 Feb 2021 15:38:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC5A3F8028D; Fri, 26 Feb 2021 15:38:37 +0100 (CET)
+ id 07CF7F802E0; Fri, 26 Feb 2021 15:38:40 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4296F8016C
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 15:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4296F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA997F8016C
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 15:38:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA997F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="FKJWsyNo"
+ header.b="CkuLTh4U"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1614350313;
+ s=mimecast20190719; t=1614350316;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Y4AWCZe0KOYt6EQ0PKQWdNvgl0pSN5ha45N+EAO7Hg8=;
- b=FKJWsyNoOtdSm/KyQRa8ezRZBk3rFte+kxJhDdt77n9L2hqf3fZGLwBP0skIOEhFyW3aXU
- zROw5f22dZ5IUmPZ18L7bB3mBA4yTp5c2yonPSCDVzMw8wTbyVVynaJbeFDSctVaei4yct
- 8cLW5yf5KFwyxzPJAL02wP4bJqODAc0=
+ bh=db/O0GI+Fd2zObLf0mZVhSQcHXvdraAQssaAgMP0tbo=;
+ b=CkuLTh4ULemBxyBN/O9riCyVKls1e2rvil9FQs7tSb39DKS3IReI+tW5Tl/bKBo0UzlOAI
+ /NC2NVLFZ3AHnyTTJQgXt6mQXWofsj7SG4SGBW2X+9xYCKxgpXWWi9IxIaYe9F5bI+c2oe
+ hOQfSjJwmV1tA0fsPYkfdLn55VFK+pU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-Oe56Vo98PV-LkOarp46gjQ-1; Fri, 26 Feb 2021 09:38:29 -0500
-X-MC-Unique: Oe56Vo98PV-LkOarp46gjQ-1
+ us-mta-232-SXErfc-yPuefjIlvrPZsMQ-1; Fri, 26 Feb 2021 09:38:31 -0500
+X-MC-Unique: SXErfc-yPuefjIlvrPZsMQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com
  [10.5.11.14])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24A62107ACED;
- Fri, 26 Feb 2021 14:38:28 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 059B0107ACE6;
+ Fri, 26 Feb 2021 14:38:30 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-36.ams2.redhat.com [10.36.112.36])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 6C92D5D9D2;
- Fri, 26 Feb 2021 14:38:24 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 69B0D5D9D2;
+ Fri, 26 Feb 2021 14:38:28 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/5] ASoC: rt5640: Add emulated 'DAC1 Playback Switch' control
-Date: Fri, 26 Feb 2021 15:38:15 +0100
-Message-Id: <20210226143817.84287-4-hdegoede@redhat.com>
+Subject: [PATCH 4/5] ASoC: rt5640: Rename 'Mono DAC Playback Volume' to 'DAC2
+ Playback Volume'
+Date: Fri, 26 Feb 2021 15:38:16 +0100
+Message-Id: <20210226143817.84287-5-hdegoede@redhat.com>
 In-Reply-To: <20210226143817.84287-1-hdegoede@redhat.com>
 References: <20210226143817.84287-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -105,187 +106,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When using AIF1 the 'DAC1 Playback Volume' control will be used as the
-PlaybackMasterElem in UCM.
+Rename 'Mono DAC Playback Volume' to 'DAC2 Playback Volume' and move it
+from rt5640_specific_snd_controls[] to rt5640_snd_controls[].
 
-We need a matching 'DAC1 Playback Switch' for 2 reasons:
+The RT5640_DAC2_DIG_VOL register controlled by this mixer-element has
+nothing to do with the Mono (Amplified) output which is only available
+on the ALC5640 chip and not on the ALC5642 chip.
 
-1. To be able to truely fully mute the output (the softest volume setting
-   is not fully muted).
-2. For reliable output-mute LED control.
+The RT5640_DAC2_DIG_VOL volume-control is the main volume control for
+audio coming from the I2S2 / AIF2 input of the chip and as such is also
+available on the ALC5642.
 
-The path from the IF1_DAC data input to the 'Stereo DAC MIXL' /
-'Stereo DAC MIXR' digital mixer has a 'DAC MIXL' / 'DAC MIXR' digital
-mixer with IF1_DAC data as one of its inputs direclty after the
-'DAC1 Playback Volume' control.
+This commit results in the following userspace visible changes:
 
-This commit adds an emulated "DAC1 Playback Switch" control by:
+1. On devices with an ACL5640 codec, the 'Mono DAC Playback Volume'
+control is renamed to 'DAC2 Playback Volume' allowing the alsa-lib
+mixer code to properly group it with the 'DAC2 Playback Switch' which
+is controlling the mute bits in the RT5640_DAC2_DIG_VOL register.
 
-1. Declaring the enable flag for the mixers IF1_DAC input as well as the
-"DAC1 Playback Switch" control both as SND_SOC_NOPM controls.
+Note the removal of the 'Mono DAC Playback Volume' is not an issue for
+userspace because the UCM profiles do not use it (the UCM profiles are
+shared betweent the 5640 and 5642 and only the 5640 had this control).
 
-2. Storing the settings of both controls as driver-private data.
+2. On devices with an ACL5642 codec, there now will be a new
+'DAC2 Playback Volume', grouped with the 'DAC2 Playback Switch'
 
-3. Only clearing the mute flag for the IF1_DAC input of that mixer if the
-stored values indicate both controls are enabled.
+Having a complete 'DAC2 Playback Volume' / 'DAC2 Playback Switch' pair
+on both variants will allow enabling hardware-volume control by
+setting the UCM PlaybackMasterElem to "DAC2" on devices where the
+I2S2/AIF2 interface of the codec is used.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 96 +++++++++++++++++++++++++++++++++++++--
- sound/soc/codecs/rt5640.h |  4 ++
- 2 files changed, 96 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5640.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index a5674c227b3a..c143ca174921 100644
+index c143ca174921..38cc3155bf25 100644
 --- a/sound/soc/codecs/rt5640.c
 +++ b/sound/soc/codecs/rt5640.c
-@@ -378,6 +378,56 @@ static const char * const rt5640_clsd_spk_ratio[] = {"1.66x", "1.83x", "1.94x",
- static SOC_ENUM_SINGLE_DECL(rt5640_clsd_spk_ratio_enum, RT5640_CLS_D_OUT,
- 			    RT5640_CLSD_RATIO_SFT, rt5640_clsd_spk_ratio);
- 
-+/*
-+ * For reliable output-mute LED control we need a "DAC1 Playback Switch" control.
-+ * We emulate this by only clearing the RT5640_M_IF1_DAC_L/_R AD_DA_MIXER register
-+ * bits when both our emulated DAC1 Playback Switch control and the DAC1 MIXL/R
-+ * DAPM-mixer DAC1 input are enabled.
-+ */
-+static void rt5640_update_ad_da_mixer_if1_dac_m_bits(struct rt5640_priv *rt5640)
-+{
-+	int val = RT5640_M_IF1_DAC_L | RT5640_M_IF1_DAC_R;
-+
-+	if (rt5640->dac1_mixl_if1_switch && rt5640->dac1_playback_switch_l)
-+		val &= ~RT5640_M_IF1_DAC_L;
-+
-+	if (rt5640->dac1_mixr_if1_switch && rt5640->dac1_playback_switch_r)
-+		val &= ~RT5640_M_IF1_DAC_R;
-+
-+	regmap_update_bits(rt5640->regmap, RT5640_AD_DA_MIXER,
-+			   RT5640_M_IF1_DAC_L | RT5640_M_IF1_DAC_R, val);
-+}
-+
-+static int rt5640_dac1_playback_switch_get(struct snd_kcontrol *kcontrol,
-+					   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = rt5640->dac1_playback_switch_l;
-+	ucontrol->value.integer.value[1] = rt5640->dac1_playback_switch_r;
-+
-+	return 0;
-+}
-+
-+static int rt5640_dac1_playback_switch_put(struct snd_kcontrol *kcontrol,
-+					   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+
-+	if (rt5640->dac1_playback_switch_l == ucontrol->value.integer.value[0] &&
-+	    rt5640->dac1_playback_switch_r == ucontrol->value.integer.value[1])
-+		return 0;
-+
-+	rt5640->dac1_playback_switch_l = ucontrol->value.integer.value[0];
-+	rt5640->dac1_playback_switch_r = ucontrol->value.integer.value[1];
-+
-+	rt5640_update_ad_da_mixer_if1_dac_m_bits(rt5640);
-+
-+	return 1;
-+}
-+
- static const struct snd_kcontrol_new rt5640_snd_controls[] = {
- 	/* Speaker Output Volume */
- 	SOC_DOUBLE("Speaker Channel Switch", RT5640_SPK_VOL,
-@@ -400,6 +450,8 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
+@@ -450,6 +450,9 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
  	/* DAC Digital Volume */
  	SOC_DOUBLE("DAC2 Playback Switch", RT5640_DAC2_CTRL,
  		RT5640_M_DAC_L2_VOL_SFT, RT5640_M_DAC_R2_VOL_SFT, 1, 1),
-+	SOC_DOUBLE_EXT("DAC1 Playback Switch", SND_SOC_NOPM, 0, 1, 1, 0,
-+			rt5640_dac1_playback_switch_get, rt5640_dac1_playback_switch_put),
++	SOC_DOUBLE_TLV("DAC2 Playback Volume", RT5640_DAC2_DIG_VOL,
++			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
++			175, 0, dac_vol_tlv),
+ 	SOC_DOUBLE_EXT("DAC1 Playback Switch", SND_SOC_NOPM, 0, 1, 1, 0,
+ 			rt5640_dac1_playback_switch_get, rt5640_dac1_playback_switch_put),
  	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5640_DAC1_DIG_VOL,
- 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
- 			175, 0, dac_vol_tlv),
-@@ -515,18 +567,44 @@ static const struct snd_kcontrol_new rt5640_mono_adc_r_mix[] = {
- 			RT5640_M_MONO_ADC_R2_SFT, 1, 1),
+@@ -495,9 +498,6 @@ static const struct snd_kcontrol_new rt5640_specific_snd_controls[] = {
+ 	/* MONO Output Control */
+ 	SOC_SINGLE("Mono Playback Switch", RT5640_MONO_OUT, RT5640_L_MUTE_SFT,
+ 		1, 1),
+-
+-	SOC_DOUBLE_TLV("Mono DAC Playback Volume", RT5640_DAC2_DIG_VOL,
+-		RT5640_L_VOL_SFT, RT5640_R_VOL_SFT, 175, 0, dac_vol_tlv),
  };
  
-+/* See comment above rt5640_update_ad_da_mixer_if1_dac_m_bits() */
-+static int rt5640_put_dac1_mix_if1_switch(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc = (struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_component *component = snd_soc_dapm_kcontrol_component(kcontrol);
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	if (mc->shift == 0)
-+		rt5640->dac1_mixl_if1_switch = ucontrol->value.integer.value[0];
-+	else
-+		rt5640->dac1_mixr_if1_switch = ucontrol->value.integer.value[0];
-+
-+	/* Apply the update (if any) */
-+	ret = snd_soc_dapm_put_volsw(kcontrol, ucontrol);
-+	if (ret == 0)
-+		return 0;
-+
-+	rt5640_update_ad_da_mixer_if1_dac_m_bits(rt5640);
-+
-+	return 1;
-+}
-+
-+#define SOC_DAPM_SINGLE_RT5640_IF1_SW(name, shift) \
-+	SOC_SINGLE_EXT(name, SND_SOC_NOPM, shift, 1, 0, \
-+		       snd_soc_dapm_get_volsw, rt5640_put_dac1_mix_if1_switch)
-+
- static const struct snd_kcontrol_new rt5640_dac_l_mix[] = {
- 	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5640_AD_DA_MIXER,
- 			RT5640_M_ADCMIX_L_SFT, 1, 1),
--	SOC_DAPM_SINGLE("INF1 Switch", RT5640_AD_DA_MIXER,
--			RT5640_M_IF1_DAC_L_SFT, 1, 1),
-+	SOC_DAPM_SINGLE_RT5640_IF1_SW("INF1 Switch", 0),
- };
- 
- static const struct snd_kcontrol_new rt5640_dac_r_mix[] = {
- 	SOC_DAPM_SINGLE("Stereo ADC Switch", RT5640_AD_DA_MIXER,
- 			RT5640_M_ADCMIX_R_SFT, 1, 1),
--	SOC_DAPM_SINGLE("INF1 Switch", RT5640_AD_DA_MIXER,
--			RT5640_M_IF1_DAC_R_SFT, 1, 1),
-+	SOC_DAPM_SINGLE_RT5640_IF1_SW("INF1 Switch", 1),
- };
- 
- static const struct snd_kcontrol_new rt5640_sto_dac_l_mix[] = {
-@@ -2831,6 +2909,16 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 	INIT_DELAYED_WORK(&rt5640->bp_work, rt5640_button_press_work);
- 	INIT_WORK(&rt5640->jack_work, rt5640_jack_work);
- 
-+	/*
-+	 * Enable the emulated "DAC1 Playback Switch" by default to avoid
-+	 * muting the output with older UCM profiles.
-+	 */
-+	rt5640->dac1_playback_switch_l = true;
-+	rt5640->dac1_playback_switch_r = true;
-+	/* The Power-On-Reset values for the DAC1 mixer have the INF1 input enabled. */
-+	rt5640->dac1_mixl_if1_switch = true;
-+	rt5640->dac1_mixr_if1_switch = true;
-+
- 	/* Make sure work is stopped on probe-error / remove */
- 	ret = devm_add_action_or_reset(&i2c->dev, rt5640_cancel_work, rt5640);
- 	if (ret)
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 4fd47f2b936b..0d029f5dbb61 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -2135,6 +2135,10 @@ struct rt5640_priv {
- 
- 	bool hp_mute;
- 	bool asrc_en;
-+	bool dac1_mixl_if1_switch;
-+	bool dac1_mixr_if1_switch;
-+	bool dac1_playback_switch_l;
-+	bool dac1_playback_switch_r;
- 
- 	/* Jack and button detect data */
- 	bool ovcd_irq_enabled;
+ /**
 -- 
 2.30.1
 
