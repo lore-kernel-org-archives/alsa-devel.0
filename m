@@ -2,77 +2,82 @@ Return-Path: <SRS0=9dS2=H4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 247B3C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:41:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3DDBC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:42:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86B9E64EED
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:41:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86B9E64EED
+	by mail.kernel.org (Postfix) with ESMTPS id 044D764EC4
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Feb 2021 15:42:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 044D764EC4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01A6915F2;
-	Fri, 26 Feb 2021 16:40:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01A6915F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6789A166D;
+	Fri, 26 Feb 2021 16:41:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6789A166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614354094;
-	bh=DtOkiLnmxGJsNvwlBPVVT9zaBfSyx8w2C9aH+YfW0zo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kJ8Q4ZEwsIpa+mtmBjpDMnfefL3mwblKZoVTG6/fP1pE2RFvef0fpI8nPLHdqlX3I
-	 aVdxEPKHq2WLiTis/y6AVU7QnmV47Q+JN4cjgh6VQ33fiRcC6tJYbLeor1o2cRou1y
-	 mbL95ZI6FNUh2mxJxN8n6OsOKs8dYnubPm2YNX4s=
+	s=default; t=1614354145;
+	bh=HA3P4xrS0JfNmmEZ39L+clx5ppNcAH9l8RmdOgvCWAA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Pdd6sSc2ow7g8eTfBgGAaSpUh+IzJO45Oz+Rsr594vuXt6fCYLNCoq7MawYtkEFv9
+	 RVO9ASP9VGTIik7K3autVabbljsc3sUT+fJG2a5ufDYTGJoUNpnC3XJ8w7Ns0X4XaF
+	 6wM/HdZMHelU3h0epSmO2qRnF6Tt7D4aJvp+ZTKY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 461C6F80249;
-	Fri, 26 Feb 2021 16:40:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B04EF80234;
+	Fri, 26 Feb 2021 16:40:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73C85F8022B; Fri, 26 Feb 2021 16:40:41 +0100 (CET)
+ id 65D61F80276; Fri, 26 Feb 2021 16:40:43 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 847CEF8012C
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 16:40:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 847CEF8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6318BF80154
+ for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 16:40:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6318BF80154
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="Rlfa+TVU"
+ header.b="OGsqKA0s"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1614354031;
+ s=mimecast20190719; t=1614354033;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=xvo/Cl/PA78w0aJsjTOiE+EypUuqUyGXqKej6pcuyC8=;
- b=Rlfa+TVUdJ8bn9NbEdiNnO5CHDKKWb7CU2DiojIHfNxupqqzVwXAjoycJsubspktB3JGA4
- kn/O8mWgjPsJh19K1stOHy6BCzQBe+ymgdnMbeqNdvqfM0czlUgaRlBKLy6gyAq9AZV3Su
- 8A3+2/Yd2lySRgT+dzEgEmBBrPGNWsU=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=jxY8B4qTKDcHaRcAhEwhGpo5FXKEPrhaW4WxzNJwna0=;
+ b=OGsqKA0sNXEQJtNduAUdMtS0epBmLMTM3ZyY4+cBE5ukbpgqkhi8mbLoh8MCNYc0CSLu+1
+ Nk5zPknl/BF/+3bd7jh15oGgxM/df3s89/tg7L3FuCPIjrpr/TDPytf8WzAfgS4BYLBMc1
+ TmXf5WRPsOjN7TKJmt+jjpmqvyBMkwU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-lQZgfDydOxaNZDlGlQxyqQ-1; Fri, 26 Feb 2021 10:40:30 -0500
-X-MC-Unique: lQZgfDydOxaNZDlGlQxyqQ-1
+ us-mta-274-3_xm-V4APPiHrOjske4BQA-1; Fri, 26 Feb 2021 10:40:31 -0500
+X-MC-Unique: 3_xm-V4APPiHrOjske4BQA-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com
  [10.5.11.23])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52847107ACC7;
- Fri, 26 Feb 2021 15:40:28 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AD5680402E;
+ Fri, 26 Feb 2021 15:40:30 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-36.ams2.redhat.com [10.36.112.36])
- by smtp.corp.redhat.com (Postfix) with ESMTP id A8F2A1050E;
- Fri, 26 Feb 2021 15:40:26 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id E2935131D8;
+ Fri, 26 Feb 2021 15:40:28 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf 0/8] codecs/rt5640: Cleanup + HW volume control
- support
-Date: Fri, 26 Feb 2021 16:40:17 +0100
-Message-Id: <20210226154025.84828-1-hdegoede@redhat.com>
+Subject: [PATCH alsa-ucm-conf 1/8] codecs/rt5640: Cleanup: unify Stereo / Mono
+ ADC handling
+Date: Fri, 26 Feb 2021 16:40:18 +0100
+Message-Id: <20210226154025.84828-2-hdegoede@redhat.com>
+In-Reply-To: <20210226154025.84828-1-hdegoede@redhat.com>
+References: <20210226154025.84828-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Authentication-Results: relay.mimecast.com;
@@ -99,53 +104,193 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi All,
+Cleanup: no functional changes intended.
 
-Here is a patch series consisting of some codecs/rt5640 cleanups and
-addition of HW volume control support to the rt5640 .conf snippets.
+The rt5640 codec is sometimes used with AIF1 connected to the SoC
+and sometimes with AIF2 connected to the SoC.
 
-Note patch 7 and 8 depend on a new "aif:%d" part being added to the
-components string, the kernel patches for this are pending upstream
-in the "[PATCH 0/5] AsoC: rt5640/rt5651: Volume control fixes" patch
-series.
+The rt5640 UCM configuration deals with this by accepting input from
+and sending output to both AIFs, relying on the kernels DAPM framework to
+disable parts of the graph which are connected to the unconnected AIF.
 
-Patches 7 and 8 should probably not be merged until the kernel patches
-have landed, because theoretically the new component string part could
-change as part of the review of the kernel patches.
+On the output side we solve this by enabling both the IF1_DAC and
+IF2_DAC data inputs to the digital 'Stereo DAC MIX' mixer.
 
-Regards,
+On the input side handling this is somewhat more complicated, the
+"Digital Mixer Path" leading to the IF1_ADC and IF2_ADC outputs
+are entirely separate paths. To solve this we enable the active
+input (DMIC or ADC) in both the Stereo ADC (connected to IF1_ADC)
+and the Mono ADC (IF2_ADC) paths.
 
-Hans
+So far we've not been entirely consistent in our handling of
+the Stereo ADC vs Mono ADC paths, this commit cleans this up:
 
+1. Set the 'Mono ADC Capture Switch' to on once from EnableSeq.conf,
+   like we do for the 'ADC Capture Switch' instead of toggling it on/off
+   from the individual input Enable/Disable sequences.
 
-Hans de Goede (8):
-  codecs/rt5640: Cleanup: unify Stereo / Mono ADC handling
-  codecs/rt5640: Cleanup: Initially disable all inputs and outputs
-  codecs/rt5640: Cleanup: Move 'SPK MIX' setup to main EnableSequene
-  codecs/rt5640: Drop bogus 'DIG MIXL DAC L2 Switch' setting
-  codecs/rt5640: Unify capture volume for AIF1 and AIF2 recording paths
-  codecs/rt5640: Add hardware volume-control support
-  codecs/rt5640: Use the new "aif:%d" part of the components string
-  codecs/rt5640: Specify Playback/CaptureMasterElem for HW
-    volume-control
+2. Group all the 'Mono ADC ...' mixer cset calls together with their
+   stereo ADC counterparts.
 
- ucm2/bytcr-rt5640/HiFi.conf                   | 46 +++++++++++++++++
- ucm2/codecs/rt5640/DigitalMics.conf           | 18 ++++++-
- ucm2/codecs/rt5640/EnableSeq-AIF-unknown.conf |  7 +++
- ucm2/codecs/rt5640/EnableSeq-AIF1.conf        |  7 +++
- ucm2/codecs/rt5640/EnableSeq-AIF2.conf        |  7 +++
- ucm2/codecs/rt5640/EnableSeq.conf             | 50 ++++++++++++++-----
- ucm2/codecs/rt5640/HeadPhones.conf            | 15 +++++-
- ucm2/codecs/rt5640/HeadsetMic.conf            | 24 ++++++---
- ucm2/codecs/rt5640/IN1-InternalMic.conf       | 27 ++++++----
- ucm2/codecs/rt5640/IN3-InternalMic.conf       | 27 ++++++----
- ucm2/codecs/rt5640/MonoSpeaker.conf           | 17 +++++--
- ucm2/codecs/rt5640/Speaker.conf               | 17 +++++--
- 12 files changed, 211 insertions(+), 51 deletions(-)
- create mode 100644 ucm2/codecs/rt5640/EnableSeq-AIF-unknown.conf
- create mode 100644 ucm2/codecs/rt5640/EnableSeq-AIF1.conf
- create mode 100644 ucm2/codecs/rt5640/EnableSeq-AIF2.conf
+3. Explicitly select DMIC L/R 1 for the Mono ADC L/R 2 Mux input, instead
+   of relying on this being the default.
 
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ ucm2/codecs/rt5640/DigitalMics.conf     |  2 --
+ ucm2/codecs/rt5640/EnableSeq.conf       | 10 +++++++---
+ ucm2/codecs/rt5640/HeadsetMic.conf      | 10 ++--------
+ ucm2/codecs/rt5640/IN1-InternalMic.conf | 11 ++---------
+ ucm2/codecs/rt5640/IN3-InternalMic.conf | 11 ++---------
+ 5 files changed, 13 insertions(+), 31 deletions(-)
+
+diff --git a/ucm2/codecs/rt5640/DigitalMics.conf b/ucm2/codecs/rt5640/DigitalMics.conf
+index fdd412f..157c544 100644
+--- a/ucm2/codecs/rt5640/DigitalMics.conf
++++ b/ucm2/codecs/rt5640/DigitalMics.conf
+@@ -8,7 +8,6 @@ SectionDevice."Mic" {
+ 	EnableSequence [
+ 		cset "name='Mono ADC MIXL ADC2 Switch' on"
+ 		cset "name='Mono ADC MIXR ADC2 Switch' on"
+-		cset "name='Mono ADC Capture Switch' on"
+ 		cset "name='Stereo ADC MIXL ADC2 Switch' on"
+ 		cset "name='Stereo ADC MIXR ADC2 Switch' on"
+ 		cset "name='Internal Mic Switch' on"
+@@ -18,7 +17,6 @@ SectionDevice."Mic" {
+ 	DisableSequence [
+ 		cset "name='Mono ADC MIXL ADC2 Switch' off"
+ 		cset "name='Mono ADC MIXR ADC2 Switch' off"
+-		cset "name='Mono ADC Capture Switch' off"
+ 		cset "name='Stereo ADC MIXL ADC2 Switch' off"
+ 		cset "name='Stereo ADC MIXR ADC2 Switch' off"
+ 		cset "name='Internal Mic Switch' off"
+diff --git a/ucm2/codecs/rt5640/EnableSeq.conf b/ucm2/codecs/rt5640/EnableSeq.conf
+index 145a23b..4754df7 100644
+--- a/ucm2/codecs/rt5640/EnableSeq.conf
++++ b/ucm2/codecs/rt5640/EnableSeq.conf
+@@ -30,8 +30,13 @@ EnableSequence [
+ 	# Input Configuration
+ 	cset "name='Stereo ADC1 Mux' ADC"
+ 	cset "name='Stereo ADC2 Mux' DMIC1"
+-	cset "name='Mono ADC L1 Mux' 1"
+-	cset "name='Mono ADC R1 Mux' 1"
++	cset "name='ADC Capture Switch' on"
++
++	cset "name='Mono ADC L1 Mux' ADCL"
++	cset "name='Mono ADC R1 Mux' ADCR"
++	cset "name='Mono ADC L2 Mux' DMIC L1"
++	cset "name='Mono ADC R2 Mux' DMIC R1"
++	cset "name='Mono ADC Capture Switch' on"
+ 
+ 	# 47=0dB, 0.375 dB/step, set it to 6 dB to help with soft mics
+ 	cset "name='ADC Capture Volume' 63"
+@@ -45,5 +50,4 @@ EnableSequence [
+ 
+ 	cset "name='Internal Mic Switch' off"
+ 	cset "name='Headset Mic Switch' off"
+-	cset "name='ADC Capture Switch' on"
+ ]
+diff --git a/ucm2/codecs/rt5640/HeadsetMic.conf b/ucm2/codecs/rt5640/HeadsetMic.conf
+index f88b611..829e4e6 100644
+--- a/ucm2/codecs/rt5640/HeadsetMic.conf
++++ b/ucm2/codecs/rt5640/HeadsetMic.conf
+@@ -21,26 +21,20 @@ SectionDevice."Headset" {
+ 
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' on"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' on"
+-
+ 		cset "name='Mono ADC MIXL ADC1 Switch' on"
+ 		cset "name='Mono ADC MIXR ADC1 Switch' on"
+-
+-		cset "name='Mono ADC Capture Switch' on"
+ 	]
+ 
+ 	DisableSequence [
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' off"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' off"
++		cset "name='Mono ADC MIXL ADC1 Switch' off"
++		cset "name='Mono ADC MIXR ADC1 Switch' off"
+ 
+ 		cset "name='RECMIXL BST2 Switch' off"
+ 		cset "name='RECMIXR BST2 Switch' off"
+ 
+ 		cset "name='Headset Mic Switch' off"
+-
+-		cset "name='Mono ADC MIXL ADC1 Switch' off"
+-		cset "name='Mono ADC MIXR ADC1 Switch' off"
+-
+-		cset "name='Mono ADC Capture Switch' off"
+ 	]
+ 
+ 	Value {
+diff --git a/ucm2/codecs/rt5640/IN1-InternalMic.conf b/ucm2/codecs/rt5640/IN1-InternalMic.conf
+index ebb5b6d..260df90 100644
+--- a/ucm2/codecs/rt5640/IN1-InternalMic.conf
++++ b/ucm2/codecs/rt5640/IN1-InternalMic.conf
+@@ -15,27 +15,20 @@ SectionDevice."Mic" {
+ 
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' on"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' on"
+-
+ 		cset "name='Mono ADC MIXL ADC1 Switch' on"
+ 		cset "name='Mono ADC MIXR ADC1 Switch' on"
+-
+-		cset "name='Mono ADC Capture Switch' on"
+ 	]
+ 
+ 	DisableSequence [
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' off"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' off"
++		cset "name='Mono ADC MIXL ADC1 Switch' off"
++		cset "name='Mono ADC MIXR ADC1 Switch' off"
+ 
+ 		cset "name='RECMIXL BST1 Switch' off"
+ 		cset "name='RECMIXR BST1 Switch' off"
+ 
+ 		cset "name='Internal Mic Switch' off"
+-
+-		cset "name='Mono ADC MIXL ADC1 Switch' off"
+-		cset "name='Mono ADC MIXR ADC1 Switch' off"
+-
+-		cset "name='Mono ADC Capture Switch' off"
+-
+ 	]
+ 
+ 	Value {
+diff --git a/ucm2/codecs/rt5640/IN3-InternalMic.conf b/ucm2/codecs/rt5640/IN3-InternalMic.conf
+index 172d909..ebd2b9c 100644
+--- a/ucm2/codecs/rt5640/IN3-InternalMic.conf
++++ b/ucm2/codecs/rt5640/IN3-InternalMic.conf
+@@ -15,27 +15,20 @@ SectionDevice."Mic" {
+ 
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' on"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' on"
+-
+ 		cset "name='Mono ADC MIXL ADC1 Switch' on"
+ 		cset "name='Mono ADC MIXR ADC1 Switch' on"
+-
+-		cset "name='Mono ADC Capture Switch' on"
+-
+ 	]
+ 
+ 	DisableSequence [
+ 		cset "name='Stereo ADC MIXL ADC1 Switch' off"
+ 		cset "name='Stereo ADC MIXR ADC1 Switch' off"
++		cset "name='Mono ADC MIXL ADC1 Switch' off"
++		cset "name='Mono ADC MIXR ADC1 Switch' off"
+ 
+ 		cset "name='RECMIXL BST3 Switch' off"
+ 		cset "name='RECMIXR BST3 Switch' off"
+ 
+ 		cset "name='Internal Mic Switch' off"
+-
+-		cset "name='Mono ADC MIXL ADC1 Switch' off"
+-		cset "name='Mono ADC MIXR ADC1 Switch' off"
+-
+-		cset "name='Mono ADC Capture Switch' off"
+ 	]
+ 
+ 	Value {
 -- 
 2.30.1
 
