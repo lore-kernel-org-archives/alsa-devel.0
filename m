@@ -2,97 +2,90 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0F85C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:47:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA08EC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:47:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 117FF64DFB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:47:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 117FF64DFB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id A4C6C64D9F
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:47:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4C6C64D9F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F00316BE;
-	Mon,  1 Mar 2021 14:46:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F00316BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCD2E16A1;
+	Mon,  1 Mar 2021 14:47:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCD2E16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614606440;
-	bh=gro99E0owKf/xGuQ6O64WikhWUc5+Lw72LCTwxpAwec=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mPlgAX/8VHyfcjT+gk2ZjY9QRDfOJgEwKn/gnC/NQZQ5nfnDLmz80mKSm2h64E/To
-	 JEer9xuVsBJU2jQHsqd2G3EpKBtw0B573XIMfK5wyJlOXu9biFni/e2GCnDydxzVgF
-	 GMt9l0I5TYg/eZ29Y2kq2jSWxp+x6yOBIcZVWILE=
+	s=default; t=1614606477;
+	bh=gxDwLPIXK3T88CxL8O4NqnFbcmDe7tqjLTSjTinfI+k=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hFOZ7dx3beeHrwlaoByrBs08jy0wN77mkvWzaih7e/cjBhBUlTTTWxq7OxDK/vRjg
+	 ad3q5S6tUIElpsMGE5BZad/B7XON1FIlB8QB24xZVnpTgYek4FOGaCqtbDMqdZhd3h
+	 lXseghTpii06vkJYADv7/lxFKGY4iBxPY7t0sJnw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1E4DF80525;
-	Mon,  1 Mar 2021 14:43:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F4D5F80529;
+	Mon,  1 Mar 2021 14:43:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9FCFF80161; Fri, 26 Feb 2021 14:35:48 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5ABECF8016A; Sat, 27 Feb 2021 19:40:10 +0100 (CET)
+Received: from conuserg-10.nifty.com (conuserg-10.nifty.com [210.131.2.77])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 367B4F8016C
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 14:35:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 367B4F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95B98F8010B
+ for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 19:40:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95B98F8010B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LjzPFPiI"
-Received: by mail-wr1-x434.google.com with SMTP id f12so4802906wrx.8
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 05:35:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=rk6bLCh8nc+NuZmX5ZCcY8DZ9W3U1ZFuulXl6O69h10=;
- b=LjzPFPiIZWsZKQqAL1Aqo/xGItIsf3caNfurvyRlHSyfVIt0E9Vwim/Z6LAaUROjJW
- 1rY7YhAYHrf2FuiPnTpjrldmidkjZyfVr9zlkLRgaqY8XUPE/waLrBby3zuiIn2Sfr1F
- FsZm4XLeVHCZGYQuOw+eDDwHBgmD0Sj6NAwLMr8lOSLSTIOIFROJEKhp+q6Q2fGT9XDr
- MNuMVCS544tyiKTV1DyTnBrgul7smQN5khwbsqz1bt9lRa5mdl8ZOJ/Gk6w4EZV9QtY2
- edRKYavDPRLeZFluJFlABfZKmBKxBXI6uzIltLbFCsT965wKrs+PKR/4lnByjFlMtYoi
- ISmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=rk6bLCh8nc+NuZmX5ZCcY8DZ9W3U1ZFuulXl6O69h10=;
- b=Y0Ow9TKsrdWM+RYsAJVxaiPewLRgi6MeTuUQTjIGYwB31pH8AhweHXbGkHTjJEoLX+
- HTKStwozVCTjCwKOYHlSmqD/49G7bEXGhw9KEdQMorL8VnJan9HxNa9/1tnMMztOMmfW
- sQruUifRgraj7JIk2Bg1arTrFmZZAr411W/M4WhqqpJxD7lMsW2bikiFe4EgsxzBWf5n
- Ykq6e75S9hT73iYibYBV8/oYJ6X7j6zOoAVx9p6VOHu3Rl1zB+xRNP8P/y80hZIn6Toi
- hSxV0PHHLb/2gaIHcbVu0dilMkeCOg7SeG1zz1FUmkLUb1/23ZIWeIUeFMjUOwPTGfCA
- 53mA==
-X-Gm-Message-State: AOAM533fUn11vivU4HciZNQxmy4U0O10z5G9geYGOPMcZXEN6MqRQJtG
- 0Y3jq12CqmI/Fdc8SVzVKMsY0lxLoo0fmq22
-X-Google-Smtp-Source: ABdhPJzLjYEjfYfE2R4rt8LAT6lafeN0e6eaNXl3faey3kXeD8u2OGAVeQY7DIFwnpzwfIPM2kfMew==
-X-Received: by 2002:adf:9b82:: with SMTP id d2mr3305521wrc.193.1614346519729; 
- Fri, 26 Feb 2021 05:35:19 -0800 (PST)
-Received: from localhost.localdomain (176-171-138-112.abo.bbox.fr.
- [176.171.138.112])
- by smtp.googlemail.com with ESMTPSA id c26sm13175547wrb.87.2021.02.26.05.35.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Feb 2021 05:35:19 -0800 (PST)
-From: Nicolas MURE <nicolas.mure2019@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ASLA: usb-audio: Declare Pioneer DJM-850 mixer controls
-Date: Fri, 26 Feb 2021 14:34:27 +0100
-Message-Id: <20210226133429.20081-3-nicolas.mure2019@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210226133429.20081-1-nicolas.mure2019@gmail.com>
-References: <20210226133429.20081-1-nicolas.mure2019@gmail.com>
+ dkim=pass (2048-bit key) header.d=nifty.com header.i=@nifty.com
+ header.b="fPLY87kz"
+Received: from grover.flets-west.jp (softbank126026090165.bbtec.net
+ [126.26.90.165]) (authenticated)
+ by conuserg-10.nifty.com with ESMTP id 11RIdc9t010275;
+ Sun, 28 Feb 2021 03:39:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 11RIdc9t010275
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+ s=dec2015msa; t=1614451181;
+ bh=gOpMVlOqLVAfnJLlOCHiAYyNe6gX6r5/1K3/T+OYopw=;
+ h=From:To:Cc:Subject:Date:From;
+ b=fPLY87kzws2TkysSnNTQHdvGt2POcPe+7+tZ9iXdoxNloOm2X3zsClVVsXxULGcEw
+ +PR9mpRMzEvvb/UEqA1ElKV5ULIrrCfk2ZwF9D6TINcbTowrkNsNmgTvEhz/17eXeF
+ u1cEcmsmIdxC53gz/YBbODLVfp5ymGKvDdLG/d01DwIBehoyx76icbY66B9fZYqngJ
+ bmAtpVvhk+txxEVvp4E1v5BBNbUs6V+M/XgD2VkxvbPH8orQZ1JfDFKvISey7blXXX
+ 4tLk1JbAd682KZ8oodAva2MBHGplrpI6BbqKi+Tt2+GhjxQ0gzdPzLXuaTBR7ignMU
+ 8twNtCg8o+miA==
+X-Nifty-SrcIP: [126.26.90.165]
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
+Date: Sun, 28 Feb 2021 03:39:10 +0900
+Message-Id: <20210227183910.221873-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 01 Mar 2021 14:43:22 +0100
-Cc: Nicolas MURE <nicolas.mure2019@gmail.com>, livvy@base.nu
+X-Mailman-Approved-At: Mon, 01 Mar 2021 14:43:21 +0100
+Cc: alsa-devel@alsa-project.org, Peter Zijlstra <peterz@infradead.org>,
+ "Darrick J. Wong" <djwong@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Sasha Levin <sashal@kernel.org>, Fangrui Song <maskray@google.com>,
+ clang-built-linux@googlegroups.com, Masahiro Yamada <masahiroy@kernel.org>,
+ Jethro Beekman <jethro@fortanix.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Ingo Molnar <mingo@redhat.com>, "H . J . Lu" <hjl.tools@gmail.com>,
+ Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+ Brian Gerst <brgerst@gmail.com>, "Chang S. Bae" <chang.seok.bae@intel.com>,
+ Chao Yu <chao@kernel.org>, Nathan Chancellor <nathan@kernel.org>,
+ Andy Lutomirski <luto@kernel.org>, Sean Christopherson <seanjc@google.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, Nick Desaulniers <ndesaulniers@google.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,94 +101,325 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare audio capture controls to choose the audio source, and also to
-set the capture level (in dB).
+This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
+error if binutils too old").
 
-See https://github.com/nm2107/Pioneer-DJM-850-driver-reverse-engineering
-    /blob/172fb9a61055960c88c67b7c416fe5bf3609807b
-    /doc/windows-djm-850-setting-utility/mixer-output-tab/README.md
+The help text in arch/x86/Kconfig says enabling the X32 ABI support
+needs binutils 2.22 or later. This is met because the minimal binutils
+version is 2.23 according to Documentation/process/changes.rst.
 
-Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
+I would not say I am not familiar with toolchain configuration, but
+I checked the configure.tgt code in binutils. The elf32_x86_64
+emulation mode seems to be included when it is configured for the
+x86_64-*-linux-* target.
+
+I also tried lld and llvm-objcopy, and succeeded in building x32 VDSO.
+
+I removed the compile-time check in arch/x86/Makefile, in the hope of
+elf32_x86_64 being always supported.
+
+With this, CONFIG_X86_X32 and CONFIG_X86_X32_ABI will be equivalent.
+Rename the former to the latter.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- sound/usb/mixer_quirks.c | 32 +++++++++++++++++++++++++++++---
- 1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 08873d2afe4d..b325b6597d91 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -2649,9 +2649,11 @@ static int snd_bbfpro_controls_create(struct usb_mixer_interface *mixer)
- #define SND_DJM_DEVICE_SHIFT	24
+ arch/x86/Kconfig                       |  8 ++------
+ arch/x86/Makefile                      | 16 ----------------
+ arch/x86/include/asm/syscall_wrapper.h |  6 +++---
+ arch/x86/include/asm/vdso.h            |  2 +-
+ arch/x86/kernel/process_64.c           |  2 +-
+ fs/fuse/file.c                         |  2 +-
+ fs/xfs/xfs_ioctl32.c                   |  2 +-
+ sound/core/control_compat.c            | 16 ++++++++--------
+ sound/core/pcm_compat.c                | 20 ++++++++++----------
+ 9 files changed, 27 insertions(+), 47 deletions(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2792879d398e..7272cba2744c 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2865,7 +2865,7 @@ config IA32_AOUT
+ 	help
+ 	  Support old a.out binaries in the 32bit emulation.
  
- // device table index
-+// used for the snd_djm_devices table, so please update accordingly
- #define SND_DJM_250MK2_IDX	0x0
- #define SND_DJM_750_IDX		0x1
--#define SND_DJM_900NXS2_IDX	0x2
-+#define SND_DJM_850_IDX		0x2
-+#define SND_DJM_900NXS2_IDX	0x3
+-config X86_X32
++config X86_X32_ABI
+ 	bool "x32 ABI for 64-bit mode"
+ 	depends on X86_64
+ 	help
+@@ -2874,10 +2874,6 @@ config X86_X32
+ 	  full 64-bit register file and wide data path while leaving
+ 	  pointers at 32 bits for smaller memory footprint.
  
- 
- #define SND_DJM_CTL(_name, suffix, _default_value, _windex) { \
-@@ -2733,11 +2735,12 @@ static const char *snd_djm_get_label(u16 wvalue, u16 windex)
- 	}
- };
- 
+-	  You will need a recent binutils (2.22 or later) with
+-	  elf32_x86_64 support enabled to compile a kernel with this
+-	  option set.
 -
--// DJM-250MK2
-+// common DJM capture level option values
- static const u16 snd_djm_opts_cap_level[] = {
- 	0x0000, 0x0100, 0x0200, 0x0300 };
+ config COMPAT_32
+ 	def_bool y
+ 	depends on IA32_EMULATION || X86_32
+@@ -2886,7 +2882,7 @@ config COMPAT_32
  
-+
-+// DJM-250MK2
- static const u16 snd_djm_opts_250mk2_cap1[] = {
- 	0x0103, 0x0100, 0x0106, 0x0107, 0x0108, 0x0109, 0x010d, 0x010a };
+ config COMPAT
+ 	def_bool y
+-	depends on IA32_EMULATION || X86_X32
++	depends on IA32_EMULATION || X86_X32_ABI
  
-@@ -2781,6 +2784,25 @@ static const struct snd_djm_ctl snd_djm_ctls_750[] = {
+ if COMPAT
+ config COMPAT_FOR_U64_ALIGNMENT
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 2d6d5a28c3bf..e163549f5be7 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -125,22 +125,6 @@ else
+         KBUILD_CFLAGS += -mcmodel=kernel
+ endif
+ 
+-ifdef CONFIG_X86_X32
+-	x32_ld_ok := $(call try-run,\
+-			/bin/echo -e '1: .quad 1b' | \
+-			$(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
+-			$(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMPO" && \
+-			$(LD) -m elf32_x86_64 "$$TMPO" -o "$$TMP",y,n)
+-        ifeq ($(x32_ld_ok),y)
+-                CONFIG_X86_X32_ABI := y
+-                KBUILD_AFLAGS += -DCONFIG_X86_X32_ABI
+-                KBUILD_CFLAGS += -DCONFIG_X86_X32_ABI
+-        else
+-                $(warning CONFIG_X86_X32 enabled but no binutils support)
+-        endif
+-endif
+-export CONFIG_X86_X32_ABI
+-
+ #
+ # If the function graph tracer is used with mcount instead of fentry,
+ # '-maccumulate-outgoing-args' is needed to prevent a GCC bug
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index a84333adeef2..69bf87c41a0b 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -158,7 +158,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ #endif /* CONFIG_IA32_EMULATION */
+ 
+ 
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ /*
+  * For the x32 ABI, we need to create a stub for compat_sys_*() which is aware
+  * of the x86-64-style parameter ordering of x32 syscalls. The syscalls common
+@@ -176,12 +176,12 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 
+ #define __X32_COMPAT_SYS_NI(name)					\
+ 	__SYS_NI(x32, compat_sys_##name)
+-#else /* CONFIG_X86_X32 */
++#else /* CONFIG_X86_X32_ABI */
+ #define __X32_COMPAT_SYS_STUB0(name)
+ #define __X32_COMPAT_SYS_STUBx(x, name, ...)
+ #define __X32_COMPAT_COND_SYSCALL(name)
+ #define __X32_COMPAT_SYS_NI(name)
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 
+ 
+ #ifdef CONFIG_COMPAT
+diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
+index 98aa103eb4ab..2963a2f5dbc4 100644
+--- a/arch/x86/include/asm/vdso.h
++++ b/arch/x86/include/asm/vdso.h
+@@ -37,7 +37,7 @@ struct vdso_image {
+ extern const struct vdso_image vdso_image_64;
+ #endif
+ 
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ extern const struct vdso_image vdso_image_x32;
+ #endif
+ 
+diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+index d08307df69ad..a93b6f4296fc 100644
+--- a/arch/x86/kernel/process_64.c
++++ b/arch/x86/kernel/process_64.c
+@@ -656,7 +656,7 @@ void set_personality_64bit(void)
+ 
+ static void __set_personality_x32(void)
+ {
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 	if (current->mm)
+ 		current->mm->context.flags = 0;
+ 
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 8cccecb55fb8..c53c620d1a7a 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -2797,7 +2797,7 @@ long fuse_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg,
+ #else
+ 	if (flags & FUSE_IOCTL_COMPAT) {
+ 		inarg.flags |= FUSE_IOCTL_32BIT;
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 		if (in_x32_syscall())
+ 			inarg.flags |= FUSE_IOCTL_COMPAT_X32;
+ #endif
+diff --git a/fs/xfs/xfs_ioctl32.c b/fs/xfs/xfs_ioctl32.c
+index 33c09ec8e6c0..e8038bc966e7 100644
+--- a/fs/xfs/xfs_ioctl32.c
++++ b/fs/xfs/xfs_ioctl32.c
+@@ -233,7 +233,7 @@ xfs_compat_ioc_fsbulkstat(
+ 	inumbers_fmt_pf		inumbers_func = xfs_fsinumbers_fmt_compat;
+ 	bulkstat_one_fmt_pf	bs_one_func = xfs_fsbulkstat_one_fmt_compat;
+ 
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 	if (in_x32_syscall()) {
+ 		/*
+ 		 * ... but on x32 the input xfs_fsop_bulkreq has pointers
+diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+index 1d708aab9c98..5d1b94bda2cd 100644
+--- a/sound/core/control_compat.c
++++ b/sound/core/control_compat.c
+@@ -153,7 +153,7 @@ struct snd_ctl_elem_value32 {
+         unsigned char reserved[128];
  };
  
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ /* x32 has a different alignment for 64bit values from ia32 */
+ struct snd_ctl_elem_value_x32 {
+ 	struct snd_ctl_elem_id id;
+@@ -165,7 +165,7 @@ struct snd_ctl_elem_value_x32 {
+ 	} value;
+ 	unsigned char reserved[128];
+ };
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
  
-+// DJM-850
-+static const u16 snd_djm_opts_850_cap1[] = {
-+	0x0100, 0x0103, 0x0106, 0x0107, 0x0108, 0x0109, 0x010a, 0x010f };
-+static const u16 snd_djm_opts_850_cap2[] = {
-+	0x0200, 0x0201, 0x0206, 0x0207, 0x0208, 0x0209, 0x020a, 0x020f };
-+static const u16 snd_djm_opts_850_cap3[] = {
-+	0x0300, 0x0301, 0x0306, 0x0307, 0x0308, 0x0309, 0x030a, 0x030f };
-+static const u16 snd_djm_opts_850_cap4[] = {
-+	0x0400, 0x0403, 0x0406, 0x0407, 0x0408, 0x0409, 0x040a, 0x040f };
-+
-+static const struct snd_djm_ctl snd_djm_ctls_850[] = {
-+	SND_DJM_CTL("Capture Level", cap_level, 0, SND_DJM_WINDEX_CAPLVL),
-+	SND_DJM_CTL("Ch1 Input",   850_cap1, 1, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch2 Input",   850_cap2, 0, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch3 Input",   850_cap3, 0, SND_DJM_WINDEX_CAP),
-+	SND_DJM_CTL("Ch4 Input",   850_cap4, 1, SND_DJM_WINDEX_CAP)
-+};
-+
-+
- // DJM-900NXS2
- static const u16 snd_djm_opts_900nxs2_cap1[] = {
- 	0x0100, 0x0102, 0x0103, 0x0106, 0x0107, 0x0108, 0x0109, 0x010a };
-@@ -2806,6 +2828,7 @@ static const struct snd_djm_ctl snd_djm_ctls_900nxs2[] = {
- static const struct snd_djm_device snd_djm_devices[] = {
- 	SND_DJM_DEVICE(250mk2),
- 	SND_DJM_DEVICE(750),
-+	SND_DJM_DEVICE(850),
- 	SND_DJM_DEVICE(900nxs2)
+ /* get the value type and count of the control */
+ static int get_ctl_type(struct snd_card *card, struct snd_ctl_elem_id *id,
+@@ -350,7 +350,7 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+ 	return ctl_elem_write_user(file, data32, &data32->value);
+ }
+ 
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ static int snd_ctl_elem_read_user_x32(struct snd_card *card,
+ 				      struct snd_ctl_elem_value_x32 __user *data32)
+ {
+@@ -362,7 +362,7 @@ static int snd_ctl_elem_write_user_x32(struct snd_ctl_file *file,
+ {
+ 	return ctl_elem_write_user(file, data32, &data32->value);
+ }
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 
+ /* add or replace a user control */
+ static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
+@@ -421,10 +421,10 @@ enum {
+ 	SNDRV_CTL_IOCTL_ELEM_WRITE32 = _IOWR('U', 0x13, struct snd_ctl_elem_value32),
+ 	SNDRV_CTL_IOCTL_ELEM_ADD32 = _IOWR('U', 0x17, struct snd_ctl_elem_info32),
+ 	SNDRV_CTL_IOCTL_ELEM_REPLACE32 = _IOWR('U', 0x18, struct snd_ctl_elem_info32),
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 	SNDRV_CTL_IOCTL_ELEM_READ_X32 = _IOWR('U', 0x12, struct snd_ctl_elem_value_x32),
+ 	SNDRV_CTL_IOCTL_ELEM_WRITE_X32 = _IOWR('U', 0x13, struct snd_ctl_elem_value_x32),
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
  };
  
-@@ -3045,6 +3068,9 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 	case USB_ID(0x08e4, 0x017f): /* Pioneer DJ DJM-750 */
- 		err = snd_djm_controls_create(mixer, SND_DJM_750_IDX);
- 		break;
-+	case USB_ID(0x08e4, 0x0163): /* Pioneer DJ DJM-850 */
-+		err = snd_djm_controls_create(mixer, SND_DJM_850_IDX);
-+		break;
- 	case USB_ID(0x2b73, 0x000a): /* Pioneer DJ DJM-900NXS2 */
- 		err = snd_djm_controls_create(mixer, SND_DJM_900NXS2_IDX);
- 		break;
+ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
+@@ -463,12 +463,12 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
+ 		return snd_ctl_elem_add_compat(ctl, argp, 0);
+ 	case SNDRV_CTL_IOCTL_ELEM_REPLACE32:
+ 		return snd_ctl_elem_add_compat(ctl, argp, 1);
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 	case SNDRV_CTL_IOCTL_ELEM_READ_X32:
+ 		return snd_ctl_elem_read_user_x32(ctl->card, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_WRITE_X32:
+ 		return snd_ctl_elem_write_user_x32(ctl, argp);
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 	}
+ 
+ 	down_read(&snd_ioctl_rwsem);
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 590a46a9e78d..937f5117a81f 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -147,13 +147,13 @@ static int snd_pcm_ioctl_channel_info_compat(struct snd_pcm_substream *substream
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ /* X32 ABI has the same struct as x86-64 for snd_pcm_channel_info */
+ static int snd_pcm_channel_info_user(struct snd_pcm_substream *substream,
+ 				     struct snd_pcm_channel_info __user *src);
+ #define snd_pcm_ioctl_channel_info_x32(s, p)	\
+ 	snd_pcm_channel_info_user(s, p)
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 
+ struct compat_snd_pcm_status64 {
+ 	snd_pcm_state_t state;
+@@ -373,7 +373,7 @@ static int snd_pcm_ioctl_xfern_compat(struct snd_pcm_substream *substream,
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ /* X32 ABI has 64bit timespec and 64bit alignment */
+ struct snd_pcm_mmap_status_x32 {
+ 	snd_pcm_state_t state;
+@@ -464,7 +464,7 @@ static int snd_pcm_ioctl_sync_ptr_x32(struct snd_pcm_substream *substream,
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 
+ /*
+  */
+@@ -484,10 +484,10 @@ enum {
+ 	SNDRV_PCM_IOCTL_READN_FRAMES32 = _IOR('A', 0x53, struct snd_xfern32),
+ 	SNDRV_PCM_IOCTL_STATUS_COMPAT64 = _IOR('A', 0x20, struct compat_snd_pcm_status64),
+ 	SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64 = _IOWR('A', 0x24, struct compat_snd_pcm_status64),
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 	SNDRV_PCM_IOCTL_CHANNEL_INFO_X32 = _IOR('A', 0x32, struct snd_pcm_channel_info),
+ 	SNDRV_PCM_IOCTL_SYNC_PTR_X32 = _IOWR('A', 0x23, struct snd_pcm_sync_ptr_x32),
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ };
+ 
+ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
+@@ -531,10 +531,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 	case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+ 		return snd_pcm_common_ioctl(file, substream, cmd, argp);
+ 	case __SNDRV_PCM_IOCTL_SYNC_PTR64:
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 		if (in_x32_syscall())
+ 			return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 		return snd_pcm_common_ioctl(file, substream, cmd, argp);
+ 	case SNDRV_PCM_IOCTL_HW_REFINE32:
+ 		return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
+@@ -566,10 +566,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 		return snd_pcm_status_user_compat64(substream, argp, false);
+ 	case SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64:
+ 		return snd_pcm_status_user_compat64(substream, argp, true);
+-#ifdef CONFIG_X86_X32
++#ifdef CONFIG_X86_X32_ABI
+ 	case SNDRV_PCM_IOCTL_CHANNEL_INFO_X32:
+ 		return snd_pcm_ioctl_channel_info_x32(substream, argp);
+-#endif /* CONFIG_X86_X32 */
++#endif /* CONFIG_X86_X32_ABI */
+ 	}
+ 
+ 	return -ENOIOCTLCMD;
 -- 
-2.29.2
+2.27.0
 
