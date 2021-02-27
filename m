@@ -6,68 +6,61 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4167AC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 07:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E12AC433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 07:54:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7F7C964EC0
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 07:51:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F7C964EC0
+	by mail.kernel.org (Postfix) with ESMTPS id 4185664EAF
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 07:54:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4185664EAF
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C99F167F;
-	Sat, 27 Feb 2021 08:51:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C99F167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44FCF1681;
+	Sat, 27 Feb 2021 08:53:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44FCF1681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614412316;
-	bh=/0w7ixF07g5A8ZfcTw+CIp/dwzVardpFJJAJDkf85ak=;
+	s=default; t=1614412460;
+	bh=5TsiCoeHMx3mAcizHaTBrCjDfBw5hBPPQC3x5jtgHsw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G8smUCZQV4T+9zsBWIkAAgTqTrIwP1ZpAjubd7993a9gB5iquBJhhjeBwpI7ImsPx
-	 yY7rNg4DDs+1FWTjUjf7jSxBwaLO8v4ngsIVi5PRmQQ9O4G0wa92vb+m1bsgfIIWnq
-	 mvMgTkasSvqcb8NAEgLFQ6hLbr5yA73AuiwICOnE=
+	b=RYMlQMrK+A7SXO6dVVD228jAhFwjptM8E1SIvH7fKRiPhvbT+Zsa4xuyLxAE6I5HD
+	 Z5lJVSeTF+P5M3BRGF+/nDhJ/jvcOFVB+mhhQybvtMqBlkw6l43LsSuE/0sejrhFpr
+	 /uclgZm3SKoXw4keAf7dooVSgszIH+7WkjEg1oIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B4A3F80169;
-	Sat, 27 Feb 2021 08:51:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE5ACF80169;
+	Sat, 27 Feb 2021 08:53:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1566BF8016A; Sat, 27 Feb 2021 08:51:04 +0100 (CET)
+ id 72FD2F8016A; Sat, 27 Feb 2021 08:53:28 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3A7EF8010B
- for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 08:50:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3A7EF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37877F8010B
+ for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 08:53:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37877F8010B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B1D21AAC5;
- Sat, 27 Feb 2021 07:50:56 +0000 (UTC)
-Date: Sat, 27 Feb 2021 08:50:56 +0100
-Message-ID: <s5hv9aekkyn.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 553BAAAC5;
+ Sat, 27 Feb 2021 07:53:25 +0000 (UTC)
+Date: Sat, 27 Feb 2021 08:53:25 +0100
+Message-ID: <s5htupykkui.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
-In-Reply-To: <50921122-85f3-14d1-abf1-e20875403771@opensynergy.com>
-References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
- <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
- <s5h35xkquvj.wl-tiwai@suse.de>
- <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
- <s5hlfbcpayj.wl-tiwai@suse.de>
- <20210225135951-mutt-send-email-mst@kernel.org>
- <s5hblc7opok.wl-tiwai@suse.de>
- <50921122-85f3-14d1-abf1-e20875403771@opensynergy.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: hda/hdmi: let new platforms assign the pcm slot
+ dynamically
+In-Reply-To: <alpine.DEB.2.22.394.2102261954260.864696@eliteleevi.tm.intel.com>
+References: <20210225102028.41769-1-hui.wang@canonical.com>
+ <alpine.DEB.2.22.394.2102261954260.864696@eliteleevi.tm.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
- "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
+Cc: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,36 +76,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 26 Feb 2021 21:19:58 +0100,
-Anton Yakovlev wrote:
+On Fri, 26 Feb 2021 19:14:32 +0100,
+Kai Vehmanen wrote:
 > 
-> On 25.02.2021 21:30, Takashi Iwai wrote:> On Thu, 25 Feb 2021 20:02:50
-> +0100,
-> > Michael S. Tsirkin wrote:
-> >>
-> 
-> [snip]
-> 
-> >> If you want to merge it yourself instead, also please say so.
-> >
-> > I don't mind who take the patches, although it looks more fitting to
-> > merge through sound git tree if judging from the changes put in
-> > sound/* directory.
-> 
-> Then should I update the MAINTAINERS and add Takashi instead of
-> Michael, or should I put both of you there?
+> Takashi, do you think we can go with this without any method (a module 
+> option) to opt-out?
 
-No need for that, I'm already named as the generic sound/* stuff
-maintainer.  And, it's rather more about how the merge gets pushed up
-to upstream.  In general, the stuff belonging to a subsystem goes via
-the subsystem tree, e.g. Mark has been maintaining ASoC stuff in his 
-tree while it gets merged sound.git tree to Linus.  Similarly, it's
-fine if Michael wants to keep a sub-subsystem tree for virtio_snd,
-too.  But keeping a dedicated git repo for a single driver isn't often
-worthwhile.
+Yes, let's try without a module option at first.  I bet no one would
+be annoyed by this change.
 
-Of course, it's no strict rule, and I don't mind if anybody has a
-strong reason to process in other ways, too.  Just let me know.
+> I'm ok to go with this, given all users should be using kcontrol status to 
+> select the PCM for HDMI/DP output. Any other method is not guaranteed 
+> anyways to work in all cases as the assignment is dynamic in the end.. 
+
+Right.  Let's hope that all modern systems already deal with the
+situation better than ago.
 
 
 thanks,
