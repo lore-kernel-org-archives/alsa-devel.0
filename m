@@ -2,64 +2,72 @@ Return-Path: <SRS0=30w1=H5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED71EC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 00:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4167AC433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 07:52:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9D680601FB
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 00:16:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D680601FB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7F7C964EC0
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 07:51:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7F7C964EC0
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51ED184A;
-	Sat, 27 Feb 2021 01:15:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51ED184A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C99F167F;
+	Sat, 27 Feb 2021 08:51:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C99F167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614385002;
-	bh=dwetA5pyvDgdA7wkVrFy5K5PUIUsFnTnT0Oty5G+X3A=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=aqWpXNZV66pwpahSRchMzrRHD/Wi7Z/gE8PUiUEh22vUmbp+4bWw5gV1IMUAdTduL
-	 HrC4TH/7kUQ3FcXclVd6qsWJVPSrTVeDMQwYG50ahNiCXLjQrRWJw4cM77Sj8tJeI2
-	 6h0ZozF32m0q9eRyM6DCGekYr6vVs2/S/zsuLRSw=
+	s=default; t=1614412316;
+	bh=/0w7ixF07g5A8ZfcTw+CIp/dwzVardpFJJAJDkf85ak=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=G8smUCZQV4T+9zsBWIkAAgTqTrIwP1ZpAjubd7993a9gB5iquBJhhjeBwpI7ImsPx
+	 yY7rNg4DDs+1FWTjUjf7jSxBwaLO8v4ngsIVi5PRmQQ9O4G0wa92vb+m1bsgfIIWnq
+	 mvMgTkasSvqcb8NAEgLFQ6hLbr5yA73AuiwICOnE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9080F80154;
-	Sat, 27 Feb 2021 01:15:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B4A3F80169;
+	Sat, 27 Feb 2021 08:51:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D70AF8016C; Sat, 27 Feb 2021 01:15:50 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 1566BF8016A; Sat, 27 Feb 2021 08:51:04 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E216F80154
- for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 01:15:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E216F80154
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <colin.king@canonical.com>)
- id 1lFnGZ-0004dU-Sc; Sat, 27 Feb 2021 00:15:27 +0000
-From: Colin King <colin.king@canonical.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Wai Yew CHAY <wychay@ctl.creative.com>, alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
-Date: Sat, 27 Feb 2021 00:15:27 +0000
-Message-Id: <20210227001527.1077484-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3A7EF8010B
+ for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 08:50:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3A7EF8010B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id B1D21AAC5;
+ Sat, 27 Feb 2021 07:50:56 +0000 (UTC)
+Date: Sat, 27 Feb 2021 08:50:56 +0100
+Message-ID: <s5hv9aekkyn.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Subject: Re: [PATCH v5 6/9] ALSA: virtio: PCM substream operators
+In-Reply-To: <50921122-85f3-14d1-abf1-e20875403771@opensynergy.com>
+References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
+ <20210222153444.348390-7-anton.yakovlev@opensynergy.com>
+ <s5h35xkquvj.wl-tiwai@suse.de>
+ <d9b6e8fa-7356-1cbf-029b-6f7c8bad4994@opensynergy.com>
+ <s5hlfbcpayj.wl-tiwai@suse.de>
+ <20210225135951-mutt-send-email-mst@kernel.org>
+ <s5hblc7opok.wl-tiwai@suse.de>
+ <50921122-85f3-14d1-abf1-e20875403771@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,39 +83,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, 26 Feb 2021 21:19:58 +0100,
+Anton Yakovlev wrote:
+> 
+> On 25.02.2021 21:30, Takashi Iwai wrote:> On Thu, 25 Feb 2021 20:02:50
+> +0100,
+> > Michael S. Tsirkin wrote:
+> >>
+> 
+> [snip]
+> 
+> >> If you want to merge it yourself instead, also please say so.
+> >
+> > I don't mind who take the patches, although it looks more fitting to
+> > merge through sound git tree if judging from the changes put in
+> > sound/* directory.
+> 
+> Then should I update the MAINTAINERS and add Takashi instead of
+> Michael, or should I put both of you there?
 
-Currently the mask operation on variable conf is just 3 bits so
-the switch statement case value of 8 is unreachable dead code.
-The function daio_mgr_dao_init can be passed a 4 bit value,
-function dao_rsc_init calls it with conf set to:
+No need for that, I'm already named as the generic sound/* stuff
+maintainer.  And, it's rather more about how the merge gets pushed up
+to upstream.  In general, the stuff belonging to a subsystem goes via
+the subsystem tree, e.g. Mark has been maintaining ASoC stuff in his 
+tree while it gets merged sound.git tree to Linus.  Similarly, it's
+fine if Michael wants to keep a sub-subsystem tree for virtio_snd,
+too.  But keeping a dedicated git repo for a single driver isn't often
+worthwhile.
 
-     conf = (desc->msr & 0x7) | (desc->passthru << 3);
+Of course, it's no strict rule, and I don't mind if anybody has a
+strong reason to process in other ways, too.  Just let me know.
 
-so clearly when desc->passthru is set to 1 then conf can be
-at least 8.
 
-Fix this by changing the mask to 0xf.
+thanks,
 
-Fixes: 8cc72361481f ("ALSA: SB X-Fi driver merge")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/pci/ctxfi/cthw20k2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
-index a855fb8c58bd..55af8ef29838 100644
---- a/sound/pci/ctxfi/cthw20k2.c
-+++ b/sound/pci/ctxfi/cthw20k2.c
-@@ -991,7 +991,7 @@ static int daio_mgr_dao_init(void *blk, unsigned int idx, unsigned int conf)
- 
- 	if (idx < 4) {
- 		/* S/PDIF output */
--		switch ((conf & 0x7)) {
-+		switch ((conf & 0xf)) {
- 		case 1:
- 			set_field(&ctl->txctl[idx], ATXCTL_NUC, 0);
- 			break;
--- 
-2.30.0
-
+Takashi
