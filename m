@@ -2,58 +2,66 @@ Return-Path: <SRS0=30w1=H5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A04A9C433E0
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 08:21:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D99BC433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 08:28:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0C7C764EBC
-	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 08:21:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C7C764EBC
+	by mail.kernel.org (Postfix) with ESMTPS id 2D8B464E69
+	for <alsa-devel@archiver.kernel.org>; Sat, 27 Feb 2021 08:28:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D8B464E69
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73CCB167A;
-	Sat, 27 Feb 2021 09:20:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73CCB167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04C70167E;
+	Sat, 27 Feb 2021 09:27:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04C70167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614414066;
-	bh=HYBSVRMHUDryGSFT06nALAaQF+ZRDv/e6IoQTCyth+g=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EDHzt52sXP4u0Ua6+TvDmLcJEWMUB5s/P9r+aUe8bNOY5JgV5aVpGh39h7rRVbjwM
-	 Qx1ocAS7bhPzNz6S5FcAWPmDg7tKThrim496WV/UdA1eRqjO1CuDnwVsozRT70M6w+
-	 fKi9C2PdexMNV+SOXuWjVIM/1YQl6YsLXnYPRv7w=
+	s=default; t=1614414521;
+	bh=xA+qQ9ADWG5NrVeWiKHXBCtNBnDHMkAGWCYYrzyRZ1s=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rI3cra7oE43BPDCdwNdT65U5lD3+VmHl3QtYws3wWKBFrtzNhILeve8eLjBMnHbk1
+	 oKzS6kjPCqI2SZvT3FSBUc4qOKA4x6/FH0dkIxOvCv4bVtiEyxY9pnHAaifxa1poU4
+	 NZ+z8EdHdM9liK98QYKcm1RxaTVIJLe1DPDM2Xoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90768F80169;
-	Sat, 27 Feb 2021 09:20:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77410F80169;
+	Sat, 27 Feb 2021 09:27:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2EE4F8016A; Sat, 27 Feb 2021 09:20:13 +0100 (CET)
+ id EFDD0F8016A; Sat, 27 Feb 2021 09:27:48 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D07ADF8010B
- for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 09:20:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D07ADF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C7E0F800EF
+ for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 09:27:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C7E0F800EF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D2511AFCB
- for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 08:20:02 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id E72B4AFCB;
+ Sat, 27 Feb 2021 08:27:45 +0000 (UTC)
+Date: Sat, 27 Feb 2021 09:27:45 +0100
+Message-ID: <s5hpn0llxtq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Don't abort even if the clock rate differs
-Date: Sat, 27 Feb 2021 09:20:02 +0100
-Message-Id: <20210227082002.21185-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Jasmin Fazlic <superfassl@gmail.com>
+Subject: Re: [PATCH 0/2] alsa-tools/hdspmixer: enhance preset save and add
+ hardware ouput loopback buttons
+In-Reply-To: <20210207145048.14580-1-superfassl@gmail.com>
+References: <2e9bb0b8-ee14-9dc9-1bd8-ecffca3982ac@gmail.com>
+ <20210207145048.14580-1-superfassl@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,47 +77,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The commit 93db51d06b32 ("ALSA: usb-audio: Check valid altsetting at
-parsing rates for UAC2/3") changed the behavior of the function
-set_sample_rate_v2v3() slightly to treat the inconsistent sample rate
-as an error.  It was done by assumption that the sample rate
-validation should have been done at the parser phase as implemented in
-that patch.  But the validation is later selectively enabled only for
-certain devices as it causes a regression (the commit fe773b8711e3
-"ALSA: usb-audio: workaround for iface reset issue"), and now the
-inconsistency surfaced as a fatal error while it worked in the past as
-is, as reported for FiiO M3K DAC.
+On Sun, 07 Feb 2021 15:50:46 +0100,
+Jasmin Fazlic wrote:
+> 
+> The main focus here was to give the user the ability
+> to toggle the hardware output loopback state available
+> with following driver patch:
+> https://github.com/tiwai/sound/commit/da2a040ee7cfe1dd57d5bec7906cb979c5787a86
+> 
+> Since the state is added to the saved preset file at the
+> end, old versions of this tool can still read the preset
+> file. Furthermore to not lose this new data should the
+> user accidentally or willfully save the preset with an
+> older version of the tool, the save routine was altered
+> to keep any extra data in a possibly present preset output
+> file.
+> 
+> Jasmin Fazlic (2):
+>   alsa-tools/hdspmixer: enhance saving of presets
+>   alsa-tools/hdspmixer: add output loopback buttons
 
-For recovering from the regression, change set_sample_rate_v2v3()
-again to ignore the sample rate difference as non-error.
+Now applied both patches.  Sorry for the delayed merge!
 
-BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1182633
-Fixes: 93db51d06b32 ("ALSA: usb-audio: Check valid altsetting at parsing rates for UAC2/3")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/clock.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index 8243652d5604..a746802d0ac3 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -652,10 +652,10 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip,
- 		cur_rate = prev_rate;
- 
- 	if (cur_rate != rate) {
--		usb_audio_warn(chip,
--			       "%d:%d: freq mismatch (RO clock): req %d, clock runs @%d\n",
--			       fmt->iface, fmt->altsetting, rate, cur_rate);
--		return -ENXIO;
-+		usb_audio_dbg(chip,
-+			      "%d:%d: freq mismatch: req %d, clock runs @%d\n",
-+			      fmt->iface, fmt->altsetting, rate, cur_rate);
-+		/* continue processing */
- 	}
- 
- validation:
--- 
-2.26.2
+thanks,
 
+Takashi
