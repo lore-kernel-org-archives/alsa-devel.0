@@ -2,97 +2,111 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD057C433E6
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:46:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28960C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:47:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 31CC464DF1
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:46:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 31CC464DF1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7405964DFB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:47:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7405964DFB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B71116B9;
-	Mon,  1 Mar 2021 14:45:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B71116B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC38A16AE;
+	Mon,  1 Mar 2021 14:46:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC38A16AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614606392;
-	bh=vdzXL2/ySjHgTH+ijSHxEwyHJcY2nnm7r32wop9NIxg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614606432;
+	bh=2tf5VmzbReK2ZctK+Z+FRDc/yOsHhFFvLiaFLlkBYGk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OIqMvHGCiPVMdBOMeI/JrkvdjpPHtxW+xtfl8VZSwgmhUHCeSifn1CG+Fvkdumdz+
-	 9mEV4Y2mqWvpKziPXXuQ3sBKuR3XDBpUL01f5hDh9GPcHhf4kh5gSECn1Lj+dT6DBs
-	 htyJrQggruNHICnj3NF3qag6Ly1Q2phDWSUE+cW0=
+	b=k0u6ZLThmS9VN6EIQepnAOoG0J+Mh+4rq+w3pH9ZWfDMffLNDFh88DYnOwLQtZE36
+	 OvlVOZpaeBhgveQHsV4M8DG7Oo0FVeqcYdU48UO41a1eDJAYimh+e4nDjsS2HkCDCC
+	 ec16tBv2dJpeek6Pw+ykcjeD25AYrC7mmHtLUgDI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC0ABF80518;
-	Mon,  1 Mar 2021 14:43:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70268F8051E;
+	Mon,  1 Mar 2021 14:43:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C943F8025E; Fri, 26 Feb 2021 14:35:31 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ id 8D30EF8025B; Sun, 28 Feb 2021 06:51:36 +0100 (CET)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87D14F80161
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 14:35:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87D14F80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61DCDF8010B
+ for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2021 06:51:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61DCDF8010B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Q7wdNd7f"
-Received: by mail-wm1-x329.google.com with SMTP id w7so7449636wmb.5
- for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2021 05:35:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=oxac2EZ2FKYl4R5ArrNEemLJ12gs169LloPc1HbjabE=;
- b=Q7wdNd7fXk1oXdTO4LTL5UVoul4SoOp86RO7p2GNkUWHolJ8s6fyL5c7EUQPlbc5SF
- vbt5Hv8KGy9I40tq4Za71fDvGeRnYb+jvmOyGKq76dAl18DdH1984PuUgh7fGF8x2xZE
- 0QdwhqVd3MEpgGgt7YxtqTa4Pw7jjvwNLl2qelfPc3kMCdVju2txTbbvzrprN1S5/+w8
- opijqiOJAvCuwdXNuPkbuk0rXiOfuin40APB8r6tHAz1g0FkEpFewhIgrhG2n4ftFF88
- CONKrQFsYTl4Gjli2rq22TFybz0GH9tTcitzFstZf4/k4DHmO89LxNEhG92/Luz8rvcI
- uz2g==
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="rKUY1oh2"
+Received: by mail-pf1-x436.google.com with SMTP id o188so2363944pfg.2
+ for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2021 21:51:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=fIHDClkBpaMvFoqSPfjj0EmUE/3x09RJqK+wtPPSg4Y=;
+ b=rKUY1oh245LhQvch6JWVGDf6a4r6pxSBfM0feGDNwBeQvC4sHH2+C8P8yMMRa2hRDb
+ 2Z430wMWNJQsZ/TQbnnJDxA8cG9oKE9/zR+53fRudHo7pYUZRMxXt/jj3TQdUbKFY2/S
+ Int/xQmCCvFRLcUk2N5NCIefgHmfwWU+CM+MccAzfAi/q/tsM34pKZrUrctvjunALRsb
+ wGb+fEbPb9QcX0ISVMC8Wv6wDWL+WTl0+H7PhJkgApwe/t7FM8WwmrQW6njmo/1wJCV6
+ ttUUtGrUXs9bTWLCczPVZ3MzUkec/qnNWVhD9zIGQmdcZlAU+BFTraBeqhNoRrlZ6+D9
+ +Zmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=oxac2EZ2FKYl4R5ArrNEemLJ12gs169LloPc1HbjabE=;
- b=nNfA6SDuORR2m/m/nqtzJOOf3qPymScWZG0sl9Cd/wFkb73OwxZqQ7yDHUNxS3yO9x
- yCLM0b3BkXwmcet/xvt+GGLu0bcdmcYC4m6G541Y6wsIVYyfs+X0yYHi2QeKhniHU2Tq
- rT866fD11P12CrHl9kbwQNBp2hWg5EsUaNmR5e6AXrYM1t+JxxzNV6VutxKbluNmbkMO
- O9j54QLdoCfKE2YIjy4bgLXRLXOPyNHdiw/PacK/7635Phe6d0UcJZEtOOGyVlUJfTbp
- inmKAhmXMRxvLYI7iBPr4xiImLFlUthTMJjZK3OCUSWCPK/+7EK60EjVrQVB/XbKhu9R
- cKAw==
-X-Gm-Message-State: AOAM5328NovuUW3JqhPk3C6pLFYI0R99/jZ2yButc7B6IZ1MlW0eKJcS
- sduTxHYKmt5C/VZ0NYMQMunLslm/ysz5f3m7
-X-Google-Smtp-Source: ABdhPJwGvYvW1L1F26puN0lUXcUBDZ1s2nfKM58Lthhzo39PBEe+oObtS+jlE9H+UfR+2OjThY5FXA==
-X-Received: by 2002:a7b:c1c4:: with SMTP id a4mr3007047wmj.122.1614346520353; 
- Fri, 26 Feb 2021 05:35:20 -0800 (PST)
-Received: from localhost.localdomain (176-171-138-112.abo.bbox.fr.
- [176.171.138.112])
- by smtp.googlemail.com with ESMTPSA id c26sm13175547wrb.87.2021.02.26.05.35.19
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=fIHDClkBpaMvFoqSPfjj0EmUE/3x09RJqK+wtPPSg4Y=;
+ b=Qb/QHw65XFxJlKbVvPRu9/0drtzznyxSsPKucFhRPwnvBM9l6vfCSh2xQyoZbglHee
+ wzIO8vXxR4fMOBxIaFE1R/VujnsWL8zhKIrgJVUYoThFRkjAlL70HEW1r30OCQmL0l6C
+ Rm9HVDJbKC3YqwCCuzNfputYRjqgBr4MPkyo6PcUUt2WdbyyUkJIiuvifLAPnMHcmNGo
+ QdNA7kCOMDM/9ehf8+BkHpi7hAhvgRu7zEttJ4qeLWNfaBEjG8u9F2xW3Kn6sWu8Q8Hf
+ 3XafU/hG3sPq0OBRkZbbTnqVf8vJyzvHEeHAiOVIm0IIqbw+fven/oJWcoMEAGMCWazA
+ +kqA==
+X-Gm-Message-State: AOAM531vkOKYGerPhIzWjexeaS9mNCfDUp+G2AdTfh/qE94Rco6LWK5o
+ LK4ECkwz7W8JJSBfZMJb+As86g==
+X-Google-Smtp-Source: ABdhPJxu4qnWdcKZTFmnI510cmE3juJdPrITY4fihAAsm2fiWh/KoeqyfS5ON62mq09DISvSV8Ym3Q==
+X-Received: by 2002:a63:c601:: with SMTP id w1mr3085474pgg.11.1614491490896;
+ Sat, 27 Feb 2021 21:51:30 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:cd02:8b49:9326:693e])
+ by smtp.gmail.com with ESMTPSA id l22sm3715072pjy.51.2021.02.27.21.51.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 26 Feb 2021 05:35:20 -0800 (PST)
-From: Nicolas MURE <nicolas.mure2019@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ALSA: usb-audio: Configure Pioneer DJM-850 samplerate
-Date: Fri, 26 Feb 2021 14:34:28 +0100
-Message-Id: <20210226133429.20081-4-nicolas.mure2019@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210226133429.20081-1-nicolas.mure2019@gmail.com>
-References: <20210226133429.20081-1-nicolas.mure2019@gmail.com>
+ Sat, 27 Feb 2021 21:51:30 -0800 (PST)
+Date: Sat, 27 Feb 2021 21:51:24 -0800
+From: Fangrui Song <maskray@google.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
+Message-ID: <20210228055124.sj3z5n3o5y4w54au@google.com>
+References: <20210227183910.221873-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 01 Mar 2021 14:43:22 +0100
-Cc: Nicolas MURE <nicolas.mure2019@gmail.com>, livvy@base.nu
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210227183910.221873-1-masahiroy@kernel.org>
+X-Mailman-Approved-At: Mon, 01 Mar 2021 14:43:21 +0100
+Cc: alsa-devel@alsa-project.org, Peter Zijlstra <peterz@infradead.org>,
+ "Darrick J. Wong" <djwong@kernel.org>, Dmitry Safonov <0x7f454c46@gmail.com>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ "H . Peter Anvin" <hpa@zytor.com>,
+ Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Sasha Levin <sashal@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>,
+ x86@kernel.org, Jethro Beekman <jethro@fortanix.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
+ "H . J . Lu" <hjl.tools@gmail.com>, Kees Cook <keescook@chromium.org>,
+ Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
+ "Chang S. Bae" <chang.seok.bae@intel.com>, Chao Yu <chao@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Sean Christopherson <seanjc@google.com>,
+ Nick Desaulniers <ndesaulniers@google.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ clang-built-linux@googlegroups.com, linux-fsdevel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,47 +122,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Send an `URB_CONTROL out` USB frame to the device to configure its
-samplerate. This should be done before using the device for audio
-streaming (capture or playback).
+On 2021-02-28, Masahiro Yamada wrote:
+>This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
+>error if binutils too old").
+>
+>The help text in arch/x86/Kconfig says enabling the X32 ABI support
+>needs binutils 2.22 or later. This is met because the minimal binutils
+>version is 2.23 according to Documentation/process/changes.rst.
+>
+>I would not say I am not familiar with toolchain configuration, but
+>I checked the configure.tgt code in binutils. The elf32_x86_64
+>emulation mode seems to be included when it is configured for the
+>x86_64-*-linux-* target.
+>
+>I also tried lld and llvm-objcopy, and succeeded in building x32 VDSO.
+>
+>I removed the compile-time check in arch/x86/Makefile, in the hope of
+>elf32_x86_64 being always supported.
+>
+>With this, CONFIG_X86_X32 and CONFIG_X86_X32_ABI will be equivalent.
+>Rename the former to the latter.
 
-About the change of `usb_rcvctrlpipe` to `usb_sndctrlpipe`, I reached
-the author of this line and she agrees about this change. Control frames
-to set device options should have the `out` direction instead of the `in`
-direction.
+Hi Masahiro, the cleanup looks nice!
 
-See https://github.com/nm2107/Pioneer-DJM-850-driver-reverse-engineering
-    /blob/172fb9a61055960c88c67b7c416fe5bf3609807b
-    /doc/windows-dvs/framerate-setting/README.md
+As of LLVM toolchain support, I don't know any user using LLVM binary
+utilities or LLD.
+The support on binary utitlies should be minimum anyway (EM_X86_64,
+ELFCLASS32, ELFDATA2LSB are mostly all the tool needs to know for many utilities), so
+many of they should just work.
 
-Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
----
- sound/usb/quirks.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+For llvm-objcopy, I know two issues related to `$(OBJCOPY) -O elf32-x86-64`
+(actually `objcopy -I elf64-x86-64 -O elf32-x86-64`).  Such an operation tries
+to convert an ELFCLASS64 object file to an ELFCLASS32 object file. It is not very clear
+what GNU objcopy does. llvm-objcopy is dumb and does not do fancy CLASS conversion.
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 9ba4682ebc48..d02dac5fcd40 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1482,7 +1482,7 @@ static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
- 	usb_set_interface(subs->dev, 0, 1);
- 	// we should derive windex from fmt-sync_ep but it's not set
- 	snd_usb_ctl_msg(subs->stream->chip->dev,
--		usb_rcvctrlpipe(subs->stream->chip->dev, 0),
-+		usb_sndctrlpipe(subs->stream->chip->dev, 0),
- 		0x01, 0x22, 0x0100, windex, &sr, 0x0003);
- 	return 0;
- }
-@@ -1503,6 +1503,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	case USB_ID(0x2b73, 0x0013): /* Pioneer DJM-450 */
- 		pioneer_djm_set_format_quirk(subs, 0x0082);
- 		break;
-+	case USB_ID(0x08e4, 0x0163): /* Pioneer DJM-850 */
-+		pioneer_djm_set_format_quirk(subs, 0x0086);
-+		break;
- 	}
- }
- 
--- 
-2.29.2
+* {gcc,clang} -gz{,=zlib} produced object files. The Elf{32,64}_Chdr headers are different.
+   Seems that GNU objcopy can convert the headers (https://github.com/ClangBuiltLinux/linux/issues/514).
+   llvm-objcopy cannot do it.
+* Seems that GNU objcopy can convert .note.gnu.property (https://github.com/ClangBuiltLinux/linux/issues/1141#issuecomment-678798228)
+   llvm-objcopy cannot do it.
 
+
+On the linker side, I know TLS relaxations and IBT need special care and I
+believe LLD does not handle them correctly. Thankfully the kernel does not use
+thread-local storage so this is not an issue. So perhaps for most configurations
+it is already working.  Since you've tested it, that is good news to me:)
