@@ -2,58 +2,60 @@ Return-Path: <SRS0=YAlk=H6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3947EC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Feb 2021 11:33:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7709C433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Feb 2021 12:06:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EFBE264E59
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Feb 2021 11:33:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFBE264E59
+	by mail.kernel.org (Postfix) with ESMTPS id 4D94D64E56
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Feb 2021 12:06:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D94D64E56
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 184A11666;
-	Sun, 28 Feb 2021 12:32:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 184A11666
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8D6D166B;
+	Sun, 28 Feb 2021 13:05:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8D6D166B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614512024;
-	bh=3t6WU0EA3psxqDERybw3/V8OOH7TLR6Qn7OawkWP8EM=;
+	s=default; t=1614513981;
+	bh=1y9wCIxgcxD3wjz0RDJo5WIzI/SkcqnAgsxqrBOgqiw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UaW9r9Ff8rBaSBO4IFe8qK/SGl3hntLh5YZiI01P1kB6H5AZhGQ3B5xvoVDBmpXTs
-	 xGkuYgHa3/0ixdrZxiDA/yieV2K+orfTMBQ3YUUlKFByex2XOz1TT6JzjsF6OAUtIO
-	 cqXCGkiP0SW0xHoL/zuD9IQT5k/X33xm8xf+j8BE=
+	b=cZZb9a50p2sUNBgjGlCvayze22oS323+7xs7s8xQ43ZLaODjOZ0bTsNiyuH0EOscP
+	 j1NXZ8KTsUHT11Hobv+Q1xeDDaIVHMiIOiZ2fra6ja/I0MQeHyuIcZhmfdrTwbRMGd
+	 5H4HVGh6Z69i4YzsJxL6HEsOAlgrPMnJufJrGVt0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9249CF80227;
-	Sun, 28 Feb 2021 12:32:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EB68F8010A;
+	Sun, 28 Feb 2021 13:05:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0752F8010A; Sun, 28 Feb 2021 12:32:51 +0100 (CET)
+ id 270CBF8025B; Sun, 28 Feb 2021 13:05:30 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8616AF8010A
- for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2021 12:32:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8616AF8010A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CE0FF8010A
+ for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2021 13:05:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CE0FF8010A
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id BAC12AAC5;
- Sun, 28 Feb 2021 11:32:46 +0000 (UTC)
-Date: Sun, 28 Feb 2021 12:32:46 +0100
-Message-ID: <s5hr1l0juld.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 25B02AB7D;
+ Sun, 28 Feb 2021 12:05:23 +0000 (UTC)
+Date: Sun, 28 Feb 2021 13:05:22 +0100
+Message-ID: <s5hpn0kjt31.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Subject: Re: [PATCH v6 6/9] ALSA: virtio: PCM substream operators
-In-Reply-To: <20210227085956.1700687-7-anton.yakovlev@opensynergy.com>
+Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume
+ support
+In-Reply-To: <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
 References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-7-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -77,83 +79,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 27 Feb 2021 09:59:53 +0100,
+On Sat, 27 Feb 2021 09:59:56 +0100,
 Anton Yakovlev wrote:
 > 
-> +static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+> All running PCM substreams are stopped on device suspend and restarted
+> on device resume.
+> 
+> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> ---
+>  sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
+>  sound/virtio/virtio_pcm.c     |  1 +
+>  sound/virtio/virtio_pcm_ops.c | 41 ++++++++++++++++++++-----
+>  3 files changed, 90 insertions(+), 8 deletions(-)
+> 
+> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+> index 59455a562018..c7ae8801991d 100644
+> --- a/sound/virtio/virtio_card.c
+> +++ b/sound/virtio/virtio_card.c
+> @@ -323,6 +323,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
+>  	kfree(snd->event_msgs);
+>  }
+>  
+> +#ifdef CONFIG_PM_SLEEP
+> +/**
+> + * virtsnd_freeze() - Suspend device.
+> + * @vdev: VirtIO parent device.
+> + *
+> + * Context: Any context.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +static int virtsnd_freeze(struct virtio_device *vdev)
 > +{
-> +	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-> +	struct virtio_snd *snd = vss->snd;
-> +	struct virtio_snd_msg *msg;
-> +	unsigned long flags;
-> +	int rc;
+> +	struct virtio_snd *snd = vdev->priv;
 > +
-> +	switch (command) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: {
-> +		struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
+> +	virtsnd_ctl_msg_cancel_all(snd);
 > +
-> +		spin_lock_irqsave(&queue->lock, flags);
-> +		spin_lock(&vss->lock);
-> +		rc = virtsnd_pcm_msg_send(vss);
-> +		if (!rc)
-> +			vss->xfer_enabled = true;
-> +		spin_unlock(&vss->lock);
-> +		spin_unlock_irqrestore(&queue->lock, flags);
+> +	vdev->config->del_vqs(vdev);
+> +	vdev->config->reset(vdev);
+> +
+> +	kfree(snd->event_msgs);
+> +
+> +	/*
+> +	 * If the virtsnd_restore() fails before re-allocating events, then we
+> +	 * get a dangling pointer here.
+> +	 */
+> +	snd->event_msgs = NULL;
+> +
+> +	return 0;
+
+I suppose some cancel of inflight works is needed?
+Ditto for the device removal, too.
+
+> --- a/sound/virtio/virtio_pcm.c
+> +++ b/sound/virtio/virtio_pcm.c
+> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+>  		SNDRV_PCM_INFO_BATCH |
+>  		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>  		SNDRV_PCM_INFO_INTERLEAVED |
+> +		SNDRV_PCM_INFO_RESUME |
+>  		SNDRV_PCM_INFO_PAUSE;
+
+Actually you don't need to set SNDRV_PCM_INFO_RESUME.
+This flag means that the driver supports the full resume procedure,
+which isn't often the case; with this, the driver is supposed to
+resume the stream exactly from the suspended position.
+
+Most drivers don't set this but implement only the suspend-stop
+action.  Then the application (or the sound backend) will re-setup the
+stream and restart accordingly.
+
+> @@ -309,6 +318,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+>  	int rc;
+>  
+>  	switch (command) {
+> +	case SNDRV_PCM_TRIGGER_RESUME: {
+> +		/*
+> +		 * We restart the substream by executing the standard command
+> +		 * sequence.
+> +		 */
+> +		rc = virtsnd_pcm_hw_params(substream, NULL);
 > +		if (rc)
 > +			return rc;
 > +
-> +		msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_START,
-> +						GFP_KERNEL);
+> +		rc = virtsnd_pcm_prepare(substream);
+> +		if (rc)
+> +			return rc;
 
-If we drop nonatomic PCM, this has to be changed: GFP_KERNEL is no
-longer valid in the trigger and the pointer callbacks.
-I wonder, though, the code below uses GFP_ATOMIC inconsistently...
-
-> +	case SNDRV_PCM_TRIGGER_STOP:
-> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: {
-> +		spin_lock_irqsave(&vss->lock, flags);
-> +		vss->xfer_enabled = false;
-> +		spin_unlock_irqrestore(&vss->lock, flags);
-> +
-> +		/*
-> +		 * The substream needs to be released on the device side only
-> +		 * when it is completely stopped.
-> +		 */
-> +		vss->release = (command == SNDRV_PCM_TRIGGER_STOP);
-> +
-> +		/*
-> +		 * The STOP command can be issued in an atomic context after
-> +		 * the drain is complete. Therefore, in general, we cannot sleep
-> +		 * here.
-> +		 */
-> +		msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_STOP,
-> +						GFP_ATOMIC);
-
-BTW...
-> +	default: {
-> +		return -EINVAL;
-> +	}
-
-Let's avoid braces inside the switch() unless it's inevitably needed.
-It makes the code harder to read.
-
-
-> +static snd_pcm_uframes_t
-> +virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
-> +{
-> +	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
-> +	snd_pcm_uframes_t hw_ptr = SNDRV_PCM_POS_XRUN;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&vss->lock, flags);
-> +	if (!vss->xfer_xrun)
-> +		hw_ptr = bytes_to_frames(substream->runtime, vss->hw_ptr);
-> +	spin_unlock_irqrestore(&vss->lock, flags);
-
-Oh, and if we drop nonatomc PCM, both trigger and pointer callbacks
-are guaranteed to be called inside the spinlock, hence you can remove
-*_irqsave() but just us spin_lock() in those two callbacks.
+And this won't work at all unless nonatomic PCM ops.
 
 
 thanks,
