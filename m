@@ -2,72 +2,84 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53AE4C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BEE3C433E6
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:32:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C31D7600CF
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C31D7600CF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 620A2600CF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:32:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 620A2600CF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EFE316D1;
-	Mon,  1 Mar 2021 16:31:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EFE316D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id F02EE16C7;
+	Mon,  1 Mar 2021 16:31:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F02EE16C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614612714;
-	bh=NLqs8LEXwd5H118H5H8aSFKLxIA2uzw5nqbxqsUp3xk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614612725;
+	bh=qjipA8BfqI024AtnTZO4xuP/tcimv3EqFld8rKft+WA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a5FA7kTty/BneVrgW8UR4RNXuPArlreA+VJO4jGls8Y9WAupmaQVmC+njkcewNbRr
-	 CJxwXAjaIQ/zkzV37uiFIzzUfvCu98eQa9V+rSui1dzxj0EbV4LKTkQJGLo2Ynu5pm
-	 uVkzhmEONJz5WXrNesuCCRXaw2hJnDvQY2JGFurw=
+	b=bqzKNzTXsumLyFUsUBaF+ZnlGg2yGC06/GtjR6GiYs++2qK+ib8Y5AW9Nb7SZ6hPN
+	 wf4x1G3oAxLurR6GdfXYHFJByZ95R+fsdatgGO2CPKEE3PL1Z5cxBbApwKoQ73I9ru
+	 WXV1JLzHRJ+/kxsLeoqeT5iVfrq/lIJnvOTEz4eI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C226AF80257;
-	Mon,  1 Mar 2021 16:30:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 834C5F80272;
+	Mon,  1 Mar 2021 16:31:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBA82F8010B; Mon,  1 Mar 2021 16:30:39 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A764BF80275; Mon,  1 Mar 2021 16:31:08 +0100 (CET)
+Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60ED7F8010B
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 16:30:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60ED7F8010B
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6387FAF54;
- Mon,  1 Mar 2021 15:30:36 +0000 (UTC)
-Date: Mon, 01 Mar 2021 16:30:36 +0100
-Message-ID: <s5hh7luj3hf.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
- for the PCM device
-In-Reply-To: <b9c93040-52d5-7445-cb1c-c223b4fd59fb@opensynergy.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4ED22F80272
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 16:31:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ED22F80272
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
+ header.b="1xa44Ndf"
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
+ [127.0.0.1])
+ by mx1.opensynergy.com (Proxmox) with ESMTP id D0845A135A;
+ Mon,  1 Mar 2021 16:30:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ h=cc:cc:content-transfer-encoding:content-type:content-type
+ :date:from:from:in-reply-to:message-id:mime-version:references
+ :reply-to:subject:subject:to:to; s=srmailgate02; bh=v4QKZoyEhUUl
+ 8eHO+sgtVV5pWRE+dBrdSzOgE4nihEc=; b=1xa44NdfhI89Ixk8UlhPryNc5vVr
+ 4AUZxU2udGJCZaGsHMNXmaddj45tBMOdTsmcvJeksOl8/01R78QdAn6nlGWgSb9f
+ MLBxVr0kjriaw5bp56t4krjwhqW1JiNvlqhUSvLQ9oiUJshRjVOMUegd66Ai0pbE
+ XjdKowsTuAUMxWYtb05K5AB9enxtcNfaBm/8kHPSqsnf/Zb1EXz5deTlDOFqS94M
+ SSkySeIvlKsQqZ88iMFWB0zAE3b2Jn6zmVU7641+Wvz6ccXo0+XoLlxlgV2f66ah
+ +ZUQFPSjMCYH5OzgYs5jPK+VyfYQ5U848MolYZbvrNS3FoDN15gqBPStwQ==
+Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume
+ support
+To: Takashi Iwai <tiwai@suse.de>
 References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
- <s5hsg5gjutg.wl-tiwai@suse.de>
- <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
- <s5h35xfj8yz.wl-tiwai@suse.de>
- <85bbc067-e7ec-903a-1518-5aab01577655@opensynergy.com>
- <s5ho8g2j532.wl-tiwai@suse.de>
- <b9c93040-52d5-7445-cb1c-c223b4fd59fb@opensynergy.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
- "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
+ <s5hpn0kjt31.wl-tiwai@suse.de>
+ <54854cb9-99c3-4c05-3b43-f41d89a29aec@opensynergy.com>
+ <s5hzgznhu3n.wl-tiwai@suse.de>
+From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <438961dc-b546-562a-26dc-53cf46ee74b6@opensynergy.com>
+Date: Mon, 1 Mar 2021 16:30:55 +0100
+MIME-Version: 1.0
+In-Reply-To: <s5hzgznhu3n.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org, "Michael S.
+ Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,73 +96,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 01 Mar 2021 16:24:00 +0100,
-Anton Yakovlev wrote:
+On 01.03.2021 14:38, Takashi Iwai wrote:
+> On Mon, 01 Mar 2021 11:03:04 +0100,
+> Anton Yakovlev wrote:
+>>
+>> On 28.02.2021 13:05, Takashi Iwai wrote:
+>>> On Sat, 27 Feb 2021 09:59:56 +0100,
+>>> Anton Yakovlev wrote:
+>>>>
+>>>> All running PCM substreams are stopped on device suspend and restarted
+>>>> on device resume.
+>>>>
+>>>> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+>>>> ---
+>>>>    sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
+>>>>    sound/virtio/virtio_pcm.c     |  1 +
+>>>>    sound/virtio/virtio_pcm_ops.c | 41 ++++++++++++++++++++-----
+>>>>    3 files changed, 90 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+>>>> index 59455a562018..c7ae8801991d 100644
+>>>> --- a/sound/virtio/virtio_card.c
+>>>> +++ b/sound/virtio/virtio_card.c
+>>>> @@ -323,6 +323,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
+>>>>         kfree(snd->event_msgs);
+>>>>    }
+>>>>
+>>>> +#ifdef CONFIG_PM_SLEEP
+>>>> +/**
+>>>> + * virtsnd_freeze() - Suspend device.
+>>>> + * @vdev: VirtIO parent device.
+>>>> + *
+>>>> + * Context: Any context.
+>>>> + * Return: 0 on success, -errno on failure.
+>>>> + */
+>>>> +static int virtsnd_freeze(struct virtio_device *vdev)
+>>>> +{
+>>>> +     struct virtio_snd *snd = vdev->priv;
+>>>> +
+>>>> +     virtsnd_ctl_msg_cancel_all(snd);
+>>>> +
+>>>> +     vdev->config->del_vqs(vdev);
+>>>> +     vdev->config->reset(vdev);
+>>>> +
+>>>> +     kfree(snd->event_msgs);
+>>>> +
+>>>> +     /*
+>>>> +      * If the virtsnd_restore() fails before re-allocating events, then we
+>>>> +      * get a dangling pointer here.
+>>>> +      */
+>>>> +     snd->event_msgs = NULL;
+>>>> +
+>>>> +     return 0;
+>>>
+>>> I suppose some cancel of inflight works is needed?
+>>> Ditto for the device removal, too.
+>>
+>> It's not necessary here, since the device is reset and all of this are
+>> happened automatically.
 > 
-> On 01.03.2021 15:56, Takashi Iwai wrote:
-> > On Mon, 01 Mar 2021 15:47:46 +0100,
-> > Anton Yakovlev wrote:
-> >>
-> >> On 01.03.2021 14:32, Takashi Iwai wrote:
-> >>> On Mon, 01 Mar 2021 10:25:05 +0100,
-> >>> Anton Yakovlev wrote:
-> >>>>
-> >>>> On 28.02.2021 12:27, Takashi Iwai wrote:
-> >>>>> On Sat, 27 Feb 2021 09:59:52 +0100,
-> >>>>> Anton Yakovlev wrote:
-> >>>>>> +/**
-> >>>>>> + * virtsnd_pcm_event() - Handle the PCM device event notification.
-> >>>>>> + * @snd: VirtIO sound device.
-> >>>>>> + * @event: VirtIO sound event.
-> >>>>>> + *
-> >>>>>> + * Context: Interrupt context.
-> >>>>>
-> >>>>> OK, then nonatomic PCM flag is invalid...
-> >>>>
-> >>>> Well, no. Here, events are kind of independent entities. PCM-related
-> >>>> events are just a special case of more generic events, which can carry
-> >>>> any kind of notification/payload. (And at the moment, only XRUN
-> >>>> notification is supported for PCM substreams.) So it has nothing to do
-> >>>> with the atomicity of the PCM device itself.
-> >>>
-> >>> OK, thanks.
-> >>>
-> >>> Basically the only question is how snd_pcm_period_elapsed() is called.
-> >>> And I see that it's called inside queue->lock, and this already
-> >>> invalidates the nonatomic PCM mode.  So the code needs the fix: either
-> >>> fix this locking (and the context is guaranteed not to be an irq
-> >>> context), or change to the normal PCM mode without nonatomic flag.
-> >>> Both would bring some side-effect, and we need further changes, I
-> >>> suppose...
-> >>
-> >> Ok, I understood the problem. Well, I would say the nonatomic PCM mode
-> >> is more important option, since in this mode we can guarantee the
-> >> correct operation of the device.
-> >
-> > Which operation (except for the resume) in the trigger and the pointer
-> > callbacks need the action that need to sleep?  I thought the sync with
-> > the command queue is done in the sync_stop.  And most of others seem
-> > already taking the spinlock in themselves, so the non-atomic operation
-> > has little merit for them.
-> 
-> All three commands from the beginning of that switch in trigger op:
-> ops->trigger(START)
-> ops->trigger(PAUSE_RELEASE)
-> ops->trigger(RESUME)
-> 
-> They all result in
-> virtsnd_ctl_msg_send_sync(VIRTIO_SND_R_PCM_START)
-> 
-> And that command must be sync, i.e. we need to wait/sleep until device
-> sent response. There are two major reasons for that: we need to be sure,
-> that substream has been actually started (i.e. device said OK). And we
-> need to take into account the virtualization overhead as well. Since
-> substream starting on device side may take some time, we can not
-> return from the trigger op until it actually happened. In atomic mode
-> all these nuances are lost, and it may lead to incorrect application
-> behavior.
+> Hrm, but the reset call itself might conflict with the inflight reset
+> work?  I haven't see any work canceling or flushing, so...
 
-I see, then the nonatomic mode is the only way to go, indeed.
+There maybe the following:
+
+1. Some pending control requests -> these are cancelled in the
+virtsnd_ctl_msg_cancel_all() call.
+
+2. PCM messages -> these must not be cancelled, since they will be
+requeued by driver on resume (starting with suspended position).
+
+3. Some pending events from the device. These will be lost. Yeah, I
+think we can process all pending events before destroying virtqueue.
+
+Other that these, there are no other inflight works or so.
 
 
-Takashi
+>> But in the device remove it makes sense also to
+>> disable events before calling snd_card_free(), since the device is still
+>> able to send notifications at that moment. Thanks!
+>>
+>>
+>>>> --- a/sound/virtio/virtio_pcm.c
+>>>> +++ b/sound/virtio/virtio_pcm.c
+>>>> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+>>>>                 SNDRV_PCM_INFO_BATCH |
+>>>>                 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>>>                 SNDRV_PCM_INFO_INTERLEAVED |
+>>>> +             SNDRV_PCM_INFO_RESUME |
+>>>>                 SNDRV_PCM_INFO_PAUSE;
+>>>
+>>> Actually you don't need to set SNDRV_PCM_INFO_RESUME.
+>>> This flag means that the driver supports the full resume procedure,
+>>> which isn't often the case; with this, the driver is supposed to
+>>> resume the stream exactly from the suspended position.
+>>
+>> If I understood you right, that's exactly how resume is implemented now
+>> in the driver. Although we fully restart substream on the device side,
+>> from an application point of view it is resumed exactly at the same
+>> position.
+>>
+>>
+>>> Most drivers don't set this but implement only the suspend-stop
+>>> action.  Then the application (or the sound backend) will re-setup the
+>>> stream and restart accordingly.
+>>
+>> And an application must be aware of such possible situation? Since I
+>> have no doubt in alsa-lib, but I don't think that for example tinyalsa
+>> can handle this right.
+> 
+> Tiny ALSA should work, too.  Actually there are only few drivers that
+> have the full PCM resume.  The majority of drivers are without the
+> resume support (including a large one like HD-audio).
+
+Then it's a great news! Since we can simplify code a lot.
+
+
+> And, with the resume implementation, I'm worried by the style like:
+> 
+>>>> @@ -309,6 +318,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+>>>>         int rc;
+>>>>
+>>>>         switch (command) {
+>>>> +     case SNDRV_PCM_TRIGGER_RESUME: {
+>>>> +             /*
+>>>> +              * We restart the substream by executing the standard command
+>>>> +              * sequence.
+>>>> +              */
+>>>> +             rc = virtsnd_pcm_hw_params(substream, NULL);
+>>>> +             if (rc)
+>>>> +                     return rc;
+>>>> +
+>>>> +             rc = virtsnd_pcm_prepare(substream);
+>>>> +             if (rc)
+>>>> +                     return rc;
+> 
+> ... and this is rather what the core code should do, and it's exactly
+> the same procedure that would be done without RESUME flag.
+> 
+> 
+> Takashi
+> 
+
+-- 
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
+
