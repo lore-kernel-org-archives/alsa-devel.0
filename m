@@ -2,73 +2,74 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD36C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CADADC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:44:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 439C6601FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:44:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 439C6601FE
+	by mail.kernel.org (Postfix) with ESMTPS id 41FCD60200
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:44:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 41FCD60200
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF13616B8;
-	Tue,  2 Mar 2021 00:43:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF13616B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77BFD1683;
+	Tue,  2 Mar 2021 00:43:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77BFD1683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614642254;
-	bh=BTDyXUsipgvB9/RxOCjF7hQ3tDehq3a8IIFVLtpcvew=;
+	s=default; t=1614642272;
+	bh=giRNibx8UMkg76ubdWLBG8i0Hm5P8hvlHVh8cF1awrk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TCjEz00nlf4otj22IVigY/7MIHdehiKf+MlSrRtzr8f/v281/+sRK+7BTwGiImHMn
-	 WXh8hzCB95V6dD7kSF2u7DrGvptMG9IKQWTAPTVR3Jjj3kj4HRqT0jHthYk5hcXl20
-	 q8b5a5d2FLx16gX+kYgg7+RzBDFbHj1ITWfjkMkY=
+	b=RXm0c7J5c2KKb6HnDnJiKSkjuMfMXx0kf9mbbvHbp6U4U33QORKwsANvu25RvXlVQ
+	 TH5fEmfXXWvx/kzyNAJvPBOkJU2noPX/wH7i3Fw/nDXZ/+jF1L6ix6SPt4KAtxZPe5
+	 4wxvm/niTd08cK5wwtpXayz0OVTan/2ksLm/ufaE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2AAEF80524;
-	Tue,  2 Mar 2021 00:37:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 779A9F8052D;
+	Tue,  2 Mar 2021 00:37:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5704F8052E; Tue,  2 Mar 2021 00:37:29 +0100 (CET)
+ id D6ABEF80536; Tue,  2 Mar 2021 00:37:34 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F101F80524
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:37:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F101F80524
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93993F8052D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:37:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93993F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TScYrYA7"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E3BB6024A;
- Mon,  1 Mar 2021 23:37:25 +0000 (UTC)
+ header.b="X2pAH5QK"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 823376024A;
+ Mon,  1 Mar 2021 23:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614641845;
- bh=BTDyXUsipgvB9/RxOCjF7hQ3tDehq3a8IIFVLtpcvew=;
+ s=k20201202; t=1614641851;
+ bh=giRNibx8UMkg76ubdWLBG8i0Hm5P8hvlHVh8cF1awrk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=TScYrYA74KRQn1ezzQgcG+QIv6hcgl2r+sVbjY/KW7Fb39gAh6b/+V+jXC6XOtEj+
- l0Lk6vA4lEQyZFMZ34OAravuVdCwa62XCO8bhV7vF7Tjbda0JWFvwpN31HrMd1uzcB
- faa6HajUM+2ukVqjRT/IBH871YJDMem/YNgD9DFX9smCDU9i5/MLdnZ+8bLnjxfHC7
- aIpaChDabBn3M/aWFZyzWBZ/KiNDtbb0/NTmdhmx9+iE70E4WhrwOWf2NSLpJhe6rK
- naxM/QpoWFOnYoQ3gwc3FVh2VrJNdbkZ3JiWMNmCrd2AwgLoCrNDhM6yINlEPKmrml
- MDpTaSwuV2wFw==
+ b=X2pAH5QKtQHCBP3xTkRq4rgHqjEnKIH8LRADOJHHti/Yltgqm0tO6DbTBwzS9+BYp
+ UFuvTzKWbnNY29jyshdCv02elfiachBnPQ/MVZ3AWcYGMWYlRdirsYcpn8tTVZ2FzR
+ m+S7CAnvfzDAf1DtHEI2gaUVjo0zFWwJPoiDoPqIiOzml3TwWnwaswHGfZ/HnsWmfV
+ IEJojZlCicGp9iFIw/ME3XquWCiuEeeR8KjM+KscREMBOqbZxEs0kJGzILENOkz1bV
+ jl2WsheKeczbK//tjjRA7asSts/slN0v+UHRmEEQzaYHMGWcmkjAkL8ZGllYLD9hM8
+ B93zX7AzvGUNA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210218222916.89809-1-pierre-louis.bossart@linux.intel.com>
-References: <20210218222916.89809-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/10] ASoC: qcom: remove cppcheck warnings
-Message-Id: <161464168096.31144.9561845057548508112.b4-ty@kernel.org>
+To: tiwai@suse.com, dingsenjie@163.com, lgirdwood@gmail.com, perex@perex.cz
+In-Reply-To: <20210224085407.22120-1-dingsenjie@163.com>
+References: <20210224085407.22120-1-dingsenjie@163.com>
+Subject: Re: [PATCH] sound: soc/uniphier: Simplify the return expression of
+ uniphier_aio_startup
+Message-Id: <161464168096.31144.10521204916240412508.b4-ty@kernel.org>
 Date: Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, vkoul@kernel.org, srinivas.kandagatla@linaro.org
+Cc: dingsenjie <dingsenjie@yulong.com>, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,24 +85,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Feb 2021 16:29:06 -0600, Pierre-Louis Bossart wrote:
-> Second batch of cleanups for Qualcomm SOCs and codecs. The only
-> functional change is the addition of a missing error check in the last
-> patch.
-> 
-> Pierre-Louis Bossart (10):
->   ASoC: qcom: lpass-hdmi: remove useless return
->   ASoC: qcom: lpass-platform: remove useless assignment
->   ASoC: qcom: q6dsp-dai: clarify expression
->   ASoC: qcom: q6afe: remove useless assignments
->   ASoC: qcom: q6afe: align function prototype
->   ASoC: qcom: q6asm: align function prototypes
->   ASoC: wcd-clsh-v2: align function prototypes
->   ASoC: wcd9335: clarify return value
->   ASoC: wcd934x: remove useless return
->   ASoC: lpass-wsa-macro: add missing test
-> 
-> [...]
+On Wed, 24 Feb 2021 16:54:07 +0800, dingsenjie@163.com wrote:
+> Simplify the return expression in the aio-cpu.c.
 
 Applied to
 
@@ -109,26 +94,8 @@ Applied to
 
 Thanks!
 
-[01/10] ASoC: qcom: lpass-hdmi: remove useless return
-        commit: 0bf10fbda55679a3fef86f5fae47105b2d61fecc
-[02/10] ASoC: qcom: lpass-platform: remove useless assignment
-        commit: 25ab7dcdb77e4ecfa1a9e1c7939318b2b90a90f3
-[03/10] ASoC: qcom: q6dsp-dai: clarify expression
-        commit: fd565b469d21ab1008f5f4fb5ca5cf9eaff83cc1
-[04/10] ASoC: qcom: q6afe: remove useless assignments
-        commit: 924d4aad24337def5b18cd3225eec7e27dcf0f74
-[05/10] ASoC: qcom: q6afe: align function prototype
-        commit: 7ca70ca9914c23e1f8a9ae68c96f1fc812cc8575
-[06/10] ASoC: qcom: q6asm: align function prototypes
-        commit: 63a372715a3c2c13720774698a08d85de5f40934
-[07/10] ASoC: wcd-clsh-v2: align function prototypes
-        commit: 297ef0a73103c59c107f8b7c013b17d27ea2f772
-[08/10] ASoC: wcd9335: clarify return value
-        commit: 71ea36550bda7359ab055a4572a5f3ae04369b07
-[09/10] ASoC: wcd934x: remove useless return
-        commit: 5c3252b3f71184f96cf1bcad3a78aa074d6d7db8
-[10/10] ASoC: lpass-wsa-macro: add missing test
-        commit: 0076777b8753e3969516dbd514a2c5ffb3ceba3a
+[1/1] sound: soc/uniphier: Simplify the return expression of uniphier_aio_startup
+      commit: e3fdb6288dd08d965dea4bf00186e20f79153b2b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
