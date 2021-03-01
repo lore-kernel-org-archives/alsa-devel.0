@@ -2,86 +2,69 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A5442C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EB0FC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:33:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32E2064DE8
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:26:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32E2064DE8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8E5E864E42
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:33:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8E5E864E42
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B40D6166A;
-	Mon,  1 Mar 2021 14:25:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B40D6166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2D23166A;
+	Mon,  1 Mar 2021 14:32:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2D23166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614605156;
-	bh=C7VhOIr/OQnZunP6mhmfsuGiCbmGkJIMi38S4yxatyc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1614605582;
+	bh=F4Dz3uOyloNYx0fdtAlrfKblDRGLHPLd8vXk6gwch2Q=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hkDYHAqIxLzGzUehMe1vnbvcocqMSOsMrLOHFGEoGszq/ScJeiMgQhgJoaLHPoZMa
-	 X19vD/SXzyvcvMEZ/jrQmX5PHvIZC9qc1AVskqxdXvaMzdZUe00nco581FTxrcm1Rk
-	 4yCoKRlF6b2s375YePVPDIcR7BaxH7p3pyTe10aw=
+	b=VK3jJ/Jof9856Q+cRZIZPHNp2uQXKG4ipiqQRxxT8aQgIfR1EyO70T2AQStbggG1z
+	 YJdLxEF45KYwlISZ7byP1fuoNwuu2m2ZEAvuEaIriAJo6oFQ/1hyobmDK+3BLbkANh
+	 sJ80ROMBNT1/O68uJE+t4tGfYVZ0m2BDwhJR/fIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D68EF80517;
-	Mon,  1 Mar 2021 14:25:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D1B7F804E3;
+	Mon,  1 Mar 2021 14:32:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 770A2F80518; Mon,  1 Mar 2021 14:25:04 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 0E0E5F804E4; Mon,  1 Mar 2021 14:32:11 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C33E0F80475
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 14:25:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C33E0F80475
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gaWTmkFd"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 087AE64D9F;
- Mon,  1 Mar 2021 13:24:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614605098;
- bh=C7VhOIr/OQnZunP6mhmfsuGiCbmGkJIMi38S4yxatyc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=gaWTmkFdun6+e80XYWG3zMqxqXjc3w5VlShUEC/gYLdd0kvwMacEE/wNJsc5DSIys
- SQ1H7YNz6lUbEAIRqb6ehlnXIICU5PbcQI6x3kHI0E7OlQcHJhLLij1WxnDQZAHNKa
- JDauJbYoNahk6Vkx9Y+nn2Xw/HRPKXRKFpZWpCxXCkzyW/84Z70Il/8kypWdB8+yiX
- 46AFDhS398K92pFDF7hG9zpcHMWL0DVAGzjnbP9Zg+jj0qp00vPDkKua38iuKMt+U8
- qvXZvXpwHUr7mvMa09c11e7fbKZL6EVUzhmRCGy9h2yv5rBKWmlAzkINkPn3JB4voO
- 6A2mzocSs4U4w==
-Date: Mon, 1 Mar 2021 13:23:52 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [RFC 2/2] ASoC: rt5670: Add LED trigger support
-Message-ID: <20210301132352.GA4628@sirena.org.uk>
-References: <s5h8s7evp8p.wl-tiwai@suse.de>
- <fc28d535-87a7-fbfd-89c7-992a537606bc@perex.cz>
- <20210223172055.GI5116@sirena.org.uk>
- <fe2941de-02ce-9ed0-70ff-d7967aeecc44@redhat.com>
- <20210224125927.GB4504@sirena.org.uk>
- <e47c7fa5-cb1a-f8a3-bfe4-1f6bca6a7d80@redhat.com>
- <20210224193626.GF4504@sirena.org.uk>
- <56ea1110-c129-5f3a-264b-fb389f615dbe@redhat.com>
- <20210225145901.GB5332@sirena.org.uk>
- <c785af21-8170-62ca-6f08-0a9a1a9071bb@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
-Content-Disposition: inline
-In-Reply-To: <c785af21-8170-62ca-6f08-0a9a1a9071bb@redhat.com>
-X-Cookie: Body by Nautilus, Brain by Mattel.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>,
- Bard Liao <bard.liao@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97BCFF804DA
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 14:32:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97BCFF804DA
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id A073DAB8C;
+ Mon,  1 Mar 2021 13:32:04 +0000 (UTC)
+Date: Mon, 01 Mar 2021 14:32:04 +0100
+Message-ID: <s5h35xfj8yz.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
+ for the PCM device
+In-Reply-To: <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+ <s5hsg5gjutg.wl-tiwai@suse.de>
+ <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,45 +80,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 01 Mar 2021 10:25:05 +0100,
+Anton Yakovlev wrote:
+> 
+> On 28.02.2021 12:27, Takashi Iwai wrote:
+> > On Sat, 27 Feb 2021 09:59:52 +0100,
+> > Anton Yakovlev wrote:
+> >> +/**
+> >> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+> >> + * @snd: VirtIO sound device.
+> >> + * @event: VirtIO sound event.
+> >> + *
+> >> + * Context: Interrupt context.
+> >
+> > OK, then nonatomic PCM flag is invalid...
+> 
+> Well, no. Here, events are kind of independent entities. PCM-related
+> events are just a special case of more generic events, which can carry
+> any kind of notification/payload. (And at the moment, only XRUN
+> notification is supported for PCM substreams.) So it has nothing to do
+> with the atomicity of the PCM device itself.
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, thanks.
 
-On Thu, Feb 25, 2021 at 07:45:15PM +0100, Hans de Goede wrote:
+Basically the only question is how snd_pcm_period_elapsed() is called.
+And I see that it's called inside queue->lock, and this already
+invalidates the nonatomic PCM mode.  So the code needs the fix: either
+fix this locking (and the context is guaranteed not to be an irq
+context), or change to the normal PCM mode without nonatomic flag.
+Both would bring some side-effect, and we need further changes, I
+suppose...
 
-> To me it seems like a really bad idea to add userspace API for this now,
-> when we don't actually have hardware which needs this. Introducing
-> userspace API for this now introduces a significant risk that we get the
-> API wrong, since we don't actuall have a use-case where we actually need
-> the suggested flexibility. And then if such a use-case does eventually
-> pop-up we might very well have gotten the userspace API for this wrong.
 
-> I'm not saying that we will never need such flexibility, but we do not
-> need it *now*, so as I said before lets cross that bridge when we reach i=
-t.=20
+> >> +/**
+> >> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
+> >> + *                        vmalloc'ed buffer.
+> >> + * @data: Pointer to vmalloc'ed buffer.
+> >> + * @length: Buffer size.
+> >> + *
+> >> + * Context: Any context.
+> >> + * Return: Number of physically contiguous parts in the @data.
+> >> + */
+> >> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
+> >> +{
+> >> +     phys_addr_t sg_address;
+> >> +     unsigned int sg_length;
+> >> +     int num = 0;
+> >> +
+> >> +     while (length) {
+> >> +             struct page *pg = vmalloc_to_page(data);
+> >> +             phys_addr_t pg_address = page_to_phys(pg);
+> >> +             size_t pg_length;
+> >> +
+> >> +             pg_length = PAGE_SIZE - offset_in_page(data);
+> >> +             if (pg_length > length)
+> >> +                     pg_length = length;
+> >> +
+> >> +             if (!num || sg_address + sg_length != pg_address) {
+> >> +                     sg_address = pg_address;
+> >> +                     sg_length = pg_length;
+> >> +                     num++;
+> >> +             } else {
+> >> +                     sg_length += pg_length;
+> >> +             }
+> >> +
+> >> +             data += pg_length;
+> >> +             length -= pg_length;
+> >> +     }
+> >> +
+> >> +     return num;
+> >> +}
+> >> +
+> >> +/**
+> >> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
+> >> + * @sgs: Preallocated sg-list to populate.
+> >> + * @nsgs: The maximum number of elements in the @sgs.
+> >> + * @data: Pointer to vmalloc'ed buffer.
+> >> + * @length: Buffer size.
+> >> + *
+> >> + * Splits the buffer into physically contiguous parts and makes an sg-list of
+> >> + * such parts.
+> >> + *
+> >> + * Context: Any context.
+> >> + */
+> >> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+> >> +                             unsigned int length)
+> >> +{
+> >> +     int idx = -1;
+> >> +
+> >> +     while (length) {
+> >> +             struct page *pg = vmalloc_to_page(data);
+> >> +             size_t pg_length;
+> >> +
+> >> +             pg_length = PAGE_SIZE - offset_in_page(data);
+> >> +             if (pg_length > length)
+> >> +                     pg_length = length;
+> >> +
+> >> +             if (idx == -1 ||
+> >> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
+> >> +                     if (idx + 1 == nsgs)
+> >> +                             break;
+> >> +                     sg_set_page(&sgs[++idx], pg, pg_length,
+> >> +                                 offset_in_page(data));
+> >> +             } else {
+> >> +                     sgs[idx].length += pg_length;
+> >> +             }
+> >> +
+> >> +             data += pg_length;
+> >> +             length -= pg_length;
+> >> +     }
+> >> +
+> >> +     sg_mark_end(&sgs[idx]);
+> >> +}
+> >
+> > Hmm, I thought there can be already a handy helper to convert vmalloc
+> > to sglist, but apparently not.  It should have been trivial to get the
+> > page list from vmalloc, e.g.
+> >
+> > int vmalloc_to_page_list(void *p, struct page **page_ret)
+> > {
+> >          struct vmap_area *va;
+> >
+> >          va = find_vmap_area((unsigned long)p);
+> >          if (!va)
+> >                  return 0;
+> >          *page_ret = va->vm->pages;
+> >          return va->vm->nr_pages;
+> > }
+> >
+> > Then you can set up the sg list in a single call from the given page
+> > list.
+> >
+> > But it's just a cleanup, and let's mark it as a room for
+> > improvements.
+> 
+> Yeah, we can take a look into some kind of optimizations here. But I
+> suspect, the overall code will look similar. It is not enough just to
+> get a list of pages, you also need to build a list of physically
+> contiguous regions from it.
 
-I don't want to get stuck in a cycle of "why can't my system just do
-what this other system does", or worse end up with problems due to
-competing system requirements when patches go in on more flexible
-devices because I didn't notice that the device wasn't a good fit for
-this sort of thing but people have the expectation that the kernel will
-transparently handle things.
+I believe the standard helper does it.  But it's for sg_table, hence
+the plain scatterlist needs to be extracted from there, but most of
+complex things are in the standard code.
 
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
+But it's merely an optimization and something for future.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA86ucACgkQJNaLcl1U
-h9CJJAf+OMNHkw3jkAdMEpLEpLa19oieszn0FruQege69wxwPHqc32t8FSpF8aNN
-FN9f8AO720BeVF+u02HxJ6IXHeLD0boIjBvrXcyZNESeMQQ8dqQatDTcxmX0O140
-En1HjDkNiE6gej04EaSElKbGmV96lnq9WvfR/YRsj9EI+/ZTfsGqniez+WCAh5VV
-TfFj8jmdK4CKjyb0DYctstTGTenbaj35aidvVqx9L4IUqy1JuvZDKlGhtjbamtxn
-f/dHjTb8vccKKggE4dmM0DtE2+XDP0xHNhoo1SsgB7rt9/h/adcT/e46Twy9ifQ1
-rZNX+M64bQY1JUXwToCQqqKUW26yZg==
-=bjm1
------END PGP SIGNATURE-----
-
---envbJBWh7q8WU6mo--
+Takashi
