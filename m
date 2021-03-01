@@ -2,75 +2,73 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C2B3C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DD03C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EF8E61481
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EF8E61481
+	by mail.kernel.org (Postfix) with ESMTPS id 08E9860200
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08E9860200
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3343E166D;
-	Tue,  2 Mar 2021 00:39:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3343E166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DA231688;
+	Tue,  2 Mar 2021 00:39:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DA231688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614642010;
-	bh=nrIQj+PF6xl0Ng8IlfsVHRNF45bzLAB5oRssCxEx3LI=;
+	s=default; t=1614642042;
+	bh=SEezi0hF1/v6AV9st48t53kpPLAS0sc43As5yWnPWDs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hdaywe75rRixxuyd/4cfYy6OZz9cAeVCUHZ7hsBY5Fw4mqgmljBYWvB2173ZVhUjv
-	 oRs0q6AyDQnluJSPn8Z4C9tpwmXamkkfMFZHOCc4ZXWzuZHhMNEUlJfMxEsNQ6jhuz
-	 Yu7QawTzaumSb2dogAnq1PtFwJadP9jkcXpZ3pZo=
+	b=E9dS5SSOENUmguVZbHaZhyOXo52m2Z+1lRJYqmNRTTTCBUb2AMq67fjsq9RVa+LRe
+	 sImyC2QnhZ1HbZXQfsV2JI4dnx11tdfU8vo86LZkI0RWHgbX8URGBB7Oq4itGgGoEH
+	 AlmTMaqC5HCrgQ/x6L4qOTj8ALv1VSCfOOOu8KQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CB66F804B4;
-	Tue,  2 Mar 2021 00:36:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F18C0F804DF;
+	Tue,  2 Mar 2021 00:36:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5ED45F804D8; Tue,  2 Mar 2021 00:36:34 +0100 (CET)
+ id 64B3BF804E0; Tue,  2 Mar 2021 00:36:40 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F416F804B4
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:36:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F416F804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0440AF804D1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:36:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0440AF804D1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QFJZgQAR"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23F94600CD;
- Mon,  1 Mar 2021 23:36:29 +0000 (UTC)
+ header.b="BOad/XSH"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9367160295;
+ Mon,  1 Mar 2021 23:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614641790;
- bh=nrIQj+PF6xl0Ng8IlfsVHRNF45bzLAB5oRssCxEx3LI=;
+ s=k20201202; t=1614641796;
+ bh=SEezi0hF1/v6AV9st48t53kpPLAS0sc43As5yWnPWDs=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QFJZgQARvXFK8J+2oAFqDC000HBhw2EThvON11Q1b7pTQHLSlVqy/ErvxjO5rrdqo
- c26YP5TSaD6WHogyBG6FVNT9wqFRVOwJc/UghCcMUrvnp2qoCVVaHbx2s/BJOQl8/c
- xhpoJOiaaYuh2MpENMlPx0qetTaGMIwk41adsyNGxKUgxdgGOJvrRZ9ASkYYjXbcK0
- rPLli8qiJhGacalRXuO5VhV9TqhM1/pK7s+0W0fgAD1ZLet4fLgPjTRweepxUzQKzx
- nWOGLbkeLvbjj/VzRzbTn5dMNUw87WQlzcSCE5YY8czDFJOVsemTgjEpCTYEGehw2d
- yxdg/8OftwmZw==
+ b=BOad/XSHSUZ9SqzabrCCGi2RHF7/+1HOzuIbIA74tIEjBOfrNn7rPEpRDXlbaQ/4g
+ OVk6T5rQ77GOZSJfnNl369fSfJY/wU78uxN0gFYgrK7dOyk4hV0RDX36HOH1xpq9B2
+ R5YFK6qeHHZAUC32sOTmjy5a2Fj95bUxLY1OLsrAe9tArkzpseaxjHEWDMkqLHsxvp
+ wmUgNw4bUb2k3gDVPVBVvQYc0NP0ayy2CTuqbrM0wx52MBZBDjsx8sSq6WQCtL1gOU
+ ZvUXbjl3aSSL8FlMFSY0UNrjD4TPBohmm2elawnCRSkUpFRF84OMC4yFIt9t/3zpkf
+ BvQplM/VX2v/g==
 From: Mark Brown <broonie@kernel.org>
-To: Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20210226143817.84287-1-hdegoede@redhat.com>
-References: <20210226143817.84287-1-hdegoede@redhat.com>
-Subject: Re: (subset) [PATCH 0/5] AsoC: rt5640/rt5651: Volume control fixes
-Message-Id: <161464168097.31144.7188432033841191426.b4-ty@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
+References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: (subset) [PATCH 0/8] ASoC: sh: remove cppcheck warnings
+Message-Id: <161464168097.31144.3559452144915356602.b4-ty@kernel.org>
 Date: Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,14 +84,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 26 Feb 2021 15:38:12 +0100, Hans de Goede wrote:
-> Here is a series of rt5640/rt5651 volume-control fixes which I wrote
-> while working on a bytcr-rt5640 UCM profile patch-series adding
-> hardware-volume control to devices using this UCM profile.
+On Fri, 19 Feb 2021 17:16:27 -0600, Pierre-Louis Bossart wrote:
+> No functional changes except for patch 4 where a missing error check
+> was added for consistency.
 > 
-> The UCM series will also work on older kernels, but it works best on
-> kernels with this series applied, giving e.g. finer grained volume
-> control and support for hardware muting the outputs.
+> Pierre-Louis Bossart (8):
+>   ASoC: sh: dma-sh7760: remove unused variable
+>   ASoC: sh: rcar: align function prototypes
+>   ASoC: sh: rcar: simplify return
+>   ASoC: sh: rcar: core: rename shadowing variables
+>   ASoC: sh: rcar: ctu: add  missing error check
+>   ASoC: sh: rcar: ssi: remove redundant assignment
+>   ASoC: sh: siu_pcm: remove useless assignment
+>   ASoC: sh: siu_pcm: remove unused variable
 > 
 > [...]
 
@@ -103,10 +106,20 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: rt5640: Fix dac- and adc- vol-tlv values being off by a factor of 10
-      commit: 24a7b77daed8f973bf8a5ed2f83344f44f9f6396
-[2/5] ASoC: rt5651: Fix dac- and adc- vol-tlv values being off by a factor of 10
-      commit: e4ffab875d32bf4ffa37b5cd725ace9e15d1707d
+[1/8] ASoC: sh: dma-sh7760: remove unused variable
+      commit: 2497d156c297992ef1254fda2277ce055f48db64
+[2/8] ASoC: sh: rcar: align function prototypes
+      commit: 8644cbf296de7440f8d53d333da89f79d3258d25
+[3/8] ASoC: sh: rcar: simplify return
+      commit: d15737e24a962941bae0373b8a89173e2451e7c9
+[5/8] ASoC: sh: rcar: ctu: add missing error check
+      commit: a029ad994d24c92228b4460cc374846170720a05
+[6/8] ASoC: sh: rcar: ssi: remove redundant assignment
+      commit: 0711cb41ce02ae8994e4f75551545b114e8922d6
+[7/8] ASoC: sh: siu_pcm: remove useless assignment
+      commit: 075bfe61c88a267755bf4cc54af19cab3141f23f
+[8/8] ASoC: sh: siu_pcm: remove unused variable
+      commit: 69011a3193be54b04b3cfd652c484e6b77cf59b0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
