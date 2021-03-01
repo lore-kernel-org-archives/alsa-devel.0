@@ -2,73 +2,74 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23011C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:39:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA0BC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:39:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 92E2460295
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:39:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92E2460295
+	by mail.kernel.org (Postfix) with ESMTPS id 2413161494
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:39:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2413161494
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CA5C166D;
-	Tue,  2 Mar 2021 00:38:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CA5C166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95A0F1687;
+	Tue,  2 Mar 2021 00:38:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95A0F1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614641952;
-	bh=OKydMsGi2kOOCi5NWNCxVzfr+l8o+583tQ3XJ7DjMbc=;
+	s=default; t=1614641968;
+	bh=cZUXtiovZI/tzqijypqjrzq6gBu3W8SMAC9WklSHYws=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RuC92yBxbryjxLCuANZuddF+mb+KLC0N/IWcAU3efbojz7KiAI3H3uJ5wslqxgSnt
-	 vC79Z881JMBfM3ISYYGO8qjz5/AeEwgSL8XiVzQdEh+LKHkNyRknsEKQTddsKx8Jq8
-	 ++gh0GNC5ysH+UcD+ToOWnAQeo9bD/VT/AtTxcek=
+	b=N14bCAFfFc8Q1g55tfXEk5VDstRGkHwS5UTnmHj78HrnxpnXC6wWVandHQq6RMtFD
+	 KhabK4UhxKtSJFZYCK188dNPYTC0BFcPOvH97nwf0I2P84X5DgcK4I5rGlpLaENnGX
+	 OfclTs22IhedenjyjSTfuxQXaynvvFUWjeUohq9M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 966E4F804AA;
-	Tue,  2 Mar 2021 00:36:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43C01F804AF;
+	Tue,  2 Mar 2021 00:36:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB8C6F804AC; Tue,  2 Mar 2021 00:36:18 +0100 (CET)
+ id 0B129F804B0; Tue,  2 Mar 2021 00:36:24 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51207F80475
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:36:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51207F80475
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9793CF804AB
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:36:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9793CF804AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aAgKMHzz"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 459A16024A;
- Mon,  1 Mar 2021 23:36:14 +0000 (UTC)
+ header.b="dCaF9pF4"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85AB661477;
+ Mon,  1 Mar 2021 23:36:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614641774;
- bh=OKydMsGi2kOOCi5NWNCxVzfr+l8o+583tQ3XJ7DjMbc=;
+ s=k20201202; t=1614641780;
+ bh=cZUXtiovZI/tzqijypqjrzq6gBu3W8SMAC9WklSHYws=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=aAgKMHzz15l90tuH2BwyfRzZKhCJ7ky9qrCmntzjbMsPtvJ8FS7vlCuvXqqhRK7VD
- uhtrm72yof88kfscqcR4kqNIyTvNmXYCfI5igcNht5/IKB/fNvFD2okVHvab1wrgS0
- 7HqbnvAEeCQEXI0a9CiJdZaWSP6gb2V4z8t0H23Rmo9l94OiSB5UDX0Qb8VVBq1es7
- OgzwyGJqQc8yNBLmRLa6jjliXAZ2DoJTHOkRVsMPSzrEUCaVryqTFg+jtFS6MoITND
- YATooBczH8DIMg9Guve5HX3WX4hba2VZ+F0PZk2CstQtpK9KimP+7eY5Yn4IiRlwbW
- k8uS5tvJsV+6A==
+ b=dCaF9pF4GRmEI4DE44lP4QN+Xroxj01DFpBfqqFQgpr3XTZGB6WONfW0O2O9bnEzD
+ uURGw8GvAUEEjUqNTlCdWSKQLsTFenL8jaJVuFaoNeU4wNOJaZCsfzwCjcxA+gg9im
+ 63BvJ22/zLB70SoFZNe2Y/yT3QKw5sTgUm4YU5QaUdfmaCGfsXuJ67WKkTz2fVKiNv
+ G3e6UKMTqEjg8E7RQ/NdHVh4gPRbfaAvPdFxZN3NkeiYNk/Q67S1pPPgzU0u/h+z7K
+ FvpuvIq5L5l6GpR/79/MDh0tvcVRgsBWiQ7O20spaK1FHP2Ub8DXpV22jmHp19klND
+ QgGg6uDcOiyWA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210219230918.5058-1-pierre-louis.bossart@linux.intel.com>
-References: <20210219230918.5058-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: (subset) [PATCH 0/6] ASoC: samsung: remove cppcheck warnings
-Message-Id: <161464168095.31144.10124667274915778506.b4-ty@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Oder Chiou <oder_chiou@realtek.com>,
+ Rikard Falkeborn <rikard.falkeborn@gmail.com>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
+References: <20210224211918.39109-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH 0/4] ASoC: rt*: Constify static structs
+Message-Id: <161464168097.31144.1513145502519193305.b4-ty@kernel.org>
 Date: Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Krzysztof Kozlowski <krzk@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,17 +85,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Feb 2021 17:09:12 -0600, Pierre-Louis Bossart wrote:
-> No functional changes except for patch 2 and 3 where missing error
-> checks were added for consistency.
+On Wed, 24 Feb 2021 22:19:14 +0100, Rikard Falkeborn wrote:
+> Constify a number of static structs that are never modified in RealTek
+> codecs. The most important patches are the first two, which constifies
+> snd_soc_dai_ops and sdw_slave_ops, both which contain function pointers.
+> The other two patches are for good measure, since I was already touching
+> the code there.
 > 
-> Pierre-Louis Bossart (6):
->   ASoC: samsung: i2s: remove unassigned variable
->   ASoC: samsung: s3c24xx_simtec: add missing error check
->   ASoC: samsung: smdk_wm8994: add missing return
->   ASoC: samsung: snow: remove useless test
->   ASoC: samsung: tm2_wm5110: check of_parse return value
->   ASoC: samsung: tm2_wm5510: remove shadowing variable
+> When doing this, I discovered sound/soc/codecs/rt1016.c is not in a
+> Makefile, so there is not really any way to build it (I added locally to
+> the Makefile to compile-test my changes). Is this expected or an oversight?
 > 
 > [...]
 
@@ -104,14 +104,14 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: samsung: i2s: remove unassigned variable
-      commit: b832fa1ce0826a915a9e1fe533fc86a1cf5ae8cd
-[2/6] ASoC: samsung: s3c24xx_simtec: add missing error check
-      commit: feb45eb2ecafdfaca5b82f27997e717ae3c70323
-[3/6] ASoC: samsung: smdk_wm8994: add missing return
-      commit: 1e4a9fcffd56b73acf4e706465be2df261da83de
-[4/6] ASoC: samsung: snow: remove useless test
-      commit: 4ff97b8dc7e6a3c5caf733ebad4efaf018829142
+[1/4] ASoC: rt*: Constify static struct sdw_slave_ops
+      commit: 3ebb1b951880d3152547ac4018bfcce0fd7810bd
+[2/4] ASoC: rt*: Constify static struct snd_soc_dai_ops
+      commit: 84732dd4ff3ad28cc65eedfa3061fe3808e8469b
+[3/4] ASoC: rt*: Constify static struct acpi_device_id
+      commit: c85ca92c716bd04981ebcd2c67cd03f96748859e
+[4/4] ASoc: rt5631: Constify static struct coeff_clk_div
+      commit: 39f9eb61307061eed197eae651ef56cb3544f9b2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
