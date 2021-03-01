@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A74AEC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:58:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6516C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:58:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA7066024A
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:58:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA7066024A
+	by mail.kernel.org (Postfix) with ESMTPS id 1EB6960240
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:58:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1EB6960240
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C06351699;
-	Tue,  2 Mar 2021 00:57:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C06351699
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1FF916A6;
+	Tue,  2 Mar 2021 00:57:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1FF916A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614643116;
-	bh=dbc/8nXB3WUmgVp3rvH+9/uNhPBmkmGjWibAuv3Sx+k=;
+	s=default; t=1614643122;
+	bh=17N/Jz5OzneohTyFuoBA2XUE7+/6DQCDhNeUgMO6W84=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TcFvNPVeJxPaoxhdmok+xDAl0dJJDKwjnxyASxtFAPo+jkNidqzsnLOUHPnoklUke
-	 jdv1aWi4JmssVOitDazwiL5v9QNLvRJHNATwNHVrFgLc9AL4SEgVtLD3fQodWxDKg1
-	 4ivpGDUcGGvTBGp2qF0nZUOhs8NKv75zC3rn46RE=
+	b=RtpykfqDPz3Zms4sjcVZ+8Ttz9YPwZfnOBxTqQ++vA56uHjNlDXCpjE58HPQFiNaZ
+	 jRWG1/fOxjI18zPJIz7TIBaXtWDUbxtNOZedbhGFb9Znwwq4BKQzXh2Jzq81FaU68B
+	 TD7154V/YQWZcd3zD4ASNX47jMNjAAuaixYA8+lw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B48AF8027D;
-	Tue,  2 Mar 2021 00:56:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11F0CF802E0;
+	Tue,  2 Mar 2021 00:56:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC0E7F80275; Tue,  2 Mar 2021 00:56:55 +0100 (CET)
+ id 52CA1F802E0; Tue,  2 Mar 2021 00:56:57 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90663F8010B
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:56:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90663F8010B
-IronPort-SDR: izxXt26VQSXEluUSKID8wccuAxXnZrpDPTrK9oetcq/ShoJcgFISrd2Jk8xmYEfT9BgqtCb0EA
- tO23lPVFObTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184195006"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="184195006"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C5D6F8026A
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:56:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C5D6F8026A
+IronPort-SDR: 9kTGIE3VClZJOchIq5qt5hGh6afxATeF9Nj+1k6RKXrl5tx7MdoazjvSH1dk3TAzW84I5LcaG/
+ UKRDhMFEXafQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184195008"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="184195008"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 15:56:46 -0800
-IronPort-SDR: sjD8tEwZyJXbtrfE1hYaV7lCRK/JMzJKjasB7oR0o3sFtuehwUnzjrNHEVmacwKcLbkvhQ14cP
- SvENJFTuhlxQ==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="406449841"
+ 01 Mar 2021 15:56:47 -0800
+IronPort-SDR: PCubHnHkdixS7vaesBTJ3Jf6oyPsZH8DsNLKmD8I4iQ3qiT4V1gb2anVV4Du45OopJoernohOh
+ n+pqrtG0ljGQ==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="406449846"
 Received: from josemrod-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.215.233])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 15:56:45 -0800
+ 01 Mar 2021 15:56:46 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ASoC: Intel: soc-acpi: remove unused TGL table with
- rt5682 only
-Date: Mon,  1 Mar 2021 17:56:36 -0600
-Message-Id: <20210301235637.1177525-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: soc-acpi: remove TGL RVP mixed SoundWire/TDM
+ config
+Date: Mon,  1 Mar 2021 17:56:37 -0600
+Message-Id: <20210301235637.1177525-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210301235637.1177525-1-pierre-louis.bossart@linux.intel.com>
 References: <20210301235637.1177525-1-pierre-louis.bossart@linux.intel.com>
@@ -87,37 +87,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch partially reverts Commit 095ee71907ea ("ASoC: Intel: common: add match table for TGL RT5682 SoundWire driver").
+The TGL RVP can be configured in many ways. We initially supported a
+mixed configuration with RT711 in SoundWire mode and RT1308 in
+TDM mode.
 
-This commit was added as an enabling patch before the Maxim98373 codec
-driver was available. This codec is now fully functional and the
-topology with only RT5682 no longer maintained or used.
+However Intel teams no longer have any hardware with this
+configuration and there are no commercially-available devices using it
+either, so let's remove this entry. The corresponding topology will
+also be removed from the SOF tree.
+
+This patch partially reverts Commit d985d208bf8f ("ASoC: Intel: common: add match tables for TGL w/ SoundWire")
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-tgl-match.c | 6 ------
- 1 file changed, 6 deletions(-)
+ .../soc/intel/common/soc-acpi-intel-tgl-match.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
 diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-index 40f31c8a3aba..e8640ee10012 100644
+index e8640ee10012..b5f05b81a584 100644
 --- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
 +++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
-@@ -415,12 +415,6 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
- 		.drv_name = "sof_sdw",
- 		.sof_tplg_filename = "sof-tgl-sdw-max98373-rt5682.tplg",
- 	},
--	{
--		.link_mask = 0x1, /* this will only enable rt5682 for now */
--		.links = tgl_chromebook_base,
--		.drv_name = "sof_sdw",
--		.sof_tplg_filename = "sof-tgl-rt5682.tplg",
--	},
- 	{},
+@@ -182,15 +182,6 @@ static const struct snd_soc_acpi_adr_device rt714_3_adr[] = {
+ 	}
  };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_sdw_machines);
+ 
+-static const struct snd_soc_acpi_link_adr tgl_i2s_rt1308[] = {
+-	{
+-		.mask = BIT(0),
+-		.num_adr = ARRAY_SIZE(rt711_0_adr),
+-		.adr_d = rt711_0_adr,
+-	},
+-	{}
+-};
+-
+ static const struct snd_soc_acpi_link_adr tgl_rvp[] = {
+ 	{
+ 		.mask = BIT(0),
+@@ -330,14 +321,6 @@ static const struct snd_soc_acpi_codecs tgl_rt1011_amp = {
+ };
+ 
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+-	{
+-		.id = "10EC1308",
+-		.drv_name = "sof_sdw",
+-		.link_mask = 0x1, /* RT711 on SoundWire link0 */
+-		.links = tgl_i2s_rt1308,
+-		.sof_fw_filename = "sof-tgl.ri",
+-		.sof_tplg_filename = "sof-tgl-rt711-i2s-rt1308.tplg",
+-	},
+ 	{
+ 		.id = "10EC5682",
+ 		.drv_name = "tgl_max98357a_rt5682",
 -- 
 2.25.1
 
