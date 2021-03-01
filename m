@@ -2,121 +2,95 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AD55C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 19:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E15EEC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 19:35:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D22B460241
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 19:23:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D22B460241
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 88A6260241
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 19:35:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88A6260241
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4BF9166A;
-	Mon,  1 Mar 2021 20:22:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4BF9166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C5AB1668;
+	Mon,  1 Mar 2021 20:34:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C5AB1668
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614626585;
-	bh=sa3gateQ3xbA5E2hPh3y8jRg9QdKfI8YgFIbqIf0JJY=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YdQhVXNXtv1eT7+bi+Gqr/ScU7wJf7/UIwhf89cmh92TYySzUUJIIQ8NMZF9MjIzT
-	 SgPRPvEx+AhkUhDY/puQXZPGNCI7L0rHOrA/wAgwSQXSXsUN/4/KRItRD2CmmzLHCO
-	 DGhTeQf2tapp48svCJ9P+QRobfhLWSPTZGIq+D0E=
+	s=default; t=1614627303;
+	bh=8zkdJs6qGxXEaf4TVsrvtbXB+XOSv6xsiBpPAuWJ4Ug=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=YydFawwdv2J+fOjabThkZhJ+ANIrDryvvkIK6qhcGI1UkMJiJCCkMi7Hs4asVZ9+L
+	 aY4lLTOWJ7BxkatbEeoM0RRf/buUHVOiymTXBAcjQ7I21SCicJ3gAdoNdH2yVbWOAZ
+	 +8kX/WY3q24OPWetYYndv2lwYR7PfZDpnU6tkHYs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 554FDF80257;
-	Mon,  1 Mar 2021 20:22:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FE7FF80257;
+	Mon,  1 Mar 2021 20:34:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3CC6F80150; Mon,  1 Mar 2021 20:22:13 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 89142F8025E; Mon,  1 Mar 2021 20:34:11 +0100 (CET)
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com
+ [IPv6:2607:f8b0:4864:20::735])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10AA7F80150
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 20:22:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10AA7F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id B75B3F80150
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 20:34:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B75B3F80150
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="ObOathdi"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1614626529;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=b6HDjDupMyBH3ekbQAgGUD3zMtmHgZK9zA/sGN5Fcwc=;
- b=ObOathdi/SEyjZTlxA2XIeLv4p8Byzlgm/iF9yGbhyPbw4OqGWpeAj1C0IOmlaUjQE7XLY
- dtA5ZujSlYucjO54BHoh1sAz44A4nigb82wlRF2Qtyc0UzHqEWo2q1knHJfUGdv0C/lVbz
- tf7buYmsd1v/iq0dgH4Tj49Ia4jE62Y=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491--9RJwhx-PK6KrrOTVBByvw-1; Mon, 01 Mar 2021 14:22:00 -0500
-X-MC-Unique: -9RJwhx-PK6KrrOTVBByvw-1
-Received: by mail-ej1-f72.google.com with SMTP id rl7so1833985ejb.16
- for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 11:21:58 -0800 (PST)
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="SE/Ad4Ks"
+Received: by mail-qk1-x735.google.com with SMTP id q85so17794082qke.8
+ for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 11:34:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=pumBrlPvSRQ35NQ2oUABR8NJww1593QYGAQuqnujt4U=;
+ b=SE/Ad4KsrH7rRD/eugjUtzUW3Xkco0kZlpRcQ3mZ+yAP5d8IspEPZpUaNJESM5XHdV
+ xZGor72Qg0WrMAFvD62A7Z0LMEfKm5oWvLAlhXM2nYZUGAgqFg0RcgFoBTIdUkc0aS9W
+ qL2aaIy86agj9hayoG6jMVwAYgTG1hXdrgEs3F7FkCK+6ozvExmGkANIgPYuXIUf37s3
+ HfGkudbd1atuVyedtnGVoFxRd9uI/2C5WuIK6uQ6tDxCetNwbL1teYPWpYL8IbIdxzr/
+ TjO28vLxJL5PT1ldG6knHoxw6E47g5YclVB9H9E4JIv1wSWDrRFO7STa/trFcDY36u3w
+ IFKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=b6HDjDupMyBH3ekbQAgGUD3zMtmHgZK9zA/sGN5Fcwc=;
- b=kxvcdMIu6J4qLR5htUuBK4f3qzup3G2LHcOF+EhZUyTIQZDmoFUKIDDDsgnuFX4PSW
- ufxzThdV2F8EOu1z25hxDmITYxKNsrOp7visb652dUBGGenYyFtC6cIKwE2hVVpe5vzO
- Em7y5QagpaUgmifybhyhhWha3pce7pcZmCdQipfBUEjNzO7KvS3X1twRulmmH83yjC5s
- gesGpxYsSPSCd0Orc2fNCd86xx4j/rgs2WOOfGB0tpvwKW7EhSDGG1ZUC5yL0M7LCEvX
- 7/+V7lL4qT0ZFIiEyeQjsEXpWInfPFhF57nl8W56Q8L3sDZ46yqsOXy6T9+BykqONFZs
- ussg==
-X-Gm-Message-State: AOAM5329Of13wVnAQwFjQxv5gAWeu/1MwhL1UMVJpgXUiw4fnXAZZe7j
- /tx6g+UXVC41jfVg4g37pF9V92hMk+hvOEWwXkgO4vOWPo5nvzGpqNSNsb8/RExU7GD0m0G0yJO
- NIv8wmtICt4tH4eNjWP/bvC6M+kwyE6RsO+Vv1ufhVNFk/qMYhtRea/qZgChPpfGnNoPMiQOlP2
- A=
-X-Received: by 2002:a17:906:b316:: with SMTP id
- n22mr2717824ejz.249.1614626517531; 
- Mon, 01 Mar 2021 11:21:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxS1/dbSEx4mh8XMdbAUERhqY1qj/l5SmMN3n5IjvR28DbTIjrlNvWPdE2/zYiQztMooq560A==
-X-Received: by 2002:a17:906:b316:: with SMTP id
- n22mr2717810ejz.249.1614626517292; 
- Mon, 01 Mar 2021 11:21:57 -0800 (PST)
-Received: from x1.localdomain
- (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
- by smtp.gmail.com with ESMTPSA id g3sm14689861ejz.91.2021.03.01.11.21.56
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 01 Mar 2021 11:21:56 -0800 (PST)
-Subject: Re: [PATCH 3/5] ASoC: rt5640: Add emulated 'DAC1 Playback Switch'
- control
-To: Mark Brown <broonie@kernel.org>
-References: <20210226143817.84287-1-hdegoede@redhat.com>
- <20210226143817.84287-4-hdegoede@redhat.com>
- <20210301185557.GG4628@sirena.org.uk>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <23ef6073-ffeb-c7ea-1365-63f3e78f241d@redhat.com>
-Date: Mon, 1 Mar 2021 20:21:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ bh=pumBrlPvSRQ35NQ2oUABR8NJww1593QYGAQuqnujt4U=;
+ b=FDatuM1C5tt3g4DK5pLqSfImq2vcY3Fp04UoYQXTMIxymCk26TVKY/kZqY83lpUlSZ
+ H6QEktd65mVBjYxrnlU0UhoKxnFqWXz1tl7NIZ1OY9GY1wfhR3r2JcG0wP95pT/BHIR0
+ mSdVzrJYhMtGKrfRhctWPonWGr/+62o08a9JNdhfdAWj1TAZa+0HvobO6m8aZIxCF5w/
+ B6kesKuZX9xZWufzbPsHEyFJE7uAkmSA4FRMi5xnf98qO/AJw29pPwbHzT/49EkDYD8T
+ bkAxArwFcKhAQ1Ub3PZJb6aRMbFs1LMAP/mS17/dONTXFVs0s3IM5rd/xjoyY4gjKLTb
+ ag+A==
+X-Gm-Message-State: AOAM530hkZddvVPCiYIbjpCR7e5flHeST5IPPumC333eTpcnxpUaS5uu
+ Z3pJtRKRNCQjnpRXj3G+Q0w=
+X-Google-Smtp-Source: ABdhPJz2qXPHyuah5NVNZ5GwAbOErUP/sWPG4hz/SJd0WBCPurA4q4pPe6AO0allwbENsLGTUSUSRg==
+X-Received: by 2002:a05:620a:16b6:: with SMTP id
+ s22mr15117496qkj.240.1614627245579; 
+ Mon, 01 Mar 2021 11:34:05 -0800 (PST)
+Received: from localhost.localdomain ([2804:14c:482:919::1000])
+ by smtp.gmail.com with ESMTPSA id a9sm11747737qtx.96.2021.03.01.11.34.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 01 Mar 2021 11:34:05 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: wm8524: Do not print probe defer error
+Date: Mon,  1 Mar 2021 16:33:28 -0300
+Message-Id: <20210301193328.2123511-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210301185557.GG4628@sirena.org.uk>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, shengjiu.wang@nxp.com,
+ Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org,
+ cphealy@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,99 +106,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+On an imx8mq-evk the following error is seen:
 
-On 3/1/21 7:55 PM, Mark Brown wrote:
-> On Fri, Feb 26, 2021 at 03:38:15PM +0100, Hans de Goede wrote:
->> When using AIF1 the 'DAC1 Playback Volume' control will be used as the
->> PlaybackMasterElem in UCM.
->>
->> We need a matching 'DAC1 Playback Switch' for 2 reasons:
->>
->> 1. To be able to truely fully mute the output (the softest volume setting
->>    is not fully muted).
->> 2. For reliable output-mute LED control.
->>
->> The path from the IF1_DAC data input to the 'Stereo DAC MIXL' /
->> 'Stereo DAC MIXR' digital mixer has a 'DAC MIXL' / 'DAC MIXR' digital
->> mixer with IF1_DAC data as one of its inputs direclty after the
->> 'DAC1 Playback Volume' control.
->>
->> This commit adds an emulated "DAC1 Playback Switch" control by:
-> 
-> This feels icky, it seems like if userspace needs to stitch together a
-> stereo mute control that doesn't already exist in the hardware
+[    1.375809] wm8524-codec audio-codec: Failed to get mute line: -517
 
-But it does exist in the hardware the digital mixer bits around DAC1
-have some more functionality then those around DAc2, including a mixer
-directly behind the DAC1 volume-control which allows digital loopback.
+It happens because the codec driver may probe prior to the imx gpio
+driver, which causes a probe defer.
 
-The inputs to those mixer are all 4 (2 pairs of l/r) controlled by
-mute bits. The codec designer has left out the mute switches normally
-directly following the volume control since then there would be 2 mute
-switches in series, one as part of the volume-control/mute combo which
-is usually used and 1 directly behind that to mute/unmute the mixer
-input.
+Change to dev_err_probe() to avoid printing this error.
 
-This is a nice hw optimization, but annoying to deal with in software,
-esp. since userspace generally expects a "Foo Playback Volume",
-"Foo Playback Switch" pair. By for the easiest way to deal with this
-is to undo the hw optimization in software and add the expected
-"Foo Playback Switch"
+Reported-by: Chris Healy <cphealy@gmail.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ sound/soc/codecs/wm8524.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> from
-> existing mono controls then UCM ought to have support for figuring that
-> out anyway or if we *must* bodge this in the kernel there should be some
-> generic way of doing it rather than open coding in drivers.
-
-This is highly codec specific. So far this has not really been an
-issue because so far on asoc based systems regular Linux userspace has
-always been using software volume-control. But now that we are starting
-to use hardware volume-control it really is desirable to also have
-a hardware mute switch available.
-
-Also problematic here is that things like volume-controls and their
-accompanying mute switches (often bit 15 + 8 of the same register)
-are modules as "normal" mixer elements which are not seen as part of
-the DAPM graph, where as the mixer in this case is part of the DAPM graph.
-
-> It also makes the whole mute LED thing feel a lot messier even for
-> existing systems than you seemed to be suggesting in the other thread.
-> This device has two I2S interfaces, two DACs (only one of which seems to
-> be affected by this control), and it appears that there's bypass path
-> from the ADC to DAC1 which won't be muted by the newly added mute switch
-> here so this reliable mute control won't be entirely reliable.  There
-> look to also be some analogue bypass paths, I didn't fully check.
-
-I don't believe that it is necessary to take bypass / loopback paths into
-account for the playback mute LED. These are normally always off and they
-don't involve the normal playback paths. So even if they are on any
-audio played from within the OS is still muted.
-
-> One
-> could equally argue that a software defined mute control should be
-> muting all the analogue outputs, it'd certainly seem more robust.
-
-The mute switches in the analog output paths are part of the DAPM
-graph, which means that they will get turned off automatically to
-save power when the audio device is not playing audio (is not kept
-open by userspace). AFAIK this makes them unsuitable to be used as a
-source for the mute-led trigger, we want the mute LED to turn on
-when the volume control is set to mute, not when the last app
-closes the audio device.
-
-I honestly don't understand your objections against the current
-set of patches for dealing with the mute-led trigger. Your main
-worry seems to be that this is not flexible enough, but it currently
-is all handled inside the kernel. So if more complex cases come up
-then we can easily adjust the code to deal with this, since there
-is no userspace API part to worry about. And if these more complex
-cases do require more userspace involvement then we can worry about
-that then (and not now) when we actually have a concrete example of
-what such a more complex setup could look like and thus also have
-something to actually design any userspace api for this around.
-
-Regards,
-
-Hans
+diff --git a/sound/soc/codecs/wm8524.c b/sound/soc/codecs/wm8524.c
+index 4e9ab542f648..81f858f6bd67 100644
+--- a/sound/soc/codecs/wm8524.c
++++ b/sound/soc/codecs/wm8524.c
+@@ -227,7 +227,7 @@ static int wm8524_codec_probe(struct platform_device *pdev)
+ 	wm8524->mute = devm_gpiod_get(&pdev->dev, "wlf,mute", GPIOD_OUT_LOW);
+ 	if (IS_ERR(wm8524->mute)) {
+ 		ret = PTR_ERR(wm8524->mute);
+-		dev_err(&pdev->dev, "Failed to get mute line: %d\n", ret);
++		dev_err_probe(&pdev->dev, ret, "Failed to get mute line\n");
+ 		return ret;
+ 	}
+ 
+-- 
+2.25.1
 
