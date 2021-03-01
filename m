@@ -6,72 +6,71 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14CABC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E000C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:37:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2368A61490
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:36:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2368A61490
+	by mail.kernel.org (Postfix) with ESMTPS id 06DCC60295
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:37:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06DCC60295
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D2881668;
-	Tue,  2 Mar 2021 00:35:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D2881668
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33E4B1676;
+	Tue,  2 Mar 2021 00:36:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E4B1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614641807;
-	bh=rLQduTIs5jHkiD4vnc60vLesppydKxcbRhb2ApKSTKA=;
+	s=default; t=1614641858;
+	bh=PrNvTgS8InZU7KzAmtxYmoKDk7AfFQJiiIAJT795I3I=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=roi8MCoLxxRIOMl4aLaf849VlydYPTUFsHZsnaLlB7ObcyILRg0+JM9JDBMPcYHpF
-	 ndbpc9yb2cJF1VQ86G3DRncjAZADLacD2osaYY7UGz7fqfNaU6+4hF2JeLFKNXc0ze
-	 TRXbD8xdsK9j2KmfV5GvU455XBppqPSouxTtRXJA=
+	b=GaGcy1ETZ7NkZFg8irtMFmb+Gftgn1L+xq2eBcI58/pHAbiBXSm7hthnoHA42Y2em
+	 xk9uLyKlBuaenF3k1Ls/hdiY+pGPFVHGj20DtZt86iHa7SaT2Igji6Ko+U7gKCsQ9m
+	 wuUBDH9jo84LkAhbK3P0xtVX8lgWIoaq2+mU4I20=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77014F8025E;
-	Tue,  2 Mar 2021 00:35:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3DF2F80275;
+	Tue,  2 Mar 2021 00:35:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44ADEF8025E; Tue,  2 Mar 2021 00:35:54 +0100 (CET)
+ id C6CCEF800E0; Tue,  2 Mar 2021 00:35:56 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D7DDF8010B
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:35:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D7DDF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5AF01F800E0
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:35:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AF01F800E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sWGTr6FB"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B08E760200;
- Mon,  1 Mar 2021 23:35:46 +0000 (UTC)
+ header.b="vKr866UP"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2390260295;
+ Mon,  1 Mar 2021 23:35:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614641747;
- bh=rLQduTIs5jHkiD4vnc60vLesppydKxcbRhb2ApKSTKA=;
+ s=k20201202; t=1614641752;
+ bh=PrNvTgS8InZU7KzAmtxYmoKDk7AfFQJiiIAJT795I3I=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=sWGTr6FBybOpFuzXYoM16lTr83+IxLLBHpvHer+l4rgkE111DgosHn9kcIRdCFr3s
- BHyQ8oXl1RFc56IYowxI+4iYVWdvyyyeJ/54mf1YzczCWyK2VWvq3pPy/1XWuG3L2T
- l1NZZr+elpK7h/oOJoTnKPvoq/Aixq7g/yFNt0AXz1ZxeNwq27T+Rygv6zh0wLYkFh
- M6RnPMA0LDcqoRX6dIMQ3AZ2KzFMuxpqtPJN/LvqR3sFdT1okjZdKPIubxwQX/6Dut
- 8MA630DKvpiRygIXGK5o5jtRygkwgEQUb2zUCcwK6aFhGVXOThKRAqyqlJJcf38Zo6
- frZnMV4xlOKJg==
+ b=vKr866UPpHt6cWjDRcwEtfIQZ+qbV6Lq/qylC8kOZ1z/nrZZiKYfmeKeVxuLugtyb
+ Kh8Zy5qlquTuxWLHdAApGGolDyHZ8S9VVDIDqT/3wHjJmn96K4y4prp8NM42etxXNG
+ qvNHBgT2lwrlA35gclbgbJkGeuFrUpFzwUFZ+4+AsKzBHTOgVw/CR73vApOOLeeIdG
+ DG+5NXK5kKMzo/K47BHrRbyttKKaBfo3jLPFzGOWmiewUq8G+Xbn5ENgWemSn/JC1V
+ UbNnSvzZw4ychOCmOi3x488cLcDn/+j9f1qBpjeX4aQMlvgrUYko5kHT6Fn9ALeijI
+ lnwNc4G1U7Ctw==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+To: Benjamin Rood <benjaminjrood@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Colin King <colin.king@canonical.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210215200501.90697-1-colin.king@canonical.com>
-References: <20210215200501.90697-1-colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: codecs: lpass-rx-macro: remove redundant
- initialization of variable hph_pwr_mode
-Message-Id: <161464168094.31144.11681610130344407838.b4-ty@kernel.org>
+ Takashi Iwai <tiwai@suse.com>, Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <20210219183308.GA2117@ubuntu-dev>
+References: <20210219183308.GA2117@ubuntu-dev>
+Subject: Re: [PATCH] ASoC: sgtl5000: set DAP_AVC_CTRL register to correct
+ default value on probe
+Message-Id: <161464168098.31144.10427745936831814607.b4-ty@kernel.org>
 Date: Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, dmacdonald@curbellmedical.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,10 +86,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 15 Feb 2021 20:05:01 +0000, Colin King wrote:
-> The variable hph_pwr_mode is being initialized with a value that is
-> never read and it is being updated later with a new value.  The
-> initialization is redundant and can be removed.
+On Fri, 19 Feb 2021 13:33:08 -0500, Benjamin Rood wrote:
+> According to the SGTL5000 datasheet [1], the DAP_AVC_CTRL register has
+> the following bit field definitions:
+> 
+> | BITS  | FIELD       | RW | RESET | DEFINITION                        |
+> | 15    | RSVD        | RO | 0x0   | Reserved                          |
+> | 14    | RSVD        | RW | 0x1   | Reserved                          |
+> | 13:12 | MAX_GAIN    | RW | 0x1   | Max Gain of AVC in expander mode  |
+> | 11:10 | RSVD        | RO | 0x0   | Reserved                          |
+> | 9:8   | LBI_RESP    | RW | 0x1   | Integrator Response               |
+> | 7:6   | RSVD        | RO | 0x0   | Reserved                          |
+> | 5     | HARD_LMT_EN | RW | 0x0   | Enable hard limiter mode          |
+> | 4:1   | RSVD        | RO | 0x0   | Reserved                          |
+> | 0     | EN          | RW | 0x0   | Enable/Disable AVC                |
+> 
+> [...]
 
 Applied to
 
@@ -98,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-rx-macro: remove redundant initialization of variable hph_pwr_mode
-      commit: 7f7d1c4fce10ca68e87165898e6232353e4be1af
+[1/1] ASoC: sgtl5000: set DAP_AVC_CTRL register to correct default value on probe
+      commit: d74fcdc51afd431ca9d956e032e14d12f0ee4153
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
