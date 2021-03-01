@@ -2,89 +2,65 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6F10C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDB16C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:59:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2D9F164E41
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:54:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D9F164E41
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id B59E864EAE
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 13:59:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B59E864EAE
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21FEB169F;
-	Mon,  1 Mar 2021 14:54:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21FEB169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC5B4166A;
+	Mon,  1 Mar 2021 14:58:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC5B4166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614606890;
-	bh=ExZVqku75Co3OApbG13LcXf3+8VU5GNXgfPiW99Yi7I=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1614607155;
+	bh=tGNgJDxqspvsr0dQh5pybJhOA/yg7K6NS7bEd73wpdY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z9FPim/LfGAVeEHiG9fMaJC5ULUb9+hDn+PMh5wxgyQDYy9VcDDEK1073vrexukuq
-	 9iXpl4U0mvn71EtsYlZaDVhhdzUs0o6HOUROTDehVDyDDAh8ar2gQ0N1jeecIMLCLd
-	 a5mZrp0EcKzwnW7izd41J4z18vhHczFVk/jdU/7g=
+	b=pzW42YDlRP+0R9ZPDsfDLgY3qbGx8RDeXBwGQyY1oWhL+SnSEYjs5iTnkgkKIJ4Ez
+	 qQOlsPRKy/jrb1Pp+uMvo7hfXNL6O4vZzo8IWsF79FkfXnYhEDQfKg3gHmgwcOkh0q
+	 tn58gDgXYylAXKTPqi08z+5XyN6gBdrlKkK7fpQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E5F2F804FC;
-	Mon,  1 Mar 2021 13:37:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71987F804AB;
+	Mon,  1 Mar 2021 14:58:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 160BDF80508; Mon,  1 Mar 2021 13:37:27 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 67665F80475; Mon,  1 Mar 2021 14:58:23 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4340F804FC
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 13:37:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4340F804FC
-IronPort-SDR: b/vuZWofEZmvPlLfwaQghgcPHT1oNkDf2kr+M/VzkxULlo5jmgv85W7oC4fnk75pM/fYU98Ptm
- qe5+FJGyaYeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="165681141"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="165681141"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 04:37:16 -0800
-IronPort-SDR: 6KMnGF1B+htsRyDuEnC0Bakm+2zocqOdXoKQvE9rjiZ01/882mKLfarANPUHwhR4OE0RyKhVuA
- cu4qtWHT+Reg==
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="397708026"
-Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.1.91])
- ([10.213.1.91])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 04:37:14 -0800
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Compile when any configuration is
- selected
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-References: <20210125115441.10383-1-cezary.rojewski@intel.com>
- <CAAd53p4fycxLn6y0WpaMWvWkN8EwmT216b40DavttfshN_GMRg@mail.gmail.com>
- <324dc8a5-c4d3-6ebf-c8e9-6321d6c93dab@intel.com>
- <CAAd53p4gqyuFPWX55fnPGHORXXf58++ZRMH9WFYp+QwS1=xDJQ@mail.gmail.com>
- <181c989f-7a4d-3cdd-11be-7378dbc9502c@intel.com>
- <5e970d19-9544-50fe-f140-b66245418c6e@intel.com>
- <CAAd53p4srH6NFwcyUCBnLj=MS8-YBvA9CPjMbcryGgi5CmUUHw@mail.gmail.com>
- <2c93bf65-4996-08c6-5be1-da4b9966e168@intel.com>
- <f20e5e2b-3761-5e13-3166-5f026d088aa1@intel.com>
- <CAAd53p6ZyuAzNJWLyONkbFndSRF2HBLn=6HLzb5RUShCmNWdVQ@mail.gmail.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-Message-ID: <46f88397-dd4e-ffb4-3bd3-8f64c4827b66@intel.com>
-Date: Mon, 1 Mar 2021 13:37:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <CAAd53p6ZyuAzNJWLyONkbFndSRF2HBLn=6HLzb5RUShCmNWdVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EBAEF80475
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 14:58:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EBAEF80475
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 8A9FDAC24;
+ Mon,  1 Mar 2021 13:58:15 +0000 (UTC)
+Date: Mon, 01 Mar 2021 14:58:15 +0100
+Message-ID: <s5hv9abht6w.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Nicolas MURE <nicolas.mure2019@gmail.com>
+Subject: Re: [PATCH 3/4] ALSA: usb-audio: Configure Pioneer DJM-850 samplerate
+In-Reply-To: <20210226133429.20081-4-nicolas.mure2019@gmail.com>
+References: <20210226133429.20081-1-nicolas.mure2019@gmail.com>
+ <20210226133429.20081-4-nicolas.mure2019@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, livvy@base.nu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,27 +76,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2021-02-22 4:04 PM, Kai-Heng Feng wrote:
-> Hi Cezary,
+On Fri, 26 Feb 2021 14:34:28 +0100,
+Nicolas MURE wrote:
 > 
-
-...
-
->>
->> I'd like to close the compilation issue which this patch is addressing.
->> Could you confirm that the presented change fixes the issue on your end?
+> Send an `URB_CONTROL out` USB frame to the device to configure its
+> samplerate. This should be done before using the device for audio
+> streaming (capture or playback).
 > 
-> No, the SST regression is not fixed.
-> However, it's not the scope of this patch, which is to fix a different issue.
+> About the change of `usb_rcvctrlpipe` to `usb_sndctrlpipe`, I reached
+> the author of this line and she agrees about this change. Control frames
+> to set device options should have the `out` direction instead of the `in`
+> direction.
+
+This specific fix should be applied separately for 5.12.
+Could you split this one and submit as an individual fix?
+
+I'm currently thinking of merging the rest for 5.13, as 5.12 merge
+window was already closed.
+
+
+thanks,
+
+Takashi
+
 > 
-> So please proceed to merge the patch. We can discuss the SST
-> regression in other thread.
+> See https://github.com/nm2107/Pioneer-DJM-850-driver-reverse-engineering
+>     /blob/172fb9a61055960c88c67b7c416fe5bf3609807b
+>     /doc/windows-dvs/framerate-setting/README.md
 > 
-
-Thanks for the reply Kai-Heng.
-Could you elaborate on the SST regression subject though?
-
-Mark, do you want me to re-send the patch?
-
-Regards,
-Czarek
+> Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
+> ---
+>  sound/usb/quirks.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+> index 9ba4682ebc48..d02dac5fcd40 100644
+> --- a/sound/usb/quirks.c
+> +++ b/sound/usb/quirks.c
+> @@ -1482,7 +1482,7 @@ static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
+>  	usb_set_interface(subs->dev, 0, 1);
+>  	// we should derive windex from fmt-sync_ep but it's not set
+>  	snd_usb_ctl_msg(subs->stream->chip->dev,
+> -		usb_rcvctrlpipe(subs->stream->chip->dev, 0),
+> +		usb_sndctrlpipe(subs->stream->chip->dev, 0),
+>  		0x01, 0x22, 0x0100, windex, &sr, 0x0003);
+>  	return 0;
+>  }
+> @@ -1503,6 +1503,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+>  	case USB_ID(0x2b73, 0x0013): /* Pioneer DJM-450 */
+>  		pioneer_djm_set_format_quirk(subs, 0x0082);
+>  		break;
+> +	case USB_ID(0x08e4, 0x0163): /* Pioneer DJM-850 */
+> +		pioneer_djm_set_format_quirk(subs, 0x0086);
+> +		break;
+>  	}
+>  }
+>  
+> -- 
+> 2.29.2
+> 
