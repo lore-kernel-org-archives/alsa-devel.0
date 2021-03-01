@@ -2,79 +2,82 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B65CAC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BCAFC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:14:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7CAFA64E07
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:01:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CAFA64E07
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8679C64D99
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:14:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8679C64D99
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=opensynergy.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B99B81672;
-	Mon,  1 Mar 2021 15:00:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B99B81672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 109241616;
+	Mon,  1 Mar 2021 15:13:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 109241616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614607277;
-	bh=OmpZzXM86SCw6KvwZBFkal/KrHkDjOkOhMSXg23gA1A=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1614608040;
+	bh=+XOVo4Y0bFHd4uMmrUr89yPMm2QeUpatqb770nfzHdU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qR0q6WayfdGko7esLU1GILunrCiY3nTHZIdXXXayL8SNyMWAs6MPHYWZOLopJGLoz
-	 bNEJ/mTKhxuW4fBpVIjayJboM5BkG6jYmWu93Dm8SIjw7mWMBslkIgnLjTEF4knJ2A
-	 Ie9otNf9FGsj7L22NXwC5dH40yMe+wyVhmsaylaE=
+	b=IrsfnEn7Zr0u8r5NNf1MS7GNIsyHAMbEnkA2Kt7ETRcm2W5MVPiWM/FHJRhKLT1H6
+	 v5DjiRNWGrr0eJVR0rRWfJuTh3Z08Mv5iYYS3E28ImZP/qQ6hsllt0JSoQNP19Yzhu
+	 ZEN1FpIkQ0ZTCXcao23mPv1lsT+cp082iXuZfUsA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55EEAF804CF;
-	Mon,  1 Mar 2021 15:00:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88A69F80257;
+	Mon,  1 Mar 2021 10:25:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF4FAF804D1; Mon,  1 Mar 2021 15:00:25 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2155EF8025E; Mon,  1 Mar 2021 10:25:12 +0100 (CET)
+Received: from mx1.opensynergy.com (mx1.opensynergy.com [217.66.60.4])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5269DF8049C
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 15:00:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5269DF8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F1D9F800E0
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 10:25:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F1D9F800E0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rz+RIQqE"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF2664DBA;
- Mon,  1 Mar 2021 14:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614607219;
- bh=OmpZzXM86SCw6KvwZBFkal/KrHkDjOkOhMSXg23gA1A=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rz+RIQqEcKcabTnYefP2KyzutZ9gwtDnxjOXrUUKm1dVtHesShkQb4cLE1tPISt99
- el7uumkcEbXj6D4KVRyiBAbEuBibG2CVw0id3u9GM8HN7WVK3IaZ4tS8u5Ia5k0+QT
- bLodgT48Iz8f2dWonQ2r/3mq8rCy55xJfS3BJ/fj5x98x6zzRDCLsdJL7JwXxy0bin
- WNy7eZCDjuOM+sSgLAjnaNTRYB09ri28Q5Y6ZtHzAL0ZP9lrZUxkWTCJnZrTLJ5opn
- PL2KLX5bBYDRxzNGB3EUfVSsyqb8w9omlbnniVK7rXNA7zDH5u1YPmIa7tqIjm/IBD
- n1kg852kZGhqg==
-Date: Mon, 1 Mar 2021 13:59:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH 1/7] ASoC: convert Microchip I2SMCC binding to yaml
-Message-ID: <20210301135913.GD4628@sirena.org.uk>
-References: <20210223181929.444640-1-codrin.ciubotariu@microchip.com>
- <20210223181929.444640-2-codrin.ciubotariu@microchip.com>
+ dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com
+ header.b="JH4+SP78"
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain
+ [127.0.0.1])
+ by mx1.opensynergy.com (Proxmox) with ESMTP id 850CBA133F;
+ Mon,  1 Mar 2021 10:25:07 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ h=cc:cc:content-transfer-encoding:content-type:content-type
+ :date:from:from:in-reply-to:message-id:mime-version:references
+ :reply-to:subject:subject:to:to; s=srmailgate02; bh=uSJJetc2M6a7
+ lgzm6cOltJ6NC/DZ0gqUW8HqU2UcHXk=; b=JH4+SP78tCJ3pTYlZ48ml+43Yh5P
+ Rs0dcRFPb0F2BNEVQcAzW3IeyRInsp5PuWcHCvQH1/O2NZYGUgUhEUI6WTPSch/m
+ b96yDk1+SB7TRKMU1qteXiL2IPCNfBitX5qqcoI5gxNRC4lpYr+g3Y7Dj96XF0uL
+ VCUILdn51VOVbEsKtwTMzuRyotgnol/QzLT/mCqdizO0UftD+kvin7MVPaH2EvPt
+ oc0m4XMstF6S/NRCzfj3WTI8gWojjdWxIa3Q9P/lS6I9QqzXSbPmNVS32qrrSiad
+ yvCT0miMljfuHH6ImaNxkqSncbKedSWYWZr0zhNuBJ72Pa/un5Nxs4O7Cw==
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
+ for the PCM device
+To: Takashi Iwai <tiwai@suse.de>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+ <s5hsg5gjutg.wl-tiwai@suse.de>
+From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+Date: Mon, 1 Mar 2021 10:25:05 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="rqzD5py0kzyFAOWN"
-Content-Disposition: inline
-In-Reply-To: <20210223181929.444640-2-codrin.ciubotariu@microchip.com>
-X-Cookie: Body by Nautilus, Brain by Mattel.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- alexandre.belloni@bootlin.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
- lgirdwood@gmail.com, ludovic.desroches@microchip.com, robh+dt@kernel.org,
- linux-arm-kernel@lists.infradead.org, nicolas.ferre@microchip.com
+In-Reply-To: <s5hsg5gjutg.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org, "Michael S.
+ Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,32 +93,196 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 28.02.2021 12:27, Takashi Iwai wrote:
+> On Sat, 27 Feb 2021 09:59:52 +0100,
+> Anton Yakovlev wrote:
+>> +/**
+>> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+>> + * @snd: VirtIO sound device.
+>> + * @event: VirtIO sound event.
+>> + *
+>> + * Context: Interrupt context.
+> 
+> OK, then nonatomic PCM flag is invalid...
 
---rqzD5py0kzyFAOWN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Well, no. Here, events are kind of independent entities. PCM-related
+events are just a special case of more generic events, which can carry
+any kind of notification/payload. (And at the moment, only XRUN
+notification is supported for PCM substreams.) So it has nothing to do
+with the atomicity of the PCM device itself.
 
-On Tue, Feb 23, 2021 at 08:19:23PM +0200, Codrin Ciubotariu wrote:
-> This patch converts the Microchip I2SMCC bindings to DT schema format
-> using json-schema.
 
-Please place any DT binding conversion patches at the end of patch
-serieses, there is a frequent backlog in reviews of those which can
-result in everything else getting held up.
+>> +/**
+>> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
+>> + *                        vmalloc'ed buffer.
+>> + * @data: Pointer to vmalloc'ed buffer.
+>> + * @length: Buffer size.
+>> + *
+>> + * Context: Any context.
+>> + * Return: Number of physically contiguous parts in the @data.
+>> + */
+>> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
+>> +{
+>> +     phys_addr_t sg_address;
+>> +     unsigned int sg_length;
+>> +     int num = 0;
+>> +
+>> +     while (length) {
+>> +             struct page *pg = vmalloc_to_page(data);
+>> +             phys_addr_t pg_address = page_to_phys(pg);
+>> +             size_t pg_length;
+>> +
+>> +             pg_length = PAGE_SIZE - offset_in_page(data);
+>> +             if (pg_length > length)
+>> +                     pg_length = length;
+>> +
+>> +             if (!num || sg_address + sg_length != pg_address) {
+>> +                     sg_address = pg_address;
+>> +                     sg_length = pg_length;
+>> +                     num++;
+>> +             } else {
+>> +                     sg_length += pg_length;
+>> +             }
+>> +
+>> +             data += pg_length;
+>> +             length -= pg_length;
+>> +     }
+>> +
+>> +     return num;
+>> +}
+>> +
+>> +/**
+>> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
+>> + * @sgs: Preallocated sg-list to populate.
+>> + * @nsgs: The maximum number of elements in the @sgs.
+>> + * @data: Pointer to vmalloc'ed buffer.
+>> + * @length: Buffer size.
+>> + *
+>> + * Splits the buffer into physically contiguous parts and makes an sg-list of
+>> + * such parts.
+>> + *
+>> + * Context: Any context.
+>> + */
+>> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+>> +                             unsigned int length)
+>> +{
+>> +     int idx = -1;
+>> +
+>> +     while (length) {
+>> +             struct page *pg = vmalloc_to_page(data);
+>> +             size_t pg_length;
+>> +
+>> +             pg_length = PAGE_SIZE - offset_in_page(data);
+>> +             if (pg_length > length)
+>> +                     pg_length = length;
+>> +
+>> +             if (idx == -1 ||
+>> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
+>> +                     if (idx + 1 == nsgs)
+>> +                             break;
+>> +                     sg_set_page(&sgs[++idx], pg, pg_length,
+>> +                                 offset_in_page(data));
+>> +             } else {
+>> +                     sgs[idx].length += pg_length;
+>> +             }
+>> +
+>> +             data += pg_length;
+>> +             length -= pg_length;
+>> +     }
+>> +
+>> +     sg_mark_end(&sgs[idx]);
+>> +}
+> 
+> Hmm, I thought there can be already a handy helper to convert vmalloc
+> to sglist, but apparently not.  It should have been trivial to get the
+> page list from vmalloc, e.g.
+> 
+> int vmalloc_to_page_list(void *p, struct page **page_ret)
+> {
+>          struct vmap_area *va;
+> 
+>          va = find_vmap_area((unsigned long)p);
+>          if (!va)
+>                  return 0;
+>          *page_ret = va->vm->pages;
+>          return va->vm->nr_pages;
+> }
+> 
+> Then you can set up the sg list in a single call from the given page
+> list.
+> 
+> But it's just a cleanup, and let's mark it as a room for
+> improvements.
 
---rqzD5py0kzyFAOWN
-Content-Type: application/pgp-signature; name="signature.asc"
+Yeah, we can take a look into some kind of optimizations here. But I
+suspect, the overall code will look similar. It is not enough just to
+get a list of pages, you also need to build a list of physically
+contiguous regions from it. Because the sg-elements are put into a
+virtqueue that has a limited size. And each sg-element consumes one item
+in the virtqueue. And since the virtqueue itself is shared between all
+substreams, the items of the virtqueue become a scarce resource.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA88zAACgkQJNaLcl1U
-h9B+qgf/TOlF0xRZSjua7srE7OysMc4fe8jYg7NVzdr2jr8nGIb83dJvgNXcBEO6
-CQ+qYQhNsNw37nXAwN+OxgmLUudoM5MkTgKK3bs0KHHh+Pbkr6Ayznv3jOf2fKRF
-gwR7oKGPR+rHVvzErYf3mMKeKtiJ9i6rmbCDk2h6UaQzRxYKpl9Fju6nXniK/IaS
-fQcjxFdc7af5EteVjJETYasx0Uz2rsAqZUesXGj4QWTnawdNwNkb+IN223R3/fX5
-oolLe3p2hSWMNB7kA5Wmc7/VtLW5GfvQ50KfmlYweeFB2mxn/PaZsorTEI+Atuf3
-ZPI2gPeaZjGTcY02x7idYxqyfbZQrw==
-=RV3G
------END PGP SIGNATURE-----
+> (snip)
+>> +/**
+>> + * virtsnd_pcm_msg_complete() - Complete an I/O message.
+>> + * @msg: I/O message.
+>> + * @written_bytes: Number of bytes written to the message.
+>> + *
+>> + * Completion of the message means the elapsed period. If transmission is
+>> + * allowed, then each completed message is immediately placed back at the end
+>> + * of the queue.
+>> + *
+>> + * For the playback substream, @written_bytes is equal to sizeof(msg->status).
+>> + *
+>> + * For the capture substream, @written_bytes is equal to sizeof(msg->status)
+>> + * plus the number of captured bytes.
+>> + *
+>> + * Context: Interrupt context. Takes and releases the VirtIO substream spinlock.
+>> + */
+>> +static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
+>> +                                  size_t written_bytes)
+>> +{
+>> +     struct virtio_pcm_substream *vss = msg->substream;
+>> +
+>> +     /*
+>> +      * hw_ptr always indicates the buffer position of the first I/O message
+>> +      * in the virtqueue. Therefore, on each completion of an I/O message,
+>> +      * the hw_ptr value is unconditionally advanced.
+>> +      */
+>> +     spin_lock(&vss->lock);
+>> +     /*
+>> +      * If the capture substream returned an incorrect status, then just
+>> +      * increase the hw_ptr by the message size.
+>> +      */
+>> +     if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK ||
+>> +         written_bytes <= sizeof(msg->status)) {
+>> +             struct scatterlist *sg;
+>> +
+>> +             for (sg = &msg->sgs[PCM_MSG_SG_DATA]; sg; sg = sg_next(sg))
+>> +                     vss->hw_ptr += sg->length;
+> 
+> So the sg list entries are supposed to be updated?  Or if the length
+> there are constant, we don't need to iterate the sg entries but keep
+> the total length beforehand?
 
---rqzD5py0kzyFAOWN--
+That's one of options. Since the same info can be derived from sg-list,
+I thought it might be not necessary to keep it in some additional field.
+But probably it makes sense to keep total length in the message
+structure itself. Then it will be more flexible (if we will need to
+create non-period sized messages in the future).
+
+
+> 
+> thanks,
+> 
+> Takashi
+> 
+
+-- 
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
+
