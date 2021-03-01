@@ -2,98 +2,73 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7565C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53AE4C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5029464DD2
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5029464DD2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id C31D7600CF
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C31D7600CF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C68F516C8;
-	Mon,  1 Mar 2021 16:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C68F516C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EFE316D1;
+	Mon,  1 Mar 2021 16:31:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EFE316D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614612670;
-	bh=wJPsAnNSTfJFx0YveVJ94nbbzvANCU6bdbKmpeSCoQE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614612714;
+	bh=NLqs8LEXwd5H118H5H8aSFKLxIA2uzw5nqbxqsUp3xk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jo4iaiuCriXbjTNLcdeIzffhyvHSYwvSyZMVm3NjUbjr24M0k2QD6OcSyxo/+43Mk
-	 WMn9PBqahV8hjvNTmCd2TxF85Eqw4F5XlXzqAMVDVB0EpJSlGk9OeHrQGAbplAfGX8
-	 wZvgp3h5TEpJ6fSYsLuuQLebk5bIqnoP8qTiAFlM=
+	b=a5FA7kTty/BneVrgW8UR4RNXuPArlreA+VJO4jGls8Y9WAupmaQVmC+njkcewNbRr
+	 CJxwXAjaIQ/zkzV37uiFIzzUfvCu98eQa9V+rSui1dzxj0EbV4LKTkQJGLo2Ynu5pm
+	 uVkzhmEONJz5WXrNesuCCRXaw2hJnDvQY2JGFurw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C275EF8032D;
-	Mon,  1 Mar 2021 16:28:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C226AF80257;
+	Mon,  1 Mar 2021 16:30:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C8C7F8027D; Mon,  1 Mar 2021 16:28:32 +0100 (CET)
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
- [IPv6:2a00:1450:4864:20::331])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id CBA82F8010B; Mon,  1 Mar 2021 16:30:39 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0514DF80150
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 16:28:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0514DF80150
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="L5xxJGQr"
-Received: by mail-wm1-x331.google.com with SMTP id k66so14935617wmf.1
- for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 07:28:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=tWMapBAvwS/onVXYHA6yVWqlynyNSsmib9BAxoMbLy4=;
- b=L5xxJGQr+EhL+7OieumjAUGKuxCzrXf7ykwfxFETSbeOyg0bBLJJik3gmQhq13ysX4
- Fcd2lT+mbwepokW9VJS2a53QWl0kGKv0Bb8w2UW78SyfIwnIS8fUjoDhwncAF/P+sTke
- UV3agPJOhP/Y0eaDwxm1gVxRyaMm/5HnGEOJ7VstpJeH6XPAiGaU4Leph8Zaxwjv4YOq
- 6EO3L3q1xLhDw6YgSLLArw/A33Jr2OalLvu1oywAcL3D/GrJ9CH9oPE2n53Fu/9hbNmW
- DrzwMvvzgDLtAMgvcSkHlBDqfi+hRIuJoBMAP7ZXmRHvK/ZBdEG90qnSo3rfo4iFXd+K
- PXPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=tWMapBAvwS/onVXYHA6yVWqlynyNSsmib9BAxoMbLy4=;
- b=XX8OGVN+7c/xhjlxX9A5CIh/AwzIwXMp47i7sWowtJIgTNQxzo64JQSSS1TEh6hPjq
- oo/fFMJeb7mP29Rrwzozjaz8iNcKrpwxfmww02g/xTaN+kchTAwkBXLqigN0l/tFfWQE
- eH08IWrjtYP0X7rBTTB6EetxQV+UQgiEGsrVb2J0gRsJZXeuAc2vfmfC9q+YAj+TCOxH
- IHfTEqGm6+F0QW4aFyxgBWmg1tqIdaUjdvQeLzc1aOa0ajD/nS1VUHltI7OlzRaxtnsS
- vJXNiW9Kg9St6mjBKRaS+lOzidLxkj8V3jCvSO9xbSxm3EAx4lAh2oeJdFqAZ7cZct6h
- GzVw==
-X-Gm-Message-State: AOAM53181Q0jaUOjjzAHOS0ImMHK59mq0twpDv48XUcYT3YRC4lhcaLC
- yinOrjWgcDbi5XDwMQBy0no=
-X-Google-Smtp-Source: ABdhPJxCJan5i2p1C0l50sI7PTD6qaFVPbqXWpQBQo+eGRWgq3cdMzwegifHsSb9mAKqGOYj4VmABA==
-X-Received: by 2002:a7b:c353:: with SMTP id l19mr16462537wmj.147.1614612503018; 
- Mon, 01 Mar 2021 07:28:23 -0800 (PST)
-Received: from localhost.localdomain (176-171-138-112.abo.bbox.fr.
- [176.171.138.112])
- by smtp.googlemail.com with ESMTPSA id c128sm201771wme.3.2021.03.01.07.28.22
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Mar 2021 07:28:22 -0800 (PST)
-From: Nicolas MURE <nicolas.mure2019@gmail.com>
-To: tiwai@suse.de
-Subject: [PATCH v2 4/4] ASLA: usb-audio: fix Pioneer DJM-850 control label info
-Date: Mon,  1 Mar 2021 16:27:29 +0100
-Message-Id: <20210301152729.18094-5-nicolas.mure2019@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210301152729.18094-1-nicolas.mure2019@gmail.com>
-References: <s5hv9abht6w.wl-tiwai@suse.de>
- <20210301152729.18094-1-nicolas.mure2019@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Nicolas MURE <nicolas.mure2019@gmail.com>, alsa-devel@alsa-project.org,
- livvy@base.nu
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60ED7F8010B
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 16:30:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60ED7F8010B
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 6387FAF54;
+ Mon,  1 Mar 2021 15:30:36 +0000 (UTC)
+Date: Mon, 01 Mar 2021 16:30:36 +0100
+Message-ID: <s5hh7luj3hf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
+ for the PCM device
+In-Reply-To: <b9c93040-52d5-7445-cb1c-c223b4fd59fb@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+ <s5hsg5gjutg.wl-tiwai@suse.de>
+ <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+ <s5h35xfj8yz.wl-tiwai@suse.de>
+ <85bbc067-e7ec-903a-1518-5aab01577655@opensynergy.com>
+ <s5ho8g2j532.wl-tiwai@suse.de>
+ <b9c93040-52d5-7445-cb1c-c223b4fd59fb@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: virtio-dev@lists.oasis-open.org, alsa-devel@alsa-project.org,
+ "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux-foundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,79 +84,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Unlike the other DJM, the value to set the "CD/LINE" and "LINE" capture
-control options are inverted. This fix makes sure that the displayed
-info label while using `alsamixer` matches the input switches label
-on the DJM-850 mixer.
+On Mon, 01 Mar 2021 16:24:00 +0100,
+Anton Yakovlev wrote:
+> 
+> On 01.03.2021 15:56, Takashi Iwai wrote:
+> > On Mon, 01 Mar 2021 15:47:46 +0100,
+> > Anton Yakovlev wrote:
+> >>
+> >> On 01.03.2021 14:32, Takashi Iwai wrote:
+> >>> On Mon, 01 Mar 2021 10:25:05 +0100,
+> >>> Anton Yakovlev wrote:
+> >>>>
+> >>>> On 28.02.2021 12:27, Takashi Iwai wrote:
+> >>>>> On Sat, 27 Feb 2021 09:59:52 +0100,
+> >>>>> Anton Yakovlev wrote:
+> >>>>>> +/**
+> >>>>>> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+> >>>>>> + * @snd: VirtIO sound device.
+> >>>>>> + * @event: VirtIO sound event.
+> >>>>>> + *
+> >>>>>> + * Context: Interrupt context.
+> >>>>>
+> >>>>> OK, then nonatomic PCM flag is invalid...
+> >>>>
+> >>>> Well, no. Here, events are kind of independent entities. PCM-related
+> >>>> events are just a special case of more generic events, which can carry
+> >>>> any kind of notification/payload. (And at the moment, only XRUN
+> >>>> notification is supported for PCM substreams.) So it has nothing to do
+> >>>> with the atomicity of the PCM device itself.
+> >>>
+> >>> OK, thanks.
+> >>>
+> >>> Basically the only question is how snd_pcm_period_elapsed() is called.
+> >>> And I see that it's called inside queue->lock, and this already
+> >>> invalidates the nonatomic PCM mode.  So the code needs the fix: either
+> >>> fix this locking (and the context is guaranteed not to be an irq
+> >>> context), or change to the normal PCM mode without nonatomic flag.
+> >>> Both would bring some side-effect, and we need further changes, I
+> >>> suppose...
+> >>
+> >> Ok, I understood the problem. Well, I would say the nonatomic PCM mode
+> >> is more important option, since in this mode we can guarantee the
+> >> correct operation of the device.
+> >
+> > Which operation (except for the resume) in the trigger and the pointer
+> > callbacks need the action that need to sleep?  I thought the sync with
+> > the command queue is done in the sync_stop.  And most of others seem
+> > already taking the spinlock in themselves, so the non-atomic operation
+> > has little merit for them.
+> 
+> All three commands from the beginning of that switch in trigger op:
+> ops->trigger(START)
+> ops->trigger(PAUSE_RELEASE)
+> ops->trigger(RESUME)
+> 
+> They all result in
+> virtsnd_ctl_msg_send_sync(VIRTIO_SND_R_PCM_START)
+> 
+> And that command must be sync, i.e. we need to wait/sleep until device
+> sent response. There are two major reasons for that: we need to be sure,
+> that substream has been actually started (i.e. device said OK). And we
+> need to take into account the virtualization overhead as well. Since
+> substream starting on device side may take some time, we can not
+> return from the trigger op until it actually happened. In atomic mode
+> all these nuances are lost, and it may lead to incorrect application
+> behavior.
 
-Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
----
- sound/usb/mixer_quirks.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+I see, then the nonatomic mode is the only way to go, indeed.
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index b325b6597d91..5b77e8140ba6 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -2693,7 +2693,7 @@ static const char *snd_djm_get_label_caplevel(u16 wvalue)
- 	}
- };
- 
--static const char *snd_djm_get_label_cap(u16 wvalue)
-+static const char *snd_djm_get_label_cap_common(u16 wvalue)
- {
- 	switch (wvalue & 0x00ff) {
- 	case SND_DJM_CAP_LINE:		return "Control Tone LINE";
-@@ -2715,6 +2715,25 @@ static const char *snd_djm_get_label_cap(u16 wvalue)
- 	}
- };
- 
-+// The DJM-850 has different values for CD/LINE and LINE capture
-+// control options than the other DJM declared in this file.
-+static const char *snd_djm_get_label_cap_850(u16 wvalue)
-+{
-+	switch (wvalue & 0x00ff) {
-+	case 0x00:		return "Control Tone CD/LINE";
-+	case 0x01:		return "Control Tone LINE";
-+	default:		return snd_djm_get_label_cap_common(wvalue);
-+	}
-+};
-+
-+static const char *snd_djm_get_label_cap(u8 device_idx, u16 wvalue)
-+{
-+	switch (device_idx) {
-+	case SND_DJM_850_IDX:		return snd_djm_get_label_cap_850(wvalue);
-+	default:			return snd_djm_get_label_cap_common(wvalue);
-+	}
-+};
-+
- static const char *snd_djm_get_label_pb(u16 wvalue)
- {
- 	switch (wvalue & 0x00ff) {
-@@ -2725,11 +2744,11 @@ static const char *snd_djm_get_label_pb(u16 wvalue)
- 	}
- };
- 
--static const char *snd_djm_get_label(u16 wvalue, u16 windex)
-+static const char *snd_djm_get_label(u8 device_idx, u16 wvalue, u16 windex)
- {
- 	switch (windex) {
- 	case SND_DJM_WINDEX_CAPLVL:	return snd_djm_get_label_caplevel(wvalue);
--	case SND_DJM_WINDEX_CAP:	return snd_djm_get_label_cap(wvalue);
-+	case SND_DJM_WINDEX_CAP:	return snd_djm_get_label_cap(device_idx, wvalue);
- 	case SND_DJM_WINDEX_PB:		return snd_djm_get_label_pb(wvalue);
- 	default:			return NULL;
- 	}
-@@ -2852,7 +2871,8 @@ static int snd_djm_controls_info(struct snd_kcontrol *kctl,
- 	if (info->value.enumerated.item >= noptions)
- 		info->value.enumerated.item = noptions - 1;
- 
--	name = snd_djm_get_label(ctl->options[info->value.enumerated.item],
-+	name = snd_djm_get_label(device_idx,
-+				ctl->options[info->value.enumerated.item],
- 				ctl->wIndex);
- 	if (!name)
- 		return -EINVAL;
--- 
-2.29.2
 
+Takashi
