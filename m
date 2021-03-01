@@ -2,107 +2,96 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAC11C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:30:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B888DC433E6
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:31:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39B9864DFB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:30:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39B9864DFB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=dell.com
+	by mail.kernel.org (Postfix) with ESMTPS id AD5EB64DF5
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 14:31:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD5EB64DF5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 197381681;
-	Mon,  1 Mar 2021 15:29:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 197381681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F8AC166D;
+	Mon,  1 Mar 2021 15:30:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F8AC166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614608999;
-	bh=EGN7ye1xYJSnqT62hWzfD8zBAlvqqjPecLMVzHS/yxw=;
+	s=default; t=1614609080;
+	bh=8Ysbo4BYNHLUgfYeMjkDDOcL0Tn1i8Dc5pG71pXfs/g=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=UFzRyE7/EuJkRNdKGgnVc4zDqlDBRvhpRuTrsxcIMLC7N5s1YjiJaN2dxNAfESoJH
-	 TZzySxfDJETHy7ZcNnCuiCgZcqHtzTm/48QFxzJPcawfj48MXQSAqRIxGsCw4gQk28
-	 srGRWvKXhJMrMCD6XUkCTvePNJSTcn0yFTBPv7k8=
+	b=XUAT2fez6eiKqk9qVBoI7TSQ5RnieZwgX+gd4TFC0+HcA4guPqwteSTIQv/sMaOBi
+	 wNu8TUu04ftnWiouHDLTgqf5LwUTPHzh4qPOema2quH8MGQzzAyYYof7LECo9PBsWD
+	 mDxp4T3/wbgUo2bFBho9mcdSShwzhEH2iUPKJex8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFDCCF804AE;
-	Mon,  1 Mar 2021 10:38:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B2B6F80150;
+	Mon,  1 Mar 2021 15:30:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36D9BF804AF; Mon,  1 Mar 2021 10:38:50 +0100 (CET)
-Received: from mx0b-00154904.pphosted.com (mx0b-00154904.pphosted.com
- [148.163.137.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 93DD5F80257; Mon,  1 Mar 2021 15:30:28 +0100 (CET)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BFBFF804AC
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 10:38:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BFBFF804AC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E318F800E0
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 15:30:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E318F800E0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=dell.com header.i=@dell.com
- header.b="SpUkVYgc"
-Received: from pps.filterd (m0170397.ppops.net [127.0.0.1])
- by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 1219bVNt024242
- for <alsa-devel@alsa-project.org>; Mon, 1 Mar 2021 04:38:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=smtpout1; bh=fwWYGhIgeA//auGUVrYqkTT5nitDGeyYzh4vm+Tr33A=;
- b=SpUkVYgc1Ir0stIzV0puPq5Lkp6MES/JhV3QTbETbabR+JaX+Dbf06bN/KaxX8tQpIs6
- 9tyCbdzHhOcSs6LAEOfQBxpxEQYwwWF4cWX1R4DUgdceO0Lxbo8d3hLShus6FEzoJ8IT
- +sskQzy9rsxoNpQv1XHFJdL3NlpXjQpnv4xHqF4gk4Ni9Ah4Utwkoq4kp5e18uivvzd/
- D0/1UH0YI7CH630d7vG/cIcWNB9DCOVzjOx2Q6jMDI0ufeEVMEingt30g93E9yK8/3RM
- rjQkMALrW2yhCYx0wOL6tedO7d2pUM1bIZKFcHvQdssSQsBtTCfShvtdySG25YbCHcR3 0Q== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com
- [67.231.149.39])
- by mx0b-00154904.pphosted.com with ESMTP id 36yg20c740-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 04:38:43 -0500
-Received: from pps.filterd (m0133268.ppops.net [127.0.0.1])
- by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 1219L0wv190204
- for <alsa-devel@alsa-project.org>; Mon, 1 Mar 2021 04:38:42 -0500
-Received: from ausxipps310.us.dell.com (AUSXIPPS310.us.dell.com
- [143.166.148.211])
- by mx0a-00154901.pphosted.com with ESMTP id 3704k2w64k-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
- for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 04:38:41 -0500
-X-LoopCount0: from 10.69.132.19
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.81,215,1610431200"; d="scan'208";a="600234247"
-From: Perry Yuan <Perry.Yuan@dell.com>
-To: pobrn@protonmail.com, pierre-louis.bossart@linux.intel.com,
- oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
- hdegoede@redhat.com, mgross@linux.intel.com, Mario.Limonciello@dell.com
-Subject: [PATCH v4 2/2] ASoC: rt715:add micmute led state control supports
-Date: Mon,  1 Mar 2021 17:38:34 +0800
-Message-Id: <20210301093834.19524-1-Perry_Yuan@Dell.com>
-X-Mailer: git-send-email 2.19.2.windows.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="U1tww+/i"
+Received: by mail-wr1-x42b.google.com with SMTP id 7so16386376wrz.0
+ for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 06:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=IONZ2McWoEbOgPE/QaoBgYmPvQbpx4exLsUFq1e6wn0=;
+ b=U1tww+/io/yTaLoy9kOlIK38E1WnTbSX/zhgaHV11dTh0z5W4nVG0sPqVFezv8WN4/
+ zhI1lXYk6OB/Wbhoi/WmsPrKskjmiWtSnz0LxsFub0Go3aKDYKm4GS3H1A2pUAtJasVF
+ cel7V3LXRvU9h4bRQ5Iw8MLFRxr/ruW4s9Esm5QgxRqAdQ923N84EM0Wo9Sg19n80DZ2
+ ONy+e8BkaEMCGvi9LFGAJ58U5unNWOddr9o2tRle2J+6EjXcBTZpGEk5RTylj/Qdnlx9
+ ZbNRYtwMaxIhvkk6IWaAtTZaQ3Wo0rBzYz/G7BBUPW6HLNRee8NzgpRl+soBAV6wtgWq
+ NywQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=IONZ2McWoEbOgPE/QaoBgYmPvQbpx4exLsUFq1e6wn0=;
+ b=LI3hfNHLoBbCZpS61eht5mgr15vPWetxTbW6Sgr+AGpm2V2sBVv4ovwj+Z7wgq2Zi8
+ fdvK2MaUjFaDdyUEZtuON7vpM4iP+DwMQLB3NiFqEr/QmfBXtU87NS2BYUbUcQ1je2DA
+ SMGMhs78xruKD4BRzvDN/92x9lgDRJJ/1ClNQyZenhfniwvCbuc+3ToaaReO34IjGaHC
+ S1Xg8CbmZzRxixE9VWDGC196Ct9c4xMI2K5STHjbewZxv7FDc0bZZrPBDcXz3AUmHC58
+ 7BP0Hb5GKaTNgy1rPUOehinQMqhU/M6BYQ6Mm38S/GIsoOm2BuHaamLNXaNdOazWc3Bg
+ mLnw==
+X-Gm-Message-State: AOAM532YSYJi9J6pXiC5xHC0MJze+z30Qd00imLl6FBDkItuCeZQN58l
+ VutuiCzvRmGH1Kw24DVdVxc=
+X-Google-Smtp-Source: ABdhPJyQCfxXbQXDdT0H1Ro8lFO8BqUWL/Vtt84/TYUyjPye7Oqkw4LQ7MnCziErwBxE+U+PpP7W9Q==
+X-Received: by 2002:a05:6000:1788:: with SMTP id
+ e8mr17334535wrg.171.1614609020670; 
+ Mon, 01 Mar 2021 06:30:20 -0800 (PST)
+Received: from localhost.localdomain (176-171-138-112.abo.bbox.fr.
+ [176.171.138.112])
+ by smtp.googlemail.com with ESMTPSA id c11sm24991204wrs.28.2021.03.01.06.30.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 01 Mar 2021 06:30:20 -0800 (PST)
+From: Nicolas MURE <nicolas.mure2019@gmail.com>
+To: tiwai@suse.de
+Subject: [PATCH] ALSA: usb-audio: Fix Pioneer DJM devices URB_CONTROL request
+ direction to set samplerate
+Date: Mon,  1 Mar 2021 15:29:27 +0100
+Message-Id: <20210301142927.14552-1-nicolas.mure2019@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369, 18.0.761
- definitions=2021-03-01_05:2021-02-26,
- 2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 bulkscore=0 suspectscore=0
- mlxscore=0 impostorscore=0 priorityscore=1501 spamscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010078
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
- suspectscore=0
- mlxscore=0 phishscore=0 malwarescore=0 adultscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010079
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Perry.Yuan@dell.com, lgirdwood@gmail.com, platform-driver-x86@vger.kernel.org,
- broonie@kernel.org
+Cc: Nicolas MURE <nicolas.mure2019@gmail.com>, alsa-devel@alsa-project.org,
+ livvy@base.nu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -118,117 +107,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Perry Yuan <perry_yuan@dell.com>
+As requested in this comment :
+https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/181275.html
 
-Some new Dell system is going to support audio internal micphone
-privacy setting from hardware level with micmute led state changing
-When micmute hotkey pressed by user, soft mute will need to be enabled
-firstly in case of pop noise, and codec driver need to react to mic
-mute event to EC(embedded controller) notifying that SW mute is completed
-Then EC will do the hardware mute physically within the timeout reached
+This commit only contains the fix about the `URB_CONTROL` request
+direction to set the samplerate of Pioneer DJM devices (`URB_CONTROL out`).
 
-This patch allow codec rt715 and rt715 sdca driver to change the local micmute
-led state. Dell privacy led trigger driver will ack EC when micmute key pressed
-through this micphone led control interface like hda_generic provided
-ACPI method defined in dell-privacy micmute led trigger will be called
-for notifying the EC that software mute has been completed, then hardware
-audio circuit solution controlled by EC will switch the audio input source off/on
-
-Signed-off-by: Perry Yuan <perry_yuan@dell.com>
-
---------
-v3 -> v4:
-* remove unused debug log
-* remove compile flag of DELL privacy
-* move the micmute_led to local from rt715_priv
-* when Jaroslav upstream his gerneric LED trigger driver,I will rebase
-  this patch,please consider merge this at first
-  https://lore.kernel.org/alsa-devel/20210211111400.1131020-1-perex@perex.cz/
-v2 -> v3:
-* simplify the patch to reuse some val value
-* add more detail to the commit info
-v1 -> v2:
-* fix some format issue
---------
+Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
 ---
- sound/soc/codecs/rt715-sdca.c | 12 ++++++++++++
- sound/soc/codecs/rt715.c      | 12 ++++++++++++
- 2 files changed, 24 insertions(+)
+ sound/usb/quirks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
-index b43ac8559e45..816348ae11a1 100644
---- a/sound/soc/codecs/rt715-sdca.c
-+++ b/sound/soc/codecs/rt715-sdca.c
-@@ -12,6 +12,7 @@
- #include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/leds.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm.h>
- #include <linux/soundwire/sdw.h>
-@@ -269,6 +270,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int reg = mc->reg;
- 	unsigned int max = mc->max;
- 	int err;
-+	bool micmute_led;
- 
- 	val = ucontrol->value.integer.value[0];
- 	if (invert)
-@@ -287,6 +289,16 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 			return err;
- 	}
- 
-+	/* Micmute LED state changed by muted/unmute switch */
-+	if (mc->invert) {
-+		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
-+			micmute_led = LED_OFF;
-+		} else {
-+			micmute_led = LED_ON;
-+		}
-+		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
-+	}
-+
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 9ba4682ebc48..737b2729c0d3 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1482,7 +1482,7 @@ static int pioneer_djm_set_format_quirk(struct snd_usb_substream *subs,
+ 	usb_set_interface(subs->dev, 0, 1);
+ 	// we should derive windex from fmt-sync_ep but it's not set
+ 	snd_usb_ctl_msg(subs->stream->chip->dev,
+-		usb_rcvctrlpipe(subs->stream->chip->dev, 0),
++		usb_sndctrlpipe(subs->stream->chip->dev, 0),
+ 		0x01, 0x22, 0x0100, windex, &sr, 0x0003);
  	return 0;
  }
- 
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index cdcba70146da..db2c0d2ff9d2 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-+#include <linux/leds.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm.h>
- #include <linux/soundwire/sdw.h>
-@@ -88,6 +89,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 		RT715_SET_GAIN_MIX_ADC2_L};
- 	unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
- 	unsigned int read_ll, read_rl, i, j, loop_cnt;
-+	bool micmute_led;
- 
- 	if (strstr(ucontrol->id.name, "Main Capture Switch") ||
- 		strstr(ucontrol->id.name, "Main Capture Volume"))
-@@ -95,6 +97,16 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 	else
- 		loop_cnt = 1;
- 
-+	/* Micmute LED state changed by muted/unmute switch */
-+	if (mc->invert) {
-+		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
-+			micmute_led = LED_OFF;
-+		} else {
-+			micmute_led = LED_ON;
-+		}
-+		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
-+	}
-+
- 	for (j = 0; j < loop_cnt; j++) {
- 		/* Can't use update bit function, so read the original value first */
- 		if (loop_cnt == 1) {
 -- 
-2.25.1
+2.29.2
 
