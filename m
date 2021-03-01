@@ -2,65 +2,70 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4341DC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 08:26:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D4DDC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 08:28:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 04F6364DD3
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 08:26:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04F6364DD3
+	by mail.kernel.org (Postfix) with ESMTPS id 0F78564DD3
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 08:28:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F78564DD3
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DFC3167A;
-	Mon,  1 Mar 2021 09:25:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DFC3167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 351F4167C;
+	Mon,  1 Mar 2021 09:27:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 351F4167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614587189;
-	bh=SUl5G8MdqwelAbUjz1zMh4HslVKyfmsypskHtaDHsz8=;
+	s=default; t=1614587286;
+	bh=gDU62yjGK2XznBSoHLkVLUqn5ak013jTUJ9+Br/WekM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hkw0jiqsGAGGxjOByYKsLsN6+IIAaK2htngGSnPQ/iswSG2YL8pjkN6uenzARVbp4
-	 AXDKb/CiwxfJLQAbe0MqcXIThkhGUI6hbl94Z/lZ0drg1vDVcsWgNiNjr3e261ujKK
-	 YJzh3SL8oFoX3zU+PKmijZL+xV2gCsopw5r7FfV0=
+	b=sZeZcugjkJEJu8ue7q/IOs/S2quHadumyMK1bVLszKwp/EoLoZkfXBf8BiSPrY44A
+	 VCgNai6YOKp1pGEEhgIxFZmUK/zwF9KOsKKwamVi6I6Dj5mTv6kGEqwADqm0rzOGJD
+	 SJ0PrO1Y9vSfIqtR/G4a8uMF/dIpMWSguRvbr4zY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3F5AF80257;
-	Mon,  1 Mar 2021 09:25:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9B96F80257;
+	Mon,  1 Mar 2021 09:27:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F757F8025E; Mon,  1 Mar 2021 09:25:37 +0100 (CET)
+ id D4D53F8025E; Mon,  1 Mar 2021 09:27:14 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05EC9F80150
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 09:25:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05EC9F80150
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE006F80150
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 09:27:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE006F80150
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 05DEBAA4F;
- Mon,  1 Mar 2021 08:25:34 +0000 (UTC)
-Date: Mon, 01 Mar 2021 09:25:33 +0100
-Message-ID: <s5heegzjn5u.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 5BC45AF59;
+ Mon,  1 Mar 2021 08:27:12 +0000 (UTC)
+Date: Mon, 01 Mar 2021 09:27:12 +0100
+Message-ID: <s5hblc3jn33.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Andrea Fagiani <andfagiani@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: use Corsair Virtuoso mapping for Corsair
- Virtuoso SE.
-In-Reply-To: <40bbdf55-f854-e2ee-87b4-183e6451352c@gmail.com>
-References: <40bbdf55-f854-e2ee-87b4-183e6451352c@gmail.com>
+To: George Harker <george@george-graphics.co.uk>
+Subject: Re: [PATCH 2/2] midi streaming substream names from jack names A
+ number of devices have named substreams which are hard to remember / decypher
+ from <device> MIDI n names. Eg. Korg puts a pass through on one substream and
+ iConnectivity devices name the connections.
+In-Reply-To: <FE234989-046F-4E65-A574-25C79A8726D2@george-graphics.co.uk>
+References: <s5hczwpucd3.wl-tiwai@suse.de>
+ <20210226212617.24616-1-george@george-graphics.co.uk>
+ <FE234989-046F-4E65-A574-25C79A8726D2@george-graphics.co.uk>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,18 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Jan 2021 09:47:44 +0100,
-Andrea Fagiani wrote:
+On Fri, 26 Feb 2021 22:36:42 +0100,
+George Harker wrote:
 > 
-> The Corsair Virtuoso SE RGB Wireless is a USB headset with a mic and a
-> sidetone feature. Assign the Corsair Virtuoso name map to the SE product
-> ids as well, in order to label its mixer appropriately and allow
-> userspace to pick the correct volume controls.
-> 
-> Signed-off-by: Andrea Fagiani <andfagiani@gmail.com>
+> Thanks for the feedback, addressed in the two patches.  I’m not sure why it pulled the body up into the title.I’m sorry about that.  I can resubmit if that needs fixing.
 
-This seems to have been forgotten, sorry.
-Applied now.
+I fixed locally and applied those two patches now in for-next branch
+(i.e. for 5.13 kernel).
 
 
 thanks,
