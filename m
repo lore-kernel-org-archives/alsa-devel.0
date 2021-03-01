@@ -6,69 +6,70 @@ X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25950C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5043C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:43:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8AFA8600CD
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:43:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8AFA8600CD
+	by mail.kernel.org (Postfix) with ESMTPS id 4AED3600CD
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:43:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4AED3600CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FFDD169A;
-	Tue,  2 Mar 2021 00:42:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FFDD169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7ECB16B2;
+	Tue,  2 Mar 2021 00:42:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7ECB16B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614642201;
-	bh=ee8F+2qtecALKXsHqBVpaFJBcACBRvTrOmpti/qYvXA=;
+	s=default; t=1614642219;
+	bh=8Rt9By5yk81xkplmKzP5gmktliyz7gcdIurrfSoX2Yc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gkhRlgitszLwx75xQQoOwyAvzvAmSAKlGVK7so7UP9cv1QrySKz5I/fJUSHTM+ysO
-	 oZ40tlCHmWWHb2y46F+dBllpMBTOHreeE64dLe4dHJ8l2q4jXfljcxAq6HnMFF9Mfp
-	 FWZ6FMKRh29DhN75GxK5zHN0zjEx4nJI9vQrhDBA=
+	b=vgVKeLNYwWXHvSCzQ2KQYDULhkAsMmiD+k7NFjNNfvokdDVivtoAtujrGheQjrJea
+	 nw8MNT91gFrGTj6IFN2GXdTGuYcIwZ6ndHXl0+lWTGJ2SrmyVProdUd50u9N2CYbh2
+	 G8pES4B9f3luh+f68gMpi2mSgOJEwm/T3p0Ui03Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14800F80519;
-	Tue,  2 Mar 2021 00:37:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A08A1F8051C;
+	Tue,  2 Mar 2021 00:37:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CAB33F8051A; Tue,  2 Mar 2021 00:37:18 +0100 (CET)
+ id 8284AF8051E; Tue,  2 Mar 2021 00:37:24 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79B36F80272
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:37:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79B36F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04925F8051B
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:37:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04925F8051B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Q8e74QRY"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69E8461490;
- Mon,  1 Mar 2021 23:37:14 +0000 (UTC)
+ header.b="sr6RnvZc"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC2F761490;
+ Mon,  1 Mar 2021 23:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614641834;
- bh=ee8F+2qtecALKXsHqBVpaFJBcACBRvTrOmpti/qYvXA=;
+ s=k20201202; t=1614641840;
+ bh=8Rt9By5yk81xkplmKzP5gmktliyz7gcdIurrfSoX2Yc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Q8e74QRYLJGluQ8/AgQ88NCNIvn4YA+bPK5+dlr4P0lwhcVRrVGnZtYCNDyQw4FkV
- ieWiYuo2GSA5VwQK5N8G8vXJBdqR2b6CSJvqAXnWfe69PxD+ZPBtxRzOWlzwuYKrpD
- F1QojJlo7mIZydEhK8q2LqIzcgzs49UllzwMuf+2/i03100xqTcsuAf+SCMBBcpIMJ
- 6DurPiaCuaj/n+ymJA8kg0EALk4hSuJg4Gp5w5rg+k84s0rLAMwKjuXgc/26JMq3RW
- t57NqP3+YMLkQVdMSTKVnLkN2Ln9bRAZZgeMZOcjHrE2Kd2YlXdxgs9s+2Ln83RtA2
- JxcYKeE+N7IVg==
+ b=sr6RnvZchNPmoTC4BFfFhYrNNjV+2RM9KaQ0Xj3S3Flm723sQDY8wq7jbEgsifvFw
+ SOamm9O60xcSty6odxy+W4zuvpYG41FdCANA93GWe/khe0o1OHXqvYobKlPpurN47D
+ LyevGj+c8ErLkTDGDiOaKHVgRBhHJkJANzrqta9oiKUesABomIU9++Jt9ucjvHKNcP
+ 9Iq+x4jtlpQbqhNLqgu8+kX9h7xedRxQOTUi7TRg5DL9kPoneHag2e63WMeaA+ubJQ
+ 3OPJJMhP9bq4NMd5FoiLrgWus+sBwsh2q461C2gvB3F5796dK1kmR5duWpovf7FJOw
+ nR0eqsJOuo0dg==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
-References: <20210218221921.88991-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/6] ASoC: core: remove cppcheck warnings
-Message-Id: <161464168096.31144.8026117442122515811.b4-ty@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <87mtvtro3h.wl-kuninori.morimoto.gx@renesas.com>
+References: <87mtvtro3h.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/5] ASoC: rsnd: cleanup ppcheck warning for Renesas sound
+ driver
+Message-Id: <161464168097.31144.6662495111295269219.b4-ty@kernel.org>
 Date: Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,17 +85,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Feb 2021 16:19:15 -0600, Pierre-Louis Bossart wrote:
-> This is the first batch of cleanups to make cppcheck more usable,
-> currently we have way too many warnings that drown real issues.
+On 25 Feb 2021 09:24:34 +0900, Kuninori Morimoto wrote:
+> These patches are based on below patch-set which from Pierre-Louis,
+> and cleanup cppcheck warnings for Rensas sound driver.
+> [3/5] has Reported-by Pierre-Louis tag.
 > 
-> Pierre-Louis Bossart (6):
->   ASoC: soc-ops: remove useless assignment
->   ASoC: soc-pcm: remove redundant assignment
->   ASoC: soc-pcm: remove shadowing variable
->   ASoC: soc-pcm: add error log
->   ASoC: soc-topology: clarify expression
->   ASoC: generic: simple-card-utils: remove useless assignment
+> 	Subject: [PATCH 0/8] ASoC: sh: remove cppcheck warnings
+> 	Date: Fri, 19 Feb 2021 17:16:27 -0600
 > 
 > [...]
 
@@ -104,18 +101,16 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: soc-ops: remove useless assignment
-      commit: 56dc057925b112353a4d920380c537d1f96699a0
-[2/6] ASoC: soc-pcm: remove redundant assignment
-      commit: 8f7351ec37b52d22e77d2cab38ddd4aa920af0b4
-[3/6] ASoC: soc-pcm: remove shadowing variable
-      commit: 52fcd9638da0803c6fe0cfadab7af978c961be37
-[4/6] ASoC: soc-pcm: add error log
-      commit: 56fc1a7fd01ef0984d0272e52a9823ca11eff890
-[5/6] ASoC: soc-topology: clarify expression
-      commit: 761fa730a2e1e9197d89f3e9d1a13a9be165b109
-[6/6] ASoC: generic: simple-card-utils: remove useless assignment
-      commit: 8754b443fa7df24e357b7e707c901eefe373a05c
+[1/5] ASoC: rsnd: cleanup ppcheck warning for ssiu.c
+      commit: 5c8f0b2a8d9ce20f7c3e0065cd8936995bd5ed63
+[2/5] ASoC: rsnd: cleanup ppcheck warning for ssi.c
+      commit: 8f5412423337ee61ffa6fa7bd20b0c78dae0b9ce
+[3/5] ASoC: rsnd: cleanup ppcheck warning for core.c
+      commit: d1031c8c058aee7f12dbdff7f4ea4521ee911ae8
+[4/5] ASoC: rsnd: cleanup ppcheck warning for cmd.c
+      commit: 783c09cbd1b5dc6fcf14947097f4d767e564acc5
+[5/5] ASoC: rsnd: cleanup ppcheck warning for adg.c
+      commit: ba55cb110dc326da8fa33401bf54727937e5a619
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
