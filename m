@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C04A0C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 16:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B8CCC433E6
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 16:56:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1C302650BA
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 16:56:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1C302650BA
+	by mail.kernel.org (Postfix) with ESMTPS id 79310650C6
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 16:56:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79310650C6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49A4C167B;
-	Mon,  1 Mar 2021 17:55:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49A4C167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03DAD1696;
+	Mon,  1 Mar 2021 17:55:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03DAD1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614617762;
-	bh=xDnWmsPB7eNkquy/dMopWBFnoDfFVV9JpIadZW3dQ6Y=;
+	s=default; t=1614617808;
+	bh=kmMTmN0aIQKYc4lZUz/OrxYV294lCnyqGKBrrDWhV1w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Zl6ihtwTcy2Utpsq+u+D8P3C/XWfkIRDOA0A9f4t5tPXVRLp9j+fp7X+XKwRAqJ6s
-	 OF3IqwrBC0iTSxaMvxtMlK+xluOkhdc0aO9XCJALAk2VnOFlHaUFrCD7oQazGnoEoD
-	 E+g7hsHCssZMxmV1YSv5oUsXN2Mz+ozdMqhsW7I0=
+	b=IzSljKHQI+aoFutIHCQn4m/egRtmveGyDRA6mznTXWT262NNAmc+5fsuv//+2ohZT
+	 Y49uIdVoSv/BAh2m2dZ6fNgo8SZXXSytS51mGHSQj+tELB0tD6xTV8TIks4+fzRXib
+	 xxuzFHhbXd8EFVZhygWC2tMKvkpvdUkSu5UCdw40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4DE6F802E3;
-	Mon,  1 Mar 2021 17:54:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB6C0F80424;
+	Mon,  1 Mar 2021 17:54:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B2D2F802E0; Mon,  1 Mar 2021 17:54:17 +0100 (CET)
+ id 2AC65F80431; Mon,  1 Mar 2021 17:54:20 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 35773F80272
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 17:54:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35773F80272
-IronPort-SDR: F3u1zujPiIVIB0Xbi+pAdmbmGc4csrwjjdb1bQ5ekqVHLk75ZVkvJemBUJvF2dru/7DyDXtO+l
- 1onK/NZZTJzA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186580174"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="186580174"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E4E0F8025E
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 17:54:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E4E0F8025E
+IronPort-SDR: ppHrS4v7NLcShBPc+/2KOn4TD1fj5UmcPnIFlGrAnkmqBeohKGUGVxLTevE6WeS3aL9rzAXzLi
+ u0oUrbs9dDiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186580172"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="186580172"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  01 Mar 2021 08:54:03 -0800
-IronPort-SDR: zF4gWg+Pn/J5sagBwYjK7W/4DNguoSP2Ycju5IuXmzirXjZFziNaLuVCHm5aX6umGOgdBUMUJp
- 8oY1kBK8tHJA==
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="505330648"
+IronPort-SDR: kMilwrl/aGrHpTwORGlQfY+fN4GOJPKYplpMuo4zXLfO6TegvadISdSa8uWbFCaHBGQtmg7+vM
+ 30BUQ31kluBw==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; d="scan'208";a="505330642"
 Received: from mhuang8-mobl3.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.25.220])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  01 Mar 2021 08:54:02 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] soundwire: cadence_master: fix kernel-doc
-Date: Mon,  1 Mar 2021 10:53:49 -0600
-Message-Id: <20210301165349.114952-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: soc-dai: fix kernel-doc
+Date: Mon,  1 Mar 2021 10:53:48 -0600
+Message-Id: <20210301165349.114952-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210301165349.114952-1-pierre-louis.bossart@linux.intel.com>
 References: <20210301165349.114952-1-pierre-louis.bossart@linux.intel.com>
@@ -87,41 +87,28 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 v5.12-rc1 flags new warnings with make W=1, fix missing or broken
 function descriptors.
 
-drivers/soundwire/cadence_master.c:914: warning: expecting prototype
-for To update slave status in a work since we will need to
-handle(). Prototype was for cdns_update_slave_status_work() instead
-
-drivers/soundwire/cadence_master.c:976: warning: expecting prototype
-for sdw_cdns_enable_slave_interrupt(). Prototype was for
-cdns_enable_slave_interrupts() instead
+sound/soc/soc-dai.c:167: warning: expecting prototype for
+snd_soc_xlate_tdm_slot(). Prototype was for
+snd_soc_xlate_tdm_slot_mask() instead
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/soc-dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index d05442e646a3..e5c3f304b8f6 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -905,7 +905,7 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
- EXPORT_SYMBOL(sdw_cdns_irq);
+diff --git a/sound/soc/soc-dai.c b/sound/soc/soc-dai.c
+index cd3bb9a7983f..080fbe053fc5 100644
+--- a/sound/soc/soc-dai.c
++++ b/sound/soc/soc-dai.c
+@@ -154,7 +154,7 @@ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_fmt);
  
  /**
-- * To update slave status in a work since we will need to handle
-+ * cdns_update_slave_status_work - update slave status in a work since we will need to handle
-  * other interrupts eg. CDNS_MCP_INT_RX_WL during the update slave
-  * process.
-  * @work: cdns worker thread
-@@ -968,7 +968,7 @@ int sdw_cdns_exit_reset(struct sdw_cdns *cdns)
- EXPORT_SYMBOL(sdw_cdns_exit_reset);
- 
- /**
-- * sdw_cdns_enable_slave_interrupt() - Enable SDW slave interrupts
-+ * cdns_enable_slave_interrupts() - Enable SDW slave interrupts
-  * @cdns: Cadence instance
-  * @state: boolean for true/false
-  */
+- * snd_soc_xlate_tdm_slot - generate tx/rx slot mask.
++ * snd_soc_xlate_tdm_slot_mask - generate tx/rx slot mask.
+  * @slots: Number of slots in use.
+  * @tx_mask: bitmask representing active TX slots.
+  * @rx_mask: bitmask representing active RX slots.
 -- 
 2.25.1
 
