@@ -2,98 +2,95 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B24BC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE228C433E6
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4E01464DB2
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:30:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E01464DB2
+	by mail.kernel.org (Postfix) with ESMTPS id EB7F464DD2
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 15:31:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB7F464DD2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FA3E16B8;
-	Mon,  1 Mar 2021 16:29:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FA3E16B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E1EF16BE;
+	Mon,  1 Mar 2021 16:30:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E1EF16BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614612623;
-	bh=dwLwOW04yrCrWnLSViGwri/swmaChV8GHbhp0ZLVAjA=;
+	s=default; t=1614612663;
+	bh=s5eAdSp1B09yhUEdBs/ahsI6F6KWyhauDVF1CM5bPVs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qAfr1H44GqfuD2RrTPxpfky/qFnLoQo9hCql1tLHMHdSd7QAi2h+18816CpUP1Fhc
-	 1HPAO9LcILXrKFUHkFf6KcHwGogHQ9vYq4EH7Ggaguz+DIlriJl33v53uauFbFSl3q
-	 wBeMvhNhogrkWMy4g5iYroLLZoWNlrY4tAb4kCeU=
+	b=h3+mF35LsvBO7Z/gkNKvIvB0bVPhdnxwIol++ZGo7WDnQHYtLTAM1M8U4bNn1aSEf
+	 Q59PEaxI9pL7xua5zMRUsSf1jhzIM8qKe3H/+tN+YXtZNl4RJAmSNLSF6bCgbIavJU
+	 nLGsLaMMEFM7qlTcWPOPxhvroZ2UEqHiRq0pt2zU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70095F802E0;
-	Mon,  1 Mar 2021 16:28:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25861F8032B;
+	Mon,  1 Mar 2021 16:28:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BE9CF80272; Mon,  1 Mar 2021 16:28:26 +0100 (CET)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ id 90033F8025E; Mon,  1 Mar 2021 16:28:27 +0100 (CET)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com
+ [IPv6:2a00:1450:4864:20::334])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2616AF8025E
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 16:28:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2616AF8025E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 913B3F8010B
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 16:28:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 913B3F8010B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LlZyVzpF"
-Received: by mail-wr1-x430.google.com with SMTP id j2so3735365wrx.9
- for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 07:28:22 -0800 (PST)
+ header.b="lZSj8lWu"
+Received: by mail-wm1-x334.google.com with SMTP id o16so14926026wmh.0
+ for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2021 07:28:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=6W/xTRp8He9BJ5rJ9sDchzMZU8/7AR1uLmgazPo2EWU=;
- b=LlZyVzpFWQUn2TwM76oXVGRzU9M+qtjgffKCemxdblkEbpl9jARjWrSbrtuzGJSuuB
- Ui7SJDpCxKsXY/Yy+REoqFFz+e4hMpOVsvJtyVNwF2rkpdQpn/OqQEArjlQnda1XZ4w4
- g1rnZA69xuKElojzV0DgIsGv6elc8RDEVWOO9+x/wLryeSp9vUOUowFfJbdVXoJLx5EL
- HqEuw/TnnhL9ewl31yB5rBfVz+nILENc96YR8DzmZkYv6x30BfUR0+Tx12TITyRwNcS6
- s/L10VYi/z8ql85bn6l+U8qYwcPR/7ZNYf/xf8N0sQQn5YQZ/4c9KgNVur7BxvV4NScG
- PYxA==
+ bh=s5eAdSp1B09yhUEdBs/ahsI6F6KWyhauDVF1CM5bPVs=;
+ b=lZSj8lWupZPmjKesB2gVMPsT+Fdxff8BSI4toG9WdiG4yXYAhE0MIvnuwtmG9kgrCc
+ KWbIv8hkaDT85l8gfebMYRhTzbTfgrNE3sh3Y2npInTx2AnG8TMmn53X7CP7U+sbt+f6
+ GH0dPDOdK8bSotWXhITcslwhqAT+0APrfH/CpON1M8dCx8CaPWkpSoyJMdF68IQYJkg+
+ D+IS8nTchmlUsORCOJBeJp8szZXhUPrQR5+5JScKzpHTrpIkVhOS7rjElknSfO2L/ra9
+ kTpoFLjtcu2lYnwkeGUb7fqTGNOb6obiciRlX6CUkbOslWq402U3v9AKIIr+0N/UVwxY
+ i8lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=6W/xTRp8He9BJ5rJ9sDchzMZU8/7AR1uLmgazPo2EWU=;
- b=hheuwwXaDZTbXQ1eUsRPaHMcyqi6RM1BKWqYA0gai5CBDdBSIHwOB62G+VJUbw412S
- KUoF5H/vz26k8B97Bf5PiP9ibwHfIJLGsqLaP8pZl5Fib1IobW+GAh10u0BNYUJXIb3S
- yvVhEhY8Uf0keqLjI1Lp3P2b8KRKiKdf0byfb26qsuzehxN3pYUCzczBdZ2TonAKcp3m
- R1rIQi6/Sw5VOEVHprJ6wtdfCU/wZnSa+U0iT3wlMnH0neYCd634MrH4BzdC8/BDm1uY
- 5Kt7SrDkR7g7svccf1lCjbbY8KztW5mTiHZVrRAnA1OhfpTlFT2mN9nQrn3vCmYN9wps
- iMLg==
-X-Gm-Message-State: AOAM532K1eEA2pqg13w/YFVgnzIRXglbe7ux+6rq/oxOmg1RC8AJTlZB
- 3oB0NkUCjpQ3kIQgpDuEE6Y=
-X-Google-Smtp-Source: ABdhPJzxPHkamR/efxc5NFfVeI53FiLL83+X+kckaSLih5fnjY7OG/LGcIuL298GVrzqLtn8fY5sHQ==
-X-Received: by 2002:adf:a3c2:: with SMTP id m2mr16214241wrb.195.1614612502290; 
- Mon, 01 Mar 2021 07:28:22 -0800 (PST)
+ bh=s5eAdSp1B09yhUEdBs/ahsI6F6KWyhauDVF1CM5bPVs=;
+ b=eywppKGp4zOeyzl+2t6LwWsKnR2CDMUOJ01nKFghBoawFuktfoBEUO1oiNiBf508GR
+ CnOC0gneQYNqJctpmdDQqlW1XDmBKQeJ/4w5Pcby2SSp3hLWtx83xas3uZlbRPZkPcww
+ x2dCitZO2lGrqSsFkUzcYQJqht9uII0bcqCf7956eQ0Yoq6hVHfceQhDGaTuWtH1/C8C
+ Kr9UQI5HLAHNg4l/5lbSjSI32NvsU1LWmLU1qviz1xruBI1ruXCwPZhydwn1khykUoNB
+ rMuxthlYjRfLO6P0wkFdIrcFHT735qISaGowUVi7BF7QqFShCfndICD6BFCBAO6HGd83
+ w2hw==
+X-Gm-Message-State: AOAM530MgYeQg0tBTjcC7YJcUcylHqT5qmn+UaeBhvZ+cdT4uctEMTG7
+ 8pxAx5xAuTmH3z6F6gY+twg=
+X-Google-Smtp-Source: ABdhPJzAofPUvvaapMPVVLxcBfWVoh59h5Y5+5YaAcIbjTSxKv/DHHwuq+M/0gW+j6j2XdMjFwfZPQ==
+X-Received: by 2002:a1c:65d6:: with SMTP id z205mr16138111wmb.88.1614612498828; 
+ Mon, 01 Mar 2021 07:28:18 -0800 (PST)
 Received: from localhost.localdomain (176-171-138-112.abo.bbox.fr.
  [176.171.138.112])
- by smtp.googlemail.com with ESMTPSA id c128sm201771wme.3.2021.03.01.07.28.21
+ by smtp.googlemail.com with ESMTPSA id c128sm201771wme.3.2021.03.01.07.28.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Mar 2021 07:28:21 -0800 (PST)
+ Mon, 01 Mar 2021 07:28:17 -0800 (PST)
 From: Nicolas MURE <nicolas.mure2019@gmail.com>
 To: tiwai@suse.de
-Subject: [PATCH v2 3/4] ALSA: usb-audio: Configure Pioneer DJM-850 samplerate
-Date: Mon,  1 Mar 2021 16:27:28 +0100
-Message-Id: <20210301152729.18094-4-nicolas.mure2019@gmail.com>
+Subject: [PATCH v2 0/4] ALSA: usb-audio: Add Pioneer DJM-850 support
+Date: Mon,  1 Mar 2021 16:27:25 +0100
+Message-Id: <20210301152729.18094-1-nicolas.mure2019@gmail.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210301152729.18094-1-nicolas.mure2019@gmail.com>
+In-Reply-To: <s5hv9abht6w.wl-tiwai@suse.de>
 References: <s5hv9abht6w.wl-tiwai@suse.de>
- <20210301152729.18094-1-nicolas.mure2019@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Nicolas MURE <nicolas.mure2019@gmail.com>, alsa-devel@alsa-project.org,
- livvy@base.nu
+Cc: alsa-devel@alsa-project.org, livvy@base.nu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,31 +106,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Send an `URB_CONTROL out` USB frame to the device to configure its
-samplerate. This should be done before using the device for audio
-streaming (capture or playback).
+Hello,
 
-See https://github.com/nm2107/Pioneer-DJM-850-driver-reverse-engineering/blob/172fb9a61055960c88c67b7c416fe5bf3609807b/doc/windows-dvs/framerate-setting/README.md
+I updated the patches to consider the request to split patch #3
+(c.f. https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/181275.html ).
 
-Signed-off-by: Nicolas MURE <nicolas.mure2019@gmail.com>
----
- sound/usb/quirks.c | 3 +++
- 1 file changed, 3 insertions(+)
+The patch #3 now only contains changes related to DJM-850 support as the
+fix it was previously containing was applied in linux 5.12
+(c.f. https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/181279.html ).
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 737b2729c0d3..d02dac5fcd40 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1503,6 +1503,9 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
- 	case USB_ID(0x2b73, 0x0013): /* Pioneer DJM-450 */
- 		pioneer_djm_set_format_quirk(subs, 0x0082);
- 		break;
-+	case USB_ID(0x08e4, 0x0163): /* Pioneer DJM-850 */
-+		pioneer_djm_set_format_quirk(subs, 0x0086);
-+		break;
- 	}
- }
- 
--- 
-2.29.2
+The patches should be ready to merge into linux 5.13 .
+
+
+Thank you :)
+
+Patches list :
+
+[PATCH v2 1/4] ALSA: usb-audio: Add Pioneer DJM-850 to quirks-table
+[PATCH v2 2/4] ASLA: usb-audio: Declare Pioneer DJM-850 mixer
+[PATCH v2 3/4] ALSA: usb-audio: Configure Pioneer DJM-850 samplerate
+[PATCH v2 4/4] ASLA: usb-audio: fix Pioneer DJM-850 control label
 
