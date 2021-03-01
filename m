@@ -6,69 +6,73 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DD03C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C92C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 08E9860200
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 08E9860200
+	by mail.kernel.org (Postfix) with ESMTPS id 2F865600CD
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 23:40:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F865600CD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DA231688;
-	Tue,  2 Mar 2021 00:39:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DA231688
+	by alsa0.perex.cz (Postfix) with ESMTPS id B89FB169B;
+	Tue,  2 Mar 2021 00:40:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B89FB169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614642042;
-	bh=SEezi0hF1/v6AV9st48t53kpPLAS0sc43As5yWnPWDs=;
+	s=default; t=1614642056;
+	bh=dg6BeBGISWGF0gV3iR/jlBIXrHb5RFxCFDTOZcWhzpQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E9dS5SSOENUmguVZbHaZhyOXo52m2Z+1lRJYqmNRTTTCBUb2AMq67fjsq9RVa+LRe
-	 sImyC2QnhZ1HbZXQfsV2JI4dnx11tdfU8vo86LZkI0RWHgbX8URGBB7Oq4itGgGoEH
-	 AlmTMaqC5HCrgQ/x6L4qOTj8ALv1VSCfOOOu8KQQ=
+	b=uOXnfxt7bm0dtFfbu0UTjJ+Diy4XOXKPCKeqCC7T4ktAi2N3jG6UpeeEYQckXKPm1
+	 u23nswAMrS/fKrpy1ciDD+0ORrR1x9TFTlK7YYMRjSn/V1rcXwe6oNN6F726HtE5mX
+	 ZnqC2D2b+gr48TNVIVRULYsfn590AU1qSNzHfJ9s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F18C0F804DF;
-	Tue,  2 Mar 2021 00:36:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9467FF804E4;
+	Tue,  2 Mar 2021 00:36:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64B3BF804E0; Tue,  2 Mar 2021 00:36:40 +0100 (CET)
+ id 925BFF804E5; Tue,  2 Mar 2021 00:36:45 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0440AF804D1
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:36:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0440AF804D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30D70F804E2
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 00:36:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D70F804E2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BOad/XSH"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9367160295;
- Mon,  1 Mar 2021 23:36:35 +0000 (UTC)
+ header.b="feHCcUT4"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 023B5600CD;
+ Mon,  1 Mar 2021 23:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614641796;
- bh=SEezi0hF1/v6AV9st48t53kpPLAS0sc43As5yWnPWDs=;
+ s=k20201202; t=1614641801;
+ bh=dg6BeBGISWGF0gV3iR/jlBIXrHb5RFxCFDTOZcWhzpQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BOad/XSHSUZ9SqzabrCCGi2RHF7/+1HOzuIbIA74tIEjBOfrNn7rPEpRDXlbaQ/4g
- OVk6T5rQ77GOZSJfnNl369fSfJY/wU78uxN0gFYgrK7dOyk4hV0RDX36HOH1xpq9B2
- R5YFK6qeHHZAUC32sOTmjy5a2Fj95bUxLY1OLsrAe9tArkzpseaxjHEWDMkqLHsxvp
- wmUgNw4bUb2k3gDVPVBVvQYc0NP0ayy2CTuqbrM0wx52MBZBDjsx8sSq6WQCtL1gOU
- ZvUXbjl3aSSL8FlMFSY0UNrjD4TPBohmm2elawnCRSkUpFRF84OMC4yFIt9t/3zpkf
- BvQplM/VX2v/g==
+ b=feHCcUT4vETo/jlSM0CULkHV1p6YmCQqv2co759EbmZjUppRf62tip3GnWKaSpSak
+ ju/LHU8rFlEqHJWAo8kLNr+vMKiibKHLVLbp/XFZ3/hjoIe1TyK70Feiwnw1ngZ1QX
+ 6BRDdf/7O6y7m12tqVokxAP73uanIX1MymcXYBqOUWVdZcMiPF5DrbUYTzF47hJRcW
+ l59bckpzuMQ10OeW/dI9FUNGtLG7lel2fg7ZUToOXRagI8FfEsLJofvwYQYR+OHYe2
+ ECVloriWDG/jEAdZyzdKnvYXoV4b4TE4JBvd23t3FgGm1hpbMzqdVxLvfuJYmhUSxI
+ BSC8AWLB2Bqgw==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
-References: <20210219231635.5749-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: (subset) [PATCH 0/8] ASoC: sh: remove cppcheck warnings
-Message-Id: <161464168097.31144.3559452144915356602.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Colin King <colin.king@canonical.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: <20210226185653.1071321-1-colin.king@canonical.com>
+References: <20210226185653.1071321-1-colin.king@canonical.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: sof-wm8804: add check for PLL setting
+Message-Id: <161464168097.31144.7451844470598305958.b4-ty@kernel.org>
 Date: Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,21 +88,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Feb 2021 17:16:27 -0600, Pierre-Louis Bossart wrote:
-> No functional changes except for patch 4 where a missing error check
-> was added for consistency.
-> 
-> Pierre-Louis Bossart (8):
->   ASoC: sh: dma-sh7760: remove unused variable
->   ASoC: sh: rcar: align function prototypes
->   ASoC: sh: rcar: simplify return
->   ASoC: sh: rcar: core: rename shadowing variables
->   ASoC: sh: rcar: ctu: add  missing error check
->   ASoC: sh: rcar: ssi: remove redundant assignment
->   ASoC: sh: siu_pcm: remove useless assignment
->   ASoC: sh: siu_pcm: remove unused variable
-> 
-> [...]
+On Fri, 26 Feb 2021 18:56:53 +0000, Colin King wrote:
+> Currently the return from snd_soc_dai_set_pll is not checking for
+> failure, this is the only driver in the kernel that ignores this,
+> so it probably should be added for sake of completeness.  Fix this
+> by adding an error return check.
 
 Applied to
 
@@ -106,20 +100,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: sh: dma-sh7760: remove unused variable
-      commit: 2497d156c297992ef1254fda2277ce055f48db64
-[2/8] ASoC: sh: rcar: align function prototypes
-      commit: 8644cbf296de7440f8d53d333da89f79d3258d25
-[3/8] ASoC: sh: rcar: simplify return
-      commit: d15737e24a962941bae0373b8a89173e2451e7c9
-[5/8] ASoC: sh: rcar: ctu: add missing error check
-      commit: a029ad994d24c92228b4460cc374846170720a05
-[6/8] ASoC: sh: rcar: ssi: remove redundant assignment
-      commit: 0711cb41ce02ae8994e4f75551545b114e8922d6
-[7/8] ASoC: sh: siu_pcm: remove useless assignment
-      commit: 075bfe61c88a267755bf4cc54af19cab3141f23f
-[8/8] ASoC: sh: siu_pcm: remove unused variable
-      commit: 69011a3193be54b04b3cfd652c484e6b77cf59b0
+[1/1] ASoC: Intel: boards: sof-wm8804: add check for PLL setting
+      commit: e067855b814600248234a2a7283a7a9006e5aadc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
