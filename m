@@ -2,96 +2,76 @@ Return-Path: <SRS0=WtzT=H7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C31C4332D
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 17:14:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EAABC433E6
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 17:16:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 03F5F6511A
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 17:14:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03F5F6511A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 947FA651BA
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Mar 2021 17:16:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 947FA651BA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BAFD167C;
-	Mon,  1 Mar 2021 18:13:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BAFD167C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BADE166C;
+	Mon,  1 Mar 2021 18:15:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BADE166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614618853;
-	bh=KkYmeABURUpBJilVSbLXGkupR/elTsE8JTUDxIe7uI8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614618979;
+	bh=OUgGRkLl/hOSzPKNv3nNLuyPs51rf6GgV/wlMIsSb54=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vt67lAZvqECpSHBtq/RyFDSSgRJ+dTKyD0PA868oWNuVtaVJumImV0+aVScKF6znr
-	 tC18ALyTyVscJcJfEEHpRhX2T1MVK4R06a/6dPmXVCkNQ6ocnnPLIkTuUhqWdwJP+6
-	 MeniyrUqtoP+/dWsAaWLi8194D9Pt6Th/aNPXiv4=
+	b=iME1OPcWXrq1zWjcDa1CQvrGaJ/OUtEqRrxqHQnmeUcmc2SWmJQc8guy4hjExXwGN
+	 ASiT48BIiWff3kFOp0A8uf0r3CqgAfBj1jUz/jXOzCpvSdD53YD7CEJ4ZZSYS6CgFx
+	 iFmkA/VRfnZZJwer39wu/fLl6j/tIu0TH7AigDwk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9DC7F804E2;
-	Mon,  1 Mar 2021 18:10:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A06C1F80150;
+	Mon,  1 Mar 2021 18:15:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10F2CF804BD; Mon,  1 Mar 2021 18:10:08 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4E7F1F8025E; Mon,  1 Mar 2021 18:15:27 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1210FF804B4
- for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 18:10:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1210FF804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93F18F800E0
+ for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2021 18:15:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93F18F800E0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="fppSOICt"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1614618606; x=1646154606;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=KkYmeABURUpBJilVSbLXGkupR/elTsE8JTUDxIe7uI8=;
- b=fppSOICtv3XrWNd1sSjnzjeWzfTyz6MudlLdzWXIbPEzHY5OULf3U8pi
- I2Rg+39oDRoe75QI059mnlrrh0FMQ0Ot9lLf9QZm6Xzn3XbBCgteezOJ5
- PFWD3TAuwZF/NPFjpuVft/C9bqtQhH5n3Wp3HexaoJdOP/TEtvJMb7GAl
- cNb49tTjM+4H54gYwjoUQPf/Te3bqSN9EU/9s/S70VTC+FF5L2+wjDfxt
- RGpQbJGZBq43aeM+CvaN/4eNlt1MlKwHQQ9B7eIBLZLymDyufZ0kgsEzT
- CoVY4kpJOuFB35f6JIeZKzSqPH8q3nKyzpd3a+oZqzFWlzdQr9SVsMIcP Q==;
-IronPort-SDR: RUAQQuKc8bU+YvOwwXbRPj8k/kX57It6Egh4uEsWodeZ68DE42ZAwMEEJBE2FVOVHFdouYL7t2
- 5x72jHGkCUI+JTzJMU3bDwoEo7Pe9FT7ox5vudm3IP/AFnb8thbuoZN0NkbEkxgqXbyyi7i1lZ
- MF1WbASYralZrx3FQB8N6VmQsie6S3cmQBiLuXCJ38JuBFq2HXbYvBejPzqOkcC9fVo6Ptm/wR
- j16+A/4RJxrBM+G0Bgri0NC890cqI/t5gntUIU9tmJP9UK7iALBN1aRvQPj228mQryYEcofSXb
- BGE=
-X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; d="scan'208";a="108323788"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Mar 2021 10:10:02 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 1 Mar 2021 10:10:00 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:57 -0700
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To: <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 7/7] ASoC: convert Microchip I2SMCC binding to yaml
-Date: Mon, 1 Mar 2021 19:09:05 +0200
-Message-ID: <20210301170905.835091-8-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
-References: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="YYFn6xkv"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 036AE64DE0;
+ Mon,  1 Mar 2021 17:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1614618922;
+ bh=OUgGRkLl/hOSzPKNv3nNLuyPs51rf6GgV/wlMIsSb54=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=YYFn6xkvTIfePGM6mTZdxElEIQIEdG0WU9uQaYgD4l4ywNGRfhXgLjEi2a5OM70Ch
+ a2q3TMeuzxuYynrtpSKLHdbTbHl0RKhF3AjDMaw2rNFNNOQPZU+OGIR5F7kK06ScPq
+ MRmfDRyJGB9LwTV5GJ1vWlZxLsyFYMnXFlN6nDvP/F+B4crRmk7oAtCS+poy+4tJYW
+ CdIEs5DjodByeVHSKPeR1CNr+MUictH9beYQ4xJst+1XXbDPCw5JfR6tMqKS8zXvsQ
+ DPQ6TVzFPRbaGUDV7u6j+Emv2BedelwWHwFP1iXGTd1nyTYmuasBT59XJlbdA3WsvK
+ HkdbEjb+Yp7ig==
+Date: Mon, 1 Mar 2021 17:14:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: codecs: nau8825: fix kernel-doc
+Message-ID: <20210301171416.GF4628@sirena.org.uk>
+References: <20210301165349.114952-1-pierre-louis.bossart@linux.intel.com>
+ <20210301165349.114952-2-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alexandre.belloni@bootlin.com, lgirdwood@gmail.com,
- nicolas.ferre@microchip.com, robh+dt@kernel.org, tiwai@suse.com,
- ludovic.desroches@microchip.com, broonie@kernel.org, Codrin
- Ciubotariu <codrin.ciubotariu@microchip.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="eNMatiwYGLtwo1cJ"
+Content-Disposition: inline
+In-Reply-To: <20210301165349.114952-2-pierre-louis.bossart@linux.intel.com>
+X-Cookie: Body by Nautilus, Brain by Mattel.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, vkoul@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,192 +87,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch converts the Microchip I2SMCC bindings to DT schema format
-using json-schema.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
+--eNMatiwYGLtwo1cJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changes in v2:
-- moved from the beginning to the end of the patch series;
-- includes the changes (to yaml) from the rest of the patches that
-  update the DT binding;
+On Mon, Mar 01, 2021 at 10:53:46AM -0600, Pierre-Louis Bossart wrote:
+> v5.12-rc1 flags new warnings with make W=1, fix missing or broken
+> function descriptors.
 
- .../bindings/sound/mchp,i2s-mcc.yaml          | 108 ++++++++++++++++++
- .../bindings/sound/mchp-i2s-mcc.txt           |  49 --------
- 2 files changed, 108 insertions(+), 49 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
+You've sent five patches (for multiple subsystems) in a thread but not
+as a series - please don't do this, it confuses tools like b4 since they
+can't figure out if this is a series or multiple revisions of a single
+patch.  Please don't do this, if things are a series send them as such
+or if it's a collection of unrelated patches send them separately.
 
-diff --git a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-new file mode 100644
-index 000000000000..0481315cb5f2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-@@ -0,0 +1,108 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/mchp,i2s-mcc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip I2S Multi-Channel Controller
-+
-+maintainers:
-+  - Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-+
-+description:
-+  The I2SMCC complies with the Inter-IC Sound (I2S) bus specification and
-+  supports a Time Division Multiplexed (TDM) interface with external
-+  multi-channel audio codecs. It consists of a receiver, a transmitter and a
-+  common clock generator that can be enabled separately to provide Adapter,
-+  Client or Controller modes with receiver and/or transmitter active.
-+  On later I2SMCC versions (starting with Microchip's SAMA7G5) I2S
-+  multi-channel is supported by using multiple data pins, output and
-+  input, without TDM.
-+
-+properties:
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  compatible:
-+    enum:
-+      - microchip,sam9x60-i2smcc
-+      - microchip,sama7g5-i2smcc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Peripheral Bus Clock
-+      - description: Generic Clock (Optional). Should be set mostly when Master
-+          Mode is required.
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: pclk
-+      - const: gclk
-+    minItems: 1
-+
-+  dmas:
-+    items:
-+      - description: TX DMA Channel
-+      - description: RX DMA Channel
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+  microchip,tdm-data-pair:
-+    description:
-+      Represents the DIN/DOUT pair pins that are used to receive/send
-+      TDM data. It is optional and it is only needed if the controller
-+      uses the TDM mode.
-+    $ref: /schemas/types.yaml#/definitions/uint8
-+    enum: [0, 1, 2, 3]
-+    default: 0
-+
-+if:
-+  properties:
-+    compatible:
-+      const: microchip,sam9x60-i2smcc
-+then:
-+  properties:
-+    microchip,tdm-data-pair: false
-+
-+required:
-+  - "#sound-dai-cells"
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - dmas
-+  - dma-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/dma/at91.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    i2s@f001c000 {
-+        #sound-dai-cells = <0>;
-+        compatible = "microchip,sam9x60-i2smcc";
-+        reg = <0xf001c000 0x100>;
-+        interrupts = <34 IRQ_TYPE_LEVEL_HIGH 7>;
-+        dmas = <&dma0 (AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-+                       AT91_XDMAC_DT_PERID(36))>,
-+               <&dma0 (AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-+                       AT91_XDMAC_DT_PERID(37))>;
-+        dma-names = "tx", "rx";
-+        clocks = <&i2s_clk>, <&i2s_gclk>;
-+        clock-names = "pclk", "gclk";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_i2s_default>;
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt b/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
-deleted file mode 100644
-index af8fe3e657df..000000000000
---- a/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--* Microchip I2S Multi-Channel Controller
--
--Required properties:
--- compatible:     Should be "microchip,sam9x60-i2smcc" or
--		  "microchip,sama7g5-i2smcc".
--- reg:            Should be the physical base address of the controller and the
--                  length of memory mapped region.
--- interrupts:     Should contain the interrupt for the controller.
--- dmas:           Should be one per channel name listed in the dma-names property,
--                  as described in atmel-dma.txt and dma.txt files.
--- dma-names:      Identifier string for each DMA request line in the dmas property.
--		  Two dmas have to be defined, "tx" and "rx".
--- clocks:         Must contain an entry for each entry in clock-names.
--                  Please refer to clock-bindings.txt.
--- clock-names:    Should be one of each entry matching the clocks phandles list:
--                  - "pclk" (peripheral clock) Required.
--                  - "gclk" (generated clock) Optional (1).
--
--Optional properties:
--- pinctrl-0:      Should specify pin control groups used for this controller.
--- princtrl-names: Should contain only one value - "default".
--- microchip,tdm-data-pair: 8 bit value that represents the DIN/DOUT pair pins
--			   which are used to receive/send TDM data. It is optional
--			   and it is only needed if the controller uses the TDM
--			   mode. Not available for "microchip,sam9x60-i2smcc"
--			   compatible. If it's not present, the default value is 0,
--			   so the DIN/DOUT 0 pins are used.
--
--(1) : Only the peripheral clock is required. The generated clock is optional
--      and should be set mostly when Master Mode is required.
--
--Example:
--
--	i2s@f001c000 {
--		compatible = "microchip,sam9x60-i2smcc";
--		reg = <0xf001c000 0x100>;
--		interrupts = <34 IRQ_TYPE_LEVEL_HIGH 7>;
--		dmas = <&dma0
--			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
--			 AT91_XDMAC_DT_PERID(36))>,
--		       <&dma0
--			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
--			 AT91_XDMAC_DT_PERID(37))>;
--		dma-names = "tx", "rx";
--		clocks = <&i2s_clk>, <&i2s_gclk>;
--		clock-names = "pclk", "gclk";
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_i2s_default>;
--	};
--- 
-2.27.0
+--eNMatiwYGLtwo1cJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA9IOcACgkQJNaLcl1U
+h9AqQAf/WlcTUojHRsOO0bYNNYW/C9y5uDyqTiy71lsrMkKyRQ/TQ3CXhfnflscN
+imwgt4zjwYOwtuuyGucsI4ICo62iYsjXbzG66eBk3NxMnBWhL/e/ge/LOK0oo12T
+h7KxZHRRsJ9l9X9cN4SbfNaJ/ZF9mzSFaB4IiIQ8ZI0UYvlnH0umqfCifrI9aJU0
+Ylm3pHEM04tpaPyLrvqDX/apqDwcyXytU+i5IAjOZBJigOizI9kl4A+w123Bf/OW
++yc3pTm5gXW0gJlc+1Fu0mVtAgsB4sIgSKk9LmctIbAKT7786vgvjomY6plqOl+a
+cLtyVthSGpr4xMh+ppKKAGZ6+UpTeg==
+=w5Wg
+-----END PGP SIGNATURE-----
+
+--eNMatiwYGLtwo1cJ--
