@@ -7,81 +7,80 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9EFDC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:10:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7757EC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:11:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 337DF64F2C
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:10:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 337DF64F2C
+	by mail.kernel.org (Postfix) with ESMTPS id C4D5564F2C
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:11:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4D5564F2C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B344F1867;
-	Tue,  2 Mar 2021 18:10:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B344F1867
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B08F187A;
+	Tue,  2 Mar 2021 18:10:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B08F187A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614705050;
-	bh=mMeSKZm0EtayDwTKsAZrc9Kk75r4H6fG9Q81Fg2u0hM=;
+	s=default; t=1614705064;
+	bh=xx1wNveLeX7IrPKfIqS5GvPesHibgIV57ZTyY7cnEgU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vdlNnuMIstJSOdAg7eIgyXaC0G3aRoXjCpQBr6hs+Hzr2ILf7UxpuzFqvUQ5zDpgg
-	 nC4uPJ7vrAGU0SLH3lXGUGKAWsyK4BR2rhmmBGIB3VjtvIKLpysTcG2Lmh4lmkK5Y5
-	 7vLcFy9yMFcmIJeMoBRRIbUD06PN4aOnUbtylE+E=
+	b=V2qfbjBKmjlZKCsGEO9yqq0hyKAwfz0pv9ZyfsjCwTH3iqz0W6EZ/gyIYHmTvd971
+	 s1LM7m06r7XS3XtZ/wWLPkcx/ikV8E+1FfrcCJBpqg3H69EAt2HVPHL/u6urYSz1Iw
+	 uqtsdSjaBq8Lu7C2cSt/EQvxmPnViUmDf8vUW6vU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 649F3F804F2;
-	Tue,  2 Mar 2021 18:05:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01743F804FF;
+	Tue,  2 Mar 2021 18:05:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22231F804BD; Tue,  2 Mar 2021 18:05:25 +0100 (CET)
+ id C2FC4F804D1; Tue,  2 Mar 2021 18:05:26 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7384CF8032B
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:05:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7384CF8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55952F8032D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:05:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55952F8032D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="WcJqpTRG"
+ header.b="HNewI+se"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 122H1q3Q022910; Tue, 2 Mar 2021 11:05:05 -0600
+ 122H1q3P022910; Tue, 2 Mar 2021 11:05:05 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=vCHWy3Exa6te6tewneVXoR9NeyrAMjtx7WMnGrouN1E=;
- b=WcJqpTRGPpz+7aAGYrLOBxcAImcAmbP3I4xPxXyhYKxWeeyR1fUKm+Bf4miCKNEYM+FV
- sST7W5dnXvgXvy1ZpWe3ad5UFJaZ9dXqG6cR+OgntmF/l8aRS0/IgT+JGtblnhoW0sl9
- c4C3/0ewPMaCJoGYn6lgYL+nmTIoTTmimiihc+b2fNjZPiySCe7hNeEdaajg633BISAH
- NDqz3rMj3QLSayfe5Csbh/jMt35DQK9RC01aGND9/gFCIHFNN9DPnSTg61SozqWzLHqm
- Lh8/+KVwtk+48C0CONq6g0N8rO8qjoTRzMWEkM49Hb0LOxmKtkPVpgmxZUPNjRbatRnu EQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg9-7
+ bh=UJrx7lFKuFkpoJqPVBon3UkFDbfMntOg6B6GwmpNHcg=;
+ b=HNewI+seYiQ8rkNbfSuS1HyfucG728waigLd3QTvOSleLrTn3aLWnrWu/zdiSlJa95PA
+ 2wO0crm1BXXgUl6z6a9NfAKfEdQzjGTKXKZCcgxMFWZpMG0yYd68TwqWZspYgyE19yBv
+ 8/9q26WEuonLoF/eqaFpqHKDzrIyvLFVDJpj3BywnUAnNNop48XSiwigWtMBA/jbwrMj
+ eOIYnJKqu0vCC43RW6nr5+QVaJQie++SLMtqNeaRSM169+yLI3ycz9TCq7PYw1cYOehe
+ DM3L8ntKOI7yYNEb+PTPY7N/p8HJhODQ+iXJUZ+7MufGw1wcopc5unfqBf+A0GA/BxU0 iA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg7-7
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Tue, 02 Mar 2021 11:05:05 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 2 Mar 2021
- 17:05:02 +0000
+ 17:05:03 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 2 Mar 2021 17:05:02 +0000
+ Transport; Tue, 2 Mar 2021 17:05:03 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3EBA811D8;
- Tue,  2 Mar 2021 17:05:02 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2126411D5;
+ Tue,  2 Mar 2021 17:05:03 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood
  <lgirdwood@gmail.com>
-Subject: [PATCH 12/15] ASoC: cs42l42: Wait at least 150us after writing
- SCLK_PRESENT
-Date: Tue, 2 Mar 2021 17:04:51 +0000
-Message-ID: <20210302170454.39679-13-tanureal@opensource.cirrus.com>
+Subject: [PATCH 15/15] ASoC: cs42l42: Fix mixer volume control
+Date: Tue, 2 Mar 2021 17:04:54 +0000
+Message-ID: <20210302170454.39679-16-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
 References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
@@ -91,7 +90,7 @@ Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
  clxscore=1015 suspectscore=0
  adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=936 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103020131
 Cc: patches@opensource.cirrus.com,
@@ -112,92 +111,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+The minimum value is 0x3f (-63dB), which also is mute
 
-There must be a delay of at least 150us after writing SCLK_PRESENT
-before issuing another I2C write.
-
-This is done using struct reg_sequence because it can specify a delay
-after the write and the whole sequence is written atomically.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 28 +++++++++++++++++++++++-----
- sound/soc/codecs/cs42l42.h |  1 +
- 2 files changed, 24 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 7898a2d52a3b7..5755f8baddbcf 100644
+index 96f4e98ceaa0b..39f742a83cd2c 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -517,6 +517,24 @@ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
- 	{ "SDOUT2", NULL, "ASP TX EN" },
+@@ -401,7 +401,7 @@ static const struct regmap_config cs42l42_regmap = {
  };
  
-+/* Switch to SCLK. Atomic delay after the write to allow the switch to complete. */
-+static const struct reg_sequence cs42l42_to_sclk_seq[] = {
-+	{
-+		.reg = CS42L42_OSC_SWITCH,
-+		.def = CS42L42_SCLK_PRESENT_MASK,
-+		.delay_us = CS42L42_CLOCK_SWITCH_DELAY_US,
-+	},
-+};
-+
-+/* Switch to OSC. Atomic delay after the write to allow the switch to complete. */
-+static const struct reg_sequence cs42l42_to_osc_seq[] = {
-+	{
-+		.reg = CS42L42_OSC_SWITCH,
-+		.def = 0,
-+		.delay_us = CS42L42_CLOCK_SWITCH_DELAY_US,
-+	},
-+};
-+
- struct cs42l42_pll_params {
- 	u32 sclk;
- 	u8 mclk_div;
-@@ -809,6 +827,7 @@ static int cs42l42_set_sysclk(struct snd_soc_dai *dai,
- static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
- 	unsigned int regval;
- 	u8 fullScaleVol;
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
+-static DECLARE_TLV_DB_SCALE(mixer_tlv, -6200, 100, false);
++static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
  
-@@ -828,8 +847,8 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 			 * SCLK must remain running until after this clock switch.
- 			 * Without a source of clock the I2C bus doesn't work.
- 			 */
--			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						      CS42L42_SCLK_PRESENT_MASK, 0);
-+			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_osc_seq,
-+					       ARRAY_SIZE(cs42l42_to_osc_seq));
- 			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 						      CS42L42_PLL_START_MASK, 0);
- 		}
-@@ -840,9 +859,8 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 						      CS42L42_PLL_START_MASK, 1);
+ static const char * const cs42l42_hpf_freq_text[] = {
+ 	"1.86Hz", "120Hz", "235Hz", "466Hz"
+@@ -458,7 +458,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
+ 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
+ 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
+-				0x3e, 1, mixer_tlv)
++				0x3f, 1, mixer_tlv)
+ };
  
- 			/* Mark SCLK as present, turn off internal oscillator */
--			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						      CS42L42_SCLK_PRESENT_MASK,
--						      CS42L42_SCLK_PRESENT_MASK);
-+			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_sclk_seq,
-+					       ARRAY_SIZE(cs42l42_to_sclk_seq));
- 		}
- 		cs42l42->stream_use |= 1 << stream;
- 
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 1df9577e367c1..a0c87f2326e69 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -755,6 +755,7 @@
- 
- #define CS42L42_NUM_SUPPLIES	5
- #define CS42L42_BOOT_TIME_US	3000
-+#define CS42L42_CLOCK_SWITCH_DELAY_US 150
- 
- static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 	"VA",
+ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
 -- 
 2.30.1
 
