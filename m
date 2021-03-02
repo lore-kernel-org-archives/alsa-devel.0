@@ -2,56 +2,56 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCEB1C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 01:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E24AC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 01:50:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47EBA6148E
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 01:49:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47EBA6148E
+	by mail.kernel.org (Postfix) with ESMTPS id EFF3D61494
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 01:50:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EFF3D61494
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1A771698;
-	Tue,  2 Mar 2021 02:48:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1A771698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78818169B;
+	Tue,  2 Mar 2021 02:49:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78818169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614649759;
-	bh=HrCswoDPqD9O2NrKRZVe9jvmh8nqyzBqd/EOYAd6irc=;
+	s=default; t=1614649805;
+	bh=A6l085Hxl0apYkUnH5vs3Ydk9P0TcQALSJ8WB4BDlGg=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eIdSlmusb6eyvdgypJqsMa03PoWqJQ8ZvTM3LlkvgY1oFiHLgj0Ay/O1B+3sgdNrn
-	 tLLG2tZyw/nqUP9d3rpQxfySzBY9LCAhvnd1fHUtNPjR1Wo+AS2MO0VZJ7xScLjaCB
-	 530Z/WxPTedwsewYQ2bpe/SZyqTjiTNHTfi2KCJg=
+	b=JM0imhUyDvDt0RPLdE1TztizjRKK3rHh8TGUaJpxU736uHGdeyJF+dU+s0aVSFakN
+	 fBlj9Gn/Rb8YIPiawk7r9GtJe4X4/Fjmb/U9PUUlLX/uv9Ui3wbeCM47Lm44Mfpfh5
+	 DU/iVMXlSw2CZDUEawEejP7cD6xehkWaubEnGzT0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDFA0F802E2;
-	Tue,  2 Mar 2021 02:48:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E816F80425;
+	Tue,  2 Mar 2021 02:48:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 223ADF802E3; Tue,  2 Mar 2021 02:48:04 +0100 (CET)
+ id A21A7F80425; Tue,  2 Mar 2021 02:48:14 +0100 (CET)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 91AAEF80272
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 02:47:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91AAEF80272
-Date: 02 Mar 2021 10:47:55 +0900
-X-IronPort-AV: E=Sophos;i="5.81,216,1610377200"; d="scan'208";a="73549502"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 02 Mar 2021 10:47:55 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 31FC5F8032B
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 02:48:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31FC5F8032B
+Date: 02 Mar 2021 10:48:07 +0900
+X-IronPort-AV: E=Sophos;i="5.81,216,1610377200"; d="scan'208";a="73549544"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 02 Mar 2021 10:48:07 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 32AC1400D0FC;
- Tue,  2 Mar 2021 10:47:55 +0900 (JST)
-Message-ID: <87r1kyqqb8.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id B2AF84143D14;
+ Tue,  2 Mar 2021 10:48:07 +0900 (JST)
+Message-ID: <87o8g2qqaw.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/8] ASoC: soc-pcm: add soc_cpu/codec_dai_name() macro
+Subject: [PATCH 4/8] ASoC: soc-pcm: add soc_pcm_care_symmetry()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tupuqqc8.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,75 +77,72 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-soc-pcm needs DAI name and it will be "multicpu/multicodec" if it has
-many DAIs. But current code is using very verbose for it.
-This patch uses macro and makes code simple.
+Current soc-pcm has soc_pcm_has_symmetry() and using it as
+
+	if (soc_pcm_has_symmetry(substream))
+		substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
+
+We want to share same operation as same function.
+This patch adds soc_pcm_care_symmetry() and share the code.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/soc-pcm.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 9b5ab7a05f65..5d17c9eb8b69 100644
+index de31eb7fbec9..76c7f04cfd1a 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -29,6 +29,11 @@
+@@ -406,7 +406,7 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
- #define DPCM_MAX_BE_USERS	8
- 
-+#define soc_cpu_dai_name(rtd) \
-+	(((rtd)->num_cpus == 1) ? asoc_rtd_to_cpu((rtd), 0)->name : "multicpu")
-+#define soc_codec_dai_name(rtd) \
-+	(((rtd)->num_codecs == 1) ? asoc_rtd_to_codec((rtd), 0)->name : "multicodec")
-+
- #ifdef CONFIG_DEBUG_FS
- static const char *dpcm_state_string(enum snd_soc_dpcm_state state)
+-static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
++static void soc_pcm_care_symmetry(struct snd_pcm_substream *substream)
  {
-@@ -697,8 +702,8 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai *dai;
--	const char *codec_dai_name = "multicodec";
--	const char *cpu_dai_name = "multicpu";
-+	const char *codec_dai_name = soc_codec_dai_name(rtd);
-+	const char *cpu_dai_name = soc_cpu_dai_name(rtd);
- 	int i, ret = 0;
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai_link *link = rtd->dai_link;
+@@ -423,7 +423,8 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+ 			dai->driver->symmetric_channels ||
+ 			dai->driver->symmetric_sample_bits;
  
- 	for_each_rtd_components(rtd, i, component)
-@@ -737,12 +742,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+-	return symmetry;
++	if (symmetry)
++		substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
+ }
+ 
+ static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bits)
+@@ -735,8 +736,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
  	/* Check that the codec and cpu DAIs are compatible */
  	soc_pcm_init_runtime_hw(substream);
  
--	if (rtd->num_codecs == 1)
--		codec_dai_name = asoc_rtd_to_codec(rtd, 0)->name;
--
--	if (rtd->num_cpus == 1)
--		cpu_dai_name = asoc_rtd_to_cpu(rtd, 0)->name;
--
- 	if (soc_pcm_has_symmetry(substream))
- 		runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
+-	if (soc_pcm_has_symmetry(substream))
+-		runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++	soc_pcm_care_symmetry(substream);
  
-@@ -2741,8 +2740,7 @@ static int soc_create_pcm(struct snd_pcm **pcm,
- 		else
- 			snprintf(new_name, sizeof(new_name), "%s %s-%d",
- 				rtd->dai_link->stream_name,
--				(rtd->num_codecs > 1) ?
--				"multicodec" : asoc_rtd_to_codec(rtd, 0)->name, num);
-+				soc_codec_dai_name(rtd), num);
+ 	ret = -EINVAL;
+ 	if (!runtime->hw.rates) {
+@@ -1681,8 +1681,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 	int i;
  
- 		ret = snd_pcm_new(rtd->card->snd_card, new_name, num, playback,
- 			capture, pcm);
-@@ -2841,8 +2839,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	pcm->no_device_suspend = true;
- out:
- 	dev_dbg(rtd->card->dev, "%s <-> %s mapping ok\n",
--		(rtd->num_codecs > 1) ? "multicodec" : asoc_rtd_to_codec(rtd, 0)->name,
--		(rtd->num_cpus > 1)   ? "multicpu"   : asoc_rtd_to_cpu(rtd, 0)->name);
-+		soc_codec_dai_name(rtd), soc_cpu_dai_name(rtd));
- 	return ret;
- }
+ 	/* apply symmetry for FE */
+-	if (soc_pcm_has_symmetry(fe_substream))
+-		fe_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++	soc_pcm_care_symmetry(fe_substream);
  
+ 	for_each_rtd_cpu_dais (fe, i, fe_cpu_dai) {
+ 		/* Symmetry only applies if we've got an active stream. */
+@@ -1707,8 +1706,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 		if (rtd->dai_link->be_hw_params_fixup)
+ 			continue;
+ 
+-		if (soc_pcm_has_symmetry(be_substream))
+-			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++		soc_pcm_care_symmetry(be_substream);
+ 
+ 		/* Symmetry only applies if we've got an active stream. */
+ 		for_each_rtd_dais(rtd, i, dai) {
 -- 
 2.25.1
 
