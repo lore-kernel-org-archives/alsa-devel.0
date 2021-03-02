@@ -2,73 +2,71 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-21.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 029A4C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58AE3C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:32:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51D2D60C3E
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:03:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51D2D60C3E
+	by mail.kernel.org (Postfix) with ESMTPS id 03D436023C
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:32:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 03D436023C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E585166C;
-	Tue,  2 Mar 2021 01:02:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E585166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9846B1657;
+	Tue,  2 Mar 2021 01:31:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9846B1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614643403;
-	bh=QpdJFayF9gMrD2kv9J7zHpHx/+7zX7Be9tOgS62PCks=;
+	s=default; t=1614645156;
+	bh=4vy1igfSStw0BC+qgu7YzubJn/ACJT1DijZN79fSvHg=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=sV2Rq4mYq1J0wIMO9bc+LHgIRHuNQs/h8wIP7pIxteZQ5eX5LLPP6WzQ7fWJZWC/9
-	 p9cMl/usqs8T1hDVL0nUE61WBGoNqYKxteDPbqF6+TGZ/Ps0fUL7dHe+wZ/biRORNV
-	 s1gwib8fgEKIyE+kMmAZtVRBdJguZvN7eaKYbGAU=
+	b=IF98unZCPrcbT9SrOUVkBT8l93G49dI0hmQG+IbLcrc9Dvsyta1OUvyeNqEc75/UA
+	 5HMxUlGC4mSiqJLTShaJW9VQLXMemsroNdcz3+ywZeAIqczubIp06b/BffQKsI4ZUM
+	 DA6oIP4llF+NmbYyVBs3lnQqCiTEWT1ZobPQLC40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04FDCF80257;
-	Tue,  2 Mar 2021 01:02:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05A4CF8026A;
+	Tue,  2 Mar 2021 01:31:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9960EF8025E; Tue,  2 Mar 2021 01:02:31 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 02F09F80272; Tue,  2 Mar 2021 01:31:43 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D27FF800E0
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 01:02:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D27FF800E0
-IronPort-SDR: E6LDGa62/Bq9BuR3wjp9uilCACKfrZA3Pp3tNzNEymNWEG+SRr2shDeS+JIe2xcj8Z0OcQz5D7
- /7n2WZJcuBUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="185960088"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="185960088"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 16:02:11 -0800
-IronPort-SDR: oeep4Keda/T5vJPrSumhEflJKQqunJLa+b4Te4JCmkJL68nBM6uMWOnDyZu64t5IUT19CDFxT8
- bnz9tKwqbwaQ==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="599480473"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DF05F80150
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 01:31:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DF05F80150
+IronPort-SDR: 6jiip5wiVHIQ0fZQr1yuhtRKpD9Ixe7WzIVfvvBxN8xnVx+y0qCHAcU7AubiSaILGEG7APaFaH
+ 014iK6aoRDjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248048761"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248048761"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2021 16:31:36 -0800
+IronPort-SDR: MLUwJ95FeEVvg8YP2Bjf6BW0ZXOnbVmo1BXl6g8rAMIyw9E6N5hN2sTdF0DkKiu/OPJKp6MBTY
+ Zf7ZppmRjmkw==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="444512500"
 Received: from josemrod-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.215.233])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 16:02:10 -0800
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Mar 2021 16:31:35 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda: intel-nhlt: verify config type
-Date: Mon,  1 Mar 2021 18:01:46 -0600
-Message-Id: <20210302000146.1177770-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/7] ALSA/ASoC/SOF/SoundWire: fix Kconfig issues
+Date: Mon,  1 Mar 2021 18:31:18 -0600
+Message-Id: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>, tiwai@suse.de,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Rander Wang <rander.wang@intel.com>
+Cc: arnd@arndb.de, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,134 +82,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Multiple bug reports report issues with the SOF and SST drivers when
-dealing with single microphone cases.
+In January, Intel kbuild bot and Arnd Bergmann reported multiple
+issues with randconfig. This patchset builds on Arnd's suggestions to
 
-We currently read the DMIC array information unconditionally but we
-don't check that the configuration type is actually a mic array.
+a) expose ACPI and PCI devices in separate modules, while sof-acpi-dev
+and sof-pci-dev become helpers. This will result in minor changes
+required for developers/testers, i.e. modprobe snd-sof-pci will no
+longer result in a probe. The SOF CI was already updated to deal with
+this module dependency change and introduction of new modules.
 
-When the DMIC link does not rely on a mic array configuration, the
-recommendation is to check the format information to infer the maximum
-number of channels, and map this to the number of microphones.
+b) Fix SOF/SoundWire/DSP_config dependencies by moving the code
+required to detect SoundWire presence in ACPI tables to sound/hda.
 
-This leaves a potential for a mismatch between actual microphones
-available in hardware and what the ACPI table contains, but we have no
-other source of information.
+Integration note:
+This patchset touches directories maintained by Vinod, Takashi and
+Mark in separate trees, and will impact additional changes to use the
+auxiliary bus in drivers/soundwire/.
+I can think of two options, both of which are fine:
+1. Mark merges the patches with Vinod and Takashi Acked-by tags, then
+Mark provides an immutable tag to Vinod.
+2. Vinod merges the patches with Mark and Takashi Acked-by tags, then
+Vinod provides an immutable tag to Mark
 
-Note that single microphone configurations can alternatively be
-handled with a 'mic array' configuration along with a 'vendor-defined'
-geometry.
+Acknowledgements:
+Thanks to Arnd for suggesting fixes and testing these patches with
+more randconfigs.
+Thanks to Vinod Koul for his feedback on the move of this common
+helper to sound/hda/
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201251
-BugLink: https://github.com/thesofproject/linux/issues/2725
-Fixes: 7a33ea70e1868 ('ALSA: hda: intel-nhlt: handle NHLT VENDOR_DEFINED DMIC geometry')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/sound/intel-nhlt.h |  5 ++++
- sound/hda/intel-nhlt.c     | 54 +++++++++++++++++++++++++++++++-------
- 2 files changed, 50 insertions(+), 9 deletions(-)
+Arnd Bergmann (1):
+  ASoC: SOF: ACPI: avoid reverse module dependency
 
-diff --git a/include/sound/intel-nhlt.h b/include/sound/intel-nhlt.h
-index 743c2f442280..d0574805865f 100644
---- a/include/sound/intel-nhlt.h
-+++ b/include/sound/intel-nhlt.h
-@@ -112,6 +112,11 @@ struct nhlt_vendor_dmic_array_config {
- 	/* TODO add vendor mic config */
- } __packed;
- 
-+enum {
-+	NHLT_CONFIG_TYPE_GENERIC = 0,
-+	NHLT_CONFIG_TYPE_MIC_ARRAY = 1
-+};
-+
- enum {
- 	NHLT_MIC_ARRAY_2CH_SMALL = 0xa,
- 	NHLT_MIC_ARRAY_2CH_BIG = 0xb,
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 059aaf04f536..d053beccfaec 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -31,18 +31,44 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 	struct nhlt_endpoint *epnt;
- 	struct nhlt_dmic_array_config *cfg;
- 	struct nhlt_vendor_dmic_array_config *cfg_vendor;
-+	struct nhlt_fmt *fmt_configs;
- 	unsigned int dmic_geo = 0;
--	u8 j;
-+	u16 max_ch = 0;
-+	u8 i, j;
- 
- 	if (!nhlt)
- 		return 0;
- 
--	epnt = (struct nhlt_endpoint *)nhlt->desc;
-+	for (j = 0, epnt = nhlt->desc; j < nhlt->endpoint_count; j++,
-+	     epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length)) {
- 
--	for (j = 0; j < nhlt->endpoint_count; j++) {
--		if (epnt->linktype == NHLT_LINK_DMIC) {
--			cfg = (struct nhlt_dmic_array_config  *)
--					(epnt->config.caps);
-+		if (epnt->linktype != NHLT_LINK_DMIC)
-+			continue;
-+
-+		cfg = (struct nhlt_dmic_array_config  *)(epnt->config.caps);
-+		fmt_configs = (struct nhlt_fmt *)(epnt->config.caps + epnt->config.size);
-+
-+		/* find max number of channels based on format_configuration */
-+		if (fmt_configs->fmt_count) {
-+			dev_dbg(dev, "%s: found %d format definitions\n",
-+				__func__, fmt_configs->fmt_count);
-+
-+			for (i = 0; i < fmt_configs->fmt_count; i++) {
-+				struct wav_fmt_ext *fmt_ext;
-+
-+				fmt_ext = &fmt_configs->fmt_config[i].fmt_ext;
-+
-+				if (fmt_ext->fmt.channels > max_ch)
-+					max_ch = fmt_ext->fmt.channels;
-+			}
-+			dev_dbg(dev, "%s: max channels found %d\n", __func__, max_ch);
-+		} else {
-+			dev_dbg(dev, "%s: No format information found\n", __func__);
-+		}
-+
-+		if (cfg->device_config.config_type != NHLT_CONFIG_TYPE_MIC_ARRAY) {
-+			dmic_geo = max_ch;
-+		} else {
- 			switch (cfg->array_type) {
- 			case NHLT_MIC_ARRAY_2CH_SMALL:
- 			case NHLT_MIC_ARRAY_2CH_BIG:
-@@ -59,13 +85,23 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 				dmic_geo = cfg_vendor->nb_mics;
- 				break;
- 			default:
--				dev_warn(dev, "undefined DMIC array_type 0x%0x\n",
--					 cfg->array_type);
-+				dev_warn(dev, "%s: undefined DMIC array_type 0x%0x\n",
-+					 __func__, cfg->array_type);
-+			}
-+
-+			if (dmic_geo > 0) {
-+				dev_dbg(dev, "%s: Array with %d dmics\n", __func__, dmic_geo);
-+			}
-+			if (max_ch > dmic_geo) {
-+				dev_dbg(dev, "%s: max channels %d exceed dmic number %d\n",
-+					__func__, max_ch, dmic_geo);
- 			}
- 		}
--		epnt = (struct nhlt_endpoint *)((u8 *)epnt + epnt->length);
- 	}
- 
-+	dev_dbg(dev, "%s: dmic number %d max_ch %d\n",
-+		__func__, dmic_geo, max_ch);
-+
- 	return dmic_geo;
- }
- EXPORT_SYMBOL_GPL(intel_nhlt_get_dmic_geo);
+Pierre-Louis Bossart (6):
+  ASoC: soc-acpi: allow for partial match in parent name
+  ASoC: SOF: pci: split PCI into different drivers
+  ASoC: SOF: pci: move DSP_CONFIG use to platform-specific drivers
+  ASoC: SOF: Intel: SoundWire: simplify Kconfig
+  ALSA: hda: move Intel SoundWire ACPI scan to dedicated module
+  ALSA: hda: intel-sdw-acpi: add missing include files
+
+ drivers/soundwire/intel.h           |   2 -
+ drivers/soundwire/intel_init.c      | 158 -------------
+ include/linux/soundwire/sdw_intel.h |   2 +
+ include/sound/soc-acpi.h            |   2 +-
+ sound/hda/Kconfig                   |   4 +
+ sound/hda/Makefile                  |   3 +
+ sound/hda/intel-dsp-config.c        |   2 +-
+ sound/hda/intel-sdw-acpi.c          | 179 +++++++++++++++
+ sound/soc/sof/Kconfig               |  15 +-
+ sound/soc/sof/Makefile              |   4 +-
+ sound/soc/sof/intel/Kconfig         | 254 +++++++--------------
+ sound/soc/sof/intel/Makefile        |  20 +-
+ sound/soc/sof/intel/bdw.c           |  67 +++++-
+ sound/soc/sof/intel/byt.c           | 106 ++++++++-
+ sound/soc/sof/intel/hda.c           |  18 ++
+ sound/soc/sof/intel/hda.h           |   3 +
+ sound/soc/sof/intel/pci-apl.c       |  81 +++++++
+ sound/soc/sof/intel/pci-cnl.c       | 104 +++++++++
+ sound/soc/sof/intel/pci-icl.c       |  84 +++++++
+ sound/soc/sof/intel/pci-tgl.c       | 121 ++++++++++
+ sound/soc/sof/intel/pci-tng.c       |  70 ++++++
+ sound/soc/sof/intel/shim.h          |   6 -
+ sound/soc/sof/sof-acpi-dev.c        | 130 +----------
+ sound/soc/sof/sof-acpi-dev.h        |  16 ++
+ sound/soc/sof/sof-pci-dev.c         | 340 +---------------------------
+ sound/soc/sof/sof-pci-dev.h         |  17 ++
+ 26 files changed, 998 insertions(+), 810 deletions(-)
+ create mode 100644 sound/hda/intel-sdw-acpi.c
+ create mode 100644 sound/soc/sof/intel/pci-apl.c
+ create mode 100644 sound/soc/sof/intel/pci-cnl.c
+ create mode 100644 sound/soc/sof/intel/pci-icl.c
+ create mode 100644 sound/soc/sof/intel/pci-tgl.c
+ create mode 100644 sound/soc/sof/intel/pci-tng.c
+ create mode 100644 sound/soc/sof/sof-acpi-dev.h
+ create mode 100644 sound/soc/sof/sof-pci-dev.h
+
 -- 
 2.25.1
 
