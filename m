@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C4C8FC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:35:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8252CC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:35:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 053AE64D73
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:35:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 053AE64D73
+	by mail.kernel.org (Postfix) with ESMTPS id C7A8960241
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:35:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7A8960241
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FC101687;
-	Tue,  2 Mar 2021 01:34:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FC101687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 435871693;
+	Tue,  2 Mar 2021 01:35:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 435871693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614645339;
-	bh=1BBEp1AYy4S8wPIZGQL8CF3OJ0cELABcaRS2Sd+Dleo=;
+	s=default; t=1614645353;
+	bh=igEk7RhpDkdl6bxeDVy7Ucbb5fabwJ8sGL2JiuzRYWQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E2cOm5Ot/4O7XHtPMLw8sjCrFp+ECemXQs2yPPuAgACKV7nqBl4NWJg6bDObYDtMB
-	 aQDrUupApjO5O2kG+9hpX3MOdcsiLLOws6qQSvITurPz2TALXe7J4tGcPj0hp9b+pX
-	 6mFGUo96AyhiBFGL49sqsLirmm9ZsukcPYsCS/so=
+	b=IDVZNbLiEi8ad5xO0U1TwcuHJx4w0nwXsfInHSeLfUSGBb52eq9B1vlDtle2atltR
+	 iWE5do7rHulhvm1DN7WWK/18C+kMlWYd26sjQKW5Xo3RYadvvC3EvP+wafPvzssT7v
+	 ptP1XtBHqjESMCdBpR8WbIrz5UwAeVo9qmb9VFQE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D68A7F804C1;
-	Tue,  2 Mar 2021 01:31:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 607EDF804D9;
+	Tue,  2 Mar 2021 01:32:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B501F80475; Tue,  2 Mar 2021 01:31:57 +0100 (CET)
+ id A3189F80482; Tue,  2 Mar 2021 01:31:57 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C1F6F802E3
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 01:31:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C1F6F802E3
-IronPort-SDR: Txw3dNQTk96e0UbtvUFotXyEP8cCvD9SmR29+IyQ7AHU+KDtx0TzvMcbffrWvbttPvn3Sx99hP
- NCtodtPmWMlw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248048806"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248048806"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3751CF80150
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 01:31:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3751CF80150
+IronPort-SDR: 2gP2oXnPlVUGeQRgquWkz4yZqTTqf/m7w/6kDSqfuThkCOWK4Jl28qqI061urc2picGvfRF9lh
+ oWKvaodvaE8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248048780"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248048780"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 16:31:49 -0800
-IronPort-SDR: L/UMQV13GKAqhZb6jfrwzUlHB3hP6RDoc4I3ZjwtcGY/huVG6Js44k9RNP3e14kKskLd+D0sQE
- lm8jVo6CrKDg==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="444512630"
+ 01 Mar 2021 16:31:42 -0800
+IronPort-SDR: NsqX9RxA11d0uuQVFut9rUByyCS8tkpmLEY2tBM845rNu/hteURUbfYO29cCInmYb+6AcAz06E
+ Ggf/sxRCkw9g==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="444512563"
 Received: from josemrod-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.215.233])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 16:31:48 -0800
+ 01 Mar 2021 16:31:40 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 7/7] ALSA: hda: intel-sdw-acpi: add missing include files
-Date: Mon,  1 Mar 2021 18:31:25 -0600
-Message-Id: <20210302003125.1178419-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/7] ASoC: SOF: pci: split PCI into different drivers
+Date: Mon,  1 Mar 2021 18:31:21 -0600
+Message-Id: <20210302003125.1178419-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
 References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
@@ -86,35 +86,1264 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We rely on implicit includes, list out explicitly what this code
-relies on.
+Move PCI IDs and device-specific definitions out of common code. No
+functionality change for now, just code split and removal of
+IF_ENABLED() which made the configurations too complicated in case of
+reuse of IP across generations.
 
-Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Additional changes to address the DSP_CONFIG case and SoundWire
+depends/select confusions are provided in follow-up patches.
+
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 ---
- sound/hda/intel-sdw-acpi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/sof/Kconfig         |   7 +-
+ sound/soc/sof/Makefile        |   2 +-
+ sound/soc/sof/intel/Kconfig   | 179 ++++++------------
+ sound/soc/sof/intel/Makefile  |  12 ++
+ sound/soc/sof/intel/pci-apl.c |  81 +++++++++
+ sound/soc/sof/intel/pci-cnl.c | 104 +++++++++++
+ sound/soc/sof/intel/pci-icl.c |  84 +++++++++
+ sound/soc/sof/intel/pci-tgl.c | 121 +++++++++++++
+ sound/soc/sof/intel/pci-tng.c |  70 +++++++
+ sound/soc/sof/sof-pci-dev.c   | 332 +---------------------------------
+ sound/soc/sof/sof-pci-dev.h   |  17 ++
+ 11 files changed, 562 insertions(+), 447 deletions(-)
+ create mode 100644 sound/soc/sof/intel/pci-apl.c
+ create mode 100644 sound/soc/sof/intel/pci-cnl.c
+ create mode 100644 sound/soc/sof/intel/pci-icl.c
+ create mode 100644 sound/soc/sof/intel/pci-tgl.c
+ create mode 100644 sound/soc/sof/intel/pci-tng.c
+ create mode 100644 sound/soc/sof/sof-pci-dev.h
 
-diff --git a/sound/hda/intel-sdw-acpi.c b/sound/hda/intel-sdw-acpi.c
-index 6359936a1503..c0123bc31c0d 100644
---- a/sound/hda/intel-sdw-acpi.c
-+++ b/sound/hda/intel-sdw-acpi.c
-@@ -6,7 +6,12 @@
-  */
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 95f55a0daefb..8dfc165c3690 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -9,14 +9,17 @@ config SND_SOC_SOF_TOPLEVEL
  
- #include <linux/acpi.h>
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
-+#include <linux/device.h>
-+#include <linux/errno.h>
- #include <linux/export.h>
-+#include <linux/fwnode.h>
- #include <linux/module.h>
- #include <linux/soundwire/sdw_intel.h>
- #include <linux/string.h>
+ if SND_SOC_SOF_TOPLEVEL
+ 
++config SND_SOC_SOF_PCI_DEV
++	tristate
++
+ config SND_SOC_SOF_PCI
+ 	tristate "SOF PCI enumeration support"
+ 	depends on PCI
+-	select SND_SOC_SOF
+-	select SND_SOC_ACPI if ACPI
+ 	help
+ 	  This adds support for PCI enumeration. This option is
+ 	  required to enable Intel Skylake+ devices.
++	  For backwards-compatibility with previous configurations the selection will
++	  be used as default for platform-specific drivers.
+ 	  Say Y if you need this option.
+ 	  If unsure select "N".
+ 
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
+index f88fce23bbc7..606d8137cd98 100644
+--- a/sound/soc/sof/Makefile
++++ b/sound/soc/sof/Makefile
+@@ -16,7 +16,7 @@ obj-$(CONFIG_SND_SOC_SOF_NOCODEC) += snd-sof-nocodec.o
+ 
+ obj-$(CONFIG_SND_SOC_SOF_ACPI_DEV) += snd-sof-acpi.o
+ obj-$(CONFIG_SND_SOC_SOF_OF) += snd-sof-of.o
+-obj-$(CONFIG_SND_SOC_SOF_PCI) += snd-sof-pci.o
++obj-$(CONFIG_SND_SOC_SOF_PCI_DEV) += snd-sof-pci.o
+ 
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_TOPLEVEL) += intel/
+ obj-$(CONFIG_SND_SOC_SOF_IMX_TOPLEVEL) += imx/
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 2b062a66f1e7..7dcb61ba5763 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -9,23 +9,6 @@ config SND_SOC_SOF_INTEL_TOPLEVEL
+ 
+ if SND_SOC_SOF_INTEL_TOPLEVEL
+ 
+-config SND_SOC_SOF_INTEL_PCI
+-	def_tristate SND_SOC_SOF_PCI
+-	select SND_SOC_SOF_MERRIFIELD  if SND_SOC_SOF_MERRIFIELD_SUPPORT
+-	select SND_SOC_SOF_APOLLOLAKE  if SND_SOC_SOF_APOLLOLAKE_SUPPORT
+-	select SND_SOC_SOF_GEMINILAKE  if SND_SOC_SOF_GEMINILAKE_SUPPORT
+-	select SND_SOC_SOF_CANNONLAKE  if SND_SOC_SOF_CANNONLAKE_SUPPORT
+-	select SND_SOC_SOF_COFFEELAKE  if SND_SOC_SOF_COFFEELAKE_SUPPORT
+-	select SND_SOC_SOF_ICELAKE     if SND_SOC_SOF_ICELAKE_SUPPORT
+-	select SND_SOC_SOF_COMETLAKE   if SND_SOC_SOF_COMETLAKE_SUPPORT
+-	select SND_SOC_SOF_TIGERLAKE   if SND_SOC_SOF_TIGERLAKE_SUPPORT
+-	select SND_SOC_SOF_ELKHARTLAKE if SND_SOC_SOF_ELKHARTLAKE_SUPPORT
+-	select SND_SOC_SOF_JASPERLAKE  if SND_SOC_SOF_JASPERLAKE_SUPPORT
+-	select SND_SOC_SOF_ALDERLAKE   if SND_SOC_SOF_ALDERLAKE_SUPPORT
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+ config SND_SOC_SOF_INTEL_HIFI_EP_IPC
+ 	tristate
+ 	help
+@@ -96,187 +79,141 @@ config SND_SOC_SOF_BROADWELL
+ 
+ endif ## SND_SOC_SOF_ACPI
+ 
+-if SND_SOC_SOF_INTEL_PCI
++if SND_SOC_SOF_PCI
+ 
+-config SND_SOC_SOF_MERRIFIELD_SUPPORT
+-	bool "SOF support for Tangier/Merrifield"
++config SND_SOC_SOF_MERRIFIELD
++	tristate "SOF support for Tangier/Merrifield"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+ 	  using the Tangier/Merrifield processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_MERRIFIELD
++config SND_SOC_SOF_INTEL_APL
+ 	tristate
+-	select SND_SOC_SOF_INTEL_ATOM_HIFI_EP
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
++	select SND_SOC_SOF_HDA_COMMON
+ 
+-config SND_SOC_SOF_APOLLOLAKE_SUPPORT
+-	bool "SOF support for Apollolake"
++config SND_SOC_SOF_APOLLOLAKE
++	tristate "SOF support for Apollolake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_APL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+ 	  using the Apollolake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_APOLLOLAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_GEMINILAKE_SUPPORT
+-	bool "SOF support for GeminiLake"
++config SND_SOC_SOF_GEMINILAKE
++	tristate "SOF support for GeminiLake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_APL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+ 	  using the Geminilake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_GEMINILAKE
++config SND_SOC_SOF_INTEL_CNL
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
++	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+ 
+-config SND_SOC_SOF_CANNONLAKE_SUPPORT
+-	bool "SOF support for Cannonlake"
++config SND_SOC_SOF_CANNONLAKE
++	tristate "SOF support for Cannonlake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_CNL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+ 	  using the Cannonlake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_CANNONLAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_COFFEELAKE_SUPPORT
+-	bool "SOF support for CoffeeLake"
++config SND_SOC_SOF_COFFEELAKE
++	tristate "SOF support for CoffeeLake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_CNL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+ 	  using the Coffeelake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_COFFEELAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_ICELAKE_SUPPORT
+-	bool "SOF support for Icelake"
++config SND_SOC_SOF_COMETLAKE
++	tristate "SOF support for CometLake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_CNL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the Icelake processors.
+-	  Say Y if you have such a device.
++	  using the Cometlake processors.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_ICELAKE
++config SND_SOC_SOF_INTEL_ICL
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
+ 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+ 
+-config SND_SOC_SOF_COMETLAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_COMETLAKE_SUPPORT
+-	bool
+-
+-config SND_SOC_SOF_COMETLAKE_LP_SUPPORT
+-	bool "SOF support for CometLake"
+-	select SND_SOC_SOF_COMETLAKE_SUPPORT
++config SND_SOC_SOF_ICELAKE
++	tristate "SOF support for Icelake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_ICL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the Cometlake processors.
++	  using the Icelake processors.
++	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_TIGERLAKE_SUPPORT
+-	bool "SOF support for Tigerlake"
++config SND_SOC_SOF_JASPERLAKE
++	tristate "SOF support for JasperLake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_ICL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the Tigerlake processors.
++	  using the JasperLake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_TIGERLAKE
++config SND_SOC_SOF_INTEL_TGL
+ 	tristate
+ 	select SND_SOC_SOF_HDA_COMMON
+ 	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+ 
+-config SND_SOC_SOF_ELKHARTLAKE_SUPPORT
+-	bool "SOF support for ElkhartLake"
++config SND_SOC_SOF_TIGERLAKE
++	tristate "SOF support for Tigerlake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_TGL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the ElkhartLake processors.
++	  using the Tigerlake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+ config SND_SOC_SOF_ELKHARTLAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_JASPERLAKE_SUPPORT
+-	bool "SOF support for JasperLake"
++	tristate "SOF support for ElkhartLake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_TGL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+-	  using the JasperLake processors.
++	  using the ElkhartLake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_JASPERLAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level.
+-
+-config SND_SOC_SOF_ALDERLAKE_SUPPORT
+-	bool "SOF support for Alderlake"
++config SND_SOC_SOF_ALDERLAKE
++	tristate "SOF support for Alderlake"
++	default SND_SOC_SOF_PCI
++	select SND_SOC_SOF_INTEL_TGL
+ 	help
+ 	  This adds support for Sound Open Firmware for Intel(R) platforms
+ 	  using the Alderlake processors.
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
+-config SND_SOC_SOF_ALDERLAKE
+-	tristate
+-	select SND_SOC_SOF_HDA_COMMON
+-	select SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
+-	help
+-	  This option is not user-selectable but automagically handled by
+-	  'select' statements at a higher level
+-
+ config SND_SOC_SOF_HDA_COMMON
+ 	tristate
+-	select SND_INTEL_DSP_CONFIG
+ 	select SND_SOC_SOF_INTEL_COMMON
++	select SND_SOC_SOF_PCI_DEV
++	select SND_INTEL_DSP_CONFIG
+ 	select SND_SOC_SOF_HDA_LINK_BASELINE
+ 	help
+ 	  This option is not user-selectable but automagically handled by
+diff --git a/sound/soc/sof/intel/Makefile b/sound/soc/sof/intel/Makefile
+index f6640fa73636..f3d6f7070fb3 100644
+--- a/sound/soc/sof/intel/Makefile
++++ b/sound/soc/sof/intel/Makefile
+@@ -18,3 +18,15 @@ obj-$(CONFIG_SND_SOC_SOF_BROADWELL) += snd-sof-acpi-intel-bdw.o
+ obj-$(CONFIG_SND_SOC_SOF_INTEL_HIFI_EP_IPC) += snd-sof-intel-ipc.o
+ obj-$(CONFIG_SND_SOC_SOF_HDA_COMMON) += snd-sof-intel-hda-common.o
+ obj-$(CONFIG_SND_SOC_SOF_HDA) += snd-sof-intel-hda.o
++
++snd-sof-pci-intel-tng-objs := pci-tng.o
++snd-sof-pci-intel-apl-objs := pci-apl.o
++snd-sof-pci-intel-cnl-objs := pci-cnl.o
++snd-sof-pci-intel-icl-objs := pci-icl.o
++snd-sof-pci-intel-tgl-objs := pci-tgl.o
++
++obj-$(CONFIG_SND_SOC_SOF_MERRIFIELD) += snd-sof-pci-intel-tng.o
++obj-$(CONFIG_SND_SOC_SOF_INTEL_APL) += snd-sof-pci-intel-apl.o
++obj-$(CONFIG_SND_SOC_SOF_INTEL_CNL) += snd-sof-pci-intel-cnl.o
++obj-$(CONFIG_SND_SOC_SOF_INTEL_ICL) += snd-sof-pci-intel-icl.o
++obj-$(CONFIG_SND_SOC_SOF_INTEL_TGL) += snd-sof-pci-intel-tgl.o
+diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
+new file mode 100644
+index 000000000000..e83ddbaafa29
+--- /dev/null
++++ b/sound/soc/sof/intel/pci-apl.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018-2021 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/sof.h>
++#include "../ops.h"
++#include "../sof-pci-dev.h"
++
++/* platform specific devices */
++#include "hda.h"
++
++static const struct sof_dev_desc bxt_desc = {
++	.machines		= snd_soc_acpi_intel_bxt_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base	= 0,
++	.resindex_pcicfg_base	= -1,
++	.resindex_imr_base	= -1,
++	.irqindex_host_ipc	= -1,
++	.resindex_dma_base	= -1,
++	.chip_info = &apl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-apl.ri",
++	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
++	.ops = &sof_apl_ops,
++};
++
++static const struct sof_dev_desc glk_desc = {
++	.machines		= snd_soc_acpi_intel_glk_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base	= 0,
++	.resindex_pcicfg_base	= -1,
++	.resindex_imr_base	= -1,
++	.irqindex_host_ipc	= -1,
++	.resindex_dma_base	= -1,
++	.chip_info = &apl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-glk.ri",
++	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
++	.ops = &sof_apl_ops,
++};
++
++/* PCI IDs */
++static const struct pci_device_id sof_pci_ids[] = {
++	{ PCI_DEVICE(0x8086, 0x5a98), /* BXT-P (ApolloLake) */
++		.driver_data = (unsigned long)&bxt_desc},
++	{ PCI_DEVICE(0x8086, 0x1a98),/* BXT-T */
++		.driver_data = (unsigned long)&bxt_desc},
++	{ PCI_DEVICE(0x8086, 0x3198), /* GeminiLake */
++		.driver_data = (unsigned long)&glk_desc},
++	{ 0, }
++};
++MODULE_DEVICE_TABLE(pci, sof_pci_ids);
++
++/* pci_driver definition */
++static struct pci_driver snd_sof_pci_intel_apl_driver = {
++	.name = "sof-audio-pci-intel-apl",
++	.id_table = sof_pci_ids,
++	.probe = sof_pci_probe,
++	.remove = sof_pci_remove,
++	.shutdown = sof_pci_shutdown,
++	.driver = {
++		.pm = &sof_pci_pm,
++	},
++};
++module_pci_driver(snd_sof_pci_intel_apl_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
++MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
+diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
+new file mode 100644
+index 000000000000..f974d3a77217
+--- /dev/null
++++ b/sound/soc/sof/intel/pci-cnl.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/sof.h>
++#include "../ops.h"
++#include "../sof-pci-dev.h"
++
++/* platform specific devices */
++#include "hda.h"
++
++static const struct sof_dev_desc cnl_desc = {
++	.machines		= snd_soc_acpi_intel_cnl_machines,
++	.alt_machines		= snd_soc_acpi_intel_cnl_sdw_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base	= 0,
++	.resindex_pcicfg_base	= -1,
++	.resindex_imr_base	= -1,
++	.irqindex_host_ipc	= -1,
++	.resindex_dma_base	= -1,
++	.chip_info = &cnl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cnl.ri",
++	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
++	.ops = &sof_cnl_ops,
++};
++
++static const struct sof_dev_desc cfl_desc = {
++	.machines		= snd_soc_acpi_intel_cfl_machines,
++	.alt_machines		= snd_soc_acpi_intel_cfl_sdw_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base	= 0,
++	.resindex_pcicfg_base	= -1,
++	.resindex_imr_base	= -1,
++	.irqindex_host_ipc	= -1,
++	.resindex_dma_base	= -1,
++	.chip_info = &cnl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cfl.ri",
++	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
++	.ops = &sof_cnl_ops,
++};
++
++static const struct sof_dev_desc cml_desc = {
++	.machines		= snd_soc_acpi_intel_cml_machines,
++	.alt_machines		= snd_soc_acpi_intel_cml_sdw_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base	= 0,
++	.resindex_pcicfg_base	= -1,
++	.resindex_imr_base	= -1,
++	.irqindex_host_ipc	= -1,
++	.resindex_dma_base	= -1,
++	.chip_info = &cnl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-cml.ri",
++	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
++	.ops = &sof_cnl_ops,
++};
++
++/* PCI IDs */
++static const struct pci_device_id sof_pci_ids[] = {
++	{ PCI_DEVICE(0x8086, 0x9dc8), /* CNL-LP */
++		.driver_data = (unsigned long)&cnl_desc},
++	{ PCI_DEVICE(0x8086, 0xa348), /* CNL-H */
++		.driver_data = (unsigned long)&cfl_desc},
++	{ PCI_DEVICE(0x8086, 0x02c8), /* CML-LP */
++		.driver_data = (unsigned long)&cml_desc},
++	{ PCI_DEVICE(0x8086, 0x06c8), /* CML-H */
++		.driver_data = (unsigned long)&cml_desc},
++	{ PCI_DEVICE(0x8086, 0xa3f0), /* CML-S */
++		.driver_data = (unsigned long)&cml_desc},
++	{ 0, }
++};
++MODULE_DEVICE_TABLE(pci, sof_pci_ids);
++
++/* pci_driver definition */
++static struct pci_driver snd_sof_pci_intel_cnl_driver = {
++	.name = "sof-audio-pci-intel-cnl",
++	.id_table = sof_pci_ids,
++	.probe = sof_pci_probe,
++	.remove = sof_pci_remove,
++	.shutdown = sof_pci_shutdown,
++	.driver = {
++		.pm = &sof_pci_pm,
++	},
++};
++module_pci_driver(snd_sof_pci_intel_cnl_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
++MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
+diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
+new file mode 100644
+index 000000000000..d5d7cefa6ef9
+--- /dev/null
++++ b/sound/soc/sof/intel/pci-icl.c
+@@ -0,0 +1,84 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018-2021 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/sof.h>
++#include "../ops.h"
++#include "../sof-pci-dev.h"
++
++/* platform specific devices */
++#include "hda.h"
++
++static const struct sof_dev_desc icl_desc = {
++	.machines               = snd_soc_acpi_intel_icl_machines,
++	.alt_machines		= snd_soc_acpi_intel_icl_sdw_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &icl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-icl.ri",
++	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
++	.ops = &sof_icl_ops,
++};
++
++static const struct sof_dev_desc jsl_desc = {
++	.machines               = snd_soc_acpi_intel_jsl_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &jsl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-jsl.ri",
++	.nocodec_tplg_filename = "sof-jsl-nocodec.tplg",
++	.ops = &sof_cnl_ops,
++};
++
++/* PCI IDs */
++static const struct pci_device_id sof_pci_ids[] = {
++	{ PCI_DEVICE(0x8086, 0x34C8), /* ICL-LP */
++		.driver_data = (unsigned long)&icl_desc},
++	{ PCI_DEVICE(0x8086, 0x3dc8), /* ICL-H */
++		.driver_data = (unsigned long)&icl_desc},
++	{ PCI_DEVICE(0x8086, 0x38c8), /* ICL-N */
++		.driver_data = (unsigned long)&jsl_desc},
++	{ PCI_DEVICE(0x8086, 0x4dc8), /* JSL-N */
++		.driver_data = (unsigned long)&jsl_desc},
++	{ 0, }
++};
++MODULE_DEVICE_TABLE(pci, sof_pci_ids);
++
++/* pci_driver definition */
++static struct pci_driver snd_sof_pci_intel_icl_driver = {
++	.name = "sof-audio-pci-intel-icl",
++	.id_table = sof_pci_ids,
++	.probe = sof_pci_probe,
++	.remove = sof_pci_remove,
++	.shutdown = sof_pci_shutdown,
++	.driver = {
++		.pm = &sof_pci_pm,
++	},
++};
++module_pci_driver(snd_sof_pci_intel_icl_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
++MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
+diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
+new file mode 100644
+index 000000000000..d35c25a450aa
+--- /dev/null
++++ b/sound/soc/sof/intel/pci-tgl.c
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018-2021 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/sof.h>
++#include "../ops.h"
++#include "../sof-pci-dev.h"
++
++/* platform specific devices */
++#include "hda.h"
++
++static const struct sof_dev_desc tgl_desc = {
++	.machines               = snd_soc_acpi_intel_tgl_machines,
++	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &tgl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-tgl.ri",
++	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
++	.ops = &sof_tgl_ops,
++};
++
++static const struct sof_dev_desc tglh_desc = {
++	.machines               = snd_soc_acpi_intel_tgl_machines,
++	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &tglh_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-tgl-h.ri",
++	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
++	.ops = &sof_tgl_ops,
++};
++
++static const struct sof_dev_desc ehl_desc = {
++	.machines               = snd_soc_acpi_intel_ehl_machines,
++	.use_acpi_target_states	= true,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &ehl_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-ehl.ri",
++	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
++	.ops = &sof_cnl_ops,
++};
++
++static const struct sof_dev_desc adls_desc = {
++	.machines               = snd_soc_acpi_intel_adl_machines,
++	.alt_machines           = snd_soc_acpi_intel_adl_sdw_machines,
++	.resindex_lpe_base      = 0,
++	.resindex_pcicfg_base   = -1,
++	.resindex_imr_base      = -1,
++	.irqindex_host_ipc      = -1,
++	.resindex_dma_base      = -1,
++	.chip_info = &adls_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-adl-s.ri",
++	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
++	.ops = &sof_tgl_ops,
++};
++
++/* PCI IDs */
++static const struct pci_device_id sof_pci_ids[] = {
++	{ PCI_DEVICE(0x8086, 0xa0c8), /* TGL-LP */
++		.driver_data = (unsigned long)&tgl_desc},
++	{ PCI_DEVICE(0x8086, 0x43c8), /* TGL-H */
++		.driver_data = (unsigned long)&tglh_desc},
++	{ PCI_DEVICE(0x8086, 0x4b55), /* EHL */
++		.driver_data = (unsigned long)&ehl_desc},
++	{ PCI_DEVICE(0x8086, 0x4b58), /* EHL */
++		.driver_data = (unsigned long)&ehl_desc},
++	{ PCI_DEVICE(0x8086, 0x7ad0), /* ADL-S */
++		.driver_data = (unsigned long)&adls_desc},
++	{ PCI_DEVICE(0x8086, 0x51c8), /* ADL-P */
++		.driver_data = (unsigned long)&tgl_desc},
++	{ 0, }
++};
++MODULE_DEVICE_TABLE(pci, sof_pci_ids);
++
++/* pci_driver definition */
++static struct pci_driver snd_sof_pci_intel_tgl_driver = {
++	.name = "sof-audio-pci-intel-tgl",
++	.id_table = sof_pci_ids,
++	.probe = sof_pci_probe,
++	.remove = sof_pci_remove,
++	.shutdown = sof_pci_shutdown,
++	.driver = {
++		.pm = &sof_pci_pm,
++	},
++};
++module_pci_driver(snd_sof_pci_intel_tgl_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
++MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
++
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+new file mode 100644
+index 000000000000..94b9704c0117
+--- /dev/null
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018-2021 Intel Corporation. All rights reserved.
++//
++// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//
++
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/sof.h>
++#include "../ops.h"
++#include "../sof-pci-dev.h"
++
++/* platform specific devices */
++#include "shim.h"
++
++static struct snd_soc_acpi_mach sof_tng_machines[] = {
++	{
++		.id = "INT343A",
++		.drv_name = "edison",
++		.sof_fw_filename = "sof-byt.ri",
++		.sof_tplg_filename = "sof-byt.tplg",
++	},
++	{}
++};
++
++static const struct sof_dev_desc tng_desc = {
++	.machines		= sof_tng_machines,
++	.resindex_lpe_base	= 3,	/* IRAM, but subtract IRAM offset */
++	.resindex_pcicfg_base	= -1,
++	.resindex_imr_base	= 0,
++	.irqindex_host_ipc	= -1,
++	.resindex_dma_base	= -1,
++	.chip_info = &tng_chip_info,
++	.default_fw_path = "intel/sof",
++	.default_tplg_path = "intel/sof-tplg",
++	.default_fw_filename = "sof-byt.ri",
++	.nocodec_tplg_filename = "sof-byt.tplg",
++	.ops = &sof_tng_ops,
++};
++
++/* PCI IDs */
++static const struct pci_device_id sof_pci_ids[] = {
++	{ PCI_DEVICE(0x8086, 0x119a),
++		.driver_data = (unsigned long)&tng_desc},
++	{ 0, }
++};
++MODULE_DEVICE_TABLE(pci, sof_pci_ids);
++
++/* pci_driver definition */
++static struct pci_driver snd_sof_pci_intel_tng_driver = {
++	.name = "sof-audio-pci-intel-tng",
++	.id_table = sof_pci_ids,
++	.probe = sof_pci_probe,
++	.remove = sof_pci_remove,
++	.shutdown = sof_pci_shutdown,
++	.driver = {
++		.pm = &sof_pci_pm,
++	},
++};
++module_pci_driver(snd_sof_pci_intel_tng_driver);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_IMPORT_NS(SND_SOC_SOF_MERRIFIELD);
++MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index fd1f0d8c2853..cfcbd9754c03 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -18,10 +18,7 @@
+ #include <sound/soc-acpi-intel-match.h>
+ #include <sound/sof.h>
+ #include "ops.h"
+-
+-/* platform specific devices */
+-#include "intel/shim.h"
+-#include "intel/hda.h"
++#include "sof-pci-dev.h"
+ 
+ static char *fw_path;
+ module_param(fw_path, charp, 0444);
+@@ -81,243 +78,14 @@ static const struct dmi_system_id community_key_platforms[] = {
+ 	{},
+ };
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+-static const struct sof_dev_desc bxt_desc = {
+-	.machines		= snd_soc_acpi_intel_bxt_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base	= 0,
+-	.resindex_pcicfg_base	= -1,
+-	.resindex_imr_base	= -1,
+-	.irqindex_host_ipc	= -1,
+-	.resindex_dma_base	= -1,
+-	.chip_info = &apl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-apl.ri",
+-	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
+-	.ops = &sof_apl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+-static const struct sof_dev_desc glk_desc = {
+-	.machines		= snd_soc_acpi_intel_glk_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base	= 0,
+-	.resindex_pcicfg_base	= -1,
+-	.resindex_imr_base	= -1,
+-	.irqindex_host_ipc	= -1,
+-	.resindex_dma_base	= -1,
+-	.chip_info = &apl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-glk.ri",
+-	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
+-	.ops = &sof_apl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
+-static struct snd_soc_acpi_mach sof_tng_machines[] = {
+-	{
+-		.id = "INT343A",
+-		.drv_name = "edison",
+-		.sof_fw_filename = "sof-byt.ri",
+-		.sof_tplg_filename = "sof-byt.tplg",
+-	},
+-	{}
+-};
+-
+-static const struct sof_dev_desc tng_desc = {
+-	.machines		= sof_tng_machines,
+-	.resindex_lpe_base	= 3,	/* IRAM, but subtract IRAM offset */
+-	.resindex_pcicfg_base	= -1,
+-	.resindex_imr_base	= 0,
+-	.irqindex_host_ipc	= -1,
+-	.resindex_dma_base	= -1,
+-	.chip_info = &tng_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-byt.ri",
+-	.nocodec_tplg_filename = "sof-byt.tplg",
+-	.ops = &sof_tng_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_CANNONLAKE)
+-static const struct sof_dev_desc cnl_desc = {
+-	.machines		= snd_soc_acpi_intel_cnl_machines,
+-	.alt_machines		= snd_soc_acpi_intel_cnl_sdw_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base	= 0,
+-	.resindex_pcicfg_base	= -1,
+-	.resindex_imr_base	= -1,
+-	.irqindex_host_ipc	= -1,
+-	.resindex_dma_base	= -1,
+-	.chip_info = &cnl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-cnl.ri",
+-	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+-	.ops = &sof_cnl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
+-static const struct sof_dev_desc cfl_desc = {
+-	.machines		= snd_soc_acpi_intel_cfl_machines,
+-	.alt_machines		= snd_soc_acpi_intel_cfl_sdw_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base	= 0,
+-	.resindex_pcicfg_base	= -1,
+-	.resindex_imr_base	= -1,
+-	.irqindex_host_ipc	= -1,
+-	.resindex_dma_base	= -1,
+-	.chip_info = &cnl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-cfl.ri",
+-	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+-	.ops = &sof_cnl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE)
+-static const struct sof_dev_desc cml_desc = {
+-	.machines		= snd_soc_acpi_intel_cml_machines,
+-	.alt_machines		= snd_soc_acpi_intel_cml_sdw_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base	= 0,
+-	.resindex_pcicfg_base	= -1,
+-	.resindex_imr_base	= -1,
+-	.irqindex_host_ipc	= -1,
+-	.resindex_dma_base	= -1,
+-	.chip_info = &cnl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-cml.ri",
+-	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
+-	.ops = &sof_cnl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
+-static const struct sof_dev_desc icl_desc = {
+-	.machines               = snd_soc_acpi_intel_icl_machines,
+-	.alt_machines		= snd_soc_acpi_intel_icl_sdw_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base      = 0,
+-	.resindex_pcicfg_base   = -1,
+-	.resindex_imr_base      = -1,
+-	.irqindex_host_ipc      = -1,
+-	.resindex_dma_base      = -1,
+-	.chip_info = &icl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-icl.ri",
+-	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
+-	.ops = &sof_icl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE) || IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
+-static const struct sof_dev_desc tgl_desc = {
+-	.machines               = snd_soc_acpi_intel_tgl_machines,
+-	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base      = 0,
+-	.resindex_pcicfg_base   = -1,
+-	.resindex_imr_base      = -1,
+-	.irqindex_host_ipc      = -1,
+-	.resindex_dma_base      = -1,
+-	.chip_info = &tgl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-tgl.ri",
+-	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
+-	.ops = &sof_tgl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
+-static const struct sof_dev_desc tglh_desc = {
+-	.machines               = snd_soc_acpi_intel_tgl_machines,
+-	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
+-	.resindex_lpe_base      = 0,
+-	.resindex_pcicfg_base   = -1,
+-	.resindex_imr_base      = -1,
+-	.irqindex_host_ipc      = -1,
+-	.resindex_dma_base      = -1,
+-	.chip_info = &tglh_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-tgl-h.ri",
+-	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
+-	.ops = &sof_tgl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
+-static const struct sof_dev_desc ehl_desc = {
+-	.machines               = snd_soc_acpi_intel_ehl_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base      = 0,
+-	.resindex_pcicfg_base   = -1,
+-	.resindex_imr_base      = -1,
+-	.irqindex_host_ipc      = -1,
+-	.resindex_dma_base      = -1,
+-	.chip_info = &ehl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-ehl.ri",
+-	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
+-	.ops = &sof_cnl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
+-static const struct sof_dev_desc jsl_desc = {
+-	.machines               = snd_soc_acpi_intel_jsl_machines,
+-	.use_acpi_target_states	= true,
+-	.resindex_lpe_base      = 0,
+-	.resindex_pcicfg_base   = -1,
+-	.resindex_imr_base      = -1,
+-	.irqindex_host_ipc      = -1,
+-	.resindex_dma_base      = -1,
+-	.chip_info = &jsl_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-jsl.ri",
+-	.nocodec_tplg_filename = "sof-jsl-nocodec.tplg",
+-	.ops = &sof_cnl_ops,
+-};
+-#endif
+-
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
+-static const struct sof_dev_desc adls_desc = {
+-	.machines               = snd_soc_acpi_intel_adl_machines,
+-	.alt_machines           = snd_soc_acpi_intel_adl_sdw_machines,
+-	.resindex_lpe_base      = 0,
+-	.resindex_pcicfg_base   = -1,
+-	.resindex_imr_base      = -1,
+-	.irqindex_host_ipc      = -1,
+-	.resindex_dma_base      = -1,
+-	.chip_info = &adls_chip_info,
+-	.default_fw_path = "intel/sof",
+-	.default_tplg_path = "intel/sof-tplg",
+-	.default_fw_filename = "sof-adl-s.ri",
+-	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
+-	.ops = &sof_tgl_ops,
+-};
+-#endif
+-
+-static const struct dev_pm_ops sof_pci_pm = {
++const struct dev_pm_ops sof_pci_pm = {
+ 	.prepare = snd_sof_prepare,
+ 	.complete = snd_sof_complete,
+ 	SET_SYSTEM_SLEEP_PM_OPS(snd_sof_suspend, snd_sof_resume)
+ 	SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
+ 			   snd_sof_runtime_idle)
+ };
++EXPORT_SYMBOL_NS(sof_pci_pm, SND_SOC_SOF_PCI_DEV);
+ 
+ static void sof_pci_probe_complete(struct device *dev)
+ {
+@@ -343,8 +111,7 @@ static void sof_pci_probe_complete(struct device *dev)
+ 	pm_runtime_put_noidle(dev);
+ }
+ 
+-static int sof_pci_probe(struct pci_dev *pci,
+-			 const struct pci_device_id *pci_id)
++int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ {
+ 	struct device *dev = &pci->dev;
+ 	const struct sof_dev_desc *desc =
+@@ -447,8 +214,9 @@ static int sof_pci_probe(struct pci_dev *pci,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_NS(sof_pci_probe, SND_SOC_SOF_PCI_DEV);
+ 
+-static void sof_pci_remove(struct pci_dev *pci)
++void sof_pci_remove(struct pci_dev *pci)
+ {
+ 	/* call sof helper for DSP hardware remove */
+ 	snd_sof_device_remove(&pci->dev);
+@@ -461,94 +229,12 @@ static void sof_pci_remove(struct pci_dev *pci)
+ 	/* release pci regions and disable device */
+ 	pci_release_regions(pci);
+ }
++EXPORT_SYMBOL_NS(sof_pci_remove, SND_SOC_SOF_PCI_DEV);
+ 
+-static void sof_pci_shutdown(struct pci_dev *pci)
++void sof_pci_shutdown(struct pci_dev *pci)
+ {
+ 	snd_sof_device_shutdown(&pci->dev);
+ }
+-
+-/* PCI IDs */
+-static const struct pci_device_id sof_pci_ids[] = {
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_MERRIFIELD)
+-	{ PCI_DEVICE(0x8086, 0x119a),
+-		.driver_data = (unsigned long)&tng_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+-	/* BXT-P & Apollolake */
+-	{ PCI_DEVICE(0x8086, 0x5a98),
+-		.driver_data = (unsigned long)&bxt_desc},
+-	{ PCI_DEVICE(0x8086, 0x1a98),
+-		.driver_data = (unsigned long)&bxt_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+-	{ PCI_DEVICE(0x8086, 0x3198),
+-		.driver_data = (unsigned long)&glk_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_CANNONLAKE)
+-	{ PCI_DEVICE(0x8086, 0x9dc8),
+-		.driver_data = (unsigned long)&cnl_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COFFEELAKE)
+-	{ PCI_DEVICE(0x8086, 0xa348),
+-		.driver_data = (unsigned long)&cfl_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_ICELAKE)
+-	{ PCI_DEVICE(0x8086, 0x34C8), /* ICL-LP */
+-		.driver_data = (unsigned long)&icl_desc},
+-	{ PCI_DEVICE(0x8086, 0x3dc8), /* ICL-H */
+-		.driver_data = (unsigned long)&icl_desc},
+-
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_JASPERLAKE)
+-	{ PCI_DEVICE(0x8086, 0x38c8),
+-		.driver_data = (unsigned long)&jsl_desc},
+-	{ PCI_DEVICE(0x8086, 0x4dc8),
+-		.driver_data = (unsigned long)&jsl_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE)
+-	{ PCI_DEVICE(0x8086, 0x02c8), /* CML-LP */
+-		.driver_data = (unsigned long)&cml_desc},
+-	{ PCI_DEVICE(0x8086, 0x06c8), /* CML-H */
+-		.driver_data = (unsigned long)&cml_desc},
+-	{ PCI_DEVICE(0x8086, 0xa3f0), /* CML-S */
+-		.driver_data = (unsigned long)&cml_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
+-	{ PCI_DEVICE(0x8086, 0xa0c8), /* TGL-LP */
+-		.driver_data = (unsigned long)&tgl_desc},
+-	{ PCI_DEVICE(0x8086, 0x43c8), /* TGL-H */
+-		.driver_data = (unsigned long)&tglh_desc},
+-
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_ELKHARTLAKE)
+-	{ PCI_DEVICE(0x8086, 0x4b55),
+-		.driver_data = (unsigned long)&ehl_desc},
+-	{ PCI_DEVICE(0x8086, 0x4b58),
+-		.driver_data = (unsigned long)&ehl_desc},
+-#endif
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
+-	{ PCI_DEVICE(0x8086, 0x7ad0),
+-		.driver_data = (unsigned long)&adls_desc},
+-	{ PCI_DEVICE(0x8086, 0x51c8),
+-		.driver_data = (unsigned long)&tgl_desc},
+-#endif
+-	{ 0, }
+-};
+-MODULE_DEVICE_TABLE(pci, sof_pci_ids);
+-
+-/* pci_driver definition */
+-static struct pci_driver snd_sof_pci_driver = {
+-	.name = "sof-audio-pci",
+-	.id_table = sof_pci_ids,
+-	.probe = sof_pci_probe,
+-	.remove = sof_pci_remove,
+-	.shutdown = sof_pci_shutdown,
+-	.driver = {
+-		.pm = &sof_pci_pm,
+-	},
+-};
+-module_pci_driver(snd_sof_pci_driver);
++EXPORT_SYMBOL_NS(sof_pci_shutdown, SND_SOC_SOF_PCI_DEV);
+ 
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_IMPORT_NS(SND_SOC_SOF_MERRIFIELD);
+-MODULE_IMPORT_NS(SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/sof-pci-dev.h b/sound/soc/sof/sof-pci-dev.h
+new file mode 100644
+index 000000000000..81155a59e63a
+--- /dev/null
++++ b/sound/soc/sof/sof-pci-dev.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2021 Intel Corporation. All rights reserved.
++ */
++
++#ifndef __SOUND_SOC_SOF_PCI_H
++#define __SOUND_SOC_SOF_PCI_H
++
++extern const struct dev_pm_ops sof_pci_pm;
++int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id);
++void sof_pci_remove(struct pci_dev *pci);
++void sof_pci_shutdown(struct pci_dev *pci);
++
++#endif
 -- 
 2.25.1
 
