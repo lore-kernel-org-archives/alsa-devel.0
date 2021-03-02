@@ -2,94 +2,94 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EFF3C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E7D3C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:24:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6725064F14
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:23:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6725064F14
+	by mail.kernel.org (Postfix) with ESMTPS id 3E0F064F15
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:24:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E0F064F15
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8C9E1616;
-	Tue,  2 Mar 2021 12:23:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8C9E1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F1BE1723;
+	Tue,  2 Mar 2021 12:23:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F1BE1723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614684235;
-	bh=1ipbjuGPh6R9cUAB1ajC4/cWVS4T2KQQPTo63o7FglE=;
+	s=default; t=1614684274;
+	bh=4Do8m4M0qAJ0NYIgTW+FYixwJg7MaUOrw2wPRgVG6Bs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WYKKSOlUN+LX/Qtbh4zm9mnhtJyJLmSH6gd4Yha0fjWdQspgzzWLyx/BhYNCjdcDJ
-	 /80LH9vDThRHp7igpB0qSWH9ZSN8rXEw3uHs8m4pWDTJDER/9oA7V2Ke6UeeJHmuWg
-	 VcvnaPAVz77E5mXMgGudEhv3RqLpK668H+6kukJo=
+	b=fnOt1RNupinfH+XKFp126yHXoSZaxepVpuyYZ3wF6sPHIriwKLZqnFD2TiRHXzYpx
+	 PVBOi7cTQ3qDXlb6dCNW1Y/LHxG0Xc2MRX6SeC3n4q9icix04vM44nqWxDUaNgjOQn
+	 VQxcvpU8l37i0O093Jrg4B7LPpuXYyAGy8E98n5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CCB7F802E7;
-	Tue,  2 Mar 2021 12:22:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3151FF8032C;
+	Tue,  2 Mar 2021 12:22:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7BC71F802E3; Tue,  2 Mar 2021 12:22:10 +0100 (CET)
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
- [IPv6:2a00:1450:4864:20::232])
+ id 29A4DF802E7; Tue,  2 Mar 2021 12:22:13 +0100 (CET)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9211BF80227
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 12:22:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9211BF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id B3703F80088
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 12:22:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3703F80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ij6zyyk2"
-Received: by mail-lj1-x232.google.com with SMTP id r25so22448957ljk.11
- for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+ header.b="KA4Y0Tsy"
+Received: by mail-lf1-x131.google.com with SMTP id f1so30716886lfu.3
+ for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=xg6BAG0aRzJfW3NL7J2fV5y7N6SqjvW9ZuXns5YdGNw=;
- b=ij6zyyk2aNlnnd0XbYbXxR36/zxdJcr9oByFXbsLlM07fBQJN/XPW5dS0umXVs3XrX
- dKb1YQ8a0gVCNKjADTd1RstNMz9rp+XjqXRIUUctar5a9uwwyr+8SKiM/O0yBBhcnGom
- 4st8pL5dZxsqRTFfsRm37Hqwsiu2fzBbjPhoJzY+o4MqR9HMilYX6zzPxgy5eAEsoe+F
- ijahXaj6u45ZWQ4YMnguCdwtluvUK8YMzenP0OmgdLwwkqPxsDPuXhnCMxYZuwR364Ok
- QIAwqM0Rjfe52bABrP21DXJol2fqr51UgLU5KHILSvm2ERP8ZQV8b17+8kOD6BoClieG
- A8oQ==
+ bh=eHJDWKwpMM6cb9JU11x1wUIhvtQqgROewecwtgVy2N0=;
+ b=KA4Y0Tsyx6wny/1fbDCWLOkL6AFPWHKh5/uwf1eSoPg7MlkRHTEMaQ329g1b/M32ZE
+ 1088gihSRrQDMld+eMaV6KktUmDbyDoGctQTOr3PXGu049GMiv/fnO406mBNQddyKJ8O
+ ZeEh4RnZKI92iYsaZ8CaLxcmmv2BKybK4dwDYdu7EJJa/az8DgxphnOX0/ILaAjrnGGt
+ m0lxX8tdJs+vZ8+Cni+iZ5evCwhvouv/LJjA1urcEHC8K1kwmStX/XBL6kSvNHF3k8so
+ 8Fh8Q9XCjqdzHIqYbcBdxml1WviiOf7CziRtpXoRQUQeUf17/4QrHF7zfYDORQj97UT5
+ J1lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=xg6BAG0aRzJfW3NL7J2fV5y7N6SqjvW9ZuXns5YdGNw=;
- b=fWe1zlDhA0OaBBzOOtKqKa4c1Wk9YOc7WiQ+jzTcuT86286TdIOE/WMb2O6NfiZqK+
- jOwSbPwvPGLqrVrnwX0r+H8AfL/QxyngIi4mdPfvwhPhshLS9BWO+W3CpQ+qhui6cfyh
- GGktzuRTrowkZ1iLTbMiFDK/8UvZUlyZ7IOwSZIJc4I1WQSbPfVxsNOuc3TRetLbz/ZQ
- KnpCQuoe3wGwCJ9d9840vr03UfL8upjH/nkQkkbEahtqdylqVdasVPaLna39RO+u4Hkm
- n9y3CDS5nU2wdgX/bhZkhdhCaGlmIO0Waj84nejcjPU5F5KIIf9f8aI/aDNdD26pTlvQ
- uzag==
-X-Gm-Message-State: AOAM530RktrzKQwPNmYdUKcAdeYkPKKuktHcKiU/0fTXHvvLruaylUkV
- lX084TajtZIgtGlX5f7iJD0=
-X-Google-Smtp-Source: ABdhPJztqfJKjybeaUExw8rEhx/7K9lWQwQ4Fio3EyS4lLaojOGOfgeTNngjfqdTuKrt1x7E4as3tg==
-X-Received: by 2002:a2e:9908:: with SMTP id v8mr8601266lji.460.1614684125149; 
- Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+ bh=eHJDWKwpMM6cb9JU11x1wUIhvtQqgROewecwtgVy2N0=;
+ b=sdRCBScGG9euKr/IeyISWJzOl9ssYaa+tnjc1i4j9LKiPzzJmXS0GYuFT79fSAnYNQ
+ EKjYR0bscLp2q7IbsX+dewC1RrLGleyfr4qTmnEtQoVys+3SEQ/CkComvUmO/t/NjdKj
+ sz8Qb+e1QdvHx4NRTGw1NeX87wM6JkZiAVeXArfOfhq7LCoSovbH06gpaDFiZHitW77F
+ nObBAIEW6xCj/jL1dmk/HR0kfSdDC9CSQx4EMb4I894zGDHs4pRuA1lxlwGmCXOzCLw2
+ Aal16PjAmiXR4RNdaFs0ENakmbw/sF5b8+ZUY3M91+c7/OwpJrsxOW0C1VaYPhpteg+4
+ 4Ueg==
+X-Gm-Message-State: AOAM5308qIHyOrywiVv8Cl8ODq+/oLoyu2AAFUID7ESgojQJmAXqhM5W
+ PECdejoNzgdnTOschifrfp4=
+X-Google-Smtp-Source: ABdhPJyKxz9BYcUUyxdMZ1AX6m8pDZ9C0dzxbibzbcLo6KkoeOmLZPDAGWCpPc8MBiSr+rey8Jv9bw==
+X-Received: by 2002:a19:3f08:: with SMTP id m8mr12331184lfa.275.1614684126498; 
+ Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.04
+ by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Mar 2021 03:22:04 -0800 (PST)
+ Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v1 1/5] reset: Allow devm_reset_control_array_get() to get
- resets in a released state
-Date: Tue,  2 Mar 2021 14:21:19 +0300
-Message-Id: <20210302112123.24161-2-digetx@gmail.com>
+Subject: [PATCH v1 3/5] ASoC: tegra20: ac97: Add reset control
+Date: Tue,  2 Mar 2021 14:21:21 +0300
+Message-Id: <20210302112123.24161-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210302112123.24161-1-digetx@gmail.com>
 References: <20210302112123.24161-1-digetx@gmail.com>
@@ -112,104 +112,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Allow devm_reset_control_array_get() to get resets in a released state
-in order to make it possible to extend reset-API with resource-managed
-variants of retrieving resets array in a released state. In particular
-this is needed by NVIDIA Tegra drivers.
+Tegra20 AC97 driver doesn't manage the AC97 controller reset, relying on
+implicit deassertion of the reset by tegra-clk driver, which needs to be
+fixed since this behaviour is unacceptable by other Tegra drivers. Add
+explicit reset control to the Tegra20 AC97 driver.
+
+Note that AC97 reset was always specified in Tegra20 device-tree, hence
+DTB ABI changes aren't required.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/reset/core.c  |  8 ++++++--
- include/linux/reset.h | 14 ++++++++------
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ sound/soc/tegra/tegra20_ac97.c | 21 +++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.h |  1 +
+ 2 files changed, 22 insertions(+)
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index dbf881b586d9..f36de3d3849b 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -985,6 +985,8 @@ EXPORT_SYMBOL_GPL(of_reset_control_array_get);
-  * @dev: device that requests the list of reset controls
-  * @shared: whether reset controls are shared or not
-  * @optional: whether it is optional to get the reset controls
-+ * @acquired: only one reset control may be acquired for a given controller
-+ *            and ID
-  *
-  * The reset control array APIs are intended for a list of resets
-  * that just have to be asserted or deasserted, without any
-@@ -993,7 +995,8 @@ EXPORT_SYMBOL_GPL(of_reset_control_array_get);
-  * Returns pointer to allocated reset_control on success or error on failure
-  */
- struct reset_control *
--devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
-+devm_reset_control_array_get(struct device *dev, bool shared, bool optional,
-+			     bool acquired)
- {
- 	struct reset_control **ptr, *rstc;
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index 06c728ae17ed..c454a34c15c4 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -21,6 +21,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/reset.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -313,6 +314,12 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	}
+ 	dev_set_drvdata(&pdev->dev, ac97);
  
-@@ -1002,7 +1005,8 @@ devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
- 	if (!ptr)
- 		return ERR_PTR(-ENOMEM);
++	ac97->reset = devm_reset_control_get_exclusive(&pdev->dev, "ac97");
++	if (IS_ERR(ac97->reset)) {
++		dev_err(&pdev->dev, "Can't retrieve ac97 reset\n");
++		return PTR_ERR(ac97->reset);
++	}
++
+ 	ac97->clk_ac97 = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(ac97->clk_ac97)) {
+ 		dev_err(&pdev->dev, "Can't retrieve ac97 clock\n");
+@@ -364,12 +371,26 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ac97->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	ac97->playback_dma_data.maxburst = 4;
  
--	rstc = of_reset_control_array_get(dev->of_node, shared, optional, true);
-+	rstc = of_reset_control_array_get(dev->of_node, shared, optional,
-+					  acquired);
- 	if (IS_ERR_OR_NULL(rstc)) {
- 		devres_free(ptr);
- 		return rstc;
-diff --git a/include/linux/reset.h b/include/linux/reset.h
-index b9109efa2a5c..3bee086f1f06 100644
---- a/include/linux/reset.h
-+++ b/include/linux/reset.h
-@@ -33,7 +33,8 @@ struct reset_control *__devm_reset_control_get(struct device *dev,
- 				     bool optional, bool acquired);
++	ret = reset_control_assert(ac97->reset);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to assert AC'97 reset: %d\n", ret);
++		goto err_clk_put;
++	}
++
+ 	ret = clk_prepare_enable(ac97->clk_ac97);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
+ 		goto err_clk_put;
+ 	}
  
- struct reset_control *devm_reset_control_array_get(struct device *dev,
--						   bool shared, bool optional);
-+						   bool shared, bool optional,
-+						   bool acquired);
- struct reset_control *of_reset_control_array_get(struct device_node *np,
- 						 bool shared, bool optional,
- 						 bool acquired);
-@@ -105,7 +106,8 @@ static inline struct reset_control *__devm_reset_control_get(
- }
- 
- static inline struct reset_control *
--devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
-+devm_reset_control_array_get(struct device *dev, bool shared, bool optional,
-+			     bool acquired)
- {
- 	return optional ? NULL : ERR_PTR(-ENOTSUPP);
- }
-@@ -511,25 +513,25 @@ static inline struct reset_control *devm_reset_control_get_by_index(
- static inline struct reset_control *
- devm_reset_control_array_get_exclusive(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, false, false);
-+	return devm_reset_control_array_get(dev, false, false, true);
- }
- 
- static inline struct reset_control *
- devm_reset_control_array_get_shared(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, true, false);
-+	return devm_reset_control_array_get(dev, true, false, true);
- }
- 
- static inline struct reset_control *
- devm_reset_control_array_get_optional_exclusive(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, false, true);
-+	return devm_reset_control_array_get(dev, false, true, true);
- }
- 
- static inline struct reset_control *
- devm_reset_control_array_get_optional_shared(struct device *dev)
- {
--	return devm_reset_control_array_get(dev, true, true);
-+	return devm_reset_control_array_get(dev, true, true, true);
- }
- 
- static inline struct reset_control *
++	usleep_range(10, 100);
++
++	ret = reset_control_deassert(ac97->reset);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to deassert AC'97 reset: %d\n", ret);
++		goto err_clk_disable_unprepare;
++	}
++
+ 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
+diff --git a/sound/soc/tegra/tegra20_ac97.h b/sound/soc/tegra/tegra20_ac97.h
+index e467cd1ff2ca..870ea09ff301 100644
+--- a/sound/soc/tegra/tegra20_ac97.h
++++ b/sound/soc/tegra/tegra20_ac97.h
+@@ -78,6 +78,7 @@ struct tegra20_ac97 {
+ 	struct clk *clk_ac97;
+ 	struct snd_dmaengine_dai_dma_data capture_dma_data;
+ 	struct snd_dmaengine_dai_dma_data playback_dma_data;
++	struct reset_control *reset;
+ 	struct regmap *regmap;
+ 	int reset_gpio;
+ 	int sync_gpio;
 -- 
 2.29.2
 
