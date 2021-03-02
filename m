@@ -2,75 +2,76 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15ABCC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:45:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3531EC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:51:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E990A64F04
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:45:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E990A64F04
+	by mail.kernel.org (Postfix) with ESMTPS id C80FA64F66
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:51:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C80FA64F66
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3DD816E1;
-	Tue,  2 Mar 2021 13:44:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3DD816E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E61116E1;
+	Tue,  2 Mar 2021 13:50:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E61116E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614689140;
-	bh=MRUH84/DjXayEDduSRCfeYm7nkt8wSOG6x7wj5e0Oik=;
+	s=default; t=1614689480;
+	bh=WmVH+zXDxgTi+YtrZbgW5+vNGhWdHs8/AxaMBHbxCdQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UogPvG5r4oZJaBuaBd97ZSRdo9rYarFCiLGPOmgnAbsDe7P9Nn5yRQzztucieZrRQ
-	 pVj3VTDUvnF115pt7Q4Imvb+qxS/PoLdX53bnnjcKCW0eht47ryzI9wmQepB/vPqn0
-	 LPZxQ9/v49Ds4CyqA66TiX6p9IJIozuhu8BdHVio=
+	b=iwUibJ0Uhlkb3s8YgDg1GovgmPl/f57Lg5VdFWnFpR0qpnF7V4ptRUHbdemNSvKS6
+	 K97IU3M/D+f/Z0Dex5jzptpXxpe909V+mPbA+j91e0Tkf44jI4qMd/1n26rUbSPcRi
+	 B3+go9RNbcLV7rGvpOvNY8U8FUtyHOUQ6a/BLRW4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C395F8025B;
-	Tue,  2 Mar 2021 13:44:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CFBEF80269;
+	Tue,  2 Mar 2021 13:50:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31659F80269; Tue,  2 Mar 2021 13:44:49 +0100 (CET)
+ id 9B659F80269; Tue,  2 Mar 2021 13:50:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B020BF80227
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 13:44:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B020BF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BB8AF8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 13:50:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BB8AF8012D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pjLixKXe"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 243AF61606;
- Tue,  2 Mar 2021 12:44:43 +0000 (UTC)
+ header.b="JOBXeQ9V"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B6664F64;
+ Tue,  2 Mar 2021 12:50:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614689084;
- bh=MRUH84/DjXayEDduSRCfeYm7nkt8wSOG6x7wj5e0Oik=;
+ s=k20201202; t=1614689420;
+ bh=WmVH+zXDxgTi+YtrZbgW5+vNGhWdHs8/AxaMBHbxCdQ=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=pjLixKXeCm9gZrPwfeo1xaKpDZ6hlL0WJL1Dn7naVdvmRXzwhShtEK8GfI+5bdbYB
- WnolIFaJOT9oYpkBx1IS6XE9tQP7Rl7nVRf+KEW2WSI3IDc+GUmfkWv8kA9+IOulTy
- sCDl+vs0SvL0AvBuVVQXfb+KworxLo79fZq/GXGR8HF0eAYrXJKUxfSoU92vXiZuMs
- JeqeDIQLIqzp6FbMhkp+iMq2pY0Rptc7NejFB2TTTLe+/1/CyzoiHunKYWvdFtKBzW
- Ij6+WFpKRxwm2jhp0bFWyfDUmHHLIHe1rHkOlz51mfR7zWHyk3lM6KC9hWPXqoaZ38
- el89sVjgKpq2w==
-Date: Tue, 2 Mar 2021 12:43:38 +0000
+ b=JOBXeQ9VgXV/INC2xKi/GmKK5Jz8qBkQE1lP2pI7N7hra2/rj3o82DhBbnmejOsD+
+ kS3mZQmhKgrVKhM5r5CkDmzN72lwR8HHeEx/nOaoukXsrnWGrd9kRF8HeUN+1A/Fbn
+ LHlWGVaY+jiXAyxfGUsnshRfCYHVUv2BFKKGDt85aaO7JSbcLc1z2AiEJtn9wQoQBb
+ VdWkv6Njxgxdm1EcBOGRJM+Asw4knR4E12b6uMezB08a+u75W/faj5qrkcChDq/rjB
+ 1tadEPDuDCjI01DDPQKS7Rw5SyRrOgFk2PAW9lTZ5IzvuyowpogOYOTkMLnR6mF9ER
+ 8SyvF+No0caLQ==
+Date: Tue, 2 Mar 2021 12:49:13 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/7] ALSA/ASoC/SOF/SoundWire: fix Kconfig issues
-Message-ID: <20210302124338.GB4522@sirena.org.uk>
-References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
+To: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] ASoC: soc-core: Prevent warning if no DMI table is present
+Message-ID: <20210302124913.GC4522@sirena.org.uk>
+References: <20210302092712.310705-1-jonathanh@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
+ protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
 Content-Disposition: inline
-In-Reply-To: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210302092712.310705-1-jonathanh@nvidia.com>
 X-Cookie: Friction is a drag.
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, vkoul@kernel.org, arnd@arndb.de
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,29 +88,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---0eh6TmSyL6TZE2Uz
+--s9fJI615cBHmzTOP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 01, 2021 at 06:31:18PM -0600, Pierre-Louis Bossart wrote:
-> In January, Intel kbuild bot and Arnd Bergmann reported multiple
-> issues with randconfig. This patchset builds on Arnd's suggestions to
+On Tue, Mar 02, 2021 at 09:27:12AM +0000, Jon Hunter wrote:
+> Many systems do not provide a DMI table and on these systems a warning,
+> such as the following, is printed on boot ...
+>=20
+>  WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
+>=20
+> If DMI support is enabled in the kernel, there is no simple way to
+> detect if a DMI table is table or not. Note that the variable
+> 'dmi_available' is not exported and so cannot be used by kernel modules.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+We could fix that, or provide an accessor function?  Or only warn if
+we're on an ACPI system (which we can check from a module).  This really
+does feel like something we should be warning about on systems that are
+supposed to have DMI information available as standard.
 
---0eh6TmSyL6TZE2Uz
+--s9fJI615cBHmzTOP
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+MvkACgkQJNaLcl1U
-h9BTAAf/QN6BOaPFMrUENBiCv9ms6IJC+dN5symXrL4r640Tqc9X3EjpvQDAFfDc
-ku/CuHtWYWrpLmMG0ixtG+Nk62xI6Af8o6OhEtD4ul10YbwPPR13dX21o6iAL8Hz
-uYaKFLxXTOTZy5dDgZaLUohkbftubYXiXxxb1cw51RzHkZNSUXo7HjdrmoOdMJ06
-BODhU1qMCRlwFOXHTgbyyRp+IFc5qcSxpk+3M257VZL2LHnrDrIGsHCu3YhPsmdd
-py+0pcZmWlXUMX2F6/9USci19/iuiTaGf1tBnBqnoX6MPJ5wgeOfnGqGmwf9s+eP
-tln+BkyBvLVpgYGk+U32vfXoAdUYGg==
-=BsL4
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+NEgACgkQJNaLcl1U
+h9CQDAf/Z48cJOMLdkoZSxTL6NDL7fNrb3cLcBfyh2VSzLXYRiPg9xSEGtxMEtZH
+Nt77fAQr36jGJj5+ArLxHIZp3t0baGveNLoWOLR+0V2nq3ySxgUfKElwV5gQ/Xwy
+NJLtb0s9AzeYnM6docqPn5mdfTHKidIEVtcdprYrPo4TGT5XwUayn5Nj037keTda
+HFDHscgSyFqEwFEQs6qwAHfNocGEakSbtsmFD+tC2GCupq1gx3pJm1i/rS50b4U6
+jiEj+pP2OPhGKj103UKc+wNByNfGPVo5p0fhKqrklHnAFC1B4ZXXWHqU7Xa/soVq
+v1Ou/xkvrjI+ckyeeLLDpPMx2bjaYg==
+=zWGP
 -----END PGP SIGNATURE-----
 
---0eh6TmSyL6TZE2Uz--
+--s9fJI615cBHmzTOP--
