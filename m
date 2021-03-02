@@ -2,64 +2,64 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5EB6C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02142C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:22:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1E6864EFC
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:21:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1E6864EFC
+	by mail.kernel.org (Postfix) with ESMTPS id 25B2964EFC
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:22:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25B2964EFC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 617CD16DF;
-	Tue,  2 Mar 2021 10:20:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 617CD16DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51B4C1707;
+	Tue,  2 Mar 2021 10:21:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51B4C1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614676875;
-	bh=G7T8JsIgc8veFQt2BzGVUkb37HzFACp7hjzJ+k/0nxA=;
+	s=default; t=1614676967;
+	bh=+YsgtAykWB1oNpbtQfvrUg5Dn5b1sn/yQOgCvUHWa7U=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SSfRWz/4NsdkHhtlLsqrlErt3/QksUoNWufM1VatnYa0JGxSqZ8bXffEzDMZD7HQK
-	 +djdl3GuG+kXdYSZnegx7dSyOm2qQabxaQ9LKfoodgArs/IryLdhj1KM9IHh8PmfyF
-	 W3ZAMi15kR1nZp6kQCB16zhlVmYWtXBPuMv13j5k=
+	b=OrlAUuNZl/Nlo5I8+SfZbPGEXI1zFdYjzATI1MM+tdZT7iV/6YB8fsmTYImpXrYbF
+	 +oqvD8CQcS1qMcxPsZduSOWLIvHqfe/qbhgLKFZ3efBzKPOUf4QILhJ/BCoi1tXU44
+	 s70eUUWBwG74NafRmtDxcXVkMGyhOfQuWukckkco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5479F80227;
-	Tue,  2 Mar 2021 10:20:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9085F80227;
+	Tue,  2 Mar 2021 10:21:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A00CF8025B; Tue,  2 Mar 2021 10:20:23 +0100 (CET)
+ id 079BDF8025B; Tue,  2 Mar 2021 10:21:56 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69692F80088
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:20:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69692F80088
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA95EF80088
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:21:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA95EF80088
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 5E627AFD7;
- Tue,  2 Mar 2021 09:20:11 +0000 (UTC)
-Date: Tue, 02 Mar 2021 10:20:11 +0100
-Message-ID: <s5ho8g1hpys.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 997BBAE79;
+ Tue,  2 Mar 2021 09:21:49 +0000 (UTC)
+Date: Tue, 02 Mar 2021 10:21:49 +0100
+Message-ID: <s5hmtvlhpw2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Nicolas MURE <nicolas.mure2019@gmail.com>
-Subject: Re: [PATCH v2 0/4] ALSA: usb-audio: Add Pioneer DJM-850 support
-In-Reply-To: <20210301152729.18094-1-nicolas.mure2019@gmail.com>
-References: <s5hv9abht6w.wl-tiwai@suse.de>
- <20210301152729.18094-1-nicolas.mure2019@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: hda: fix kernel-doc warnings
+In-Reply-To: <20210301174617.116960-1-pierre-louis.bossart@linux.intel.com>
+References: <20210301174617.116960-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, livvy@base.nu
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,33 +75,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 01 Mar 2021 16:27:25 +0100,
-Nicolas MURE wrote:
+On Mon, 01 Mar 2021 18:46:17 +0100,
+Pierre-Louis Bossart wrote:
 > 
-> Hello,
+> v5.12-rc1 flags new warnings with make W=1, fix missing or broken
+> function descriptors.
 > 
-> I updated the patches to consider the request to split patch #3
-> (c.f. https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/181275.html ).
+> sound/pci/hda/hda_codec.c:3492: warning: expecting prototype for
+> snd_hda_input_mux_info_info(). Prototype was for
+> snd_hda_input_mux_info() instead
 > 
-> The patch #3 now only contains changes related to DJM-850 support as the
-> fix it was previously containing was applied in linux 5.12
-> (c.f. https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/181279.html ).
+> sound/pci/hda/hda_codec.c:3521: warning: expecting prototype for
+> snd_hda_input_mux_info_put(). Prototype was for
+> snd_hda_input_mux_put() instead
 > 
-> The patches should be ready to merge into linux 5.13 .
+> sound/pci/hda/hda_codec.c:3958: warning: expecting prototype for
+> _snd_hda_pin_ctl(). Prototype was for _snd_hda_set_pin_ctl() instead
 > 
+> sound/pci/hda/hda_jack.c:223: warning: expecting prototype for
+> snd_hda_set_dirty_all(). Prototype was for
+> snd_hda_jack_set_dirty_all() instead
 > 
-> Thank you :)
+> sound/pci/hda/hda_jack.c:309: warning: expecting prototype for
+> snd_hda_jack_detect_enable_mst(). Prototype was for
+> snd_hda_jack_detect_enable_callback_mst() instead
 > 
-> Patches list :
+> sound/pci/hda/hda_generic.c:3933: warning: expecting prototype for
+> snd_dha_gen_add_mute_led_cdev(). Prototype was for
+> snd_hda_gen_add_mute_led_cdev() instead
 > 
-> [PATCH v2 1/4] ALSA: usb-audio: Add Pioneer DJM-850 to quirks-table
-> [PATCH v2 2/4] ASLA: usb-audio: Declare Pioneer DJM-850 mixer
-> [PATCH v2 3/4] ALSA: usb-audio: Configure Pioneer DJM-850 samplerate
-> [PATCH v2 4/4] ASLA: usb-audio: fix Pioneer DJM-850 control label
+> sound/pci/hda/hda_generic.c:4093: warning: expecting prototype for
+> snd_dha_gen_add_micmute_led_cdev(). Prototype was for
+> snd_hda_gen_add_micmute_led_cdev() instead
+> 
+> sound/pci/hda/patch_ca0132.c:2357: warning: expecting prototype for
+> Prepare and send the SCP message to DSP(). Prototype was for
+> dspio_scp() instead
+> 
+> sound/pci/hda/patch_ca0132.c:2883: warning: expecting prototype for
+> Allocate router ports(). Prototype was for dsp_allocate_router_ports()
+> instead
+> 
+> sound/pci/hda/patch_ca0132.c:3202: warning: expecting prototype for
+> Write a block of data into DSP code or data RAM using pre(). Prototype
+> was for dspxfr_one_seg() instead
+> 
+> sound/pci/hda/patch_ca0132.c:3397: warning: expecting prototype for
+> data overlay to DSP memories(). Prototype was for dspxfr_image()
+> instead
+> 
+> sound/hda/hdac_regmap.c:393: warning: expecting prototype for
+> snd_hdac_regmap_init(). Prototype was for snd_hdac_regmap_exit()
+> instead
+> 
+> sound/hda/ext/hdac_ext_controller.c:142: warning: expecting prototype
+> for snd_hdac_ext_bus_get_link_index(). Prototype was for
+> snd_hdac_ext_bus_get_link() instead
+> 
+> sound/hda/ext/hdac_ext_stream.c:140: warning: expecting prototype for
+> snd_hdac_ext_linkstream_start(). Prototype was for
+> snd_hdac_ext_link_stream_start() instead
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Applied all four patches now (with correction of subject prefix :)
+Thanks, applied.
 
-
-thanks,
 
 Takashi
