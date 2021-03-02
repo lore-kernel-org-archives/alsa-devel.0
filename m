@@ -2,66 +2,69 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D95E0C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8690C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:13:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0A3CF614A7
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:12:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0A3CF614A7
+	by mail.kernel.org (Postfix) with ESMTPS id 48CE0614A7
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:13:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48CE0614A7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3493416A9;
-	Tue,  2 Mar 2021 10:11:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3493416A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D7FB16B3;
+	Tue,  2 Mar 2021 10:12:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D7FB16B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614676358;
-	bh=bZcrVby0cG11lKYEsKVg+YyVkpCG3atrfEyGlH8xQlI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Awm2BnhNbinzT7olPAmfW+cchgmlQyU0iHmSZB52++PkACs7D4Rkrnu/H17biEmKK
-	 f4gnYBcp5VjJxPaKu7yQIeM/LzttGqsCeHxnYHHg/gIuK3s5uEdID/Ltz6UF1K7Exy
-	 XuXu3g7g+Ty/uWE3IuAg2LAYkYvcxTtpaOZqg960=
+	s=default; t=1614676409;
+	bh=VWaISLBMGmXjCJiLAn15tAf5haSoI3FsT+kdMLptSMQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tytoC3jAW2j3niO1UektIPCe300UdRvdT00QkSAin1yhczsmfT1y0QC48b07cglRl
+	 qRqnIK3kJ5ED8fJs33kIFcbdBtXjHwACCBVIX5QdgBOe7lh3nYH4zzOzBcCVKcxsz4
+	 Ctm5XgwfO959q1bqmugMESzpB8dSFv9NAjDd84R0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAEF9F8025B;
-	Tue,  2 Mar 2021 10:11:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B672F80273;
+	Tue,  2 Mar 2021 10:11:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F33DDF80227; Tue,  2 Mar 2021 10:11:45 +0100 (CET)
+ id 413C1F8032B; Tue,  2 Mar 2021 10:11:51 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FC96F80227
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:11:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FC96F80227
-IronPort-SDR: SJ+fIXGPwyFjrVa5hlLxSFU25dB9U7ipRw00jpzm1Y8+ATleMNUJCiRSjZXWVpal40AFFPo3wr
- 3GlZgwe3vchQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248158704"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248158704"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7ACB9F80088
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:11:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7ACB9F80088
+IronPort-SDR: 1mhHp3DdyGOOb8Sk8/9HApffRrkSqgjLx2DeKGsezNCm/bd2J6TO762cdn0zZnkm5O4XOkzh67
+ l9cvAqOcMc+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248158717"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248158717"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 01:11:34 -0800
-IronPort-SDR: hZQxCrkKhBVjp3mM9YKHlcK//84I3xX50t9XgnrQVq0kZUn8/dKpFElU8843NUX5iWDuY6MImQ
- PSiNYpjlNzuA==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="506262244"
+ 02 Mar 2021 01:11:36 -0800
+IronPort-SDR: n6rOxNeDk1fm2YpeOv7OWrCG3cuj95pZ2h5aet+R9VvYX6DPRZJEJJBpfyX3CSj64yp5wyVWgA
+ g3Kdi3K7SNBw==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="506262265"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 01:11:30 -0800
+ 02 Mar 2021 01:11:34 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 00/11] soundwire: some cleanup patches
-Date: Tue,  2 Mar 2021 17:11:11 +0800
-Message-Id: <20210302091122.13952-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 02/11] soundwire: bus: test read status
+Date: Tue,  2 Mar 2021 17:11:13 +0800
+Message-Id: <20210302091122.13952-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210302091122.13952-1-yung-chuan.liao@linux.intel.com>
+References: <20210302091122.13952-1-yung-chuan.liao@linux.intel.com>
 Cc: vkoul@kernel.org, alsa-devel@alsa-project.org,
  pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -79,29 +82,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To make soundwire driver more decent and less Cppcheck complaint.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Pierre-Louis Bossart (11):
-  soundwire: bus: use correct driver name in error messages
-  soundwire: bus: test read status
-  soundwire: bus: use consistent tests for return values
-  soundwire: bus: demote clock stop prepare log to dev_dbg()
-  soundwire: bus: uniquify dev_err() for SCP_INT access
-  soundwire: bus: remove useless initialization
-  soundwire: generic_bandwidth_allocation: remove useless init
-  soundwire: intel: remove useless readl
-  soundwire: qcom: check of_property_read status
-  soundwire: stream: remove useless initialization
-  soundwire: stream: remove useless bus initializations
+In the existing code we may read a negative error value but still mask
+it and write it back.
 
- drivers/soundwire/bus.c                       | 54 +++++++++++--------
- drivers/soundwire/bus_type.c                  | 15 ++++--
- .../soundwire/generic_bandwidth_allocation.c  |  4 +-
- drivers/soundwire/intel.c                     |  2 -
- drivers/soundwire/qcom.c                      |  3 ++
- drivers/soundwire/stream.c                    |  8 +--
- 6 files changed, 52 insertions(+), 34 deletions(-)
+Make sure all reads are tested and errors not propagated further.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 46885429928a..129e2afbe98e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -875,8 +875,12 @@ static int sdw_slave_clk_stop_prepare(struct sdw_slave *slave,
+ 		if (wake_en)
+ 			val |= SDW_SCP_SYSTEMCTRL_WAKE_UP_EN;
+ 	} else {
+-		val = sdw_read_no_pm(slave, SDW_SCP_SYSTEMCTRL);
+-
++		ret = sdw_read_no_pm(slave, SDW_SCP_SYSTEMCTRL);
++		if (ret < 0) {
++			dev_err(&slave->dev, "SDW_SCP_SYSTEMCTRL read failed:%d\n", ret);
++			return ret;
++		}
++		val = ret;
+ 		val &= ~(SDW_SCP_SYSTEMCTRL_CLK_STP_PREP);
+ 	}
+ 
+@@ -895,8 +899,12 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
+ 	int val;
+ 
+ 	do {
+-		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT) &
+-			SDW_SCP_STAT_CLK_STP_NF;
++		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT);
++		if (val < 0) {
++			dev_err(bus->dev, "SDW_SCP_STAT bread failed:%d\n", val);
++			return val;
++		}
++		val &= SDW_SCP_STAT_CLK_STP_NF;
+ 		if (!val) {
+ 			dev_info(bus->dev, "clock stop prep/de-prep done slave:%d",
+ 				 dev_num);
 -- 
 2.17.1
 
