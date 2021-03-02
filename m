@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3EB2C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:31:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED4ECC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:31:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0AE9664F2C
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:31:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AE9664F2C
+	by mail.kernel.org (Postfix) with ESMTPS id 2987764F1E
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:31:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2987764F1E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 726D71AA5;
-	Tue,  2 Mar 2021 22:30:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 726D71AA5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 740F11AA1;
+	Tue,  2 Mar 2021 22:30:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 740F11AA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614720674;
-	bh=xwHyQ82ZHpVYvEayV0sQ19jeQANsEVTXn7J9lqdKZY8=;
+	s=default; t=1614720689;
+	bh=axW5bJMhWwbWb+67wcsLySow8nhp+n6s3h0DmWbZQAY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V72mkWMunZ8Vr7fSdgWAski1BMvis/4pd1Q9+QrtGcuFUdSwFEsAlO5owr9aGLllX
-	 Vq7MF4l+Vr16E1njnILQ8VIh4s0rKcvGdE1A+iUBm89cGoNb187GN0kUoKufMrSQnL
-	 2zUP7SKI5byGPsWG+fJ850yDgmoLKXNBAirYxcH4=
+	b=rBPLW2x60zj8dMXTGvJhibGDhKYVAsZ/NT5aePeyf/RjAmx9sLF3cKy/3qtFlEHpQ
+	 4NHjlrHgGOTF1bsYfoJmh+8O+1WsL005R14KAtL0xgIxcb/1hrq4wlkZg77r9peh41
+	 5KUcTR9HgWrNSQVxCuLU4fiKn8KdOuEOm0DRZWu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CC13F80507;
-	Tue,  2 Mar 2021 22:26:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE671F8042F;
+	Tue,  2 Mar 2021 22:26:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D661AF804F1; Tue,  2 Mar 2021 22:26:23 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id 0A07EF804F2; Tue,  2 Mar 2021 22:26:24 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91F75F8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id E286EF802E7
  for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 22:26:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91F75F8032B
-IronPort-SDR: rwzVeQ1k/ZyB1t7YJLMVGWk8GOORbNyC5s7pVgOMwZCnTVpYmsCsB2PFAlfxV9v9bCau2nc+5a
- Iuex9dZOIAUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="183603752"
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="183603752"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E286EF802E7
+IronPort-SDR: uLZm0TiPlqNyCryOITYKCA81Jzkj9b2H4mK8y71MmdZjZk6O5aw5UVYd/uixwp6D4YuJHtDnfE
+ 7lC/VzzxuTPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174631390"
+X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="174631390"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 13:26:03 -0800
-IronPort-SDR: r18VhWi9xGUBE6gwJTll9wKNx9Vnz17U8q05BuT50ce00wMDQKGKa/itdMLk3lyt2YooHXtito
- 4O+Nmgua+VRw==
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="399223377"
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Mar 2021 13:26:07 -0800
+IronPort-SDR: Cr+nNPB08wEVP68KQeGnd48cBiottDZHvriswr3PIgKMBCh+Etx4ibjI3xSHytEhBDjpDleR8U
+ skg85Y90eawQ==
+X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="399223465"
 Received: from btucker-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.60.230])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 13:25:52 -0800
+ 02 Mar 2021 13:26:06 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/24] ASoC: rt1016: clarify expression
-Date: Tue,  2 Mar 2021 15:25:08 -0600
-Message-Id: <20210302212527.55158-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 16/24] ASoC: rt5665: clarify expression
+Date: Tue,  2 Mar 2021 15:25:19 -0600
+Message-Id: <20210302212527.55158-17-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
 References: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
@@ -88,41 +88,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 cppcheck warning:
 
-sound/soc/codecs/rt1016.c:503:61: style: Boolean result is used in
+sound/soc/codecs/rt5665.c:4388:61: style: Boolean result is used in
 bitwise operation. Clarify expression with
 parentheses. [clarifyCondition]
-  (pll_code.m_bp ? 0 : pll_code.m_code) << RT1016_PLL_M_SFT |
+  (pll_code.m_bp ? 0 : pll_code.m_code) << RT5665_PLL_M_SFT |
                                                             ^
-sound/soc/codecs/rt1016.c:506:40: style: Boolean result is used in
-bitwise operation. Clarify expression with
-parentheses. [clarifyCondition]
-  pll_code.k_bp << RT1016_PLL_K_BP_SFT |
-                                       ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt1016.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5665.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1016.c b/sound/soc/codecs/rt1016.c
-index c14a809da52b..7561d202274c 100644
---- a/sound/soc/codecs/rt1016.c
-+++ b/sound/soc/codecs/rt1016.c
-@@ -500,10 +500,11 @@ static int rt1016_set_component_pll(struct snd_soc_component *component,
- 		(pll_code.k_bp ? 0 : pll_code.k_code));
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 8a915cdce0fe..e59323fd5bf2 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4385,8 +4385,8 @@ static int rt5665_set_component_pll(struct snd_soc_component *component, int pll
+ 	snd_soc_component_write(component, RT5665_PLL_CTRL_1,
+ 		pll_code.n_code << RT5665_PLL_N_SFT | pll_code.k_code);
+ 	snd_soc_component_write(component, RT5665_PLL_CTRL_2,
+-		(pll_code.m_bp ? 0 : pll_code.m_code) << RT5665_PLL_M_SFT |
+-		pll_code.m_bp << RT5665_PLL_M_BP_SFT);
++		((pll_code.m_bp ? 0 : pll_code.m_code) << RT5665_PLL_M_SFT) |
++		(pll_code.m_bp << RT5665_PLL_M_BP_SFT));
  
- 	snd_soc_component_write(component, RT1016_PLL1,
--		(pll_code.m_bp ? 0 : pll_code.m_code) << RT1016_PLL_M_SFT |
--		pll_code.m_bp << RT1016_PLL_M_BP_SFT | pll_code.n_code);
-+		((pll_code.m_bp ? 0 : pll_code.m_code) << RT1016_PLL_M_SFT) |
-+		(pll_code.m_bp << RT1016_PLL_M_BP_SFT) |
-+		pll_code.n_code);
- 	snd_soc_component_write(component, RT1016_PLL2,
--		pll_code.k_bp << RT1016_PLL_K_BP_SFT |
-+		(pll_code.k_bp << RT1016_PLL_K_BP_SFT) |
- 		(pll_code.k_bp ? 0 : pll_code.k_code));
- 
- 	rt1016->pll_in = freq_in;
+ 	rt5665->pll_in = freq_in;
+ 	rt5665->pll_out = freq_out;
 -- 
 2.25.1
 
