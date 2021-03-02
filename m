@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CE9A0C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:35:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62584C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:36:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1ED2164F34
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:35:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1ED2164F34
+	by mail.kernel.org (Postfix) with ESMTPS id A473464F38
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:36:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A473464F38
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59B4E1AC3;
-	Tue,  2 Mar 2021 22:34:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59B4E1AC3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18DD41AD4;
+	Tue,  2 Mar 2021 22:35:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18DD41AD4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614720943;
-	bh=Al11bVZWOFSBD34GQkdChWF9YLIJH/XwJYR9rBcuLyg=;
+	s=default; t=1614720968;
+	bh=uW1LMlV7iQTVtexkWuUHbpGOnRf5yNNEFq9POn6+7Jo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UVdqPjbFEkABqkrueuwfhsNdKb7vTJsR9hPurjLjh73W0mz1b4nmdAwPtjmXEg1Uj
-	 k+RmKw/IKevVJdaWKpaTCo7YWNc7ofH7EupjDkm2hDSssSx01N39NUK0CzVuAhKkxF
-	 DmW8kZcXgnwXr/2eDlQRWRnWv2IWSgd5l7ysEKUI=
+	b=MjCFSEiiErMB12X6JBhhDLL8tPk/vfJjqOOYUFGVNUhIh4HvxmSnEjsYkiIVlCPL3
+	 hcVc9dbHrEiRwHaGKnhKNvymd0PxTMM+J8kLqfjhQdTTXlV/i/MfoTRuDQ4CIz0sQ+
+	 INNgl0XboyFElwPNwImzgQDAC8fe6C7lK1oXTCHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42E98F80553;
+	by alsa1.perex.cz (Postfix) with ESMTP id C562DF80557;
 	Tue,  2 Mar 2021 22:26:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12F23F80527; Tue,  2 Mar 2021 22:26:42 +0100 (CET)
+ id 94194F8052E; Tue,  2 Mar 2021 22:26:42 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8D40F802A9
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 22:26:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8D40F802A9
-IronPort-SDR: yfBZnVF8QVjjaD385f43W2qaj0EXJGbkf4YL4/EJAyRHB3+LQ8CzMoyCQaN6tVfdsuO8hLZ+8d
- BhOhjqupPJYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174631449"
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="174631449"
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4A63F804D1
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 22:26:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4A63F804D1
+IronPort-SDR: qSGJcAnflutKmPO9t/1Qqfwv40tpXBaEa+FQHIsCbAZDvqsCnRNPWyLNZ8mpTgI12M6q2bX/xl
+ QOMIdbYffB/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174631453"
+X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="174631453"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 13:26:16 -0800
-IronPort-SDR: u5viCwLYaLyRuyuKDXHP+zEmSEk0tWl3pC0sBI1B7JToos1g/oHdBbyxCornmlahDv45iDDhGQ
- gmFgLmLwtNow==
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="399223492"
+ 02 Mar 2021 13:26:17 -0800
+IronPort-SDR: pC9NKtUICHh4s6qodHufeA2cQjkaWUPwgZSGCuHlh+bWzgDtCE3g7QpHfXZp/K1CHCjtYTxFtV
+ iCLbrckwha9A==
+X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="399223494"
 Received: from btucker-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.60.230])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 13:26:14 -0800
+ 02 Mar 2021 13:26:16 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 23/24] ASoC: rt5682: remove useless assignments
-Date: Tue,  2 Mar 2021 15:25:26 -0600
-Message-Id: <20210302212527.55158-24-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 24/24] ASoC: rt5682: remove useless initialization
+Date: Tue,  2 Mar 2021 15:25:27 -0600
+Message-Id: <20210302212527.55158-25-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
 References: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
@@ -86,59 +86,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warnings:
-
-sound/soc/codecs/rt5682.c:1234:6: style: Redundant initialization for
-'idx'. The initialized value is overwritten before it is
-read. [redundantInitialization]
- idx = rt5682_div_sel(rt5682, dmic_clk_rate, div, ARRAY_SIZE(div));
-     ^
-sound/soc/codecs/rt5682.c:1228:10: note: idx is initialized
- int idx = -EINVAL, dmic_clk_rate = 3072000;
-         ^
-sound/soc/codecs/rt5682.c:1234:6: note: idx is overwritten
- idx = rt5682_div_sel(rt5682, dmic_clk_rate, div, ARRAY_SIZE(div));
-     ^
-
-sound/soc/codecs/rt5682.c:1263:6: style: Redundant initialization for
-'idx'. The initialized value is overwritten before it is
-read. [redundantInitialization]
- idx = rt5682_div_sel(rt5682, ref, div_f, ARRAY_SIZE(div_f));
-     ^
-sound/soc/codecs/rt5682.c:1248:25: note: idx is initialized
- int ref, val, reg, idx = -EINVAL;
-                        ^
-sound/soc/codecs/rt5682.c:1263:6: note: idx is overwritten
- idx = rt5682_div_sel(rt5682, ref, div_f, ARRAY_SIZE(div_f));
-     ^
+cppcheck complains about a possible null pointer dereference, but the
+problem is rather an useless initialization before walking through a
+list.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt5682.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5682.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index e4542200009d..8d5b8f01f55c 100644
+index 8d5b8f01f55c..559dc6db1f7c 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -1225,7 +1225,7 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_component *component =
- 		snd_soc_dapm_to_component(w->dapm);
- 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
--	int idx = -EINVAL, dmic_clk_rate = 3072000;
-+	int idx, dmic_clk_rate = 3072000;
- 	static const int div[] = {2, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128};
+@@ -2751,7 +2751,7 @@ static int rt5682_bclk_set_rate(struct clk_hw *hw, unsigned long rate,
+ 		container_of(hw, struct rt5682_priv,
+ 			     dai_clks_hw[RT5682_DAI_BCLK_IDX]);
+ 	struct snd_soc_component *component = rt5682->component;
+-	struct snd_soc_dai *dai = NULL;
++	struct snd_soc_dai *dai;
+ 	unsigned long factor;
  
- 	if (rt5682->pdata.dmic_clk_rate)
-@@ -1245,7 +1245,7 @@ static int set_filter_clk(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_component *component =
- 		snd_soc_dapm_to_component(w->dapm);
- 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
--	int ref, val, reg, idx = -EINVAL;
-+	int ref, val, reg, idx;
- 	static const int div_f[] = {1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48};
- 	static const int div_o[] = {1, 2, 4, 6, 8, 12, 16, 24, 32, 48};
- 
+ 	if (!rt5682_clk_check(rt5682))
 -- 
 2.25.1
 
