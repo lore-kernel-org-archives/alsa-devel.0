@@ -2,76 +2,67 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3531EC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:51:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D211C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:52:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C80FA64F66
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:51:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C80FA64F66
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id BDC3A64F0A
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:52:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC3A64F0A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E61116E1;
-	Tue,  2 Mar 2021 13:50:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E61116E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E840E16F3;
+	Tue,  2 Mar 2021 13:51:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E840E16F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614689480;
-	bh=WmVH+zXDxgTi+YtrZbgW5+vNGhWdHs8/AxaMBHbxCdQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iwUibJ0Uhlkb3s8YgDg1GovgmPl/f57Lg5VdFWnFpR0qpnF7V4ptRUHbdemNSvKS6
-	 K97IU3M/D+f/Z0Dex5jzptpXxpe909V+mPbA+j91e0Tkf44jI4qMd/1n26rUbSPcRi
-	 B3+go9RNbcLV7rGvpOvNY8U8FUtyHOUQ6a/BLRW4=
+	s=default; t=1614689531;
+	bh=pZn+IWo+aCByh+esLsR5waDbyh6B8P9quBIKKdoOb3U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=N+FMcNWISREvNmpichl0PwgpaqNV9q/zGs+ILvTCjXKCrmra/5Hez2qP+C7H8THIX
+	 WKoch1RE4JGIlvrEt7DknRnloMX+Sbtpx44fOVc9dPenuHZerXl+Lcn7f11lrsSNXq
+	 o5DyXeiEuAgq6/zFLTYHpPwtNJvdYEY2k5G9Kwaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CFBEF80269;
-	Tue,  2 Mar 2021 13:50:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E7E6F80271;
+	Tue,  2 Mar 2021 13:50:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B659F80269; Tue,  2 Mar 2021 13:50:28 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BB8AF8012D
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 13:50:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BB8AF8012D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JOBXeQ9V"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B6664F64;
- Tue,  2 Mar 2021 12:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614689420;
- bh=WmVH+zXDxgTi+YtrZbgW5+vNGhWdHs8/AxaMBHbxCdQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JOBXeQ9VgXV/INC2xKi/GmKK5Jz8qBkQE1lP2pI7N7hra2/rj3o82DhBbnmejOsD+
- kS3mZQmhKgrVKhM5r5CkDmzN72lwR8HHeEx/nOaoukXsrnWGrd9kRF8HeUN+1A/Fbn
- LHlWGVaY+jiXAyxfGUsnshRfCYHVUv2BFKKGDt85aaO7JSbcLc1z2AiEJtn9wQoQBb
- VdWkv6Njxgxdm1EcBOGRJM+Asw4knR4E12b6uMezB08a+u75W/faj5qrkcChDq/rjB
- 1tadEPDuDCjI01DDPQKS7Rw5SyRrOgFk2PAW9lTZ5IzvuyowpogOYOTkMLnR6mF9ER
- 8SyvF+No0caLQ==
-Date: Tue, 2 Mar 2021 12:49:13 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH] ASoC: soc-core: Prevent warning if no DMI table is present
-Message-ID: <20210302124913.GC4522@sirena.org.uk>
-References: <20210302092712.310705-1-jonathanh@nvidia.com>
+ id EF222F80277; Tue,  2 Mar 2021 13:50:36 +0100 (CET)
+Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com
+ [221.176.66.80])
+ by alsa1.perex.cz (Postfix) with ESMTP id DA114F8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 13:50:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA114F8012D
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by
+ rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee7603e3480fae-934fd;
+ Tue, 02 Mar 2021 20:50:09 +0800 (CST)
+X-RM-TRANSID: 2ee7603e3480fae-934fd
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+ by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea603e347d2a6-1de80;
+ Tue, 02 Mar 2021 20:50:09 +0800 (CST)
+X-RM-TRANSID: 2eea603e347d2a6-1de80
+From: Tang Bin <tangbin@cmss.chinamobile.com>
+To: broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
+ Xiubo.Lee@gmail.com, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH] ASoC: fsl_xcvr: Use devm_platform_ioremap_resource_byname()
+ to simplify code
+Date: Tue,  2 Mar 2021 20:50:02 +0800
+Message-Id: <20210302125002.23900-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
-Content-Disposition: inline
-In-Reply-To: <20210302092712.310705-1-jonathanh@nvidia.com>
-X-Cookie: Friction is a drag.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, Tang Bin <tangbin@cmss.chinamobile.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +78,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+In this function, devm_platform_ioremap_resource_byname() should be 
+suitable to simplify code.
 
---s9fJI615cBHmzTOP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-On Tue, Mar 02, 2021 at 09:27:12AM +0000, Jon Hunter wrote:
-> Many systems do not provide a DMI table and on these systems a warning,
-> such as the following, is printed on boot ...
->=20
->  WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
->=20
-> If DMI support is enabled in the kernel, there is no simple way to
-> detect if a DMI table is table or not. Note that the variable
-> 'dmi_available' is not exported and so cannot be used by kernel modules.
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index 6dd0a5fcd455..5e8284db857b 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -1131,7 +1131,7 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct fsl_xcvr *xcvr;
+-	struct resource *ram_res, *regs_res, *rx_res, *tx_res;
++	struct resource *rx_res, *tx_res;
+ 	void __iomem *regs;
+ 	int ret, irq;
+ 
+@@ -1166,13 +1166,11 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
+ 		return PTR_ERR(xcvr->pll_ipg_clk);
+ 	}
+ 
+-	ram_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ram");
+-	xcvr->ram_addr = devm_ioremap_resource(dev, ram_res);
++	xcvr->ram_addr = devm_platform_ioremap_resource_byname(pdev, "ram");
+ 	if (IS_ERR(xcvr->ram_addr))
+ 		return PTR_ERR(xcvr->ram_addr);
+ 
+-	regs_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+-	regs = devm_ioremap_resource(dev, regs_res);
++	regs = devm_platform_ioremap_resource_byname(pdev, "regs");
+ 	if (IS_ERR(regs))
+ 		return PTR_ERR(regs);
+ 
+-- 
+2.18.2
 
-We could fix that, or provide an accessor function?  Or only warn if
-we're on an ACPI system (which we can check from a module).  This really
-does feel like something we should be warning about on systems that are
-supposed to have DMI information available as standard.
 
---s9fJI615cBHmzTOP
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+NEgACgkQJNaLcl1U
-h9CQDAf/Z48cJOMLdkoZSxTL6NDL7fNrb3cLcBfyh2VSzLXYRiPg9xSEGtxMEtZH
-Nt77fAQr36jGJj5+ArLxHIZp3t0baGveNLoWOLR+0V2nq3ySxgUfKElwV5gQ/Xwy
-NJLtb0s9AzeYnM6docqPn5mdfTHKidIEVtcdprYrPo4TGT5XwUayn5Nj037keTda
-HFDHscgSyFqEwFEQs6qwAHfNocGEakSbtsmFD+tC2GCupq1gx3pJm1i/rS50b4U6
-jiEj+pP2OPhGKj103UKc+wNByNfGPVo5p0fhKqrklHnAFC1B4ZXXWHqU7Xa/soVq
-v1Ou/xkvrjI+ckyeeLLDpPMx2bjaYg==
-=zWGP
------END PGP SIGNATURE-----
-
---s9fJI615cBHmzTOP--
