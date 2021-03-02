@@ -2,93 +2,97 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C529CC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:23:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C276C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:23:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E12DA64F0B
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:23:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E12DA64F0B
+	by mail.kernel.org (Postfix) with ESMTPS id 0BBA064F0E
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:23:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BBA064F0E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EDF316D2;
-	Tue,  2 Mar 2021 12:22:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EDF316D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 296BE1712;
+	Tue,  2 Mar 2021 12:23:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 296BE1712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614684180;
-	bh=nyblzrf3BU3WVnm2sGiXVm8NmbNlNmK8Fy7FRu1YCoI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ufc4qf+ML+dwuuBkhJ2vF5vdvBXxpnhXTlCD/vQKlRWDXOtNufaVxsNr9gAsRJuGY
-	 3PuRUgd4mjohCBTGbFCLzpmG93LY2u5E3X8uB/4dr11Llc/2jXITRBCHNl1ECmD4Yi
-	 aKsNw9flBSzFDswrQimrigG7Ilge8BChhHb100FM=
+	s=default; t=1614684231;
+	bh=w7yyQAee/9lKt2kJMAucZCJ21tW0mF97NV9iiM97/ok=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Ff6LocPv2TqG2WjUEIrMzcqFMye4mBTPIBAwE+ogXioGGGUR9pzexyRnprS0d2NVr
+	 lkU6A7PTOE6A5krCF7FFLnypnvpGit3dEsq2/nHICOwBt7pzGBl2hhacYDCW6j+1WH
+	 MQOyR3oWsa3RhPkI34C0WBCF61zZLoFTin8s+en8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00ECAF80271;
-	Tue,  2 Mar 2021 12:22:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C68DF802CA;
+	Tue,  2 Mar 2021 12:22:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6F4FF80269; Tue,  2 Mar 2021 12:22:07 +0100 (CET)
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com
- [IPv6:2a00:1450:4864:20::132])
+ id 27FC3F802E2; Tue,  2 Mar 2021 12:22:10 +0100 (CET)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 723BEF80227
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 12:22:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 723BEF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92143F8025B
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 12:22:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92143F8025B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="MZO0fEml"
-Received: by mail-lf1-x132.google.com with SMTP id p21so30657406lfu.11
- for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+ header.b="rAeqU7sA"
+Received: by mail-lj1-x229.google.com with SMTP id r23so23440673ljh.1
+ for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2021 03:22:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=UXsyTscw9zuLBva4U3+AGU7LQRHCPXqRCSzHFPwdbsg=;
- b=MZO0fEml85aBPb+L0zZijvlr73xZelJgEhc1czmKIkPN1WA/Ao2bmG2eEpQn9/5Cnv
- 5gmNhukOhWRqrabru5ZLRuQIe19Ppw7xvec8e8WVtDNcFX2YXjsaC2KTFuDBS9V1HR8A
- q2i1pBwu3M4Yx/RPucxQRLZb8JTWF/n+Sj3BAiypZKcIHbe/VxT6ElkveIjI5YIc+/Sq
- 95ldH1eekOw0jmoqo6CncpYd7lOJmwl+A2aFdkIzc4avBbz6tjukMFbxvrmgqU6g6YQp
- p+7yRGMFPKujcTuilLJVt6o0YRGvr4xgMdYCwR/jU1wQP+aK3vfpkWUCxmjOo2tTyiVN
- SMNw==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=6Pw3GTr/GjOIi01Z3q0PpRjgmUtwICxpPYij6S5wwcI=;
+ b=rAeqU7sAJzvubjRxRBvRPb0Xflif2/Ah/bGNEHgWmu+/qMN17futs5w/h0G2v5btvR
+ ulRQ7DirUjesXRkGzZfp1Lho3KVLbwvkKQlo+3su/+lWoKp+Zs5L7Bdx/8dLlSBUnPOl
+ 8wxQV4GfyCy/19GKbdc1SZ1VEYOqAtNT8iUtBaK8pDQramHT1kYhKejtTATwZe1lVaO5
+ +CW1jzinKThVdFaH9ZUGdojzZMdg39nlbrJkz/Io/LT+0XHkJ9rZj28tclXXmFyyc0iv
+ l87aJSmd2WUZmHX0WYuh+jXeG9hl1Ao+eLoEg6JZp5tSObo5bWGeJbYkARntYkvYVgkd
+ FNig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=UXsyTscw9zuLBva4U3+AGU7LQRHCPXqRCSzHFPwdbsg=;
- b=AVMnuKcUpYEP+/IOICwMq8+39pkoxQJb75Iytpb4b4YD1IlDtbfrfL/AGFuQHnwZyf
- 0YLFOaCmv9dxImEGUPvRDx/fydpzZqZDEO0yCb8cie3QGTpqwHVSV0jT9N3cAFyUKhcd
- WL8HQeor2T3BPssA+t9ekpAEXK1IPh+K8M0cb3VrgUsDZIxewYaCxjdBfB6yhuaCGJLp
- iBopjMFpdKqbIZmEl7SFxvmiaYvCLCx22ibyzzkgHmSzocGsdaLCdXrSVBU2XLYAgK25
- e/hlo8/K+646QaE9lTgHCjdUSxEU/CdDwGkFuprajC4lGN4G1kciujRqIJFTUDs38Buw
- zulw==
-X-Gm-Message-State: AOAM530k0y9varnHk3QmDqklDZrNRRI6NUcT503Xqa4ifV3HgXR9TLnM
- 4TNCSdRWUTJO787wRvLRfKA=
-X-Google-Smtp-Source: ABdhPJxRymJixfSpthjYFtxI7AlxBgvrcbqGsXaXA/6qsfInz7jYNSYRX1M8a7spc/pgycwZXoi9BQ==
-X-Received: by 2002:a05:6512:2356:: with SMTP id
- p22mr11522329lfu.3.1614684124467; 
- Tue, 02 Mar 2021 03:22:04 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=6Pw3GTr/GjOIi01Z3q0PpRjgmUtwICxpPYij6S5wwcI=;
+ b=Iuy0QsYIi6Dfa9pbZFETD5og2kWBnUm0c+wHdRhFzAyk4VAFPIlaXBTTXoNRKL/yla
+ Qbnr88fJTQ8vyBh989iRoGYtKr7M/4MWlhvUyeAX+R9+LuvxZbWLVyvA0iYdgjqki/90
+ OdGOQWM4pUdXf3sdGvtLJmzAd93Iw8HNTg4a/i5gld7cvLiwF1kZZ65c7eRIYkr3yCBU
+ GVbQsjUXoy5n6jof1d6um6+8KLTpUNcRvg21q8R82IDBAZOEZebhBU5JvPDFQT/gQRt8
+ mMRhYVtyL5TAaZbpf21NWFk+Ww4PY/s7TZ1zp8Ei0kIp475VmWSR2laJjafoY+0u+YzE
+ b1gA==
+X-Gm-Message-State: AOAM530TrLY7BRbi1LZbmbB15T1atxTpUlPtrG4RtyYTCiv3xOkF3QZm
+ hu6MindWzUdGXKJkC9PYga1iwARaNHQ=
+X-Google-Smtp-Source: ABdhPJz+HoWgkAqzXnvMEVoBpss7bHPZEO+Q5RCteeV43AIfK/+skRujNOfzl7jNkdQpdps0XG12ng==
+X-Received: by 2002:a2e:9f08:: with SMTP id u8mr7152270ljk.50.1614684125824;
+ Tue, 02 Mar 2021 03:22:05 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.03
+ by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Mar 2021 03:22:03 -0800 (PST)
+ Tue, 02 Mar 2021 03:22:05 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v1 0/5] Add missing reset controls to NVIDIA Tegra ASoC drivers
-Date: Tue,  2 Mar 2021 14:21:18 +0300
-Message-Id: <20210302112123.24161-1-digetx@gmail.com>
+Subject: [PATCH v1 2/5] reset: Add
+ devm_reset_control_array_get_exclusive_released()
+Date: Tue,  2 Mar 2021 14:21:20 +0300
+Message-Id: <20210302112123.24161-3-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210302112123.24161-1-digetx@gmail.com>
+References: <20210302112123.24161-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
@@ -108,38 +112,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Add devm_reset_control_array_get_exclusive_released() which is wanted by
+NVIDIA Tegra drivers.
 
-This series adds missing hardware reset controls to I2S and AC97 drivers.
-Currently drivers happen to work properly because reset is implicitly
-deasserted by tegra-clk driver, but clk driver shouldn't touch the resets
-and we need to fix it because this breaks other Tegra drivers. Previously
-we fixed the resets of the AHUB and HDMI codec drivers, but turned out
-that we missed the I2C and AC97 drivers.
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ include/linux/reset.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Thanks to Paul Fertser for testing the pending clk patches and finding
-that audio got broken on Tegra20 AC100 netbook because of the missing I2S
-reset.
-
-Dmitry Osipenko (5):
-  reset: Allow devm_reset_control_array_get() to get resets in a
-    released state
-  reset: Add devm_reset_control_array_get_exclusive_released()
-  ASoC: tegra20: ac97: Add reset control
-  ASoC: tegra20: i2s: Add reset control
-  ASoC: tegra30: i2s: Add reset control
-
- drivers/reset/core.c           |  8 ++++++--
- include/linux/reset.h          | 20 +++++++++++++------
- sound/soc/tegra/tegra20_ac97.c | 21 ++++++++++++++++++++
- sound/soc/tegra/tegra20_ac97.h |  1 +
- sound/soc/tegra/tegra20_i2s.c  | 31 +++++++++++++++++++++++++++++
- sound/soc/tegra/tegra20_i2s.h  |  1 +
- sound/soc/tegra/tegra30_ahub.c | 14 ++++++++++---
- sound/soc/tegra/tegra30_i2s.c  | 36 +++++++++++++++++++++++++++++++++-
- sound/soc/tegra/tegra30_i2s.h  |  1 +
- 9 files changed, 121 insertions(+), 12 deletions(-)
-
+diff --git a/include/linux/reset.h b/include/linux/reset.h
+index 3bee086f1f06..ab240a8648ee 100644
+--- a/include/linux/reset.h
++++ b/include/linux/reset.h
+@@ -534,6 +534,12 @@ devm_reset_control_array_get_optional_shared(struct device *dev)
+ 	return devm_reset_control_array_get(dev, true, true, true);
+ }
+ 
++static inline struct reset_control *
++devm_reset_control_array_get_exclusive_released(struct device *dev)
++{
++	return devm_reset_control_array_get(dev, false, false, false);
++}
++
+ static inline struct reset_control *
+ of_reset_control_array_get_exclusive(struct device_node *node)
+ {
 -- 
 2.29.2
 
