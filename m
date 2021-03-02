@@ -7,80 +7,80 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3434BC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:09:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87260C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:10:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C2D864EF4
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:09:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C2D864EF4
+	by mail.kernel.org (Postfix) with ESMTPS id 9A56364EF4
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:09:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A56364EF4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FA95182F;
-	Tue,  2 Mar 2021 18:08:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FA95182F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 212A4183B;
+	Tue,  2 Mar 2021 18:09:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 212A4183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614704970;
-	bh=wyYBYMUbFk0TK76re8pJ1xjbtqbRGaC9R5U95UpJclo=;
+	s=default; t=1614704998;
+	bh=k/tJs5BN8FRe48EJ6sctzdDsgwWERTbFQO7O6G/00u8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eCIMeaWTS1+ilnOLtAjokzRECLFPkbPCZsumjxjapnomJ+T9hgKQWR8DwtycxhyTQ
-	 xH3ThqkpdqlM3Znb90s7X7k4KARvJCEdbFWO3+SX/Fgowtb12q53YhnrHy590Azj5A
-	 cXbPHg9Se3PIh/BLe/bg1yapGgg3qDPJPcZHcVXw=
+	b=j5WQUM0UFZC5/z2+RshvDUTR19lWhazCiMhT8H01MB+3GEmDBbysNAfFLuYlNSjTL
+	 CVExwz8oBQGfff0ykVhLgmLGKsDovvji0Sg2sVarXGdVNr7qVxhqX8dnKCKkGdiaaN
+	 D9QjV2myqKeey73FASzg4a+s+CYV4BeAIsmRDPgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9B55F80423;
-	Tue,  2 Mar 2021 18:05:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 877D7F804E0;
+	Tue,  2 Mar 2021 18:05:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B43BF804AA; Tue,  2 Mar 2021 18:05:22 +0100 (CET)
+ id 98F39F804B0; Tue,  2 Mar 2021 18:05:23 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BABC5F802E2
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:05:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BABC5F802E2
+ by alsa1.perex.cz (Postfix) with ESMTPS id B42F1F802A9
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:05:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B42F1F802A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="TLk4pG2U"
+ header.b="LgqRDF7o"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 122H1q3J022910; Tue, 2 Mar 2021 11:05:03 -0600
+ 122H1q3K022910; Tue, 2 Mar 2021 11:05:03 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=tWyZeZVeGuVvYoyoVDyHojNWQ6q8/ZKGC/Al5hpTjZo=;
- b=TLk4pG2UfHXx3xnjnhMrf37kDBXXlEX1vPPAmzXk6NiQ77LhR3BrdmMIbGqFlaissrGP
- GKM6GyIwTw7nJbt5X4yVcYY7b1XTltvcWbRsLoUqbcLJoR9Bwm7pvjNGtksUk4IfX/bM
- TsPSBevR4Ynk6xHoKF48JuXsXiQkVU6KrcGkmX9DuMr15wDoFhkHJ+ULlotjNi8skrsL
- Sd/5FjNTZClZK3EdrEuDRNOdrsaZqpCXiEf1eW/Y6YAFTp7iTQDcLLiS07LgzemKlGtL
- b+CDbccOsQ/Sja69dVxpa6LxtInMx61r4/Vm7R5a1zVoz7APVN5VJtmV8+Li7+kLdIjF ew== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg7-4
+ bh=uEj5ZIOlpg1j1E+0wNPoMN6JX9ZzpCiLBva1l5WJfi0=;
+ b=LgqRDF7oP0vY9IddZ4OOK3xwpsATiNz5htV3JAu70ewNljcCFVwcFZBTOrT35xVX47DM
+ XCIXFJ1GDj2FRMM50+UgnredR9Tvf8i/Ud+6u8piwBlYNzZkC2E+phWWVz+m0zZw4tCR
+ XeApij4CgVvRoBoEbkzW/UuYKMWzE/c3BN0M+XH9l7g06IF9fQPMQAJWcR++fVpVP8ZK
+ pC9HdbmuDZbiNnQ4uS1Cq7hlbMBJdMxgKdjdAD8uZuch3gdG4bvFJkSoz+C+87F2syio
+ MaoY/BzNuT31q5tihogCaCFOgXVMSixysZF/qAd47Gt3UcawizpvJq2oBBwqIVZt3jAi IA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg9-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Tue, 02 Mar 2021 11:05:03 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 2 Mar 2021
- 17:05:01 +0000
+ 17:05:00 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 2 Mar 2021 17:05:01 +0000
+ Transport; Tue, 2 Mar 2021 17:05:00 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6923811D0;
- Tue,  2 Mar 2021 17:05:01 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8DB4411D6;
+ Tue,  2 Mar 2021 17:05:00 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood
  <lgirdwood@gmail.com>
-Subject: [PATCH 09/15] ASoC: cs42l42: Add Capture Support
-Date: Tue, 2 Mar 2021 17:04:48 +0000
-Message-ID: <20210302170454.39679-10-tanureal@opensource.cirrus.com>
+Subject: [PATCH 06/15] ASoC: cs42l42: Provide finer control on playback path
+Date: Tue, 2 Mar 2021 17:04:45 +0000
+Message-ID: <20210302170454.39679-7-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
 References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
@@ -90,7 +90,7 @@ Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
  clxscore=1015 suspectscore=0
  adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=773 bulkscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103020131
 Cc: patches@opensource.cirrus.com,
@@ -111,109 +111,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for capture path on headseat pins
+Removing cs42l42_hpdrv_evt that enables the entire chain and replace by
+a set of widgets that can better define the codec
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 39 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs42l42.h | 12 ++++++++++++
- 2 files changed, 51 insertions(+)
+ sound/soc/codecs/cs42l42.c | 65 +++++++++++++-------------------------
+ sound/soc/codecs/cs42l42.h |  8 ++---
+ 2 files changed, 26 insertions(+), 47 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 6022b6f9c6d27..9a7217cf59f36 100644
+index 834b702fe4297..663a6a8104171 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -471,6 +471,18 @@ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
- 
- 	/* Playback Requirements */
- 	SND_SOC_DAPM_SUPPLY("ASP DAI0", CS42L42_PWR_CTL1, CS42L42_ASP_DAI_PDN_SHIFT, 1, NULL, 0),
-+
-+	/* Capture Path */
-+	SND_SOC_DAPM_INPUT("HS"),
-+	SND_SOC_DAPM_ADC("ADC", NULL, CS42L42_PWR_CTL1, CS42L42_ADC_PDN_SHIFT, 1),
-+	SND_SOC_DAPM_AIF_OUT("SDOUT1", NULL, 0, CS42L42_ASP_TX_CH_EN, CS42L42_ASP_TX0_CH1_SHIFT, 0),
-+	SND_SOC_DAPM_AIF_OUT("SDOUT2", NULL, 1, CS42L42_ASP_TX_CH_EN, CS42L42_ASP_TX0_CH2_SHIFT, 0),
-+
-+	/* Capture Requirements */
-+	SND_SOC_DAPM_SUPPLY("ASP DAO0", CS42L42_PWR_CTL1, CS42L42_ASP_DAO_PDN_SHIFT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ASP TX EN", CS42L42_ASP_TX_SZ_EN, CS42L42_ASP_TX_EN_SHIFT, 0, NULL, 0),
-+
-+	/* Playback/Capture Requirements */
- 	SND_SOC_DAPM_SUPPLY("SCLK", CS42L42_ASP_CLK_CFG, CS42L42_ASP_SCLK_EN_SHIFT, 0, NULL, 0),
+@@ -461,54 +461,33 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				0x3e, 1, mixer_tlv)
  };
  
-@@ -488,6 +500,21 @@ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
- 	{"SDIN2", NULL, "ASP DAI0"},
- 	{"SDIN1", NULL, "SCLK"},
- 	{"SDIN2", NULL, "SCLK"},
+-static int cs42l42_hpdrv_evt(struct snd_soc_dapm_widget *w,
+-				struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
+-
+-	if (event & SND_SOC_DAPM_POST_PMU) {
+-		/* Enable the channels */
+-		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_EN,
+-				CS42L42_ASP_RX0_CH_EN_MASK,
+-				(CS42L42_ASP_RX0_CH1_EN |
+-				CS42L42_ASP_RX0_CH2_EN) <<
+-				CS42L42_ASP_RX0_CH_EN_SHIFT);
+-
+-		/* Power up */
+-		snd_soc_component_update_bits(component, CS42L42_PWR_CTL1,
+-			CS42L42_ASP_DAI_PDN_MASK | CS42L42_MIXER_PDN_MASK |
+-				CS42L42_HP_PDN_MASK, 0);
+-	} else if (event & SND_SOC_DAPM_PRE_PMD) {
+-		/* Disable the channels */
+-		snd_soc_component_update_bits(component, CS42L42_ASP_RX_DAI0_EN,
+-				CS42L42_ASP_RX0_CH_EN_MASK, 0);
+-
+-		/* Power down */
+-		snd_soc_component_update_bits(component, CS42L42_PWR_CTL1,
+-			CS42L42_ASP_DAI_PDN_MASK | CS42L42_MIXER_PDN_MASK |
+-				CS42L42_HP_PDN_MASK,
+-			CS42L42_ASP_DAI_PDN_MASK | CS42L42_MIXER_PDN_MASK |
+-				CS42L42_HP_PDN_MASK);
+-	} else {
+-		dev_err(component->dev, "Invalid event 0x%x\n", event);
+-	}
+-	return 0;
+-}
+-
+ static const struct snd_soc_dapm_widget cs42l42_dapm_widgets[] = {
++	/* Playback Path */
+ 	SND_SOC_DAPM_OUTPUT("HP"),
+-	SND_SOC_DAPM_AIF_IN("SDIN", NULL, 0, CS42L42_ASP_CLK_CFG,
+-					CS42L42_ASP_SCLK_EN_SHIFT, false),
+-	SND_SOC_DAPM_OUT_DRV_E("HPDRV", SND_SOC_NOPM, 0,
+-					0, NULL, 0, cs42l42_hpdrv_evt,
+-					SND_SOC_DAPM_POST_PMU |
+-					SND_SOC_DAPM_PRE_PMD)
++	SND_SOC_DAPM_DAC("DAC", NULL, CS42L42_PWR_CTL1, CS42L42_HP_PDN_SHIFT, 1),
++	SND_SOC_DAPM_MIXER("MIXER", CS42L42_PWR_CTL1, CS42L42_MIXER_PDN_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_AIF_IN("SDIN1", NULL, 0, CS42L42_ASP_RX_DAI0_EN, CS42L42_ASP_RX0_CH1_SHIFT, 0),
++	SND_SOC_DAPM_AIF_IN("SDIN2", NULL, 1, CS42L42_ASP_RX_DAI0_EN, CS42L42_ASP_RX0_CH2_SHIFT, 0),
 +
-+	/* Capture Path */
-+	{"ADC", NULL, "HS"},
-+	{ "SDOUT1", NULL, "ADC" },
-+	{ "SDOUT2", NULL, "ADC" },
-+	{ "Capture", NULL, "SDOUT1" },
-+	{ "Capture", NULL, "SDOUT2" },
++	/* Playback Requirements */
++	SND_SOC_DAPM_SUPPLY("ASP DAI0", CS42L42_PWR_CTL1, CS42L42_ASP_DAI_PDN_SHIFT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("SCLK", CS42L42_ASP_CLK_CFG, CS42L42_ASP_SCLK_EN_SHIFT, 0, NULL, 0),
+ };
+ 
+ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
+-	{"SDIN", NULL, "Playback"},
+-	{"HPDRV", NULL, "SDIN"},
+-	{"HP", NULL, "HPDRV"}
++	/* Playback Path */
++	{"HP", NULL, "DAC"},
++	{"DAC", NULL, "MIXER"},
++	{"MIXER", NULL, "SDIN1"},
++	{"MIXER", NULL, "SDIN2"},
++	{"SDIN1", NULL, "Playback"},
++	{"SDIN2", NULL, "Playback"},
 +
-+	/* Capture Requirements */
-+	{ "SDOUT1", NULL, "ASP DAO0" },
-+	{ "SDOUT2", NULL, "ASP DAO0" },
-+	{ "SDOUT1", NULL, "SCLK" },
-+	{ "SDOUT2", NULL, "SCLK" },
-+	{ "SDOUT1", NULL, "ASP TX EN" },
-+	{ "SDOUT2", NULL, "ASP TX EN" },
++	/* Playback Requirements */
++	{"SDIN1", NULL, "ASP DAI0"},
++	{"SDIN2", NULL, "ASP DAI0"},
++	{"SDIN1", NULL, "SCLK"},
++	{"SDIN2", NULL, "SCLK"},
  };
  
  static int cs42l42_component_probe(struct snd_soc_component *component)
-@@ -747,12 +774,24 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
-+	unsigned int channels = params_channels(params);
- 	unsigned int width = (params_width(params) / 8) - 1;
- 	unsigned int val = 0;
- 
- 	cs42l42->srate = params_rate(params);
- 
- 	switch(substream->stream) {
-+	case SNDRV_PCM_STREAM_CAPTURE:
-+		if (channels == 2) {
-+			val |= CS42L42_ASP_TX_CH2_AP_MASK;
-+			val |= width << CS42L42_ASP_TX_CH2_RES_SHIFT;
-+		}
-+		val |= width << CS42L42_ASP_TX_CH1_RES_SHIFT;
-+
-+		snd_soc_component_update_bits(component, CS42L42_ASP_TX_CH_AP_RES,
-+				CS42L42_ASP_TX_CH1_AP_MASK | CS42L42_ASP_TX_CH2_AP_MASK |
-+				CS42L42_ASP_TX_CH2_RES_MASK | CS42L42_ASP_TX_CH1_RES_MASK, val);
-+		break;
- 	case SNDRV_PCM_STREAM_PLAYBACK:
- 		val |= width << CS42L42_ASP_RX_CH_RES_SHIFT;
- 		/* channel 1 on low LRCLK */
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 3dcbfebc53b0f..c373259ed46f7 100644
+index 2bd370b184e1d..e17a0c0aeb4a0 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -683,8 +683,20 @@
+@@ -695,10 +695,10 @@
+ #define CS42L42_ASP_RX_DAI0_EN		(CS42L42_PAGE_2A + 0x01)
+ #define CS42L42_ASP_RX0_CH_EN_SHIFT	2
+ #define CS42L42_ASP_RX0_CH_EN_MASK	(0xf << CS42L42_ASP_RX0_CH_EN_SHIFT)
+-#define CS42L42_ASP_RX0_CH1_EN		1
+-#define CS42L42_ASP_RX0_CH2_EN		2
+-#define CS42L42_ASP_RX0_CH3_EN		4
+-#define CS42L42_ASP_RX0_CH4_EN		8
++#define CS42L42_ASP_RX0_CH1_SHIFT	2
++#define CS42L42_ASP_RX0_CH2_SHIFT	3
++#define CS42L42_ASP_RX0_CH3_SHIFT	4
++#define CS42L42_ASP_RX0_CH4_SHIFT	5
  
- /* Page 0x29 Serial Port TX Registers */
- #define CS42L42_ASP_TX_SZ_EN		(CS42L42_PAGE_29 + 0x01)
-+#define CS42L42_ASP_TX_EN_SHIFT		0
- #define CS42L42_ASP_TX_CH_EN		(CS42L42_PAGE_29 + 0x02)
-+#define CS42L42_ASP_TX0_CH2_SHIFT	1
-+#define CS42L42_ASP_TX0_CH1_SHIFT	0
-+
- #define CS42L42_ASP_TX_CH_AP_RES	(CS42L42_PAGE_29 + 0x03)
-+#define CS42L42_ASP_TX_CH1_AP_SHIFT	7
-+#define CS42L42_ASP_TX_CH1_AP_MASK	(1 << CS42L42_ASP_TX_CH1_AP_SHIFT)
-+#define CS42L42_ASP_TX_CH2_AP_SHIFT	6
-+#define CS42L42_ASP_TX_CH2_AP_MASK	(1 << CS42L42_ASP_TX_CH2_AP_SHIFT)
-+#define CS42L42_ASP_TX_CH2_RES_SHIFT	2
-+#define CS42L42_ASP_TX_CH2_RES_MASK	(3 << CS42L42_ASP_TX_CH2_RES_SHIFT)
-+#define CS42L42_ASP_TX_CH1_RES_SHIFT	0
-+#define CS42L42_ASP_TX_CH1_RES_MASK	(3 << CS42L42_ASP_TX_CH1_RES_SHIFT)
- #define CS42L42_ASP_TX_CH1_BIT_MSB	(CS42L42_PAGE_29 + 0x04)
- #define CS42L42_ASP_TX_CH1_BIT_LSB	(CS42L42_PAGE_29 + 0x05)
- #define CS42L42_ASP_TX_HIZ_DLY_CFG	(CS42L42_PAGE_29 + 0x06)
+ #define CS42L42_ASP_RX_DAI0_CH1_AP_RES	(CS42L42_PAGE_2A + 0x02)
+ #define CS42L42_ASP_RX_DAI0_CH1_BIT_MSB	(CS42L42_PAGE_2A + 0x03)
 -- 
 2.30.1
 
