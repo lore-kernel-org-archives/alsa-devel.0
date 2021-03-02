@@ -2,64 +2,65 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65D0AC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C964C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:37:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 988AA64F2A
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:34:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 988AA64F2A
+	by mail.kernel.org (Postfix) with ESMTPS id 10B5664F1D
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:37:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 10B5664F1D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18A1718D5;
-	Tue,  2 Mar 2021 18:33:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A1718D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4836A18D4;
+	Tue,  2 Mar 2021 18:36:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4836A18D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614706458;
-	bh=yCgv5HM25dQfwOWild+5qxI5IZc2Fy0B0bY1bSzF5nY=;
+	s=default; t=1614706657;
+	bh=Nlgm3mX8YlCVvIxIC/Or4N/OCUB338DuvArrWr9ZVXI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZvTIhMv+eKUG4pTeh41xjX3hn15msMian/RGuQDQJl/6gMBR8ZyY5V/eCEGBf6Md2
-	 K84k2OXVv6SjAQntIZNBy50FGLh63assXmukbCbMIodcJUs7pJfGKFo0wx3jUAuUH4
-	 tc3DPivBpANkxBSdBsZ0eJLKnUDk0HekEX11PpL0=
+	b=RMhLlh719nCk27KZtgWdvVg+JDepDpbl3k4wLPY08Ag2HL7Mnr9A0IWATpnlKIAWo
+	 QC/2URO5Bty1wS9R9iDMbfqEPWE4jh5w+NhQcGTMPZcXs1Y0nse8Vf4pxVCbaROHPH
+	 a5O/huzgJXfx0aoAITQd4l6sFc6owZ01ELHYuSVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97BE6F8012D;
-	Tue,  2 Mar 2021 18:33:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE059F8025B;
+	Tue,  2 Mar 2021 18:36:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56DD5F80269; Tue,  2 Mar 2021 18:33:26 +0100 (CET)
+ id A9B7AF80269; Tue,  2 Mar 2021 18:36:45 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22698F8012D
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:33:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22698F8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0A87F8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:36:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0A87F8012D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 59A19ADCD;
- Tue,  2 Mar 2021 17:33:19 +0000 (UTC)
-Date: Tue, 02 Mar 2021 18:33:19 +0100
-Message-ID: <s5hmtvlea00.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 6E08FAE84;
+ Tue,  2 Mar 2021 17:36:39 +0000 (UTC)
+Date: Tue, 02 Mar 2021 18:36:39 +0100
+Message-ID: <s5hk0qpe9ug.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
-In-Reply-To: <0eee6545-5169-ef08-6cfa-5def8cd48c86@tuxedocomputers.com>
-References: <0eee6545-5169-ef08-6cfa-5def8cd48c86@tuxedocomputers.com>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v3] ALSA: hda/hdmi: let new platforms assign the pcm slot
+ dynamically
+In-Reply-To: <20210301111202.2684-1-hui.wang@canonical.com>
+References: <20210301111202.2684-1-hui.wang@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,29 +76,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Mar 2021 17:25:22 +0100,
-Werner Sembach wrote:
+On Mon, 01 Mar 2021 12:12:02 +0100,
+Hui Wang wrote:
 > 
-> From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+> If the platform set the dyn_pcm_assign to true, it will call
+> hdmi_find_pcm_slot() to find a pcm slot when hdmi/dp monitor is
+> connected and need to create a pcm.
 > 
-> ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+> So far only intel_hsw_common_init() and patch_nvhdmi() set the
+> dyn_pcm_assign to true, here we let tgl platforms assign the pcm slot
+> dynamically first, if the driver runs for a period of time and there
+> is no regression reported, we could set no_fixed_assgin to true in
+> the intel_hsw_common_init(), and then set it to true in the
+> patch_nvhdmi().
 > 
-> This applies a SND_PCI_QUIRK(...) to the Clevo NH55RZQ barebone. This
-> fixes the issue of the device not recognizing a pluged in microphone.
+> This change comes from the discussion between Takashi and
+> Kai Vehmanen. Please refer to:
+> https://github.com/alsa-project/alsa-lib/pull/118
 > 
-> The device has both, a microphone only jack, and a speaker + microphone
-> combo jack. The combo jack already works. The microphone-only jack does
-> not recognize when a device is pluged in without this patch.
-> 
-> Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-> Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> ---
-> This is a resend of the patch because I missed that the editor I used to write the commit message replaced tabs with spaces.
+> Suggested-and-reviewed-by: Takashi Iwai <tiwai@suse.de>
+> Suggested-and-reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
 
-Thanks, now I could apply it.
-
-Could you resubmit the NUC10 patch as well?
+Applied now.  Thanks.
 
 
 Takashi
