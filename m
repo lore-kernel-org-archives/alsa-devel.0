@@ -2,74 +2,104 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 11BB7C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDEBCC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:15:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C313064F0D
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:14:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C313064F0D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id B02C664F0B
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:15:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B02C664F0B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=lenovo.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA27A1721;
-	Tue,  2 Mar 2021 15:13:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA27A1721
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C5EA1715;
+	Tue,  2 Mar 2021 15:14:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C5EA1715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614694475;
-	bh=e2McjVy3y5qr0Wd/WbMZ/AzBg0tg8pRi5+XNX61Qlk8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1614694503;
+	bh=6YeEQeSY2aAqu4UwA7UJx6z2RKa4wMiORHUtgH+Rzvo=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kmal/qSLu+duN6DDDT88fJ8ptpOwBJcTyvDpev6Uqi8WPxOmuWsPQ8IFCZqmWpINY
-	 XCC62l9Nu1F3oAaizXRvwtNvp+n5kwFvbXyOxSfC+5TkC2zwcyy+hpdXWRZzAUwWCp
-	 t0jns+Xh12Q3ff2FI+p0RvdS6jZAg3GHi3VPTf5A=
+	b=sx4XvmF8j5pImacbsBUi0yn2XXoWpdLgEArZFm2hsMA/k+zLrnJJXsgLzOzv62orD
+	 jklr0Z/mWM7jcXO84AnKV7jK5jAnKZFs4uBSvS2kGLazpHdG+WmU+hKg5Ohhmvj1uC
+	 hEcjKnVXKLnuA2Q7j93NhshFO0Kll28biGv1wrS4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49D5EF8012D;
-	Tue,  2 Mar 2021 15:13:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7481F802A9;
+	Tue,  2 Mar 2021 15:14:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC9EEF80273; Tue,  2 Mar 2021 15:13:43 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BB195F80269; Tue,  2 Mar 2021 15:10:36 +0100 (CET)
+Received: from mail1.bemta24.messagelabs.com (mail1.bemta24.messagelabs.com
+ [67.219.250.114])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BB5CF8025B
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 15:13:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BB5CF8025B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="clmZ1iLH"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D6B264F0A;
- Tue,  2 Mar 2021 14:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614694415;
- bh=e2McjVy3y5qr0Wd/WbMZ/AzBg0tg8pRi5+XNX61Qlk8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=clmZ1iLHGVNPr76eCE04aX8y/sBngA43w2GCHEPEAJrgYy8k/DqLSkOJv+obaDJlg
- 4Ttlxnp1SPZ5UXbRDb+RCY6bIwCT0bqIku0hfAjcIjVeowrRHsWZqt2dUr/EXZMRP1
- dUK/xjlOARLck34zcu+WRsrgQpXGRMQVwcPllLL7AkxnrBBnngXVJKj45qfvD513N1
- RewAUA6+kj5GE8c7SOLoE6E2QVLRnQZ6tV+kFBwnN63CzKAw7ELMAEzTEQuOJAnfos
- UhTCDzUbtWGdTF3YTbS5E+V6HxK924VoaKaxRwQOotllA7PSvdGwoMz+mrJtilAnmM
- pIYv8pxwvAOGw==
-Date: Tue, 2 Mar 2021 19:43:30 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 0/7] ALSA/ASoC/SOF/SoundWire: fix Kconfig issues
-Message-ID: <YD5IChh6Xubim//Q@vkoul-mobl>
-References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
- <s5htuptfyae.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D46CF80088
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 15:10:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D46CF80088
+Received: from [100.112.135.57] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-3.bemta.az-b.us-west-2.aws.symcld.net id A8/2C-22828-1574E306;
+ Tue, 02 Mar 2021 14:10:25 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRWlGSWpSXmKPExsWSLveKXdfP3S7
+ BoGGlhcWVi4eYLNb1pzsweWz43MTmsal1CWsAUxRrZl5SfkUCa8aqT7eYCtZyVvyZuIKlgfE3
+ excjF4eQwH9GicMPzzBDOK8ZJd5uf8vYxcjJwSagLbFlyy+2LkYODhEBGYkPaz1BwswCoRL3L
+ qxjA7GFBUwlJn/vZwWxWQRUJB5P2MwCYvMKWEl8mrQZbIyEgLzE/9ZTYDWcAqoSZ7oeg9UIAd
+ Xff7CEDaJeUOLkzCcsEPPlJZq3zmaGsCUkDr54wQwxR0Fi/5+zrBB2gkTPv0dsExgFZiFpn4W
+ kfRaS9gWMzKsYLZKKMtMzSnITM3N0DQ0MdA0NjXQNjU2AbEu9xCrdJL3SYt3y1OISXSO9xPJi
+ veLK3OScFL281JJNjMCATiloy93BuPHNB71DjJIcTEqivLsE7BKE+JLyUyozEosz4otKc1KLD
+ zHKcHAoSfDecgXKCRalpqdWpGXmAKMLJi3BwaMkwjvHCSjNW1yQmFucmQ6ROsWoKCXO6+UGlB
+ AASWSU5sG1wSL6EqOslDAvIwMDgxBPQWpRbmYJqvwrRnEORiVhXneQKTyZeSVw018BLWYCWrw
+ 90ApkcUkiQkqqgWmSxOpjHwWd4ibvWnRq05qj770cIy2dgr5vum4aN+1s7g/NHdxuhxy9zeQN
+ ReICfOsOtt886JlsKvaQ//crFfsNzjVMJ8/tVzMJejVHVP2oU9wF2UftXNdL2rfNPbjr+au0u
+ 7XpHy5GHKhj22cudulnnmDTTL95umGyR+RetaxUMQvc9VdignhQzeLLV+NYW2aXaBYcne7Xc/
+ vOxEdVQedSFtV4pxXWBrzMvyy0j9M7dO/JXke1FXskrmUHCL3JLC997OmszflMwVrpx8ZdZ58
+ /XnC7KkRFrdRJlotRYdblc9pXrH8fuvjfeRv/2wwtg3W2R+epTK9fp3+a61x0fMsblrniDbdF
+ q+8cfXm3rUGJpTgj0VCLuag4EQAleH2AYwMAAA==
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-36.tower-355.messagelabs.com!1614694220!67213!1
+X-Originating-IP: [103.30.234.7]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 19625 invoked from network); 2 Mar 2021 14:10:22 -0000
+Received: from unknown (HELO lenovo.com) (103.30.234.7)
+ by server-36.tower-355.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 2 Mar 2021 14:10:22 -0000
+Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
+ (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by Forcepoint Email with ESMTPS id A0320DC26ECAE212DB6E;
+ Tue,  2 Mar 2021 22:10:19 +0800 (CST)
+Received: from localhost.localdomain.com (10.64.94.117) by
+ reswpmail01.lenovo.com (10.62.32.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 2 Mar 2021 09:09:16 -0500
+From: Mark Pearson <markpearson@lenovo.com>
+To: <markpearson@lenovo.com>
+Subject: [PATCH] ALSA: hda: ignore invalid NHLT table
+Date: Tue, 2 Mar 2021 09:10:03 -0500
+Message-ID: <20210302141003.7342-1-markpearson@lenovo.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <markpearson@lenovo.com>
+References: <markpearson@lenovo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5htuptfyae.wl-tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, arnd@arndb.de
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.94.117]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail01.lenovo.com (10.62.32.20)
+X-Mailman-Approved-At: Tue, 02 Mar 2021 15:14:04 +0100
+Cc: alsa-devel@alsa-project.org,
+ Philipp Leskovitz <philipp.leskovitz@secunet.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,37 +115,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 02-03-21, 15:03, Takashi Iwai wrote:
-> On Tue, 02 Mar 2021 01:31:18 +0100,
-> Pierre-Louis Bossart wrote:
-> > 
-> > In January, Intel kbuild bot and Arnd Bergmann reported multiple
-> > issues with randconfig. This patchset builds on Arnd's suggestions to
-> > 
-> > a) expose ACPI and PCI devices in separate modules, while sof-acpi-dev
-> > and sof-pci-dev become helpers. This will result in minor changes
-> > required for developers/testers, i.e. modprobe snd-sof-pci will no
-> > longer result in a probe. The SOF CI was already updated to deal with
-> > this module dependency change and introduction of new modules.
-> > 
-> > b) Fix SOF/SoundWire/DSP_config dependencies by moving the code
-> > required to detect SoundWire presence in ACPI tables to sound/hda.
-> > 
-> > Integration note:
-> > This patchset touches directories maintained by Vinod, Takashi and
-> > Mark in separate trees, and will impact additional changes to use the
-> > auxiliary bus in drivers/soundwire/.
-> > I can think of two options, both of which are fine:
-> > 1. Mark merges the patches with Vinod and Takashi Acked-by tags, then
-> > Mark provides an immutable tag to Vinod.
-> > 2. Vinod merges the patches with Mark and Takashi Acked-by tags, then
-> > Vinod provides an immutable tag to Mark
-> 
-> Acked-by: Takashi Iwai <tiwai@suse.de>
+On some Lenovo systems if the microphone is disabled in the BIOS
+only the NHLT table header is created, with no data. This means
+the endpoints field is not correctly set to zero - leading to an
+unintialised variable and hence invalid descriptors are parsed
+leading to page faults.
 
-Since most of the changes are sound/ it makes sense for this to go thru
-sound tree. I have acked the sdw part..
+The Lenovo firmware team is addressing this, but adding a check
+preventing invalid tables being parsed is worthwhile.
 
-Thanks
+Tested on a Lenovo T14.
+
+Tested-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
+Reported-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
+Signed-off-by: Mark Pearson <markpearson@lenovo.com>
+---
+ sound/hda/intel-nhlt.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
+index 059aaf04f..0889f2cc5 100644
+--- a/sound/hda/intel-nhlt.c
++++ b/sound/hda/intel-nhlt.c
+@@ -37,6 +37,11 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
+ 	if (!nhlt)
+ 		return 0;
+ 
++	if (nhlt->header.length <= sizeof(struct acpi_table_header)) {
++		dev_warn(dev, "Invalid DMIC description table\n");
++		return 0;
++	}
++
+ 	epnt = (struct nhlt_endpoint *)nhlt->desc;
+ 
+ 	for (j = 0; j < nhlt->endpoint_count; j++) {
 -- 
-~Vinod
+2.29.2
+
