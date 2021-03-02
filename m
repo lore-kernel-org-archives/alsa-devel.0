@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92948C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:34:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 023EBC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:34:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3E7BC6023C
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:34:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E7BC6023C
+	by mail.kernel.org (Postfix) with ESMTPS id 1B8C16023C
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 00:34:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1B8C16023C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B452169B;
-	Tue,  2 Mar 2021 01:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B452169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9845184A;
+	Tue,  2 Mar 2021 01:33:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9845184A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614645259;
-	bh=r9M/0VtHR2KZZWHCJdyWRB1K6m5+NR3vCuCPbI4qxIA=;
+	s=default; t=1614645274;
+	bh=GGkgk8i8406IIU5f2KmmsGCtsFQ5fH2M4lqAstO0krg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DEdYuhztwa1YA8qJrfwUnOu+B7tKaSopaBu4j+I7CAF14ypq/efgUkTgMB6bB88Oc
-	 dkbuTWr6FLzMeQT6WDtJTgDHe0ypY6iQdujD48E6/8GdGUoXWizPYY7eswNpc7GD27
-	 v8Qtq7PFNtAlfb25SiICJBv+vO1WA4r2RobzpmA0=
+	b=vjbdEU/uLsoCrC09khZGBebg/4evUd15w+hFEKZYuYtz0UEmCWyg0KF6M3F173U56
+	 vZqqe9455Ltne79GOACBVvcrwEi0pYzjhb+jh56IdBmijyWrxEMep75E5Zg3iu9Jgf
+	 7oDpLO1tKz02oIyh3njmRO6GLRIhOGwdClTvL3CY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20A9AF8025E;
-	Tue,  2 Mar 2021 01:31:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0276DF80482;
+	Tue,  2 Mar 2021 01:31:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEE67F8049C; Tue,  2 Mar 2021 01:31:54 +0100 (CET)
+ id 27BBCF80482; Tue,  2 Mar 2021 01:31:55 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6E39F8025E
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 01:31:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6E39F8025E
-IronPort-SDR: Jtykpv2dYqVLpSihDU8HNFoTTcBsJwbyKPYNj/z0G7jkoAju34oX5D/fMODAN1C8Ob1k7wcq9M
- uFK2t/ucU7CQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248048789"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248048789"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F18CF802E0
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 01:31:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F18CF802E0
+IronPort-SDR: crv0JNjN6tHsNyg/1y9e9vpfPi3DEb1mqDZ038q+JvgmdlolFXAM/BtjzMAq1dy+NGqDavKqev
+ 434aaeUGG0ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248048798"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248048798"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 16:31:44 -0800
-IronPort-SDR: 0+UFhUompKZkf4nzhwhzmok1dTr0jekqFBgaoGWhUIZIiW2Vxs6LlBsEuDpocPqfXHVRxMh/Di
- AOUbR4Alcoqw==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="444512580"
+ 01 Mar 2021 16:31:48 -0800
+IronPort-SDR: FnGPyA0XuhZwZyBIWTEwS3Ty4L5cUlqumPrHGwtQCacOn35KWmhZ/bIoQPn25rurx8kUqQktjO
+ dSeT3LqLto1Q==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="444512611"
 Received: from josemrod-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.215.233])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Mar 2021 16:31:42 -0800
+ 01 Mar 2021 16:31:46 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/7] ASoC: SOF: pci: move DSP_CONFIG use to platform-specific
- drivers
-Date: Mon,  1 Mar 2021 18:31:22 -0600
-Message-Id: <20210302003125.1178419-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 6/7] ALSA: hda: move Intel SoundWire ACPI scan to dedicated
+ module
+Date: Mon,  1 Mar 2021 18:31:24 -0600
+Message-Id: <20210302003125.1178419-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
 References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
@@ -87,156 +87,491 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no reason why we should call the intel_dspcfg helpers from
-common code, this should be moved in Intel-specific code and only
-called from platforms where a conflict may occur with the HDaudio or
-SST/Skylake driver.
+The ACPI scan capabilities is called from the intel-dspconfig as well
+as the SOF/HDaudio drivers. This creates dependencies and randconfig issues
+when HDaudio and SOF/SoundWire are not all configured as modules.
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
+To simplify Kconfig dependencies between HDAudio, SoundWire, SOF and
+intel-dspconfig, move the ACPI scan helpers to a dedicated
+module. This follows the same idea as NHLT helpers which are already
+handled as a dedicated module.
+
+The only functional change is that the kernel parameter to filter
+links is now handled by a different module, but that was only provided
+for developers needing work-arounds for early BIOS releases.
+
+Reported-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Reviewed-by: Bard Liao <bard.liao@intel.com>
 ---
- sound/soc/sof/intel/hda.c     | 17 +++++++++++++++++
- sound/soc/sof/intel/hda.h     |  3 +++
- sound/soc/sof/intel/pci-apl.c |  2 +-
- sound/soc/sof/intel/pci-cnl.c |  2 +-
- sound/soc/sof/intel/pci-icl.c |  2 +-
- sound/soc/sof/intel/pci-tgl.c |  2 +-
- sound/soc/sof/sof-pci-dev.c   |  8 --------
- 7 files changed, 24 insertions(+), 12 deletions(-)
+ drivers/soundwire/intel.h           |   2 -
+ drivers/soundwire/intel_init.c      | 158 -------------------------
+ include/linux/soundwire/sdw_intel.h |   2 +
+ sound/hda/Kconfig                   |   4 +
+ sound/hda/Makefile                  |   3 +
+ sound/hda/intel-dsp-config.c        |   2 +-
+ sound/hda/intel-sdw-acpi.c          | 174 ++++++++++++++++++++++++++++
+ sound/soc/sof/intel/Kconfig         |   1 +
+ sound/soc/sof/intel/hda.c           |   1 +
+ 9 files changed, 186 insertions(+), 161 deletions(-)
+ create mode 100644 sound/hda/intel-sdw-acpi.c
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 25b799f0accc..2b2829655bfb 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -22,10 +22,12 @@
- #include <linux/module.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_intel.h>
-+#include <sound/intel-dsp-config.h>
- #include <sound/intel-nhlt.h>
- #include <sound/sof.h>
- #include <sound/sof/xtensa.h>
- #include "../sof-audio.h"
-+#include "../sof-pci-dev.h"
- #include "../ops.h"
- #include "hda.h"
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index 76820d0b9deb..06bac8ba14e9 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -48,8 +48,6 @@ struct sdw_intel {
+ #endif
+ };
  
-@@ -1256,7 +1258,22 @@ void hda_machine_select(struct snd_sof_dev *sdev)
- 		dev_warn(sdev->dev, "warning: No matching ASoC machine driver found\n");
+-#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
+-
+ int intel_master_startup(struct platform_device *pdev);
+ int intel_master_process_wakeen_event(struct platform_device *pdev);
+ 
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index bc8520eb385e..05b726cdfebc 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -18,42 +18,12 @@
+ #include "cadence_master.h"
+ #include "intel.h"
+ 
+-#define SDW_LINK_TYPE		4 /* from Intel ACPI documentation */
+-#define SDW_MAX_LINKS		4
+ #define SDW_SHIM_LCAP		0x0
+ #define SDW_SHIM_BASE		0x2C000
+ #define SDW_ALH_BASE		0x2C800
+ #define SDW_LINK_BASE		0x30000
+ #define SDW_LINK_SIZE		0x10000
+ 
+-static int ctrl_link_mask;
+-module_param_named(sdw_link_mask, ctrl_link_mask, int, 0444);
+-MODULE_PARM_DESC(sdw_link_mask, "Intel link mask (one bit per link)");
+-
+-static bool is_link_enabled(struct fwnode_handle *fw_node, int i)
+-{
+-	struct fwnode_handle *link;
+-	char name[32];
+-	u32 quirk_mask = 0;
+-
+-	/* Find master handle */
+-	snprintf(name, sizeof(name),
+-		 "mipi-sdw-link-%d-subproperties", i);
+-
+-	link = fwnode_get_named_child_node(fw_node, name);
+-	if (!link)
+-		return false;
+-
+-	fwnode_property_read_u32(link,
+-				 "intel-quirk-mask",
+-				 &quirk_mask);
+-
+-	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
+-		return false;
+-
+-	return true;
+-}
+-
+ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
+ {
+ 	struct sdw_intel_link_res *link = ctx->links;
+@@ -81,74 +51,6 @@ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
+ 	return 0;
  }
  
-+int hda_pci_intel_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
-+{
-+	int ret;
+-static int
+-sdw_intel_scan_controller(struct sdw_intel_acpi_info *info)
+-{
+-	struct acpi_device *adev;
+-	int ret, i;
+-	u8 count;
+-
+-	if (acpi_bus_get_device(info->handle, &adev))
+-		return -EINVAL;
+-
+-	/* Found controller, find links supported */
+-	count = 0;
+-	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
+-					    "mipi-sdw-master-count", &count, 1);
+-
+-	/*
+-	 * In theory we could check the number of links supported in
+-	 * hardware, but in that step we cannot assume SoundWire IP is
+-	 * powered.
+-	 *
+-	 * In addition, if the BIOS doesn't even provide this
+-	 * 'master-count' property then all the inits based on link
+-	 * masks will fail as well.
+-	 *
+-	 * We will check the hardware capabilities in the startup() step
+-	 */
+-
+-	if (ret) {
+-		dev_err(&adev->dev,
+-			"Failed to read mipi-sdw-master-count: %d\n", ret);
+-		return -EINVAL;
+-	}
+-
+-	/* Check count is within bounds */
+-	if (count > SDW_MAX_LINKS) {
+-		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
+-			count, SDW_MAX_LINKS);
+-		return -EINVAL;
+-	}
+-
+-	if (!count) {
+-		dev_warn(&adev->dev, "No SoundWire links detected\n");
+-		return -EINVAL;
+-	}
+-	dev_dbg(&adev->dev, "ACPI reports %d SDW Link devices\n", count);
+-
+-	info->count = count;
+-	info->link_mask = 0;
+-
+-	for (i = 0; i < count; i++) {
+-		if (ctrl_link_mask && !(ctrl_link_mask & BIT(i))) {
+-			dev_dbg(&adev->dev,
+-				"Link %d masked, will not be enabled\n", i);
+-			continue;
+-		}
+-
+-		if (!is_link_enabled(acpi_fwnode_handle(adev), i)) {
+-			dev_dbg(&adev->dev,
+-				"Link %d not selected in firmware\n", i);
+-			continue;
+-		}
+-
+-		info->link_mask |= BIT(i);
+-	}
+-
+-	return 0;
+-}
+-
+ #define HDA_DSP_REG_ADSPIC2             (0x10)
+ #define HDA_DSP_REG_ADSPIS2             (0x14)
+ #define HDA_DSP_REG_ADSPIC2_SNDW        BIT(5)
+@@ -357,66 +259,6 @@ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
+ 	return 0;
+ }
+ 
+-static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
+-				     void *cdata, void **return_value)
+-{
+-	struct sdw_intel_acpi_info *info = cdata;
+-	struct acpi_device *adev;
+-	acpi_status status;
+-	u64 adr;
+-
+-	status = acpi_evaluate_integer(handle, METHOD_NAME__ADR, NULL, &adr);
+-	if (ACPI_FAILURE(status))
+-		return AE_OK; /* keep going */
+-
+-	if (acpi_bus_get_device(handle, &adev)) {
+-		pr_err("%s: Couldn't find ACPI handle\n", __func__);
+-		return AE_NOT_FOUND;
+-	}
+-
+-	info->handle = handle;
+-
+-	/*
+-	 * On some Intel platforms, multiple children of the HDAS
+-	 * device can be found, but only one of them is the SoundWire
+-	 * controller. The SNDW device is always exposed with
+-	 * Name(_ADR, 0x40000000), with bits 31..28 representing the
+-	 * SoundWire link so filter accordingly
+-	 */
+-	if (FIELD_GET(GENMASK(31, 28), adr) != SDW_LINK_TYPE)
+-		return AE_OK; /* keep going */
+-
+-	/* device found, stop namespace walk */
+-	return AE_CTRL_TERMINATE;
+-}
+-
+-/**
+- * sdw_intel_acpi_scan() - SoundWire Intel init routine
+- * @parent_handle: ACPI parent handle
+- * @info: description of what firmware/DSDT tables expose
+- *
+- * This scans the namespace and queries firmware to figure out which
+- * links to enable. A follow-up use of sdw_intel_probe() and
+- * sdw_intel_startup() is required for creation of devices and bus
+- * startup
+- */
+-int sdw_intel_acpi_scan(acpi_handle *parent_handle,
+-			struct sdw_intel_acpi_info *info)
+-{
+-	acpi_status status;
+-
+-	info->handle = NULL;
+-	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
+-				     parent_handle, 1,
+-				     sdw_intel_acpi_cb,
+-				     NULL, info, NULL);
+-	if (ACPI_FAILURE(status) || info->handle == NULL)
+-		return -ENODEV;
+-
+-	return sdw_intel_scan_controller(info);
+-}
+-EXPORT_SYMBOL_NS(sdw_intel_acpi_scan, SOUNDWIRE_INTEL_INIT);
+-
+ /**
+  * sdw_intel_probe() - SoundWire Intel probe routine
+  * @res: resource data
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 120ffddc03d2..3a5446ac014a 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -187,4 +187,6 @@ void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable);
+ 
+ irqreturn_t sdw_intel_thread(int irq, void *dev_id);
+ 
++#define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
 +
-+	ret = snd_intel_dsp_driver_probe(pci);
-+	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
-+		dev_dbg(&pci->dev, "SOF PCI driver not selected, aborting probe\n");
-+		return -ENODEV;
+ #endif
+diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
+index 9ed5cfa3c18c..57595f1552c9 100644
+--- a/sound/hda/Kconfig
++++ b/sound/hda/Kconfig
+@@ -44,9 +44,13 @@ config SND_INTEL_NHLT
+ config SND_INTEL_DSP_CONFIG
+ 	tristate
+ 	select SND_INTEL_NHLT if ACPI
++	select SND_INTEL_SOUNDWIRE_ACPI if ACPI
+ 	# this config should be selected only for Intel DSP platforms.
+ 	# A fallback is provided so that the code compiles in all cases.
+ 
++config SND_INTEL_SOUNDWIRE_ACPI
++	tristate
++
+ config SND_INTEL_BYT_PREFER_SOF
+ 	bool "Prefer SOF driver over SST on BY/CHT platforms"
+ 	depends on SND_SST_ATOM_HIFI2_PLATFORM_ACPI && SND_SOC_SOF_BAYTRAIL
+diff --git a/sound/hda/Makefile b/sound/hda/Makefile
+index 601e617918b8..78f487a635f8 100644
+--- a/sound/hda/Makefile
++++ b/sound/hda/Makefile
+@@ -17,3 +17,6 @@ obj-$(CONFIG_SND_HDA_EXT_CORE) += ext/
+ snd-intel-dspcfg-objs := intel-dsp-config.o
+ snd-intel-dspcfg-$(CONFIG_SND_INTEL_NHLT) += intel-nhlt.o
+ obj-$(CONFIG_SND_INTEL_DSP_CONFIG) += snd-intel-dspcfg.o
++
++snd-intel-sdw-acpi-objs := intel-sdw-acpi.o
++obj-$(CONFIG_SND_INTEL_SOUNDWIRE_ACPI) += snd-intel-sdw-acpi.o
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index d1eb9d34993a..ab5ff7867eb9 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -557,4 +557,4 @@ EXPORT_SYMBOL_GPL(snd_intel_acpi_dsp_driver_probe);
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Intel DSP config driver");
+-MODULE_IMPORT_NS(SOUNDWIRE_INTEL_INIT);
++MODULE_IMPORT_NS(SND_INTEL_SOUNDWIRE_ACPI);
+diff --git a/sound/hda/intel-sdw-acpi.c b/sound/hda/intel-sdw-acpi.c
+new file mode 100644
+index 000000000000..6359936a1503
+--- /dev/null
++++ b/sound/hda/intel-sdw-acpi.c
+@@ -0,0 +1,174 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2015-2021 Intel Corporation.
++
++/*
++ * SDW Intel ACPI scan helpers
++ */
++
++#include <linux/acpi.h>
++#include <linux/export.h>
++#include <linux/module.h>
++#include <linux/soundwire/sdw_intel.h>
++#include <linux/string.h>
++
++#define SDW_LINK_TYPE		4 /* from Intel ACPI documentation */
++#define SDW_MAX_LINKS		4
++
++static int ctrl_link_mask;
++module_param_named(sdw_link_mask, ctrl_link_mask, int, 0444);
++MODULE_PARM_DESC(sdw_link_mask, "Intel link mask (one bit per link)");
++
++static bool is_link_enabled(struct fwnode_handle *fw_node, int i)
++{
++	struct fwnode_handle *link;
++	char name[32];
++	u32 quirk_mask = 0;
++
++	/* Find master handle */
++	snprintf(name, sizeof(name),
++		 "mipi-sdw-link-%d-subproperties", i);
++
++	link = fwnode_get_named_child_node(fw_node, name);
++	if (!link)
++		return false;
++
++	fwnode_property_read_u32(link,
++				 "intel-quirk-mask",
++				 &quirk_mask);
++
++	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
++		return false;
++
++	return true;
++}
++
++static int
++sdw_intel_scan_controller(struct sdw_intel_acpi_info *info)
++{
++	struct acpi_device *adev;
++	int ret, i;
++	u8 count;
++
++	if (acpi_bus_get_device(info->handle, &adev))
++		return -EINVAL;
++
++	/* Found controller, find links supported */
++	count = 0;
++	ret = fwnode_property_read_u8_array(acpi_fwnode_handle(adev),
++					    "mipi-sdw-master-count", &count, 1);
++
++	/*
++	 * In theory we could check the number of links supported in
++	 * hardware, but in that step we cannot assume SoundWire IP is
++	 * powered.
++	 *
++	 * In addition, if the BIOS doesn't even provide this
++	 * 'master-count' property then all the inits based on link
++	 * masks will fail as well.
++	 *
++	 * We will check the hardware capabilities in the startup() step
++	 */
++
++	if (ret) {
++		dev_err(&adev->dev,
++			"Failed to read mipi-sdw-master-count: %d\n", ret);
++		return -EINVAL;
 +	}
 +
-+	return sof_pci_probe(pci, pci_id);
-+}
-+EXPORT_SYMBOL_NS(hda_pci_intel_probe, SND_SOC_SOF_INTEL_HDA_COMMON);
++	/* Check count is within bounds */
++	if (count > SDW_MAX_LINKS) {
++		dev_err(&adev->dev, "Link count %d exceeds max %d\n",
++			count, SDW_MAX_LINKS);
++		return -EINVAL;
++	}
 +
- MODULE_LICENSE("Dual BSD/GPL");
-+MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
++	if (!count) {
++		dev_warn(&adev->dev, "No SoundWire links detected\n");
++		return -EINVAL;
++	}
++	dev_dbg(&adev->dev, "ACPI reports %d SDW Link devices\n", count);
++
++	info->count = count;
++	info->link_mask = 0;
++
++	for (i = 0; i < count; i++) {
++		if (ctrl_link_mask && !(ctrl_link_mask & BIT(i))) {
++			dev_dbg(&adev->dev,
++				"Link %d masked, will not be enabled\n", i);
++			continue;
++		}
++
++		if (!is_link_enabled(acpi_fwnode_handle(adev), i)) {
++			dev_dbg(&adev->dev,
++				"Link %d not selected in firmware\n", i);
++			continue;
++		}
++
++		info->link_mask |= BIT(i);
++	}
++
++	return 0;
++}
++
++static acpi_status sdw_intel_acpi_cb(acpi_handle handle, u32 level,
++				     void *cdata, void **return_value)
++{
++	struct sdw_intel_acpi_info *info = cdata;
++	struct acpi_device *adev;
++	acpi_status status;
++	u64 adr;
++
++	status = acpi_evaluate_integer(handle, METHOD_NAME__ADR, NULL, &adr);
++	if (ACPI_FAILURE(status))
++		return AE_OK; /* keep going */
++
++	if (acpi_bus_get_device(handle, &adev)) {
++		pr_err("%s: Couldn't find ACPI handle\n", __func__);
++		return AE_NOT_FOUND;
++	}
++
++	info->handle = handle;
++
++	/*
++	 * On some Intel platforms, multiple children of the HDAS
++	 * device can be found, but only one of them is the SoundWire
++	 * controller. The SNDW device is always exposed with
++	 * Name(_ADR, 0x40000000), with bits 31..28 representing the
++	 * SoundWire link so filter accordingly
++	 */
++	if (FIELD_GET(GENMASK(31, 28), adr) != SDW_LINK_TYPE)
++		return AE_OK; /* keep going */
++
++	/* device found, stop namespace walk */
++	return AE_CTRL_TERMINATE;
++}
++
++/**
++ * sdw_intel_acpi_scan() - SoundWire Intel init routine
++ * @parent_handle: ACPI parent handle
++ * @info: description of what firmware/DSDT tables expose
++ *
++ * This scans the namespace and queries firmware to figure out which
++ * links to enable. A follow-up use of sdw_intel_probe() and
++ * sdw_intel_startup() is required for creation of devices and bus
++ * startup
++ */
++int sdw_intel_acpi_scan(acpi_handle *parent_handle,
++			struct sdw_intel_acpi_info *info)
++{
++	acpi_status status;
++
++	info->handle = NULL;
++	status = acpi_walk_namespace(ACPI_TYPE_DEVICE,
++				     parent_handle, 1,
++				     sdw_intel_acpi_cb,
++				     NULL, info, NULL);
++	if (ACPI_FAILURE(status) || info->handle == NULL)
++		return -ENODEV;
++
++	return sdw_intel_scan_controller(info);
++}
++EXPORT_SYMBOL_NS(sdw_intel_acpi_scan, SND_INTEL_SOUNDWIRE_ACPI);
++
++MODULE_LICENSE("Dual BSD/GPL");
++MODULE_DESCRIPTION("Intel Soundwire ACPI helpers");
+diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
+index 21e24a3c64fb..da1c396f529d 100644
+--- a/sound/soc/sof/intel/Kconfig
++++ b/sound/soc/sof/intel/Kconfig
+@@ -286,6 +286,7 @@ config SND_SOC_SOF_INTEL_SOUNDWIRE
+ 	depends on ACPI && SOUNDWIRE
+ 	depends on !(SOUNDWIRE=m && SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE=y)
+ 	select SOUNDWIRE_INTEL
++	select SND_INTEL_SOUNDWIRE_ACPI
+ 	help
+ 	  This adds support for SoundWire with Sound Open Firmware
+ 	  for Intel(R) platforms.
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 2b2829655bfb..0e092877f550 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1277,4 +1277,5 @@ MODULE_IMPORT_NS(SND_SOC_SOF_PCI_DEV);
  MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC);
  MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
  MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index d1c38c37bc9d..7c7579daee7f 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -764,4 +764,7 @@ void hda_machine_select(struct snd_sof_dev *sdev);
- void hda_set_mach_params(const struct snd_soc_acpi_mach *mach,
- 			 struct device *dev);
- 
-+/* PCI driver selection and probe */
-+int hda_pci_intel_probe(struct pci_dev *pci, const struct pci_device_id *pci_id);
-+
- #endif
-diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
-index e83ddbaafa29..f89e746c2570 100644
---- a/sound/soc/sof/intel/pci-apl.c
-+++ b/sound/soc/sof/intel/pci-apl.c
-@@ -67,7 +67,7 @@ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
- static struct pci_driver snd_sof_pci_intel_apl_driver = {
- 	.name = "sof-audio-pci-intel-apl",
- 	.id_table = sof_pci_ids,
--	.probe = sof_pci_probe,
-+	.probe = hda_pci_intel_probe,
- 	.remove = sof_pci_remove,
- 	.shutdown = sof_pci_shutdown,
- 	.driver = {
-diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
-index f974d3a77217..f23257adf2ab 100644
---- a/sound/soc/sof/intel/pci-cnl.c
-+++ b/sound/soc/sof/intel/pci-cnl.c
-@@ -90,7 +90,7 @@ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
- static struct pci_driver snd_sof_pci_intel_cnl_driver = {
- 	.name = "sof-audio-pci-intel-cnl",
- 	.id_table = sof_pci_ids,
--	.probe = sof_pci_probe,
-+	.probe = hda_pci_intel_probe,
- 	.remove = sof_pci_remove,
- 	.shutdown = sof_pci_shutdown,
- 	.driver = {
-diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
-index d5d7cefa6ef9..2f60c28ae81f 100644
---- a/sound/soc/sof/intel/pci-icl.c
-+++ b/sound/soc/sof/intel/pci-icl.c
-@@ -70,7 +70,7 @@ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
- static struct pci_driver snd_sof_pci_intel_icl_driver = {
- 	.name = "sof-audio-pci-intel-icl",
- 	.id_table = sof_pci_ids,
--	.probe = sof_pci_probe,
-+	.probe = hda_pci_intel_probe,
- 	.remove = sof_pci_remove,
- 	.shutdown = sof_pci_shutdown,
- 	.driver = {
-diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
-index d35c25a450aa..485607471181 100644
---- a/sound/soc/sof/intel/pci-tgl.c
-+++ b/sound/soc/sof/intel/pci-tgl.c
-@@ -106,7 +106,7 @@ MODULE_DEVICE_TABLE(pci, sof_pci_ids);
- static struct pci_driver snd_sof_pci_intel_tgl_driver = {
- 	.name = "sof-audio-pci-intel-tgl",
- 	.id_table = sof_pci_ids,
--	.probe = sof_pci_probe,
-+	.probe = hda_pci_intel_probe,
- 	.remove = sof_pci_remove,
- 	.shutdown = sof_pci_shutdown,
- 	.driver = {
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index cfcbd9754c03..b842a414e1df 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -13,7 +13,6 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/pm_runtime.h>
--#include <sound/intel-dsp-config.h>
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
- #include <sound/sof.h>
-@@ -120,13 +119,6 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 	const struct snd_sof_dsp_ops *ops;
- 	int ret;
- 
--	if (IS_REACHABLE(CONFIG_SND_INTEL_DSP_CONFIG)) {
--		ret = snd_intel_dsp_driver_probe(pci);
--		if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
--			dev_dbg(&pci->dev, "SOF PCI driver not selected, aborting probe\n");
--			return -ENODEV;
--		}
--	}
- 	dev_dbg(&pci->dev, "PCI DSP detected");
- 
- 	/* get ops for platform */
++MODULE_IMPORT_NS(SND_INTEL_SOUNDWIRE_ACPI);
+ MODULE_IMPORT_NS(SOUNDWIRE_INTEL_INIT);
 -- 
 2.25.1
 
