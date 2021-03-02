@@ -2,86 +2,86 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E28DC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:07:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC3F9C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:07:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2BBF64EF4
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:07:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2BBF64EF4
+	by mail.kernel.org (Postfix) with ESMTPS id 0910A64EF4
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:07:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0910A64EF4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7349717BC;
-	Tue,  2 Mar 2021 18:06:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7349717BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3414C17CE;
+	Tue,  2 Mar 2021 18:06:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3414C17CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614704828;
-	bh=Y1OOHGLROQcjG2Qm7yJnDYLuXH556gluXGONSSc16QI=;
+	s=default; t=1614704862;
+	bh=45Uh8cS+dnpDexhgU6WxXfhAm6yn5+ilWLg9VOVER04=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xaf1kX6DbG9tflW9J5nV21lm57XkNDScERRd0ALuEOAeov87+G1Ss3TzkERo0yQkq
-	 vQKinpHK7ZTOz34hAiDTRLCjru0TlfAAgO6ReTSkhXc1gst9r3eT16jiVjErjnrkvC
-	 QepDv2pJpbndJnQBXThORGCr1GYXZleNGqsSglJQ=
+	b=jhnw1FLW5mVqDa8HCvsQYUjZwDFW0NouMxabaR8HW4tSx91kfrOiUpIiPj/xZ9EYU
+	 yFkcovsTc5buHFXbvxQ+uK2Pvp8xjQohOWYx0oXEW6m8qGDVUxe8CfFDEeuac8PGBI
+	 Rl3m6DT2K7NNCfTilCoRGRxNMHbAck5zEOpG16YM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E06AFF80277;
-	Tue,  2 Mar 2021 18:05:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72C97F8049C;
+	Tue,  2 Mar 2021 18:05:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E173F804A9; Tue,  2 Mar 2021 18:05:16 +0100 (CET)
+ id 61EF4F8049C; Tue,  2 Mar 2021 18:05:16 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0D59F80277
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:05:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0D59F80277
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6535F80269
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:05:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6535F80269
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="hUVOqHeW"
+ header.b="LeNyu/y8"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 122H1q3H022910; Tue, 2 Mar 2021 11:05:02 -0600
+ 122H1q3N022910; Tue, 2 Mar 2021 11:05:04 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=kCgmon+H0mCTEPsdSE/zvE9WEodhfHIQSgmuNA3+o1U=;
- b=hUVOqHeWS1DTR4rTXjLnq9BRUzAXO6VmLa2UtTWbYnEXaGnlGrq8fh5uB4/XZruhFVD/
- PgXmRYSTCan6nMMsW1O1Rug+jEBOZp1nQB9jaktjOhhZmEBDwJRmObWyEkQb+YoIxnX1
- 3yMSushY43/YyYISpskSX9MmN2//ZQodHhchRi1iZN600vV//Iw6CMxp39Wc0IHyikRn
- oJjK3V7Io3droBKGX6JgYDHEMK1XIRHdHEB/9FouPaBOE1YfZ7YT+ssM3y+bN2Tqz19q
- 6Q87o5ci9LtGrpVxdqsH95v8aJ/Aw8jdKBbGIBqFBQL6xoCtif6Jy7545wW27gz8HbGf 9Q== 
+ bh=vFotJFunbO6grlMdLvKjcHA1rEucWzbu+dMncghehHQ=;
+ b=LeNyu/y82tnwn91HR+p65t84kz8ghYsXNv5VfFu0s6N3DbEPriW4nHKv27udAHpVbY8N
+ vYAp4R57kTBGNJ2IqYNliuGNwRHZzj2ZR5Felyvv8f9Q5umF7mmUXFRl1OX7e8Bi7BpD
+ UC0sAKRsRDaexH12Fh9DKHcFON626MEtDD9avO91zfLxS80REDX8jg3WubgdY6v2woMw
+ xlJuPoEnD9rF4UaUAJWBT6pB/ZQ26xjTUuDTPJJH+5y6pSDk1r4WMLty/j0xaQSk9/0Q
+ iUeEZ+EtWE7tidJDJnn+eBfPVlXwAhz5+RyJYz7b8wUs/KexI2Cb5j2bK5EpUdM0vQfh 0A== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg7-3
+ by mx0a-001ae601.pphosted.com with ESMTP id 36ymc6usg7-6
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 02 Mar 2021 11:05:02 -0600
+ Tue, 02 Mar 2021 11:05:04 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 2 Mar 2021
- 17:04:59 +0000
+ 17:05:02 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 2 Mar 2021 17:04:59 +0000
+ Transport; Tue, 2 Mar 2021 17:05:02 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A8B8711CB;
- Tue,  2 Mar 2021 17:04:59 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EF84B11CB;
+ Tue,  2 Mar 2021 17:05:01 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood
  <lgirdwood@gmail.com>
-Subject: [PATCH 03/15] ASoC: cs42l42: Remove power if the driver is being
- removed
-Date: Tue, 2 Mar 2021 17:04:42 +0000
-Message-ID: <20210302170454.39679-4-tanureal@opensource.cirrus.com>
+Subject: [PATCH 11/15] ASoC: cs42l42: Use bclk from hw_params if set_sysclk
+ was not called
+Date: Tue, 2 Mar 2021 17:04:50 +0000
+Message-ID: <20210302170454.39679-12-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
 References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
@@ -91,7 +91,7 @@ Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
  clxscore=1015 suspectscore=0
  adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=974 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103020131
 Cc: patches@opensource.cirrus.com,
@@ -112,26 +112,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Ensure the power supplies are turned off when removing the driver
+Add support for reading the source clock from snd_soc_params_to_bclk
+so the machine driver is not required to call cs42l42_set_sysclk
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/cs42l42.c | 17 +++++++++++++----
+ sound/soc/codecs/cs42l42.h |  1 +
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 2a25a30f842b1..00e303c711ddc 100644
+index 8345f52ec9d58..7898a2d52a3b7 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1852,6 +1852,8 @@ static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
- 	/* Hold down reset */
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
+@@ -556,10 +556,16 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ {
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	int i;
++	u32 clk;
+ 	u32 fsync;
  
-+	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies), cs42l42->supplies);
++	if (!cs42l42->sclk)
++		clk = cs42l42->bclk;
++	else
++		clk = cs42l42->sclk;
 +
- 	return 0;
- }
+ 	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
+-		if (pll_ratio_table[i].sclk == cs42l42->sclk) {
++		if (pll_ratio_table[i].sclk == clk) {
+ 			/* Configure the internal sample rate */
+ 			snd_soc_component_update_bits(component, CS42L42_MCLK_CTL,
+ 					CS42L42_INTERNAL_FS_MASK,
+@@ -579,12 +585,12 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ 					(pll_ratio_table[i].mclk_div <<
+ 					CS42L42_MCLKDIV_SHIFT));
+ 			/* Set up the LRCLK */
+-			fsync = cs42l42->sclk / cs42l42->srate;
+-			if (((fsync * cs42l42->srate) != cs42l42->sclk)
++			fsync = clk / cs42l42->srate;
++			if (((fsync * cs42l42->srate) != clk)
+ 				|| ((fsync % 2) != 0)) {
+ 				dev_err(component->dev,
+ 					"Unsupported sclk %d/sample rate %d\n",
+-					cs42l42->sclk,
++					clk,
+ 					cs42l42->srate);
+ 				return -EINVAL;
+ 			}
+@@ -756,6 +762,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int val = 0;
  
+ 	cs42l42->srate = params_rate(params);
++	cs42l42->bclk = snd_soc_params_to_bclk(params);
+ 
+ 	switch(substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+@@ -888,6 +895,8 @@ static struct snd_soc_dai_driver cs42l42_dai = {
+ 			.rates = SNDRV_PCM_RATE_8000_192000,
+ 			.formats = CS42L42_FORMATS,
+ 		},
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 		.ops = &cs42l42_ops,
+ };
+ 
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 267c2b616e57d..1df9577e367c1 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -772,6 +772,7 @@ struct  cs42l42_private {
+ 	struct completion pdn_done;
+ 	struct snd_soc_jack jack;
+ 	int irq;
++	int bclk;
+ 	u32 sclk;
+ 	u32 srate;
+ 	u8 plug_state;
 -- 
 2.30.1
 
