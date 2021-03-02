@@ -2,104 +2,60 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDEBCC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:15:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6D9BC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:17:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B02C664F0B
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:15:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B02C664F0B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=lenovo.com
+	by mail.kernel.org (Postfix) with ESMTPS id B2A4161494
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:17:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2A4161494
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=crapouillou.net
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C5EA1715;
-	Tue,  2 Mar 2021 15:14:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C5EA1715
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EC9E171E;
+	Tue,  2 Mar 2021 15:16:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EC9E171E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614694503;
-	bh=6YeEQeSY2aAqu4UwA7UJx6z2RKa4wMiORHUtgH+Rzvo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614694665;
+	bh=LleYcrOEL8Gdk2tU1UTiVFkiqctEHVkX/P47FtNk+54=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sx4XvmF8j5pImacbsBUi0yn2XXoWpdLgEArZFm2hsMA/k+zLrnJJXsgLzOzv62orD
-	 jklr0Z/mWM7jcXO84AnKV7jK5jAnKZFs4uBSvS2kGLazpHdG+WmU+hKg5Ohhmvj1uC
-	 hEcjKnVXKLnuA2Q7j93NhshFO0Kll28biGv1wrS4=
+	b=giYf/gUJOKeSLNhanMJnfHdkbgb1ndlB2OOVDFuaP8jYBnKxmN8ZHFyctTIfnD4vk
+	 +G3vFNPe6/UR3i0wRARIkOF3/5ERnzCVWoLn2dmFezeg3DXcwjnObEqLIR4PGsNZkh
+	 vgxybmhnUF95iIAYflj1v1X120jV0rB9WB9SEhr8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7481F802A9;
-	Tue,  2 Mar 2021 15:14:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D5C1F8012D;
+	Tue,  2 Mar 2021 15:16:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB195F80269; Tue,  2 Mar 2021 15:10:36 +0100 (CET)
-Received: from mail1.bemta24.messagelabs.com (mail1.bemta24.messagelabs.com
- [67.219.250.114])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8EA84F80269; Tue,  2 Mar 2021 15:16:53 +0100 (CET)
+Received: from aposti.net (aposti.net [89.234.176.197])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D46CF80088
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 15:10:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D46CF80088
-Received: from [100.112.135.57] (using TLSv1.2 with cipher
- DHE-RSA-AES256-GCM-SHA384 (256 bits))
- by server-3.bemta.az-b.us-west-2.aws.symcld.net id A8/2C-22828-1574E306;
- Tue, 02 Mar 2021 14:10:25 +0000
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRWlGSWpSXmKPExsWSLveKXdfP3S7
- BoGGlhcWVi4eYLNb1pzsweWz43MTmsal1CWsAUxRrZl5SfkUCa8aqT7eYCtZyVvyZuIKlgfE3
- excjF4eQwH9GicMPzzBDOK8ZJd5uf8vYxcjJwSagLbFlyy+2LkYODhEBGYkPaz1BwswCoRL3L
- qxjA7GFBUwlJn/vZwWxWQRUJB5P2MwCYvMKWEl8mrQZbIyEgLzE/9ZTYDWcAqoSZ7oeg9UIAd
- Xff7CEDaJeUOLkzCcsEPPlJZq3zmaGsCUkDr54wQwxR0Fi/5+zrBB2gkTPv0dsExgFZiFpn4W
- kfRaS9gWMzKsYLZKKMtMzSnITM3N0DQ0MdA0NjXQNjU2AbEu9xCrdJL3SYt3y1OISXSO9xPJi
- veLK3OScFL281JJNjMCATiloy93BuPHNB71DjJIcTEqivLsE7BKE+JLyUyozEosz4otKc1KLD
- zHKcHAoSfDecgXKCRalpqdWpGXmAKMLJi3BwaMkwjvHCSjNW1yQmFucmQ6ROsWoKCXO6+UGlB
- AASWSU5sG1wSL6EqOslDAvIwMDgxBPQWpRbmYJqvwrRnEORiVhXneQKTyZeSVw018BLWYCWrw
- 90ApkcUkiQkqqgWmSxOpjHwWd4ibvWnRq05qj770cIy2dgr5vum4aN+1s7g/NHdxuhxy9zeQN
- ReICfOsOtt886JlsKvaQ//crFfsNzjVMJ8/tVzMJejVHVP2oU9wF2UftXNdL2rfNPbjr+au0u
- 7XpHy5GHKhj22cudulnnmDTTL95umGyR+RetaxUMQvc9VdignhQzeLLV+NYW2aXaBYcne7Xc/
- vOxEdVQedSFtV4pxXWBrzMvyy0j9M7dO/JXke1FXskrmUHCL3JLC997OmszflMwVrpx8ZdZ58
- /XnC7KkRFrdRJlotRYdblc9pXrH8fuvjfeRv/2wwtg3W2R+epTK9fp3+a61x0fMsblrniDbdF
- q+8cfXm3rUGJpTgj0VCLuag4EQAleH2AYwMAAA==
-X-Env-Sender: markpearson@lenovo.com
-X-Msg-Ref: server-36.tower-355.messagelabs.com!1614694220!67213!1
-X-Originating-IP: [103.30.234.7]
-X-SYMC-ESS-Client-Auth: outbound-route-from=pass
-X-StarScan-Received: 
-X-StarScan-Version: 9.60.3; banners=-,-,-
-X-VirusChecked: Checked
-Received: (qmail 19625 invoked from network); 2 Mar 2021 14:10:22 -0000
-Received: from unknown (HELO lenovo.com) (103.30.234.7)
- by server-36.tower-355.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
- encrypted SMTP; 2 Mar 2021 14:10:22 -0000
-Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
- (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by Forcepoint Email with ESMTPS id A0320DC26ECAE212DB6E;
- Tue,  2 Mar 2021 22:10:19 +0800 (CST)
-Received: from localhost.localdomain.com (10.64.94.117) by
- reswpmail01.lenovo.com (10.62.32.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 2 Mar 2021 09:09:16 -0500
-From: Mark Pearson <markpearson@lenovo.com>
-To: <markpearson@lenovo.com>
-Subject: [PATCH] ALSA: hda: ignore invalid NHLT table
-Date: Tue, 2 Mar 2021 09:10:03 -0500
-Message-ID: <20210302141003.7342-1-markpearson@lenovo.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <markpearson@lenovo.com>
-References: <markpearson@lenovo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6B7BF8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 15:16:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6B7BF8012D
+Date: Tue, 02 Mar 2021 14:16:26 +0000
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2] ASoC: codec: Omit superfluous error message in 
+ jz4760_codec_probe()
+To: Tang Bin <tangbin@cmss.chinamobile.com>
+Message-Id: <EBICPQ.45RCN3X3PJUR1@crapouillou.net>
+In-Reply-To: <20210302135630.11456-1-tangbin@cmss.chinamobile.com>
+References: <20210302135630.11456-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.94.117]
-X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
- reswpmail01.lenovo.com (10.62.32.20)
-X-Mailman-Approved-At: Tue, 02 Mar 2021 15:14:04 +0100
-Cc: alsa-devel@alsa-project.org,
- Philipp Leskovitz <philipp.leskovitz@secunet.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,40 +71,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On some Lenovo systems if the microphone is disabled in the BIOS
-only the NHLT table header is created, with no data. This means
-the endpoints field is not correctly set to zero - leading to an
-unintialised variable and hence invalid descriptors are parsed
-leading to page faults.
 
-The Lenovo firmware team is addressing this, but adding a check
-preventing invalid tables being parsed is worthwhile.
 
-Tested on a Lenovo T14.
+Le mar. 2 mars 2021 =E0 21:56, Tang Bin <tangbin@cmss.chinamobile.com> a=20
+=E9crit :
+> The function devm_platform_ioremap_resource has already contained
+> error message, so remove the redundant dev_err here.
+>=20
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-Tested-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
-Reported-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
-Signed-off-by: Mark Pearson <markpearson@lenovo.com>
----
- sound/hda/intel-nhlt.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 059aaf04f..0889f2cc5 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -37,6 +37,11 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
- 	if (!nhlt)
- 		return 0;
- 
-+	if (nhlt->header.length <= sizeof(struct acpi_table_header)) {
-+		dev_warn(dev, "Invalid DMIC description table\n");
-+		return 0;
-+	}
-+
- 	epnt = (struct nhlt_endpoint *)nhlt->desc;
- 
- 	for (j = 0; j < nhlt->endpoint_count; j++) {
--- 
-2.29.2
+Thanks!
+
+Cheers,
+-Paul
+
+> ---
+> Changes from v1
+>  - to streamline the code.
+> ---
+>  sound/soc/codecs/jz4760.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/sound/soc/codecs/jz4760.c b/sound/soc/codecs/jz4760.c
+> index e8f28ccc145a..5ae0e312bcfc 100644
+> --- a/sound/soc/codecs/jz4760.c
+> +++ b/sound/soc/codecs/jz4760.c
+> @@ -841,11 +841,8 @@ static int jz4760_codec_probe(struct=20
+> platform_device *pdev)
+>  	codec->dev =3D dev;
+>=20
+>  	codec->base =3D devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(codec->base)) {
+> -		ret =3D PTR_ERR(codec->base);
+> -		dev_err(dev, "Failed to ioremap mmio memory: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (IS_ERR(codec->base))
+> +		return PTR_ERR(codec->base);
+>=20
+>  	codec->regmap =3D devm_regmap_init(dev, NULL, codec,
+>  					&jz4760_codec_regmap_config);
+> --
+> 2.18.2
+>=20
+>=20
+>=20
+
 
