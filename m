@@ -2,66 +2,78 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C98D2C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B877AC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:36:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9ED864F20
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:17:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9ED864F20
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 404B564EFC
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:36:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 404B564EFC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67BB2173A;
-	Tue,  2 Mar 2021 16:17:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67BB2173A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E862A1740;
+	Tue,  2 Mar 2021 16:35:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E862A1740
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614698272;
-	bh=+zjYd5v9rIBo8f5HD3LHrDJ7sd2eIypUkzS/YKceP38=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614699382;
+	bh=evihsePfhb5iz7KiIdDtFh5xwLZ4gVVRpTp/7GQQkEo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uBruBxXx/3oawQXbEFAWA69q9PqRYYh46hKSEP5KorPtyisE43uoX0MfYhRT4WGQF
-	 WsDvyOSphh5rRtRMxcDlR8qKfDPStkgyf2nH4cR+cpWpIiDuXeYjn65vTGvOu+ELIx
-	 WZSnOi+2Px9z61kEMqaaUTJWgUBdyqOPWu8KcNHo=
+	b=bY6AhnX1+/k8tYoip7Abd4YGJkEfzah1V58KuAlbpI0s0jpBIooZq4AVGzU+l3er/
+	 r2sI+/8k3Et/z9PIjKl2d2esmmmWd1eNt0kNdJu9Nq5YnvoINaxfqU6qh7CUmgTivS
+	 C53JCIJhKeYIFKqR7B73N/4qBX0+vZJLyTMRvA+o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6331F8025B;
-	Tue,  2 Mar 2021 16:17:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C7B7F8012D;
+	Tue,  2 Mar 2021 16:35:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B131F80269; Tue,  2 Mar 2021 16:17:00 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 62D0CF80269; Tue,  2 Mar 2021 16:35:29 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A74C6F8012D
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 16:16:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A74C6F8012D
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9FEA1AD5C;
- Tue,  2 Mar 2021 15:16:52 +0000 (UTC)
-Date: Tue, 02 Mar 2021 16:16:52 +0100
-Message-ID: <s5heegxfuvv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18E3EF80227
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 16:35:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E3EF80227
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="da/tXKKm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E22E564EFC;
+ Tue,  2 Mar 2021 15:35:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1614699321;
+ bh=evihsePfhb5iz7KiIdDtFh5xwLZ4gVVRpTp/7GQQkEo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=da/tXKKmKA5x34tzcosh3fEjxa9BO19Iv67BGVSACHJTTPurT+Nb661CFpRo7la2K
+ JjVBNjUJYhpQjlQX5+593FSbszng1qKiSwhus2Ecp4LqpLqSl3T+vPygOhlGyozHTQ
+ F4mBAW7Nn6aP7r2SVlPPkamy0IxI7eQzV7MiYEbU+LyS8tJwmcAu4xaemgLF8LKvTP
+ Fpl8IgTCTWEtrldMAyhBJMTvBiG+pWzmc74USP1YHa0aKb1OcmJ+TSxJUuAKFq1+BT
+ F/Tyj4kBrFLh01gdomNGL6iotljSRHttU5X0CtvpH/D1NgVCDLJri5HNXJghJOaaGM
+ tUavrFodYoToQ==
+Date: Tue, 2 Mar 2021 15:34:14 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH 0/7] ALSA/ASoC/SOF/SoundWire: fix Kconfig issues
-In-Reply-To: <20210302150337.GG4522@sirena.org.uk>
+Message-ID: <20210302153414.GH4522@sirena.org.uk>
 References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
  <s5htuptfyae.wl-tiwai@suse.de> <YD5IChh6Xubim//Q@vkoul-mobl>
  <s5hk0qpfwfo.wl-tiwai@suse.de>
  <20210302150337.GG4522@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5heegxfuvv.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="AqCDj3hiknadvR6t"
+Content-Disposition: inline
+In-Reply-To: <s5heegxfuvv.wl-tiwai@suse.de>
+X-Cookie: Friction is a drag.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Cc: Vinod Koul <vkoul@kernel.org>, arnd@arndb.de,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
@@ -80,19 +92,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Mar 2021 16:03:37 +0100,
-Mark Brown wrote:
-> 
-> On Tue, Mar 02, 2021 at 03:43:23PM +0100, Takashi Iwai wrote:
-> 
-> > Mark, Vinod, feel free to pull from:
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-sdw-kconfig/fixes
-> 
-> $ git pull git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-sdw-kconfig/fixes
 
-Sorry, copy&paste error, it's  not with "/fixes" but "-fixes".
+--AqCDj3hiknadvR6t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-sdw-kconfig-fixes
+On Tue, Mar 02, 2021 at 04:16:52PM +0100, Takashi Iwai wrote:
 
+> Sorry, copy&paste error, it's  not with "/fixes" but "-fixes".
 
-Takashi
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-sdw-kconfig-fixes
+
+Thanks, got it now.
+
+--AqCDj3hiknadvR6t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+WvUACgkQJNaLcl1U
+h9DU5gf9GsCf/upfZgBYL337GF3ZBMl9t+dKpYhE/P565+R+3HskFyW7Q7ARjNLJ
+2by4jbbJlUqxI1QDRYfcoGSMA2w2v/zCSQS5lum0uAGtn2g2uR6MaR3dAoVwzJn0
+/jF8tOFPCAF3SoB0KvRpjSAfbkcBl7WeD2dBslfK22ZxFoT/9A55n0YEu7lNzYzC
+xjhFrph4gLvFvZq8Hg24HEggqCM9+ITyHDotwvK2ShpgUjzxePvTjlifVmH98xl+
+gS6m/T6jEnGyqEpfBu0e0ApGG1+fPeWg1+Vms3zIR2TYCuenPiflSmjZ5nZHSkdO
+8ftlN2G2eExscDdjAdlV6efUilvSGw==
+=V6/e
+-----END PGP SIGNATURE-----
+
+--AqCDj3hiknadvR6t--
