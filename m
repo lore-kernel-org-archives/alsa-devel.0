@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18AEBC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:56:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C47CAC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:57:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4A9F464F2D
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:56:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A9F464F2D
+	by mail.kernel.org (Postfix) with ESMTPS id 022BF64F3A
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 21:57:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 022BF64F3A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C52AF1AC9;
-	Tue,  2 Mar 2021 22:55:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C52AF1AC9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70CEE1AE5;
+	Tue,  2 Mar 2021 22:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70CEE1AE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614722209;
-	bh=G+E+Ltfjc8kJYyqzQmh9EP1lw9WYG5c6nvcp7P97K1Y=;
+	s=default; t=1614722243;
+	bh=Bm8j14YIoBgSpvdrcvUM7PoQCyFJAq8BG4s/PDx2eK0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S1NDes8g7VMaMRajfJyjWoVNExzYasJIBim/xkORQIrvcsaLJSDnctNQLUOj94AAP
-	 kUSeQriwv3s+1LW35AyN9M6E9IWhwWZyc6m8UZCQeYx0t25FFPdykva19+FnLCexHE
-	 2CXRFReKmQrf1NO1tYJ2SmlvD+vJuEGEXz8QvIE0=
+	b=ioY4oC6X5vbSqyoHNWHxaqHoPEgt7lH3CT6/Va0qj0P7y8T7Y+74oTJdK7duYpRp3
+	 KUrGWOCigPgLy4GDyeoLQF2SA5BxBqnwxbZODaBKSTUeiUnuws30noJCL/Nk8KVwF+
+	 Qeqa53S8HQdrVhOhDjIVYDfwc0XsvcOAnt87fMQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BB35F80269;
-	Tue,  2 Mar 2021 22:55:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EAC1F80425;
+	Tue,  2 Mar 2021 22:55:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8A91F80425; Tue,  2 Mar 2021 22:55:00 +0100 (CET)
+ id 45173F8025B; Tue,  2 Mar 2021 22:55:02 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5585F80269
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 22:54:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5585F80269
-IronPort-SDR: bIelYrrnDZQFjCuVStGmuceC9FlbQjcR6HxlCkti//OJS8V0OnGIkmziMVgfI6CboBXxynRsWB
- XObUNuT1k3nA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="166248702"
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="166248702"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15EC5F80227
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 22:54:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15EC5F80227
+IronPort-SDR: Kf/kR9Q2jx7uvYh8ahN/3nRanTJJVpAV7+OWmpHHLUmggTMLNw16Ha6FmL8MfPIv/X16SooNA/
+ mdM9PjJFyXEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="166248703"
+X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="166248703"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Mar 2021 13:54:46 -0800
-IronPort-SDR: 48DQ+GeLB9l5sIZ17yJnMZHnXmg/k4cH7gV9cX1DGGkbtGc8GOZI4hSP6pcbWGwE9lx0dYv35O
- KJ4WDjLBS+wQ==
-X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="518014312"
+IronPort-SDR: TbgzaU/ZztdCxnVeJAl+CSwAfGGUgGVrtKWrQzkCCbmuUW8LpwW+50LjTidQmNaGjJG1MBDS86
+ pCffQJkDHzXw==
+X-IronPort-AV: E=Sophos;i="5.81,217,1610438400"; d="scan'208";a="518014314"
 Received: from btucker-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.209.60.230])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Mar 2021 13:54:45 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ALSA: pci: mixart: fix kernel-doc warning
-Date: Tue,  2 Mar 2021 15:54:29 -0600
-Message-Id: <20210302215430.87309-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ALSA: pci: vx222: fix kernel-doc warning
+Date: Tue,  2 Mar 2021 15:54:30 -0600
+Message-Id: <20210302215430.87309-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210302215430.87309-1-pierre-louis.bossart@linux.intel.com>
 References: <20210302215430.87309-1-pierre-louis.bossart@linux.intel.com>
@@ -83,31 +83,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-make W=1 warning:
+make W=1 warnings:
 
-sound/pci/mixart/mixart_hwdep.c:36: warning: expecting prototype for
-exit with a timeout(). Prototype was for
-mixart_wait_nice_for_register_value() instead
+sound/pci/vx222/vx222_ops.c:86: warning: expecting prototype for
+snd_vx_inb(). Prototype was for vx2_inb() instead
+
+sound/pci/vx222/vx222_ops.c:97: warning: expecting prototype for
+snd_vx_outb(). Prototype was for vx2_outb() instead
+
+sound/pci/vx222/vx222_ops.c:110: warning: expecting prototype for
+snd_vx_inl(). Prototype was for vx2_inl() instead
+
+sound/pci/vx222/vx222_ops.c:121: warning: expecting prototype for
+snd_vx_outl(). Prototype was for vx2_outl() instead
+
+sound/pci/vx222/vx222_ops.c:221: warning: expecting prototype for
+vx_setup_pseudo_dma(). Prototype was for vx2_setup_pseudo_dma()
+instead
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/mixart/mixart_hwdep.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/vx222/vx222_ops.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/mixart/mixart_hwdep.c b/sound/pci/mixart/mixart_hwdep.c
-index 13dcb2fd0a85..f579f7698bba 100644
---- a/sound/pci/mixart/mixart_hwdep.c
-+++ b/sound/pci/mixart/mixart_hwdep.c
-@@ -22,7 +22,8 @@
+diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
+index 23d4338dc553..a05537202738 100644
+--- a/sound/pci/vx222/vx222_ops.c
++++ b/sound/pci/vx222/vx222_ops.c
+@@ -78,7 +78,7 @@ static inline unsigned long vx2_reg_addr(struct vx_core *_chip, int reg)
+ }
+ 
+ /**
+- * snd_vx_inb - read a byte from the register
++ * vx2_inb - read a byte from the register
+  * @chip: VX core instance
+  * @offset: register enum
+  */
+@@ -88,7 +88,7 @@ static unsigned char vx2_inb(struct vx_core *chip, int offset)
+ }
+ 
+ /**
+- * snd_vx_outb - write a byte on the register
++ * vx2_outb - write a byte on the register
+  * @chip: VX core instance
+  * @offset: the register offset
+  * @val: the value to write
+@@ -102,7 +102,7 @@ static void vx2_outb(struct vx_core *chip, int offset, unsigned char val)
+ }
+ 
+ /**
+- * snd_vx_inl - read a 32bit word from the register
++ * vx2_inl - read a 32bit word from the register
+  * @chip: VX core instance
+  * @offset: register enum
+  */
+@@ -112,7 +112,7 @@ static unsigned int vx2_inl(struct vx_core *chip, int offset)
+ }
+ 
+ /**
+- * snd_vx_outl - write a 32bit word on the register
++ * vx2_outl - write a 32bit word on the register
+  * @chip: VX core instance
+  * @offset: the register enum
+  * @val: the value to write
+@@ -213,7 +213,7 @@ static int vx2_test_xilinx(struct vx_core *_chip)
  
  
  /**
-- * wait for a value on a peudo register, exit with a timeout
-+ * mixart_wait_nice_for_register_value - wait for a value on a peudo register,
-+ * exit with a timeout
-  *
-  * @mgr: pointer to miXart manager structure
-  * @offset: unsigned pseudo_register base + offset of value
+- * vx_setup_pseudo_dma - set up the pseudo dma read/write mode.
++ * vx2_setup_pseudo_dma - set up the pseudo dma read/write mode.
+  * @chip: VX core instance
+  * @do_write: 0 = read, 1 = set up for DMA write
+  */
 -- 
 2.25.1
 
