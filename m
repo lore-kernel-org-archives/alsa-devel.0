@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F572C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09CD9C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:16:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8461764D74
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:16:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8461764D74
+	by mail.kernel.org (Postfix) with ESMTPS id 4D1B164EDC
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:16:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4D1B164EDC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D81C616DB;
-	Tue,  2 Mar 2021 10:15:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D81C616DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B828E16B9;
+	Tue,  2 Mar 2021 10:15:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B828E16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614676561;
-	bh=9KT+w93KTy5ENJKgfjnvzdJis87AamX4d4gRLnTV/hA=;
+	s=default; t=1614676590;
+	bh=qVNo4VoTkDCJxXf2prANfKHBlU0oSvEW8sTMzJemmRU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oepfkd4/SKIYfXNkrPPMow+l//PBaJKKvcu2NxrNYijajCcAjG5r96ITjfqfF1G00
-	 A+DQP72tcXUICud0KUoloObA2vtpeH0cfS2PNc9Pit/aC+imER371M0Cg6VaFVhnu1
-	 xoCDhS6ILrU6Tw0qlJYxOAj6NGVucOlHjH02AjTo=
+	b=GB3kL1YT6WuOwVONNlkwwfC9ijDpSwhqCeK8QBwrcVtxa4uQmGBygscKi7CJK6o1Q
+	 3ZBHEqwohQ8603e268NUwvNl2IIjIt+jn8VGQNvoYtQizjvzCgIziPVooSOd0aC+d2
+	 HM4K46qlo3Wc0/jIZPHm5n8O6XN4zPkFaOY7OKdc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E9F8F804D9;
-	Tue,  2 Mar 2021 10:12:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67AD3F804DF;
+	Tue,  2 Mar 2021 10:12:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 452C1F804B4; Tue,  2 Mar 2021 10:12:01 +0100 (CET)
+ id 58A68F80271; Tue,  2 Mar 2021 10:12:01 +0100 (CET)
 Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA480F8032B
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:11:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA480F8032B
-IronPort-SDR: uvS6dmjygtQZSTiqIebtMNTCCmUozfXZhDE5AHmDA+HuWZHcLyqfIhZkDUBJRauqqFo5GADT7H
- 5JUTxvmC+Quw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248158756"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248158756"
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFD0AF80271
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:11:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFD0AF80271
+IronPort-SDR: TqLJJexj+KSAG1OPha8Suftdr08EhL63Hka2EAJ/jwiBIPAMWT/dEwBQB4sAaCUmheuUPERJwn
+ RKupGb9a17VA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248158769"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="248158769"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 01:11:51 -0800
-IronPort-SDR: KgYWTwh08+pPyn4a4PmkGflP+Mvi0ke37e/PsvjTaDOucb/LgfGOWD0bdVxKWJ5EzpR/Fq29wT
- j1GJWUjt0ZPw==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="506262312"
+ 02 Mar 2021 01:11:55 -0800
+IronPort-SDR: dgiL/EPfDQSt2RNgHi+Iotq4anUDZrWPz35DdGCpBnzXpxTjY4bwSF1UgRNne6a4G0qCMrJffK
+ geTb2XlxGj4g==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="506262330"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 01:11:47 -0800
+ 02 Mar 2021 01:11:53 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 08/11] soundwire: intel: remove useless readl
-Date: Tue,  2 Mar 2021 17:11:19 +0800
-Message-Id: <20210302091122.13952-9-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 10/11] soundwire: stream: remove useless initialization
+Date: Tue,  2 Mar 2021 17:11:21 +0800
+Message-Id: <20210302091122.13952-11-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210302091122.13952-1-yung-chuan.liao@linux.intel.com>
 References: <20210302091122.13952-1-yung-chuan.liao@linux.intel.com>
@@ -84,13 +84,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Cppcheck complains:
-
-drivers/soundwire/intel.c:564:15: style: Variable 'link_control' is
-assigned a value that is never used. [unreadVariable]
- link_control = intel_readl(shim, SDW_SHIM_LCTL);
-
-This looks like a leftover from a previous version, remove.
+Cppcheck complains about possible null pointer dereferences, but it's
+more like there are unnecessary initializations before walking
+through a list.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -98,22 +94,31 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/soundwire/stream.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index a2d5cdaa9998..608fbe3eb22e 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -561,8 +561,6 @@ static int intel_link_power_down(struct sdw_intel *sdw)
- 		ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
- 	}
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 1099b5d1262b..71af14ae9c30 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -261,7 +261,7 @@ static int sdw_program_master_port_params(struct sdw_bus *bus,
+  */
+ static int sdw_program_port_params(struct sdw_master_runtime *m_rt)
+ {
+-	struct sdw_slave_runtime *s_rt = NULL;
++	struct sdw_slave_runtime *s_rt;
+ 	struct sdw_bus *bus = m_rt->bus;
+ 	struct sdw_port_runtime *p_rt;
+ 	int ret = 0;
+@@ -1470,7 +1470,7 @@ static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
+  */
+ static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
+ {
+-	struct sdw_master_runtime *m_rt = NULL;
++	struct sdw_master_runtime *m_rt;
+ 	struct sdw_bus *bus = NULL;
  
--	link_control = intel_readl(shim, SDW_SHIM_LCTL);
--
- 	mutex_unlock(sdw->link_res->shim_lock);
- 
- 	if (ret < 0) {
+ 	/* Iterate for all Master(s) in Master list */
 -- 
 2.17.1
 
