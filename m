@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D279C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 08:29:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AA1BFC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 08:30:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 705E16148E
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 08:29:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 705E16148E
+	by mail.kernel.org (Postfix) with ESMTPS id C0E7A600CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 08:29:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C0E7A600CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBA5016AD;
-	Tue,  2 Mar 2021 09:28:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBA5016AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0145D16B9;
+	Tue,  2 Mar 2021 09:29:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0145D16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614673758;
-	bh=RciUQNXVWuYGnbSCzCRvL3tHLSG5s1KgsdZnQnc5ZX8=;
+	s=default; t=1614673797;
+	bh=KiF38rdEb9uT4uOk0Xm4LFf1SvTi926DSSAegXlJa1M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fzRcKQ2WhFBEGUx23ebqzRnEmGIdgacu9xwXKNTZH1R8pj5CT17enwfyeD6nud+zQ
-	 /ghnX3J+ZSlaeXy7VJl9LvwXaoHLZHzQhjadzHIWs1ksQUUReS+6Qygrdjioe5+OCq
-	 z7DkEPN3WxK5Gn7j0UyfXln2TSreoHWIipqfeu7Q=
+	b=sKLDjjuFdaK8tFL/g7P7W5wHrDscpSD374LDuU10Z54DLKMQH8pijW9Ad4CGtjkUG
+	 OjIQjJXyoaxk2jFtrIYo0DPQsiuuBx0DoK0R94lgC8sUW8uadD27sRhq34MZJesLXy
+	 mkHo6z8hegq5LaPJ+gEYVkw7GZvNI00iD2U85Zuk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05BD8F802E3;
-	Tue,  2 Mar 2021 09:27:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BE88F8032C;
+	Tue,  2 Mar 2021 09:27:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CAB1F802E7; Tue,  2 Mar 2021 09:27:40 +0100 (CET)
+ id 67155F8032D; Tue,  2 Mar 2021 09:27:43 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43BC9F8025B
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 09:27:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43BC9F8025B
-IronPort-SDR: bezPFLN+18O+Efl/v+canMW+cdnoruE+ZbbyqTZifdrhaLOZqKqeo07fCWdO12hcwop7EkmHY0
- kcuhncR9qy4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184302381"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="184302381"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E796F802CA
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 09:27:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E796F802CA
+IronPort-SDR: 0Q7SOdZTQUULIFMwQH1AalDCFMyFJtfnLd+ut5ytjvne+tZg0ym+8leubN+pA+Hp2cKX0Fi0RK
+ 8EOFgQhHzEow==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184302415"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="184302415"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 00:27:31 -0800
-IronPort-SDR: xAlpQ8JXAmQ+n8fC89bie0evDYi+YCMqQXG2YNdWADQCthuTTF9VGQiK2yCWnJZzLAG1JTToOU
- 9V+Qs2wrzwRQ==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="406613472"
+ 02 Mar 2021 00:27:35 -0800
+IronPort-SDR: X48LF1vSvlfDH+mntuNDOUikuDyU5dXy1/6HejuRlt9XVne9Qfu/JD9DY3Yuz4GQG6/5tHZQv1
+ wG+YzVJHRVCw==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="406613529"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 00:27:27 -0800
+ 02 Mar 2021 00:27:31 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 2/3] soundwire: bus: handle master quirks for bus clash and
+Subject: [PATCH v2 3/3] soundwire: intel: add master quirks for bus clash and
  parity
-Date: Tue,  2 Mar 2021 16:27:19 +0800
-Message-Id: <20210302082720.12322-3-yung-chuan.liao@linux.intel.com>
+Date: Tue,  2 Mar 2021 16:27:20 +0800
+Message-Id: <20210302082720.12322-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210302082720.12322-1-yung-chuan.liao@linux.intel.com>
 References: <20210302082720.12322-1-yung-chuan.liao@linux.intel.com>
@@ -85,76 +85,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add optional interrupt status read/clear if the master quirks are set.
-
-In the case of the parity, the master quirk is only applied if the
-Slave doesn't already have a parity-related quirk.
+Now that we have declarations and bus support, add quirks for Intel
+platforms.
 
 Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/soundwire/intel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 46885429928a..04eb879de145 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1253,6 +1253,7 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
- static int sdw_initialize_slave(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
-+	int status;
- 	int ret;
- 	u8 val;
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index a2d5cdaa9998..c1fdc85d0a74 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1286,6 +1286,9 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
+ 	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
+ 		prop->hw_disabled = true;
  
-@@ -1260,6 +1261,44 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
- 	if (ret < 0)
- 		return ret;
- 
-+	if (slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH) {
-+		/* Clear bus clash interrupt before enabling interrupt mask */
-+		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
-+		if (status < 0) {
-+			dev_err(&slave->dev,
-+				"SDW_SCP_INT1 (BUS_CLASH) read failed:%d\n", status);
-+			return status;
-+		}
-+		if (status & SDW_SCP_INT1_BUS_CLASH) {
-+			dev_warn(&slave->dev, "Bus clash detected before INT mask is enabled\n");
-+			ret = sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_BUS_CLASH);
-+			if (ret < 0) {
-+				dev_err(&slave->dev,
-+					"SDW_SCP_INT1 (BUS_CLASH) write failed:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+	}
-+	if ((slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY) &&
-+	    !(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY)) {
-+		/* Clear parity interrupt before enabling interrupt mask */
-+		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
-+		if (status < 0) {
-+			dev_err(&slave->dev,
-+				"SDW_SCP_INT1 (PARITY) read failed:%d\n", status);
-+			return status;
-+		}
-+		if (status & SDW_SCP_INT1_PARITY) {
-+			dev_warn(&slave->dev, "PARITY error detected before INT mask is enabled\n");
-+			ret = sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_PARITY);
-+			if (ret < 0) {
-+				dev_err(&slave->dev,
-+					"SDW_SCP_INT1 (PARITY) write failed:%d\n", ret);
-+				return ret;
-+			}
-+		}
-+	}
++	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH |
++		SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY;
 +
- 	/*
- 	 * Set SCP_INT1_MASK register, typically bus clash and
- 	 * implementation-defined interrupt mask. The Parity detection
+ 	return 0;
+ }
+ 
 -- 
 2.17.1
 
