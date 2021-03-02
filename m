@@ -2,67 +2,81 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84CECC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A301FC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:28:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A516B64F0D
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:25:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A516B64F0D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 3A4D2600EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 09:28:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A4D2600EF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19A6A170A;
-	Tue,  2 Mar 2021 10:24:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19A6A170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15B4E16F8;
+	Tue,  2 Mar 2021 10:27:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15B4E16F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614677105;
-	bh=zAUFp61au4T3RBp+aioTt9LbbubGaPORCKaUpxY2TRc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ndYc3inDDl7qKvGOagfRlkwHxzyai/6Pmf/IHKJp3mU6qAbXtW5WLXHchyODRbGoQ
-	 5sw9VU2Gg0gcQWvRtRhHsUG2Jinum1A6n0KnLstgXdfbIzSS7ttDnei4DLoCs4AEJ3
-	 ZdCOrtku+z8z6nuLwfd2ftoCUcbP8Nzvlrwz5Y3U=
+	s=default; t=1614677318;
+	bh=35S74DMFw5uNYR837mv6EHNd80UGKVB94JPNHIfj7Eg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LeMK8clt6CMFjuBpEE2M4Li3ykyex8MFItkDgel+FQs0Jd9r2Xu4eIbXRRCy8rWxs
+	 TEW95JcWuEFdrEiycyMV3Lj9OnbTbX6c3UJB4DIegOcYfX7sZwYSVbxDVNdY1tv5xR
+	 tykJqwdMxOS+WX9HVhLVOlRVYi/zVDry5SDy3pgY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA7ABF80227;
-	Tue,  2 Mar 2021 10:24:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98D66F80227;
+	Tue,  2 Mar 2021 10:27:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 086F5F8025B; Tue,  2 Mar 2021 10:24:13 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A9DC3F8025B; Tue,  2 Mar 2021 10:27:46 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5818F80088
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:24:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5818F80088
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3D833AAC5;
- Tue,  2 Mar 2021 09:24:06 +0000 (UTC)
-Date: Tue, 02 Mar 2021 10:24:06 +0100
-Message-ID: <s5hlfb5hps9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: intel-nhlt: verify config type
-In-Reply-To: <20210302000146.1177770-1-pierre-louis.bossart@linux.intel.com>
-References: <20210302000146.1177770-1-pierre-louis.bossart@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B3D4F8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 10:27:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B3D4F8012D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="PwzcV7EQ"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B603e05070000>; Tue, 02 Mar 2021 01:27:35 -0800
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
+ 2021 09:27:34 +0000
+Received: from moonraker.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 2 Mar 2021 09:27:32 +0000
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: soc-core: Prevent warning if no DMI table is present
+Date: Tue, 2 Mar 2021 09:27:12 +0000
+Message-ID: <20210302092712.310705-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1614677255; bh=zevSqHxMC5QGrkWCFYq/EsEdVzaCU5yAoPM8ypRlfpc=;
+ h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+ X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+ b=PwzcV7EQg1C4LN4dDshBu7voQLeGRdGDb6knwc3i0aY7pbulXizZEPzlimEwg7Auz
+ VyCtp7G0k4NgkqvA8LdSckC+FiRgJZzf8v6n+GdryuQo+zooc5z/05b0HG1WeM2Zv6
+ KWxbt/lVD4psbsSinv2GrJHw/PxDccMzTpgyDAvK62w1jsa7YlXbA8cpkPYV+ArgPS
+ DHZrLuhn1zkEGvAATCWeTk2ZoG6WA+JiFp1SfBhig/pn9squbzWLKsuAT8KzkqjJ5S
+ Y3vu4l5jGPPFoaJpzyAStdtikSWK7J5ZLpepSTbc+4XwxN/Pny1TRaCIXB+8HoS9Jo
+ wmxINcR98iacw==
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,36 +92,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Mar 2021 01:01:46 +0100,
-Pierre-Louis Bossart wrote:
-> 
-> Multiple bug reports report issues with the SOF and SST drivers when
-> dealing with single microphone cases.
-> 
-> We currently read the DMIC array information unconditionally but we
-> don't check that the configuration type is actually a mic array.
-> 
-> When the DMIC link does not rely on a mic array configuration, the
-> recommendation is to check the format information to infer the maximum
-> number of channels, and map this to the number of microphones.
-> 
-> This leaves a potential for a mismatch between actual microphones
-> available in hardware and what the ACPI table contains, but we have no
-> other source of information.
-> 
-> Note that single microphone configurations can alternatively be
-> handled with a 'mic array' configuration along with a 'vendor-defined'
-> geometry.
-> 
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201251
-> BugLink: https://github.com/thesofproject/linux/issues/2725
-> Fixes: 7a33ea70e1868 ('ALSA: hda: intel-nhlt: handle NHLT VENDOR_DEFINED DMIC geometry')
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Many systems do not provide a DMI table and on these systems a warning,
+such as the following, is printed on boot ...
 
-Thanks, applied.
+ WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 
+If DMI support is enabled in the kernel, there is no simple way to
+detect if a DMI table is table or not. Note that the variable
+'dmi_available' is not exported and so cannot be used by kernel modules.
+It could be possible to have every ASoC sound card driver set the long
+name to avoid the above message, but it might be intentional for the
+long name, that we fall back to using the sound card name. Therefore,
+make this a debug print by default to avoid the warning.
 
-Takashi
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f6d4e99b590c..f1189e7c1fcc 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1576,7 +1576,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, c=
+onst char *flavour)
+ 	/* make up dmi long name as: vendor-product-version-board */
+ 	vendor =3D dmi_get_system_info(DMI_BOARD_VENDOR);
+ 	if (!vendor || !is_dmi_valid(vendor)) {
+-		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
++		dev_dbg(card->dev, "ASoC: no DMI vendor name!\n");
+ 		return 0;
+ 	}
+=20
+--=20
+2.25.1
+
