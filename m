@@ -7,70 +7,101 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E193C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E898C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:58:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4E8261494
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:40:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4E8261494
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 919D564F20
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 15:58:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 919D564F20
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=lenovo.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F2E21755;
-	Tue,  2 Mar 2021 16:39:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F2E21755
+	by alsa0.perex.cz (Postfix) with ESMTPS id 757221753;
+	Tue,  2 Mar 2021 16:58:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 757221753
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614699609;
-	bh=QaHA9X5OswDlxaAHGziquicz0JjnI6eBGCu04Ebt0mE=;
+	s=default; t=1614700735;
+	bh=fdsA4pngkbZ/2sjhECKWhI/Cr8GWVf8rgHKPWCUy2q8=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IBcHhLhkDjmWmP+6O5d5OXcF663Px4lhR5AyIBbEB3NxeaoD+8nu3g+CvSX28ruwU
-	 cMtDHrclqZ/psefn5FCkT0xinTiiDrB0hBqL7QfNL8Z5Ed+qA7j2Hc4vZhWM9DPn1F
-	 njkWYy15MvsMrc5+PIknZspZG8tfZEQ3KBmvAWEg=
+	b=Cc8HQ++5bVeeTHFSU7jCqgXx0ud6tOc68HnW++wh8HF2utPPHPLAqjOENp9olhmpE
+	 cVZiruq1lqeJGdnak8pQc8yuqR2jJIn3Mftor28A8V7QVbow9oc1dFzX+dtPQiKWgd
+	 N3flfflny284EKvbyZFHRmjBMgPfboTfOUPAuxwQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C230DF8025B;
-	Tue,  2 Mar 2021 16:38:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6E1AF8025B;
+	Tue,  2 Mar 2021 16:58:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CBF8F802E7; Tue,  2 Mar 2021 16:38:27 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 596A1F80269; Tue,  2 Mar 2021 16:57:58 +0100 (CET)
+Received: from mail1.bemta24.messagelabs.com (mail1.bemta24.messagelabs.com
+ [67.219.250.4])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A21DCF80271
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 16:38:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A21DCF80271
-IronPort-SDR: +gSMlSA7vizKF6KZ5xM5iWL+/h5ekXawuzngfEj+vsg2c+9F9dZUvQFYwX/+wwJ0j6cdHKaTko
- gY1I0xyP93/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="166091285"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="166091285"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 07:38:17 -0800
-IronPort-SDR: gRdgfcqWl6QH00IgRBRP4pJt0G+jxV2OASezPNbhybhVycmtkr91WTSY5w5brA8iJFFPxHrpin
- mWWknS9qFbPw==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="406768987"
-Received: from bgrewell-mobl3.amr.corp.intel.com (HELO [10.212.242.206])
- ([10.212.242.206])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Mar 2021 07:38:17 -0800
-Subject: Re: [PATCH] ALSA: hda: ignore invalid NHLT table
-To: Mark Pearson <markpearson@lenovo.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31072F8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 16:57:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31072F8012D
+Received: from [100.112.128.20] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-4.bemta.az-a.us-west-2.aws.symcld.net id 13/04-42417-A706E306;
+ Tue, 02 Mar 2021 15:57:46 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOKsWRWlGSWpSXmKPExsWS8eIhj25Vgl2
+ Cwfn3MhZXLh5ispj68AmbxacP+1ktOnf1s1qs60+3+PX/GZPFy81vmBzYPTZ8bmLzWLznJZPH
+ plWdbB7zTgZ67Hu7jM1jU+sSVo/Np6sD2KNYM/OS8isSWDNaHmYXdAtU/FvwlLmB8RhvFyMXh
+ 5DAf0aJ/kdP2SCc54wST1+sZe1i5OAQFvCQOLHHoouRk0NEwF7iyaztzCA1zAIvGCUuP5/CBN
+ HQwygxad8fVpAqNgFtiS1bfrGB2LwCthL//j1gB7FZBFQkpr+dywJiiwqES7ze9JkRokZQ4uT
+ MJ2BxTgFniVOdX8AWMwtoSqzfpQ8SZhYQl7j1ZD4ThC0v0bx1NjOILSGgIPG6fzYjhJ0g0fPv
+ EdsERsFZSKbOQpg0C8mkWUgmLWBkWcVokVSUmZ5RkpuYmaNraGCga2hopGtoZKlraGyil1ilm
+ 6hXWqxbnlpcomukl1herFdcmZuck6KXl1qyiREYXykFjW07GGe++aB3iFGSg0lJlLfByy5BiC
+ 8pP6UyI7E4I76oNCe1+BCjDAeHkgSvbxxQTrAoNT21Ii0zBxjrMGkJDh4lEd6EGKA0b3FBYm5
+ xZjpE6hSjopQ47+V4oIQASCKjNA+uDZZeLjHKSgnzMjIwMAjxFKQW5WaWoMq/YhTnYFQS5v0F
+ MoUnM68EbvoroMVMQItnuYEtLklESEk1MMnE9AeYmpzVus7l4r/ddZHyaYGqdKETG+9n/5y2h
+ E268dcPhutPrDceW2qem3MqI0BWoDbG5l+SPcPtSZ0nOnf/f8ztZP/cvHRdYtj5Onv2cw07L5
+ exTlzJP8eh8gOTh9bchUU+P78dthKfN0fnrKzHqZBM953/Ht9JMXfdcZbPfWpO7ed2zX61UKN
+ 2yxfrjE9Zf9Sensq5SmNd2oxM+1+d/bXbHjsc91Yoal/md60nw8RNU9g11HU5n6j3tOW7YlOk
+ rgS/vmUinLhqv/LHkIaFtodTPPX3tr/ZqVy98YGAdnDoNOFM1oC5PnPUhQ9L93xx0bL5tf+LT
+ aNteua6xS7fn83NqQhNv+Q6a6mdEktxRqKhFnNRcSIAoBtHZaoDAAA=
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-15.tower-335.messagelabs.com!1614700665!4127!1
+X-Originating-IP: [104.232.225.12]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 24434 invoked from network); 2 Mar 2021 15:57:46 -0000
+Received: from unknown (HELO lenovo.com) (104.232.225.12)
+ by server-15.tower-335.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 2 Mar 2021 15:57:46 -0000
+Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
+ (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by Forcepoint Email with ESMTPS id 3F3CEF7B9A4DBD1B2804;
+ Tue,  2 Mar 2021 10:57:45 -0500 (EST)
+Received: from localhost.localdomain (10.38.104.43) by reswpmail01.lenovo.com
+ (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Tue, 2 Mar 2021
+ 10:56:43 -0500
+Subject: Re: [External] Re: [PATCH] ALSA: hda: ignore invalid NHLT table
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 References: <markpearson@lenovo.com>
  <20210302141003.7342-1-markpearson@lenovo.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <420b9b48-0a80-634b-9a98-973c6bdb544c@linux.intel.com>
-Date: Tue, 2 Mar 2021 08:46:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <420b9b48-0a80-634b-9a98-973c6bdb544c@linux.intel.com>
+From: Mark Pearson <markpearson@lenovo.com>
+Message-ID: <55a6f9e6-17ab-6049-d2e2-5dee1941b539@lenovo.com>
+Date: Tue, 2 Mar 2021 10:57:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210302141003.7342-1-markpearson@lenovo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <420b9b48-0a80-634b-9a98-973c6bdb544c@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.38.104.43]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail01.lenovo.com (10.62.32.20)
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, "Rojewski,
  Cezary" <cezary.rojewski@intel.com>, Mark Brown <broonie@kernel.org>,
  Philipp Leskovitz <philipp.leskovitz@secunet.com>
@@ -89,50 +120,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Adding Mark, Takashi, Jaroslav and Cezary in Cc:
+Hi Pierre-Louis,
 
-On 3/2/21 8:10 AM, Mark Pearson wrote:
-> On some Lenovo systems if the microphone is disabled in the BIOS
-> only the NHLT table header is created, with no data. This means
-> the endpoints field is not correctly set to zero - leading to an
-> unintialised variable and hence invalid descriptors are parsed
-> leading to page faults.
+On 02/03/2021 09:46, Pierre-Louis Bossart wrote:
+> Adding Mark, Takashi, Jaroslav and Cezary in Cc:
+
+Thanks - I wasn't sure who needed to be on this :)
 > 
-> The Lenovo firmware team is addressing this, but adding a check
-> preventing invalid tables being parsed is worthwhile.
+> On 3/2/21 8:10 AM, Mark Pearson wrote:
+>> On some Lenovo systems if the microphone is disabled in the BIOS
+>> only the NHLT table header is created, with no data. This means
+>> the endpoints field is not correctly set to zero - leading to an
+>> unintialised variable and hence invalid descriptors are parsed
+>> leading to page faults.
+>>
+>> The Lenovo firmware team is addressing this, but adding a check
+>> preventing invalid tables being parsed is worthwhile.
+>>
+>> Tested on a Lenovo T14.
+>>
+>> Tested-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
+>> Reported-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
+>> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
 > 
-> Tested on a Lenovo T14.
+> The change looks good to me
 > 
-> Tested-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
-> Reported-by: Philipp Leskovitz <philipp.leskovitz@secunet.com>
-> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
-
-The change looks good to me
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Out of curiosity, does this impact Kabylake or CometLake+ systems?
-
-Thanks!
-
-> ---
->   sound/hda/intel-nhlt.c | 5 +++++
->   1 file changed, 5 insertions(+)
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-> index 059aaf04f..0889f2cc5 100644
-> --- a/sound/hda/intel-nhlt.c
-> +++ b/sound/hda/intel-nhlt.c
-> @@ -37,6 +37,11 @@ int intel_nhlt_get_dmic_geo(struct device *dev, struct nhlt_acpi_table *nhlt)
->   	if (!nhlt)
->   		return 0;
->   
-> +	if (nhlt->header.length <= sizeof(struct acpi_table_header)) {
-> +		dev_warn(dev, "Invalid DMIC description table\n");
-> +		return 0;
-> +	}
-> +
->   	epnt = (struct nhlt_endpoint *)nhlt->desc;
->   
->   	for (j = 0; j < nhlt->endpoint_count; j++) {
+> Out of curiosity, does this impact Kabylake or CometLake+ systems?
+
+We've seen it on some of our CometLake systems so far. T14 & T15 are
+confirmed, but it will take a while to cycle through all the platforms.
+We're unlikely to catch any non-Linux certified systems that folk still
+put Linux on - I'd like to have this available for them too.
+
 > 
+> Thanks!
+> 
+>> ---
+>>   sound/hda/intel-nhlt.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
+>> index 059aaf04f..0889f2cc5 100644
+>> --- a/sound/hda/intel-nhlt.c
+>> +++ b/sound/hda/intel-nhlt.c
+>> @@ -37,6 +37,11 @@ int intel_nhlt_get_dmic_geo(struct device *dev,
+>> struct nhlt_acpi_table *nhlt)
+>>       if (!nhlt)
+>>           return 0;
+>>   +    if (nhlt->header.length <= sizeof(struct acpi_table_header)) {
+>> +        dev_warn(dev, "Invalid DMIC description table\n");
+>> +        return 0;
+>> +    }
+>> +
+>>       epnt = (struct nhlt_endpoint *)nhlt->desc;
+>>         for (j = 0; j < nhlt->endpoint_count; j++) {
+>>
