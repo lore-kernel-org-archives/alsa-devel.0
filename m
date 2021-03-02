@@ -2,77 +2,99 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 24F85C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 13:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63ACCC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 13:20:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D89564F1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 13:13:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D89564F1F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4087160231
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 13:20:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4087160231
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83A7316ED;
-	Tue,  2 Mar 2021 14:12:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83A7316ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49D3E16F2;
+	Tue,  2 Mar 2021 14:19:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49D3E16F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614690781;
-	bh=U/HHFktYJkmOUhQoJChOT80QJnf4UxQLBjSVqX092jk=;
+	s=default; t=1614691213;
+	bh=20Pih5eYSXBIOnPpCPRKxQEQzRyoG04Lb3OCnmA+K28=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dTjDlYAkXfXESGgPaUeDxP2FBax54yDEFv9/GUue+wSmwcJjzASgRNzDHrHxVNMdz
-	 w1Tqphr2IRLG1Bt5vnG3u/BzxXbr6de8h8a/SiuxQOxErtqdXHumneD/+8MWUIUy3m
-	 PA9lbkCQ/xryEAoX2441LHJAKK9yNF/Maz1LwQc4=
+	b=Qd0EUwrvsdl2GZSbuyrRLLVrpGegoLZewW613gakKcWid9tohS9UXYbLz2ai/ZR3k
+	 rMw044FGRW24yQnXBOR1EIG5/hyfSfkI1bKCJIczFaFo2kxjowWI4Jn7aqGufMHC7a
+	 mE2mZVAx7OLO+6gvc5lvCO9p8dtdne9V7e/QNXNo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 804F2F8025B;
-	Tue,  2 Mar 2021 14:12:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD995F8025B;
+	Tue,  2 Mar 2021 14:19:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CACF9F80269; Tue,  2 Mar 2021 14:12:08 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B6FD1F80269; Tue,  2 Mar 2021 14:19:21 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37968F8012D
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 14:12:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37968F8012D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6218F80227
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 14:19:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6218F80227
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JTvVoeEp"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B27D64F1E;
- Tue,  2 Mar 2021 13:11:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614690717;
- bh=U/HHFktYJkmOUhQoJChOT80QJnf4UxQLBjSVqX092jk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JTvVoeEpFguErPefguu/02LK3NL3Ix5VbEuvH48mU7qZ+duUShqmLL4NSdASbqvkf
- FXzrRexQHyD0hzVYxl0tMsUGlzIbV/auRVPnlc50WIHkT1+EXGkjVd8tTtCUfwBuew
- 80/DX/mYYLi/fpHwANdOCbR7aMlWSHzsTpu2D/snUZfq49xJ75WVEmgQs4McEO4DKs
- in6bAigtLzTLwCGf8TCLSor1Rv4uQYqpeJN5J6R9aik7KOm3XUouNMDrHDeK0kBSgk
- uHsi2CaveaGwwfQmF1WNKCuBASxW3qhQWa75DOr3xKjSwokTqAet8H/EeOEICdbh0G
- +KRj+deFL7kEA==
-Date: Tue, 2 Mar 2021 13:10:51 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 4/8] ASoC: soc-pcm: add soc_pcm_care_symmetry()
-Message-ID: <20210302131051.GE4522@sirena.org.uk>
-References: <87tupuqqc8.wl-kuninori.morimoto.gx@renesas.com>
- <87o8g2qqaw.wl-kuninori.morimoto.gx@renesas.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="NGIJpzeA"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 122DGtvB027209; Tue, 2 Mar 2021 07:19:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=t2lwxX1hbQrJ3MKSvW2tSY+53xgKeDE6McOV5fU3ESU=;
+ b=NGIJpzeAIxgLR2Cj+tOOqX9SOBQXThs4BVB6YvQjvva8vWnC2tooORQ9B7YXS1JBA3JP
+ rwiloKHRhYzmmw7LEPpwt+4qbX5GJadPhTdYKaasqbo+w4p9F/mGoOrV2AvDWVnIUC1m
+ VO2BVJKfX3aZe/mq+7XptR0ymXFEcL1VqoaNJigw95iAcU2BlFdiJJp3TVR16ekhAjHI
+ kZ5nWRIdinEUIc0fqt+o1LvOXWrzjIkW3+fCBwQYVzLtE93cDd9Y4dMUdFnx0dm+9t62
+ BBvNz3zSbYTIL0874dL7uqjLBUB+y3XWOSN/jrDkp4oFzzlxQ+OJSRV/huhI9bUGJqBc bQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 36ykctkc7e-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 02 Mar 2021 07:19:12 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 2 Mar 2021
+ 13:19:10 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 2 Mar 2021 13:19:10 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 824B011CB;
+ Tue,  2 Mar 2021 13:19:04 +0000 (UTC)
+Date: Tue, 2 Mar 2021 13:19:04 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: wm8960: Remove bitclk relax condition
+Message-ID: <20210302131904.GC106851@ediswmail.ad.cirrus.com>
+References: <1614683891-29255-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="7LkOrbQMr4cezO2T"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <87o8g2qqaw.wl-kuninori.morimoto.gx@renesas.com>
-X-Cookie: Friction is a drag.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+In-Reply-To: <1614683891-29255-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 clxscore=1011
+ malwarescore=0 priorityscore=1501 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 impostorscore=0 mlxlogscore=934 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020109
+Cc: kstewart@linuxfoundation.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com, tiwai@suse.com,
+ lgirdwood@gmail.com, broonie@kernel.org, tglx@linutronix.de, info@metux.net,
+ ckeepax@opensource.wolfsonmicro.com, allison@lohutok.net
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,86 +110,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Mar 02, 2021 at 07:18:11PM +0800, Shengjiu Wang wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
+> 
+> Using a higher bitclk then expected doesn't always work.
+> Here is an example:
+> 
+> aplay -Dhw:0,0 -d 5 -r 48000 -f S24_LE -c 2 audio48k24b2c.wav
+> 
+> In this case, the required bitclk is 48000 * 24 * 2 = 2304000
+> but the closest bitclk that can be derived is 3072000. Since
+> the clock is faster than expected, it will start to send bytes
+> from the next channel so the sound will be corrupted.
+> 
+> Fixes: 82bab88910ee ("ASoC: codec: wm8960: Relax bit clock computation when using PLL")
+> Fixes: 3c01b9ee2ab9 ("ASoC: codec: wm8960: Relax bit clock computation")
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
 
---7LkOrbQMr4cezO2T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think this is probably going to need a much more involved fix.
+The problem is that there are systems that depend on this
+behaviour, so you can't just flat out revert it. And to be fair
+the I2S specification says that bit clock can run at a higher
+rate than required for the data, so the behaviour is correct as
+well.
 
-On Tue, Mar 02, 2021 at 10:48:07AM +0900, Kuninori Morimoto wrote:
+Probably the best solution here is to add additional contraints
+from the machine driver on which rates/bit depths/channels are
+supported.
 
-> -static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
-> +static void soc_pcm_care_symmetry(struct snd_pcm_substream *substream)
->  {
->  	struct snd_soc_pcm_runtime *rtd =3D asoc_substream_to_rtd(substream);
->  	struct snd_soc_dai_link *link =3D rtd->dai_link;
-> @@ -423,7 +423,8 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_subst=
-ream *substream)
->  			dai->driver->symmetric_channels ||
->  			dai->driver->symmetric_sample_bits;
-> =20
-> -	return symmetry;
-> +	if (symmetry)
-> +		substream->runtime->hw.info |=3D SNDRV_PCM_INFO_JOINT_DUPLEX;
-
-The idea makes sense but I'm not sure about the name here - perhaps
-soc_pcm_update_symmetry() might work better?  It's not super clear but
-does look more natural.
-
->  }
-> =20
->  static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bit=
-s)
-> @@ -735,8 +736,7 @@ static int soc_pcm_open(struct snd_pcm_substream *sub=
-stream)
->  	/* Check that the codec and cpu DAIs are compatible */
->  	soc_pcm_init_runtime_hw(substream);
-> =20
-> -	if (soc_pcm_has_symmetry(substream))
-> -		runtime->hw.info |=3D SNDRV_PCM_INFO_JOINT_DUPLEX;
-> +	soc_pcm_care_symmetry(substream);
-> =20
->  	ret =3D -EINVAL;
->  	if (!runtime->hw.rates) {
-> @@ -1681,8 +1681,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_subst=
-ream *fe_substream,
->  	int i;
-> =20
->  	/* apply symmetry for FE */
-> -	if (soc_pcm_has_symmetry(fe_substream))
-> -		fe_substream->runtime->hw.info |=3D SNDRV_PCM_INFO_JOINT_DUPLEX;
-> +	soc_pcm_care_symmetry(fe_substream);
-> =20
->  	for_each_rtd_cpu_dais (fe, i, fe_cpu_dai) {
->  		/* Symmetry only applies if we've got an active stream. */
-> @@ -1707,8 +1706,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_subst=
-ream *fe_substream,
->  		if (rtd->dai_link->be_hw_params_fixup)
->  			continue;
-> =20
-> -		if (soc_pcm_has_symmetry(be_substream))
-> -			be_substream->runtime->hw.info |=3D SNDRV_PCM_INFO_JOINT_DUPLEX;
-> +		soc_pcm_care_symmetry(be_substream);
-> =20
->  		/* Symmetry only applies if we've got an active stream. */
->  		for_each_rtd_dais(rtd, i, dai) {
-> --=20
-> 2.25.1
->=20
-
---7LkOrbQMr4cezO2T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+OVoACgkQJNaLcl1U
-h9BypQf+L/2ERGTTNBqfmaE0sfhiTudm8mydnahf2l7jEp0G1pM4Bevcefylcddh
-GNMwo4JS76Hgey3f1zcRYr0iMRlhaLTbSOZASvduuogPVfBQZd8LEqr0e2NDLaD/
-NM+KF/bhfaE1BjyJDhZbS668b3Hw/56EbQVwjkAm47FxHzJre2rKt44pSfsmVbYH
-IB/5LbJ14pda1T3YIxP6RjhtEGZ8gfV0k36FtPGZMFfPotAE0AJgDQ+w+vTb1rI7
-04OjKd0ZSxXX3ErBaSmrtNKKUAtmRnOPfyfEvDm1H+BwaAuT8SeTsIuWw1Ij6j8x
-kYf+CcTFUgq6Egkz0EE5oBV7vhktzA==
-=1bdc
------END PGP SIGNATURE-----
-
---7LkOrbQMr4cezO2T--
+Thanks,
+Charles
