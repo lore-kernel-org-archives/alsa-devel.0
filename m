@@ -2,66 +2,77 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E53A5C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:44:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FB13C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:53:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E371464F1F
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:44:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E371464F1F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id ACAE664F31
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 14:53:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ACAE664F31
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35F331738;
-	Tue,  2 Mar 2021 15:43:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35F331738
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE7251734;
+	Tue,  2 Mar 2021 15:52:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE7251734
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614696266;
-	bh=AhXfs4d11YuDE6WJ15ICSPGSqR1OaC0bWQlseNrBfoc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1614696818;
+	bh=XihITupK6MGku91rU9Px6KPzNG/zpZKIUug87S9agqk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=B/EvnRWGXZ3DaMVAZDwOAfay3PT9N8lFKHdCZ7lr/FlCBcL/vL+NyiEI61cfA6XSD
-	 A+y8EklQVhEw8nPu+TamM/Babwa7DR5ncC5w4Q3ePH895naYh2arg+uJgjPaulk4gd
-	 9iZREsdaYpsnG16GLlYWUSKqz5MIkgXIMkKYkYXU=
+	b=TYDYDe4pac2U972RFY3ZlP6WD2lbycejhmKrE1bx9O8gKiJx6WvSWrnp1IzaAwZma
+	 GK79v023DTsIu9a+tYSCLBN418+ZlH56X1EkMwI89zeQDy2ehXnbgT+RBrxRZYAndp
+	 FyLIAfyeQpefNEJFZ3jBOBvMNpq6nPPu0Ek8KUTs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7C72F80271;
-	Tue,  2 Mar 2021 15:43:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F93FF8025B;
+	Tue,  2 Mar 2021 15:52:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1F94F8025B; Tue,  2 Mar 2021 15:43:33 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 71922F80269; Tue,  2 Mar 2021 15:52:46 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60C63F80271
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 15:43:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60C63F80271
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B276FAC54;
- Tue,  2 Mar 2021 14:43:23 +0000 (UTC)
-Date: Tue, 02 Mar 2021 15:43:23 +0100
-Message-ID: <s5hk0qpfwfo.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vinod Koul <vkoul@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D8E2F8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 15:52:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D8E2F8012D
+IronPort-SDR: lcQHp1FfcnvGL6pFFUEPbnBAPULflM8KrfmaFA4+WHMyZ0kURG0OZHs71SHRcZx6hWp88RTXVc
+ 4mpDcrwb11MA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="166713722"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="166713722"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Mar 2021 06:52:35 -0800
+IronPort-SDR: mwUcK08S3UWBfmzGuV3G8R5+njEMi6baLAd9sBG4O/u/ncXVFRz33+DEyUPu7nTwzivU+zQ9ue
+ hXyBkmMPCUNQ==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; d="scan'208";a="383573032"
+Received: from twang17-mobl.gar.corp.intel.com (HELO [10.213.174.57])
+ ([10.213.174.57])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Mar 2021 06:52:35 -0800
 Subject: Re: [PATCH 0/7] ALSA/ASoC/SOF/SoundWire: fix Kconfig issues
-In-Reply-To: <YD5IChh6Xubim//Q@vkoul-mobl>
+To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vkoul@kernel.org>
 References: <20210302003125.1178419-1-pierre-louis.bossart@linux.intel.com>
  <s5htuptfyae.wl-tiwai@suse.de> <YD5IChh6Xubim//Q@vkoul-mobl>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, arnd@arndb.de
+ <s5hk0qpfwfo.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <01feab68-14a2-36e0-4e30-f88187ae2a5e@linux.intel.com>
+Date: Tue, 2 Mar 2021 08:52:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <s5hk0qpfwfo.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, arnd@arndb.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,52 +88,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Mar 2021 15:13:30 +0100,
-Vinod Koul wrote:
+
+> OK, I applied those and pushed to topic/sound-sdw-kconfig-fixes
+> immutable branch.   A signed tag, sound-sdw-kconfig-fixes, is found
+> there, too.
 > 
-> On 02-03-21, 15:03, Takashi Iwai wrote:
-> > On Tue, 02 Mar 2021 01:31:18 +0100,
-> > Pierre-Louis Bossart wrote:
-> > > 
-> > > In January, Intel kbuild bot and Arnd Bergmann reported multiple
-> > > issues with randconfig. This patchset builds on Arnd's suggestions to
-> > > 
-> > > a) expose ACPI and PCI devices in separate modules, while sof-acpi-dev
-> > > and sof-pci-dev become helpers. This will result in minor changes
-> > > required for developers/testers, i.e. modprobe snd-sof-pci will no
-> > > longer result in a probe. The SOF CI was already updated to deal with
-> > > this module dependency change and introduction of new modules.
-> > > 
-> > > b) Fix SOF/SoundWire/DSP_config dependencies by moving the code
-> > > required to detect SoundWire presence in ACPI tables to sound/hda.
-> > > 
-> > > Integration note:
-> > > This patchset touches directories maintained by Vinod, Takashi and
-> > > Mark in separate trees, and will impact additional changes to use the
-> > > auxiliary bus in drivers/soundwire/.
-> > > I can think of two options, both of which are fine:
-> > > 1. Mark merges the patches with Vinod and Takashi Acked-by tags, then
-> > > Mark provides an immutable tag to Vinod.
-> > > 2. Vinod merges the patches with Mark and Takashi Acked-by tags, then
-> > > Vinod provides an immutable tag to Mark
-> > 
-> > Acked-by: Takashi Iwai <tiwai@suse.de>
+> Mark, Vinod, feel free to pull from:
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-sdw-kconfig/fixes
 > 
-> Since most of the changes are sound/ it makes sense for this to go thru
-> sound tree. I have acked the sdw part..
 
-OK, I applied those and pushed to topic/sound-sdw-kconfig-fixes
-immutable branch.   A signed tag, sound-sdw-kconfig-fixes, is found
-there, too.
+Thanks Takashi!
 
-Mark, Vinod, feel free to pull from:
-  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-sdw-kconfig/fixes
+> I suppose those are supposed to be merged in 5.12?  If so, I'm going
+> to merge to for-linus branch as well.
 
+We finished those changes rather late in the cycle, so I didn't want to 
+send this before 5.12-rc1 and create issues.
 
-I suppose those are supposed to be merged in 5.12?  If so, I'm going
-to merge to for-linus branch as well.
-
-
-thanks,
-
-Takashi
+But we've been testing them for at least a month now, so the risk is low 
+if this series was added in an 5.12-rcX branch.
