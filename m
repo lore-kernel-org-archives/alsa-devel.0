@@ -2,100 +2,83 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78703C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E1E6C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:26:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7828664F11
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:25:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7828664F11
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id AC5D664F0E
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 11:26:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC5D664F0E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tuxedocomputers.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC1721708;
-	Tue,  2 Mar 2021 12:24:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC1721708
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10BA81723;
+	Tue,  2 Mar 2021 12:25:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10BA81723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614684324;
-	bh=j4aUPdKiYoXEoNs6zvEijyuS4laHxmQHyZetALal37k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=apW30cww28WhB99p73tx8OnMGrBbSbzgjm3TlhpQYVyGFvKBIvKwBa+NtpbtCdcsX
-	 7d1boKdby/ilR7thyjVkpj8D0iud/5HKps/PcAqLdODuuD06RFlIsNyubft8ZLInuS
-	 VPkLkngUh+DYck/Dyj3XBbXQaqOUCfIn/SAzrz0A=
+	s=default; t=1614684366;
+	bh=cfaDG0CsDkWjXtFu07R+FJxbG+tugJ23ed4upjZF7Ec=;
+	h=From:Subject:To:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hy6Aevn7JZXCcyohMSrkzYltpPZfsH3cHS2/IVi5P+3q2zYzdALSStXopo7cKCmKc
+	 Xx/QZXCNVMKehP1+aYnk1QozXkftWMZL3MjLBbqHjO4344nTlkhIOStLH541p7nQvk
+	 p+ZTsj7SIGj3YvZFzmsPTEOYhkdZOrafUZmV0OQI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0529FF804A9;
-	Tue,  2 Mar 2021 12:22:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F58BF80271;
+	Tue,  2 Mar 2021 12:25:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BC86F804A9; Tue,  2 Mar 2021 12:22:16 +0100 (CET)
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
- [IPv6:2a00:1450:4864:20::22d])
+ id C7FCFF80271; Tue,  2 Mar 2021 12:25:13 +0100 (CET)
+Received: from srv6.fidu.org (srv6.fidu.org [159.69.62.71])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A82B3F802A9
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 12:22:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A82B3F802A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="hE2yP80G"
-Received: by mail-lj1-x22d.google.com with SMTP id r23so23440752ljh.1
- for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2021 03:22:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=yx3Rm9jzGKCPBq80QBACsTq0WbETqkrvY2ZCaXbwiog=;
- b=hE2yP80GuxnR3XsGAANyFMzvuOLz/ZpQMmTFhEXv43SCND/ao7TCA1fIEYkLQj8+4L
- imhR5/xMGH/9jV6IfXoGd3td3KezpfkN6EmkACmpfdwZkv0a4YBFb0JNbsdN4Quv2p0R
- lIq3zf41LbLwYrmma2SKnbmdKihfqo4Cro/FlGxFgoD4uA49etZzOTcTmTKcbhRRd6Zn
- gk9CuB9NpjbpDq981M+f9ZzngXrF0+1SIBUdeiMKwk0gAj/Ic8IwUDKlDXigqfwgFeKg
- EojB3Y8kXjzTLpTpoL3GrPXDlTyTvWvmUX/t7QR19qJPZDUCEcLh6jEXfJKhcvn6XaaU
- NFgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=yx3Rm9jzGKCPBq80QBACsTq0WbETqkrvY2ZCaXbwiog=;
- b=nr6eY+7xNu1Rt7iM4gi63yu2XeptreSUQtwBDvMGfRle+fiQxYhrHEOyHOGpM/IWcO
- qo9m3ciXysn/GizVW0slWBNEp//8t+lGlSHhI9O0hz21pYNkiLav2mDFfwYOQaYN2cDM
- Im4HACm3OzSTYc9BipI0CLwixHQo9YVoRMiEsBp3yuHwuiVahatViQLG0DpID7E3q4TZ
- XZTGzjsL6cEZ7YxYPOYhmljzcpjP3EWhAWHkeDEaz6OZPL+uvYE7WYl8MO2LyphQ2MEJ
- 2vOOwBDpqF/Q0pUafaqhgPhtxt0suY1YPoqS5wpU0Qa2w7Qw14kVuLsaNNzIYnZaKAML
- tovA==
-X-Gm-Message-State: AOAM530bx5rlpGJvScrX4T9MIL/mYwR8dnZ0Mx/zC2HazeaVDCzjgcGU
- ftGotFBQ+62CtXQe050Khy0=
-X-Google-Smtp-Source: ABdhPJxY2V/3+YiXrVWJXhoxQHtaDT4E8zOniFwbDdn0KZP5+Xumkdt/bDgK3eQ0vw4Uvj7C2vdlTQ==
-X-Received: by 2002:a2e:7d03:: with SMTP id y3mr10165943ljc.0.1614684127193;
- Tue, 02 Mar 2021 03:22:07 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
- [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.06
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Mar 2021 03:22:06 -0800 (PST)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v1 4/5] ASoC: tegra20: i2s: Add reset control
-Date: Tue,  2 Mar 2021 14:21:22 +0300
-Message-Id: <20210302112123.24161-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210302112123.24161-1-digetx@gmail.com>
-References: <20210302112123.24161-1-digetx@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA799F80227
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA799F80227
+Received: from localhost (localhost.localdomain [127.0.0.1])
+ by srv6.fidu.org (Postfix) with ESMTP id 9644BC800CD;
+ Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+ by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id lbnLkmpAJE1l; Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+Received: from [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8]
+ (p200300e37f234700CC4188a7F2f8D6b8.dip0.t-ipconnect.de
+ [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: wse@tuxedocomputers.com)
+ by srv6.fidu.org (Postfix) with ESMTPSA id 52B51C800CB;
+ Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+From: Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel NUC 10
+To: wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ alsa-devel@vger.kernel.org
+Autocrypt: addr=wse@tuxedocomputers.com; keydata=
+ mDMEX6ALvhYJKwYBBAHaRw8BAQdAG/kE3mlbV1YLpCU8iA7Pyq2eDq9LxzGQxcOZODh2Vnq0
+ KFdlcm5lciBTZW1iYWNoIDx3c2VAdHV4ZWRvY29tcHV0ZXJzLmNvbT6IlgQTFggAPhYhBNzq
+ jJqAsvWKK1h7bi7eQpXUvijKBQJfoAu+AhsDBQkJZgGABQsJCAcCBhUKCQgLAgQWAgMBAh4B
+ AheAAAoJEC7eQpXUvijKzkEA/jblmQRWU/e18oo8J9GPHWOCRUA1WJLUt9lSye5cgl2vAP0Y
+ q+EpkDRS+QqtIcIr3fVELwA4b/V1lVE2LW+plcmdCbg4BF+gC74SCisGAQQBl1UBBQEBB0Bc
+ k3J9DVAB4ysrdDcKE7L9iAUjlWD+rsLh/5soPORqFQMBCAeIfgQYFggAJhYhBNzqjJqAsvWK
+ K1h7bi7eQpXUvijKBQJfoAu+AhsMBQkJZgGAAAoJEC7eQpXUvijKBBYA/2DT2g26dpTU2Rbc
+ lqviltu+woGZCd0GBfRgXuzUK0OfAQCwr8qPCl8uIsBgOsDmWIJYByG2ddwmXiAgBS1985bM Ag==
+Message-ID: <447c7c3f-9e9b-bdbe-5c91-c6d8ab306173@tuxedocomputers.com>
+Date: Tue, 2 Mar 2021 12:25:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,107 +94,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The I2S reset may be asserted at a boot time, in particular this is the
-case on Tegra20 AC100 netbook. Tegra20 I2S driver doesn't manage the
-reset control and currently it happens to work because reset is implicitly
-deasserted by the tegra-clk driver when I2S clock is enabled. The I2S
-permanently stays in a reset once tegra-clk is fixed to not touch the
-resets, which it shouldn't be doing. Add reset control to the Tegra20
-I2S driver.
+From: Werner Sembach <wse@tuxedocomputers.com>
 
-Note that I2S reset was always specified in Tegra20 device-tree, hence
-DTB ABI changes aren't required.
+ALSA: hda/realtek: Add quirk for Intel NUC 10
 
-Tested-by: Paul Fertser <fercerpav@gmail.com> # T20 AC100
-Reported-by: Paul Fertser <fercerpav@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
+devices. This fixes the issue of the devices not having audio input and
+output on the headset jack because the kernel does not recognize when
+something is plugged in.
+
+The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
+it turned out that the NUC 10 uses another pin. This information was
+acquired by black box testing likely pins.
+
+Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 31 +++++++++++++++++++++++++++++++
- sound/soc/tegra/tegra20_i2s.h |  1 +
- 2 files changed, 32 insertions(+)
+Hi,
+this is my second ever submitted kernel patch with the first one send just some minutes ago, feel free to criticise me if I made an error or missed a best practice bullet point.
+Also: I'm unsure if this would fit the requirements for stable@vger.kernel.org and/or trivial@kernel.org, but I think not (correct me if I'm wrong).
+Kind regards
+Werner Sembach
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index d7a3d046c8f8..c0af5352b483 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -22,6 +22,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -37,6 +38,8 @@ static int tegra20_i2s_runtime_suspend(struct device *dev)
- {
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 
-+	regcache_cache_only(i2s->regmap, true);
-+
- 	clk_disable_unprepare(i2s->clk_i2s);
- 
- 	return 0;
-@@ -47,13 +50,35 @@ static int tegra20_i2s_runtime_resume(struct device *dev)
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 	int ret;
- 
-+	ret = reset_control_assert(i2s->reset);
-+	if (ret)
-+		return ret;
-+
- 	ret = clk_prepare_enable(i2s->clk_i2s);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
- 		return ret;
- 	}
- 
-+	usleep_range(10, 100);
-+
-+	ret = reset_control_deassert(i2s->reset);
-+	if (ret)
-+		goto disable_clocks;
-+
-+	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	ret = regcache_sync(i2s->regmap);
-+	if (ret)
-+		goto disable_clocks;
-+
- 	return 0;
-+
-+disable_clocks:
-+	clk_disable_unprepare(i2s->clk_i2s);
-+
-+	return ret;
- }
- 
- static int tegra20_i2s_set_fmt(struct snd_soc_dai *dai,
-@@ -339,6 +364,12 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 	i2s->dai = tegra20_i2s_dai_template;
- 	i2s->dai.name = dev_name(&pdev->dev);
- 
-+	i2s->reset = devm_reset_control_get_exclusive(&pdev->dev, "i2s");
-+	if (IS_ERR(i2s->reset)) {
-+		dev_err(&pdev->dev, "Can't retrieve i2s reset\n");
-+		return PTR_ERR(i2s->reset);
-+	}
-+
- 	i2s->clk_i2s = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(i2s->clk_i2s)) {
- 		dev_err(&pdev->dev, "Can't retrieve i2s clock\n");
-diff --git a/sound/soc/tegra/tegra20_i2s.h b/sound/soc/tegra/tegra20_i2s.h
-index 628d3ca09f42..8233e5fa2eff 100644
---- a/sound/soc/tegra/tegra20_i2s.h
-+++ b/sound/soc/tegra/tegra20_i2s.h
-@@ -144,6 +144,7 @@ struct tegra20_i2s {
- 	struct snd_dmaengine_dai_dma_data capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
- 	struct regmap *regmap;
-+	struct reset_control *reset;
- };
- 
- #endif
+From d281364b8ca6c054a0e5ce20caa599bf7d08160d Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Fri, 26 Feb 2021 13:54:30 +0100
+Subject: [PATCH] Fix Intel NUC10 no output and input on headset jack
+
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 290645516313..c14d624dbaf1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6362,6 +6362,7 @@ enum {
+     ALC269_FIXUP_LEMOTE_A1802,
+     ALC269_FIXUP_LEMOTE_A190X,
+     ALC256_FIXUP_INTEL_NUC8_RUGGED,
++    ALC256_FIXUP_INTEL_NUC10,
+     ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+     ALC274_FIXUP_HP_MIC,
+     ALC274_FIXUP_HP_HEADSET_MIC,
+@@ -7744,6 +7745,15 @@ static const struct hda_fixup alc269_fixups[] = {
+         .chained = true,
+         .chain_id = ALC269_FIXUP_HEADSET_MODE
+     },
++    [ALC256_FIXUP_INTEL_NUC10] = {
++        .type = HDA_FIXUP_PINS,
++        .v.pins = (const struct hda_pintbl[]) {
++            { 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++            { }
++        },
++        .chained = true,
++        .chain_id = ALC269_FIXUP_HEADSET_MODE
++    },
+     [ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
+         .type = HDA_FIXUP_VERBS,
+         .v.verbs = (const struct hda_verb[]) {
+@@ -8183,6 +8193,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+     SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+     SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
+     SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
++    SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+ 
+ #if 0
+     /* Below is a quirk table taken from the old code.
 -- 
-2.29.2
+2.25.1
+
+
+
+
+
+
+
 
