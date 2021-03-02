@@ -2,79 +2,64 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41919C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65D0AC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:34:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89EA264F17
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:33:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89EA264F17
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 988AA64F2A
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 17:34:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 988AA64F2A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A8D618D5;
-	Tue,  2 Mar 2021 18:32:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A8D618D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18A1718D5;
+	Tue,  2 Mar 2021 18:33:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A1718D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614706380;
-	bh=NlcAM5Aogt3gM4mWTWDu8X0fG511lhYUImn5GGC0ybU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1614706458;
+	bh=yCgv5HM25dQfwOWild+5qxI5IZc2Fy0B0bY1bSzF5nY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GG56m4hegzj2y0TJtWfU/Xu1xwcMpnmMk1pAVl/bENPgAp6fAm/PVyi++qc9PAHsV
-	 imhVlVdMpFfIdWAaSm//oPh4bu22yYhYDFCYHKNRjh2y+G5UL2uk2Qoy9BQwxBcei8
-	 P65XdfMeYylEXLCWRW2Y8GK4Vxc3K41hHJWnQeYo=
+	b=ZvTIhMv+eKUG4pTeh41xjX3hn15msMian/RGuQDQJl/6gMBR8ZyY5V/eCEGBf6Md2
+	 K84k2OXVv6SjAQntIZNBy50FGLh63assXmukbCbMIodcJUs7pJfGKFo0wx3jUAuUH4
+	 tc3DPivBpANkxBSdBsZ0eJLKnUDk0HekEX11PpL0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A82FF802A9;
-	Tue,  2 Mar 2021 18:32:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97BE6F8012D;
+	Tue,  2 Mar 2021 18:33:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 617D6F802CA; Tue,  2 Mar 2021 18:32:08 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 56DD5F80269; Tue,  2 Mar 2021 18:33:26 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55497F80269
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:32:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55497F80269
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Feu7pMkJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C44DA64F14;
- Tue,  2 Mar 2021 17:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614706323;
- bh=NlcAM5Aogt3gM4mWTWDu8X0fG511lhYUImn5GGC0ybU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Feu7pMkJs+pIBDi3Bse8WsRg7wuHnzIf99DXDMOy+aB/qN4mjcW6uJi2Ztn9RnPh2
- /6SNid8TEDYwaQ5daZNp/odMK6/IBHl5kFEHr5T/EabU2g0pj/jtkqS71nAl9/k5R8
- zkfa2fYDR+GaAnRwGs+tw9dYM2u0yy91P7BAk5C86G2VTtjbOKwmHLjX6+crQxUDnw
- r/Onp+jxRxpcvejgZjfIRsN2EbGdrhsavgpk7QTshZOssoCZc8zcDe78wPaSJ183+g
- uzZhZRKqqZImaKWR7IiwI2nDXgSrNessc7p9c0H5jWE8eK4WkmOIEgv7/NeTtshJ+D
- FE9Zfdz2c2b+Q==
-Date: Tue, 2 Mar 2021 17:30:55 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: Re: [PATCH 15/15] ASoC: cs42l42: Fix mixer volume control
-Message-ID: <20210302173055.GT4522@sirena.org.uk>
-References: <20210302170454.39679-1-tanureal@opensource.cirrus.com>
- <20210302170454.39679-16-tanureal@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="v9g2r9e2kvGs7M7R"
-Content-Disposition: inline
-In-Reply-To: <20210302170454.39679-16-tanureal@opensource.cirrus.com>
-X-Cookie: Friction is a drag.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Liam Girdwood <lgirdwood@gmail.com>, David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- James Schulman <james.schulman@cirrus.com>, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22698F8012D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 18:33:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22698F8012D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 59A19ADCD;
+ Tue,  2 Mar 2021 17:33:19 +0000 (UTC)
+Date: Tue, 02 Mar 2021 18:33:19 +0100
+Message-ID: <s5hmtvlea00.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+In-Reply-To: <0eee6545-5169-ef08-6cfa-5def8cd48c86@tuxedocomputers.com>
+References: <0eee6545-5169-ef08-6cfa-5def8cd48c86@tuxedocomputers.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,29 +75,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 02 Mar 2021 17:25:22 +0100,
+Werner Sembach wrote:
+> 
+> From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+> 
+> ALSA: hda/realtek: Add quirk for Clevo NH55RZQ
+> 
+> This applies a SND_PCI_QUIRK(...) to the Clevo NH55RZQ barebone. This
+> fixes the issue of the device not recognizing a pluged in microphone.
+> 
+> The device has both, a microphone only jack, and a speaker + microphone
+> combo jack. The combo jack already works. The microphone-only jack does
+> not recognize when a device is pluged in without this patch.
+> 
+> Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+> Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+> This is a resend of the patch because I missed that the editor I used to write the commit message replaced tabs with spaces.
 
---v9g2r9e2kvGs7M7R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, now I could apply it.
 
-On Tue, Mar 02, 2021 at 05:04:54PM +0000, Lucas Tanure wrote:
-> The minimum value is 0x3f (-63dB), which also is mute
+Could you resubmit the NUC10 patch as well?
 
-Fixes at the start of the series please.
 
---v9g2r9e2kvGs7M7R
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+dk4ACgkQJNaLcl1U
-h9CWSgf/b0RC5UXxZcufu3vrMuRm8vblSh339svCskkTE++2NNILSXWAu271P6gv
-bRriKvyOHwXw0SshXxHW+dzA2pmwGTxtIjjrQXe3m9vfy1NPpDZg2X+gbxHriPnQ
-eMjvCzKsKRxRxpp+P20XB15CmxbrwYjzmHtIRvQvHgNTtzDzB6wlsMTRciGqhNf1
-4qbs7Lfmwf8xNoI0fsSCYggZBfFIcI6EJb6NfOc85ST8gomwfBwC0GhPT0Lzs9pE
-JuwZVdQNkpRKe2cEHnvWtkGSPYkjBRMVePU1rL1buaTy2IxLHz0hQIcePg1sJFAc
-/PBq4LsaJSYkQV0JsvxNrZKxxZlVDA==
-=rdnJ
------END PGP SIGNATURE-----
-
---v9g2r9e2kvGs7M7R--
+Takashi
