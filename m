@@ -2,67 +2,73 @@ Return-Path: <SRS0=nFZf=IA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D211C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:52:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 933E3C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:56:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BDC3A64F0A
-	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:52:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BDC3A64F0A
+	by mail.kernel.org (Postfix) with ESMTPS id 7CAA164EE8
+	for <alsa-devel@archiver.kernel.org>; Tue,  2 Mar 2021 12:56:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CAA164EE8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=cmss.chinamobile.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E840E16F3;
-	Tue,  2 Mar 2021 13:51:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E840E16F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA16A16E8;
+	Tue,  2 Mar 2021 13:55:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA16A16E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614689531;
-	bh=pZn+IWo+aCByh+esLsR5waDbyh6B8P9quBIKKdoOb3U=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=N+FMcNWISREvNmpichl0PwgpaqNV9q/zGs+ILvTCjXKCrmra/5Hez2qP+C7H8THIX
-	 WKoch1RE4JGIlvrEt7DknRnloMX+Sbtpx44fOVc9dPenuHZerXl+Lcn7f11lrsSNXq
-	 o5DyXeiEuAgq6/zFLTYHpPwtNJvdYEY2k5G9Kwaw=
+	s=default; t=1614689803;
+	bh=WSQ5OmpDjnBfZSFw+1rouxFXlsQZWQTrgpfTp3JMPt0=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=otWVo0hyX9OAPbOuV+I/gUtaqzJqMTNPhDoiQNTDSEL41777IDCCXj/nC1q8dm8wT
+	 UcIEzuzO0vCbISOr38jZPtMY9z84EQl1iJ4IbSaFWiJgOwzk0RHPyTEbeaLEvIv9Vz
+	 9M7iM2LdMaiWJ4YO2xeJawPgC7f8w5NGODzQo/v4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E7E6F80271;
-	Tue,  2 Mar 2021 13:50:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53453F80227;
+	Tue,  2 Mar 2021 13:55:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF222F80277; Tue,  2 Mar 2021 13:50:36 +0100 (CET)
+ id 34C6AF80269; Tue,  2 Mar 2021 13:55:52 +0100 (CET)
 Received: from cmccmta2.chinamobile.com (cmccmta2.chinamobile.com
  [221.176.66.80])
- by alsa1.perex.cz (Postfix) with ESMTP id DA114F8012D
- for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 13:50:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA114F8012D
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by
- rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee7603e3480fae-934fd;
- Tue, 02 Mar 2021 20:50:09 +0800 (CST)
-X-RM-TRANSID: 2ee7603e3480fae-934fd
+ by alsa1.perex.cz (Postfix) with ESMTP id EA666F80227
+ for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2021 13:55:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA666F80227
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.17]) by
+ rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee7603e35c7067-935b6;
+ Tue, 02 Mar 2021 20:55:37 +0800 (CST)
+X-RM-TRANSID: 2ee7603e35c7067-935b6
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
- by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea603e347d2a6-1de80;
- Tue, 02 Mar 2021 20:50:09 +0800 (CST)
-X-RM-TRANSID: 2eea603e347d2a6-1de80
-From: Tang Bin <tangbin@cmss.chinamobile.com>
-To: broonie@kernel.org, timur@kernel.org, nicoleotsuka@gmail.com,
- Xiubo.Lee@gmail.com, perex@perex.cz, tiwai@suse.com
-Subject: [PATCH] ASoC: fsl_xcvr: Use devm_platform_ioremap_resource_byname()
- to simplify code
-Date: Tue,  2 Mar 2021 20:50:02 +0800
-Message-Id: <20210302125002.23900-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+Received: from [192.168.21.77] (unknown[10.42.68.12])
+ by rmsmtp-syy-appsvr09-12009 (RichMail) with SMTP id 2ee9603e35c7299-1c3fb;
+ Tue, 02 Mar 2021 20:55:37 +0800 (CST)
+X-RM-TRANSID: 2ee9603e35c7299-1c3fb
+Subject: Re: [PATCH] ASoC: codec: Omit superfluous error message
+ injz4760_codec_probe()
+To: Paul Cercueil <paul@crapouillou.net>
+References: <20210302121148.28328-1-tangbin@cmss.chinamobile.com>
+ <K2DCPQ.25EEALUNZ4K3@crapouillou.net>
+From: tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <76c87931-094e-0804-9405-ad4841fae2d3@cmss.chinamobile.com>
+Date: Tue, 2 Mar 2021 20:55:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <K2DCPQ.25EEALUNZ4K3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Tang Bin <tangbin@cmss.chinamobile.com>
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,45 +84,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In this function, devm_platform_ioremap_resource_byname() should be 
-suitable to simplify code.
+Hi Paul:
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- sound/soc/fsl/fsl_xcvr.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+On 2021/3/2 20:23, Paul Cercueil wrote:
+> Hi Tang,
+>
+> Le mar. 2 mars 2021 à 20:11, Tang Bin <tangbin@cmss.chinamobile.com> a 
+> écrit :
+>> The function devm_platform_ioremap_resource has already contained error
+>> message, so remove the redundant dev_err here.
+>>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>> ---
+>>  sound/soc/codecs/jz4760.c | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/sound/soc/codecs/jz4760.c b/sound/soc/codecs/jz4760.c
+>> index e8f28ccc145a..c2d8a107f159 100644
+>> --- a/sound/soc/codecs/jz4760.c
+>> +++ b/sound/soc/codecs/jz4760.c
+>> @@ -843,7 +843,6 @@ static int jz4760_codec_probe(struct 
+>> platform_device *pdev)
+>>      codec->base = devm_platform_ioremap_resource(pdev, 0);
+>>      if (IS_ERR(codec->base)) {
+>>          ret = PTR_ERR(codec->base);
+>> -        dev_err(dev, "Failed to ioremap mmio memory: %d\n", ret);
+>>          return ret;
+>>      }
+>
+> Indeed, you are right.
+>
+> I guess you do this instead:
+>
+> if (IS_ERR(codec->base))
+>    return PTR_ERR(codec->base);
 
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index 6dd0a5fcd455..5e8284db857b 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -1131,7 +1131,7 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct fsl_xcvr *xcvr;
--	struct resource *ram_res, *regs_res, *rx_res, *tx_res;
-+	struct resource *rx_res, *tx_res;
- 	void __iomem *regs;
- 	int ret, irq;
- 
-@@ -1166,13 +1166,11 @@ static int fsl_xcvr_probe(struct platform_device *pdev)
- 		return PTR_ERR(xcvr->pll_ipg_clk);
- 	}
- 
--	ram_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ram");
--	xcvr->ram_addr = devm_ioremap_resource(dev, ram_res);
-+	xcvr->ram_addr = devm_platform_ioremap_resource_byname(pdev, "ram");
- 	if (IS_ERR(xcvr->ram_addr))
- 		return PTR_ERR(xcvr->ram_addr);
- 
--	regs_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
--	regs = devm_ioremap_resource(dev, regs_res);
-+	regs = devm_platform_ioremap_resource_byname(pdev, "regs");
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
--- 
-2.18.2
+Yes, I would have written it in your ways, but considered the variable 
+"ret", I gave up, and just deleted dev_err().
+
+
+Thanks
+
+Tang Bin
+
+
 
 
 
