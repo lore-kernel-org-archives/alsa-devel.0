@@ -2,103 +2,82 @@ Return-Path: <SRS0=LSvA=IB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FCC3C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 11:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4977AC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 11:56:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 30BEA64ED7
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 11:47:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 30BEA64ED7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id B91E360234
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 11:56:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B91E360234
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 580F018C9;
-	Wed,  3 Mar 2021 12:46:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 580F018C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE2EC18DE;
+	Wed,  3 Mar 2021 12:55:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE2EC18DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614772031;
-	bh=y/5kp/yxDAtV6N4rcb2pCcoN+xFgcu6sOObUr1y4j+E=;
-	h=From:Subject:To:References:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Gw+aE4h15wVuMxRC9mcOtC8943FvKxKlXt0HVD9ROOlN5lPIumzBkSlyKHO/XcwSy
-	 w+nLaxTucHaMo1j4w+Kd1I20nKKgyQE2lJvu3NrDy4pD+H7nzxiSgXbWj0dS5fRl5o
-	 Yja598j8NxJMLvpVhb5JVawpFqDk+9rzup3NKMmQ=
+	s=default; t=1614772603;
+	bh=Q8n65+GMlzQxlVxGM1bvfq7tXfF4Wvi9IavbOvDXfmw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q1hin5rGcV5hU9ndNC+HbX6b9NCMsa4wAwvIihveNzo0cOylI9ZkEgLC19L6WxpY0
+	 86DOTtOW7Xsgvphiya5kL+73LSxDoGREeYjcn4aMkXezKU/b21Yo0o+Rs6DNwZK5Ej
+	 bE3zlNp0UGSVw2eaa2Sm2zhbxfBBusm3+p3uDM+k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C28CFF80257;
-	Wed,  3 Mar 2021 12:46:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A7D3F80257;
+	Wed,  3 Mar 2021 12:55:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB02BF8025E; Wed,  3 Mar 2021 12:46:19 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 47535F8012D; Wed,  3 Mar 2021 12:55:50 +0100 (CET)
+Received: from hqnvemgate26.nvidia.com (hqnvemgate26.nvidia.com
+ [216.228.121.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F065F800B2
- for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2021 12:46:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F065F800B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5E34F8012D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2021 12:55:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5E34F8012D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="HhgsIYii"
-Received: by mail-wr1-x42a.google.com with SMTP id u16so5325733wrt.1
- for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2021 03:46:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:subject:to:cc:references:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=MeQqLKfUpWUw4m4oMpwWQScKW8kK3AHyes4EBhAmAkY=;
- b=HhgsIYiiTod2dmWWRk3//eBmB2MYwsQLBC29KvdiN6vETMyE+ZMNnNqWQL9Q/yCDRg
- Yg7jpXpcAlfCciQCb1dhadnF1MPG3VwptYH/Ffc5eM5IfYHwxK1t23w8y4ntWhdpi+hX
- BIdAy9ioa8VWsHKWh1hl1XsGVsLbZ9vzImWgu2vPeKZlly2rSxusiAHRfNCBs86+vq9L
- olhq+VMNM4Pu76UAGBI/m9kUSvPY0HVIku76Yb6QYkeBp3nUkcM8Ef8f8KMwHu3fumMR
- Uk0aD7BckV9mia2RFglhuobhexzKfCjQt53ygUBx6ogiReBN9axN2qTu5jFGUVE/4b0H
- 4YQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:subject:to:cc:references:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=MeQqLKfUpWUw4m4oMpwWQScKW8kK3AHyes4EBhAmAkY=;
- b=htq6zK2FJCoLSO1Ew2ELI37VbnOnR62fpza3Vign/k6PJ84Dfk+CVHjKqlKizSReht
- LVjM0k2QyQy4Nb2Un1tly3NWIKgriIFjgiv9eQjIQ6wuziXyj61ss72MAnUNuhgKxVf9
- 351cgmWxRF+M9Y70wjiebuHxC8HJUvcuTjzpWS1T0WMqAx7okYacV7kAQpkxEktzvvQj
- 91WbVcVwJ9qZ+NkarLL+0u6yg4S+p/htX1MgC2N8rHTgbiIKun+cvyV+qyY7/K5+HOKv
- b5y/33vRb/7A4VDeBUDlDJj4EX6nDxEYYVJMazsgko15zTXVVo65erAAHeu4okyptc3X
- raXg==
-X-Gm-Message-State: AOAM531VSaMOqA62+gU9z1fZLBdhUUvO5KKTu7VHHAgQLX2AHw4q6DYp
- 8uureMUvDYsuHAIGkBQ9vk9u9g==
-X-Google-Smtp-Source: ABdhPJx6TiVE2WzgqGC5H4bW+t5fZtoXZpTTF4vyAcjFnqKb7ufY0KvoXlWsJCX56BMIZ1QB/VTfFQ==
-X-Received: by 2002:adf:fe8d:: with SMTP id l13mr26294650wrr.81.1614771973791; 
- Wed, 03 Mar 2021 03:46:13 -0800 (PST)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id y10sm23512424wrl.19.2021.03.03.03.46.09
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 03 Mar 2021 03:46:13 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 3/3] soundwire: qcom: add clock stop via runtime pm support
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- vkoul@kernel.org
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
- <20210226170250.9067-4-srinivas.kandagatla@linaro.org>
- <2899ca9e-2938-4d8d-5e56-49eba8cdb920@linux.intel.com>
-Message-ID: <75a7a05c-d34d-aa3f-e8e8-4bbb89e1beca@linaro.org>
-Date: Wed, 3 Mar 2021 11:46:07 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ dkim=pass (2048-bit key) header.d=nvidia.com header.i=@nvidia.com
+ header.b="TPCLIFKc"
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by
+ hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+ id <B603f79370000>; Wed, 03 Mar 2021 03:55:35 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 3 Mar
+ 2021 11:55:34 +0000
+Received: from moonraker.nvidia.com (172.20.145.6) by mail.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 3 Mar 2021 11:55:32 +0000
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is present
+Date: Wed, 3 Mar 2021 11:55:26 +0000
+Message-ID: <20210303115526.419458-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <2899ca9e-2938-4d8d-5e56-49eba8cdb920@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
- yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+ t=1614772535; bh=4m4/54FIMd3nVyRMq6v7JqGzyu918YBQawVTaUMBx8I=;
+ h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+ X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+ b=TPCLIFKcv+wAz90NoF7wDd+GzlkGxwrcf/fCzuJ6d7VOED5nzc7bOwHPEgT12p8FM
+ 5HunMahXtxxTrRmPhv9QUA1qVbnS4VZ+0Fz2blC2l05vzZG6OkA9OMl5i+5PbB2DDV
+ zXD6804I0dgUExmdoaeRTln+uE0cPZ4VIH9V0ayG4lT1Fke39YZzgBtcbe+wV309Mb
+ dyQj4BG0Sa5UlLhSHmnoTyQW2PPNc3lvphUqikiTiUhk+WIEC8dNcDaiDhj8OFVYNT
+ MH7lVhc8fJwI8Ei8CJT9LMghh7lR+Hypvt9a7A0UvdNokt5d7n4KvGYfGnu2TQ7wws
+ kF3aomKs1YqmA==
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,106 +93,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Pierre for reviewing this in detail!
+Many systems do not use ACPI and hence do not provide a DMI table. On
+non-ACPI systems a warning, such as the following, is printed on boot.
 
+ WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
 
-On 26/02/2021 17:41, Pierre-Louis Bossart wrote:
-...
+The variable 'dmi_available' is not exported and so currently cannot be
+used by kernel modules without adding an accessor. However, it is
+possible to use the function is_acpi_device_node() to determine if the
+sound card is an ACPI device and hence indicate if we expect a DMI table
+to be present. Therefore, call is_acpi_device_node() to see if we are
+using ACPI and only parse the DMI table if we are booting with ACPI.
 
->>       return 0;
->>   err_master_add:
->> @@ -1214,6 +1261,47 @@ static int qcom_swrm_remove(struct 
->> platform_device *pdev)
->>       return 0;
->>   }
->> +static int swrm_runtime_resume(struct device *dev)
->> +{
->> +    struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
->> +
->> +    reinit_completion(&ctrl->enumeration);
->> +    clk_prepare_enable(ctrl->hclk);
->> +    ctrl->reg_write(ctrl, SWRM_COMP_SW_RESET, 0x01);
->> +    qcom_swrm_get_device_status(ctrl);
->> +    sdw_handle_slave_status(&ctrl->bus, ctrl->status);
->> +    qcom_swrm_init(ctrl);
->> +    wait_for_completion_timeout(&ctrl->enumeration,
->> +                    msecs_to_jiffies(TIMEOUT_MS));
->> +    usleep_range(100, 105);
->> +
->> +    pm_runtime_mark_last_busy(dev);
-> 
-> Humm, what 'clock stop' are we talking about here?
-> 
-> In SoundWire 1.x devices, you can stop the BUS clock and not have to 
-> redo any enumeration on resume, devices are required to save their 
-> context.  You have to also follow the pattern of preparing and 
-> broadcasting the CLOCK STOP NOW message.
-> 
-> It looks like you are stopping something else, and completely resetting 
-> the hardware. It's fine, it's just a reset but not clock stop support as 
-> defined in the SoundWire spec.
-> 
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+Changes since V1:
+- Use is_acpi_device_node() to determine if we expect the DMI table to
+  be present.
 
-This is clock stop that Soundwire Spec refers to.
+ sound/soc/soc-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-However I think I messed up this patch! :-)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f6d4e99b590c..0cffc9527e28 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -31,6 +31,7 @@
+ #include <linux/of.h>
+ #include <linux/of_graph.h>
+ #include <linux/dmi.h>
++#include <linux/acpi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, c=
+onst char *flavour)
+ 	if (card->long_name)
+ 		return 0; /* long name already set by driver or from DMI */
+=20
++	if (!is_acpi_device_node(card->dev->fwnode))
++		return 0;
++
+ 	/* make up dmi long name as: vendor-product-version-board */
+ 	vendor =3D dmi_get_system_info(DMI_BOARD_VENDOR);
+ 	if (!vendor || !is_dmi_valid(vendor)) {
+--=20
+2.25.1
 
-
-
-
->> +
->> +    return 0;
->> +}
->> +
->> +static int __maybe_unused swrm_runtime_suspend(struct device *dev)
->> +{
->> +    struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
->> +
->> +    /* Mask bus clash interrupt */
->> +    ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
->> +    ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
->> +    ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
->> +    /* clock stop sequence */
->> +    qcom_swrm_cmd_fifo_wr_cmd(ctrl, 0x2, 0xF, SDW_SCP_CTRL);
-> 
-> Humm, this looks like writing in SCP_CTRL::ClockStopNow, so why is 
-> enumeration required on restart?
-> 
-One of the controller instance needed a full reset so there is a mix of 
-code for both clock stop and reset here!
-
-Am working on cleaning up this in a better way!
-
-I will also address the runtime pm comments that you have noticed in 
-next version!
-
---srini
-
-
-> If you take down the bus and reset everything, you don't need to do this 
-> sequence. a hardware reset will do...
-> 
->> +
->> +    clk_disable_unprepare(ctrl->hclk);
->> +
->> +    usleep_range(100, 105);
->> +
->> +    return 0;
->> +}
->> +
->> +static const struct dev_pm_ops swrm_dev_pm_ops = {
->> +    SET_RUNTIME_PM_OPS(swrm_runtime_suspend, swrm_runtime_resume, NULL)
->> +};
->> +
->>   static const struct of_device_id qcom_swrm_of_match[] = {
->>       { .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
->>       { .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
->> @@ -1228,6 +1316,7 @@ static struct platform_driver qcom_swrm_driver = {
->>       .driver = {
->>           .name    = "qcom-soundwire",
->>           .of_match_table = qcom_swrm_of_match,
->> +        .pm = &swrm_dev_pm_ops,
->>       }
->>   };
->>   module_platform_driver(qcom_swrm_driver);
->>
