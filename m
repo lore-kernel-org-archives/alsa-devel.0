@@ -2,70 +2,124 @@ Return-Path: <SRS0=LSvA=IB=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 726DCC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 03:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5581BC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 06:06:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94FE960231
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 03:21:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94FE960231
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 6D70564EBB
+	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 06:06:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D70564EBB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=samsung.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D1F51AF1;
-	Wed,  3 Mar 2021 04:20:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D1F51AF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27C021AFA;
+	Wed,  3 Mar 2021 07:05:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27C021AFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614741683;
-	bh=5XT3865674a/zoRtvouH3y1dA2LRhb+HbGzmsCD9Njg=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WT8KyhApP6kV373PAhvwjpWQE4sEl9M50vxHHH3xp7Kxfqcc85MUO+S6S/JHUR/xs
-	 1ercA7foZZtzyiQmr70a3ipfQfJClv2HdE07gvhOqXbwkaO5g9ZO9zo2S5HYMyvFpC
-	 +00ln+oOsmEwN9bVlo99SK8u23EZUN9jPsoQ/0lM=
+	s=default; t=1614751572;
+	bh=hfjfwuUz5hCp1EJJ8uIVJx4l3pAdWlBvNdzqCa5OzYY=;
+	h=From:To:Subject:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=AIbvQUIntBR6+n0GS6ys3ZufWa9cFlyIPcW/LgPVV4g3y1CPknhql+NOetlK+yQlv
+	 NUp3rV25sZTmmjajHll349EZyud2+aswlCf/rl6D+CHBCZnk/CRYlQ0ZWOzfiRO5hx
+	 xVh9uj3V0+dPfv17NNTaLLWem04J9WTRFYhXOJFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A649EF80227;
-	Wed,  3 Mar 2021 04:20:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97CE8F8025E;
+	Wed,  3 Mar 2021 07:05:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E318EF8012D; Wed,  3 Mar 2021 04:20:30 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 93F2CF8026A; Wed,  3 Mar 2021 07:05:14 +0100 (CET)
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9228AF8012D
- for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2021 04:20:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9228AF8012D
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E8BA6200024;
- Wed,  3 Mar 2021 04:20:20 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D8323200154;
- Wed,  3 Mar 2021 04:20:13 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 7B7EE402C1;
- Wed,  3 Mar 2021 04:20:05 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- shengjiu.wang@nxp.com, ckeepax@opensource.cirrus.com,
- kuninori.morimoto.gx@renesas.com, peter.ujfalusi@ti.com,
- gustavoars@kernel.org, pierre-louis.bossart@linux.intel.com,
- daniel.baluta@nxp.com, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: wm8960: Remove bitclk relax condition in
- wm8960_configure_sysclk
-Date: Wed,  3 Mar 2021 11:07:42 +0800
-Message-Id: <1614740862-30196-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AEBAF8012D
+ for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2021 07:05:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AEBAF8012D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
+ header.b="jthYFTJx"
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+ by mailout1.samsung.com (KnoxPortal) with ESMTP id
+ 20210303060502epoutp01d0efefef11c090cf48e4a828504caa39~ov__xQWET2178921789epoutp01B
+ for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2021 06:05:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
+ 20210303060502epoutp01d0efefef11c090cf48e4a828504caa39~ov__xQWET2178921789epoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1614751502;
+ bh=2kCxJoB4c79GwjGHtxy5yjssULi/d/s77sB3KP6IKTs=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=jthYFTJxHYeUDQhtcMvbsmkr+7eNOzcU95f1oTf5fGu0xYZBMKrkBO+6xZVX3mR5A
+ ClRrXbHtRv7MPiCMSxtCR19pAowADuTUqGxhe/zjA2DFuNLkVG02Z/4lgB9diV+h7S
+ 2QxfpcHSLxwpIS9k318WADdM9kroMJj0Ogrg9hU0=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+ epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+ 20210303060502epcas3p454ef823ec3f119581ca69cc0d16cf835~ov__bgVsX2370223702epcas3p40;
+ Wed,  3 Mar 2021 06:05:02 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
+ (Postfix) with ESMTP id 4Dr3PV1Ldjz4x9Py; Wed,  3 Mar 2021 06:05:02 +0000
+ (GMT)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+ 20210303060125epcas2p2f8bd60105935980a670a72f8481ddf00~ov70bktJB2732827328epcas2p2O;
+ Wed,  3 Mar 2021 06:01:25 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20210303060125epsmtrp19a0db8b13198f1b410831f171460921f~ov70ar9xT2317223172epsmtrp1Y;
+ Wed,  3 Mar 2021 06:01:25 +0000 (GMT)
+X-AuditID: b6c32a29-f3fff7000000349e-70-603f2635ce5d
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 0B.62.13470.5362F306; Wed,  3 Mar 2021 15:01:25 +0900 (KST)
+Received: from KORDO025540 (unknown [12.36.182.130]) by epsmtip1.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20210303060125epsmtip1929c96a3bb9c2c53397e86ac7f5d1507~ov70Nw4ep2311323113epsmtip1f;
+ Wed,  3 Mar 2021 06:01:25 +0000 (GMT)
+From: "Gyeongtaek Lee" <gt82.lee@samsung.com>
+To: "'Kuninori Morimoto'" <kuninori.morimoto.gx@renesas.com>,
+ <broonie@kernel.org>, <cpgs@samsung.com>
+Subject: [PATCH v5 0/1] ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
+Date: Wed, 3 Mar 2021 15:01:24 +0900
+Message-ID: <2038148563.21614751502179.JavaMail.epsvc@epcpadp3>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdcPxSxmyTU0C67NRtS/utnZZ5oyWA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsWy7bCSnK6pmn2CwcNJ/BZXLh5ispj68Amb
+ xctDmhZ3f5hbzNjWzWLReG8Cm8Xqq1uYLF4d3sVo8e1KB5PFr//PmCyOXlzMZNFwt5nd4uXm
+ N0wWRxqnMDnweWz43MTmsXPWXXaPTas62TzmnQz0+HZmIotH35ZVjB6bT1cHsEdx2aSk5mSW
+ pRbp2yVwZayesYCtoJe74smTm4wNjG84uhg5OSQETCQub/rB1sXIxSEksJtR4vv0PkaIhITE
+ h/ln2CFsYYn7LUdYIYqeM0qsX76aFSTBJqAr8eXeHWYQW0QgS+Ll/7vMIEXMAu+YJCau+cgC
+ khAW8JJY8/kLWAOLgIpE88RlYFN5BSwl1hzdxQhhC0qcnPkEqJ4DqFlPom0jWJhZQF5i+9s5
+ zBBHKEj8fLqMFaREBKjk8X9LiBIRidmdbcwTGAVnIRk0C2HQLCSDZiHpWMDIsopRMrWgODc9
+ t9iwwDAvtVyvODG3uDQvXS85P3cTIzjetDR3MG5f9UHvECMTB+MhRgkOZiURXvGXtglCvCmJ
+ lVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnNTk0tSC2CyTJxcEo1MAUbOfdev5WjX/Jn
+ 52bLf8sD/27q+xFXtF5Zqm/Jx/3zNNNO304y/H/qqeOm/08FwhrmWDxfybtD8pNF6RGL8Dfy
+ wvX7VwS4/pvz88m165zzLukVCEa8kAtOqGD4OkNeqIV5EXuGqWLRwpevvLNLNfXlNkT7JAh4
+ tp9KznzAZbJW45xqndm5+Gv3Li/Kume3Z1N76s2zrg2PL0j8MtiR9f7U2zLvE187ix0Zqir2
+ +oU8KVnSZX3p44f92gx2az/qNzedKDDT7JpRXav1afq1U63JzpUfN+ZkMYTdWCL3Svz1p+Np
+ XbazTJ/dWF7pajDL+6IA060FCxftXyjfr7mERWtuF///j6v/bnzRbr6zL0KJpTgj0VCLuag4
+ EQA784O6JgMAAA==
+X-CMS-MailID: 20210303060125epcas2p2f8bd60105935980a670a72f8481ddf00
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210303060125epcas2p2f8bd60105935980a670a72f8481ddf00
+References: <CGME20210303060125epcas2p2f8bd60105935980a670a72f8481ddf00@epcas2p2.samsung.com>
+Cc: alsa-devel@alsa-project.org, khw0178.kim@samsung.com, 'Takashi
+ Iwai' <tiwai@suse.de>, lgirdwood@gmail.com,
+ 'Pierre-Louis Bossart' <pierre-louis.bossart@linux.intel.com>,
+ kimty@samsung.com, donggyun.ko@samsung.com, hmseo@samsung.com,
+ cpgs@samsung.com, s47.kang@samsung.com, pilsun.jang@samsung.com,
+ tkjung@samsung.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,80 +135,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The call sequence in wm8960_configure_clocking is
+On Wed, 2021-02-17 16:29, Takashi Iwai wrote:
+>On Wed, 17 Feb 2021 05:31:49 +0100,
+>Gyeongtaek Lee wrote:
+>> 
+>> If stop by underrun and DPCM BE disconnection is run simultaneously,
+>> data abort can be occurred by the sequence below.
+>> 
+>> CPU0					CPU1
+>> dpcm_be_dai_trigger():			dpcm_be_disconnect():
+>> 
+>> for_each_dpcm_be(fe, stream, dpcm) {
+>> 
+>> 					spin_lock_irqsave(&fe->card->dpcm_lock, flags);
+>> 					list_del(&dpcm->list_be);
+>> 					list_del(&dpcm->list_fe);
+>> 					spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+>> 					kfree(dpcm);
+>> 
+>> struct snd_soc_pcm_runtime *be = dpcm->be; <-- Accessing freed memory
+>> 
+>> To prevent this situation, dpcm_lock should be acquired during
+>> iteration of dpcm list in dpcm_be_dai_trigger().
+>
+>I don't think we can apply spin lock there blindly.  There is
+>non-atomic PCM that must not take a spin lock there, too.
+Hi, Takashi
 
-   ret = wm8960_configure_sysclk();
-   if (ret >= 0)
-        goto configure_clock;
+I fixed the patch to hold dpcm_lock during accessing dpcm related data only,
+not on the trigger callback of driver.
 
-   ....
+Thank you.
+Gyeongtaek Lee
+>
+>
+>thanks,
+>
+>Takashi
+>
 
-   ret = wm8960_configure_pll();
+Gyeongtaek Lee (1):
+  ASoC: dpcm: acquire dpcm_lock in dpcm_do_trigger()
 
-configure_clock:
-   ...
+ include/sound/soc-dpcm.h |  5 ++++
+ sound/soc/soc-pcm.c      | 59 +++++++++++++++++++++++++++++++++-------
+ 2 files changed, 54 insertions(+), 10 deletions(-)
 
-wm8960_configure_sysclk is called before wm8960_configure_pll, as
-there is bitclk relax on both functions, so wm8960_configure_sysclk
-always return success, then wm8960_configure_pll() never be called.
 
-With this case:
-aplay -Dhw:0,0 -d 5 -r 48000 -f S24_LE -c 2 audio48k24b2c.wav
-the required bitclk is 48000 * 24 * 2 = 2304000, bitclk got from
-wm8960_configure_sysclk is 3072000, but if go to wm8960_configure_pll.
-it can get correct bitclk 2304000.
-
-So bitclk relax condition should be removed in wm8960_configure_sysclk,
-then wm8960_configure_pll can be called, and there is also bitclk relax
-function in wm8960_configure_pll.
-
-Fixes: 3c01b9ee2ab9 ("ASoC: codec: wm8960: Relax bit clock computation")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
-changes in v2:
-- Find the real reason for the case, just patially remove bitclk relax
-
- sound/soc/codecs/wm8960.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index df351519a3a6..847ca16b9841 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -608,10 +608,6 @@ static const int bclk_divs[] = {
-  *		- lrclk      = sysclk / dac_divs
-  *		- 10 * bclk  = sysclk / bclk_divs
-  *
-- *	If we cannot find an exact match for (sysclk, lrclk, bclk)
-- *	triplet, we relax the bclk such that bclk is chosen as the
-- *	closest available frequency greater than expected bclk.
-- *
-  * @wm8960: codec private data
-  * @mclk: MCLK used to derive sysclk
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -629,7 +625,7 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
- {
- 	int sysclk, bclk, lrclk;
- 	int i, j, k;
--	int diff, closest = mclk;
-+	int diff;
- 
- 	/* marker for no match */
- 	*bclk_idx = -1;
-@@ -653,12 +649,6 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
- 					*bclk_idx = k;
- 					break;
- 				}
--				if (diff > 0 && closest > diff) {
--					*sysclk_idx = i;
--					*dac_idx = j;
--					*bclk_idx = k;
--					closest = diff;
--				}
- 			}
- 			if (k != ARRAY_SIZE(bclk_divs))
- 				break;
+base-commit: fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
 -- 
-2.27.0
+2.21.0
+
+
 
