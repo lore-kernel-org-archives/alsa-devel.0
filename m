@@ -2,69 +2,59 @@ Return-Path: <SRS0=cpFx=IC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CFA0C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 824EAC433E9
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:31:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B448464EF8
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:28:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B448464EF8
+	by mail.kernel.org (Postfix) with ESMTPS id 9734864F0D
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:31:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9734864F0D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4142A1AAC;
-	Thu,  4 Mar 2021 09:27:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4142A1AAC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1B851AAD;
+	Thu,  4 Mar 2021 09:30:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1B851AAD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614846502;
-	bh=BynDkTr7+aySFyw39/IV0usr2t2JwZJ3o6eTDsiY4I0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vSooiw9vUMiaafvSNZwHS4rEuifGtiQ8XOGxqAyvNEEPIeF40i99cLwCQt9UH5RM7
-	 muOxxQ2NVgtZ/uoNPuAnCqDp6KI98lmrfailxP4rH+8j2BG4SWdT8jZqOg3v1DWOqt
-	 aOLoU4HqMFbw48iJikW7V9c2MMcvqLzkRYfgUVB0=
+	s=default; t=1614846681;
+	bh=i2Q3++JrdPYSZ2mdHPkXyHXFTaHL21FDdRLiMAZxIaU=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nlDnHBxbohitOXDdSCWzucZxvFXW5EhvN0mU0c8ZAsFW9Ogzyl4b+eJKRz14ayreB
+	 Id9oLvqUwncMWHfiGY9oMPOJwBBhqqxkWTUksw6roahAoqzEJnUMkPSl98bNow4/E+
+	 5+sp180977c1zsDJEMqXZtaxkMbYXRcsEIXKJJa0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3163F8025B;
-	Thu,  4 Mar 2021 09:27:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66E52F80227;
+	Thu,  4 Mar 2021 09:30:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 968C7F80269; Thu,  4 Mar 2021 09:27:30 +0100 (CET)
+ id 14413F80269; Thu,  4 Mar 2021 09:30:29 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89F12F800ED
- for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 09:27:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89F12F800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E43DF80227
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 09:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E43DF80227
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 103B9AAC5;
- Thu,  4 Mar 2021 08:27:20 +0000 (UTC)
-Date: Thu, 04 Mar 2021 09:27:19 +0100
-Message-ID: <s5hft1bb9y0.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 96780AF5A
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 08:30:22 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Pearson <markpearson@lenovo.com>
-Subject: Re: [External] Re: [PATCH] ALSA: hda: ignore invalid NHLT table
-In-Reply-To: <55a6f9e6-17ab-6049-d2e2-5dee1941b539@lenovo.com>
-References: <markpearson@lenovo.com>
- <20210302141003.7342-1-markpearson@lenovo.com>
- <420b9b48-0a80-634b-9a98-973c6bdb544c@linux.intel.com>
- <55a6f9e6-17ab-6049-d2e2-5dee1941b539@lenovo.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>,
- Philipp Leskovitz <philipp.leskovitz@secunet.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Fix "cannot get freq eq" errors on Dell
+ AE515 sound bar
+Date: Thu,  4 Mar 2021 09:30:21 +0100
+Message-Id: <20210304083021.2152-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,20 +70,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 02 Mar 2021 16:57:43 +0100,
-Mark Pearson wrote:
-> 
-> Hi Pierre-Louis,
-> 
-> On 02/03/2021 09:46, Pierre-Louis Bossart wrote:
-> > Adding Mark, Takashi, Jaroslav and Cezary in Cc:
-> 
-> Thanks - I wasn't sure who needed to be on this :)
+Dell AE515 sound bar (413c:a506) spews the error messages when the
+driver tries to read the current sample frequency, hence it needs to
+be on the list in snd_usb_get_sample_rate_quirk().
 
-Thanks, applied now.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211551
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Unfortunately the patch conflicted slightly with the recent change by
-Pierre, so I corrected in my side.  Please check it later.
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index d02dac5fcd40..58f1dff79e52 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1523,6 +1523,7 @@ bool snd_usb_get_sample_rate_quirk(struct snd_usb_audio *chip)
+ 	case USB_ID(0x1901, 0x0191): /* GE B850V3 CP2114 audio interface */
+ 	case USB_ID(0x21b4, 0x0081): /* AudioQuest DragonFly */
+ 	case USB_ID(0x2912, 0x30c8): /* Audioengine D1 */
++	case USB_ID(0x413c, 0xa506): /* Dell AE515 sound bar */
+ 		return true;
+ 	}
+ 
+-- 
+2.26.2
 
-
-Takashi
