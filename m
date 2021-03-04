@@ -2,60 +2,61 @@ Return-Path: <SRS0=cpFx=IC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70A41C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 22:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68259C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 22:07:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7BC7164FE3
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 22:05:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7BC7164FE3
+	by mail.kernel.org (Postfix) with ESMTPS id C6A2A64FE4
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 22:07:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6A2A64FE4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE0B317EE;
-	Thu,  4 Mar 2021 23:05:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE0B317EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6A3D1899;
+	Thu,  4 Mar 2021 23:06:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6A3D1899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614895553;
-	bh=NOZWWHxj4h1T6CeNACibGe2qPxxWRSHgqTFWHfVCtMg=;
+	s=default; t=1614895621;
+	bh=3MtMT1lM8kLabdL2d/ZAWyt/ylwayTDvmXJfpjLuV+Y=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JMY43iGTVO4A5nqmP0PhAXL6snYvrGPd755C+3WasZw5DVRRtLq+SrWPB87/xdrFi
-	 9v7feFm9+DV69mKb6rjNzMG2IYLhIgMxAaUQNKoALj1keuERz2xPl51tGz4A7QUAvg
-	 55Kt8M7cU7iIDrYQ3uttd7U7cvV1emS00NdbsYao=
+	b=nAaV6vDxpVA2Wt5iydahvwUMknrjD98W6mv16I9VNQVrehhd022qDIwarFMp3twYJ
+	 EcXk/YK2+q98xdVrF9tMg1UTdSu4Rp6QZmps2E1bxivmHhTtvTLxUhUdwvsRz+XJVV
+	 V72rAZzhHr+oH9fVEqF6VU9gR6LoDvT5OJzzdA9w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9BE9F8025B;
-	Thu,  4 Mar 2021 23:05:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E47FF80227;
+	Thu,  4 Mar 2021 23:06:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B20B2F80269; Thu,  4 Mar 2021 23:05:00 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 2047DF80227
- for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 23:04:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2047DF80227
-Date: 05 Mar 2021 07:04:50 +0900
-X-IronPort-AV: E=Sophos;i="5.81,223,1610377200"; d="scan'208";a="74127213"
+ id 4C400F80273; Thu,  4 Mar 2021 23:06:10 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id E8452F80227
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 23:06:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8452F80227
+Date: 05 Mar 2021 07:06:00 +0900
+X-IronPort-AV: E=Sophos;i="5.81,223,1610377200"; d="scan'208";a="73879983"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 05 Mar 2021 07:04:50 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 05 Mar 2021 07:06:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6615F40104CB;
- Fri,  5 Mar 2021 07:04:50 +0900 (JST)
-Message-ID: <874khqr2wt.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 65628400E8FD;
+ Fri,  5 Mar 2021 07:06:00 +0900 (JST)
+Message-ID: <8735xar2uv.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/8] ASoC: soc-pcm: add soc_cpu/codec_dai_name() macro
-In-Reply-To: <20210302130400.GD4522@sirena.org.uk>
+Subject: Re: [PATCH 4/8] ASoC: soc-pcm: add soc_pcm_care_symmetry()
+In-Reply-To: <20210302131051.GE4522@sirena.org.uk>
 References: <87tupuqqc8.wl-kuninori.morimoto.gx@renesas.com>
- <87r1kyqqb8.wl-kuninori.morimoto.gx@renesas.com>
- <20210302130400.GD4522@sirena.org.uk>
+ <87o8g2qqaw.wl-kuninori.morimoto.gx@renesas.com>
+ <20210302131051.GE4522@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -78,16 +79,25 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Mark
 
-> > +#define soc_cpu_dai_name(rtd) \
-> > +	(((rtd)->num_cpus == 1) ? asoc_rtd_to_cpu((rtd), 0)->name : "multicpu")
-> > +#define soc_codec_dai_name(rtd) \
-> > +	(((rtd)->num_codecs == 1) ? asoc_rtd_to_codec((rtd), 0)->name : "multicodec")
+> > -static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+> > +static void soc_pcm_care_symmetry(struct snd_pcm_substream *substream)
+> >  {
+> >  	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+> >  	struct snd_soc_dai_link *link = rtd->dai_link;
+> > @@ -423,7 +423,8 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+> >  			dai->driver->symmetric_channels ||
+> >  			dai->driver->symmetric_sample_bits;
+> >  
+> > -	return symmetry;
+> > +	if (symmetry)
+> > +		substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
 > 
-> I can't see any reason not to make these static inline functions
-> instead?
+> The idea makes sense but I'm not sure about the name here - perhaps
+> soc_pcm_update_symmetry() might work better?  It's not super clear but
+> does look more natural.
 
-Yes indeed.
-Will update today.
+Thank for your feedback.
+Make sense, will update today
 
 Thank you for your help !!
 
