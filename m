@@ -4,77 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E8CDBC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE91EC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6084864F16
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6084864F16
+	by mail.kernel.org (Postfix) with ESMTPS id 2B5A564EDF
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 01:02:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B5A564EDF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E83C01AF8;
-	Thu,  4 Mar 2021 02:01:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E83C01AF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD63F1AFF;
+	Thu,  4 Mar 2021 02:01:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD63F1AFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614819726;
-	bh=HTFsv6Fv1iYZbTyUPYTDVHFZqM3lA61amO6iQi9gLgU=;
+	s=default; t=1614819751;
+	bh=0vSvXdGmE87HAvoAagW8EnApB1MQYaYgX3xsBx/2nKs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F89ekFllnMqcDtkdjyD5x3VHskDhUmlOpOIXA3ky9NADMPYE4P1QPreFl8/8FE7Ys
-	 BS2Gql+C6Q6t4+p0z9+23VofORnRL7We+6osnx+cPhB9XPjA7/Hflhmj5zuIzXGExx
-	 U3wZRnDiKJQ01FVwGPk6fEqtyhYEa6hE3uo9LdTw=
+	b=nPuCkhKY8FH3MVe9qggeBkKTS3OvjMqHoQpbPf25R/THUDdat+JO5fFYqRYh/dW2u
+	 lfFhL6UzwWYlkSh/JmBMesD7MqyvyMp1anofuzBqC1sDmzwJp+g3iVstI5ZuUVlnkc
+	 hKdhYIPzpcStpEAtTyUxqXpDTQGMTnU+09xYfazU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50F30F8050F;
-	Thu,  4 Mar 2021 01:56:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10AA8F80510;
+	Thu,  4 Mar 2021 01:56:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0280F80510; Thu,  4 Mar 2021 01:56:34 +0100 (CET)
+ id 48FB5F80516; Thu,  4 Mar 2021 01:56:41 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5458FF80506
- for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:56:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5458FF80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95594F80510
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:56:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95594F80510
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RmOiUzLt"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CE3C64E86;
- Thu,  4 Mar 2021 00:56:30 +0000 (UTC)
+ header.b="g9HdPDtR"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A0B64E76;
+ Thu,  4 Mar 2021 00:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614819390;
- bh=HTFsv6Fv1iYZbTyUPYTDVHFZqM3lA61amO6iQi9gLgU=;
+ s=k20201202; t=1614819396;
+ bh=0vSvXdGmE87HAvoAagW8EnApB1MQYaYgX3xsBx/2nKs=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=RmOiUzLtiSBt3o6wiPFTH/7CT6WnBQdjuEL4dQjWNhho1+B5vpNaFuEBU1P6uVTlY
- jGXkSWC3Ei62k9+vSdzEEYKWn4LRUPvAvZZNmAgWHa3ahVuIShNcjKbkWKStqZ//uI
- zbCnkL96OGJdTfNcanMJ8tujdTxYJGDmCVzFHL5GNAE4VjAVhxp+VBgNzU7VnkBC53
- U44g+O0RvJ6s3nEao8PxuCphPWOB1GP8HQyz8wzILRFQ3vCkZuxpaFyjfPCbDklEXx
- qvKYf4snK+6fjxHfF5zd6r7R0BAkXs7xGX0p0Ge4hO99r20Z6SImNUx0UVSKElmqcv
- mIILruaj7Jc0A==
+ b=g9HdPDtRwG7MUHPJIO7+CZWdU7gDbUbt7eIH4NiRc46be4EHnYSUEKdhk/qeHD9YV
+ /VuyVpt4Xbf/r6NkydjrNj23OY+5Mh9MDNs5mF7YEzsULtQ2XaHkrpIqQmPjDppOfP
+ j7z4vydtAXQniO0J46iVDQtFTPMaBozUa/SxuLDKZGF6mtK9x3QVhx/KeCeY/NdbW2
+ Uv4pwwGrCvC+37VUJVTg2CNlv5t+5a+oOsCUBHWB1C0fMwm9ri416zayO98h7loGmY
+ ONuL5C3K7ICu2GVU6E7rdsEALqjnlvRTOYufFEhSgyPwntRypBpILmJoncsVuIVSr6
+ GNCC/CWlN7Jng==
 From: Mark Brown <broonie@kernel.org>
-To: Colin King <colin.king@canonical.com>, linuxppc-dev@lists.ozlabs.org,
- Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
- Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
- Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20210303091835.5024-1-colin.king@canonical.com>
-References: <20210303091835.5024-1-colin.king@canonical.com>
-Subject: Re: [PATCH][next] ASoC: fsl: fsl_easrc: Fix uninitialized variable
- st2_mem_alloc
-Message-Id: <161481924070.9553.9267870549828564094.b4-ty@kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+References: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+Subject: Re: (subset) [PATCH v2 0/7] Add I2S-MCC support for Microchip's
+ SAMA7G5
+Message-Id: <161481924068.9553.13493874640788116726.b4-ty@kernel.org>
 Date: Thu, 04 Mar 2021 00:54:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: alexandre.belloni@bootlin.com, lgirdwood@gmail.com, tiwai@suse.com,
+ nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+ robh+dt@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,9 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 3 Mar 2021 09:18:35 +0000, Colin King wrote:
-> A previous cleanup commit removed the ininitialization of st2_mem_alloc.
-> Fix this by restoring the original behaviour by initializing it to zero.
+On Mon, 1 Mar 2021 19:08:58 +0200, Codrin Ciubotariu wrote:
+> SAMA7G5 includes an updated version of I2S-MCC, found previously on
+> SAM9X60. This controller includes 8 data pins, 4 for playback and 4 for
+> capture. For I2S and LEFT_J formats, these pins can be used to
+> send/receive up to 8 audio channels. For DSP_A, with TDM, any pins pair
+> (DIN/DOUT) from these 4 can be selected to send/receive data. This
+> version also includes 2 FIFOs (send and receive).
+> This patch set starts by moving the driver's bindings to yaml and
+> continues with adding a new compatible for the SAMA7G5 variant, followed
+> by the changes needed for I2S/LEFT_J support, TDM pin pair selection and
+> FIFO support, exclusively for SAMA7G5.
+> 
+> [...]
 
 Applied to
 
@@ -100,8 +108,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: fsl_easrc: Fix uninitialized variable st2_mem_alloc
-      commit: 84e4eb57ed620adc0371579a5662c4924a72a306
+[1/7] dt-bindings: mchp,i2s-mcc: Add SAMA7G5 to binding
+      commit: 4423a2724e3d1d55adfb1d515a9fa0759e95451e
+[2/7] ASoC: mchp-i2s-mcc: Add compatible for SAMA7G5
+      commit: 02d212ce7c72509139ceeee46f631fdf20e4c2fb
+[3/7] ASoC: mchp-i2s-mcc: Add multi-channel support for I2S and LEFT_J formats
+      commit: 89dcd5cc4bee9f87ef597374a8d7dc0c51436fb2
+[4/7] dt-bindings: mchp, i2s-mcc: Add property to specify pin pair for TDM
+      commit: d43f821b8a0162de9e9d392a8f1907c5638f558a
+[5/7] ASoC: mchp-i2s-mcc: Add support to select TDM pins
+      commit: 1d6257bbe6e9fcaf639f313ccd4cebe1f5e46865
+[6/7] ASoC: mchp-i2s-mcc: Add FIFOs support
+      commit: cb43e3692731401d4303c378f530c43bd283716e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
