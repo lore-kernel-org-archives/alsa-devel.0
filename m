@@ -2,74 +2,69 @@ Return-Path: <SRS0=cpFx=IC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78438C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CFA0C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:28:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3F3DE64EA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:11:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3F3DE64EA4
+	by mail.kernel.org (Postfix) with ESMTPS id B448464EF8
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 08:28:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B448464EF8
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C19361AA9;
-	Thu,  4 Mar 2021 09:10:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C19361AA9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4142A1AAC;
+	Thu,  4 Mar 2021 09:27:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4142A1AAC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614845488;
-	bh=t/ZIOLSHjIxFK1lSCBkI/zL+NEgw/z2/BZWowhGI6yg=;
+	s=default; t=1614846502;
+	bh=BynDkTr7+aySFyw39/IV0usr2t2JwZJ3o6eTDsiY4I0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n1wkVxg0gVaOJv5Mzba0x0jiT8EWBgQ1Rn+PmHnZGqUTg4BDUMzUf43LiaQCNhbzz
-	 UIlIlMeP3sGqBWnAxdI5P8qH8BPYgJ75U538Sac4QIc3uVafFONpFR+GtrRoIBe2lW
-	 +wVDIB2Y0OH88GgRQknmFlJRXjSHM8OZwPrn3h7o=
+	b=vSooiw9vUMiaafvSNZwHS4rEuifGtiQ8XOGxqAyvNEEPIeF40i99cLwCQt9UH5RM7
+	 muOxxQ2NVgtZ/uoNPuAnCqDp6KI98lmrfailxP4rH+8j2BG4SWdT8jZqOg3v1DWOqt
+	 aOLoU4HqMFbw48iJikW7V9c2MMcvqLzkRYfgUVB0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E6FBF80227;
-	Thu,  4 Mar 2021 09:10:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3163F8025B;
+	Thu,  4 Mar 2021 09:27:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CF20F80269; Thu,  4 Mar 2021 09:10:36 +0100 (CET)
+ id 968C7F80269; Thu,  4 Mar 2021 09:27:30 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A23DF80227
- for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 09:10:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A23DF80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89F12F800ED
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 09:27:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89F12F800ED
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 9861EAC1F;
- Thu,  4 Mar 2021 08:10:22 +0000 (UTC)
-Date: Thu, 04 Mar 2021 09:10:22 +0100
-Message-ID: <s5hh7lrbaq9.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 103B9AAC5;
+ Thu,  4 Mar 2021 08:27:20 +0000 (UTC)
+Date: Thu, 04 Mar 2021 09:27:19 +0100
+Message-ID: <s5hft1bb9y0.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Disable USB autosuspend properly in
- setup_disable_autosuspend()
-In-Reply-To: <20210304043419.287191-1-kai.heng.feng@canonical.com>
-References: <20210304043419.287191-1-kai.heng.feng@canonical.com>
+To: Mark Pearson <markpearson@lenovo.com>
+Subject: Re: [External] Re: [PATCH] ALSA: hda: ignore invalid NHLT table
+In-Reply-To: <55a6f9e6-17ab-6049-d2e2-5dee1941b539@lenovo.com>
+References: <markpearson@lenovo.com>
+ <20210302141003.7342-1-markpearson@lenovo.com>
+ <420b9b48-0a80-634b-9a98-973c6bdb544c@linux.intel.com>
+ <55a6f9e6-17ab-6049-d2e2-5dee1941b539@lenovo.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Dmitry Panchenko <dmitry@d-systems.ee>,
- Dylan Robinson <dylan_robinson@motu.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Chris Wulff <crwulff@gmail.com>, tiwai@suse.com,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Joakim Tjernlund <joakim.tjernlund@infinera.com>,
- Alexander Tsoy <alexander@tsoy.me>, Mark Brown <broonie@kernel.org>,
- Joe Perches <joe@perches.com>, Olivia Mackintosh <livvy@base.nu>,
- open list <linux-kernel@vger.kernel.org>
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>,
+ Philipp Leskovitz <philipp.leskovitz@secunet.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,41 +80,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 04 Mar 2021 05:34:16 +0100,
-Kai-Heng Feng wrote:
+On Tue, 02 Mar 2021 16:57:43 +0100,
+Mark Pearson wrote:
 > 
-> Rear audio on Lenovo ThinkStation P620 stops working after commit
-> 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo
-> ThinkStation P620"):
-> [    6.013526] usbcore: registered new interface driver snd-usb-audio
-> [    6.023064] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-> [    6.023083] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-> [    6.023090] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-> [    6.023098] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-> [    6.023103] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-> [    6.023110] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-> [    6.045846] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-> [    6.045866] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-> [    6.045877] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-> [    6.045886] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
-> [    6.045894] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x0, type = 1
-> [    6.045908] usb 3-6: cannot get ctl value: req = 0x81, wValue = 0x202, wIndex = 0x0, type = 4
+> Hi Pierre-Louis,
 > 
-> I overlooked the issue because when I was working on the said commit,
-> only the front audio is tested. Apology for that.
+> On 02/03/2021 09:46, Pierre-Louis Bossart wrote:
+> > Adding Mark, Takashi, Jaroslav and Cezary in Cc:
 > 
-> Changing supports_autosuspend in driver is too late for disabling
-> autosuspend, because it was already used by USB probe routine, so it can
-> break the balance on the following code that depends on
-> supports_autosuspend.
-> 
-> Fix it by using usb_disable_autosuspend() helper, and balance the
-> suspend count in disconnect callback.
-> 
-> Fixes: 1965c4364bdd ("ALSA: usb-audio: Disable autosuspend for Lenovo ThinkStation P620")
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Thanks - I wasn't sure who needed to be on this :)
 
-Thanks, applied.
+Thanks, applied now.
+
+Unfortunately the patch conflicted slightly with the recent change by
+Pierre, so I corrected in my side.  Please check it later.
 
 
 Takashi
