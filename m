@@ -2,73 +2,75 @@ Return-Path: <SRS0=cpFx=IC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B2E2C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61BBDC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:57:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D690264E76
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:57:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D690264E76
+	by mail.kernel.org (Postfix) with ESMTPS id BA44264EE4
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:57:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA44264EE4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 311501AA7;
-	Thu,  4 Mar 2021 01:56:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 311501AA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4617E194A;
+	Thu,  4 Mar 2021 01:57:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4617E194A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614819468;
-	bh=0pu/M8sUDKzcvVYUfvCVY2AUjgKvCpEmJxV1G8eflJ4=;
+	s=default; t=1614819477;
+	bh=Gi6vhMe8s4084Sx6ogEUyxF4ntiCV9nXuhbQndE8JA0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dsKkvr3zzXWMR+y0f3WgUgVCS4snY+2gGgtNrEE09LOgIjmIgzgNCzkPrfqErlncs
-	 qisQKNavcFf1OwuaWv5oBz1chQf5tkAJ7YXxS9xXgowssF2Ddy3mJhxg1+aNBZ6tD0
-	 DC/XAL6DDvikzRN88bqbmS3VEZg/RxpFGwawaSFA=
+	b=lKSaR6lekeQpFMZkKQ3TRWdgB0YmlcIWqZPoPaJIp4P8TQTSPK6/9wZv4vo5psTXL
+	 dQRjUuFQbdJaqBR3AtvSyl1MX/AZ56thB8HRgBG5a9VY7caoqUPHTGFcOb2ooqg9lb
+	 tk+UaITitubppLXvI/p+Z7KiY/gNMhTIuff7thco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77672F80430;
-	Thu,  4 Mar 2021 01:55:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68349F8049C;
+	Thu,  4 Mar 2021 01:55:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE9C6F80431; Thu,  4 Mar 2021 01:55:29 +0100 (CET)
+ id 34C04F804A9; Thu,  4 Mar 2021 01:55:37 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83A3EF8042F
- for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:55:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83A3EF8042F
+ by alsa1.perex.cz (Postfix) with ESMTPS id D97A8F80475
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:55:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D97A8F80475
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PgrJMl/P"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76DD464E99;
- Thu,  4 Mar 2021 00:55:25 +0000 (UTC)
+ header.b="C6vnEpZ1"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C5A64E7C;
+ Thu,  4 Mar 2021 00:55:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614819326;
- bh=0pu/M8sUDKzcvVYUfvCVY2AUjgKvCpEmJxV1G8eflJ4=;
+ s=k20201202; t=1614819332;
+ bh=Gi6vhMe8s4084Sx6ogEUyxF4ntiCV9nXuhbQndE8JA0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=PgrJMl/PFU+4sP65ggCykCMa++XriaKq6zdZJEYiLnoSTxvpZaPewVRRUNLXQpBK6
- tR5YSr9d266q2Bqbccgb5b4GdJ58AxRSGz3kWiK+25MiuSkbvqKARjmjNw4qJhXYCS
- AtkttofK+JZQUgeQIR11UFwMHBM50ktBw2uPQjhYsMjsCpvry1YdCnTLRwPg5hCJg+
- bB+fC0a9IRJ0UuJRejgdBBPblrPXMXxIdbyc8MuVSLVL0U5m31zzf8c6zI/NLxWLWB
- 8RTj3FT65bMTR2CrwdHuMYw9mBk+alcKzZcPc+DIJXoqy+UsxyR/+MzUx0lnTQFYV6
- jYmo3iejLeu6A==
+ b=C6vnEpZ19JwRCAzWip52gIqd1mm7MtMDD+mHEeA+XWwyfO/rgR3+pxVMc2mi1O4cJ
+ 0KWSvOfgmSr8GaD5rfGhhP/AKD531krvaPdXPmWCtJBjukcO9XEPwKcbW9V0KYvsfI
+ 0YrOzex6MC0AYk0x0gABQLVnvZbWu8VlX5dFkU2gDhQRrbz8Rp5nBrhs+K1vh32qf1
+ FvNXOJHL3OX7n4h9n64b747jtk90fEN0WiGm2U+m5WCSB/m2ojFxqgROlt4eWNV+tg
+ 7HYl73Zw8nij+UPtlnyBIl5D9nZcJAp6k20I9gcW9PEOLOoYr5t1LyjzzyOOJqtEHd
+ YWQvZFGX38JVg==
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-In-Reply-To: <20210301174649.117069-1-pierre-louis.bossart@linux.intel.com>
-References: <20210301174649.117069-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: atom: fix kernel-doc
-Message-Id: <161481924069.9553.17627037948074432578.b4-ty@kernel.org>
+In-Reply-To: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
+References: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/24] ASoC: realtek: fix cppcheck warnings
+Message-Id: <161481924070.9553.15132742876390019419.b4-ty@kernel.org>
 Date: Thu, 04 Mar 2021 00:54:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, vkoul@kernel.org
+Cc: Shuming Fan <shumingf@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de,
+ Jack Yu <jack.yu@realtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +86,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 1 Mar 2021 11:46:49 -0600, Pierre-Louis Bossart wrote:
-> v5.12-rc1 flags new warnings with make W=1, fix missing or broken
-> function descriptors.
+On Tue, 2 Mar 2021 15:25:03 -0600, Pierre-Louis Bossart wrote:
+> Lots of trivial issues that make cppcheck too verbose. There shouldn't
+> be any functionality change with this patchset.
 > 
-> sound/soc/intel/atom/sst/sst_loader.c:85: warning: expecting prototype
-> for sst_start_merrifield(). Prototype was for sst_start_mrfld()
-> instead
+> Pierre-Louis Bossart (24):
+>   ASoC: rt1011: use logical OR
+>   ASoC: rt1011: remove redundant test
+>   ASoC: rt1011: clarify expression
+>   ASoC: rt1015: clarify expression
+>   ASoC: rt1016: clarify expression
+>   ASoC: rt1305: clarify expression
+>   ASoC: rt1308: clarify expression
+>   ASoC: rt5640: clarify expression
+>   ASoC: rt5645: use logical OR
+>   ASoC: rt5645: clarify expression
+>   ASoC: rt5651: clarify expression
+>   ASoC: rt5651: remove useless assignment
+>   ASoC: rt5659: clarify expression
+>   ASoC: rt5660: clarify expression
+>   ASoC: rt5663: clarify expression
+>   ASoC: rt5665: clarify expression
+>   ASoC: rt5668: clarify expression
+>   ASoC: rt5668: remove useless assignments
+>   ASoC: rt5670: clarify expression
+>   ASoC: rt5677: clarify expression
+>   ASoC: rt5677: remove useless assignment
+>   ASoC: rt5682: clarify expression
+>   ASoC: rt5682: remove useless assignments
+>   ASoC: rt5682: remove useless initialization
 > 
 > [...]
 
@@ -100,8 +124,54 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: atom: fix kernel-doc
-      commit: 2acbcd2aae5788de5b3c98880688086ef23976bd
+[01/24] ASoC: rt1011: use logical OR
+        commit: 5acc964734db7ec5b2d8d1dd22cee32594a551f3
+[02/24] ASoC: rt1011: remove redundant test
+        commit: c573fca0fac3f5eca28a0780ab5ecbb1deacb386
+[03/24] ASoC: rt1011: clarify expression
+        commit: 068bde16c9d1fdf2ae2fd62ce3fba536eaea623d
+[04/24] ASoC: rt1015: clarify expression
+        commit: 2f76b7f704f2155a2da2a8d0f7d5253e12c6fdf5
+[05/24] ASoC: rt1016: clarify expression
+        commit: 175a02a87b5a938bb664ceae33121bfeba2b45c1
+[06/24] ASoC: rt1305: clarify expression
+        commit: 25d4b3c27916a0d723e2cdc1550f239869eefdf4
+[07/24] ASoC: rt1308: clarify expression
+        commit: 2e0c5a4fdb83bb8d816edb6c12948e95f13cb741
+[08/24] ASoC: rt5640: clarify expression
+        commit: 88704a9c9b6d7ee7ec3018fd248130ce46acfc38
+[09/24] ASoC: rt5645: use logical OR
+        commit: 8fb4c29534f45c2bc34881960453ff133bcedb36
+[10/24] ASoC: rt5645: clarify expression
+        commit: 1a96045422465d1edb75bc80292294d73e29fa4b
+[11/24] ASoC: rt5651: clarify expression
+        commit: 5906d0c64ddc090b7fa7f26b72ca133b803fb1e4
+[12/24] ASoC: rt5651: remove useless assignment
+        commit: 0b6fe4729dfb39920fefac41d752b48914ee901e
+[13/24] ASoC: rt5659: clarify expression
+        commit: 54ae982a9fd4dc2d18cdc45201b92b02a08fcc27
+[14/24] ASoC: rt5660: clarify expression
+        commit: 4b5fdec4f702ce626025f7820b618c5e6915141a
+[15/24] ASoC: rt5663: clarify expression
+        commit: 7fe6b7ffe542055107dcc5f3d70dd5877ce86ae0
+[16/24] ASoC: rt5665: clarify expression
+        commit: ef138bbc4eb001898437e4c4f93d5b6076c63fba
+[17/24] ASoC: rt5668: clarify expression
+        commit: c7c2a964c73e3e4b571da7b8e185fbf9e054bc3d
+[18/24] ASoC: rt5668: remove useless assignments
+        commit: 9fe9e3733061d9e1037048e7a73d35860506c447
+[19/24] ASoC: rt5670: clarify expression
+        commit: 78d61c46ac12ce112682b9848bb50b7e0105962a
+[20/24] ASoC: rt5677: clarify expression
+        commit: 71205f24bf7906a104c118d339e91d3bc3d49b89
+[21/24] ASoC: rt5677: remove useless assignment
+        commit: aeaf814964282da53696c1ece267f9d27aff025a
+[22/24] ASoC: rt5682: clarify expression
+        commit: 3398dfd4984a7d164d913124976f85cdb197de90
+[23/24] ASoC: rt5682: remove useless assignments
+        commit: df665ec288c78884ce8f1dbe5e90805c919e4cdf
+[24/24] ASoC: rt5682: remove useless initialization
+        commit: 175fb03e241919cd1bad3d599bf306ae8eb66f23
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
