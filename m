@@ -1,82 +1,74 @@
-Return-Path: <SRS0=LSvA=IB=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=cpFx=IC=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57164C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 22:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B2C6C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:56:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B872464E67
-	for <alsa-devel@archiver.kernel.org>; Wed,  3 Mar 2021 22:01:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B872464E67
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 04B8964EDB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:56:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 04B8964EDB
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3968B1A9C;
-	Wed,  3 Mar 2021 23:00:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3968B1A9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 405741947;
+	Thu,  4 Mar 2021 01:55:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 405741947
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614808867;
-	bh=VJ7q0MZZUZeWZmwbfCm08F1YOvaS+DKjKMxjfHuAMQM=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1614819368;
+	bh=DnHVHEm1lKEaBb2HEDO79HbcE+nNYRNZRIk3ew/UrtU=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g0b1EhCgNLs8Ksxx+cB7/32D9Z7iC2d7udssviLiU2O5xvewV8QoRlbGUQrZJPzgj
-	 +UyY2RAPrKSRlr/lnyakueM/iJpS0RCVZp6QuoEwtBCUUxE6UL79MadEiGw7rVQkM3
-	 9an38tObJ8CIMvYKkwIaYyifHnZUIGL8rtKIXdec=
+	b=vEx+SAHL6wVrm2nx0JhRkYCgi0XpmS+ZdvpTA1XFSjfTjDrMmFI7n7iONPRMyH6lm
+	 OGAynsIu/fNuDbnXazb6oG4mUfK0zzg2HuS1zjy70nnlcl/Pmd4o7QSkLWy4CYhjYY
+	 KLfsBQi0Oj8GjZQs+5S98mCXWPWXUh0Pf1YQoREk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C760CF80275;
-	Wed,  3 Mar 2021 22:59:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FCCEF80257;
+	Thu,  4 Mar 2021 01:55:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B95F6F8027D; Wed,  3 Mar 2021 22:59:26 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 38E82F800B2; Thu,  4 Mar 2021 01:55:15 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24F40F8012D
- for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2021 22:59:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24F40F8012D
-IronPort-SDR: T8jI3lMj9stsv02B0ysEjIfu4q9d9hNYhNdcZj68S9C2VXJMQtWHhy8J+8tWW5Yy0Ft5bGUSX1
- JC6TIBoOnhww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="174405702"
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; d="scan'208";a="174405702"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Mar 2021 13:59:16 -0800
-IronPort-SDR: 6dZauLo0rkIiwJ4EHv9A3wROd4/CtGYrMteQot/EYZlf/lmoBAzjGek5ybEj9M1pnTsQqx/R1z
- pNW2c6n6IvoA==
-X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; d="scan'208";a="586487028"
-Received: from srcook1-mobl1.amr.corp.intel.com (HELO [10.209.143.11])
- ([10.209.143.11])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Mar 2021 13:59:15 -0800
-Subject: Re: [PATCH 2/3] soundwire: qcom: add auto enumeration support
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
- <20210226170250.9067-3-srinivas.kandagatla@linaro.org>
- <0c551b23-7ed4-59d7-72c2-284bdf8584f1@linux.intel.com>
- <4721dd27-c8ce-f988-3c10-794841390656@linaro.org>
- <01e5ea33-1813-069a-1674-042141947323@linux.intel.com>
- <601b585e-c3e3-4006-b078-d54c3fd36438@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c5fe182d-1769-73ed-0268-5353fd030521@linux.intel.com>
-Date: Wed, 3 Mar 2021 10:35:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96F35F800B2
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:55:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96F35F800B2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="C6eErzMj"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 768CE64EA4;
+ Thu,  4 Mar 2021 00:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1614819308;
+ bh=DnHVHEm1lKEaBb2HEDO79HbcE+nNYRNZRIk3ew/UrtU=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=C6eErzMjRsIXoNnol50IAYY4M1kYqqEsc6jlsRzFo+M/S3ksBJ7QkU3BxsvLHvuIi
+ POm5ce8W6Nd1gp2SPVr2RbtSqSRcjzg0V2pemcspYDsQHm6rTp6yGBt7urhgKfylb6
+ 6ep684MTr3+rq94psup8LJ16BqyJ93UDTKFgqLSSYRNVL0oAO9tgqSW7Dv2sgSN4x3
+ 5PSt6waCuyvA0sRRAhJlqnm1WtP4uyK90wgKXKfRrsW6Q2yohaQBEEV6GCd4NUrOr9
+ NSsehCXwNqPEsHdmKhtgJNe5WW/JsqO/du2ssPHIZ9BR1ZQr1G2nuNJ0rXhK0Cz/DX
+ HUuQ0w29DRwqg==
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20210302205926.49063-1-pierre-louis.bossart@linux.intel.com>
+References: <20210302205926.49063-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/9] ASoC: remove more make W=1 warnings
+Message-Id: <161481924070.9553.15206998571179785512.b4-ty@kernel.org>
+Date: Thu, 04 Mar 2021 00:54:00 +0000
 MIME-Version: 1.0
-In-Reply-To: <601b585e-c3e3-4006-b078-d54c3fd36438@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,74 +84,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 3/3/21 3:38 AM, Srinivas Kandagatla wrote:
+On Tue, 2 Mar 2021 14:59:17 -0600, Pierre-Louis Bossart wrote:
+> These warnings get in the way of automation/CI, let's remove them.
 > 
+> Pierre-Louis Bossart (9):
+>   ASoC: cs4270: fix kernel-doc
+>   ASoC: jz4760: fix set but not used warning
+>   ASoC: rt5631: fix kernel-doc warning
+>   ASoC: sigmadsp-regmap: fix kernel-doc warning
+>   ASoC: amd: renoir: remove invalid kernel-doc comment
+>   ASoC: fsl: fsl_ssi: fix kernel-doc warning
+>   ASoC: fsl: fsl_easrc: fix kernel-doc warning
+>   ASoC: Intel: bytcr_wm5102: remove unused static variable
+>   ASoC: qcom: q6dsp: fix kernel-doc warning
 > 
-> On 02/03/2021 14:34, Pierre-Louis Bossart wrote:
->>
->>
->>>>> +        if (!val1 && !val2)
->>>>> +            break;
->>>>> +
->>>>> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
->>>>> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
->>>>> +            ((u64)buf1[0] << 40);
->>>>> +
->>>>> +        sdw_extract_slave_id(bus, addr, &id);
->>>>> +        /* Now compare with entries */
->>>>> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
->>>>> +            if (sdw_compare_devid(slave, id) == 0) {
->>>>> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
->>>>> +                if (status == SDW_SLAVE_ATTACHED) {
->>>>> +                    slave->dev_num = i;
->>>>> +                    mutex_lock(&bus->bus_lock);
->>>>> +                    set_bit(i, bus->assigned);
->>>>> +                    mutex_unlock(&bus->bus_lock);
->>>>> +
->>>>> +                }
->>>>
->>>> And that part is strange as well. The bus->assigned bit should be 
->>>> set even if the Slave is not in the list provided by platform 
->>>> firmware. It's really tracking the state of the hardware, and it 
->>>> should not be influenced by what software knows to manage.
->>>
->>> Am not 100% sure If I understand the concern here, but In normal (non 
->>> auto enum) cases this bit is set by the bus code while its doing 
->>> enumeration to assign a dev number from the assigned bitmap!
->>>
->>> However in this case where auto enumeration happens it makes sense to 
->>> set this here with matching dev number!
->>>
->>> AFAIU from code, each bit in this bitmap corresponds to slave dev 
->>> number!
->>
->> Yes, but the point was "why do you compare with information coming 
->> from platform firmware"? if the hardware reports the presence of 
->> devices on 
-> 
-> This is the logic that hardware IP document suggests to use to get get 
-> the correct the device number associated with the slave!
-> 
-> 
->> the link, why not use the information as is?
->>
->> You recently added code that helps us deal with devices that are not 
->> listed in DT or ACPI tables, so why would we filter in this specific 
->> loop?
+> [...]
 
-I don't think my point was understood, so let me try to explain it 
-differently.
+Applied to
 
-it's my understanding that the hardware reads the DevID registers and 
-writes a Device Number - so that the entire enumeration sequence started 
-by reading DevID0 and finished by a successful write to SCP_DevNum is 
-handled in hardware.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-The question is: what happens if that device is NOT described in the 
-Device Tree data? The loop over bus->slaves will not find this device by 
-comparing with known devID values, so the set_bit(i, bus->assigned) will 
-not happen.
+Thanks!
 
+[1/9] ASoC: cs4270: fix kernel-doc
+      commit: 8133968501b6d839a3621d553c212b9f3cc1b6ca
+[2/9] ASoC: jz4760: fix set but not used warning
+      commit: af54170f0c1ba84989e0975b6f67e758b472d00c
+[3/9] ASoC: rt5631: fix kernel-doc warning
+      commit: 952b3b9f90a2004b14a90d1fe303600dc8c6a98c
+[4/9] ASoC: sigmadsp-regmap: fix kernel-doc warning
+      commit: de233813778ed0eb8fc8ce03624bcffb29e04564
+[5/9] ASoC: amd: renoir: remove invalid kernel-doc comment
+      commit: 101d1e201fa1d8fd96f7da7a48288c95e2bae6d7
+[6/9] ASoC: fsl: fsl_ssi: fix kernel-doc warning
+      commit: 0c6fbbe5ffd1ff233a84e6e8fbc95f4e6deb6b24
+[7/9] ASoC: fsl: fsl_easrc: fix kernel-doc warning
+      commit: a45c305bbee30506d3bd068b40f6eb8699a88e54
+[8/9] ASoC: Intel: bytcr_wm5102: remove unused static variable
+      commit: ff321d72e7f31e96f92b36f02883fc0a27eb0a9f
+[9/9] ASoC: qcom: q6dsp: fix kernel-doc warning
+      commit: 098acd30d38bd8f5e3aa2544a4bc72942bf8b27e
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
