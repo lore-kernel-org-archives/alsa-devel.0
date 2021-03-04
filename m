@@ -6,71 +6,70 @@ X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
 	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61BBDC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:57:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8245CC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:58:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BA44264EE4
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:57:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA44264EE4
+	by mail.kernel.org (Postfix) with ESMTPS id EC27864EBD
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Mar 2021 00:58:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC27864EBD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4617E194A;
-	Thu,  4 Mar 2021 01:57:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4617E194A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87C1E1A98;
+	Thu,  4 Mar 2021 01:57:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87C1E1A98
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614819477;
-	bh=Gi6vhMe8s4084Sx6ogEUyxF4ntiCV9nXuhbQndE8JA0=;
+	s=default; t=1614819509;
+	bh=L0OP+7WE67QJyKe867n6tBB39PeMXXr6mqmjqW7ik3I=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lKSaR6lekeQpFMZkKQ3TRWdgB0YmlcIWqZPoPaJIp4P8TQTSPK6/9wZv4vo5psTXL
-	 dQRjUuFQbdJaqBR3AtvSyl1MX/AZ56thB8HRgBG5a9VY7caoqUPHTGFcOb2ooqg9lb
-	 tk+UaITitubppLXvI/p+Z7KiY/gNMhTIuff7thco=
+	b=NJ2dzaxgQiXcr9uiW6GPiHtaFZiGWp8yXa4g0NkQIVNHTMAqEVqATa7QbFLq8AT6H
+	 EAeGud59Td+9UCRpz4tv8x0F4g1GvFCYnJxyiFet8eR2/fsolMjBKSIyIG8xG/A/Kz
+	 jnpoKSCOoWSwBcOqFEYub6LFyPDBBmdnT3V9pGs4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68349F8049C;
-	Thu,  4 Mar 2021 01:55:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04226F804AC;
+	Thu,  4 Mar 2021 01:55:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34C04F804A9; Thu,  4 Mar 2021 01:55:37 +0100 (CET)
+ id 13BF8F804AD; Thu,  4 Mar 2021 01:55:42 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D97A8F80475
- for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:55:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D97A8F80475
+ by alsa1.perex.cz (Postfix) with ESMTPS id 735C4F804A9
+ for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2021 01:55:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 735C4F804A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="C6vnEpZ1"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C5A64E7C;
- Thu,  4 Mar 2021 00:55:31 +0000 (UTC)
+ header.b="nRXBEoqe"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1170364EA4;
+ Thu,  4 Mar 2021 00:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1614819332;
- bh=Gi6vhMe8s4084Sx6ogEUyxF4ntiCV9nXuhbQndE8JA0=;
+ s=k20201202; t=1614819337;
+ bh=L0OP+7WE67QJyKe867n6tBB39PeMXXr6mqmjqW7ik3I=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=C6vnEpZ19JwRCAzWip52gIqd1mm7MtMDD+mHEeA+XWwyfO/rgR3+pxVMc2mi1O4cJ
- 0KWSvOfgmSr8GaD5rfGhhP/AKD531krvaPdXPmWCtJBjukcO9XEPwKcbW9V0KYvsfI
- 0YrOzex6MC0AYk0x0gABQLVnvZbWu8VlX5dFkU2gDhQRrbz8Rp5nBrhs+K1vh32qf1
- FvNXOJHL3OX7n4h9n64b747jtk90fEN0WiGm2U+m5WCSB/m2ojFxqgROlt4eWNV+tg
- 7HYl73Zw8nij+UPtlnyBIl5D9nZcJAp6k20I9gcW9PEOLOoYr5t1LyjzzyOOJqtEHd
- YWQvZFGX38JVg==
+ b=nRXBEoqeFGZGQKz2Qvzza5DTGlhVW1KUlBrsXeeRSCZ0TTABYVu+ttVGatWYCt9Oq
+ 4Z4VIDyLBP9w8kKo1pGz2qKPZ6l9zFAbG4BbOW7HuEp0INFz3hPiY93Z4qKokDcSpY
+ 2CXAQACZimFjdk5rnEyAG5uOzwLao5LfVoXZJJWRObUAIx+6HeiLoH8xWYrUZyXKd+
+ BUneCFg6fkLE0FsnqoTw6uIkrhnCwUs0vpPaGlb46aOaOM/cqmm7aJzzzR7z7yCYyS
+ +IxZucAfYXe9thHzMtnEzuBFeXt+bHiJO8b1LCpCFDUURd7WwBjHXUXFz4DxUpagHD
+ lcaFqkPXv2ETA==
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-In-Reply-To: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
-References: <20210302212527.55158-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/24] ASoC: realtek: fix cppcheck warnings
-Message-Id: <161481924070.9553.15132742876390019419.b4-ty@kernel.org>
+In-Reply-To: <20210301235637.1177525-1-pierre-louis.bossart@linux.intel.com>
+References: <20210301235637.1177525-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: Intel: soc-acpi: remove unused TigerLake
+ configurations
+Message-Id: <161481924069.9553.424705069305614938.b4-ty@kernel.org>
 Date: Thu, 04 Mar 2021 00:54:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Shuming Fan <shumingf@realtek.com>, Oder Chiou <oder_chiou@realtek.com>,
- Bard liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de,
- Jack Yu <jack.yu@realtek.com>
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,35 +85,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 2 Mar 2021 15:25:03 -0600, Pierre-Louis Bossart wrote:
-> Lots of trivial issues that make cppcheck too verbose. There shouldn't
-> be any functionality change with this patchset.
+On Mon, 1 Mar 2021 17:56:35 -0600, Pierre-Louis Bossart wrote:
+> Remove two machine descriptors which were added for development on
+> Intel RVPs but are no longer used or productized. This will not have
+> any impact on end-users. The corresponding cleanup was applied in the
+> SOF topologies.
 > 
-> Pierre-Louis Bossart (24):
->   ASoC: rt1011: use logical OR
->   ASoC: rt1011: remove redundant test
->   ASoC: rt1011: clarify expression
->   ASoC: rt1015: clarify expression
->   ASoC: rt1016: clarify expression
->   ASoC: rt1305: clarify expression
->   ASoC: rt1308: clarify expression
->   ASoC: rt5640: clarify expression
->   ASoC: rt5645: use logical OR
->   ASoC: rt5645: clarify expression
->   ASoC: rt5651: clarify expression
->   ASoC: rt5651: remove useless assignment
->   ASoC: rt5659: clarify expression
->   ASoC: rt5660: clarify expression
->   ASoC: rt5663: clarify expression
->   ASoC: rt5665: clarify expression
->   ASoC: rt5668: clarify expression
->   ASoC: rt5668: remove useless assignments
->   ASoC: rt5670: clarify expression
->   ASoC: rt5677: clarify expression
->   ASoC: rt5677: remove useless assignment
->   ASoC: rt5682: clarify expression
->   ASoC: rt5682: remove useless assignments
->   ASoC: rt5682: remove useless initialization
+> Pierre-Louis Bossart (2):
+>   ASoC: Intel: soc-acpi: remove unused TGL table with rt5682 only
+>   ASoC: Intel: soc-acpi: remove TGL RVP mixed SoundWire/TDM config
 > 
 > [...]
 
@@ -124,54 +103,10 @@ Applied to
 
 Thanks!
 
-[01/24] ASoC: rt1011: use logical OR
-        commit: 5acc964734db7ec5b2d8d1dd22cee32594a551f3
-[02/24] ASoC: rt1011: remove redundant test
-        commit: c573fca0fac3f5eca28a0780ab5ecbb1deacb386
-[03/24] ASoC: rt1011: clarify expression
-        commit: 068bde16c9d1fdf2ae2fd62ce3fba536eaea623d
-[04/24] ASoC: rt1015: clarify expression
-        commit: 2f76b7f704f2155a2da2a8d0f7d5253e12c6fdf5
-[05/24] ASoC: rt1016: clarify expression
-        commit: 175a02a87b5a938bb664ceae33121bfeba2b45c1
-[06/24] ASoC: rt1305: clarify expression
-        commit: 25d4b3c27916a0d723e2cdc1550f239869eefdf4
-[07/24] ASoC: rt1308: clarify expression
-        commit: 2e0c5a4fdb83bb8d816edb6c12948e95f13cb741
-[08/24] ASoC: rt5640: clarify expression
-        commit: 88704a9c9b6d7ee7ec3018fd248130ce46acfc38
-[09/24] ASoC: rt5645: use logical OR
-        commit: 8fb4c29534f45c2bc34881960453ff133bcedb36
-[10/24] ASoC: rt5645: clarify expression
-        commit: 1a96045422465d1edb75bc80292294d73e29fa4b
-[11/24] ASoC: rt5651: clarify expression
-        commit: 5906d0c64ddc090b7fa7f26b72ca133b803fb1e4
-[12/24] ASoC: rt5651: remove useless assignment
-        commit: 0b6fe4729dfb39920fefac41d752b48914ee901e
-[13/24] ASoC: rt5659: clarify expression
-        commit: 54ae982a9fd4dc2d18cdc45201b92b02a08fcc27
-[14/24] ASoC: rt5660: clarify expression
-        commit: 4b5fdec4f702ce626025f7820b618c5e6915141a
-[15/24] ASoC: rt5663: clarify expression
-        commit: 7fe6b7ffe542055107dcc5f3d70dd5877ce86ae0
-[16/24] ASoC: rt5665: clarify expression
-        commit: ef138bbc4eb001898437e4c4f93d5b6076c63fba
-[17/24] ASoC: rt5668: clarify expression
-        commit: c7c2a964c73e3e4b571da7b8e185fbf9e054bc3d
-[18/24] ASoC: rt5668: remove useless assignments
-        commit: 9fe9e3733061d9e1037048e7a73d35860506c447
-[19/24] ASoC: rt5670: clarify expression
-        commit: 78d61c46ac12ce112682b9848bb50b7e0105962a
-[20/24] ASoC: rt5677: clarify expression
-        commit: 71205f24bf7906a104c118d339e91d3bc3d49b89
-[21/24] ASoC: rt5677: remove useless assignment
-        commit: aeaf814964282da53696c1ece267f9d27aff025a
-[22/24] ASoC: rt5682: clarify expression
-        commit: 3398dfd4984a7d164d913124976f85cdb197de90
-[23/24] ASoC: rt5682: remove useless assignments
-        commit: df665ec288c78884ce8f1dbe5e90805c919e4cdf
-[24/24] ASoC: rt5682: remove useless initialization
-        commit: 175fb03e241919cd1bad3d599bf306ae8eb66f23
+[1/2] ASoC: Intel: soc-acpi: remove unused TGL table with rt5682 only
+      commit: 94e534632b1ba6066f7af976d2e3059050706c3d
+[2/2] ASoC: Intel: soc-acpi: remove TGL RVP mixed SoundWire/TDM config
+      commit: bec93283948a9edba21ca6689a28aec2b7df7ecb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
