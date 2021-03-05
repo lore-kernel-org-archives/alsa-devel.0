@@ -2,67 +2,96 @@ Return-Path: <SRS0=OWbI=IH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EB0AC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 06:44:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40BFEC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 07:02:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ECB0C65287
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 06:44:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ECB0C65287
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 89C2865299
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 07:02:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89C2865299
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46F071743;
-	Tue,  9 Mar 2021 07:43:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46F071743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 327DD17CA;
+	Tue,  9 Mar 2021 08:02:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 327DD17CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615272271;
-	bh=0vXmuMH50zTSbSTw9S9Bv0RgfiFHFbQ7yvV1Ny3BWD0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615273373;
+	bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ichdk7b9WylnixPjxEvVzUWNZowww2BPMAgVDB1FXitnXNF1cnT3FdJ3zJtYvWNAN
-	 QErAogLc+A+3FbPuPmIi2yR7eVfKUgDAo5o9I5dOYBusoIjUu54l2C61ZWDSAeT0ib
-	 FnjhEpAseCJ8Y+LuBipUUiQVg8UUfPbtiM6THRBI=
+	b=VHeA4ayIK5jwxtZwTR9Cdl1rFH0Jj8UjPqEo1LgOpKpJVAvDOasGcqY2jXChWR7PG
+	 6+M+CkfScRq0K5OBu60pxCfm+ppWBwiY2S9bs6vzl4Vl/IK7/hd3rqLTRwzPF6GzWW
+	 3R6eo1pbyfO/gooLxCkY/VP2cqcEM7kLAY8IZ9eE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34CB8F80166;
-	Tue,  9 Mar 2021 07:43:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3F92F8019B;
+	Tue,  9 Mar 2021 08:02:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6BBFF80227; Tue,  9 Mar 2021 07:43:38 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 94C98F8025E; Fri,  5 Mar 2021 13:43:30 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84046F80166
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 07:43:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84046F80166
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3438AAB8C;
- Tue,  9 Mar 2021 06:43:34 +0000 (UTC)
-Date: Tue, 09 Mar 2021 07:43:34 +0100
-Message-ID: <s5hh7lk3jzd.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH next 2/2] sound: usb: fix use after free in
- usb_audio_disconnect
-In-Reply-To: <16da19126ff461e5e64a9aec648cce28fb8ed73e.1615242183.git.paskripkin@gmail.com>
-References: <cover.1615242183.git.paskripkin@gmail.com>
- <16da19126ff461e5e64a9aec648cce28fb8ed73e.1615242183.git.paskripkin@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- kai.heng.feng@canonical.com, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90922F800F3
+ for <alsa-devel@alsa-project.org>; Fri,  5 Mar 2021 13:43:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90922F800F3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="bHjAZhuf"
+Received: by mail-wr1-x434.google.com with SMTP id j2so1923813wrx.9
+ for <alsa-devel@alsa-project.org>; Fri, 05 Mar 2021 04:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
+ b=bHjAZhufUbVM2E/Px0qJ/imHzNvX1/O2wSS2s49c1PdMwr1NmNHqMaRuXPcczu75l9
+ cW/D3D1RXj7tRr/0BCgFgr3wTTOPAG+xNNlvxNQrqXzIGNK+SZWuaXTSoSUiBIWa+S75
+ yb22bkzeZebfMKeo2Qggt9fImoNaTxorpFA2uz/VeoQ+vIUp3UtPiz6rUM3A1LkqT9k1
+ AWe2V923LfTkrqUKrKNUr7LGNGhG3MbtYhwzxDLBGyXliY7mzZj2xN9grbtA4+WIAhcn
+ 5hAAqGcR5kAZbirU0GnDm82xIOnBXGY4GcPxKby2cJu2M601j3KI8S9FT+DOdPbMr0Ep
+ S5Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=QmF+mvS+MLxLt6q3dQkoY40EhjIBy/NHIII8iIh6APQ=;
+ b=GXlfh3EQd/9/k9Mdeb6J5w8G56gPiVa/SkbTDQ0Qufzkujvm2SpbhfUiZH9aL8b9ww
+ kmZjDGvPs4UBKETQt2kz0Jqhe2ziGXYZEadQJuXBbLy1dzgyHwrdbRq5f2XIfOvy4oxk
+ Xfx1RkCLNxJk3LMBoK0V8djXjIymjy1iI04vsZ15NWFAwnn3ZOUSv5ySAyurFkwKprxh
+ BAJo9qemEI6egoN7TgVem2bXpF0JZb+FFQywNj60VxrQFModanUw50vfgW2lGk4FVcp3
+ vSsRR+bcdwxkSjCK0ZyfYk6gt3Nu95pcBAKbPkdnTeuz09+5oqJeBfsCxKCDFVbnuIZv
+ je0A==
+X-Gm-Message-State: AOAM532NfiSiqOFB5xSn7MIXnrLmtGltcEZMh/20gXfEFAvM52F7Rxe/
+ nRLIizvDIWNPhIs/mbEn59XpmjCfw5Orz7/yXiI=
+X-Google-Smtp-Source: ABdhPJwXjMQOM5nzdg/7g/bbUofDP/d6h+41pogdgtczYu3CsbmEQu+kYS+mJ/MZKSwvcgtaRzjf4pLIUt6BcHQLzpU=
+X-Received: by 2002:adf:d84d:: with SMTP id k13mr9527969wrl.164.1614948200745; 
+ Fri, 05 Mar 2021 04:43:20 -0800 (PST)
+MIME-Version: 1.0
+References: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Fri, 5 Mar 2021 14:43:08 +0200
+Message-ID: <CAEnQRZCvYe6n_8MFwfz_MyanJLqH2VAqkgcZ7K9NJkqBPg=r1A@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: wm8962: Relax bit clock divider searching
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Tue, 09 Mar 2021 08:01:58 +0100
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux-ALSA <alsa-devel@alsa-project.org>, gustavoars@kernel.org,
+ ckeepax@opensource.cirrus.com,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Mark Brown <broonie@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,16 +107,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 08 Mar 2021 23:30:57 +0100,
-Pavel Skripkin wrote:
-> 
-> The problem was in wrong "if" placement. chip->quirk_type is freed
-> in snd_card_free_when_closed(), but inside if statement it's accesed.
-> 
-> Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()"
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+On Fri, Mar 5, 2021 at 1:15 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
+>
+> With S20_3LE format case, the sysclk = rate * 384,
+> the bclk = rate * 20 * 2, there is no proper bclk divider
+> for 384 / 40, because current condition needs exact match.
+> So driver fails to configure the clocking:
+>
+> wm8962 3-001a: Unsupported BCLK ratio 9
+>
+> Fix this by relaxing bitclk divider searching, so that when
+> no exact value can be derived from sysclk pick the closest
+> value greater than expected bitclk.
+>
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Thanks, applied now.
-
-
-Takashi
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
