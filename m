@@ -4,55 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC3A6C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 01:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9A18C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 01:01:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C49B664FDD
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 01:01:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C49B664FDD
+	by mail.kernel.org (Postfix) with ESMTPS id 5298C64FDD
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 01:01:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5298C64FDD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0818417EE;
-	Fri,  5 Mar 2021 02:00:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0818417EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA7D018A6;
+	Fri,  5 Mar 2021 02:01:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA7D018A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614906105;
-	bh=yNrooPa/yoU7OmBf4DYJdK44gfXfbPR3leAH668CAk0=;
+	s=default; t=1614906111;
+	bh=8y8qnXoZCP2X4oIFtqJ8udhoKpHpZC0JCXI8wbosb4A=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KgP9CZ9LY2FPPx76kaFTxe6h5sxF8aEdfw/h3VzaZTEpKKkB9IGZxkPxLCl65wh/M
-	 4ZlzXJ4xLBKizxtOqjYSH6pUY1MM65CyfCdcfRgRVoBv8ZpGK3R9t78aDnFnLkzQoO
-	 dWTDxZg92szd9At8gwaJh9e2nlBziL1++MBnGAOs=
+	b=eynWj+a5bpFVi92Aod8vckl293qy1JGjDo8jleKhSB5qF+e+eWtf6lbmgOBW9arTR
+	 N1WwSAyU/HawXpRyQr9bC3YjK8sVsxc7mo8rBvQhpGoNstGgiTPRLwB7hHEaob56G4
+	 FZqqeiJ17naSX02xyjaGrB5ld8ixab20IkMFbyrU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62942F8032C;
-	Fri,  5 Mar 2021 01:59:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6670F80425;
+	Fri,  5 Mar 2021 01:59:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB121F8032D; Fri,  5 Mar 2021 01:59:55 +0100 (CET)
+ id AA6BAF80424; Fri,  5 Mar 2021 01:59:58 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id B9DF8F802E3
- for <alsa-devel@alsa-project.org>; Fri,  5 Mar 2021 01:59:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9DF8F802E3
-Date: 05 Mar 2021 09:59:48 +0900
-X-IronPort-AV: E=Sophos;i="5.81,224,1610377200"; d="scan'208";a="74142247"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 05 Mar 2021 09:59:48 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 597ECF802E3
+ for <alsa-devel@alsa-project.org>; Fri,  5 Mar 2021 01:59:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 597ECF802E3
+Date: 05 Mar 2021 09:59:54 +0900
+X-IronPort-AV: E=Sophos;i="5.81,224,1610377200"; d="scan'208";a="74142258"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 05 Mar 2021 09:59:54 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id BCFF441340EE;
- Fri,  5 Mar 2021 09:59:48 +0900 (JST)
-Message-ID: <87pn0epg8r.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D1CAE401822D;
+ Fri,  5 Mar 2021 09:59:54 +0900 (JST)
+Message-ID: <87o8fypg8l.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 3/8] ASoC: soc-pcm: direct copy at
- snd_soc_set_runtime_hwparams()
+Subject: [PATCH 4/8] ASoC: soc-pcm: add soc_pcm_update_symmetry()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tupqpg9x.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,42 +74,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-snd_soc_set_runtime_hwparams() is called from each driver
-to initialize hw parameters,
-but coping each parameters one-by-one.
+Current soc-pcm has soc_pcm_has_symmetry() and using it as
 
-Current code is not copying all parameters, but no big effect
-if we do it. This patch copies all parameters by simple code.
+	if (soc_pcm_has_symmetry(substream))
+		substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
+
+We want to share same operation as same function.
+This patch adds soc_pcm_update_symmetry() and pack above code in
+one function.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ sound/soc/soc-pcm.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 60e688b103d8..6f2de27cf18f 100644
+index 6f2de27cf18f..4ea4e2af9134 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -300,15 +300,8 @@ bool snd_soc_runtime_ignore_pmdown_time(struct snd_soc_pcm_runtime *rtd)
- int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hardware *hw)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	runtime->hw.info = hw->info;
--	runtime->hw.formats = hw->formats;
--	runtime->hw.period_bytes_min = hw->period_bytes_min;
--	runtime->hw.period_bytes_max = hw->period_bytes_max;
--	runtime->hw.periods_min = hw->periods_min;
--	runtime->hw.periods_max = hw->periods_max;
--	runtime->hw.buffer_bytes_max = hw->buffer_bytes_max;
--	runtime->hw.fifo_size = hw->fifo_size;
-+	substream->runtime->hw = *hw;
-+
+@@ -410,7 +410,7 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
  	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_soc_set_runtime_hwparams);
+ 
+-static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
++static void soc_pcm_update_symmetry(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai_link *link = rtd->dai_link;
+@@ -427,7 +427,8 @@ static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+ 			dai->driver->symmetric_channels ||
+ 			dai->driver->symmetric_sample_bits;
+ 
+-	return symmetry;
++	if (symmetry)
++		substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
+ }
+ 
+ static void soc_pcm_set_msb(struct snd_pcm_substream *substream, int bits)
+@@ -739,8 +740,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	/* Check that the codec and cpu DAIs are compatible */
+ 	soc_pcm_init_runtime_hw(substream);
+ 
+-	if (soc_pcm_has_symmetry(substream))
+-		runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++	soc_pcm_update_symmetry(substream);
+ 
+ 	ret = -EINVAL;
+ 	if (!runtime->hw.rates) {
+@@ -1685,8 +1685,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 	int i;
+ 
+ 	/* apply symmetry for FE */
+-	if (soc_pcm_has_symmetry(fe_substream))
+-		fe_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++	soc_pcm_update_symmetry(fe_substream);
+ 
+ 	for_each_rtd_cpu_dais (fe, i, fe_cpu_dai) {
+ 		/* Symmetry only applies if we've got an active stream. */
+@@ -1711,8 +1710,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
+ 		if (rtd->dai_link->be_hw_params_fixup)
+ 			continue;
+ 
+-		if (soc_pcm_has_symmetry(be_substream))
+-			be_substream->runtime->hw.info |= SNDRV_PCM_INFO_JOINT_DUPLEX;
++		soc_pcm_update_symmetry(be_substream);
+ 
+ 		/* Symmetry only applies if we've got an active stream. */
+ 		for_each_rtd_dais(rtd, i, dai) {
 -- 
 2.25.1
 
