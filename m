@@ -7,82 +7,81 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B18F7C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 17:40:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32020C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 17:40:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F6A4650A8
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 17:40:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F6A4650A8
+	by mail.kernel.org (Postfix) with ESMTPS id 5D7EF650A8
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Mar 2021 17:40:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D7EF650A8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC1F7194A;
-	Fri,  5 Mar 2021 18:39:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC1F7194A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F06731A9E;
+	Fri,  5 Mar 2021 18:39:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F06731A9E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1614966036;
-	bh=nSm3AlKxSBPlcbtNEgEHSPvpU1DiV5vlZkJ7111rgkY=;
+	s=default; t=1614966047;
+	bh=/L23YUu3PPxKNjRCwh7mZskZG/FYXwlLSLygOuN+hRA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K8NGn6nGJInvf4eiHk2zygZh1gkP/Tl58yqCF3ooLlm0yl8uLZubQ1pc0eE59tuQr
-	 9HRz7bP7537Lrp8X0+6716WEn3LyN/LwB1eT9/+R/ILj2yLjbuBPtny6W3ZguqwkgY
-	 Ng0A4RZgv774mCRMHNUlzv8D3XYmNKHlSLTQkLRE=
+	b=B3IBrY+IAI96kdnFF0anIfL6mEAmQoTrIC5Y6x5L8UQbp+plW3SwDOR04tGUc7GLu
+	 y96ZqWTZ+OQ08MFK9rghrXV2NnA/Fr2JrEKecTafIaZxO6DVAw9m6Wi5FUlmuXTDnK
+	 QN5W1gViH35h2gCTwRaeR+olQF62KsO4ixIkwdwo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 291D1F804F2;
-	Fri,  5 Mar 2021 18:35:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6631AF804FF;
+	Fri,  5 Mar 2021 18:35:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FDE4F804D9; Fri,  5 Mar 2021 18:35:18 +0100 (CET)
+ id A0EA8F804DA; Fri,  5 Mar 2021 18:35:18 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D0B7F802C4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B85CF8032B
  for <alsa-devel@alsa-project.org>; Fri,  5 Mar 2021 18:34:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D0B7F802C4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B85CF8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="WwLUFBT0"
+ header.b="izwOjrpW"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 125HWXhQ005984; Fri, 5 Mar 2021 11:34:51 -0600
+ 125HWLWe005729; Fri, 5 Mar 2021 11:34:51 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=thc2Jy6DJcx0Qu+2XNlj2PUXNyf0MUDl4YhAFw37iFs=;
- b=WwLUFBT0VZLBQ7XJ+LGRbXnjt3DGuHOqGLHWoVJhdE2nAWZfc/8g/e8ZJArEoz4uAPNw
- idPbc9nvwjWLyAPYXBsQW5TG8JyJQN9VOElnaaXsqhC/jzUcshA+7xzEyukx8qSjm277
- WMZdH+rLg3/idHRhTTfQmk3WrN/MuZnt3vsN/y7id5ceHb39vL0Eclj0QzvKZs/vqjYX
- GEo7MBZz7N4BMEAN9MixD396RC8qOyvN00h0erazVJQQJla3Ym9elzhSSor+tEJ45/es
- Q1PkHp5NAdze65ytH+ElG+G0CORVJcK5LYsqAQdV9DtTMiyFHcQn2lkpVtfvqilHORyK 9Q== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 36ymc70eyv-1
+ bh=M2+N2yfj7KJ/9KkUfuDtF5GUf9Pnf+67Qk0IZmBxmhM=;
+ b=izwOjrpWQdzUehnfbq/lOezYjaG3Oc0aTB2XM3CceLwMCYsdygfkXO+rX/pe1Lt2/DWC
+ 0FHkthx2WBihXU04C04ADCdz+V6Msimh5ouEN9XYUf/v7e3Sza9u/79PfBB1c0SbHJwV
+ j26/D/gGoTMo7jLd8CZ3V7vWF+hQk3qmeFk4soV75gy30v7Va5iPpE0cVb/MCvyO/iHN
+ rSQXqXA0gkv1y1HAZSW62jtlFBYiwIjIfAOO+fRd7Yue3OYGX8IuqkOSDsayAlIU3WzJ
+ T43M9jIad3ptfEyblPRx9qe5rgO+kUhXmDiBskk2EErBOGaEbnKtroMqF/mpmAsjRQIv fg== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 36ymc70eyn-7
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Fri, 05 Mar 2021 11:34:51 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 5 Mar 2021
- 17:34:49 +0000
+ 17:34:48 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Fri, 5 Mar 2021 17:34:49 +0000
+ Transport; Fri, 5 Mar 2021 17:34:48 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 17FA111CB;
- Fri,  5 Mar 2021 17:34:49 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6F84711D7;
+ Fri,  5 Mar 2021 17:34:48 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>
-Subject: [PATCH v2 13/15] ASoC: cs42l42: Wait at least 150us after writing
- SCLK_PRESENT
-Date: Fri, 5 Mar 2021 17:34:40 +0000
-Message-ID: <20210305173442.195740-14-tanureal@opensource.cirrus.com>
+Subject: [PATCH v2 11/15] ASoC: cs42l42: Report jack and button detection
+Date: Fri, 5 Mar 2021 17:34:38 +0000
+Message-ID: <20210305173442.195740-12-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
 References: <20210305173442.195740-1-tanureal@opensource.cirrus.com>
@@ -92,7 +91,7 @@ Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0
  clxscore=1015 suspectscore=0
  adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=866 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 bulkscore=0 impostorscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103050090
 Cc: patches@opensource.cirrus.com,
@@ -113,90 +112,188 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Report the Jack events to the user space through ALSA.
+Also moves request_threaded_irq() to component_probe so it don't get
+interrupts before the initialization the struct snd_soc_jack.
 
-There must be a delay of at least 150us after writing SCLK_PRESENT
-before issuing another I2C write.
-
-This is done using struct reg_sequence because it can specify a delay
-after the write and the whole sequence is written atomically.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
 Changes in v2:
-- struct cs42l42_private add by this patch was wrong and moved to the
-correct patch
-- Lucas signed-off added
+- Don't move the code around
+- Removed rename component
+- Request IRQ moved back to main probe
+- cs42l42_component_remove removed as is not needed anymore
 
- sound/soc/codecs/cs42l42.c | 27 ++++++++++++++++++++++-----
- sound/soc/codecs/cs42l42.h |  1 +
- 2 files changed, 23 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 70 ++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/cs42l42.h |  3 ++
+ 2 files changed, 59 insertions(+), 14 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index f0270de2ccb8a..4181765d99af7 100644
+index 54dd942f3731e..db8c8f0121d12 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -549,6 +549,24 @@ static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
- 	.non_legacy_dai_naming	= 1,
- };
+@@ -522,10 +522,18 @@ static int cs42l42_component_probe(struct snd_soc_component *component)
+ {
+ 	struct cs42l42_private *cs42l42 =
+ 		(struct cs42l42_private *)snd_soc_component_get_drvdata(component);
++	struct snd_soc_card *crd = component->card;
++	int ret = 0;
  
-+/* Switch to SCLK. Atomic delay after the write to allow the switch to complete. */
-+static const struct reg_sequence cs42l42_to_sclk_seq[] = {
-+	{
-+		.reg = CS42L42_OSC_SWITCH,
-+		.def = CS42L42_SCLK_PRESENT_MASK,
-+		.delay_us = CS42L42_CLOCK_SWITCH_DELAY_US,
-+	},
-+};
-+
-+/* Switch to OSC. Atomic delay after the write to allow the switch to complete. */
-+static const struct reg_sequence cs42l42_to_osc_seq[] = {
-+	{
-+		.reg = CS42L42_OSC_SWITCH,
-+		.def = 0,
-+		.delay_us = CS42L42_CLOCK_SWITCH_DELAY_US,
-+	},
-+};
-+
- struct cs42l42_pll_params {
- 	u32 sclk;
- 	u8 mclk_div;
-@@ -861,8 +879,8 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 			 * SCLK must remain running until after this clock switch.
- 			 * Without a source of clock the I2C bus doesn't work.
- 			 */
--			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						      CS42L42_SCLK_PRESENT_MASK, 0);
-+			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_osc_seq,
-+					       ARRAY_SIZE(cs42l42_to_osc_seq));
- 			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 						      CS42L42_PLL_START_MASK, 0);
- 		}
-@@ -873,9 +891,8 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 						      CS42L42_PLL_START_MASK, 1);
+ 	cs42l42->component = component;
  
- 			/* Mark SCLK as present, turn off internal oscillator */
--			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						      CS42L42_SCLK_PRESENT_MASK,
--						      CS42L42_SCLK_PRESENT_MASK);
-+			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_sclk_seq,
-+					       ARRAY_SIZE(cs42l42_to_sclk_seq));
+-	return 0;
++	ret = snd_soc_card_jack_new(crd, "CS42L42 Headset", SND_JACK_HEADSET | SND_JACK_BTN_0 |
++				    SND_JACK_BTN_1 | SND_JACK_BTN_2 | SND_JACK_BTN_3,
++				    &cs42l42->jack, NULL, 0);
++	if (ret < 0)
++		dev_err(component->dev, "Cannot create CS42L42 Headset: %d\n", ret);
++
++	return ret;
+ }
+ 
+ static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
+@@ -1198,7 +1206,7 @@ static void cs42l42_cancel_hs_type_detect(struct cs42l42_private *cs42l42)
+ 				(3 << CS42L42_HSDET_AUTO_TIME_SHIFT));
+ }
+ 
+-static void cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
++static int cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
+ {
+ 	int bias_level;
+ 	unsigned int detect_status;
+@@ -1241,17 +1249,24 @@ static void cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
+ 
+ 	switch (bias_level) {
+ 	case 1: /* Function C button press */
++		bias_level = SND_JACK_BTN_2;
+ 		dev_dbg(cs42l42->component->dev, "Function C button press\n");
+ 		break;
+ 	case 2: /* Function B button press */
++		bias_level = SND_JACK_BTN_1;
+ 		dev_dbg(cs42l42->component->dev, "Function B button press\n");
+ 		break;
+ 	case 3: /* Function D button press */
++		bias_level = SND_JACK_BTN_3;
+ 		dev_dbg(cs42l42->component->dev, "Function D button press\n");
+ 		break;
+ 	case 4: /* Function A button press */
++		bias_level = SND_JACK_BTN_0;
+ 		dev_dbg(cs42l42->component->dev, "Function A button press\n");
+ 		break;
++	default:
++		bias_level = 0;
++		break;
+ 	}
+ 
+ 	/* Set button detect level sensitivity back to default */
+@@ -1281,6 +1296,8 @@ static void cs42l42_handle_button_press(struct cs42l42_private *cs42l42)
+ 		(0 << CS42L42_M_HSBIAS_HIZ_SHIFT) |
+ 		(1 << CS42L42_M_SHORT_RLS_SHIFT) |
+ 		(1 << CS42L42_M_SHORT_DET_SHIFT));
++
++	return bias_level;
+ }
+ 
+ struct cs42l42_irq_params {
+@@ -1325,6 +1342,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 	unsigned int current_plug_status;
+ 	unsigned int current_button_status;
+ 	unsigned int i;
++	int report = 0;
++
+ 
+ 	/* Read sticky registers to clear interurpt */
+ 	for (i = 0; i < ARRAY_SIZE(stickies); i++) {
+@@ -1351,9 +1370,20 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 	if ((~masks[5]) & irq_params_table[5].mask) {
+ 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
+ 			cs42l42_process_hs_type_detect(cs42l42);
+-			dev_dbg(component->dev,
+-				"Auto detect done (%d)\n",
+-				cs42l42->hs_type);
++			switch(cs42l42->hs_type){
++			case CS42L42_PLUG_CTIA:
++			case CS42L42_PLUG_OMTP:
++				snd_soc_jack_report(&cs42l42->jack, SND_JACK_HEADSET,
++						    SND_JACK_HEADSET);
++				break;
++			case CS42L42_PLUG_HEADPHONE:
++				snd_soc_jack_report(&cs42l42->jack, SND_JACK_HEADPHONE,
++						    SND_JACK_HEADPHONE);
++				break;
++			default:
++				break;
++			}
++			dev_dbg(component->dev, "Auto detect done (%d)\n", cs42l42->hs_type);
  		}
- 		cs42l42->stream_use |= 1 << stream;
+ 	}
+ 
+@@ -1371,8 +1401,19 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 			if (cs42l42->plug_state != CS42L42_TS_UNPLUG) {
+ 				cs42l42->plug_state = CS42L42_TS_UNPLUG;
+ 				cs42l42_cancel_hs_type_detect(cs42l42);
+-				dev_dbg(component->dev,
+-					"Unplug event\n");
++
++				switch(cs42l42->hs_type){
++				case CS42L42_PLUG_CTIA:
++				case CS42L42_PLUG_OMTP:
++					snd_soc_jack_report(&cs42l42->jack, 0, SND_JACK_HEADSET);
++					break;
++				case CS42L42_PLUG_HEADPHONE:
++					snd_soc_jack_report(&cs42l42->jack, 0, SND_JACK_HEADPHONE);
++					break;
++				default:
++					break;
++				}
++				dev_dbg(component->dev, "Unplug event\n");
+ 			}
+ 			break;
+ 
+@@ -1387,14 +1428,15 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+ 		if (!(current_button_status &
+ 			CS42L42_M_HSBIAS_HIZ_MASK)) {
+ 
+-			if (current_button_status &
+-				CS42L42_M_DETECT_TF_MASK) {
+-				dev_dbg(component->dev,
+-					"Button released\n");
+-			} else if (current_button_status &
+-				CS42L42_M_DETECT_FT_MASK) {
+-				cs42l42_handle_button_press(cs42l42);
++			if (current_button_status & CS42L42_M_DETECT_TF_MASK) {
++				dev_dbg(component->dev, "Button released\n");
++				report = 0;
++			} else if (current_button_status & CS42L42_M_DETECT_FT_MASK) {
++				report = cs42l42_handle_button_press(cs42l42);
++
+ 			}
++			snd_soc_jack_report(&cs42l42->jack, report, SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++								   SND_JACK_BTN_2 | SND_JACK_BTN_3);
+ 		}
+ 	}
  
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 429c6833fc811..214cee762709d 100644
+index c373259ed46f7..e12828877a20d 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -755,6 +755,7 @@
+@@ -12,6 +12,8 @@
+ #ifndef __CS42L42_H__
+ #define __CS42L42_H__
  
- #define CS42L42_NUM_SUPPLIES	5
- #define CS42L42_BOOT_TIME_US	3000
-+#define CS42L42_CLOCK_SWITCH_DELAY_US 150
- 
- static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 	"VA",
++#include <sound/jack.h>
++
+ #define CS42L42_PAGE_REGISTER	0x00	/* Page Select Register */
+ #define CS42L42_WIN_START	0x00
+ #define CS42L42_WIN_LEN		0x100
+@@ -768,6 +770,7 @@ struct  cs42l42_private {
+ 	struct regulator_bulk_data supplies[CS42L42_NUM_SUPPLIES];
+ 	struct gpio_desc *reset_gpio;
+ 	struct completion pdn_done;
++	struct snd_soc_jack jack;
+ 	u32 sclk;
+ 	u32 srate;
+ 	u8 plug_state;
 -- 
 2.30.1
 
