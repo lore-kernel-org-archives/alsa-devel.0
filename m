@@ -7,82 +7,82 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55E0DC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD2DDC433E0
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:19:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BE2BB650BC
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:19:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BE2BB650BC
+	by mail.kernel.org (Postfix) with ESMTPS id 2BF1765081
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:19:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BF1765081
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B56E1F7B;
-	Sat,  6 Mar 2021 20:18:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B56E1F7B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B84B71F70;
+	Sat,  6 Mar 2021 20:18:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B84B71F70
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615058365;
-	bh=jHgn2PGYQ+mJYWAUYjRLN72CI0afqxmrCjJW82T4fZ8=;
+	s=default; t=1615058377;
+	bh=9CyzxahLv/LTSTNBpDK3lzaqzBXcF0rSXJ3aMWa7mvc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t3eCarKjL4q9MC1TvTq1zH4t1+DpeI4AHzQNPbBV2vGoapas2Db/HYTx3CAK7LbXD
-	 W9W9Ik9LocTkBdcJhRibXcLd+9XPLSMZ7mrDOTSetNmOYAS+vaAXh5bcbMq0M4//qZ
-	 8pk/3DU1lDyuqfqHf4FvCNbWpVm21xnXS7H4yxes=
+	b=QNPnF+Xgr8//ea2GuA7D/p9Bgsql4LbqOtQPtuF3wHOu7d4AL8+lh6kG4gtIIDlr8
+	 tvubNGmR1vbZs/n+Pz8qgpaqzRnYskNFpjmHAvTCOywS62kk027hPkWpnoeYjwESKT
+	 Kug3k2sygvuvXXS/5WVmiUXWzyvqMxosc1Ww7RBE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66245F804FB;
-	Sat,  6 Mar 2021 20:14:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4735FF804FF;
+	Sat,  6 Mar 2021 20:14:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EA9DF804E2; Sat,  6 Mar 2021 20:14:06 +0100 (CET)
+ id EA01EF804E2; Sat,  6 Mar 2021 20:14:07 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08179F802E3
- for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 20:13:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08179F802E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A64BF8032C
+ for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 20:13:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A64BF8032C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="LlNdB25v"
+ header.b="BMjHq7at"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 126JCNcg017698; Sat, 6 Mar 2021 13:13:35 -0600
+ 126J6uDO011401; Sat, 6 Mar 2021 13:13:35 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=D0L/2V284lBlYPp+kHSQexXxL3YGhWhj1b/e97X3Pf4=;
- b=LlNdB25vtWVZ4mWh3McSg4c/jVU30xpOTrNUWOELVNM+tY4taTVflQcCBlWnu1KQtPlt
- kMA4EZmmMSrDf382Amyat+iptJl/6lgby0U/HRmnHY/EO0lIZk2R/QFyBFL9HdFppSrY
- v3a9lzF8s4+ddV3ViiReOWHZcmcAMPjdJ7GblHBpnZGSDs5rkOhd5KOS9YNEM7ApTbLX
- rAK7lLUNqQlnoZcAbRLeVg2OhU73OjAU1+q4EUPkIg7WVSFb40t+qb9x3W3OyVjkibCI
- T7Wqvn8E4PSU7RDkJa1AuvZlYnTKO9cAO0Q1zQfGVUhb5AzRzmsn7uLL5rRyCqEoZpDi Ag== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3748198d08-6
+ bh=IktnEuzg1ZGoJtu1+yDY32Nu0JF3e7Ysdso1aDneHnk=;
+ b=BMjHq7at49TU1j9jxa3CpiOO98cdhzX0Kb7b5rk7WqgbBCeQABgQHHLEpAHJ33silchB
+ 4jRyMqCdcKR1ndwkAx/naK2iprWILuKBfdk6dZDxcE3TtntlabTtdjSuILfgYj/uFuT9
+ +ZdtARTKy+bQhGXNBEfaHHxhZeehvflVcluBiP6ClLsZvM3UhQLToQW345fu7VRidjlP
+ wIXKKpEi3eQm6ltrXgEItq60HzxCfF9gAadQzJPhiboBcKjZ68q7lUmRoLl9hlk9zdkX
+ 6b7k4SMb46l9dxCkw/HtjL7F7JI6HhWtg0Qk4KeEQKHQe2KKNLkcCGH+fzJnso1YUvNs SA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3748198d06-8
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Sat, 06 Mar 2021 13:13:35 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 6 Mar 2021
- 18:56:29 +0000
+ 18:56:30 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 6 Mar 2021 18:56:29 +0000
+ Transport; Sat, 6 Mar 2021 18:56:30 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 56BFC11CF;
- Sat,  6 Mar 2021 18:56:29 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 06FD911D7;
+ Sat,  6 Mar 2021 18:56:30 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>
-Subject: [PATCH v3 13/15] ASoC: cs42l42: Wait at least 150us after writing
- SCLK_PRESENT
-Date: Sat, 6 Mar 2021 18:55:51 +0000
-Message-ID: <20210306185553.62053-14-tanureal@opensource.cirrus.com>
+Subject: [PATCH v3 15/15] ASoC: cs42l42: Wait for PLL to lock before switching
+ to it
+Date: Sat, 6 Mar 2021 18:55:53 +0000
+Message-ID: <20210306185553.62053-16-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
 References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
@@ -92,7 +92,7 @@ Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  lowpriorityscore=0 suspectscore=0
  phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=863 clxscore=1015
+ mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=958 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103060119
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
@@ -115,11 +115,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-There must be a delay of at least 150us after writing SCLK_PRESENT
-before issuing another I2C write.
-
-This is done using struct reg_sequence because it can specify a delay
-after the write and the whole sequence is written atomically.
+The PLL should have locked before using it to supply MCLK.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
@@ -128,75 +124,54 @@ Changes in v3:
 - No changes
 
 Changes in v2:
-- struct cs42l42_private add by this patch was wrong and moved to the
-correct patch
 - Lucas signed-off added
 
- sound/soc/codecs/cs42l42.c | 27 ++++++++++++++++++++++-----
- sound/soc/codecs/cs42l42.h |  1 +
- 2 files changed, 23 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 12 +++++++++++-
+ sound/soc/codecs/cs42l42.h |  2 ++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 68b7ed71ad542..08718fd10fb9b 100644
+index d7a314aa59b73..bf982e145e945 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -549,6 +549,24 @@ static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
- 	.non_legacy_dai_naming	= 1,
- };
+@@ -862,6 +862,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	unsigned int regval;
+ 	u8 fullScaleVol;
++	int ret;
  
-+/* Switch to SCLK. Atomic delay after the write to allow the switch to complete. */
-+static const struct reg_sequence cs42l42_to_sclk_seq[] = {
-+	{
-+		.reg = CS42L42_OSC_SWITCH,
-+		.def = CS42L42_SCLK_PRESENT_MASK,
-+		.delay_us = CS42L42_CLOCK_SWITCH_DELAY_US,
-+	},
-+};
-+
-+/* Switch to OSC. Atomic delay after the write to allow the switch to complete. */
-+static const struct reg_sequence cs42l42_to_osc_seq[] = {
-+	{
-+		.reg = CS42L42_OSC_SWITCH,
-+		.def = 0,
-+		.delay_us = CS42L42_CLOCK_SWITCH_DELAY_US,
-+	},
-+};
-+
- struct cs42l42_pll_params {
- 	u32 sclk;
- 	u8 mclk_div;
-@@ -861,8 +879,8 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 			 * SCLK must remain running until after this clock switch.
- 			 * Without a source of clock the I2C bus doesn't work.
- 			 */
--			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						      CS42L42_SCLK_PRESENT_MASK, 0);
-+			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_osc_seq,
-+					       ARRAY_SIZE(cs42l42_to_osc_seq));
- 			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
- 						      CS42L42_PLL_START_MASK, 0);
- 		}
-@@ -873,9 +891,8 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 						      CS42L42_PLL_START_MASK, 1);
+ 	if (mute) {
+ 		/* Mute the headphone */
+@@ -887,9 +888,18 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
+ 	} else {
+ 		if (!cs42l42->stream_use) {
+ 			/* SCLK must be running before codec unmute */
+-			if ((cs42l42->bclk < 11289600) && (cs42l42->sclk < 11289600))
++			if ((cs42l42->bclk < 11289600) && (cs42l42->sclk < 11289600)) {
+ 				snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
+ 							      CS42L42_PLL_START_MASK, 1);
++				ret = regmap_read_poll_timeout(cs42l42->regmap,
++							       CS42L42_PLL_LOCK_STATUS,
++							       regval,
++							       (regval & 1),
++							       CS42L42_PLL_LOCK_POLL_US,
++							       CS42L42_PLL_LOCK_TIMEOUT_US);
++				if (ret < 0)
++					dev_warn(component->dev, "PLL failed to lock: %d\n", ret);
++			}
  
  			/* Mark SCLK as present, turn off internal oscillator */
--			snd_soc_component_update_bits(component, CS42L42_OSC_SWITCH,
--						      CS42L42_SCLK_PRESENT_MASK,
--						      CS42L42_SCLK_PRESENT_MASK);
-+			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_sclk_seq,
-+					       ARRAY_SIZE(cs42l42_to_sclk_seq));
- 		}
- 		cs42l42->stream_use |= 1 << stream;
- 
+ 			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_sclk_seq,
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 429c6833fc811..214cee762709d 100644
+index 214cee762709d..36b763f0d1a06 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -755,6 +755,7 @@
- 
+@@ -756,6 +756,8 @@
  #define CS42L42_NUM_SUPPLIES	5
  #define CS42L42_BOOT_TIME_US	3000
-+#define CS42L42_CLOCK_SWITCH_DELAY_US 150
+ #define CS42L42_CLOCK_SWITCH_DELAY_US 150
++#define CS42L42_PLL_LOCK_POLL_US	250
++#define CS42L42_PLL_LOCK_TIMEOUT_US	1250
  
  static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
  	"VA",
