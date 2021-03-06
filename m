@@ -2,101 +2,89 @@ Return-Path: <SRS0=DV51=IE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01592C433E0
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1727BC433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 20:37:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D05A650A2
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:20:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D05A650A2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 64A3965081
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 20:37:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64A3965081
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC36E1F97;
-	Sat,  6 Mar 2021 20:19:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC36E1F97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6E41FA7;
+	Sat,  6 Mar 2021 21:36:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6E41FA7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615058409;
-	bh=3MjIiTWQ8ljafQiDCj7XRSARXInFglMyVEfERIUQ77w=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615063047;
+	bh=FtLEFOJa9DMNE/45EG7z+vQeixnnLkZorEhAccJlWrM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sCJ3Iu1mxfkuRklOoqI6SsLmHjj9/lqjALfv+2bz4VQDvphml9RZDumnWAbScVYq4
-	 n+j4V3Pv87d6lHGh6bVDDx/pRb8Sdmc2uRNKA7NFkzlX6ZHerWH3rNH/UYvy3wyRbq
-	 QHoUI6mLmNLs/ONXUIWNDGCneyX7VHT8HVbd4diQ=
+	b=Vw62mdytNjNTBtqedf+5+sq4RMXL1B+XLUF7H59Cnv/oCj9/ibFEjCW20bT27aTBM
+	 YJHMtEbZkVXIon34ttfQlLiNNHClxEow706z9mFhP3Hmwp/1wHx9gmfHGpw9jnKlS4
+	 qdItUC6TmSQIfV2UillT50kNq4dq3Z8ZEjBDh9GM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B08EF8050F;
-	Sat,  6 Mar 2021 20:14:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B2D6F8025B;
+	Sat,  6 Mar 2021 21:36:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15EACF804E5; Sat,  6 Mar 2021 20:14:09 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id F2B74F8025B; Sat,  6 Mar 2021 21:36:34 +0100 (CET)
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com
+ [209.85.216.45])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B5BEF8032D
- for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 20:13:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B5BEF8032D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ClLMUdRS"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 126J6uDN011401; Sat, 6 Mar 2021 13:13:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=3+mEvs73up6nUSnS6x/qDcB4A4e6/5agXr3vE8x766o=;
- b=ClLMUdRS7Dg+bc9dNfW0N8jFTXFTwoOAfR3gKbqLoAp4DUqgfgTXC5U6G3yJB5ZWR9jT
- Aw51PmO3lX32regdM3LULuQSBJTWxZB4UArcOuhBCHVOKZc0r/P8KsvYaNI/a+PcN4Ln
- Pps7zISpauOOng/iHpSyXHzrG41htatOye+z0qemIVLzzSJfWDlHw506DvXuiOd+rAjj
- KzOe5ghugSs6NrLCG1o7oT++ZolyvL08ZEFKobSmcjfxfaWkoF/hq3QVMURMcWjGjVsB
- 5bq9PEltSpXUU/9WUaSyE0v8Jl7YkDyzy/vlWGLp1tUkSTYqJlwHatmvl6TZf0lYQIiN gA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3748198d06-7
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sat, 06 Mar 2021 13:13:35 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 6 Mar 2021
- 18:56:29 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 6 Mar 2021 18:56:29 +0000
-Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A4C0F11CB;
- Sat,  6 Mar 2021 18:56:29 +0000 (UTC)
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
-To: James Schulman <james.schulman@cirrus.com>, David Rhodes
- <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>
-Subject: [PATCH v3 14/15] ASoC: cs42l42: Only start PLL if it is needed
-Date: Sat, 6 Mar 2021 18:55:52 +0000
-Message-ID: <20210306185553.62053-15-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
-References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D5CCF800F3
+ for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 21:36:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D5CCF800F3
+Received: by mail-pj1-f45.google.com with SMTP id
+ d14-20020a17090ab30eb02900caa8f10060so958549pjr.4
+ for <alsa-devel@alsa-project.org>; Sat, 06 Mar 2021 12:36:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=kxst1hG7ALyCmuPlQ7JFD7SMZloRyR6/yTfXMK8W7T0=;
+ b=QoBJNVKebkk54Xl4apdNgCBpc760UmtMf0X+3aovQmfKgXwId6bEspeYfaelylNuaV
+ kffSPij88DUdh6ntplG+N/93N0ZI3pUcD831wY0E8OZbJPq6ATUIvx2hJlLvona7Fa0V
+ vmE6c3og7LYNmq2VUcfRMdKdiJTt01Qs/RrZOVQmAqAPlf/o9h8/FMCXLfOwh8cmMU19
+ SAH4MBHtFaZCcUm38rWI2m59iFFumYc1glmqqYkAFWj/LpYS3Yy8vU+XagtF499zI80h
+ clzi99Dae3NR/Z2S9M0zcCT/ijEYuCMjGDY8sEWgOTdtcl4YqQc+4gHFc6Qys81bdyQR
+ fUaA==
+X-Gm-Message-State: AOAM530Z8oklV4mGb5Ax5VyZnS1JwwltkQiC9MSPtX5EYuXv1Qi6jNxU
+ hYZxCMGNql10oXypmCQ8mg==
+X-Google-Smtp-Source: ABdhPJz0P+6rkvVUSXxTrcwxqhCKO6b8X5k2tVKedc0iXxGFF8nD+HcxsXL0EuR95YHQZyqlJKMczg==
+X-Received: by 2002:a17:90b:809:: with SMTP id
+ bk9mr16677761pjb.83.1615062983602; 
+ Sat, 06 Mar 2021 12:36:23 -0800 (PST)
+Received: from robh.at.kernel.org ([172.58.27.98])
+ by smtp.gmail.com with ESMTPSA id t22sm6300886pjw.54.2021.03.06.12.36.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 06 Mar 2021 12:36:22 -0800 (PST)
+Received: (nullmailer pid 1172590 invoked by uid 1000);
+ Sat, 06 Mar 2021 20:36:17 -0000
+Date: Sat, 6 Mar 2021 13:36:17 -0700
+From: Rob Herring <robh@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v3 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
+ rpmsg machine driver
+Message-ID: <20210306203617.GA1164939@robh.at.kernel.org>
+References: <1614221563-26822-1-git-send-email-shengjiu.wang@nxp.com>
+ <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
- lowpriorityscore=0 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103060119
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- Lucas Tanure <tanureal@opensource.cirrus.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
+ lgirdwood@gmail.com, linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, nicoleotsuka@gmail.com,
+ broonie@kernel.org, festevam@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,40 +100,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+On Thu, Feb 25, 2021 at 10:52:43AM +0800, Shengjiu Wang wrote:
+> Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
+> core. The Cortex-M core will control the audio interface, DMA and audio
+> codec, setup the pipeline, the audio driver on Cortex-A core side is just
+> to communitcate with M core, it is a virtual sound card and don't touch
+> the hardware.
 
-The PLL is only needed for sclk < 11289600 Hz and cs42l42_pll_config()
-will not configure it for higher rates. So it must only be enabled
-when it is needed.
+This sounds like 1 h/w block (the interface to the cortex-M), your DT 
+should be 1 node. If you need 2 drivers to satisfy the needs of the OS, 
+then instantiate one device from the other device's driver.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
-Changes in v3:
-- No changes
-
-Changes in v2:
-- Lucas signed-off added
-
- sound/soc/codecs/cs42l42.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 08718fd10fb9b..d7a314aa59b73 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -887,8 +887,9 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 	} else {
- 		if (!cs42l42->stream_use) {
- 			/* SCLK must be running before codec unmute */
--			snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
--						      CS42L42_PLL_START_MASK, 1);
-+			if ((cs42l42->bclk < 11289600) && (cs42l42->sclk < 11289600))
-+				snd_soc_component_update_bits(component, CS42L42_PLL_CTL1,
-+							      CS42L42_PLL_START_MASK, 1);
- 
- 			/* Mark SCLK as present, turn off internal oscillator */
- 			regmap_multi_reg_write(cs42l42->regmap, cs42l42_to_sclk_seq,
--- 
-2.30.1
-
+Rob
