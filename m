@@ -2,89 +2,89 @@ Return-Path: <SRS0=DV51=IE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1727BC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 20:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7863C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 23:03:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64A3965081
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 20:37:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64A3965081
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id EF037650D0
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 23:03:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EF037650D0
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E6E41FA7;
-	Sat,  6 Mar 2021 21:36:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E6E41FA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 698F31F8F;
+	Sun,  7 Mar 2021 00:02:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 698F31F8F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615063047;
-	bh=FtLEFOJa9DMNE/45EG7z+vQeixnnLkZorEhAccJlWrM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Vw62mdytNjNTBtqedf+5+sq4RMXL1B+XLUF7H59Cnv/oCj9/ibFEjCW20bT27aTBM
-	 YJHMtEbZkVXIon34ttfQlLiNNHClxEow706z9mFhP3Hmwp/1wHx9gmfHGpw9jnKlS4
-	 qdItUC6TmSQIfV2UillT50kNq4dq3Z8ZEjBDh9GM=
+	s=default; t=1615071809;
+	bh=lJyK83QJM/M0ualrncJrMaBtTSkQAWGJ1gl3LtwKzGs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tyyTMwiGkMfN6cHX5C+k5nfoUeivz2YdQYFNxv482AiNklUGt8zmCSFAUomFaOgDq
+	 mBA961uK1M0jonlPPk+4pk5lQapt4Zx1Qaf5ec1OUyvY8nC7rZz7Kv+NpObBL63N4G
+	 TBYHGLd4PNBsaqRhln0fSfenK8ZvxF8IP5EUeJO4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B2D6F8025B;
-	Sat,  6 Mar 2021 21:36:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF949F8025B;
+	Sun,  7 Mar 2021 00:02:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2B74F8025B; Sat,  6 Mar 2021 21:36:34 +0100 (CET)
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com
- [209.85.216.45])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8D4ABF80269; Sun,  7 Mar 2021 00:02:37 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D5CCF800F3
- for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 21:36:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D5CCF800F3
-Received: by mail-pj1-f45.google.com with SMTP id
- d14-20020a17090ab30eb02900caa8f10060so958549pjr.4
- for <alsa-devel@alsa-project.org>; Sat, 06 Mar 2021 12:36:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=kxst1hG7ALyCmuPlQ7JFD7SMZloRyR6/yTfXMK8W7T0=;
- b=QoBJNVKebkk54Xl4apdNgCBpc760UmtMf0X+3aovQmfKgXwId6bEspeYfaelylNuaV
- kffSPij88DUdh6ntplG+N/93N0ZI3pUcD831wY0E8OZbJPq6ATUIvx2hJlLvona7Fa0V
- vmE6c3og7LYNmq2VUcfRMdKdiJTt01Qs/RrZOVQmAqAPlf/o9h8/FMCXLfOwh8cmMU19
- SAH4MBHtFaZCcUm38rWI2m59iFFumYc1glmqqYkAFWj/LpYS3Yy8vU+XagtF499zI80h
- clzi99Dae3NR/Z2S9M0zcCT/ijEYuCMjGDY8sEWgOTdtcl4YqQc+4gHFc6Qys81bdyQR
- fUaA==
-X-Gm-Message-State: AOAM530Z8oklV4mGb5Ax5VyZnS1JwwltkQiC9MSPtX5EYuXv1Qi6jNxU
- hYZxCMGNql10oXypmCQ8mg==
-X-Google-Smtp-Source: ABdhPJz0P+6rkvVUSXxTrcwxqhCKO6b8X5k2tVKedc0iXxGFF8nD+HcxsXL0EuR95YHQZyqlJKMczg==
-X-Received: by 2002:a17:90b:809:: with SMTP id
- bk9mr16677761pjb.83.1615062983602; 
- Sat, 06 Mar 2021 12:36:23 -0800 (PST)
-Received: from robh.at.kernel.org ([172.58.27.98])
- by smtp.gmail.com with ESMTPSA id t22sm6300886pjw.54.2021.03.06.12.36.19
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 06 Mar 2021 12:36:22 -0800 (PST)
-Received: (nullmailer pid 1172590 invoked by uid 1000);
- Sat, 06 Mar 2021 20:36:17 -0000
-Date: Sat, 6 Mar 2021 13:36:17 -0700
-From: Rob Herring <robh@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v3 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
- rpmsg machine driver
-Message-ID: <20210306203617.GA1164939@robh.at.kernel.org>
-References: <1614221563-26822-1-git-send-email-shengjiu.wang@nxp.com>
- <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DF22F800ED
+ for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 00:02:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DF22F800ED
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="hfqb41hQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1615071751;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=LKmFE8VCObEH5jkmou56BqpgYKBCBH123BgXWnIAKto=;
+ b=hfqb41hQPpuclD1NvWjID14GH202y+fIElZLeH9j6e0tJrSQfg9cn//da2aZMkWNcarTk7
+ 1LZLhzxbpxajhwAan5L6HCAklpsYiZdSXbdwDCxTQdtk4tSvUm8zivgtkLk9Hp2lUwJcJf
+ mm+qsXo97MZGj5qZbLNDXlGVdZ7xkbo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-AR6e2DM5OvmJMzsvtpn7hg-1; Sat, 06 Mar 2021 18:02:28 -0500
+X-MC-Unique: AR6e2DM5OvmJMzsvtpn7hg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com
+ [10.5.11.11])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6BB4800D53;
+ Sat,  6 Mar 2021 23:02:26 +0000 (UTC)
+Received: from x1.localdomain (ovpn-112-60.ams2.redhat.com [10.36.112.60])
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 62F1950AC6;
+ Sat,  6 Mar 2021 23:02:24 +0000 (UTC)
+From: Hans de Goede <hdegoede@redhat.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: rt5645: Move rt5645_platform_data to
+ sound/soc/codecs/rt5645.c
+Date: Sun,  7 Mar 2021 00:02:22 +0100
+Message-Id: <20210306230223.516566-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614221563-26822-8-git-send-email-shengjiu.wang@nxp.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
- lgirdwood@gmail.com, linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, nicoleotsuka@gmail.com,
- broonie@kernel.org, festevam@gmail.com
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,15 +100,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Feb 25, 2021 at 10:52:43AM +0800, Shengjiu Wang wrote:
-> Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
-> core. The Cortex-M core will control the audio interface, DMA and audio
-> codec, setup the pipeline, the audio driver on Cortex-A core side is just
-> to communitcate with M core, it is a virtual sound card and don't touch
-> the hardware.
+sound/soc/codecs/rt5645.c is the only user of the rt5645_platform_data,
+move its definition to sound/soc/codecs/rt5645.c and remove the now
+empty include/sound/rt5645.h file.
 
-This sounds like 1 h/w block (the interface to the cortex-M), your DT 
-should be 1 node. If you need 2 drivers to satisfy the needs of the OS, 
-then instantiate one device from the other device's driver.
+Note since the DMI quirk mechanism uses pointers to the
+rt5645_platform_data struct we can NOT simply add its members to
+the rt5645_priv struct and completely remove the struct.
 
-Rob
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ include/sound/rt5645.h    | 32 --------------------------------
+ sound/soc/codecs/rt5645.c | 23 ++++++++++++++++++++++-
+ sound/soc/codecs/rt5645.h |  2 --
+ 3 files changed, 22 insertions(+), 35 deletions(-)
+ delete mode 100644 include/sound/rt5645.h
+
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+deleted file mode 100644
+index 710c95be5509..000000000000
+--- a/include/sound/rt5645.h
++++ /dev/null
+@@ -1,32 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * linux/sound/rt5645.h -- Platform data for RT5645
+- *
+- * Copyright 2013 Realtek Microelectronics
+- */
+-
+-#ifndef __LINUX_SND_RT5645_H
+-#define __LINUX_SND_RT5645_H
+-
+-struct rt5645_platform_data {
+-	/* IN2 can optionally be differential */
+-	bool in2_diff;
+-
+-	unsigned int dmic1_data_pin;
+-	/* 0 = IN2N; 1 = GPIO5; 2 = GPIO11 */
+-	unsigned int dmic2_data_pin;
+-	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
+-
+-	unsigned int jd_mode;
+-	/* Use level triggered irq */
+-	bool level_trigger_irq;
+-	/* Invert JD1_1 status polarity */
+-	bool inv_jd1_1;
+-	/* Invert HP detect status polarity */
+-	bool inv_hp_pol;
+-
+-	/* Value to asign to snd_soc_card.long_name */
+-	const char *long_name;
+-};
+-
+-#endif
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 63a7e052eaa0..06ea6fce427c 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -411,6 +411,27 @@ static const char *const rt5645_supply_names[] = {
+ 	"cpvdd",
+ };
+ 
++struct rt5645_platform_data {
++	/* IN2 can optionally be differential */
++	bool in2_diff;
++
++	unsigned int dmic1_data_pin;
++	/* 0 = IN2N; 1 = GPIO5; 2 = GPIO11 */
++	unsigned int dmic2_data_pin;
++	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
++
++	unsigned int jd_mode;
++	/* Use level triggered irq */
++	bool level_trigger_irq;
++	/* Invert JD1_1 status polarity */
++	bool inv_jd1_1;
++	/* Invert HP detect status polarity */
++	bool inv_hp_pol;
++
++	/* Value to assign to snd_soc_card.long_name */
++	const char *long_name;
++};
++
+ struct rt5645_priv {
+ 	struct snd_soc_component *component;
+ 	struct rt5645_platform_data pdata;
+@@ -3834,7 +3855,7 @@ static int rt5645_parse_dt(struct rt5645_priv *rt5645, struct device *dev)
+ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+-	struct rt5645_platform_data *pdata = dev_get_platdata(&i2c->dev);
++	struct rt5645_platform_data *pdata = NULL;
+ 	const struct dmi_system_id *dmi_data;
+ 	struct rt5645_priv *rt5645;
+ 	int ret, i;
+diff --git a/sound/soc/codecs/rt5645.h b/sound/soc/codecs/rt5645.h
+index e2d72ae17484..ac3de6f3bc2f 100644
+--- a/sound/soc/codecs/rt5645.h
++++ b/sound/soc/codecs/rt5645.h
+@@ -9,8 +9,6 @@
+ #ifndef __RT5645_H__
+ #define __RT5645_H__
+ 
+-#include <sound/rt5645.h>
+-
+ /* Info */
+ #define RT5645_RESET				0x00
+ #define RT5645_VENDOR_ID			0xfd
+-- 
+2.30.1
+
