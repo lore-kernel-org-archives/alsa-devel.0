@@ -7,81 +7,81 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8D9FC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:14:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A41EDC433DB
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:15:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 39A9564DF3
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:14:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 39A9564DF3
+	by mail.kernel.org (Postfix) with ESMTPS id 18F5965004
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:15:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18F5965004
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 661DC1AFE;
-	Sat,  6 Mar 2021 20:13:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 661DC1AFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADA7E1B10;
+	Sat,  6 Mar 2021 20:14:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADA7E1B10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615058078;
-	bh=lfR91+dd/0PvgAQw1PT3r1lGhLaSM+aCwhM2IxU9oxQ=;
+	s=default; t=1615058129;
+	bh=XWismT+mNxbEOV55GrHlBDWras0r3eBqs8GDHOf+wZU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k8n65axp9M9Y/wZ7s7JGnh+8/LdeM81v9BFaD+LYrFy3O/U2wKLn5T0YQvWjM2xj1
-	 qa0rDo+50T/PwYzvAVxtooMin1xKFNOA9SiUnQK7cu389TAhmYlGAZiA0dfxG23O5g
-	 8PhDebMxGPQLCQJ4dbz0OaGsvtFJ0S+LUHOR5K/o=
+	b=Sxk6ptt5UrokKrk/0CGqQ7bdcrSSbnhLoYU+efjpc5v7kxBzMDnNL7tb+qmCZ/PyD
+	 Sxq/MDi3Q7jJS21lZ/FxcwYPtxpXTQNFOOfkHzJcM4CJActENASIDir0GsAazT6z7U
+	 2pEi4vqKWuYDd4Sv0zlPvXziJGKe4oek2yf5n/Zs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3415FF80424;
-	Sat,  6 Mar 2021 20:13:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AA74F80430;
+	Sat,  6 Mar 2021 20:13:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 381B8F80424; Sat,  6 Mar 2021 20:13:45 +0100 (CET)
+ id D389BF80425; Sat,  6 Mar 2021 20:13:44 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A010CF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9892FF8025B
  for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 20:13:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A010CF80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9892FF8025B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="XZz3Wsg1"
+ header.b="kGYZXo6x"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 126JCNcc017698; Sat, 6 Mar 2021 13:13:32 -0600
+ 126JCNcb017698; Sat, 6 Mar 2021 13:13:31 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=CiEKSTjYLcSgfPsH1Wdc4wThi9n7EU2ewT3omwX+a3A=;
- b=XZz3Wsg12l/BdxwD+TiTxtPSlk0ihUGZuVVvCq4YwL9213sosLzxEEHLelAGyK9MhNsn
- JWfdbWs2QtGWIkdS8auxCchXQOLCGPY7xl2iGgY8BgnJv3+VGGGNmgI0UvZDcWN+vyZC
- 1H8azKy7s5jCNCRCqY7Dtv/nzzbI6jrLbdOQojjKbz0HdDPIJxFBFD+jWSZVjOly+u1m
- 5HNc9KEOuNMrFUHiP5IA/HLPfwc9TxfcD1EOttDNy2wCvof+aGGkEP+cPAPFVv08jx0M
- vElafsA8tYQIHmSp3jJSmKM1fdiAobhPD4ZgXDNPNe4/JpQ0IjMkiMWpo8Z32p1M6zj9 ZQ== 
+ bh=8YWxrT2lHb23g9XQQZg1JKBV76cBNceJxjYy4j0ffVI=;
+ b=kGYZXo6xEGBT4L1ia7EsF0OVSxoYZmWPW7OCTVYk4Pm1LjSmYn2Iyg7xS1ttt+I2Al7E
+ NN2Gxc/yz774PZCF73eKtEJUBstD96JJHuzUdXw9Q8QLOBMrjC+Lm7fCWVKQkGqfmX9Q
+ Mo3yDawzZzHleH/hyN4S1gPkAvaC7gz907PdPSAEfmJMoOGrGqZjES8cb8eCwSY2OYXF
+ RawyXuCt2EG34BCq1JJnKt0ZG8WIlLRexmSov5beMxWlZxwmqHJxZ7k3mmIkw9iuvzXN
+ gJdCLR3htENf+6YunypBmXFd51O4H9rLt7ktfIOGS6AsL2MAM4DGw6rx3616pLMyUB7u SA== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3748198d08-2
+ by mx0a-001ae601.pphosted.com with ESMTP id 3748198d08-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sat, 06 Mar 2021 13:13:32 -0600
+ Sat, 06 Mar 2021 13:13:31 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 6 Mar 2021
- 18:56:27 +0000
+ 18:56:26 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 6 Mar 2021 18:56:27 +0000
+ Transport; Sat, 6 Mar 2021 18:56:26 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 94D2111CB;
- Sat,  6 Mar 2021 18:56:27 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5659011CB;
+ Sat,  6 Mar 2021 18:56:26 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>
-Subject: [PATCH v3 07/15] ASoC: cs42l42: Disable regulators if probe fails
-Date: Sat, 6 Mar 2021 18:55:45 +0000
-Message-ID: <20210306185553.62053-8-tanureal@opensource.cirrus.com>
+Subject: [PATCH v3 03/15] ASoC: cs42l42: Fix mixer volume control
+Date: Sat, 6 Mar 2021 18:55:41 +0000
+Message-ID: <20210306185553.62053-4-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
 References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
@@ -111,7 +111,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In case of cs42l42_i2c_probe() fail, the regulators were left enabled.
+The minimum value is 0x3f (-63dB), which also is mute
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
@@ -121,51 +121,31 @@ Changes in v3:
 Changes in v2:
 - No changes
 
- sound/soc/codecs/cs42l42.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index f61404de139b0..81cdd09d80bb3 100644
+index 4f9ad95479292..d5078ce79fadd 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1750,8 +1750,10 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 	/* Reset the Device */
- 	cs42l42->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
- 		"reset", GPIOD_OUT_LOW);
--	if (IS_ERR(cs42l42->reset_gpio))
--		return PTR_ERR(cs42l42->reset_gpio);
-+	if (IS_ERR(cs42l42->reset_gpio)) {
-+		ret = PTR_ERR(cs42l42->reset_gpio);
-+		goto err_disable;
-+	}
+@@ -401,7 +401,7 @@ static const struct regmap_config cs42l42_regmap = {
+ };
  
- 	if (cs42l42->reset_gpio) {
- 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
-@@ -1785,13 +1787,13 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 		dev_err(&i2c_client->dev,
- 			"CS42L42 Device ID (%X). Expected %X\n",
- 			devid, CS42L42_CHIP_ID);
--		return ret;
-+		goto err_disable;
- 	}
+ static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
+-static DECLARE_TLV_DB_SCALE(mixer_tlv, -6200, 100, false);
++static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
  
- 	ret = regmap_read(cs42l42->regmap, CS42L42_REVID, &reg);
- 	if (ret < 0) {
- 		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
--		return ret;
-+		goto err_disable;
- 	}
+ static const char * const cs42l42_hpf_freq_text[] = {
+ 	"1.86Hz", "120Hz", "235Hz", "466Hz"
+@@ -458,7 +458,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
+ 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
+ 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
+ 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
+-				0x3e, 1, mixer_tlv)
++				0x3f, 1, mixer_tlv)
+ };
  
- 	dev_info(&i2c_client->dev,
-@@ -1817,7 +1819,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 	if (i2c_client->dev.of_node) {
- 		ret = cs42l42_handle_device_data(i2c_client, cs42l42);
- 		if (ret != 0)
--			return ret;
-+			goto err_disable;
- 	}
- 
- 	/* Setup headset detection */
+ static int cs42l42_hpdrv_evt(struct snd_soc_dapm_widget *w,
 -- 
 2.30.1
 
