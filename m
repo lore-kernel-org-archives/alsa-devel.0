@@ -7,82 +7,82 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BBAC433E0
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:17:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63BE9C433E6
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:17:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBC80650BC
-	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:17:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBC80650BC
+	by mail.kernel.org (Postfix) with ESMTPS id CFA3965004
+	for <alsa-devel@archiver.kernel.org>; Sat,  6 Mar 2021 19:17:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFA3965004
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EFFA1F10;
-	Sat,  6 Mar 2021 20:16:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EFFA1F10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 347E31F2A;
+	Sat,  6 Mar 2021 20:16:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 347E31F2A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615058232;
-	bh=n3eWBaGKZOL3U7dXUnho03eqWNnM1vZ813qsIOMLkqY=;
+	s=default; t=1615058268;
+	bh=5bNSeDnRW10CjMLDAH39oxitYBw6X0hm0FBFY5KOIaQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IDOALr39SruZ3ht/5NQSAKTpMADXkH/21sePy7AJTdK12fQ/GRjtqMlNC09u089pM
-	 6LL6R3B1GfwjGnnwvxvydSKeObgk5OkzZk0LzmPCuwma0i8rL4ih+sp64f0sh1PIlV
-	 AIm6ximlhHYBFjhV0dGuzpEJw5WbMigJIOok0Z9k=
+	b=nsrjvoUaqsA2eFMbqq0MMwedZvWu8SAjEGscTbKk0SU/3th1tx20ELXW5o0ZO/JW5
+	 kYtDm04XHd2iH7QoPmgpLWEDfRkWCxnyqBRGa1z3aYXlM24ejEet9ii/S4C5LcQdUj
+	 npU38n8GJwsLNOCmwox9nszP83lCsIL6SuS5TG5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6466EF804D8;
-	Sat,  6 Mar 2021 20:14:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D85C9F802A9;
+	Sat,  6 Mar 2021 20:14:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62ACAF804AA; Sat,  6 Mar 2021 20:13:54 +0100 (CET)
+ id B24D6F804CF; Sat,  6 Mar 2021 20:14:00 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30E24F800F3
- for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 20:13:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30E24F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DC57F802C4
+ for <alsa-devel@alsa-project.org>; Sat,  6 Mar 2021 20:13:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DC57F802C4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="SikI74hb"
+ header.b="We6H5cyw"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 126J6uDI011401; Sat, 6 Mar 2021 13:13:31 -0600
+ 126JCNcf017698; Sat, 6 Mar 2021 13:13:34 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=DQ0UlbScbDwHDZ/kfdanwdE02lH2JfbA7yM0VW0dsQI=;
- b=SikI74hb+XFQb6zqJyHmdU8Xp0xXda5wm/6duPJ9N9pyqRHJBwzW2aSnSWweCXkBGCKS
- kVwuut1RKOYcs6lEyF6rAeaDegNsoqd8xlfBL2NUIkbkVdi4UwnWTgl7921KlhuQVDlH
- ZsJI0aw2AgoKSCC/R89fQ7vuvilkRMWQYYd0WTV2BqZxRhTpb6sHr17cgtHooBVzbr0G
- JaYpesri240EPX2Tcjwi/1nYkChvinDrlPO8s80hENx/ganJ1OVwJKN39Le4L4qzJjTk
- 8A/xmTXxb66Ou11zW4S5AngQ9U/VCbFcuORTJ04x9JH0x+9MSy/TZZN1ZLko9aZk7RO9 Bw== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 3748198d06-2
+ bh=wPSDKxGxlPyJi/idIuSZPJ+4etMy5RzWXBgwugWh+Iw=;
+ b=We6H5cywIxKaZhqYgl73PUsdJE64yFMCHrHmdkAafU4CIa/Poym1DmaVhk6ez1fixrTG
+ jsIqS4TUUhYwjZ2sNH+T0atdpE5udkl/OVduOABwi3hrj4KKSxlJqay7nkryi8QXb2b7
+ MzaXhjNAb/HrtclRxlxGdZqF+MM1f4rAn4mEBGpbMuKQuAJrglGrFBV+XOLUoytNcIc1
+ m1GZqLBm0AEQOMhVWBlUGJenLtvHtFuvuIobMRQc2zwW9ZCe64EeLDj/JpsYPGdMTR4d
+ ajwzht2ik0x4vycs7ZK8uohCArUTdyixXA4ej0vgpOTRAmbtvC0grWty4yzq29CLWjvS +g== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0a-001ae601.pphosted.com with ESMTP id 3748198d08-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sat, 06 Mar 2021 13:13:31 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Sat, 06 Mar 2021 13:13:34 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 6 Mar 2021
- 18:56:26 +0000
+ 18:56:29 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 6 Mar 2021 18:56:26 +0000
+ Transport; Sat, 6 Mar 2021 18:56:29 +0000
 Received: from mail1.cirrus.com (unknown [198.61.64.35])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AA02111D7;
- Sat,  6 Mar 2021 18:56:26 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 10ED711CB;
+ Sat,  6 Mar 2021 18:56:29 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: James Schulman <james.schulman@cirrus.com>, David Rhodes
  <david.rhodes@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
  <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
  <tiwai@suse.com>
-Subject: [PATCH v3 04/15] ASoC: cs42l42: Don't enable/disable regulator at
- Bias Level
-Date: Sat, 6 Mar 2021 18:55:42 +0000
-Message-ID: <20210306185553.62053-5-tanureal@opensource.cirrus.com>
+Subject: [PATCH v3 12/15] ASoC: cs42l42: Use bclk from hw_params if set_sysclk
+ was not called
+Date: Sat, 6 Mar 2021 18:55:50 +0000
+Message-ID: <20210306185553.62053-13-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
 References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
@@ -92,7 +92,7 @@ Content-Type: text/plain
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
  lowpriorityscore=0 suspectscore=0
  phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=841 clxscore=1015
+ mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103060119
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
@@ -112,7 +112,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-dev_pm_ops already enable/disable the codec if not in use
+Add support for reading the source clock from snd_soc_params_to_bclk
+so the machine driver is not required to call cs42l42_set_sysclk
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
@@ -122,65 +123,77 @@ Changes in v3:
 Changes in v2:
 - No changes
 
- sound/soc/codecs/cs42l42.c | 38 --------------------------------------
- 1 file changed, 38 deletions(-)
+ sound/soc/codecs/cs42l42.c | 17 +++++++++++++----
+ sound/soc/codecs/cs42l42.h |  1 +
+ 2 files changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d5078ce79fadd..eee3fc3200308 100644
+index 594bf22521037..68b7ed71ad542 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -511,43 +511,6 @@ static const struct snd_soc_dapm_route cs42l42_audio_map[] = {
- 	{"HP", NULL, "HPDRV"}
+@@ -588,10 +588,16 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ {
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	int i;
++	u32 clk;
+ 	u32 fsync;
+ 
++	if (!cs42l42->sclk)
++		clk = cs42l42->bclk;
++	else
++		clk = cs42l42->sclk;
++
+ 	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
+-		if (pll_ratio_table[i].sclk == cs42l42->sclk) {
++		if (pll_ratio_table[i].sclk == clk) {
+ 			/* Configure the internal sample rate */
+ 			snd_soc_component_update_bits(component, CS42L42_MCLK_CTL,
+ 					CS42L42_INTERNAL_FS_MASK,
+@@ -611,12 +617,12 @@ static int cs42l42_pll_config(struct snd_soc_component *component)
+ 					(pll_ratio_table[i].mclk_div <<
+ 					CS42L42_MCLKDIV_SHIFT));
+ 			/* Set up the LRCLK */
+-			fsync = cs42l42->sclk / cs42l42->srate;
+-			if (((fsync * cs42l42->srate) != cs42l42->sclk)
++			fsync = clk / cs42l42->srate;
++			if (((fsync * cs42l42->srate) != clk)
+ 				|| ((fsync % 2) != 0)) {
+ 				dev_err(component->dev,
+ 					"Unsupported sclk %d/sample rate %d\n",
+-					cs42l42->sclk,
++					clk,
+ 					cs42l42->srate);
+ 				return -EINVAL;
+ 			}
+@@ -788,6 +794,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int val = 0;
+ 
+ 	cs42l42->srate = params_rate(params);
++	cs42l42->bclk = snd_soc_params_to_bclk(params);
+ 
+ 	switch(substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+@@ -921,6 +928,8 @@ static struct snd_soc_dai_driver cs42l42_dai = {
+ 			.rates = SNDRV_PCM_RATE_8000_192000,
+ 			.formats = CS42L42_FORMATS,
+ 		},
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
+ 		.ops = &cs42l42_ops,
  };
  
--static int cs42l42_set_bias_level(struct snd_soc_component *component,
--					enum snd_soc_bias_level level)
--{
--	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
--	int ret;
--
--	switch (level) {
--	case SND_SOC_BIAS_ON:
--		break;
--	case SND_SOC_BIAS_PREPARE:
--		break;
--	case SND_SOC_BIAS_STANDBY:
--		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF) {
--			regcache_cache_only(cs42l42->regmap, false);
--			regcache_sync(cs42l42->regmap);
--			ret = regulator_bulk_enable(
--						ARRAY_SIZE(cs42l42->supplies),
--						cs42l42->supplies);
--			if (ret != 0) {
--				dev_err(component->dev,
--					"Failed to enable regulators: %d\n",
--					ret);
--				return ret;
--			}
--		}
--		break;
--	case SND_SOC_BIAS_OFF:
--
--		regcache_cache_only(cs42l42->regmap, true);
--		regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies),
--						    cs42l42->supplies);
--		break;
--	}
--
--	return 0;
--}
--
- static int cs42l42_component_probe(struct snd_soc_component *component)
- {
- 	struct cs42l42_private *cs42l42 =
-@@ -560,7 +523,6 @@ static int cs42l42_component_probe(struct snd_soc_component *component)
- 
- static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
- 	.probe			= cs42l42_component_probe,
--	.set_bias_level		= cs42l42_set_bias_level,
- 	.dapm_widgets		= cs42l42_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(cs42l42_dapm_widgets),
- 	.dapm_routes		= cs42l42_audio_map,
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index e12828877a20d..429c6833fc811 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -771,6 +771,7 @@ struct  cs42l42_private {
+ 	struct gpio_desc *reset_gpio;
+ 	struct completion pdn_done;
+ 	struct snd_soc_jack jack;
++	int bclk;
+ 	u32 sclk;
+ 	u32 srate;
+ 	u8 plug_state;
 -- 
 2.30.1
 
