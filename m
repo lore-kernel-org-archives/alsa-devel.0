@@ -7,94 +7,94 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AACA5C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 17:31:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 923B0C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 17:36:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 70B4A65182
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 17:31:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70B4A65182
+	by mail.kernel.org (Postfix) with ESMTPS id 63B7B65185
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 17:36:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 63B7B65185
 Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D7E41F5B;
-	Sun,  7 Mar 2021 18:30:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D7E41F5B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5643518E3;
+	Sun,  7 Mar 2021 18:35:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5643518E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615138277;
-	bh=pCeB5JVeModdLYSnWUF46oxT6WvcQH/+S48fLGvWFEo=;
+	s=default; t=1615138572;
+	bh=yGUhKgZ6m34xT9Xeri7wLeb1Wx+muLvWx2Rc7tNYFBE=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gWVQ3ErvkY3XOjgSiAUpErsLSsd5POBQluZmFJhjpM2E8RpDf1kfENdwUs7JUCFAD
-	 gIEXqtjUySYPIPYfxw0Gyqclx/4zIRyKihejmCYLoeknlsD/lAwPhFqqdfbpBSVaLI
-	 bwA1FnXooM1kAxPiFxcTMk0JJpCUS+WWUknzn65Q=
+	b=sOBKdWFm1SR+KC7cZNS6eDdYQHbV1skcOhkHOHZN6xlY4IjR9EPLA8/78v2eYEbS5
+	 pjnIDzOZ3LJvYw7ioPMENGb0iduzGk2j/4qipbfeL+r5uLeEzNUOxeU44uMN5MTNvJ
+	 Grt4kk+K8oQ9qPp453uIabQ9rKAmbGLnEjPRWesE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A230F8019B;
-	Sun,  7 Mar 2021 18:30:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BE9DF8019B;
+	Sun,  7 Mar 2021 18:35:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9641F80227; Sun,  7 Mar 2021 18:30:23 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id C782BF80256; Sun,  7 Mar 2021 18:35:18 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C45B3F800ED
- for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 18:30:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C45B3F800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52CACF800ED
+ for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 18:35:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52CACF800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Q3TKGNs6"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 127HTsxA023819; Sun, 7 Mar 2021 11:29:54 -0600
+ header.b="kEtZ2lF3"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 127HUVRR030768; Sun, 7 Mar 2021 11:35:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=PODMain02222019;
- bh=qFwuaB9XRWNdbWaM1kjbKcvQcMGq7hMqEHja3kG8szw=;
- b=Q3TKGNs6jVIvV3XvCmrApgK/BIpd/eWKtee5dvRWRrLf19B6pzkFvRD++5D0Ox/OsDRH
- esp8o8nd8gX4e99EtjIERCTYCJ2Oqavx++GhVTf2HtLYbdLlBXKEFa5Ms/QjGqX/aarx
- DV5OgBlrCa6vnO7Dl+kaX0gn7cHipNMeMybN8qoh5eKe3iEh3Aeo+tjqfKt2pTx0UyKU
- EJCnzmWSRj3Qtt3hKqfqYw+r/X4vvwHDhVJ/JwtW9lHGtDOAmQJ4OfTGSIcXCrGVf2m2
- 0Ei4X0NQ4URm7HdzWCh49YfPHMGaT76pZhW5LbxCdz5t4NAnEfsUsB2w5Tbqc6erDno6 Rg== 
+ bh=4IcP482WivrPpW8qzTq8Vh0u+FmYVTZmwQGRKPQ/uWY=;
+ b=kEtZ2lF3/BzuBisoKfbsC3Ztan8jYG2af21/rcObe0Rl+2YzhJGCZN7KVzB9kO+77FxM
+ a5D8uIgZP17bJL7btJK2vvLUXR6lrM31ONg06bcXA2uBcpM/8Wt1GutnegM9YXhus8FJ
+ RFG523+3YS47k5diRlVPhQ5pydsu7B0LYw2g3YjVFBvUy0rYu8O7i4FdK2chNJLz3XYB
+ v/6yog+9BGqwHgZbxygX6w7J8akCH03cVZfg66tpimITD4U9ag0CgQbcLRTuJb1qeKHh
+ 4SgxRoyHcVUrlpYuUTnCyZqBGUSSC3T2nnewU6eSCBniFbzH7m6KNez2khBItKxygDUo Cg== 
 Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0b-001ae601.pphosted.com with ESMTP id 37471vs4kr-1
+ by mx0a-001ae601.pphosted.com with ESMTP id 37481993yc-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sun, 07 Mar 2021 11:29:54 -0600
+ Sun, 07 Mar 2021 11:35:08 -0600
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sun, 7 Mar 2021
- 17:29:52 +0000
+ 17:05:02 +0000
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sun, 7 Mar 2021 17:29:52 +0000
+ Transport; Sun, 7 Mar 2021 17:05:02 +0000
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D480B11CB;
- Sun,  7 Mar 2021 17:29:52 +0000 (UTC)
-Date: Sun, 7 Mar 2021 17:29:52 +0000
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0ECB611D6;
+ Sun,  7 Mar 2021 17:05:02 +0000 (UTC)
+Date: Sun, 7 Mar 2021 17:05:02 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: wm8962: Relax bit clock divider searching
-Message-ID: <20210307172952.GG106851@ediswmail.ad.cirrus.com>
-References: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+To: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH] sound: soc: codecs: Fix a spello in the file wm8955.c
+Message-ID: <20210307170502.GE106851@ediswmail.ad.cirrus.com>
+References: <20210306115151.31759-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20210306115151.31759-1-unixbhaskar@gmail.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015
- adultscore=0
- malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103070096
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- gustavoars@kernel.org, kuninori.morimoto.gx@renesas.com,
- patches@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
- peter.ujfalusi@ti.com, broonie@kernel.org, linux-kernel@vger.kernel.org
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0
+ lowpriorityscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103070096
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+ lgirdwood@gmail.com, patches@opensource.cirrus.com, rdunlap@infradead.org,
+ gustavoars@kernel.org, tiwai@suse.com, peter.ujfalusi@ti.com,
+ broonie@kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,47 +110,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Mar 03, 2021 at 07:21:28PM +0800, Shengjiu Wang wrote:
-> With S20_3LE format case, the sysclk = rate * 384,
-> the bclk = rate * 20 * 2, there is no proper bclk divider
-> for 384 / 40, because current condition needs exact match.
-> So driver fails to configure the clocking:
+On Sat, Mar 06, 2021 at 05:21:51PM +0530, Bhaskar Chowdhury wrote:
 > 
-> wm8962 3-001a: Unsupported BCLK ratio 9
+> s/sortd/sorted/
 > 
-> Fix this by relaxing bitclk divider searching, so that when
-> no exact value can be derived from sysclk pick the closest
-> value greater than expected bitclk.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  sound/soc/codecs/wm8962.c | 21 +++++++++++----------
->  1 file changed, 11 insertions(+), 10 deletions(-)
+>  sound/soc/codecs/wm8955.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> index ce4666a74793..f5cd22450190 100644
-> --- a/sound/soc/codecs/wm8962.c
-> +++ b/sound/soc/codecs/wm8962.c
-> @@ -2403,6 +2403,7 @@ static const int sysclk_rates[] = {
->  static void wm8962_configure_bclk(struct snd_soc_component *component)
->  {
->  	struct wm8962_priv *wm8962 = snd_soc_component_get_drvdata(component);
-> +	int best, min_diff, diff;
->  	int dspclk, i;
->  	int clocking2 = 0;
->  	int clocking4 = 0;
-> @@ -2473,23 +2474,23 @@ static void wm8962_configure_bclk(struct snd_soc_component *component)
->  
->  	dev_dbg(component->dev, "DSPCLK is %dHz, BCLK %d\n", dspclk, wm8962->bclk);
->  
+> diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
+> index 513df47bd87d..538bb8b0db39 100644
+> --- a/sound/soc/codecs/wm8955.c
+> +++ b/sound/soc/codecs/wm8955.c
+> @@ -151,7 +151,7 @@ static int wm8955_pll_factors(struct device *dev,
+>  	/* The oscilator should run at should be 90-100MHz, and
+>  	 * there's a divide by 4 plus an optional divide by 2 in the
+>  	 * output path to generate the system clock.  The clock table
+> -	 * is sortd so we should always generate a suitable target. */
+> +	 * is sorted so we should always generate a suitable target. */
+>  	target = Fout * 4;
+>  	if (target < 90000000) {
+>  		pll->outdiv = 1;
+> --
+> 2.26.2
+> 
 
-Very minor nit but it would probably be nice to have some
-equivalent debug statement that prints out the actual BCLK we end
-up with. There are a couple of statements printing the requested
-speed, but nothing that will output what the driver actually
-applies after this change.
-
-Otherwise I think the change looks good.
+Content of the patch looks good, the commit message might need a
+little work. The subject line needs to be appropriate for the
+subsystem. Would be better to start with "ASoC: wm8955: " and
+typo is a more standard term than spello :-)
 
 Thanks,
 Charles
