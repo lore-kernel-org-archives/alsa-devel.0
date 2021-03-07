@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9006EC433DB
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:32:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC8CAC433DB
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:32:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D17F8650E7
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:32:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D17F8650E7
+	by mail.kernel.org (Postfix) with ESMTPS id 51371650BD
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:32:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51371650BD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7423D1928;
-	Sun,  7 Mar 2021 14:31:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7423D1928
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFD3D1F1B;
+	Sun,  7 Mar 2021 14:32:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFD3D1F1B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615123938;
-	bh=S7IWAbPv5qnh3Ho4oFKppBM3Ltr7CXQAYFjP/7PAjQY=;
+	s=default; t=1615123978;
+	bh=b+s3OBotdKH5qg136xVspP+3hqETci4VM5OPwDEjIYA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ik2lkEwYHSWYJc9OnGQ2xs9oMfkFG6eNWxTur5Z1doUnC2A74DpN1xiaU1rPFki+B
-	 qbu6TTmC761Q03dwxKNhZXLQpylm8YSxIINKAp7XD2kE7WH0JbDfTLGYPRAth99EAi
-	 2fOxBIRcTK2WdVPfOGqLu5X4wxoTt/YUljYyjWP0=
+	b=EbeskOkmMMoPWQD8sExUTKg2fMMoyDvJrBYBUxwF+jUbYitEY1tuno9C8WUcAvxu+
+	 hhygZ7LIdo7TUF8/1WEX7KOI8sM4JLGiAA4D7drqxoeUuLM44H4dUtfH9U75fuc+8c
+	 0kmCg+NkEyMkTuIhS7G44pRuhlv5LKDqm7vADyDA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91C59F8029B;
-	Sun,  7 Mar 2021 14:30:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 965FBF8032B;
+	Sun,  7 Mar 2021 14:30:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A44EF802E7; Sun,  7 Mar 2021 14:30:33 +0100 (CET)
+ id 6816FF8032B; Sun,  7 Mar 2021 14:30:33 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2F3EF80256
- for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 14:30:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2F3EF80256
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E7C7F8025A
+ for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 14:30:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E7C7F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="g04CdcwB"
+ header.b="Z9/gWB3l"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615123812;
+ s=mimecast20190719; t=1615123813;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=i047CKFCjWISjT8RgNvNjcSgYVkSqF6L9d0bgC4eBM0=;
- b=g04CdcwBAZKRJrSCDAlb6IaAB8ukTZZE72BoY19UUTWdLJKWcBpPwfpKk08cY1e82lBKi6
- nmQcI2pyKz3Af7MoopPqj7se/NPzxjr5wMxTFDHhAKS+MBmT7f/nhOaqc2lztEKeP2LR6O
- c6BHCpzT53GdqNF7ux+SUL4vqm1L4Wo=
+ bh=5B4hNxElmX8Qxaj9doCBhadPFHIDCtqOWrUg8cq2q4w=;
+ b=Z9/gWB3l23mET4CVKocZecGuI2IWbJUwaSlMsk/Rtr0Inh2UNEa2pmnb0vZ806ucf3cmkv
+ SR4SDtYKBF/uvBoVORg6wTrEvkEjn3dHnJVVXZxBbqSBk6YiqKF0AO6WzfsRj2Ap+DI67J
+ Rn69VQ+ErGC2Fa+4WYy2wSHGZIDA6Hg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-TJgNWWD-NvCp_7PFRoVMuA-1; Sun, 07 Mar 2021 08:30:10 -0500
-X-MC-Unique: TJgNWWD-NvCp_7PFRoVMuA-1
+ us-mta-318-FmIREiuTMt6cwwR-vROJeA-1; Sun, 07 Mar 2021 08:30:11 -0500
+X-MC-Unique: FmIREiuTMt6cwwR-vROJeA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C14DF8143F0;
- Sun,  7 Mar 2021 13:30:09 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D150D18D6A2C;
+ Sun,  7 Mar 2021 13:30:10 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-90.ams2.redhat.com [10.36.112.90])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 020C25C1CF;
- Sun,  7 Mar 2021 13:30:08 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 12B295C1CF;
+ Sun,  7 Mar 2021 13:30:09 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib v3 2/5] mixer: simple - Move handling of 3D Control -
- Depth controls to the exceptions list
-Date: Sun,  7 Mar 2021 14:30:02 +0100
-Message-Id: <20210307133005.30801-3-hdegoede@redhat.com>
+Subject: [PATCH alsa-lib v3 3/5] mixer: simple - Add exceptions for non "
+ Volume" suffixed capture vol-ctls used in ASoC realtek codec drivers
+Date: Sun,  7 Mar 2021 14:30:03 +0100
+Message-Id: <20210307133005.30801-4-hdegoede@redhat.com>
 In-Reply-To: <20210307133005.30801-1-hdegoede@redhat.com>
 References: <20210307133005.30801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,48 +103,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove the custom handling of 3D Control - Depth control-names, replacing
-this with adding the 3 full names which are used for such controls to the
-exceptions list:
+The following ASoC codec drivers:
 
-"3D Control - Depth"
-"3D Control Sigmatel - Depth"
-"3D Control Sigmatel - Rear Depth"
+sound/soc/codecs/rt5640.c
+sound/soc/codecs/rt5645.c
+sound/soc/codecs/rt5651.c
+sound/soc/codecs/rt5677.c
+
+Use capture-volume-control names like: "IN1 Boost", note the missing
+" Volume" suffix. This causes the mixer code to not identify these as
+volume-controls, which causes some of the dB related sm_elem_ops to
+return -EINVAL.
+
+This in turn causes alsamixer to not show dB info and causes UCM profile
+HW volume control support in pulseaudio to not work properly due to the
+lacking dB scale info.
+
+This cannot be fixed on the kernel side because the non " Volume" suffixed
+names are used in UCM profiles currently shipping in alsa-ucm-conf.
+
+Add these to the exceptions table, so that these correctly get identified
+as CTL_CAPTURE_VOLUME controls.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/mixer/simple_none.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ src/mixer/simple_none.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index 30d5aa8b..b29554cb 100644
+index b29554cb..8f964959 100644
 --- a/src/mixer/simple_none.c
 +++ b/src/mixer/simple_none.c
-@@ -922,6 +922,10 @@ static const struct excep {
- 	/* Avoid these Capture Volume/Switch controls getting seen as GLOBAL VOL/SW */
- 	{"Capture Volume", 7, CTL_CAPTURE_VOLUME},
- 	{"Capture Switch", 7, CTL_CAPTURE_SWITCH},
-+	/* Playback Volume/Switch controls without a " Playback ..." suffix */
-+	{"3D Control - Depth", 18, CTL_PLAYBACK_VOLUME},
-+	{"3D Control Sigmatel - Depth", 27, CTL_PLAYBACK_VOLUME},
-+	{"3D Control Sigmatel - Rear Depth", 32, CTL_PLAYBACK_VOLUME},
+@@ -926,6 +926,11 @@ static const struct excep {
+ 	{"3D Control - Depth", 18, CTL_PLAYBACK_VOLUME},
+ 	{"3D Control Sigmatel - Depth", 27, CTL_PLAYBACK_VOLUME},
+ 	{"3D Control Sigmatel - Rear Depth", 32, CTL_PLAYBACK_VOLUME},
++	/* Capture Volume/Switch controls without a " Capture ..." suffix */
++	{"ADC Boost Gain", 14, CTL_CAPTURE_VOLUME},
++	{"IN1 Boost", 9, CTL_CAPTURE_VOLUME},
++	{"IN2 Boost", 9, CTL_CAPTURE_VOLUME},
++	{"IN3 Boost", 9, CTL_CAPTURE_VOLUME},
  	{NULL,}
  };
  #endif
-@@ -953,13 +957,6 @@ static int base_len(const char *name, selem_ctl_type_t *type)
- 		}
- 	}
- 
--	if (strstr(name, "3D Control")) {
--		if (strstr(name, "Depth")) {
--			*type = CTL_PLAYBACK_VOLUME;
--			return strlen(name);
--		}
--	}
--
- 	*type = CTL_SINGLE;
- 	return strlen(name);
- }
 -- 
 2.30.1
 
