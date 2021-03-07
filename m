@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95BEDC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3766C433DB
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:33:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A9480650BD
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:33:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9480650BD
+	by mail.kernel.org (Postfix) with ESMTPS id 270BA64D9A
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:33:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 270BA64D9A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66A8D1F28;
-	Sun,  7 Mar 2021 14:32:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66A8D1F28
+	by alsa0.perex.cz (Postfix) with ESMTPS id B64CF1930;
+	Sun,  7 Mar 2021 14:32:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B64CF1930
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615123986;
-	bh=p7VWHgR1ITEEX+8LlwQB+9+He2yowwjdKGL0H260rgc=;
+	s=default; t=1615124024;
+	bh=RAlb1+by613LvdC3rbdYqSr6E1bH1PNZUzXr9FBXE1o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fqnPp9byYrNovYd1dVfTtQYRjr8XGmpggebdzFyIkyS38py6v7qVzYuRJwN5yS7E7
-	 juC/MEUz/JWRBIAywDutZYqZZRogZXWIUHRi7E1TurMc6Jkp7SNIRT/XOpBsQd2oRr
-	 sAHmt5iOp+WYRfX7R/5i3WnO0yQNoN9oZphoCjCc=
+	b=l2FXBAR8TX1YdjRQCvcoRh0cXVgMQjvbmlpR6VwgjomUb2WkWfQ7E6GH/YHXK1/fb
+	 0utwp35AoYhWwA1JfidwM8ENn7GWha7Oz+Lx+wY/PgvSYIy56jxOoMqDWVqvOxwjyn
+	 QvWXf9B7H938MhBotcoFFzUk5pSJ+GiHEq+9WSOw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B12CF8042F;
-	Sun,  7 Mar 2021 14:30:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1204CF80482;
+	Sun,  7 Mar 2021 14:30:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D28EAF8025A; Sun,  7 Mar 2021 14:30:33 +0100 (CET)
+ id 0F7B6F802E7; Sun,  7 Mar 2021 14:30:33 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FD8BF80275
- for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 14:30:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FD8BF80275
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF528F8019B
+ for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 14:30:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF528F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="bSabm9Uu"
+ header.b="cGsCbOTO"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615123816;
+ s=mimecast20190719; t=1615123811;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=j/CX1bmk7VyVvG8DVLSSYlp5BHvTlqOBOy5C6FxS73U=;
- b=bSabm9UuPJelR9bY1iKZ3BYyJTHKPSoHwWGbeKxzixeVMex5tIXooyR+kMzsqH8tZ+sKNI
- Lcn3OHL4AAe0iyuib9m643u/89nZOpvb89SRapNMHXblJjCD/9OxkW3tEe9lZ6v2N6Uf70
- kiGS9Johqg645VIoITKKV2V4YcbHreU=
+ bh=SHU77spW39BhXLl2khuj00Iq6JVeXwQVZQpSm57VkBw=;
+ b=cGsCbOTORG9gapx0fVAUNuR2AXw78k+7vv/D9MK8b4pztDbPcMOLtv/Vj3rHkwtftZyJW3
+ jGWfbyH9FvI2yEPmTDxBHVW39FtbMJ7AXzp5LQllHvipUe+0Ec+kNOzT8pnN0CYl5CGrES
+ t9OJVc8Sl9F0bLK0x6Nz1hsGbTbSWDs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-_64VhUY2NDK9J5FWvku3DQ-1; Sun, 07 Mar 2021 08:30:13 -0500
-X-MC-Unique: _64VhUY2NDK9J5FWvku3DQ-1
+ us-mta-533-Vjine5g2Oi2WgaZydM5ghA-1; Sun, 07 Mar 2021 08:30:09 -0500
+X-MC-Unique: Vjine5g2Oi2WgaZydM5ghA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 209578143F0;
- Sun,  7 Mar 2021 13:30:12 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD97D26860;
+ Sun,  7 Mar 2021 13:30:08 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-90.ams2.redhat.com [10.36.112.90])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 26BCB5C1CF;
- Sun,  7 Mar 2021 13:30:11 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id E51615C230;
+ Sun,  7 Mar 2021 13:30:07 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib v3 4/5] mixer: simple - Add exceptions for some
- capture-vol-ctls which have a " Volume" suffix
-Date: Sun,  7 Mar 2021 14:30:04 +0100
-Message-Id: <20210307133005.30801-5-hdegoede@redhat.com>
+Subject: [PATCH alsa-lib v3 1/5] mixer: simple - Add generic exception
+ mechanism for non-standard control-names
+Date: Sun,  7 Mar 2021 14:30:01 +0100
+Message-Id: <20210307133005.30801-2-hdegoede@redhat.com>
 In-Reply-To: <20210307133005.30801-1-hdegoede@redhat.com>
 References: <20210307133005.30801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,58 +103,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The following ASoC codec drivers:
+Add a generic exception mechanism for mixer-control-names which
+don't use the standard suffixes from the suffixes table.
 
-sound/soc/codecs/rt5659.c
-sound/soc/codecs/rt5660.c
-sound/soc/codecs/rt5665.c
-sound/soc/codecs/rt5668.c
-sound/soc/codecs/rt5670.c
-sound/soc/codecs/rt5682.c
+And move the existing exceptions which consist of a simple !strcmp()
+check over to this new mechanism.
 
-Use the following troublesome capture-volume-control names:
-"IN1 Boost Volume"
-"IN2 Boost Volume"
-"IN3 Boost Volume"
-"STO1 ADC Boost Gain Volume"
-"STO2 ADC Boost Gain Volume"
-"Mono ADC Boost Gain Volume"
-
-And sound/soc/codecs/es8316.c uses "ADC PGA Gain Volume".
-
-Note how these are suffixed with just " Volume" instead of
-"Capture Volume". Add these to the exceptions table,
-so that the type correctly gets set to CTL_CAPTURE_VOLUME instead
-of CTL_GLOBAL_VOLUME.
-
-This correctly makes snd_mixer_selem_has_capture_volume() return true for
-these (and makes snd_mixer_selem_has_common_volume() return false).
+This also fixes the "Capture Volume" and "Capture Switch" exceptions
+no longer working after commit 86b9c67774bc ("mixer: simple - Unify
+simple_none: base_len() exception handling") because they were moved
+to after the suffix checking, so they would be treated as
+CTL_GLOBAL_VOLUME resp. CTL_GLOBAL_SWITCH based on their suffix
+before the exception check has a chance to check for a match.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/mixer/simple_none.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ src/mixer/simple_none.c | 48 +++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
 diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
-index 8f964959..de81966f 100644
+index 71d88486..30d5aa8b 100644
 --- a/src/mixer/simple_none.c
 +++ b/src/mixer/simple_none.c
-@@ -920,8 +920,15 @@ static const struct excep {
- 	 */
- 	{"Input Source", 12, CTL_CAPTURE_ROUTE},
- 	/* Avoid these Capture Volume/Switch controls getting seen as GLOBAL VOL/SW */
-+	{"ADC PGA Gain Volume", 12, CTL_CAPTURE_VOLUME},
- 	{"Capture Volume", 7, CTL_CAPTURE_VOLUME},
- 	{"Capture Switch", 7, CTL_CAPTURE_SWITCH},
-+	{"IN1 Boost Volume", 9, CTL_CAPTURE_VOLUME},
-+	{"IN2 Boost Volume", 9, CTL_CAPTURE_VOLUME},
-+	{"IN3 Boost Volume", 9, CTL_CAPTURE_VOLUME},
-+	{"Mono ADC Boost Gain Volume", 19, CTL_CAPTURE_VOLUME},
-+	{"STO1 ADC Boost Gain Volume", 19, CTL_CAPTURE_VOLUME},
-+	{"STO2 ADC Boost Gain Volume", 19, CTL_CAPTURE_VOLUME},
- 	/* Playback Volume/Switch controls without a " Playback ..." suffix */
- 	{"3D Control - Depth", 18, CTL_PLAYBACK_VOLUME},
- 	{"3D Control Sigmatel - Depth", 27, CTL_PLAYBACK_VOLUME},
+@@ -905,14 +905,41 @@ static const struct suf {
+ 	{" Volume", CTL_GLOBAL_VOLUME},
+ 	{NULL, 0}
+ };
++
++static const struct excep {
++	const char *name;
++	int base_len;
++	selem_ctl_type_t type;
++} exceptions[] = {
++	/* Special case - handle "Input Source" as a capture route.
++	 * Note that it's *NO* capture source.  A capture source is split over
++	 * sub-elements, and multiple capture-sources will result in an error.
++	 * That's why some drivers use "Input Source" as a workaround.
++	 * Hence, this is a workaround for a workaround to get the things
++	 * straight back again.  Sigh.
++	 */
++	{"Input Source", 12, CTL_CAPTURE_ROUTE},
++	/* Avoid these Capture Volume/Switch controls getting seen as GLOBAL VOL/SW */
++	{"Capture Volume", 7, CTL_CAPTURE_VOLUME},
++	{"Capture Switch", 7, CTL_CAPTURE_SWITCH},
++	{NULL,}
++};
+ #endif
+ 
+ /* Return base length */
+ static int base_len(const char *name, selem_ctl_type_t *type)
+ {
++	const struct excep *e;
+ 	const struct suf *p;
+ 	size_t nlen = strlen(name);
+ 
++	for (e = exceptions; e->name; e++) {
++		if (!strcmp(name, e->name)) {
++			*type = e->type;
++			return e->base_len;
++		}
++	}
++
+ 	for (p = suffixes; p->suffix; p++) {
+ 		size_t slen = strlen(p->suffix);
+ 		size_t l;
+@@ -926,27 +953,6 @@ static int base_len(const char *name, selem_ctl_type_t *type)
+ 		}
+ 	}
+ 
+-	/* exception: "Capture Volume" and "Capture Switch" */
+-	if (!strcmp(name, "Capture Volume")) {
+-		*type = CTL_CAPTURE_VOLUME;
+-		return strlen("Capture");
+-	}
+-	if (!strcmp(name, "Capture Switch")) {
+-		*type = CTL_CAPTURE_SWITCH;
+-		return strlen("Capture");
+-	}
+-
+-	/* Special case - handle "Input Source" as a capture route.
+-	 * Note that it's *NO* capture source.  A capture source is split over
+-	 * sub-elements, and multiple capture-sources will result in an error.
+-	 * That's why some drivers use "Input Source" as a workaround.
+-	 * Hence, this is a workaround for a workaround to get the things
+-	 * straight back again.  Sigh.
+-	 */
+-	if (!strcmp(name, "Input Source")) {
+-		*type = CTL_CAPTURE_ROUTE;
+-		return strlen(name);
+-	}
+ 	if (strstr(name, "3D Control")) {
+ 		if (strstr(name, "Depth")) {
+ 			*type = CTL_PLAYBACK_VOLUME;
 -- 
 2.30.1
 
