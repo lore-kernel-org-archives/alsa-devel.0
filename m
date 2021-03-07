@@ -7,74 +7,75 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D470C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 20:05:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5AE2C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 20:05:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CE1AB65164
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 20:05:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CE1AB65164
+	by mail.kernel.org (Postfix) with ESMTPS id 028B66515E
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 20:05:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 028B66515E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0858418E9;
-	Sun,  7 Mar 2021 21:04:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0858418E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D30618C6;
+	Sun,  7 Mar 2021 21:04:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D30618C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615147512;
-	bh=Wmj2zpdQmIMbSwZCxl4yeiGgswPpCpbQl34Nqym2DWg=;
+	s=default; t=1615147516;
+	bh=/jh/5HZKOj0zNybnfm6P14vh9jzh92JaFk30KVDcEPA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mIxlyBVRFw52ObNs8py38YgrPJFG4bqRC6nmZXWP6KP3KfvSacQcVlYgXql0iNYJd
-	 rbpGTI0iMlvwvTuB3+99JSEh6TUvW4H68Uk7s6HLgd82ZAkE89BmyvQqu6D1LK2lW/
-	 CP2eQ8nDwBYS1fIffTbaPOG7HGpCXrLFnXvrc2/U=
+	b=Helx7W+0VinxaXjYa/GndZDLdPmiBUCKgm+9CmUc6dCWp63UIjBrP9iB1al0/Olot
+	 QbEZtkCVsOYpW/NXgG0VbRWedkQCX0yau9ChaZX1tPUArFrk3uiRgfxWtGrQcBaWWa
+	 GZ6oUztssZZ2xU7rI0UROrBd7nWAfVLsOVsf/+jk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59DFAF80256;
-	Sun,  7 Mar 2021 21:03:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BEF7F8028B;
+	Sun,  7 Mar 2021 21:03:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E45FF80275; Sun,  7 Mar 2021 21:03:30 +0100 (CET)
+ id 74B1DF8028B; Sun,  7 Mar 2021 21:03:31 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCE7BF800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 691DAF8019B
  for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 21:03:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCE7BF800ED
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 691DAF8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="OHpkbcX4"
+ header.b="dQZIUnls"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615147398;
+ s=mimecast20190719; t=1615147399;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=W+nhyO38vizETGP7h3BJpXv/cVrIDfIU9N1mcLpZy7c=;
- b=OHpkbcX4rqhm12dIzGnHV/V8Fw/F0LeGuG5/D0wIsf9RIg9WqOjB/EvqMHJiQDN8JJ5ZIw
- qFlzOK8S/9/QkdNi6n0WBcsC52zM5RZVzuOeKg19EfWXOHs5LZUK/PvHWHbOCEY8q2wPgq
- Wdb1AzybVXdy11ovkx63uqp+R5t1R+U=
+ bh=8VyDX/KeJgAQ1xNKZErNIMtv7nhbK+Qfv5+D8jX1NfM=;
+ b=dQZIUnls6YvHlHnUsfK9JDIxW0rVWanloNdopstHmqHt+4djW7UBuvyD6aYlUylBtWm8xb
+ rxdGAad29xZQVAiiguAVv86fyQ3zwbuf/QOXz+BIejbvIBp7VkX3zlld2Nzij7DCbys69N
+ ZbKpoFz2ki8nDySzDAHgIt5oALuZQG4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-q0Y8eOZTN0GAUYm-kw2SMw-1; Sun, 07 Mar 2021 15:03:14 -0500
-X-MC-Unique: q0Y8eOZTN0GAUYm-kw2SMw-1
+ us-mta-292-DKqqjZWsOmOqVymeD7VLKg-1; Sun, 07 Mar 2021 15:03:16 -0500
+X-MC-Unique: DKqqjZWsOmOqVymeD7VLKg-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
  [10.5.11.22])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97BD1108BD06;
- Sun,  7 Mar 2021 20:03:13 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CD087A826;
+ Sun,  7 Mar 2021 20:03:15 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-90.ams2.redhat.com [10.36.112.90])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 35E5310016F9;
- Sun,  7 Mar 2021 20:03:12 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id E06AC1009962;
+ Sun,  7 Mar 2021 20:03:13 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf 2/3] codecs/es8316: Fix 'HP Mixer Volume' setting
-Date: Sun,  7 Mar 2021 21:03:07 +0100
-Message-Id: <20210307200308.136385-2-hdegoede@redhat.com>
+Subject: [PATCH alsa-ucm-conf 3/3] codecs/es8316: Add hardware volume-control
+ support
+Date: Sun,  7 Mar 2021 21:03:08 +0100
+Message-Id: <20210307200308.136385-3-hdegoede@redhat.com>
 In-Reply-To: <20210307200308.136385-1-hdegoede@redhat.com>
 References: <20210307200308.136385-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -103,38 +104,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The 'HP Mixer Volume' control is interesting in that it has a hole
-in its range which should not be used (described in the tlv table),
-valid values are 0-4 and 8-11
-
-I assume that the "Set HP mixer vol to -6 dB (4/7) louder does not work"
-comment which this patch changes comes from attempts to use values in
-that hole in the range (also notice the wrong max value in the comment).
-
-Setting the HP mixer to -6 dB causes the sound to be significantly
-softer then under Windows. This commit fixes this by initializing the
-HP mixer control to 11 / 0 dB.
+Add hardware volume-control support for the es8316 codec.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- ucm2/codecs/es8316/EnableSeq.conf | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ ucm2/codecs/es8316/HeadPhones.conf      | 2 ++
+ ucm2/codecs/es8316/IN1-HeadsetMic.conf  | 2 ++
+ ucm2/codecs/es8316/IN1-InternalMic.conf | 2 ++
+ ucm2/codecs/es8316/IN2-HeadsetMic.conf  | 2 ++
+ ucm2/codecs/es8316/IN2-InternalMic.conf | 2 ++
+ ucm2/codecs/es8316/MonoSpeaker.conf     | 4 ++++
+ ucm2/codecs/es8316/Speaker.conf         | 4 ++++
+ 7 files changed, 18 insertions(+)
 
-diff --git a/ucm2/codecs/es8316/EnableSeq.conf b/ucm2/codecs/es8316/EnableSeq.conf
-index 272ef1a..147ce53 100644
---- a/ucm2/codecs/es8316/EnableSeq.conf
-+++ b/ucm2/codecs/es8316/EnableSeq.conf
-@@ -7,8 +7,8 @@ EnableSequence [
- 
- 	# Set HP vol to 0 dB (3/3)
- 	cset "name='Headphone Playback Volume' 3"
--	# Set HP mixer vol to -6 dB (4/7) louder does not work
--	cset "name='Headphone Mixer Volume' 4"
-+	# Set HP mixer vol to 0 dB 
-+	cset "name='Headphone Mixer Volume' 11"
- 	# Set DAC vol to 0 dB (192/192)
- 	cset "name='DAC Playback Volume' 192"
- 
+diff --git a/ucm2/codecs/es8316/HeadPhones.conf b/ucm2/codecs/es8316/HeadPhones.conf
+index b68569a..57bd448 100644
+--- a/ucm2/codecs/es8316/HeadPhones.conf
++++ b/ucm2/codecs/es8316/HeadPhones.conf
+@@ -16,6 +16,8 @@ SectionDevice."Headphones" {
+ 	Value {
+ 		PlaybackPriority 200
+ 		PlaybackPCM "hw:${CardId}"
++		PlaybackMixerElem "Headphone Mixer"
++		PlaybackMasterElem "DAC"
+ 		JackControl "Headphone Jack"
+ 		JackHWMute "Speaker"
+ 	}
+diff --git a/ucm2/codecs/es8316/IN1-HeadsetMic.conf b/ucm2/codecs/es8316/IN1-HeadsetMic.conf
+index a76b275..53958ba 100644
+--- a/ucm2/codecs/es8316/IN1-HeadsetMic.conf
++++ b/ucm2/codecs/es8316/IN1-HeadsetMic.conf
+@@ -17,6 +17,8 @@ SectionDevice."Headset" {
+ 	Value {
+ 		CapturePriority 200
+ 		CapturePCM "hw:${CardId}"
++		CaptureMixerElem "ADC PGA Gain"
++		CaptureMasterElem "ADC"
+ 		JackControl "Headset Mic Jack"
+ 	}
+ }
+diff --git a/ucm2/codecs/es8316/IN1-InternalMic.conf b/ucm2/codecs/es8316/IN1-InternalMic.conf
+index ede0a8c..7e7f75f 100644
+--- a/ucm2/codecs/es8316/IN1-InternalMic.conf
++++ b/ucm2/codecs/es8316/IN1-InternalMic.conf
+@@ -17,5 +17,7 @@ SectionDevice."Mic" {
+ 	Value {
+ 		CapturePriority 100
+ 		CapturePCM "hw:${CardId}"
++		CaptureMixerElem "ADC PGA Gain"
++		CaptureMasterElem "ADC"
+ 	}
+ }
+diff --git a/ucm2/codecs/es8316/IN2-HeadsetMic.conf b/ucm2/codecs/es8316/IN2-HeadsetMic.conf
+index b114c86..9221b24 100644
+--- a/ucm2/codecs/es8316/IN2-HeadsetMic.conf
++++ b/ucm2/codecs/es8316/IN2-HeadsetMic.conf
+@@ -17,6 +17,8 @@ SectionDevice."Headset" {
+ 	Value {
+ 		CapturePriority 200
+ 		CapturePCM "hw:${CardId}"
++		CaptureMixerElem "ADC PGA Gain"
++		CaptureMasterElem "ADC"
+ 		JackControl "Headset Mic Jack"
+ 	}
+ }
+diff --git a/ucm2/codecs/es8316/IN2-InternalMic.conf b/ucm2/codecs/es8316/IN2-InternalMic.conf
+index c8fce62..8b73da4 100644
+--- a/ucm2/codecs/es8316/IN2-InternalMic.conf
++++ b/ucm2/codecs/es8316/IN2-InternalMic.conf
+@@ -17,5 +17,7 @@ SectionDevice."Mic" {
+ 	Value {
+ 		CapturePriority 100
+ 		CapturePCM "hw:${CardId}"
++		CaptureMixerElem "ADC PGA Gain"
++		CaptureMasterElem "ADC"
+ 	}
+ }
+diff --git a/ucm2/codecs/es8316/MonoSpeaker.conf b/ucm2/codecs/es8316/MonoSpeaker.conf
+index f5f4273..2d76413 100644
+--- a/ucm2/codecs/es8316/MonoSpeaker.conf
++++ b/ucm2/codecs/es8316/MonoSpeaker.conf
+@@ -33,5 +33,9 @@ SectionDevice."Speaker" {
+ 	Value {
+ 		PlaybackPriority 100
+ 		PlaybackPCM "hw:${CardId}"
++		# The es8316 only has a HP-amp which is muxed to the speaker
++		# or to the headpones output
++		PlaybackMixerElem "Headphone Mixer"
++		PlaybackMasterElem "DAC"
+ 	}
+ }
+diff --git a/ucm2/codecs/es8316/Speaker.conf b/ucm2/codecs/es8316/Speaker.conf
+index 03c21b3..4e97772 100644
+--- a/ucm2/codecs/es8316/Speaker.conf
++++ b/ucm2/codecs/es8316/Speaker.conf
+@@ -16,5 +16,9 @@ SectionDevice."Speaker" {
+ 	Value {
+ 		PlaybackPriority 100
+ 		PlaybackPCM "hw:${CardId}"
++		# The es8316 only has a HP-amp which is muxed to the speaker
++		# or to the headpones output
++		PlaybackMixerElem "Headphone Mixer"
++		PlaybackMasterElem "DAC"
+ 	}
+ }
 -- 
 2.30.1
 
