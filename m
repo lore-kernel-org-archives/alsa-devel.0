@@ -2,78 +2,83 @@ Return-Path: <SRS0=dfEF=IF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-	autolearn_force=no version=3.4.0
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A2A3C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71A50C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:32:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D8F46650E7
-	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:31:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8F46650E7
+	by mail.kernel.org (Postfix) with ESMTPS id 8B5AF650EA
+	for <alsa-devel@archiver.kernel.org>; Sun,  7 Mar 2021 13:32:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8B5AF650EA
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80F3B18FB;
-	Sun,  7 Mar 2021 14:30:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80F3B18FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A87501930;
+	Sun,  7 Mar 2021 14:31:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A87501930
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615123882;
-	bh=7GSAYzyKreVs6ebcDog1i8nuxjANh9fGw27JDTNf5uU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=U5gdicNN+4nQ2WO13mntQDKvMdg8cgIgIyhZUWQKrZe/9AepnIN1cZCRdKO/lDvcx
-	 E5l0y//58Tbkzod7fbUlS/D13HplN+OS+iMfpujs36FLINQFokVHKht1Ra0Y0YGFCm
-	 LGVU/pzBHo/VEL9Ujz5ygj/MulIXE3ZTQMARiFs8=
+	s=default; t=1615123933;
+	bh=8O0d/kNPgBpV5+yYxJPPAvEu1uKERHrms99Zk7cIPl0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WTlU7+dK014HPirA4p++l5PKsi8HxGxL547D/j/kmktxZq83p49h92wCRy0FFtUi0
+	 X+DBhVFlKQxiHTxwaepq8JHaHq4u/+GJTw4t2rgtInWcdvmE7nXHK13kT8rmurMeEn
+	 i9s3ld/caJLmcog8p2xozvzh1D0Oo592L5U2VH4Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 792B0F80227;
-	Sun,  7 Mar 2021 14:30:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FCC7F80275;
+	Sun,  7 Mar 2021 14:30:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26F01F8029B; Sun,  7 Mar 2021 14:30:24 +0100 (CET)
+ id 373BCF8028B; Sun,  7 Mar 2021 14:30:26 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB883F800CC
- for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 14:30:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB883F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49452F80139
+ for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2021 14:30:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49452F80139
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="FAwYCikg"
+ header.b="V12NwWE8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615123810;
+ s=mimecast20190719; t=1615123816;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=5SL00BNHyt7bzS9Gi2d+CPSxfnptw1VqlWxt9ptQaL4=;
- b=FAwYCikgu/cB8Xgk0IYNkKPMCKwU/i01PAAcfYG0RUfVUehjs5mILn04FPeCHTDEKXKXLm
- RKMMHkA9pHnSD4ilPzj2HDMS8OpUNkY4u6Om1Ju3Tc+Nxl0znzznXeBiy1elcXOE+NMmUZ
- uLuNP6BnWqtctgEMv4EVIpVGmZvTmyE=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=9lj3yTk+vlO6dCXJo07zGOEEWDDRs84TfJ/OXTzWp/Y=;
+ b=V12NwWE83r2sf+DC2A7Gp+ZN7tUYozeqYOdRaGugjAi4lZdRrWrf72uHhdM/UGP+AxE//Y
+ 3aHryhVG087C3YRzqL7li5XPBfuoyMoly1I40J6mAa/fTpZejwxZkNiidfW6BYEIiqO6y3
+ RBrV1aA634grVE1ye5Ha/13kCt5iGd0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-utIzPjp9PPmD7MFym3apaA-1; Sun, 07 Mar 2021 08:30:09 -0500
-X-MC-Unique: utIzPjp9PPmD7MFym3apaA-1
+ us-mta-183-zWQLVDfuN5qlOWhi3ASqMg-1; Sun, 07 Mar 2021 08:30:14 -0500
+X-MC-Unique: zWQLVDfuN5qlOWhi3ASqMg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EF391005D4A;
- Sun,  7 Mar 2021 13:30:07 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3474E1005D4A;
+ Sun,  7 Mar 2021 13:30:13 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-90.ams2.redhat.com [10.36.112.90])
- by smtp.corp.redhat.com (Postfix) with ESMTP id AD7C45C1CF;
- Sun,  7 Mar 2021 13:30:06 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 6859A5C1CF;
+ Sun,  7 Mar 2021 13:30:12 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib v3 0/5] mixer: simple - Volume control fixes
-Date: Sun,  7 Mar 2021 14:30:00 +0100
-Message-Id: <20210307133005.30801-1-hdegoede@redhat.com>
+Subject: [PATCH alsa-lib v3 5/5] mixer: simple - Add exceptions for some
+ Playback Switches with a " Channel Switch" suffix
+Date: Sun,  7 Mar 2021 14:30:05 +0100
+Message-Id: <20210307133005.30801-6-hdegoede@redhat.com>
+In-Reply-To: <20210307133005.30801-1-hdegoede@redhat.com>
+References: <20210307133005.30801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Authentication-Results: relay.mimecast.com;
@@ -98,44 +103,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi All,
+The following ASoC codec drivers:
+sound/soc/codecs/rt5640.c
+sound/soc/codecs/rt5645.c
 
-Here is v3 of my series of alsa-lib volume-control fixes which I wrote
-while working on adding hw-volume control to UCM profiles for various
-x86 ASoC setups.
+Use the following troublesome playback-switch-control names:
 
-New in version i3 s first adding a new generic exceptions table to
-deal with controls with names which don't use the expected suffixes
-to indicate their type.
+"Headphone Channel Switch"
+"HP Channel Switch"
+"Speaker Channel Switch"
 
-Also new this version is a patch to deal with some output mute switches
-which are called "Foo Channel Switch" instead of "Foo Playback Switch"
-(patch 5/5).
+There are 2 problems with these names:
 
-Note patch 1/5 also fixes a regression introduced by the changes which
-Jaroslav made to commit 86b9c67774bc ("mixer: simple - Unify simple_none: 
-base_len() exception handling") before merging it.
+1. They are the mute controls for the matching:
+"Headphone Playback Volume"
+"HP Playback Volume"
+"Speaker Playback Volume"
+controls, to be properly paired, which is necessary for HW volume-control
+support, the simple mixer code needs to recognize that the base-name for
+these is e.g. "Headphone" not "Headphone Channel".
 
-Regards,
+2. They are playback-switches, yet they get recognized as global-switches.
 
-Hans
+Add these to the exceptions table so that they get the proper basename
+and type set.
 
+Note we can NOT fix this by adding " Channel Switch" as a suffix to the
+suffixes table, because the line-out output on these codecs has the
+following controls:
 
-Hans de Goede (5):
-  mixer: simple - Add generic exception mechanism for non-standard
-    control-names
-  mixer: simple - Move handling of 3D Control - Depth controls to the
-    exceptions list
-  mixer: simple - Add exceptions for non " Volume" suffixed capture
-    vol-ctls used in ASoC realtek codec drivers
-  mixer: simple - Add exceptions for some capture-vol-ctls which have a
-    " Volume" suffix
-  mixer: simple - Add exceptions for some Playback Switches with a "
-    Channel Switch" suffix
+"OUT Playback Switch"
+"OUT Channel Switch"
+"OUT Playback Volume"
 
- src/mixer/simple_none.c | 74 +++++++++++++++++++++++++----------------
- 1 file changed, 46 insertions(+), 28 deletions(-)
+Where the 2 switches describe mutes in 2 different places in the graph.
 
+So if we were to add a " Channel Switch" suffix map to CTL_PLAYBACK_SWITCH
+then we would get 2 CTL_PLAYBACK_SWITCH controls for the "OUT" mixer
+element, which is not allowed.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ src/mixer/simple_none.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
+index de81966f..d5025f68 100644
+--- a/src/mixer/simple_none.c
++++ b/src/mixer/simple_none.c
+@@ -933,6 +933,9 @@ static const struct excep {
+ 	{"3D Control - Depth", 18, CTL_PLAYBACK_VOLUME},
+ 	{"3D Control Sigmatel - Depth", 27, CTL_PLAYBACK_VOLUME},
+ 	{"3D Control Sigmatel - Rear Depth", 32, CTL_PLAYBACK_VOLUME},
++	{"Headphone Channel Switch", 9, CTL_PLAYBACK_SWITCH},
++	{"HP Channel Switch", 2, CTL_PLAYBACK_SWITCH},
++	{"Speaker Channel Switch", 7, CTL_PLAYBACK_SWITCH},
+ 	/* Capture Volume/Switch controls without a " Capture ..." suffix */
+ 	{"ADC Boost Gain", 14, CTL_CAPTURE_VOLUME},
+ 	{"IN1 Boost", 9, CTL_CAPTURE_VOLUME},
 -- 
 2.30.1
 
