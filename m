@@ -2,74 +2,58 @@ Return-Path: <SRS0=LCrH=IG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70313C43331
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 14:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53D85C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:08:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C4D19651CD
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 14:34:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C4D19651CD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 7AC4C6522B
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:08:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AC4C6522B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF29317EA;
-	Mon,  8 Mar 2021 15:34:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF29317EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id C05911897;
+	Mon,  8 Mar 2021 17:07:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C05911897
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615214094;
-	bh=0Auu+1ynDSzh+Ku78pmvIBULVeSA/Y8XhOOjN10Tcj0=;
-	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Jtk+HQIdEChowoWMaKMy5tWcVB1V1I7YUin4w3bmVzZ4IRJ+RCJkzum4QvvYlEx+N
-	 Xy99H3I5B6FCy0dA1LEYZZDq1bi6PtX1zn28PtIIJLmbFDqgMtQlrVNNZ0rawEAxWV
-	 IoxpSROY2pN67OuQPn/3Avgh5XB+yhZpPGHZ6s/I=
+	s=default; t=1615219712;
+	bh=+ayh8DB6AjaU5LiEjo7XWkGZpwk8lbRyMmXrrzBRRqk=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OZ87wMMsJEkmx78KPexDLmCdz1/A2yPhgYbMsYLvoSojhCN7y8nphrwWeDG/RaBaG
+	 luyamZGp9s0/K0580TDuLNPKlEczWZyGkP100LoCGz6NWJ20NyLqxfqLeIf9yq19Tz
+	 VYaYZxbHLOoZmd3/HnF+hoyaXIeUiNxKCwks89JE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA443F8020D;
-	Mon,  8 Mar 2021 15:34:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AC03F80139;
+	Mon,  8 Mar 2021 17:07:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A9F0F80217; Mon,  8 Mar 2021 15:34:01 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 61E90F801D8; Mon,  8 Mar 2021 17:07:40 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E99DDF80139
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 15:33:49 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id EE1EAA0040;
- Mon,  8 Mar 2021 15:33:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz EE1EAA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1615214029; bh=xBOpSJWhEw36v2cp4f3tyeF6dQe4OVp9lWUN5qu9BqA=;
- h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
- b=u20hX8p1xAjRSyFSV3gDrEr/20LuomykAwavYyqcZ2Ngiy/lBuFPpqHR7B/XUsIth
- l6VKa3WxTq09eNtfxpDgEqR5V2Q+jBSCyYPYGg4KUYY86Nb4flIVFwUDuQOEj8aW9g
- sm4Bk9ULoIlonAGgZJl6iPdzfW9iLj6wXbY+q2PY=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon,  8 Mar 2021 15:33:46 +0100 (CET)
-Subject: Re: alsa-lib's new API issue (snd_ctl_elem_id_compare)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3DD1F80139
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 17:07:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3DD1F80139
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id C9B48AB8C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 16:07:27 +0000 (UTC)
+From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-References: <20210308125817.GA212288@workstation>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <5e26625d-3db1-0600-47f8-057c0101d6b1@perex.cz>
-Date: Mon, 8 Mar 2021 15:33:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Subject: [PATCH] ALSA: hda: Drop the BATCH workaround for AMD controllers
+Date: Mon,  8 Mar 2021 17:07:26 +0100
+Message-Id: <20210308160726.22930-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210308125817.GA212288@workstation>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,53 +69,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 08. 03. 21 v 13:58 Takashi Sakamoto napsal(a):
-> Hi Jaroslav,
-> 
-> I have some concern about your commit 2cfe6addaef6[1] for alsa-lib,
-> 
-> It adds new library API, 'snd_ctl_elem_id_compare()', to compare a pair of
-> IDs for control element. In the implementation, the API call returns 0 if
-> they are the same, else negative or positive numeric value according to
-> contents of the IDs.
+The commit c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on
+AMD controller (1022:1457)") introduced a few workarounds for the
+recent AMD HD-audio controller, and one of them is the forced BATCH
+PCM mode so that PulseAudio avoids the timer-based scheduling.  This
+was thought to cover for some badly working applications, but this
+actually worsens for more others.  In total, this wasn't a good idea
+to enforce it.
 
-I just noted that I didn't fill the function doc text correctly.
+This is a partial revert of the commit above for dropping the PCM
+BATCH enforcement part to recover from the regression again.
 
-> 
-> My concerns are:
-> 
-> 1. evaluation of numid field is not covered.
-> 
-> This is not preferable since ALSA control core implementation covers two
-> types of comparison; numid only, and the combination iface, device,
-> subdevice, name, and index fields. If the API is produced for general use
-> cases, it should correctly handle the numid-only case, in my opinion.
+Fixes: c02f77d32d2c ("ALSA: hda - Workaround for crackled sound on AMD controller (1022:1457)")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195303
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_controller.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-My motivation was to allow to use this function for qsort() for example. The
-numid and full-field comparisons are two very different things.
-
-> 2. tri-state return value is semantically inconsistent
-
-It's correct for the sorting (strcmp like).
-
-> The ID structure includes three types of values; integer, enumeration, and
-> string. In my opinion, tri-state return value from them has different meaning
-> each other.
-True, the signess is the key, the value should be ignored.
-
-> The reason I post this message instead of posting any fix is that the fix
-> to the API affects to alsa-utils, in which the API is used by a patch you
-> applied a few days ago[2]. The patch also includes change to 'AM_PATH_ALSA'
-> declaration in configure.ac with bumped-up version to '1.2.5', and it
-> disables to rebuild alsa-utils on the latest toolchain. (alsa-lib 1.2.5 is
-> not released yet.)
-
-The latest alsa-lib in the git repo is already set to 1.2.5pre1, so if you
-upgrade alsa-lib, everything should be fine. I was a bit lazy to write a
-configure test and add a wrapper to alsactl to support the older alsa-lib.
-
-					Jaroslav
-
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 9087981cd1f7..ca2f2ecd1488 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -609,13 +609,6 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 				     20,
+ 				     178000000);
+ 
+-	/* by some reason, the playback stream stalls on PulseAudio with
+-	 * tsched=1 when a capture stream triggers.  Until we figure out the
+-	 * real cause, disable tsched mode by telling the PCM info flag.
+-	 */
+-	if (chip->driver_caps & AZX_DCAPS_AMD_WORKAROUND)
+-		runtime->hw.info |= SNDRV_PCM_INFO_BATCH;
+-
+ 	if (chip->align_buffer_size)
+ 		/* constrain buffer sizes to be multiple of 128
+ 		   bytes. This is more efficient in terms of memory
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.26.2
+
