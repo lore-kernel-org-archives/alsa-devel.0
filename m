@@ -3,76 +3,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 20B0BC433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C84AEC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:10:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB6A06522D
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:10:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB6A06522D
+	by mail.kernel.org (Postfix) with ESMTPS id 3D33F65210
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:10:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D33F65210
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2144D18EE;
-	Mon,  8 Mar 2021 17:09:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2144D18EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7D2418C1;
+	Mon,  8 Mar 2021 17:09:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7D2418C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615219809;
-	bh=unytn+VSFwHvrGycVScysAQggJb+07mg32CXgmA3230=;
+	s=default; t=1615219816;
+	bh=prCh/xGiHbNquextTbUBnmsLnM6OjHCR/I80pp00SsU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PTIXdoYQ3LC68uF0WXJA8rdc78N2bwWU8tEDNxoiTG034ELPigGI9zdwPcY8xznGR
-	 as0eOuUPoUeNsosfwWxGPg/5RrVQXmcYCoxLVhvf5V1QzmHdCkIrROfHUfwFEf0RZQ
-	 tYyQleSPPpZpBsGj402PAXjMDTpRTIWVQBUck4tI=
+	b=qizHFwhTUEPOKj5f+d/JlTpNa02ZeKfA09qFps3vjj8VWdNurC/mCCEWU8CF5f6af
+	 RSclpoUVHD1Jc08/gnNyUN4MyR4lNDS67PLvKX0T12tNQVFS04n1jM1UfmYILah98l
+	 xoj+EbIkr41I6kiZ6+FJ8F+uoylM6vjH/jj7gzaQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09E52F80423;
-	Mon,  8 Mar 2021 17:08:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2B9CF80279;
+	Mon,  8 Mar 2021 17:08:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31169F80279; Mon,  8 Mar 2021 17:08:15 +0100 (CET)
+ id 57643F80430; Mon,  8 Mar 2021 17:08:20 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB602F80279
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 17:08:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB602F80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D708F80279
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 17:08:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D708F80279
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AC/5wj6r"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9222C65227;
- Mon,  8 Mar 2021 16:08:09 +0000 (UTC)
+ header.b="gb+oYKAX"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0756C65227;
+ Mon,  8 Mar 2021 16:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615219690;
- bh=unytn+VSFwHvrGycVScysAQggJb+07mg32CXgmA3230=;
+ s=k20201202; t=1615219695;
+ bh=prCh/xGiHbNquextTbUBnmsLnM6OjHCR/I80pp00SsU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=AC/5wj6rCiHqmZOu+V+al9aRJa/YRfEPp+AQmUI59iGaO/tu2VAqoR6W514lViPzD
- B6iJHAqbb+DyCaiZr1P9oQfKCxCq2uaX7qccwBULyY38Gj7ASVXlycFDH699zktapL
- n8aYATlNx1zrDimYNFUryWVafSPUf8OEvJegvt9F7sWiHQW/3VzQXuxXLeZ1u6e3Qv
- eK9d5F6p61UwUrM77Zw/L96l5yL5YnAEsiTL0JtDPnWw5D71ApRuhGzClt7bfrNdnc
- cGYxjr2i+fG6QmBdJ10tpkfsRtxDHAjJPOd3pCZ+gwhWCpxkiBd5MXX9hAyl1wH5yW
- +Lk7HEs2/Ab6Q==
+ b=gb+oYKAXJIzpXVYIbMN1vWuHVFEeQWDYFCJe7JnEAYcWMq1fcar5Y47NtfhdeKvAT
+ 2MCwS8hQiY2NR1M5N09x/8zp4uT1xBWinGDnhJ2Dv3o2uw6IrsunmfqmxTmKRTFnH2
+ nZ+l+7a6uMYn4iYc2cTp35BtBNR3mA459Ts5i+iLEn4akOuyM38Kwi1k+a0RMQLIzs
+ zhbYQCnTPhtdZ9ZthYPpOn9M0ZPA7ea1RqW4a2dbqgy/ulRkbY1f7AUMUB7FiyqhzX
+ 2AWKRsLWIFuZGU5uc0Yo14Fy6B/YP3fs5GKdibkCtxooRy+6CVuJqljMMq22HDUwQw
+ BF5lhUuaI2MHQ==
 From: Mark Brown <broonie@kernel.org>
-To: Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-In-Reply-To: <20210305005049.24726-1-jonathan@marek.ca>
-References: <20210305005049.24726-1-jonathan@marek.ca>
-Subject: Re: [PATCH] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
-Message-Id: <161521960847.9621.10965090880693667383.b4-ty@kernel.org>
+To: shumingf@realtek.com, lgirdwood@gmail.com
+In-Reply-To: <20210302091506.18745-1-shumingf@realtek.com>
+References: <20210302091506.18745-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt711-sdca: Add RT711 SDCA vendor-specific driver
+Message-Id: <161521960848.9621.1458662142974315741.b4-ty@kernel.org>
 Date: Mon, 08 Mar 2021 16:06:48 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "moderated list:QCOM AUDIO ASoC DRIVERS" <alsa-devel@alsa-project.org>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
+ flove@realtek.com, pierre-louis.bossart@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,14 +85,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 4 Mar 2021 19:50:48 -0500, Jonathan Marek wrote:
-> Attempting to use the RX MIX path at 48kHz plays at 96kHz, because these
-> controls are incorrectly toggling the first bit of the register, which
-> is part of the FS_RATE field.
-> 
-> Fix the problem by using the same method used by the "WSA RX_MIX EC0_MUX"
-> control, which is to use SND_SOC_NOPM as the register and use an enum in
-> the shift field instead.
+On Tue, 2 Mar 2021 17:15:06 +0800, shumingf@realtek.com wrote:
+> This is the initial codec driver for rt711 SDCA version.
 
 Applied to
 
@@ -103,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-wsa-macro: fix RX MIX input controls
-      commit: 810c4ac485e9de34624469a1c5ad1453699b993c
+[1/1] ASoC: rt711-sdca: Add RT711 SDCA vendor-specific driver
+      commit: 1cd2219246bd8a07d490e463ee24d2c813bb5b7c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
