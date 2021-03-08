@@ -2,68 +2,69 @@ Return-Path: <SRS0=LCrH=IG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71A9BC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:38:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D975C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:38:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 840B1651C7
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:38:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 840B1651C7
+	by mail.kernel.org (Postfix) with ESMTPS id 9845A651C2
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:38:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9845A651C2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED9FD18A3;
-	Mon,  8 Mar 2021 14:37:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED9FD18A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29C0F18B4;
+	Mon,  8 Mar 2021 14:37:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29C0F18B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615210695;
-	bh=Lt7IbXTkSCNnTE8wKy9XN0Dos8uRbszm1cBdlu3q3/Q=;
+	s=default; t=1615210703;
+	bh=V6jc4FcWdBgR8hsKzR76JZ2twSvb6brTjmNxRqv7LLA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HKqaFLA2hFie7TSeP4PCAvk7eWODvahgvEoNExWSD24PlRvLIoZa2Ifkbb1DrZ2bX
-	 Ufyti8DKTI91O8np/y84VpbNtKB/t6eZXASpf2nqGbSr+QEk/Pzes0KoiPoQM916W0
-	 tMUD1Vyp1mCQAjczb+N+fAuhFcNarRDMhVnWrklA=
+	b=Y7mnVzMiewOtcny5EN2FSc2pceA4RY2RTdTbS6ynh8JMmwjZ4+jDwEMsJMuvXqNUM
+	 xZSoFbdy01HPQ+/4AZkwxhUMMW8Q4+dickUwW4i9eZx82PO4RCehP6aOwo0UHm0+JS
+	 G+NNpan5K3ouccHc7xm45b7/mBYkQc3OAp5Oh8uM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BAB7F80475;
-	Mon,  8 Mar 2021 14:35:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F98DF804AA;
+	Mon,  8 Mar 2021 14:35:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA0C6F80482; Mon,  8 Mar 2021 14:35:51 +0100 (CET)
+ id 1764FF80430; Mon,  8 Mar 2021 14:35:52 +0100 (CET)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D51A5F801ED
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 14:35:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D51A5F801ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C0B0F8016C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 14:35:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C0B0F8016C
 Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8C6A81A0BB7;
- Mon,  8 Mar 2021 14:35:38 +0100 (CET)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F19AA1A0146;
+ Mon,  8 Mar 2021 14:35:42 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B0E631A0BB1;
- Mon,  8 Mar 2021 14:35:31 +0100 (CET)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 217461A0BB0;
+ Mon,  8 Mar 2021 14:35:36 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EF06B402AC;
- Mon,  8 Mar 2021 14:35:22 +0100 (CET)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C579440313;
+ Mon,  8 Mar 2021 14:35:27 +0100 (CET)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
  devicetree@vger.kernel.org
-Subject: [PATCH v4 3/6] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
- rpmsg cpu dai driver
-Date: Mon,  8 Mar 2021 21:22:27 +0800
-Message-Id: <1615209750-2357-4-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v4 6/6] ASoC: imx-rpmsg: Add machine driver for audio base on
+ rpmsg
+Date: Mon,  8 Mar 2021 21:22:30 +0800
+Message-Id: <1615209750-2357-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1615209750-2357-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1615209750-2357-1-git-send-email-shengjiu.wang@nxp.com>
@@ -83,141 +84,191 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
-for getting the user's configuration from device tree and configure the
-clocks which is used by Cortex-M core. So in this document define the
-needed property.
+The platform device is not registered by device tree or
+cpu dai driver, it is registered by the rpmsg channel,
+So add a dedicated machine driver to handle this case.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 118 ++++++++++++++++++
- 1 file changed, 118 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+ sound/soc/fsl/Kconfig     |  12 ++++
+ sound/soc/fsl/Makefile    |   2 +
+ sound/soc/fsl/imx-rpmsg.c | 127 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 141 insertions(+)
+ create mode 100644 sound/soc/fsl/imx-rpmsg.c
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 3b94882aee99..ad69026a7fd1 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -334,6 +334,18 @@ config SND_SOC_IMX_HDMI
+ 	  Say Y if you want to add support for SoC audio on an i.MX board with
+ 	  IMX HDMI.
+ 
++config SND_SOC_IMX_RPMSG
++	tristate "SoC Audio support for i.MX boards with rpmsg"
++	depends on RPMSG
++	select SND_SOC_IMX_PCM_RPMSG
++	select SND_SOC_IMX_AUDIO_RPMSG
++	select SND_SOC_FSL_RPMSG
++	help
++	  SoC Audio support for i.MX boards with rpmsg.
++	  There should be rpmsg devices defined in other core (M core)
++	  Say Y if you want to add support for SoC audio on an i.MX board with
++	  a rpmsg devices.
++
+ endif # SND_IMX_SOC
+ 
+ endmenu
+diff --git a/sound/soc/fsl/Makefile b/sound/soc/fsl/Makefile
+index ce4f4324c3a2..f146ce464acd 100644
+--- a/sound/soc/fsl/Makefile
++++ b/sound/soc/fsl/Makefile
+@@ -70,6 +70,7 @@ snd-soc-imx-sgtl5000-objs := imx-sgtl5000.o
+ snd-soc-imx-spdif-objs := imx-spdif.o
+ snd-soc-imx-audmix-objs := imx-audmix.o
+ snd-soc-imx-hdmi-objs := imx-hdmi.o
++snd-soc-imx-rpmsg-objs := imx-rpmsg.o
+ 
+ obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
+ obj-$(CONFIG_SND_SOC_IMX_ES8328) += snd-soc-imx-es8328.o
+@@ -77,3 +78,4 @@ obj-$(CONFIG_SND_SOC_IMX_SGTL5000) += snd-soc-imx-sgtl5000.o
+ obj-$(CONFIG_SND_SOC_IMX_SPDIF) += snd-soc-imx-spdif.o
+ obj-$(CONFIG_SND_SOC_IMX_AUDMIX) += snd-soc-imx-audmix.o
+ obj-$(CONFIG_SND_SOC_IMX_HDMI) += snd-soc-imx-hdmi.o
++obj-$(CONFIG_SND_SOC_IMX_RPMSG) += snd-soc-imx-rpmsg.o
+diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
 new file mode 100644
-index 000000000000..5731c1fbc0a6
+index 000000000000..c26531525a7b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
-@@ -0,0 +1,118 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/sound/soc/fsl/imx-rpmsg.c
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright 2017-2020 NXP
 +
-+title: NXP Audio RPMSG CPU DAI Controller
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <linux/of_reserved_mem.h>
++#include <linux/i2c.h>
++#include <linux/of_gpio.h>
++#include <linux/slab.h>
++#include <linux/gpio.h>
++#include <linux/clk.h>
++#include <sound/soc.h>
++#include <sound/jack.h>
++#include <sound/control.h>
++#include <sound/pcm_params.h>
++#include <sound/soc-dapm.h>
++#include "imx-pcm-rpmsg.h"
 +
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
++struct imx_rpmsg {
++	struct snd_soc_dai_link dai;
++	struct snd_soc_card card;
++};
 +
-+description: |
-+  fsl_rpmsg cpu dai driver is virtual driver for rpmsg audio, which doesn't
-+  touch hardware. It is mainly used for getting the user's configuration
-+  from device tree and configure the clocks which is used by Cortex-M core.
-+  So in this document define the needed property.
++static int imx_rpmsg_probe(struct platform_device *pdev)
++{
++	struct snd_soc_dai_link_component *dlc;
++	struct device *dev = pdev->dev.parent;
++	/* rpmsg_pdev is the platform device for the rpmsg node that probed us */
++	struct platform_device *rpmsg_pdev = to_platform_device(dev);
++	struct device_node *np = rpmsg_pdev->dev.of_node;
++	struct of_phandle_args args;
++	struct imx_rpmsg *data;
++	int ret = 0;
 +
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx7ulp-rpmsg
-+      - fsl,imx8mn-rpmsg
-+      - fsl,imx8mm-rpmsg
-+      - fsl,imx8mp-rpmsg
++	dlc = devm_kzalloc(&pdev->dev, 3 * sizeof(*dlc), GFP_KERNEL);
++	if (!dlc)
++		return -ENOMEM;
 +
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User specified audio sound card name
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data) {
++		ret = -ENOMEM;
++		goto fail;
++	}
 +
-+  clocks:
-+    items:
-+      - description: Peripheral clock for register access
-+      - description: Master clock
-+      - description: DMA clock for DMA register access
-+      - description: Parent clock for multiple of 8kHz sample rates
-+      - description: Parent clock for multiple of 11kHz sample rates
-+    minItems: 5
++	ret = of_reserved_mem_device_init_by_idx(&pdev->dev, np, 0);
++	if (ret)
++		dev_warn(&pdev->dev, "no reserved DMA memory\n");
 +
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: mclk
-+      - const: dma
-+      - const: pll8k
-+      - const: pll11k
-+    minItems: 5
++	data->dai.cpus = &dlc[0];
++	data->dai.num_cpus = 1;
++	data->dai.platforms = &dlc[1];
++	data->dai.num_platforms = 1;
++	data->dai.codecs = &dlc[2];
++	data->dai.num_codecs = 1;
 +
-+  power-domains:
-+    maxItems: 1
++	data->dai.name = "rpmsg hifi";
++	data->dai.stream_name = "rpmsg hifi";
++	data->dai.dai_fmt = SND_SOC_DAIFMT_I2S |
++			    SND_SOC_DAIFMT_NB_NF |
++			    SND_SOC_DAIFMT_CBS_CFS;
 +
-+  fsl,audioindex:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1]
-+    default: 0
-+    description: Instance index for sound card in
-+                 M core side, which share one rpmsg
-+                 channel.
++	/* Optional codec node */
++	ret = of_parse_phandle_with_fixed_args(np, "audio-codec", 0, 0, &args);
++	if (ret) {
++		data->dai.codecs->dai_name = "snd-soc-dummy-dai";
++		data->dai.codecs->name = "snd-soc-dummy";
++	} else {
++		data->dai.codecs->of_node = args.np;
++		ret = snd_soc_get_dai_name(&args, &data->dai.codecs->dai_name);
++		if (ret) {
++			dev_err(&pdev->dev, "Unable to get codec_dai_name\n");
++			goto fail;
++		}
++	}
 +
-+  fsl,version:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [1, 2]
-+    default: 2
-+    description: The version of M core image, which is
-+                 to make driver compatible with different image.
++	data->dai.cpus->dai_name = dev_name(&rpmsg_pdev->dev);
++	data->dai.platforms->name = IMX_PCM_DRV_NAME;
++	data->dai.playback_only = true;
++	data->dai.capture_only = true;
++	data->card.num_links = 1;
++	data->card.dai_link = &data->dai;
 +
-+  fsl,buffer-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: pre allocate dma buffer size
++	if (of_property_read_bool(np, "fsl,rpmsg-out"))
++		data->dai.capture_only = false;
 +
-+  fsl,enable-lpa:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: enable low power audio path.
++	if (of_property_read_bool(np, "fsl,rpmsg-in"))
++		data->dai.playback_only = false;
 +
-+  fsl,rpmsg-out:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: |
-+      This is a boolean property. If present, the transmitting function
-+      will be enabled.
++	if (data->dai.playback_only && data->dai.capture_only) {
++		dev_err(&pdev->dev, "no enabled rpmsg DAI link\n");
++		ret = -EINVAL;
++		goto fail;
++	}
 +
-+  fsl,rpmsg-in:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: |
-+      This is a boolean property. If present, the receiving function
-+      will be enabled.
++	data->card.dev = &pdev->dev;
++	data->card.owner = THIS_MODULE;
 +
-+  fsl,codec-type:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2]
-+    default: 0
-+    description: Sometimes the codec is registered by
-+                 driver not by the device tree, this items
-+                 can be used to distinguish codecs.
++	ret = of_property_read_string_index(np, "model", 0, &data->card.name);
++	if (ret)
++		goto fail;
 +
-+  audio-codec:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle of the audio codec
++	platform_set_drvdata(pdev, &data->card);
++	snd_soc_card_set_drvdata(&data->card, data);
++	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
++		goto fail;
++	}
 +
-+  memory-region:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: phandle to the reserved memory nodes
++fail:
++	return ret;
++}
 +
-+required:
-+  - compatible
-+  - fsl,audioindex
-+  - fsl,version
-+  - fsl,buffer-size
++static struct platform_driver imx_rpmsg_driver = {
++	.driver = {
++		.name = "imx-audio-rpmsg",
++		.owner = THIS_MODULE,
++		.pm = &snd_soc_pm_ops,
++	},
++	.probe = imx_rpmsg_probe,
++};
++module_platform_driver(imx_rpmsg_driver);
 +
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    rpmsg_audio: rpmsg_audio {
-+        compatible = "fsl,imx8mn-rpmsg";
-+        fsl,audioindex = <0> ;
-+        fsl,version = <2>;
-+        fsl,buffer-size = <0x6000000>;
-+        fsl,enable-lpa;
-+    };
++MODULE_DESCRIPTION("Freescale SoC Audio RPMSG Machine Driver");
++MODULE_AUTHOR("Shengjiu Wang <shengjiu.wang@nxp.com>");
++MODULE_ALIAS("platform:imx-audio-rpmsg");
++MODULE_LICENSE("GPL v2");
 -- 
 2.27.0
 
