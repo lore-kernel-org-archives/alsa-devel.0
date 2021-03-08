@@ -2,75 +2,103 @@ Return-Path: <SRS0=LCrH=IG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AE98C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7388C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:17:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 117EB65226
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:15:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 117EB65226
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6EBCD6521B
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 16:17:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EBCD6521B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DAA618CD;
-	Mon,  8 Mar 2021 17:14:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DAA618CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0987F18D9;
+	Mon,  8 Mar 2021 17:16:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0987F18D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615220104;
-	bh=5ZxenuEnRxfzPre9OG6r5woaetmVVzyp01P71cOUEI4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1615220230;
+	bh=Hf55fkCww1Btslpb4csEw76QDlJxLHAO9j5RJ5HekjM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rIdVhks2NjdoGS8FplmAKWe1o0Z39+MzSzo6KiUV/Q+Nbh4DYzkWUMpb5rOZJXfY9
-	 FcTHmJV8z5udNUmk+XkJTDdlWtbovBaL+1mbcIjqK3ymrJQop+nAJXQ0bmC5cZB8r3
-	 r0skcVFfAdziSll4g1t8PjpQuWD9oT639Yc6QNnk=
+	b=g+yeaSDpzXXct5Bdy/O4LGsRp8bprvndKUJhwUlUVlTx3uaSRFxUmC4pQbJIoJDEn
+	 xJe7cqOUaWforp9NN3UX5nwAWfQBOPhDR8atqqrlSXd9Ti4x5eFRLY6PFDbAJUqXF9
+	 98iTehAI13vf9pgi/eI07cN58hwWOuF7n5T2Ka7M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02F85F80519;
-	Mon,  8 Mar 2021 17:09:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E8F1F8016C;
+	Mon,  8 Mar 2021 17:16:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D67AF804FB; Mon,  8 Mar 2021 17:08:56 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 84A46F801D8; Mon,  8 Mar 2021 17:16:18 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21F1EF804AE
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 17:08:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21F1EF804AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id D69EFF80139
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 17:16:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D69EFF80139
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FlP3VA9Z"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD30A65229;
- Mon,  8 Mar 2021 16:08:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615219729;
- bh=5ZxenuEnRxfzPre9OG6r5woaetmVVzyp01P71cOUEI4=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=FlP3VA9ZKepWg5/F6l/C/wKWBfJzj9FxaAunQX3+vEqURInAj96aiv8xsqsgsq5Pv
- HeMN9+xB83ZcXUUPLp0lYWRkxIuOWiib2suX57+Ln+8qQrjNXXcDPWsecbP/awBS/G
- 6W9WExFp0U7axoirXf2YZWbyHNyYwCMeMRl+jNfw6SiTKij9h+gQdN5LUs+Ry+RamR
- URb9rK9r26AscFSaWq22Y0MfMniaaXSDYY9kJcPSHpJQZjeP1YpRWpVNk2ZXAanTYV
- muiFv8kdewRqCaLhZO974KRku0L4rMOoD7XMRjYYywi8QwZBvVsFD9yK2r7ULqEztl
- fIBMwUDdUDKcQ==
-From: Mark Brown <broonie@kernel.org>
-To: festevam@gmail.com, lgirdwood@gmail.com, sebastian.krzyszkowiak@puri.sm,
- linux-kernel@vger.kernel.org, perex@perex.cz, ckeepax@opensource.cirrus.com,
- gustavoars@kernel.org, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1615170877-25918-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1615170877-25918-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2] ASoC: wm8962: Relax bit clock divider searching
-Message-Id: <161521960849.9621.6433725701226320562.b4-ty@kernel.org>
-Date: Mon, 08 Mar 2021 16:06:48 +0000
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="Nff/mQrl"
+Received: by mail-wm1-x32e.google.com with SMTP id w7so6390819wmb.5
+ for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2021 08:16:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=dUhsdpgyKbkw4pWWzlPQlJO0EnmBV3jJKURQm4/QkFA=;
+ b=Nff/mQrlyV5ROAurVkLSqXKFuMVDszocw7rDWhPBnR1Ok/wDmBLCS7nSDiGVDCozIp
+ 80abNeWluZ3qJunraTaWeTDrTS6QZ55A1JrT+eOXxLY/VB8r0lVPL4S2vI9JqXfUw0Qg
+ jb+a3xx6pBIAaJX274bWbRkLGTLpBwGJCgCj/mU7Jh1LVVmhvZbA1Yfo5a594wVROqUF
+ cbvNKf6TSIj9Cebzvjd+bnKKtgJfjwRW4lwN84X4C8ewFjkxdJsneCURVdlOu38mHCCF
+ LGW4Eqinvni1b7sguCO8y/yy0KD8f0vs5HY7l6zV1f0csCm/Z6QNTZIXx80Spfy2uVhK
+ r2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=dUhsdpgyKbkw4pWWzlPQlJO0EnmBV3jJKURQm4/QkFA=;
+ b=IJQpFPCeendYQGrTx9sasNbY6PqI4ZwUzAswqKQyxaXzm9z790rUZUqxYvKji0YUD0
+ OvRzUaRkWH9o/4j5r3nYFX8i4S3JNGFFsOSMyqndOthd5YlHo9G/wWGRiYluC88J2yWt
+ EqWHDAMTDzpKbmrQxJp8U7gATm1qNW+Ka44TEH3bQ+xMYC7ASQgbCsrPYiKC/TU9VyYl
+ e+SiX1lnihJPI98roLD3D0Vb81e8/VaNOuE2yFv6Kt0gGfyQmi5Zl1kDDoVX/6iPdp72
+ B5O4dMRZRisUkQvFm5BRJ3XlYROgaZgKnWxMdOoEKZ7qchrjThH+bdIZltXEjhn2lraY
+ RuJA==
+X-Gm-Message-State: AOAM531UZiaeX4w2mE2LC7UMF5jG20ExkNPJp2e9tC2P4z5n+rkXIig8
+ N7zTqIwaWlc+OgnDsPMuXnB8ApsZdbuijA==
+X-Google-Smtp-Source: ABdhPJx+IiBiziHQQ87PcUBmZFUJZZod0kR9YdAx8gqEn3DHUhj10eGtKcUpB9mxBAwo+eSgd3bZaQ==
+X-Received: by 2002:a1c:c282:: with SMTP id s124mr22525795wmf.99.1615220172820; 
+ Mon, 08 Mar 2021 08:16:12 -0800 (PST)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id n6sm20123107wmd.27.2021.03.08.08.16.12
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Mon, 08 Mar 2021 08:16:12 -0800 (PST)
+Subject: Re: [PATCH v3 8/9] soundwire: qcom: add auto enumeration support
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ vkoul@kernel.org
+References: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
+ <20210308134957.16024-9-srinivas.kandagatla@linaro.org>
+ <ab00438b-dbb9-e6c6-019a-d50494e5dee1@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <6050461e-5594-6272-e0ef-2ebdc271d809@linaro.org>
+Date: Mon, 8 Mar 2021 16:16:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <ab00438b-dbb9-e6c6-019a-d50494e5dee1@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Cc: sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,40 +114,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 8 Mar 2021 10:34:37 +0800, Shengjiu Wang wrote:
-> With S20_3LE format case, the sysclk = rate * 384,
-> the bclk = rate * 20 * 2, there is no proper bclk divider
-> for 384 / 40, because current condition needs exact match.
-> So driver fails to configure the clocking:
+
+
+On 08/03/2021 15:56, Pierre-Louis Bossart wrote:
 > 
-> wm8962 3-001a: Unsupported BCLK ratio 9
+>> +static int qcom_swrm_enumerate(struct sdw_bus *bus)
+>> +{
+>> +    struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
+>> +    struct sdw_slave *slave, *_s;
+>> +    struct sdw_slave_id id;
+>> +    u32 val1, val2;
+>> +    bool found;
+>> +    u64 addr;
+>> +    int i;
+>> +    char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
+>> +
+>> +    for (i = 1; i <= SDW_MAX_DEVICES; i++) {
+>> +        /*SCP_Devid5 - Devid 4*/
+>> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
+>> +
+>> +        /*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
+>> +        ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
+>> +
+>> +        if (!val1 && !val2)
+>> +            break;
+>> +
+>> +        addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
+>> +            ((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
+>> +            ((u64)buf1[0] << 40);
+>> +
+>> +        sdw_extract_slave_id(bus, addr, &id);
+>> +        found = false;
+>> +        /* Now compare with entries */
+>> +        list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
+>> +            if (sdw_compare_devid(slave, id) == 0) {
+>> +                u32 status = qcom_swrm_get_n_device_status(ctrl, i);
+>> +
+>> +                found = true;
+>> +                if (status == SDW_SLAVE_ATTACHED) {
+>> +                    slave->dev_num = i;
+>> +                    mutex_lock(&bus->bus_lock);
+>> +                    set_bit(i, bus->assigned);
+>> +                    mutex_unlock(&bus->bus_lock);
+>> +
+>> +                }
 > 
-> [...]
+> you haven't changed that part, if the device is not in DT we should 
+> still set bus->assigned::i
 
-Applied to
+My bad! I missed it again!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Will fix it in next spin!
 
-Thanks!
 
-[1/1] ASoC: wm8962: Relax bit clock divider searching
-      commit: 51309c5bec7cfe567a00a667adbffea444845543
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--srini
