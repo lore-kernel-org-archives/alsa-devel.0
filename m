@@ -7,72 +7,74 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 348A5C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 07:04:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D4FFC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 07:05:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8EFF0652A8
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 07:04:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8EFF0652A8
+	by mail.kernel.org (Postfix) with ESMTPS id 52D96652A4
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 07:05:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52D96652A4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gatech.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0DD317D9;
-	Tue,  9 Mar 2021 08:03:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0DD317D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9A4817D5;
+	Tue,  9 Mar 2021 08:04:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9A4817D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615273477;
-	bh=3wm0X9YEiv5wROvrtoZwvTJ9gvEw7p1fPlFA8kkHQo4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FE/n6weh7f+FBaCu5z6e52zIKYsoYtPQEQ9Fgz2nlS9nRxoTqnQ8N/KwjRKUiOaRV
-	 +4SUgK8yMt5EOGnCtiK6g9pm1MdSaH8xded+6YXqbYIlbkfOYi42B7/aeqJvOFR2Wp
-	 Ps7tegHXlSm+PqkonxMaS8M4awtvPFLafMYpz3hw=
+	s=default; t=1615273514;
+	bh=5NND8fD7aenwqPv48d7y96RipxSlAYKosA8+fm888Yc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dLrfNK2XioKcufW5hEIY9a6WDqM7bL/4Sd1MxTJIjjxe3SqxzEuLrsdAyapK8tvbe
+	 ZqJ7v8bs/26avjhIOjRjEhZZk2cHwtdEjwoPWWXJdnlWONuJOCQkbcGyTWXjGaJdWi
+	 mgHsQZTg1MGiuD1LDXmeqHB9wyS0lJvppTi5/CzE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCA51F80424;
-	Tue,  9 Mar 2021 08:02:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE0E1F80482;
+	Tue,  9 Mar 2021 08:02:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3875DF80217; Mon,  8 Mar 2021 23:20:30 +0100 (CET)
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com
- [209.85.160.174])
+ id F0074F8020D; Mon,  8 Mar 2021 23:20:30 +0100 (CET)
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com
+ [209.85.222.178])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB0E4F800D0
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 23:20:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB0E4F800D0
-Received: by mail-qt1-f174.google.com with SMTP id w6so8824652qti.6
- for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2021 14:20:18 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A701AF8016C
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 23:20:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A701AF8016C
+Received: by mail-qk1-f178.google.com with SMTP id 130so11062578qkh.11
+ for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2021 14:20:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XmlLBPGDhN0+7RIF/2Sq8jmCe3/Wk10rCYPYFc/sdbc=;
- b=guCzVNW6PUDM8tMbcuXUATKAQcDFfrJI97sr/ajnWcos0b43p+8o2X+Uxzd4b3VIW8
- GSYforiuTBN7gUFmHM/U0I9owfTFJFCnRl5Ff5m0oFZqL998XWzV/tCm9Ak24ERyNwuZ
- jovVBpWIFrhprNpcPhF9t76E1g3drwYPuu7j+LpS/a/43ayrJCPqdrqbvszR4NzQxPpZ
- NMmhWj2EggAzg6nWhPR8sV53uX0vyt2J7zCDOmbB59VyxYPXsxjUb2XNwjoz2U4nGmhq
- r9BOcvpWi8BE0Rf0MB6RQ1HF96WV7ta5oiaJSqh8B8jqTwZpmbsJ9h8FlDTqd9HmeHj9
- H5IQ==
-X-Gm-Message-State: AOAM5338+eqXqNeDjvkrSqmPATlGqAqa2IPYeXs3xBUyYtC/8dnKTrCc
- XU2zTW/wIQ5+FiIK6jrvG0s=
-X-Google-Smtp-Source: ABdhPJzdAZ53EFLl0v5nMzZDt69IABpLFTF+mIgzeMeukmiyK1N/Ls/Ac1oCKVDgql5QMwm1tMd8ow==
-X-Received: by 2002:ac8:6ede:: with SMTP id f30mr2004433qtv.275.1615242016960; 
- Mon, 08 Mar 2021 14:20:16 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=8wLOjkx8Aw550chRq6bfwY018S+0d9yEzCRGLO7c+iQ=;
+ b=U0CbguTkA1oFIprH6jS2uU/LjC6paGcmdFhNuWT6NKh4Z3aC5eJJu5NWdwwoFo3lnR
+ wIXGmf6Dtw/m5vllFAlmGw8GAWEO2YRgwLRGgaRgfAQ7IZTzD9GAkg5uiqiZI9gZ4Rqc
+ qT7kkDsagXvLOiTZMXoDxpoSBVwEP31Zg6z0m/6YKle5Zedvs+HfTuNpXl/xnrFyW7bw
+ CwCKPeTB/OTbQGyqAVaXur+87mO7jouumv5pqpepu7WSPsIq3VIufLos8Ad/7hLk8y72
+ MNf+ZKDPj3eygyBov2ju5M578XwVFGJ21mtoQMBLwybN+CjRMyFEUX71jWotHtc7n9Cj
+ ONhw==
+X-Gm-Message-State: AOAM531UQkx7BeU+g7X1BZHIOlMVR/mCYFVTcSdFeAbC+Yar5J9oKQ+x
+ RtzuemVtgRQ+BaFQJ+hHClE=
+X-Google-Smtp-Source: ABdhPJyS8AAwQdPfiGOCRS0IAxVVrVOhiSmcAytyZVzRDxD1L6MUq7d5NA65ij86KE7L9uJtRo2utQ==
+X-Received: by 2002:a37:630a:: with SMTP id x10mr22334583qkb.326.1615242018237; 
+ Mon, 08 Mar 2021 14:20:18 -0800 (PST)
 Received: from dpward-laptop.. ([2601:184:417f:5914::53e7:ddc3])
- by smtp.gmail.com with ESMTPSA id y1sm8676722qki.9.2021.03.08.14.20.15
+ by smtp.gmail.com with ESMTPSA id y1sm8676722qki.9.2021.03.08.14.20.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Mar 2021 14:20:16 -0800 (PST)
+ Mon, 08 Mar 2021 14:20:17 -0800 (PST)
 From: David Ward <david.ward@gatech.edu>
 To: Oder Chiou <oder_chiou@realtek.com>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ASoc: rt286: Fix combojack detection for ALC3263 (Dell
- XPS 13 9343)
-Date: Mon,  8 Mar 2021 17:18:14 -0500
-Message-Id: <20210308221817.12908-1-david.ward@gatech.edu>
+Subject: [PATCH 1/3] ASoC: rt286: Make RT286_SET_GPIO_* readable and writable
+Date: Mon,  8 Mar 2021 17:18:15 -0500
+Message-Id: <20210308221817.12908-2-david.ward@gatech.edu>
 X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210308221817.12908-1-david.ward@gatech.edu>
+References: <20210308221817.12908-1-david.ward@gatech.edu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 09 Mar 2021 08:01:59 +0100
@@ -94,36 +96,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This fixes a longstanding issue that prevented jack detection from working
-on systems with the ALC3263 codec, such as the Dell XPS 13 9343, when using
-I2S mode for audio (instead of HDA mode).
-
-There is currently an ACPI quirk for the Dell XPS 13 9343 that forces it to
-use HDA mode instead of I2S mode, because jack detection did not work. See:
-
-https://lore.kernel.org/alsa-devel/CAPeXnHv07HkvcHrYFmZMr8OTp7U7F=k_k=LPYnUtp89iPn2d2Q@mail.gmail.com/
-
-There are very likely codec fixups for the HDA driver which should be added
-to the I2S codec driver, to attempt to achieve parity. Commit 394c97f824fa
-("ALSA: hda/realtek - Change EAPD to verb control") describes an issue that
-still seems to be present in the I2S codec driver, for example. In any case
-this change should move closer to allowing the Dell XPS 13 9343 to default
-to I2S mode; and it resolves this issue for systems which use I2S mode now,
-including the Dell Latitude 7350 and the Dell Venue 11 Pro 7140.
+Otherwise, the GPIO configuration for the Dell XPS 13 9343 is not actually
+applied, so the headset microphone does not work.
 
 BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=114171
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=150601
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205961
 Signed-off-by: David Ward <david.ward@gatech.edu>
+---
+ sound/soc/codecs/rt286.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-David Ward (3):
-  ASoC: rt286: Make RT286_SET_GPIO_* readable and writable
-  ASoC: rt286: Handle all devices with ALC3263 codec
-  ASoc: rt286: Handle headphones in combo jack correctly
-
- sound/soc/codecs/rt286.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
-
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index f9b29782b62a..e16e7237156f 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -171,6 +171,9 @@ static bool rt286_readable_register(struct device *dev, unsigned int reg)
+ 	case RT286_PROC_COEF:
+ 	case RT286_SET_AMP_GAIN_ADC_IN1:
+ 	case RT286_SET_AMP_GAIN_ADC_IN2:
++	case RT286_SET_GPIO_MASK:
++	case RT286_SET_GPIO_DIRECTION:
++	case RT286_SET_GPIO_DATA:
+ 	case RT286_SET_POWER(RT286_DAC_OUT1):
+ 	case RT286_SET_POWER(RT286_DAC_OUT2):
+ 	case RT286_SET_POWER(RT286_ADC_IN1):
 -- 
 2.30.1
 
