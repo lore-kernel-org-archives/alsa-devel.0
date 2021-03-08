@@ -2,99 +2,79 @@ Return-Path: <SRS0=LCrH=IG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0AB4C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:54:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E57BC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 14:24:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B28265100
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:54:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B28265100
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id A15C5651D3
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 14:24:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A15C5651D3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F02D18CD;
-	Mon,  8 Mar 2021 14:54:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F02D18CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 448731739;
+	Mon,  8 Mar 2021 15:23:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 448731739
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615211697;
-	bh=/F3YN6PaFRpB7kV+9oiEPJe/tMM8VZwcbT5STpHjO80=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615213454;
+	bh=Zb8DKQnu1TVEmOaYJrfupIqv9XI8RE4ij4ltQDSLnLs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C0QYm6wDwmC6MGad6lY9DVIB+q7yC0GEL69GxBzyfwDLLBbckZ3hoWgoJIAxKPvUv
-	 X8U73gGTLR6iF5mcMZ8JgvG80ARL8owQSffmWOa29rtA81rBU8Y5YBrqJN1sUKxawT
-	 1ankWzuo4/DfRxgBcxwdfkvs736tsIH9Xj8UZQJ4=
+	b=Sy3Jrj7m4Pe5Kdccv/dLz8PLMpWznNBl5U78VwYV4gtI3kaiEHZ/6KAh0orz591Cp
+	 StmT5YHBBTZ67bU46WLK5MGibwUhBD2C2yMV+OQUvkVIH+oIV+9slMX+3egIEqz6Ss
+	 eM7rBfl0kCYzzCfAF8wgHm7L9WlKCRdKFFQvW77g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49786F804DF;
-	Mon,  8 Mar 2021 14:50:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90168F8016C;
+	Mon,  8 Mar 2021 15:23:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C835BF80424; Mon,  8 Mar 2021 14:50:26 +0100 (CET)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 95F98F801D8; Mon,  8 Mar 2021 15:23:13 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11BB5F802CA
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 14:50:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11BB5F802CA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9AFFF800D0
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 15:23:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9AFFF800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Oo3P+Hp6"
-Received: by mail-wm1-x32c.google.com with SMTP id n22so6091683wmc.2
- for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2021 05:50:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=hw0l9gPz+tN23oDHxuibjWq7IppcbR1TA4q1XJqNFak=;
- b=Oo3P+Hp6h6pgNeyzANZsSKTpnDUom9KW7Jn3DVYffVP5lQVHIJEGMtggu2dXugQG2V
- 2RQCvATZvyHxiY/NmiUTxAyNuIcRY2Kut583q2EAWZScOOqQg8utyJqe7uke8XINjb5a
- Av8okeFVG1yse61MNBBY6UJ9x85UIoQFavyBGMpa7OiHMDikJAXiprsRGnKU9AhkioPA
- 9pf1WPmkYcKW8X2cPsdDCbfxoY4Lx+LkpmOhCfM4uFjG97JK2RzunWKcj486WFHfO+jc
- rhUpnjfFcNgE2rb9LSPIOOPOsUYEG5O+8inci/BnkQVu2var7meQeiW/MlIdjsIgYzZ9
- T7Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=hw0l9gPz+tN23oDHxuibjWq7IppcbR1TA4q1XJqNFak=;
- b=ayUF9o3EVuKjI2Yjznmeb7HMQCjf6BEcxljymI81CHW0PjTo/7PWdQXuC8fk5FyjV3
- rQHRKGp3zNi0dAnfVDe/xdhXlcReKTomAvB0RJpsjeOuVFyYEo6NZac9T0Y0vub6XFw9
- j7CXnrPfqfOlhnDPEvQhOYII+voNd1Q5t5np9YcLq9GtQOzo1hJBBZF3CI4YHEwXCiWb
- UPCQyZUcrMp+WJQB/4NZV2XhGWSVER81yU4JXZiffU+B2z6l7s8DHdkCJIcLMTDlc7xN
- c146cSmV3b+oEaeNW6v8rVePcpbTluiRNzX6MWXtPFAQG5xOT9iihx32E13toP1nKQFj
- sChg==
-X-Gm-Message-State: AOAM533znQdW2koENxuIbEoiXlA21Mv/GftYb5OsgtxeAA2WGEH6IznW
- XuN8JvYdtXG8Dhe+aRk5UUCAs2ZvY/KLiQ==
-X-Google-Smtp-Source: ABdhPJz1Icy2SwvgNCoyUlsPFCCiOigJxp3ypLwsZtEexflpytUQxr3G4kvuZ8HR/QZwwW6C/20oqg==
-X-Received: by 2002:a05:600c:287:: with SMTP id
- 7mr23191564wmk.23.1615211412064; 
- Mon, 08 Mar 2021 05:50:12 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h22sm19490589wmb.36.2021.03.08.05.50.11
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Mar 2021 05:50:11 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Subject: [PATCH v3 6/9] soundwire: qcom: add support to new interrupts
-Date: Mon,  8 Mar 2021 13:49:54 +0000
-Message-Id: <20210308134957.16024-7-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
-References: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="oPdaQdrY"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3599651CC;
+ Mon,  8 Mar 2021 14:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1615213378;
+ bh=Zb8DKQnu1TVEmOaYJrfupIqv9XI8RE4ij4ltQDSLnLs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=oPdaQdrYZ6rvVQJ1v/pLUIJI7aEviku/k+xSMLJjolCqQ2d20IVyYjApKVQJaa5rm
+ O3c9uW+rZ67Z5Acw2pbotwlZpRIzm+4ZcFWKNvyrnvwptqmOXlUSd8fAIrv4KvLWYz
+ aAQfFzEObX1sYmKZ41VYKSEoaTJs4BcBFyi7HrW01bdKR+nygowWd9/B9x6RF9Ig9o
+ zLbWTTS7nI9t/SdkUtyKOFuuJj0/IzRlEACHDsVXZdQv4W6oB+g8btB1PTNxexB7DA
+ CnVT+R67WgNq+pA0VSRbKY8WseoUxO1fp9XfOh5TvULNjv8396CEt4Vfk4MRKCdOBN
+ 8VlPvRmpv4sdg==
+Date: Mon, 8 Mar 2021 14:21:47 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Peter Robinson <pbrobinson@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: remove zte zx dangling kconfig
+Message-ID: <20210308142147.GD4656@sirena.org.uk>
+References: <20210307162338.1160604-1-pbrobinson@gmail.com>
+ <20210307162338.1160604-2-pbrobinson@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="d01dLTUuW90fS44H"
+Content-Disposition: inline
+In-Reply-To: <20210307162338.1160604-2-pbrobinson@gmail.com>
+X-Cookie: Am I SHOPLIFTING?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: Barry Song <baohua@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jun Nie <jun.nie@linaro.org>,
+ Shawn Guo <shawnguo@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,232 +90,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support to new interrupts which includes reporting some of the
-error interrupts and adding support to SLAVE pending interrupt!
 
-This patch also changes the interrupt handler behaviour on handling
-any pending interrupts by checking it before returning out of irq handler.
+--d01dLTUuW90fS44H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 161 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 135 insertions(+), 26 deletions(-)
+On Sun, Mar 07, 2021 at 04:23:38PM +0000, Peter Robinson wrote:
+> In commit dc98f1d we removed the zte zx sound drivers but there
+> was a dangling Kconfig left around for the codec so fix this.
+>=20
+> Fixes: dc98f1d655ca (ASoC: ASoC: remove zte zx drivers)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 7762ff237636..2a53da521626 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -28,10 +28,21 @@
- #define SWRM_COMP_PARAMS_DIN_PORTS_MASK				GENMASK(9, 5)
- #define SWRM_INTERRUPT_STATUS					0x200
- #define SWRM_INTERRUPT_STATUS_RMSK				GENMASK(16, 0)
-+#define SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ			BIT(0)
- #define SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED		BIT(1)
- #define SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS		BIT(2)
-+#define SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET			BIT(3)
-+#define SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW			BIT(4)
-+#define SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW			BIT(5)
-+#define SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW		BIT(6)
- #define SWRM_INTERRUPT_STATUS_CMD_ERROR				BIT(7)
-+#define SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION		BIT(8)
-+#define SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH		BIT(9)
- #define SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED		BIT(10)
-+#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2             BIT(13)
-+#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2              BIT(14)
-+#define SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP               BIT(16)
-+#define SWRM_INTERRUPT_MAX					17
- #define SWRM_INTERRUPT_MASK_ADDR				0x204
- #define SWRM_INTERRUPT_CLEAR					0x208
- #define SWRM_INTERRUPT_CPU_EN					0x210
-@@ -58,6 +69,7 @@
- #define SWRM_MCP_STATUS_BANK_NUM_MASK				BIT(0)
- #define SWRM_MCP_SLV_STATUS					0x1090
- #define SWRM_MCP_SLV_STATUS_MASK				GENMASK(1, 0)
-+#define SWRM_MCP_SLV_STATUS_SZ					2
- #define SWRM_DP_PORT_CTRL_BANK(n, m)	(0x1124 + 0x100 * (n - 1) + 0x40 * m)
- #define SWRM_DP_PORT_CTRL_2_BANK(n, m)	(0x1128 + 0x100 * (n - 1) + 0x40 * m)
- #define SWRM_DP_BLOCK_CTRL_1(n)		(0x112C + 0x100 * (n - 1))
-@@ -123,6 +135,7 @@ struct qcom_swrm_ctrl {
- 	int rows_index;
- 	unsigned long dout_port_mask;
- 	unsigned long din_port_mask;
-+	u32 intr_mask;
- 	u8 rcmd_id;
- 	u8 wcmd_id;
- 	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
-@@ -304,6 +317,25 @@ static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
- 	return SDW_CMD_IGNORED;
- }
- 
-+static int qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
-+{
-+	u32 val, status;
-+	int dev_num;
-+
-+	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
-+
-+	for (dev_num = 0; dev_num < SDW_MAX_DEVICES; dev_num++) {
-+		status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
-+
-+		if ((status & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
-+			ctrl->status[dev_num] = status;
-+			return dev_num;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
- {
- 	u32 val;
-@@ -322,36 +354,112 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
- 
- static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- {
--	struct qcom_swrm_ctrl *ctrl = dev_id;
--	u32 sts, value;
-+	struct qcom_swrm_ctrl *swrm = dev_id;
-+	u32 value, intr_sts, intr_sts_masked;
-+	u32 i;
-+	u8 devnum = 0;
-+	int ret = IRQ_HANDLED;
- 
--	ctrl->reg_read(ctrl, SWRM_INTERRUPT_STATUS, &sts);
-+	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-+	intr_sts_masked = intr_sts & swrm->intr_mask;
- 
--	if (sts & SWRM_INTERRUPT_STATUS_CMD_ERROR) {
--		ctrl->reg_read(ctrl, SWRM_CMD_FIFO_STATUS, &value);
--		dev_err_ratelimited(ctrl->dev,
--				    "CMD error, fifo status 0x%x\n",
--				     value);
--		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CMD, 0x1);
--	}
--
--	if ((sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED) ||
--	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS) {
--		qcom_swrm_get_device_status(ctrl);
--		sdw_handle_slave_status(&ctrl->bus, ctrl->status);
--	}
--
--	/**
--	 * clear the interrupt before complete() is called, as complete can
--	 * schedule new read/writes which require interrupts, clearing the
--	 * interrupt would avoid missing interrupts in such cases.
--	 */
--	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR, sts);
-+	do {
-+		for (i = 0; i < SWRM_INTERRUPT_MAX; i++) {
-+			value = intr_sts_masked & (1 << i);
-+			if (!value)
-+				continue;
-+
-+			switch (value) {
-+			case SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ:
-+				devnum = qcom_swrm_get_alert_slave_dev_num(swrm);
-+				if (devnum < 0) {
-+					dev_err_ratelimited(swrm->dev,
-+					    "no slave alert found.spurious interrupt\n");
-+				} else {
-+					sdw_handle_slave_status(&swrm->bus, swrm->status);
-+				}
- 
--	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED)
--		complete(&ctrl->broadcast);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
-+			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
-+				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
-+					__func__);
-+				qcom_swrm_get_device_status(swrm);
-+				sdw_handle_slave_status(&swrm->bus, swrm->status);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
-+				dev_err_ratelimited(swrm->dev,
-+						"%s: SWR bus clsh detected\n",
-+						__func__);
-+				swrm->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-+				swrm->reg_write(swrm, SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR read FIFO overflow fifo status 0x%x\n",
-+					__func__, value);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR read FIFO underflow fifo status 0x%x\n",
-+					__func__, value);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err(swrm->dev,
-+					"%s: SWR write FIFO overflow fifo status %x\n",
-+					__func__, value);
-+				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_CMD_ERROR:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR CMD error, fifo status 0x%x, flushing fifo\n",
-+					__func__, value);
-+				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION:
-+				dev_err_ratelimited(swrm->dev,
-+						"%s: SWR Port collision detected\n",
-+						__func__);
-+				swrm->intr_mask &= ~SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION;
-+				swrm->reg_write(swrm,
-+					SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH:
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR read enable valid mismatch\n",
-+					__func__);
-+				swrm->intr_mask &=
-+					~SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH;
-+				swrm->reg_write(swrm,
-+					SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED:
-+				complete(&swrm->broadcast);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2:
-+				break;
-+			case SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2:
-+				break;
-+			case SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP:
-+				break;
-+			default:
-+				dev_err_ratelimited(swrm->dev,
-+						"%s: SWR unknown interrupt value: %d\n",
-+						__func__, value);
-+				ret = IRQ_NONE;
-+				break;
-+			}
-+		}
-+		swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, intr_sts);
-+		swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-+		intr_sts_masked = intr_sts & swrm->intr_mask;
-+	} while (intr_sts_masked);
- 
--	return IRQ_HANDLED;
-+	return ret;
- }
- 
- static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
-@@ -367,6 +475,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	/* Disable Auto enumeration */
- 	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
- 
-+	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
- 	/* Mask soundwire interrupts */
- 	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR,
- 			SWRM_INTERRUPT_STATUS_RMSK);
--- 
-2.21.0
+Commit: 6973bba35377 ("ASoC: remove zte zx dangling kconfig")
+	Fixes tag: Fixes: dc98f1d655ca (ASoC: ASoC: remove zte zx drivers)
+	Has these problem(s):
+		- Subject does not match target commit subject
+		  Just use
+			git log -1 --format=3D'Fixes: %h ("%s")'
 
+--d01dLTUuW90fS44H
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBGMvoACgkQJNaLcl1U
+h9C1jQf/ZdMMZ91IWuV7Zk0JI9m0iss3F/0k/bGCMBJo8BsrfMscOgk1Mf8sLHj0
+DT5W2PRrvh9aEUGwiYjRwmu9ucPArgrev69UPUikERfx9wVi7GRbFgEEB+LHBHxF
+9FGnwFrNmdt/9hOsP3EE2nWAl+howKqnBlcWgZF69SwcOiwhvIFsw0lo/nEXP2hA
+d78YhbReObuahUGXldiXNYVmCfXfXJOW9gnFQ7sVMZB4kAwoDdg2YfhIpBVXloBd
+Ai4zw+mUAsj4ONTt/D1rq+0qumZsUS2emSDRa8GP2pO3HjaFy22Q07AmUqkY73mV
+0Aao5CCFGHwWK67eg9f4VT8gqfCv/g==
+=XBNu
+-----END PGP SIGNATURE-----
+
+--d01dLTUuW90fS44H--
