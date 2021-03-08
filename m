@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8804C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 22:09:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F90FC433E0
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 22:10:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 263F165256
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 22:09:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 263F165256
+	by mail.kernel.org (Postfix) with ESMTPS id A98706525F
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 22:10:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A98706525F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB73B18DD;
-	Mon,  8 Mar 2021 23:08:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB73B18DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34B8F18EF;
+	Mon,  8 Mar 2021 23:09:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34B8F18EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615241375;
-	bh=AoCj2MfxvD/4rvE5UVuBwiQrDDmChsm6kaRt9+H2suI=;
+	s=default; t=1615241409;
+	bh=x4+FgSssDE9BMSixTLrG+yhrTemcwYNtNGLNlESKGNI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b0GrtniSRM3A9EgVviLfNRYXbUmkEm9rf35XlG7Dj3R8bab7FBRgiAPjdm6KMGv+S
-	 XI1wx+H+kvcVKzgHqDv5ey6tgRevTKiQuIlFuUC+Jam1QypRYR3AdD2U+hjCpFpsse
-	 vN5qOm4Z0Z1d2s5L3QD7aV8l7DHcOvYhgsv2fomY=
+	b=Js/dWKd+Qqy+dmlACkD1yQTSEUcTmSsFWjlWJnbXQubWn/U0BpiXNi1lzkiFAd/an
+	 FCVUH/896F+FblnHF7CZzuSSOnOWnMoqX3sBAQib5Ya31REy0c0m8KoEQm2DUFdg9z
+	 lFph8iay6+13eL+cqK3HfJGzUdbgemgCJI6c+VIA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B0D0F804B1;
-	Mon,  8 Mar 2021 23:06:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42F66F804B2;
+	Mon,  8 Mar 2021 23:06:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0862F802E7; Mon,  8 Mar 2021 23:06:15 +0100 (CET)
+ id A7863F8032C; Mon,  8 Mar 2021 23:06:17 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BF8FF80139
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 23:06:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BF8FF80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D8DCF80217
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 23:06:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D8DCF80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="g5BW5Mdg"
+ header.b="Rm+aycLb"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615241168;
+ s=mimecast20190719; t=1615241172;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GptrVlL/IvCa/3+g0IoS03y5KFkwAmZrLf7JXRBN3xQ=;
- b=g5BW5MdgRWhYfgs2f7I6Dz8obMZ/ooL/WQol7FDK/DsBAQ9e4WUvuXDQ7UWGSgyqNAyPuI
- DWlIs3RAtURTfcY2Ok17CxRG2o/MowJ3nSErXvB0pWrspZPcLBt7QNf7obp1VQWePqJuDT
- ujgBGU0/HF8Os3ya5v2jW9XRHdgbkKo=
+ bh=Z0NdPACqB8ow7xOL5EC/vn8YKbEAliMiY/iewaHXPy4=;
+ b=Rm+aycLbZRiUlIOkcPX2n4wAUXdT1SGrWJrsLQ9WjRgsX9kA+GBE1ihnBYPFkyag4IDmAx
+ i0njPyhlNvvkf11BdFva+uzSWOuzRvym1Qlk5BhnzwaJZRXFyAVMNq6JilD1p3PWny+Ypx
+ YBE/vXhmbZhQ0msxfqnbFSFIRg7rNeU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-NuQ8V8YaOtWCmVerCe8V5g-1; Mon, 08 Mar 2021 17:06:06 -0500
-X-MC-Unique: NuQ8V8YaOtWCmVerCe8V5g-1
+ us-mta-427-Qfkis2H3NdyXDHDiKigvuA-1; Mon, 08 Mar 2021 17:06:08 -0500
+X-MC-Unique: Qfkis2H3NdyXDHDiKigvuA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com
  [10.5.11.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EBB71018F74;
- Mon,  8 Mar 2021 22:06:05 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04B631018F64;
+ Mon,  8 Mar 2021 22:06:07 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-114-220.ams2.redhat.com
  [10.36.114.220])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 7C0B25D6D7;
- Mon,  8 Mar 2021 22:06:04 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id D47485D756;
+ Mon,  8 Mar 2021 22:06:05 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH alsa-ucm-conf v2 6/7] codecs/rt5640: Add hardware
- volume-control support
-Date: Mon,  8 Mar 2021 23:05:53 +0100
-Message-Id: <20210308220554.76111-7-hdegoede@redhat.com>
+Subject: [PATCH alsa-ucm-conf v2 7/7] codecs/rt5640: Specify
+ Playback/CaptureMasterElem for HW volume-control
+Date: Mon,  8 Mar 2021 23:05:54 +0100
+Message-Id: <20210308220554.76111-8-hdegoede@redhat.com>
 In-Reply-To: <20210308220554.76111-1-hdegoede@redhat.com>
 References: <20210308220554.76111-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -105,92 +105,218 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add hardware volume-control support for the rt5640 codec.
+Newer kernels add "aif:1" or "aif:2" to the components string to let
+us know which AIF is being used.
 
-Note this commit does not add support for the (digital) master
-ADC/DAC Volume / Mute controls. There are 2 of each, and which
-one should be used depends on which AIF is being used.
+Use this to specify the correct Playback/CaptureMasterElem for HW
+volume-control, based on which AIF is being used.
+
+On older kernels, where there is no "aif:%d" string in the components
+string, no Playback/CaptureMasterElem is specified.
+
+In DigitalMics.conf the master mixer is used as regular CaptureMixerElem
+instead of as CaptureMasterElem since the DMICs don't have any analog
+volume control.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- ucm2/codecs/rt5640/HeadPhones.conf      | 2 ++
- ucm2/codecs/rt5640/HeadsetMic.conf      | 2 ++
- ucm2/codecs/rt5640/IN1-InternalMic.conf | 2 ++
- ucm2/codecs/rt5640/IN3-InternalMic.conf | 2 ++
- ucm2/codecs/rt5640/MonoSpeaker.conf     | 2 ++
- ucm2/codecs/rt5640/Speaker.conf         | 2 ++
- 6 files changed, 12 insertions(+)
+ ucm2/bytcr-rt5640/HiFi.conf             | 21 +++++++++++++++++++++
+ ucm2/codecs/rt5640/DigitalMics.conf     | 16 ++++++++++++++++
+ ucm2/codecs/rt5640/HeadPhones.conf      | 12 ++++++++++++
+ ucm2/codecs/rt5640/HeadsetMic.conf      | 12 ++++++++++++
+ ucm2/codecs/rt5640/IN1-InternalMic.conf | 12 ++++++++++++
+ ucm2/codecs/rt5640/IN3-InternalMic.conf | 12 ++++++++++++
+ ucm2/codecs/rt5640/MonoSpeaker.conf     | 12 ++++++++++++
+ ucm2/codecs/rt5640/Speaker.conf         | 12 ++++++++++++
+ 8 files changed, 109 insertions(+)
 
+diff --git a/ucm2/bytcr-rt5640/HiFi.conf b/ucm2/bytcr-rt5640/HiFi.conf
+index a5c05ba..7d504d1 100644
+--- a/ucm2/bytcr-rt5640/HiFi.conf
++++ b/ucm2/bytcr-rt5640/HiFi.conf
+@@ -1,5 +1,26 @@
+ # Use case Configuration for bytcr-rt5640
+ 
++Define.HaveAif1 ""
++Define.HaveAif2 ""
++
++If.DefineAif1 {
++	Condition {
++		Type String
++		Haystack "${CardComponents}"
++		Needle "aif:1"
++	}
++	True.Define.HaveAif1 "yes"
++}
++
++If.DefineAif2 {
++	Condition {
++		Type String
++		Haystack "${CardComponents}"
++		Needle "aif:2"
++	}
++	True.Define.HaveAif2 "yes"
++}
++
+ SectionVerb {
+ 	Include.e.File "/codecs/rt5640/EnableSeq.conf"
+ 
+diff --git a/ucm2/codecs/rt5640/DigitalMics.conf b/ucm2/codecs/rt5640/DigitalMics.conf
+index 157c544..032d954 100644
+--- a/ucm2/codecs/rt5640/DigitalMics.conf
++++ b/ucm2/codecs/rt5640/DigitalMics.conf
+@@ -26,5 +26,21 @@ SectionDevice."Mic" {
+ 	Value {
+ 		CapturePriority 100
+ 		CapturePCM "hw:${CardId}"
++		If.DmicAif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				CaptureMixerElem "ADC"
++				CaptureVolume "ADC Capture Volume"
++				CaptureSwitch "ADC Capture Switch"
++			}
++		}
++		If.DmicAif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				CaptureMixerElem "Mono ADC"
++				CaptureVolume "Mono ADC Capture Volume"
++				CaptureSwitch "Mono ADC Capture Switch"
++			}
++		}
+ 	}
+ }
 diff --git a/ucm2/codecs/rt5640/HeadPhones.conf b/ucm2/codecs/rt5640/HeadPhones.conf
-index 1f4316d..5535111 100644
+index 5535111..4fbe95d 100644
 --- a/ucm2/codecs/rt5640/HeadPhones.conf
 +++ b/ucm2/codecs/rt5640/HeadPhones.conf
-@@ -35,5 +35,7 @@ SectionDevice."Headphones" {
- 		PlaybackPriority 300
- 		PlaybackPCM "hw:${CardId}"
+@@ -37,5 +37,17 @@ SectionDevice."Headphones" {
  		JackControl "Headphone Jack"
-+		PlaybackMixerElem "HP"
-+		PlaybackVolume "HP Playback Volume"
+ 		PlaybackMixerElem "HP"
+ 		PlaybackVolume "HP Playback Volume"
++		If.HpAif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				PlaybackMasterElem "DAC1"
++			}
++		}
++		If.HpAif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				PlaybackMasterElem "DAC2"
++			}
++		}
  	}
  }
 diff --git a/ucm2/codecs/rt5640/HeadsetMic.conf b/ucm2/codecs/rt5640/HeadsetMic.conf
-index 829e4e6..8479672 100644
+index 8479672..b49dad4 100644
 --- a/ucm2/codecs/rt5640/HeadsetMic.conf
 +++ b/ucm2/codecs/rt5640/HeadsetMic.conf
-@@ -41,5 +41,7 @@ SectionDevice."Headset" {
- 		CapturePriority 200
- 		CapturePCM "hw:${CardId}"
+@@ -43,5 +43,17 @@ SectionDevice."Headset" {
  		JackControl "Headset Mic Jack"
-+		CaptureMixerElem "IN2 Boost"
-+		CaptureVolume "IN2 Boost"
+ 		CaptureMixerElem "IN2 Boost"
+ 		CaptureVolume "IN2 Boost"
++		If.HSmicAif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				CaptureMasterElem "ADC"
++			}
++		}
++		If.HSmicAif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				CaptureMasterElem "Mono ADC"
++			}
++		}
  	}
  }
 diff --git a/ucm2/codecs/rt5640/IN1-InternalMic.conf b/ucm2/codecs/rt5640/IN1-InternalMic.conf
-index d7c419e..a317388 100644
+index a317388..d670484 100644
 --- a/ucm2/codecs/rt5640/IN1-InternalMic.conf
 +++ b/ucm2/codecs/rt5640/IN1-InternalMic.conf
-@@ -32,5 +32,7 @@ SectionDevice."Mic" {
- 	Value {
- 		CapturePriority 100
+@@ -34,5 +34,17 @@ SectionDevice."Mic" {
  		CapturePCM "hw:${CardId}"
-+		CaptureMixerElem "IN1 Boost"
-+		CaptureVolume "IN1 Boost"
+ 		CaptureMixerElem "IN1 Boost"
+ 		CaptureVolume "IN1 Boost"
++		If.In1Aif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				CaptureMasterElem "ADC"
++			}
++		}
++		If.In1Aif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				CaptureMasterElem "Mono ADC"
++			}
++		}
  	}
  }
 diff --git a/ucm2/codecs/rt5640/IN3-InternalMic.conf b/ucm2/codecs/rt5640/IN3-InternalMic.conf
-index 3e330e6..ef4eaba 100644
+index ef4eaba..345db1e 100644
 --- a/ucm2/codecs/rt5640/IN3-InternalMic.conf
 +++ b/ucm2/codecs/rt5640/IN3-InternalMic.conf
-@@ -32,5 +32,7 @@ SectionDevice."Mic" {
- 	Value {
- 		CapturePriority 100
+@@ -34,5 +34,17 @@ SectionDevice."Mic" {
  		CapturePCM "hw:${CardId}"
-+		CaptureMixerElem "IN3 Boost"
-+		CaptureVolume "IN3 Boost"
+ 		CaptureMixerElem "IN3 Boost"
+ 		CaptureVolume "IN3 Boost"
++		If.In3Aif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				CaptureMasterElem "ADC"
++			}
++		}
++		If.In3Aif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				CaptureMasterElem "Mono ADC"
++			}
++		}
  	}
  }
 diff --git a/ucm2/codecs/rt5640/MonoSpeaker.conf b/ucm2/codecs/rt5640/MonoSpeaker.conf
-index 654edc3..3cbeafd 100644
+index 3cbeafd..addaddd 100644
 --- a/ucm2/codecs/rt5640/MonoSpeaker.conf
 +++ b/ucm2/codecs/rt5640/MonoSpeaker.conf
-@@ -29,5 +29,7 @@ SectionDevice."Speaker" {
- 	Value {
- 		PlaybackPriority 100
+@@ -31,5 +31,17 @@ SectionDevice."Speaker" {
  		PlaybackPCM "hw:${CardId}"
-+		PlaybackMixerElem "Speaker"
-+		PlaybackVolume "Speaker Playback Volume"
+ 		PlaybackMixerElem "Speaker"
+ 		PlaybackVolume "Speaker Playback Volume"
++		If.MonoSpkAif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				PlaybackMasterElem "DAC1"
++			}
++		}
++		If.MonoSpkAif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				PlaybackMasterElem "DAC2"
++			}
++		}
  	}
  }
 diff --git a/ucm2/codecs/rt5640/Speaker.conf b/ucm2/codecs/rt5640/Speaker.conf
-index 3264cc3..0924f9c 100644
+index 0924f9c..e7ff673 100644
 --- a/ucm2/codecs/rt5640/Speaker.conf
 +++ b/ucm2/codecs/rt5640/Speaker.conf
-@@ -29,5 +29,7 @@ SectionDevice."Speaker" {
- 	Value {
- 		PlaybackPriority 100
+@@ -31,5 +31,17 @@ SectionDevice."Speaker" {
  		PlaybackPCM "hw:${CardId}"
-+		PlaybackMixerElem "Speaker"
-+		PlaybackVolume "Speaker Playback Volume"
+ 		PlaybackMixerElem "Speaker"
+ 		PlaybackVolume "Speaker Playback Volume"
++		If.SpkAif1 {
++			Condition { Type String Empty "${var:HaveAif1}" }
++			False {
++				PlaybackMasterElem "DAC1"
++			}
++		}
++		If.SpkAif2 {
++			Condition { Type String Empty "${var:HaveAif2}" }
++			False {
++				PlaybackMasterElem "DAC2"
++			}
++		}
  	}
  }
 -- 
