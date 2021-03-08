@@ -2,91 +2,90 @@ Return-Path: <SRS0=LCrH=IG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A561FC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A034C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 98B9065100
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:53:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 98B9065100
+	by mail.kernel.org (Postfix) with ESMTPS id A32B065100
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Mar 2021 13:54:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A32B065100
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B21B18B3;
-	Mon,  8 Mar 2021 14:52:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B21B18B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7910189D;
+	Mon,  8 Mar 2021 14:53:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7910189D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615211621;
-	bh=ltg7XewtqecQRA2cKlzpWUvzpFIuKLDC2ECRiBiZjME=;
+	s=default; t=1615211652;
+	bh=tde7FK0e/Q7zB/pCiB65Dd6ODA2qsIVS6rczw/wdSAM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AWzuaopPih2wmANf6UWhdvpE7uvjWPLGDbz9XSjHuhtRzTkIjVY+GRb7CQAbpe4cL
-	 wgrjMgnC7tFgQ8yosixKYH30BjhBYh/6K+8u7sKCC4/+jout6yc0dymtXcN0ApLeR+
-	 PzOHT8Dny063o7dx4FVOSRKaJrn5Rj8fWLydN1Js=
+	b=DEA0QAwWjhXV038jvF+EzlOTI43pmdvqY1Cu8JblAaxXfF47CdarrprDrTAXQZ0Eo
+	 77NJ+r5Bi7Ceij7COhjqaH72yiyg24afEpmoTiXZJqBQDkMXe6tIy7QKW8nFQ51gxM
+	 bgaFKtOy7SVEYuygbY3zjQA53GPVyys4J9NJoCw4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50E59F804AE;
+	by alsa1.perex.cz (Postfix) with ESMTP id F03BBF804C1;
 	Mon,  8 Mar 2021 14:50:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4F8DF80475; Mon,  8 Mar 2021 14:50:22 +0100 (CET)
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
- [IPv6:2a00:1450:4864:20::336])
+ id 9285CF804AE; Mon,  8 Mar 2021 14:50:27 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 338AFF80217
- for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 14:50:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 338AFF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CE89F80424
+ for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2021 14:50:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CE89F80424
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mj5yP36/"
-Received: by mail-wm1-x336.google.com with SMTP id
- b2-20020a7bc2420000b029010be1081172so3845399wmj.1
- for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2021 05:50:11 -0800 (PST)
+ header.b="Rd1zk2w9"
+Received: by mail-wr1-x434.google.com with SMTP id v15so11532019wrx.4
+ for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2021 05:50:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Kt98wxzyb5q6vqJoFnxZsf8Ldj8uDSWyZT3+vVOmDyo=;
- b=mj5yP36/WOCpTrGUVN7PM68Y5qQG7IdxZ+l9ovmbaLYXvb8CMN5+kNyJWVfkAA99sb
- Uo4qu4l4vgoJSYgipFR057eFzHfL10SmsjGvP3JRSfHZSD+L9x/g7seKN7afOJTwox1n
- 1c7enUzhDr1m7RWnnfccZ6Pg2k8VqWE3Diqo74yEAQCOtveWvTcUSVtLrwy+togiZRTp
- 1Csthzcask+yjsSPK11M6a99GKlWgKuOYn890SAQX6Bj0tpP2zTBnZDWWb7tyPxq00Ts
- bLWjJIXgmr9hRPBPhK1JC7KsCpwcfZyVXON5VuJeT3Pp03WC9TC1pVZgRKuoy0cEt3jl
- OUSg==
+ bh=bXsQNCXUapXF20IWHIenhBSQ480XBxLPcOx8iPsHvUs=;
+ b=Rd1zk2w9YzhMPxyi8nCdwEy1T1l1/k/MW2duY8f0HkMU7dz3vG0wu0amZs4x3SEoRp
+ pwVBGeiWabU00t9Dvj0Z0KW6O2tBKwPGPLfuadP0p7Mg/taqWOj9P3Xu2s+j93lwnvcw
+ KrkDTOL5Cv3litLwdv+MM4uJ8YR9dknPGefO7GJyq5lvC4VLtexdT2qS8fkt7w0+9IEj
+ kWNWAkgNOglXIAlLc34LjRsfThYx4bX27bM8xVLghL3k3UCvs0lAnOdQvy7pc3Ow6Kgc
+ eWDnJr5MTcmLVAp1pD/0y4EZoyU2mBDCRd1rm1gQS2L9ptOTt0iw4Jk4E0X60KhoreFQ
+ OmkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Kt98wxzyb5q6vqJoFnxZsf8Ldj8uDSWyZT3+vVOmDyo=;
- b=QKJgAYAGlUHSxVbj2+AfW8zTmOb2mMdTfKOx0D7Tm+mSvoG6aGrRXsxvDnLc8bWt5T
- 3z+hnZWvwGZ3h63UNyOZ8dKlkbYadjEAEQ+LlvPiUlBdzT1yCM1ymHf6hEslWTrikt96
- Pw90Whbu7o1Tgu59dyXUaNaVzbU7LcOi6NHx9sq3JzUwf9cz/jjCiUu5X/v/lc3FnpQp
- FnocPMEUvv2nE8wx1wzRusIFSE7QWDxiYdR2p7Ln4k6rjLVeAHFFf4Y7QdeJr12ZupZr
- XrLGWw/4O0DwUFy84KVaL1eXUsGp7qzqn7tLfNftKf9Ts/zQCNJRU1+Un2+AoTEFw+Ax
- 9dfA==
-X-Gm-Message-State: AOAM530Ge+kGdcdpq8K2LMpxkEt9SQwkGlgkuDqByYA2VyjD7rux0bkH
- 1A6w5tDb3HPiS+tlbYn7yBSUiQ==
-X-Google-Smtp-Source: ABdhPJxHDEMUv9q/PY+lJIs7z4xUay0GzVDUK9TwalpXAWklzfSqLXdV96uu39+XP7nGpYZGFPDuTg==
-X-Received: by 2002:a1c:4b15:: with SMTP id y21mr22804880wma.94.1615211411043; 
- Mon, 08 Mar 2021 05:50:11 -0800 (PST)
+ bh=bXsQNCXUapXF20IWHIenhBSQ480XBxLPcOx8iPsHvUs=;
+ b=KGemtlYZW77J3GamQjWGWGWBHVlie8SFZAQ9IMehB+P2LYEU5CbsQK8wrpd9KM3vXX
+ d31aff5Cm+/ST2v//uEMve247QxTHuDEnoo7aMW2+QG0tq1d+J7rCk5sAV9OFMSj9+fP
+ P+ETXWzVZY7chJ1gCBm6pjO+O+x4SytfZDb4QLtmKoIjsxCdT582nOymWW0pdX+Exnv/
+ zYOKv0fIFNsxnyhBW7hTG/DrzMZ9ohRWrtobiUymwYiFtwRfS5frC+n72MJZoKl7Wkn3
+ tgoBa3Vw9zTHWzHSxUcdssO56jh+ocIIO2SLpeMCWxkXvJtP7Tv3ozTd/JLd2Qh29sJR
+ t6iw==
+X-Gm-Message-State: AOAM531T9XglhJTYCYdeEjruU0vKiKuAELuK18vSIjHQOCyTOjeUNnV5
+ /3Hw1TPwiYOMcN7tRC7v0tei7A==
+X-Google-Smtp-Source: ABdhPJyGmakQk7A4faicPCFfSQQku7sOUvCrhMttiO6Hw9GvFWY6gs6QEikQEs2SdWNTke9zcRKQhw==
+X-Received: by 2002:a5d:4d09:: with SMTP id z9mr22312853wrt.426.1615211415041; 
+ Mon, 08 Mar 2021 05:50:15 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h22sm19490589wmb.36.2021.03.08.05.50.10
+ by smtp.gmail.com with ESMTPSA id h22sm19490589wmb.36.2021.03.08.05.50.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 08 Mar 2021 05:50:10 -0800 (PST)
+ Mon, 08 Mar 2021 05:50:14 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
-Subject: [PATCH v3 5/9] soundwire: qcom: update register read/write routine
-Date: Mon,  8 Mar 2021 13:49:53 +0000
-Message-Id: <20210308134957.16024-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 9/9] soundwire: qcom: wait for enumeration to be complete
+ in probe
+Date: Mon,  8 Mar 2021 13:49:57 +0000
+Message-Id: <20210308134957.16024-10-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
 References: <20210308134957.16024-1-srinivas.kandagatla@linaro.org>
@@ -111,319 +110,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In the existing code every soundwire register read and register write
-are kinda blocked. Each of these are using a special command id that
-generates interrupt after it successfully finishes. This is really
-overhead, limiting and not really necessary unless we are doing
-something special.
-
-We can simply read/write the fifo that should also give exactly
-what we need! This will also allow to read/write registers in
-interrupt context, which was not possible with the special
-command approach.
-
-With previous approach number of interrupts generated
-after enumeration are around 130:
-$ cat /proc/interrupts  | grep soundwire
- 21: 130 0 0 0 0 0 0 0 GICv3 234 Edge      soundwire
-
-after this patch they are just 3 interrupts
-$ cat /proc/interrupts  | grep soundwire
- 21: 3 0 0 0 0 0 0 0 GICv3 234 Edge      soundwire
-
-This has significantly not only reduced interrupting CPU during enumeration
-but also during streaming!
-
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 178 ++++++++++++++++++++++-----------------
- 1 file changed, 99 insertions(+), 79 deletions(-)
+ drivers/soundwire/qcom.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 071d05d3a971..7762ff237636 100644
+index 3109ec6c33ac..578a392bfbee 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -38,11 +38,13 @@
- #define SWRM_CMD_FIFO_WR_CMD					0x300
- #define SWRM_CMD_FIFO_RD_CMD					0x304
- #define SWRM_CMD_FIFO_CMD					0x308
-+#define SWRM_CMD_FIFO_FLUSH					0x1
- #define SWRM_CMD_FIFO_STATUS					0x30C
- #define SWRM_CMD_FIFO_CFG_ADDR					0x314
- #define SWRM_CONTINUE_EXEC_ON_CMD_IGNORE			BIT(31)
- #define SWRM_RD_WR_CMD_RETRIES					0x7
- #define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
-+#define SWRM_RD_FIFO_CMD_ID_MASK				GENMASK(11, 8)
- #define SWRM_ENUMERATOR_CFG_ADDR				0x500
- #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
- #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
-@@ -78,13 +80,16 @@
- #define SWRM_SPECIAL_CMD_ID	0xF
- #define MAX_FREQ_NUM		1
- #define TIMEOUT_MS		(2 * HZ)
--#define QCOM_SWRM_MAX_RD_LEN	0xf
-+#define QCOM_SWRM_MAX_RD_LEN	0x1
- #define QCOM_SDW_MAX_PORTS	14
- #define DEFAULT_CLK_FREQ	9600000
- #define SWRM_MAX_DAIS		0xF
- #define SWR_INVALID_PARAM 0xFF
- #define SWR_HSTOP_MAX_VAL 0xF
- #define SWR_HSTART_MIN_VAL 0x0
-+#define SWR_BROADCAST_CMD_ID    0x0F
-+#define SWR_MAX_CMD_ID	14
-+#define MAX_FIFO_RD_RETRY 3
- 
- struct qcom_swrm_port_config {
- 	u8 si;
-@@ -103,10 +108,8 @@ struct qcom_swrm_ctrl {
- 	struct device *dev;
+@@ -123,6 +123,7 @@ struct qcom_swrm_ctrl {
  	struct regmap *regmap;
  	void __iomem *mmio;
--	struct completion *comp;
-+	struct completion broadcast;
+ 	struct completion broadcast;
++	struct completion enumeration;
  	struct work_struct slave_work;
--	/* read/write lock */
--	spinlock_t comp_lock;
  	/* Port alloc/free lock */
  	struct mutex port_lock;
- 	struct clk *hclk;
-@@ -120,6 +123,8 @@ struct qcom_swrm_ctrl {
- 	int rows_index;
- 	unsigned long dout_port_mask;
- 	unsigned long din_port_mask;
-+	u8 rcmd_id;
-+	u8 wcmd_id;
- 	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
- 	struct sdw_stream_runtime *sruntime[SWRM_MAX_DAIS];
- 	enum sdw_slave_status status[SDW_MAX_DEVICES];
-@@ -198,77 +203,105 @@ static int qcom_swrm_cpu_reg_write(struct qcom_swrm_ctrl *ctrl, int reg,
- 	return SDW_CMD_OK;
- }
- 
--static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
--				     u8 dev_addr, u16 reg_addr)
-+static u32 swrm_get_packed_reg_val(u8 *cmd_id, u8 cmd_data,
-+				   u8 dev_addr, u16 reg_addr)
- {
--	DECLARE_COMPLETION_ONSTACK(comp);
--	unsigned long flags;
- 	u32 val;
--	int ret;
--
--	spin_lock_irqsave(&ctrl->comp_lock, flags);
--	ctrl->comp = &comp;
--	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
--	val = SWRM_REG_VAL_PACK(cmd_data, dev_addr,
--				SWRM_SPECIAL_CMD_ID, reg_addr);
--	ret = ctrl->reg_write(ctrl, SWRM_CMD_FIFO_WR_CMD, val);
--	if (ret)
--		goto err;
--
--	ret = wait_for_completion_timeout(ctrl->comp,
--					  msecs_to_jiffies(TIMEOUT_MS));
-+	u8 id = *cmd_id;
- 
--	if (!ret)
--		ret = SDW_CMD_IGNORED;
--	else
--		ret = SDW_CMD_OK;
--err:
--	spin_lock_irqsave(&ctrl->comp_lock, flags);
--	ctrl->comp = NULL;
--	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
-+	if (id != SWR_BROADCAST_CMD_ID) {
-+		if (id < SWR_MAX_CMD_ID)
-+			id += 1;
-+		else
-+			id = 0;
-+		*cmd_id = id;
-+	}
-+	val = SWRM_REG_VAL_PACK(cmd_data, dev_addr, id, reg_addr);
- 
--	return ret;
-+	return val;
- }
- 
--static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *ctrl,
--				     u8 dev_addr, u16 reg_addr,
--				     u32 len, u8 *rval)
-+
-+static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *swrm, u8 cmd_data,
-+				     u8 dev_addr, u16 reg_addr)
- {
--	int i, ret;
--	u32 val;
--	DECLARE_COMPLETION_ONSTACK(comp);
--	unsigned long flags;
- 
--	spin_lock_irqsave(&ctrl->comp_lock, flags);
--	ctrl->comp = &comp;
--	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
-+	u32 val;
-+	int ret = 0;
-+	u8 cmd_id = 0x0;
- 
--	val = SWRM_REG_VAL_PACK(len, dev_addr, SWRM_SPECIAL_CMD_ID, reg_addr);
--	ret = ctrl->reg_write(ctrl, SWRM_CMD_FIFO_RD_CMD, val);
--	if (ret)
--		goto err;
-+	if (dev_addr == SDW_BROADCAST_DEV_NUM) {
-+		cmd_id = SWR_BROADCAST_CMD_ID;
-+		val = swrm_get_packed_reg_val(&cmd_id, cmd_data,
-+					      dev_addr, reg_addr);
-+	} else {
-+		val = swrm_get_packed_reg_val(&swrm->wcmd_id, cmd_data,
-+					      dev_addr, reg_addr);
-+	}
- 
--	ret = wait_for_completion_timeout(ctrl->comp,
--					  msecs_to_jiffies(TIMEOUT_MS));
-+	swrm->reg_write(swrm, SWRM_CMD_FIFO_WR_CMD, val);
-+
-+	/* version 1.3 or less */
-+	if (swrm->version <= 0x01030000)
-+		usleep_range(150, 155);
-+
-+	if (cmd_id == SWR_BROADCAST_CMD_ID) {
-+		/*
-+		 * sleep for 10ms for MSM soundwire variant to allow broadcast
-+		 * command to complete.
-+		 */
-+		ret = wait_for_completion_timeout(&swrm->broadcast,
-+						  msecs_to_jiffies(TIMEOUT_MS));
-+		if (!ret)
-+			ret = SDW_CMD_IGNORED;
-+		else
-+			ret = SDW_CMD_OK;
- 
--	if (!ret) {
--		ret = SDW_CMD_IGNORED;
--		goto err;
- 	} else {
- 		ret = SDW_CMD_OK;
- 	}
-+	return ret;
-+}
- 
--	for (i = 0; i < len; i++) {
--		ctrl->reg_read(ctrl, SWRM_CMD_FIFO_RD_FIFO_ADDR, &val);
--		rval[i] = val & 0xFF;
--	}
-+static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
-+				     u8 dev_addr, u16 reg_addr,
-+				     u32 len, u8 *rval)
-+{
-+	u32 cmd_data, cmd_id, val, retry_attempt = 0;
-+
-+	val = swrm_get_packed_reg_val(&swrm->rcmd_id, len, dev_addr, reg_addr);
-+
-+	/* wait for FIFO RD to complete to avoid overflow */
-+	usleep_range(100, 105);
-+	swrm->reg_write(swrm, SWRM_CMD_FIFO_RD_CMD, val);
-+	/* wait for FIFO RD CMD complete to avoid overflow */
-+	usleep_range(250, 255);
-+
-+	do {
-+		swrm->reg_read(swrm, SWRM_CMD_FIFO_RD_FIFO_ADDR, &cmd_data);
-+		rval[0] = cmd_data & 0xFF;
-+		cmd_id = FIELD_GET(SWRM_RD_FIFO_CMD_ID_MASK, cmd_data);
-+
-+		if (cmd_id != swrm->rcmd_id) {
-+			if (retry_attempt < (MAX_FIFO_RD_RETRY - 1)) {
-+				/* wait 500 us before retry on fifo read failure */
-+				usleep_range(500, 505);
-+				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD,
-+						SWRM_CMD_FIFO_FLUSH);
-+				swrm->reg_write(swrm, SWRM_CMD_FIFO_RD_CMD, val);
-+			}
-+			retry_attempt++;
-+		} else {
-+			return SDW_CMD_OK;
-+		}
- 
--err:
--	spin_lock_irqsave(&ctrl->comp_lock, flags);
--	ctrl->comp = NULL;
--	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
-+	} while (retry_attempt < MAX_FIFO_RD_RETRY);
- 
--	return ret;
-+	dev_err(swrm->dev, "failed to read fifo: reg: 0x%x, rcmd_id: 0x%x,\
-+		dev_num: 0x%x, cmd_data: 0x%x\n",
-+		reg_addr, swrm->rcmd_id, dev_addr, cmd_data);
-+
-+	return SDW_CMD_IGNORED;
- }
- 
- static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
-@@ -291,7 +324,6 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- {
- 	struct qcom_swrm_ctrl *ctrl = dev_id;
- 	u32 sts, value;
--	unsigned long flags;
- 
- 	ctrl->reg_read(ctrl, SWRM_INTERRUPT_STATUS, &sts);
- 
-@@ -304,8 +336,10 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+@@ -415,6 +416,7 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
+ 			sdw_slave_add(bus, &id, NULL);
  	}
  
- 	if ((sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED) ||
--	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS)
--		schedule_work(&ctrl->slave_work);
-+	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS) {
-+		qcom_swrm_get_device_status(ctrl);
-+		sdw_handle_slave_status(&ctrl->bus, ctrl->status);
-+	}
- 
- 	/**
- 	 * clear the interrupt before complete() is called, as complete can
-@@ -314,15 +348,12 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- 	 */
- 	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR, sts);
- 
--	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED) {
--		spin_lock_irqsave(&ctrl->comp_lock, flags);
--		if (ctrl->comp)
--			complete(ctrl->comp);
--		spin_unlock_irqrestore(&ctrl->comp_lock, flags);
--	}
-+	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED)
-+		complete(&ctrl->broadcast);
- 
- 	return IRQ_HANDLED;
++	complete(&ctrl->enumeration);
+ 	return 0;
  }
-+
- static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- {
- 	u32 val;
-@@ -562,16 +593,6 @@ static u32 qcom_swrm_freq_tbl[MAX_FREQ_NUM] = {
- 	DEFAULT_CLK_FREQ,
- };
  
--static void qcom_swrm_slave_wq(struct work_struct *work)
--{
--	struct qcom_swrm_ctrl *ctrl =
--			container_of(work, struct qcom_swrm_ctrl, slave_work);
--
--	qcom_swrm_get_device_status(ctrl);
--	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
--}
--
--
- static void qcom_swrm_stream_free_ports(struct qcom_swrm_ctrl *ctrl,
- 					struct sdw_stream_runtime *stream)
- {
-@@ -928,9 +949,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 
- 	ctrl->dev = dev;
+@@ -1134,6 +1136,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
  	dev_set_drvdata(&pdev->dev, ctrl);
--	spin_lock_init(&ctrl->comp_lock);
  	mutex_init(&ctrl->port_lock);
--	INIT_WORK(&ctrl->slave_work, qcom_swrm_slave_wq);
-+	init_completion(&ctrl->broadcast);
+ 	init_completion(&ctrl->broadcast);
++	init_completion(&ctrl->enumeration);
  
  	ctrl->bus.ops = &qcom_swrm_ops;
  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+@@ -1180,6 +1183,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	qcom_swrm_init(ctrl);
++	wait_for_completion_timeout(&ctrl->enumeration,
++				    msecs_to_jiffies(TIMEOUT_MS));
+ 	ret = qcom_swrm_register_dais(ctrl);
+ 	if (ret)
+ 		goto err_master_add;
 -- 
 2.21.0
 
