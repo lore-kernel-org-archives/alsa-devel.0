@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC756C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:10:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8608FC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:11:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5230864D74
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:10:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5230864D74
+	by mail.kernel.org (Postfix) with ESMTPS id 87D8D64D74
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:11:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87D8D64D74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBAEB1887;
-	Tue,  9 Mar 2021 20:09:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBAEB1887
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20B85187D;
+	Tue,  9 Mar 2021 20:10:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B85187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615317021;
-	bh=5LFeXwxT2ezSl9hx8CP3wbU4WsjUdtBM6kZreWIPWnM=;
+	s=default; t=1615317060;
+	bh=4/ckH8xZoXSICajXB+7g+u4ZkL+N5xAUWPghH9G2ul8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r8PfIBcd1PxE85Ni9cU7MLfF3oleMCJMwuLHvQDMLj5A2GfNa97daA3hOM4PRWePh
-	 tbt5eHZl/CUv5XjtZ20GB9bWRK3WHdUNum6B9pKvNieKXww4wZ/e0aG3ugnnanCJ/N
-	 4DBw4fzq9Km+hV6+YXZNQkYS+OG1ImnA5KlkMYM0=
+	b=M1pzk4jW483M6RrKOcausTJ2nJuU5rv2P9wpKw0Xpuzi+ZNifzjJTwz3HLV5wKKFT
+	 zyRWannFScXGe0Y3Gz0O2CghCPqpdSSdksEiBOxQxxNM1aSu/+GM+tdud8rNUvdwjh
+	 W/4OFT9mVuUoZ8H5gcGlYOWmpJZBjapWrdFVlznw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08B72F8042F;
-	Tue,  9 Mar 2021 20:08:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D44F1F80431;
+	Tue,  9 Mar 2021 20:08:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55C61F8042F; Tue,  9 Mar 2021 20:08:03 +0100 (CET)
+ id 58923F8049C; Tue,  9 Mar 2021 20:08:09 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 459D3F8032D
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:08:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 459D3F8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24FCCF80431
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:08:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24FCCF80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sRA5VoJJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28CA96523F;
- Tue,  9 Mar 2021 19:07:57 +0000 (UTC)
+ header.b="Q70v7PtO"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4B7F6523D;
+ Tue,  9 Mar 2021 19:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615316878;
- bh=5LFeXwxT2ezSl9hx8CP3wbU4WsjUdtBM6kZreWIPWnM=;
+ s=k20201202; t=1615316884;
+ bh=4/ckH8xZoXSICajXB+7g+u4ZkL+N5xAUWPghH9G2ul8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=sRA5VoJJmcFpl1R9Mfva2aHpI0XdmMPwB2WdvbDzQn9EAXMUJo/pDUiRkSoQQf6Rw
- Xu2eiagNeJuMaysWjrKxzNfm1VxQc1v79AaV4ti6Y73r7RJbioD6kulCo/hGs059Ef
- kbhG7XXkLNXibnbW/qrsIU081om6OGIOLOAMNA8vXR2BskbvD0gIs+ofURaMYysqG1
- nIOFp+a1PtXGtIuEw6IVp3pxlpR1ZoEeLXAHeUvw3Gq++zm1GPZK0wSFMCGzXrAl2B
- LRng35lCe2Lu/p6Q3r3hNHIPUPN4RntsP6ijcV/KFFP+msD+7QlzO/jYA7mx+Ok9rk
- AOH6xMlfy0MnQ==
+ b=Q70v7PtOqj//DVDBeRJ9Q1n2HZsu981F7gXcvAoCcKgaoEmR2kapvcta+npqEOqvl
+ KRT08jcUlAvkwCFiKmpHE04XpvUGnlGIv6MaTsiyA2rVOz/vTPamIV+k05P17uhTM6
+ w2Sr0pZFuY+k7XhOOu9FYiP8bxAbpndmC5qb0zlq0LNLAd3/XavXlKNgSRNT68FOV4
+ C/xhU44pbGN3wF7xfjB25/Ai4IWS4TTBrUUilRpTQLbhoWa4nC0m4cqcduKPCTYBWG
+ LWKy6DjsXABhwJWthQEeb8laSwqYBG2TOzsVrZHMF2FfhDji2wiVjLq/x1+YrTNaOq
+ Ffw1NJjJGGzDw==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20210309004127.4940-1-pierre-louis.bossart@linux.intel.com>
-References: <20210309004127.4940-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: intel: fix wrong poll bits in dsp power down
-Message-Id: <161531678410.49117.8807899905412695011.b4-ty@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>,
+ James Schulman <james.schulman@cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
+ David Rhodes <david.rhodes@cirrus.com>
+In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
+References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH v3 00/15] Report jack and button detection +
+ Capture Support
+Message-Id: <161531678409.49117.4460920508176091644.b4-ty@kernel.org>
 Date: Tue, 09 Mar 2021 19:06:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pan Xiuli <xiuli.pan@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,9 +89,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 8 Mar 2021 18:41:27 -0600, Pierre-Louis Bossart wrote:
-> The ADSPCS_SPA is Set Power Active bit. To check if DSP is powered
-> down, we need to check ADSPCS_CPA, the Current Power Active bit.
+On Sat, 6 Mar 2021 18:55:38 +0000, Lucas Tanure wrote:
+> Here is a patch series for reporting to user space jack and button events and
+> add the support for Capture. With some cleanups and fixes along the way.
+> 
+> Regards,
+> 
+> Lucas Tanure
+> 
+> [...]
 
 Applied to
 
@@ -96,8 +105,26 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: intel: fix wrong poll bits in dsp power down
-      commit: e3a1a31b8ec0cdd2c6483e342fcb5ee46167853a
+[06/15] ASoC: cs42l42: Remove power if the driver is being removed
+        commit: 0e992635233c909652b87f1a84775746e2780306
+[07/15] ASoC: cs42l42: Disable regulators if probe fails
+        commit: 384c0c11be3f4c4bd28196f97507788cc84dd5e1
+[08/15] ASoC: cs42l42: Provide finer control on playback path
+        commit: 48a679742612308b320f1ca89366ee7fde04f547
+[09/15] ASoC: cs42l42: Set clock source for both ways of stream
+        commit: f1fe73ce62864cb48e603d61a3936b475ba5bbef
+[10/15] ASoC: cs42l42: Add Capture Support
+        commit: a6ea36692a4846d9470bdeeb90081e1dc5144b95
+[11/15] ASoC: cs42l42: Report jack and button detection
+        commit: f3f6f77beaee1b955ea835358e4c3ab1bbb56927
+[12/15] ASoC: cs42l42: Use bclk from hw_params if set_sysclk was not called
+        commit: 8ecb782355f30cfb207bffd5d04c4c5f2ac98ae3
+[13/15] ASoC: cs42l42: Wait at least 150us after writing SCLK_PRESENT
+        commit: 43cb98d6ba84d8917f377b5720fb1451ce86de13
+[14/15] ASoC: cs42l42: Only start PLL if it is needed
+        commit: b5019672a0526a2e0de6843734d1b7687f138b02
+[15/15] ASoC: cs42l42: Wait for PLL to lock before switching to it
+        commit: 5974fb2911b92b1921ab4aa35aede7454d72052a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
