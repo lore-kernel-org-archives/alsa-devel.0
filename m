@@ -6,74 +6,73 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8608FC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:11:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E919EC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:11:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87D8D64D74
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:11:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87D8D64D74
+	by mail.kernel.org (Postfix) with ESMTPS id 00D476522D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:11:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00D476522D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20B85187D;
-	Tue,  9 Mar 2021 20:10:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B85187D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BE861878;
+	Tue,  9 Mar 2021 20:10:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BE861878
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615317060;
-	bh=4/ckH8xZoXSICajXB+7g+u4ZkL+N5xAUWPghH9G2ul8=;
+	s=default; t=1615317068;
+	bh=LZvTkv/SxO6tIjypoyqW+hKOj/pXA793+m3se61bT78=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M1pzk4jW483M6RrKOcausTJ2nJuU5rv2P9wpKw0Xpuzi+ZNifzjJTwz3HLV5wKKFT
-	 zyRWannFScXGe0Y3Gz0O2CghCPqpdSSdksEiBOxQxxNM1aSu/+GM+tdud8rNUvdwjh
-	 W/4OFT9mVuUoZ8H5gcGlYOWmpJZBjapWrdFVlznw=
+	b=AYvTW6F/PeTofx/DI/sVtQq3gWT2fN8BiXvnrZVjYHYV7utVFa4DfHrhZSUe73N9R
+	 pTj/VeF2kOAxY30F0TwaTzfGcCNMhPc1FIqB3J7Q10fk/HdcRPKL/6iwVINB8WyJVr
+	 SmLEZcUcZ7QumuyccvHCy4UUJN1pafv8cfP9asu4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D44F1F80431;
-	Tue,  9 Mar 2021 20:08:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B008F804AB;
+	Tue,  9 Mar 2021 20:08:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58923F8049C; Tue,  9 Mar 2021 20:08:09 +0100 (CET)
+ id 528CAF804AC; Tue,  9 Mar 2021 20:08:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24FCCF80431
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:08:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24FCCF80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id A319EF80482
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:08:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A319EF80482
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Q70v7PtO"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4B7F6523D;
- Tue,  9 Mar 2021 19:08:03 +0000 (UTC)
+ header.b="DBF/6vXQ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DAF06523B;
+ Tue,  9 Mar 2021 19:08:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615316884;
- bh=4/ckH8xZoXSICajXB+7g+u4ZkL+N5xAUWPghH9G2ul8=;
+ s=k20201202; t=1615316889;
+ bh=LZvTkv/SxO6tIjypoyqW+hKOj/pXA793+m3se61bT78=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Q70v7PtOqj//DVDBeRJ9Q1n2HZsu981F7gXcvAoCcKgaoEmR2kapvcta+npqEOqvl
- KRT08jcUlAvkwCFiKmpHE04XpvUGnlGIv6MaTsiyA2rVOz/vTPamIV+k05P17uhTM6
- w2Sr0pZFuY+k7XhOOu9FYiP8bxAbpndmC5qb0zlq0LNLAd3/XavXlKNgSRNT68FOV4
- C/xhU44pbGN3wF7xfjB25/Ai4IWS4TTBrUUilRpTQLbhoWa4nC0m4cqcduKPCTYBWG
- LWKy6DjsXABhwJWthQEeb8laSwqYBG2TOzsVrZHMF2FfhDji2wiVjLq/x1+YrTNaOq
- Ffw1NJjJGGzDw==
+ b=DBF/6vXQ29ht7dJmSDFQpToZ3s2KjnJwDxTvz+VCYDOv0T19+yxttQEJVBkwyHNJ6
+ AlbJxHv6tLcRQ+iDQEiDr7h9Us8r4WEB3cI7SsxQoIwBORRGq+hVMPWJPwp+5Ihcp9
+ ZuOtpuaMO17FcNnI9rD4W32i43AftxSx/C/xg62oOkW6dmf0EN+WYfCZBK7bXlZJ1Z
+ AV9BcNnxvFI71kZMOAHPy+hy3jvCJvmRnHaFyC6wRrctvb3H8/jguEaJxn5NSolvxT
+ detSqsU4w84EzsKtUSbbvSx/8y3VRArKIozVIXBsOzoJW9Se4kOywCNQcvIgBSxhcO
+ r1HBHyzoWWycg==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>,
- James Schulman <james.schulman@cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
- David Rhodes <david.rhodes@cirrus.com>
-In-Reply-To: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
-References: <20210306185553.62053-1-tanureal@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH v3 00/15] Report jack and button detection +
- Capture Support
-Message-Id: <161531678409.49117.4460920508176091644.b4-ty@kernel.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+In-Reply-To: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+References: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+Subject: Re: (subset) [PATCH v2 0/7] Add I2S-MCC support for Microchip's
+ SAMA7G5
+Message-Id: <161531678410.49117.15323877762928879476.b4-ty@kernel.org>
 Date: Tue, 09 Mar 2021 19:06:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com,
+ lgirdwood@gmail.com, tiwai@suse.com, ludovic.desroches@microchip.com,
+ robh+dt@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,13 +88,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 6 Mar 2021 18:55:38 +0000, Lucas Tanure wrote:
-> Here is a patch series for reporting to user space jack and button events and
-> add the support for Capture. With some cleanups and fixes along the way.
-> 
-> Regards,
-> 
-> Lucas Tanure
+On Mon, 1 Mar 2021 19:08:58 +0200, Codrin Ciubotariu wrote:
+> SAMA7G5 includes an updated version of I2S-MCC, found previously on
+> SAM9X60. This controller includes 8 data pins, 4 for playback and 4 for
+> capture. For I2S and LEFT_J formats, these pins can be used to
+> send/receive up to 8 audio channels. For DSP_A, with TDM, any pins pair
+> (DIN/DOUT) from these 4 can be selected to send/receive data. This
+> version also includes 2 FIFOs (send and receive).
+> This patch set starts by moving the driver's bindings to yaml and
+> continues with adding a new compatible for the SAMA7G5 variant, followed
+> by the changes needed for I2S/LEFT_J support, TDM pin pair selection and
+> FIFO support, exclusively for SAMA7G5.
 > 
 > [...]
 
@@ -105,26 +108,8 @@ Applied to
 
 Thanks!
 
-[06/15] ASoC: cs42l42: Remove power if the driver is being removed
-        commit: 0e992635233c909652b87f1a84775746e2780306
-[07/15] ASoC: cs42l42: Disable regulators if probe fails
-        commit: 384c0c11be3f4c4bd28196f97507788cc84dd5e1
-[08/15] ASoC: cs42l42: Provide finer control on playback path
-        commit: 48a679742612308b320f1ca89366ee7fde04f547
-[09/15] ASoC: cs42l42: Set clock source for both ways of stream
-        commit: f1fe73ce62864cb48e603d61a3936b475ba5bbef
-[10/15] ASoC: cs42l42: Add Capture Support
-        commit: a6ea36692a4846d9470bdeeb90081e1dc5144b95
-[11/15] ASoC: cs42l42: Report jack and button detection
-        commit: f3f6f77beaee1b955ea835358e4c3ab1bbb56927
-[12/15] ASoC: cs42l42: Use bclk from hw_params if set_sysclk was not called
-        commit: 8ecb782355f30cfb207bffd5d04c4c5f2ac98ae3
-[13/15] ASoC: cs42l42: Wait at least 150us after writing SCLK_PRESENT
-        commit: 43cb98d6ba84d8917f377b5720fb1451ce86de13
-[14/15] ASoC: cs42l42: Only start PLL if it is needed
-        commit: b5019672a0526a2e0de6843734d1b7687f138b02
-[15/15] ASoC: cs42l42: Wait for PLL to lock before switching to it
-        commit: 5974fb2911b92b1921ab4aa35aede7454d72052a
+[7/7] ASoC: convert Microchip I2SMCC binding to yaml
+      commit: 2a29ad9ffc2a11827695b7b4fb32b486c604db3d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
