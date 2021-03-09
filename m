@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27A5DC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01465C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:10:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 845F66522B
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:09:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 845F66522B
+	by mail.kernel.org (Postfix) with ESMTPS id 0C101651D1
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:10:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0C101651D1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D083217D3;
-	Tue,  9 Mar 2021 20:08:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D083217D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B9F81757;
+	Tue,  9 Mar 2021 20:09:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B9F81757
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615316973;
-	bh=hwI6kC4mBqrnC0CTov6gJku09IaTgZ+T/06Xvzo9GIw=;
+	s=default; t=1615317013;
+	bh=X5DV0+7bQxagO19B+PPtigR8hF4pn1HYTTs6MfV4kqM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AUXLhd367Z02q7C3AIc0bwCVhmVUEX4SJw6sv32CzUn+x/rgBLEDtm+mk0gMmvYtj
-	 XuoakqqckbMAIjb+Nek7ZxkHl277O8UU0Er7pMowKwWGF8DYedscMbMV0E971qCLXX
-	 Q/UOVlOHffwT4+w9e0o0fdT2qSfhgI+RSHQc/ZXY=
+	b=Z9RqexCfqqpVQmbsQaqzFg8uvN9OF4DiFQNKYeJBV7Pz4KNdAYO4QQSqVMm5NN9ZI
+	 w/5npsThSK9GJ4QJV9p2OurcEXXzuJ19yHgSjOJC2HuE/CAVH3bxmY6f+eDp3jJX+Q
+	 Ce3qD5MBfetGRvo86S20iYvMx5l6Tx8pb5Li7LR4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B180F8029B;
-	Tue,  9 Mar 2021 20:07:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F245BF8032C;
+	Tue,  9 Mar 2021 20:08:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7396F8028B; Tue,  9 Mar 2021 20:07:51 +0100 (CET)
+ id 76DC3F80424; Tue,  9 Mar 2021 20:08:01 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64E4BF8029B
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:07:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64E4BF8029B
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB287F8032B
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:07:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB287F8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CS43ATgX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D709365230;
- Tue,  9 Mar 2021 19:07:45 +0000 (UTC)
+ header.b="jA+tDQyi"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 902DA65238;
+ Tue,  9 Mar 2021 19:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615316866;
- bh=hwI6kC4mBqrnC0CTov6gJku09IaTgZ+T/06Xvzo9GIw=;
+ s=k20201202; t=1615316873;
+ bh=X5DV0+7bQxagO19B+PPtigR8hF4pn1HYTTs6MfV4kqM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=CS43ATgXMarGu0GvJWBWlVVsyTKh5krHdovWQarBjU6g8WcGRimIgWThq+XGGhLU5
- qQaWSdStIszeJoLKHjzDNhUuMvviTC+0UgcOOnG4KzzMsWJT3jsx+M862iCUMJof4x
- VSfTw4b8Y1d7Rfcwxl+LVD8aqod8MWaiFFVFhXQv6Yvq4bQgSRXE0/wjHylu05ZK5G
- HilVqsE3Z9htt2PGxuyNLuJFICO+dYQ7rLxZDcJuEz/aSfveUofVbz6pmvPdfTtKu1
- g3FwH3J7lCG61iyLFcsyKGvgKS6WbfWBpou1Q9ekky9m0ZVvFVQGBgpMTYFusVSPJd
- 2HBBOR8B7YAQQ==
+ b=jA+tDQyilQydUb3ZwV+HkijdzjiZfjdQxeaswauEiGU71XzLzVkxPWi2fvJOJ6K/l
+ ba0FziIYFUEAMC376s11TJUrIE3EWUKB5kDebEaVH3fdN6XqzxwJlBWbbbRp4SjDdi
+ 0yBKPqK+Q+T3QvuBEYq0KjdU2Z3SkarOOOKml4BflvSPa9cI6ZUcDKHGn2QGC700Ar
+ bI3oTmrnZnZCwYUK7skW/tn5ExTVeZnVsnd5Eo6t9LqWQJdstix52llrH/4YzjTKJX
+ 99OaWJdsDnMaBSft2NMa2atIbZDjreYyPg0PBG9SqU6GNh3Q9iWhxromGj/n2W4H8S
+ hdiumrS8MwKFg==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- Takashi Iwai <tiwai@suse.com>, 'Wei Yongjun <weiyongjun1@huawei.com>
-In-Reply-To: <20210309131458.1884899-1-weiyongjun1@huawei.com>
-References: <20210309131458.1884899-1-weiyongjun1@huawei.com>
-Subject: Re: [PATCH -next] ASoC: rt715-sdca: Fix return value check in
- rt715_sdca_sdw_probe()
-Message-Id: <161531678411.49117.17895673664091013218.b4-ty@kernel.org>
+To: lgirdwood@gmail.com, shumingf@realtek.com
+In-Reply-To: <20210309085827.32032-1-shumingf@realtek.com>
+References: <20210309085827.32032-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt5682: add delay time of workqueue to control next
+ IRQ event
+Message-Id: <161531678411.49117.16681049804699060826.b4-ty@kernel.org>
 Date: Tue, 09 Mar 2021 19:06:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Hulk Robot <hulkci@huawei.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ jairaj.arava@intel.com, cujomalainey@google.com, lars@metafoo.de,
+ derek.fang@realtek.com, sathyanarayana.nujella@intel.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,10 +86,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 9 Mar 2021 13:14:58 +0000, 'Wei Yongjun wrote:
-> In case of error, the function devm_regmap_init_sdw_mbq() and
-> devm_regmap_init_sdw() returns ERR_PTR() not NULL. The NULL test
-> in the return value check should be replaced with IS_ERR().
+On Tue, 9 Mar 2021 16:58:27 +0800, shumingf@realtek.com wrote:
+> This patch keeps the delay time (50 ms) for jack detection and zero delay time for the button press.
+> This patch improves the reaction of the button press.
 
 Applied to
 
@@ -98,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt715-sdca: Fix return value check in rt715_sdca_sdw_probe()
-      commit: bcfb088e7686b45b1f323e92315954e97bf634bc
+[1/1] ASoC: rt5682: add delay time of workqueue to control next IRQ event
+      commit: 113e7a60209aa8b54255a21c0acfc5000753ffff
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
