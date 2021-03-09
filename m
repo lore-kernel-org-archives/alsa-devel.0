@@ -2,73 +2,74 @@ Return-Path: <SRS0=4IlU=II=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 447D9C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:47:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8949C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:47:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B4FE964F8B
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:47:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4FE964F8B
+	by mail.kernel.org (Postfix) with ESMTPS id C1C3B64F9B
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:47:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C1C3B64F9B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BDA21769;
-	Wed, 10 Mar 2021 16:46:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BDA21769
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F8A91789;
+	Wed, 10 Mar 2021 16:46:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F8A91789
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615391220;
-	bh=yIeAvHFqsLjMa89kqXmZq/cL/MIj2Enoy3tKPrg61Uk=;
+	s=default; t=1615391231;
+	bh=0s1rr19PpTx1V2pocvsySFbzFiZMTA9Iy8rHYkBguyU=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZPnQGqRPUUNsBss9LhpDw+gKYhxhgMu+1y4M7j9qjemy9827qVwQYZH1prmyFNLar
-	 wKGuea0UQ1X6Oo446KpUTpDk4JwYYRM4O/n5mCBnSg6l+cq0guRfha8qvfedF5AuGZ
-	 GmVPdxpaZmtAvQ6IN1WBNyJ5TYvqS8iwi63otzVU=
+	b=Phs6lPQ4eIob685RBDqKnWdCTeD9tS5+pIlKDPbZJXNN3tXYIz/YrLvytDTsaN7C/
+	 JkIlekwU2RKrwaZt5YvL1yDMPktuEdSZy/WTLl8eQNgYYFiCI0V9GjO+rP5xZ6Jl7N
+	 ObfnWlioywNsQlc7oEkmdwaY2YhySOxN5tKPphAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E49AF80430;
+	by alsa1.perex.cz (Postfix) with ESMTP id D27FFF8049C;
 	Wed, 10 Mar 2021 16:45:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1F7DF8032D; Wed, 10 Mar 2021 16:45:22 +0100 (CET)
+ id E7DD9F80272; Wed, 10 Mar 2021 16:45:26 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55998F80272
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 16:45:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55998F80272
-IronPort-SDR: otHWQHkpn6ng8EPVIFSVMD6c/2cigLUjBJOg5+EunalZUOONx7gxWnJw67hEy043LrCWDgonbJ
- ZDAM3xHcYb+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188589664"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="188589664"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70545F8028D
+ for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 16:45:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70545F8028D
+IronPort-SDR: WlzUYBEOfBQ9jIrfcApqeT3LCuVVhCp+6RK24vR0yADbf1JQegz2/Rdsh5Py6P/CPQE9T67wYf
+ /lXpPFnZ82ZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188589643"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="188589643"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 07:45:13 -0800
-IronPort-SDR: p60gojLrqWi7gsJ+jGQIvHKjinxj4Uyg3tK8TS2R54X0M1l56f9wlmWyvVrGUD3oyomvZXEd29
- rLz46anVIlZg==
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="403722234"
+ 10 Mar 2021 07:45:10 -0800
+IronPort-SDR: HqmaViramXuMCp9/kgif+x29hhv50s1Kyy9Okq0ZpTO8MC2xdO7bPrO0r5Mjs1UsmAgF5RtfyO
+ VOkV8rq7XeAg==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="403722190"
 Received: from huiyingw-mobl.amr.corp.intel.com (HELO [10.212.214.84])
  ([10.212.214.84])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 07:45:12 -0800
-Subject: Re: [PATCH v2 3/5] soundwire: qcom: add static port map support
+ 10 Mar 2021 07:45:09 -0800
+Subject: Re: [PATCH v2 2/5] soundwire: qcom: update port map allocation bit
+ mask
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, 
  vkoul@kernel.org
 References: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
- <20210309141514.24744-4-srinivas.kandagatla@linaro.org>
+ <20210309141514.24744-3-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <cc812a5b-c3c3-bb46-f2fe-3e0a14cf0524@linux.intel.com>
-Date: Tue, 9 Mar 2021 10:10:19 -0600
+Message-ID: <50c83be0-8948-8450-4b91-d43cc97f8640@linux.intel.com>
+Date: Tue, 9 Mar 2021 09:55:34 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210309141514.24744-4-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210309141514.24744-3-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -92,57 +93,69 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-
->   	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
-> @@ -473,8 +475,13 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
->   		}
+On 3/9/21 8:15 AM, Srinivas Kandagatla wrote:
+> currently the internal bitmask used for allocating ports starts with offset 0.
+> This is bit confusing as data port numbers on Qualcomm controller are valid
+> from 1 to 14. So adjust this bit mask accordingly, this will also help while
+> adding static port map support.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   drivers/soundwire/qcom.c | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index 6d22df01f354..f4f1c5f2af0b 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -519,7 +519,7 @@ static void qcom_swrm_stream_free_ports(struct qcom_swrm_ctrl *ctrl,
+>   			port_mask = &ctrl->din_port_mask;
 >   
->   		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-> +			slave = s_rt->slave;
+>   		list_for_each_entry(p_rt, &m_rt->port_list, port_node)
+> -			clear_bit(p_rt->num - 1, port_mask);
+> +			clear_bit(p_rt->num, port_mask);
+>   	}
+>   
+>   	mutex_unlock(&ctrl->port_lock);
+> @@ -552,13 +552,13 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
 >   			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
-> -				pcfg = &ctrl->pconfig[i];
-> +				m_port = slave->m_port_map[_rtp->num - 1];
-> +				if (m_port)
-> +					pcfg = &ctrl->pconfig[m_port - 1];
-> +				else
-> +					pcfg = &ctrl->pconfig[i];
-
-Maybe add a short comment on port allocation, I had to think a bit to 
-figure out why the -1 was required on both peripheral and manager but it 
-is not below [1]
-
->   				p_rt->transport_params.port_num = p_rt->num;
->   				p_rt->transport_params.sample_interval =
->   					pcfg->si + 1;
-> @@ -535,8 +542,10 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
->   	struct sdw_master_runtime *m_rt;
->   	struct sdw_slave_runtime *s_rt;
->   	struct sdw_port_runtime *p_rt;
-> +	struct sdw_slave *slave;
->   	unsigned long *port_mask;
->   	int i, maxport, pn, nports = 0, ret = 0;
-> +	unsigned int m_port;
->   
->   	mutex_lock(&ctrl->port_lock);
->   	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-> @@ -549,9 +558,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
->   		}
->   
->   		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-> +			slave = s_rt->slave;
->   			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
-> +				m_port = slave->m_port_map[p_rt->num - 1];
 >   				/* Port numbers start from 1 - 14*/
-> -				pn = find_first_zero_bit(port_mask, maxport);
-> +				if (m_port)
-> +					pn = m_port;
-> +				else
-> +					pn = find_first_zero_bit(port_mask, maxport);
+>   				pn = find_first_zero_bit(port_mask, maxport);
+> -				if (pn > (maxport - 1)) {
+> +				if (pn > (maxport)) {
 
-[1]
+nit-pick: useless parentheses
 
-> +
->   				if (pn > (maxport)) {
 >   					dev_err(ctrl->dev, "All ports busy\n");
 >   					ret = -EBUSY;
+>   					goto err;
+>   				}
+>   				set_bit(pn, port_mask);
+> -				pconfig[nports].num = pn + 1;
+> +				pconfig[nports].num = pn;
+>   				pconfig[nports].ch_mask = p_rt->ch_mask;
+>   				nports++;
+>   			}
+> @@ -580,7 +580,7 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+>   err:
+>   	if (ret) {
+>   		for (i = 0; i < nports; i++)
+> -			clear_bit(pconfig[i].num - 1, port_mask);
+> +			clear_bit(pconfig[i].num, port_mask);
+>   	}
+>   
+>   	mutex_unlock(&ctrl->port_lock);
+> @@ -754,6 +754,9 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+>   	ctrl->num_dout_ports = val;
+>   
+>   	nports = ctrl->num_dout_ports + ctrl->num_din_ports;
+> +	/* port numbers are non zero, so mark port 0 */
+
+mask?
+
+> +	set_bit(0, &ctrl->dout_port_mask);
+> +	set_bit(0, &ctrl->din_port_mask);
+>   
+>   	ret = of_property_read_u8_array(np, "qcom,ports-offset1",
+>   					off1, nports);
 > 
