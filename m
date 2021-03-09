@@ -7,85 +7,85 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1133C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C83F4C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:18:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 22E7365220
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:18:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22E7365220
+	by mail.kernel.org (Postfix) with ESMTPS id 2D14665220
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:18:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2D14665220
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F20B1833;
-	Tue,  9 Mar 2021 15:17:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F20B1833
+	by alsa0.perex.cz (Postfix) with ESMTPS id A619C184C;
+	Tue,  9 Mar 2021 15:17:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A619C184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615299486;
-	bh=7rJI1iswpadLIDgBFldvh4yR1EkDomri5WTHFp5Jznw=;
+	s=default; t=1615299494;
+	bh=XQcksOAEpy8X3ANG5p1B6t1Qhdc/uWnALrlHOgaf2sY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JSP7BGf4XwEIflCvLug7oiNpeCVBHRUghqAL356GD4r6t/a54yhcXtYUEHzcJ+Htv
-	 eQiyo/L+e0CSxcIE3VLqRGnhiUOglgWjiynjd4XuT1aje4HJUrxs5ISN13+SHxCcdX
-	 rT9OncoTqIaam67dIRkEW5ce/ppyQNpb85QwWH80=
+	b=R3H1bJ3SG0APnRCP7kTOeeVp++yA457iRmJ96bOFn+VgG8hI0OHKPic1e+lmyOwpE
+	 QjWzTvS5Nm1m8OzPk7Lvuk13/YIEWSwju4WDQkYeEXm74E3r3mfoaKocBwTRQvyY0X
+	 kzrTmVfldRB8E5xon6ET4j93kQTSb+gkGH9VYhoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99709F80423;
-	Tue,  9 Mar 2021 15:15:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82D00F8042F;
+	Tue,  9 Mar 2021 15:15:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6E89F80227; Tue,  9 Mar 2021 15:15:43 +0100 (CET)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
+ id 4DC68F8032B; Tue,  9 Mar 2021 15:15:46 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E202BF8014E
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 15:15:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E202BF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6BED5F80166
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 15:15:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BED5F80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="VMfw2/F3"
-Received: by mail-wr1-x42f.google.com with SMTP id 7so15930050wrz.0
- for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2021 06:15:33 -0800 (PST)
+ header.b="RiA6ZyC1"
+Received: by mail-wr1-x434.google.com with SMTP id a18so15851969wrc.13
+ for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2021 06:15:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=7gDmC37JxzQ5hGBDDct3/T0SwytsBBauAUrn0ZFgLOw=;
- b=VMfw2/F318b244pqC02hJYJaHUKyllWsXMoL96g5Bx3Exg5BpOWKfk396oEP6ylN6h
- Htuzw4Jb7IrefcX1arcdOlAxcp3FHx4SG6Vm9yRoboFzvTvQqx+auDxgKm66yNq6C9wK
- sFnQ92HhHYDwTwdbOUEI6JfWH7wU83fWUqXByEvXQTp1VgaSpZn1TpV6DhwWk7vDMsis
- QWltgCtEx4awHj0350HhRtv3mPIu3YT9AFda+jjqlKDLQDq32/XVDJPFuHclO6J49rV3
- fCGiBPfkiBvcLRzvc2ktHCGlUR1bNS9FH+0nk8Nm5FCDVS2Wr5m6NK0Y2B/8zs5LjjcY
- JQJg==
+ bh=5k92QxyrxRTJi0W/7xlk/UVOaJACzUsOHFwPLvqgR18=;
+ b=RiA6ZyC1Ou9XpUVI0ItDLdRO6zud+MChTC+o6ira9EZ0LBKCxLcd8dACvfFCXex9xG
+ p9fGwmwAdu/qM0fLG5hU2OZBg4MfZbWN73bTzYkYRS30+4biIrxv4hCR8cCmxo8lzhrb
+ bYVcrdHfDEwi/XU/nMoe5UUQwgnui//jQX5bUPQ8Etcwz7hjAFy1mA1E/nlEy7PUm+39
+ qLyqPwaB+iPP8IqhopbnW5deD1QMEGHEKPxbMKDL1EkHzi+ILkcE7r1xx71+MucFMxKl
+ EQQnAL4Ef0A3fFDmI5bLlCm8mcKv7KhFev83MLpVMYV0BYT42XI+CD5MhUKDwNUX5qph
+ 5BDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=7gDmC37JxzQ5hGBDDct3/T0SwytsBBauAUrn0ZFgLOw=;
- b=omjw1oaM3KMESrq8Vgh2pUqNseBMh+exxxCrLOITxYqU1QxRDSvW6tJPojhiuTUynl
- EMHFSPt5BNn4OgcIk2gBuEDS/HpGlZ9OwlxTOuL5DTMENl3zURSCBy3WFF4R6PQ+nLW4
- 4PB9u7v3ppPPM11ztCjAP4PUJBVuaji/hWwhubcu+PhI6lJUpYyO8yMUUow3gIjJWbTO
- aBbrmE23be6dr3YN0cG32dI1r5d4NoqUnDEkFNsNJmxH+pZwqAzVTupCfEkrJ8JCdJ7l
- idKG4gmeHqAWrXzZqDR3AZ60J9IWGLzWWzqy216xlh0UL0QMefHBw7afw4CBJQReBU/f
- cdTw==
-X-Gm-Message-State: AOAM532cnmMyGcU89mNdvn394/i2+TKDX+JZQJIuRnbGjK3mH3j945RU
- 2I13+H2G+EOO1WEbmp5vJkSrv1QtE6rTSw==
-X-Google-Smtp-Source: ABdhPJzeXxHYM4+hidJKnBfyZ6yLKrTkfVXOLtOIS2uC0k1nZ9CPT6fh3Kil1zaNtjFJAc39AkgJsw==
-X-Received: by 2002:adf:e34f:: with SMTP id n15mr28566940wrj.224.1615299333563; 
- Tue, 09 Mar 2021 06:15:33 -0800 (PST)
+ bh=5k92QxyrxRTJi0W/7xlk/UVOaJACzUsOHFwPLvqgR18=;
+ b=S7CA6gNRTWfnAsvM7/Fd/r7JtpCG8GkGR31PUNO6n867d86oFyErUWumPhbx4dYgzD
+ axKOIqaw2N6uBbGq6Ea4A6nUpDdXVoH1olF2V5V3QjtXg1KFp8vezH83kmtzjvRex0Gg
+ tWXAis/inLMljXQMzWy37gt4QQkvifw5hdlk9tKToX3SZXB4f+PaZ0z/vhwUsZgba4lc
+ 3k4DkPM/TaAnQ1BkMPVFZrLrp2V8sAtWp7aFOwz1F5Zclm1ubNB/LdX8rpPMrkEUYQKc
+ GeHuoXEYLhZKwh9CmbtEovIfonreh3xz+1qA+PrmP4sBext8Il5zaHHDhIS6yKvlg077
+ xyhg==
+X-Gm-Message-State: AOAM531AiAdz+b+LXKf3/vQqsj9kitOUNvingW0HrC1X2qpe5QoxG57w
+ /0vyTTIJFmedbfO3rgOTZNnuHw==
+X-Google-Smtp-Source: ABdhPJwGF/B0sdM18GQqLgu4EoQINoJ2w3HS1vWklHTY5soJkWA4Wynb1oR2mypHaFivw90hQvPoJw==
+X-Received: by 2002:a5d:43cc:: with SMTP id v12mr28316085wrr.287.1615299337598; 
+ Tue, 09 Mar 2021 06:15:37 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id u20sm28007579wru.6.2021.03.09.06.15.32
+ by smtp.gmail.com with ESMTPSA id u20sm28007579wru.6.2021.03.09.06.15.36
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Mar 2021 06:15:32 -0800 (PST)
+ Tue, 09 Mar 2021 06:15:37 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 1/5] soundwire: add static port mapping support
-Date: Tue,  9 Mar 2021 14:15:10 +0000
-Message-Id: <20210309141514.24744-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 5/5] ASoC: codecs: wsa881x: add static port map support
+Date: Tue,  9 Mar 2021 14:15:14 +0000
+Message-Id: <20210309141514.24744-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
 References: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
@@ -110,40 +110,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some of the SoundWire device ports are statically mapped to Controller
-ports during design, however there is no way to expose this information
-to the controller. Controllers like Qualcomm ones use this info to setup
-static bandwith parameters for those ports.
-
-A generic port allocation is not possible in this cases!
-So this patch adds a new member m_port_map to struct sdw_slave to expose
-this static map.
+Two instances of WSA881x(Speaker Right, Speaker Left) ports
+are statically mapped to master ports. Allow the driver to parse
+those mappings from device tree.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/linux/soundwire/sdw.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/wsa881x.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index d08039d65825..2f52d6609076 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -614,6 +614,7 @@ struct sdw_slave_ops {
-  * @debugfs: Slave debugfs
-  * @node: node for bus list
-  * @port_ready: Port ready completion flag for each Slave port
-+ * @m_port_map: static Master port map for each Slave port
-  * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
-  * @dev_num_sticky: one-time static Device Number assigned by Bus
-  * @probed: boolean tracking driver state
-@@ -645,6 +646,7 @@ struct sdw_slave {
- #endif
- 	struct list_head node;
- 	struct completion port_ready[SDW_MAX_PORTS];
-+	unsigned int m_port_map[SDW_MAX_PORTS];
- 	enum sdw_clk_stop_mode curr_clk_stop_mode;
- 	u16 dev_num;
- 	u16 dev_num_sticky;
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index db87e07b11c9..f7b6bbd62728 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -1105,6 +1105,11 @@ static int wsa881x_probe(struct sdw_slave *pdev,
+ 		return PTR_ERR(wsa881x->sd_n);
+ 	}
+ 
++	if (of_property_read_u32_array(dev->of_node, "qcom,port-mapping",
++				       pdev->m_port_map,
++				       WSA881X_MAX_SWR_PORTS))
++		dev_info(dev, "Static Port mapping not specified\n");
++
+ 	dev_set_drvdata(&pdev->dev, wsa881x);
+ 	wsa881x->slave = pdev;
+ 	wsa881x->dev = &pdev->dev;
 -- 
 2.21.0
 
