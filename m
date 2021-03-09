@@ -6,72 +6,70 @@ X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D19AC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87625C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:09:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0836960232
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:08:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0836960232
+	by mail.kernel.org (Postfix) with ESMTPS id 0AE4264D74
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 19:09:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AE4264D74
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 44484174F;
-	Tue,  9 Mar 2021 20:07:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44484174F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BE651841;
+	Tue,  9 Mar 2021 20:08:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BE651841
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615316918;
-	bh=kL8V2tIiFOJatpiuDn9iQM2rKrqezgz7PUjeotjXIWU=;
+	s=default; t=1615316969;
+	bh=hwkOb9GSNa4+vO3k/+jgdbf0VkBnReZAqNBE9CLOGRM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=grDCi64p/SpMdDBwmtsdj1n/Ztnk5FYFP3qD3F8odv5EGWy3E48qOraZPV0PTkeXV
-	 q/1THnSmtnZQEwehOHr1rqkPNm0ect6EKdmvsft2i+3mzZvBVjSpcACnAx8MD8JzIy
-	 H+D3Af3LhItK+3FnYAjzaCe3e9D2ADIykLwk8vG0=
+	b=e3swA9pShuv7WY6xm8drcN9fwXHGLmQeKDlfU0EQSuHKnkw2/ET0kbBtoZ9tX/qLz
+	 9JbQdb3HffCoy4cBa/800hAwfCU8H+k5nxXI+WOFqc7U2TO3IqzS+3KVtaCGwcXYrs
+	 fTUgMhrQxMwXdlpxfsDF4LTS+Ec/OunyRRPEmcjU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0FCAF800D0;
-	Tue,  9 Mar 2021 20:07:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 815C7F80275;
+	Tue,  9 Mar 2021 20:07:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34802F80256; Tue,  9 Mar 2021 20:07:46 +0100 (CET)
+ id 7FDF1F80227; Tue,  9 Mar 2021 20:07:46 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 541E9F800D0
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:07:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 541E9F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75E91F8019B
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 20:07:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75E91F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kaYyKoqv"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91DBE65230;
- Tue,  9 Mar 2021 19:07:34 +0000 (UTC)
+ header.b="U5LFJGLX"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 548BE6523B;
+ Tue,  9 Mar 2021 19:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615316855;
- bh=kL8V2tIiFOJatpiuDn9iQM2rKrqezgz7PUjeotjXIWU=;
+ s=k20201202; t=1615316860;
+ bh=hwkOb9GSNa4+vO3k/+jgdbf0VkBnReZAqNBE9CLOGRM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kaYyKoqva9Q9G6T97vdJYbuLWwR0klxD2GpP+GdiD15CJWxXN/4igYEckquHNNc7Y
- e+1RDhgaoYmHuyLD0BEUa9DOwxlBZioIhHalJg/i9ZqFIAFjcYDpDTVLOqoeXgRD3l
- NSRSaUmr76RLqxZC962zul+R/M+CiODa9lWOMqJnVuTOd/a+3QIqTYcU/M0gunCABX
- fNCz4QkOmB1xv1bwgERmG+3i/XsDJOc5IQBQbyC5oiBAKJktznOd6DVCqi0M15Cos1
- TLuNh7bCWOhuGSMuVf44B6PMQtD5f/AYzaq6wGC/NEgTORA25wds1UP4hfso4uaXE3
- i1DcXgiHQZSAQ==
+ b=U5LFJGLXFzlSiypYuDxkGO83uvFm3APTKwrbvISYEuhQUKgIBK0tOAlMHFQd34d62
+ g7vy5pq4uW2hMEcxidcmOOwbVSmjszJPx18i1RiiJvmqdzgROr2ACj/iaWZmMuSnCX
+ XvM8td4KuJhS2zyCY5q6QyISvwbfARKTgpuUq1iOxWpDwoobMjUKtLusr7pcDTBoR5
+ e7lnIASzNfE8IgxUGEbPbxTTkfzB24dOxdVL3af1NCTAFHI55NxiSXMt4YWzHWVECH
+ NdyXLPs81JM8nqmirXxKlWYKAactevs0+Nsqq5mcIGIoWCUHgiLF/mb1Kn95DaULDi
+ E07biXA1s1+MQ==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>,
- Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>,
- Takashi Iwai <tiwai@suse.com>, 'Wei Yongjun <weiyongjun1@huawei.com>
-In-Reply-To: <20210309131455.1883120-1-weiyongjun1@huawei.com>
-References: <20210309131455.1883120-1-weiyongjun1@huawei.com>
-Subject: Re: [PATCH -next] ASoC: rt715-sdca: Remove unused including
- <linux/version.h>
-Message-Id: <161531678411.49117.10283512358773519203.b4-ty@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210309142129.14182-1-srinivas.kandagatla@linaro.org>
+References: <20210309142129.14182-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 0/3] ASoC: sdm845: array out of bound issues
+Message-Id: <161531678411.49117.14765657958455012863.b4-ty@kernel.org>
 Date: Tue, 09 Mar 2021 19:06:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Hulk Robot <hulkci@huawei.com>, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: amit.pundir@linaro.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+ bjorn.andersson@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,8 +85,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 9 Mar 2021 13:14:55 +0000, 'Wei Yongjun wrote:
-> Remove including <linux/version.h> that don't need it.
+On Tue, 9 Mar 2021 14:21:26 +0000, Srinivas Kandagatla wrote:
+> During testing John Stultz and Amit reported few array our bound issues
+> after enabling bound sanitizer
+> 
+> This patch series attempts to fix those!
+> 
+> changes since v1:
+> 	- make sure the wcd is not de-referenced without intialization
+> 
+> [...]
 
 Applied to
 
@@ -96,8 +102,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt715-sdca: Remove unused including <linux/version.h>
-      commit: a29ba32ac97760822a0a664d1ec521c6be8d632f
+[1/3] ASoC: qcom: sdm845: Fix array out of bounds access
+      commit: a5fd5e475655d3830f376e29ca6a7222dc7074cf
+[2/3] ASoC: qcom: sdm845: Fix array out of range on rx slim channels
+      commit: 3ed85d1e1aa53db6fa4398846fbd213a7d87ceac
+[3/3] ASoC: codecs: wcd934x: add a sanity check in set channel map
+      commit: 480c25e7003d0222f64824d4c7afcd274bc66ebd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
