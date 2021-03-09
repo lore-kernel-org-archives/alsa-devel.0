@@ -5,92 +5,84 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 502AEC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:56:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B010DC433E6
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:57:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 383FA6522B
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:56:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 383FA6522B
+	by mail.kernel.org (Postfix) with ESMTPS id B35A86525D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:57:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B35A86525D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D8F117C1;
-	Tue,  9 Mar 2021 11:55:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D8F117C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 342C317CE;
+	Tue,  9 Mar 2021 11:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 342C317CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615287392;
-	bh=G9ciPs/Fvtk4MHj4mH20dqCwF0y5VTarPOId5Uf8cUQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TqM8FrcxM7IVj8U/BL47u1dat+OT/y3xCClAp4RyO5SDOvPacLz9U9bFQnPIfA/2G
-	 24aPmLYYuQJe231udiTnSByol9ZNoAMdpDRUubqJRAjUZdzClEsruyibiPeZPxbfMt
-	 t+GjupqvGCawKkaNLS3bsWCX4SH4ULTl5DDt2PEo=
+	s=default; t=1615287443;
+	bh=cqRsqBDHJMgJB4/YUlDSsGA4nYMwUr5e3nk8IHOjRWE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eD1H2yxXH9xDiUrT/wd6AygJO8mx4y4Pgtmmxga36GMjZsq+EHw7gs3Ss2oy+q4Dm
+	 nieHlFEW8RNLrL/u9vcZmqrDxToPN8euNqNp2+mObdSc802/9s812hnfK31caP3tJe
+	 k0QTh2pa5fQoodUf2LiNeMsITV2+Dfgq7P0JgCus=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3197F8019B;
-	Tue,  9 Mar 2021 11:55:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98790F8025A;
+	Tue,  9 Mar 2021 11:55:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB76AF80256; Tue,  9 Mar 2021 11:55:39 +0100 (CET)
+ id BCFD4F8014E; Tue,  9 Mar 2021 11:55:44 +0100 (CET)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 717DFF80166
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 11:55:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 717DFF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9CCAF8014E
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 11:55:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9CCAF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="B/9piOwD"
+ header.b="e1P3dMIs"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615287330;
+ s=mimecast20190719; t=1615287336;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=qXtQKgIGCfZ9zBltozu9luumN+mvOGZeMn1rnLSEzCs=;
- b=B/9piOwDfqf4Fvdw0U7lTwUTuZ98WZLvQp3+9LWYiq4dEYW/Qs2EH9uzWVqsKtoRGCfVtV
- jmhMshMb9QzdHt8hGXwHqYhEjhkY551nSF6wcd/vslb889be/a8yYNNUzpeAolcXAKxQBi
- chT6HHeXwo7DZmOBb3bpDn/0RMBEFxI=
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=igGpDVPOk/k+jGdogKjW4xIG1vuaITeT4xXr4ZX6k0w=;
+ b=e1P3dMIs2QUEyY6MLKd3DOXne162uQ5hMDUY0FpZ/dUBbeJL3JhThjqPHIt0cuEIs2Jfay
+ JNFxpQ1fRK+LSg98F+Kb9ZraQSRWuchv2VkiPIknoxCCroRIWKzP9zETV/mJz/vRq7XNvh
+ AuDOKjEAkD2YVf5VGMWhoOI+eIDlfJY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-JM9XxSv_PTWlgFuzGcS8KA-1; Tue, 09 Mar 2021 05:55:28 -0500
-X-MC-Unique: JM9XxSv_PTWlgFuzGcS8KA-1
+ us-mta-249-oVdI6PnrMImLglztRGZhgw-1; Tue, 09 Mar 2021 05:55:26 -0500
+X-MC-Unique: oVdI6PnrMImLglztRGZhgw-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
  [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 496786973B;
- Tue,  9 Mar 2021 10:55:27 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 652EF83DD27;
+ Tue,  9 Mar 2021 10:55:24 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-201.ams2.redhat.com
  [10.36.112.201])
- by smtp.corp.redhat.com (Postfix) with ESMTP id ABA3B5C266;
- Tue,  9 Mar 2021 10:55:24 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 9E7FC5C701;
+ Tue,  9 Mar 2021 10:55:21 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: intel: atom: Remove 44100 sample-rate from the
- media and deep-buffer DAI descriptions
-Date: Tue,  9 Mar 2021 11:55:20 +0100
-Message-Id: <20210309105520.9185-2-hdegoede@redhat.com>
-In-Reply-To: <20210309105520.9185-1-hdegoede@redhat.com>
-References: <20210309105520.9185-1-hdegoede@redhat.com>
+Subject: [PATCH 1/2] ASoC: intel: atom: Stop advertising non working S24LE
+ support
+Date: Tue,  9 Mar 2021 11:55:19 +0100
+Message-Id: <20210309105520.9185-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,44 +98,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The media and deep-buffer DAIs only support 48000 Hz samplerate,
-remove the 44100 sample-rate from their descriptions.
+The SST firmware's media and deep-buffer inputs are hardcoded to
+S16LE, the corresponding DAIs don't have a hw_params callback and
+their prepare callback also does not take the format into account.
 
+So far the advertising of non working S24LE support has not caused
+issues because pulseaudio defaults to S16LE, but changing pulse-audio's
+config to use S24LE will result in broken sound.
+
+Pipewire is replacing pulse now and pipewire prefers S24LE over S16LE
+when available, causing the problem of the broken S24LE support to
+come to the surface now.
+
+Cc: stable@vger.kernel.org
+BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/866
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
  sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index aa5dd590ddd5..4124aa2fc247 100644
+index 9e9b05883557..aa5dd590ddd5 100644
 --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
 +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -487,14 +487,14 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.stream_name = "Headset Playback",
+@@ -488,14 +488,14 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
  		.channels_min = SST_STEREO,
  		.channels_max = SST_STEREO,
--		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.rates = SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
  	},
  	.capture = {
  		.stream_name = "Headset Capture",
  		.channels_min = 1,
  		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.rates = SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
  	},
  },
-@@ -505,7 +505,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.stream_name = "Deepbuffer Playback",
+ {
+@@ -506,7 +506,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
  		.channels_min = SST_STEREO,
  		.channels_max = SST_STEREO,
--		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-+		.rates = SNDRV_PCM_RATE_48000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
  	},
  },
+ {
 -- 
 2.30.1
 
