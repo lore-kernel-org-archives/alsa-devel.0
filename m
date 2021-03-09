@@ -2,78 +2,95 @@ Return-Path: <SRS0=OWbI=IH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC200C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 08:59:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1795C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:17:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BAED964E75
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 08:59:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BAED964E75
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 36F8B6525D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:17:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 36F8B6525D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29B9217CD;
-	Tue,  9 Mar 2021 09:58:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29B9217CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id C57F617C6;
+	Tue,  9 Mar 2021 11:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C57F617C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615280383;
-	bh=ripNf3au9s3gESAL9eDP/4d9bRiZtw3O86/jTXmt3r8=;
+	s=default; t=1615285031;
+	bh=BRVhD52pmWHL1HNcZmIYnvtdZYl372NJ8VdvNqRYleM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=he5WI8wl9JmLHzFcnw+1uvg1A9s0w8r+haxHKXSolEfcGXtK8mjpkq8Lj9R6W611/
-	 UKyW1EheMacqHdO9+iHAvjecyNJ6C+PI7WhDXd+E94Sz1z2wA3zdjn+1+K33h5nQX2
-	 Vg8o+LpYaITCqVlyD1bptdsvm3oYqZcQ35gat+oY=
+	b=DxgVMRheOupppXdKYn15uLa4vEzm47oAwqjo3JfoVVcA6rPWTUTMMOboWIHMQLgNQ
+	 ybgj1FNMvik86oikLL7iZPwx4i/NRpEEWH5Czu2+f29qV0RZcoWkMMyaRjBOjzRGvR
+	 1c4tbU1LINpl9AAO74dfWM8RZJPRRtZMViCj8FpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7345FF80166;
-	Tue,  9 Mar 2021 09:58:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2477AF80256;
+	Tue,  9 Mar 2021 11:16:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98F78F80227; Tue,  9 Mar 2021 09:58:50 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C5ED6F8025A; Tue,  9 Mar 2021 11:16:19 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC9B2F80166
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 09:58:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC9B2F80166
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1298wX6C1008133,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 1298wX6C1008133
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 9 Mar 2021 16:58:33 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 16:58:33 +0800
-Received: from localhost.localdomain (172.22.102.1) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 16:58:32 +0800
-From: <shumingf@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt5682: add delay time of workqueue to control next IRQ
- event
-Date: Tue, 9 Mar 2021 16:58:27 +0800
-Message-ID: <20210309085827.32032-1-shumingf@realtek.com>
-X-Mailer: git-send-email 2.29.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0C66F8014E
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 11:16:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0C66F8014E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="wx8qqAH5"
+Received: by mail-wm1-x333.google.com with SMTP id
+ r15-20020a05600c35cfb029010e639ca09eso5574371wmq.1
+ for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2021 02:16:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=h7PtkbsEWdkuJd/mmYpJAYKJMOfm44GbXmX9GIVF+Uo=;
+ b=wx8qqAH5D94zcPZhTci5hev6TaMVBRkTx/B9T8R2RCHadUoOcTgCEgY2J/0ylwWSqh
+ qFsWCkng5osHQRgET9sguzMMOYiBxrpzSK6F3JiwxBy7Ij+i9n8XSo5sBk8CKhZftY6Z
+ a9rwcCh27dXbLnjJflxEBNFjQ816PbAc32fcGC3FNnLaObGcbos7cwL6UtqZ2QB6q1C0
+ jUcqcTDRpuZEjg427XPr1YVSq7qDdEB/DE4HXvQkWeiAeuc2YXQc1a27QoaRrTYhB+Wh
+ eGbXyW1RkvDfDr4BJODy3d5yiJW1HLuTTcIFYnOIQdHsnQ7p99AbAiUiwUipxZ3sMmM3
+ QIzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=h7PtkbsEWdkuJd/mmYpJAYKJMOfm44GbXmX9GIVF+Uo=;
+ b=YVdlzdsRFdnsfaTzwxQrtTNd/Rnx5nb8AKOgJMc5FihSoAe+su6qtvyClY4yLc4Fuq
+ nJRyph1tah1WLwoOzHTlZw9huBHkVsFK8E1ZabnfnP1vK0Izc3YeC719C9vg6qy+9iu3
+ TGwWvX+OYJXKDiZGuMT9Tix7CNWsQVknaIrgP3omjvk5uU7EvVwbKpucHu4YXE4Dzhi2
+ PFxHyBCQhOtqesrBPX9uPQSMXerkKIZpkGK3fWel+btzd983RKI6HDtEO0epl6RHr3xV
+ 4sGZutKEj1qC8wqa+gD7/3Am0XxONqeBixnYZZi4gRk25hKkzvAT+qfKWZ2cNZtaSS0q
+ xnIg==
+X-Gm-Message-State: AOAM531cWLNNAvl8FAl/uy6dYAV/yJbQ6QBQwK/eW+2NjVLYtVZklat0
+ uEs4JQiFYL9Fdb7t71fyDAG+nA==
+X-Google-Smtp-Source: ABdhPJwyT3j3Xfd3tolLUlZDCHTHVfr30U9H40Y0ozNmW0iEDfz/gVEPVyODJb3UTTeAt6ehMHGJeQ==
+X-Received: by 2002:a7b:c1c4:: with SMTP id a4mr3240872wmj.122.1615284975651; 
+ Tue, 09 Mar 2021 02:16:15 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id r2sm22552248wrt.8.2021.03.09.02.16.14
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Mar 2021 02:16:15 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 0/3] ASoC: sdm845: array out of bound issues
+Date: Tue,  9 Mar 2021 10:16:10 +0000
+Message-Id: <20210309101613.25995-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXDAG01.realtek.com.tw (172.21.6.100)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, cujomalainey@google.com, jairaj.arava@intel.com,
- derek.fang@realtek.com, sathyanarayana.nujella@intel.com,
- Shuming Fan <shumingf@realtek.com>, flove@realtek.com
+Cc: amit.pundir@linaro.org, alsa-devel@alsa-project.org,
+ bjorn.andersson@linaro.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ john.stultz@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,77 +106,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Shuming Fan <shumingf@realtek.com>
+During testing John Stultz and Amit reported few array our bound issues
+after enabling bound sanitizer
 
-This patch keeps the delay time (50 ms) for jack detection and zero delay time for the button press.
-This patch improves the reaction of the button press.
+This patch series attempts to fix those!
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt5682-i2c.c | 2 +-
- sound/soc/codecs/rt5682-sdw.c | 2 +-
- sound/soc/codecs/rt5682.c     | 2 ++
- sound/soc/codecs/rt5682.h     | 1 +
- 4 files changed, 5 insertions(+), 2 deletions(-)
+Srinivas Kandagatla (3):
+  ASoC: qcom: sdm845: Fix array out of bounds access
+  ASoC: qcom: sdm845: Fix array out of range on rx slim channels
+  ASoC: codecs: wcd934x: add a sanity check in set channel map
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 93c1603b42f1..8ea9f1d9fec0 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -78,7 +78,7 @@ static irqreturn_t rt5682_irq(int irq, void *data)
- 	struct rt5682_priv *rt5682 = data;
- 
- 	mod_delayed_work(system_power_efficient_wq,
--		&rt5682->jack_detect_work, msecs_to_jiffies(250));
-+		&rt5682->jack_detect_work, msecs_to_jiffies(rt5682->irq_work_delay_time));
- 
- 	return IRQ_HANDLED;
- }
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index 5e097f776561..fed80c8f994f 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -677,7 +677,7 @@ static int rt5682_interrupt_callback(struct sdw_slave *slave,
- 
- 	if (status->control_port & 0x4) {
- 		mod_delayed_work(system_power_efficient_wq,
--			&rt5682->jack_detect_work, msecs_to_jiffies(250));
-+			&rt5682->jack_detect_work, msecs_to_jiffies(rt5682->irq_work_delay_time));
- 	}
- 
- 	return 0;
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 559dc6db1f7c..0e2a10ed11da 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -1094,6 +1094,7 @@ void rt5682_jack_detect_handler(struct work_struct *work)
- 			/* jack was out, report jack type */
- 			rt5682->jack_type =
- 				rt5682_headset_detect(rt5682->component, 1);
-+			rt5682->irq_work_delay_time = 0;
- 		} else if ((rt5682->jack_type & SND_JACK_HEADSET) ==
- 			SND_JACK_HEADSET) {
- 			/* jack is already in, report button event */
-@@ -1139,6 +1140,7 @@ void rt5682_jack_detect_handler(struct work_struct *work)
- 	} else {
- 		/* jack out */
- 		rt5682->jack_type = rt5682_headset_detect(rt5682->component, 0);
-+		rt5682->irq_work_delay_time = 50;
- 	}
- 
- 	snd_soc_jack_report(rt5682->hs_jack, rt5682->jack_type,
-diff --git a/sound/soc/codecs/rt5682.h b/sound/soc/codecs/rt5682.h
-index 1f9c51a5b9bf..74ff66767016 100644
---- a/sound/soc/codecs/rt5682.h
-+++ b/sound/soc/codecs/rt5682.h
-@@ -1439,6 +1439,7 @@ struct rt5682_priv {
- 	int pll_out[RT5682_PLLS];
- 
- 	int jack_type;
-+	int irq_work_delay_time;
- };
- 
- extern const char *rt5682_supply_names[RT5682_NUM_SUPPLIES];
+ sound/soc/codecs/wcd934x.c | 6 ++++++
+ sound/soc/qcom/sdm845.c    | 6 +++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
 -- 
-2.29.0
+2.21.0
 
