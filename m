@@ -2,87 +2,64 @@ Return-Path: <SRS0=OWbI=IH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B010DC433E6
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:57:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BB3EC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 11:39:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B35A86525D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 10:57:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B35A86525D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id A6A7865228
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 11:39:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A6A7865228
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 342C317CE;
-	Tue,  9 Mar 2021 11:56:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 342C317CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A80417C2;
+	Tue,  9 Mar 2021 12:38:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A80417C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615287443;
-	bh=cqRsqBDHJMgJB4/YUlDSsGA4nYMwUr5e3nk8IHOjRWE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eD1H2yxXH9xDiUrT/wd6AygJO8mx4y4Pgtmmxga36GMjZsq+EHw7gs3Ss2oy+q4Dm
-	 nieHlFEW8RNLrL/u9vcZmqrDxToPN8euNqNp2+mObdSc802/9s812hnfK31caP3tJe
-	 k0QTh2pa5fQoodUf2LiNeMsITV2+Dfgq7P0JgCus=
+	s=default; t=1615289981;
+	bh=s3jwF99y0+cbJHzmzctZ84t9ndOKCR30S8xAdk83f30=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ReZS1DsErUB/AhZolmWHTQhnZjkIZNlPXJ8EYgLwB/jW1Au9U8l0Frow2dW6uGFQD
+	 VZ1qVbodqahEKXDNux6Amr0evYlCN8DuiQDaWAVV6dXeTuVAdp7WG4iXSuHTphYKrR
+	 UuKoIAwHJ6Lw64RqcgHmki8J3ti6krJRTWg/+tRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98790F8025A;
-	Tue,  9 Mar 2021 11:55:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2F6EF8019B;
+	Tue,  9 Mar 2021 12:38:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCFD4F8014E; Tue,  9 Mar 2021 11:55:44 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9CCAF8014E
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 11:55:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9CCAF8014E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="e1P3dMIs"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615287336;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=igGpDVPOk/k+jGdogKjW4xIG1vuaITeT4xXr4ZX6k0w=;
- b=e1P3dMIs2QUEyY6MLKd3DOXne162uQ5hMDUY0FpZ/dUBbeJL3JhThjqPHIt0cuEIs2Jfay
- JNFxpQ1fRK+LSg98F+Kb9ZraQSRWuchv2VkiPIknoxCCroRIWKzP9zETV/mJz/vRq7XNvh
- AuDOKjEAkD2YVf5VGMWhoOI+eIDlfJY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-oVdI6PnrMImLglztRGZhgw-1; Tue, 09 Mar 2021 05:55:26 -0500
-X-MC-Unique: oVdI6PnrMImLglztRGZhgw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
- [10.5.11.16])
+ id 74F6CF80227; Tue,  9 Mar 2021 12:38:48 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 652EF83DD27;
- Tue,  9 Mar 2021 10:55:24 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-201.ams2.redhat.com
- [10.36.112.201])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 9E7FC5C701;
- Tue,  9 Mar 2021 10:55:21 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: intel: atom: Stop advertising non working S24LE
- support
-Date: Tue,  9 Mar 2021 11:55:19 +0100
-Message-Id: <20210309105520.9185-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org,
- stable@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8EE7EF800D0
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 12:38:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EE7EF800D0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id AC3E6AB8C;
+ Tue,  9 Mar 2021 11:38:40 +0000 (UTC)
+Date: Tue, 09 Mar 2021 12:38:40 +0100
+Message-ID: <s5him601rr3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: Re: [syzbot] KASAN: use-after-free Read in usb_audio_disconnect
+In-Reply-To: <000000000000217e4d05bd18e750@google.com>
+References: <000000000000217e4d05bd18e750@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: tiwai@suse.com, kai.heng.feng@canonical.com,
+ syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,55 +75,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The SST firmware's media and deep-buffer inputs are hardcoded to
-S16LE, the corresponding DAIs don't have a hw_params callback and
-their prepare callback also does not take the format into account.
+On Tue, 09 Mar 2021 12:32:18 +0100,
+syzbot wrote:
+> 
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    4641b323 Add linux-next specific files for 20210305
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=103252ead00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=b87b6a083d302a90
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ffad4c74b3b3ea3aa9c3
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1122d35cd00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17f6476cd00000
+> 
+> The issue was bisected to:
+> 
+> commit 9799110825dba087c2bdce886977cf84dada2005
+> Author: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Date:   Thu Mar 4 04:34:16 2021 +0000
+> 
+>     ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=166d91ead00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=156d91ead00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=116d91ead00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ffad4c74b3b3ea3aa9c3@syzkaller.appspotmail.com
+> Fixes: 9799110825db ("ALSA: usb-audio: Disable USB autosuspend properly in setup_disable_autosuspend()")
+> 
+> usb 1-1: USB disconnect, device number 2
+> ==================================================================
+> BUG: KASAN: use-after-free in usb_audio_disconnect+0x750/0x800 sound/usb/card.c:918
 
-So far the advertising of non working S24LE support has not caused
-issues because pulseaudio defaults to S16LE, but changing pulse-audio's
-config to use S24LE will result in broken sound.
+This must be fixed by the commit that was already merged to sound.git
+tree today:
+c5aa956eaeb0 ("ALSA: usb-audio: fix use after free in usb_audio_disconnect")
 
-Pipewire is replacing pulse now and pipewire prefers S24LE over S16LE
-when available, causing the problem of the broken S24LE support to
-come to the surface now.
 
-Cc: stable@vger.kernel.org
-BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/866
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+thanks,
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 9e9b05883557..aa5dd590ddd5 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -488,14 +488,14 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.capture = {
- 		.stream_name = "Headset Capture",
- 		.channels_min = 1,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- },
- {
-@@ -506,7 +506,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
- 		.channels_min = SST_STEREO,
- 		.channels_max = SST_STEREO,
- 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- },
- {
--- 
-2.30.1
-
+Takashi
