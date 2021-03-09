@@ -7,56 +7,56 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B90AC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 13:07:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3B36C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 13:08:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86BC965287
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 13:07:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86BC965287
+	by mail.kernel.org (Postfix) with ESMTPS id 387B565272
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 13:08:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 387B565272
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C21E17BB;
-	Tue,  9 Mar 2021 14:06:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C21E17BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7786C17C6;
+	Tue,  9 Mar 2021 14:07:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7786C17C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615295241;
-	bh=R0mtIWjsf9xLYkXiefyadvdUkCWmEIY00awFwaeVDmo=;
+	s=default; t=1615295292;
+	bh=GP0Tk3hCYXO7KAUnszFjuDKX8+FPn9lwtPFiJ5Ozn8M=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=KpDiHweQiNvYv0h5FPCKmJwvXmdhGu7M3kb3O1gVjmZsuBcQUqSn4izZLtoxcUVYx
-	 /zic4ZPQjcRChYQdpgVbEWot3gO0eVQuTSGqYfatD29LklLZvtLUE2NCjLZXvzrmBy
-	 JDH1QS1wRFJE5IvmTkiUGSXkwpfUh+j5N9oWJC5Q=
+	b=rrrLFR1rarE0C6DjbdjUSMneZKIYCzFr0Acebp4Vq8jpNT9de7AE4DJAAWQS4uDCX
+	 z6TdrdZaNuAkFPk6/lo25BnaLlyRss6aPf8giXKI6qBxLjJHIgKmVJrj7Sdf5ofAzi
+	 Ff9Sq85DV3mRLTnCJkUoLcNKlNYiT0YeRlvUyJUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC2E0F8014E;
-	Tue,  9 Mar 2021 14:06:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11B92F80275;
+	Tue,  9 Mar 2021 14:06:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3525AF80256; Tue,  9 Mar 2021 14:06:29 +0100 (CET)
+ id 8F1A5F80227; Tue,  9 Mar 2021 14:06:29 +0100 (CET)
 Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A4D4F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3ED69F8019B
  for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 14:06:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A4D4F800D0
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
- by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DvwR44WbBzjWmK;
- Tue,  9 Mar 2021 21:04:48 +0800 (CST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ED69F8019B
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+ by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DvwR56S7pzkWgK;
+ Tue,  9 Mar 2021 21:04:49 +0800 (CST)
 Received: from localhost.localdomain (10.175.102.38) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 9 Mar 2021 21:06:07 +0800
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 9 Mar 2021 21:06:10 +0800
 From: 'Wei Yongjun <weiyongjun1@huawei.com>
 To: <weiyongjun1@huawei.com>, Oder Chiou <oder_chiou@realtek.com>, "Liam
  Girdwood" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Jaroslav
  Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jack Yu
  <jack.yu@realtek.com>
-Subject: [PATCH -next] ASoC: rt715-sdca: Remove unused including
- <linux/version.h>
-Date: Tue, 9 Mar 2021 13:14:55 +0000
-Message-ID: <20210309131455.1883120-1-weiyongjun1@huawei.com>
+Subject: [PATCH -next] ASoC: rt715-sdca: Fix return value check in
+ rt715_sdca_sdw_probe()
+Date: Tue, 9 Mar 2021 13:14:58 +0000
+Message-ID: <20210309131458.1884899-1-weiyongjun1@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -82,24 +82,36 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Wei Yongjun <weiyongjun1@huawei.com>
 
-Remove including <linux/version.h> that don't need it.
+In case of error, the function devm_regmap_init_sdw_mbq() and
+devm_regmap_init_sdw() returns ERR_PTR() not NULL. The NULL test
+in the return value check should be replaced with IS_ERR().
 
+Fixes: 393c52d2d109 ("ASoC: rt715-sdca: Add RT715 sdca vendor-specific driver")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- sound/soc/codecs/rt715-sdca.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/rt715-sdca-sdw.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
-index 92ad6fa408ec..20528afbdc57 100644
---- a/sound/soc/codecs/rt715-sdca.c
-+++ b/sound/soc/codecs/rt715-sdca.c
-@@ -9,7 +9,6 @@
+diff --git a/sound/soc/codecs/rt715-sdca-sdw.c b/sound/soc/codecs/rt715-sdca-sdw.c
+index bcced85876b0..1350798406f0 100644
+--- a/sound/soc/codecs/rt715-sdca-sdw.c
++++ b/sound/soc/codecs/rt715-sdca-sdw.c
+@@ -184,12 +184,12 @@ static int rt715_sdca_sdw_probe(struct sdw_slave *slave,
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/pm_runtime.h>
+ 	/* Regmap Initialization */
+ 	mbq_regmap = devm_regmap_init_sdw_mbq(slave, &rt715_sdca_mbq_regmap);
+-	if (!mbq_regmap)
+-		return -EINVAL;
++	if (IS_ERR(mbq_regmap))
++		return PTR_ERR(mbq_regmap);
+ 
+ 	regmap = devm_regmap_init_sdw(slave, &rt715_sdca_regmap);
+-	if (!regmap)
+-		return -EINVAL;
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
+ 
+ 	return rt715_sdca_init(&slave->dev, mbq_regmap, regmap, slave);
+ }
 
