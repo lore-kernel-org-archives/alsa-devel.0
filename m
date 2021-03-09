@@ -2,80 +2,79 @@ Return-Path: <SRS0=4IlU=II=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DATE_IN_PAST_24_48,
-	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-9.2 required=3.0 tests=BAYES_00,DATE_IN_PAST_12_24,
+	DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 306DFC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:46:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 447D9C433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:47:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7C16D64F8B
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:46:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C16D64F8B
+	by mail.kernel.org (Postfix) with ESMTPS id B4FE964F8B
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 15:47:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4FE964F8B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04B6D176C;
-	Wed, 10 Mar 2021 16:45:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04B6D176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BDA21769;
+	Wed, 10 Mar 2021 16:46:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BDA21769
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615391174;
-	bh=xxFA1J8CssuXlRu/vxFFbFJZds1v+VFhTjVKhBPqdss=;
+	s=default; t=1615391220;
+	bh=yIeAvHFqsLjMa89kqXmZq/cL/MIj2Enoy3tKPrg61Uk=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Iqz8+5QnEGzC3VUgUHzqSu02eHpkQ699sZgeTBSEdPlsQjNiEwGXCKw3tdXqk3+5x
-	 hsorkpVktT1J48Dco07Kypfc7YCyU2YL2wsCoUbF+DfihHJpd/5X4j4tg4nLGpqDh4
-	 dN7/l1ObdQSJawFUvqe9END6tNCrMZ2HhI9WaW9Q=
+	b=ZPnQGqRPUUNsBss9LhpDw+gKYhxhgMu+1y4M7j9qjemy9827qVwQYZH1prmyFNLar
+	 wKGuea0UQ1X6Oo446KpUTpDk4JwYYRM4O/n5mCBnSg6l+cq0guRfha8qvfedF5AuGZ
+	 GmVPdxpaZmtAvQ6IN1WBNyJ5TYvqS8iwi63otzVU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 36F9FF8020D;
-	Wed, 10 Mar 2021 16:45:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E49AF80430;
+	Wed, 10 Mar 2021 16:45:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D41C3F8020D; Wed, 10 Mar 2021 16:45:17 +0100 (CET)
+ id F1F7DF8032D; Wed, 10 Mar 2021 16:45:22 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8D7CF8020D
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 16:45:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D7CF8020D
-IronPort-SDR: AWRVM9++Yx+C/ViOXE4dkdASavE3Z3v8imObKdsNaI/03nlzMI5A/gfvrdnNbyKMgTt6sY7Pif
- DfVJUVWobF/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188589634"
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="188589634"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55998F80272
+ for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 16:45:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55998F80272
+IronPort-SDR: otHWQHkpn6ng8EPVIFSVMD6c/2cigLUjBJOg5+EunalZUOONx7gxWnJw67hEy043LrCWDgonbJ
+ ZDAM3xHcYb+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="188589664"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="188589664"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 07:45:08 -0800
-IronPort-SDR: EBn1OfYcIEnRmTsi2bRxfu/vCk1dJ/f+VsVMYYxw3enRy2DOO4/6dYG2GDIwk7WbTLZvBvQoT4
- VqA32q2iwYYQ==
-X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="403722167"
+ 10 Mar 2021 07:45:13 -0800
+IronPort-SDR: p60gojLrqWi7gsJ+jGQIvHKjinxj4Uyg3tK8TS2R54X0M1l56f9wlmWyvVrGUD3oyomvZXEd29
+ rLz46anVIlZg==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="403722234"
 Received: from huiyingw-mobl.amr.corp.intel.com (HELO [10.212.214.84])
  ([10.212.214.84])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 07:45:07 -0800
-Subject: Re: [PATCH 1/2] ASoC: intel: atom: Stop advertising non working S24LE
- support
-To: Hans de Goede <hdegoede@redhat.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-References: <20210309105520.9185-1-hdegoede@redhat.com>
+ 10 Mar 2021 07:45:12 -0800
+Subject: Re: [PATCH v2 3/5] soundwire: qcom: add static port map support
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, 
+ vkoul@kernel.org
+References: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
+ <20210309141514.24744-4-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e1af1b57-d384-0dce-6362-c39197cf2063@linux.intel.com>
-Date: Tue, 9 Mar 2021 09:42:19 -0600
+Message-ID: <cc812a5b-c3c3-bb46-f2fe-3e0a14cf0524@linux.intel.com>
+Date: Tue, 9 Mar 2021 10:10:19 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210309105520.9185-1-hdegoede@redhat.com>
+In-Reply-To: <20210309141514.24744-4-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, sanyog.r.kale@intel.com,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,60 +92,57 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 3/9/21 4:55 AM, Hans de Goede wrote:
-> The SST firmware's media and deep-buffer inputs are hardcoded to
-> S16LE, the corresponding DAIs don't have a hw_params callback and
-> their prepare callback also does not take the format into account.
-> 
-> So far the advertising of non working S24LE support has not caused
-> issues because pulseaudio defaults to S16LE, but changing pulse-audio's
-> config to use S24LE will result in broken sound.
-> 
-> Pipewire is replacing pulse now and pipewire prefers S24LE over S16LE
-> when available, causing the problem of the broken S24LE support to
-> come to the surface now.
-> 
-> Cc: stable@vger.kernel.org
-> BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/866
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-Humm, that is strange.
-I can't recall such limitations in the firmware, and the SSP support 
-does make use of 24 bits.
-Please give me a couple of days to double-check what's missing.
+>   	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
+> @@ -473,8 +475,13 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
+>   		}
+>   
+>   		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+> +			slave = s_rt->slave;
+>   			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+> -				pcfg = &ctrl->pconfig[i];
+> +				m_port = slave->m_port_map[_rtp->num - 1];
+> +				if (m_port)
+> +					pcfg = &ctrl->pconfig[m_port - 1];
+> +				else
+> +					pcfg = &ctrl->pconfig[i];
 
-> ---
->   sound/soc/intel/atom/sst-mfld-platform-pcm.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> index 9e9b05883557..aa5dd590ddd5 100644
-> --- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> +++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-> @@ -488,14 +488,14 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
->   		.channels_min = SST_STEREO,
->   		.channels_max = SST_STEREO,
->   		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-> -		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
->   	},
->   	.capture = {
->   		.stream_name = "Headset Capture",
->   		.channels_min = 1,
->   		.channels_max = 2,
->   		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-> -		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
->   	},
->   },
->   {
-> @@ -506,7 +506,7 @@ static struct snd_soc_dai_driver sst_platform_dai[] = {
->   		.channels_min = SST_STEREO,
->   		.channels_max = SST_STEREO,
->   		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
-> -		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE,
->   	},
->   },
->   {
+Maybe add a short comment on port allocation, I had to think a bit to 
+figure out why the -1 was required on both peripheral and manager but it 
+is not below [1]
+
+>   				p_rt->transport_params.port_num = p_rt->num;
+>   				p_rt->transport_params.sample_interval =
+>   					pcfg->si + 1;
+> @@ -535,8 +542,10 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+>   	struct sdw_master_runtime *m_rt;
+>   	struct sdw_slave_runtime *s_rt;
+>   	struct sdw_port_runtime *p_rt;
+> +	struct sdw_slave *slave;
+>   	unsigned long *port_mask;
+>   	int i, maxport, pn, nports = 0, ret = 0;
+> +	unsigned int m_port;
+>   
+>   	mutex_lock(&ctrl->port_lock);
+>   	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> @@ -549,9 +558,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+>   		}
+>   
+>   		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+> +			slave = s_rt->slave;
+>   			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+> +				m_port = slave->m_port_map[p_rt->num - 1];
+>   				/* Port numbers start from 1 - 14*/
+> -				pn = find_first_zero_bit(port_mask, maxport);
+> +				if (m_port)
+> +					pn = m_port;
+> +				else
+> +					pn = find_first_zero_bit(port_mask, maxport);
+
+[1]
+
+> +
+>   				if (pn > (maxport)) {
+>   					dev_err(ctrl->dev, "All ports busy\n");
+>   					ret = -EBUSY;
 > 
