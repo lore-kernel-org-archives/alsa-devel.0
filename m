@@ -2,90 +2,94 @@ Return-Path: <SRS0=OWbI=IH=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E30AC4321A
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:16:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A906C433E0
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:17:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8677D65242
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:16:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8677D65242
+	by mail.kernel.org (Postfix) with ESMTPS id 28F6964E21
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Mar 2021 14:17:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28F6964E21
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57BF917EC;
-	Tue,  9 Mar 2021 15:15:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57BF917EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E983181A;
+	Tue,  9 Mar 2021 15:16:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E983181A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615299391;
-	bh=OwJ6dOwkhtcZrVKRSvU4fldoYMyzS2IxPhAhxkXfyP8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qCZfzrQblt3qwfxIhd06PLvmDV1EH96MYDZRp69JBmUFgVA0Vv1FmavZVAm++onCe
-	 94n91YcZzuKoShmg74I1LxE4TkNsfRenCuOSqeup9YN1hrSn3zU7iapG29TjjbI/mY
-	 YPVm4kZ96IIfLwvvVtUT3D9GIqi+EYSZ5M4ss6gU=
+	s=default; t=1615299442;
+	bh=3fXNYzEoOSjndry0TwBfJ8bkWInpJXUM/uq9GUnTpc4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Wzne8mQQWHpd1F2hETD0fPqJZTqmoEa+t26/8IN7NjO8c44BOffgwYhgVsbtPu/Cn
+	 sOfYEg21eH6m4/klrUchFp8ThFFbJNsiVZa7D8VxxX6v9ZiJ6dzflm/ka0YTe0+hGp
+	 7UP1rm4bVXEHoKkySHU3ohwNO1hZzF4SOv34YzR0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 870A7F8025A;
-	Tue,  9 Mar 2021 15:15:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 247F7F8019B;
+	Tue,  9 Mar 2021 15:15:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CF41F80275; Tue,  9 Mar 2021 15:15:38 +0100 (CET)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+ id 4232EF8032B; Tue,  9 Mar 2021 15:15:42 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5056AF80166
- for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 15:15:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5056AF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 826B0F8019B
+ for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2021 15:15:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 826B0F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="cIR0awXA"
-Received: by mail-wr1-x42b.google.com with SMTP id d15so15906380wrv.5
- for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2021 06:15:32 -0800 (PST)
+ header.b="a0wPe4uB"
+Received: by mail-wr1-x42a.google.com with SMTP id w11so15889488wrr.10
+ for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2021 06:15:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ITjSKt2+hgLxV+pJeV70ZxWkeY46z8D/gW74nzxpexQ=;
- b=cIR0awXA4ZwNU6o+0+jVnRL7Babi+PksJnzMSiQ7MadA4GGA9063k/iup2S9q6G5uv
- wZ3uw7uVZjQv+dNVhtkz/shlR01AgsyXABjs+uNtJck975Uhehz0tpV5Vms01BN37L9r
- HbkZyKKoirlUdO4d/UUs542iUJ/oR5Ivxq4ca56n94Dn0WpLgZhsI9SjMOjDzl3Ef1AK
- oJxebeVWNWX3+PbhBXWNSZg0WTbsnxjccXA1I5yKTYs5rkVARjemLZiXiYhcXT4cn2/6
- 7g5rrMgRlAd3mSsZVT6r5sKDwMPHVWOUQnPpgt7AdZu5e/09T22PNZNOtOz/5D3j4z7m
- uVEQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=wgYYRBqu2Co/W7gReOySnEqRtjbIxnEiAoNrpCeyOWk=;
+ b=a0wPe4uBWNYiKbyGGwI6t+Hkruw1OOcXeqba3zAZBCB60ZCLwoQVYScCa8hzieutsh
+ SGoyNyzWoaoR2ms5OzwPFK30f5bn+eZ6nzcSFY6ooQqqXgLOYieELbjHJd4fJqpHZ1zf
+ MqMZdPNHQ/1kyYAcbRZKr6mjotlwtICa5A+jl2zKTjF829xKvsI4Om2j6fNLqe8ZptL9
+ bK2v9xGsqGCCBzA/eGip5CbVucsRc8W8oD1UvjL7Cf3FW/OKgbGuIi3tAdMpc2v7/lfB
+ w1VR4MmEPI3kNqlWuC/T+agMZigWjqZNHid4XGC39rkWjTCam3kLtn67ZnhDLJeXoDQZ
+ UIAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=ITjSKt2+hgLxV+pJeV70ZxWkeY46z8D/gW74nzxpexQ=;
- b=FdrWDPDmO1omnEZxrtBNoFAuzhOpcLSHSWQwXoMZ7f8jzGygvuHuFsBwmRbWnKX4Go
- DPTiVR29w9CEAhAnNDyumaQuRD5wTfQB7iwxWBQ0G0XRakzL+5Bm4wsKhacc5zBdFT/J
- 3O0axAVjFYtcHZv1fKAVta9EtEcmAwks4fiURu7W8Nqm2a7245Zxe4hW1FfnwpwYhveR
- dfHmhYpiFq+sR+tCGXetdSnNeh9e6nhaiL2TzH9vZVc+sb0QWajC9A3P9oXHEH7VEZ63
- qL/whnN8dRp8KxoNl7N/8WvPwoTEwu3DtmklqACJZdSd7DLLdA6PjWjCOY0foR8x7aWw
- qKow==
-X-Gm-Message-State: AOAM533Lu71fPcP1C4qS/OD4rotXjYz9HdH2i61JZafVFxh/s+dnsBq9
- RyXi1J9DZwXjSUEtAEso1pVqEA==
-X-Google-Smtp-Source: ABdhPJxDXMPd2fcO0YWat53zH3/GB5WmZ45cb3wtWE2C8qsiuF2eJgclfNU+g/If55JxBW+DEwPjcg==
-X-Received: by 2002:a5d:4fcb:: with SMTP id h11mr29800438wrw.66.1615299332299; 
- Tue, 09 Mar 2021 06:15:32 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=wgYYRBqu2Co/W7gReOySnEqRtjbIxnEiAoNrpCeyOWk=;
+ b=lbU3I1ziuB4Qk/oiMrk4DX1QNGtxP6hM5LHRyGKMvI1y9P6jpvFLyA/4i4qYelGzq2
+ ShyAUmgwAKed2tZrhrmFL+MX+/smtPcMtMmaCD/rq6jtIApggQtbrulS2eD01vBhxFXW
+ oh4v38LNEQ/AoxQa+f1EaNoC1Nvwl0rU42bgDpS7HKSli5GBfOkkmeHpBWx+X13Om3Pd
+ XJ+Awn5SYkToAxW6nu7pC10Su5XEj2ovjA2rTzDUDTrYgUVZGYl0Bf5YmwkH3WYE97uq
+ loB8l0rka/MwjGP5tdhdYhbc2sm0Va8g0xk5f0cJen8SEV11l2k1a+y84YiB+oud+878
+ mDqw==
+X-Gm-Message-State: AOAM5332aOZSMelQpmTS0MTeV4GMf8udF23PC2rhZ+VYwpSxpA748byj
+ SMfMHuX4CEBhysMcbdHRbyzr/A==
+X-Google-Smtp-Source: ABdhPJzjx+A4weJ+YoAO37xTieQKrFjnYgWo5WE0uu2XX5PvGFn3BCfRxZNQHen1u/9up4DZtcduhw==
+X-Received: by 2002:a05:6000:147:: with SMTP id
+ r7mr29046369wrx.25.1615299334635; 
+ Tue, 09 Mar 2021 06:15:34 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id u20sm28007579wru.6.2021.03.09.06.15.31
+ by smtp.gmail.com with ESMTPSA id u20sm28007579wru.6.2021.03.09.06.15.33
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Mar 2021 06:15:31 -0800 (PST)
+ Tue, 09 Mar 2021 06:15:34 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org,
 	vkoul@kernel.org
-Subject: [PATCH v2 0/5] soundwire: add static port map support
-Date: Tue,  9 Mar 2021 14:15:09 +0000
-Message-Id: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/5] soundwire: qcom: update port map allocation bit mask
+Date: Tue,  9 Mar 2021 14:15:11 +0000
+Message-Id: <20210309141514.24744-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
+References: <20210309141514.24744-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
@@ -107,38 +111,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In some cases, SoundWire device ports are statically mapped to Controller
-ports during design, however there is no way to expose this information
-to the controller. Controllers like Qualcomm ones use this info to setup
-static bandwith parameters for those ports.
+currently the internal bitmask used for allocating ports starts with offset 0.
+This is bit confusing as data port numbers on Qualcomm controller are valid
+from 1 to 14. So adjust this bit mask accordingly, this will also help while
+adding static port map support.
 
-A generic port allocation is not possible in this cases!
-This patch adds a new member m_port_map to SoundWire device so that
-it can populate the static master port map and share it with controller
-to be able to setup correct bandwidth parameters.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-As a user of this feature this patchset also adds new bindings for
-wsa881x smart speaker which has 4 ports which are statically mapped
-to the 3 output and 1 input port of the controller.
-
-Tested it on DB845c and SM8250 MTP.
-
-thanks,
-srini
-
-Srinivas Kandagatla (5):
-  soundwire: add static port mapping support
-  soundwire: qcom: update port map allocation bit mask
-  soundwire: qcom: add static port map support
-  ASoC: dt-bindings: wsa881x: add bindings for port mapping
-  ASoC: codecs: wsa881x: add static port map support
-
- .../bindings/sound/qcom,wsa881x.yaml          |  9 ++++++
- drivers/soundwire/qcom.c                      | 30 +++++++++++++++----
- include/linux/soundwire/sdw.h                 |  2 ++
- sound/soc/codecs/wsa881x.c                    |  5 ++++
- 4 files changed, 40 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 6d22df01f354..f4f1c5f2af0b 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -519,7 +519,7 @@ static void qcom_swrm_stream_free_ports(struct qcom_swrm_ctrl *ctrl,
+ 			port_mask = &ctrl->din_port_mask;
+ 
+ 		list_for_each_entry(p_rt, &m_rt->port_list, port_node)
+-			clear_bit(p_rt->num - 1, port_mask);
++			clear_bit(p_rt->num, port_mask);
+ 	}
+ 
+ 	mutex_unlock(&ctrl->port_lock);
+@@ -552,13 +552,13 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ 			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+ 				/* Port numbers start from 1 - 14*/
+ 				pn = find_first_zero_bit(port_mask, maxport);
+-				if (pn > (maxport - 1)) {
++				if (pn > (maxport)) {
+ 					dev_err(ctrl->dev, "All ports busy\n");
+ 					ret = -EBUSY;
+ 					goto err;
+ 				}
+ 				set_bit(pn, port_mask);
+-				pconfig[nports].num = pn + 1;
++				pconfig[nports].num = pn;
+ 				pconfig[nports].ch_mask = p_rt->ch_mask;
+ 				nports++;
+ 			}
+@@ -580,7 +580,7 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ err:
+ 	if (ret) {
+ 		for (i = 0; i < nports; i++)
+-			clear_bit(pconfig[i].num - 1, port_mask);
++			clear_bit(pconfig[i].num, port_mask);
+ 	}
+ 
+ 	mutex_unlock(&ctrl->port_lock);
+@@ -754,6 +754,9 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+ 	ctrl->num_dout_ports = val;
+ 
+ 	nports = ctrl->num_dout_ports + ctrl->num_din_ports;
++	/* port numbers are non zero, so mark port 0 */
++	set_bit(0, &ctrl->dout_port_mask);
++	set_bit(0, &ctrl->din_port_mask);
+ 
+ 	ret = of_property_read_u8_array(np, "qcom,ports-offset1",
+ 					off1, nports);
 -- 
 2.21.0
 
