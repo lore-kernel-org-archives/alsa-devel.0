@@ -2,70 +2,88 @@ Return-Path: <SRS0=4IlU=II=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E059C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 02:15:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4569FC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 02:49:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 479AD64F7D
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 02:15:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 479AD64F7D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id E377864FD3
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 02:49:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E377864FD3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBFEB16FC;
-	Wed, 10 Mar 2021 03:14:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBFEB16FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCB431782;
+	Wed, 10 Mar 2021 03:48:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCB431782
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615342508;
-	bh=a2INZZ8bCKy04pUAhQccv7UL+IpImbAFMAlLKQFVY24=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jOwAbjXglpAMXBINfR5l2wVeLrcC1e0kkDo4fxV93gaEXy9mVyPMg23wFbuzfSOqK
-	 PhJZyT3xNTXSgp+J6e/V98IuMsrYPAMaO9NkfqNrh+wltZnqycBC7TIlKgq3qU3rEN
-	 oOgZGJ/5Y1PzHhxXI/hAD48Ra1WAqK05kcIrHqQo=
+	s=default; t=1615344583;
+	bh=y+ttdnbFRHpmJbihbHmuLzeKRiIX18ukIn1SliLX4bo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kboYRXpSN56qSG9k6ZGEiBHDP5kWUMqfxtD6HHqL9StErCiclgEHM8xiGsk22IqNT
+	 3OKymIPzUxW0VUu+4gO7Yvcf6ZaeE2G11TDjOLsOCj+iT0N1cHFbuLFWj5GrywGxO6
+	 rgwW5QzGUbtETi4zkkkGcufwHc7PF9HN3xWwYRco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C943F8016C;
-	Wed, 10 Mar 2021 03:14:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 055BEF8012F;
+	Wed, 10 Mar 2021 03:48:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8F82F801D8; Wed, 10 Mar 2021 03:14:15 +0100 (CET)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A59D7F801D8; Wed, 10 Mar 2021 03:48:49 +0100 (CET)
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com
+ [209.85.166.175])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 025D4F8010D
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 03:14:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 025D4F8010D
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id AECC51A07AD;
- Wed, 10 Mar 2021 03:14:03 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 164151A056F;
- Wed, 10 Mar 2021 03:13:57 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 44464402A7;
- Wed, 10 Mar 2021 03:13:48 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- shengjiu.wang@nxp.com, ckeepax@opensource.cirrus.com,
- kuninori.morimoto.gx@renesas.com, gustavoars@kernel.org,
- pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2] ASoC: wm8960: Remove bitclk relax condition in
- wm8960_configure_sysclk
-Date: Wed, 10 Mar 2021 10:00:42 +0800
-Message-Id: <1615341642-3797-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9EF95F8012F
+ for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 03:48:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EF95F8012F
+Received: by mail-il1-f175.google.com with SMTP id e2so14192881ilu.0
+ for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2021 18:48:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=tEOOZPHDEcY0BRs13eDY3wS0u+L4s5FzuNZ5kGdjLNs=;
+ b=cLiSRVZb8B8gqHqu7mnHM1+9LKR0sKJWDYq5KKqzb+2yNZZLh5RaRQSfA7eWufN7Cd
+ 0PdeuM17ajf/ivk+ssgXjg1fR3ZXtw3RQHo//SyH2ETloLNV9cR+NaCZ7B8jXirSqA35
+ 5wEGrD5rvR+X5VVozQoIfOngoF0AVDspdAg287hHydb6nWw8lfrBtbgpHbP1MHLhKTW4
+ CiVOAbV01f6KLz7Y+8nTZ+0rcHVK4W+LIEbEc+wyb89TwTSS51NvBvHgS/I3jgM9jn7c
+ HWhSIl+CXP9raxLksA/av3Mxomn2DmVNJrkgt71FN5thpz1k+QmS9/9oa3WKvwNCHR5m
+ lYmQ==
+X-Gm-Message-State: AOAM531dOG9Lx2qW4mPVEirG20qqCIP9BuHkiXYhOWCO+n7z3le/OqyD
+ 6zsgwEwWi6j6IThF0DAOeg==
+X-Google-Smtp-Source: ABdhPJxlxbdsnOqUBKBvn9roAYNjrX2t5RPeImFkLklYb3N4N/Nb+GkhzCBE7xUxdgoLpquCONAlmw==
+X-Received: by 2002:a05:6e02:685:: with SMTP id o5mr998162ils.39.1615344518240; 
+ Tue, 09 Mar 2021 18:48:38 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+ by smtp.gmail.com with ESMTPSA id x6sm8397734ioh.19.2021.03.09.18.48.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Mar 2021 18:48:37 -0800 (PST)
+Received: (nullmailer pid 1645357 invoked by uid 1000);
+ Wed, 10 Mar 2021 02:48:34 -0000
+Date: Tue, 9 Mar 2021 19:48:34 -0700
+From: Rob Herring <robh@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v4 3/6] ASoC: dt-bindings: fsl_rpmsg: Add binding doc for
+ rpmsg cpu dai driver
+Message-ID: <20210310024834.GA1623179@robh.at.kernel.org>
+References: <1615209750-2357-1-git-send-email-shengjiu.wang@nxp.com>
+ <1615209750-2357-4-git-send-email-shengjiu.wang@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615209750-2357-4-git-send-email-shengjiu.wang@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@kernel.org,
+ lgirdwood@gmail.com, linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, nicoleotsuka@gmail.com,
+ broonie@kernel.org, festevam@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,84 +99,173 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The call sequence in wm8960_configure_clocking is
+On Mon, Mar 08, 2021 at 09:22:27PM +0800, Shengjiu Wang wrote:
+> fsl_rpmsg cpu dai driver is driver for rpmsg audio, which is mainly used
 
-   ret = wm8960_configure_sysclk();
-   if (ret >= 0)
-        goto configure_clock;
+Bindings describe h/w blocks, not drivers.
 
-   ....
+> for getting the user's configuration from device tree and configure the
+> clocks which is used by Cortex-M core. So in this document define the
+> needed property.
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  .../devicetree/bindings/sound/fsl,rpmsg.yaml  | 118 ++++++++++++++++++
+>  1 file changed, 118 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> new file mode 100644
+> index 000000000000..5731c1fbc0a6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml
+> @@ -0,0 +1,118 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/fsl,rpmsg.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP Audio RPMSG CPU DAI Controller
+> +
+> +maintainers:
+> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> +
+> +description: |
+> +  fsl_rpmsg cpu dai driver is virtual driver for rpmsg audio, which doesn't
+> +  touch hardware. It is mainly used for getting the user's configuration
+> +  from device tree and configure the clocks which is used by Cortex-M core.
+> +  So in this document define the needed property.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx7ulp-rpmsg
+> +      - fsl,imx8mn-rpmsg
+> +      - fsl,imx8mm-rpmsg
+> +      - fsl,imx8mp-rpmsg
+> +
+> +  model:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: User specified audio sound card name
+> +
+> +  clocks:
+> +    items:
+> +      - description: Peripheral clock for register access
+> +      - description: Master clock
+> +      - description: DMA clock for DMA register access
+> +      - description: Parent clock for multiple of 8kHz sample rates
+> +      - description: Parent clock for multiple of 11kHz sample rates
+> +    minItems: 5
 
-   ret = wm8960_configure_pll();
+If this doesn't touch hardware, what are these clocks for?
 
-configure_clock:
-   ...
+You don't need 'minItems' unless it's less than the number of 'items'.
 
-wm8960_configure_sysclk is called before wm8960_configure_pll, as
-there is bitclk relax on both functions, so wm8960_configure_sysclk
-always return success, then wm8960_configure_pll() never be called.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ipg
+> +      - const: mclk
+> +      - const: dma
+> +      - const: pll8k
+> +      - const: pll11k
+> +    minItems: 5
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  fsl,audioindex:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1]
+> +    default: 0
+> +    description: Instance index for sound card in
+> +                 M core side, which share one rpmsg
+> +                 channel.
 
-With this case:
-aplay -Dhw:0,0 -d 5 -r 48000 -f S24_LE -c 2 audio48k24b2c.wav
-the required bitclk is 48000 * 24 * 2 = 2304000, bitclk got from
-wm8960_configure_sysclk is 3072000, but if go to wm8960_configure_pll.
-it can get correct bitclk 2304000.
+We don't do indexes in DT. What's this numbering tied to?
 
-So bitclk relax condition should be removed in wm8960_configure_sysclk,
-then wm8960_configure_pll can be called, and there is also bitclk relax
-function in wm8960_configure_pll.
+> +
+> +  fsl,version:
 
-Fixes: 3c01b9ee2ab9 ("ASoC: codec: wm8960: Relax bit clock computation")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
-changes in resend v2
-- Add acked-by Charles
+version of what?
 
-changes in v2:
-- Find the real reason for the case, just patially remove bitclk relax
+This seems odd at best.
 
- sound/soc/codecs/wm8960.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2]
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index df351519a3a6..847ca16b9841 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -608,10 +608,6 @@ static const int bclk_divs[] = {
-  *		- lrclk      = sysclk / dac_divs
-  *		- 10 * bclk  = sysclk / bclk_divs
-  *
-- *	If we cannot find an exact match for (sysclk, lrclk, bclk)
-- *	triplet, we relax the bclk such that bclk is chosen as the
-- *	closest available frequency greater than expected bclk.
-- *
-  * @wm8960: codec private data
-  * @mclk: MCLK used to derive sysclk
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -629,7 +625,7 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
- {
- 	int sysclk, bclk, lrclk;
- 	int i, j, k;
--	int diff, closest = mclk;
-+	int diff;
- 
- 	/* marker for no match */
- 	*bclk_idx = -1;
-@@ -653,12 +649,6 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
- 					*bclk_idx = k;
- 					break;
- 				}
--				if (diff > 0 && closest > diff) {
--					*sysclk_idx = i;
--					*dac_idx = j;
--					*bclk_idx = k;
--					closest = diff;
--				}
- 			}
- 			if (k != ARRAY_SIZE(bclk_divs))
- 				break;
--- 
-2.27.0
+You're going to update this with every new firmware version?
 
+> +    default: 2
+> +    description: The version of M core image, which is
+> +                 to make driver compatible with different image.
+> +
+> +  fsl,buffer-size:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: pre allocate dma buffer size
+
+How can you have DMA, this doesn't touch h/w?
+
+> +
+> +  fsl,enable-lpa:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: enable low power audio path.
+> +
+> +  fsl,rpmsg-out:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+> +      This is a boolean property. If present, the transmitting function
+> +      will be enabled.
+> +
+> +  fsl,rpmsg-in:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+> +      This is a boolean property. If present, the receiving function
+> +      will be enabled.
+> +
+> +  fsl,codec-type:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2]
+> +    default: 0
+> +    description: Sometimes the codec is registered by
+> +                 driver not by the device tree, this items
+> +                 can be used to distinguish codecs.
+
+How does one decide what value to use?
+
+> +
+> +  audio-codec:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: The phandle of the audio codec
+
+The codec is controlled from the Linux side?
+
+> +
+> +  memory-region:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: phandle to the reserved memory nodes
+> +
+> +required:
+> +  - compatible
+> +  - fsl,audioindex
+> +  - fsl,version
+> +  - fsl,buffer-size
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    rpmsg_audio: rpmsg_audio {
+> +        compatible = "fsl,imx8mn-rpmsg";
+> +        fsl,audioindex = <0> ;
+> +        fsl,version = <2>;
+> +        fsl,buffer-size = <0x6000000>;
+> +        fsl,enable-lpa;
+
+How does this work? Don't you need somewhere to put the 'rpmsg' data?
+
+> +    };
+> -- 
+> 2.27.0
+> 
