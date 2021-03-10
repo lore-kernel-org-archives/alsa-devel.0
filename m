@@ -2,79 +2,82 @@ Return-Path: <SRS0=4IlU=II=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52656C41620
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 13:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01235C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 13:34:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 186B464FDA
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 13:26:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 186B464FDA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 14ACB64FEE
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 13:34:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 14ACB64FEE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=mediatek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 284AA176B;
-	Wed, 10 Mar 2021 14:25:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 284AA176B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7090A1764;
+	Wed, 10 Mar 2021 14:33:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7090A1764
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615382777;
-	bh=3YEROOanQFhwri64Wf39ydWpxMlU6FxhJmhx5ERcPxg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XLnVv9aXJKyKFcaSTC1NPSpKpvl1pvR8Xgfeng/UpUsPA26KqwR5lHePAQ62OPzt3
-	 kbFiLLdLqSwjjWGJfoEESrHbzk5CZSeJRs9OQ4u+1xr8LAte519jqQ68E1hEEKmNMt
-	 sgUjiggkx4GhS+hgy8N6/sWeL2MUwjpzUdbzBbIM=
+	s=default; t=1615383268;
+	bh=fj5MmGfIxinbWNvrGLqZcoG8QaWhAecLiSTecn2Mof0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mC+NBnYAENB00M17+/GIBycEuK+upRzm4goupkLBInhkcsFFSwJMfmsfQWmt7D+Pg
+	 +hON58u1GU9sfjXpMmA/XVgpRVJ8wkf+Cy7UVVe8o3x28hl+XvgAtzz/E94iaPwI6r
+	 5Pv4FKlBNJQJN9xkVs/yk90+qeYwBIzTi97Em8wA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF2F7F801ED;
-	Wed, 10 Mar 2021 14:25:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75BF9F801ED;
+	Wed, 10 Mar 2021 14:33:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A91EF8020D; Wed, 10 Mar 2021 14:25:25 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE525F8016C
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 14:25:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE525F8016C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PS8PlXwq"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7886F64FF3;
- Wed, 10 Mar 2021 13:25:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615382716;
- bh=3YEROOanQFhwri64Wf39ydWpxMlU6FxhJmhx5ERcPxg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=PS8PlXwqn9tn4bLkN+PaIjd7KVPLlOCG0IC4NjGgEHDo0XXhnh6p26sOc4HfkTU4W
- hGemk5Ql/keQ/hMy251dQgRtHacmUvsWY08AYDmWq4MKcjEyllNTMQd86tpk+XsRqm
- NBArS2O79NvDKFbJVS9hVVhFhR4Oxe1E3TRXffunAcUyXJZNezV+nZj72/cfZB9p1c
- Am0MLIVH3iXRpwQPt9S0R+aB5UiWMOFf4ihAf2SY2Yr0YbEtJpj3LpwvFTj6wju0tG
- RgQduI//kqFx9ioCRTc0pZWg+v9z2icltjyaFSGVX9ZqWRCYQlYPFeH6yDCauB8CSF
- x0Yqo3QRSRWyQ==
-Date: Wed, 10 Mar 2021 13:24:04 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [RESEND PATCH v2] ASoC: wm8960: Remove bitclk relax condition in
- wm8960_configure_sysclk
-Message-ID: <20210310132404.GB4746@sirena.org.uk>
-References: <1615341642-3797-1-git-send-email-shengjiu.wang@nxp.com>
+ id 5BFC5F8020D; Wed, 10 Mar 2021 14:33:34 +0100 (CET)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa1.perex.cz (Postfix) with ESMTP id CD7B4F8012F
+ for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 14:33:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD7B4F8012F
+X-UUID: 35be12979a3b4820865019ae070c219e-20210310
+X-UUID: 35be12979a3b4820865019ae070c219e-20210310
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+ (envelope-from <argus.lin@mediatek.com>)
+ (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2
+ ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 851875394; Wed, 10 Mar 2021 21:33:11 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 10 Mar 2021 21:33:09 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Wed, 10 Mar 2021 21:33:10 +0800
+From: Argus Lin <argus.lin@mediatek.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH V2 0/2] Add mediatek MT6359 ASoC accdet jack driver
+Date: Wed, 10 Mar 2021 21:33:04 +0800
+Message-ID: <1615383186-18500-1-git-send-email-argus.lin@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="l76fUT7nc3MelDdI"
-Content-Disposition: inline
-In-Reply-To: <1615341642-3797-1-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: no maintenance:
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
- lgirdwood@gmail.com, patches@opensource.cirrus.com, gustavoars@kernel.org,
- tiwai@suse.com, daniel.baluta@nxp.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-MTK: N
+Cc: Jack Yu <jack.yu@realtek.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Lars-Peter Clausen <lars@metafoo.de>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Argus Lin <argus.lin@mediatek.com>, Arnd Bergmann <arnd@arndb.de>,
+ "Shane.Chien" <shane.chien@mediatek.com>, linux-mediatek@lists.infradead.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, linux-kernel@vger.kernel.org,
+ Chipeng Chang <chipeng.chang@mediatek.com>, Tzung-Bi Shih <tzungbi@google.com>,
+ devicetree@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Dan Murphy <dmurphy@ti.com>, Shuming Fan <shumingf@realtek.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org, wsd_upstream@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,31 +93,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+All of 3-pole and 4-pole jack are supported.
 
---l76fUT7nc3MelDdI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+change since v2:
+  - fixs missing blank at Kconfig.
+  - fixs comment format and spelling mistake.
+  - changes private structure mt6359_accdet to mt6359-accdet.h and uses this
+    data as function parameter.
+  - removes compatible string declaration.
+  - uses regmap_read_poll_timeout as polling timer.
+  - simplify jack detection and key detection report function.
+  - adds mt6359_accdet_enable_jack_detect for sound card jack initialization.
 
-On Wed, Mar 10, 2021 at 10:00:42AM +0800, Shengjiu Wang wrote:
+change since v1:
+  - adds mt6359 accdet binding document
+  - adds mt6359 accdet driver
 
-> changes in resend v2
-> - Add acked-by Charles
+*** BLURB HERE ***
 
-Please don't resend for acks, it just makes for more noise.
+Argus Lin (2):
+  dt-bindings: mediatek: mt6359: add ASoC mt6359 ASoC accdet jack
+    document
+  ASoC: mediatek: mt6359: add MT6359 accdet jack driver
 
---l76fUT7nc3MelDdI
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../bindings/sound/mt6359-accdet.yaml         |  164 ++
+ sound/soc/codecs/Kconfig                      |    8 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/mt6359-accdet.c              | 1080 ++++++++++
+ sound/soc/codecs/mt6359-accdet.h              |  128 ++
+ sound/soc/codecs/mt6359.h                     | 1864 ++++++++++++++++-
+ 6 files changed, 3139 insertions(+), 107 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+ create mode 100644 sound/soc/codecs/mt6359-accdet.c
+ create mode 100644 sound/soc/codecs/mt6359-accdet.h
 
------BEGIN PGP SIGNATURE-----
+--
+2.18.0
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBIyHMACgkQJNaLcl1U
-h9Bw0Qf/Yh9VvCk6GMlhz0L0JzyvLqDcnIIJ38Zv/dUcvEMq416SGcrsZzgT+gHK
-uKdC2H6qJqAqP9Ko86isNFhesN0Ep5th+ymYthtsDtf3rme/b3purNQepuR8E27r
-Y7AkyOj+GLo69WTwlYmvVZzEzJYMIzcuL0DOh0VURQsSp0q2wOPrFk7dOcAxYx8X
-2EmSKwKR21pwnkWo/BQUmVmY/rNirii/m6n/1Ytj6flqnQz6HOHkksrMEYcPv4/V
-ERQ4f73bpkyo+9ofh/14DYQ+mVcd4sz4gov8kE9lKMkG5jeFLwqurBx+nVUrBT1r
-peHrYo1wWVkIftvHScO2FV/JdBt/Og==
-=XEXn
------END PGP SIGNATURE-----
-
---l76fUT7nc3MelDdI--
