@@ -2,87 +2,89 @@ Return-Path: <SRS0=4IlU=II=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6AFBC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 18:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BFE18C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 18:18:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55C1064FB5
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 18:15:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55C1064FB5
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
+	by mail.kernel.org (Postfix) with ESMTPS id 3676A64FB3
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 18:18:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3676A64FB3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E08521709;
-	Wed, 10 Mar 2021 19:14:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E08521709
+	by alsa0.perex.cz (Postfix) with ESMTPS id 807EB1705;
+	Wed, 10 Mar 2021 19:17:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 807EB1705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615400142;
-	bh=6LfS2j2Hmu/WYZZaDuQamAENhBJealZxjGpnopl3B/I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615400303;
+	bh=seX8IHJ8PXMUIRxGxRB5hNS0RqETp5JirlEF/xT6KjY=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kYXQsOqCp+Fndg7622mL6RiwNBXx9xYjo5+hzmA/CBT8sd7chIYEEx6oM4++/XPls
-	 Pnb/MERQ3is4HJ4omNtaQ3IoW60ibV4cup56btwBiyuSt7Q3/n1V2/mjQJejvu5gz3
-	 jEZ7H0X2U+rwkGGpYzgQtEKyn2w3naqa7cuFcE6I=
+	b=YUcCJtHWHCOOFsCgfKuAIijflbAOPqzQSgdvS3PK1KqvPXhM0ugEu2aFz3OgQ0stL
+	 HlxWo69xyQcwzQ0SFx0rGlfqFGgMugWF6L9sMqzZjZIYEiKmY378QNLbQuC/ZEVFgg
+	 iPIN4L5Z7N2Ve/0QpQFrgmIdySYO6pbCn2uF70r4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67BEAF8016C;
-	Wed, 10 Mar 2021 19:14:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD481F8016C;
+	Wed, 10 Mar 2021 19:17:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA2EAF801D8; Wed, 10 Mar 2021 19:14:50 +0100 (CET)
-Received: from ssl.serverraum.org (ssl.serverraum.org
- [IPv6:2a01:4f8:151:8464::1:2])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id AD5C7F801D8; Wed, 10 Mar 2021 19:17:31 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 940DDF8010D
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 19:14:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 940DDF8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC224F8010D
+ for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 19:17:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC224F8010D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=walle.cc header.i=@walle.cc
- header.b="tAwIfuHQ"
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ssl.serverraum.org (Postfix) with ESMTPSA id 9317522173;
- Wed, 10 Mar 2021 19:14:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
- s=mail2016061301; t=1615400078;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=raaT8hRIbeIkMsfmgVYBm7wNKoVMABIhHxKLm28T03s=;
- b=tAwIfuHQ1UIEuWmKANx46QXvrhsMsjpXyVkGLtwNTP9g8WVpCMp5mWUEl8E4vRPOUuGyxE
- TmKC4VGVy2+RcPD116dB0ZQRCT050viuhioJA1P7mJ0uLYGwYp+WAsBEFBtEguybdf2GJT
- wnA4WYCP+dBI/SQFOBLog3Oi+jE1IN4=
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="hcCOJA3u"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 066D564DC4;
+ Wed, 10 Mar 2021 18:17:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1615400244;
+ bh=seX8IHJ8PXMUIRxGxRB5hNS0RqETp5JirlEF/xT6KjY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=hcCOJA3udo3Mgm3NqixPmgYiFXxPg0m3SKW6TtBCx+zFNLB5iBWqXECCQvI4FsBNW
+ nMtqzstKw2DDsGCBkVMDtOhDLFoon2gpixwHm+UuanSzFlecBEHt9xS+kH/bM1Y76f
+ 2cJMcZuOW0OmqmZdKlgj2odBWupbStSQrpdBSVcVJntM17Hh+Ixp9lgGpV44yJCfjJ
+ cGgj21wTcBYc05AbrNrbMGs+097PD+4xcNPtOkGPPl7omM+18OolZO/UMiaH9HWae0
+ CRvtU4j2a6jObwLc42QU/MyOMfwthRp5uu2wPVgAJ+W3noJSZQsLvngNaWGDiAzceO
+ Cz1rAxazj1ttA==
+Date: Wed, 10 Mar 2021 18:16:11 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+Message-ID: <20210310181611.GE28564@sirena.org.uk>
+References: <20210303115526.419458-1-jonathanh@nvidia.com>
+ <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
+ <20210310133534.GD4746@sirena.org.uk>
+ <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
+ <20210310161814.GA28564@sirena.org.uk>
+ <s5hzgzbvube.wl-tiwai@suse.de>
+ <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
+ <20210310165235.GD28564@sirena.org.uk>
+ <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 10 Mar 2021 19:14:37 +0100
-From: Michael Walle <michael@walle.cc>
-To: Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-In-Reply-To: <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
-References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
- <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
- <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
- <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <6e6b312eb91b8b86ceaa8a52311ea437@walle.cc>
-X-Sender: michael@walle.cc
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, robh@kernel.org,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="TD8GDToEDw0WLGOL"
+Content-Disposition: inline
+In-Reply-To: <cf03ce61-1501-e0e7-6887-d921c7d1af62@linux.intel.com>
+X-Cookie: Yow!  Are we laid back yet?
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,82 +100,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Sameer, Hi Mark,
 
-Am 2021-03-10 15:50, schrieb Sameer Pujar:
-> On 3/10/2021 4:00 AM, Michael Walle wrote:
->> Am 2021-03-09 17:27, schrieb Sameer Pujar:
->>> On 3/9/2021 8:11 PM, Michael Walle wrote:
->>>>> If "clocks = <&xxx>" is specified from the CPU or Codec component
->>>>> device node, the clock is not getting enabled. Thus audio playback
->>>>> or capture fails.
->>>>> 
->>>>> Fix this by populating "simple_dai->clk" field when clocks property
->>>>> is specified from device node as well. Also tidy up by 
->>>>> re-organising
->>>>> conditional statements of parsing logic.
->>>>> 
->>>>> Fixes: bb6fc620c2ed ("ASoC: simple-card-utils: add
->>>>> asoc_simple_card_parse_clk()")
->>>>> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->>>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->>>> 
->>>> This actually breaks sound on my board
->>>> (arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts).
->>>> The codec on this board (wm8904) has a fixed clock input (only
->>>> distinct
->>>> frequencies are supported) and uses the FLL of the codec to generate
->>>> the
->>>> desired sample rate.
->>>> 
->>>> It seems that after this patch the clock rate of the codecs clock
->>>> (rather
->>>> than the FLL) is tried to be changed. Which fails, because it 
->>>> doesn't
->>>> support arbitrary frequencies.
->>> 
->>> Yes, after the given change the clock will be updated if "*mclk-fs"
->>> property is specified.
->>> 
->>> DT you mentioned has property "simple-audio-card,mclk-fs = <256>",
->>> which means you need a clock that is a function of sample rate. But 
->>> as
->>> per above you want a fixed clock for MCLK. I think if you drop this
->>> property, the clock updates won't happen. Earlier for your case, this
->>> property was not used at all because the clock handle was not
->>> populated.
->> 
->> You mean to drop the mclk-fs property? I can't do that because I
->> actually need a frequency of 256 * sample rate. But that doesn't
->> necessarily need to be the MCLK, because the codec itself has a
->> FLL/PLL which can be used to generate any frequency for a given
->> MCLK. So that is a valid scenario. See also commit 13409d27cb39
->> ("ASoC: wm8904: configure sysclk/FLL automatically").
->> 
-> 
-> If I read this correctly below is the configuration you need,
-> SoC -> MCLK(fixed rate) -> PLL(wm8904) -> PLL output (256 * fs) -> 
-> sysclk
-> 
-> From the doc simple-card.txt, "simple-audio-card,mclk-fs" is a scaling
-> factor for MCLK and hence I am not sure if it is correct to have
-> "*mclk-fs" property when MCLK is fixed. In simple cases, codec sysclk
-> direclty depends on MCLK and set_sysclk() callback helps. Your case
-> requires PLL configuration and set_pll() may be a better alternative.
-> However simple-card does not offer this yet. But even if this is
-> added, there should be a way to suggest PLL output requirement as a
-> function of sample rate.
+--TD8GDToEDw0WLGOL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But its also a scaling factor for the sysclk, then maybe the property
-has a wrong name. And you might be right with your suggestion, but
-as I said, this breaks sound on my board and whats even worse, it
-breaks it for older kernel too, because of the Fixes tag.
+On Wed, Mar 10, 2021 at 11:50:13AM -0600, Pierre-Louis Bossart wrote:
+> On 3/10/21 10:52 AM, Mark Brown wrote:
 
-Btw I'm pretty sure, the MCLK was enabled and disabled depending on
-whether there was an audio stream, the last time I've measured the
-clock.
+> > Build time dependencies aren't going to help anything, arm64 (and to my
+> > understanding some future x86 systems, LynxPoint IIRC) supports both DT
+> > and ACPI and so you have kernels built with support for both.
 
-Mark, can this patch please be reverted (with a Fixes tag) until
-a proper fix is found which satisfies both needs?
+> well, that's what I suggested initially:
+>        if (is_of_node(card->dev->fwnode))
 
--michael
+> I used the of_node test as a proxy for 'no DMI' since I am not aware of any
+> means to detect if DMI is enabled at run-time.
+
+Can we not fix the DMI code so it lets us check dmi_available either
+directly or with an accessor?  I don't understand why all the proposals
+are dancing around local bodges here.
+
+--TD8GDToEDw0WLGOL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBJDOoACgkQJNaLcl1U
+h9D+lQf/cbnPJjsJ3ygPrp1tnP/Rp54Yib+fQFY62oCWapnvaBTHjolxWqtrddTO
+wswX/BLf4uVVueVQ7AUTuaARx+aan0MAK1/xWU+lyeHcGk0fGy+mV9LFnhGUEEv5
+Rke4xQJOwGazHSMb0IBGlfILV9cIJ+G7VTh5pLWvGMrFPT+yw1T35LacGOFwQFvX
+gCCwqVqJ70jKVcKqD6BFb/YxsceAAmcp5UgzIs2+fa9UUVF5TxDxXO5EDKAh37Ru
+0bedE12aOkCKMoS/UVosteXqppBn5If4QhZGZKojq38ueWyBxZ2Mg3/ZKhHPydgo
+W+aXdVobyPhQPKWXhA9GZoFSVwoVAA==
+=NWjC
+-----END PGP SIGNATURE-----
+
+--TD8GDToEDw0WLGOL--
