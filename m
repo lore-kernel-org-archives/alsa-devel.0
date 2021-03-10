@@ -2,69 +2,80 @@ Return-Path: <SRS0=4IlU=II=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54D81C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 16:38:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0DD8EC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 16:42:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C5C0564FCA
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 16:38:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5C0564FCA
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 822D864FC7
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Mar 2021 16:42:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 822D864FC7
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC3CB1761;
-	Wed, 10 Mar 2021 17:37:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC3CB1761
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C9921761;
+	Wed, 10 Mar 2021 17:41:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C9921761
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615394305;
-	bh=uzRtggBXgXc//KQUYRUMuQ+6CgjbawvbtOQ5JJEsZoY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615394542;
+	bh=dHvMiU3ptuDAImeUIkUtOagfaCABavIqgtzQd1u/+vo=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O8g/HxA4h6EMOqou/AjQ8wAmdwp1+M8xApZKu3Qccbffrb305WTNqHrvN1+NVQpu2
-	 uftzJnFWzBoQpNSjit5ameuwcHgds7pU6GdPM2xzIuDZWzOWZAiPopRVY8MSbpNifM
-	 6TncwB+4fHvBgk3jkQKJZGeZc29GLQFm5D/QVQ9I=
+	b=RJM76zxWUaJGPd0jpQJhPjPTcmPbcA24/ZodiVvyB5qRyx8Cik8xvyPw8mL4xLcvE
+	 /ytT5xRncsCCAEPxLMTeYybT8PapEKlY/ypCT2aLUSODiQT8yy6DiS3yRAofYSBRSr
+	 eCU3SMuZh6q60eKjGJy3zOzOXdJDiopNNWDPj9N0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A58ACF8016C;
-	Wed, 10 Mar 2021 17:37:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE06EF8016C;
+	Wed, 10 Mar 2021 17:41:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51C91F801D8; Wed, 10 Mar 2021 17:37:32 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 18ED4F801D8; Wed, 10 Mar 2021 17:41:30 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3213F8014E
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 17:37:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3213F8014E
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 01531ABD7;
- Wed, 10 Mar 2021 16:37:26 +0000 (UTC)
-Date: Wed, 10 Mar 2021 17:37:25 +0100
-Message-ID: <s5hzgzbvube.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCA32F8012F
+ for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 17:41:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCA32F8012F
+IronPort-SDR: i+zVH2HLnfjIJYDaeqjG6fz9qi9qjmXsQkaW4x9jVFgRj+aVsSjj0bpyTucupIJiYoWqIf+WJ3
+ o4ySeEab+0Wg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="168425115"
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="168425115"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Mar 2021 08:41:23 -0800
+IronPort-SDR: YYDjhh1OA5FA/uN50/iTRjQ0hrwf4lSd5EzYDJrUKp2IotZ73mJSacsS+5eHu3txj+eR013M9t
+ BFj6NdzrLPcg==
+X-IronPort-AV: E=Sophos;i="5.81,237,1610438400"; d="scan'208";a="403742860"
+Received: from huiyingw-mobl.amr.corp.intel.com (HELO [10.212.214.84])
+ ([10.212.214.84])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Mar 2021 08:41:21 -0800
 Subject: Re: [PATCH V2] ASoC: soc-core: Prevent warning if no DMI table is
  present
-In-Reply-To: <20210310161814.GA28564@sirena.org.uk>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
 References: <20210303115526.419458-1-jonathanh@nvidia.com>
  <91480f92-a3f5-e71f-acdc-ea74488ab0a1@linux.intel.com>
  <20210310133534.GD4746@sirena.org.uk>
  <6a2352e6-f2b7-def1-de58-52fbeb7846e5@linux.intel.com>
- <20210310161814.GA28564@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ <20210310161814.GA28564@sirena.org.uk> <s5hzgzbvube.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9b073d01-f2fe-a99b-e53c-4a0b3f95ca05@linux.intel.com>
+Date: Wed, 10 Mar 2021 10:41:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <s5hzgzbvube.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
@@ -85,23 +96,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 10 Mar 2021 17:18:14 +0100,
-Mark Brown wrote:
-> 
-> On Wed, Mar 10, 2021 at 09:44:07AM -0600, Pierre-Louis Bossart wrote:
-> > On 3/10/21 7:35 AM, Mark Brown wrote:
-> 
-> > > Just change it to a system level check for ACPI, checking for OF would
-> > > leave problems for board files or any other alternative firmware
-> > > interfaces.
-> 
-> > did you mean if (!IS_ENABLED(CONFIG_ACPI)) ?
-> 
-> Is there a runtime check?
-
-Well, basically both DMI and ACPI are completely different things, so
-I don't think it's right to check the availability of ACPI as a signal
-of the availability of DMI.
 
 
-Takashi
+On 3/10/21 10:37 AM, Takashi Iwai wrote:
+> On Wed, 10 Mar 2021 17:18:14 +0100,
+> Mark Brown wrote:
+>>
+>> On Wed, Mar 10, 2021 at 09:44:07AM -0600, Pierre-Louis Bossart wrote:
+>>> On 3/10/21 7:35 AM, Mark Brown wrote:
+>>
+>>>> Just change it to a system level check for ACPI, checking for OF would
+>>>> leave problems for board files or any other alternative firmware
+>>>> interfaces.
+>>
+>>> did you mean if (!IS_ENABLED(CONFIG_ACPI)) ?
+>>
+>> Is there a runtime check?
+> 
+> Well, basically both DMI and ACPI are completely different things, so
+> I don't think it's right to check the availability of ACPI as a signal
+> of the availability of DMI.
+
+would this work?
+
+if (!IS_ENABLED(CONFIG_DMI))
+     return 0;
