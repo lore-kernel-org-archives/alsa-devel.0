@@ -7,76 +7,76 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C4DAC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:23:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53C35C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:23:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 80AB964FC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:23:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80AB964FC9
+	by mail.kernel.org (Postfix) with ESMTPS id 4A0A764FBB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:23:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4A0A764FBB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2293216F7;
-	Thu, 11 Mar 2021 06:22:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2293216F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC0621704;
+	Thu, 11 Mar 2021 06:23:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC0621704
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615440180;
-	bh=fXzADS1kq2dZtVPzavTTOVod7u+a/ibR0BQErc0xOsk=;
+	s=default; t=1615440232;
+	bh=nKJpAWbmNGAWS0PnclTCWRar0su+QPYXRETlnt3lbx8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EIA5piyjzuWjcMB6xvUqFBOitpAs9TIZX8XHb9IYYtu7R3fKTOkwOyUdoRIfIEXhz
-	 SPxSrLnmbpYvr6nQV+dj9WYgr+UwqFYD08HKszo4RrL9sAM9tfQI1/QQBCR9iVYTCm
-	 Zkd/jvhw3eZkxIvg3zWfD9GRh10SBrkvGNzX7lZE=
+	b=r2iODI/XaPYg6ODuxGTJualAM1Zhza6nVyDzbgeZxI0b3GMbk0kN5UmwBxhD0nBZF
+	 MliWIjnKAOkHe6544sWZX+B29Ab4z2dKCFMw78DNxZx0+iF3KTbhK64EULPt8ZWYt1
+	 G+23OPyViV5R3lEyKFm6xjpQsjqIF5xoOE2ZG8Xg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56A06F802E7;
-	Thu, 11 Mar 2021 06:22:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6300F80424;
+	Thu, 11 Mar 2021 06:22:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1DB14F8019B; Thu, 11 Mar 2021 06:22:05 +0100 (CET)
+ id DBB76F802E7; Thu, 11 Mar 2021 06:22:05 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 788D8F8019B
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:21:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 788D8F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6E9EF80227
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:21:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6E9EF80227
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="EcMimhCj"; 
+ header.b="2dG7dRSE"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="qDNZ9MAa"
+ header.i=@messagingengine.com header.b="vCQ7AmUJ"
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id C2D1E2FA6;
- Thu, 11 Mar 2021 00:21:55 -0500 (EST)
+ by mailout.west.internal (Postfix) with ESMTP id 671412F9D;
+ Thu, 11 Mar 2021 00:21:54 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:21:56 -0500
+ by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:21:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=woD/s1xL3qGTy
- n5onCrVICODUISrJwFGDBfJAjXoCcg=; b=EcMimhCj5GzcFF+YsySRu70XPzjad
- 4NtsMks9uHNMnVYFDPOOiQOlRg5m6uKZOp457T+GYDS9IqQDo5WIf8YUz3qD6Fhl
- a/1RtKsl0OXHFJjRKUYXdz6X4Yp/+nSlvtF0piBnMq+wYm8s/XdUXdaJUsN37f1H
- +lv81a3twzlGbwoBEp/qxvvrTRqbkcOGwMFYNIktPiDkw2TrVI6dWdAxpZlQIPuH
- A+lM5szcHL4cEBr+oKIkIiRa98Jt6aqYqSAwRKBoxoHoeTl9G4OQH4pbZCb4v/pg
- kW+tKIH3raj8DY7Ipn9Ek+BEdInBzsfr7wPreJXh3M2OXnUJdvybFEGVQ==
+ :mime-version:content-transfer-encoding; s=fm1; bh=r9NmmVXj2X/lM
+ wdRk/iv7M6mcJV1mKAwq4IuCDRDv5U=; b=2dG7dRSEnQrZ4IbLKfW+xogCGNc9L
+ ZEc3zC4pEbXbSt+H0rwd/7hh2S6jOO3u56NTpE1nrM239eIRa9u/KesG5oSkXK9D
+ Je2mAqrLBOHsIos9IQ0cZs45eAaPerEQcV4igseFS/msKS0sjXDfR9ssjFS6v82P
+ urg/f37CdoiLNjOzLZDS6R0wAcUpR7xqq0tG4+2s/++xeSjDWppCzqwHnYA9h0HD
+ C38dBnxqRWOpZzr/nY0sF1yJEcYePYCMdH1t/Q9bgbl1b2H0r8sTd9xZkw4/qSnE
+ LJpN9cbjZamOmBWBCDEp+qhMnA5yKD5w4yuURFzgRT/1ncOGpOiYTsSJw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=woD/s1xL3qGTyn5onCrVICODUISrJwFGDBfJAjXoCcg=; b=qDNZ9MAa
- wdnJIcIdkHTNZNcmN6NMI8cl7DIilBHS6Tn69EjJ+MgyASH7V8mcw+kvZDP6xDIO
- JEwwHCqEv3dySEmiagWixtnJlbgOQFhgUphzInL3O549HlpyPhqNwugU2iXbMT1V
- zpTw9Sa+ir5F9vDHHSE2ANY2u1ieGB37JCKr/+s5wsHzfqHvOl8YkU4mxsoNVS50
- g4HtgUH7YcMLns2INqDXkZV7nl0dNii8X1c0J0BfnCdRpxrmCjmdknMeuypX+cO0
- 5MYOKBpsjzY47WmDcB50FbwRVZKE+iHnrg2/NuGSm9VZlLh1YWF85G/Fwlrj7Jku
- ryDyrMTtUIGFBQ==
-X-ME-Sender: <xms:86hJYI7iyaXxQDLnNlzWMUTdlOiVlgPxAj85qrZGe2OlqBkwQLXDww>
- <xme:86hJYFVY_0U-rDn71wTpBR4yXjCX1gMIIGHkppSchs3j-ZiYP_vx6RKPbKn4q0tzl
- CvtP_fyMw4TwpLGF80>
+ fm2; bh=r9NmmVXj2X/lMwdRk/iv7M6mcJV1mKAwq4IuCDRDv5U=; b=vCQ7AmUJ
+ cD076+gCySBw09M34TLx08ZghUXba4xQBir1YK+1vpJ0/2++uEJFcGpkTD3moh+J
+ Uhe5X5R3BFZ9v9eI0+t/RM2+yP3rOM/TJPzmkKrNloRbOjEcs91DkgjGcepKOckI
+ 1vsis7uUlV2YcycadPXeNtvwyb26n0pKk8BRb4CzfZLMRYm/yZYuHcuDY33HQ+AQ
+ j3J5FdWPAu08JZ+2yLxYmpwfSVnm5clRgykhbVi6kPMJus5R9aoNkkm5hM1js0xH
+ wN9Ww6gE0jtm//lk8Lm+qOXVTVPXqBlfo5fxSy8X5jZs1K/023TRHaHGHut1T9YE
+ g3HPJNE2rMEcDw==
+X-ME-Sender: <xms:8ahJYNihyPbA2hirBMRjIjL6UMjgIV_SjNIagcA4Y9_3VYIMhtx59A>
+ <xme:8ahJYCAV6x9G3WiEWlqzfGM7U1y44bMUdC4Wn3HsKiOlZ6EeA3jMLx4Jp9NFj2Z9s
+ z6R-lw0bNA-jsx_jHQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduledgkeduucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
@@ -85,21 +85,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduledgkeduucetufdoteggod
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
  fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:86hJYK8NXONtumB_FArxdL7T2fvBkwDSNX_HPUzysfcEaysrBHTb6A>
- <xmx:86hJYBn0_fwOdXXvPQmAHXnveN0dsz_WKEmBn9UwGKuS1xyj2BjXtg>
- <xmx:86hJYIX3jTkstEeYodkP0hs1yXm75EQcnw1UtrtmvZNtMIRR8XMncQ>
- <xmx:86hJYE9mi4jdrsRSVuwb6iPt7JAdHkuozDnyIN8hfpy1A7e__DBtvQ>
+X-ME-Proxy: <xmx:8ahJYNEW8_zu6quXcIXY-kuhrWX3wm8z9ECGErTlIRLlb8jVL86STQ>
+ <xmx:8ahJYCTpj6X3kOCGDBK_IqPVJ_fP-p-BHVeNIOHv2rOkq407RWCfXg>
+ <xmx:8ahJYKxgMCuy7fdG7KerDPYUuDGlvcgJgf2SrNf9tEXOeLgkpwTRuw>
+ <xmx:8qhJYAbdA9pFFGuAmHpjNoMikmb7fxsFoMelBSMWtljK0hUsvTNrYA>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA id 5988F24005D;
- Thu, 11 Mar 2021 00:21:54 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 00C8B240054;
+ Thu, 11 Mar 2021 00:21:52 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [alsa-utils][PATCH 03/14] axfer: minor code arrangement in a point of
- opened file descriptor
-Date: Thu, 11 Mar 2021 14:21:34 +0900
-Message-Id: <20210311052146.404003-4-o-takashi@sakamocchi.jp>
+Subject: [alsa-utils][PATCH 02/14] axfer: minor code arrangement in a point of
+ stdio detection
+Date: Thu, 11 Mar 2021 14:21:33 +0900
+Message-Id: <20210311052146.404003-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
 References: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
@@ -121,68 +121,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit arranges assignment to fd member after checking file
-descriptor.
+Current implementation sets stdio member in a condition branch, however
+it's convenient to set it always regardless of any condition.
+
+This commit arranges assignment to the member.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/container.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ axfer/container.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/axfer/container.c b/axfer/container.c
-index fb35eba..b4646b9 100644
+index 8733ff7..fb35eba 100644
 --- a/axfer/container.c
 +++ b/axfer/container.c
-@@ -151,6 +151,7 @@ int container_parser_init(struct container_context *cntr,
- 		[CONTAINER_FORMAT_AU] = &container_parser_au,
- 		[CONTAINER_FORMAT_VOC] = &container_parser_voc,
- 	};
-+	int fd;
- 	const struct container_parser *parser;
- 	unsigned int size;
- 	int i;
-@@ -168,12 +169,13 @@ int container_parser_init(struct container_context *cntr,
- 
+@@ -169,6 +169,14 @@ int container_parser_init(struct container_context *cntr,
  	// Open a target descriptor.
  	if (!strcmp(path, "-")) {
--		cntr->fd = fileno(stdin);
-+		fd = fileno(stdin);
- 	} else {
+ 		cntr->fd = fileno(stdin);
++	} else {
++		cntr->fd = open(path, O_RDONLY);
++		if (cntr->fd < 0)
++			return -errno;
++	}
++
++	cntr->stdio = (cntr->fd == fileno(stdin));
++	if (cntr->stdio) {
+ 		if (isatty(cntr->fd)) {
+ 			fprintf(stderr,
+ 				"A terminal is referred for standard input. "
+@@ -176,11 +184,6 @@ int container_parser_init(struct container_context *cntr,
+ 				"should be referred instead.\n");
+ 			return -EIO;
+ 		}
+-		cntr->stdio = true;
+-	} else {
 -		cntr->fd = open(path, O_RDONLY);
 -		if (cntr->fd < 0)
-+		fd = open(path, O_RDONLY);
-+		if (fd < 0)
- 			return -errno;
+-			return -errno;
  	}
-+	cntr->fd = fd;
  
- 	cntr->stdio = (cntr->fd == fileno(stdin));
- 	if (cntr->stdio) {
-@@ -239,6 +241,7 @@ int container_builder_init(struct container_context *cntr,
- 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
- 		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
- 	};
-+	int fd;
- 	const struct container_builder *builder;
- 	int err;
- 
-@@ -256,12 +259,13 @@ int container_builder_init(struct container_context *cntr,
- 	if (path == NULL || *path == '\0')
+ 	err = set_nonblock_flag(cntr->fd);
+@@ -254,6 +257,14 @@ int container_builder_init(struct container_context *cntr,
  		return -EINVAL;
  	if (!strcmp(path, "-")) {
--		cntr->fd = fileno(stdout);
-+		fd = fileno(stdout);
- 	} else {
+ 		cntr->fd = fileno(stdout);
++	} else {
++		cntr->fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
++		if (cntr->fd < 0)
++			return -errno;
++	}
++
++	cntr->stdio = (cntr->fd == fileno(stdout));
++	if (cntr->stdio) {
+ 		if (isatty(cntr->fd)) {
+ 			fprintf(stderr,
+ 				"A terminal is referred for standard output. "
+@@ -261,11 +272,6 @@ int container_builder_init(struct container_context *cntr,
+ 				"should be referred instead.\n");
+ 			return -EIO;
+ 		}
+-		cntr->stdio = true;
+-	} else {
 -		cntr->fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
 -		if (cntr->fd < 0)
-+		fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+		if (fd < 0)
- 			return -errno;
+-			return -errno;
  	}
-+	cntr->fd = fd;
  
- 	cntr->stdio = (cntr->fd == fileno(stdout));
- 	if (cntr->stdio) {
+ 	err = set_nonblock_flag(cntr->fd);
 -- 
 2.27.0
 
