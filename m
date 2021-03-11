@@ -8,88 +8,87 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65AE8C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:02:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25067C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:03:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AEB1064F94
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:02:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AEB1064F94
+	by mail.kernel.org (Postfix) with ESMTPS id 35BA864FE5
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:03:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 35BA864FE5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 13BFA17E9;
-	Thu, 11 Mar 2021 19:02:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13BFA17E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CBB117B6;
+	Thu, 11 Mar 2021 19:02:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CBB117B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615485770;
-	bh=j4aUPdKiYoXEoNs6zvEijyuS4laHxmQHyZetALal37k=;
+	s=default; t=1615485813;
+	bh=QEjCLWP8sLcwp6c6HKbAp7jh7m5vGsRmKCTHL18MY70=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AlwG+wSnQzxx5W/l6lsJkOvuWhjYWkWQTYF5D8RQFQn2QyE7t+WtU/3pOqUwbeyed
-	 cbn5rmj4HWRIiXQruHrApnM2v0I0fpSuWw3dY+j+CxjkOaIrCIoKVvwC3NUzdBbphb
-	 ltx7fpCf/FZpHcvZvdIRhAEdFj7EVxwJ6hN+FI8M=
+	b=mMxtNVz3+mYkruzakNFsDPb4JVkHRG8ebhpLqu1/Tt2zAuHFUwAG0Xq7FpLupbe+3
+	 i4PAz4gdOagwzjpa9De4jeqhgzWHoPOqgPhpGPmT6dkva+ybU8E4SplgznAekCUKUz
+	 hA022TBlNUBlz5/A1iIGJGUqdef62aGg7hiu8CZs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 450BEF8032C;
-	Thu, 11 Mar 2021 19:00:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8472F804AD;
+	Thu, 11 Mar 2021 19:00:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CB3AF8032C; Thu, 11 Mar 2021 19:00:21 +0100 (CET)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
- [IPv6:2a00:1450:4864:20::233])
+ id 4195DF80431; Thu, 11 Mar 2021 19:00:29 +0100 (CET)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25EB5F80227
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 19:00:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25EB5F80227
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91688F8032C
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 19:00:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91688F8032C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="RfazgWpy"
-Received: by mail-lj1-x233.google.com with SMTP id f16so3301326ljm.1
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 10:00:10 -0800 (PST)
+ header.b="nuspR0XW"
+Received: by mail-lj1-x234.google.com with SMTP id u20so3298654lja.13
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 10:00:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=yx3Rm9jzGKCPBq80QBACsTq0WbETqkrvY2ZCaXbwiog=;
- b=RfazgWpy9p7PrRnmKyR8+2NTMO03Sr+kHm3ECVQQpNf+cYTLxB9o7UzQSvUlAyjtb2
- v9+ubFIaklLJ+oaCyOvj4U5eSqjsPU1mCih7jGwlw+vy4hcl49esTDD9TLLybfaS47aL
- 4luzmPqVamTZUPGAw9XFOrEQMjXXFv3EkOu/0rtYbgNUCuvWJ3+3cupyxZwEwQs5H6r2
- Y0/SyoH4W3ahSTKd5YVUq3JRTdb9E1Oc26MLSf4WSWit1RWaQLXjIihA0xYvi8T0/8c8
- rr+aDyuJD5FV6YoDl1Fx3s7MKwTJX1wUBSPhzGsL5CAgmvpPwtxzjD2MZ2TLFB92EnVc
- a6qg==
+ bh=q00zpBro72Ip8wELfk0YWMTb5Ltu7RVyaMs1yLIxuYM=;
+ b=nuspR0XW0F/NZFNnRzXiLnruZi1Hd4Z1iflY+307YYtxbbzsSUaEcJIYAOi45VbDOj
+ sayXmsBf/cRYDkmXFiwb3d4pBhP5qjYVTHYRDf7hGY3RgUp0UxlHA5Vbswr1q8bxQIGG
+ V01imBVb+Sc360TGUl+TYvrOLrXDr6u48VcaO7BgLzMwjZqWkBV7JtmPKsrz4x4QxXV9
+ EDNX3iKh9Mer2c2C1VllYcPxDdtKFxeOG6Qa/7aIKVzJjuTwDC4H2qrVHrJayxy//oTm
+ LealbaTK0xplLh+zAprTMsghGAJg2ur4Q+rCFTFmANn6feU5HbGq3KFyAVB9RZNqgtAu
+ NL/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=yx3Rm9jzGKCPBq80QBACsTq0WbETqkrvY2ZCaXbwiog=;
- b=Zwo5mH8MK+l2ZfSjWGMKyKqh/F0iS0MXdW72IkD3pN0JkGNPk4yWBPxdp7gM4Cpx08
- T5HhYba0A9ic9ENbw4fkFTJ4dDOjpSRqcxiTMd8l61UO8C0YwOCJVgiWJdei9G27uoXu
- WWHlh9Q5L/giOvyqBmZaT04NIkz4e1LbkTt42RqEOjA0lTvKhz6Vg5xfLmoFxSVOfCjk
- jKa5kVtEOYwwBZO6HLr7iiKlKuyB7Vg87RBJ64zTOD3W1XHhcd1TcjdIb/LwQ/Pvs66m
- LE0L4gJfMpJOAwaAmIfU7rnIhjoXQs7zl1ftjNt4rBzRLe0F1Vw7K4Ci8GvMDAyEi5fl
- OAkA==
-X-Gm-Message-State: AOAM532YNoDsnJGtC1Ez87itCth6TZ1LXdqFXjVGc/dT6SwBi+N2bZ0r
- JgzmU2jBrpIkqxx32ryym6s=
-X-Google-Smtp-Source: ABdhPJwEDL0cJGc6NP26XyZSzQK2KvCQdi/cIkV0fkYk3M2bND0hldvpC1t3fb8CkXoaMXu4Q54CuA==
-X-Received: by 2002:a05:651c:1033:: with SMTP id
- w19mr40842ljm.191.1615485609423; 
- Thu, 11 Mar 2021 10:00:09 -0800 (PST)
+ bh=q00zpBro72Ip8wELfk0YWMTb5Ltu7RVyaMs1yLIxuYM=;
+ b=XAERSOdJGcEonXfaA9MuFm5onDPMypSO8MGZ+zWW1Wp3qkRYUbK39FyV4/WeaWC2dP
+ bCEzjrUxQfA7duddq0z5vnTo9pR38YaOcr9tAiCoIC1EQw5ixJHS1yv+MYbdEY6cTDA0
+ IlQKMQ2M++Zobm3DSFY+LrvAfyQO78/J7n14fb93re5JRPcxb2Mp/89w6Y8n7lLeNItp
+ JGJDq0kUnVleLdWKbleT8x1msBw3LKQ9dy7SxvlMFmAWlDBQfc1sXxJIPbChYzl3xJzR
+ uRsRrQkNmaQCtKtkOWLHEauQ9yLb3uRM853lj7J/MUK3/uNyUFRWLRSujj6j4RxJK4ns
+ ymXg==
+X-Gm-Message-State: AOAM5318v0WrC/VOBnSe1cxtBUF0sWdXE2eetuZt0cTi/KppuwxmO9As
+ s3RPXjvaMZe1JkSwmKS+iiA=
+X-Google-Smtp-Source: ABdhPJwBKUSFryjMB/m1tyCl2lW3i3okePpo+biLLsUnpaeomJFlK7PLtVJOWlXvcFsr2k7QWRfKBA==
+X-Received: by 2002:a2e:8e75:: with SMTP id t21mr60030ljk.216.1615485611215;
+ Thu, 11 Mar 2021 10:00:11 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id k18sm1014075lfm.88.2021.03.11.10.00.08
+ by smtp.gmail.com with ESMTPSA id k18sm1014075lfm.88.2021.03.11.10.00.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Mar 2021 10:00:09 -0800 (PST)
+ Thu, 11 Mar 2021 10:00:10 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v4 2/5] ASoC: tegra20: i2s: Add reset control
-Date: Thu, 11 Mar 2021 20:59:55 +0300
-Message-Id: <20210311175958.7433-3-digetx@gmail.com>
+Subject: [PATCH v4 4/5] reset: Add reset_control_bulk API
+Date: Thu, 11 Mar 2021 20:59:57 +0300
+Message-Id: <20210311175958.7433-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210311175958.7433-1-digetx@gmail.com>
 References: <20210311175958.7433-1-digetx@gmail.com>
@@ -112,107 +111,729 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The I2S reset may be asserted at a boot time, in particular this is the
-case on Tegra20 AC100 netbook. Tegra20 I2S driver doesn't manage the
-reset control and currently it happens to work because reset is implicitly
-deasserted by the tegra-clk driver when I2S clock is enabled. The I2S
-permanently stays in a reset once tegra-clk is fixed to not touch the
-resets, which it shouldn't be doing. Add reset control to the Tegra20
-I2S driver.
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-Note that I2S reset was always specified in Tegra20 device-tree, hence
-DTB ABI changes aren't required.
+Follow the clock and regulator subsystems' lead and add a bulk API
+for reset controls.
 
-Tested-by: Paul Fertser <fercerpav@gmail.com> # T20 AC100
-Reported-by: Paul Fertser <fercerpav@gmail.com>
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 31 +++++++++++++++++++++++++++++++
- sound/soc/tegra/tegra20_i2s.h |  1 +
- 2 files changed, 32 insertions(+)
+ drivers/reset/core.c  | 215 ++++++++++++++++++++++++++++
+ include/linux/reset.h | 315 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 530 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index d7a3d046c8f8..c0af5352b483 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -22,6 +22,7 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -37,6 +38,8 @@ static int tegra20_i2s_runtime_suspend(struct device *dev)
- {
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 
-+	regcache_cache_only(i2s->regmap, true);
-+
- 	clk_disable_unprepare(i2s->clk_i2s);
- 
- 	return 0;
-@@ -47,13 +50,35 @@ static int tegra20_i2s_runtime_resume(struct device *dev)
- 	struct tegra20_i2s *i2s = dev_get_drvdata(dev);
- 	int ret;
- 
-+	ret = reset_control_assert(i2s->reset);
-+	if (ret)
-+		return ret;
-+
- 	ret = clk_prepare_enable(i2s->clk_i2s);
- 	if (ret) {
- 		dev_err(dev, "clk_enable failed: %d\n", ret);
- 		return ret;
- 	}
- 
-+	usleep_range(10, 100);
-+
-+	ret = reset_control_deassert(i2s->reset);
-+	if (ret)
-+		goto disable_clocks;
-+
-+	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	ret = regcache_sync(i2s->regmap);
-+	if (ret)
-+		goto disable_clocks;
-+
- 	return 0;
-+
-+disable_clocks:
-+	clk_disable_unprepare(i2s->clk_i2s);
-+
-+	return ret;
+diff --git a/drivers/reset/core.c b/drivers/reset/core.c
+index dbf881b586d9..71c1c8264b2d 100644
+--- a/drivers/reset/core.c
++++ b/drivers/reset/core.c
+@@ -358,6 +358,30 @@ int reset_control_reset(struct reset_control *rstc)
  }
+ EXPORT_SYMBOL_GPL(reset_control_reset);
  
- static int tegra20_i2s_set_fmt(struct snd_soc_dai *dai,
-@@ -339,6 +364,12 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
- 	i2s->dai = tegra20_i2s_dai_template;
- 	i2s->dai.name = dev_name(&pdev->dev);
- 
-+	i2s->reset = devm_reset_control_get_exclusive(&pdev->dev, "i2s");
-+	if (IS_ERR(i2s->reset)) {
-+		dev_err(&pdev->dev, "Can't retrieve i2s reset\n");
-+		return PTR_ERR(i2s->reset);
++/**
++ * reset_control_bulk_reset - reset the controlled devices in order
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset controls set
++ *
++ * Issue a reset on all provided reset controls, in order.
++ *
++ * See also: reset_control_reset()
++ */
++int reset_control_bulk_reset(int num_rstcs,
++			     struct reset_control_bulk_data *rstcs)
++{
++	int ret, i;
++
++	for (i = 0; i < num_rstcs; i++) {
++		ret = reset_control_reset(rstcs[i].rstc);
++		if (ret)
++			return ret;
 +	}
 +
- 	i2s->clk_i2s = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(i2s->clk_i2s)) {
- 		dev_err(&pdev->dev, "Can't retrieve i2s clock\n");
-diff --git a/sound/soc/tegra/tegra20_i2s.h b/sound/soc/tegra/tegra20_i2s.h
-index 628d3ca09f42..8233e5fa2eff 100644
---- a/sound/soc/tegra/tegra20_i2s.h
-+++ b/sound/soc/tegra/tegra20_i2s.h
-@@ -144,6 +144,7 @@ struct tegra20_i2s {
- 	struct snd_dmaengine_dai_dma_data capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
- 	struct regmap *regmap;
-+	struct reset_control *reset;
- };
++	return 0;
++}
++EXPORT_SYMBOL_GPL(reset_control_bulk_reset);
++
+ /**
+  * reset_control_rearm - allow shared reset line to be re-triggered"
+  * @rstc: reset controller
+@@ -461,6 +485,36 @@ int reset_control_assert(struct reset_control *rstc)
+ }
+ EXPORT_SYMBOL_GPL(reset_control_assert);
  
- #endif
++/**
++ * reset_control_bulk_assert - asserts the reset lines in order
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset controls set
++ *
++ * Assert the reset lines for all provided reset controls, in order.
++ * If an assertion fails, already asserted resets are deasserted again.
++ *
++ * See also: reset_control_assert()
++ */
++int reset_control_bulk_assert(int num_rstcs,
++			      struct reset_control_bulk_data *rstcs)
++{
++	int ret, i;
++
++	for (i = 0; i < num_rstcs; i++) {
++		ret = reset_control_assert(rstcs[i].rstc);
++		if (ret)
++			goto err;
++	}
++
++	return 0;
++
++err:
++	while (i--)
++		reset_control_deassert(rstcs[i].rstc);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(reset_control_bulk_assert);
++
+ /**
+  * reset_control_deassert - deasserts the reset line
+  * @rstc: reset controller
+@@ -511,6 +565,36 @@ int reset_control_deassert(struct reset_control *rstc)
+ }
+ EXPORT_SYMBOL_GPL(reset_control_deassert);
+ 
++/**
++ * reset_control_bulk_deassert - deasserts the reset lines in reverse order
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset controls set
++ *
++ * Deassert the reset lines for all provided reset controls, in reverse order.
++ * If a deassertion fails, already deasserted resets are asserted again.
++ *
++ * See also: reset_control_deassert()
++ */
++int reset_control_bulk_deassert(int num_rstcs,
++				struct reset_control_bulk_data *rstcs)
++{
++	int ret, i;
++
++	for (i = num_rstcs - 1; i >= 0; i--) {
++		ret = reset_control_deassert(rstcs[i].rstc);
++		if (ret)
++			goto err;
++	}
++
++	return 0;
++
++err:
++	while (i < num_rstcs)
++		reset_control_assert(rstcs[i++].rstc);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(reset_control_bulk_deassert);
++
+ /**
+  * reset_control_status - returns a negative errno if not supported, a
+  * positive value if the reset line is asserted, or zero if the reset
+@@ -588,6 +672,36 @@ int reset_control_acquire(struct reset_control *rstc)
+ }
+ EXPORT_SYMBOL_GPL(reset_control_acquire);
+ 
++/**
++ * reset_control_bulk_acquire - acquires reset controls for exclusive use
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset controls set
++ *
++ * This is used to explicitly acquire reset controls requested with
++ * reset_control_bulk_get_exclusive_release() for temporary exclusive use.
++ *
++ * See also: reset_control_acquire(), reset_control_bulk_release()
++ */
++int reset_control_bulk_acquire(int num_rstcs,
++			       struct reset_control_bulk_data *rstcs)
++{
++	int ret, i;
++
++	for (i = 0; i < num_rstcs; i++) {
++		ret = reset_control_acquire(rstcs[i].rstc);
++		if (ret)
++			goto err;
++	}
++
++	return 0;
++
++err:
++	while (i--)
++		reset_control_release(rstcs[i].rstc);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(reset_control_bulk_acquire);
++
+ /**
+  * reset_control_release() - releases exclusive access to a reset control
+  * @rstc: reset control
+@@ -610,6 +724,26 @@ void reset_control_release(struct reset_control *rstc)
+ }
+ EXPORT_SYMBOL_GPL(reset_control_release);
+ 
++/**
++ * reset_control_bulk_release() - releases exclusive access to reset controls
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset controls set
++ *
++ * Releases exclusive access right to reset controls previously obtained by a
++ * call to reset_control_bulk_acquire().
++ *
++ * See also: reset_control_release(), reset_control_bulk_acquire()
++ */
++void reset_control_bulk_release(int num_rstcs,
++				struct reset_control_bulk_data *rstcs)
++{
++	int i;
++
++	for (i = 0; i < num_rstcs; i++)
++		reset_control_release(rstcs[i].rstc);
++}
++EXPORT_SYMBOL_GPL(reset_control_bulk_release);
++
+ static struct reset_control *__reset_control_get_internal(
+ 				struct reset_controller_dev *rcdev,
+ 				unsigned int index, bool shared, bool acquired)
+@@ -814,6 +948,32 @@ struct reset_control *__reset_control_get(struct device *dev, const char *id,
+ }
+ EXPORT_SYMBOL_GPL(__reset_control_get);
+ 
++int __reset_control_bulk_get(struct device *dev, int num_rstcs,
++			     struct reset_control_bulk_data *rstcs,
++			     bool shared, bool optional, bool acquired)
++{
++	int ret, i;
++
++	for (i = 0; i < num_rstcs; i++) {
++		rstcs[i].rstc = __reset_control_get(dev, rstcs[i].id, 0,
++						    shared, optional, acquired);
++		if (IS_ERR(rstcs[i].rstc)) {
++			ret = PTR_ERR(rstcs[i].rstc);
++			goto err;
++		}
++	}
++
++	return 0;
++
++err:
++	mutex_lock(&reset_list_mutex);
++	while (i--)
++		__reset_control_put_internal(rstcs[i].rstc);
++	mutex_unlock(&reset_list_mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(__reset_control_bulk_get);
++
+ static void reset_control_array_put(struct reset_control_array *resets)
+ {
+ 	int i;
+@@ -845,6 +1005,23 @@ void reset_control_put(struct reset_control *rstc)
+ }
+ EXPORT_SYMBOL_GPL(reset_control_put);
+ 
++/**
++ * reset_control_bulk_put - free the reset controllers
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset controls set
++ */
++void reset_control_bulk_put(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++	mutex_lock(&reset_list_mutex);
++	while (num_rstcs--) {
++		if (IS_ERR_OR_NULL(rstcs[num_rstcs].rstc))
++			continue;
++		__reset_control_put_internal(rstcs[num_rstcs].rstc);
++	}
++	mutex_unlock(&reset_list_mutex);
++}
++EXPORT_SYMBOL_GPL(reset_control_bulk_put);
++
+ static void devm_reset_control_release(struct device *dev, void *res)
+ {
+ 	reset_control_put(*(struct reset_control **)res);
+@@ -874,6 +1051,44 @@ struct reset_control *__devm_reset_control_get(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(__devm_reset_control_get);
+ 
++struct reset_control_bulk_devres {
++	int num_rstcs;
++	struct reset_control_bulk_data *rstcs;
++};
++
++static void devm_reset_control_bulk_release(struct device *dev, void *res)
++{
++	struct reset_control_bulk_devres *devres = res;
++
++	reset_control_bulk_put(devres->num_rstcs, devres->rstcs);
++}
++
++int __devm_reset_control_bulk_get(struct device *dev, int num_rstcs,
++				  struct reset_control_bulk_data *rstcs,
++				  bool shared, bool optional, bool acquired)
++{
++	struct reset_control_bulk_devres *ptr;
++	int ret;
++
++	ptr = devres_alloc(devm_reset_control_bulk_release, sizeof(*ptr),
++			   GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	ret = __reset_control_bulk_get(dev, num_rstcs, rstcs, shared, optional, acquired);
++	if (ret < 0) {
++		devres_free(ptr);
++		return ret;
++	}
++
++	ptr->num_rstcs = num_rstcs;
++	ptr->rstcs = rstcs;
++	devres_add(dev, ptr);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(__devm_reset_control_bulk_get);
++
+ /**
+  * __device_reset - find reset controller associated with the device
+  *                  and perform reset
+diff --git a/include/linux/reset.h b/include/linux/reset.h
+index b9109efa2a5c..46e6372cb431 100644
+--- a/include/linux/reset.h
++++ b/include/linux/reset.h
+@@ -10,6 +10,21 @@ struct device;
+ struct device_node;
+ struct reset_control;
+ 
++/**
++ * struct reset_control_bulk_data - Data used for bulk reset control operations.
++ *
++ * @id: reset control consumer ID
++ * @rstc: struct reset_control * to store the associated reset control
++ *
++ * The reset APIs provide a series of reset_control_bulk_*() API calls as
++ * a convenience to consumers which require multiple reset controls.
++ * This structure is used to manage data for these calls.
++ */
++struct reset_control_bulk_data {
++	const char			*id;
++	struct reset_control		*rstc;
++};
++
+ #ifdef CONFIG_RESET_CONTROLLER
+ 
+ int reset_control_reset(struct reset_control *rstc);
+@@ -20,6 +35,12 @@ int reset_control_status(struct reset_control *rstc);
+ int reset_control_acquire(struct reset_control *rstc);
+ void reset_control_release(struct reset_control *rstc);
+ 
++int reset_control_bulk_reset(int num_rstcs, struct reset_control_bulk_data *rstcs);
++int reset_control_bulk_assert(int num_rstcs, struct reset_control_bulk_data *rstcs);
++int reset_control_bulk_deassert(int num_rstcs, struct reset_control_bulk_data *rstcs);
++int reset_control_bulk_acquire(int num_rstcs, struct reset_control_bulk_data *rstcs);
++void reset_control_bulk_release(int num_rstcs, struct reset_control_bulk_data *rstcs);
++
+ struct reset_control *__of_reset_control_get(struct device_node *node,
+ 				     const char *id, int index, bool shared,
+ 				     bool optional, bool acquired);
+@@ -27,10 +48,18 @@ struct reset_control *__reset_control_get(struct device *dev, const char *id,
+ 					  int index, bool shared,
+ 					  bool optional, bool acquired);
+ void reset_control_put(struct reset_control *rstc);
++int __reset_control_bulk_get(struct device *dev, int num_rstcs,
++			     struct reset_control_bulk_data *rstcs,
++			     bool shared, bool optional, bool acquired);
++void reset_control_bulk_put(int num_rstcs, struct reset_control_bulk_data *rstcs);
++
+ int __device_reset(struct device *dev, bool optional);
+ struct reset_control *__devm_reset_control_get(struct device *dev,
+ 				     const char *id, int index, bool shared,
+ 				     bool optional, bool acquired);
++int __devm_reset_control_bulk_get(struct device *dev, int num_rstcs,
++				  struct reset_control_bulk_data *rstcs,
++				  bool shared, bool optional, bool acquired);
+ 
+ struct reset_control *devm_reset_control_array_get(struct device *dev,
+ 						   bool shared, bool optional);
+@@ -96,6 +125,48 @@ static inline struct reset_control *__reset_control_get(
+ 	return optional ? NULL : ERR_PTR(-ENOTSUPP);
+ }
+ 
++static inline int
++reset_control_bulk_reset(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++	return 0;
++}
++
++static inline int
++reset_control_bulk_assert(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++	return 0;
++}
++
++static inline int
++reset_control_bulk_deassert(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++	return 0;
++}
++
++static inline int
++reset_control_bulk_acquire(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++	return 0;
++}
++
++static inline void
++reset_control_bulk_release(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++}
++
++static inline int
++__reset_control_bulk_get(struct device *dev, int num_rstcs,
++			 struct reset_control_bulk_data *rstcs,
++			 bool shared, bool optional, bool acquired)
++{
++	return optional ? 0 : -EOPNOTSUPP;
++}
++
++static inline void
++reset_control_bulk_put(int num_rstcs, struct reset_control_bulk_data *rstcs)
++{
++}
++
+ static inline struct reset_control *__devm_reset_control_get(
+ 					struct device *dev, const char *id,
+ 					int index, bool shared, bool optional,
+@@ -104,6 +175,14 @@ static inline struct reset_control *__devm_reset_control_get(
+ 	return optional ? NULL : ERR_PTR(-ENOTSUPP);
+ }
+ 
++static inline int
++__devm_reset_control_bulk_get(struct device *dev, int num_rstcs,
++			      struct reset_control_bulk_data *rstcs,
++			      bool shared, bool optional, bool acquired)
++{
++	return optional ? 0 : -EOPNOTSUPP;
++}
++
+ static inline struct reset_control *
+ devm_reset_control_array_get(struct device *dev, bool shared, bool optional)
+ {
+@@ -155,6 +234,23 @@ __must_check reset_control_get_exclusive(struct device *dev, const char *id)
+ 	return __reset_control_get(dev, id, 0, false, false, true);
+ }
+ 
++/**
++ * reset_control_bulk_get_exclusive - Lookup and obtain exclusive references to
++ *                                    multiple reset controllers.
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Fills the rstcs array with pointers to exclusive reset controls and
++ * returns 0, or an IS_ERR() condition containing errno.
++ */
++static inline int __must_check
++reset_control_bulk_get_exclusive(struct device *dev, int num_rstcs,
++				 struct reset_control_bulk_data *rstcs)
++{
++	return __reset_control_bulk_get(dev, num_rstcs, rstcs, false, false, true);
++}
++
+ /**
+  * reset_control_get_exclusive_released - Lookup and obtain a temoprarily
+  *                                        exclusive reference to a reset
+@@ -176,6 +272,48 @@ __must_check reset_control_get_exclusive_released(struct device *dev,
+ 	return __reset_control_get(dev, id, 0, false, false, false);
+ }
+ 
++/**
++ * reset_control_bulk_get_exclusive_released - Lookup and obtain temporarily
++ *                                    exclusive references to multiple reset
++ *                                    controllers.
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Fills the rstcs array with pointers to exclusive reset controls and
++ * returns 0, or an IS_ERR() condition containing errno.
++ * reset-controls returned by this function must be acquired via
++ * reset_control_bulk_acquire() before they can be used and should be released
++ * via reset_control_bulk_release() afterwards.
++ */
++static inline int __must_check
++reset_control_bulk_get_exclusive_released(struct device *dev, int num_rstcs,
++					  struct reset_control_bulk_data *rstcs)
++{
++	return __reset_control_bulk_get(dev, num_rstcs, rstcs, false, false, false);
++}
++
++/**
++ * reset_control_bulk_get_optional_exclusive_released - Lookup and obtain optional
++ *                                    temporarily exclusive references to multiple
++ *                                    reset controllers.
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Optional variant of reset_control_bulk_get_exclusive_released(). If the
++ * requested reset is not specified in the device tree, this function returns 0
++ * instead of an error and missing rtsc is set to NULL.
++ *
++ * See reset_control_bulk_get_exclusive_released() for more information.
++ */
++static inline int __must_check
++reset_control_bulk_get_optional_exclusive_released(struct device *dev, int num_rstcs,
++						   struct reset_control_bulk_data *rstcs)
++{
++	return __reset_control_bulk_get(dev, num_rstcs, rstcs, false, true, false);
++}
++
+ /**
+  * reset_control_get_shared - Lookup and obtain a shared reference to a
+  *                            reset controller.
+@@ -204,6 +342,23 @@ static inline struct reset_control *reset_control_get_shared(
+ 	return __reset_control_get(dev, id, 0, true, false, false);
+ }
+ 
++/**
++ * reset_control_bulk_get_shared - Lookup and obtain shared references to
++ *                                 multiple reset controllers.
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Fills the rstcs array with pointers to shared reset controls and
++ * returns 0, or an IS_ERR() condition containing errno.
++ */
++static inline int __must_check
++reset_control_bulk_get_shared(struct device *dev, int num_rstcs,
++			      struct reset_control_bulk_data *rstcs)
++{
++	return __reset_control_bulk_get(dev, num_rstcs, rstcs, true, false, false);
++}
++
+ /**
+  * reset_control_get_optional_exclusive - optional reset_control_get_exclusive()
+  * @dev: device to be reset by the controller
+@@ -221,6 +376,26 @@ static inline struct reset_control *reset_control_get_optional_exclusive(
+ 	return __reset_control_get(dev, id, 0, false, true, true);
+ }
+ 
++/**
++ * reset_control_bulk_get_optional_exclusive - optional
++ *                                             reset_control_bulk_get_exclusive()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Optional variant of reset_control_bulk_get_exclusive(). If any of the
++ * requested resets are not specified in the device tree, this function sets
++ * them to NULL instead of returning an error.
++ *
++ * See reset_control_bulk_get_exclusive() for more information.
++ */
++static inline int __must_check
++reset_control_bulk_get_optional_exclusive(struct device *dev, int num_rstcs,
++					  struct reset_control_bulk_data *rstcs)
++{
++	return __reset_control_bulk_get(dev, num_rstcs, rstcs, false, true, true);
++}
++
+ /**
+  * reset_control_get_optional_shared - optional reset_control_get_shared()
+  * @dev: device to be reset by the controller
+@@ -238,6 +413,26 @@ static inline struct reset_control *reset_control_get_optional_shared(
+ 	return __reset_control_get(dev, id, 0, true, true, false);
+ }
+ 
++/**
++ * reset_control_bulk_get_optional_shared - optional
++ *                                             reset_control_bulk_get_shared()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Optional variant of reset_control_bulk_get_shared(). If the requested resets
++ * are not specified in the device tree, this function sets them to NULL
++ * instead of returning an error.
++ *
++ * See reset_control_bulk_get_shared() for more information.
++ */
++static inline int __must_check
++reset_control_bulk_get_optional_shared(struct device *dev, int num_rstcs,
++				       struct reset_control_bulk_data *rstcs)
++{
++	return __reset_control_bulk_get(dev, num_rstcs, rstcs, true, true, false);
++}
++
+ /**
+  * of_reset_control_get_exclusive - Lookup and obtain an exclusive reference
+  *                                  to a reset controller.
+@@ -343,6 +538,26 @@ __must_check devm_reset_control_get_exclusive(struct device *dev,
+ 	return __devm_reset_control_get(dev, id, 0, false, false, true);
+ }
+ 
++/**
++ * devm_reset_control_bulk_get_exclusive - resource managed
++ *                                         reset_control_bulk_get_exclusive()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Managed reset_control_bulk_get_exclusive(). For reset controllers returned
++ * from this function, reset_control_put() is called automatically on driver
++ * detach.
++ *
++ * See reset_control_bulk_get_exclusive() for more information.
++ */
++static inline int __must_check
++devm_reset_control_bulk_get_exclusive(struct device *dev, int num_rstcs,
++				      struct reset_control_bulk_data *rstcs)
++{
++	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, false, false, true);
++}
++
+ /**
+  * devm_reset_control_get_exclusive_released - resource managed
+  *                                             reset_control_get_exclusive_released()
+@@ -362,6 +577,26 @@ __must_check devm_reset_control_get_exclusive_released(struct device *dev,
+ 	return __devm_reset_control_get(dev, id, 0, false, false, false);
+ }
+ 
++/**
++ * devm_reset_control_bulk_get_exclusive_released - resource managed
++ *                                                  reset_control_bulk_get_exclusive_released()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Managed reset_control_bulk_get_exclusive_released(). For reset controllers
++ * returned from this function, reset_control_put() is called automatically on
++ * driver detach.
++ *
++ * See reset_control_bulk_get_exclusive_released() for more information.
++ */
++static inline int __must_check
++devm_reset_control_bulk_get_exclusive_released(struct device *dev, int num_rstcs,
++					       struct reset_control_bulk_data *rstcs)
++{
++	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, false, false, false);
++}
++
+ /**
+  * devm_reset_control_get_optional_exclusive_released - resource managed
+  *                                                      reset_control_get_optional_exclusive_released()
+@@ -381,6 +616,26 @@ __must_check devm_reset_control_get_optional_exclusive_released(struct device *d
+ 	return __devm_reset_control_get(dev, id, 0, false, true, false);
+ }
+ 
++/**
++ * devm_reset_control_bulk_get_optional_exclusive_released - resource managed
++ *                                                           reset_control_bulk_optional_get_exclusive_released()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Managed reset_control_bulk_optional_get_exclusive_released(). For reset
++ * controllers returned from this function, reset_control_put() is called
++ * automatically on driver detach.
++ *
++ * See reset_control_bulk_optional_get_exclusive_released() for more information.
++ */
++static inline int __must_check
++devm_reset_control_bulk_get_optional_exclusive_released(struct device *dev, int num_rstcs,
++							struct reset_control_bulk_data *rstcs)
++{
++	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, false, true, false);
++}
++
+ /**
+  * devm_reset_control_get_shared - resource managed reset_control_get_shared()
+  * @dev: device to be reset by the controller
+@@ -396,6 +651,26 @@ static inline struct reset_control *devm_reset_control_get_shared(
+ 	return __devm_reset_control_get(dev, id, 0, true, false, false);
+ }
+ 
++/**
++ * devm_reset_control_bulk_get_shared - resource managed
++ *                                      reset_control_bulk_get_shared()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Managed reset_control_bulk_get_shared(). For reset controllers returned
++ * from this function, reset_control_put() is called automatically on driver
++ * detach.
++ *
++ * See reset_control_bulk_get_shared() for more information.
++ */
++static inline int __must_check
++devm_reset_control_bulk_get_shared(struct device *dev, int num_rstcs,
++				   struct reset_control_bulk_data *rstcs)
++{
++	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, true, false, false);
++}
++
+ /**
+  * devm_reset_control_get_optional_exclusive - resource managed
+  *                                             reset_control_get_optional_exclusive()
+@@ -414,6 +689,26 @@ static inline struct reset_control *devm_reset_control_get_optional_exclusive(
+ 	return __devm_reset_control_get(dev, id, 0, false, true, true);
+ }
+ 
++/**
++ * devm_reset_control_bulk_get_optional_exclusive - resource managed
++ *                                                  reset_control_bulk_get_optional_exclusive()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Managed reset_control_bulk_get_optional_exclusive(). For reset controllers
++ * returned from this function, reset_control_put() is called automatically on
++ * driver detach.
++ *
++ * See reset_control_bulk_get_optional_exclusive() for more information.
++ */
++static inline int __must_check
++devm_reset_control_bulk_get_optional_exclusive(struct device *dev, int num_rstcs,
++					       struct reset_control_bulk_data *rstcs)
++{
++	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, true, false, true);
++}
++
+ /**
+  * devm_reset_control_get_optional_shared - resource managed
+  *                                          reset_control_get_optional_shared()
+@@ -432,6 +727,26 @@ static inline struct reset_control *devm_reset_control_get_optional_shared(
+ 	return __devm_reset_control_get(dev, id, 0, true, true, false);
+ }
+ 
++/**
++ * devm_reset_control_bulk_get_optional_shared - resource managed
++ *                                               reset_control_bulk_get_optional_shared()
++ * @dev: device to be reset by the controller
++ * @num_rstcs: number of entries in rstcs array
++ * @rstcs: array of struct reset_control_bulk_data with reset line names set
++ *
++ * Managed reset_control_bulk_get_optional_shared(). For reset controllers
++ * returned from this function, reset_control_put() is called automatically on
++ * driver detach.
++ *
++ * See reset_control_bulk_get_optional_shared() for more information.
++ */
++static inline int __must_check
++devm_reset_control_bulk_get_optional_shared(struct device *dev, int num_rstcs,
++					    struct reset_control_bulk_data *rstcs)
++{
++	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, true, true, false);
++}
++
+ /**
+  * devm_reset_control_get_exclusive_by_index - resource managed
+  *                                             reset_control_get_exclusive()
 -- 
 2.29.2
 
