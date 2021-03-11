@@ -2,74 +2,75 @@ Return-Path: <SRS0=8+EQ=IJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D6CEC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:48:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 628B9C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:50:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5DC6564F7B
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:48:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5DC6564F7B
+	by mail.kernel.org (Postfix) with ESMTPS id A7F7164F7B
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:50:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7F7164F7B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E39851706;
-	Thu, 11 Mar 2021 01:48:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E39851706
+	by alsa0.perex.cz (Postfix) with ESMTPS id E778516E7;
+	Thu, 11 Mar 2021 01:49:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E778516E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615423733;
-	bh=C8rZLOyPeQFxEB79VDQlEvFD/fJTteTe+o7qgfWN7ng=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qXsqA5j/PO5og2Fqnz/8JTyZGiHGxo5Kpu77X/Q7Z0SRuNx7igi5UzACvCqfc+Iwy
-	 cCvfZmkK3HidEBMNaNjb6+cif/BFPK7F/Dd98K+I3TIraup12pdWXMyDxQ0iGiEwgb
-	 5C9jpoZSMxbQGlju8bgyr2ytx3PZyVIlmUnxgs5s=
+	s=default; t=1615423820;
+	bh=2ecOAVFcrUjJwIr0E0Uu5srCuEUvIY/ZwIS3LRzlZ6U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mSi6u5ICCt5K2R/oFEKzobaFBzBsh7ldvr8KTxIOsfFEZOra2fcSpmBOoS/4Mub6R
+	 yvCMcXiNAhnDZ3eAfS19/tiSyPgQrhCnXGdelFoJ6TS0VMKUKW2BtXeTl+sZnVb6V1
+	 I2FDDztEf7onA84xOeXB9HVDw1qSfGYql91AJm5s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1FE6F804E5;
-	Thu, 11 Mar 2021 01:44:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E503F80217;
+	Thu, 11 Mar 2021 01:49:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24826F804DA; Thu, 11 Mar 2021 01:44:14 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id E318CF801D8; Thu, 11 Mar 2021 01:49:24 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D3E3F8010D
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 01:43:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D3E3F8010D
-IronPort-SDR: zfr4FXAsVrdN4Ukl1QhoJZduYQY+Je6357GdSTH+G16fLvHzMddQN2uwFqpnn7R6k8r9RQaIPw
- /hBVMeG0r1Fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="176185755"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="176185755"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35247F8012F
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 01:49:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35247F8012F
+IronPort-SDR: 83Xb8SUwNStPZ6Z96qib19wNg4zFwPpdlztuoLL5TAKqKcDKKPYWAJcfeNWHnsj6ETGJ3a1KAc
+ C/8A3KR46/cQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167865529"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="167865529"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 16:43:50 -0800
-IronPort-SDR: BcRb5lw500HsxKgUVtA4g1Rz0UT3NSia9ZfP0six96eSBVz2h+F+8OJpi8Nj99RTQtnlsOmNFS
- 6IHu8VmCLIsQ==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="370385636"
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Mar 2021 16:49:14 -0800
+IronPort-SDR: hDjsuncF8llssoUHAl8uU/QMI4xyFcq7TAK8JfSQYqi+YH2A1WFKueuFGF3ERBxayd/b+aD6Ze
+ W/XcEmU17a3A==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="370386779"
 Received: from theer-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.101.109])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 16:43:49 -0800
+ 10 Mar 2021 16:49:13 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/10] ASoC: wm_hubs: align function prototype
-Date: Wed, 10 Mar 2021 18:43:32 -0600
-Message-Id: <20210311004332.120901-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/4] ASoC: mediatek: remove cppcheck warnings
+Date: Wed, 10 Mar 2021 18:49:00 -0600
+Message-Id: <20210311004904.121205-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210311004332.120901-1-pierre-louis.bossart@linux.intel.com>
-References: <20210311004332.120901-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, patches@opensource.cirrus.com, broonie@kernel.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ "moderated list:ARM/Mediatek SoC support"
+ <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,59 +86,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warnings:
+There should be no functionality change, this patchset only fixes
+shadowed variables, prototypes and removes a useless assignment.
 
-sound/soc/codecs/wm_hubs.c:1194:11: style:inconclusive: Function
-'wm_hubs_handle_analogue_pdata' argument 8 names different:
-declaration 'micbias1_dly' definition
-'micbias1_delay'. [funcArgNamesDifferent]
-      int micbias1_delay, int micbias2_delay,
-          ^
-sound/soc/codecs/wm_hubs.h:59:11: note: Function
-'wm_hubs_handle_analogue_pdata' argument 8 names different:
-declaration 'micbias1_dly' definition 'micbias1_delay'.
-      int micbias1_dly, int micbias2_dly,
-          ^
-sound/soc/codecs/wm_hubs.c:1194:11: note: Function
-'wm_hubs_handle_analogue_pdata' argument 8 names different:
-declaration 'micbias1_dly' definition 'micbias1_delay'.
-      int micbias1_delay, int micbias2_delay,
-          ^
-sound/soc/codecs/wm_hubs.c:1194:31: style:inconclusive: Function
-'wm_hubs_handle_analogue_pdata' argument 9 names different:
-declaration 'micbias2_dly' definition
-'micbias2_delay'. [funcArgNamesDifferent]
-      int micbias1_delay, int micbias2_delay,
-                              ^
-sound/soc/codecs/wm_hubs.h:59:29: note: Function
-'wm_hubs_handle_analogue_pdata' argument 9 names different:
-declaration 'micbias2_dly' definition 'micbias2_delay'.
-      int micbias1_dly, int micbias2_dly,
-                            ^
-sound/soc/codecs/wm_hubs.c:1194:31: note: Function
-'wm_hubs_handle_analogue_pdata' argument 9 names different:
-declaration 'micbias2_dly' definition 'micbias2_delay'.
-      int micbias1_delay, int micbias2_delay,
-                              ^
+Pierre-Louis Bossart (4):
+  ASoC: mediatek: mtk-btcvsd: remove useless assignment
+  ASoC: mediatek: mt2701: align function prototype
+  ASoC: mediatek: mt2701: rename shadowed array
+  ASoC: mediatek: mt8173: rename local irq variable
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/wm_hubs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mediatek/common/mtk-btcvsd.c            | 2 +-
+ sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h | 4 ++--
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c        | 4 ++--
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c        | 6 +++---
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_hubs.h b/sound/soc/codecs/wm_hubs.h
-index 988b29e63060..a4ed9bd31426 100644
---- a/sound/soc/codecs/wm_hubs.h
-+++ b/sound/soc/codecs/wm_hubs.h
-@@ -56,7 +56,7 @@ extern int wm_hubs_handle_analogue_pdata(struct snd_soc_component *,
- 					 int lineout1_diff, int lineout2_diff,
- 					 int lineout1fb, int lineout2fb,
- 					 int jd_scthr, int jd_thr,
--					 int micbias1_dly, int micbias2_dly,
-+					 int micbias1_delay, int micbias2_delay,
- 					 int micbias1_lvl, int micbias2_lvl);
- 
- extern irqreturn_t wm_hubs_dcs_done(int irq, void *data);
 -- 
 2.25.1
 
