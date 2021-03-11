@@ -2,94 +2,93 @@ Return-Path: <SRS0=8+EQ=IJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E4FFC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:02:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C473FC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:02:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2CE9064FEB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2CE9064FEB
+	by mail.kernel.org (Postfix) with ESMTPS id EAB1264F94
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 18:02:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EAB1264F94
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FF2D17AC;
-	Thu, 11 Mar 2021 19:01:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FF2D17AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E4BB17A9;
+	Thu, 11 Mar 2021 19:01:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E4BB17A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615485718;
-	bh=4Do8m4M0qAJ0NYIgTW+FYixwJg7MaUOrw2wPRgVG6Bs=;
+	s=default; t=1615485722;
+	bh=XRJyqw/pXkIasdZQxg8O0t/Aew+OI2IcWd5DSpLusp4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ot6yVz9TqB3vQB1D/rNLoVnpb5wn7O2AVPkLhZZDIPasOnij4GzFHMWMIpMYcSHSV
-	 E9IJcCUH+OHcV6wEYaQPog6f8AwFbNw4cNwALkVgbLAMiweA8yxZ9h4OJ8NZxUpShc
-	 rl8kPpsmk0Mf2GjX8Fv7LS/qtGuA8mU/vLVa+cQo=
+	b=relTirp6oGufcn5BZm4Eq47O8fD/E7ju6mFWkz0MwgPdgJdjKCl3BOnXjJULAhDAT
+	 k5IIKTEWGMpa2fTcY0Gc0T4ohKzm3Je9TnXT/yBNpnbq7YNuCZyUl1IUj66JpzQEKo
+	 8JpYtjVJJrxHroW6+busomnk3rawcRJuZ9ZsjF/c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA8FBF802D2;
-	Thu, 11 Mar 2021 19:00:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 453C6F80276;
+	Thu, 11 Mar 2021 19:00:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB9EEF8025A; Thu, 11 Mar 2021 19:00:14 +0100 (CET)
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
- [IPv6:2a00:1450:4864:20::232])
+ id 76590F8032B; Thu, 11 Mar 2021 19:00:18 +0100 (CET)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DE0DF8019B
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 19:00:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DE0DF8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9E1FF8015B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 19:00:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9E1FF8015B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="YHJeneJd"
-Received: by mail-lj1-x232.google.com with SMTP id s17so3297815ljc.5
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 10:00:09 -0800 (PST)
+ header.b="Y3QbADfv"
+Received: by mail-lf1-x12c.google.com with SMTP id u4so41288237lfs.0
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 10:00:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=eHJDWKwpMM6cb9JU11x1wUIhvtQqgROewecwtgVy2N0=;
- b=YHJeneJdE4Enc/8Xku29ZmnRY8oTJ47hEElUOCCXiKWRA30gyzyd+3wNy567wqVa5j
- 2KSJ95gE+8n2iv0KgI4HnT21A7qXnYDF3JzXdae4paDf4PLIft89wxrow5h8xYex2caW
- zcehAowvLzp45Gn0iE0+E9EYk4PiKdUlywpyTLS3XyfSQkQAID9nikyD6hX9ChujUrDZ
- UVvgIn8Rbcy5yWYgypk6t7oSvtVW3VQdu1KF6RE5R1K3iEYI4f5j2PRIaQF0kZg+vcN+
- rOeGY+vhLFbmW8icIlZ3zvgvLPOCc/Sjyvk+VRbC0L41tov+XrtHLqTwv0RPvpyXjW1r
- GwPA==
+ bh=KFH1WQ55n2o2H6XVeSwGtTqtJ0JVSPd2X/kO35Iu2VI=;
+ b=Y3QbADfvuUkbu6NWYoIqazp/CChS2t9iXPrLO5bu3IJvsnL+/Zb/EC/qzrxKaNWHR2
+ MuN4guYQ3RddBPGPtzVKPUq9cTE0BKUmfF3OahBd5UpyyaqD+Ooiz6lonhVjtoidW1Gl
+ LFTeTbGGc+FVH5ToaLT7fTHgzrAEOv/bKeUUfL9g3sZQ3ZIXc+bh7cbiRnYjGn8vsXMZ
+ Ne7nX7z+9CXOmsZ/T2sZf4iSwdvocUt7T2WJ5vyK2MPSBu/qtlr7pnm9ibi1Y65mLg5t
+ ZSVnjk1m6PlIzeal+GPzWy0xAd+5AgUhofdN/UWwo3kjuLDYN0Wi1uuKV4H6QcU4tJ2T
+ +o7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=eHJDWKwpMM6cb9JU11x1wUIhvtQqgROewecwtgVy2N0=;
- b=K/oI9jAjhujcF0VZl2Xpct7Yw2nyyirXjqqM9hALRdB1Vpe99d6z8RPAKTSuxZPNPn
- sOvQp0+k0OmFqTld8GyJ8gRxfkHOrzwMVkDmN70DcFVPrjuOHbDNM8sBf4aB0W9pMcQZ
- DpSsCDVLa1HC5NLqGXyJSIEqDHseBdBZevgyP1SG9yfENzQgsiIs4A3L323LdUsbEdIv
- mqTrDM63z7mEMeuSDl9Th5khOwSDmZ8Thmieq0kAupxlHtWraF8ot7LgJflVD/woD/XA
- 4mOePPdTDLxmvam1NWtC6Nkpjnf2L/I7GD9CM44nnBUUBgSF/0jmWRoMFF9XiJ4cxoAc
- PDFg==
-X-Gm-Message-State: AOAM530IDTAixcI/xAU96u5RhrnKT/iQgtGE6zrCaUOIHJ5X1GQBpGJQ
- agYxQ4rTHCJRe0wkrOFDSiA=
-X-Google-Smtp-Source: ABdhPJyLIiZqHGSxzUlyr1upuIM/T5dJcXvowwIxY0k04HlETLrlwr/g+0SSbeumbQPEKw9ltguASw==
-X-Received: by 2002:a2e:b80a:: with SMTP id u10mr28562ljo.475.1615485608683;
- Thu, 11 Mar 2021 10:00:08 -0800 (PST)
+ bh=KFH1WQ55n2o2H6XVeSwGtTqtJ0JVSPd2X/kO35Iu2VI=;
+ b=LapNTW6iF5AHMXufpiT/UA9b/yRqBmtSe6yQFKNzJwaeIC8H7sNmwbxanvdnqmwWqz
+ RnUqphoEuSC2O5m/GIhxLc5XG0Qi+pMlDKH+SdOr2Ip5aFhQwrAKEWfcE2IwhRNRRIaF
+ UTXyONi0KhPgO4wWk4EeEaDgmHbbpSheLa/EFwPvBYu817hLNrcIVdyfN2LHivWENskf
+ qljXVJqwo9EWewsaaKzbsUKXz++7URTPJE4031ZN3p17lY0+W9/WWd2SSkadfHddJlyd
+ gUnUIKeKMy2Tc2XM/rMr9FHC8AYnZV5Fe68IC+cqzRbsf0YzdCJPBOKLx7Pd9jfQ3CVf
+ 2RIg==
+X-Gm-Message-State: AOAM532UGckNuXHPOk6gwqpxuelIwsoS8N2LeaExjkpBcYwiPj/0bzKL
+ y4K/kxXHmzkQhkqi3l09D0g=
+X-Google-Smtp-Source: ABdhPJwsvqZftyLuasjtpxTMa/bbQzjjGVSBrPNokc5dWnW/NvANxLos0mOIDHLxu4Js8D3ZZ7rXMQ==
+X-Received: by 2002:ac2:4d8e:: with SMTP id g14mr2947431lfe.572.1615485611937; 
+ Thu, 11 Mar 2021 10:00:11 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id k18sm1014075lfm.88.2021.03.11.10.00.08
+ by smtp.gmail.com with ESMTPSA id k18sm1014075lfm.88.2021.03.11.10.00.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Mar 2021 10:00:08 -0800 (PST)
+ Thu, 11 Mar 2021 10:00:11 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v4 1/5] ASoC: tegra20: ac97: Add reset control
-Date: Thu, 11 Mar 2021 20:59:54 +0300
-Message-Id: <20210311175958.7433-2-digetx@gmail.com>
+Subject: [PATCH v4 5/5] ASoC: tegra: ahub: Switch to use reset-bulk API
+Date: Thu, 11 Mar 2021 20:59:58 +0300
+Message-Id: <20210311175958.7433-6-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210311175958.7433-1-digetx@gmail.com>
 References: <20210311175958.7433-1-digetx@gmail.com>
@@ -112,25 +111,214 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Tegra20 AC97 driver doesn't manage the AC97 controller reset, relying on
-implicit deassertion of the reset by tegra-clk driver, which needs to be
-fixed since this behaviour is unacceptable by other Tegra drivers. Add
-explicit reset control to the Tegra20 AC97 driver.
-
-Note that AC97 reset was always specified in Tegra20 device-tree, hence
-DTB ABI changes aren't required.
+Switch to use reset-bulk API in order to make code cleaner.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_ac97.c | 21 +++++++++++++++++++++
- sound/soc/tegra/tegra20_ac97.h |  1 +
- 2 files changed, 22 insertions(+)
+ sound/soc/tegra/tegra30_ahub.c | 104 ++++++++++++---------------------
+ sound/soc/tegra/tegra30_ahub.h |   5 +-
+ sound/soc/tegra/tegra30_i2s.c  |   1 +
+ 3 files changed, 40 insertions(+), 70 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
-index 06c728ae17ed..c454a34c15c4 100644
---- a/sound/soc/tegra/tegra20_ac97.c
-+++ b/sound/soc/tegra/tegra20_ac97.c
-@@ -21,6 +21,7 @@
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index 9ef05ca4f6c4..d24c26f4960d 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -65,7 +65,7 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
+ {
+ 	int ret;
+ 
+-	ret = reset_control_assert(ahub->reset);
++	ret = reset_control_bulk_assert(ahub->nresets, ahub->resets);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -75,7 +75,7 @@ static int tegra30_ahub_runtime_resume(struct device *dev)
+ 
+ 	usleep_range(10, 100);
+ 
+-	ret = reset_control_deassert(ahub->reset);
++	ret = reset_control_bulk_deassert(ahub->nresets, ahub->resets);
+ 	if (ret)
+ 		goto disable_clocks;
+ 
+@@ -339,41 +339,28 @@ int tegra30_ahub_unset_rx_cif_source(enum tegra30_ahub_rxcif rxcif)
+ }
+ EXPORT_SYMBOL_GPL(tegra30_ahub_unset_rx_cif_source);
+ 
+-#define MOD_LIST_MASK_TEGRA30	BIT(0)
+-#define MOD_LIST_MASK_TEGRA114	BIT(1)
+-#define MOD_LIST_MASK_TEGRA124	BIT(2)
+-
+-#define MOD_LIST_MASK_TEGRA30_OR_LATER \
+-		(MOD_LIST_MASK_TEGRA30 | MOD_LIST_MASK_TEGRA114 | \
+-			MOD_LIST_MASK_TEGRA124)
+-#define MOD_LIST_MASK_TEGRA114_OR_LATER \
+-		(MOD_LIST_MASK_TEGRA114 | MOD_LIST_MASK_TEGRA124)
+-
+-static const struct {
+-	const char *rst_name;
+-	u32 mod_list_mask;
+-} configlink_mods[] = {
+-	{ "d_audio", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "apbif", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "i2s0", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "i2s1", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "i2s2", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "i2s3", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "i2s4", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "dam0", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "dam1", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "dam2", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "spdif", MOD_LIST_MASK_TEGRA30_OR_LATER },
+-	{ "amx", MOD_LIST_MASK_TEGRA114_OR_LATER },
+-	{ "adx", MOD_LIST_MASK_TEGRA114_OR_LATER },
+-	{ "amx1", MOD_LIST_MASK_TEGRA124 },
+-	{ "adx1", MOD_LIST_MASK_TEGRA124 },
+-	{ "afc0", MOD_LIST_MASK_TEGRA124 },
+-	{ "afc1", MOD_LIST_MASK_TEGRA124 },
+-	{ "afc2", MOD_LIST_MASK_TEGRA124 },
+-	{ "afc3", MOD_LIST_MASK_TEGRA124 },
+-	{ "afc4", MOD_LIST_MASK_TEGRA124 },
+-	{ "afc5", MOD_LIST_MASK_TEGRA124 },
++static const struct reset_control_bulk_data tegra30_ahub_resets_data[] = {
++	{ "d_audio" },
++	{ "apbif" },
++	{ "i2s0" },
++	{ "i2s1" },
++	{ "i2s2" },
++	{ "i2s3" },
++	{ "i2s4" },
++	{ "dam0" },
++	{ "dam1" },
++	{ "dam2" },
++	{ "spdif" },
++	{ "amx" }, /* Tegra114+ */
++	{ "adx" }, /* Tegra114+ */
++	{ "amx1" }, /* Tegra124 */
++	{ "adx1" }, /* Tegra124 */
++	{ "afc0" }, /* Tegra124 */
++	{ "afc1" }, /* Tegra124 */
++	{ "afc2" }, /* Tegra124 */
++	{ "afc3" }, /* Tegra124 */
++	{ "afc4" }, /* Tegra124 */
++	{ "afc5" }, /* Tegra124 */
+ };
+ 
+ #define LAST_REG(name) \
+@@ -502,17 +489,17 @@ static const struct regmap_config tegra30_ahub_ahub_regmap_config = {
+ };
+ 
+ static struct tegra30_ahub_soc_data soc_data_tegra30 = {
+-	.mod_list_mask = MOD_LIST_MASK_TEGRA30,
++	.num_resets = 11,
+ 	.set_audio_cif = tegra30_ahub_set_cif,
+ };
+ 
+ static struct tegra30_ahub_soc_data soc_data_tegra114 = {
+-	.mod_list_mask = MOD_LIST_MASK_TEGRA114,
++	.num_resets = 13,
+ 	.set_audio_cif = tegra30_ahub_set_cif,
+ };
+ 
+ static struct tegra30_ahub_soc_data soc_data_tegra124 = {
+-	.mod_list_mask = MOD_LIST_MASK_TEGRA124,
++	.num_resets = 21,
+ 	.set_audio_cif = tegra124_ahub_set_cif,
+ };
+ 
+@@ -527,8 +514,6 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ {
+ 	const struct of_device_id *match;
+ 	const struct tegra30_ahub_soc_data *soc_data;
+-	struct reset_control *rst;
+-	int i;
+ 	struct resource *res0;
+ 	void __iomem *regs_apbif, *regs_ahub;
+ 	int ret = 0;
+@@ -541,34 +526,16 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	soc_data = match->data;
+ 
+-	/*
+-	 * The AHUB hosts a register bus: the "configlink". For this to
+-	 * operate correctly, all devices on this bus must be out of reset.
+-	 */
+-	for (i = 0; i < ARRAY_SIZE(configlink_mods); i++) {
+-		if (!(configlink_mods[i].mod_list_mask &
+-					soc_data->mod_list_mask))
+-			continue;
+-
+-		rst = reset_control_get_exclusive(&pdev->dev,
+-						  configlink_mods[i].rst_name);
+-		if (IS_ERR(rst)) {
+-			dev_err(&pdev->dev, "Can't get reset %s\n",
+-				configlink_mods[i].rst_name);
+-			ret = PTR_ERR(rst);
+-			return ret;
+-		}
+-
+-		/* just check presence of the reset control in DT */
+-		reset_control_put(rst);
+-	}
+-
+ 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+ 			    GFP_KERNEL);
+ 	if (!ahub)
+ 		return -ENOMEM;
+ 	dev_set_drvdata(&pdev->dev, ahub);
+ 
++	BUILD_BUG_ON(sizeof(ahub->resets) != sizeof(tegra30_ahub_resets_data));
++	memcpy(ahub->resets, tegra30_ahub_resets_data, sizeof(ahub->resets));
++
++	ahub->nresets = soc_data->num_resets;
+ 	ahub->soc_data = soc_data;
+ 	ahub->dev = &pdev->dev;
+ 
+@@ -579,10 +546,11 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	ahub->reset = devm_reset_control_array_get_exclusive(&pdev->dev);
+-	if (IS_ERR(ahub->reset)) {
+-		dev_err(&pdev->dev, "Can't get resets: %pe\n", ahub->reset);
+-		return PTR_ERR(ahub->reset);
++	ret = devm_reset_control_bulk_get_exclusive(&pdev->dev, ahub->nresets,
++						    ahub->resets);
++	if (ret) {
++		dev_err(&pdev->dev, "Can't get resets: %d\n", ret);
++		return ret;
+ 	}
+ 
+ 	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+diff --git a/sound/soc/tegra/tegra30_ahub.h b/sound/soc/tegra/tegra30_ahub.h
+index 3b85244f87f1..c9eaf4ec8f6e 100644
+--- a/sound/soc/tegra/tegra30_ahub.h
++++ b/sound/soc/tegra/tegra30_ahub.h
+@@ -491,7 +491,7 @@ void tegra124_ahub_set_cif(struct regmap *regmap, unsigned int reg,
+ 			   struct tegra30_ahub_cif_conf *conf);
+ 
+ struct tegra30_ahub_soc_data {
+-	u32 mod_list_mask;
++	unsigned int num_resets;
+ 	void (*set_audio_cif)(struct regmap *regmap,
+ 			      unsigned int reg,
+ 			      struct tegra30_ahub_cif_conf *conf);
+@@ -511,7 +511,8 @@ struct tegra30_ahub_soc_data {
+ struct tegra30_ahub {
+ 	const struct tegra30_ahub_soc_data *soc_data;
+ 	struct device *dev;
+-	struct reset_control *reset;
++	struct reset_control_bulk_data resets[21];
++	unsigned int nresets;
+ 	struct clk_bulk_data clocks[2];
+ 	unsigned int nclocks;
+ 	resource_size_t apbif_addr;
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 3d22c1be6f3d..614b67be1dd9 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -23,6 +23,7 @@
  #include <linux/platform_device.h>
  #include <linux/pm_runtime.h>
  #include <linux/regmap.h>
@@ -138,58 +326,6 @@ index 06c728ae17ed..c454a34c15c4 100644
  #include <linux/slab.h>
  #include <sound/core.h>
  #include <sound/pcm.h>
-@@ -313,6 +314,12 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 	}
- 	dev_set_drvdata(&pdev->dev, ac97);
- 
-+	ac97->reset = devm_reset_control_get_exclusive(&pdev->dev, "ac97");
-+	if (IS_ERR(ac97->reset)) {
-+		dev_err(&pdev->dev, "Can't retrieve ac97 reset\n");
-+		return PTR_ERR(ac97->reset);
-+	}
-+
- 	ac97->clk_ac97 = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(ac97->clk_ac97)) {
- 		dev_err(&pdev->dev, "Can't retrieve ac97 clock\n");
-@@ -364,12 +371,26 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
- 	ac97->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	ac97->playback_dma_data.maxburst = 4;
- 
-+	ret = reset_control_assert(ac97->reset);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to assert AC'97 reset: %d\n", ret);
-+		goto err_clk_put;
-+	}
-+
- 	ret = clk_prepare_enable(ac97->clk_ac97);
- 	if (ret) {
- 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
- 		goto err_clk_put;
- 	}
- 
-+	usleep_range(10, 100);
-+
-+	ret = reset_control_deassert(ac97->reset);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to deassert AC'97 reset: %d\n", ret);
-+		goto err_clk_disable_unprepare;
-+	}
-+
- 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to set AC'97 ops: %d\n", ret);
-diff --git a/sound/soc/tegra/tegra20_ac97.h b/sound/soc/tegra/tegra20_ac97.h
-index e467cd1ff2ca..870ea09ff301 100644
---- a/sound/soc/tegra/tegra20_ac97.h
-+++ b/sound/soc/tegra/tegra20_ac97.h
-@@ -78,6 +78,7 @@ struct tegra20_ac97 {
- 	struct clk *clk_ac97;
- 	struct snd_dmaengine_dai_dma_data capture_dma_data;
- 	struct snd_dmaengine_dai_dma_data playback_dma_data;
-+	struct reset_control *reset;
- 	struct regmap *regmap;
- 	int reset_gpio;
- 	int sync_gpio;
 -- 
 2.29.2
 
