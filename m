@@ -6,54 +6,54 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC7CEC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 13:35:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E004C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 13:39:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CDD6764EFD
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 13:35:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDD6764EFD
+	by mail.kernel.org (Postfix) with ESMTPS id 92E3D64F4D
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 13:39:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 92E3D64F4D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3731617EE;
-	Thu, 11 Mar 2021 14:34:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3731617EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07F0417F4;
+	Thu, 11 Mar 2021 14:38:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07F0417F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615469720;
-	bh=C2avMT7834rdrheQua8NTCc8KeEmFvhpLLkHdyZkhzM=;
+	s=default; t=1615469983;
+	bh=IR1sV8WnMbe43pW5SPR8/2b/2L6RpVNvWyIKhBL1tzg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LLvTiGmP860QUppyBI0hAVAYOJbpzALomlKTYgljIDij2mJapzkfDKmS/I2i05Bhd
-	 dO7PlK6Q3efsI04bG/qYL6IwydUjn5DUKJrfgevgTNVnKRzwAwA3NVnMbHCU0NC6ul
-	 51zLGOdQLEjVvYNuE4yNkQm6uPprr6g3W6jRx+xo=
+	b=aal7U+P0yVvuQpufEvkcWBqxcGp9JGiRjac/vOFLh3Zo7J5iSBpw2w5Zo8m36sn3c
+	 hmXxUAkFv2vvgT5O6ynC3pDgchVy+L9gKI/L1t+lXhTleJvR4OcvZ5o0WUHUQU2Ea5
+	 RgorD5srySJJLY/0YCqbv0ZU2zHDdnFBtZCEjIsM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5FBBF800BF;
-	Thu, 11 Mar 2021 14:34:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72285F8010D;
+	Thu, 11 Mar 2021 14:38:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18193F80227; Thu, 11 Mar 2021 14:34:25 +0100 (CET)
+ id 745FBF80227; Thu, 11 Mar 2021 14:38:51 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 658CDF800BF
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 14:34:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 658CDF800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED3D6F8010D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 14:38:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED3D6F8010D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 85545AC16;
- Thu, 11 Mar 2021 13:34:16 +0000 (UTC)
-Date: Thu, 11 Mar 2021 14:34:16 +0100
-Message-ID: <s5hr1klvmp3.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 520A9AC17;
+ Thu, 11 Mar 2021 13:38:45 +0000 (UTC)
+Date: Thu, 11 Mar 2021 14:38:45 +0100
+Message-ID: <s5hpn05vmhm.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Subject: Re: [PATCH v1 1/1] ALSA: hda/realtek: Sort alphanumerically the
- HDA_CODEC_ENTRY() entries.
-In-Reply-To: <20210311132748.81071-1-andriy.shevchenko@linux.intel.com>
-References: <20210311132748.81071-1-andriy.shevchenko@linux.intel.com>
+ SND_PCI_QUIRK() entries.
+In-Reply-To: <20210311132741.80989-1-andriy.shevchenko@linux.intel.com>
+References: <20210311132741.80989-1-andriy.shevchenko@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -76,17 +76,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 11 Mar 2021 14:27:48 +0100,
+On Thu, 11 Mar 2021 14:27:41 +0100,
 Andy Shevchenko wrote:
 > 
-> Sort alphanumerically the HDA_CODEC_ENTRY() entries for better maintenance.
+> Sort alphanumerically the SND_PCI_QUIRK() entries for better maintenance.
 > No functional change implied.
-> 
-> Note, that HDA_CODEC_REV_ENTRY() goes after HDA_CODEC_ENTRY() as per
-> default value in the latter macro.
 
-This breaks the matching rule.  Please put the HDA_CODEC_REV_ENTRY()
-before the HDA_CODEC_ENTRY().
+I'd love to apply this kind of cleanups (and I do sometimes
+partially), but practically seen, this may make the stable backporting
+significantly harder because many quirk patches are backported to the
+very old LTS kernels.  So, unless any specific reason (e.g. some
+entries doubled or wrongly applied) is given, I'd avoid this full
+plastic surgery.
 
+
+thanks,
 
 Takashi
