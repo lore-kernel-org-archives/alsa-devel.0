@@ -2,101 +2,99 @@ Return-Path: <SRS0=8+EQ=IJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF0B2C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 15:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 306FBC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 15:39:18 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CD53D64FAA
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 15:20:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD53D64FAA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 80DEC64FEF
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 15:39:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80DEC64FEF
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C004185B;
-	Thu, 11 Mar 2021 16:19:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C004185B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41D1E189A;
+	Thu, 11 Mar 2021 16:38:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D1E189A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615476021;
-	bh=lM8GOOCpvUTwlOOR+j55s0PnLGsgvCRMd2ds1GLpIqo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615477154;
+	bh=pjjRqeWEkerPs1+DO2+21ov/btYW87tUsW9gQomfGko=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QZlqZaEhIbRyJ4nVZNdI36aa3vLVB6dMma2RR6Wl/d3Fym3uPmtLf90YfopbyV1u9
-	 oUoi09Thv5jJi37mMyay03SDy2XWq4NJjsuYqcRQqCl+oWsjYZaY7hj0Td5sfLXQtj
-	 rhfVna94eWWtHSfyvjPs6peg4RB4wzOJBmqUZz9E=
+	b=fNGdqS1IKb1I8XO/aajuKUFCbXP1dlOoBfJ03rzzBXtlV3dQIplWbmW5OEL/YA5wl
+	 6y7bG+uz1OcoqcGKANOMTfe977EAe142aSeddm2+QnF11NbrSDkZxQ0w83qNenK1mI
+	 q34DV6zJol320jHm5CsoPHOkd7rR3o5k6LI0B6qo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5427BF804AD;
-	Thu, 11 Mar 2021 16:17:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3C18F8019B;
+	Thu, 11 Mar 2021 16:38:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44EE8F8032D; Thu, 11 Mar 2021 16:17:14 +0100 (CET)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
+ id 31494F80227; Thu, 11 Mar 2021 16:38:22 +0100 (CET)
+Received: from m42-2.mailgun.net (m42-2.mailgun.net [69.72.42.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95F20F800BF
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 16:17:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95F20F800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13EBDF8015B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 16:38:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13EBDF8015B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="efyTR88F"
-Received: by mail-lj1-x234.google.com with SMTP id y1so2608748ljm.10
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 07:17:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=2SMSIMvYxaxu4F53i5qtc3hVUmETiEH2Ssz4CshQdOI=;
- b=efyTR88FuZ/EWfd8zdy/nRhfsx2cu7cgcFzRLhSVkTz+pFbP+DWxbDR3qq8bqGaXkQ
- KJHJKKPLJjxPuW+SgxTgmhcN3fOilX/K72gigNjciCZtSM1H3eyTp8nzkjqfhNIzCFVq
- +rWlREF3qU58GsnF8gpBkvVvjooWAjlYdj2RGaAZPYSPOo/zq+zww810VvkZ5fIqzVjx
- i8K0nOWtuZj67K8cfQODxQEiW1RoFLaARYQ0swfMCDR+6hdFBXLR5jPbcvf8wux9nmrv
- SjdqvzhxEB9v2Gh0+TmlXX/wu2vtbjogw302OV8svqjlfarX+5fnWG/xcLEeyxkHQ5Ap
- VESQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=2SMSIMvYxaxu4F53i5qtc3hVUmETiEH2Ssz4CshQdOI=;
- b=X2feCJQtFTxd4soy1lV0DVX5mlekvusybuq/PULot9nMoU73krVm21Acctl8FD9CYJ
- uEPZEZ6o7sOtxr5mac1M4x9w682es0+ayT0yqX9y9FD8/R+E0N+G9IrJB2tg5nPzO3t3
- VSrkJhD7LDEFV6RlgtWI1kmx21AAm56nbX7PuIZdEDELqbmBjOrbSOomW+u9QuXj+l0F
- Gd9j6G4XglZei3Ac8Qk9tQD3jG7XqJltAsAo7ImLoRxhTkDw7Y2yvaFoa1/T8KkjnR8i
- L/23asntq+fCgKN24h9kgzYd9dbvSFhBVoyifJIkJJRvcz9IQxSfNO5OP9gaoVPIyuzH
- ScUw==
-X-Gm-Message-State: AOAM533oyHI+pQlAzNxaxabPegMsEnYHfGcZRFd9RxtvIcVdOLz3pHJz
- RnhlbBjtc79yULpRpZmLM4k=
-X-Google-Smtp-Source: ABdhPJxuzRFej1Px86UaKb3FEtTASiLFxKlnTGK+H5EU5OOkqUeCaBRlXW0zziipgDFzLjTcbUgmGw==
-X-Received: by 2002:a2e:87ca:: with SMTP id v10mr5145808ljj.96.1615475820463; 
- Thu, 11 Mar 2021 07:17:00 -0800 (PST)
-Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
- [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id m24sm923138lfq.184.2021.03.11.07.16.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Mar 2021 07:17:00 -0800 (PST)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v2 3/5] ASoC: tegra30: i2s: Restore hardware state on runtime
- PM resume
-Date: Thu, 11 Mar 2021 18:15:52 +0300
-Message-Id: <20210311151554.23982-4-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210311151554.23982-1-digetx@gmail.com>
-References: <20210311151554.23982-1-digetx@gmail.com>
+ dkim=pass (1024-bit key) header.d=mg.codeaurora.org
+ header.i=@mg.codeaurora.org header.b="uL2GfJ0h"
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org;
+ q=dns/txt; 
+ s=smtp; t=1615477095; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=fci74IU0CcbrD9iuw1GhDi36gvGwuEOcVviIB6uQtqA=;
+ b=uL2GfJ0h9g3LIyjoKi7FjJ3TzesMjgC4PkvFhkrqez2d+UuxNVTZ4u/tOuwk3vfOs2wEyBCC
+ MEPJa4VpKOUutGySCfht7QdDnVRtvPWkoWdpJgiIzrKOkjHAQ0IX3wFaGek6ByZOKwj6ZVk1
+ ZPN1twAaNQfu7qoERKI+iMratIQ=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI4ZmE2ZSIsICJhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmciLCAiYmU5ZTRhIl0=
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 604a392a0c7cf0f56c7f740f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 11 Mar 2021 15:37:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+ id E2159C43463; Thu, 11 Mar 2021 15:37:13 +0000 (UTC)
+Received: from [192.168.29.24] (unknown [49.37.159.71])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: srivasam)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 86317C433CA;
+ Thu, 11 Mar 2021 15:37:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 86317C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org;
+ spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Fix lpass dai ids parse
+To: Mark Brown <broonie@kernel.org>
+References: <20210311081805.20424-1-srivasam@codeaurora.org>
+ <20210311132250.GA14183@sirena.org.uk>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <c38e3a71-f023-e740-5f85-cb7e4df658ea@codeaurora.org>
+Date: Thu, 11 Mar 2021 21:07:06 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210311132250.GA14183@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org,
+ tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ bjorn.andersson@linaro.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
+ rohitkr@codeaurora.org, swboyd@chromium.org, judyhsiao@chromium.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,82 +110,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Tegra30 I2S driver syncs regmap cache only on resume from system suspend,
-but hardware is reset across the runtime suspend because RPM of the parent
-AHUB driver resets the I2S hardware, hence h/w state is lost after each
-RPM resume. The problem isn't visible because hardware happens to be fully
-reprogrammed after each RPM resume. Move hardware syncing to RPM resume in
-order to restore h/w state properly.
+Thanks for the info Mark!!
 
-Fixes: ed9ce1ed2239 ("ASoC: tegra: ahub: Reset hardware properly")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_i2s.c | 40 +++++++++++------------------------
- 1 file changed, 12 insertions(+), 28 deletions(-)
+Sorry for the typo mistake. Will re-post with proper subject.
 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 6740df541508..3d22c1be6f3d 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -58,8 +58,18 @@ static int tegra30_i2s_runtime_resume(struct device *dev)
- 	}
- 
- 	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	ret = regcache_sync(i2s->regmap);
-+	if (ret)
-+		goto disable_clocks;
- 
- 	return 0;
-+
-+disable_clocks:
-+	clk_disable_unprepare(i2s->clk_i2s);
-+
-+	return ret;
- }
- 
- static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
-@@ -551,37 +561,11 @@ static int tegra30_i2s_platform_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int tegra30_i2s_suspend(struct device *dev)
--{
--	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
--
--	regcache_mark_dirty(i2s->regmap);
--
--	return 0;
--}
--
--static int tegra30_i2s_resume(struct device *dev)
--{
--	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
--	int ret;
--
--	ret = pm_runtime_get_sync(dev);
--	if (ret < 0) {
--		pm_runtime_put(dev);
--		return ret;
--	}
--	ret = regcache_sync(i2s->regmap);
--	pm_runtime_put(dev);
--
--	return ret;
--}
--#endif
--
- static const struct dev_pm_ops tegra30_i2s_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra30_i2s_runtime_suspend,
- 			   tegra30_i2s_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(tegra30_i2s_suspend, tegra30_i2s_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
- 
- static struct platform_driver tegra30_i2s_driver = {
+On 3/11/2021 6:52 PM, Mark Brown wrote:
+> git log -1 --format='Fixes: %h ("%s")'
+
 -- 
-2.29.2
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
