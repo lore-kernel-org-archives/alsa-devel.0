@@ -2,92 +2,110 @@ Return-Path: <SRS0=8+EQ=IJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B73C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 03:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C4DAC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:23:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8539564E22
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 03:34:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8539564E22
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
+	by mail.kernel.org (Postfix) with ESMTPS id 80AB964FC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:23:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80AB964FC9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 067F8170A;
-	Thu, 11 Mar 2021 04:33:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 067F8170A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2293216F7;
+	Thu, 11 Mar 2021 06:22:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2293216F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615433646;
-	bh=p9QBR8FF+SMYerovRtrcPflfDpdCaoqDU/Fa3N/qOys=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	s=default; t=1615440180;
+	bh=fXzADS1kq2dZtVPzavTTOVod7u+a/ibR0BQErc0xOsk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s1RdDTZpzab7qPz5MTx4ahrrSxLVPvNFXAMvWTVtk+8VCHTNdxopM3ySq4tJv/XLp
-	 aTXwb7Vr0VO/BxMILKPYEDwRJUvCIQhOUmgqGzxdru16MlnTAjEsvPFZlarvozY8HD
-	 aHn82WMt1zxnFBzvKJutDq1k5uEqN2QJCwAwgRfk=
+	b=EIA5piyjzuWjcMB6xvUqFBOitpAs9TIZX8XHb9IYYtu7R3fKTOkwOyUdoRIfIEXhz
+	 SPxSrLnmbpYvr6nQV+dj9WYgr+UwqFYD08HKszo4RrL9sAM9tfQI1/QQBCR9iVYTCm
+	 Zkd/jvhw3eZkxIvg3zWfD9GRh10SBrkvGNzX7lZE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B12FCF802D2;
-	Thu, 11 Mar 2021 04:32:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56A06F802E7;
+	Thu, 11 Mar 2021 06:22:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DD74F80276; Thu, 11 Mar 2021 04:32:21 +0100 (CET)
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com
- [IPv6:2607:f8b0:4864:20::749])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1DB14F8019B; Thu, 11 Mar 2021 06:22:05 +0100 (CET)
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
+ [64.147.123.21])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63945F8010D
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 04:32:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63945F8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 788D8F8019B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:21:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 788D8F8019B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="pKhD1S53"
-Received: by mail-qk1-x749.google.com with SMTP id i11so14378663qkn.21
- for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2021 19:32:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=ta3c37NC4IC38mag1lCTgXilpT5IXIyHlWQH4EiC/iA=;
- b=pKhD1S53tPW8xEw0EjG1zY8EqSWaFA1ZGIMnppVhynZq+48BEUkcpXvmbt2f8of5fi
- TWq/YeYdJZb+7Maj234fxi0H+q3PrbBIBJWlbXwYtYveHu7XiqUOp8fwGCB8a+4oaIil
- 2gtRYuyr6qiLR3KJPJ/Rw2I3rDl51xKZ0zzkau+UpSOu0aoCTyduHInerq1ezpFE/ma2
- AjSzuplJPwyxsD2wfh/bwBqsP5Rfk2oFEc2991BGcbpdiUgwB1TnI+3hgaheRJADX8+i
- roC+95ULvIHvc3vAttWclG+jjCvpZaW0vO0ioZfmcv+bRJAmbDVaDEj23jVk1ZXXTz3A
- CxzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=ta3c37NC4IC38mag1lCTgXilpT5IXIyHlWQH4EiC/iA=;
- b=uWiaDww3a1rD9e6jnKGMv3L9ETsoXSCmyrIS9o3aueYNkabgqyJKIAi5ffN9OPfiL5
- 1OwXS207ETfePH20iT7FpdJlSw+xr9a1X9QsostbR31rtPu+ZauiijQeDywgbV/Srfms
- 9GmKJc4uBLCkyz2+8nyWcxrYkxwUzMwVQ7/C3CyPQqIrp5jnALcqMgWdCSF6nG2gnm9x
- 5UuBvd89PxPWGwi00tfXgQ1F6PYR8nkp9r+9+1UsV2V1JU7pxidTPNP9eVpCYlEB6r/X
- itlsBxmJu2EQMIMYMvYGzc9iYor7NrYUs8tX0RPLcioIQrVESebmB0zkTOdI6Oan2ELO
- +oWw==
-X-Gm-Message-State: AOAM533Ul3tikEu0hPLTZnBSUwJ2f6SqY+6rQtP++OxEBUwWHx+WUBSc
- VSkYvxU1Zeamlb3TFba3ZTu76io3Ud5P
-X-Google-Smtp-Source: ABdhPJyjG9Eti+3Jl9cxnyfQ8irNUI+/6ZL9YuaCZo7HcpU2iTmXZS+14JL16sfSy/SFI7vcw0qFLAdT3Utv
-X-Received: from tzungbi-z840.tpe.corp.google.com
- ([2401:fa00:1:b:d958:2f3:afb:68a3])
- (user=tzungbi job=sendgmr) by 2002:ad4:4692:: with SMTP id
- bq18mr6269467qvb.0.1615433535565; Wed, 10 Mar 2021 19:32:15 -0800 (PST)
-Date: Thu, 11 Mar 2021 11:31:51 +0800
-In-Reply-To: <20210311033151.1818603-1-tzungbi@google.com>
-Message-Id: <20210311033151.1818603-3-tzungbi@google.com>
-Mime-Version: 1.0
-References: <20210311033151.1818603-1-tzungbi@google.com>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-Subject: [PATCH 2/2] ASoC: mediatek: mt8183: support machine driver with
- rt1015p
-From: Tzung-Bi Shih <tzungbi@google.com>
-To: broonie@kernel.org, robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: tzungbi@google.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="EcMimhCj"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="qDNZ9MAa"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.west.internal (Postfix) with ESMTP id C2D1E2FA6;
+ Thu, 11 Mar 2021 00:21:55 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:21:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=woD/s1xL3qGTy
+ n5onCrVICODUISrJwFGDBfJAjXoCcg=; b=EcMimhCj5GzcFF+YsySRu70XPzjad
+ 4NtsMks9uHNMnVYFDPOOiQOlRg5m6uKZOp457T+GYDS9IqQDo5WIf8YUz3qD6Fhl
+ a/1RtKsl0OXHFJjRKUYXdz6X4Yp/+nSlvtF0piBnMq+wYm8s/XdUXdaJUsN37f1H
+ +lv81a3twzlGbwoBEp/qxvvrTRqbkcOGwMFYNIktPiDkw2TrVI6dWdAxpZlQIPuH
+ A+lM5szcHL4cEBr+oKIkIiRa98Jt6aqYqSAwRKBoxoHoeTl9G4OQH4pbZCb4v/pg
+ kW+tKIH3raj8DY7Ipn9Ek+BEdInBzsfr7wPreJXh3M2OXnUJdvybFEGVQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=woD/s1xL3qGTyn5onCrVICODUISrJwFGDBfJAjXoCcg=; b=qDNZ9MAa
+ wdnJIcIdkHTNZNcmN6NMI8cl7DIilBHS6Tn69EjJ+MgyASH7V8mcw+kvZDP6xDIO
+ JEwwHCqEv3dySEmiagWixtnJlbgOQFhgUphzInL3O549HlpyPhqNwugU2iXbMT1V
+ zpTw9Sa+ir5F9vDHHSE2ANY2u1ieGB37JCKr/+s5wsHzfqHvOl8YkU4mxsoNVS50
+ g4HtgUH7YcMLns2INqDXkZV7nl0dNii8X1c0J0BfnCdRpxrmCjmdknMeuypX+cO0
+ 5MYOKBpsjzY47WmDcB50FbwRVZKE+iHnrg2/NuGSm9VZlLh1YWF85G/Fwlrj7Jku
+ ryDyrMTtUIGFBQ==
+X-ME-Sender: <xms:86hJYI7iyaXxQDLnNlzWMUTdlOiVlgPxAj85qrZGe2OlqBkwQLXDww>
+ <xme:86hJYFVY_0U-rDn71wTpBR4yXjCX1gMIIGHkppSchs3j-ZiYP_vx6RKPbKn4q0tzl
+ CvtP_fyMw4TwpLGF80>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduledgkeduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:86hJYK8NXONtumB_FArxdL7T2fvBkwDSNX_HPUzysfcEaysrBHTb6A>
+ <xmx:86hJYBn0_fwOdXXvPQmAHXnveN0dsz_WKEmBn9UwGKuS1xyj2BjXtg>
+ <xmx:86hJYIX3jTkstEeYodkP0hs1yXm75EQcnw1UtrtmvZNtMIRR8XMncQ>
+ <xmx:86hJYE9mi4jdrsRSVuwb6iPt7JAdHkuozDnyIN8hfpy1A7e__DBtvQ>
+Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
+ [14.3.65.175])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 5988F24005D;
+ Thu, 11 Mar 2021 00:21:54 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de,
+	perex@perex.cz
+Subject: [alsa-utils][PATCH 03/14] axfer: minor code arrangement in a point of
+ opened file descriptor
+Date: Thu, 11 Mar 2021 14:21:34 +0900
+Message-Id: <20210311052146.404003-4-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
+References: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,89 +121,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Supports machine driver with rt1015p ("mt8183_mt6358_ts3a227_rt1015p").
-Embeds in the existing mt8183-mt6358-ts3a227-max98357.c because they
-share most of the code.
+This commit arranges assignment to fd member after checking file
+descriptor.
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/mediatek/Kconfig                    |  1 +
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 29 +++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ axfer/container.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index effdb76369e4..74dae4332d17 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -124,6 +124,7 @@ config SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A
- 	select SND_SOC_MT6358
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_RT1015
-+	select SND_SOC_RT1015P
- 	select SND_SOC_BT_SCO
- 	select SND_SOC_TS3A227E
- 	select SND_SOC_CROS_EC_CODEC if CROS_EC
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 271413e719e3..94dcbd36c869 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -284,6 +284,11 @@ SND_SOC_DAILINK_DEFS(i2s3_rt1015,
- 			   COMP_CODEC(RT1015_DEV1_NAME, RT1015_CODEC_DAI)),
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()));
+diff --git a/axfer/container.c b/axfer/container.c
+index fb35eba..b4646b9 100644
+--- a/axfer/container.c
++++ b/axfer/container.c
+@@ -151,6 +151,7 @@ int container_parser_init(struct container_context *cntr,
+ 		[CONTAINER_FORMAT_AU] = &container_parser_au,
+ 		[CONTAINER_FORMAT_VOC] = &container_parser_voc,
+ 	};
++	int fd;
+ 	const struct container_parser *parser;
+ 	unsigned int size;
+ 	int i;
+@@ -168,12 +169,13 @@ int container_parser_init(struct container_context *cntr,
  
-+SND_SOC_DAILINK_DEFS(i2s3_rt1015p,
-+	DAILINK_COMP_ARRAY(COMP_CPU("I2S3")),
-+	DAILINK_COMP_ARRAY(COMP_CODEC("rt1015p", "HiFi")),
-+	DAILINK_COMP_ARRAY(COMP_EMPTY()));
-+
- SND_SOC_DAILINK_DEFS(i2s5,
- 	DAILINK_COMP_ARRAY(COMP_CPU("I2S5")),
- 	DAILINK_COMP_ARRAY(COMP_CODEC("bt-sco", "bt-sco-pcm")),
-@@ -590,6 +595,13 @@ static struct snd_soc_card mt8183_mt6358_ts3a227_rt1015_card = {
- 	.num_configs = ARRAY_SIZE(mt8183_mt6358_ts3a227_rt1015_amp_conf),
- };
+ 	// Open a target descriptor.
+ 	if (!strcmp(path, "-")) {
+-		cntr->fd = fileno(stdin);
++		fd = fileno(stdin);
+ 	} else {
+-		cntr->fd = open(path, O_RDONLY);
+-		if (cntr->fd < 0)
++		fd = open(path, O_RDONLY);
++		if (fd < 0)
+ 			return -errno;
+ 	}
++	cntr->fd = fd;
  
-+static struct snd_soc_card mt8183_mt6358_ts3a227_rt1015p_card = {
-+	.name = "mt8183_mt6358_ts3a227_rt1015p",
-+	.owner = THIS_MODULE,
-+	.dai_link = mt8183_mt6358_ts3a227_dai_links,
-+	.num_links = ARRAY_SIZE(mt8183_mt6358_ts3a227_dai_links),
-+};
-+
- static int
- mt8183_mt6358_ts3a227_max98357_headset_init(struct snd_soc_component *component)
- {
-@@ -686,6 +698,19 @@ mt8183_mt6358_ts3a227_max98357_dev_probe(struct platform_device *pdev)
- 				dai_link->platforms = i2s3_rt1015_platforms;
- 				dai_link->num_platforms =
- 					ARRAY_SIZE(i2s3_rt1015_platforms);
-+			} else if (card == &mt8183_mt6358_ts3a227_rt1015p_card) {
-+				dai_link->be_hw_params_fixup =
-+					mt8183_rt1015_i2s_hw_params_fixup;
-+				dai_link->ops = &mt8183_mt6358_i2s_ops;
-+				dai_link->cpus = i2s3_rt1015p_cpus;
-+				dai_link->num_cpus =
-+					ARRAY_SIZE(i2s3_rt1015p_cpus);
-+				dai_link->codecs = i2s3_rt1015p_codecs;
-+				dai_link->num_codecs =
-+					ARRAY_SIZE(i2s3_rt1015p_codecs);
-+				dai_link->platforms = i2s3_rt1015p_platforms;
-+				dai_link->num_platforms =
-+					ARRAY_SIZE(i2s3_rt1015p_platforms);
- 			}
- 		}
+ 	cntr->stdio = (cntr->fd == fileno(stdin));
+ 	if (cntr->stdio) {
+@@ -239,6 +241,7 @@ int container_builder_init(struct container_context *cntr,
+ 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
+ 		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
+ 	};
++	int fd;
+ 	const struct container_builder *builder;
+ 	int err;
  
-@@ -772,6 +797,10 @@ static const struct of_device_id mt8183_mt6358_ts3a227_max98357_dt_match[] = {
- 		.compatible = "mediatek,mt8183_mt6358_ts3a227_rt1015",
- 		.data = &mt8183_mt6358_ts3a227_rt1015_card,
- 	},
-+	{
-+		.compatible = "mediatek,mt8183_mt6358_ts3a227_rt1015p",
-+		.data = &mt8183_mt6358_ts3a227_rt1015p_card,
-+	},
- 	{}
- };
- #endif
+@@ -256,12 +259,13 @@ int container_builder_init(struct container_context *cntr,
+ 	if (path == NULL || *path == '\0')
+ 		return -EINVAL;
+ 	if (!strcmp(path, "-")) {
+-		cntr->fd = fileno(stdout);
++		fd = fileno(stdout);
+ 	} else {
+-		cntr->fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
+-		if (cntr->fd < 0)
++		fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
++		if (fd < 0)
+ 			return -errno;
+ 	}
++	cntr->fd = fd;
+ 
+ 	cntr->stdio = (cntr->fd == fileno(stdout));
+ 	if (cntr->stdio) {
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.27.0
 
