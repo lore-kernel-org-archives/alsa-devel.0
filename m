@@ -4,102 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAEBBC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:26:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 201AFC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:26:52 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3905C64FC3
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:26:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3905C64FC3
+	by mail.kernel.org (Postfix) with ESMTPS id 5C4B264FC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:26:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C4B264FC9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F5121709;
-	Thu, 11 Mar 2021 06:25:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F5121709
+	by alsa0.perex.cz (Postfix) with ESMTPS id E44C21720;
+	Thu, 11 Mar 2021 06:25:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E44C21720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615440388;
-	bh=Y1Z5oqqUXZx9/NOjjvKDH6O0xsoKjy673BBO7hzY4l0=;
+	s=default; t=1615440410;
+	bh=hWsnkRuJb7qpnixsMMtNyG+ABHy4L4oG0RnnCp0JdV0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DQiS08o6WMtkk4LVwDBPbkbCxQEmP+TJ8gCLRvMkwgXItkxsgHcyxRKc9cE8d/HqS
-	 KHvGK26w/W0V28foqooXkGswqG0dhwLGlSs2DPyj5zCnOzZCL4IHz0XysvYqYQA9TF
-	 OnJjsippMSzBIF5aVarHDorfixhnuWZUYgCHQCDQ=
+	b=K30Qk78BgYe1g2OQIdXrQ3UaBs4fGJuGHAEXn10qahouoMFYz3oJaqCaz7gWqYeXa
+	 9MXxE2xzLjC1vQ3H9pQunytI6telQovXMvYCtVUgBhvfuVbg8X6sumdKXIP2qCVe8Q
+	 PXLmiOcYz4Gf9Fv0Xyz6Sk7UiMG7CELwAOaDar2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C06ECF804E5;
-	Thu, 11 Mar 2021 06:22:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 724DEF8019B;
+	Thu, 11 Mar 2021 06:22:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F9F3F804DA; Thu, 11 Mar 2021 06:22:38 +0100 (CET)
+ id E1489F80227; Thu, 11 Mar 2021 06:22:38 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96685F802D2
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:22:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96685F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE90EF8032C
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:22:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE90EF8032C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="eh8zKoRk"; 
+ header.b="lm/tEIq1"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="NBNnw3kd"
+ header.i=@messagingengine.com header.b="eFiCcbBD"
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 00B3C2F95;
- Thu, 11 Mar 2021 00:22:02 -0500 (EST)
+ by mailout.west.internal (Postfix) with ESMTP id 1AA112FA0;
+ Thu, 11 Mar 2021 00:22:07 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:22:03 -0500
+ by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:22:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=KB5FiiHZGxuKj
- qAN6vHRFU/8JJNKlxJREV69SmH6ev4=; b=eh8zKoRkXEXnsjFv5PlXJea28CJet
- R5oO6R83xnlv3/UgkQocOqcZjb/ZSSEqG27xqJoj1ZZxRPwqq5jutkei4YNnLhQw
- w7vsvpr1PeIieoL5u9OGC3/SgKPSozejuJaVEtvnbr7xFJ9W2Dc+Vcc86Yb4+Awb
- DcmMjpcbW38hkFagQ1BUhAW3rLYu4iiR0aYVGTUvnUltS10+bG/HQkEPn/TOp+DF
- JEq3oLPa8eUKV8HjH5QTjg2zZYHza19bsGOZSpiApAKIJHs5aX9CAni8GPijt5zO
- /9gA95yYyk0YyuC6PaXEvGzqkqmxHpRIiJUw7BuF9BSLLHjDQfu1vv0iw==
+ :mime-version:content-transfer-encoding; s=fm1; bh=c8CvjuUr3RQk5
+ H387/Mvm7ZDVN3RPJbq9mHJK9/9FPE=; b=lm/tEIq10m/0hmYV394BUwklNeJk0
+ ssfMi04Js0eOEBWHNFb+W0KBnL9rgZh2/+vT2OlMtb3sIn6TyONE7zeYTTdsabHF
+ iKdLe9FP/OGLUDoA3bD2xW5366vq7H/2dbO5QYQGplxmlqiVQ5Jq3TfumDoxWtGC
+ UlDJrPPPASFFfGaK4i/ZEI8qJsScxSfjyu7CUIqqm2jpi9fOajC6Fxh+8HJjYJKz
+ TVtZ5TBXatVXYy9CiFTBfZIKBUOd9IoclGjLEcR7rMQiPyoQnlqGScjFY4+mkVY2
+ iBHNLD34VVitmlAiVrGsGjSOROGUTmc7+x7OJm5NbCTfW7CkKKZ60f7jA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=KB5FiiHZGxuKjqAN6vHRFU/8JJNKlxJREV69SmH6ev4=; b=NBNnw3kd
- x229zqZ+v0A0+WJ8HJbu90zQiO3e4jEXF+V2sFYN4yNIjFGlyZgVSGODuaOXRoYR
- noWjK1wGyN1AzfnsOiztMGY7j/6IJjrhdIYwXtQeMpwE/9qijgxcPEpjNtI+loqe
- JrYSm60n/97ohSOGPkIBIotadR8RmvSR6VeiKLzdtzj559bGJ/fwqjfbvwQTb7X+
- 1uQtVWKSfTDBr8LPS6jGYzbI1p76ivxG8FxfXlJKizDgLra22DXbkrDSltyo0ItP
- fm7PGibgDkDs0HH4tDU2AeTkSflkWWlLW9NODE7F1qguJMNeai0FxGZdV0qlZjii
- S3l2qleNvxcCMw==
-X-ME-Sender: <xms:-qhJYAxzqE8kblb8U7KLfNvrXOxTc6fKGk_fyAkwhqh1yzkhdzOzCg>
- <xme:-qhJYETgGwHytnsuyB4lCHOHE2ZVSPsfYZf6kgAwecI2PTXCfnOSk7ri2BOg6p9Hp
- LltV2EYa69LaP4H9F0>
+ fm2; bh=c8CvjuUr3RQk5H387/Mvm7ZDVN3RPJbq9mHJK9/9FPE=; b=eFiCcbBD
+ vDw5kqFgh7Jm2uFLmuBES9l8WnXTjDCoaKvbmqGUTruyuP3MWk7m504WKyQCF+dE
+ yrI5K34PayTyQ75yyMZSjnjE0aRy+bLjrAjrezkOlIYWBDctBi56nnTJdREoSjyP
+ FM7NmI1D22iOolB4VqkFnm5IPmXJVPeAfQR41yHq3yjUd7iijqK494wv5kzslnSf
+ aZXJXkKAx6/6+/Jp8YS9wvf33I+UIAO0k0bmKuMlwdFUlThEhvRs4euqLS9bXjYZ
+ Jv1wnQVG41fQyDp9Afs+/KxBZF5/ZvmR3DjLZEoV5CB/gTcDDVe0YHfrE4lmjMGO
+ 6mHUwVKRmhStlQ==
+X-ME-Sender: <xms:_qhJYA3V_lVBHs8YnB9RiMgNFChkIqr23YnA_D26H1q-ijydvrh8Pg>
+ <xme:_qhJYLGA3IYdBJiSm8aUlJcl7IVH2MRUVD9Dxdb3QZyomC0MCQiy8nLdx9dDwPqct
+ ZBh-O2vUWX85QsdpdM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduledgkedvucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepgeenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:-qhJYCXtazLdh7znfeeAKeANEKfWnTNSTaEAXyXG2F7AnN1wjMAjFA>
- <xmx:-qhJYOiiAmjFiziIW2HsxIhDmSJR6e5unka9MOSV_miozMDYaGDeXg>
- <xmx:-qhJYCCRn0EYhVMTUMszZyiIJHUnl6HjIkCnOJYcHBDPUW1vUiiB4A>
- <xmx:-qhJYNqp2fGLFzHsDYVVKNG88CArxGdpHdVsAeWW0Q7M_LcUG-alHQ>
+X-ME-Proxy: <xmx:_qhJYI4pDqBVQWWWDqEipsC3adt4rOG86PKP-K1KaKAW3lYoyHYwJw>
+ <xmx:_qhJYJ2xKJchwYgdB9dP42GF5vGd8XHvQlO7x5wepUs5IKjPhG1B7Q>
+ <xmx:_qhJYDFy5gp1oK2YAjN0ggy6pY5SnlPe9eHRVPLP4O1LPi_olQUz0Q>
+ <xmx:_qhJYGOqdcmMwnA-80t_YueQgiyo6KdOLl5fT3ESCGkZ75TQEskJ3w>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA id 7CB6A24005A;
- Thu, 11 Mar 2021 00:22:00 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id A6080240054;
+ Thu, 11 Mar 2021 00:22:05 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [alsa-utils][PATCH 08/14] axfer: test: minor code arrangement to use
- the same file descriptor for container-test
-Date: Thu, 11 Mar 2021 14:21:39 +0900
-Message-Id: <20210311052146.404003-9-o-takashi@sakamocchi.jp>
+Subject: [alsa-utils][PATCH 11/14] axfer: test: use memfd_create() for
+ mapper-test
+Date: Thu, 11 Mar 2021 14:21:42 +0900
+Message-Id: <20210311052146.404003-12-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
 References: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
@@ -121,135 +121,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In container test program, two file descriptors open to the same file
-for builder and parser contexts, however the same file descriptor is
-available for the case.
+The mapper test program writes audio data frame to files, and read
+them from the files, then validate them. For the operations, usage of
+any in-memory file is good to shorten time of overall operations.
 
-This commit arranges to use the same file descriptor for the contexts.
+This commit uses shm by memfd_create().
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/test/container-test.c | 40 +++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 17 deletions(-)
+ axfer/test/mapper-test.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/axfer/test/container-test.c b/axfer/test/container-test.c
-index d89852a..4d825b6 100644
---- a/axfer/test/container-test.c
-+++ b/axfer/test/container-test.c
-@@ -24,8 +24,8 @@ struct container_trial {
- 	bool verbose;
- };
+diff --git a/axfer/test/mapper-test.c b/axfer/test/mapper-test.c
+index 0bed4bb..477871d 100644
+--- a/axfer/test/mapper-test.c
++++ b/axfer/test/mapper-test.c
+@@ -6,11 +6,20 @@
+ //
+ // Licensed under the terms of the GNU General Public License, version 2.
  
--static void test_builder(struct container_context *cntr,
--			 enum container_format format, const char *const name,
-+static void test_builder(struct container_context *cntr, int fd,
-+			 enum container_format format,
- 			 snd_pcm_access_t access,
- 			 snd_pcm_format_t sample_format,
- 			 unsigned int samples_per_frame,
-@@ -33,7 +33,6 @@ static void test_builder(struct container_context *cntr,
- 			 void *frame_buffer, unsigned int frame_count,
- 			 bool verbose)
- {
--	int fd;
- 	snd_pcm_format_t sample;
- 	unsigned int channels;
- 	unsigned int rate;
-@@ -42,9 +41,6 @@ static void test_builder(struct container_context *cntr,
- 	uint64_t total_frame_count;
- 	int err;
- 
--	fd = open(name, O_RDWR | O_CREAT | O_TRUNC, 0644);
--	assert(fd >= 0);
--
- 	err = container_builder_init(cntr, fd, format, verbose);
- 	assert(err == 0);
- 
-@@ -73,18 +69,16 @@ static void test_builder(struct container_context *cntr,
- 	assert(total_frame_count == frame_count);
- 
- 	container_context_destroy(cntr);
--	close(fd);
- }
- 
--static void test_parser(struct container_context *cntr,
--		        enum container_format format, const char *const name,
-+static void test_parser(struct container_context *cntr, int fd,
-+		        enum container_format format,
- 		        snd_pcm_access_t access, snd_pcm_format_t sample_format,
- 		        unsigned int samples_per_frame,
- 		        unsigned int frames_per_second,
- 		        void *frame_buffer, unsigned int frame_count,
- 			bool verbose)
- {
--	int fd;
- 	snd_pcm_format_t sample;
- 	unsigned int channels;
- 	unsigned int rate;
-@@ -92,9 +86,6 @@ static void test_parser(struct container_context *cntr,
- 	unsigned int handled_frame_count;
- 	int err;
- 
--	fd = open(name, O_RDONLY);
--	assert(fd >= 0);
--
- 	err = container_parser_init(cntr, fd, verbose);
- 	assert(err == 0);
- 
-@@ -122,7 +113,6 @@ static void test_parser(struct container_context *cntr,
- 	assert(total_frame_count == handled_frame_count);
- 
- 	container_context_destroy(cntr);
--	close(fd);
- }
- 
- static int callback(struct test_generator *gen, snd_pcm_access_t access,
-@@ -156,26 +146,42 @@ static int callback(struct test_generator *gen, snd_pcm_access_t access,
- 	unlink(name);
- 
- 	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
-+		int fd;
-+		off64_t pos;
++#include <aconfig.h>
++#ifdef HAVE_MEMFD_CREATE
++#define _GNU_SOURCE
++#endif
 +
- 		frames_per_second = entries[i];
+ #include "../mapper.h"
+ #include "../misc.h"
  
--		test_builder(&trial->cntr, trial->format, name, access,
-+		fd = open(name, O_RDWR | O_CREAT | O_TRUNC, 0644);
-+		if (fd < 0) {
-+			err = -errno;
-+			break;
-+		}
+ #include "generator.h"
+ 
++#ifdef HAVE_MEMFD_CREATE
++#include <sys/mman.h>
++#endif
 +
-+		test_builder(&trial->cntr, fd, trial->format, access,
- 			     sample_format, samples_per_frame,
- 			     frames_per_second, frame_buffer, frame_count,
- 			     trial->verbose);
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <stdbool.h>
+@@ -230,7 +239,11 @@ static int test_mapper(struct mapper_trial *trial, snd_pcm_access_t access,
+ 	for (i = 0; i < cntr_count; ++i) {
+ 		const char *path = trial->paths[i];
  
--		test_parser(&trial->cntr, trial->format, name, access,
-+		pos = lseek64(fd, 0, SEEK_SET);
-+		if (pos < 0) {
-+			err = -errno;
-+			break;
-+		}
-+
-+		test_parser(&trial->cntr, fd, trial->format, access,
- 			    sample_format, samples_per_frame, frames_per_second,
- 			    buf, frame_count, trial->verbose);
++#ifdef HAVE_MEMFD_CREATE
++		cntr_fds[i] = memfd_create(path, 0);
++#else
+ 		cntr_fds[i] = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
++#endif
+ 		if (cntr_fds[i] < 0) {
+ 			err = -errno;
+ 			goto end;
+@@ -255,10 +268,8 @@ static int test_mapper(struct mapper_trial *trial, snd_pcm_access_t access,
+ 		       frames_per_second, frames_per_buffer, check_buffer,
+ 		       frame_count, cntr_fds, cntr_count);
+ end:
+-	for (i = 0; i < cntr_count; ++i) {
+-		unlink(trial->paths[i]);
++	for (i = 0; i < cntr_count; ++i)
+ 		close(cntr_fds[i]);
+-	}
  
- 		err = memcmp(buf, frame_buffer, size);
- 		assert(err == 0);
+ 	free(cntr_fds);
  
-+		close(fd);
- 		unlink(name);
- 	}
- 
- 	free(buf);
- 
--	return 0;
-+	return err;
- }
- 
- int main(int argc, const char *argv[])
 -- 
 2.27.0
 
