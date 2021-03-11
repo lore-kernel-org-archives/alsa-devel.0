@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 235BBC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43B5CC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:52:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 652DF64FC0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:51:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 652DF64FC0
+	by mail.kernel.org (Postfix) with ESMTPS id 784B064FC1
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:52:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 784B064FC1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 525441725;
-	Thu, 11 Mar 2021 01:51:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 525441725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00712172A;
+	Thu, 11 Mar 2021 01:51:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00712172A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615423917;
-	bh=O5PZ0H43KGyU54JduFVdVlKVcKjE7aAz5R7Edh15h/g=;
+	s=default; t=1615423926;
+	bh=hWOJS+dM7A1EuqUTqpCvEakwNn3+Da/uOx0yvNxXa8c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OBJYwOMXPGBBY+F2p/qaFDrRLgTc/EB970UNrXQ/20Fine/mt886Uc09qbCe8J0s2
-	 Q6Bnnq8Ic1ajzfuS74++Td0C3HHD7pmbmNQqvaoymWsubjBIbVkLRP5wXVAAk/S4Jo
-	 IDGgeL0VvZ+fpnmj+jEDQhpoWyW+GUf5slXOZhTE=
+	b=gIant7QClJZ+hLCuR9FczQqd7iv5Kbnw2u7eoppHnwzCEYKUuvmGhZy1KDQZnbDLj
+	 gKbjYx9XWf7pPfoQF9UKxrKGOOJRHSnzf3mqjEHdkdODMh5nXg0KFvb5e1PIHAgN32
+	 0Nao6O+sFNkE1CNNxoTAkQboce2lxoMNd0KL5gg0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 652D0F80431;
-	Thu, 11 Mar 2021 01:49:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32D97F804A9;
+	Thu, 11 Mar 2021 01:49:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67B67F80430; Thu, 11 Mar 2021 01:49:35 +0100 (CET)
+ id 06635F8042F; Thu, 11 Mar 2021 01:49:36 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A8C3F8014E
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 01:49:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A8C3F8014E
-IronPort-SDR: /fdsvnBupSTNThHlfo23tLOgSepzvEbnCWbFA6d3quMvek2iLGkIE8g0O7Ejo/PPE9+4Bxbjj5
- 2r3A5DyrSpNg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167865545"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="167865545"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A4ECF8020D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 01:49:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A4ECF8020D
+IronPort-SDR: qaIKIcDh4PC+G+Xs/7VTK9WCaNQT5qA0N1pKN55aowLtHbHtOQP598G0d1C5OJbeoqN7OsR1oT
+ VjE/sRdJKGRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="167865539"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="167865539"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 16:49:25 -0800
-IronPort-SDR: FSbU1mY7rxBkyn+H5OVD7Y273ef/naAw+b1hkifbnAIIoIsy6sJoCNqQo/iLmPA3hbZZA4rijd
- rl09/87K6A6Q==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="370386809"
+ 10 Mar 2021 16:49:22 -0800
+IronPort-SDR: BhKoyhXtdGKV5O1zd6/K9C7KxhHwbj9vnaXtmqYZmIkYx82BA/1XRFhC/c5asRys56K22Q4GZQ
+ wV2iI0dMK3Dw==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="370386802"
 Received: from theer-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.101.109])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 16:49:23 -0800
+ 10 Mar 2021 16:49:21 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: mediatek: mt8173: rename local irq variable
-Date: Wed, 10 Mar 2021 18:49:04 -0600
-Message-Id: <20210311004904.121205-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: mediatek: mt2701: rename shadowed array
+Date: Wed, 10 Mar 2021 18:49:03 -0600
+Message-Id: <20210311004904.121205-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210311004904.121205-1-pierre-louis.bossart@linux.intel.com>
 References: <20210311004904.121205-1-pierre-louis.bossart@linux.intel.com>
@@ -72,7 +72,6 @@ Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
  "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Matthias Brugger <matthias.bgg@gmail.com>,
  "moderated list:ARM/Mediatek SoC support"
  <linux-arm-kernel@lists.infradead.org>
@@ -93,48 +92,58 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 cppcheck warning:
 
-sound/soc/mediatek/mt8173/mt8173-afe-pcm.c:929:28: style: Local
-variable 'irq' shadows outer argument [shadowArgument]
-  struct mtk_base_afe_irq *irq;
-                           ^
-sound/soc/mediatek/mt8173/mt8173-afe-pcm.c:914:47: note: Shadowed
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:406:36: style: Local
+variable 'memif_data' shadows outer variable [shadowVariable]
+ const struct mtk_base_memif_data *memif_data;
+                                   ^
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:977:41: note: Shadowed
 declaration
-static irqreturn_t mt8173_afe_irq_handler(int irq, void *dev_id)
-                                              ^
-sound/soc/mediatek/mt8173/mt8173-afe-pcm.c:929:28: note: Shadow
+static const struct mtk_base_memif_data memif_data[MT2701_MEMIF_NUM] = {
+                                        ^
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:406:36: note: Shadow
 variable
-  struct mtk_base_afe_irq *irq;
-                           ^
-
-Not a great idea to have two 'irq' variables in the same function...
+ const struct mtk_base_memif_data *memif_data;
+                                   ^
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:431:36: style: Local
+variable 'memif_data' shadows outer variable [shadowVariable]
+ const struct mtk_base_memif_data *memif_data;
+                                   ^
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:977:41: note: Shadowed
+declaration
+static const struct mtk_base_memif_data memif_data[MT2701_MEMIF_NUM] = {
+                                        ^
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c:431:36: note: Shadow
+variable
+ const struct mtk_base_memif_data *memif_data;
+                                   ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-index 685f4074b4e0..6350390414d4 100644
---- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-@@ -926,14 +926,14 @@ static irqreturn_t mt8173_afe_irq_handler(int irq, void *dev_id)
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index d5cffe7a7e15..bc3d0466472b 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -974,7 +974,7 @@ static const struct snd_soc_component_driver mt2701_afe_pcm_dai_component = {
+ 	.resume = mtk_afe_resume,
+ };
  
- 	for (i = 0; i < MT8173_AFE_MEMIF_NUM; i++) {
- 		struct mtk_base_afe_memif *memif = &afe->memif[i];
--		struct mtk_base_afe_irq *irq;
-+		struct mtk_base_afe_irq *irq_p;
+-static const struct mtk_base_memif_data memif_data[MT2701_MEMIF_NUM] = {
++static const struct mtk_base_memif_data memif_data_array[MT2701_MEMIF_NUM] = {
+ 	{
+ 		.name = "DL1",
+ 		.id = MT2701_MEMIF_DL1,
+@@ -1366,7 +1366,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- 		if (memif->irq_usage < 0)
- 			continue;
+ 	for (i = 0; i < afe->memif_size; i++) {
+-		afe->memif[i].data = &memif_data[i];
++		afe->memif[i].data = &memif_data_array[i];
+ 		afe->memif[i].irq_usage = -1;
+ 	}
  
--		irq = &afe->irqs[memif->irq_usage];
-+		irq_p = &afe->irqs[memif->irq_usage];
- 
--		if (!(reg_value & (1 << irq->irq_data->irq_clr_shift)))
-+		if (!(reg_value & (1 << irq_p->irq_data->irq_clr_shift)))
- 			continue;
- 
- 		snd_pcm_period_elapsed(memif->substream);
 -- 
 2.25.1
 
