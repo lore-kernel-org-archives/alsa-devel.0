@@ -7,99 +7,99 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AB0CC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E024C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:29:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4D8564FC9
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:28:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4D8564FC9
+	by mail.kernel.org (Postfix) with ESMTPS id 80D3264FC4
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:29:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 80D3264FC4
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19BAB172B;
-	Thu, 11 Mar 2021 06:27:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19BAB172B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E006A172C;
+	Thu, 11 Mar 2021 06:28:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E006A172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615440528;
+	s=default; t=1615440546;
 	bh=4gGhQEflyU+oi6w1WzQ9TAOysKzm/K4E0EaBNTugjB4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tDmxZMJ0Ov7Lu53wlgFcUkenSv9QezBS2ixDB58NkkeXmPZ746GCxhVhNWTzeO6ZV
-	 kWW72NIgLACciQVKLkpFqI7l9TgKTPu0M1bZnVf/rxdkHTtRhAaQNS9FV/Iy63j7GC
-	 gOrKGYX0ntVkrXgCTuW3gpCVwjhLk/GB9WOg2Hwo=
+	b=DD3Is5Vq5oKxV3Vv+C7nijJEEthrpWNobh1UajYL0WfpfkOlOGXUz9e6lazDQu9SB
+	 uB4FvnFTi9C0YaYKN9k73Oo35+fmtAh+Ewqgzp3GFTB6DOn4d+wxJDGYJG6idr1Qjo
+	 XSXhPgTyKIjXAIVVaogOWQ+XRBj1Nmr7OqlshO7c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68502F8051B;
-	Thu, 11 Mar 2021 06:23:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CE10F8051D;
+	Thu, 11 Mar 2021 06:23:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54EBFF804EB; Thu, 11 Mar 2021 06:22:48 +0100 (CET)
+ id 67FCFF804ED; Thu, 11 Mar 2021 06:22:49 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2503EF80431
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:22:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2503EF80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76C87F8019B
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:22:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76C87F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="WL75j8EL"; 
+ header.b="udS8/Wfb"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="pss/YvT0"
+ header.i=@messagingengine.com header.b="nGeEUDSp"
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 7F3A82FCB;
- Thu, 11 Mar 2021 00:22:12 -0500 (EST)
+ by mailout.west.internal (Postfix) with ESMTP id C71F12FB1;
+ Thu, 11 Mar 2021 00:22:09 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:22:12 -0500
+ by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:22:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding; s=fm1; bh=VFcSEjkdAFaQv
- Dbt65kFzXcJZaVcyUHzaDAHX7DHzJ8=; b=WL75j8ELdFczgNGzAGm3+5cDodl01
- ju0RbacdjroHTKNQzy0uEQLtKqDq+YlsUSLnWaFZ5Hoy7T+Qbw/JmnBbwOSGt2yZ
- ne6/W7MvaoNSW6cphDdBFOgI1VrkueKySltNySs4l9xr9OY621SKWENW0NqJOnKH
- 9UjOv5BMbDZlrLmeHX9UybBd+wOhM/3HDM3Z9qw7pSmXPxyIOQbFcRazSygQUArg
- UGYQ2oezTONNSMXY1sJMWht1QEBlXdjTvZVcj9Hui2xtdUerjp4iSSOlXVHHkACP
- dNyJbM0nYKNr6d14slAqUBecCqFIEX5YRRIzJ4WXHBovbUNiw1RHKn8Bg==
+ Dbt65kFzXcJZaVcyUHzaDAHX7DHzJ8=; b=udS8/WfbH0qGRJrf6z66osxi5WQ54
+ 9lOmmgy24xwjwCPdpUQzm2tXrDQRt5rvmmbw9hPFROFGIclgtzO/4fNCsyH0SbRV
+ kNFfwwYEjUqmYaWBRrBcbXqTJf0F3MNcprWtyXK4hOybveQKDCS88E8LTr6XPrX8
+ kAaRxs2DjttnEgezCEb4ZysK9Ie0Du9GIT+z+25y1T1OksjeFH9E4HDqqLo2xiDI
+ e3AOaur85RYe5vs8TzCGbVuwTCCi0JUqrRNtspTIcuSAF49L0JQvVX6Y1WW5m4cf
+ rkwdKJw6+KejSeO/YwggqithWyvTIzWF0OURi5QjBKO9s4vCsQOo61L5Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=VFcSEjkdAFaQvDbt65kFzXcJZaVcyUHzaDAHX7DHzJ8=; b=pss/YvT0
- gdyjsRoSzN+qFeVoZJ+Lni4eNhjlsXcl3f471M8xkQ5qmdxS+dB16OLy6pUVBftI
- bOp7vxCKBTvr4srTVv3rgueXYtVqhVN6QBqpW3xZoLFor1IRGubz904khLawVvsb
- EkBajDxl6f0EPSpEpJ8RbWC9fU6D96L1JAFN0+rAbuqJYLjc1oNGAfSH3GDf0O89
- nqQCw1Zqdu4NB9EJtVeN94OfewHcq2XY7wxZFDWuSRY5dxQotY+ZXBmdJ6kmmEnS
- d7piqgB+Men2AsLT+OWnrIvwGfmiri4ln6+E/iyJMWlBwwLAGHj3jPDgnCYoL/87
- olcJocT/rAZd1A==
-X-ME-Sender: <xms:BKlJYGhZcCHePVng51B5N8VMmzmJ60GKEbroK1faoKmNh9Jv5Vh1RQ>
- <xme:BKlJYHCd_xDaotUQn8rcNhB9I_C0XZ2zuZqyouyPVSAdA9_QT79LNiu7e8SB6Nr14
- XNgn-BLfBQN8BZwvf8>
+ fm2; bh=VFcSEjkdAFaQvDbt65kFzXcJZaVcyUHzaDAHX7DHzJ8=; b=nGeEUDSp
+ rO3ry/dyqUHT8hNAl/Ei4cbLUPstR05oLjQNRCeQV14PuikbtYUN1DwZxYTA4Smi
+ 2FDupI9shOtt6lWQoMyo5T7IYifBOpuA7eqYKuH0hNh4Px11egnKnKcGpiXKDn9K
+ WnlnbtsNjti4U4yVCkP/gkEpiNw47Mi59vFsAggkoKPSpyG59qdCAErJ2xgVxZuc
+ IrqCt++C52aZEMFaq7NlJzvdZ3i5qYtE7DYaVxTQg3ctIACR6Lk/GLDgPNEqNSZW
+ Yu5fqDL9TXDWaYwtTHz0Ldvp/XcT7fYGXQ9O86IhL1R7V0pgrahNtHwOaf/gdXgL
+ Etdk7YytZrNZlA==
+X-ME-Sender: <xms:AalJYIM4CRiRgXZpbzRYFDWtlKZ1ABx6-BVVxfrZV6KMSGYjQTzXFw>
+ <xme:AalJYO_dbH_350KZrb-RtlTgReJ2I4pKZL-hSk87xNZ_Uq55jXFJCixMo_M-BgCIL
+ zxML5Wc_JL9hKyq7M4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduledgkedvucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepkeenucfrrghrrghmpehmrghilh
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepgeenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:BKlJYOEA6R6ALI4wl8xyRMBsF6ApBr0sY142mskWJ2u1G3Z6mDdtQA>
- <xmx:BKlJYPTxTrKLWFHdWmeQ9eGR9-SQuQwtTZTbkKH_VjFh-lT9CYu_Dg>
- <xmx:BKlJYDwBMrpi1FBk8JXFOESLsPuAZEFMVm0RYsMqeqtPqllZE6klcQ>
- <xmx:BKlJYBb5ZrsJxrLXnwq2kTJ5ewFS-pSnac2wbD0wi8c2efv-G_rgdg>
+X-ME-Proxy: <xmx:AalJYPSQc-I7v7S04lO7Gh1Cd6ED6XqLugR4IF_9vKEpFxaMJbi_1A>
+ <xmx:AalJYAtcQ73QqGaoIhc8j8cjmtXWUE2YY-FbN2R5ZvI8gPvaGcFYTQ>
+ <xmx:AalJYAfXx7rlX1Fu2GLz7k-kvyfkmw2x_LsBMULyLG_mnIArzNGoZw>
+ <xmx:AalJYIlYfp8l-FkOhDNdn4xWOlQnmNnHpsVqdbwHLPVHqhqjr1a1IA>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA id 13AA7240054;
- Thu, 11 Mar 2021 00:22:10 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 6653E240054;
+ Thu, 11 Mar 2021 00:22:08 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [alsa-utils][PATCH 14/14] Revert "axfer: test - add
+Subject: [alsa-utils][PATCH 13/13] Revert "axfer: test - add
  run-test-in-tmpdir.sh script"
-Date: Thu, 11 Mar 2021 14:21:46 +0900
-Message-Id: <20210311052146.404003-16-o-takashi@sakamocchi.jp>
+Date: Thu, 11 Mar 2021 14:21:44 +0900
+Message-Id: <20210311052146.404003-14-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
 References: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
