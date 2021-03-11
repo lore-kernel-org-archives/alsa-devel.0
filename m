@@ -4,102 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1708C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4DA2C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:24:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6D7D164FC0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:24:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6D7D164FC0
+	by mail.kernel.org (Postfix) with ESMTPS id C313764FC9
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 05:24:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C313764FC9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6DB616FA;
-	Thu, 11 Mar 2021 06:23:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6DB616FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22C7016F9;
+	Thu, 11 Mar 2021 06:23:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C7016F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615440246;
-	bh=IgEhd8gaWjpcjoO0iH9sBrM2odmhhyld8wg3/H9tW8o=;
+	s=default; t=1615440279;
+	bh=Y3cOTsRyyvZlnIHXYFniuOuRTCdb2iDsPPWkLtjSWjw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Dwn3EtxxtUey+mklCGZWuGvD0XG27rfnf5CtFhpKVNv/IcoaAujf24vyTul9eMxKl
-	 gTSlj6Lb2hrIAldbtnKgVNBzl+YrMwqMwVMuafvHETUTUKhXbL7kdVpOiisKLS58PL
-	 ZlEoQinMuIetYLJheKKaU96ftUI4ATxiHxH4Q+tA=
+	b=lz+K2fkMD94WqdZ1fTy+Fru+GdNfLUQY6tQ6FPkxQI0Po0puyISdUqEJXqCQy4W1Y
+	 Po9leM9AnBQadJk/KiVT/HISkcvFM5j1pff2pULk7CSfBRea6VGEP6hq3atGuiQgOh
+	 jefUhcuh6mprDs6YS+05dzuoIsvvWJ8Fhw1C4yGE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F339F804AC;
-	Thu, 11 Mar 2021 06:22:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B61CF80256;
+	Thu, 11 Mar 2021 06:22:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA9A8F804AC; Thu, 11 Mar 2021 06:22:16 +0100 (CET)
+ id 9092AF804B1; Thu, 11 Mar 2021 06:22:20 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6E2AF8015B
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:21:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6E2AF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E092F8025A
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 06:22:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E092F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="gxJiz9bB"; 
+ header.b="tzpiksJ9"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="rg6mQtUT"
+ header.i=@messagingengine.com header.b="PDX3UWK9"
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 1945A2FA0;
- Thu, 11 Mar 2021 00:21:53 -0500 (EST)
+ by mailout.west.internal (Postfix) with ESMTP id 84F0B2FB1;
+ Thu, 11 Mar 2021 00:21:58 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:21:53 -0500
+ by compute4.internal (MEProxy); Thu, 11 Mar 2021 00:21:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=4/hffh3FPz/3y
- LeRfHga+JBwUjSKdCrIAe+KpMYAOMs=; b=gxJiz9bBMoHCP5AW64nWC1bsEDJOG
- hT6b/8TIBp0GqIZjrvya4yj024pm0wH2Y3kIpOvLxaj0WPjK+ZxlWVLnbeGYWP3D
- D4B4qVfMVMTRBRzD3WWWFxQstyq+fZnr+cAgKgOx0zZpM90MzQ4xX/nuHLBMOBH3
- 1KUnaQGkyr8z43k2LgXz+tvzdY2Y4DdWW1u13qxEzi70p2fttPw+qf+J7fwW2Fwq
- nqEo6xw5gtt9hWTyltnGmwnegYaqvrOJ/b5HGCKb1EhzJQD5FTTQOWpGMQZX4sav
- tyVITPEJrRO6coiMyPbyYmPS55cryDPJzX0Q8BMHIVE9C8ZfYdshN5M7A==
+ :mime-version:content-transfer-encoding; s=fm1; bh=HvJAd77eOJTuR
+ hKUuKWovywlFpayPVJJGRJkfS7k9Pg=; b=tzpiksJ9EhJX+9yJV2DFgB1ERjBa9
+ GJVg/UdVX7/py9h4XzrmLAQADyBc4hkwjAYIAsfhwKkL5/ChIcNBaRd2p1vNPcDL
+ IVl8HlL1dIzDTcOxfxb8+3VqVOGOPAUA47MIVy43CyjGE3SF4SvuCvaYjjYLJ0Cb
+ xfQBk6JiVPs9xS0aTvjZVllSo3FptH11lsDaHSL7dI8Mgu38t8tgYvfI/rRbvPrw
+ BVkKf+xwwT82HN84LYe6ioT26fdwpf9eFCMxvN8HWLweXobHAy2Qts5bubMebcll
+ WFB8q7UidNrivL2QxcHX8Wc3tg0I+s3VXgO18alDjiaSTKmgCCfPn3CVw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=4/hffh3FPz/3yLeRfHga+JBwUjSKdCrIAe+KpMYAOMs=; b=rg6mQtUT
- E6J0aobkqtfS6NT4oQC5qfi8Ir4DEHzWWBzsdlLTlGk9OtHb+ZWagXh4uqMRJiNI
- mUcKlDsHJZi+a0ESFGGQkH5LSbVOi064fQ1VAkY+xesMvZSXNtwdLihN5eGYjFRZ
- pTa0et6WEJzhDNTXrYSvsa6sD+g8AjPMzUd5oIE+iXMDIxod8Zt3KmswKfTGqDjS
- lkWjiF0DivpqnbK0xhSUbUD/3d+xi2i0Ktc5jHnZ+wlBf9nNI6Jh8+fXMXYYJtti
- eO2RZC23wMqUpdlkR0nfFcfzGGdJK69jAQQ6nTyod7E/vX8hyVTfyTmba/Bvf3io
- +cfW/6Io/UL7FA==
-X-ME-Sender: <xms:8KhJYFk5DKXejE5LdKxZOL3W4Yt973hPoL16NmOLbQrm2AOsK7wASg>
- <xme:8KhJYA19vJVIuMQCQDbBpdupbgHaGqdFbUV3HtECfzDKnF51U-Y5Q4AgouB4DAkH_
- -PS4uJoHmOG7ZqcD0M>
+ fm2; bh=HvJAd77eOJTuRhKUuKWovywlFpayPVJJGRJkfS7k9Pg=; b=PDX3UWK9
+ XhBqcfGtqp/FQkUXlA52/sG/1Ym9+oZ4CHKL5djrh+phwOX+KyeRWR7FC22z1nEX
+ VUCSau1lOSKbftbWKa9i6cMTlWV+ZA+/HcuDzDiujzFNj6k7oEAI9v9YZfmtiNzb
+ AZg7lrnvTqtzGEodjJIbsAJYyEvQlqoBLkQrny7pegFUs8Y1Eo0Xw6lL9jkmIBHe
+ 06JTqHxigvE/st5DLG0wWW/Dg15D5AbXaoYXz+ecmUUtf95VAfn/J8+XQoKeO+Ca
+ 8CWhhKThzmfIhfgg3qeXs4UPISl8xyIISmyBiB2jnLSpaUhmjb9LuqDOAQOygD5A
+ tcKcSAkqhRTGew==
+X-ME-Sender: <xms:9qhJYF8rM8u6OgXFZkkd_NAVPmW_SCsZaeU4lnYXbpRK6SH1RSl9Mw>
+ <xme:9qhJYJvtSiMT6oQAqdOedQiPSV03V1d4S_QEP6ZQeg3Su9Du-lPOsWMN8dwHc6-K7
+ _ZJlI4m5IvCYf-wf0Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduledgkeduucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepgeenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:8KhJYLpE954yrqQQijuNJYnQrtC-R5CUYcIuqeTQ7KYELimXhffIGQ>
- <xmx:8KhJYFnLYsNOVsIRX2p6UcNKx7KCHhSA7VePrD-mWynCtS791yZZcA>
- <xmx:8KhJYD1PEtT-zs_I1lJ_hTEVzPXBEeZV6ABdp_JWmN7m1W2aty1Sag>
- <xmx:8KhJYA9_vq7EpVNXgVNotlzNtIUaWqoDKfOOJv10jyT9BhFAWgoL-A>
+X-ME-Proxy: <xmx:9qhJYDDFpMSWOC-PP9hqrW1GsxTM-xXEgrRbzZODzKD5ax_NyxKjLA>
+ <xmx:9qhJYJeBdHCbMuzUUhim5sL6J-i_I0VUiVLd8lGWFgnmIOKKQw-Ccw>
+ <xmx:9qhJYKObgDPwixv7Rptnnlm9JdazZobYYi70I6UGcKrwNkEZvaM9gw>
+ <xmx:9qhJYEVY8ye5NYpw0Jb9gE2rWQ2AwuNwR5kDM7_9kxHtnMtEQ0k7sA>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA id AE5A224005A;
- Thu, 11 Mar 2021 00:21:51 -0500 (EST)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 18D43240057;
+ Thu, 11 Mar 2021 00:21:56 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [alsa-utils][PATCH 01/14] axfer: minor code arrangement for container
- module in a point of nonblocking flag
-Date: Thu, 11 Mar 2021 14:21:32 +0900
-Message-Id: <20210311052146.404003-2-o-takashi@sakamocchi.jp>
+Subject: [alsa-utils][PATCH 05/14] axfer: open file descriptor outside of
+ container module
+Date: Thu, 11 Mar 2021 14:21:36 +0900
+Message-Id: <20210311052146.404003-6-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
 References: <20210311052146.404003-1-o-takashi@sakamocchi.jp>
@@ -121,68 +121,287 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In internal container module, any file descriptor is expected as
-non-blocking mode. Current implementation distinguish the case of
-standard input and output from the case to open actual file since
-O_NONBLOCK is used for the latter case. However, in both cases,
-fcntl(2) is available to set non-blocking mode to the file descriptor.
+Internal container module operates file descriptor to media file. For
+this purpose, the structure has fd member and any file operation is done
+internally. However, the case to use special file descriptor such as
+memfd requires to maintain file descriptor externally.
 
-This commit arranges to use fcntl(2) for both cases.
+This commit opens file descriptor outside of container module. The
+internal APIs to initialize container get an argument for the file
+descriptor instead of file path.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- axfer/container.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ axfer/container.c           | 35 ++++++-----------------------------
+ axfer/container.h           |  9 ++++-----
+ axfer/subcmd-transfer.c     | 26 ++++++++++++++++++++++----
+ axfer/test/container-test.c | 12 ++++++++++--
+ axfer/test/mapper-test.c    | 19 ++++++++++++++-----
+ 5 files changed, 56 insertions(+), 45 deletions(-)
 
 diff --git a/axfer/container.c b/axfer/container.c
-index 566acd0..8733ff7 100644
+index b4646b9..255f12c 100644
 --- a/axfer/container.c
 +++ b/axfer/container.c
-@@ -176,16 +176,17 @@ int container_parser_init(struct container_context *cntr,
- 				"should be referred instead.\n");
- 			return -EIO;
- 		}
--		err = set_nonblock_flag(cntr->fd);
--		if (err < 0)
--			return err;
- 		cntr->stdio = true;
- 	} else {
--		cntr->fd = open(path, O_RDONLY | O_NONBLOCK);
-+		cntr->fd = open(path, O_RDONLY);
- 		if (cntr->fd < 0)
- 			return -errno;
- 	}
+@@ -143,23 +143,21 @@ static int set_nonblock_flag(int fd)
+ 	return 0;
+ }
  
-+	err = set_nonblock_flag(cntr->fd);
-+	if (err < 0)
-+		return err;
+-int container_parser_init(struct container_context *cntr,
+-			  const char *const path, unsigned int verbose)
++int container_parser_init(struct container_context *cntr, int fd,
++			  unsigned int verbose)
+ {
+ 	const struct container_parser *parsers[] = {
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_parser_riff_wave,
+ 		[CONTAINER_FORMAT_AU] = &container_parser_au,
+ 		[CONTAINER_FORMAT_VOC] = &container_parser_voc,
+ 	};
+-	int fd;
+ 	const struct container_parser *parser;
+ 	unsigned int size;
+ 	int i;
+ 	int err;
+ 
+ 	assert(cntr);
+-	assert(path);
+-	assert(path[0] != '\0');
++	assert(fd >= 0);
+ 
+ 	// Detect forgotten to destruct.
+ 	assert(cntr->fd == 0);
+@@ -167,14 +165,6 @@ int container_parser_init(struct container_context *cntr,
+ 
+ 	memset(cntr, 0, sizeof(*cntr));
+ 
+-	// Open a target descriptor.
+-	if (!strcmp(path, "-")) {
+-		fd = fileno(stdin);
+-	} else {
+-		fd = open(path, O_RDONLY);
+-		if (fd < 0)
+-			return -errno;
+-	}
+ 	cntr->fd = fd;
+ 
+ 	cntr->stdio = (cntr->fd == fileno(stdin));
+@@ -231,9 +221,8 @@ int container_parser_init(struct container_context *cntr,
+ 	return 0;
+ }
+ 
+-int container_builder_init(struct container_context *cntr,
+-			   const char *const path, enum container_format format,
+-			   unsigned int verbose)
++int container_builder_init(struct container_context *cntr, int fd,
++			   enum container_format format, unsigned int verbose)
+ {
+ 	const struct container_builder *builders[] = {
+ 		[CONTAINER_FORMAT_RIFF_WAVE] = &container_builder_riff_wave,
+@@ -241,13 +230,11 @@ int container_builder_init(struct container_context *cntr,
+ 		[CONTAINER_FORMAT_VOC] = &container_builder_voc,
+ 		[CONTAINER_FORMAT_RAW] = &container_builder_raw,
+ 	};
+-	int fd;
+ 	const struct container_builder *builder;
+ 	int err;
+ 
+ 	assert(cntr);
+-	assert(path);
+-	assert(path[0] != '\0');
++	assert(fd >= 0);
+ 
+ 	// Detect forgotten to destruct.
+ 	assert(cntr->fd == 0);
+@@ -255,16 +242,6 @@ int container_builder_init(struct container_context *cntr,
+ 
+ 	memset(cntr, 0, sizeof(*cntr));
+ 
+-	// Open a target descriptor.
+-	if (path == NULL || *path == '\0')
+-		return -EINVAL;
+-	if (!strcmp(path, "-")) {
+-		fd = fileno(stdout);
+-	} else {
+-		fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
+-		if (fd < 0)
+-			return -errno;
+-	}
+ 	cntr->fd = fd;
+ 
+ 	cntr->stdio = (cntr->fd == fileno(stdout));
+diff --git a/axfer/container.h b/axfer/container.h
+index cb64816..0840369 100644
+--- a/axfer/container.h
++++ b/axfer/container.h
+@@ -61,11 +61,10 @@ struct container_context {
+ 
+ const char *const container_suffix_from_format(enum container_format format);
+ enum container_format container_format_from_path(const char *path);
+-int container_parser_init(struct container_context *cntr,
+-			  const char *const path, unsigned int verbose);
+-int container_builder_init(struct container_context *cntr,
+-			   const char *const path, enum container_format format,
+-			   unsigned int verbose);
++int container_parser_init(struct container_context *cntr, int fd,
++			  unsigned int verbose);
++int container_builder_init(struct container_context *cntr, int fd,
++			   enum container_format format, unsigned int verbose);
+ void container_context_destroy(struct container_context *cntr);
+ int container_context_pre_process(struct container_context *cntr,
+ 				  snd_pcm_format_t *format,
+diff --git a/axfer/subcmd-transfer.c b/axfer/subcmd-transfer.c
+index 6962208..52c32d5 100644
+--- a/axfer/subcmd-transfer.c
++++ b/axfer/subcmd-transfer.c
+@@ -185,10 +185,19 @@ static int capture_pre_process(struct context *ctx, snd_pcm_access_t *access,
+ 
+ 	*total_frame_count = 0;
+ 	for (i = 0; i < ctx->cntr_count; ++i) {
++		const char *path = ctx->xfer.paths[i];
++		int fd;
+ 		uint64_t frame_count;
+ 
+-		err = container_builder_init(ctx->cntrs + i,
+-					     ctx->xfer.paths[i],
++		if (!strcmp(path, "-")) {
++			fd = fileno(stdout);
++		} else {
++			fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
++			if (fd < 0)
++				return -errno;
++		}
 +
- 	// 4 bytes are enough to detect supported containers.
- 	err = container_recursive_read(cntr, cntr->magic, sizeof(cntr->magic));
- 	if (err < 0)
-@@ -260,17 +261,17 @@ int container_builder_init(struct container_context *cntr,
- 				"should be referred instead.\n");
- 			return -EIO;
- 		}
--		err = set_nonblock_flag(cntr->fd);
--		if (err < 0)
--			return err;
- 		cntr->stdio = true;
- 	} else {
--		cntr->fd = open(path, O_RDWR | O_NONBLOCK | O_CREAT | O_TRUNC,
--				0644);
-+		cntr->fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
- 		if (cntr->fd < 0)
- 			return -errno;
- 	}
++		err = container_builder_init(ctx->cntrs + i, fd,
+ 					     ctx->xfer.cntr_format,
+ 					     ctx->xfer.verbose > 1);
+ 		if (err < 0)
+@@ -226,13 +235,22 @@ static int playback_pre_process(struct context *ctx, snd_pcm_access_t *access,
+ 		return err;
  
-+	err = set_nonblock_flag(cntr->fd);
-+	if (err < 0)
-+		return err;
+ 	for (i = 0; i < ctx->cntr_count; ++i) {
++		const char *path = ctx->xfer.paths[i];
++		int fd;
+ 		snd_pcm_format_t format;
+ 		unsigned int channels;
+ 		unsigned int rate;
+ 		uint64_t frame_count;
+ 
+-		err = container_parser_init(ctx->cntrs + i,
+-					    ctx->xfer.paths[i],
++		if (!strcmp(path, "-")) {
++			fd = fileno(stdin);
++		} else {
++			fd = open(path, O_RDONLY);
++			if (fd < 0)
++				return -errno;
++		}
 +
- 	builder = builders[format];
++		err = container_parser_init(ctx->cntrs + i, fd,
+ 					    ctx->xfer.verbose > 1);
+ 		if (err < 0)
+ 			return err;
+diff --git a/axfer/test/container-test.c b/axfer/test/container-test.c
+index 9b30ae3..fbef3a4 100644
+--- a/axfer/test/container-test.c
++++ b/axfer/test/container-test.c
+@@ -33,6 +33,7 @@ static void test_builder(struct container_context *cntr,
+ 			 void *frame_buffer, unsigned int frame_count,
+ 			 bool verbose)
+ {
++	int fd;
+ 	snd_pcm_format_t sample;
+ 	unsigned int channels;
+ 	unsigned int rate;
+@@ -41,7 +42,10 @@ static void test_builder(struct container_context *cntr,
+ 	uint64_t total_frame_count;
+ 	int err;
  
- 	// Allocate private data for the builder.
+-	err = container_builder_init(cntr, name, format, verbose);
++	fd = open(name, O_RDWR | O_CREAT | O_TRUNC, 0644);
++	assert(fd >= 0);
++
++	err = container_builder_init(cntr, fd, format, verbose);
+ 	assert(err == 0);
+ 
+ 	sample = sample_format;
+@@ -79,6 +83,7 @@ static void test_parser(struct container_context *cntr,
+ 		        void *frame_buffer, unsigned int frame_count,
+ 			bool verbose)
+ {
++	int fd;
+ 	snd_pcm_format_t sample;
+ 	unsigned int channels;
+ 	unsigned int rate;
+@@ -86,7 +91,10 @@ static void test_parser(struct container_context *cntr,
+ 	unsigned int handled_frame_count;
+ 	int err;
+ 
+-	err = container_parser_init(cntr, name, verbose);
++	fd = open(name, O_RDONLY);
++	assert(fd >= 0);
++
++	err = container_parser_init(cntr, fd, verbose);
+ 	assert(err == 0);
+ 
+ 	sample = sample_format;
+diff --git a/axfer/test/mapper-test.c b/axfer/test/mapper-test.c
+index f0376c7..6252900 100644
+--- a/axfer/test/mapper-test.c
++++ b/axfer/test/mapper-test.c
+@@ -66,7 +66,6 @@ static int test_demux(struct mapper_trial *trial, snd_pcm_access_t access,
+ 		      unsigned int cntr_count)
+ {
+ 	struct container_context *cntrs = trial->cntrs;
+-	char **paths = trial->paths;
+ 	enum container_format cntr_format = trial->cntr_format;
+ 	unsigned int bytes_per_sample;
+ 	uint64_t total_frame_count;
+@@ -74,12 +73,17 @@ static int test_demux(struct mapper_trial *trial, snd_pcm_access_t access,
+ 	int err = 0;
+ 
+ 	for (i = 0; i < cntr_count; ++i) {
++		const char *path = trial->paths[i];
++		int fd;
+ 		snd_pcm_format_t format;
+ 		unsigned int channels;
+ 		unsigned int rate;
+ 
+-		err = container_builder_init(cntrs + i, paths[i], cntr_format,
+-					     0);
++		fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
++		if (fd < 0)
++			return -errno;
++
++		err = container_builder_init(cntrs + i, fd, cntr_format, 0);
+ 		if (err < 0)
+ 			goto end;
+ 
+@@ -159,18 +163,23 @@ static int test_mux(struct mapper_trial *trial, snd_pcm_access_t access,
+ 		    unsigned int cntr_count)
+ {
+ 	struct container_context *cntrs = trial->cntrs;
+-	char **paths = trial->paths;
+ 	unsigned int bytes_per_sample;
+ 	uint64_t total_frame_count;
+ 	int i;
+ 	int err = 0;
+ 
+ 	for (i = 0; i < cntr_count; ++i) {
++		const char *path = trial->paths[i];
++		int fd;
+ 		snd_pcm_format_t format;
+ 		unsigned int channels;
+ 		unsigned int rate;
+ 
+-		err = container_parser_init(cntrs + i, paths[i], 0);
++		fd = open(path, O_RDONLY);
++		if (fd < 0)
++			return -errno;
++
++		err = container_parser_init(cntrs + i, fd, 0);
+ 		if (err < 0)
+ 			goto end;
+ 
 -- 
 2.27.0
 
