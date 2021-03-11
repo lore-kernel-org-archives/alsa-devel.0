@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0057BC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:45:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70E6BC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:45:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id ED09A64FC4
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:45:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ED09A64FC4
+	by mail.kernel.org (Postfix) with ESMTPS id 1328164FC1
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 00:45:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1328164FC1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A8AB16FA;
-	Thu, 11 Mar 2021 01:44:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A8AB16FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8986D1707;
+	Thu, 11 Mar 2021 01:44:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8986D1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615423533;
-	bh=S5tOAsAfJdTrq6OkiF/5uVEOU08EfWg4vPf074GQVl8=;
+	s=default; t=1615423537;
+	bh=6ux2X3Y7N5z1T8wfL2xpm02MZxiKVbtp+0NuKLJXE2U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pGYpfDSN44chaXXXW2WPaTSlM7GX3WJ2QJj+NfHsh2nQoHJ2y3FEWMEIqXYH5PiC9
-	 Hq9lMrLu/Ydcu8Z5s9AXj8/A62Jd50PWbgsgxjr/xpMfsu51DZbL1dLa8iV0+ZO05V
-	 VKoj0dV5rO48VqE8cQEmhUEULHtU3pr/MxlplUSk=
+	b=iJJpO6zstbfXUiNfGxi34BIZuefbiI+FlPXlZx9npzuPfPdt6Y2XWmhOSHDe//sRe
+	 b5LEeXDbfppfrNYmPNaRUiD+jLu6KaDUhhG3ygY79k7T11IIPaTQ7qkDgnj+VhoDtO
+	 9SqPaRX1qEYAosbbB0YOuAVN4cVthtiYBIsfwf2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA1BCF80424;
-	Thu, 11 Mar 2021 01:43:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46F25F80425;
+	Thu, 11 Mar 2021 01:44:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E8C77F80423; Thu, 11 Mar 2021 01:43:54 +0100 (CET)
+ id CC3DFF80425; Thu, 11 Mar 2021 01:43:56 +0100 (CET)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80F03F8010D
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 01:43:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80F03F8010D
-IronPort-SDR: q24iRZ6qhQ21Btuky0zV4X1RYqExcy58Hu/Bdd5hubwcqtWD9wsXufHScjGNOnNx7T3KYuqXcd
- vvZeRDIjj3Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="176185734"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="176185734"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A894F8016C
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 01:43:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A894F8016C
+IronPort-SDR: ZApM0vQKDv/Nls7ThJpVshq8Y2/qq/pV1Lu6jQAvTCMVaO8qm8Vy5ncjtWBl83FD4tNguiFTzW
+ KTbefS7lvcfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="176185737"
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="176185737"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 16:43:41 -0800
-IronPort-SDR: HZbMokLYeQJbN4Tn8GqJMXkxkVKDYXDYywGKRatgo+1eYl7sKxrV9zXbklXRGKDhd40gBfumRi
- k2cNqn4alMWA==
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="370385610"
+ 10 Mar 2021 16:43:43 -0800
+IronPort-SDR: LOZ5SwOTan/hoxd52WcYZL71+PaaGrIF/sP2EhYFCFBNLCQsnLikzmOJ5F6pFaMsDsPOzBVyKk
+ QOs81nonMt1Q==
+X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; d="scan'208";a="370385616"
 Received: from theer-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.101.109])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Mar 2021 16:43:40 -0800
+ 10 Mar 2021 16:43:42 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/10] ASoC: arizona: fix function argument
-Date: Wed, 10 Mar 2021 18:43:23 -0600
-Message-Id: <20210311004332.120901-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/10] ASoC: wm2200: remove unused structure
+Date: Wed, 10 Mar 2021 18:43:25 -0600
+Message-Id: <20210311004332.120901-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210311004332.120901-1-pierre-louis.bossart@linux.intel.com>
 References: <20210311004332.120901-1-pierre-louis.bossart@linux.intel.com>
@@ -85,40 +85,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cppcheck warning:
-
-sound/soc/codecs/arizona.c:2042:53: style:inconclusive: Function
-'arizona_init_dai' argument 2 names different: declaration 'dai'
-definition 'id'. [funcArgNamesDifferent]
-int arizona_init_dai(struct arizona_priv *priv, int id)
-                                                    ^
-sound/soc/codecs/arizona.h:320:53: note: Function 'arizona_init_dai'
-argument 2 names different: declaration 'dai' definition 'id'.
-int arizona_init_dai(struct arizona_priv *priv, int dai);
-                                                    ^
-sound/soc/codecs/arizona.c:2042:53: note: Function 'arizona_init_dai'
-argument 2 names different: declaration 'dai' definition 'id'.
-int arizona_init_dai(struct arizona_priv *priv, int id)
-                                                    ^
+cppcheck complains about some members not being used, but it's really
+the entire structure that is never used anywhere.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/arizona.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm2200.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index b893d3e4c97c..b3abbe80f11d 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -317,7 +317,7 @@ int arizona_init_vol_limit(struct arizona *arizona);
- int arizona_init_spk_irqs(struct arizona *arizona);
- int arizona_free_spk_irqs(struct arizona *arizona);
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index c62f7ad0022c..b0a6d31299bb 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -72,13 +72,6 @@ static const char *wm2200_core_supply_names[WM2200_NUM_CORE_SUPPLIES] = {
+ 	"LDOVDD",
+ };
  
--int arizona_init_dai(struct arizona_priv *priv, int dai);
-+int arizona_init_dai(struct arizona_priv *priv, int id);
- 
- int arizona_set_output_mode(struct snd_soc_component *component, int output,
- 			    bool diff);
+-struct wm2200_fll {
+-	int fref;
+-	int fout;
+-	int src;
+-	struct completion lock;
+-};
+-
+ /* codec private data */
+ struct wm2200_priv {
+ 	struct wm_adsp dsp[2];
 -- 
 2.25.1
 
