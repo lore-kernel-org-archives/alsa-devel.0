@@ -2,97 +2,92 @@ Return-Path: <SRS0=8+EQ=IJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A1C8C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:45:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F0AC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:45:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F8DF64F3B
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:45:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F8DF64F3B
+	by mail.kernel.org (Postfix) with ESMTPS id A9F4864FE9
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:45:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9F4864FE9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A87F51750;
-	Thu, 11 Mar 2021 18:44:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A87F51750
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06C4D174A;
+	Thu, 11 Mar 2021 18:44:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06C4D174A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615484706;
-	bh=lM8GOOCpvUTwlOOR+j55s0PnLGsgvCRMd2ds1GLpIqo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TlPT03mHxLJAzSIlNAyoL/hIFI6ENNaJS0m2l+wuAo2QjNqdjZhCQj2ZiZUgxYh9F
-	 hEwYkus5I7juA6AfI6q7ljwlTTyw7zulPrh/t7Aef6gtEv88ymA8ggD++M4cqLZ2VE
-	 2er5afJuM/xjri+pDZka41SoQbLuUeHaJdounbRU=
+	s=default; t=1615484711;
+	bh=2UphQsBif55vQUtcAhtOrY1NkQ3W78h/XxDGSIIlJL0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KZ7T7uHhEZNcvUSQt26CCiNXVdLDXVAUFQHmp9CRBxRAiCcLESf6ElVKWPSPIsEyH
+	 ZJEOEkpiimQnRneWb/OT9KEhgQjNmVmjHBt1JEndei8WjjWEZ54YraRdO9SlKGS1mu
+	 lJiofXFZG7kKbXQQTmhN9P4fev3NHftGP+4qeBts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C8A1F8010D;
-	Thu, 11 Mar 2021 18:43:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85657F802E7;
+	Thu, 11 Mar 2021 18:43:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10B07F802E7; Thu, 11 Mar 2021 18:43:27 +0100 (CET)
+ id 07DD4F8028B; Thu, 11 Mar 2021 18:43:28 +0100 (CET)
 Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
  [IPv6:2a00:1450:4864:20::12d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04322F8019B
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 18:43:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04322F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23CDCF8010D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 18:43:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23CDCF8010D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="nPMDAfRV"
-Received: by mail-lf1-x12d.google.com with SMTP id p21so41094681lfu.11
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 09:43:14 -0800 (PST)
+ header.b="ECDG4MRi"
+Received: by mail-lf1-x12d.google.com with SMTP id q25so41131330lfc.8
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 09:43:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=2SMSIMvYxaxu4F53i5qtc3hVUmETiEH2Ssz4CshQdOI=;
- b=nPMDAfRVDDoZs0rrhyF8XsG0pQQNjBacimeiag9hlGeuKQ5Lu0pHbeoRz3avqMOcvx
- 7GobZrCvZLlROufJ1ApX0WI4zMA5ISknv2y9vbZTmJWJupOKBPJfE84fPWSCA5842JTu
- 7VAKq5BDxktUVfz0SrBjcmEyVeAAt1qr7Rrj8841PcWrZTg+TLxRroxejVfo34v0An45
- rm/bAEN3Ob6X2eI2P/C9TyY7nIaVu4zmVTaCBRwYzsAJdSyoTvfKTCIop+Yh+i+l1QJc
- yyGFRC2pKSIh9rQOQ+qUi78TNZ1DFBc5qTBo02g1oWlT6sgMpCQDbVtHlyEQ86EAdQhf
- 5P+Q==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=tV08/S8AYkOlggjIBuODj7Why8Z1+LlJ+V4vGmOX1RE=;
+ b=ECDG4MRiMe5CStYYvkaKYV/dG6cxvGotcx4pATfKF5+buUVugq1PUOLDnIhnG8292C
+ Bk8WZFFoHtcXvw0fBRsh3zQNR1ddjKewwsm7uHNtXPh9nMAMSKhjXEbJ53QUrUC5GvIf
+ gVvZTMmfQjki/ucGrhTIVSFcCGuI+ux35MV3lBcpvl74jtHS8eYR0meRsdF7Xxbnwij0
+ u4yjsAT5O2yBzcJe6STgyR+Jv37tRfcvmXragfxRP8pU/VtHw2YoU4oi/bmLAbGJlB+u
+ +qCFDehB11KbuxefFr7zrSFjUkL9XpU2lxPZ1cGe9CN/SBEFBwZs0x5CAQ04j2cI8+/a
+ 5AUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=2SMSIMvYxaxu4F53i5qtc3hVUmETiEH2Ssz4CshQdOI=;
- b=r/4srL2Pu7buu6EiZ3r7JTqOVeGjbGMFREeULNBgag5LKJ3BqafQvTXX+d8FPP2VYY
- QNtONZho8tFSPzgtd3Ht7SNlm/mWrDd9Ab2pBduDM/LUMx4gdZwWo1MvwFpbwkP2yKqu
- otHtoxaqbVxyklRHKYu6I+RZSHQMS4Twiwqt3qSJk3v2hJWCr8CekOalCqlm3qnepqI6
- T7z4uZCoQW/snIJat4dsc+Hw2/28VzJTxVtzJ5zWqXg636kyytLagTt/ttigYxEsrDTE
- aoLFPXY+6IHm1AujqB8sDDKgV9KyveWQtzsDPmtm5ao+gYap3Bcpms3dx71Ba79wbO6I
- W/DA==
-X-Gm-Message-State: AOAM530nmgvFwbHX2GEEzYf6OYUHLf0b9DfjXgcNYJQ4Fe+SKWHRt3Os
- d9wI9kIUCDXLpoMEV+HHUTWCwgMLcIE=
-X-Google-Smtp-Source: ABdhPJx7am9gJOeVJtdyhP6kXrjDmeN/fJJmTlBjiUylapuIR/ADwJzfnKrRqmdAVcxiJ1d2hV5Szg==
-X-Received: by 2002:a19:4850:: with SMTP id v77mr2979755lfa.6.1615484594239;
- Thu, 11 Mar 2021 09:43:14 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=tV08/S8AYkOlggjIBuODj7Why8Z1+LlJ+V4vGmOX1RE=;
+ b=c8HPRbPfhUSNH0EavMl7LBzKN9ehfVmZVGmyhrGzJ/Awn3cJM+40STSbJ8k0Vpf54w
+ T1ODEPhVaOv+cAhr/n6wxqkJfpT8SpgtmvXFnMf3j7R/oc2UdQWdQK34QG9bb1q7uHKq
+ N1vjUnZ0S/l6w5Yt4HEMXNC15Ut/qJqh9ao781FYXjb047uUyw+lEdX2Pj7nNWG748xg
+ glcnB2QyfEn79Rvc7H/AqQM2wiZDpjg2hNW8lEk/nA106D4U0LBMut58FG1KqH4pbgVx
+ Tz6/ECHett2uPtuO0YUQqJ0cMUdmeIYRt+GhCDsBmLmUAdrGobQRmHqtBWpJ9Kn0HuTy
+ uMkQ==
+X-Gm-Message-State: AOAM531aXM6HArNYQZGmp/emlNsh+NrXBJmCcOCcWRkAJTV+d9s4MVfS
+ QmlkwbLa8d3AgSELiAT2/ZQ=
+X-Google-Smtp-Source: ABdhPJzZoVdzNWaBBpv/V2H46jX+HJmoeEWU1giXzXKNrzi0/bcW1oUOQs8EzXjuFa1ZQ7NacFM8vQ==
+X-Received: by 2002:a19:520b:: with SMTP id m11mr2863398lfb.42.1615484592025; 
+ Thu, 11 Mar 2021 09:43:12 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id g10sm1021245lfe.90.2021.03.11.09.43.13
+ by smtp.gmail.com with ESMTPSA id g10sm1021245lfe.90.2021.03.11.09.43.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Mar 2021 09:43:14 -0800 (PST)
+ Thu, 11 Mar 2021 09:43:11 -0800 (PST)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v3 3/5] ASoC: tegra30: i2s: Restore hardware state on runtime
- PM resume
-Date: Thu, 11 Mar 2021 20:43:00 +0300
-Message-Id: <20210311174302.15430-4-digetx@gmail.com>
+Subject: [PATCH v3 0/5] Add missing reset controls to NVIDIA Tegra ASoC drivers
+Date: Thu, 11 Mar 2021 20:42:57 +0300
+Message-Id: <20210311174302.15430-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210311174302.15430-1-digetx@gmail.com>
-References: <20210311174302.15430-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
@@ -112,82 +107,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Tegra30 I2S driver syncs regmap cache only on resume from system suspend,
-but hardware is reset across the runtime suspend because RPM of the parent
-AHUB driver resets the I2S hardware, hence h/w state is lost after each
-RPM resume. The problem isn't visible because hardware happens to be fully
-reprogrammed after each RPM resume. Move hardware syncing to RPM resume in
-order to restore h/w state properly.
+Hi,
 
-Fixes: ed9ce1ed2239 ("ASoC: tegra: ahub: Reset hardware properly")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- sound/soc/tegra/tegra30_i2s.c | 40 +++++++++++------------------------
- 1 file changed, 12 insertions(+), 28 deletions(-)
+This series adds missing hardware reset controls to I2S and AC97 drivers.
+Currently drivers happen to work properly because reset is implicitly
+deasserted by tegra-clk driver, but clk driver shouldn't touch the resets
+and we need to fix it because this breaks other Tegra drivers. Previously
+we fixed the resets of the AHUB and HDMI codec drivers, but turned out
+that we missed the I2C and AC97 drivers.
 
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index 6740df541508..3d22c1be6f3d 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -58,8 +58,18 @@ static int tegra30_i2s_runtime_resume(struct device *dev)
- 	}
- 
- 	regcache_cache_only(i2s->regmap, false);
-+	regcache_mark_dirty(i2s->regmap);
-+
-+	ret = regcache_sync(i2s->regmap);
-+	if (ret)
-+		goto disable_clocks;
- 
- 	return 0;
-+
-+disable_clocks:
-+	clk_disable_unprepare(i2s->clk_i2s);
-+
-+	return ret;
- }
- 
- static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
-@@ -551,37 +561,11 @@ static int tegra30_i2s_platform_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int tegra30_i2s_suspend(struct device *dev)
--{
--	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
--
--	regcache_mark_dirty(i2s->regmap);
--
--	return 0;
--}
--
--static int tegra30_i2s_resume(struct device *dev)
--{
--	struct tegra30_i2s *i2s = dev_get_drvdata(dev);
--	int ret;
--
--	ret = pm_runtime_get_sync(dev);
--	if (ret < 0) {
--		pm_runtime_put(dev);
--		return ret;
--	}
--	ret = regcache_sync(i2s->regmap);
--	pm_runtime_put(dev);
--
--	return ret;
--}
--#endif
--
- static const struct dev_pm_ops tegra30_i2s_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra30_i2s_runtime_suspend,
- 			   tegra30_i2s_runtime_resume, NULL)
--	SET_SYSTEM_SLEEP_PM_OPS(tegra30_i2s_suspend, tegra30_i2s_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
- 
- static struct platform_driver tegra30_i2s_driver = {
+Thanks to Paul Fertser for testing the pending clk patches and finding
+that audio got broken on Tegra20 AC100 netbook because of the missing I2S
+reset.
+
+Changelog:
+
+v3: - Fixed reset stubs for !CONFIG_RESET_CONTROLLER.
+
+v2: - After some more testing I found that I2S control logic doesn't require
+      I2S clock to be enabled for resetting. Hence it's fine to have I2S to
+      be reset by parent AHUB driver, so I dropped "tegra30: i2s: Add reset
+      control" patch.
+
+    - While I was double-checking resets on Tegra30, I found that that
+      Tegra30 I2S driver has a broken runtime PM which doesn't restore
+      hardware state on resume and it's lost after AHUB RPM-resume.
+      Thus, added this new patch "tegra30: i2s: Restore hardware state
+      on runtime PM resume".
+
+    - Added new patches which switch AHUB driver to use reset-bulk API.
+      I took the RFC patch from Philipp Zabel, fixed it and added
+      devm_reset_control_bulk_optional_get_exclusive_released() that
+      will be useful for further Tegra GPU patches. This is a minor
+      improvement which makes code cleaner.
+
+Dmitry Osipenko (4):
+  ASoC: tegra20: ac97: Add reset control
+  ASoC: tegra20: i2s: Add reset control
+  ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
+  ASoC: tegra: ahub: Switch to use reset-bulk API
+
+Philipp Zabel (1):
+  reset: Add reset_control_bulk API
+
+ drivers/reset/core.c           | 215 +++++++++++++++++++++++
+ include/linux/reset.h          | 308 +++++++++++++++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.c |  21 +++
+ sound/soc/tegra/tegra20_ac97.h |   1 +
+ sound/soc/tegra/tegra20_i2s.c  |  31 ++++
+ sound/soc/tegra/tegra20_i2s.h  |   1 +
+ sound/soc/tegra/tegra30_ahub.c | 104 ++++-------
+ sound/soc/tegra/tegra30_ahub.h |   5 +-
+ sound/soc/tegra/tegra30_i2s.c  |  41 ++---
+ 9 files changed, 629 insertions(+), 98 deletions(-)
+
 -- 
 2.29.2
 
