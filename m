@@ -2,89 +2,92 @@ Return-Path: <SRS0=8+EQ=IJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EC65C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:36:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FA7FC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:36:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F02E864F98
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:36:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F02E864F98
+	by mail.kernel.org (Postfix) with ESMTPS id 4B04664F97
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Mar 2021 17:36:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B04664F97
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E2B21702;
-	Thu, 11 Mar 2021 18:35:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E2B21702
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C1361715;
+	Thu, 11 Mar 2021 18:36:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C1361715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615484159;
-	bh=d0C8Ojll3/EEuWuxavFwZaiz9yzAt97Fw/VErCXjdtg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gaW4HHoNkMZdgwePxLHGqANCgKy4gLWstfpHT/1MtwZethds+ShZfDjZ9mETAlVN+
-	 t6qcMQBu4iSOfkEP4DryFwCUdytb2ors+DI7akf88qgzbdyeFmI+Y4Xr3eQgksLs+m
-	 ixvF9RSq2bI949TjA6ynDIx3cp/y0FXAdZAKzZy0=
+	s=default; t=1615484210;
+	bh=jpmHmT2szYBfQSwiM8GbmMJXNHmA4fCb4hwoQgDWcUs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fO6l6+EQYez05QNaWNtsJnUgnLZQXjNDiA2mD+K/8rfW3iWIYPnIEPwDSEszIG0w0
+	 Up9WDA0AKJALfEjx+TLms+rmd1c8GyncjauDt+5ljoc1KzEQeCZSFVeRLEuCQVhmey
+	 G6NVSczho4IbtEwjYWrv6DlGs72mmeKKwIpHfzfk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9FFCFF80227;
-	Thu, 11 Mar 2021 18:35:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F62AF802D2;
+	Thu, 11 Mar 2021 18:35:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24BEEF80256; Thu, 11 Mar 2021 18:35:07 +0100 (CET)
+ id 1FAA0F80276; Thu, 11 Mar 2021 18:35:12 +0100 (CET)
 Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
  [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 484DBF800BF
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 18:34:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 484DBF800BF
+ by alsa1.perex.cz (Postfix) with ESMTPS id E27D0F8010D
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 18:35:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E27D0F8010D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="zkwOxIEa"
-Received: by mail-wr1-x42f.google.com with SMTP id l12so2981354wry.2
- for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 09:34:59 -0800 (PST)
+ header.b="rga90TJQ"
+Received: by mail-wr1-x42f.google.com with SMTP id w11so2951975wrr.10
+ for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2021 09:35:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=66tTTfF5r6oUktX13OauExH1HuAm+OFPdK/+vXqQOQY=;
- b=zkwOxIEa6c8D5QbUHxY1j0HRCVQu5oihUH8Z5p4P9vA5q/nURFNx/VXJBhk+jMxhrB
- BnUB1j7sErY/oomCD9yoDNRxxAHWiMeAep5pOmErv+VLZ16gyxDaO2gK98wsVprHY5p/
- R6Cjo/07TSvdQxmVTu+1AQ+cvYcgC2JxwQ/iPb3aOQACTGk+fQytpBTobXrqimNUspVn
- G9XXgiwJIb+rS17XoYnRO1wgTvY/ITX30t+HBsVix+4P9d1TyiZ/sX20sFa7qmi+r5dM
- WXNUtHW5bekn+SpbokTeb6oWkGevg8pxzcqYqYI3EcVAzRDjiUL8C4Ku19bo6/3tfZTX
- kuIQ==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=0j7/mJ9hsNyjCz2UBWw3RsdNjgdghs6t6j2jgPrVNrk=;
+ b=rga90TJQbvQrd3kwdDuvr+LQ7z/gzSpin1AY+VA1GT+L1ZqklkHgPTy4pJK5eEXVhi
+ AmLINd6V2mM8ZaZ6hLOf+DL/VPF1M++87p+S/SrIF6cpz0dAlnhbN/pnjRWY3qI952iU
+ 0ABAq3eVC3UYrvFuF0acbZQ8KGX4b1Tix/UN+/PmWgpMCAvPgaTRenSlL5diXEyQpqdJ
+ lXuKNEswB5aktZEyPz/1vTX4CzQSQnInjzm8ZjDosLsIKbE0TdqBCY7qvDQ4XvV/Uh6K
+ bgTxG55DvvjUViEGvMKy86UqMw2nHAsv+VaLTOYeJJG+Q6LvfJpnRHTE1SHHo8fqTeOD
+ TpPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=66tTTfF5r6oUktX13OauExH1HuAm+OFPdK/+vXqQOQY=;
- b=EqUIrTmVsOQuyOsOHz83SUi3IN+INPq5UVeFx3N+StnGvj+l8f7weod9lsZGNL/nJP
- czZKnnUJlNgldLjlU1eImlHy//liqj3SRa0GoXUDmMmnfbkAQRKGf/xtvaaGN6UwaRe7
- Y2N7V8BwuLumM+ZBKtPq1rVEMNrD3XEfI0AWkPWVuiA5cGsZfJX4cos0w/j1tIgXBOqm
- Eb2wBNnmKFf3nCDvIYJ5HNItvqFmS7vOSsSIJ1Iyq3V8tXQvSg5dVMBiDintpasOF/Ty
- PA9VWY7XTLhSw5mhkP/Hw91ZbPDO8+D0v1SvamLc9DJJ232tfc7w85Am2XkdDl/W7Kaq
- DV+A==
-X-Gm-Message-State: AOAM531ihgrvypRAcfGi/BNLmdDW0r5w/cTIsv6oGksOqof5EKs9hDmv
- bGQh/t71BfeVZU4EYwI2Y1AXDg==
-X-Google-Smtp-Source: ABdhPJwcthG3QwbLdp+pL70hoWTIadW9sUoXZnpm6KSu0v13JgxV+GMEkj8ootJFcGASY5/YXirevw==
-X-Received: by 2002:adf:fa41:: with SMTP id y1mr9713611wrr.256.1615484099379; 
- Thu, 11 Mar 2021 09:34:59 -0800 (PST)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=0j7/mJ9hsNyjCz2UBWw3RsdNjgdghs6t6j2jgPrVNrk=;
+ b=Vnd1a8F8CstV8hZE1voZRNfTPKE5R5dHgpSyCAHNA3iQXRNkmOr9iAK8xXneHtRFqB
+ T8heJyr4DohNCmCT1fXmMiYvT8x8rbT9PSMeUm01BuN6LlLp9jKp3wMs6Hy5bBCG6ZQ9
+ H45HvawdCWMraeJVErcFpQ/9TUqWD+Drc+z6ZY3/orPegWF67FwuO8krGPS7AWQTzhP2
+ fgWQ2GsPojpWyesYNL+i+YAoOucqkdzTo9X1M+AHWayyDhaFk4afwlN/KOQe5zNRuPN8
+ 1G39JChu5XBGt2ey6+0gfL3w1t/OPLSye3OGDmjxDW9dBl5SuUu5c94aGPpZ+mnE6OEq
+ w3dg==
+X-Gm-Message-State: AOAM533+ERf637SeQE1stq8lpceUam8noZ2eYhjyzHiWiQ6Geu/uzXEq
+ Vu/CZ2f38LO6Qc+hN7Uy3LmeSQ==
+X-Google-Smtp-Source: ABdhPJxEUFo6cMD0/ZpJBZmxQy4BlsY81g5xJ2+fwPZDElx+nFy+7zBVOW0yKqaFbs682soKa6bW4g==
+X-Received: by 2002:a5d:4b06:: with SMTP id v6mr10144419wrq.41.1615484100414; 
+ Thu, 11 Mar 2021 09:35:00 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id 36sm5221152wrh.94.2021.03.11.09.34.58
+ by smtp.gmail.com with ESMTPSA id 36sm5221152wrh.94.2021.03.11.09.34.59
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 11 Mar 2021 09:34:58 -0800 (PST)
+ Thu, 11 Mar 2021 09:34:59 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 0/7] ASoC: codecs: add wcd938x support
-Date: Thu, 11 Mar 2021 17:34:09 +0000
-Message-Id: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/7] ASoC: dt-bindings: wcd938x: add bindings for wcd938x
+Date: Thu, 11 Mar 2021 17:34:10 +0000
+Message-Id: <20210311173416.25219-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
+References: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
@@ -105,47 +108,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds support for Qualcomm WCD938X codec.
-
 Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
-connected over SoundWire. This device has two SoundWire devices, RX and
-TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
-7 x TX diff inputs, 8 DMICs and MBHC.
+connected over SoundWire. This device has two SoundWire device RX and
+TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+7 x TX diff inputs, 8 DMICs, MBHC.
 
-Even though this device has two SoundWire devices, only tx device has
-access to main codec Control/Status Registers!
-
-This patchset along with other SoundWire patches on the list
-have been tested on SM8250 MTP device.
-
-Am planning to send support for MBHC once this driver gets accepted!
-
-Thanks,
-srini
-
-Srinivas Kandagatla (7):
-  ASoC: dt-bindings: wcd938x: add bindings for wcd938x
-  ASoC: codecs: wcd-clsh: add new version support
-  ASoC: codecs: wcd938x: add basic driver
-  ASoC: codecs: wcd938x: add basic controls
-  ASoC: codecs: wcd938x: add playback dapm widgets
-  ASoC: codecs: wcd938x: add capture dapm widgets
-  ASoC: codecs: wcd938x: add audio routing
-
- .../bindings/sound/qcom,wcd938x.yaml          |  127 +
- sound/soc/codecs/Kconfig                      |    9 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/wcd-clsh-v2.c                |  350 +-
- sound/soc/codecs/wcd-clsh-v2.h                |   16 +
- sound/soc/codecs/wcd938x-sdw.c                |  294 ++
- sound/soc/codecs/wcd938x.c                    | 3688 +++++++++++++++++
- sound/soc/codecs/wcd938x.h                    |  675 +++
- 8 files changed, 5151 insertions(+), 10 deletions(-)
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../bindings/sound/qcom,wcd938x.yaml          | 127 ++++++++++++++++++
+ 1 file changed, 127 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
- create mode 100644 sound/soc/codecs/wcd938x-sdw.c
- create mode 100644 sound/soc/codecs/wcd938x.c
- create mode 100644 sound/soc/codecs/wcd938x.h
 
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+new file mode 100644
+index 000000000000..81c8957145d6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+@@ -0,0 +1,127 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/qcom,wcd938x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bindings for Qualcomm WCD9380/WCD9385 Audio Codec
++
++maintainers:
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description: |
++  Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC.
++  It has RX and TX Soundwire slave devices.
++
++properties:
++  compatible:
++    const: sdw20217010d00
++
++  reg:
++    maxItems: 1
++
++  reset-gpios:
++    description: GPIO spec for reset line to use
++    maxItems: 1
++
++  direction:
++    oneOf:
++      - const: rx
++      - const: tx
++
++  vdd-buck-supply:
++    description: A reference to the 1.8V buck supply
++
++  vdd-rxtx-supply:
++    description: A reference to the 1.8V rx supply
++
++  vdd-io-supply:
++    description: A reference to the 1.8V I/O supply
++
++  qcom,micbias1-microvolt:
++    description: micbias1 voltage
++    minimum: 1800000
++    maximum: 2850000
++
++  qcom,micbias2-microvolt:
++    description: micbias2 voltage
++    minimum: 1800000
++    maximum: 2850000
++
++  qcom,micbias3-microvolt:
++    description: micbias3 voltage
++    minimum: 1800000
++    maximum: 2850000
++
++  qcom,micbias4-microvolt:
++    description: micbias4 voltage
++    minimum: 1800000
++    maximum: 2850000
++
++  qcom,mbhc-hphl-switch:
++    description: Indicates that HPHL switch type is normally closed!
++    type: boolean
++
++  qcom,mbhc-ground-switch:
++    description: Indicates that Headset Gound switch type is normally closed!
++    type: boolean
++
++  qcom,mbhc-vthreshold:
++    description: |
++      Voltage threshold values for all the headset buttons
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 8
++    maxItems: 8
++
++  qcom,port-mapping:
++    description: |
++      Specifies static port mapping between slave and master ports.
++      In the order of slave port index.
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 4
++    maxItems: 5
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - reset-gpios
++  - qcom,micbias1-microvolt
++  - qcom,micbias2-microvolt
++  - qcom,micbias3-microvolt
++  - qcom,micbias4-microvolt
++  - qcom,port-mapping
++  - qcom,mbhc-hphl-switch
++  - qcom,mbhc-ground-switch
++  - qcom,mbhc-vthreshold
++  - "#sound-dai-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    soundwire@3230000 {
++        #address-cells = <2>;
++        #size-cells = <0>;
++        reg = <0x03230000 0x2000>;
++
++        codec@0,3 {
++            compatible = "sdw20217010d00";
++            reg  = <0 3>;
++            reset-gpios = <&tlmm 32 0>;
++            direction = "tx";
++            #sound-dai-cells = <1>;
++            qcom,micbias1-microvolt = <1800000>;
++            qcom,micbias2-microvolt = <1800000>;
++            qcom,micbias3-microvolt = <1800000>;
++            qcom,micbias4-microvolt = <1800000>;
++            qcom,mbhc-hphl-switch;
++            qcom,mbhc-ground-switch;
++            qcom,mbhc-vthreshold = <75 150 237 500 500 500 500 500>;
++            qcom,port-mapping = <2 3 4 5>;
++        };
++    };
++
++...
 -- 
 2.21.0
 
