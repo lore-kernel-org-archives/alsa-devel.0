@@ -5,73 +5,96 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29B49C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46AAEC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:46:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8BAAC64F6B
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:33:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BAAC64F6B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 70F3864F70
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:46:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 70F3864F70
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 289CD183A;
-	Fri, 12 Mar 2021 19:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 289CD183A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13EF617DA;
+	Fri, 12 Mar 2021 19:45:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13EF617DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615573989;
-	bh=NSXCLClRZ9gUL040pOQOpINvZtoL4VU8e98p3r2hEDs=;
+	s=default; t=1615574759;
+	bh=VrFUrNJ+fwUAZ1M9YYtCs6oh5AJ0K1YjwsLIA0PWXAI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cuhN6rbwg+FQ3CLN1Iix+Mx5Qh+7MXE96GZ5gGN1UfAUQ5nVlCHjE5rVs6xxIk2ly
-	 nh77vWoAxe2kICc/KiXs4QPpBBbbT5mzFG9VkuiDygatjTFcK7vLiQhBpwOz1ZdJ5N
-	 OJa4QvhvV1nf1uWZyuUHM+uJhhfVZoCRcugHcgjo=
+	b=h+GTZZiUP/VXh5xs2z3QYFgTixKc+kiqigdw5EDecEigpovNqWs1EZKq0Bic80dcv
+	 dpNNyAd9QFNStBtVKrHxZBa8Syk0tUu+Y/oa/MoZD6f8Jn/RJQh6PBKm9aZ6SakMUo
+	 8Dit6KjYVF8bOLbz/jLiu7QVeASqhR8uAGAOWd1I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A06DDF80552;
-	Fri, 12 Mar 2021 19:24:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C111F8020D;
+	Fri, 12 Mar 2021 19:45:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83367F80520; Fri, 12 Mar 2021 19:24:09 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 4D55DF80217; Fri, 12 Mar 2021 19:45:03 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFA96F8051B
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFA96F8051B
-IronPort-SDR: befHOn/pfa4gXruhfoeMkt5NpkTom/40c9tO3ACDYYXGnom25NWztOyQ7lOTyWSZut0Rb9TNOb
- ocnKITqBs3/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188236514"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="188236514"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:53 -0800
-IronPort-SDR: E9O7IV7e7ub5dVrwkwUzmXCJw+SM4r+726+8r+foHL37Ll8I6AVOHSBQi42ZZKtGSx/3m1HCG3
- VeYIKmbzE2UA==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377792069"
-Received: from amiteshs-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.37.30])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:52 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 21/23] ASoC: tas2770: remove useless initialization
-Date: Fri, 12 Mar 2021 12:22:44 -0600
-Message-Id: <20210312182246.5153-22-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09738F801D8
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:44:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09738F801D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="OiRerQ3Z"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 12CIRb3c003181; Fri, 12 Mar 2021 12:44:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=NX8RY1xd95ZWCwXoLApW7WQefXxOZPlmb59SfSvWfZI=;
+ b=OiRerQ3ZygTpnvUXeYmhfSOLH8EZ60Z2hkrV/asroRtELSMcxz47cL7CFDA5mhQ3HauA
+ mFKNJYom0uM+qgGvboviufIawTzspewjdK8mAJmeor1Y91DVnywMBnaHpTM/y8wbe77V
+ xZZthvSzrPwVvF6/JvhS1C8SYiYdAAK09JeRAeoasCNQyM7f6CR+/uty+OJgHUy3UeAQ
+ WyWra77FWrASJuqs94RhBYG9pwroxzCRsENmHpoojKKfCCTNCggqAuUYheOxepqZwQm8
+ dMa4TVz9bX1zhUwMGZ9C5GgWQk3y9cI00iZpr6hbfoMqrcqeQre5Z4QWyZC1NasswgLL 3w== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 37471w0b29-3
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Fri, 12 Mar 2021 12:44:55 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 12 Mar
+ 2021 18:44:54 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Fri, 12 Mar 2021 18:44:54 +0000
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DBA4311CB;
+ Fri, 12 Mar 2021 18:44:53 +0000 (UTC)
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 3/4] ALSA: hda/cirrus: Fix CS42L42 Headset Mic volume control
+ name
+Date: Fri, 12 Mar 2021 18:44:51 +0000
+Message-ID: <20210312184452.3288-4-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
-References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210312184452.3288-1-vitalyr@opensource.cirrus.com>
+References: <20210312184452.3288-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
- Dan Murphy <dmurphy@ti.com>, "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011
+ adultscore=0
+ malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103120135
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ You-Sheng Yang <vicamo.yang@canonical.com>, linux-kernel@vger.kernel.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,31 +110,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-sound/soc/codecs/tas2770.c:109:10: style: Variable 'ret' is assigned a
-value that is never used. [unreadVariable]
- int ret = 0;
-         ^
+Existing name "Headset Mic Volume Control" causes multiple Microphone
+entries to appear in UI. Using name "Mic Volume Control" ensures only a
+single Microphone entry exists when the Headset is connected.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
+
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+BugLink: https://bugs.launchpad.net/bugs/1918378
+Reported-and-tested-by: You-Sheng Yang <vicamo.yang@canonical.com>
 ---
- sound/soc/codecs/tas2770.c | 2 +-
+ sound/pci/hda/patch_cirrus.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 15fca5109e14..781bf9cc4faa 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -106,7 +106,7 @@ static int tas2770_codec_suspend(struct snd_soc_component *component)
- static int tas2770_codec_resume(struct snd_soc_component *component)
- {
- 	struct tas2770_priv *tas2770 = snd_soc_component_get_drvdata(component);
--	int ret = 0;
-+	int ret;
- 
- 	if (tas2770->sdz_gpio) {
- 		gpiod_set_value_cansleep(tas2770->sdz_gpio, 1);
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index 20e2cc433c6e..6495da523ea3 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -1760,7 +1760,7 @@ static const struct snd_kcontrol_new cs8409_cs42l42_hp_volume_mixer = {
+ static const struct snd_kcontrol_new cs8409_cs42l42_amic_volume_mixer = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.index = 0,
+-	.name = "Headset Mic Capture Volume",
++	.name = "Mic Capture Volume",
+ 	.subdevice = (HDA_SUBDEV_AMP_FLAG | HDA_SUBDEV_NID_FLAG),
+ 	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE
+ 			 | SNDRV_CTL_ELEM_ACCESS_TLV_READ),
 -- 
 2.25.1
 
