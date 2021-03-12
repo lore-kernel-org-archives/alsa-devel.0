@@ -2,87 +2,100 @@ Return-Path: <SRS0=XQZd=IK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99285C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75E47C4321A
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:24:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AF4E364FD6
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:07:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AF4E364FD6
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id BA42A64FDC
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:24:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BA42A64FDC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 429631731;
-	Fri, 12 Mar 2021 13:06:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 429631731
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96FDE1706;
+	Fri, 12 Mar 2021 13:23:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96FDE1706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615550835;
-	bh=DHmyk8GUReblYUlhSMgM0JiPJvuHbVNLZgcQ4Uqew+8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1615551839;
+	bh=TzcSLnTBxY1kJ6YWS9tHnnidnVCz7qO3SLCDMKWFIoE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NjfizyHySw675KDDhlc2GHeubfRKvZEq8JTeCIW1RetoTXcR8iWZ5O4TDDq0aHLt7
-	 S6gMn7pqJ0jBwXos7jGcfUVKmMA48HGIn3LTiNq5k1bgePGuRgKmKj/6O07kaAgzwc
-	 mSKMpzjJD3vZsYWCs2va3rMtBfnv7RHVrB4ikYIM=
+	b=rQq9nYIctj3kYZTVQgz/CXW8xktBkFQlaYIOirnbzhYkWBPFh70uYfmBldeZobcrS
+	 He26C/0PKwpvrY6XiKakmzgTRflnP1E8BbG2OrkvIPqcW91QsAzmpWANl1HZuu0HQy
+	 73hSVfjmZOFinD51E+R7KKkYfAI6QiNIkhpC1pJ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5F63F8016C;
-	Fri, 12 Mar 2021 13:06:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBCA8F8012A;
+	Fri, 12 Mar 2021 13:23:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64BDDF8012A; Fri, 12 Mar 2021 13:06:23 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B45C0F80217; Fri, 12 Mar 2021 13:23:06 +0100 (CET)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE511F8012A
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 13:06:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE511F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D30DF800BF
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 13:22:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D30DF800BF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZMnlJOK4"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 470F764FD6;
- Fri, 12 Mar 2021 12:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615550769;
- bh=DHmyk8GUReblYUlhSMgM0JiPJvuHbVNLZgcQ4Uqew+8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ZMnlJOK4+abTr5z6UYLOMd63xUlgezqJXvqxpjbY9ta+qtcZwgxxfDbPmXKjn9G/x
- fJH3pXeWHvA3lHlndJknsq+TlkHWBGctbcZ81JOI6QsX3ZMv0nto7+QDcim7ArHJOj
- 9I2mVhq9wW7bbwMSGLddZUQCee/FnVMFe3vTv7qt+FXXGGY2F6rtrcv+V9DZqtm7t+
- WU6H07eYP7vHhX0lFQfBr6wobUMro6CUc76cwUfvvD82C5sTLKLO/AJOmNRIeBK1fe
- 6c/mh7emCx1217+ygNXUp4FTLCvL4uNCNfu0hgYTLvLGOVAiG7NWTlatoHNVIMKJGt
- DeotHYNFPoIhQ==
-Date: Fri, 12 Mar 2021 12:04:56 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
-Message-ID: <20210312120456.GD5348@sirena.org.uk>
-References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
- <20210309144156.18887-1-michael@walle.cc>
- <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
- <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
- <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
- <20210311161558.GG4962@sirena.org.uk>
- <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
- <20210312113544.GB5348@sirena.org.uk>
- <6ed28bb5330879b1919aced5174f319f@walle.cc>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="rEb1ZAVk"
+Received: by mail-wm1-x331.google.com with SMTP id
+ r15-20020a05600c35cfb029010e639ca09eso15685528wmq.1
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 04:22:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=5ru3G/xiV/FesvnfCiQRQW9G+LeLCgjQacdkoFKvPOI=;
+ b=rEb1ZAVk7u4jNmffOk7mLfzINp31HOQMZUlWVBN1F2s9P8pN+JhAhtVmrutZZRCR2E
+ VvboNivvgKapQp0hLjn1Et0fvwqvFPT3/jQxXbInUp2Zziw0ChMUtR4ReW9vkDNaOa47
+ WqpOAvxl6jLyNluRd9IkqSzz/L906chETyQVZxEKp1v58HpOH2+8tX9dS06GJhxI/5d6
+ MsR7N/o3fMB+RnAWcbyfGqYYV72Ir5ufpOGUNPlaSI9hyRPzRHF45GWaKhrGTD3dCgI6
+ 2T8gH/Kjhva1MCuF/zRknPrKHnoZ7aLrdtFx3Gjsij9XrcOgbDF+FbqG2yzct9VzuKeg
+ a+Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=5ru3G/xiV/FesvnfCiQRQW9G+LeLCgjQacdkoFKvPOI=;
+ b=rh+ZDYPnHgc0TxnDgiNLyaqsW2OvpqmXM5sumvMxli02JhvLn8ycaC+Zpo3LJ7R/m5
+ Sqv0rWfwK2atLDJ7ZTB9z3tBWbejrI/ctxm+ydOWriDfY+ROxJq76q2a4fSo0fAOk+oY
+ nWD080VxudCtCa0uJhRiu+ilwIT4x/ckHBqo69evS0ArTVlaVjedYN+jzNZoATBjgo5p
+ 3zzyMsNaA/zEOJWj78/pL+TVdJlH39t2JPLwJo6s71XEjS1Takr/rzM76ypN+lEt7qyQ
+ OCflR0NrfB/KHpKpmgxuOLk/mN37K87y0ALr8Kf1pqHgtYGVbXReuTPZ3SmFZp+Tc0f1
+ g2og==
+X-Gm-Message-State: AOAM5331cOE9qlO9Zp93IR+WUdAdMzf4sn2ISFrxkeKEknOJux2EINGr
+ FsBzONcrwRycQ0uB81trWgPTCg==
+X-Google-Smtp-Source: ABdhPJwpydk8dosdsqVArU7quVgt8gCulgkPEEHFjnRr1TiDAGDr3M4AaBcsKdbXa0SYvUH86WN2vQ==
+X-Received: by 2002:a7b:cd04:: with SMTP id f4mr12894536wmj.76.1615551779161; 
+ Fri, 12 Mar 2021 04:22:59 -0800 (PST)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id 3sm8804329wry.72.2021.03.12.04.22.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 12 Mar 2021 04:22:58 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org,
+	vkoul@kernel.org
+Subject: [RESEND PATCH v3 1/5] soundwire: add static port mapping support
+Date: Fri, 12 Mar 2021 12:22:51 +0000
+Message-Id: <20210312122255.3143-2-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20210312122255.3143-1-srinivas.kandagatla@linaro.org>
+References: <20210312122255.3143-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="2Z2K0IlrPCVsbNpk"
-Content-Disposition: inline
-In-Reply-To: <6ed28bb5330879b1919aced5174f319f@walle.cc>
-X-Cookie: Lake Erie died for your sins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, robh@kernel.org,
- Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
- jonathanh@nvidia.com, sharadg@nvidia.com, thierry.reding@gmail.com,
- linux-tegra@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,41 +111,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Some of the SoundWire device ports are statically mapped to Controller
+ports during design, however there is no way to expose this information
+to the controller. Controllers like Qualcomm ones use this info to setup
+static bandwith parameters for those ports.
 
---2Z2K0IlrPCVsbNpk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A generic port allocation is not possible in this cases!
+So this patch adds a new member m_port_map to struct sdw_slave to expose
+this static map.
 
-On Fri, Mar 12, 2021 at 01:01:41PM +0100, Michael Walle wrote:
-> Am 2021-03-12 12:35, schrieb Mark Brown:
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ include/linux/soundwire/sdw.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> > If the card has a clock API clock as sysclk then set_sysclk(() should
-> > be configuring that clock.
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index d08039d65825..b032d6ac0b39 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -614,6 +614,7 @@ struct sdw_slave_ops {
+  * @debugfs: Slave debugfs
+  * @node: node for bus list
+  * @port_ready: Port ready completion flag for each Slave port
++ * @m_port_map: static Master port map for each Slave port0 to port14
+  * @dev_num: Current Device Number, values can be 0 or dev_num_sticky
+  * @dev_num_sticky: one-time static Device Number assigned by Bus
+  * @probed: boolean tracking driver state
+@@ -645,6 +646,7 @@ struct sdw_slave {
+ #endif
+ 	struct list_head node;
+ 	struct completion port_ready[SDW_MAX_PORTS];
++	unsigned int m_port_map[SDW_MAX_PORTS];
+ 	enum sdw_clk_stop_mode curr_clk_stop_mode;
+ 	u16 dev_num;
+ 	u16 dev_num_sticky;
+-- 
+2.21.0
 
-> What do you mean by "the card". The simple-audio-card itself?
-
-> Take a look at:
-> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts#L29
-
-> Does the card has a clock? IMHO the WM8904 codec has a clock, but not
-> the audio card.
-
-The clock on the CODEC, which the card configures.  The CODEC should be
-passing on the configuration to the clock API.
-
---2Z2K0IlrPCVsbNpk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLWOcACgkQJNaLcl1U
-h9Dr4wf/RvhCgjsXMqQfCMBjIX58G+v9Cg2OPPplcaKKCYDjRg91mNXrL3E80qFQ
-HOfZJ33uxBY2xnzXmfnttbMlnRrQys2U0XPqbQXNnJTnHmJu4XqVU/j+c8QJeKJK
-DCYp/qmAvUqm3i4KDM/bbqIeNCiXHtVZ6FvLdrEL8smdJhXdMGFA24rOvNMlhCyw
-T2/y0+K/70cbhiWTrVFs4LyRnGdlIooLdErAfQ0ZoXnsid0QNObGiS0eOSjssjke
-gfwoUWcR5skL2eEzLBkWAOnJM1Am5S56kSpMaF/69BfwwINbfV7GpCZFOHbI+Zy1
-0ZPH0ScPMHaRdPcpq9ArImBAxwU+Fw==
-=mvjs
------END PGP SIGNATURE-----
-
---2Z2K0IlrPCVsbNpk--
