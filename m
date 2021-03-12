@@ -2,77 +2,79 @@ Return-Path: <SRS0=XQZd=IK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83C32C433E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 15:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DFCBC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 16:31:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0F96F64FA7
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 15:58:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0F96F64FA7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7CF4E64FE2
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 16:31:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7CF4E64FE2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BA221762;
-	Fri, 12 Mar 2021 16:57:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BA221762
+	by alsa0.perex.cz (Postfix) with ESMTPS id 016051723;
+	Fri, 12 Mar 2021 17:30:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 016051723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615564681;
-	bh=ojGrFLtmo64nYFR3VEaVz3HJGIRiCZA8lbBQOasUvlo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1615566707;
+	bh=CkCOPTFIXACAysAPtapS6GQns0kG8jWuUbka7IkCmPE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qOJfC0VtGm4uO/SJ5rx9qxMphbEkSOv/sTOXVT9Yz/aueYmOeFoVy3Mg/tpw2HPXi
-	 j5Geyc5Sh+sQjc4dRI8f2hCoODp2Hsy4YF7YjKkS+fBD2MyHNwf2oL0kepUdYnEvpa
-	 hdsR/r25N6XpoW628dY5T6n9pM4xSlpYaHqn1Tyc=
+	b=Z4gVRIixTGQ593+vzr3Dd4x88mtBoC10un7J7cNMTomntR/8fPyTf9AZO4vMG+czw
+	 CGzSd3baiNVDbXVnaOiYNw9Qa9WeWdHxkR327UTgjthydSC6N57sOvML1V3YDybMo6
+	 pKt4lGukg6NwCmkMh6jblvSBklBnYfSHdbwhQ+90=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7806DF8012A;
-	Fri, 12 Mar 2021 16:57:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 737DBF8016C;
+	Fri, 12 Mar 2021 17:30:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 558ABF801D8; Fri, 12 Mar 2021 16:57:09 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 50BD1F801D8; Fri, 12 Mar 2021 17:30:50 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42B5BF8012A
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 16:57:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42B5BF8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JQPcyht+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2B8064FE0;
- Fri, 12 Mar 2021 15:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615564621;
- bh=ojGrFLtmo64nYFR3VEaVz3HJGIRiCZA8lbBQOasUvlo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JQPcyht+hkriUsqzARGtHarLDLqucOxZk3Ax6yi9PSB9eDXY7CmN6yI9nJZfswjgh
- Q9d5KVGZvllDfJKyulFG9Q8IY75/fmcEtydpXrVXjCJzaUDTpPk/HeDnclvFqJL5MI
- yF6lYdNYTUHKiITOwf+JXVwe+e4tOeeYmyR0Ng1BSclGknUOTOhEdWdd0Q1OWY7PG8
- R+gWBTxpH8CqkeqP64E7tupY0i6tonndMPxAnwC/jy81cP+0MwJr5GbzgNaSCFlYX5
- +adE1/O1rjTMp8QKPfW8sdm+vMalHKYSJev3P+1wVe90xCcdOGAN46E0UiKUEGmV4h
- NNqNrWFbFwpZw==
-Date: Fri, 12 Mar 2021 15:55:47 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 4/7] ASoC: codecs: wcd938x: add basic controls
-Message-ID: <20210312155547.GJ5348@sirena.org.uk>
-References: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
- <20210311173416.25219-5-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF6AFF800AB
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 17:30:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF6AFF800AB
+IronPort-SDR: llZ66xm0hRMVYNRAFlUyfRRxDks7RrTVbmBy/MIV7AVG651zMS0QgQBU971UXPVEMF4P5qToJH
+ fIh3xRJ6kSKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="208697459"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="208697459"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Mar 2021 08:30:34 -0800
+IronPort-SDR: ger7O0uf9egtmMbqWdf6zVVZ7H3ix27xYVtB4bE1jdEUmztM01ASjX+r17WgMXYaxRUjtzkxvS
+ koG3AXh91IlQ==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="411057188"
+Received: from akharche-mobl2.ccr.corp.intel.com (HELO [10.212.135.254])
+ ([10.212.135.254])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Mar 2021 08:30:34 -0800
+Subject: Re: [PATCH v3 1/2] ASoC: samsung: tm2_wm5110: check of of_parse
+ return value
+To: Mark Brown <broonie@kernel.org>
+References: <20210311003516.120003-1-pierre-louis.bossart@linux.intel.com>
+ <20210311003516.120003-2-pierre-louis.bossart@linux.intel.com>
+ <20210312142812.GA17802@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a9caf1c6-d9d0-7e05-31f2-6a8d9026e509@linux.intel.com>
+Date: Fri, 12 Mar 2021 10:30:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="wRtZRu2mMGBZ6YQ7"
-Content-Disposition: inline
-In-Reply-To: <20210311173416.25219-5-srinivas.kandagatla@linaro.org>
-X-Cookie: Lake Erie died for your sins.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <20210312142812.GA17802@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, stable@vger.kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,84 +91,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---wRtZRu2mMGBZ6YQ7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Mar 11, 2021 at 05:34:13PM +0000, Srinivas Kandagatla wrote:
+On 3/12/21 8:28 AM, Mark Brown wrote:
+> On Wed, Mar 10, 2021 at 06:35:15PM -0600, Pierre-Louis Bossart wrote:
+> 
+>> Fixes: 8d1513cef51a ("ASoC: samsung: Add support for HDMI audio on TM2board")
+>> Cc: <stable@vger.kernel.org>
+> 
+> Commit: 11bc3bb24003 ("ASoC: samsung: tm2_wm5110: check of of_parse return value")
+> 	Fixes tag: Fixes: 8d1513cef51a ("ASoC: samsung: Add support for HDMI audio on TM2board")
+> 	Has these problem(s):
+> 		- Subject does not match target commit subject
+> 		  Just use
+> 			git log -1 --format='Fixes: %h ("%s")'
+> 
 
-> +	if (wcd938x->variant == WCD9380) {
+Sorry, I don't know what to make of this. I don't see this commit 
+11bc3bb24003
 
-switch statements please.
-
-> +		if (mode_val == CLS_H_HIFI || mode_val == CLS_AB_HIFI) {
-> +			dev_info(component->dev,
-> +				"%s:Invalid HPH Mode, default to CLS_H_ULP\n",
-> +				__func__);
-> +			mode_val = CLS_H_ULP;
-> +		}
-
-If the value can't be set an error should be returned rather than the
-input ignored.
-
-> +static int wcd938x_ear_pa_gain_get(struct snd_kcontrol *kcontrol,
-> +				   struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-> +
-> +	ucontrol->value.integer.value[0] = snd_soc_component_read_field(component,
-> +						WCD938X_ANA_EAR_COMPANDER_CTL,
-> +						WCD938X_EAR_GAIN_MASK);
-> +
-> +	return 0;
-> +}
-
-This just looks like a normal operation?
-
-> +static int wcd938x_ear_pa_gain_put(struct snd_kcontrol *kcontrol,
-> +				   struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-> +	struct wcd938x_sdw_priv *wcd = snd_soc_component_get_drvdata(component);
-> +	struct wcd938x_priv *wcd938x = wcd->wcd938x;
-> +
-> +	if (!wcd938x->comp1_enable) {
-> +		snd_soc_component_write_field(component,
-> +				WCD938X_ANA_EAR_COMPANDER_CTL,
-> +				WCD938X_EAR_GAIN_MASK,
-> +				ucontrol->value.integer.value[0]);
-> +	}
-
-Again, values should not be ignored on error.
-
-> +	if (wcd938x->variant == WCD9380) {
-> +		ret = snd_soc_add_component_controls(component, wcd9380_snd_controls,
-> +					ARRAY_SIZE(wcd9380_snd_controls));
-> +		if (ret < 0) {
-> +			dev_err(component->dev,
-> +				"%s: Failed to add snd ctrls for variant: %d\n",
-> +				__func__, wcd938x->variant);
-> +			goto err;
-> +		}
-> +	}
-> +	if (wcd938x->variant == WCD9385) {
-
-Again, switch statements - I'll never understand why people seem so
-intent on writing if trees :(
-
---wRtZRu2mMGBZ6YQ7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBLjwIACgkQJNaLcl1U
-h9BaJgf+P8wVqvc+n6yTGoXc3vb0A59dDMzjY3jznMvKhtpHuapGd3Lfp7ZVKvab
-JN2wkUtn2CYfScb53MvCNCb7hdmrL0vZdW/YwukyVzlvh8jkf430ylyjNQItQ+wn
-VEK0OlhBwum8oYzi7QPxv3N6iI8xT5B6W5wf8IrPhfmXZBO7xtIojNb8MkWqz4VX
-K3hkUgjhUFtTw8L2s0hxrurVCnp9R5lOm2SvAdnzxD+d6XLgAUwVPfEIWV21Bcvo
-6BU73FDLauHJY5EtBfgZaOksCfuUBrRJ92yw+dKcXaU4AIsQhPmevJmD85DUPS8n
-yajJqMi8LIWffoXD1CHbp+H2UJEZfA==
-=AoLL
------END PGP SIGNATURE-----
-
---wRtZRu2mMGBZ6YQ7--
+Something odd happened, there was an initial merge and it seems to have 
+disappeared, it's no longer in the for-next branch?
