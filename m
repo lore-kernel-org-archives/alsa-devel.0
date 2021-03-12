@@ -7,70 +7,71 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DC7CC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 397A4C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:31:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A82E064F6B
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:31:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A82E064F6B
+	by mail.kernel.org (Postfix) with ESMTPS id AAE9064F42
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:31:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AAE9064F42
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BF101828;
-	Fri, 12 Mar 2021 19:30:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BF101828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A588170A;
+	Fri, 12 Mar 2021 19:30:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A588170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615573883;
-	bh=jIxmqOuVPc7Z0o1IBOAR8DABChtJYEXCzAOzg0Nqtxk=;
+	s=default; t=1615573902;
+	bh=/9NFL+/j5eXg+WIN0DoY+EzQE4h23tvBfGxERZRaP5o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FVhXIRAjDYYtKFs49i5TlupEtjw2DFdS2vyyCL1sRP/GLDacxSpOxt146J91vZEtW
-	 5x9dHh7HsUN/gkcXhEYGOAqWhLn4bzCgVy/eZjM9b9A6Rj7TuJegB7KfDJxgcqP0dh
-	 LP3Y7JzJVYrS+kk4vTJcNDeeWIhJcOZe19YnxzAU=
+	b=f+o3iN8y+97t3i7EU8Ql1Pv3Q2AEIHqlcHoWHgdomp3BtdBqYifXgzHA2Y2ZAjS0Y
+	 +JD2L6knO3Zk3Deg9hTXzrK/jsqKiQswhbibKbNY/OnpMSFfd15eLRG7I5fpWxz6bQ
+	 fqmU71bwBSjbXGHf3H/lwEeaz/SmWKOuSCyFonGE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65676F80533;
-	Fri, 12 Mar 2021 19:24:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28E03F80537;
+	Fri, 12 Mar 2021 19:24:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16795F8052D; Fri, 12 Mar 2021 19:24:02 +0100 (CET)
+ id 28085F804E3; Fri, 12 Mar 2021 19:24:02 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E253F804E3
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E253F804E3
-IronPort-SDR: AIkKtUwujdNPJvx7WoqbHP3QToeztNJdl4QzqwC2uAF8lEBRI7mlL4mSJcudbybttDTRb+eWYK
- XQ/cICNMj0fg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188236479"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="188236479"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D46AF804E4
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D46AF804E4
+IronPort-SDR: S2nAzW7upNGg8O0bZ3PxTT3giS3EmF9HUTaDOxQbOB0aNgBsGSfs3GP1Qo7zbmXHDhP0m+EHan
+ TKaGA+gww5MA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="188236472"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="188236472"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:46 -0800
-IronPort-SDR: T0I19Xpl7umOcexnSGDoG5Dw8vQZRch9lFDKeZUhhxsuf9Tpm/OHz0k3+B1cu9XkBVgZU0Z6vk
- sxg63zRIWgIA==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377792045"
+ 12 Mar 2021 10:23:45 -0800
+IronPort-SDR: Qmd/PrKab4w5xZ718ans4S8x0QzbdDtmgQ4cSiMH5KAMUFVWZalveoN5EIQ1fpgV22pc84X/lt
+ qIjmHRs5kEJQ==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377792044"
 Received: from amiteshs-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.37.30])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:45 -0800
+ 12 Mar 2021 10:23:44 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 17/23] ASoC: sigmadsp: align function prototype
-Date: Fri, 12 Mar 2021 12:22:40 -0600
-Message-Id: <20210312182246.5153-18-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 16/23] ASoC: pcm1681: remove useless assignment
+Date: Fri, 12 Mar 2021 12:22:39 -0600
+Message-Id: <20210312182246.5153-17-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
 References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>,
- tiwai@suse.de, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>, broonie@kernel.org
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,42 +89,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 cppcheck warning:
 
-sound/soc/codecs/sigmadsp.c:736:60: style:inconclusive: Function
-'sigmadsp_setup' argument 2 names different: declaration 'rate'
-definition 'samplerate'. [funcArgNamesDifferent]
-int sigmadsp_setup(struct sigmadsp *sigmadsp, unsigned int samplerate)
-                                                           ^
-
-sound/soc/codecs/sigmadsp.h:62:60: note: Function 'sigmadsp_setup'
-argument 2 names different: declaration 'rate' definition
-'samplerate'.
-int sigmadsp_setup(struct sigmadsp *sigmadsp, unsigned int rate);
-                                                           ^
-
-sound/soc/codecs/sigmadsp.c:736:60: note: Function 'sigmadsp_setup'
-argument 2 names different: declaration 'rate' definition
-'samplerate'.
-int sigmadsp_setup(struct sigmadsp *sigmadsp, unsigned int samplerate)
-                                                           ^
+sound/soc/codecs/pcm1681.c:87:8: style: Variable 'i' is assigned a
+value that is never used. [unreadVariable]
+ int i = 0, val = -1, enable = 0;
+       ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/sigmadsp.h | 2 +-
+ sound/soc/codecs/pcm1681.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/sigmadsp.h b/sound/soc/codecs/sigmadsp.h
-index e3c9656e006d..d63b8c366efb 100644
---- a/sound/soc/codecs/sigmadsp.h
-+++ b/sound/soc/codecs/sigmadsp.h
-@@ -59,7 +59,7 @@ struct sigmadsp *devm_sigmadsp_init_i2c(struct i2c_client *client,
+diff --git a/sound/soc/codecs/pcm1681.c b/sound/soc/codecs/pcm1681.c
+index 07ed8fded471..5b78e9299c95 100644
+--- a/sound/soc/codecs/pcm1681.c
++++ b/sound/soc/codecs/pcm1681.c
+@@ -84,7 +84,7 @@ static const int pcm1681_deemph[] = { 44100, 48000, 32000 };
+ static int pcm1681_set_deemph(struct snd_soc_component *component)
+ {
+ 	struct pcm1681_private *priv = snd_soc_component_get_drvdata(component);
+-	int i = 0, val = -1, enable = 0;
++	int i, val = -1, enable = 0;
  
- int sigmadsp_attach(struct sigmadsp *sigmadsp,
- 	struct snd_soc_component *component);
--int sigmadsp_setup(struct sigmadsp *sigmadsp, unsigned int rate);
-+int sigmadsp_setup(struct sigmadsp *sigmadsp, unsigned int samplerate);
- void sigmadsp_reset(struct sigmadsp *sigmadsp);
- 
- #endif
+ 	if (priv->deemph) {
+ 		for (i = 0; i < ARRAY_SIZE(pcm1681_deemph); i++) {
 -- 
 2.25.1
 
