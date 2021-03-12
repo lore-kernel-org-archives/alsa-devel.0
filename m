@@ -2,82 +2,71 @@ Return-Path: <SRS0=XQZd=IK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F3D9C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 02:46:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE2B2C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 02:55:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 704E964F6B
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 02:46:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 704E964F6B
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 76E6664F88
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 02:55:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76E6664F88
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1969F16E1;
-	Fri, 12 Mar 2021 03:45:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1969F16E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC43816E7;
+	Fri, 12 Mar 2021 03:54:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC43816E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615517202;
-	bh=OStRsWTcyMxOTDEnetIYhGi8B0bLORjmptg/oNJLkJQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=j/QHc7Ol+Eo6pV1J4PK93qzGqi6dOrkOvPVVWU0A1ZB3iU2afSsOGuyNT31fG0cZn
-	 2Ij9EdiHZCgcX6gEZIrWPj4UOPvNq4cR75DQvWuDgwW8/5ydE833oLr6JtLuIBHTl/
-	 46z0dXlSyWzniEcyiycAozTiavna5C463Tjdr4Vs=
+	s=default; t=1615517701;
+	bh=gzUsAxIK5VVNmz6VpKmScm7EERMKJPgqa04UNCPiYoA=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ax/THxw0kjLWwZ1gdButqGMTaWLBq1o+sxkner+prHK1093oK7yqsEmP2aOMDtNQr
+	 zFYC3D8vFUY3IehvNVSrUBr5JmAh67jCg0B/vlKqtf/1hosQ6en8UjIgqAZVPlxLbl
+	 vQVJBMXnN9PYevO93EvSQtMi/NPHrQ6CJSU2QiSw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D7A6F800AB;
-	Fri, 12 Mar 2021 03:45:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB456F8020D;
+	Fri, 12 Mar 2021 03:54:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCA7FF801D8; Fri, 12 Mar 2021 03:45:39 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ id 73787F80217; Fri, 12 Mar 2021 03:54:08 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84313F800AB
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 03:45:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84313F800AB
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12C2jGOw9007520,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 12C2jGOw9007520
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 12 Mar 2021 10:45:16 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 12 Mar 2021 10:45:15 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef]) by
- RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef%7]) with mapi id
- 15.01.2106.013; Fri, 12 Mar 2021 10:45:15 +0800
-Content-Type: multipart/mixed;
- boundary="_000_949671bd00c14b6d9aa5e85cc14be5d4realtekcom_"
-From: Jack Yu <jack.yu@realtek.com>
-To: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com"
- <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>
-Subject: [PATCH v2] ASoC: rt1015p: add acpi device id for rt1015p
-Thread-Topic: [PATCH v2] ASoC: rt1015p: add acpi device id for rt1015p
-Thread-Index: AdcW6bqwqWnOSfkEQNW/qNsRquqXtQ==
-Date: Fri, 12 Mar 2021 02:45:15 +0000
-Message-ID: <949671bd00c14b6d9aa5e85cc14be5d4@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: <949671bd00c14b6d9aa5e85cc14be5d4@realtek.com>
-x-originating-ip: [172.22.102.167]
-MIME-Version: 1.0
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- =?big5?B?U2h1bWluZyBbrVOu0bvKXQ==?= <shumingf@realtek.com>,
- =?big5?B?RGVyZWsgW6TovHe4cV0=?= <derek.fang@realtek.com>,
- =?big5?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFuzr6vYp7td?= <kent_chen@realtek.com>,
- "Flove\(HsinFu\)" <flove@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2FA5F8016C
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 03:54:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2FA5F8016C
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C64161A04A3;
+ Fri, 12 Mar 2021 03:54:00 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 25C841A04A5;
+ Fri, 12 Mar 2021 03:53:54 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 560E74029B;
+ Fri, 12 Mar 2021 03:53:45 +0100 (CET)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
+ devicetree@vger.kernel.org
+Subject: [PATCH v5 1/6] ASoC: soc-component: Add snd_soc_pcm_component_ack
+Date: Fri, 12 Mar 2021 10:38:40 +0800
+Message-Id: <1615516725-4975-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1615516725-4975-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1615516725-4975-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,126 +82,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---_000_949671bd00c14b6d9aa5e85cc14be5d4realtekcom_
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+Add snd_soc_pcm_component_ack back, which can be used to get an
+updated buffer pointer in the platform driver.
+On Asymmetric multiprocessor, this pointer can be sent to Cortex-M
+core for audio processing.
 
-QWRkIGFjcGkgZGV2aWNlIGlkIGZvciBydDEwMTVwLg0KDQpTaWduZWQtb2ZmLWJ5OiBKYWNrIFl1
-IDxqYWNrLnl1QHJlYWx0ZWsuY29tPg0KLS0tDQogc291bmQvc29jL2NvZGVjcy9ydDEwMTVwLmMg
-fCAxMCArKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKykNCg0KZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvcnQxMDE1cC5jIGIvc291bmQvc29jL2NvZGVjcy9y
-dDEwMTVwLmMNCmluZGV4IDY3MWYyYTIxMzBmZS4uMzlmNGM0ZWQyYWI4IDEwMDY0NA0KLS0tIGEv
-c291bmQvc29jL2NvZGVjcy9ydDEwMTVwLmMNCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvcnQxMDE1
-cC5jDQpAQCAtNCw2ICs0LDcgQEANCiAvLw0KIC8vIENvcHlyaWdodCAyMDIwIFRoZSBMaW51eCBG
-b3VuZGF0aW9uLiBBbGwgcmlnaHRzIHJlc2VydmVkLg0KIA0KKyNpbmNsdWRlIDxsaW51eC9hY3Bp
-Lmg+DQogI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+DQogI2luY2x1ZGUgPGxpbnV4L2RldmljZS5o
-Pg0KICNpbmNsdWRlIDxsaW51eC9lcnIuaD4NCkBAIC0xMzAsMTAgKzEzMSwxOSBAQCBzdGF0aWMg
-Y29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBydDEwMTVwX2RldmljZV9pZFtdID0gew0KIE1PRFVM
-RV9ERVZJQ0VfVEFCTEUob2YsIHJ0MTAxNXBfZGV2aWNlX2lkKTsNCiAjZW5kaWYNCiANCisjaWZk
-ZWYgQ09ORklHX0FDUEkNCitzdGF0aWMgY29uc3Qgc3RydWN0IGFjcGlfZGV2aWNlX2lkIHJ0MTAx
-NXBfYWNwaV9tYXRjaFtdID0gew0KKwl7ICJSVEwxMDE1IiwgMH0sDQorCXsgfSwNCit9Ow0KK01P
-RFVMRV9ERVZJQ0VfVEFCTEUoYWNwaSwgcnQxMDE1cF9hY3BpX21hdGNoKTsNCisjZW5kaWYNCisN
-CiBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBydDEwMTVwX3BsYXRmb3JtX2RyaXZlciA9
-IHsNCiAJLmRyaXZlciA9IHsNCiAJCS5uYW1lID0gInJ0MTAxNXAiLA0KIAkJLm9mX21hdGNoX3Rh
-YmxlID0gb2ZfbWF0Y2hfcHRyKHJ0MTAxNXBfZGV2aWNlX2lkKSwNCisJCS5hY3BpX21hdGNoX3Rh
-YmxlID0gQUNQSV9QVFIocnQxMDE1cF9hY3BpX21hdGNoKSwNCiAJfSwNCiAJLnByb2JlID0gcnQx
-MDE1cF9wbGF0Zm9ybV9wcm9iZSwNCiB9Ow0KLS0gDQoyLjI5LjANCg0K
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ include/sound/soc-component.h |  3 +++
+ sound/soc/soc-component.c     | 14 ++++++++++++++
+ sound/soc/soc-pcm.c           |  2 ++
+ 3 files changed, 19 insertions(+)
 
---_000_949671bd00c14b6d9aa5e85cc14be5d4realtekcom_
-Content-Disposition: attachment; filename="winmail.dat"
-Content-Transfer-Encoding: base64
-Content-Type: application/ms-tnef; name="winmail.dat"
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 7dc75b39287f..722cfab28d29 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -146,6 +146,8 @@ struct snd_soc_component_driver {
+ 	int (*mmap)(struct snd_soc_component *component,
+ 		    struct snd_pcm_substream *substream,
+ 		    struct vm_area_struct *vma);
++	int (*ack)(struct snd_soc_component *component,
++		   struct snd_pcm_substream *substream);
+ 
+ 	const struct snd_compress_ops *compress_ops;
+ 
+@@ -498,5 +500,6 @@ int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
+ 					 void *stream);
+ void snd_soc_pcm_component_pm_runtime_put(struct snd_soc_pcm_runtime *rtd,
+ 					  void *stream, int rollback);
++int snd_soc_pcm_component_ack(struct snd_pcm_substream *substream);
+ 
+ #endif /* __SOC_COMPONENT_H */
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 8415e9bd2932..3a5e84e16a87 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -1212,3 +1212,17 @@ void snd_soc_pcm_component_pm_runtime_put(struct snd_soc_pcm_runtime *rtd,
+ 		soc_component_mark_pop(component, stream, pm);
+ 	}
+ }
++
++int snd_soc_pcm_component_ack(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_component *component;
++	int i;
++
++	/* FIXME: use 1st pointer */
++	for_each_rtd_components(rtd, i, component)
++		if (component->driver->ack)
++			return component->driver->ack(component, substream);
++
++	return 0;
++}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index ba8ffbf8a5d3..e75b404a9f36 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2826,6 +2826,8 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->ops.page		= snd_soc_pcm_component_page;
+ 		if (drv->mmap)
+ 			rtd->ops.mmap		= snd_soc_pcm_component_mmap;
++		if (drv->ack)
++			rtd->ops.ack            = snd_soc_pcm_component_ack;
+ 	}
+ 
+ 	if (playback)
+-- 
+2.27.0
 
-eJ8+Ir5wAQaQCAAEAAAAAAABAAEAAQeQBgAIAAAAtgMAAAAAAAC5AAEJgAEAIQAAADU3MTJCQzI5
-MjExNjU0NEZBNkFCODRDQjZDOEVBMkQ5AD0HAQ2ABAACAAAAAgACAAEFgAMADgAAAOUHAwAMAAIA
-LQAPAAUAPgEBIIADAA4AAADlBwMADAACAC0ADwAFAD4BAQiABwAYAAAASVBNLk1pY3Jvc29mdCBN
-YWlsLk5vdGUAMQgBBIABADkAAABbUEFUQ0ggdjJdIEFTb0M6IHJ0MTAxNXA6IGFkZCBhY3BpIGRl
-dmljZSBpZCBmb3IgcnQxMDE1cAAuEQELgAEAIQAAADU3MTJCQzI5MjExNjU0NEZBNkFCODRDQjZD
-OEVBMkQ5AD0HAQOQBgDoEgAARAAAAAIBfwABAAAALwAAADw5NDk2NzFiZDAwYzE0YjZkOWFhNWU4
-NWNjMTRiZTVkNEByZWFsdGVrLmNvbT4AAAsAHw4AAAAAAgEJEAEAAACMAwAAiAMAAIYGAABMWkZ1
-YacY42EACmZiaWQEAABjY8BwZzEyNTIA/gND8HRleHQB9wKkA+MCAARjaArAc2V0MCDvB20CgwBQ
-EU0yCoAGtAKAln0KgAjIOwliMTkOwL8JwxZyCjIWcQKAFWIqCbBzCfAEkGF0BbIOUANgc6JvAYAg
-RXgRwW4YMF0GUnYEkBe2AhByAMB0fQhQbhoxECAFwAWgG2RkmiADUiAQIheyXHYIkOR3awuAZDUd
-UwTwB0ANF3AwCnEX8mJrbWsGcwGQACAgQk1fQuBFR0lOfQr8AfEL8RggQWQcYADQcGkg+wEAHWBj
-GeAN0BxwBbEAIIEekDE1cC5cbAuARmUKgSOkU2lnGFBkAi0ZMGYtYnk6IAJKANBrIFl1IDzCaiVx
-Lnl1QAlwB0CnECAmIAWgbT4jlS0noFUjlSAZIHUdwC8ZIGMmLwWgBYFzLyMWYyBkfCAekCArKlcn
-1jHPHHADEBngGZRkLCoSC4ALEgAAIGkCIHMoKymXI5wN4AEgICegZ2kFQO5hKKEofymGYi8fKVgj
-lQMdsRAwIDY3MWYyAGEyMTMwZmUugC4zOWY0YzQJgAkzoGI4KhEwNjQ0/yc4Lv8x3wqAKlEwzzcv
-CoDEQEAukDQsNipAOwBMNyA6wCfWLy87uCDJCFBweQUQZ2gFQAHQqSFxVGgZ4EwLgHUzQK5GOMIY
-gC0BLiGQbAMg3z1DBCAJcCzBGjBkI4YDMPU39SMLgGMKQAEAJdAjoaU+YC8h4i5oJyYgQZ77AQAL
-YHlC30PqIlJE30H43QSQckboOsIz0SwqIjPQ+jFJ0Dk7gShAAZAs8CngxxvhH2BKsXJ1YwVAGTA6
-XyI0XyKhIxVMKFtdHCA9AzAAACflTU9EAFVMRV9ERVZJokNPIFRBQk8QKBkw+yxQTN8pFiBHJgnw
-LlFAnwcGkAEBPPBPTkZJR+BfQUNQSTfmSs9L0f8h4kwvTTBWQxsREcBN7CrgQHsgIlJUTCMyIrMs
-UAFAfSxYyVo6fVF2/itO30/hIeJQOFe4UWdBgP9SGirnVQVLlQtRADAa8VaA3wUQGjFQR2IeThou
-ZC9lMexuYQeATgEiIxVZ8GTX+0wBWANfAZErsU4QaEcFMNRyKFBfKVpXLle4aMfhVEJfUFRSahde
-mWen61o4ZUBwA2BiZtJjH3AjD27ZUXY18SOVMi4yOR4uAUAjqxVCdVAfAEIAAQAAABAAAABKAGEA
-YwBrACAAWQB1AAAAHwBlAAEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwAdABlAGsALgBj
-AG8AbQAAAB8AZAABAAAACgAAAFMATQBUAFAAAAAAAAIBQQABAAAAWgAAAAAAAACBKx+kvqMQGZ1u
-AN0BD1QCAAAAgEoAYQBjAGsAIABZAHUAAABTAE0AVABQAAAAagBhAGMAawAuAHkAdQBAAHIAZQBh
-AGwAdABlAGsALgBjAG8AbQAAAAAAHwACXQEAAAAoAAAAagBhAGMAawAuAHkAdQBAAHIAZQBhAGwA
-dABlAGsALgBjAG8AbQAAAB8A5V8BAAAAMAAAAHMAaQBwADoAagBhAGMAawAuAHkAdQBAAHIAZQBh
-AGwAdABlAGsALgBjAG8AbQAAAB8AGgwBAAAAEAAAAEoAYQBjAGsAIABZAHUAAAAfAB8MAQAAACgA
-AABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAHwAeDAEAAAAKAAAAUwBN
-AFQAUAAAAAAAAgEZDAEAAABaAAAAAAAAAIErH6S+oxAZnW4A3QEPVAIAAACASgBhAGMAawAgAFkA
-dQAAAFMATQBUAFAAAABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAAAAf
-AAFdAQAAACgAAABqAGEAYwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAACwBAOgEA
-AAAfABoAAQAAABIAAABJAFAATQAuAE4AbwB0AGUAAAAAAAMA8T8EBAAACwBAOgEAAAADAP0/tgMA
-AAIBCzABAAAAEAAAAFcSvCkhFlRPpquEy2yOotkDABcAAQAAAEAAOQCA7+y66RbXAUAACDDxIRm7
-6RbXAQsAKQAAAAAAHwDZPwEAAAAAAgAAQQBkAGQAIABhAGMAcABpACAAZABlAHYAaQBjAGUAIABp
-AGQAIABmAG8AcgAgAHIAdAAxADAAMQA1AHAALgANAAoADQAKAFMAaQBnAG4AZQBkAC0AbwBmAGYA
-LQBiAHkAOgAgAEoAYQBjAGsAIABZAHUAIAA8AGoAYQBjAGsALgB5AHUAQAByAGUAYQBsAHQAZQBr
-AC4AYwBvAG0APgANAAoALQAtAC0ADQAKACAAcwBvAHUAbgBkAC8AcwBvAGMALwBjAG8AZABlAGMA
-cwAvAHIAdAAxADAAMQA1AHAALgBjACAAfAAgADEAMAAgACsAKwArACsAKwArACsAKwArACsADQAK
-ACAAMQAgAGYAaQBsAGUAIABjAGgAYQBuAGcAZQBkACwAIAAxADAAIABpAG4AcwBlAHIAdABpAG8A
-bgBzACgAKwApAA0ACgANAAoAZABpAGYAZgAgAC0ALQBnAGkAdAAgAGEALwBzAG8AdQBuAGQALwBz
-AG8AYwAvAGMAbwBkAGUAYwBzAC8AcgB0ADEAMAAxADUAcAAuAGMAIABiAC8AcwBvAHUAbgBkAC8A
-cwBvAGMALwBjAG8AZABlAGMAcwAvAHIAdAAxADAAMQA1AHAALgBjAA0ACgBpAG4AZABlAHgAIAA2
-ADcAMQBmADIAYQAyADEAMwAwAGYAAAALAACACCAGAAAAAADAAAAAAAAARgAAAAAUhQAAAQAAAB8A
-AICGAwIAAAAAAMAAAAAAAABGAQAAAB4AAABhAGMAYwBlAHAAdABsAGEAbgBnAHUAYQBnAGUAAAAA
-AAEAAAAaAAAAegBoAC0AVABXACwAIABlAG4ALQBVAFMAAAAAAAMAAIAIIAYAAAAAAMAAAAAAAABG
-AQAAADIAAABFAHgAYwBoAGEAbgBnAGUAQQBwAHAAbABpAGMAYQB0AGkAbwBuAEYAbABhAGcAcwAA
-AAAAIAAAAEgAAIAIIAYAAAAAAMAAAAAAAABGAQAAACIAAABOAGUAdAB3AG8AcgBrAE0AZQBzAHMA
-YQBnAGUASQBkAAAAAADMZHZiq/VqRuGyCNjlAN2bHwAAgBOP8kH0gxRBpYTu21prC/8BAAAAFgAA
-AEMAbABpAGUAbgB0AEkAbgBmAG8AAAAAAAEAAAAqAAAAQwBsAGkAZQBuAHQAPQBNAFMARQB4AGMA
-aABhAG4AZwBlAFIAUABDAAAAAAAfAPo/AQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwA3AAEAAABy
-AAAAWwBQAEEAVABDAEgAIAB2ADIAXQAgAEEAUwBvAEMAOgAgAHIAdAAxADAAMQA1AHAAOgAgAGEA
-ZABkACAAYQBjAHAAaQAgAGQAZQB2AGkAYwBlACAAaQBkACAAZgBvAHIAIAByAHQAMQAwADEANQBw
-AAAAAAAfAD0AAQAAAAIAAAAAAAAAAwA2AAAAAAACAXEAAQAAABYAAAAB1xbpurCpac5J+QRA1b+o
-2xGq6pe1AAAfAHAAAQAAAHIAAABbAFAAQQBUAEMASAAgAHYAMgBdACAAQQBTAG8AQwA6ACAAcgB0
-ADEAMAAxADUAcAA6ACAAYQBkAGQAIABhAGMAcABpACAAZABlAHYAaQBjAGUAIABpAGQAIABmAG8A
-cgAgAHIAdAAxADAAMQA1AHAAAAAAAB8ANRABAAAAXgAAADwAOQA0ADkANgA3ADEAYgBkADAAMABj
-ADEANABiADYAZAA5AGEAYQA1AGUAOAA1AGMAYwAxADQAYgBlADUAZAA0AEAAcgBlAGEAbAB0AGUA
-awAuAGMAbwBtAD4AAAAAAAMA3j+2AwAAAwATEgAAAAACAQCAE4/yQfSDFEGlhO7bWmsL/wEAAAAu
-AAAASABlAGEAZABlAHIAQgBvAGQAeQBGAHIAYQBnAG0AZQBuAHQATABpAHMAdAAAAAAAAQAAACIA
-AAABAAoAAAAEAAAAAAAAABQAAAAAAAAAAAAAAP////8AAAAAAAALAACAE4/yQfSDFEGlhO7bWmsL
-/wEAAAAcAAAASABhAHMAUQB1AG8AdABlAGQAVABlAHgAdAAAAAAAAAALAACAE4/yQfSDFEGlhO7b
-WmsL/wEAAAAoAAAASQBzAFEAdQBvAHQAZQBkAFQAZQB4AHQAQwBoAGEAbgBnAGUAZAAAAAAAAABA
-AAcwDOASu+kW1wECAQsAAQAAABAAAABXErwpIRZUT6arhMtsjqLZAwAmAAAAAAALAAYMAAAAAAIB
-EDABAAAARgAAAAAAAADb6cRKJKDnQZMbKrsrs21MBwBMt30NVaF5RL5zhTli0AClAAAAaWD3AAAy
-rzgFSrBORoDHxzgiug9aAAAB16URAAAAAAIBEzABAAAAEAAAAKlpzkn5BEDVv6jbEarql7UCARQw
-AQAAAAwAAABaAAAAgR1weUEAAAAfAPg/AQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwAiQAEAAAAG
-AAAARQBYAAAAAAAfACNAAQAAALYAAAAvAE8APQBSAFQARQBYAEMASAAvAE8AVQA9AEUAWABDAEgA
-QQBOAEcARQAgAEEARABNAEkATgBJAFMAVABSAEEAVABJAFYARQAgAEcAUgBPAFUAUAAgACgARgBZ
-AEQASQBCAE8ASABGADIAMwBTAFAARABMAFQAKQAvAEMATgA9AFIARQBDAEkAUABJAEUATgBUAFMA
-LwBDAE4APQBVAFMARQBSADUAOQA4ADYANQAxADAAOQAAAAAAHwAkQAEAAAAGAAAARQBYAAAAAAAf
-ACVAAQAAALYAAAAvAE8APQBSAFQARQBYAEMASAAvAE8AVQA9AEUAWABDAEgAQQBOAEcARQAgAEEA
-RABNAEkATgBJAFMAVABSAEEAVABJAFYARQAgAEcAUgBPAFUAUAAgACgARgBZAEQASQBCAE8ASABG
-ADIAMwBTAFAARABMAFQAKQAvAEMATgA9AFIARQBDAEkAUABJAEUATgBUAFMALwBDAE4APQBVAFMA
-RQBSADUAOQA4ADYANQAxADAAOQAAAAAAHwAwQAEAAAAQAAAASgBhAGMAawAgAFkAdQAAAB8AMUAB
-AAAAEAAAAEoAYQBjAGsAIABZAHUAAAAfADhAAQAAABAAAABKAGEAYwBrACAAWQB1AAAAHwA5QAEA
-AAAQAAAASgBhAGMAawAgAFkAdQAAAAMAWUAAAAAAAwBaQAAAAAADAAlZAQAAAB8ACl0BAAAAKAAA
-AGoAYQBjAGsALgB5AHUAQAByAGUAYQBsAHQAZQBrAC4AYwBvAG0AAAAfAAtdAQAAACgAAABqAGEA
-YwBrAC4AeQB1AEAAcgBlAGEAbAB0AGUAawAuAGMAbwBtAAAAHwAAgB+k6zOoei5Cvnt54amOVLMB
-AAAAOAAAAEMAbwBuAHYAZQByAHMAYQB0AGkAbwBuAEkAbgBkAGUAeABUAHIAYQBjAGsAaQBuAGcA
-RQB4AAAAAQAAACQBAABJAEkAPQBbAEMASQBEAD0ANAA5AGMAZQA2ADkAYQA5AC0AMAA0AGYAOQAt
-AGQANQA0ADAALQBiAGYAYQA4AC0AZABiADEAMQBhAGEAZQBhADkANwBiADUAOwBJAEQAWABIAEUA
-QQBEAD0ARAA3ADEANgBFADkAQgBBAEIAMAA7AEkARABYAEMATwBVAE4AVAA9ADEAXQA7AFAAUwA9
-AFUAbgBrAG4AbwB3AG4AOwBWAGUAcgBzAGkAbwBuAD0AVgBlAHIAcwBpAG8AbgAgADEANQAuADEA
-IAAoAEIAdQBpAGwAZAAgADIAMQAwADYALgAwACkALAAgAFMAdABhAGcAZQA9AEgANAA7AFUAUAA9
-ADEAMAA7AEQAUAA9ADEAQwA1AAAACwAAgAggBgAAAAAAwAAAAAAAAEYAAAAAgoUAAAAAAAADAA00
-/T8AAB8AAICGAwIAAAAAAMAAAAAAAABGAQAAACAAAAB4AC0AbQBzAC0AaABhAHMALQBhAHQAdABh
-AGMAaAAAAAEAAAACAAAAAAAAAB8AAICGAwIAAAAAAMAAAAAAAABGAQAAACIAAAB4AC0AbwByAGkA
-ZwBpAG4AYQB0AGkAbgBnAC0AaQBwAAAAAAABAAAAIgAAAFsAMQA3ADIALgAyADIALgAxADAAMgAu
-ADEANgA3AF0AAAAAAJeJ
-
---_000_949671bd00c14b6d9aa5e85cc14be5d4realtekcom_--
