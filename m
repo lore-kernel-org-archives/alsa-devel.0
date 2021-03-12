@@ -2,100 +2,91 @@ Return-Path: <SRS0=XQZd=IK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FC10C4332E
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:26:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19863C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:31:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDDAC64FEE
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:26:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDDAC64FEE
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 87FB264F6E
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:31:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87FB264F6E
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57AB71754;
-	Fri, 12 Mar 2021 13:25:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57AB71754
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCFA3170E;
+	Fri, 12 Mar 2021 13:30:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCFA3170E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615551981;
-	bh=5JD/u/4SLVoGXkLrtm1/02PRSaR/nq5DKcsd+dLbtzA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615552267;
+	bh=p/fyUU6/cwt6MQDqBQu2n306GiOaBTF+4aI30Io7tOk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sZj+NYHzjJXLhp8MPobwDaiM6/rwpyC3KZZcscWuUFjkwfUzFwmS396TPwctMi9bJ
-	 wgsmlGYdxPCt0FRcSiTc5pJomdely03P1Qwfrl3ouhxaL3WCAkqQx6UsDznbsR/nAD
-	 51nZmTaqa3Gl9Ew7fHC+5Gw3Yc00jC1ZKBEDG5kM=
+	b=p2ARWasdYkLFS6lRHki6d2MSBU9z8rXebedA+QOctfXhQ7DD98CR0PdAP6K/RkqM/
+	 aEDf9VT7LsBQTZBHjIfWydt+vs6AyBf5fIpB6UBHuZXTEyPsxmfd1JTlT0F+dm5bfT
+	 /qjc+yXyi6+7Uw6J22W+h3kQO9ilfC/xYNybd2P0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B532F80482;
-	Fri, 12 Mar 2021 13:23:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26E0CF8016C;
+	Fri, 12 Mar 2021 13:30:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5517F8032D; Fri, 12 Mar 2021 13:23:14 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C1822F801D8; Fri, 12 Mar 2021 13:30:13 +0100 (CET)
+Received: from ssl.serverraum.org (ssl.serverraum.org [176.9.125.105])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 520CAF80272
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 13:23:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 520CAF80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id E417DF800BF
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 13:30:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E417DF800BF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="YRawz45L"
-Received: by mail-wr1-x42a.google.com with SMTP id j7so1665718wrd.1
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 04:23:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=6S4oc3H/pGD3ohc32wC+7IuRuvb/2oR7Yf16M/iJXA4=;
- b=YRawz45LNtttk3HenoCONJFDTNNca+FzdessU2tg+yt1grzPilMT9kL/9Wh3yC/Ofe
- wpOC52qJcJSsHIbRBC4+CK/MUpraS78G8Ow2jtKaV6LjUWo7gzq535HIjhIhACv0A1z0
- U1VOs3A7KyrcGJdKpckT/As/AEtmgme9cg3AZ0NP6p2RJyjfT8YhtxLLne7UPuHC0cpC
- 4MTVhMV+u6t7vPSVkCsHnjmVnsLMrgJIZUwsC5lXoVBQ0o/vjJu8dH3AGjtq2b0f9acM
- OiB4MkB2fPA6b/pl8NlLc2CNvMqZ/Cwi+ObLOWxvt3zwPL0+CWqRUCzBkDLYtqqQxXz7
- uyHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=6S4oc3H/pGD3ohc32wC+7IuRuvb/2oR7Yf16M/iJXA4=;
- b=NtxmAPBSLYXOXBPu2nQNSe3aIMarYFlsvQqzCIRy3HCP4rSTX7xZoeHOqRibtmeSBo
- 8Af4cSIy7PDWCuOoKFNKJrhc+fr7tJ8rcbTiJ3yWvo0v9qFnL5DA2D1D6g8tL9s1nwVv
- sGWL4E7qC4+U1JM73WREAqAU0IUVHT6CwzEw61bxCD0LfLLStC4Im8ceN5+9cAhYY9iN
- eFFHZD0ImjTuzoGgTVSHkFRA4gCAAJIkZc3Y+154r+rHYJfyl3ux7Q/1GKAcDdvtlVuD
- IeWRW+lBIRegHmeZUvx+XxmDaU/UderRE52DruzX7eWJx3cqMuKcIMZDG5lQfNc76FGv
- WScQ==
-X-Gm-Message-State: AOAM531QZJeNZfxthbg/6s+5fhEJLeg1gyZzSfkalV0Vz3lwaNNxEwRL
- U5SKa0rjeylEtwoS5Cz5lNSOZgw4V/77gQ==
-X-Google-Smtp-Source: ABdhPJyECcjI4bJaeKB5525lkzQWeGSZ7fhUMb/PSBwvy9RH+lOuu9IO1s7CygCdkUXDA58e6AU/kw==
-X-Received: by 2002:a05:6000:2aa:: with SMTP id
- l10mr13737171wry.368.1615551781175; 
- Fri, 12 Mar 2021 04:23:01 -0800 (PST)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id 3sm8804329wry.72.2021.03.12.04.23.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Mar 2021 04:23:00 -0800 (PST)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org,
-	vkoul@kernel.org
-Subject: [RESEND PATCH v3 3/5] soundwire: qcom: add static port map support
-Date: Fri, 12 Mar 2021 12:22:53 +0000
-Message-Id: <20210312122255.3143-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210312122255.3143-1-srinivas.kandagatla@linaro.org>
-References: <20210312122255.3143-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (1024-bit key) header.d=walle.cc header.i=@walle.cc
+ header.b="JUibZx2Y"
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 550BD22238;
+ Fri, 12 Mar 2021 13:30:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1615552202;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=DLDt3qK5Lj/9krzodd0NKRhKwpbPQn93pLiyIHMlDW4=;
+ b=JUibZx2YXrL0+9ptaGFBZofuARSICiab+jH7Ss0cay9ZcmU0D3vh1gZdeXXD0DNc3h3g60
+ LMYwkXdk50J1K4d0J8tLLq6ujOw7IzFxnNqUyJ+Zaj8wxNqlj0qw3slHj3m1GJZl1orOYk
+ p42hD3MvuvCFZihjvNoxAoQCNJZhEPs=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Fri, 12 Mar 2021 13:30:02 +0100
+From: Michael Walle <michael@walle.cc>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: simple-card-utils: Fix device module clock
+In-Reply-To: <20210312120456.GD5348@sirena.org.uk>
+References: <1612939421-19900-2-git-send-email-spujar@nvidia.com>
+ <20210309144156.18887-1-michael@walle.cc>
+ <e8b80188-978c-29fa-b5d4-9788a9f2282f@nvidia.com>
+ <611ed3362dee3b3b7c7a80edfe763fd0@walle.cc>
+ <ca540fb6-2ea7-90b0-66ad-097e99b6e585@nvidia.com>
+ <20210311161558.GG4962@sirena.org.uk>
+ <f21b87f1afb3eda54b5f00f2d1c146d3@walle.cc>
+ <20210312113544.GB5348@sirena.org.uk>
+ <6ed28bb5330879b1919aced5174f319f@walle.cc>
+ <20210312120456.GD5348@sirena.org.uk>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <684332700f8be9f77348a510eb6eba22@walle.cc>
+X-Sender: michael@walle.cc
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ kuninori.morimoto.gx@renesas.com, robh@kernel.org,
+ Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
+ jonathanh@nvidia.com, sharadg@nvidia.com, thierry.reding@gmail.com,
+ linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,75 +102,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SoundWire device ports are statically mapped to Controller ports during
-design. Add support to read these from SoundWire devices.
-This controller uses static port map info to setup bandwidth
-parameters for those ports.
+Am 2021-03-12 13:04, schrieb Mark Brown:
+> On Fri, Mar 12, 2021 at 01:01:41PM +0100, Michael Walle wrote:
+>> Am 2021-03-12 12:35, schrieb Mark Brown:
+> 
+>> > If the card has a clock API clock as sysclk then set_sysclk(() should
+>> > be configuring that clock.
+> 
+>> What do you mean by "the card". The simple-audio-card itself?
+> 
+>> Take a look at:
+>> https://elixir.bootlin.com/linux/v5.12-rc2/source/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts#L29
+> 
+>> Does the card has a clock? IMHO the WM8904 codec has a clock, but not
+>> the audio card.
+> 
+> The clock on the CODEC, which the card configures.  The CODEC should be
+> passing on the configuration to the clock API.
 
-A generic port allocation is not possible in this cases!
+Sorry, I don't understand.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+The card calls set_sysclk(), which eventually ends up in the codec.
+The codec therefore, could figure out if it needs to configure the
+clock or if it can use its internal FLL.
+Is that what you mean?
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 9e70c53e2c7b..39222b04a2e0 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -460,6 +460,8 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
- 	struct sdw_slave_runtime *s_rt;
- 	struct sdw_port_runtime *p_rt;
- 	struct qcom_swrm_port_config *pcfg;
-+	struct sdw_slave *slave;
-+	unsigned int m_port;
- 	int i = 0;
- 
- 	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
-@@ -473,8 +475,14 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
- 		}
- 
- 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+			slave = s_rt->slave;
- 			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
--				pcfg = &ctrl->pconfig[i];
-+				m_port = slave->m_port_map[p_rt->num];
-+				/* port config starts at offset 0 so -1 from actual port number */
-+				if (m_port)
-+					pcfg = &ctrl->pconfig[m_port - 1];
-+				else
-+					pcfg = &ctrl->pconfig[i];
- 				p_rt->transport_params.port_num = p_rt->num;
- 				p_rt->transport_params.sample_interval =
- 					pcfg->si + 1;
-@@ -535,8 +543,10 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
- 	struct sdw_master_runtime *m_rt;
- 	struct sdw_slave_runtime *s_rt;
- 	struct sdw_port_runtime *p_rt;
-+	struct sdw_slave *slave;
- 	unsigned long *port_mask;
- 	int i, maxport, pn, nports = 0, ret = 0;
-+	unsigned int m_port;
- 
- 	mutex_lock(&ctrl->port_lock);
- 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-@@ -549,9 +559,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
- 		}
- 
- 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+			slave = s_rt->slave;
- 			list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
-+				m_port = slave->m_port_map[p_rt->num];
- 				/* Port numbers start from 1 - 14*/
--				pn = find_first_zero_bit(port_mask, maxport);
-+				if (m_port)
-+					pn = m_port;
-+				else
-+					pn = find_first_zero_bit(port_mask, maxport);
-+
- 				if (pn > maxport) {
- 					dev_err(ctrl->dev, "All ports busy\n");
- 					ret = -EBUSY;
--- 
-2.21.0
+But the set_sysclk() of the codec isn't even called, because the
+card itself already tries to call clk_set_rate() on the Codec's MCLK,
+which returns with an error [0].
 
+[0] 
+https://elixir.bootlin.com/linux/v5.12-rc2/source/sound/soc/generic/simple-card-utils.c#L265
+
+-michael
