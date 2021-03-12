@@ -7,84 +7,84 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60A91C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:03:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60810C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:03:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 87B9A64FF9
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:03:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87B9A64FF9
+	by mail.kernel.org (Postfix) with ESMTPS id A9F2064FE0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 12:03:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9F2064FE0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 199C416F6;
-	Fri, 12 Mar 2021 13:02:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 199C416F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 486D91712;
+	Fri, 12 Mar 2021 13:02:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 486D91712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615550584;
-	bh=GH9Zx2fjGVbOMJPmIGAsUEw4wdgLkT1twbWfrXsgv+4=;
+	s=default; t=1615550595;
+	bh=NGeQ1H9cntxsOIHhSMiHTzsi1SXIo+/m3a6BTLBUTu0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uSmEXuKBmbCBjXH7SbSUF9J4Sto6cl3uUnbI52ob1F/a5pTx35zX/wxFSik+8VSpT
-	 a1ZTzvqavgWNOsDZXsKKbuHSBgxENu8Un/YW9wAUpOQ19oQzL4ikwCcWG80EIgRHJv
-	 B6NnZHvY/Jp2yLcZrNTmMVczqGoiKZanRiwuOrSY=
+	b=Mlsy7jSsU4NaGTQq96Td7jvm4XWAl4YuZMGw+83is/egjJiIqSBxC9iOYGKfzeHdc
+	 7+tmK6noU5Bj13mWB1depiovr/HKW/mSmZPTki+dEh/ALnAwwIWtmU9NPKNid8lG1k
+	 XBgyNvrar+k5WyCL8Dhy3Nox1Fb73MrqDrbzg6WI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4B55F804AD;
-	Fri, 12 Mar 2021 13:00:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAB60F80217;
+	Fri, 12 Mar 2021 13:00:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 525F8F80475; Fri, 12 Mar 2021 13:00:48 +0100 (CET)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
+ id 39461F80482; Fri, 12 Mar 2021 13:00:49 +0100 (CET)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38A50F802E7
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 13:00:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38A50F802E7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44E27F8012A
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 13:00:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44E27F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="yuAwZqI5"
-Received: by mail-wm1-x32b.google.com with SMTP id l19so3649578wmh.1
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 04:00:30 -0800 (PST)
+ header.b="n9tFVto6"
+Received: by mail-wr1-x429.google.com with SMTP id k8so1626015wrc.3
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 04:00:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=PyVet0MMNWzuhpz0LymeggNR30pG1D8Q6fhrbm8pPJQ=;
- b=yuAwZqI5hE3Nk1PQHMW8alNtebLpjAxb00I/vDK2HYDGwbW19/3HnDctnAOISkpyKL
- /Yzey65rKRNHS924Cl1SQbOYbsfXCpf4/YjODLbIDtAqGBf6KbGRmU5oKxkBenIWKmr7
- buIa65ePyv/64ORhiczgM6Dqrl0lvpw9J3EdVr6y5J4R5g+5WmJjjY8Q3xhsudxqeOe+
- UVueMLxryIVAgUG+BhBZRG24VhrCcHSdWiPNKY2u0lc8QrUXnfiqMhZhSmIr8fJ98h4t
- ZsbB2KJwG2sjOelLn4VjIcJScq0cyZvJ5gZ+7PTXNDc2Lynp6VOoNHpFt52YSSyWtZ8u
- quOg==
+ bh=McMRGa+k2wYhi+9vmCrUwcgebhPfYzfC04NyJL/Hc1k=;
+ b=n9tFVto6RRq8v6s1Rub2Qm0ophWbFgmh9Ud/YccjDR3kMoMIcuXtN4PuH9bDyb4Ez5
+ z92NLQrilIoMeI++fWg+xbzTYOL+3dtmXjnr17qt748thtz1RIHlaWCcchsjBtDUUndh
+ QRTzZ1ABy9K8LFdZzwGcZJ/aQ9l7l26zg3R5KR8XZN8GGvihSP4N3TUILQo6ffOQKiiF
+ dA2MQRu5KGVbreOncoqYELOWlS565l8lO0LOEnNazdq9eVFwccXEXXE+gCl/OLL+jC7X
+ cYNFR3w4oz6xh5f700LqhTXiZSGSav+0lJMIEiN5Tj8v4ssaKTo7vs3Y/emepHljblnA
+ mHLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=PyVet0MMNWzuhpz0LymeggNR30pG1D8Q6fhrbm8pPJQ=;
- b=pg+nCkNTgbK9n967JWR80iy/QCESODaFmYr0I8LeuPKFngIUMDZVkXg9L+EwjwjF7w
- 4bRd9omaA0GlubbFrxPtZEhrU94ZJsRNVqBBiCpPYUu2eMgDoS42p+3tioxGXY8dEMWo
- BRkUdGY2/nWlKKLfRVjquAGP5JL0hL5n/gjxYE+AiHM8yUzl60Pv2KSg+qF3XGXd9LFq
- 8GNkH5x3wSlkZfGpTr7Jq44Cyl79MCS00ERv0Kz8o9DvVIBku+pbXJ239B17PdK8Ff0G
- 9Z9yCPGp/biCoiP94xtKc4m0bVupgSHc7bMWx0kVoHUcL4PszjGUvBhFD6R9/kxrabDP
- fxtA==
-X-Gm-Message-State: AOAM531yHxmqDsgn5u8EfjBCpF9+btwWKKh/IAHpRV898tiIob9kXMrH
- UH7mbm7eGttj7K9f7NbvPKVvAw==
-X-Google-Smtp-Source: ABdhPJy9KcO9sDBKosM7tc7Jg0n438myr81vwQ09fMmyMQpHv/Hs5T5U8qaJ9Ym9nGmhjYyAyK+doA==
-X-Received: by 2002:a1c:1dd4:: with SMTP id d203mr12574908wmd.83.1615550429802; 
- Fri, 12 Mar 2021 04:00:29 -0800 (PST)
+ bh=McMRGa+k2wYhi+9vmCrUwcgebhPfYzfC04NyJL/Hc1k=;
+ b=oY17YFOl0NFHT758WX847fvUqToapLU2LbKmwhAVCaqBmF5h4Z9AHvrhq1BF1yE3n/
+ +zUD7wpRpPIPeEnh7b2c15+DVUrlwLs5+FFIOf2vY4cAYXZipj26pvTbV4yEboEYfjiW
+ t7n6mrZNABorTa7bXYTPMrPID36XG/yBQ9YH1ij6rNknBOGvF8XyKi5UFpw2U6qbiBDZ
+ lySeaV63Pnxx8oMce4Luo1T3hnhFabA/xWczS+E14C/cJbz7tJAObaX571jRnYoJnBkh
+ GQGrDTlEWcaCFZ8RoAYuZhSAJBlqbXNfJ1HVAMjZkCROExeCI8wjHkZRd+zHWWWE70K/
+ /Q8g==
+X-Gm-Message-State: AOAM531BJVN7VkrNSXzgjy8ChPJtoGzzV6BsPYoubLZ3nNM239UIL2IW
+ JQhHxgBj9xBO6aWsOnXHtQQS8g==
+X-Google-Smtp-Source: ABdhPJxy6BPF9ppF0+7adLNIuGg8jfai0L0+HSnffGPxpIRZcI9SbnLRWQgLRcl95vbG5E0nL9oZ0A==
+X-Received: by 2002:a5d:4485:: with SMTP id j5mr13343571wrq.339.1615550431803; 
+ Fri, 12 Mar 2021 04:00:31 -0800 (PST)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id h25sm2268315wml.32.2021.03.12.04.00.28
+ by smtp.gmail.com with ESMTPSA id h25sm2268315wml.32.2021.03.12.04.00.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 12 Mar 2021 04:00:29 -0800 (PST)
+ Fri, 12 Mar 2021 04:00:31 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
-Subject: [PATCH v4 6/9] soundwire: qcom: add support to new interrupts
-Date: Fri, 12 Mar 2021 12:00:06 +0000
-Message-Id: <20210312120009.22386-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 8/9] soundwire: qcom: add auto enumeration support
+Date: Fri, 12 Mar 2021 12:00:08 +0000
+Message-Id: <20210312120009.22386-9-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210312120009.22386-1-srinivas.kandagatla@linaro.org>
 References: <20210312120009.22386-1-srinivas.kandagatla@linaro.org>
@@ -109,232 +109,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support to new interrupts which includes reporting some of the
-error interrupts and adding support to SLAVE pending interrupt!
-
-This patch also changes the interrupt handler behaviour on handling
-any pending interrupts by checking it before returning out of irq handler.
+Qualcomm SoundWire controller supports Auto Enumeration of the
+devices within the IP. This patch enables support for this feature.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/soundwire/qcom.c | 161 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 135 insertions(+), 26 deletions(-)
+ drivers/soundwire/qcom.c | 86 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 81 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 0cbd611fb8c6..6a563fb52444 100644
+index 6a563fb52444..c6c923329b15 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -28,10 +28,21 @@
- #define SWRM_COMP_PARAMS_DIN_PORTS_MASK				GENMASK(9, 5)
- #define SWRM_INTERRUPT_STATUS					0x200
- #define SWRM_INTERRUPT_STATUS_RMSK				GENMASK(16, 0)
-+#define SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ			BIT(0)
- #define SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED		BIT(1)
- #define SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS		BIT(2)
-+#define SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET			BIT(3)
-+#define SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW			BIT(4)
-+#define SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW			BIT(5)
-+#define SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW		BIT(6)
- #define SWRM_INTERRUPT_STATUS_CMD_ERROR				BIT(7)
-+#define SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION		BIT(8)
-+#define SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH		BIT(9)
- #define SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED		BIT(10)
-+#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2             BIT(13)
-+#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2              BIT(14)
-+#define SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP               BIT(16)
-+#define SWRM_INTERRUPT_MAX					17
- #define SWRM_INTERRUPT_MASK_ADDR				0x204
- #define SWRM_INTERRUPT_CLEAR					0x208
- #define SWRM_INTERRUPT_CPU_EN					0x210
-@@ -58,6 +69,7 @@
- #define SWRM_MCP_STATUS_BANK_NUM_MASK				BIT(0)
- #define SWRM_MCP_SLV_STATUS					0x1090
- #define SWRM_MCP_SLV_STATUS_MASK				GENMASK(1, 0)
-+#define SWRM_MCP_SLV_STATUS_SZ					2
- #define SWRM_DP_PORT_CTRL_BANK(n, m)	(0x1124 + 0x100 * (n - 1) + 0x40 * m)
- #define SWRM_DP_PORT_CTRL_2_BANK(n, m)	(0x1128 + 0x100 * (n - 1) + 0x40 * m)
- #define SWRM_DP_BLOCK_CTRL_1(n)		(0x112C + 0x100 * (n - 1))
-@@ -123,6 +135,7 @@ struct qcom_swrm_ctrl {
- 	int rows_index;
- 	unsigned long dout_port_mask;
- 	unsigned long din_port_mask;
-+	u32 intr_mask;
- 	u8 rcmd_id;
- 	u8 wcmd_id;
- 	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
-@@ -304,6 +317,25 @@ static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
- 	return SDW_CMD_IGNORED;
+@@ -57,6 +57,8 @@
+ #define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
+ #define SWRM_RD_FIFO_CMD_ID_MASK				GENMASK(11, 8)
+ #define SWRM_ENUMERATOR_CFG_ADDR				0x500
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_1(m)		(0x530 + 0x8 * (m))
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_2(m)		(0x534 + 0x8 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
+ #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
+@@ -143,6 +145,7 @@ struct qcom_swrm_ctrl {
+ 	enum sdw_slave_status status[SDW_MAX_DEVICES];
+ 	int (*reg_read)(struct qcom_swrm_ctrl *ctrl, int reg, u32 *val);
+ 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
++	u32 slave_status;
+ };
+ 
+ struct qcom_swrm_data {
+@@ -342,6 +345,7 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	int i;
+ 
+ 	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	ctrl->slave_status = val;
+ 
+ 	for (i = 0; i < SDW_MAX_DEVICES; i++) {
+ 		u32 s;
+@@ -352,10 +356,74 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	}
  }
  
-+static int qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
++static void qcom_swrm_set_slave_dev_num(struct sdw_bus *bus,
++					struct sdw_slave *slave, int devnum)
 +{
-+	u32 val, status;
-+	int dev_num;
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++	u32 status;
 +
-+	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &status);
++	status = (status >> (devnum * SWRM_MCP_SLV_STATUS_SZ));
++	status &= SWRM_MCP_SLV_STATUS_MASK;
 +
-+	for (dev_num = 0; dev_num < SDW_MAX_DEVICES; dev_num++) {
-+		status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
-+
-+		if ((status & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
-+			ctrl->status[dev_num] = status;
-+			return dev_num;
-+		}
++	if (status == SDW_SLAVE_ATTACHED) {
++		if (slave)
++			slave->dev_num = devnum;
++		mutex_lock(&bus->bus_lock);
++		set_bit(devnum, bus->assigned);
++		mutex_unlock(&bus->bus_lock);
 +	}
-+
-+	return -EINVAL;
 +}
 +
- static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
- {
- 	u32 val;
-@@ -322,36 +354,112 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
- 
- static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- {
--	struct qcom_swrm_ctrl *ctrl = dev_id;
--	u32 sts, value;
-+	struct qcom_swrm_ctrl *swrm = dev_id;
-+	u32 value, intr_sts, intr_sts_masked;
-+	u32 i;
-+	u8 devnum = 0;
-+	int ret = IRQ_HANDLED;
- 
--	ctrl->reg_read(ctrl, SWRM_INTERRUPT_STATUS, &sts);
-+	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-+	intr_sts_masked = intr_sts & swrm->intr_mask;
- 
--	if (sts & SWRM_INTERRUPT_STATUS_CMD_ERROR) {
--		ctrl->reg_read(ctrl, SWRM_CMD_FIFO_STATUS, &value);
--		dev_err_ratelimited(ctrl->dev,
--				    "CMD error, fifo status 0x%x\n",
--				     value);
--		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CMD, 0x1);
--	}
--
--	if ((sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED) ||
--	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS) {
--		qcom_swrm_get_device_status(ctrl);
--		sdw_handle_slave_status(&ctrl->bus, ctrl->status);
--	}
--
--	/**
--	 * clear the interrupt before complete() is called, as complete can
--	 * schedule new read/writes which require interrupts, clearing the
--	 * interrupt would avoid missing interrupts in such cases.
--	 */
--	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR, sts);
-+	do {
-+		for (i = 0; i < SWRM_INTERRUPT_MAX; i++) {
-+			value = intr_sts_masked & (1 << i);
-+			if (!value)
-+				continue;
++static int qcom_swrm_enumerate(struct sdw_bus *bus)
++{
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++	struct sdw_slave *slave, *_s;
++	struct sdw_slave_id id;
++	u32 val1, val2;
++	bool found;
++	u64 addr;
++	int i;
++	char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
 +
-+			switch (value) {
-+			case SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ:
-+				devnum = qcom_swrm_get_alert_slave_dev_num(swrm);
-+				if (devnum < 0) {
-+					dev_err_ratelimited(swrm->dev,
-+					    "no slave alert found.spurious interrupt\n");
-+				} else {
-+					sdw_handle_slave_status(&swrm->bus, swrm->status);
-+				}
- 
--	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED)
--		complete(&ctrl->broadcast);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
-+			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
-+				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
-+					__func__);
-+				qcom_swrm_get_device_status(swrm);
-+				sdw_handle_slave_status(&swrm->bus, swrm->status);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
-+				dev_err_ratelimited(swrm->dev,
-+						"%s: SWR bus clsh detected\n",
-+						__func__);
-+				swrm->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-+				swrm->reg_write(swrm, SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR read FIFO overflow fifo status 0x%x\n",
-+					__func__, value);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR read FIFO underflow fifo status 0x%x\n",
-+					__func__, value);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err(swrm->dev,
-+					"%s: SWR write FIFO overflow fifo status %x\n",
-+					__func__, value);
-+				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_CMD_ERROR:
-+				swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR CMD error, fifo status 0x%x, flushing fifo\n",
-+					__func__, value);
-+				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION:
-+				dev_err_ratelimited(swrm->dev,
-+						"%s: SWR Port collision detected\n",
-+						__func__);
-+				swrm->intr_mask &= ~SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION;
-+				swrm->reg_write(swrm,
-+					SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH:
-+				dev_err_ratelimited(swrm->dev,
-+					"%s: SWR read enable valid mismatch\n",
-+					__func__);
-+				swrm->intr_mask &=
-+					~SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH;
-+				swrm->reg_write(swrm,
-+					SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED:
-+				complete(&swrm->broadcast);
-+				break;
-+			case SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2:
-+				break;
-+			case SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2:
-+				break;
-+			case SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP:
-+				break;
-+			default:
-+				dev_err_ratelimited(swrm->dev,
-+						"%s: SWR unknown interrupt value: %d\n",
-+						__func__, value);
-+				ret = IRQ_NONE;
++	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
++		/*SCP_Devid5 - Devid 4*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
++
++		/*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
++
++		if (!val1 && !val2)
++			break;
++
++		addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
++			((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
++			((u64)buf1[0] << 40);
++
++		sdw_extract_slave_id(bus, addr, &id);
++		found = false;
++		/* Now compare with entries */
++		list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
++			if (sdw_compare_devid(slave, id) == 0) {
++				qcom_swrm_set_slave_dev_num(bus, slave, i);
++				found = true;
 +				break;
 +			}
 +		}
-+		swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, intr_sts);
-+		swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-+		intr_sts_masked = intr_sts & swrm->intr_mask;
-+	} while (intr_sts_masked);
++
++		if (!found) {
++			qcom_swrm_set_slave_dev_num(bus, NULL, i);
++			sdw_slave_add(bus, &id, NULL);
++		}
++	}
++
++	return 0;
++}
++
+ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ {
+ 	struct qcom_swrm_ctrl *swrm = dev_id;
+-	u32 value, intr_sts, intr_sts_masked;
++	u32 value, intr_sts, intr_sts_masked, slave_status;
+ 	u32 i;
+ 	u8 devnum = 0;
+ 	int ret = IRQ_HANDLED;
+@@ -384,8 +452,15 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ 			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
+ 				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
+ 					__func__);
+-				qcom_swrm_get_device_status(swrm);
+-				sdw_handle_slave_status(&swrm->bus, swrm->status);
++				swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, &slave_status);
++				if (swrm->slave_status == slave_status) {
++					dev_err(swrm->dev, "Slave status not changed %x\n",
++						slave_status);
++				} else {
++					qcom_swrm_get_device_status(swrm);
++					qcom_swrm_enumerate(&swrm->bus);
++					sdw_handle_slave_status(&swrm->bus, swrm->status);
++				}
+ 				break;
+ 			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+ 				dev_err_ratelimited(swrm->dev,
+@@ -472,8 +547,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
  
--	return IRQ_HANDLED;
-+	return ret;
+ 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+ 
+-	/* Disable Auto enumeration */
+-	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
++	/* Enable Auto enumeration */
++	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
+ 
+ 	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+ 	/* Mask soundwire interrupts */
+@@ -507,6 +582,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
+ 				SWRM_INTERRUPT_STATUS_RMSK);
+ 	}
++	ctrl->slave_status = 0;
+ 	return 0;
  }
  
- static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
-@@ -367,6 +475,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	/* Disable Auto enumeration */
- 	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
- 
-+	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
- 	/* Mask soundwire interrupts */
- 	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR,
- 			SWRM_INTERRUPT_STATUS_RMSK);
 -- 
 2.21.0
 
