@@ -6,66 +6,66 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6151C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 23:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BB1FC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 23:04:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FEF064F85
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 23:03:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FEF064F85
+	by mail.kernel.org (Postfix) with ESMTPS id B562F64F49
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 23:04:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B562F64F49
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DB6E1878;
-	Sat, 13 Mar 2021 00:03:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DB6E1878
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DB3B18B3;
+	Sat, 13 Mar 2021 00:03:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DB3B18B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615590237;
-	bh=9RVyEoYAlQ7GZfSBXHiyQVVErCf3SSm3a7352AyUUXE=;
+	s=default; t=1615590242;
+	bh=gKRx09iEEzT9fEiWAZ/WywZpvs/RAYQqI8WAKlElFYQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U5fPltbMdTDAFFkN42zcpqfZq9/Bz2njqmYwOFlZmuQqos+ekMQyZkc+IJ0+qllXW
-	 AkBDqSQ3UcqlEWo5vlWcvCxf0XeFIqXycNx+2NDnye3xZb7H5U236ONSW0p/eSFWt+
-	 dtDQFQQ4MV9RsNfdgvI48pVXSz0IkxvrGLSeYAEY=
+	b=pBGsp1bIS/r/wprXOANKilmFLQkjswdwqkO0zX3hYozLLeEPHXahrA4F6VhKiKCkk
+	 60dvhiMjaiD65ndBqK05rY5OaRDCsudlAr02WIvVgvfc0kcO1oYqrK0r4An6UaCZjE
+	 vR6uEL5uqUlZfZ60YQX/bu5WvsBUdNhdWgECJThU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48DB0F8020D;
-	Sat, 13 Mar 2021 00:02:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7ED5F802E0;
+	Sat, 13 Mar 2021 00:02:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFE60F801D8; Sat, 13 Mar 2021 00:02:14 +0100 (CET)
+ id 5F18FF80272; Sat, 13 Mar 2021 00:02:17 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6F0CF8012A
- for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 00:02:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6F0CF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5ACA2F8012A
+ for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 00:02:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5ACA2F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JmeGxaZl"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC9FD64F49;
- Fri, 12 Mar 2021 23:02:09 +0000 (UTC)
+ header.b="lJDsGGeB"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7519564F6D;
+ Fri, 12 Mar 2021 23:02:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615590130;
- bh=9RVyEoYAlQ7GZfSBXHiyQVVErCf3SSm3a7352AyUUXE=;
+ s=k20201202; t=1615590133;
+ bh=gKRx09iEEzT9fEiWAZ/WywZpvs/RAYQqI8WAKlElFYQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=JmeGxaZlHk7s8AKx4Qse8ZuFcuT5RSP1utJvkTmgl78bcdS4j+3jIVBSm99mUIeTU
- AbiUK5Rl/hoIGQ5195++fXEOMwhn40cZQioOrwMwFhL+8dN/EYRRV67DFavuOr04tE
- /aYxJbGeE+6YwlSNKAiuYhcN9FD5t9RSGVgdms59J7rW84Me0QzEAqTvSsNVH/cPjm
- whOn6tk7kcaDd872BBHDRMIOZQLii61llUhQjnXiONRSO27G3ACFYHOhuWPExzk3Cp
- Hw5jV1NTrldB5VO9k48arsdMjhahgTJ4uHrmaqVVTDK9vIZ4yq2IB+KKpzua/p4qng
- AG+mRMg+SD3zg==
+ b=lJDsGGeBUBAgWoOvLFNlj4XVDLcIpp382xSzdXMx5FMir3/xKgpVJIyITYaVIJGx3
+ WYEFhRwtUULH3sgpDwNRZHEcG7BkjdCqVKUPq5/6jDnZENyxVBtVtre6G6LHZunFtc
+ jqfEfLd1aL1ysYGKcVGn7Z3EGyO0fSgqby1ZB48p0GexNwVPMp/bX2zOgxmURl0/DL
+ FA9POWxn9Ju3hwyeCR+q2CTu9iCtr8lcNDDJo9l/tE7Tvu+ieTpiWRNBVI/K//kcpX
+ 9kjQhkzcU03t/KPxeh8aoHSCpyolxADNGM/+bngRgmYMJVk+aeOkdwMHZBIX6qt+z6
+ 5CyVu70/F+njA==
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-Subject: Re: [PATCH v4 0/2] ASoC: samsung: remove cppcheck warnings
-Date: Fri, 12 Mar 2021 23:00:50 +0000
-Message-Id: <161558981189.31753.14691275395674140496.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH v3 0/2] ASoC: samsung: remove cppcheck warnings
+Date: Fri, 12 Mar 2021 23:00:51 +0000
+Message-Id: <161558981189.31753.5372027063951646682.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210312180231.2741-1-pierre-louis.bossart@linux.intel.com>
-References: <20210312180231.2741-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210311003516.120003-1-pierre-louis.bossart@linux.intel.com>
+References: <20210311003516.120003-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -86,12 +86,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Mar 2021 12:02:29 -0600, Pierre-Louis Bossart wrote:
-> v4:
-> corrected Fixes tag
-> Added added Krzysztof Kozlowski's r-v-b tag
-> reverted patch2 to v2 since this is the agreement.
-> 
+On Wed, 10 Mar 2021 18:35:14 -0600, Pierre-Louis Bossart wrote:
 > v3:
 > Added Sylwester tag
 > Rebased and squashed fix with initial patch which was merged at some
@@ -110,8 +105,6 @@ Thanks!
 
 [1/2] ASoC: samsung: tm2_wm5110: check of of_parse return value
       commit: d58970da324732686529655c21791cef0ee547c4
-[2/2] ASoC: samsung: tm2_wm5110: remove shadowed variable
-      commit: f7b61287cf17486dd09438115a993d699db2ab3b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
