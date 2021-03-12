@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-11.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DDB7C433E9
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 20:26:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A629C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 20:26:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA85C64F84
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 20:26:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA85C64F84
+	by mail.kernel.org (Postfix) with ESMTPS id 0CBF164F88
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 20:26:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CBF164F88
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DE6D1878;
-	Fri, 12 Mar 2021 21:25:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DE6D1878
+	by alsa0.perex.cz (Postfix) with ESMTPS id 503421872;
+	Fri, 12 Mar 2021 21:26:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 503421872
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615580762;
-	bh=L5UCKkPePMWB188VqNKtdXugQ7SL7KSmHQlv2sa1uJk=;
+	s=default; t=1615580815;
+	bh=PiAVnNdcv0wxF9iybfaUy8tQqGnHkVEy3c5oroa2KHM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HjY3tVJqJszb6pcrmYupqIhVC7fqI7hvw+g9T8JntOLT/nYxDB7umLCe4KwnQI2kQ
-	 GvMyVlvrDQITsK+JITcerF80MTLG9e0KYlL9nDIpE5V+kjhagfuz9Z9Q2TZ14rDtw1
-	 rK7/gNT/azaFUPo5PZ+D5wKw0kvhUAhrsBPcVnTc=
+	b=CVCH51x+wijoTwRmNgDoodOYlD2jHtPWpG8X7vFBm0VQvMkfXDlp1u2VrNs2D9Jzx
+	 u99oOt73/dytdMzfuENlqAZrxSj+ali+PZ6aewZIylblGc3JgHkHIc03+brSHn9NwJ
+	 NkAG2YHw3p9HJDIst3wWW+bBrIgt4hIvcVBbTWbU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C6A6F801D8;
-	Fri, 12 Mar 2021 21:25:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99F14F8012A;
+	Fri, 12 Mar 2021 21:25:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F724F801D8; Fri, 12 Mar 2021 21:25:09 +0100 (CET)
+ id 5A047F8012A; Fri, 12 Mar 2021 21:25:13 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B86EBF8012A
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 21:25:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B86EBF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4CD4EF800AB
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 21:25:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CD4EF800AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tQknCmXG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A360E64F77;
- Fri, 12 Mar 2021 20:25:02 +0000 (UTC)
+ header.b="o8FQyHky"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3700A64F85;
+ Fri, 12 Mar 2021 20:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615580703;
- bh=L5UCKkPePMWB188VqNKtdXugQ7SL7KSmHQlv2sa1uJk=;
+ s=k20201202; t=1615580708;
+ bh=PiAVnNdcv0wxF9iybfaUy8tQqGnHkVEy3c5oroa2KHM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=tQknCmXGwmrmpmtrf9SfgIuij2w1N0+5Gn6M74bC6hS9BYaOkiD9L9VARMUi96thV
- BesRg1FTAoilT0VYMuG3+n3DYczddMBZWmWFSnek7LQUf7VUUAZ9lSpvtYjj/tV33N
- oAT//7uxw6G3Vk/0okxQh++PrrI1hwD4YyA31HoPMaMNBZaCAICQesiuSMK9bEcGUi
- r66XA/Ta9xxWo+vhAJfMZOTKlaCUIQxN0fcekYytR6wEonDPkX4xiQmxE5TlKEkzQF
- 50wQkenBbi7JRLxHKK7ymmrChOntRaKa7YXcO1ipi/yDXmnzhZM03SOww//NdANgOY
- wMYpmkdpux4JQ==
+ b=o8FQyHkyzFenyo0UuWd6wh2j7bC0C04wtwqWUTHR4M6gmRaPuUJJ0NeDg8Fmlanw2
+ KSYKf7p7QQ4SNM1I7HJv4xWx58gznLpo74xx6feJk9xU386bqRU9lIITw7CfVHOWsy
+ atv/kXx9b2boDhplUT1gjRlcMjIBYFfbiOWt+ShunEcrGBnurneffMQ3cdnYcWIxZn
+ 1WWJbtunZwpJtk/Uk3tWK5yniysUib3d3ky5edhHFPQ4EIF8POI75wlUpIWCnXrbwY
+ UfEyccrXQXTbzulEbsv30wi5hrAQFolBhUA1qMPIN5Uq/3ENnWwqwydP2M8FBG0fhn
+ +WgQaR5gA8vKQ==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Hans de Goede <hdegoede@redhat.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>
-In-Reply-To: <20210312114850.13832-1-hdegoede@redhat.com>
-References: <20210312114850.13832-1-hdegoede@redhat.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Enable jack-detect support on
- Asus T100TAF
-Message-Id: <161558062957.11113.14165487041258847634.b4-ty@kernel.org>
+To: linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ tzungbi@google.com, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, matthias.bgg@gmail.com
+In-Reply-To: <1615516005-781-1-git-send-email-jiaxin.yu@mediatek.com>
+References: <1615516005-781-1-git-send-email-jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8192: fix tdm out data is valid on
+ rising edge
+Message-Id: <161558062956.11113.8460883520488854945.b4-ty@kernel.org>
 Date: Fri, 12 Mar 2021 20:23:49 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: shane.chien@mediatek.com, Trevor.Wu@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +86,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Mar 2021 12:48:50 +0100, Hans de Goede wrote:
-> The Asus T100TAF uses the same jack-detect settings as the T100TA,
-> this has been confirmed on actual hardware.
-> 
-> Add these settings to the T100TAF quirks to enable jack-detect support
-> on the T100TAF.
+On Fri, 12 Mar 2021 10:26:45 +0800, Jiaxin Yu wrote:
+> This patch correct tdm out bck inverse register to AUDIO_TOP_CON3[3].
 
 Applied to
 
@@ -100,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: bytcr_rt5640: Enable jack-detect support on Asus T100TAF
-      commit: b7c7203a1f751348f35fc4bcb157572d303f7573
+[1/1] ASoC: mediatek: mt8192: fix tdm out data is valid on rising edge
+      commit: 8d06b9633a66f41fed520f6eebd163189518ba79
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
