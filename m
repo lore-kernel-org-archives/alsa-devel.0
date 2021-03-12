@@ -7,70 +7,70 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0992C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 51A0BC433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:26:42 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 27A1864F69
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:26:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27A1864F69
+	by mail.kernel.org (Postfix) with ESMTPS id C5E6D64F69
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:26:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C5E6D64F69
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF12117A0;
-	Fri, 12 Mar 2021 19:25:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF12117A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62E401771;
+	Fri, 12 Mar 2021 19:25:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62E401771
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615573586;
-	bh=upp5ZUZRtSKsNId2Ok+46MZfd3t9gkUW/5OzQ+LosDw=;
+	s=default; t=1615573600;
+	bh=0gqmIVbn0kxHkrOTuuNJKPDrVhxiVSuQPQs9T4Rcles=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MtlE4fvb87ty9in7i2PSuDqVd1dnIVtB+cUDd6L3pKhUvgZi+7k/9QZwc4cXuFyft
-	 SEPmzRgpi1NGmCv3DBpvmC/Jcx7Mbr+3peElJPWmtcq1zWohyAYFB21j0oq+fQHuo2
-	 AVoV6k4QoRoLpTrqj1wRwQ6O7fu3eRvp6fPhWbiQ=
+	b=rO95fp8ZjuPH/83sDAIajNTXlSVa03ZnUXGszLb0fs77Mj2W8YsvB9wT5u6O7ljob
+	 omjq39BMJd4wDlKCTmKjCs3+GVsPZnDsWWQOjEmy8eqMqmxhjVmpYjB1RF32KSTvLJ
+	 rbOHUSnz2JDYj5o5h6ftUUh39JoqHHcrkUP8TjBE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9A94F804AF;
-	Fri, 12 Mar 2021 19:23:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7BEFF804B1;
+	Fri, 12 Mar 2021 19:23:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DBD7F80430; Fri, 12 Mar 2021 19:23:28 +0100 (CET)
+ id 7F0B3F802E0; Fri, 12 Mar 2021 19:23:29 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72100F802E0
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72100F802E0
-IronPort-SDR: UY22DYptdEbtH+M8ualT/YBj83fNUmmz97aI9TH5/naNkFF1k6EGTQK/72gVwYQmDa8aAuBq5H
- tjRnZA1EtWzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185515188"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="185515188"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34072F80279
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34072F80279
+IronPort-SDR: AtTzVAcyPiulU5IbpHImG7fcefrMjcJC9z4EcW/RnRhMYUwM8mBpNzCmHYvPxDTVUyDa88KDU7
+ D4BbZOm+CbjA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185515172"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="185515172"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:19 -0800
-IronPort-SDR: lzN1KljaGYYjbG1Oo2IpFujU1ijS7jTgsFBUG2pNEQ3BVCmRNUXpt2cdgFd+LdC8sbakb1d0jH
- u+jq1nOudkmg==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377791933"
+ 12 Mar 2021 10:23:13 -0800
+IronPort-SDR: QqSJl6GqR83C0e1V9F0rNWXneiMt4IABHFnIUl5YH3DYsIw/OIfDhsvJtSC6hWb0VEFFffamOJ
+ OdqkXBbqKPpA==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377791918"
 Received: from amiteshs-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.37.30])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:18 -0800
+ 12 Mar 2021 10:23:12 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/23] ASoC: da7219-aad: remove useless initialization
-Date: Fri, 12 Mar 2021 12:22:30 -0600
-Message-Id: <20210312182246.5153-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/23] ASoC: cx2070x: remove useless assignment
+Date: Fri, 12 Mar 2021 12:22:28 -0600
+Message-Id: <20210312182246.5153-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
 References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Support Opensource <support.opensource@diasemi.com>, tiwai@suse.de,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, broonie@kernel.org
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.de,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,31 +86,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+Cppcheck warning:
 
-sound/soc/codecs/da7219-aad.c:118:22: style: Variable 'ret' is
-assigned a value that is never used. [unreadVariable]
- int report = 0, ret = 0;
-                     ^
+sound/soc/codecs/cx2072x.c:830:26: style: Variable
+'reg1.r.rx_data_one_line' is reassigned a value before the old one has
+been used. [redundantAssignment]
+
+ reg1.r.rx_data_one_line = 1;
+                         ^
+
+sound/soc/codecs/cx2072x.c:782:26: note: reg1.r.rx_data_one_line is
+assigned
+ reg1.r.rx_data_one_line = 1;
+                         ^
+
+sound/soc/codecs/cx2072x.c:830:26: note: reg1.r.rx_data_one_line is
+overwritten
+ reg1.r.rx_data_one_line = 1;
+                         ^
+
+sound/soc/codecs/cx2072x.c:831:26: style: Variable
+'reg1.r.tx_data_one_line' is reassigned a value before the old one has
+been used. [redundantAssignment]
+ reg1.r.tx_data_one_line = 1;
+                         ^
+sound/soc/codecs/cx2072x.c:783:26: note: reg1.r.tx_data_one_line is
+assigned
+ reg1.r.tx_data_one_line = 1;
+                         ^
+
+sound/soc/codecs/cx2072x.c:831:26: note: reg1.r.tx_data_one_line is
+overwritten
+ reg1.r.tx_data_one_line = 1;
+                         ^
+
+Likely copy/paste.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/da7219-aad.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cx2072x.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index 48081d71c22c..7998fdd3b378 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -115,7 +115,7 @@ static void da7219_aad_hptest_work(struct work_struct *work)
+diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
+index 8ab22815c2c9..d2d004654c9b 100644
+--- a/sound/soc/codecs/cx2072x.c
++++ b/sound/soc/codecs/cx2072x.c
+@@ -827,9 +827,6 @@ static int cx2072x_config_i2spcm(struct cx2072x_priv *cx2072x)
+ 	}
+ 	regdbt2.r.i2s_bclk_invert = is_bclk_inv;
  
- 	__le16 tonegen_freq_hptest;
- 	u8 pll_srm_sts, pll_ctrl, gain_ramp_ctrl, accdet_cfg8;
--	int report = 0, ret = 0;
-+	int report = 0, ret;
- 
- 	/* Lock DAPM, Kcontrols affected by this test and the PLL */
- 	snd_soc_dapm_mutex_lock(dapm);
+-	reg1.r.rx_data_one_line = 1;
+-	reg1.r.tx_data_one_line = 1;
+-
+ 	/* Configures the BCLK output */
+ 	bclk_rate = cx2072x->sample_rate * frame_len;
+ 	reg5.r.i2s_pcm_clk_div_chan_en = 0;
 -- 
 2.25.1
 
