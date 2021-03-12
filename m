@@ -2,77 +2,98 @@ Return-Path: <SRS0=ty8W=IN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 396FFC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 16:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1683DC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 16:52:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0603E64F2A
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 16:42:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0603E64F2A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5127064F33
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 16:52:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5127064F33
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B79217B4;
-	Mon, 15 Mar 2021 17:41:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B79217B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A82A179A;
+	Mon, 15 Mar 2021 17:51:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A82A179A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615826543;
-	bh=2tsCdGJrlm7rYgVWK1opS+T7B/2Sm3z0L6QTt6VjmOo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615827161;
+	bh=qeyw3/7nwxUcXOj2n7GM9vDDZgmq2o+bigL2dqUnDso=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FGwhft29yRVsAGn/nwKAH7LOXPkVo/JWqY9u2W/+QyGGMX9JwStXnPu6Ri7d/ySmG
-	 qRnZaCY5/8Jq9l2E52TrzrAxG8Xm+5DfyOrmA5poNRjsmkwR+W8EeTJA2Lx9LHP8zX
-	 HBTgDY6EpNuELTjQzBlHRWzJMqerObOsvVm+IA6U=
+	b=CIwiSx9rd993uDrmg8GNZXT4EyPqv0T22XVNcqyGLN12YjdZ/ro16NfUbDrCMRHFS
+	 EEZnl4/KyRvKAZLUgtmvcU47TFaU44ge4ii8UWINcROVGD/2pvOO2mvlFk4EC1Emgl
+	 6ti0HZmXEq1r53KdtpArhZG3UFrD0LbJKFurWRtQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8BD3F801F7;
-	Mon, 15 Mar 2021 17:40:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAE58F80163;
+	Mon, 15 Mar 2021 17:51:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CF9AF80423; Mon, 15 Mar 2021 17:40:11 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8A1AEF801D8; Fri, 12 Mar 2021 20:55:36 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34453F801F7
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 17:39:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34453F801F7
-IronPort-SDR: ugjPNQDrf1mztqfZvs7s2O4zTI0z80YMYZzoZB8+eL7FyOdJWYtCLV9KM4MbI37dkdAB/fvwQ3
- PKSokttK10ww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="274160570"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="274160570"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Mar 2021 09:39:45 -0700
-IronPort-SDR: 3EP6WpDAfYPCw3g2XApnjVgCwxQl7v3Z0GQ8OuQMFn8vT0fDNsXfcpDS8QX6cjFtFtZVZrJVKy
- WenHcMUHAwuA==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="604912907"
-Received: from pwells-mobl2.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
- ([10.212.5.38])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Mar 2021 09:39:43 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: SOF: remove superfluous NULL check in debugfs read
-Date: Mon, 15 Mar 2021 11:39:32 -0500
-Message-Id: <20210315163932.18663-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210315163932.18663-1-pierre-louis.bossart@linux.intel.com>
-References: <20210315163932.18663-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7EF7EF800BF
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 20:55:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EF7EF800BF
+Received: from mail-wr1-f72.google.com ([209.85.221.72])
+ by youngberry.canonical.com with esmtps
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <krzysztof.kozlowski@canonical.com>)
+ id 1lKnsg-0005fB-0w
+ for alsa-devel@alsa-project.org; Fri, 12 Mar 2021 19:55:30 +0000
+Received: by mail-wr1-f72.google.com with SMTP id l10so11633773wry.16
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 11:55:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=ef0/cxh++6bmrkpsWA/Gvozz9orBLts8hIN80rz0i1Q=;
+ b=Bfc/05NhdYP/1q9oeGG++OOwfUNpDhGyTgOLZ8RZXNjHkLaNpGCKg2d1oib4on2sol
+ Yaafi4WLSqRZ1SUK3oeTA4IZu5u62kI6jY4deGyt5hOlH8bc98iTIXUJU2d6Qgao9Moq
+ eBIbw6gT7PjohE26fxs9vtaZAuZwJjwj0WaeoYtPY2LPqKf1Svlosz7KSm/MiGm+zrj7
+ gqO2uU2Szm2YqhUpxm2kbRF57wanXD2ceYM+59T8v59mNQWm0Ywne/4s5wHLFcS2Om2b
+ g5VYbF5OCZK8Zp1+2NCot+R7J2QTcM4uab3cz/AM1TTqf/EiETrcmnw4LamOQo+V318I
+ v5RQ==
+X-Gm-Message-State: AOAM531Gfyjd7BLCrERqb1ffYGTsg9lojTqnP9ue0Zdw+vEA1js4CuvE
+ dX9Gb3hvy0/YbOslevZHlOvaJ3cSuvRWAvQn5fOGS6yg5VZgnY9jU+NsvwRvb6NJvU6x5Gcl7zj
+ DtUk/S26WxIyuOliIaIC0i3G/jLNkAvHZ0GAN6s2T
+X-Received: by 2002:a5d:4587:: with SMTP id p7mr15677624wrq.205.1615578929757; 
+ Fri, 12 Mar 2021 11:55:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxh14UskDRLnjzcAq+59VeHiQ9wuARQpPv+fwbL+V2IPHLAmno2N/21mgbrVOGVoCQB46dJkg==
+X-Received: by 2002:a5d:4587:: with SMTP id p7mr15677616wrq.205.1615578929591; 
+ Fri, 12 Mar 2021 11:55:29 -0800 (PST)
+Received: from [192.168.1.116] (adsl-84-226-167-205.adslplus.ch.
+ [84.226.167.205])
+ by smtp.gmail.com with ESMTPSA id c18sm20951131wmk.0.2021.03.12.11.55.29
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 12 Mar 2021 11:55:29 -0800 (PST)
+Subject: Re: [PATCH v4 2/2] ASoC: samsung: tm2_wm5110: remove shadowed variable
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20210312180231.2741-1-pierre-louis.bossart@linux.intel.com>
+ <20210312180231.2741-3-pierre-louis.bossart@linux.intel.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <95691fe0-6a0d-1bd4-ba51-bd41f78296c6@canonical.com>
+Date: Fri, 12 Mar 2021 20:55:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Xiuli Pan <xiulipan@outlook.com>, Keqiao Zhang <keqiao.zhang@intel.com>,
- tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org
+In-Reply-To: <20210312180231.2741-3-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Mon, 15 Mar 2021 17:51:49 +0100
+Cc: tiwai@suse.de, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,39 +109,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+On 12/03/2021 19:02, Pierre-Louis Bossart wrote:
+> cppcheck warning:
+> 
+> sound/soc/samsung/tm2_wm5110.c:552:26: style: Local variable 'args'
+> shadows outer variable [shadowVariable]
+>   struct of_phandle_args args;
+>                          ^
+> sound/soc/samsung/tm2_wm5110.c:504:25: note: Shadowed declaration
+>  struct of_phandle_args args;
+>                         ^
+> sound/soc/samsung/tm2_wm5110.c:552:26: note: Shadow variable
+>   struct of_phandle_args args;
+>                          ^
+> Move the top-level variable to the lower scope where it's needed.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  sound/soc/samsung/tm2_wm5110.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
 
-When reading from IPC flood debugfs entries no need to check whether
-.cache_buf is NULL - it's impossible since otherwise the initialisation
-would have failed. This also fixes a klocwork reported issue:
+Thanks!
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-passed to function and may be dereferenced there by passing argument 2
-to function 'memcpy' at line 510.
-sound/soc/sof/debug.c:510 | sof_dfsentry_read()
 
-Reported-by: Keqiao Zhang <keqiao.zhang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Xiuli Pan <xiulipan@outlook.com>
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/debug.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 778c7d028493..a51a928ea40a 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -451,8 +451,7 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
- 
- 	dentry = file->f_path.dentry;
- 	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
--	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) &&
--	    dfse->cache_buf) {
-+	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))) {
- 		if (*ppos)
- 			return 0;
- 
--- 
-2.25.1
-
+Best regards,
+Krzysztof
