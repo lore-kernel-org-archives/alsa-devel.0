@@ -7,73 +7,70 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E426DC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0992C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:26:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1545A64F5F
-	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:25:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1545A64F5F
+	by mail.kernel.org (Postfix) with ESMTPS id 27A1864F69
+	for <alsa-devel@archiver.kernel.org>; Fri, 12 Mar 2021 18:26:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 27A1864F69
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87A16175A;
-	Fri, 12 Mar 2021 19:25:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87A16175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF12117A0;
+	Fri, 12 Mar 2021 19:25:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF12117A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615573554;
-	bh=yXUSD6I0i/Hro6z4J6hKnGM12NmrrNUxORUv8a+KYFo=;
+	s=default; t=1615573586;
+	bh=upp5ZUZRtSKsNId2Ok+46MZfd3t9gkUW/5OzQ+LosDw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aE3iCJm5OHVBLSlqUv4x4Lr9woz/xFnLQq9nvoJO6rryhOdbZ/Tf5s2qWg/4ZfEkv
-	 8C+9/IK2v7EQ03OJiTpbYemL282ZK+TE1EHNBGz06YcHYiWvJQ/S2SSqnp4Me5dBhy
-	 fOMOxm2iG7ea8CmNZCjdjTqIHuB5wW7U5O9FOZ9Q=
+	b=MtlE4fvb87ty9in7i2PSuDqVd1dnIVtB+cUDd6L3pKhUvgZi+7k/9QZwc4cXuFyft
+	 SEPmzRgpi1NGmCv3DBpvmC/Jcx7Mbr+3peElJPWmtcq1zWohyAYFB21j0oq+fQHuo2
+	 AVoV6k4QoRoLpTrqj1wRwQ6O7fu3eRvp6fPhWbiQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00DEBF8049C;
+	by alsa1.perex.cz (Postfix) with ESMTP id C9A94F804AF;
 	Fri, 12 Mar 2021 19:23:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9A3DF8049C; Fri, 12 Mar 2021 19:23:27 +0100 (CET)
+ id 0DBD7F80430; Fri, 12 Mar 2021 19:23:28 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2937DF801ED
- for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2937DF801ED
-IronPort-SDR: zlGv7xUhJdwjbtkQzaR2i5VPhysR/YnYPhUj19GIr5AqaqEmleWSaq5ssmmqpww+yK7JfcH7ve
- qqjmORNGh3eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185515169"
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="185515169"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72100F802E0
+ for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2021 19:23:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72100F802E0
+IronPort-SDR: UY22DYptdEbtH+M8ualT/YBj83fNUmmz97aI9TH5/naNkFF1k6EGTQK/72gVwYQmDa8aAuBq5H
+ tjRnZA1EtWzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9921"; a="185515188"
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="185515188"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:11 -0800
-IronPort-SDR: hRKnoHE/VowBFnczbtcE9mCoFpZg3OvRWwVpvZEDrZHjTrkzPJX3aue76/cawBAbdFRDqanEua
- 37ijkhiH5m/w==
-X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377791911"
+ 12 Mar 2021 10:23:19 -0800
+IronPort-SDR: lzN1KljaGYYjbG1Oo2IpFujU1ijS7jTgsFBUG2pNEQ3BVCmRNUXpt2cdgFd+LdC8sbakb1d0jH
+ u+jq1nOudkmg==
+X-IronPort-AV: E=Sophos;i="5.81,244,1610438400"; d="scan'208";a="377791933"
 Received: from amiteshs-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.37.30])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Mar 2021 10:23:10 -0800
+ 12 Mar 2021 10:23:18 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/23] ASoC: cros_ec_codec: remove null pointer dereference
- warning
-Date: Fri, 12 Mar 2021 12:22:27 -0600
-Message-Id: <20210312182246.5153-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/23] ASoC: da7219-aad: remove useless initialization
+Date: Fri, 12 Mar 2021 12:22:30 -0600
+Message-Id: <20210312182246.5153-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
 References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Guenter Roeck <groeck@chromium.org>, broonie@kernel.org,
- Enric Balletbo i Serra <enric.balletbo@collabora.com>,
- Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Support Opensource <support.opensource@diasemi.com>, tiwai@suse.de,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,43 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cppcheck complains of a possible issue:
+cppcheck warning:
 
-sound/soc/codecs/cros_ec_codec.c:98:10: warning: Possible null pointer
-dereference: in [nullPointer]
-  memcpy(in, msg->data, insize);
-         ^
-sound/soc/codecs/cros_ec_codec.c:162:34: note: Calling function
-'send_ec_host_command', 5th argument 'NULL' value is 0
-       (uint8_t *)&p, sizeof(p), NULL, 0);
-                                 ^
-sound/soc/codecs/cros_ec_codec.c:98:10: note: Null pointer dereference
-  memcpy(in, msg->data, insize);
-         ^
-
-In practice the access to the pointer is protected by another
-argument, but this is likely to fool other static analysis tools. Add
-a test to avoid doing the memcpy if the pointer is NULL or the size is
-zero.
+sound/soc/codecs/da7219-aad.c:118:22: style: Variable 'ret' is
+assigned a value that is never used. [unreadVariable]
+ int report = 0, ret = 0;
+                     ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/cros_ec_codec.c | 2 +-
+ sound/soc/codecs/da7219-aad.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index c4772f82485a..a201d652aca2 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -94,7 +94,7 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
- 	if (ret < 0)
- 		goto error;
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index 48081d71c22c..7998fdd3b378 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -115,7 +115,7 @@ static void da7219_aad_hptest_work(struct work_struct *work)
  
--	if (insize)
-+	if (in && insize)
- 		memcpy(in, msg->data, insize);
+ 	__le16 tonegen_freq_hptest;
+ 	u8 pll_srm_sts, pll_ctrl, gain_ramp_ctrl, accdet_cfg8;
+-	int report = 0, ret = 0;
++	int report = 0, ret;
  
- 	ret = 0;
+ 	/* Lock DAPM, Kcontrols affected by this test and the PLL */
+ 	snd_soc_dapm_mutex_lock(dapm);
 -- 
 2.25.1
 
