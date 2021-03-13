@@ -2,98 +2,118 @@ Return-Path: <SRS0=P760=IL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B761BC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 11:37:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45437C433E0
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 12:11:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D9F5764ECB
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 11:36:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D9F5764ECB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id BB5DC64F18
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 12:11:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB5DC64F18
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 718DD18E0;
-	Sat, 13 Mar 2021 12:36:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 718DD18E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F18D18FB;
+	Sat, 13 Mar 2021 13:10:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F18D18FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615635418;
-	bh=5jHPNPZgpjv7LwhpZHJe234/yD5sS3VgxwuJfqOvbIk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615637484;
+	bh=YdCZpoVXzBIt9QIWCJscGLnBiYW7c9GQ5cyb7HuM+v4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b/HoJLMbm5a0R/2bMpCpKTgpp/X32nrKUBL//OJJByekPFK+L1fp/fUvoU1e4Pn3x
-	 6s4weaHLjXlW5csnf4x+caa2ojXclfUMv2WN2poMFZRf/3qgJGECJ+0RFf3096wflX
-	 chto3N1lpMuIK5tcUfE9GocpMlzUVOo7Di+vPqws=
+	b=gHFQEMbXA7+Uq7cp6O/wE7ePTM6W1bKcOAr3Dv8CsipGFxFJ0x2J6293HdYbD5WXa
+	 wbHFBtMQY4Yb4kIJoZo8M4ydh1HBcnt0cUu2sYirgcbC121g6p921NWb83b3Sgg+to
+	 LOz6jRm55HQk7Zv91GQn0uwkaIcbkw8FXM0SNyo4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38F2DF8042F;
-	Sat, 13 Mar 2021 12:34:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F17BF8019B;
+	Sat, 13 Mar 2021 13:10:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44BC7F8025A; Sat, 13 Mar 2021 12:34:29 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id F285DF80227; Sat, 13 Mar 2021 13:10:32 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8FC3F8019B
- for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 12:34:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8FC3F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF251F80148
+ for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 13:10:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF251F80148
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Lz/3T0Yg"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 12DBW2lw023937; Sat, 13 Mar 2021 05:34:13 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=pp+sX61uj5O2+xrS2wtIUEu5PxenboniV7FybwrLRAM=;
- b=Lz/3T0YgyGNFMi0z4R+udulSVsspjXJNo6Z/YR/6w9aBpv5KZlyPh/eJmomERfoK3D3h
- f0x8pydGPZP//sa//rfapD2IULC8BsJvH4dx4w5q+lIVRwrllYZnM0RBPTu9zJgHi6vw
- Iw4IOXV7qZOYmQKpiHkCAP9oPeN7yT2DpB9P3O0BkltWxxvoTsHoYJb2K7U55QCsM6PX
- 0lYPz9zzC9wMDdxHtkqCBOJZHeVi7NN2Srl58X10lwlfcXHEzr/5qR120u8Fvkx9tmJ0
- UbliZm2PjvJLkhYrh8HCxbiflsfTKkTxOf1KQ8gbR2OAxFe1U8eDW4qvYFCPTR2AdheZ EA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 378up782kb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sat, 13 Mar 2021 05:34:13 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 13 Mar
- 2021 11:34:11 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Sat, 13 Mar 2021 11:34:11 +0000
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.45])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7050F11D7;
- Sat, 13 Mar 2021 11:34:10 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 1/4] ALSA: hda/cirrus: Add error handling into CS8409 I2C
- functions
-Date: Sat, 13 Mar 2021 11:34:07 +0000
-Message-ID: <20210313113410.90088-2-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
-References: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="bb8jb3PA"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1615637427;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=p1TNOI0fDhSMNlmYWaAdI+ORAeIT3TuvCkbJRtDjxh0=;
+ b=bb8jb3PAMr66RtxmIpOJlOruv/haXhPsI/c9Ib+SMx7D/H2bXl6cxwu1khMCH50D7/XEcU
+ K9lSKS4LczCLXhdpCBaZLYyWiZcT+j9iGImn3uT8EHltpkT6kfHjyOQ7reytombYTwLvbJ
+ LCi3SAuXHfB80zW6pHPA9zDgcZTjOKs=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-_jLqaJA7Mf2-_iSgLZ9flQ-1; Sat, 13 Mar 2021 07:10:25 -0500
+X-MC-Unique: _jLqaJA7Mf2-_iSgLZ9flQ-1
+Received: by mail-ed1-f72.google.com with SMTP id o24so13027749edt.15
+ for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 04:10:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=p1TNOI0fDhSMNlmYWaAdI+ORAeIT3TuvCkbJRtDjxh0=;
+ b=TezfMJUlZMOJ+d0DspB7SKZBpFjviEzDWH4W0DhoLoyU61otTNpKejvpBvw/72ULp1
+ N5eC5wbCWShGe2QIbjecqSoZSNQKYhTLNMCQzK4y3HpL01I6o6I9b6a9RB9E4XVRJx9D
+ 5yhvzr03eediigpvIq0O0DIIsXf+op77x2YOMl2fsKReb0FsMgKEVUTaVdCv5o5a20Ph
+ LAAQvZha0b2/UVxfZqRzME7/TwksxotmpUOB5FKa/Jo82LP9fx0l/KAy4DxsA/R/CbrG
+ UpXlMutIq/HCZHobY1gUCUVEdhkF5CdeNP/XUtuD4Es54dY6LL4CDQEz/te3PbSPexDM
+ YlFg==
+X-Gm-Message-State: AOAM531Wqo9YY1bCwqMnZuNUFCUAGrP0BZ2Y/tRmXpll2WkEJWBmsrY0
+ /9c9XvExPVYCkENEmrMkYL7UT1TEkH9a4hdN23MfxN31/gfIHrH01/EIIuSAPWwOBzs483a9Vbl
+ DLzWzJjZWn34gk54DUH+TEhVniF2PN+oYHO3X/fcQs3w1Ofc8Mrq/NBtPrXQWkPbqmgvmFXIoFI
+ c=
+X-Received: by 2002:a17:906:b316:: with SMTP id
+ n22mr13232839ejz.249.1615637423524; 
+ Sat, 13 Mar 2021 04:10:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyDoUMzTYsZ6IzNq9nSlH0ZElnkwaOThWjhpKlB44PZAiPZ91f82C5P7szmmkKC8oMxlS9KWg==
+X-Received: by 2002:a17:906:b316:: with SMTP id
+ n22mr13232821ejz.249.1615637423308; 
+ Sat, 13 Mar 2021 04:10:23 -0800 (PST)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+ by smtp.gmail.com with ESMTPSA id p3sm3979802ejd.7.2021.03.13.04.10.22
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sat, 13 Mar 2021 04:10:22 -0800 (PST)
+Subject: Re: [PATCH alsa-ucm-conf v2 7/7] codecs/rt5640: Specify
+ Playback/CaptureMasterElem for HW volume-control
+To: Jaroslav Kysela <perex@perex.cz>
+References: <20210308220554.76111-1-hdegoede@redhat.com>
+ <20210308220554.76111-8-hdegoede@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <784b0a8e-7308-9b08-c751-4f8571576c13@redhat.com>
+Date: Sat, 13 Mar 2021 13:10:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
- impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 phishscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103130084
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+In-Reply-To: <20210308220554.76111-8-hdegoede@redhat.com>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,223 +129,231 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+Hi,
 
-Tested on DELL Inspiron-3505, DELL Inspiron-3501, DELL Inspiron-3500
+On 3/8/21 11:05 PM, Hans de Goede wrote:
+> Newer kernels add "aif:1" or "aif:2" to the components string to let
+> us know which AIF is being used.
+> 
+> Use this to specify the correct Playback/CaptureMasterElem for HW
+> volume-control, based on which AIF is being used.
+> 
+> On older kernels, where there is no "aif:%d" string in the components
+> string, no Playback/CaptureMasterElem is specified.
+> 
+> In DigitalMics.conf the master mixer is used as regular CaptureMixerElem
+> instead of as CaptureMasterElem since the DMICs don't have any analog
+> volume control.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+The kernel side of this patch has landed now, so this patch can
+be merged now.
 
-Changes in v1:
-- No changes
+Thanks & Regards,
 
----
- sound/pci/hda/patch_cirrus.c | 95 +++++++++++++++++++++---------------
- 1 file changed, 56 insertions(+), 39 deletions(-)
+Hans
 
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index 6a9e5c803977..ca8b522b1d6d 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -1508,7 +1508,7 @@ static void cs8409_enable_i2c_clock(struct hda_codec *codec, unsigned int flag)
- static int cs8409_i2c_wait_complete(struct hda_codec *codec)
- {
- 	int repeat = 5;
--	unsigned int retval = 0;
-+	unsigned int retval;
- 
- 	do {
- 		retval = cs_vendor_coef_get(codec, CIR_I2C_STATUS);
-@@ -1520,78 +1520,82 @@ static int cs8409_i2c_wait_complete(struct hda_codec *codec)
- 
- 	} while (repeat);
- 
--	return repeat > 0 ? 0 : -1;
-+	return !!repeat;
- }
- 
--/* CS8409 slave i2cRead */
--static unsigned int cs8409_i2c_read(struct hda_codec *codec,
-+/* CS8409 slave i2cRead.
-+ * Returns negative on error, otherwise returns read value in bits 0-7.
-+ */
-+static int cs8409_i2c_read(struct hda_codec *codec,
- 		unsigned int i2c_address,
- 		unsigned int i2c_reg,
- 		unsigned int paged)
- {
- 	unsigned int i2c_reg_data;
--	unsigned int retval = 0;
-+	unsigned int read_data;
- 
- 	cs8409_enable_i2c_clock(codec, 1);
- 	cs_vendor_coef_set(codec, CIR_I2C_ADDR, i2c_address);
- 
- 	if (paged) {
- 		cs_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg >> 8);
--		if (cs8409_i2c_wait_complete(codec) == -1) {
-+		if (!cs8409_i2c_wait_complete(codec)) {
- 			codec_err(codec,
--				"%s() Paged Transaction Failed 0x%02x : 0x%04x = 0x%02x\n",
--				__func__, i2c_address, i2c_reg, retval);
-+				"%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
-+				__func__, i2c_address, i2c_reg);
-+			return -EIO;
- 		}
- 	}
- 
- 	i2c_reg_data = (i2c_reg << 8) & 0x0ffff;
- 	cs_vendor_coef_set(codec, CIR_I2C_QREAD, i2c_reg_data);
--	if (cs8409_i2c_wait_complete(codec) == -1) {
--		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x = 0x%02x\n",
--			__func__, i2c_address, i2c_reg, retval);
-+	if (!cs8409_i2c_wait_complete(codec)) {
-+		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
-+			__func__, i2c_address, i2c_reg);
-+		return -EIO;
- 	}
- 
- 	/* Register in bits 15-8 and the data in 7-0 */
--	retval = cs_vendor_coef_get(codec, CIR_I2C_QREAD);
--	retval &= 0x0ff;
-+	read_data = cs_vendor_coef_get(codec, CIR_I2C_QREAD);
- 
- 	cs8409_enable_i2c_clock(codec, 0);
- 
--	return retval;
-+	return read_data & 0x0ff;
- }
- 
- /* CS8409 slave i2cWrite */
--static unsigned int cs8409_i2c_write(struct hda_codec *codec,
-+static int cs8409_i2c_write(struct hda_codec *codec,
- 		unsigned int i2c_address, unsigned int i2c_reg,
- 		unsigned int i2c_data,
- 		unsigned int paged)
- {
--	unsigned int retval = 0;
--	unsigned int i2c_reg_data = 0;
-+	unsigned int i2c_reg_data;
- 
- 	cs8409_enable_i2c_clock(codec, 1);
- 	cs_vendor_coef_set(codec, CIR_I2C_ADDR, i2c_address);
- 
- 	if (paged) {
- 		cs_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg >> 8);
--		if (cs8409_i2c_wait_complete(codec) == -1) {
-+		if (!cs8409_i2c_wait_complete(codec)) {
- 			codec_err(codec,
--				"%s() Paged Transaction Failed 0x%02x : 0x%04x = 0x%02x\n",
--				__func__, i2c_address, i2c_reg, retval);
-+				"%s() Paged Transaction Failed 0x%02x : 0x%04x\n",
-+				__func__, i2c_address, i2c_reg);
-+			return -EIO;
- 		}
- 	}
- 
- 	i2c_reg_data = ((i2c_reg << 8) & 0x0ff00) | (i2c_data & 0x0ff);
- 	cs_vendor_coef_set(codec, CIR_I2C_QWRITE, i2c_reg_data);
- 
--	if (cs8409_i2c_wait_complete(codec) == -1) {
--		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x = 0x%02x\n",
--			__func__, i2c_address, i2c_reg, retval);
-+	if (!cs8409_i2c_wait_complete(codec)) {
-+		codec_err(codec, "%s() Transaction Failed 0x%02x : 0x%04x\n",
-+			__func__, i2c_address, i2c_reg);
-+		return -EIO;
- 	}
- 
- 	cs8409_enable_i2c_clock(codec, 0);
- 
--	return retval;
-+	return 0;
- }
- 
- static int cs8409_cs42l42_volume_info(struct snd_kcontrol *kcontrol,
-@@ -1624,14 +1628,27 @@ static int cs8409_cs42l42_volume_info(struct snd_kcontrol *kcontrol,
- static void cs8409_cs42l42_update_volume(struct hda_codec *codec)
- {
- 	struct cs_spec *spec = codec->spec;
-+	int data;
- 
- 	mutex_lock(&spec->cs8409_i2c_mux);
--	spec->cs42l42_hp_volume[0] = -(cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
--				CS8409_CS42L42_REG_HS_VOLUME_CHA, 1));
--	spec->cs42l42_hp_volume[1] = -(cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
--				CS8409_CS42L42_REG_HS_VOLUME_CHB, 1));
--	spec->cs42l42_hs_mic_volume[0] = -(cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
--				CS8409_CS42L42_REG_AMIC_VOLUME, 1));
-+	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_HS_VOLUME_CHA, 1);
-+	if (data >= 0)
-+		spec->cs42l42_hp_volume[0] = -data;
-+	else
-+		spec->cs42l42_hp_volume[0] = CS8409_CS42L42_HP_VOL_REAL_MIN;
-+	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_HS_VOLUME_CHB, 1);
-+	if (data >= 0)
-+		spec->cs42l42_hp_volume[1] = -data;
-+	else
-+		spec->cs42l42_hp_volume[1] = CS8409_CS42L42_HP_VOL_REAL_MIN;
-+	data = cs8409_i2c_read(codec, CS42L42_I2C_ADDR,
-+				CS8409_CS42L42_REG_AMIC_VOLUME, 1);
-+	if (data >= 0)
-+		spec->cs42l42_hs_mic_volume[0] = -data;
-+	else
-+		spec->cs42l42_hs_mic_volume[0] = CS8409_CS42L42_AMIC_VOL_REAL_MIN;
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 	spec->cs42l42_volume_init = 1;
- }
-@@ -1782,7 +1799,7 @@ static void cs8409_cs42l42_reset(struct hda_codec *codec)
- }
- 
- /* Configure CS42L42 slave codec for jack autodetect */
--static int cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
-+static void cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
- {
- 	struct cs_spec *spec = codec->spec;
- 
-@@ -1804,8 +1821,6 @@ static int cs8409_cs42l42_enable_jack_detect(struct hda_codec *codec)
- 	cs8409_i2c_write(codec, CS42L42_I2C_ADDR, 0x1b79, 0x00, 1);
- 
- 	mutex_unlock(&spec->cs8409_i2c_mux);
--
--	return 0;
- }
- 
- /* Enable and run CS42L42 slave codec jack auto detect */
-@@ -1860,9 +1875,9 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- {
- 	struct cs_spec *spec = codec->spec;
- 	int status_changed = 0;
--	unsigned int reg_cdc_status = 0;
--	unsigned int reg_hs_status = 0;
--	unsigned int reg_ts_status = 0;
-+	int reg_cdc_status;
-+	int reg_hs_status;
-+	int reg_ts_status;
- 	int type = 0;
- 	struct hda_jack_tbl *jk;
- 
-@@ -1881,13 +1896,15 @@ static void cs8409_jack_unsol_event(struct hda_codec *codec, unsigned int res)
- 	reg_hs_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1124, 1);
- 	reg_ts_status = cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
- 
--	/* Clear interrupts */
-+	/* Clear interrupts, by reading interrupt status registers */
- 	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1b7b, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x1308, 1);
--	cs8409_i2c_read(codec, CS42L42_I2C_ADDR, 0x130f, 1);
- 
- 	mutex_unlock(&spec->cs8409_i2c_mux);
- 
-+	/* If status values are < 0, read error has occurred. */
-+	if ((reg_cdc_status < 0) || (reg_hs_status < 0) || (reg_ts_status < 0))
-+		return;
-+
- 	/* HSDET_AUTO_DONE */
- 	if (reg_cdc_status & CS42L42_HSDET_AUTO_DONE) {
- 
--- 
-2.25.1
+
+> ---
+>  ucm2/bytcr-rt5640/HiFi.conf             | 21 +++++++++++++++++++++
+>  ucm2/codecs/rt5640/DigitalMics.conf     | 16 ++++++++++++++++
+>  ucm2/codecs/rt5640/HeadPhones.conf      | 12 ++++++++++++
+>  ucm2/codecs/rt5640/HeadsetMic.conf      | 12 ++++++++++++
+>  ucm2/codecs/rt5640/IN1-InternalMic.conf | 12 ++++++++++++
+>  ucm2/codecs/rt5640/IN3-InternalMic.conf | 12 ++++++++++++
+>  ucm2/codecs/rt5640/MonoSpeaker.conf     | 12 ++++++++++++
+>  ucm2/codecs/rt5640/Speaker.conf         | 12 ++++++++++++
+>  8 files changed, 109 insertions(+)
+> 
+> diff --git a/ucm2/bytcr-rt5640/HiFi.conf b/ucm2/bytcr-rt5640/HiFi.conf
+> index a5c05ba..7d504d1 100644
+> --- a/ucm2/bytcr-rt5640/HiFi.conf
+> +++ b/ucm2/bytcr-rt5640/HiFi.conf
+> @@ -1,5 +1,26 @@
+>  # Use case Configuration for bytcr-rt5640
+>  
+> +Define.HaveAif1 ""
+> +Define.HaveAif2 ""
+> +
+> +If.DefineAif1 {
+> +	Condition {
+> +		Type String
+> +		Haystack "${CardComponents}"
+> +		Needle "aif:1"
+> +	}
+> +	True.Define.HaveAif1 "yes"
+> +}
+> +
+> +If.DefineAif2 {
+> +	Condition {
+> +		Type String
+> +		Haystack "${CardComponents}"
+> +		Needle "aif:2"
+> +	}
+> +	True.Define.HaveAif2 "yes"
+> +}
+> +
+>  SectionVerb {
+>  	Include.e.File "/codecs/rt5640/EnableSeq.conf"
+>  
+> diff --git a/ucm2/codecs/rt5640/DigitalMics.conf b/ucm2/codecs/rt5640/DigitalMics.conf
+> index 157c544..032d954 100644
+> --- a/ucm2/codecs/rt5640/DigitalMics.conf
+> +++ b/ucm2/codecs/rt5640/DigitalMics.conf
+> @@ -26,5 +26,21 @@ SectionDevice."Mic" {
+>  	Value {
+>  		CapturePriority 100
+>  		CapturePCM "hw:${CardId}"
+> +		If.DmicAif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				CaptureMixerElem "ADC"
+> +				CaptureVolume "ADC Capture Volume"
+> +				CaptureSwitch "ADC Capture Switch"
+> +			}
+> +		}
+> +		If.DmicAif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				CaptureMixerElem "Mono ADC"
+> +				CaptureVolume "Mono ADC Capture Volume"
+> +				CaptureSwitch "Mono ADC Capture Switch"
+> +			}
+> +		}
+>  	}
+>  }
+> diff --git a/ucm2/codecs/rt5640/HeadPhones.conf b/ucm2/codecs/rt5640/HeadPhones.conf
+> index 5535111..4fbe95d 100644
+> --- a/ucm2/codecs/rt5640/HeadPhones.conf
+> +++ b/ucm2/codecs/rt5640/HeadPhones.conf
+> @@ -37,5 +37,17 @@ SectionDevice."Headphones" {
+>  		JackControl "Headphone Jack"
+>  		PlaybackMixerElem "HP"
+>  		PlaybackVolume "HP Playback Volume"
+> +		If.HpAif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				PlaybackMasterElem "DAC1"
+> +			}
+> +		}
+> +		If.HpAif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				PlaybackMasterElem "DAC2"
+> +			}
+> +		}
+>  	}
+>  }
+> diff --git a/ucm2/codecs/rt5640/HeadsetMic.conf b/ucm2/codecs/rt5640/HeadsetMic.conf
+> index 8479672..b49dad4 100644
+> --- a/ucm2/codecs/rt5640/HeadsetMic.conf
+> +++ b/ucm2/codecs/rt5640/HeadsetMic.conf
+> @@ -43,5 +43,17 @@ SectionDevice."Headset" {
+>  		JackControl "Headset Mic Jack"
+>  		CaptureMixerElem "IN2 Boost"
+>  		CaptureVolume "IN2 Boost"
+> +		If.HSmicAif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				CaptureMasterElem "ADC"
+> +			}
+> +		}
+> +		If.HSmicAif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				CaptureMasterElem "Mono ADC"
+> +			}
+> +		}
+>  	}
+>  }
+> diff --git a/ucm2/codecs/rt5640/IN1-InternalMic.conf b/ucm2/codecs/rt5640/IN1-InternalMic.conf
+> index a317388..d670484 100644
+> --- a/ucm2/codecs/rt5640/IN1-InternalMic.conf
+> +++ b/ucm2/codecs/rt5640/IN1-InternalMic.conf
+> @@ -34,5 +34,17 @@ SectionDevice."Mic" {
+>  		CapturePCM "hw:${CardId}"
+>  		CaptureMixerElem "IN1 Boost"
+>  		CaptureVolume "IN1 Boost"
+> +		If.In1Aif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				CaptureMasterElem "ADC"
+> +			}
+> +		}
+> +		If.In1Aif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				CaptureMasterElem "Mono ADC"
+> +			}
+> +		}
+>  	}
+>  }
+> diff --git a/ucm2/codecs/rt5640/IN3-InternalMic.conf b/ucm2/codecs/rt5640/IN3-InternalMic.conf
+> index ef4eaba..345db1e 100644
+> --- a/ucm2/codecs/rt5640/IN3-InternalMic.conf
+> +++ b/ucm2/codecs/rt5640/IN3-InternalMic.conf
+> @@ -34,5 +34,17 @@ SectionDevice."Mic" {
+>  		CapturePCM "hw:${CardId}"
+>  		CaptureMixerElem "IN3 Boost"
+>  		CaptureVolume "IN3 Boost"
+> +		If.In3Aif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				CaptureMasterElem "ADC"
+> +			}
+> +		}
+> +		If.In3Aif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				CaptureMasterElem "Mono ADC"
+> +			}
+> +		}
+>  	}
+>  }
+> diff --git a/ucm2/codecs/rt5640/MonoSpeaker.conf b/ucm2/codecs/rt5640/MonoSpeaker.conf
+> index 3cbeafd..addaddd 100644
+> --- a/ucm2/codecs/rt5640/MonoSpeaker.conf
+> +++ b/ucm2/codecs/rt5640/MonoSpeaker.conf
+> @@ -31,5 +31,17 @@ SectionDevice."Speaker" {
+>  		PlaybackPCM "hw:${CardId}"
+>  		PlaybackMixerElem "Speaker"
+>  		PlaybackVolume "Speaker Playback Volume"
+> +		If.MonoSpkAif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				PlaybackMasterElem "DAC1"
+> +			}
+> +		}
+> +		If.MonoSpkAif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				PlaybackMasterElem "DAC2"
+> +			}
+> +		}
+>  	}
+>  }
+> diff --git a/ucm2/codecs/rt5640/Speaker.conf b/ucm2/codecs/rt5640/Speaker.conf
+> index 0924f9c..e7ff673 100644
+> --- a/ucm2/codecs/rt5640/Speaker.conf
+> +++ b/ucm2/codecs/rt5640/Speaker.conf
+> @@ -31,5 +31,17 @@ SectionDevice."Speaker" {
+>  		PlaybackPCM "hw:${CardId}"
+>  		PlaybackMixerElem "Speaker"
+>  		PlaybackVolume "Speaker Playback Volume"
+> +		If.SpkAif1 {
+> +			Condition { Type String Empty "${var:HaveAif1}" }
+> +			False {
+> +				PlaybackMasterElem "DAC1"
+> +			}
+> +		}
+> +		If.SpkAif2 {
+> +			Condition { Type String Empty "${var:HaveAif2}" }
+> +			False {
+> +				PlaybackMasterElem "DAC2"
+> +			}
+> +		}
+>  	}
+>  }
+> 
 
