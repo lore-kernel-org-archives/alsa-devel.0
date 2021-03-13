@@ -2,111 +2,73 @@ Return-Path: <SRS0=P760=IL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BAABC433DB
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 15:48:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C13B8C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 15:57:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA7F464E1F
-	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 15:48:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA7F464E1F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 714B364F1A
+	for <alsa-devel@archiver.kernel.org>; Sat, 13 Mar 2021 15:57:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 714B364F1A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50DDB18D9;
-	Sat, 13 Mar 2021 16:47:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50DDB18D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DEE517F1;
+	Sat, 13 Mar 2021 16:56:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DEE517F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615650505;
-	bh=2LJrqVN3y0a+8I6uvTkZyn3EQgZfRbJT1O626Zmb7wM=;
+	s=default; t=1615651043;
+	bh=lSU/4VEL+T/SWQn20Ol4Kr9+hKB+bpgt7Rct+Ea11gI=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RLP2kvw0MTvymaw9IfNj2DdTxEY5WCqIDuuw9dTuqMyHXUNsKOchw17IhxGS47pL5
-	 lkNcAlez6Fp8S89InKZqxDFJukOPDj7xyHyPLdTWefjjpEtuatwGWywdNkDE1cPiFB
-	 DA0Yu84PbYaWkdJd8cL2krGPp76vzhApTk+/yxpM=
+	b=XXlF3vAyF92oRZZICxSR9TbLU42mpREPiM8JN+QzHQNXQqnHmh1PQaZ19VCrYvaOU
+	 cYn3m6l6b9/L0s+jyrgROJb+/d8m8m4AiMQ6rsm/d4XU0EP8SEoMcqESVovo5rbnsy
+	 vqLgI9sTBQFOqh8tekDdMzb/8/Md/79BDm8dtxt8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD401F8019B;
-	Sat, 13 Mar 2021 16:47:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0278F80154;
+	Sat, 13 Mar 2021 16:56:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1512F80227; Sat, 13 Mar 2021 16:47:21 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [216.205.24.124])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ id 8766BF80227; Sat, 13 Mar 2021 16:56:31 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B0D5F8012A
- for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 16:47:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B0D5F8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="ftK8VC7Q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1615650431;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=FLq3X211LfbU619/ijQXkqri4bO5wBBbciKuxUC8+Lo=;
- b=ftK8VC7QFwmSpx+VZ9FKtKlcIkRmqnqT5Mz9ExpoiswTFBD1E26vTdGf+YGvvDzUVCIbnX
- gQglaQSnWMaxRlJFjGNgE5RocesUasMiuLDnIs0U8ri0r+laEsTbu/Pc2xb8D4KOlZNNNH
- udzhBKS9OQGH1lEss+a6SPz8qRjfew0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-241-xKVZPQr3M_mOPWsUS4WQnw-1; Sat, 13 Mar 2021 10:47:09 -0500
-X-MC-Unique: xKVZPQr3M_mOPWsUS4WQnw-1
-Received: by mail-ed1-f69.google.com with SMTP id a26so6259482edt.23
- for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 07:47:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=FLq3X211LfbU619/ijQXkqri4bO5wBBbciKuxUC8+Lo=;
- b=o4dVB9rDssTZDshx0OKidJu3st0/oKZuAL7fnuaYhYuvbDj+dpx9j8Nit22aGFPFJo
- ELAnuXFs3tSQdPFTGQIvTA3KxecbM+UzH04bHSY8l3xQklx9AlyR73emk6fBUPw9WBBV
- noHkSCtciJ7v/JTbBQSLAYvWnY4Q0/d526ATKKr2v4A+tSNeAzt9vsPCtzfZ2Zbkf/LJ
- LUyy4T6iBF7JFNEL+nGooxbqPUEh0Q5VY0OzfnkHm7vGqX2/xzF7EGBUcw9YstDdTb8j
- sf6S6bdfenhV0S6IutP61E76thWMhGPQm6LIUjkTlbFkJFlv2MXDAJWMUR0e6MqKqtxQ
- B4eg==
-X-Gm-Message-State: AOAM532w/esR7o2E7qeAE7BuGhSeMAT06pCFtBf8V+H4Xzwyyp/q5boz
- WVkYqITFJo6naoMwWAErx9GMOlNHgqMWrL4+O1cPdM+DVrgZ3T5JCvTWqcE6iwcgv/99GfxnXl/
- YPMxg/yIMhCqs7qdcGKqO04qj+9se3msvFIlU1PX35fq7PpOuZvoDCnlSYOkbA8a7K4jgwjnJdV
- g=
-X-Received: by 2002:a17:907:788e:: with SMTP id
- ku14mr14774484ejc.17.1615650427547; 
- Sat, 13 Mar 2021 07:47:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwiulns+wh157SPSvqQI9OLCPjcj0npOY+xKPiYH5Kkv6o/itGGJyyS03Faalysou8WFsLGfg==
-X-Received: by 2002:a17:907:788e:: with SMTP id
- ku14mr14774465ejc.17.1615650427281; 
- Sat, 13 Mar 2021 07:47:07 -0800 (PST)
-Received: from x1.localdomain
- (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
- [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
- by smtp.gmail.com with ESMTPSA id v15sm4675673edw.28.2021.03.13.07.47.06
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 13 Mar 2021 07:47:06 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55871F8012A
+ for <alsa-devel@alsa-project.org>; Sat, 13 Mar 2021 16:56:25 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 3B8C0A003F;
+ Sat, 13 Mar 2021 16:56:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 3B8C0A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1615650985; bh=TmIRSHZYzf5LZMz6aOoRTEFjFOVbK0UOhcZ10QhomiI=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=hYDOO+YR0SkAkRo1XVEutpa1PBqXVsV4+KzTIbrDwwAODwwDIYQltDL81tNaECzgF
+ 0hfNAko0bhC+EmAl1sxFtSZtkFMUw6KQcg6SlfvWwGHI1w/kfjegFtHb9goWJ4NeUz
+ Tl4NjaD1l/7MULUfLc2niuk9wRB77Z2jLzWWJ3Yw=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Sat, 13 Mar 2021 16:56:20 +0100 (CET)
 Subject: Re: [PATCH alsa-ucm-conf 1/2] codecs/rt5672: Move +12dB input boost
  from 'STO1 ADC Boost Gain' to 'ADC Capture Volume'
-To: Jaroslav Kysela <perex@perex.cz>
+To: Hans de Goede <hdegoede@redhat.com>
 References: <20210217143436.74209-1-hdegoede@redhat.com>
-From: Hans de Goede <hdegoede@redhat.com>
-Message-ID: <2f424984-ae8f-7393-94f8-fc18e5100e58@redhat.com>
-Date: Sat, 13 Mar 2021 16:47:06 +0100
+ <2f424984-ae8f-7393-94f8-fc18e5100e58@redhat.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <e3357efb-75fa-1f47-159e-0b4472e9361a@perex.cz>
+Date: Sat, 13 Mar 2021 16:56:20 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210217143436.74209-1-hdegoede@redhat.com>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
+In-Reply-To: <2f424984-ae8f-7393-94f8-fc18e5100e58@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -128,62 +90,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-
-On 2/17/21 3:34 PM, Hans de Goede wrote:
-> Both the 'STO1 ADC Boost Gain' and the 'ADC Capture Volume' controls are
-> digital and the 'ADC Capture Volume' control goes up to +30dB.
+Dne 13. 03. 21 v 16:47 Hans de Goede napsal(a):
+> Hi,
 > 
-> When adding hw-volume-control support adding the +12dB boost gain on to of
-> the max +30dB of 'ADC Capture Volume' is a bit too much.
+> On 2/17/21 3:34 PM, Hans de Goede wrote:
+>> Both the 'STO1 ADC Boost Gain' and the 'ADC Capture Volume' controls are
+>> digital and the 'ADC Capture Volume' control goes up to +30dB.
+>>
+>> When adding hw-volume-control support adding the +12dB boost gain on to of
+>> the max +30dB of 'ADC Capture Volume' is a bit too much.
+>>
+>> So move the +12dB from the 'STO1 ADC Boost Gain' control to the
+>> 'ADC Capture Volume' control.
+>>
+>> This way we keep the same setting for userspace which does not support
+>> hw-volume-control, while getting a better range when we start using
+>> 'ADC Capture Volume' as hw-volume-control.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > 
-> So move the +12dB from the 'STO1 ADC Boost Gain' control to the
-> 'ADC Capture Volume' control.
-> 
-> This way we keep the same setting for userspace which does not support
-> hw-volume-control, while getting a better range when we start using
-> 'ADC Capture Volume' as hw-volume-control.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Ping? This series seems to have fallen through the cracks, AFAIK
+> there is nothing blocking this series from getting merged.
 
-Ping? This series seems to have fallen through the cracks, AFAIK
-there is nothing blocking this series from getting merged.
+Yep, it was somehow lost on my side. It's merged now. Thank you.
 
-If you want a resend let me know and I'll resubmit.
+				Jaroslav
 
-Regards,
-
-Hans
-
-
-> ---
->  ucm2/codecs/rt5672/EnableSeq.conf | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/ucm2/codecs/rt5672/EnableSeq.conf b/ucm2/codecs/rt5672/EnableSeq.conf
-> index ddfb1c7..e373275 100644
-> --- a/ucm2/codecs/rt5672/EnableSeq.conf
-> +++ b/ucm2/codecs/rt5672/EnableSeq.conf
-> @@ -26,14 +26,13 @@ EnableSequence [
->  	# cset "name='LOUT MIX OUTMIX L Switch' on"
->  	# cset "name='LOUT MIX OUTMIX R Switch' on"
->  
-> -	# 47=0dB, 0.375 dB/step
-> -	cset "name='ADC Capture Volume' 47"
-> +	# Both the DMICs and the headset mic (even with the 20dB boost below)
-> +	# are quite soft, set the default capture volume to +12dB
-> +	# 47=0dB, 0.375dB/step, 79=+12dB
-> +	cset "name='ADC Capture Volume' 79"
->  	cset "name='ADC Capture Switch' on"
-> -
-> -	# Both the DMICs and the headset mic (even with the 20 dB boost below)
-> -	# are quite soft, set the ADC Boost gain (range 0-3) to 1 = 12 dB the
-> -	# next step is 24 dB which is a bit too much
-> -	cset "name='STO1 ADC Boost Gain Volume' 1"
-> +	# 0=0dB
-> +	cset "name='STO1 ADC Boost Gain Volume' 0"
->  
->  	# Headset mic is quite soft, boost it a bit, 1 = 20dB which is the first
->  	# available boost step
-> 
-
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
