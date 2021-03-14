@@ -2,64 +2,65 @@ Return-Path: <SRS0=8nxE=IM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D650C433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F82C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:37:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 042D364EC0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:35:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 042D364EC0
+	by mail.kernel.org (Postfix) with ESMTPS id ADF4264EC0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:37:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org ADF4264EC0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8EB111717;
-	Sun, 14 Mar 2021 09:34:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EB111717
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6778D1728;
+	Sun, 14 Mar 2021 09:36:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6778D1728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615710928;
-	bh=+B7Y0sqAUJOinbx1euLnR2iLxkCpKmAfOXMxvOgE+Zs=;
+	s=default; t=1615711032;
+	bh=uwoJHASc57kyM/rHvxyKpfI1JuRMQAE2NyKZ+oHFfgA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SlzwCvCnDjc3rpHO08ylCY8XQulmHGLWeG79Jxbp0CW10E10iH8JXNwOot72NU2bL
-	 DzsKNUnjps6VfzhjURujQfGJHF3+TH6BVmUgTSIsUdWpNPxMjsMMFe1DEk9LwShzyg
-	 nKLyvVfFYsAYTHowneWxYcYA2OvUTx9cl89stIPg=
+	b=ByNsLzwO6aAxOLl8Km0uDhyssGx+FiBAZgLJxjgNy9EZqxpCtshIR4Oi8uw+hJwTB
+	 4bXtMXxqtTrht6ySG9n56dymM1niehVnUh1AerTC3FOCizm3coLGjfe6fSNqW+oF+x
+	 XNNBf424ge1n/eLsRASeWuMDxgoDbM0TmyPps3ok=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FC3EF80148;
-	Sun, 14 Mar 2021 09:34:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3D4BF80148;
+	Sun, 14 Mar 2021 09:36:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29F48F80218; Sun, 14 Mar 2021 09:34:37 +0100 (CET)
+ id 1D822F8010D; Sun, 14 Mar 2021 09:36:20 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E373DF80100
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 09:34:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E373DF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id E430CF8010D
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 09:36:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E430CF8010D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B0F69AB8C;
- Sun, 14 Mar 2021 08:34:30 +0000 (UTC)
-Date: Sun, 14 Mar 2021 09:34:30 +0100
-Message-ID: <s5h35wyrv55.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id AC782ABD7;
+ Sun, 14 Mar 2021 08:36:13 +0000 (UTC)
+Date: Sun, 14 Mar 2021 09:36:13 +0100
+Message-ID: <s5h1rcirv2a.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] speaker-test: add support for S24_LE and S24_BE
-In-Reply-To: <20210312170316.63231-1-pierre-louis.bossart@linux.intel.com>
-References: <20210312170316.63231-1-pierre-louis.bossart@linux.intel.com>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v1 0/4] ALSA: hda/cirrus: Make CS8409 driver more generic
+ by using fixups
+In-Reply-To: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
+References: <20210313113410.90088-1-vitalyr@opensource.cirrus.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,33 +76,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Mar 2021 18:03:16 +0100,
-Pierre-Louis Bossart wrote:
+On Sat, 13 Mar 2021 12:34:06 +0100,
+Vitaly Rodionov wrote:
 > 
-> These formats are sometimes advertised by drivers, e.g. SOF.
-> The format is 3 bytes packed in 32-bit container, with the MSB zeroed
-> out.
+> This series of patches will address comments by Pierre-Louis Bossart,
+> cleans up patch_cirrus.c source, reducing checkpatch.pl warnings from 19 to 0,
+> fixing an issue reported by Canonical: BugLink: https://bugs.launchpad.net/bugs/1918378,
+> and makes the CS8409 patch more generic by using fixups.
 > 
-> sample: 0x00123456
-> 
-> S24_LE format:
-> b0 56
-> b1 34
-> b2 12
-> b3 00
-> 
-> S24_BE format:
-> b0 00
-> b1 12
-> b2 34
-> b3 56
-> 
-> I only tested the S24_LE format with the SOF driver, S24_BE was added
-> for symmetry only.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Stefan Binding (4):
+>   ALSA: hda/cirrus: Add error handling into CS8409 I2C functions
+>   ALSA: hda/cirrus: Cleanup patch_cirrus.c code.
+>   ALSA: hda/cirrus: Fix CS42L42 Headset Mic volume control name
+>   ALSA: hda/cirrus: Make CS8409 driver more generic by using fixups.
 
-Thanks, applied now.
+Is this the same content as the series you've already submitted in
+20210312184452.3288-1-vitalyr@opensource.cirrus.com ?
 
+
+thanks,
 
 Takashi
