@@ -2,53 +2,53 @@ Return-Path: <SRS0=8nxE=IM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F80FC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89777C433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:32:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2511D64EC4
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:31:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2511D64EC4
+	by mail.kernel.org (Postfix) with ESMTPS id 79BB764EC0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:32:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79BB764EC0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5031712;
-	Sun, 14 Mar 2021 09:30:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5031712
+	by alsa0.perex.cz (Postfix) with ESMTPS id BADDD1728;
+	Sun, 14 Mar 2021 09:31:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BADDD1728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615710685;
-	bh=ud7LfutbypB0ImFaJxqnZHfMy8EgEY3SC9ssFBGReOw=;
+	s=default; t=1615710736;
+	bh=goFzjmRMWHmHmiZKrNYova6X7tdHaOT9ArLT2i3hRIY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fwCtwzXA8lLpi8Iuhn61ueqXleBPBQtbJFR7w1YzvwC8pW7UhIUKq1CNrW4253c8w
-	 HKEsqx62GecYgwfBJY6J/3MtQEv1zx22fLvsZT4qGtkbNaFHN+RzZsH5sq0FqjTWrV
-	 m9kziLgm8NTrXFofvm47f/LQV/vUK+dcq5ICBpgU=
+	b=ckqN6fMzKkdcpCr5BFrh32hwluNChG1ld+91VOq3sIjNK7LsH6JZtAJy0ZQqjwf+K
+	 UKaJBiO6yM3qgfMqv1Zan1tkofLJ5D2bn1EVwNqETy7ZPzzTxRti/UyNugZvNEnz8V
+	 u4zxoOrSgT/SPlFHC84mx98NrprrmZqf5p9qxdY0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44F33F80100;
-	Sun, 14 Mar 2021 09:30:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4267FF8023B;
+	Sun, 14 Mar 2021 09:31:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07B82F80218; Sun, 14 Mar 2021 09:30:33 +0100 (CET)
+ id 91BECF8010D; Sun, 14 Mar 2021 09:31:05 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2217FF80100
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 09:30:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2217FF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CA67F8010D
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 09:30:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CA67F8010D
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 85547AB8C;
- Sun, 14 Mar 2021 08:30:22 +0000 (UTC)
-Date: Sun, 14 Mar 2021 09:30:22 +0100
-Message-ID: <s5h7dmarvc1.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 3375CAC2D;
+ Sun, 14 Mar 2021 08:30:59 +0000 (UTC)
+Date: Sun, 14 Mar 2021 09:30:59 +0100
+Message-ID: <s5h5z1urvb0.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 05/23] ASoC: cx2070x: remove useless assignment
@@ -126,26 +126,3 @@ Reviewed-by: Takashi Iwai <tiwai@suse.de>
 thanks,
 
 Takashi
-
-
-> ---
->  sound/soc/codecs/cx2072x.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/cx2072x.c b/sound/soc/codecs/cx2072x.c
-> index 8ab22815c2c9..d2d004654c9b 100644
-> --- a/sound/soc/codecs/cx2072x.c
-> +++ b/sound/soc/codecs/cx2072x.c
-> @@ -827,9 +827,6 @@ static int cx2072x_config_i2spcm(struct cx2072x_priv *cx2072x)
->  	}
->  	regdbt2.r.i2s_bclk_invert = is_bclk_inv;
->  
-> -	reg1.r.rx_data_one_line = 1;
-> -	reg1.r.tx_data_one_line = 1;
-> -
->  	/* Configures the BCLK output */
->  	bclk_rate = cx2072x->sample_rate * frame_len;
->  	reg5.r.i2s_pcm_clk_div_chan_en = 0;
-> -- 
-> 2.25.1
-> 
