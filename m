@@ -8,89 +8,88 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C145EC433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C9B8C433DB
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:51:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 294B564E76
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:51:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 294B564E76
+	by mail.kernel.org (Postfix) with ESMTPS id 1589864E51
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:51:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1589864E51
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1BC617C8;
-	Sun, 14 Mar 2021 16:50:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1BC617C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id A41121745;
+	Sun, 14 Mar 2021 16:51:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A41121745
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615737076;
-	bh=1WHFvNA0wc7rqLRfOJ+5TuPs3ziUU1A1jZTl4Ri/kPk=;
+	s=default; t=1615737112;
+	bh=3exbRPU3vyjZG4OS8bm2QBQ39WjIaqaRHR7hZY11sI4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=owFlQpizSnqGWvZzX7hR+b9PQj71dYM/XVigZHsjU173LQVbBmXio6T+pZauxZ3+6
-	 bzVHkv+KmcPcUpin2+1t4vueiNOB78JdB1KI/B6NbJm0ou8dNPxrR7PDvc/oV5m9Wv
-	 wMYTX+SwYtYMLBOrr2zVUQW/CNBOSlKtmA1WVhNg=
+	b=WDYwcIHOc9cHKi8BQwgUf9xVvHTsNMK3De6jbv4NRytj4u6h1795+Tc7QdCpz6lzp
+	 Cqeht/eaX7pP3BKRa3px6v2Awu6k4nVA41ERTVmTaTp/err5jzYlJO4Qa36e3LXR9a
+	 r8aMOHutbtE0CfYNnjh5w3GICctsR4YtDmTYZzmo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2DF5F804FF;
-	Sun, 14 Mar 2021 16:45:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B883CF80519;
+	Sun, 14 Mar 2021 16:45:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33A14F804E6; Sun, 14 Mar 2021 16:45:52 +0100 (CET)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ id 71A23F804E4; Sun, 14 Mar 2021 16:45:52 +0100 (CET)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 767D8F804AE
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 16:45:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 767D8F804AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F76AF8042F
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 16:45:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F76AF8042F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="i/b/ENnV"
-Received: by mail-wm1-x32c.google.com with SMTP id g25so6681951wmh.0
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 08:45:38 -0700 (PDT)
+ header.b="KKfe44JV"
+Received: by mail-wr1-x432.google.com with SMTP id b9so4456937wrt.8
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 08:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=q2VvKGS2IBfU/FyzkzlhapnFhEuPDgTyFY3A2pVCWuc=;
- b=i/b/ENnVfmEm7gJZEiJN2YTGqMz6qL70iprAM+NYUEEBXgzljDTTvb+IEgAQrdAlzw
- RRI/kUonxFW04TF69GppVa/5TpkFs5NyObtXDqlVb23mxcCNI0YRN647B/M6ANMtF6qd
- 1mWai9P7B6/XNLswXwsbfAjNZ6lEfjwmZrZEcC/zUm7M6D7OBaN+CfuQjAu/+mHcMEiI
- vEMgGMQotDEac0bFpZEG/2i6miMI9hZz5mCgwZuC2y4cXXm+49oxYO2YEDOdrh8Yu2Ep
- tfOqLmAAI2Z06dhzpWb84yxjGXkJ0ug9HBDC22uUwwFXyoVh0PQ+h1OMZ4EEQZQvImhr
- b77g==
+ bh=oD3FaI4IefheXyOruQTSZ8GPhKjZkAiPZDDxvon3Qf0=;
+ b=KKfe44JVwuQ/IBwSvIg3rcroBJOZn6rWeUXbyoRs8WuIzwBr2SVINJDN4xhqpXSpQC
+ 6rUZdgP/vS9Ok7xTyvcLS2Z6WjYgYF7lpIUa6URhis1da+S6ZVBRR8U0EHMyVZZ3YCx1
+ 47PVHWWsiJZdFIkfqk48U+oVdRaafucgvDrdM0OtvuciQlPfuMI1+QcGF5RA02uJ2TAC
+ lD2mjwiCeVk8WBmriPbIuSph0iDaYZMVl78ua5zuqENTJXFrEz6+FIcGVsYae+s31CuC
+ +YNaXKPLeUY5Z55WMGTRfXMaMXKKdaTMS0Ja62pj0fFzj3mn3li2zc15e+N7z5j7I88g
+ q6mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=q2VvKGS2IBfU/FyzkzlhapnFhEuPDgTyFY3A2pVCWuc=;
- b=Rz1g5gBFssG72v2vZHB1AEdTrP16jAZz5RiXcxSx9xltrrT8uIYeinqrP2NmNdvDq7
- kB8elNe1M7thG9X815JtkddF5geMSueyXvBZPOavi0EJGTn81AU2W3eLSD+kHHsw8WYt
- T+5rgMAtI5awHpVu8W/hELGfFU852/xTm5Vyhwg4oZdCtrJzwJD4izZPW3B4mxRc6j+S
- oxU4qIVW94D63ljkpTZImKRwsaHyQ9Bp9gq2VqM0b79IFz8w+hs46dPCRqNIszQcYvGf
- SxZeTbJkQLlRKmrtUf48VwWUtcCng++DCYOMAH8OmIDPjXg0LRplcurXLOh4VuSKixWE
- plcA==
-X-Gm-Message-State: AOAM5303Q1l/ANlR+9/4aHu8n10lJwcKZ60R5vDrX7hVgTxUPNREOH/x
- yaOoQxTT/Y+rmWSDgVpg8HQ=
-X-Google-Smtp-Source: ABdhPJzPUOQiE4u6hODiaXeNZpPVy34v31wjC2p8noKP8thVkp98ivhkzcje9/QeTF2Dt9Lhmeo10Q==
-X-Received: by 2002:a05:600c:2301:: with SMTP id
- 1mr22842264wmo.36.1615736738237; 
- Sun, 14 Mar 2021 08:45:38 -0700 (PDT)
+ bh=oD3FaI4IefheXyOruQTSZ8GPhKjZkAiPZDDxvon3Qf0=;
+ b=Grng8I5nIjAr2Jt+D47nY+cvJ4tuP4tua8sh6EMl799GtNrsAPtgkl091/loFaLtTS
+ hstT2WHq6FABOoUgoIipSJkIqEV2c2Ya7IZudXXnv770ugrtTc8pAhH1P1COKKyrAPLE
+ nVTlRvMg0REtIim+FdccNrPjFyuPirglaBJ6RAMLhQX9f34iybQKzcpReMDmKHY0Gq9X
+ xvlvZlaYCNhlgv8Lvoz0c6Wq8IUK8eNzs8VONM7ogGBDyXUjNvWQ3vc246aFHIuNdkiG
+ Codq08egZM+Ir2vgU9KSGv42VL8u4BDuCq9rQfUdxmtN/YbSTaNPo9r0TdjD9DlYjsje
+ wGZg==
+X-Gm-Message-State: AOAM530egOA23s20lUV9513UuWZSsCQfybdEPZOvSQ0kkKThK498BzfX
+ RzXTit2FJMeU1ul10p5uABM=
+X-Google-Smtp-Source: ABdhPJzDp5zth7DowoByIIzbNFBq6dWh7HlXTtOifkclsw34ZZSdE40cm2y12jMfgTOfLaOfYumI7A==
+X-Received: by 2002:a5d:4203:: with SMTP id n3mr23094069wrq.116.1615736728700; 
+ Sun, 14 Mar 2021 08:45:28 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.37
+ by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 14 Mar 2021 08:45:38 -0700 (PDT)
+ Sun, 14 Mar 2021 08:45:28 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v5 17/17] ASoC: tegra30: ahub: Remove handing of disabled
- runtime PM
-Date: Sun, 14 Mar 2021 18:44:59 +0300
-Message-Id: <20210314154459.15375-18-digetx@gmail.com>
+Subject: [PATCH v5 08/17] ASoC: tegra20: i2s: Add system level suspend-resume
+ callbacks
+Date: Sun, 14 Mar 2021 18:44:50 +0300
+Message-Id: <20210314154459.15375-9-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
 References: <20210314154459.15375-1-digetx@gmail.com>
@@ -113,48 +112,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Runtime PM is always available on Tegra since commit 40b2bb1b132a
-("ARM: tegra: enforce PM requirement"), hence there is no need to
-handle the case of a disabled RPM by Tegra drivers. Remove handing
-of a disabled runtime PM from Tegra30 AHUB driver.
+Add system level suspend-resume callbacks in order to ensure that I2S
+is gated before system is suspended. This puts Tegra20 I2S driver on
+par with the Tegra30 I2S driver.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra30_ahub.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ sound/soc/tegra/tegra20_i2s.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index e64b41bc5fdf..d1718f3af3cd 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -584,18 +584,11 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- 	regcache_cache_only(ahub->regmap_ahub, true);
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index c0af5352b483..267517446d27 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -460,6 +460,8 @@ static const struct of_device_id tegra20_i2s_of_match[] = {
+ static const struct dev_pm_ops tegra20_i2s_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(tegra20_i2s_runtime_suspend,
+ 			   tegra20_i2s_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
  
- 	pm_runtime_enable(&pdev->dev);
--	if (!pm_runtime_enabled(&pdev->dev)) {
--		ret = tegra30_ahub_runtime_resume(&pdev->dev);
--		if (ret)
--			goto err_pm_disable;
--	}
- 
- 	of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
- 
- 	return 0;
- 
--err_pm_disable:
--	pm_runtime_disable(&pdev->dev);
- err_unset_ahub:
- 	ahub = NULL;
- 
-@@ -605,8 +598,6 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
- static int tegra30_ahub_remove(struct platform_device *pdev)
- {
- 	pm_runtime_disable(&pdev->dev);
--	if (!pm_runtime_status_suspended(&pdev->dev))
--		tegra30_ahub_runtime_suspend(&pdev->dev);
- 
- 	ahub = NULL;
- 
+ static struct platform_driver tegra20_i2s_driver = {
 -- 
 2.30.2
 
