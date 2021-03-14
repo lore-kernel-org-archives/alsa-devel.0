@@ -8,88 +8,89 @@ X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C9B8C433DB
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:51:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D51EBC433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:52:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1589864E51
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:51:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1589864E51
+	by mail.kernel.org (Postfix) with ESMTPS id 53BDF64E76
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 15:52:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53BDF64E76
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A41121745;
-	Sun, 14 Mar 2021 16:51:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A41121745
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF2A3172C;
+	Sun, 14 Mar 2021 16:51:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF2A3172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615737112;
-	bh=3exbRPU3vyjZG4OS8bm2QBQ39WjIaqaRHR7hZY11sI4=;
+	s=default; t=1615737129;
+	bh=aNzIfJR+5Nmbpf5Ys3S6+buSZdGWkFg7hyGwkgiJ9sI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WDYwcIHOc9cHKi8BQwgUf9xVvHTsNMK3De6jbv4NRytj4u6h1795+Tc7QdCpz6lzp
-	 Cqeht/eaX7pP3BKRa3px6v2Awu6k4nVA41ERTVmTaTp/err5jzYlJO4Qa36e3LXR9a
-	 r8aMOHutbtE0CfYNnjh5w3GICctsR4YtDmTYZzmo=
+	b=oHajOgNBHajw7Dz8DqKBOHy41QUgFGSYdjpLmznbRjQlOp9z9TYNf05FcvLW2AeVu
+	 ARgFgGGQSsKP6ilgUdJeSrDnE7Yr6/tHJ+blVQmGOdZxuFbUTHglmILn+4rzN0BSor
+	 qNNkI9Eie0LZiGJJohgF5vf1oHQdgMFaj7pCvFLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B883CF80519;
-	Sun, 14 Mar 2021 16:45:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0124F8051D;
+	Sun, 14 Mar 2021 16:46:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71A23F804E4; Sun, 14 Mar 2021 16:45:52 +0100 (CET)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
+ id 89565F80272; Sun, 14 Mar 2021 16:45:52 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F76AF8042F
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 16:45:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F76AF8042F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F9A2F80272
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 16:45:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F9A2F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="KKfe44JV"
-Received: by mail-wr1-x432.google.com with SMTP id b9so4456937wrt.8
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 08:45:34 -0700 (PDT)
+ header.b="TTnxonYC"
+Received: by mail-wm1-x329.google.com with SMTP id
+ m20-20020a7bcb940000b029010cab7e5a9fso18771181wmi.3
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 08:45:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=oD3FaI4IefheXyOruQTSZ8GPhKjZkAiPZDDxvon3Qf0=;
- b=KKfe44JVwuQ/IBwSvIg3rcroBJOZn6rWeUXbyoRs8WuIzwBr2SVINJDN4xhqpXSpQC
- 6rUZdgP/vS9Ok7xTyvcLS2Z6WjYgYF7lpIUa6URhis1da+S6ZVBRR8U0EHMyVZZ3YCx1
- 47PVHWWsiJZdFIkfqk48U+oVdRaafucgvDrdM0OtvuciQlPfuMI1+QcGF5RA02uJ2TAC
- lD2mjwiCeVk8WBmriPbIuSph0iDaYZMVl78ua5zuqENTJXFrEz6+FIcGVsYae+s31CuC
- +YNaXKPLeUY5Z55WMGTRfXMaMXKKdaTMS0Ja62pj0fFzj3mn3li2zc15e+N7z5j7I88g
- q6mA==
+ bh=vFPZqRdZbdNHKEvFXCrSAmXDgJl8zams6Cvy18zeWXc=;
+ b=TTnxonYC5VTIZ1twFzbPolp0axamF7Ut4IK5VEOEOuRvASyNVct3OOKrlmeruqncAk
+ BRgL47uCsx9+kXls9oIR5ER/k71DFRKrzbzEOApyNrTGg1cfG0C2GYhdae5ahiQns5/1
+ xG08vaPmn/SAPoRpBgpsKMliBW5pHz5aG81Ih88IsgprrsemB79lZFNjl7qoPXXSQrMt
+ 6I+LPfr0LqpG5+FHXFYDtiKX45Q1LkAPmty17W5slx/0I7EPlEbuTsweT5NFZoCEt3hg
+ 5qPgX8e8uJBXS2D0mSmgvx/S/lZwI07xbo4VqIPnfjProyZIXVkFzkQLJ2W6/7kAgQXq
+ UnHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=oD3FaI4IefheXyOruQTSZ8GPhKjZkAiPZDDxvon3Qf0=;
- b=Grng8I5nIjAr2Jt+D47nY+cvJ4tuP4tua8sh6EMl799GtNrsAPtgkl091/loFaLtTS
- hstT2WHq6FABOoUgoIipSJkIqEV2c2Ya7IZudXXnv770ugrtTc8pAhH1P1COKKyrAPLE
- nVTlRvMg0REtIim+FdccNrPjFyuPirglaBJ6RAMLhQX9f34iybQKzcpReMDmKHY0Gq9X
- xvlvZlaYCNhlgv8Lvoz0c6Wq8IUK8eNzs8VONM7ogGBDyXUjNvWQ3vc246aFHIuNdkiG
- Codq08egZM+Ir2vgU9KSGv42VL8u4BDuCq9rQfUdxmtN/YbSTaNPo9r0TdjD9DlYjsje
- wGZg==
-X-Gm-Message-State: AOAM530egOA23s20lUV9513UuWZSsCQfybdEPZOvSQ0kkKThK498BzfX
- RzXTit2FJMeU1ul10p5uABM=
-X-Google-Smtp-Source: ABdhPJzDp5zth7DowoByIIzbNFBq6dWh7HlXTtOifkclsw34ZZSdE40cm2y12jMfgTOfLaOfYumI7A==
-X-Received: by 2002:a5d:4203:: with SMTP id n3mr23094069wrq.116.1615736728700; 
- Sun, 14 Mar 2021 08:45:28 -0700 (PDT)
+ bh=vFPZqRdZbdNHKEvFXCrSAmXDgJl8zams6Cvy18zeWXc=;
+ b=ieAEzSzkahuN8BcpjFvMCFMeQSgeWBbTjAzzQXn/yaW1hngSCG65idZNYHMdW52V1E
+ +g33Y7wxAZY6jYa9sfaIk46tv/261iKhxnTJlXjsBXhkUAwBtVsI+tmxIXFbFWybxwCt
+ xeKMdy7lSVtv0N5qWOtF7xy8BJpxOBDKRtIldxjBzsFi+wrAhQ3iB5M4FAhiu5TBUxYQ
+ K4gOcif/o/Tdp5u+/LK+6BoWNr/bcWjE2BZ/qdXKG+sCuIExj9vC+KaN7IuDA8qeXC6g
+ GWzbMzwZdR5pLqurLOBujru0GtHiaDxtnivPhz1ZqRdwhlHvMgSqQ8tynRAU4W+YOoBG
+ 0+Rw==
+X-Gm-Message-State: AOAM532cIIKAOYbmwJNOVkDnQ0iID0O7zaJSrf0h9GaN94XixMQRJ3x7
+ PDqJuiJHEoyjeOHSo9khfEo=
+X-Google-Smtp-Source: ABdhPJyNAw8waaCEpxZTcM+qiZa+ugLC/FyHQNxJnz8ojqzssYLkm9hVtJkrv7mc8nkBCSex73XwKw==
+X-Received: by 2002:a1c:32ca:: with SMTP id y193mr22046494wmy.56.1615736735263; 
+ Sun, 14 Mar 2021 08:45:35 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru.
  [109.252.193.52])
- by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.27
+ by smtp.gmail.com with ESMTPSA id f14sm9673507wmf.7.2021.03.14.08.45.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 14 Mar 2021 08:45:28 -0700 (PDT)
+ Sun, 14 Mar 2021 08:45:35 -0700 (PDT)
 From: Dmitry Osipenko <digetx@gmail.com>
 To: Thierry Reding <thierry.reding@gmail.com>,
  Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
  Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-Subject: [PATCH v5 08/17] ASoC: tegra20: i2s: Add system level suspend-resume
- callbacks
-Date: Sun, 14 Mar 2021 18:44:50 +0300
-Message-Id: <20210314154459.15375-9-digetx@gmail.com>
+Subject: [PATCH v5 14/17] ASoC: tegra30: i2s: Remove handing of disabled
+ runtime PM
+Date: Sun, 14 Mar 2021 18:44:56 +0300
+Message-Id: <20210314154459.15375-15-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
 References: <20210314154459.15375-1-digetx@gmail.com>
@@ -112,28 +113,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add system level suspend-resume callbacks in order to ensure that I2S
-is gated before system is suspended. This puts Tegra20 I2S driver on
-par with the Tegra30 I2S driver.
+Runtime PM is always available on Tegra since commit 40b2bb1b132a
+("ARM: tegra: enforce PM requirement"), hence there is no need to
+handle the case of a disabled RPM by Tegra drivers. Remove handing
+of a disabled runtime PM from Tegra30 I2S driver.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_i2s.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/tegra/tegra30_i2s.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
-index c0af5352b483..267517446d27 100644
---- a/sound/soc/tegra/tegra20_i2s.c
-+++ b/sound/soc/tegra/tegra20_i2s.c
-@@ -460,6 +460,8 @@ static const struct of_device_id tegra20_i2s_of_match[] = {
- static const struct dev_pm_ops tegra20_i2s_pm_ops = {
- 	SET_RUNTIME_PM_OPS(tegra20_i2s_runtime_suspend,
- 			   tegra20_i2s_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 0ed982548ce4..8730ffa0f691 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -461,11 +461,6 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
+ 	regcache_cache_only(i2s->regmap, true);
  
- static struct platform_driver tegra20_i2s_driver = {
+ 	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = tegra30_i2s_runtime_resume(&pdev->dev);
+-		if (ret)
+-			goto err_pm_disable;
+-	}
+ 
+ 	i2s->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+ 	i2s->playback_dma_data.maxburst = 4;
+@@ -475,7 +470,7 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
+ 					    &i2s->playback_dma_data.addr);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Could not alloc TX FIFO: %d\n", ret);
+-		goto err_suspend;
++		goto err_pm_disable;
+ 	}
+ 	ret = tegra30_ahub_set_rx_cif_source(i2s->playback_i2s_cif,
+ 					     i2s->playback_fifo_cif);
+@@ -529,9 +524,6 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
+ 	tegra30_ahub_unset_rx_cif_source(i2s->playback_i2s_cif);
+ err_free_tx_fifo:
+ 	tegra30_ahub_free_tx_fifo(i2s->playback_fifo_cif);
+-err_suspend:
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra30_i2s_runtime_suspend(&pdev->dev);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ err:
+@@ -552,8 +544,6 @@ static int tegra30_i2s_platform_remove(struct platform_device *pdev)
+ 	tegra30_ahub_free_tx_fifo(i2s->playback_fifo_cif);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		tegra30_i2s_runtime_suspend(&pdev->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
