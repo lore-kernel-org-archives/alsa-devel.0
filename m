@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB5AFC433E0
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D650C433E0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:35:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1590364E67
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:33:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1590364E67
+	by mail.kernel.org (Postfix) with ESMTPS id 042D364EC0
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Mar 2021 08:35:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 042D364EC0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72A9A1714;
-	Sun, 14 Mar 2021 09:32:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72A9A1714
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EB111717;
+	Sun, 14 Mar 2021 09:34:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EB111717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615710805;
-	bh=tgns3q049i/LaB8KC0KyUlI+yvk71mVksDYKpzfL6DA=;
+	s=default; t=1615710928;
+	bh=+B7Y0sqAUJOinbx1euLnR2iLxkCpKmAfOXMxvOgE+Zs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GS/MXwwomKMWz4jNp+smWG6QQDmnuq+DpRJu6O9BF3Amz7vRB1p0dX1MT3Hy10r+V
-	 6wG7+sEWAnCgLYx9Lx5APy4tJpPVWdATIGChY2jPvS2mkKr3y8NP9BXxeOuJl2blvz
-	 A301neZEWGhz0MOpkpkzjUolZ7mT2XecmsAkY40I=
+	b=SlzwCvCnDjc3rpHO08ylCY8XQulmHGLWeG79Jxbp0CW10E10iH8JXNwOot72NU2bL
+	 DzsKNUnjps6VfzhjURujQfGJHF3+TH6BVmUgTSIsUdWpNPxMjsMMFe1DEk9LwShzyg
+	 nKLyvVfFYsAYTHowneWxYcYA2OvUTx9cl89stIPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E1BFF80148;
-	Sun, 14 Mar 2021 09:32:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2FC3EF80148;
+	Sun, 14 Mar 2021 09:34:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 727C0F80224; Sun, 14 Mar 2021 09:32:33 +0100 (CET)
+ id 29F48F80218; Sun, 14 Mar 2021 09:34:37 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3E61F8010D
- for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 09:32:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3E61F8010D
+ by alsa1.perex.cz (Postfix) with ESMTPS id E373DF80100
+ for <alsa-devel@alsa-project.org>; Sun, 14 Mar 2021 09:34:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E373DF80100
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4BA5CAB8C;
- Sun, 14 Mar 2021 08:32:28 +0000 (UTC)
-Date: Sun, 14 Mar 2021 09:32:28 +0100
-Message-ID: <s5h4kherv8j.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B0F69AB8C;
+ Sun, 14 Mar 2021 08:34:30 +0000 (UTC)
+Date: Sun, 14 Mar 2021 09:34:30 +0100
+Message-ID: <s5h35wyrv55.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 06/23] ASoC: cx2070x: remove duplicate else branch
-In-Reply-To: <20210312182246.5153-7-pierre-louis.bossart@linux.intel.com>
-References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
- <20210312182246.5153-7-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] speaker-test: add support for S24_LE and S24_BE
+In-Reply-To: <20210312170316.63231-1-pierre-louis.bossart@linux.intel.com>
+References: <20210312170316.63231-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,31 +75,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 12 Mar 2021 19:22:29 +0100,
+On Fri, 12 Mar 2021 18:03:16 +0100,
 Pierre-Louis Bossart wrote:
 > 
-> cppcheck warning:
+> These formats are sometimes advertised by drivers, e.g. SOF.
+> The format is 3 bytes packed in 32-bit container, with the MSB zeroed
+> out.
 > 
-> sound/soc/codecs/cx2072x.c:1436:10: style:inconclusive: Found
-> duplicate branches for 'if' and 'else'. [duplicateBranch]
->   } else if (type & 0x4) {
->          ^
-> sound/soc/codecs/cx2072x.c:1439:5: note: Found duplicate branches for
-> 'if' and 'else'.
->   } else {
->     ^
-> sound/soc/codecs/cx2072x.c:1436:10: note: Found duplicate branches for
-> 'if' and 'else'.
->   } else if (type & 0x4) {
->          ^
+> sample: 0x00123456
 > 
-> The last two branches do the same thing and can be collapsed together.
+> S24_LE format:
+> b0 56
+> b1 34
+> b2 12
+> b3 00
+> 
+> S24_BE format:
+> b0 00
+> b1 12
+> b2 34
+> b3 56
+> 
+> I only tested the S24_LE format with the SOF driver, S24_BE was added
+> for symmetry only.
 > 
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Thanks, applied now.
 
-
-thanks,
 
 Takashi
