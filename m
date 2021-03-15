@@ -2,102 +2,70 @@ Return-Path: <SRS0=ty8W=IN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3946C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 10:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24899C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 10:40:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0EFB764DD1
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 10:06:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EFB764DD1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 8A64164E21
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 10:40:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A64164E21
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=collabora.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 904851777;
-	Mon, 15 Mar 2021 11:06:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 904851777
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EF9F112;
+	Mon, 15 Mar 2021 11:39:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EF9F112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615802810;
-	bh=640/7dwngXQChQe8hi/tPbPLZCzP3nlXY5UfWyMoISA=;
+	s=default; t=1615804842;
+	bh=Uyt6dgshgP24UDwthHKY5wiMbQ7H8i9aHozjHvLd+1o=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F/e+eh1LKHfo8psmp+6gEkRfglSpP1NtrKkSRlNY1ILD0XyyNKXRRjTnLtH7XFAXV
-	 1O/7bFyAkFnIQ8AZKxEi92KQerhsE5Gt9WhyWH62A68jyCPRHDjektR4g9B5C3VB/O
-	 dRsJj45hvRjOBsJJlgNXGZTiPtm/uDmod7qSyzLU=
+	b=oUWAtV3OcupmRwG5bS3uPk3U3i/fNy0yU3VhQhOU1hqIZ97w0ky2jMfMg+fDT56oS
+	 wD8gR2SQAnZ5BdXlIj88F5KFp1nDXZIbqFbk5btAyCgh7CLQKsPZTpxm5ySdvZUaDl
+	 YeJCYItR975RhtopwNKZYiDkzflWVtlY4FS074oc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51A8CF80424;
-	Mon, 15 Mar 2021 11:05:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FE18F80163;
+	Mon, 15 Mar 2021 11:39:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57BFBF80425; Mon, 15 Mar 2021 11:05:12 +0100 (CET)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 76463F80171; Mon, 15 Mar 2021 11:39:50 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 984A6F80423
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 11:05:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 984A6F80423
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="inE43yh5"
-Received: by mail-wr1-x435.google.com with SMTP id 7so8349223wrz.0
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 03:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=8SMiahey8v4BV8lToy6R2QEYE5blVKIxUsXSY4XKVRQ=;
- b=inE43yh5mxV2P8ekxS9v30Ff7VpTHlXC3ZjGUi1QDZ7nvdwPXd1Pg3DfXspYVOqh5T
- w75/Df4puJBkXNBhzHVJw1veurtp9RIKxzlmFK9EZCopSo5WjhgpfyhYbWBo/7dCNJzE
- +jZp4ek4nU+VTf9AS+ULq6g1ERI3ClvKHn8VllyeBcgSDTApgaIX9nIRIghpnt1QTnQe
- 2eZl9H4kktV3Dbv0t239yPxofr+dsCvCwgsC/g97ukmq0VJ7WyIVr7z8dK9pc+rMVxEY
- G5fefnzN50DQ9wUmLf2HNX7AnX9K6OV0lWzwtP23Uc+/XoZsR6XChfPLO1YKJZh0KC/8
- L8eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=8SMiahey8v4BV8lToy6R2QEYE5blVKIxUsXSY4XKVRQ=;
- b=ZSVYSkoPy6wcU2hWU4/J6QtTG0ofxV5079jhpxokHM1uW2UJ5RLbQKy+vAlZZe4w83
- 3Nn1JxIvu59FDoqNrIWc3VCsHE3EyMFUsxJXw1BvwSOqryUReE7BsZ/aIAbOafoOjACS
- 6RUQ15c8ybN9iaFydH8WgVAXqfh3bn7fMAjbfhnhwJPf6ir+PhWBYX/xg2vOtYj3Ziex
- 8h/UIDA421ODNGjdaMVgBLWqIWIxHQKEyfGM8HJEu1BJk3g2akvpZtKKjGznyF3w19OR
- RqW+DFgsQFcClKFdsonHAlo7Eq7LVan3NToV3R5vOZfoODgeJrIfv+nBZoxW62jKnxjS
- qLOA==
-X-Gm-Message-State: AOAM5329spqdJrFFhRWq9pNQ8x1Q6z2pBD18KYxKFn0EHykTap2Oq/ve
- dDaqFJU4bGnoDM9fGJvt5ifNkg==
-X-Google-Smtp-Source: ABdhPJx7Dtu9ZS9xqeYGJ2GbicmlaYaRmGAHNW4y1Jny+wn05eTed91yW2P8HTmYZ5pXC1gUShoDnQ==
-X-Received: by 2002:a5d:5492:: with SMTP id h18mr27037131wrv.340.1615802701475; 
- Mon, 15 Mar 2021 03:05:01 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id g11sm17704589wrw.89.2021.03.15.03.05.00
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 15 Mar 2021 03:05:01 -0700 (PDT)
-Subject: Re: [PATCH 1/7] ASoC: dt-bindings: wcd938x: add bindings for wcd938x
-To: Mark Brown <broonie@kernel.org>
-References: <20210311173416.25219-1-srinivas.kandagatla@linaro.org>
- <20210311173416.25219-2-srinivas.kandagatla@linaro.org>
- <20210312152143.GH5348@sirena.org.uk>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <b68f9c7b-7c44-9a98-01bf-ee1fa8d5ee3a@linaro.org>
-Date: Mon, 15 Mar 2021 10:05:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6868AF8013F
+ for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 11:39:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6868AF8013F
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ (Authenticated sender: eballetbo) with ESMTPSA id 420AA1F45CDA
+Subject: Re: [PATCH 04/23] ASoC: cros_ec_codec: remove null pointer
+ dereference warning
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+References: <20210312182246.5153-1-pierre-louis.bossart@linux.intel.com>
+ <20210312182246.5153-5-pierre-louis.bossart@linux.intel.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <dd3fd255-4397-80d6-2114-3b37b5be5c08@collabora.com>
+Date: Mon, 15 Mar 2021 11:39:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210312152143.GH5348@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210312182246.5153-5-pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ broonie@kernel.org, Guenter Roeck <groeck@chromium.org>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,23 +81,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks for your feedback,
+Hi Pierre-Louis,
 
-On 12/03/2021 15:21, Mark Brown wrote:
-> On Thu, Mar 11, 2021 at 05:34:10PM +0000, Srinivas Kandagatla wrote:
+Thank you for you patch.
+
+On 12/3/21 19:22, Pierre-Louis Bossart wrote:
+> Cppcheck complains of a possible issue:
 > 
->> +  qcom,mbhc-hphl-switch:
->> +    description: Indicates that HPHL switch type is normally closed!
->> +    type: boolean
->> +
->> +  qcom,mbhc-ground-switch:
->> +    description: Indicates that Headset Gound switch type is normally closed!
->> +    type: boolean
+> sound/soc/codecs/cros_ec_codec.c:98:10: warning: Possible null pointer
+> dereference: in [nullPointer]
+>   memcpy(in, msg->data, insize);
+>          ^
+> sound/soc/codecs/cros_ec_codec.c:162:34: note: Calling function
+> 'send_ec_host_command', 5th argument 'NULL' value is 0
+>        (uint8_t *)&p, sizeof(p), NULL, 0);
+>                                  ^
+> sound/soc/codecs/cros_ec_codec.c:98:10: note: Null pointer dereference
+>   memcpy(in, msg->data, insize);
+>          ^
 > 
-> Why do these descriptions have exclamation marks?
+> In practice the access to the pointer is protected by another
+> argument, but this is likely to fool other static analysis tools. Add
+> a test to avoid doing the memcpy if the pointer is NULL or the size is
+> zero.
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This was not intentional, will remove those instances in next version.
+Looks good to me, so
 
-Thanks,
-srini
+Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+
+> ---
+>  sound/soc/codecs/cros_ec_codec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+> index c4772f82485a..a201d652aca2 100644
+> --- a/sound/soc/codecs/cros_ec_codec.c
+> +++ b/sound/soc/codecs/cros_ec_codec.c
+> @@ -94,7 +94,7 @@ static int send_ec_host_command(struct cros_ec_device *ec_dev, uint32_t cmd,
+>  	if (ret < 0)
+>  		goto error;
+>  
+> -	if (insize)
+> +	if (in && insize)
+>  		memcpy(in, msg->data, insize);
+>  
+>  	ret = 0;
 > 
