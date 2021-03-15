@@ -2,133 +2,84 @@ Return-Path: <SRS0=ty8W=IN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7F82C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 17:34:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C76CC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 17:40:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D83AE64F06
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 17:34:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D83AE64F06
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nvidia.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4417F64E41
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 17:40:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4417F64E41
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=walle.cc
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 133D618DB;
-	Mon, 15 Mar 2021 18:33:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 133D618DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5140E18A4;
+	Mon, 15 Mar 2021 18:39:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5140E18A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615829671;
-	bh=oEd2dykwbOcU3uZO7habVtS3SOSMOOQnMCP0bWk9InI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1615830040;
+	bh=fCvHELi9y9Ws7qmlwxFHKukhKV6B8NeTX7cdTpKyySU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VDxK6VvOyVb8F8XUlxMIF70Ck/wplpHgubHMgC4hJsYzP9OLIQa2IXc++EzHLUytg
-	 75G2VdRFb/DZydXKvI0iVBTKl/6FxVxDvRmtppw9Xu7s36LWNbJ7NHgNqmUv9iTrRd
-	 z8mjxeFI6kEFoi1mWXL2QRaQvIvWx3KvGfruOzqM=
+	b=TibxKMJh0Kbo075JbUheMg/T5JCjxRMVDzj2A9XsoOm2TPWmotbGX0MDRD0tJgxTU
+	 ZVwKpEDV7OKjlEZWENjBtKf0cVC7pfs4Z0mGTeuSw4DiqRzBK3MLbNrvDv8g/W/Q1k
+	 zcKeAihouNCUzNSeNEzKlAs5ay9mRLMG7paeDIKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9944F80424;
-	Mon, 15 Mar 2021 18:32:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC075F80163;
+	Mon, 15 Mar 2021 18:39:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C46B8F80163; Mon, 15 Mar 2021 18:32:33 +0100 (CET)
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam10on2071.outbound.protection.outlook.com [40.107.93.71])
+ id A5F14F80171; Mon, 15 Mar 2021 18:39:47 +0100 (CET)
+Received: from ssl.serverraum.org (ssl.serverraum.org
+ [IPv6:2a01:4f8:151:8464::1:2])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F35E7F80100
+ for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 18:39:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F35E7F80100
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=walle.cc header.i=@walle.cc
+ header.b="RZBHsDx9"
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5FA96F80171
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 18:32:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FA96F80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
- header.b="KPOd1maa"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b1woKfulkKmdW62DbNy68EJCpYdOQwd9GEkcdfpW7YdgF0KKZplVmCFCI9c2OHfZHSM+QzyL+7wxyeGIy6Ndi4C4dIIywuXsFEN2h4lBV1mgZDq1eNmy8hIrxqAnP8ijB9bGpul7xZD7MJn/KKbNuvLCR3msKoS7LFSWfvet67fxXmun73Wlj8egZQiEZgqyFbvNmOFh/Nk+bsNndbCiEnGVSTrp9phSgpo8cmYnuD/cs2D0i+hySotdZDTPqYctsjPTDSSe6MDzuMaAlcUI+TiZ5+yUa6jwI2ihFLL5QtSe8StoIyBWsRRZTG/1xiYbwPkE43YtvYpu8YMyAcC1vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gvMB+SmVqenYtoji9nyeUsmGS00fwDO1pCM+PCuqC/c=;
- b=avl2AmlXPEl7El52YzPu5AsJUfdX8OKC5tYgDpc+L7gui8EK+ovlGsD2jLqqcm6iot+fyZXI//CgKZ4ES/y7/CLtoTtKdSVxZILBosZRy/Rt+NngmsRRACSagvvHq8TNBZceCkgF38bSt7KYu7HVLFYthMizzRUssy0PnLnFO9f9YFP8LAv1d1qpjtJ5WGfAqrHX5JkMhu71o1GpE85HVsFvB6/EUYQZMWfB+p6QxNsaN671RR7Yen3JQIfiPbfQv6uaIXtApxx2l2lH5bD1vzIK/KiMpaFci3l+0SpO+NzUpBNUoi697zqVy9IxxYT+x2wBSOrsO55yqNHZBjfU2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gvMB+SmVqenYtoji9nyeUsmGS00fwDO1pCM+PCuqC/c=;
- b=KPOd1maa8No7449fLDI6yglEcCGfeYFzT2T4HV/dqeWsprjjGQ7QThOUS3SYRqP50My8v8OWaWERKN6raqUeWOS2aK3YTQXAuJ6pQAQz4JDjUqD97gui0Hht+rqZ2LjyjWREGx3DeMZxHfpMz6RJ7N164I/1Tn0LjB6C/ATC5G/usMNeCjk3+YWaU0N8WiLCryglbOYf7pFtZaaVVw2DcOUhd5rT9hxeYaw3QdBSQw+4jb5djShtrTcsXKca7cecbo1d8Xh1108/odHHURfWIGh6ljKlnl5DXwF0HGCHgH2J6kZya1s5UHYu7CI8CcXKxiRIeVmVQHOeCU+nhHHXig==
-Received: from BN6PR17CA0044.namprd17.prod.outlook.com (2603:10b6:405:75::33)
- by MN2PR12MB4254.namprd12.prod.outlook.com (2603:10b6:208:1d0::17)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 17:32:14 +0000
-Received: from BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:405:75:cafe::79) by BN6PR17CA0044.outlook.office365.com
- (2603:10b6:405:75::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend
- Transport; Mon, 15 Mar 2021 17:32:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- BN8NAM11FT046.mail.protection.outlook.com (10.13.177.127) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 17:32:13 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
- 2021 17:32:12 +0000
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 15 Mar
- 2021 17:32:12 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 15 Mar 2021 17:32:09 +0000
-From: Sameer Pujar <spujar@nvidia.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 1/2] ASoC: simple-card-utils: Do not handle device clock
-Date: Mon, 15 Mar 2021 23:01:31 +0530
-Message-ID: <1615829492-8972-2-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
-References: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
+ by ssl.serverraum.org (Postfix) with ESMTPSA id 4A3D022234;
+ Mon, 15 Mar 2021 18:39:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc;
+ s=mail2016061301; t=1615829971;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=d5Z7hIwaOvVEkPuQ/yO5n6QsbNAjH+MEMoi2JmnTPOE=;
+ b=RZBHsDx9Y5MjBUY5csUgmC1nFPa8dTjN7jJIpPRI2n93+1k5+1DEroe2KSWAB1BXD655G/
+ n8KQgVkL2apu2tHioXkWQJLrEA4uplu9369VnsQP84xo2jAZTV/DMKspBXYHnQBb989XTg
+ gsHabVe+AdcOT3daGqCeASHgQCLOnIQ=
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7e4346c7-1723-44ea-f9a3-08d8e7d845be
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4254:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4254C479CA757832CDC8A43AA76C9@MN2PR12MB4254.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TMGs9HYW+LdEV6OyI0MSH5SjVjXwtLjZ0W9IAebEf8XHDX2WlCjGrvb1hWGFehq2WRLibwhMJuLfem6TFnC7Y6zFfHZh5mW3eU7+z+oAaggi8bpJcprMk4IH4rPfpK812lvHdCXHJKCXqCTWtmIQ9dkjv4BzcL8plIfBvfz8vAQ8J6RsxgPjrrbfneMugn+68eXh+nwTr/mtYvCRJwAEjua1vDk/R66sJhTsHM7WqHwxbsaukJExvvU23rvhsr48hSzlrxqXv9V96XeixiNCP6i8eBG7HkPASlNe+/+GM+4iRcbQYLb6K8r7Ylxqvp9Ste8zXD7K8WPpUaTEiewf1NQhfgC8ggBwL19jmQtcCsaxPVCEk2QqY3NUNjjp/g7Cq5jl4MgcQ06NTBV1ueOSWGGq9hgOpx1Q8y/ygFTwILGlxrT0Qh+eAQsplEJLoCqJiG1rH7maB4+UPzBT+a81RX5THKzhkE2XFQSXOOF9w6Hfrynn6mZKo3u2E060OMo21mH/pOy1mjd+p95OMH3E2LRz/g9vvc0n5jmb4LAwFNfjbnGLaZpdJaWZ1uDXa5NFhdUNLnLtkZ4z02iXU1SZfHUA8KTvOTmuQc1g7Cy7l+beMnLFmAoRp0fm64Lk/Yw+T5YG9pt10zWAgRyDjJH5Kjjp5FBmEpJGuyN2qXy2PGccDMZ/oPSf3Y94FcIpcYsW
-X-Forefront-Antispam-Report: CIP:216.228.112.35; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:schybrid02.nvidia.com; CAT:NONE;
- SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(46966006)(36840700001)(426003)(316002)(2616005)(70586007)(70206006)(54906003)(47076005)(110136005)(26005)(8936002)(83380400001)(8676002)(82740400003)(356005)(478600001)(34020700004)(82310400003)(7636003)(5660300002)(4326008)(336012)(36756003)(6666004)(107886003)(186003)(86362001)(7696005)(2906002)(36906005)(36860700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 17:32:13.9432 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e4346c7-1723-44ea-f9a3-08d8e7d845be
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[216.228.112.35];
- Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4254
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 15 Mar 2021 18:39:31 +0100
+From: Michael Walle <michael@walle.cc>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH 1/2] ASoC: simple-card-utils: Do not handle device clock
+In-Reply-To: <1615829492-8972-2-git-send-email-spujar@nvidia.com>
+References: <1615829492-8972-1-git-send-email-spujar@nvidia.com>
+ <1615829492-8972-2-git-send-email-spujar@nvidia.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <62f003b9cf2bc1ae238689ea811b870d@walle.cc>
+X-Sender: michael@walle.cc
 Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, Sameer Pujar <spujar@nvidia.com>,
- linux-kernel@vger.kernel.org, jonathanh@nvidia.com, sharadg@nvidia.com,
- michael@walle.cc, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+ kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org,
+ lgirdwood@gmail.com, jonathanh@nvidia.com, sharadg@nvidia.com,
+ broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -144,51 +95,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This reverts commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device
-module clock"). The original patch ended up breaking following platform,
-which depends on set_sysclk() to configure internal PLL on wm8904 codec
-and expects simple-card-utils to not update the MCLK rate.
- - "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
+Am 2021-03-15 18:31, schrieb Sameer Pujar:
+> This reverts commit 1e30f642cf29 ("ASoC: simple-card-utils: Fix device
+> module clock"). The original patch ended up breaking following 
+> platform,
+> which depends on set_sysclk() to configure internal PLL on wm8904 codec
+> and expects simple-card-utils to not update the MCLK rate.
+>  - 
+> "arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts"
+> 
+> It would be best if codec takes care of setting MCLK clock via DAI
+> set_sysclk() callback.
+> 
+> Reported-by: Michael Walle <michael@walle.cc>
+> Suggested-by: Mark Brown <broonie@kernel.org>
+> Suggested-by: Michael Walle <michael@walle.cc>
+> Fixes: 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module 
+> clock")
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 
-It would be best if codec takes care of setting MCLK clock via DAI
-set_sysclk() callback.
+Thanks!
 
-Reported-by: Michael Walle <michael@walle.cc>
-Suggested-by: Mark Brown <broonie@kernel.org>
-Suggested-by: Michael Walle <michael@walle.cc>
-Fixes: 1e30f642cf29 ("ASoC: simple-card-utils: Fix device module clock")
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- sound/soc/generic/simple-card-utils.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+Tested-by: Michael Walle <michael@walle.cc>
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index ab31045..6cada4c 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -172,15 +172,16 @@ int asoc_simple_parse_clk(struct device *dev,
- 	 *  or device's module clock.
- 	 */
- 	clk = devm_get_clk_from_child(dev, node, NULL);
--	if (IS_ERR(clk))
--		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
--
- 	if (!IS_ERR(clk)) {
--		simple_dai->clk = clk;
- 		simple_dai->sysclk = clk_get_rate(clk);
--	} else if (!of_property_read_u32(node, "system-clock-frequency",
--					 &val)) {
-+
-+		simple_dai->clk = clk;
-+	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
- 		simple_dai->sysclk = val;
-+	} else {
-+		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
-+		if (!IS_ERR(clk))
-+			simple_dai->sysclk = clk_get_rate(clk);
- 	}
- 
- 	if (of_property_read_bool(node, "system-clock-direction-out"))
--- 
-2.7.4
-
+-michael
