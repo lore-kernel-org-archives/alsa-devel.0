@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BC177C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:59:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73B95C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:59:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D383E614A7
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:59:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D383E614A7
+	by mail.kernel.org (Postfix) with ESMTPS id E769564E45
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:59:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E769564E45
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6421B1703;
-	Mon, 15 Mar 2021 01:58:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6421B1703
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78F88171E;
+	Mon, 15 Mar 2021 01:59:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78F88171E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615769955;
-	bh=C/YfEKFS9Jzrv36//p2zB3Wc4iC27VJxb0/7P0HAtPU=;
+	s=default; t=1615769993;
+	bh=4kvuWSgWf/3mo7ngBDUlSQ1hM7jf6wtv9iXbzCMbIAE=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qN5QJ5sYGxQuRbfoztdyWQambov2tazQFfGaDgTn1EWHZpK9HdQfpd2VSi6apHXJI
-	 E6fQgMPVVluOi2pOMvm7YP/N5XNHK0aDd9GguvGXV51CAyZ9oRwHBtHWmcfrWAjT2Q
-	 wafj9bFnHqoUTURGk8cv78wlFVrcPnIF7W1Kv7Vw=
+	b=Pq4tg6zLyzG1KTqVLZHFZZ4iTKMumkeg9qzNaXEZ/jbH19TmoJjzWDroDE7uo/aC6
+	 6dKaelP21tQ938Y6OgXGj9yRUY6whpCDvWtHJKUSNdpzxuN/+WFXzF8l+1D95UW0dw
+	 OmNvXTc5vDdM84h3eHCsmxboTFoLWUu6OWcvFjf4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BD4FF8026F;
-	Mon, 15 Mar 2021 01:57:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B118F8032D;
+	Mon, 15 Mar 2021 01:57:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DA08F8032C; Mon, 15 Mar 2021 01:57:56 +0100 (CET)
+ id 3CCD2F8032B; Mon, 15 Mar 2021 01:57:57 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 09EA6F8023B
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:57:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09EA6F8023B
-Date: 15 Mar 2021 09:57:48 +0900
-X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="75146084"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Mar 2021 09:57:48 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 5AC58F8026F
+ for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:57:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AC58F8026F
+Date: 15 Mar 2021 09:57:52 +0900
+X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="75146091"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Mar 2021 09:57:52 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 7AF4D41467CF;
- Mon, 15 Mar 2021 09:57:48 +0900 (JST)
-Message-ID: <87o8flutbn.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id D41904003893;
+ Mon, 15 Mar 2021 09:57:52 +0900 (JST)
+Message-ID: <87mtv5utbj.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 03/14] ASoC: soc-pcm: indicate error message at
- soc_pcm_prepare()
+Subject: [PATCH 04/14] ASoC: soc-pcm: indicate error message at dpcm_path_get()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87sg4xutcl.wl-kuninori.morimoto.gx@renesas.com>
@@ -118,57 +117,94 @@ detail information without forgot.
 		...
 	}
 
-This patch follow above style at soc_pcm_prepare().
+Now, many place uses dpcm_path_get() like below
 
-By this patch, dpcm_fe/be_dai_prepare(...)
-temporary lacks FE/BE error info, but it will reborn soon.
+	ret = dpcm_path_get(...);
+	if (ret < 0)
+		goto error;
+(A)	else if (ret == 0)
+		dev_dbg(...)
+
+But here, (A) part can be indicated at dpcm_path_get() not caller.
+It is simple and readable code.
+
+This patch do it.
+Small detail behaviors will be exchanged by this patch.
+
+	1) indicates debug info (= path numbers) if path > 0 case only
+	   (It was *always* indicated).
+	2) soc_dpcm_fe_runtime_update() is indicating error message
+	   for paths < 0 case, but it is already done at dpcm_path_get().
+	   Thus just remove it. but dev_dbg() vs dev_warn() is exchanged.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/soc-compress.c |  4 +---
+ sound/soc/soc-pcm.c      | 19 +++++++------------
+ 2 files changed, 8 insertions(+), 15 deletions(-)
 
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 89445ba0e86b..94f1f7a9dd53 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -115,9 +115,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 	ret = dpcm_path_get(fe, stream, &list);
+ 	if (ret < 0)
+ 		goto be_err;
+-	else if (ret == 0)
+-		dev_dbg(fe->dev, "Compress ASoC: %s no valid %s route\n",
+-			fe->dai_link->name, stream ? "capture" : "playback");
++
+ 	/* calculate valid and active FE <-> BE dpcms */
+ 	dpcm_process_paths(fe, stream, &list, 1);
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index a956d1852ade..82daf79f5b3f 100644
+index 82daf79f5b3f..b21c53becd11 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -852,6 +852,10 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+@@ -1290,8 +1290,12 @@ int dpcm_path_get(struct snd_soc_pcm_runtime *fe,
+ 			fe->card->component_chaining ?
+ 				NULL : dpcm_end_walk_at_be);
  
- out:
- 	mutex_unlock(&rtd->card->pcm_mutex);
-+
-+	if (ret < 0)
-+		dev_err(rtd->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
-+
- 	return ret;
+-	dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
++	if (paths > 0)
++		dev_dbg(fe->dev, "ASoC: found %d audio %s paths\n", paths,
+ 			stream ? "capture" : "playback");
++	else if (paths == 0)
++		dev_dbg(fe->dev, "ASoC: %s no valid %s path\n", fe->dai_link->name,
++			 stream ? "capture" : "playback");
+ 
+ 	return paths;
  }
+@@ -2457,13 +2461,8 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 			continue;
  
-@@ -2234,11 +2238,8 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
- 			be->dai_link->name);
- 
- 		ret = soc_pcm_prepare(be_substream);
--		if (ret < 0) {
--			dev_err(be->dev, "ASoC: backend prepare failed %d\n",
--				ret);
-+		if (ret < 0)
- 			break;
+ 		paths = dpcm_path_get(fe, stream, &list);
+-		if (paths < 0) {
+-			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
+-				 fe->dai_link->name,
+-				 stream == SNDRV_PCM_STREAM_PLAYBACK ?
+-				 "playback" : "capture");
++		if (paths < 0)
+ 			return paths;
 -		}
  
- 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
- 	}
-@@ -2270,11 +2271,8 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
+ 		/* update any playback/capture paths */
+ 		count = dpcm_process_paths(fe, stream, &list, new);
+@@ -2556,12 +2555,8 @@ static int dpcm_fe_dai_open(struct snd_pcm_substream *fe_substream)
+ 	fe->dpcm[stream].runtime = fe_substream->runtime;
  
- 	/* call prepare on the frontend */
- 	ret = soc_pcm_prepare(substream);
+ 	ret = dpcm_path_get(fe, stream, &list);
 -	if (ret < 0) {
--		dev_err(fe->dev,"ASoC: prepare FE %s failed\n",
--			fe->dai_link->name);
 +	if (ret < 0)
- 		goto out;
+ 		goto open_end;
+-	} else if (ret == 0) {
+-		dev_dbg(fe->dev, "ASoC: %s no valid %s route\n",
+-			fe->dai_link->name, stream ? "capture" : "playback");
 -	}
  
- 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
- 
+ 	/* calculate valid and active FE <-> BE dpcms */
+ 	dpcm_process_paths(fe, stream, &list, 1);
 -- 
 2.25.1
 
