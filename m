@@ -2,56 +2,60 @@ Return-Path: <SRS0=ty8W=IN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2E97C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:58:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2220C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:59:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 90E2F64E44
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:58:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 90E2F64E44
+	by mail.kernel.org (Postfix) with ESMTPS id 6B2D164E44
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 00:59:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6B2D164E44
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 598F7171E;
-	Mon, 15 Mar 2021 01:57:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 598F7171E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 337301755;
+	Mon, 15 Mar 2021 01:58:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 337301755
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615769899;
-	bh=Mmapply7r23UsE9hniBLeNrWaEoyj7hXq6cZeda1i6c=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mGSXp2V5dhAGaHYlKW/CeGAx6H23Ht5xK4MmRe3gCQEAtFSBRnCDf8Dsagxb6Kgxq
-	 SBYtL031ayqPfNh30fYEfxjVpJKe1UXpGpfNzVotPkw5rRtbkhFTjMD2OhRMBc/Qas
-	 7vjBwDqSKxVlGlO7DHIYjj1EG3meAxtfpAlJWHQg=
+	s=default; t=1615769950;
+	bh=G7JAlDSkCBWSlFTRu3bd012J8SUhfk1uWylaKzfrEnw=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cbTG/gLlmoZH96M+0d0kIDPw3Z2BbLaLdjVM+jiTg+DktkY0+yPSPJnHm+duxJOP4
+	 jnxS22Kpj1z1izfhOWXg2vm8g91ttcAiCFoZFh0fJ5YNk70gdjbErAD3H7FYRMKSH5
+	 Jp9sh6FgJrpJ/Mx11TYmvk4cupyfgRWqKb5AKTgs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1FE4F80100;
-	Mon, 15 Mar 2021 01:57:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C95B1F8025E;
+	Mon, 15 Mar 2021 01:57:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECB26F80224; Mon, 15 Mar 2021 01:57:26 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id AED9CF80100
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:57:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AED9CF80100
-Date: 15 Mar 2021 09:57:14 +0900
-X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="74917894"
+ id B61CAF8026A; Mon, 15 Mar 2021 01:57:52 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 179EBF8010D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:57:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 179EBF8010D
+Date: 15 Mar 2021 09:57:37 +0900
+X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="75146075"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 15 Mar 2021 09:57:14 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 15 Mar 2021 09:57:37 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C2C0B4003882;
- Mon, 15 Mar 2021 09:57:14 +0900 (JST)
-Message-ID: <87sg4xutcl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B79874003882;
+ Mon, 15 Mar 2021 09:57:37 +0900 (JST)
+Message-ID: <87r1khutby.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 00/14] ASoC: tidyup error message timing
+Subject: [PATCH 01/14] ASoC: soc-pcm: indicate error message at soc_pcm_open()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87sg4xutcl.wl-kuninori.morimoto.gx@renesas.com>
+References: <87sg4xutcl.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -71,10 +75,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Indicating error message when failed case is very useful for debuging.
-In many case, it uses below style.
+In many case, its style is like below.
 
 	int function(...)
 	{
@@ -95,9 +99,8 @@ This is not so bad, but in this style *each caller* needs to indicate
 duplicate same error message, and some caller is forgetting to do it.
 And caller can't indicate detail function() error information.
 
-I know many people have many opinion, but if function() indicates error
-message, we can get same and detail information without forgot, and it is better.
-This patch-set tidyup to do it.
+If function() indicates error message, we can get same and
+detail information without forgot.
 
 	int function(...)
 	{
@@ -115,30 +118,52 @@ This patch-set tidyup to do it.
 		...
 	}
 
+This patch follow above style at soc_pcm_open().
 
-Kuninori Morimoto (14):
-  ASoC: soc-pcm: indicate error message at soc_pcm_open()
-  ASoC: soc-pcm: indicate error message at soc_pcm_hw_params()
-  ASoC: soc-pcm: indicate error message at soc_pcm_prepare()
-  ASoC: soc-pcm: indicate error message at dpcm_path_get()
-  ASoC: soc-pcm: indicate error message at dpcm_be_dai_trigger()
-  ASoC: soc-pcm: indicate error message at dpcm_apply_symmetry()
-  ASoC: soc-pcm: indicate error message at dpcm_run_update_startup/shutdown()
-  ASoC: soc-pcm: indicate error message at dpcm_fe/be_dai_startup()
-  ASoC: soc-pcm: indicate error message at dpcm_fe/be_dai_hw_params()
-  ASoC: soc-pcm: indicate error message at dpcm_fe/be_dai_prepare()
-  ASoC: soc-pcm: don't indicate error message for soc_pcm_hw_free()
-  ASoC: soc-pcm: don't indicate error message for dpcm_be_dai_hw_free()
-  ASoC: don't indicate error message for snd_soc_[pcm_]dai_xxx()
-  ASoC: don't indicate error message for snd_soc_[pcm_]component_xxx()
+By this patch, dpcm_fe/be_dai_startup(...)
+temporary lacks FE/BE error info, but it will reborn soon.
 
- include/sound/soc-dpcm.h |   2 +-
- sound/soc/soc-compress.c |   9 +-
- sound/soc/soc-core.c     |  22 +----
- sound/soc/soc-dapm.c     |  24 ++---
- sound/soc/soc-pcm.c      | 197 +++++++++++++++++++--------------------
- 5 files changed, 108 insertions(+), 146 deletions(-)
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/soc-pcm.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a27385ab7b55..ad4b67bd0306 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -792,8 +792,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ err:
+ 	mutex_unlock(&rtd->card->pcm_mutex);
+ pm_err:
+-	if (ret < 0)
++	if (ret < 0) {
+ 		soc_pcm_clean(substream, 1);
++		dev_err(rtd->dev, "%s() failed (%d)", __func__, ret);
++	}
+ 
+ 	return ret;
+ }
+@@ -1504,7 +1506,6 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 		be_substream->runtime = be->dpcm[stream].runtime;
+ 		err = soc_pcm_open(be_substream);
+ 		if (err < 0) {
+-			dev_err(be->dev, "ASoC: BE open failed %d\n", err);
+ 			be->dpcm[stream].users--;
+ 			if (be->dpcm[stream].users < 0)
+ 				dev_err(be->dev, "ASoC: no users %s at unwind %d\n",
+@@ -1744,10 +1745,8 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
+ 
+ 	/* start the DAI frontend */
+ 	ret = soc_pcm_open(fe_substream);
+-	if (ret < 0) {
+-		dev_err(fe->dev,"ASoC: failed to start FE %d\n", ret);
++	if (ret < 0)
+ 		goto unwind;
+-	}
+ 
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
+ 
 -- 
 2.25.1
 
