@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AC85C433E0
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:02:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FEDDC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:02:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 97047614A7
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:02:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97047614A7
+	by mail.kernel.org (Postfix) with ESMTPS id A9ACE64E44
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:02:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A9ACE64E44
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27608176F;
-	Mon, 15 Mar 2021 02:01:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27608176F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 331881776;
+	Mon, 15 Mar 2021 02:01:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 331881776
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615770129;
-	bh=kvqxhPnYX5jT5Y5PMaTC/dWJWyphKEgln/WIX3JRD8g=;
+	s=default; t=1615770157;
+	bh=Y2UPaZXY123kTkUNZoW3JktG0PwgZ5pQd3QiwewJINs=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E/phLLKiPEjROHccKtx/m6+/PrCVZOsZyCvmH+huH2mKAvuopxIVwocnw41MnIWxM
-	 WHyjPZ/QpEP1Xo/HY8KIIxHTf3xy7D+U6dZprBDjdhDVq+oZD7Jaq+aEjWdII+4tqD
-	 U81v2nkHiD/RsG39Tqok/odJNBz0z8iVWSy6SuIE=
+	b=tIkQxZid4P3FJkqnhBPFhutF3ijOXvxt39cDhgO7NfFSTnr5Xs5jrIk1hWGOOyLJz
+	 4s/fcEwgldu/ne6mJziNtgOS/AdMIPJ38ePrFyDAN7CSW8jm/27WkeH1jJse5j4B2E
+	 mNAgU7BswCHp9NUFqZtfTCporDh3oqU0MZuHxwLY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B54F0F804D9;
-	Mon, 15 Mar 2021 01:58:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3F8EF804E0;
+	Mon, 15 Mar 2021 01:58:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87EDFF804E2; Mon, 15 Mar 2021 01:58:25 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 16E07F804D9
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:58:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16E07F804D9
-Date: 15 Mar 2021 09:58:18 +0900
-X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="75146174"
+ id D4B28F804F2; Mon, 15 Mar 2021 01:58:30 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id EE93DF804E0
+ for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:58:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE93DF804E0
+Date: 15 Mar 2021 09:58:22 +0900
+X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="74918028"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 15 Mar 2021 09:58:18 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 15 Mar 2021 09:58:22 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5DD1A414726E;
- Mon, 15 Mar 2021 09:58:18 +0900 (JST)
-Message-ID: <87ft0xutat.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id BB6AF41470DE;
+ Mon, 15 Mar 2021 09:58:22 +0900 (JST)
+Message-ID: <87eeghutap.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 09/14] ASoC: soc-pcm: indicate error message at
- dpcm_fe/be_dai_hw_params()
+Subject: [PATCH 10/14] ASoC: soc-pcm: indicate error message at
+ dpcm_fe/be_dai_prepare()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87sg4xutcl.wl-kuninori.morimoto.gx@renesas.com>
@@ -118,72 +118,34 @@ detail information without forgot.
 		...
 	}
 
-This patch follow above style at dpcm_fe/be_dai_hw_params()
+This patch follow above style at dpcm_fe/be_dai_prepare()
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ sound/soc/soc-pcm.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 9e3ecf788a74..e141d0658279 100644
+index e141d0658279..4a01a3925ab6 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1882,14 +1882,14 @@ static int dpcm_fe_dai_hw_free(struct snd_pcm_substream *substream)
+@@ -2261,6 +2261,10 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream)
  
- int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- {
-+	struct snd_soc_pcm_runtime *be;
-+	struct snd_pcm_substream *be_substream;
- 	struct snd_soc_dpcm *dpcm;
- 	int ret;
- 
- 	for_each_dpcm_be(fe, stream, dpcm) {
--
--		struct snd_soc_pcm_runtime *be = dpcm->be;
--		struct snd_pcm_substream *be_substream =
--			snd_soc_dpcm_get_substream(be, stream);
-+		be = dpcm->be;
-+		be_substream = snd_soc_dpcm_get_substream(be, stream);
- 
- 		/* is this op for this BE ? */
- 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
-@@ -1929,11 +1929,13 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 	return 0;
- 
- unwind:
-+	dev_dbg(fe->dev, "ASoC: %s() failed at %s (%d)\n",
-+		__func__, be->dai_link->name, ret);
+ 		be->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
+ 	}
 +
- 	/* disable any enabled and non active backends */
- 	for_each_dpcm_be_rollback(fe, stream, dpcm) {
--		struct snd_soc_pcm_runtime *be = dpcm->be;
--		struct snd_pcm_substream *be_substream =
--			snd_soc_dpcm_get_substream(be, stream);
-+		be = dpcm->be;
-+		be_substream = snd_soc_dpcm_get_substream(be, stream);
- 
- 		if (!snd_soc_dpcm_be_can_update(fe, be, stream))
- 			continue;
-@@ -1966,10 +1968,8 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
- 	memcpy(&fe->dpcm[stream].hw_params, params,
- 			sizeof(struct snd_pcm_hw_params));
- 	ret = dpcm_be_dai_hw_params(fe, stream);
--	if (ret < 0) {
--		dev_err(fe->dev,"ASoC: hw_params BE failed %d\n", ret);
 +	if (ret < 0)
- 		goto out;
--	}
++		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
++
+ 	return ret;
+ }
  
- 	dev_dbg(fe->dev, "ASoC: hw_params FE %s rate %d chan %x fmt %d\n",
- 			fe->dai_link->name, params_rate(params),
-@@ -1985,6 +1985,10 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
- out:
+@@ -2298,6 +2302,9 @@ static int dpcm_fe_dai_prepare(struct snd_pcm_substream *substream)
  	dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
  	mutex_unlock(&fe->card->mutex);
-+
+ 
 +	if (ret < 0)
-+		dev_err(fe->dev, "ASoC: %s failed (%d)\n", __func__, ret);
++		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
 +
  	return ret;
  }
