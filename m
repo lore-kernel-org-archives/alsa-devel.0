@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB222C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 410C1C433E0
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:01:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 34D60614A7
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:00:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34D60614A7
+	by mail.kernel.org (Postfix) with ESMTPS id 13A8064E4A
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Mar 2021 01:01:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 13A8064E4A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 892C81767;
-	Mon, 15 Mar 2021 02:00:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 892C81767
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FEC61773;
+	Mon, 15 Mar 2021 02:00:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FEC61773
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615770056;
-	bh=mmiScp9WVaPtRibe7qE//Bge7/gc55cBAC6Sz2jKZ+k=;
+	s=default; t=1615770085;
+	bh=0YUt1yihDCSQBe+aJ0ci4DbTSzRw1b0FFI/5DG/eoeg=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cDJ3yOnADhQZGJJbFCB+/slEtsPOuaKMK/w6tVfi+3VakABpnTe6TpwioFEog63qx
-	 PHFuR5XTjrsmNFZT9wkM0pwwF0zC1p6/PpJL8025+d0zsn7k2ShvalIStVuHgRHzXS
-	 CSIfYTxf5+52PjvwPz5Q0hbmL0mvgwoV8JIVcZDM=
+	b=sXXd4gusXE8mj5A8B1o1K8H25Ei8r5kVj10WRIJQuEeMAgQ7kIG/yXBPW6o2SYg1t
+	 O4gJ5N1GTfZmcz0yPr2xZ0eFJl5fdL0ebWBCerf8fUL3hSbW+jMM1Ygf+PKzt369Dp
+	 BtaYnBseAqlOSi2nBOAlMnbxsRxKAKHGqt+GmvDQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EEA7F804B0;
-	Mon, 15 Mar 2021 01:58:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05167F804B2;
+	Mon, 15 Mar 2021 01:58:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E5DCF804AF; Mon, 15 Mar 2021 01:58:09 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 80389F804AF
- for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:58:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80389F804AF
-Date: 15 Mar 2021 09:58:02 +0900
-X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="74917969"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 15 Mar 2021 09:58:02 +0900
+ id B0D63F804D1; Mon, 15 Mar 2021 01:58:17 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id A58B0F804B2
+ for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2021 01:58:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A58B0F804B2
+Date: 15 Mar 2021 09:58:08 +0900
+X-IronPort-AV: E=Sophos;i="5.81,249,1610377200"; d="scan'208";a="75146145"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Mar 2021 09:58:08 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id E20DB4004D08;
- Mon, 15 Mar 2021 09:58:02 +0900 (JST)
-Message-ID: <87k0q9utb9.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 633424147263;
+ Mon, 15 Mar 2021 09:58:08 +0900 (JST)
+Message-ID: <87im5tutb3.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 06/14] ASoC: soc-pcm: indicate error message at
- dpcm_apply_symmetry()
+Subject: [PATCH 07/14] ASoC: soc-pcm: indicate error message at
+ dpcm_run_update_startup/shutdown()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87sg4xutcl.wl-kuninori.morimoto.gx@renesas.com>
@@ -118,53 +118,74 @@ detail information without forgot.
 		...
 	}
 
-This patch follow above style at dpcm_apply_symmetry(...)
+This patch also
+do below to dpcm_run_update_startup()
+	1) remove duplicated ret = -EINVAL
+	2) remove blank line
+do below to dpcm_run_update_shutdown()
+	1) remove unused ret
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/soc-pcm.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 35c62062b8f8..855904c0938d 100644
+index 855904c0938d..a34b1fb9967a 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1706,7 +1706,7 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 		/* Symmetry only applies if we've got an active stream. */
- 		err = soc_pcm_apply_symmetry(fe_substream, fe_cpu_dai);
- 		if (err < 0)
--			return err;
-+			goto error;
- 	}
- 
- 	/* apply symmetry for BE */
-@@ -1731,11 +1731,14 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
- 		for_each_rtd_dais(rtd, i, dai) {
- 			err = soc_pcm_apply_symmetry(fe_substream, dai);
- 			if (err < 0)
--				return err;
-+				goto error;
- 		}
- 	}
-+error:
-+	if (err < 0)
-+		dev_err(fe->dev, "ASoC: %s failed (%d)\n", __func__, err);
+@@ -2325,7 +2325,10 @@ static int dpcm_run_update_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
+ 	/* run the stream event for each BE */
+ 	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_NOP);
  
 -	return 0;
++	if (err < 0)
++		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, err);
++
 +	return err;
  }
  
- static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
-@@ -1767,9 +1770,6 @@ static int dpcm_fe_dai_startup(struct snd_pcm_substream *fe_substream)
- 	dpcm_runtime_setup_be_rate(fe_substream);
+ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+@@ -2366,7 +2369,6 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	if (fe->dpcm[stream].state == SND_SOC_DPCM_STATE_HW_PARAMS)
+ 		return 0;
  
- 	ret = dpcm_apply_symmetry(fe_substream, stream);
--	if (ret < 0)
--		dev_err(fe->dev, "ASoC: failed to apply dpcm symmetry %d\n",
--			ret);
- 
- unwind:
+-
+ 	ret = dpcm_be_dai_prepare(fe, stream);
  	if (ret < 0)
+ 		goto hw_free;
+@@ -2421,6 +2423,9 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 	}
+ 	spin_unlock_irqrestore(&fe->card->dpcm_lock, flags);
+ 
++	if (ret < 0)
++		dev_err(fe->dev, "ASoC: %s() failed (%d)\n", __func__, ret);
++
+ 	return ret;
+ }
+ 
+@@ -2429,7 +2434,6 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 	struct snd_soc_dapm_widget_list *list;
+ 	int stream;
+ 	int count, paths;
+-	int ret;
+ 
+ 	if (!fe->dai_link->dynamic)
+ 		return 0;
+@@ -2469,11 +2473,9 @@ static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ 		if (count) {
+ 			dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_BE);
+ 			if (new)
+-				ret = dpcm_run_update_startup(fe, stream);
++				dpcm_run_update_startup(fe, stream);
+ 			else
+-				ret = dpcm_run_update_shutdown(fe, stream);
+-			if (ret < 0)
+-				dev_err(fe->dev, "ASoC: failed to shutdown some BEs\n");
++				dpcm_run_update_shutdown(fe, stream);
+ 			dpcm_set_fe_update_state(fe, stream, SND_SOC_DPCM_UPDATE_NO);
+ 
+ 			dpcm_clear_pending_state(fe, stream);
 -- 
 2.25.1
 
