@@ -2,67 +2,68 @@ Return-Path: <SRS0=ENK7=IO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A440EC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 08:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81BEAC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 08:58:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C295565002
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 08:55:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C295565002
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 49F4965001
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 08:58:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49F4965001
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 724601919;
-	Tue, 16 Mar 2021 09:54:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 724601919
+	by alsa0.perex.cz (Postfix) with ESMTPS id D67FC1928;
+	Tue, 16 Mar 2021 09:58:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D67FC1928
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615884909;
-	bh=sKAa5eC2apofwKJIZO59abb3yZrkRnTXidfiIl0ooBs=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=khp51/zCy4OFa37lbwvOZ8EP6HfrLhWkDJPamLq6heY+sqh2kKbo0uIw6y7nBvxDe
-	 1zLFlIBGdSJRIjViGi6k2/rz94FHlM65OOF8a7n/r3IhH99U+wbjWF5tGcWBtHZ1cg
-	 yP8PuTen4FcHqmoYZrL5x3uXLYqxqQPV5ll5t7U8=
+	s=default; t=1615885134;
+	bh=aEl8r0VZKG4qEzzHhom64xqkRQSgZ/WUMqO1A8FTC6I=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=a1/GlI3ssqpoVyEe4HxMmgPllyXS0tl/NSaU0mLVrF1/aRckrEPCID0+BQT+HWyAt
+	 ww3ZC3gpS2gE9XZgD4f62gDGav4rr4EgE6e4lz2lPCrC4KQbah0JfPuQ2cY+L8/tKM
+	 zfY2Z9kjHGxs8Sab0bjHXzEwb99yAUoYe2R/NSDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE73AF80156;
-	Tue, 16 Mar 2021 09:54:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 494BBF80156;
+	Tue, 16 Mar 2021 09:58:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11168F80163; Tue, 16 Mar 2021 09:54:17 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B2562F80163; Tue, 16 Mar 2021 09:58:01 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1FD6F80148
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 09:54:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1FD6F80148
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4938B200328;
- Tue, 16 Mar 2021 09:54:07 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D0B1A203E04;
- Tue, 16 Mar 2021 09:54:03 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3F944402C1;
- Tue, 16 Mar 2021 09:53:59 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: fsl_spdif: Add compatible string for new
- platforms
-Date: Tue, 16 Mar 2021 16:40:53 +0800
-Message-Id: <1615884053-4264-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C85FF80137
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 09:57:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C85FF80137
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 7BBCDAC1F;
+ Tue, 16 Mar 2021 08:57:49 +0000 (UTC)
+Date: Tue, 16 Mar 2021 09:57:49 +0100
+Message-ID: <s5hh7lbo4qa.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jeremy Szu <jeremy.szu@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP 440 G8
+In-Reply-To: <20210316074626.79895-1-jeremy.szu@canonical.com>
+References: <20210316074626.79895-1-jeremy.szu@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kailang Yang <kailang@realtek.com>, Thomas Hebb <tommyhebb@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ Jian-Hong Pan <jhp@endlessos.org>, tiwai@suse.com,
+ Hui Wang <hui.wang@canonical.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,29 +79,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add compatible string for new added platforms which support spdif module.
-They are i.MX8QXP, i.MX8MM, i.MX8MN, i.MX8MQ.
+On Tue, 16 Mar 2021 08:46:24 +0100,
+Jeremy Szu wrote:
+> 
+> The HP EliteBook 840 G8 Notebook PC is using ALC236 codec which is
+> using 0x02 to control mute LED and 0x01 to control micmute LED.
+> Therefore, add a quirk to make it works.
+> 
+> Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+Thanks, applied.
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-index 50449b6d1048..4454aca34d56 100644
---- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-@@ -21,6 +21,10 @@ properties:
-       - fsl,vf610-spdif
-       - fsl,imx6sx-spdif
-       - fsl,imx8qm-spdif
-+      - fsl,imx8qxp-spdif
-+      - fsl,imx8mq-spdif
-+      - fsl,imx8mm-spdif
-+      - fsl,imx8mn-spdif
- 
-   reg:
-     maxItems: 1
--- 
-2.27.0
 
+Takashi
