@@ -2,83 +2,95 @@ Return-Path: <SRS0=ENK7=IO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A1D2C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 10:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 425B5C4321A
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 10:59:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 44A0264FC0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 10:05:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 44A0264FC0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C43E564FA1
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 10:59:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C43E564FA1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B22D817B3;
-	Tue, 16 Mar 2021 11:04:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B22D817B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79650180F;
+	Tue, 16 Mar 2021 11:58:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79650180F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615889131;
-	bh=fIpf7XMKz3pMSVgy5XK2usku/YzgtF+Dm006yWN0gnc=;
+	s=default; t=1615892385;
+	bh=H2wXRvJ/swZsyUk16iLrO2RQUAM6ZCdQk91v9E9Hsxk=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=s3vWqKBfHa5np8+SH0ODGwDV1ME4mnaibMfYmPZyWOvCfPiJXVlk0QmEXt4ksLlzm
-	 UhsP4GSMrLcQrG4q8SZafqjbSpirpX24RGG96/0qmoiehK1Ga2/ng8I2J7Nz0OZWjx
-	 kvbFIbBTB5OTJeTv0jEH3nMdvD5tSNTmcjUGuyls=
+	b=JRWYM0IOZOO4UNdVm394S2QkkmFp08vRtVj0+PceVqSZ9Yjvv2bdm7A3palzagBNm
+	 Uwwf3/reuyvmO347vpSHMfzBEq7cQOjVcFi4RwOfytTKQB1TVj43WFDnOYtm87kFyO
+	 Fko2t8btwYxWuBNLrMpwFcjALBvc+OzX0p3oSx04=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27F4DF80156;
-	Tue, 16 Mar 2021 11:04:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99A23F8026A;
+	Tue, 16 Mar 2021 11:58:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4733AF80163; Tue, 16 Mar 2021 11:04:39 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 81C48F8025E; Tue, 16 Mar 2021 11:58:52 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6BF9EF80148
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 11:04:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6BF9EF80148
-IronPort-SDR: B8OrAkvXhojSBfjN955bF7SjiGv8BWt5IQQNVMzivTeW7aG3YUSlDp0Focz4B0ispbw/W8aqO9
- GkhWMe7+83sA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="176364040"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="176364040"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2021 03:04:20 -0700
-IronPort-SDR: 6IftTXmi2LdcxhS00zLN4LTm/m7W4X/5iqExFzoZRCk9jnR+9O4+AT4iXH4xpmdRjff/BeIfO6
- t3dBHvVXla5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="432971301"
-Received: from brentlu-desk0.itwn.intel.com ([10.5.253.9])
- by fmsmga004.fm.intel.com with ESMTP; 16 Mar 2021 03:04:16 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
- support
-Date: Tue, 16 Mar 2021 17:46:32 +0800
-Message-Id: <20210316094632.12360-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.17.1
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Dharageswari R <dharageswari.r@intel.com>,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Fred Oh <fred.oh@linux.intel.com>,
- Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Libin Yang <libin.yang@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05EE9F80137
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 11:58:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05EE9F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="bLShwwE2"
+Received: by mail-wr1-x434.google.com with SMTP id a18so10185184wrc.13
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 03:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=24QvwXRXNZBG8P5bI9Ru0zkrD3yT3FL6QtFP4Z/IiLg=;
+ b=bLShwwE2NNGgKecTuPnOEQwa/JauHpEAfqfy2ZM1Qkjybrhf7KA6DZ1eciByTBzc34
+ uXddZ2OaEUUJfFfQowlOBZ8yju2NoronQ6HbS0zQFcFfrpsx+Qo/yLFH6ilPTxvXuOD6
+ I/iCo8CdZpsPr+pdTPIT77rmC72aZCg3WlCTLAfZN+z9mA350isfWQe3imjRjP3+p4We
+ 4FBk6ucOLUKHAdZyeVh8N2+TEp298+MJrMRQ2t4sgUnAbgqtA1Jt3/ts+eeQblhc2mDK
+ 7SmPEbZKdYv0XO22UNG+PKwS3MmYPG9DfmOP+Ilv0x3mrDJ+yvdp4Gulv3DZW4izpBm4
+ zcFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=24QvwXRXNZBG8P5bI9Ru0zkrD3yT3FL6QtFP4Z/IiLg=;
+ b=cu1r/fuahmCawvz3mTTGO4ZO1Ii/bcNJ7qnmO/oehh72oCufhs4nGfgcVfAoLfZbVE
+ 3fUfubRESHcQwWi8wUlbUvj34HvNsGwh1wBjtLYMhXu+291GWOqEiI5WdF2+/A0fWBiN
+ SnXcnzvnC1CTVD9R5o/Y2uYmEZbp7UQRbKPOEhxNpzaEebQWl5b44hHJ+6cpNalK2L+4
+ JoF1wzQ2tQmCZr5BcEC6zynodZ1kui57Hmxa2mdNV5fDhWi5egYs0BHixua4Llm4b+9P
+ XWfK8KTBfAJO5cKJKpxPaeLs5gtONFdIFiircDaHQYSHYU9uKMgzIy6OrChUguwquf/I
+ 8J0w==
+X-Gm-Message-State: AOAM532LLMi54nCHx3znvR/9Nh5phcXJ42fpO4EGkecCG0m2b98zEqU2
+ 3AFQn2+nRVdyhm7uL11a5enjMQ==
+X-Google-Smtp-Source: ABdhPJxm0K26B9PRpTF/GyU9+eLdOkYWg6nG0DU3mf7ffrr63yrtk8DEOp/feUcRNxXbo7S4Ki2ZtQ==
+X-Received: by 2002:a05:6000:10c5:: with SMTP id
+ b5mr4148284wrx.347.1615892316414; 
+ Tue, 16 Mar 2021 03:58:36 -0700 (PDT)
+Received: from srini-hackbox.lan
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.gmail.com with ESMTPSA id t8sm21465956wrr.10.2021.03.16.03.58.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 16 Mar 2021 03:58:35 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH v2 0/7] ASoC: codecs: add wcd938x support
+Date: Tue, 16 Mar 2021 10:58:21 +0000
+Message-Id: <20210316105828.16436-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,249 +106,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds jsl_rt5682_rt1015p which supports the RT5682 headset
-codec and ALC1015Q-VB speaker amplifier combination on JasperLake
-platform.
+This patchset adds support for Qualcomm WCD938X codec.
 
-This driver also applies for ALC1015Q-CG running in auto-mode.
+Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+connected over SoundWire. This device has two SoundWire devices, RX and
+TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+7 x TX diff inputs, 8 DMICs and MBHC.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/Kconfig                |  1 +
- sound/soc/intel/boards/sof_realtek_common.c   | 99 +++++++++++++++++++
- sound/soc/intel/boards/sof_realtek_common.h   |  7 ++
- sound/soc/intel/boards/sof_rt5682.c           | 19 +++-
- .../intel/common/soc-acpi-intel-jsl-match.c   | 13 +++
- 5 files changed, 137 insertions(+), 2 deletions(-)
+Even though this device has two SoundWire devices, only tx device has
+access to main codec Control/Status Registers!
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index d1d28129a32b..58379393b8e4 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -457,6 +457,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
- 	select SND_SOC_MAX98373_I2C
- 	select SND_SOC_RT1011
- 	select SND_SOC_RT1015
-+	select SND_SOC_RT1015P
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
-diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
-index f3cf73c620ba..5dd0eb438aa3 100644
---- a/sound/soc/intel/boards/sof_realtek_common.c
-+++ b/sound/soc/intel/boards/sof_realtek_common.c
-@@ -7,6 +7,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/soc-acpi.h>
- #include <sound/soc-dai.h>
- #include <sound/soc-dapm.h>
- #include <uapi/sound/asound.h>
-@@ -136,3 +137,101 @@ void sof_rt1011_codec_conf(struct snd_soc_card *card)
- 	card->codec_conf = rt1011_codec_confs;
- 	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
- }
-+
-+/*
-+ * rt1015:  i2c mode driver for ALC1015 and ALC1015Q
-+ * rt1015p: auto-mode driver for ALC1015, ALC1015Q, and ALC1015Q-VB
-+ */
-+static const struct snd_soc_dapm_route rt1015p_1dev_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Speaker" },
-+	{ "Right Spk", NULL, "Speaker" },
-+};
-+
-+static const struct snd_soc_dapm_route rt1015p_2dev_dapm_routes[] = {
-+	/* speaker */
-+	{ "Left Spk", NULL, "Left Speaker" },
-+	{ "Right Spk", NULL, "Right Speaker" },
-+};
-+
-+static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
-+		.name_prefix = "Left",
-+	},
-+	{
-+		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
-+		.name_prefix = "Right",
-+	},
-+};
-+
-+static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
-+	{
-+		.name = RT1015P_DEV0_NAME,
-+		.dai_name = RT1015P_CODEC_DAI,
-+	},
-+	{
-+		.name = RT1015P_DEV1_NAME,
-+		.dai_name = RT1015P_CODEC_DAI,
-+	},
-+};
-+
-+static int rt1015p_get_num_codecs(void)
-+{
-+	static int dev_num;
-+
-+	if (dev_num)
-+		return dev_num;
-+
-+	if (!acpi_dev_present("RTL1015", "1", -1))
-+		dev_num = 1;
-+	else
-+		dev_num = 2;
-+
-+	return dev_num;
-+}
-+
-+static int rt1015p_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	/* reserved for debugging purpose */
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_ops rt1015p_ops = {
-+	.hw_params = rt1015p_hw_params,
-+};
-+
-+static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	int ret;
-+
-+	if (rt1015p_get_num_codecs() == 1)
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_1dev_dapm_routes,
-+					      ARRAY_SIZE(rt1015p_1dev_dapm_routes));
-+	else
-+		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_2dev_dapm_routes,
-+					      ARRAY_SIZE(rt1015p_2dev_dapm_routes));
-+	if (ret)
-+		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
-+	return ret;
-+}
-+
-+void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
-+{
-+	link->codecs = rt1015p_dai_link_components;
-+	link->num_codecs = rt1015p_get_num_codecs();
-+	link->init = rt1015p_init;
-+	link->ops = &rt1015p_ops;
-+}
-+
-+void sof_rt1015p_codec_conf(struct snd_soc_card *card)
-+{
-+	if (rt1015p_get_num_codecs() == 1)
-+		return;
-+
-+	card->codec_conf = rt1015p_codec_confs;
-+	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
-+}
-diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
-index 87cb3812b926..cb0b49b2855c 100644
---- a/sound/soc/intel/boards/sof_realtek_common.h
-+++ b/sound/soc/intel/boards/sof_realtek_common.h
-@@ -21,4 +21,11 @@
- void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
- void sof_rt1011_codec_conf(struct snd_soc_card *card);
- 
-+#define RT1015P_CODEC_DAI	"HiFi"
-+#define RT1015P_DEV0_NAME	"RTL1015:00"
-+#define RT1015P_DEV1_NAME	"RTL1015:01"
-+
-+void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
-+void sof_rt1015p_codec_conf(struct snd_soc_card *card);
-+
- #endif /* __SOF_REALTEK_COMMON_H */
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 55505e207bc0..f4b898c1719f 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -45,8 +45,9 @@
- #define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
- #define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
- #define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
--#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
--#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
-+#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
- 
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
-@@ -723,6 +724,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			links[id].num_codecs = ARRAY_SIZE(rt1015_components);
- 			links[id].init = speaker_codec_init_lr;
- 			links[id].ops = &sof_rt1015_ops;
-+		} else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
-+			sof_rt1015p_dai_link(&links[id]);
- 		} else if (sof_rt5682_quirk &
- 				SOF_MAX98373_SPEAKER_AMP_PRESENT) {
- 			links[id].codecs = max_98373_components;
-@@ -851,6 +854,8 @@ static int sof_audio_probe(struct platform_device *pdev)
- 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
- 	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
- 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
-+	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
-+		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
- 
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
- 					      dmic_be_num, hdmi_num);
-@@ -940,6 +945,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_AMP(1) |
- 					SOF_RT5682_NUM_HDMIDEV(4)),
- 	},
-+	{
-+		.name = "jsl_rt5682_rt1015p",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1015P_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{ }
- };
- 
-@@ -966,3 +980,4 @@ MODULE_ALIAS("platform:tgl_max98373_rt5682");
- MODULE_ALIAS("platform:jsl_rt5682_max98360a");
- MODULE_ALIAS("platform:cml_rt1015_rt5682");
- MODULE_ALIAS("platform:tgl_rt1011_rt5682");
-+MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index 52238db0bcb5..73fe4f89a82d 100644
---- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs rt1015_spk = {
- 	.codecs = {"10EC1015"}
- };
- 
-+static struct snd_soc_acpi_codecs rt1015p_spk = {
-+	.num_codecs = 1,
-+	.codecs = {"RTL1015"}
-+};
-+
- static struct snd_soc_acpi_codecs mx98360a_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98360A"}
-@@ -52,6 +57,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 		.quirk_data = &rt1015_spk,
- 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
- 	},
-+	{
-+		.id = "10EC5682",
-+		.drv_name = "jsl_rt5682_rt1015p",
-+		.sof_fw_filename = "sof-jsl.ri",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &rt1015p_spk,
-+		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
-+	},
- 	{
- 		.id = "10EC5682",
- 		.drv_name = "jsl_rt5682_max98360a",
+This patchset along with other SoundWire patches on the list
+have been tested on SM8250 MTP device.
+
+Am planning to send support for MBHC once this driver gets accepted!
+
+Thanks,
+srini
+
+Many thanks for reviewing v1.
+
+Changes since v1:
+	- updated PA gain to a proper TLV control
+	- move various if else checks to switch case.
+	- return error on check failure rather than fallback to default
+	- cleaned up micbias pull up control
+	- fixed all the gain tlvs correctly
+	- update dt-bindings to use microvolt for button thresholds
+	- removed unnecessary debug at various places.
+
+Srinivas Kandagatla (7):
+  ASoC: dt-bindings: wcd938x: add bindings for wcd938x
+  ASoC: codecs: wcd-clsh: add new version support
+  ASoC: codecs: wcd938x: add basic driver
+  ASoC: codecs: wcd938x: add basic controls
+  ASoC: codecs: wcd938x: add playback dapm widgets
+  ASoC: codecs: wcd938x: add capture dapm widgets
+  ASoC: codecs: wcd938x: add audio routing
+
+ .../bindings/sound/qcom,wcd938x.yaml          |  127 +
+ sound/soc/codecs/Kconfig                      |    9 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/wcd-clsh-v2.c                |  350 +-
+ sound/soc/codecs/wcd-clsh-v2.h                |   16 +
+ sound/soc/codecs/wcd938x-sdw.c                |  291 ++
+ sound/soc/codecs/wcd938x.c                    | 3623 +++++++++++++++++
+ sound/soc/codecs/wcd938x.h                    |  676 +++
+ 8 files changed, 5084 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+ create mode 100644 sound/soc/codecs/wcd938x-sdw.c
+ create mode 100644 sound/soc/codecs/wcd938x.c
+ create mode 100644 sound/soc/codecs/wcd938x.h
+
 -- 
-2.17.1
+2.21.0
 
