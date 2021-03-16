@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC748C433E6
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01F9FC433E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:03:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5B2F96512E
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B2F96512E
+	by mail.kernel.org (Postfix) with ESMTPS id 222BB6512E
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:03:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 222BB6512E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF7931931;
-	Tue, 16 Mar 2021 19:01:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF7931931
+	by alsa0.perex.cz (Postfix) with ESMTPS id A94FB1934;
+	Tue, 16 Mar 2021 19:02:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A94FB1934
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615917769;
-	bh=38WyV8v4iq0F8oP0e3/RtPJ7rN9AuwnlWyMS9fqp3qc=;
+	s=default; t=1615917798;
+	bh=zCkCxox1OLwnderDRZkFV/XZY0rZMifulX6TMpnOfVE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gjKNAXMP6z8uspvpU0+AS1NNjRC0krVe6vQq85RGkAcb2jjxlv5ERLCjt/jcmmCks
-	 ZQUQU7ZTdinuF9wYwaVZbiXgSXxoVmPGADx7QS4h6Xx1VzVqrvr3nwfjpRa/1wyIaK
-	 2+m/HNIT+q6g5kO65e91wMAWrl74deopNsZGQbWs=
+	b=ohUVQ3JezWXxwcuT/HLixoKvCOM6DFBnaeKFj5rXZCL899hLSf4FPJpfC7vZP5RyG
+	 oQ/Tm1GrISOPUf4RpMQKHX7bCGweanQUlHBiC7titeLYv62FEMLVDEhDE1U+M7GP+C
+	 9IW84Dg84maB/noWjYC4GqKj83Uy2TDa6A5lBlK0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C490FF8049C;
-	Tue, 16 Mar 2021 19:00:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC435F804AC;
+	Tue, 16 Mar 2021 19:00:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1FC5F80171; Tue, 16 Mar 2021 19:00:16 +0100 (CET)
+ id 65534F80425; Tue, 16 Mar 2021 19:00:19 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9802EF80156
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9802EF80156
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F358F80137
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F358F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X2IDI0I9"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05DCE6512E;
- Tue, 16 Mar 2021 18:00:09 +0000 (UTC)
+ header.b="jCoQowma"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18C136513F;
+ Tue, 16 Mar 2021 18:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615917610;
- bh=38WyV8v4iq0F8oP0e3/RtPJ7rN9AuwnlWyMS9fqp3qc=;
+ s=k20201202; t=1615917614;
+ bh=zCkCxox1OLwnderDRZkFV/XZY0rZMifulX6TMpnOfVE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=X2IDI0I9IufjRTUobZUc873zt6QC3v2ggmqGdlVPUoz2bBpTmfViwlu+JpKpke/FM
- phf1QTaAdYt0GOsRr51iWzA36ob4M9qKOMbUfZNICP0xwy4XFOAhAVBqbdTmJoB7AX
- iKBws2psWUqWTozmwZW6/vmRvNqNd9ie/ET+TpO+oWsM+DseE6rO4wW2E2N/HPAH6Z
- 6bGneEmoyXsAIHD4ItJegofEQvOCOAn8RvSGKmXeoPuBKRVpxE2TBTPP5gy0nyKo5i
- F+xW4NvznjCOU8LN7ggOCd4iYhA1mtGN+kcEBKtjyWIN5Y4G96mmHwmrELcD8D0A9N
- G/ywUHWkhcr/g==
+ b=jCoQowmadMlIKMs+WjcPUNyaWB5eP8tFGI5dVLJcYjQUisc3vt8hUiCkLEw+CsfUc
+ CDjeasuFdJcGnQpblAZ5XZSnKnPkhdQ0vWx7cqaIRJq7oo1OW/1ThEDALIXr1jMJBv
+ WBFDppUXneOrl+Y+kdmYy84ON3+5JFuGkHhvYH+rzrncBTiL3zE6IU9ZJILIH/ZJo0
+ miEf64uHbn0suazLJTXu2xcrcTBFsXBm8pOkGvMjNJ8q3XD6WG4ycsIAXPniz/nQPw
+ CaRmZaOj+hlE2mWljwjfkqr4HO5oA+urwooHaLPaZ/AO7McHDvsi7Verv9UVIIKl7W
+ z3wdIDPMiHXSg==
 From: Mark Brown <broonie@kernel.org>
-To: kuninori.morimoto.gx@renesas.com, mikhail_durnev@mentor.com,
- mdurnev@gmail.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v0] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
-Date: Tue, 16 Mar 2021 17:59:45 +0000
-Message-Id: <161591744696.13544.2360957689864131715.b4-ty@kernel.org>
+To: ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ peter.ujfalusi@ti.com, perex@perex.cz,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com,
+ gustavoars@kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com
+Subject: Re: [PATCH] ASoC: wm8962: Relax bit clock divider searching
+Date: Tue, 16 Mar 2021 17:59:46 +0000
+Message-Id: <161591744696.13544.17150512683547354902.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1615870055-13954-1-git-send-email-mikhail_durnev@mentor.com>
-References: <1615870055-13954-1-git-send-email-mikhail_durnev@mentor.com>
+In-Reply-To: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1614770488-12861-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -86,13 +90,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 16 Mar 2021 14:47:35 +1000, mdurnev@gmail.com wrote:
-> snd_pcm_hw_params_set_rate_near can return incorrect sample rate in
-> some cases, e.g. when the backend output rate is set to some value higher
-> than 48000 Hz and the input rate is 8000 Hz. So passing the value returned
-> by snd_pcm_hw_params_set_rate_near to snd_pcm_hw_params will result in
-> "FSO/FSI ratio error" and playing no audio at all while the userland
-> is not properly notified about the issue.
+On Wed, 3 Mar 2021 19:21:28 +0800, Shengjiu Wang wrote:
+> With S20_3LE format case, the sysclk = rate * 384,
+> the bclk = rate * 20 * 2, there is no proper bclk divider
+> for 384 / 40, because current condition needs exact match.
+> So driver fails to configure the clocking:
+> 
+> wm8962 3-001a: Unsupported BCLK ratio 9
 > 
 > [...]
 
@@ -102,8 +106,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rsnd: core: Check convert rate in rsnd_hw_params
-      commit: 19c6a63ced5e07e40f3a5255cb1f0fe0d3be7b14
+[1/1] ASoC: wm8962: Relax bit clock divider searching
+      commit: aa4890f673f9d54d3cb0ea156acfe41958ea7f08
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
