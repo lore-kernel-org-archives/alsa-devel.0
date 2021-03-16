@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3457C433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15BF7C433E9
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:04:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5127A64F83
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:03:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5127A64F83
+	by mail.kernel.org (Postfix) with ESMTPS id 8928B64F83
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:04:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8928B64F83
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D879B192D;
-	Tue, 16 Mar 2021 19:03:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D879B192D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27E04193D;
+	Tue, 16 Mar 2021 19:03:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27E04193D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615917837;
-	bh=D8loEQ56HKcCKPHpPRZyps50hlJbx9hUfxJrH4kPrUs=;
+	s=default; t=1615917861;
+	bh=2fj5dGP/zR4wsXfm/xMcNJRjrHOV0o0B85I5JwH7B8w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NrvDuw3SlLpqdo9Bg4usyWbNlOAEkl7ibi2zDSVExCpbmhoXcUsMzMhsFBexsA1IY
-	 ivpLr+IAhOBbSmHCNwtg7HSiCea11S2p2vG4xMN1JhOBRZzFwV19+j6cDH2fD7ZtQl
-	 AFQn1dCqn2WN0SarG1ZHyl8+lHAiSb4Mg86oti5w=
+	b=iYWxec8wfNVM1DGOZlrhw1dwZ7574/TaPk+fP0ZZpk/nDsc+V8XSGR5dQZ59EX1w4
+	 zT71GNEfn2b8cU6mqE2QnxAhclsJvsh/cg8SytacR5OEmtL5LPUKEDbCVYBkXEJPB+
+	 gnG3mM9Xvz3/PmJ1bKJM/4BRhCFHj0P6HgQj8NRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 441BBF804C1;
-	Tue, 16 Mar 2021 19:00:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07C78F804D9;
+	Tue, 16 Mar 2021 19:00:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59A40F804AF; Tue, 16 Mar 2021 19:00:27 +0100 (CET)
+ id A7D4DF80430; Tue, 16 Mar 2021 19:00:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9C16F80430
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9C16F80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9BDFF804AC
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9BDFF804AC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SMS97Ik5"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14EC265137;
- Tue, 16 Mar 2021 18:00:16 +0000 (UTC)
+ header.b="Ub1xhw31"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 028D265132;
+ Tue, 16 Mar 2021 18:00:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615917617;
- bh=D8loEQ56HKcCKPHpPRZyps50hlJbx9hUfxJrH4kPrUs=;
+ s=k20201202; t=1615917623;
+ bh=2fj5dGP/zR4wsXfm/xMcNJRjrHOV0o0B85I5JwH7B8w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=SMS97Ik5g11s6ffUhBsithKvysjHc4fPT/p0JQe06lZYIYQFOLlavz6dUWSEA9C3+
- 8y9PmCgXCCDaRV4y7XF928vxF7ytuQ7WP3lT0yX0IxmKhaiUyvE2/GVpsDRJzPVJvg
- LnxO/eTPlVJ4RZnB/FIZoCTRTi8m1X1SZpVgDpoT9ba6j33ZUWL1mbRMb9YWUuZVko
- 3zhcPR2C2kMBxg0IU9t98QD21KOZwu5oHnixagcbnjMWQYnlvCF0SbI7+PZTkjIXrk
- 9Dzn0j7zm+3vPQJOmchITGwXkdnVFWxdlVQDbNvjm+cM4Vvbbtt8M2ad5AA/jThUwn
- o5XNe5Ad8yhPQ==
+ b=Ub1xhw31G3hDSFXh3nmvfyFz4lO2Vs+DZYFRysrHpPmnp0rtBB08NTpy2oHEjCJBE
+ eIapJfg444+I+dfIMEeDqaj2+imDgOVlQOgkeYg8PM6uAcUrSjUOXbtyFn8GPb6bm9
+ Gy5piqvH7c2iX6TLLgVcQxfAWjCndU+3frVmmJrPnyqY9Eq8ALFVirGAP8sYaPBWGB
+ tac9+NcVLvfgIA/K4LMcxaIsD14miW+zJJAqupzXUqNtiQJkcPLHEdhGxvSSROwEZL
+ 6nXcxKHnfWbYOcPWprCoG3cDtaVM7YhvclV0brEOWLEheJf8V2yO+nJ73SZkai7zCA
+ 8Ypm1BUohDlsg==
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ASoC: mx27vis: Remove unused file
-Date: Tue, 16 Mar 2021 17:59:47 +0000
-Message-Id: <161591744696.13544.11463160601004848129.b4-ty@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: debug: cleanups
+Date: Tue, 16 Mar 2021 17:59:49 +0000
+Message-Id: <161591744697.13544.17063116713760183518.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210315193842.183042-1-festevam@gmail.com>
-References: <20210315193842.183042-1-festevam@gmail.com>
+In-Reply-To: <20210315163932.18663-1-pierre-louis.bossart@linux.intel.com>
+References: <20210315163932.18663-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,11 +85,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 15 Mar 2021 16:38:42 -0300, Fabio Estevam wrote:
-> i.MX has been converted to a devicetree-only platform and
-> asoc-mx27vis.h is no longer used.
+On Mon, 15 Mar 2021 11:39:29 -0500, Pierre-Louis Bossart wrote:
+> cleanups of allocation and error handling
 > 
-> Get rid of this unused file.
+> Guennadi Liakhovetski (3):
+>   ASoC: SOF: fix debugfs initialisation error handling
+>   ASoC: SOF: only allocate debugfs cache buffers for IPC flood entries
+>   ASoC: SOF: remove superfluous NULL check in debugfs read
+> 
+> [...]
 
 Applied to
 
@@ -96,8 +101,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mx27vis: Remove unused file
-      commit: 1d49439c04792a4a3d8299a32b7673ab7ba13b77
+[1/3] ASoC: SOF: fix debugfs initialisation error handling
+      commit: 11fd6d8e097b5b179ea445e0206aaefc47e62845
+[2/3] ASoC: SOF: only allocate debugfs cache buffers for IPC flood entries
+      commit: 72c35856b5edc3f734be5699e9f6737190a1d897
+[3/3] ASoC: SOF: remove superfluous NULL check in debugfs read
+      commit: 97f53046d746bef513d5fbaac53eedb011968407
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
