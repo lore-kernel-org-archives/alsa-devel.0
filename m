@@ -6,66 +6,67 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF3FC433E0
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDA4EC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 58EAF6512E
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58EAF6512E
+	by mail.kernel.org (Postfix) with ESMTPS id 4C20265132
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4C20265132
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBC471928;
-	Tue, 16 Mar 2021 19:01:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBC471928
+	by alsa0.perex.cz (Postfix) with ESMTPS id D56E318EF;
+	Tue, 16 Mar 2021 19:01:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D56E318EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615917723;
-	bh=vdy2WpeZI2HCzGdQqz3Y/L//P+ab1QFmmzSf0iTsJxg=;
+	s=default; t=1615917756;
+	bh=iGiBNRxaPcDr+iH013raTIVuSi+f7uXGwsktWMiJ3zA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jOwlkVD9M5JARec25gAfAy+MZDGoPTErwUw0qb0EtWRb+zb2N5y5eC88rINW0n0Ak
-	 LuwUmQ3Lg8scydCTiDJsQIdNHcKdHCJpgT5HINcaMpmKskcdJCKvd5EUsTgAwEziki
-	 cXOS6X8sxES1ZqKt6Wvmnud6lGQrjz6MJqSQgZNo=
+	b=elJe4E6x6ZrEro4yd9I3HlR6vMmKFARPVj7JRYuOJLU/A15t85aUKDzp0AN1O8s2C
+	 oc/i5+DKzkg/FlP4wPNuXN8JYWBIgTW2J3Cy4P4j7OYcSnrIP2x3nl+UIOMgom5Ruz
+	 VFrhfsANAoPhs95mEHTLAosogfeHCNCTQxmU/k1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D187CF80424;
-	Tue, 16 Mar 2021 19:00:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB959F80475;
+	Tue, 16 Mar 2021 19:00:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D74BF80224; Tue, 16 Mar 2021 19:00:14 +0100 (CET)
+ id 8B1BAF8025E; Tue, 16 Mar 2021 19:00:12 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FF43F80137
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FF43F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 714E8F80163
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 714E8F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UnlsifzF"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7E73650D9;
- Tue, 16 Mar 2021 17:59:57 +0000 (UTC)
+ header.b="Vk1OzZlj"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56D5065138;
+ Tue, 16 Mar 2021 18:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615917598;
- bh=vdy2WpeZI2HCzGdQqz3Y/L//P+ab1QFmmzSf0iTsJxg=;
+ s=k20201202; t=1615917606;
+ bh=iGiBNRxaPcDr+iH013raTIVuSi+f7uXGwsktWMiJ3zA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UnlsifzFhj3D7YpXvvXOJU1CORovHfvgX17+U2yLJQFIhShbsFwrxhYDfy4n3Qkwp
- t+tSGUVpZcfEVLKsHejsyo26wxOi/2dh6ZTWags7XmGxJCI20l0YQhkgAwde5K69CO
- YIqlWdcLppGJR1U8qaT+dlLgjE4mu+nWZT/AxDSIBUfBU5DTVWzc/P2KLpCopE8xRR
- sDsb4MpkKwRPRZHje7YgqUNa98+5xMgUgPW9ebUDLMUEAeyR5EM18v8RJtQ/MEaKn2
- vDQEq6I9Ttz8qOessEJAW/UgI04oHXEq5OLCKEljcMW/jc4FwTqIUkWccl49vwuF9k
- HYyY4rqU9s1TQ==
+ b=Vk1OzZljn21yoof0f5+sxZerNH5nku57uhEErWCu0wqClyD4i6+Q2gbSbinH/hoX/
+ Poq/vNUJiY/GJRdmdYa4dy0OgbxuWygENGWFNGJxR89EDL9/78UysElnpg21NKbXw3
+ dHmhgaKTG+tQt/c3LtCQ8qWbaLFIFrWbvqrfSGFAcNarYf5zhp/nPIvochh1Nk2zX/
+ /iQmt9+9gN+yM1Qzw0QDlvx610nIKv6apmWOqSYnVYx7KkGj4UQwREqOEzXHtdR7lx
+ 3h+LSG2S/3G7RkIPagCZMjiVT9fa2EGi41cX+jUOfYFHx+iHShBzl51X69GHAScRa1
+ i8iYkO/X4yU8A==
 From: Mark Brown <broonie@kernel.org>
 To: timur@kernel.org,
 	Yang Li <yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: hdmi-codec: fix platform_no_drv_owner.cocci warnings
-Date: Tue, 16 Mar 2021 17:59:41 +0000
-Message-Id: <161591744695.13544.8415296923566318166.b4-ty@kernel.org>
+Subject: Re: [PATCH v2] ASoC: imx-hdmi: fix platform_no_drv_owner.cocci
+ warnings
+Date: Tue, 16 Mar 2021 17:59:44 +0000
+Message-Id: <161591744695.13544.5664238144081084443.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1614761651-86898-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1614761651-86898-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1614848881-29637-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1614848881-29637-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -90,7 +91,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 3 Mar 2021 16:54:11 +0800, Yang Li wrote:
+On Thu, 4 Mar 2021 17:08:01 +0800, Yang Li wrote:
 > ./sound/soc/fsl/imx-hdmi.c:226:3-8: No need to set .owner here. The core
 > will do it.
 > 
@@ -102,7 +103,7 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: hdmi-codec: fix platform_no_drv_owner.cocci warnings
+[1/1] ASoC: imx-hdmi: fix platform_no_drv_owner.cocci warnings
       commit: 2e2bf6d479616a15c54c4e668558f61caffa4db4
 
 All being well this means that it will be integrated into the linux-next
