@@ -2,77 +2,79 @@ Return-Path: <SRS0=ENK7=IO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92682C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:01:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AF3FC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0737065127
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:01:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0737065127
+	by mail.kernel.org (Postfix) with ESMTPS id 58EAF6512E
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 18:02:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 58EAF6512E
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6815B191B;
-	Tue, 16 Mar 2021 19:01:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6815B191B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBC471928;
+	Tue, 16 Mar 2021 19:01:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBC471928
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615917714;
-	bh=HoSgMtiIiSAkVpHOLGFLlZiBQhF3CTEX630pkOg0tF8=;
+	s=default; t=1615917723;
+	bh=vdy2WpeZI2HCzGdQqz3Y/L//P+ab1QFmmzSf0iTsJxg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Scb4TyEBo2k3QXpAAeO6hI4KGdw1Fjs84MNro3LzqWhLj1BvDmgu81/hNsYQZ556W
-	 W9Vbe8zZgFz1A8OS+2q6u1BS+WyaDz3el6cEB7GSAgOiJrNmeOqtrHDXgPRHSA/5oD
-	 Q9f5GL0oLD2gBOZDDfYhA76rr50kofGjc9Sm5jC8=
+	b=jOwlkVD9M5JARec25gAfAy+MZDGoPTErwUw0qb0EtWRb+zb2N5y5eC88rINW0n0Ak
+	 LuwUmQ3Lg8scydCTiDJsQIdNHcKdHCJpgT5HINcaMpmKskcdJCKvd5EUsTgAwEziki
+	 cXOS6X8sxES1ZqKt6Wvmnud6lGQrjz6MJqSQgZNo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E6BDF8032C;
-	Tue, 16 Mar 2021 19:00:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D187CF80424;
+	Tue, 16 Mar 2021 19:00:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36036F8026A; Tue, 16 Mar 2021 19:00:12 +0100 (CET)
+ id 6D74BF80224; Tue, 16 Mar 2021 19:00:14 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E08F5F80156
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E08F5F80156
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FF43F80137
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 19:00:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FF43F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oPFo3HEm"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87EEA65133;
- Tue, 16 Mar 2021 18:00:03 +0000 (UTC)
+ header.b="UnlsifzF"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7E73650D9;
+ Tue, 16 Mar 2021 17:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1615917604;
- bh=HoSgMtiIiSAkVpHOLGFLlZiBQhF3CTEX630pkOg0tF8=;
+ s=k20201202; t=1615917598;
+ bh=vdy2WpeZI2HCzGdQqz3Y/L//P+ab1QFmmzSf0iTsJxg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=oPFo3HEmTj7fXwVlPAbg2/67boHFQ5fn1riyjzHQVTcmIIJrMvgNBFL7gMO3M/3gk
- OhqnVkWUr+LxO1vWgXl56pTnORZXAzS9SBHed9ZnJVw3uHxKvzIx5MtJeBGY2AObkB
- NlB9edqAUyhPMwjlRdYk653y+ScwnxxDQxSwhoechPZlTpdHXCL5UD8KgPuCgtsjKd
- JjqIlm+yajsnVIjEup91KXVa8fD5P75eo7POnhMqVL7FJCG6tu5RzVUVM92re0+iCL
- 0HKUT8AL0T/w3ZwcBBE2QYiKp643CctO1emtQ7vYaG2ecAy2GlVqZkSAaQ6xIex1Uk
- QbCD9IE5jc9NQ==
+ b=UnlsifzFhj3D7YpXvvXOJU1CORovHfvgX17+U2yLJQFIhShbsFwrxhYDfy4n3Qkwp
+ t+tSGUVpZcfEVLKsHejsyo26wxOi/2dh6ZTWags7XmGxJCI20l0YQhkgAwde5K69CO
+ YIqlWdcLppGJR1U8qaT+dlLgjE4mu+nWZT/AxDSIBUfBU5DTVWzc/P2KLpCopE8xRR
+ sDsb4MpkKwRPRZHje7YgqUNa98+5xMgUgPW9ebUDLMUEAeyR5EM18v8RJtQ/MEaKn2
+ vDQEq6I9Ttz8qOessEJAW/UgI04oHXEq5OLCKEljcMW/jc4FwTqIUkWccl49vwuF9k
+ HYyY4rqU9s1TQ==
 From: Mark Brown <broonie@kernel.org>
-To: Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, perex@perex.cz,
- timur@kernel.org, linuxppc-dev@lists.ozlabs.org, tiwai@suse.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, festevam@gmail.com,
- lgirdwood@gmail.com, nicoleotsuka@gmail.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: fsl_spdif: use snd_ctl_boolean_mono_info
-Date: Tue, 16 Mar 2021 17:59:43 +0000
-Message-Id: <161591744696.13544.5081763572355349115.b4-ty@kernel.org>
+To: timur@kernel.org,
+	Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: fix platform_no_drv_owner.cocci warnings
+Date: Tue, 16 Mar 2021 17:59:41 +0000
+Message-Id: <161591744695.13544.8415296923566318166.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1615887736-31217-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1615887736-31217-1-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <1614761651-86898-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1614761651-86898-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, shengjiu.wang@gmail.com,
+ Xiubo.Lee@gmail.com, festevam@gmail.com, s.hauer@pengutronix.de,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, nicoleotsuka@gmail.com,
+ Mark Brown <broonie@kernel.org>, linux-imx@nxp.com, kernel@pengutronix.de,
+ shawnguo@kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,9 +90,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 16 Mar 2021 17:42:16 +0800, Shengjiu Wang wrote:
-> Remove redundant code and use snd_ctl_boolean_mono_info
-> instead.
+On Wed, 3 Mar 2021 16:54:11 +0800, Yang Li wrote:
+> ./sound/soc/fsl/imx-hdmi.c:226:3-8: No need to set .owner here. The core
+> will do it.
+> 
+> Remove .owner field if calls are used which set it automatically
 
 Applied to
 
@@ -98,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_spdif: use snd_ctl_boolean_mono_info
-      commit: 6ad864ed6ac50f11a6d8575fda79991cca8f245c
+[1/1] ASoC: hdmi-codec: fix platform_no_drv_owner.cocci warnings
+      commit: 2e2bf6d479616a15c54c4e668558f61caffa4db4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
