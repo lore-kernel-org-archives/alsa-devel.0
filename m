@@ -2,84 +2,196 @@ Return-Path: <SRS0=ENK7=IO=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 21F66C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 15:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A83AC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 15:21:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 191BE6508A
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 15:06:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 191BE6508A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id F2133650DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Mar 2021 15:21:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2133650DF
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E1BE18F0;
-	Tue, 16 Mar 2021 16:05:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E1BE18F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E450D18BE;
+	Tue, 16 Mar 2021 16:20:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E450D18BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615907188;
-	bh=2JQWrD1BEdDFhiO+/je+FGCZdigzlLU21cRM7PU/4u4=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1615908085;
+	bh=EBhvFWRuK8LUdjvVldRxzoMRoPT+Flr68e5RDn/50UY=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WMYiHVXRIiRVH6fWL4ANY14Z0+4KWMH7IGE2LKSTzITlwqvU7CFVR0jRMK4arAxSq
-	 ATR+lvDxpq2x366Crq8EJEkVKcbQHO6LubcHw0EozFTgqsYrB2Tr636OqRpkzJI4Gi
-	 KHnfA2bFAOh3ef3rSIVkiNRY+Gc5LVyz0ko1VkKM=
+	b=Jtbhpp2LglWSES6GIbEsQgJmbu7FSw6hpxl4tQSwkSr1iIfaTlUyTm5Lfv2/tEbZ0
+	 Hp1zsoO1aCv2i8Y1MOuisOHRjtWaFkEKT8Wj7mHaCUyvgetNwoW/iSjS/DecqYABx1
+	 mxRuZ5XeKa4q2laITTD/j152OqarSQ2Qt91NLhN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99C4BF8032B;
-	Tue, 16 Mar 2021 16:05:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64DD3F8013F;
+	Tue, 16 Mar 2021 16:20:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B95F7F8032C; Tue, 16 Mar 2021 16:04:59 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 82BCFF80163; Tue, 16 Mar 2021 16:20:33 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C33BF8026A
- for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 16:04:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C33BF8026A
-IronPort-SDR: kV+v1mGnqA1dutpM7szaWc+3JELjFb26oAonlLL4Cq8V/XlRhCdIjLJDy1PzCSjuR/+bHvlJ7o
- ovHZVgKL5o4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="189367868"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="189367868"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2021 08:04:45 -0700
-IronPort-SDR: ZGgvL0zLqcwacdfAybfgzcPBHc5oXgdtfqdvBMp77181rJn6gKrGGmkEXJbFlex8iA2Ksjfev8
- GCcpTqNW3oZg==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="601857037"
-Received: from mdacha-mobl3.amr.corp.intel.com (HELO [10.212.75.21])
- ([10.212.75.21])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2021 08:04:43 -0700
-Subject: Re: [PATCH v3] ASoC: amd: add support for rt5682 codec in machine
- driver
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <1615824133-21553-1-git-send-email-Vijendar.Mukunda@amd.com>
- <efa02319-2abf-4fb9-efec-13b6279f3d78@linux.intel.com>
- <87f41e68-3158-38f8-5e84-270ab184691b@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <6bdef069-374a-d215-30a4-715e05304fc7@linux.intel.com>
-Date: Tue, 16 Mar 2021 09:53:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <87f41e68-3158-38f8-5e84-270ab184691b@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64C37F8013F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2021 16:20:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64C37F8013F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=intel.onmicrosoft.com
+ header.i=@intel.onmicrosoft.com header.b="C3AYrqBO"
+IronPort-SDR: UAyfdX58D9uRFI30lbcT6UX63h7f1Qgz5k9v24Kn+1JTDxHC6sugTXaNmuOtX0Y3ENnD26drGq
+ Qr2q7eo5xF2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="169192116"
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="169192116"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Mar 2021 08:20:16 -0700
+IronPort-SDR: S5ezofNbvD8/Ky/oYvYdCURsJZwsoWBN9GLaSFYQYQeRmphU0w7v4kSbyZE2Zm6AsZip+qWOe5
+ iFEC88wfWkRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; d="scan'208";a="378900358"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+ by fmsmga007.fm.intel.com with ESMTP; 16 Mar 2021 08:20:15 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 08:20:15 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 16 Mar 2021 08:20:15 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Tue, 16 Mar 2021 08:20:15 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Tue, 16 Mar 2021 08:20:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aa7L+2mQ1qlZ9xlxU4CGF0MGe7q0TZWQF3VIXMooOj5Z9t2yH2A8XQMyUY38eD81YkjJg3/E0vxiuPkdlFHP7SOweX9/1QbQdyiL+LC5LUs1TmDvI90IRCkrxtDDIPLElDau3RoXNmh74FpxaVU7jM1hsQ5m7xeXGgcROHsLlrznLdzrZDaDU81ZIuj41w/qMfGy7epD7IWwkOBQou9p2enrKRxL3mEpftWXrZfP5v+nQRnf5fHgcTgaK58kTJ1OLd7jW2l8pnbcLwYto1cX57IyozcpxCyruLzgnYprw1xGti0IdA0REpIAPyNxCKbmo/2d05VLocbs8vJLTS9nCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBhvFWRuK8LUdjvVldRxzoMRoPT+Flr68e5RDn/50UY=;
+ b=Hm+odiRSNbw0OkBTzmBJtEFcQi48S3naMNdUuafN7W3RQITwNweDcCC3IkexY4241Zrgp+VOogOjTsPTv+sAkHEwReUyeq4OzO/2AqGlcMXtvuLh4VMqlkwF/X9pekYGRdFo9CeDyp3dNV6715s1/OEqcjSIBgLumekG54Ty4k8i32g5ZIPPOaen1AeYZkZsMYABo+cI921NbuUuFWSmc/0zDk2ZscdpnUizSs59UGd/OvevvFccThGuiv8K0owgIGzLDbYJhHfr2LKLPx+sNJDatrvA7vikHX4Eoi6/sgUuMghtMzpzSJKJc99j4CN1Tf3pa4HSeRuXsf39O7h1gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com; 
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EBhvFWRuK8LUdjvVldRxzoMRoPT+Flr68e5RDn/50UY=;
+ b=C3AYrqBOXhy0Epx7uMrBBH7iWr1c1MsIP7LYHZjqixPM6wu2ZxShK7OdPcRKq1AojK3Y/m09FZttgLF9H9RmcuDgo3vEPTUxNd7kLeq4Umbq/r/8t2C5oA62ybzjnorRaDnSfp9UWfjW21sXRSEr/957C9px0lySnjrbzwUZVHg=
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com (2603:10b6:5:138::26)
+ by DM6PR11MB4689.namprd11.prod.outlook.com (2603:10b6:5:2a0::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
+ 2021 15:20:11 +0000
+Received: from DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f135:7a69:c586:6a22]) by DM6PR11MB3642.namprd11.prod.outlook.com
+ ([fe80::f135:7a69:c586:6a22%2]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
+ 15:20:11 +0000
+From: "Lu, Brent" <brent.lu@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: RE: [PATCH v2] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
+ support
+Thread-Topic: [PATCH v2] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
+ support
+Thread-Index: AQHXGkvAdLyP5wwwj0ysOm95FV+F/KqGtqwAgAAAbrA=
+Date: Tue, 16 Mar 2021 15:20:11 +0000
+Message-ID: <DM6PR11MB3642B7F0E8D288CFD7772CBB976B9@DM6PR11MB3642.namprd11.prod.outlook.com>
+References: <20210316094632.12360-1-brent.lu@intel.com>
+ <3e48f98a-247f-1784-2d72-ccd6feae1cd4@linux.intel.com>
+In-Reply-To: <3e48f98a-247f-1784-2d72-ccd6feae1cd4@linux.intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
- Chuhong Yuan <hslester96@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com,
- Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
- Virendra-Pratap.Arya@amd.com, Murali-krishna.Vemuri@amd.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [111.248.46.124]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b5ac1bb0-b730-4134-a934-08d8e88efdd8
+x-ms-traffictypediagnostic: DM6PR11MB4689:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB4689E2E503D260ED3611C5B8976B9@DM6PR11MB4689.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CB1ndK5MKt1zdcT3KnLZENpB01oOfUhoJxt4VgrBdmTTQ2Jm6zZeAskORoAV/OTc45N/In22Mepg+2VeRkPqAEsguKVuTxEQ48U+3uB8YpsTV/Nx2Z1fE18wypdOi7iOj/F+AtO9CyI7lwa5XU6NXPdqe3L8+26CXEi3y00uhshXuby82ZiZelkIUZsRBMmonOfeRp2YbDOH0f3QAHvUjA2GNawu1hQLIlWz9LusHxHqzIwJhp78oszGNOt5O6MWEfug5OwGawhnlzq123W1U/LMurbPs2e9tf3+K8ekVKP9mOTbcfy0+eQKyz1tOiY2HvfRbW857SALcmeXyZ16L4FgDwD+5nsVozFWSPZBLO38bFPGtU8TiEZilm2shQEIVKHVgNsDaEG1P+UIU77XUkmb9FITWwzeiRXwAo1C6TuzKDg/ZIHy3P8EyW2LdCY6arFFJlVE7WhpZeOKpXd0YxkGouByhx5NVVhBD+rL8IaJoux4hZrm7UOoPL5o7r0ufLIgyGk3Ab/4jJ23+5VbpUOvmyigroiUFPyKp7N4zIyJ1rfjcNucB0jjoy836c4W
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR11MB3642.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(366004)(55016002)(33656002)(76116006)(4326008)(66446008)(9686003)(7416002)(2906002)(54906003)(26005)(7696005)(66946007)(110136005)(6506007)(8676002)(86362001)(5660300002)(498600001)(66476007)(66556008)(64756008)(52536014)(186003)(8936002)(71200400001);
+ DIR:OUT; SFP:1102; 
+x-ms-exchange-antispam-messagedata: =?utf-8?B?OUlmbjUrUjZHYWtLS1FsN0RYemlJMUVrenJ5VTdSSTI1ZjAxcEhIQU1MbmFT?=
+ =?utf-8?B?TGw5T2VjTFN2OUltNVQ0YndZNGRxVHAxYmdWMkFrQVg3ZlpMK0VaQ0hKdm5l?=
+ =?utf-8?B?a3lWK2hicmxMWWlrLzNYYnMwZGx6WitSOEhDOGdEbEJqWVZZRUJ2RGNpbExB?=
+ =?utf-8?B?YWlYS0plZ01vNlEyWXFJcWk3aUw5ZGUvcENzRE9vYXZkRkUwdmlzdXlPdHR0?=
+ =?utf-8?B?dG5Ma3B4V3h6Tk5YWTZVbXJHcmVieU5yMnVJak1OQnlOYXl6NXRqTTBlam1O?=
+ =?utf-8?B?dmpMRi92TngxYWlvN2kzcVBnVXBJd1pNVHQ0NDNkODBsWXFrUnRiTXVYdGpI?=
+ =?utf-8?B?b0lKNG0xcWpTT1BlOUFDN0NYSjBsN01sN2Z3cXNGM0t4aEpsdWRxNW5LUThI?=
+ =?utf-8?B?dDhucG9wU2FDeDkzUG55cjRueS9BOVR1OVJuSWw3ZElxa2QzT3hyTTV2Rkg0?=
+ =?utf-8?B?dHRYaGowNVJKbk5wZXQ0Yy84UzNaQ2RYRXBWVlVQcFU0MzM3YTByN21xcFN2?=
+ =?utf-8?B?ZnFVWVpOODZXTzljQ2J4c2xpNlJhcncxWnBaNW43ck4rRzkyK1A2eVdKcE5R?=
+ =?utf-8?B?TmEvNENCVEowSUV6bitXMWtqY0E0cWxraG8ySnN6cmhYREoxNWtvUmxzbGpU?=
+ =?utf-8?B?ZE1HNmZtZkQ0L000OUVBM3J4eFc5MS8wUXFBTmk4Q25kcytkMkFiYi8rK0p4?=
+ =?utf-8?B?V2xJOXhiaVBNMnBXMk1HWHM3UG0zanpmQWVSUHBZYW5kUEhrNlVlcE5aYnh2?=
+ =?utf-8?B?RFJCNTFmNytoQ1JEWTN0d2RVZVRzd2FyR2pQZGVRSGg5a3FZYkpaVlZUbEwv?=
+ =?utf-8?B?ZytMcmJIYjR5TEtQa0pvaU12RU5NWDdYVHFRUzQ3UEl0bnFOQzNQcXh4RFJp?=
+ =?utf-8?B?MGpaNkVtOWhCWlFRMXBPU2o3Nkl0azZhNmp4UXdpTUh5TEVWT3dxa1B5ak05?=
+ =?utf-8?B?T0taT2hrN25TdVdhV3lNNFNZT2ZOREQ4bFQ2YVpDNll4MmVIZFVzVzdIMGpB?=
+ =?utf-8?B?NG5xZTNtU2VHVis1K0lFMS9uZyt5SEZOWjB5WExVMEp5ZUQ3TDI1K2tOK0Zm?=
+ =?utf-8?B?QWpITDhXQjI5d1lWS1l1UFBpWlIrcElob0hoQllTdGNCVU9tWDdRanQwZlBi?=
+ =?utf-8?B?YVc4ZW1lbWRiUTcvbjZHenMzcXpkS25mcVhmUlUwRlZ1REJST2kxNThIcmla?=
+ =?utf-8?B?RzBXa3QrYWpHOHB5M2xjdmFDcHU5L3k3em14aU8vVDNoQjljeS92TStQVHVj?=
+ =?utf-8?B?aWlmTzZNZG0rVVhtVS92QnMwamtuMitwKzl6Zyt2cDJONXh6MHQ4WU8zK1gv?=
+ =?utf-8?B?T2dNU2JTSDU5ZFlibk82UThzMEhHV1dLckw5dW1rZU1VNUUrOW5pTDlCMkJm?=
+ =?utf-8?B?Z0QxUkhiQzErNHZNTGxtQVl4Rlo2U3VFVlBNL21GOE9XVStlS3Fiem5HYzJm?=
+ =?utf-8?B?TXJNa0RyOUhqcWdhTHU5QXRYTzlRdzErYXo2a2N4SE5RM0hHQkxabGZka2FE?=
+ =?utf-8?B?cDZCV3pHYWd2QTFzSlE5bkp0RndrVExOclhCd2VudU1uMUZFRnJOanFwa3Iz?=
+ =?utf-8?B?T2FvaFZtTFI2THhoT05ZSVZ1QnJLTWFzOE5WTnJQdnFKSTlXL25VY3NnT1pV?=
+ =?utf-8?B?L3lTK085R2UwRGUvSm8ycFphcVhaQWwyWTJMcHdVKyswcmR6d2QyU1VCVmdE?=
+ =?utf-8?B?Njd2RVhpdWhmMnFNQTNaOHJUclFaMmx1bUttV25ONno1dzV4OHFrT3A5S1FX?=
+ =?utf-8?Q?SybwRxCURwGWmWMdWFSlGj1KdFXDPWwy9ohq7zW?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3642.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5ac1bb0-b730-4134-a934-08d8e88efdd8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 15:20:11.3830 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dih6c7WGPgFYSFaoXnuBlhNP8CA/Y1/oSwdf7scSsjrrK7D3+/kAZwGfc/9FaBRkz/fem0XXMrvUptQd/MH4lg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4689
+X-OriginatorOrg: intel.com
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, "Rojewski,
+ Cezary" <cezary.rojewski@intel.com>, "R,
+ Dharageswari" <dharageswari.r@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi
+ Iwai <tiwai@suse.com>, Fred Oh <fred.oh@linux.intel.com>,
+ Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>, "Nujella,
+ Sathyanarayana" <sathyanarayana.nujella@intel.com>, Ranjani
+ Sridharan <ranjani.sridharan@linux.intel.com>,
+ Libin Yang <libin.yang@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>, "Zhi, Yong" <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,42 +207,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 3/16/21 8:37 AM, Mukunda,Vijendar wrote:
-> 
-> 
-> On 15/03/21 9:30 pm, Pierre-Louis Bossart wrote:
->>
->>> +static int rt5682_clk_enable(struct snd_pcm_substream *substream)
->>> +{
->>> +    int ret;
->>> +    struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
->>> +
->>> +    /*
->>> +     * Set wclk to 48000 because the rate constraint of this driver is
->>> +     * 48000. ADAU7002 spec: "The ADAU7002 requires a BCLK rate that is
->>> +     * minimum of 64x the LRCLK sample rate." RT5682 is the only clk
->>> +     * source so for all codecs we have to limit bclk to 64X lrclk.
->>> +     */
->>> +    clk_set_rate(rt5682_dai_wclk, 48000);
->>> +    clk_set_rate(rt5682_dai_bclk, 48000 * 64);
->>> +    ret = clk_prepare_enable(rt5682_dai_bclk);
->>> +    if (ret < 0) {
->>> +        dev_err(rtd->dev, "can't enable master clock %d\n", ret);
->>> +        return ret;
->>> +    }
->>> +    return ret;
->>> +}
->>
->> Out of curiosity, is there a reason why you use clk_prepare_enable() 
->> for the bclk but not for the wclk?These changes were shared by codec 
->> vendor as an initial patch.
-> We should use clk_prepare_enable() for wclk not for bclk.
-> We will update and share the new patch.
-
-Well the question remains: if you have two clocks and only enable one, 
-why do you need to get two clocks.
-
-Also this patch was modeled after the da7219 case, where the same open 
-applies.
+PiA+ICsvKg0KPiA+ICsgKiBydDEwMTU6ICBpMmMgbW9kZSBkcml2ZXIgZm9yIEFMQzEwMTUgYW5k
+IEFMQzEwMTVRDQo+ID4gKyAqIHJ0MTAxNXA6IGF1dG8tbW9kZSBkcml2ZXIgZm9yIEFMQzEwMTUs
+IEFMQzEwMTVRLCBhbmQgQUxDMTAxNVEtVkINCj4gPiArKi8gc3RhdGljIGNvbnN0IHN0cnVjdCBz
+bmRfc29jX2RhcG1fcm91dGUgcnQxMDE1cF8xZGV2X2RhcG1fcm91dGVzW10NCj4gPiArPSB7DQo+
+ID4gKwkvKiBzcGVha2VyICovDQo+ID4gKwl7ICJMZWZ0IFNwayIsIE5VTEwsICJTcGVha2VyIiB9
+LA0KPiA+ICsJeyAiUmlnaHQgU3BrIiwgTlVMTCwgIlNwZWFrZXIiIH0sDQo+ID4gK307DQo+ID4g
+Kw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZSBydDEwMTVwXzJk
+ZXZfZGFwbV9yb3V0ZXNbXSA9IHsNCj4gPiArCS8qIHNwZWFrZXIgKi8NCj4gPiArCXsgIkxlZnQg
+U3BrIiwgTlVMTCwgIkxlZnQgU3BlYWtlciIgfSwNCj4gPiArCXsgIlJpZ2h0IFNwayIsIE5VTEws
+ICJSaWdodCBTcGVha2VyIiB9LCB9Ow0KPiANCj4gSSBhbSBjb25mdXNlZCBieSB0aGVzZSByb3V0
+ZXMuLi4NCj4gDQo+IGlzIHRoaXMgYSByZXN1bHQgb2YgdXNpbmcgdGhlIGNvZGVjIGNvbmZzIGJl
+bG93IG9ubHkgd2hlbiB0aGVyZSBhcmUgMiBhbXBzIHdpdGgNCj4gdGhlaXIgb3duIGVuYWJsZSBw
+aW4/DQpZZXMsIHdlIG5lZWQgdG8gdXNlIHRoZSBwcmVmaXggaW4gY29kZWMgY29uZnMgd2hlbiB0
+aGVyZSBhcmUgdHdvIGRldmljZSBpbnN0YW5jZXMuDQoNCj4gDQo+IFlvdSBzdGlsbCBoYXZlIDIg
+YW1wcyBldmVuIGluIHRoZSAxZGV2IGNhc2UsIHNvIEkgd2FudCB0byBtYWtlIHN1cmUgdGhlIGNv
+ZGUgaGFzDQo+IGVub3VnaCBjb21tZW50cyBzbyB0aGF0IHdlIGRvbid0IGxvc2UgdHJhY2sgb2Yg
+dGhlIGRlc2lnbi4NCj4gDQo+IFRoZSByZXN0IG9mIHRoZSBjb2RlIGxvb2tzIGZpbmUuDQo+IA0K
+VGhlcmUgYXJlIGFsd2F5cyB0d28gYW1wcyBvbiB0aGUgYm9hcmQgZm9yIHN0ZXJlbyBvdXRwdXQu
+IElmIHRoZSB0d28gYW1wcyBzaGFyaW5nDQpvbmUgZW5hYmxlIHBpbiwgT0RNIHdpbGwgaW1wbGVt
+ZW50IG9ubHkgb25lIGRldmljZSBpbnN0YW5jZSBpbiB0aGUgQUNQSSB0YWJsZQ0KYmVjYXVzZSB0
+aGVyZSBpcyBvbmx5IG9uZSBHUElPIHRvIGNvbnRyb2wgaW4gY29kZWMgZHJpdmVyLg0KDQpJJ2xs
+IHVwbG9hZCBhIHYzIHdpdGggbW9yZSBjb21tZW50Lg0KDQoNClJlZ2FyZHMsDQpCcmVudA0KDQo=
