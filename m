@@ -2,101 +2,82 @@ Return-Path: <SRS0=sQP2=IP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3BAEC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 08:49:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 997D9C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 11:27:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 170C164F26
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 08:49:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 170C164F26
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id B963764F69
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 11:27:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B963764F69
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 018F71856;
-	Wed, 17 Mar 2021 09:48:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 018F71856
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B5EE184E;
+	Wed, 17 Mar 2021 12:26:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B5EE184E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1615970987;
-	bh=8mxDD/W1aV9HJ28LxFk8Y4PycNt3mrnUso9sEsG8vSI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=B0wa3GOC5gjk+vphgry5nWeJSJvHj0Lx3mXoxdYAcwXavNx2tE8r4q/B8+GCAIBt4
-	 Lryde4rPfC8iQ2ppbK/4RUZUTetfCvSezJp4N9j6n5ETiSAJQB3YT0hJfC1Mp1iPAj
-	 eph9Ug1NkVkBabPFwCkZY559XScQ5n/ebngqLpC4=
+	s=default; t=1615980442;
+	bh=X+9VcG2ZtkRpDGybY/vOiwO7DQH31cRtgyvLS55c0mo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=n+F2ccqawd8cHv9MDjEWPkN2X9rf2T2K0Rf/O9QsRP2KQ3Di0QoUX/z/9tx3Vx5PJ
+	 bjcX/DzPzrdtJjW04DbFOsUMoZ8v1KQYrc9uIsxi0rp3ZMJtlJbvgYADa/cUiPPRlk
+	 1bq5jPw03rk9FK9EUcDUz6Q17d6WPON/XoRK1MLw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75F29F801F7;
-	Wed, 17 Mar 2021 09:48:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D32BCF801F7;
+	Wed, 17 Mar 2021 12:26:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4395F8021C; Wed, 17 Mar 2021 09:48:54 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6AAF5F8021C; Wed, 17 Mar 2021 12:26:17 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 624F6F80124
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 09:48:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 624F6F80124
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mnAGudcJ"
-Received: by mail-wr1-x434.google.com with SMTP id v4so918419wrp.13
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 01:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=VBpt3cP49rkhcN1HDm3Z0MkEX5WMSS3fRvn/Ddo7Grk=;
- b=mnAGudcJmPDXj3PsCg383Zafr1alCSpuwgLfOQu4c4uXl480/f/Jb9eoNmwq1ZRCZW
- gSOPiEy0VwEc4Lp6MTCzjzfT+Ns/8saO+vDxOzk7kmx6vyXn7glnU6SOxKdZAyp0qytw
- ZJDJpVoZg75JxMwsRT2VPGJlePl1T5OlBzw2cDic7ZjhInRw4mxei0z0YVyIwsjNNiQn
- ikyF3KhIsF0kN1bpamn9xQwg5RNz7X97CaAfdzpK7cKg42IsEhN3SFxj1NVmv2XRZhF0
- Ps3qSAWQXWAZ/qAt1XBYGxeJfnuelMKXcVWWLXiofD0P4XxrimOfgoSlRL7rDa180oJo
- Y6gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=VBpt3cP49rkhcN1HDm3Z0MkEX5WMSS3fRvn/Ddo7Grk=;
- b=QJXNYcUCmq9IwSQM5YHyNVqa749Lf4CqXvLDvzB1zBE2HJ2M4xxbbggzh2T/8idJH9
- +gCYimp0GYqJWhmz9ejxgZ7yuRXJXxZ24MyVtiR72lSxnIkN9nigvko8/sEYb+12gfXP
- VgkRKiB2lx35vQqU/DOC//Ih3/9V3zTLPWDcSCH+8ZlQNoN/PQE1lHDCaNVGSTMn8rz+
- FTUpmanYfeONAd1B2aAl6eNyabcORWre4QqPmg7m9UJdp1Y/x8ZsUZXBsgJIj+t3tO3e
- tlrOKBiVWcGzO+UJDIYTUlSAKCtEMbtQBkq/B+Ush54XqUu3kibyUqhPy4bXIgq5aTYc
- g0HQ==
-X-Gm-Message-State: AOAM533thB1t6FFLZ4X7W1KVgGN7WyYoWJ9uM6cz9cidGm9R6ea8d6Ye
- PXmB96ZUdzn63ACdTl4cciK3ITgTAOWzko4ZRCQ=
-X-Google-Smtp-Source: ABdhPJwNbkasdtkhEZRdHf63ZqK5QSWkTi1rSy/5Vg7bz4EmHLSj2PEtEu5k8z2p7n7pWIUZG0FutNwXSSTIiLXKnis=
-X-Received: by 2002:adf:e5c4:: with SMTP id a4mr3264627wrn.174.1615970925417; 
- Wed, 17 Mar 2021 01:48:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210309082328.38388-1-daniel.baluta@oss.nxp.com>
- <20210309153455.GB4878@sirena.org.uk>
- <CAEnQRZB_VgsEPYgxtWQWUgs2+noRt1AMMHf2crJ_9Hg7s7NJ0Q@mail.gmail.com>
- <20210312104931.GA5348@sirena.org.uk>
- <CAEnQRZDe_Q-N7L_7z7aVz1o3guKd6R+WFrOfT9KPbggJP8SPZw@mail.gmail.com>
- <20210312115748.GC5348@sirena.org.uk>
- <CAEnQRZAAU34YS778WJVD6uubSwQxjA-5LTG9g0CvSdSZOuO+tQ@mail.gmail.com>
- <20210312142300.GG5348@sirena.org.uk>
-In-Reply-To: <20210312142300.GG5348@sirena.org.uk>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Wed, 17 Mar 2021 10:48:33 +0200
-Message-ID: <CAEnQRZB7BDA7gdiWH1PR_=XDiFiDW0=tPH4xY2D98=s_-mV7nw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: core: Don't set platform name when of_node is set
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>,
- "S.j. Wang" <shengjiu.wang@nxp.com>, Daniel Baluta <daniel.baluta@oss.nxp.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74135F80124
+ for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 12:26:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74135F80124
+IronPort-SDR: OglxaJpQznmNT+R823FVRNsBe9VZjxdWFieF243QbBECbsKfBw3WGtbQAv9todaX1O0tL6cCWJ
+ sB5iSmK9jBvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9925"; a="168717542"
+X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; d="scan'208";a="168717542"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Mar 2021 04:26:00 -0700
+IronPort-SDR: 5amaejvwP30nMCGeOa0rj2XeXzOQXnopcaIPsC/GocP71x3P0GtCO4zulJTcZffA5mJWurZrYj
+ GJdZ+nksM2YQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,256,1610438400"; d="scan'208";a="433367932"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.9])
+ by fmsmga004.fm.intel.com with ESMTP; 17 Mar 2021 04:25:57 -0700
+From: Brent Lu <brent.lu@intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
+ support
+Date: Wed, 17 Mar 2021 19:08:24 +0800
+Message-Id: <20210317110824.20814-1-brent.lu@intel.com>
+X-Mailer: git-send-email 2.17.1
+Cc: Oder Chiou <oder_chiou@realtek.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Dharageswari R <dharageswari.r@intel.com>,
+ Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Fred Oh <fred.oh@linux.intel.com>,
+ Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, dl-linux-imx <linux-imx@nxp.com>,
- Daniel Baluta <daniel.baluta@nxp.com>
+ Libin Yang <libin.yang@linux.intel.com>,
+ Rander Wang <rander.wang@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,44 +93,264 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Mar 12, 2021 at 4:24 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Mar 12, 2021 at 02:37:30PM +0200, Daniel Baluta wrote:
-> > On Fri, Mar 12, 2021 at 1:59 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > No, just the opposite!  If there's an explict name configured why do you
-> > > want to ignore it?
->
-> > Because the initial assignment:
->
-> > dai_link->platforms->name = component->name;
->
-> > doesn't take into consideration that dai_link->platform->of_node is
-> > also explicitly configured.
->
-> But why should we take that into consideration here?
->
-> > dai->link->platforms->of_node
-> > configured and we hit this error:
-> >
-> > soc_dai_link_sanity_check:
-> > /*
-> >  * Platform may be specified by either name or OF node, but it
-> >  * can be left unspecified, then no components will be inserted
-> >  * in the rtdcom list
-> >  */
-> > if (!!platform->name == !!platform->of_node) {
-> >     dev_err(card->dev,
-> >     "ASoC: Neither/both platform name/of_node are set for %s\n", link->name);
-> >     return -EINVAL;
-> > }
->
-> OK, but then does this check actually make sense?  The code has been
-> that way since the initial DT introduction since we disallow matching by
-> both name and OF node in order to avoid confusion when building the card
-> so I think it does but it's only with this mail that I get the
-> information to figure out that this is something we actually check for
-> then go find the reason why we check.
+This patch adds jsl_rt5682_rt1015p which supports the RT5682 headset
+codec and ALC1015Q-VB speaker amplifier combination on JasperLake
+platform.
 
-I will enhance the commit message and send v2. Hope to catch all the
-inner details.
+This driver also supports ALC1015Q-CG if running in auto-mode.
+Following table shows the audio interface support of the two
+amplifiers.
+
+          | ALC1015Q-CG | ALC1015Q-VB
+=====================================
+I2C       | Yes         | No
+Auto-mode | 48K, 64fs   | 16k, 32fs
+                        | 48k, 32fs
+                        | 48k, 64fs
+
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/Kconfig                |   1 +
+ sound/soc/intel/boards/sof_realtek_common.c   | 105 ++++++++++++++++++
+ sound/soc/intel/boards/sof_realtek_common.h   |   7 ++
+ sound/soc/intel/boards/sof_rt5682.c           |  19 +++-
+ .../intel/common/soc-acpi-intel-jsl-match.c   |  13 +++
+ 5 files changed, 143 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index d1d28129a32b..58379393b8e4 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -457,6 +457,7 @@ config SND_SOC_INTEL_SOF_RT5682_MACH
+ 	select SND_SOC_MAX98373_I2C
+ 	select SND_SOC_RT1011
+ 	select SND_SOC_RT1015
++	select SND_SOC_RT1015P
+ 	select SND_SOC_RT5682_I2C
+ 	select SND_SOC_DMIC
+ 	select SND_SOC_HDAC_HDMI
+diff --git a/sound/soc/intel/boards/sof_realtek_common.c b/sound/soc/intel/boards/sof_realtek_common.c
+index f3cf73c620ba..2ec34f8df9e1 100644
+--- a/sound/soc/intel/boards/sof_realtek_common.c
++++ b/sound/soc/intel/boards/sof_realtek_common.c
+@@ -7,6 +7,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/soc-acpi.h>
+ #include <sound/soc-dai.h>
+ #include <sound/soc-dapm.h>
+ #include <uapi/sound/asound.h>
+@@ -136,3 +137,107 @@ void sof_rt1011_codec_conf(struct snd_soc_card *card)
+ 	card->codec_conf = rt1011_codec_confs;
+ 	card->num_configs = ARRAY_SIZE(rt1011_codec_confs);
+ }
++
++/*
++ * rt1015:  i2c mode driver for ALC1015 and ALC1015Q
++ * rt1015p: auto-mode driver for ALC1015, ALC1015Q, and ALC1015Q-VB
++ *
++ * For stereo output, there are always two amplifiers on the board.
++ * However, the ACPI implements only one device instance (UID=0) if they
++ * are sharing the same enable pin. The code will detect the number of
++ * device instance and use corresponding DAPM structures for
++ * initialization.
++ */
++static const struct snd_soc_dapm_route rt1015p_1dev_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Speaker" },
++	{ "Right Spk", NULL, "Speaker" },
++};
++
++static const struct snd_soc_dapm_route rt1015p_2dev_dapm_routes[] = {
++	/* speaker */
++	{ "Left Spk", NULL, "Left Speaker" },
++	{ "Right Spk", NULL, "Right Speaker" },
++};
++
++static struct snd_soc_codec_conf rt1015p_codec_confs[] = {
++	{
++		.dlc = COMP_CODEC_CONF(RT1015P_DEV0_NAME),
++		.name_prefix = "Left",
++	},
++	{
++		.dlc = COMP_CODEC_CONF(RT1015P_DEV1_NAME),
++		.name_prefix = "Right",
++	},
++};
++
++static struct snd_soc_dai_link_component rt1015p_dai_link_components[] = {
++	{
++		.name = RT1015P_DEV0_NAME,
++		.dai_name = RT1015P_CODEC_DAI,
++	},
++	{
++		.name = RT1015P_DEV1_NAME,
++		.dai_name = RT1015P_CODEC_DAI,
++	},
++};
++
++static int rt1015p_get_num_codecs(void)
++{
++	static int dev_num;
++
++	if (dev_num)
++		return dev_num;
++
++	if (!acpi_dev_present("RTL1015", "1", -1))
++		dev_num = 1;
++	else
++		dev_num = 2;
++
++	return dev_num;
++}
++
++static int rt1015p_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params)
++{
++	/* reserved for debugging purpose */
++
++	return 0;
++}
++
++static const struct snd_soc_ops rt1015p_ops = {
++	.hw_params = rt1015p_hw_params,
++};
++
++static int rt1015p_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_card *card = rtd->card;
++	int ret;
++
++	if (rt1015p_get_num_codecs() == 1)
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_1dev_dapm_routes,
++					      ARRAY_SIZE(rt1015p_1dev_dapm_routes));
++	else
++		ret = snd_soc_dapm_add_routes(&card->dapm, rt1015p_2dev_dapm_routes,
++					      ARRAY_SIZE(rt1015p_2dev_dapm_routes));
++	if (ret)
++		dev_err(rtd->dev, "Speaker map addition failed: %d\n", ret);
++	return ret;
++}
++
++void sof_rt1015p_dai_link(struct snd_soc_dai_link *link)
++{
++	link->codecs = rt1015p_dai_link_components;
++	link->num_codecs = rt1015p_get_num_codecs();
++	link->init = rt1015p_init;
++	link->ops = &rt1015p_ops;
++}
++
++void sof_rt1015p_codec_conf(struct snd_soc_card *card)
++{
++	if (rt1015p_get_num_codecs() == 1)
++		return;
++
++	card->codec_conf = rt1015p_codec_confs;
++	card->num_configs = ARRAY_SIZE(rt1015p_codec_confs);
++}
+diff --git a/sound/soc/intel/boards/sof_realtek_common.h b/sound/soc/intel/boards/sof_realtek_common.h
+index 87cb3812b926..cb0b49b2855c 100644
+--- a/sound/soc/intel/boards/sof_realtek_common.h
++++ b/sound/soc/intel/boards/sof_realtek_common.h
+@@ -21,4 +21,11 @@
+ void sof_rt1011_dai_link(struct snd_soc_dai_link *link);
+ void sof_rt1011_codec_conf(struct snd_soc_card *card);
+ 
++#define RT1015P_CODEC_DAI	"HiFi"
++#define RT1015P_DEV0_NAME	"RTL1015:00"
++#define RT1015P_DEV1_NAME	"RTL1015:01"
++
++void sof_rt1015p_dai_link(struct snd_soc_dai_link *link);
++void sof_rt1015p_codec_conf(struct snd_soc_card *card);
++
+ #endif /* __SOF_REALTEK_COMMON_H */
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 55505e207bc0..f4b898c1719f 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -45,8 +45,9 @@
+ #define SOF_RT1011_SPEAKER_AMP_PRESENT		BIT(13)
+ #define SOF_RT1015_SPEAKER_AMP_PRESENT		BIT(14)
+ #define SOF_RT1015_SPEAKER_AMP_100FS		BIT(15)
+-#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(16)
+-#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(17)
++#define SOF_RT1015P_SPEAKER_AMP_PRESENT		BIT(16)
++#define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
++#define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
+ 
+ /* Default: MCLK on, MCLK 19.2M, SSP0  */
+ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
+@@ -723,6 +724,8 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			links[id].num_codecs = ARRAY_SIZE(rt1015_components);
+ 			links[id].init = speaker_codec_init_lr;
+ 			links[id].ops = &sof_rt1015_ops;
++		} else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
++			sof_rt1015p_dai_link(&links[id]);
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_MAX98373_SPEAKER_AMP_PRESENT) {
+ 			links[id].codecs = max_98373_components;
+@@ -851,6 +854,8 @@ static int sof_audio_probe(struct platform_device *pdev)
+ 		sof_max98373_codec_conf(&sof_audio_card_rt5682);
+ 	else if (sof_rt5682_quirk & SOF_RT1011_SPEAKER_AMP_PRESENT)
+ 		sof_rt1011_codec_conf(&sof_audio_card_rt5682);
++	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
++		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
+ 
+ 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
+ 					      dmic_be_num, hdmi_num);
+@@ -940,6 +945,15 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
++	{
++		.name = "jsl_rt5682_rt1015p",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_MCLK_24MHZ |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT1015P_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1)),
++	},
+ 	{ }
+ };
+ 
+@@ -966,3 +980,4 @@ MODULE_ALIAS("platform:tgl_max98373_rt5682");
+ MODULE_ALIAS("platform:jsl_rt5682_max98360a");
+ MODULE_ALIAS("platform:cml_rt1015_rt5682");
+ MODULE_ALIAS("platform:tgl_rt1011_rt5682");
++MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+index 52238db0bcb5..73fe4f89a82d 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+@@ -19,6 +19,11 @@ static struct snd_soc_acpi_codecs rt1015_spk = {
+ 	.codecs = {"10EC1015"}
+ };
+ 
++static struct snd_soc_acpi_codecs rt1015p_spk = {
++	.num_codecs = 1,
++	.codecs = {"RTL1015"}
++};
++
+ static struct snd_soc_acpi_codecs mx98360a_spk = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98360A"}
+@@ -52,6 +57,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+ 		.quirk_data = &rt1015_spk,
+ 		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
+ 	},
++	{
++		.id = "10EC5682",
++		.drv_name = "jsl_rt5682_rt1015p",
++		.sof_fw_filename = "sof-jsl.ri",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &rt1015p_spk,
++		.sof_tplg_filename = "sof-jsl-rt5682-rt1015.tplg",
++	},
+ 	{
+ 		.id = "10EC5682",
+ 		.drv_name = "jsl_rt5682_max98360a",
+-- 
+2.17.1
+
