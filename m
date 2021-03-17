@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49592C433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BB84C2BB55
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:33:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 928D964EEE
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:33:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 928D964EEE
+	by mail.kernel.org (Postfix) with ESMTPS id 88A3A64EEE
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:33:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88A3A64EEE
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 283C716F9;
-	Wed, 17 Mar 2021 18:32:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 283C716F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29CE516F2;
+	Wed, 17 Mar 2021 18:32:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29CE516F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616002411;
-	bh=Q8pxTk3I/yn/VzOuwdRZpwKHxfHtjYGJ3FWvyRWadIY=;
+	s=default; t=1616002419;
+	bh=6jn2yY8vlkK8EeshpId7tcg1BBzVxyhMyK6r0A6lBvw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YSbM/jzH1crGs9w9aboVApuCMp+Eo6y9nOrB75pq1uhypz5G+KUzqxXhCCzrn97GO
-	 mbYUp+2KjC1ol8qaICAreg06vDqqbV8DcKMrX2Ebkost2rfAYVJpsJ27G2mpJa3SCu
-	 Xz1GrRxtNJ0nrURPVkiKQT782/GDu45Id/emNfp4=
+	b=FHIMITYOids5lygfqgA3QQO0fUqATAqBWyH86lOf2s+xeKvSIIWNC4CfX3M5xCOtU
+	 FMvtPCB9rvRWeGBxoz3CPauV4vzlf+dhVsRn2pdz5GsElj3+u168O6/NoqUuNIK1kJ
+	 WlVDX7V1TBLshT++truQdkOeuc9WdvpViKP8PAe4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B09C4F80431;
-	Wed, 17 Mar 2021 18:30:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1038F804AB;
+	Wed, 17 Mar 2021 18:30:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF5E2F80253; Wed, 17 Mar 2021 18:30:19 +0100 (CET)
+ id 14DF4F80253; Wed, 17 Mar 2021 18:30:23 +0100 (CET)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C174F8023C
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 18:30:07 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D174CF8023C
+ for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 18:30:19 +0100 (CET)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C270BA0046;
- Wed, 17 Mar 2021 18:30:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C270BA0046
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 6B3C1A0042;
+ Wed, 17 Mar 2021 18:30:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 6B3C1A0042
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1616002206; bh=6kD5zATXnBQFDOj0UOLkb8RB9SxBRcqvaUjvcdBtyGs=;
+ t=1616002219; bh=3gMl5PhiJGtMQ5h4maZzD2DIH/xwu8QFP0QjXIyeyq8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=reQ0OhR+ZOESB/nVnRqOBsLs3odgNkshSFKTQm3gw505LaGi5NmhE0BFH/hTW+gQ7
- N+KumpiMPt1tue8/iiC+m56OFhOfBNk98I+ribdjrMkSPWtYl8HXrN8SjN+k8wHHJ3
- P8cQ3A1rVnaZnKtPicd/BgpGVIR9Ns/yypxYwWxY=
+ b=bK1cOIM16YAqvkdMvWz7cbptkxyle7kU/90+AH6vUfVk53xj9aYlPizS5OaKu21+j
+ d8bcLDUqatb8gtYJ5noOWTS0yaaaWtguGKTs5BP3xl2o+HKr8KTZiXO8XsA2YANgSv
+ mnpCNTvC+TVYzCYn/t0VgMYs4eO6BxGNpCgXDDrM=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 17 Mar 2021 18:30:02 +0100 (CET)
+ Wed, 17 Mar 2021 18:30:15 +0100 (CET)
 From: Jaroslav Kysela <perex@perex.cz>
 To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH v4 3/6] ALSA: control - add generic LED trigger module as the
- new control layer
-Date: Wed, 17 Mar 2021 18:29:42 +0100
-Message-Id: <20210317172945.842280-4-perex@perex.cz>
+Subject: [PATCH v4 6/6] ALSA: led control - add sysfs kcontrol LED marking
+ layer
+Date: Wed, 17 Mar 2021 18:29:45 +0100
+Message-Id: <20210317172945.842280-7-perex@perex.cz>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210317172945.842280-1-perex@perex.cz>
 References: <20210317172945.842280-1-perex@perex.cz>
@@ -84,417 +84,490 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent laptops have usually two LEDs assigned to reflect
-the speaker and microphone mute state. This implementation
-adds a tiny layer on top of the control API which calculates
-the state for those LEDs using the driver callbacks.
+We need to manage the kcontrol entries association for the LED trigger
+from the user space. This patch adds a layer to the sysfs tree like:
 
-Two new access flags are introduced to describe the controls
-which affects the audio path settings (an easy code change
-for drivers).
+/sys/devices/virtual/sound/ctl-led/mic
+   + card0
+   |  + attach
+   |  + detach
+   |  ...
+   + card1
+      + attach
+      ...
 
-The LED resource can be shared with multiple sound cards with
-this code. The user space controls may be added to the state
-chain on demand, too.
+Operations:
 
-This code should replace the LED code in the HDA driver and
-add a possibility to easy extend the other drivers (ASoC
-codecs etc.).
+  attach and detach
+    - amixer style ID is accepted and easy strings for numid and
+      simple names
+  reset
+    - reset all associated kcontrol entries
+  list
+    - list associated kcontrol entries (numid values only)
+
+Additional symlinks:
+
+/sys/devices/virtual/sound/ctl-led/mic/card0/card ->
+  /sys/class/sound/card0
+
+/sys/class/sound/card0/controlC0/led-mic ->
+  /sys/devices/virtual/sound/ctl-led/mic/card0
 
 Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
- include/sound/control.h  |  19 ++-
- sound/core/Kconfig       |   6 +
- sound/core/Makefile      |   2 +
- sound/core/control.c     |   4 +-
- sound/core/control_led.c | 278 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 307 insertions(+), 2 deletions(-)
- create mode 100644 sound/core/control_led.c
+ sound/core/control_led.c | 366 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 362 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 175610bfa8c8..985c51a8fb74 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -24,7 +24,7 @@ typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
- 
- /* internal flag for skipping validations */
- #ifdef CONFIG_SND_CTL_VALIDATION
--#define SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK	(1 << 27)
-+#define SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK	(1 << 24)
- #define snd_ctl_skip_validation(info) \
- 	((info)->access & SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK)
- #else
-@@ -32,6 +32,12 @@ typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
- #define snd_ctl_skip_validation(info)		true
- #endif
- 
-+/* kernel only - LED bits */
-+#define SNDRV_CTL_ELEM_ACCESS_LED_SHIFT		25
-+#define SNDRV_CTL_ELEM_ACCESS_LED_MASK		(7<<25) /* kernel three bits - LED group */
-+#define SNDRV_CTL_ELEM_ACCESS_SPK_LED		(1<<25) /* kernel speaker (output) LED flag */
-+#define SNDRV_CTL_ELEM_ACCESS_MIC_LED		(2<<25) /* kernel microphone (input) LED flag */
-+
- enum {
- 	SNDRV_CTL_TLV_OP_READ = 0,
- 	SNDRV_CTL_TLV_OP_WRITE = 1,
-@@ -265,6 +271,17 @@ int snd_ctl_apply_vmaster_followers(struct snd_kcontrol *kctl,
- 						void *arg),
- 				    void *arg);
- 
-+/*
-+ * Control LED trigger layer
-+ */
-+#define SND_CTL_LAYER_MODULE_LED	"snd-ctl-led"
-+
-+#if IS_MODULE(CONFIG_SND_CTL_LED)
-+static inline int snd_ctl_led_request(void) { return snd_ctl_request_layer(SND_CTL_LAYER_MODULE_LED); }
-+#else
-+static inline int snd_ctl_led_request(void) { return 0; }
-+#endif
-+
- /*
-  * Helper functions for jack-detection controls
-  */
-diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index a4050f87f230..db2e3c63ff41 100644
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -203,4 +203,10 @@ config SND_DMA_SGBUF
- 	def_bool y
- 	depends on X86
- 
-+config SND_CTL_LED
-+	tristate
-+	select NEW_LEDS if SND_CTL_LED
-+	select LEDS_TRIGGERS if SND_CTL_LED
-+	select LEDS_TRIGGER_AUDIO if SND_CTL_LED
-+
- source "sound/core/seq/Kconfig"
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index ee4a4a6b99ba..d774792850f3 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -27,6 +27,7 @@ CFLAGS_pcm_native.o := -I$(src)
- 
- snd-pcm-dmaengine-objs := pcm_dmaengine.o
- 
-+snd-ctl-led-objs  := control_led.o
- snd-rawmidi-objs  := rawmidi.o
- snd-timer-objs    := timer.o
- snd-hrtimer-objs  := hrtimer.o
-@@ -37,6 +38,7 @@ snd-seq-device-objs := seq_device.o
- snd-compress-objs := compress_offload.o
- 
- obj-$(CONFIG_SND) 		+= snd.o
-+obj-$(CONFIG_SND_CTL_LED)	+= snd-ctl-led.o
- obj-$(CONFIG_SND_HWDEP)		+= snd-hwdep.o
- obj-$(CONFIG_SND_TIMER)		+= snd-timer.o
- obj-$(CONFIG_SND_HRTIMER)	+= snd-hrtimer.o
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 87630021e434..6825ca75daf5 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -278,6 +278,7 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
- 		   SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE |
- 		   SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND |
- 		   SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK |
-+		   SNDRV_CTL_ELEM_ACCESS_LED_MASK |
- 		   SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK);
- 
- 	err = snd_ctl_new(&kctl, count, access, NULL);
-@@ -1047,7 +1048,8 @@ static int snd_ctl_elem_info_user(struct snd_ctl_file *ctl,
- 	if (result < 0)
- 		return result;
- 	/* drop internal access flags */
--	info.access &= ~SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK;
-+	info.access &= ~(SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK|
-+			 SNDRV_CTL_ELEM_ACCESS_LED_MASK);
- 	if (copy_to_user(_info, &info, sizeof(info)))
- 		return -EFAULT;
- 	return result;
 diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-new file mode 100644
-index 000000000000..3e2c3c485c5c
---- /dev/null
+index dfa51d8461e1..d4fb8b873f34 100644
+--- a/sound/core/control_led.c
 +++ b/sound/core/control_led.c
-@@ -0,0 +1,278 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  LED state routines for driver control interface
-+ *  Copyright (c) 2021 by Jaroslav Kysela <perex@perex.cz>
-+ */
-+
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/leds.h>
-+#include <sound/core.h>
-+#include <sound/control.h>
-+
-+MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
-+MODULE_DESCRIPTION("ALSA control interface to LED trigger code.");
-+MODULE_LICENSE("GPL");
-+
-+#define MAX_LED (((SNDRV_CTL_ELEM_ACCESS_MIC_LED - SNDRV_CTL_ELEM_ACCESS_SPK_LED) \
-+			>> SNDRV_CTL_ELEM_ACCESS_LED_SHIFT) + 1)
-+
-+struct snd_ctl_led {
-+	struct list_head list;
-+	struct snd_card *card;
-+	unsigned int access;
-+	struct snd_kcontrol *kctl;
-+	unsigned int index_offset;
+@@ -24,6 +24,12 @@ enum snd_ctl_led_mode {
+ 	 MODE_ON,
+ };
+ 
++struct snd_ctl_led_card {
++	struct device dev;
++	int number;
++	struct snd_ctl_led *led;
 +};
 +
-+static DEFINE_MUTEX(snd_ctl_led_mutex);
-+static struct list_head snd_ctl_led_controls[MAX_LED];
-+static bool snd_ctl_led_card_valid[SNDRV_CARDS];
+ struct snd_ctl_led {
+ 	struct device dev;
+ 	struct list_head controls;
+@@ -31,6 +37,7 @@ struct snd_ctl_led {
+ 	unsigned int group;
+ 	enum led_audio trigger_type;
+ 	enum snd_ctl_led_mode mode;
++	struct snd_ctl_led_card *cards[SNDRV_CARDS];
+ };
+ 
+ struct snd_ctl_led_ctl {
+@@ -58,6 +65,9 @@ static struct snd_ctl_led snd_ctl_leds[MAX_LED] = {
+ 	},
+ };
+ 
++static void snd_ctl_led_sysfs_add(struct snd_card *card);
++static void snd_ctl_led_sysfs_remove(struct snd_card *card);
 +
-+#define UPDATE_ROUTE(route, cb) \
-+	do { \
-+		int route2 = (cb); \
-+		if (route2 >= 0) \
-+			route = route < 0 ? route2 : (route | route2); \
-+	} while (0)
-+
-+static inline unsigned int access_to_group(unsigned int access)
+ #define UPDATE_ROUTE(route, cb) \
+ 	do { \
+ 		int route2 = (cb); \
+@@ -222,6 +232,46 @@ static void snd_ctl_led_notify(struct snd_card *card, unsigned int mask,
+ 	}
+ }
+ 
++static int snd_ctl_led_set_id(int card_number, struct snd_ctl_elem_id *id,
++			      unsigned int group, bool set)
 +{
-+	return ((access & SNDRV_CTL_ELEM_ACCESS_LED_MASK) >>
-+				SNDRV_CTL_ELEM_ACCESS_LED_SHIFT) - 1;
-+}
++	struct snd_card *card;
++	struct snd_kcontrol *kctl;
++	struct snd_kcontrol_volatile *vd;
++	unsigned int ioff, access, new_access;
++	int err = 0;
 +
-+static inline unsigned int group_to_access(unsigned int group)
-+{
-+	return (group + 1) << SNDRV_CTL_ELEM_ACCESS_LED_SHIFT;
-+}
-+
-+static struct list_head *snd_ctl_led_controls_by_access(unsigned int access)
-+{
-+	unsigned int group = access_to_group(access);
-+	if (group >= MAX_LED)
-+		return NULL;
-+	return &snd_ctl_led_controls[group];
-+}
-+
-+static int snd_ctl_led_get(struct snd_ctl_led *lctl)
-+{
-+	struct snd_kcontrol *kctl = lctl->kctl;
-+	struct snd_ctl_elem_info info;
-+	struct snd_ctl_elem_value value;
-+	unsigned int i;
-+	int result;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.id = kctl->id;
-+	info.id.index += lctl->index_offset;
-+	info.id.numid += lctl->index_offset;
-+	result = kctl->info(kctl, &info);
-+	if (result < 0)
-+		return -1;
-+	memset(&value, 0, sizeof(value));
-+	value.id = info.id;
-+	result = kctl->get(kctl, &value);
-+	if (result < 0)
-+		return -1;
-+	if (info.type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-+	    info.type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
-+		for (i = 0; i < info.count; i++)
-+			if (value.value.integer.value[i] != info.value.integer.min)
-+				return 1;
-+	} else if (info.type == SNDRV_CTL_ELEM_TYPE_INTEGER64) {
-+		for (i = 0; i < info.count; i++)
-+			if (value.value.integer64.value[i] != info.value.integer64.min)
-+				return 1;
++	card = snd_card_ref(card_number);
++	if (card) {
++		down_write(&card->controls_rwsem);
++		kctl = snd_ctl_find_id(card, id);
++		if (kctl) {
++			ioff = snd_ctl_get_ioff(kctl, id);
++			vd = &kctl->vd[ioff];
++			access = vd->access & SNDRV_CTL_ELEM_ACCESS_LED_MASK;
++			if (access != 0 && access != group_to_access(group)) {
++				err = -EXDEV;
++				goto unlock;
++			}
++			new_access = vd->access & ~SNDRV_CTL_ELEM_ACCESS_LED_MASK;
++			if (set)
++				new_access |= group_to_access(group);
++			if (new_access != vd->access) {
++				vd->access = new_access;
++				snd_ctl_led_notify(card, SNDRV_CTL_EVENT_MASK_INFO, kctl, ioff);
++			}
++		} else {
++			err = -ENOENT;
++		}
++unlock:
++		up_write(&card->controls_rwsem);
++		snd_card_unref(card);
++	} else {
++		err = -ENXIO;
 +	}
++	return err;
++}
++
+ static void snd_ctl_led_refresh(void)
+ {
+ 	unsigned int group;
+@@ -230,6 +280,12 @@ static void snd_ctl_led_refresh(void)
+ 		snd_ctl_led_set_state(NULL, group_to_access(group), NULL, 0);
+ }
+ 
++static void snd_ctl_led_ctl_destroy(struct snd_ctl_led_ctl *lctl)
++{
++	list_del(&lctl->list);
++	kfree(lctl);
++}
++
+ static void snd_ctl_led_clean(struct snd_card *card)
+ {
+ 	unsigned int group;
+@@ -241,13 +297,47 @@ static void snd_ctl_led_clean(struct snd_card *card)
+ repeat:
+ 		list_for_each_entry(lctl, &led->controls, list)
+ 			if (!card || lctl->card == card) {
+-				list_del(&lctl->list);
+-				kfree(lctl);
++				snd_ctl_led_ctl_destroy(lctl);
+ 				goto repeat;
+ 			}
+ 	}
+ }
+ 
++static int snd_ctl_led_reset(int card_number, unsigned int group)
++{
++	struct snd_card *card;
++	struct snd_ctl_led *led;
++	struct snd_ctl_led_ctl *lctl;
++	struct snd_kcontrol_volatile *vd;
++	bool change = false;
++
++	card = snd_card_ref(card_number);
++	if (!card)
++		return -ENXIO;
++
++	mutex_lock(&snd_ctl_led_mutex);
++	if (!snd_ctl_led_card_valid[card_number]) {
++		mutex_unlock(&snd_ctl_led_mutex);
++		snd_card_unref(card);
++		return -ENXIO;
++	}
++	led = &snd_ctl_leds[group];
++repeat:
++	list_for_each_entry(lctl, &led->controls, list)
++		if (lctl->card == card) {
++			vd = &lctl->kctl->vd[lctl->index_offset];
++			vd->access &= ~group_to_access(group);
++			snd_ctl_led_ctl_destroy(lctl);
++			change = true;
++			goto repeat;
++		}
++	mutex_unlock(&snd_ctl_led_mutex);
++	if (change)
++		snd_ctl_led_set_state(NULL, group_to_access(group), NULL, 0);
++	snd_card_unref(card);
 +	return 0;
 +}
 +
-+static void snd_ctl_led_set_state(struct snd_card *card, unsigned int access,
-+				  struct snd_kcontrol *kctl, unsigned int ioff)
+ static void snd_ctl_led_register(struct snd_card *card)
+ {
+ 	struct snd_kcontrol *kctl;
+@@ -264,10 +354,12 @@ static void snd_ctl_led_register(struct snd_card *card)
+ 		for (ioff = 0; ioff < kctl->count; ioff++)
+ 			snd_ctl_led_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, kctl, ioff);
+ 	snd_ctl_led_refresh();
++	snd_ctl_led_sysfs_add(card);
+ }
+ 
+ static void snd_ctl_led_disconnect(struct snd_card *card)
+ {
++	snd_ctl_led_sysfs_remove(card);
+ 	mutex_lock(&snd_ctl_led_mutex);
+ 	snd_ctl_led_card_valid[card->number] = false;
+ 	snd_ctl_led_clean(card);
+@@ -349,8 +441,264 @@ static const struct attribute_group *snd_ctl_led_dev_attr_groups[] = {
+ 	NULL,
+ };
+ 
++static char *find_eos(char *s)
 +{
-+	struct list_head *controls;
-+	struct snd_ctl_led *lctl;
-+	enum led_audio led_trigger_type;
-+	int route;
-+	bool found;
++	while (*s && *s != ',')
++		s++;
++	if (*s)
++		s++;
++	return s;
++}
 +
-+	controls = snd_ctl_led_controls_by_access(access);
-+	if (!controls)
-+		return;
-+	if (access == SNDRV_CTL_ELEM_ACCESS_SPK_LED) {
-+		led_trigger_type = LED_AUDIO_MUTE;
-+	} else if (access == SNDRV_CTL_ELEM_ACCESS_MIC_LED) {
-+		led_trigger_type = LED_AUDIO_MICMUTE;
++static char *parse_uint(char *s, unsigned int *val)
++{
++	unsigned long long res;
++	if (kstrtoull(s, 10, &res))
++		res = 0;
++	*val = res;
++	return find_eos(s);
++}
++
++static char *parse_string(char *s, char *val, size_t val_size)
++{
++	if (*s == '"' || *s == '\'') {
++		char c = *s;
++		s++;
++		while (*s && *s != c) {
++			if (val_size > 1) {
++				*val++ = *s;
++				val_size--;
++			}
++			s++;
++		}
 +	} else {
-+		return;
-+	}
-+	route = -1;
-+	found = false;
-+	mutex_lock(&snd_ctl_led_mutex);
-+	/* the card may not be registered (active) at this point */
-+	if (card && !snd_ctl_led_card_valid[card->number]) {
-+		mutex_unlock(&snd_ctl_led_mutex);
-+		return;
-+	}
-+	list_for_each_entry(lctl, controls, list) {
-+		if (lctl->kctl == kctl && lctl->index_offset == ioff)
-+			found = true;
-+		UPDATE_ROUTE(route, snd_ctl_led_get(lctl));
-+	}
-+	if (!found && kctl && card) {
-+		lctl = kzalloc(sizeof(*lctl), GFP_KERNEL);
-+		if (lctl) {
-+			lctl->card = card;
-+			lctl->access = access;
-+			lctl->kctl = kctl;
-+			lctl->index_offset = ioff;
-+			list_add(&lctl->list, controls);
-+			UPDATE_ROUTE(route, snd_ctl_led_get(lctl));
++		while (*s && *s != ',') {
++			if (val_size > 1) {
++				*val++ = *s;
++				val_size--;
++			}
++			s++;
 +		}
 +	}
-+	mutex_unlock(&snd_ctl_led_mutex);
-+	if (route >= 0)
-+		ledtrig_audio_set(led_trigger_type, route ? LED_OFF : LED_ON);
++	*val = '\0';
++	if (*s)
++		s++;
++	return s;
 +}
 +
-+static struct snd_ctl_led *snd_ctl_led_find(struct snd_kcontrol *kctl, unsigned int ioff)
++static char *parse_iface(char *s, unsigned int *val)
 +{
-+	struct list_head *controls;
-+	struct snd_ctl_led *lctl;
-+	unsigned int group;
-+
-+	for (group = 0; group < MAX_LED; group++) {
-+		controls = &snd_ctl_led_controls[group];
-+		list_for_each_entry(lctl, controls, list)
-+			if (lctl->kctl == kctl && lctl->index_offset == ioff)
-+				return lctl;
-+	}
-+	return NULL;
-+}
-+
-+static unsigned int snd_ctl_led_remove(struct snd_kcontrol *kctl, unsigned int ioff,
-+				       unsigned int access)
-+{
-+	struct snd_ctl_led *lctl;
-+	unsigned int ret = 0;
-+
-+	mutex_lock(&snd_ctl_led_mutex);
-+	lctl = snd_ctl_led_find(kctl, ioff);
-+	if (lctl && (access == 0 || access != lctl->access)) {
-+		ret = lctl->access;
-+		list_del(&lctl->list);
-+		kfree(lctl);
-+	}
-+	mutex_unlock(&snd_ctl_led_mutex);
-+	return ret;
-+}
-+
-+static void snd_ctl_led_notify(struct snd_card *card, unsigned int mask,
-+			       struct snd_kcontrol *kctl, unsigned int ioff)
-+{
-+	struct snd_kcontrol_volatile *vd;
-+	unsigned int access, access2;
-+
-+	if (mask == SNDRV_CTL_EVENT_MASK_REMOVE) {
-+		access = snd_ctl_led_remove(kctl, ioff, 0);
-+		if (access)
-+			snd_ctl_led_set_state(card, access, NULL, 0);
-+	} else if (mask & SNDRV_CTL_EVENT_MASK_INFO) {
-+		vd = &kctl->vd[ioff];
-+		access = vd->access & SNDRV_CTL_ELEM_ACCESS_LED_MASK;
-+		access2 = snd_ctl_led_remove(kctl, ioff, access);
-+		if (access2)
-+			snd_ctl_led_set_state(card, access2, NULL, 0);
-+		if (access)
-+			snd_ctl_led_set_state(card, access, kctl, ioff);
-+	} else if ((mask & (SNDRV_CTL_EVENT_MASK_ADD |
-+			    SNDRV_CTL_EVENT_MASK_VALUE)) != 0) {
-+		vd = &kctl->vd[ioff];
-+		access = vd->access & SNDRV_CTL_ELEM_ACCESS_LED_MASK;
-+		if (access)
-+			snd_ctl_led_set_state(card, access, kctl, ioff);
-+	}
-+}
-+
-+static void snd_ctl_led_refresh(void)
-+{
-+	unsigned int group;
-+
-+	for (group = 0; group < MAX_LED; group++)
-+		snd_ctl_led_set_state(NULL, group_to_access(group), NULL, 0);
-+}
-+
-+static void snd_ctl_led_clean(struct snd_card *card)
-+{
-+	unsigned int group;
-+	struct list_head *controls;
-+	struct snd_ctl_led *lctl;
-+
-+	for (group = 0; group < MAX_LED; group++) {
-+		controls = &snd_ctl_led_controls[group];
-+repeat:
-+		list_for_each_entry(lctl, controls, list)
-+			if (!card || lctl->card == card) {
-+				list_del(&lctl->list);
-+				kfree(lctl);
-+				goto repeat;
-+			}
-+	}
-+}
-+
-+static void snd_ctl_led_register(struct snd_card *card)
-+{
-+	struct snd_kcontrol *kctl;
-+	unsigned int ioff;
-+
-+	if (snd_BUG_ON(card->number < 0 ||
-+		       card->number >= ARRAY_SIZE(snd_ctl_led_card_valid)))
-+		return;
-+	mutex_lock(&snd_ctl_led_mutex);
-+	snd_ctl_led_card_valid[card->number] = true;
-+	mutex_unlock(&snd_ctl_led_mutex);
-+	/* the register callback is already called with held card->controls_rwsem */
-+	list_for_each_entry(kctl, &card->controls, list)
-+		for (ioff = 0; ioff < kctl->count; ioff++)
-+			snd_ctl_led_notify(card, SNDRV_CTL_EVENT_MASK_VALUE, kctl, ioff);
-+	snd_ctl_led_refresh();
-+}
-+
-+static void snd_ctl_led_disconnect(struct snd_card *card)
-+{
-+	mutex_lock(&snd_ctl_led_mutex);
-+	snd_ctl_led_card_valid[card->number] = false;
-+	snd_ctl_led_clean(card);
-+	mutex_unlock(&snd_ctl_led_mutex);
-+	snd_ctl_led_refresh();
++	if (!strncasecmp(s, "card", 4))
++		*val = SNDRV_CTL_ELEM_IFACE_CARD;
++	else if (!strncasecmp(s, "mixer", 5))
++		*val = SNDRV_CTL_ELEM_IFACE_MIXER;
++	return find_eos(s);
 +}
 +
 +/*
-+ * Control layer registration
++ * These types of input strings are accepted:
++ *
++ *   unsigned integer - numid (equivaled to numid=UINT)
++ *   string - basic mixer name (equivalent to iface=MIXER,name=STR)
++ *   numid=UINT
++ *   [iface=MIXER,][device=UINT,][subdevice=UINT,]name=STR[,index=UINT]
 + */
-+static struct snd_ctl_layer_ops snd_ctl_led_lops = {
-+	.module_name = SND_CTL_LAYER_MODULE_LED,
-+	.lregister = snd_ctl_led_register,
-+	.ldisconnect = snd_ctl_led_disconnect,
-+	.lnotify = snd_ctl_led_notify,
++static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, size_t count,
++			  bool attach)
++{
++	char buf2[256], *s;
++	size_t len = max(sizeof(s) - 1, count);
++	struct snd_ctl_elem_id id;
++	int err;
++
++	strncpy(buf2, buf, len);
++	buf2[len] = '\0';
++	memset(&id, 0, sizeof(id));
++	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++	s = buf2;
++	while (*s) {
++		if (!strncasecmp(s, "numid=", 6)) {
++			s = parse_uint(s + 6, &id.numid);
++		} else if (!strncasecmp(s, "iface=", 6)) {
++			s = parse_iface(s + 6, &id.iface);
++		} else if (!strncasecmp(s, "device=", 7)) {
++			s = parse_uint(s + 7, &id.device);
++		} else if (!strncasecmp(s, "subdevice=", 10)) {
++			s = parse_uint(s + 10, &id.subdevice);
++		} else if (!strncasecmp(s, "name=", 5)) {
++			s = parse_string(s + 5, id.name, sizeof(id.name));
++		} else if (!strncasecmp(s, "index=", 6)) {
++			s = parse_uint(s + 6, &id.index);
++		} else if (s == buf2) {
++			while (*s) {
++				if (*s < '0' || *s > '9')
++					break;
++				s++;
++			}
++			if (*s == '\0')
++				parse_uint(buf2, &id.numid);
++			else {
++				for (; *s >= ' '; s++);
++				*s = '\0';
++				strlcpy(id.name, buf2, sizeof(id.name));
++			}
++			break;
++		}
++		if (*s == ',')
++			s++;
++	}
++
++	err = snd_ctl_led_set_id(led_card->number, &id, led_card->led->group, attach);
++	if (err < 0)
++		return err;
++
++	return count;
++}
++
++static ssize_t parse_attach(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
++	return set_led_id(led_card, buf, count, true);
++}
++
++static ssize_t parse_detach(struct device *dev, struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
++	return set_led_id(led_card, buf, count, false);
++}
++
++static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
++			 const char *buf, size_t count)
++{
++	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
++	int err;
++
++	if (count > 0 && buf[0] == '1') {
++		err = snd_ctl_led_reset(led_card->number, led_card->led->group);
++		if (err < 0)
++			return err;
++	}
++	return count;
++}
++
++static ssize_t ctl_list(struct device *dev,
++			struct device_attribute *attr, char *buf)
++{
++	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
++	struct snd_card *card;
++	struct snd_ctl_led_ctl *lctl;
++	char *buf2 = buf;
++	size_t l;
++
++	card = snd_card_ref(led_card->number);
++	if (!card)
++		return -ENXIO;
++	down_read(&card->controls_rwsem);
++	mutex_lock(&snd_ctl_led_mutex);
++	if (snd_ctl_led_card_valid[led_card->number]) {
++		list_for_each_entry(lctl, &led_card->led->controls, list)
++			if (lctl->card == card) {
++				if (buf2 - buf > PAGE_SIZE - 16)
++					break;
++				if (buf2 != buf)
++					*buf2++ = ' ';
++				l = scnprintf(buf2, 15, "%u",
++						lctl->kctl->id.numid +
++							lctl->index_offset);
++				buf2[l] = '\0';
++				buf2 += l + 1;
++			}
++	}
++	mutex_unlock(&snd_ctl_led_mutex);
++	up_read(&card->controls_rwsem);
++	snd_card_unref(card);
++	return buf2 - buf;
++}
++
++static DEVICE_ATTR(attach, 0200, NULL, parse_attach);
++static DEVICE_ATTR(detach, 0200, NULL, parse_detach);
++static DEVICE_ATTR(reset, 0200, NULL, ctl_reset);
++static DEVICE_ATTR(list, 0444, ctl_list, NULL);
++
++static struct attribute *snd_ctl_led_card_attrs[] = {
++	&dev_attr_attach.attr,
++	&dev_attr_detach.attr,
++	&dev_attr_reset.attr,
++	&dev_attr_list.attr,
++	NULL,
 +};
 +
-+static int __init snd_ctl_led_init(void)
++static const struct attribute_group snd_ctl_led_card_attr_group = {
++	.attrs = snd_ctl_led_card_attrs,
++};
++
++static const struct attribute_group *snd_ctl_led_card_attr_groups[] = {
++	&snd_ctl_led_card_attr_group,
++	NULL,
++};
++
+ static struct device snd_ctl_led_dev;
+ 
++static void snd_ctl_led_sysfs_add(struct snd_card *card)
 +{
 +	unsigned int group;
++	struct snd_ctl_led_card *led_card;
++	struct snd_ctl_led *led;
++	char link_name[32];
 +
-+	for (group = 0; group < MAX_LED; group++)
-+		INIT_LIST_HEAD(&snd_ctl_led_controls[group]);
-+	snd_ctl_register_layer(&snd_ctl_led_lops);
-+	return 0;
++	for (group = 0; group < MAX_LED; group++) {
++		led = &snd_ctl_leds[group];
++		led_card = kzalloc(sizeof(*led_card), GFP_KERNEL);
++		if (!led_card)
++			goto cerr2;
++		led_card->number = card->number;
++		led_card->led = led;
++		device_initialize(&led_card->dev);
++		if (dev_set_name(&led_card->dev, "card%d", card->number) < 0)
++			goto cerr;
++		led_card->dev.parent = &led->dev;
++		led_card->dev.groups = snd_ctl_led_card_attr_groups;
++		if (device_add(&led_card->dev))
++			goto cerr;
++		led->cards[card->number] = led_card;
++		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
++		WARN(sysfs_create_link(&card->ctl_dev.kobj, &led_card->dev.kobj, link_name),
++			"can't create symlink to controlC%i device\n", card->number);
++		WARN(sysfs_create_link(&led_card->dev.kobj, &card->card_dev.kobj, "card"),
++			"can't create symlink to card%i\n", card->number);
++
++		continue;
++cerr:
++		put_device(&led_card->dev);
++cerr2:
++		printk(KERN_ERR "snd_ctl_led: unable to add card%d", card->number);
++		kfree(led_card);
++	}
 +}
 +
-+static void __exit snd_ctl_led_exit(void)
++static void snd_ctl_led_sysfs_remove(struct snd_card *card)
 +{
-+	snd_ctl_disconnect_layer(&snd_ctl_led_lops);
-+	snd_ctl_led_clean(NULL);
++	unsigned int group;
++	struct snd_ctl_led_card *led_card;
++	struct snd_ctl_led *led;
++	char link_name[32];
++
++	for (group = 0; group < MAX_LED; group++) {
++		led = &snd_ctl_leds[group];
++		led_card = led->cards[card->number];
++		if (!led_card)
++			continue;
++		snprintf(link_name, sizeof(link_name), "led-%s", led->name);
++		sysfs_remove_link(&card->ctl_dev.kobj, link_name);
++		sysfs_remove_link(&led_card->dev.kobj, "card");
++		device_del(&led_card->dev);
++		kfree(led_card);
++		led->cards[card->number] = NULL;
++	}
 +}
 +
-+module_init(snd_ctl_led_init)
-+module_exit(snd_ctl_led_exit)
+ /*
+  * Control layer registration
+  */
+@@ -397,14 +745,24 @@ static int __init snd_ctl_led_init(void)
+ static void __exit snd_ctl_led_exit(void)
+ {
+ 	struct snd_ctl_led *led;
+-	unsigned int group;
++	struct snd_card *card;
++	unsigned int group, card_number;
+ 
++	snd_ctl_disconnect_layer(&snd_ctl_led_lops);
++	for (card_number = 0; card_number < SNDRV_CARDS; card_number++) {
++		if (!snd_ctl_led_card_valid[card_number])
++			continue;
++		card = snd_card_ref(card_number);
++		if (card) {
++			snd_ctl_led_sysfs_remove(card);
++			snd_card_unref(card);
++		}
++	}
+ 	for (group = 0; group < MAX_LED; group++) {
+ 		led = &snd_ctl_leds[group];
+ 		device_del(&led->dev);
+ 	}
+ 	device_del(&snd_ctl_led_dev);
+-	snd_ctl_disconnect_layer(&snd_ctl_led_lops);
+ 	snd_ctl_led_clean(NULL);
+ }
+ 
 -- 
 2.29.2
