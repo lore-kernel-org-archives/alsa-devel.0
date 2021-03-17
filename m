@@ -2,105 +2,72 @@ Return-Path: <SRS0=sQP2=IP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F84DC433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3CEFC433E0
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:31:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 319ED64E0F
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:21:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 319ED64E0F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 88E0E64EBD
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:31:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88E0E64EBD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17FED16D3;
-	Wed, 17 Mar 2021 18:20:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17FED16D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6552016B6;
+	Wed, 17 Mar 2021 18:30:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6552016B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616001668;
-	bh=tUY5VAEw/UzSDL7/pa7a/yq3LDL7WLc7x6Ex+yqgnWk=;
-	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1616002270;
+	bh=yKNrV5Lq3qBotUK4Fx6OaA9OC+cft2LGeAnpEdCcT5c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ugr6+rMge+WdyQdfiWyM7k4RvM4x/Nh3Vss31LI0YSDmjUiuL+0VNg5vFn+jFkqk7
-	 8/JxIIHtBK0Y86qSvZbpYSSf4Qxi2kbPv6rpwOqsuRcIcgM2tB3YBz4i6hfWtdHjHc
-	 o+/SMu4gCln2Juc9aBiATLHyaNYpwtfGGiCxL6/8=
+	b=NtIp/Wv73WWgirWKMPmy6oNV+3DJ6EaUdnW6RqbsVDZzfEOlp9pH6PMhHXvQe0bIV
+	 TG+nnV4IavfRY1DnjOpj2cpHQri6eeMX4/8WGTMq2FC7S4Krje3lct14Z+UZ7/qUJV
+	 +kC5X1bR6+cQib/HIrZmOEbKJGGFiovHw4Gn5Nso=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AA9FF8013F;
-	Wed, 17 Mar 2021 18:20:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCD0FF8013F;
+	Wed, 17 Mar 2021 18:30:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 493EBF8021C; Wed, 17 Mar 2021 18:20:15 +0100 (CET)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 71ED1F80148; Wed, 17 Mar 2021 18:30:12 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A71DDF8013F
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 18:20:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A71DDF8013F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="OoZX2tiI"
-Received: by mail-lf1-x130.google.com with SMTP id m17so84678lfg.0
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 10:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=subject:from:to:cc:references:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=NFi1kFhrUTgn5FvPk8wh5i9n6BvR2USVpUn/9xflTkk=;
- b=OoZX2tiIQyHFy7a/jirVKoULGhIrjwPvuvQYgCktz4ZesxRQIDzLxjYERGMvcaXbl7
- ryx5JZPNhEiujaONPvnTEyRdEh2Ng2lheMKTZRstYdQVPM/2jB3HUccjYkZXVPtkuvCL
- EqfZCMS7EewunrhZM9O7vYe+c200rM1v8egLvPZN2bAYMqGlTxg7Asacma/8LAFUbrts
- IOGgi9jIHiCuEn5jWEstEXVelAIqOj77bkrhQkwwnuj3vQ3N6xqO/u/DKvCK3iEs3TeY
- NKspi5cJRrgqwvKgXLBFsQnrkviRb9cN8vW0kJjjPSRkzLj5itjRAq50N/XjuEgvfjLd
- Zpug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:from:to:cc:references:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=NFi1kFhrUTgn5FvPk8wh5i9n6BvR2USVpUn/9xflTkk=;
- b=LV7fLFLk7pGxbQoKi5CG+6w/ilmtBhxZRmUUgmkQbBOcfZPCtidotOi7R5rVanax28
- DmSN2rGML8WnrmFd0836mqWX5xYtg1/6Hx97ZwF052N33Lfr4MrupMrgtFqK188UbokX
- Y255gId3pHz8Y4IvBfEvTTb7LRPXBhRV7HB0V//XUIv3UdQAyUBfFc+ub8dWy+pZpYzp
- p0zyKTqcH+wyTQnfz7kJJ/SdMZgVk0PMgsf+gJZLMCdBnSkB47iVXwO8VVTTBh3Dm9Lu
- nvlCkxAIuJB7kUB5pDy01yj9pdHkMCQr4VQgcBJLeJkxvQwqVSY2I1NlGuQg4lFZdW0r
- Y6fQ==
-X-Gm-Message-State: AOAM532cH62+jikeWfkXrtsx618h2ntfWzqt6BWYI/2zG+eWJXiSPZME
- iXeAZuYRCnaGN10ACdl1nnVdQkc9740=
-X-Google-Smtp-Source: ABdhPJxMJd14k9yjtgxRwNLmMWFGlgc0PX7nuLmBb8FfvmGKIWsxLnOUuuJIpmAAfPUbW+HjT4CY2A==
-X-Received: by 2002:a05:6512:108e:: with SMTP id
- j14mr2741412lfg.364.1616001611659; 
- Wed, 17 Mar 2021 10:20:11 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru.
- [109.252.193.52])
- by smtp.googlemail.com with ESMTPSA id v2sm3576654ljg.89.2021.03.17.10.20.10
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 17 Mar 2021 10:20:11 -0700 (PDT)
-Subject: Re: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC
- drivers
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- Philipp Zabel <p.zabel@pengutronix.de>, Paul Fertser <fercerpav@gmail.com>
-References: <20210314154459.15375-1-digetx@gmail.com>
-Message-ID: <be93d088-fefe-77f0-9b8e-9c815cc0d0f0@gmail.com>
-Date: Wed, 17 Mar 2021 20:20:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03A65F80148
+ for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 18:30:03 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8E8B3A0042;
+ Wed, 17 Mar 2021 18:30:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8E8B3A0042
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1616002202; bh=KTqKDX+DCnMNvVisVqYD4DESDUL5FvK+M6H8PBf4PNk=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=ID9Y0p8mKf0L0WCaBFx6bez+yIed3XqIsUGC0XSfNSHH5ip6mlZSrYEBeX9LxWUmY
+ 3mq+6EDDz+UCY86NfznIaaJg8ffDSB3yyWHLgDL8NcnYRtn4/ddP7UWd2V5XtMC2lY
+ PwF9gY4Cv12CvYO2ZKgPWNbUFMB+sc+Hh7/WTp7M=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 17 Mar 2021 18:29:58 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH v4 2/6] ALSA: control - add layer registration routines
+Date: Wed, 17 Mar 2021 18:29:41 +0100
+Message-Id: <20210317172945.842280-3-perex@perex.cz>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210317172945.842280-1-perex@perex.cz>
+References: <20210317172945.842280-1-perex@perex.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,44 +83,210 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-14.03.2021 18:44, Dmitry Osipenko пишет:
-> Hi,
-> 
-> This series adds missing hardware reset controls to I2S and AC97 drivers,
-> corrects runtime PM usage and drivers probe/remove order. Currently drivers
-> happen to work properly because reset is implicitly deasserted by tegra-clk
-> driver, but clk driver shouldn't touch the resets and we need to fix it
-> because this breaks other Tegra drivers. Previously we fixed the resets of
-> the AHUB and HDMI codec drivers, but turned out that we missed the I2C and
-> AC97 drivers.
-> 
-> Thanks to Paul Fertser for testing the pending clk patches and finding
-> that audio got broken on Tegra20 AC100 netbook because of the missing I2S
-> reset.
-....
-> Dmitry Osipenko (16):
->   ASoC: tegra20: ac97: Add reset control
->   ASoC: tegra20: i2s: Add reset control
->   ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
->   ASoC: tegra30: ahub: Switch to use reset-bulk API
->   ASoC: tegra20: spdif: Correct driver removal order
->   ASoC: tegra20: spdif: Remove handing of disabled runtime PM
->   ASoC: tegra20: i2s: Add system level suspend-resume callbacks
->   ASoC: tegra20: i2s: Correct driver removal order
->   ASoC: tegra20: i2s: Use devm_clk_get()
->   ASoC: tegra20: i2s: Remove handing of disabled runtime PM
->   ASoC: tegra30: i2s: Correct driver removal order
->   ASoC: tegra30: i2s: Use devm_clk_get()
->   ASoC: tegra30: i2s: Remove handing of disabled runtime PM
->   ASoC: tegra30: ahub: Reset global variable
->   ASoC: tegra30: ahub: Correct suspend-resume callbacks
->   ASoC: tegra30: ahub: Remove handing of disabled runtime PM
-> 
-> Philipp Zabel (1):
->   reset: Add reset_control_bulk API
+The layer registration allows to handle an extra functionality
+on top of the control API. It can be used for the audio
+LED control for example.
 
-Mark / Takashi, I may try to split up this series into two or three
-smaller patchsets and then the reset/ patch from Philipp Zabel could be
-merged by Philipp himself. I primarily want to have the audio resets
-fixed and the reset API extended with reset_control_bulk in 5.13 because
-this will unblock other patches. Please let me know what you prefer more.
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ include/sound/control.h |  12 +++++
+ sound/core/control.c    | 110 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 120 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 22f3d48163ff..175610bfa8c8 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -108,6 +108,14 @@ struct snd_ctl_file {
+ 	struct list_head events;	/* waiting events for read */
+ };
+ 
++struct snd_ctl_layer_ops {
++	struct snd_ctl_layer_ops *next;
++	const char *module_name;
++	void (*lregister)(struct snd_card *card);
++	void (*ldisconnect)(struct snd_card *card);
++	void (*lnotify)(struct snd_card *card, unsigned int mask, struct snd_kcontrol *kctl, unsigned int ioff);
++};
++
+ #define snd_ctl_file(n) list_entry(n, struct snd_ctl_file, list)
+ 
+ typedef int (*snd_kctl_ioctl_func_t) (struct snd_card * card,
+@@ -140,6 +148,10 @@ int snd_ctl_unregister_ioctl_compat(snd_kctl_ioctl_func_t fcn);
+ #define snd_ctl_unregister_ioctl_compat(fcn)
+ #endif
+ 
++int snd_ctl_request_layer(const char *module_name);
++void snd_ctl_register_layer(struct snd_ctl_layer_ops *lops);
++void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops);
++
+ int snd_ctl_get_preferred_subdevice(struct snd_card *card, int type);
+ 
+ static inline unsigned int snd_ctl_get_ioffnum(struct snd_kcontrol *kctl, struct snd_ctl_elem_id *id)
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 8a5cedb0a4be..87630021e434 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -28,10 +28,12 @@ struct snd_kctl_ioctl {
+ };
+ 
+ static DECLARE_RWSEM(snd_ioctl_rwsem);
++static DECLARE_RWSEM(snd_ctl_layer_rwsem);
+ static LIST_HEAD(snd_control_ioctls);
+ #ifdef CONFIG_COMPAT
+ static LIST_HEAD(snd_control_compat_ioctls);
+ #endif
++static struct snd_ctl_layer_ops *snd_ctl_layer;
+ 
+ static int snd_ctl_open(struct inode *inode, struct file *file)
+ {
+@@ -195,10 +197,15 @@ void snd_ctl_notify_one(struct snd_card *card, unsigned int mask,
+ 			struct snd_kcontrol *kctl, unsigned int ioff)
+ {
+ 	struct snd_ctl_elem_id id = kctl->id;
++	struct snd_ctl_layer_ops *lops;
+ 
+ 	id.index += ioff;
+ 	id.numid += ioff;
+ 	snd_ctl_notify(card, mask, &id);
++	down_read(&snd_ctl_layer_rwsem);
++	for (lops = snd_ctl_layer; lops; lops = lops->next)
++		lops->lnotify(card, mask, kctl, ioff);
++	up_read(&snd_ctl_layer_rwsem);
+ }
+ EXPORT_SYMBOL(snd_ctl_notify_one);
+ 
+@@ -1997,6 +2004,86 @@ EXPORT_SYMBOL_GPL(snd_ctl_get_preferred_subdevice);
+ #define snd_ctl_ioctl_compat	NULL
+ #endif
+ 
++/*
++ * control layers (audio LED etc.)
++ */
++
++/**
++ * snd_ctl_request_layer - request to use the layer
++ * @module_name: Name of the kernel module (NULL == build-in)
++ *
++ * Return an error code when the module cannot be loaded.
++ */
++int snd_ctl_request_layer(const char *module_name)
++{
++	struct snd_ctl_layer_ops *lops;
++
++	if (module_name == NULL)
++		return 0;
++	down_read(&snd_ctl_layer_rwsem);
++	for (lops = snd_ctl_layer; lops; lops = lops->next)
++		if (strcmp(lops->module_name, module_name) == 0)
++			break;
++	up_read(&snd_ctl_layer_rwsem);
++	if (lops)
++		return 0;
++	return request_module(module_name);
++}
++EXPORT_SYMBOL_GPL(snd_ctl_request_layer);
++
++/**
++ * snd_ctl_register_layer - register new control layer
++ * @lops: operation structure
++ *
++ * The new layer can track all control elements and do additional
++ * operations on top (like audio LED handling).
++ */
++void snd_ctl_register_layer(struct snd_ctl_layer_ops *lops)
++{
++	struct snd_card *card;
++	int card_number;
++
++	down_write(&snd_ctl_layer_rwsem);
++	lops->next = snd_ctl_layer;
++	snd_ctl_layer = lops;
++	up_write(&snd_ctl_layer_rwsem);
++	for (card_number = 0; card_number < SNDRV_CARDS; card_number++) {
++		card = snd_card_ref(card_number);
++		if (card) {
++			down_read(&card->controls_rwsem);
++			lops->lregister(card);
++			up_read(&card->controls_rwsem);
++			snd_card_unref(card);
++		}
++	}
++}
++EXPORT_SYMBOL_GPL(snd_ctl_register_layer);
++
++/**
++ * snd_ctl_disconnect_layer - disconnect control layer
++ * @lops: operation structure
++ *
++ * It is expected that the information about tracked cards
++ * is freed before this call (the disconnect callback is
++ * not called here).
++ */
++void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops)
++{
++	struct snd_ctl_layer_ops *lops2, *prev_lops2;
++
++	down_write(&snd_ctl_layer_rwsem);
++	for (lops2 = snd_ctl_layer, prev_lops2 = NULL; lops2; lops2 = lops2->next)
++		if (lops2 == lops) {
++			if (!prev_lops2)
++				snd_ctl_layer = lops->next;
++			else
++				prev_lops2->next = lops->next;
++			break;
++		}
++	up_write(&snd_ctl_layer_rwsem);
++}
++EXPORT_SYMBOL_GPL(snd_ctl_disconnect_layer);
++
+ /*
+  *  INIT PART
+  */
+@@ -2020,9 +2107,20 @@ static const struct file_operations snd_ctl_f_ops =
+ static int snd_ctl_dev_register(struct snd_device *device)
+ {
+ 	struct snd_card *card = device->device_data;
++	struct snd_ctl_layer_ops *lops;
++	int err;
+ 
+-	return snd_register_device(SNDRV_DEVICE_TYPE_CONTROL, card, -1,
+-				   &snd_ctl_f_ops, card, &card->ctl_dev);
++	err = snd_register_device(SNDRV_DEVICE_TYPE_CONTROL, card, -1,
++				  &snd_ctl_f_ops, card, &card->ctl_dev);
++	if (err < 0)
++		return err;
++	down_read(&card->controls_rwsem);
++	down_read(&snd_ctl_layer_rwsem);
++	for (lops = snd_ctl_layer; lops; lops = lops->next)
++		lops->lregister(card);
++	up_read(&snd_ctl_layer_rwsem);
++	up_read(&card->controls_rwsem);
++	return 0;
+ }
+ 
+ /*
+@@ -2032,6 +2130,7 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
+ {
+ 	struct snd_card *card = device->device_data;
+ 	struct snd_ctl_file *ctl;
++	struct snd_ctl_layer_ops *lops;
+ 	unsigned long flags;
+ 
+ 	read_lock_irqsave(&card->ctl_files_rwlock, flags);
+@@ -2041,6 +2140,13 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
+ 	}
+ 	read_unlock_irqrestore(&card->ctl_files_rwlock, flags);
+ 
++	down_read(&card->controls_rwsem);
++	down_read(&snd_ctl_layer_rwsem);
++	for (lops = snd_ctl_layer; lops; lops = lops->next)
++		lops->ldisconnect(card);
++	up_read(&snd_ctl_layer_rwsem);
++	up_read(&card->controls_rwsem);
++
+ 	return snd_unregister_device(&card->ctl_dev);
+ }
+ 
+-- 
+2.29.2
