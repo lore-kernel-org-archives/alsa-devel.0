@@ -2,69 +2,66 @@ Return-Path: <SRS0=sQP2=IP=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3CEFC433E0
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:31:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F24FC433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:32:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 88E0E64EBD
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:31:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88E0E64EBD
+	by mail.kernel.org (Postfix) with ESMTPS id B471464EBD
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Mar 2021 17:32:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B471464EBD
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6552016B6;
-	Wed, 17 Mar 2021 18:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6552016B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3622016E0;
+	Wed, 17 Mar 2021 18:31:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3622016E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616002270;
-	bh=yKNrV5Lq3qBotUK4Fx6OaA9OC+cft2LGeAnpEdCcT5c=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NtIp/Wv73WWgirWKMPmy6oNV+3DJ6EaUdnW6RqbsVDZzfEOlp9pH6PMhHXvQe0bIV
-	 TG+nnV4IavfRY1DnjOpj2cpHQri6eeMX4/8WGTMq2FC7S4Krje3lct14Z+UZ7/qUJV
-	 +kC5X1bR6+cQib/HIrZmOEbKJGGFiovHw4Gn5Nso=
+	s=default; t=1616002321;
+	bh=n2sA8MYB3thyDn4lhSykeRf1xGa2KnDUhQIrgKjHZ8I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NVKrdnrBxtLoAEDL+t1XFXD5dhkD0aQYU35Wk7mXmU3umY3Ma4t9dBQzy8bHwGtvC
+	 jUO5XFgWWup3neKE8r3wqQUTlk5fM+MkDRWClzEZgZd8JSDEryRF6orpsGwKkLNa1/
+	 //z0FlpWR8U/T2J4hnWIr06MeFtTEmLbJnoyMlDQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCD0FF8013F;
-	Wed, 17 Mar 2021 18:30:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18371F8023E;
+	Wed, 17 Mar 2021 18:30:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71ED1F80148; Wed, 17 Mar 2021 18:30:12 +0100 (CET)
+ id E6842F80253; Wed, 17 Mar 2021 18:30:10 +0100 (CET)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03A65F80148
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 18:30:03 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09DE3F8013F
+ for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 18:29:58 +0100 (CET)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8E8B3A0042;
- Wed, 17 Mar 2021 18:30:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8E8B3A0042
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 36305A0042;
+ Wed, 17 Mar 2021 18:29:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 36305A0042
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1616002202; bh=KTqKDX+DCnMNvVisVqYD4DESDUL5FvK+M6H8PBf4PNk=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ID9Y0p8mKf0L0WCaBFx6bez+yIed3XqIsUGC0XSfNSHH5ip6mlZSrYEBeX9LxWUmY
- 3mq+6EDDz+UCY86NfznIaaJg8ffDSB3yyWHLgDL8NcnYRtn4/ddP7UWd2V5XtMC2lY
- PwF9gY4Cv12CvYO2ZKgPWNbUFMB+sc+Hh7/WTp7M=
+ t=1616002194; bh=um8iBwhpHXZgZ99XMHEtko5xE2xv9TLCDLS/OJPEYuY=;
+ h=From:To:Cc:Subject:Date:From;
+ b=HEOMSc/7E5Y1qNPISR+WUv5CmTlFSL6rG+Rt/5cGZKPxYoN9g3GsSjKaSZxx9OC6k
+ d+DdBXa8kbc/IzmLMyEpbWQZcfRqoCnBPuNgOotV4Fj583sIoU5EdIKuzHfgtXMwz4
+ 1IQCJTFNEjnWzb/MM+gUBfOGoo5xPYstfF1q1P0A=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 17 Mar 2021 18:29:58 +0100 (CET)
+ Wed, 17 Mar 2021 18:29:50 +0100 (CET)
 From: Jaroslav Kysela <perex@perex.cz>
 To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH v4 2/6] ALSA: control - add layer registration routines
-Date: Wed, 17 Mar 2021 18:29:41 +0100
-Message-Id: <20210317172945.842280-3-perex@perex.cz>
+Subject: [PATCH v4 0/6] ALSA: control - add generic LED API
+Date: Wed, 17 Mar 2021 18:29:39 +0100
+Message-Id: <20210317172945.842280-1-perex@perex.cz>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210317172945.842280-1-perex@perex.cz>
-References: <20210317172945.842280-1-perex@perex.cz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>
@@ -83,210 +80,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The layer registration allows to handle an extra functionality
-on top of the control API. It can be used for the audio
-LED control for example.
+This patchset tries to resolve the diversity in the audio LED
+control among the ALSA drivers. A new control layer registration
+is introduced which allows to run additional operations on
+top of the elementary ALSA sound controls.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- include/sound/control.h |  12 +++++
- sound/core/control.c    | 110 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 120 insertions(+), 2 deletions(-)
+A new control access group (three bits in the access flags)
+was introduced to carry the LED group information for
+the sound controls. The low-level sound drivers can just
+mark those controls using this access group. This information
+is not exported to the user space, but user space can
+manage the LED sound control associations through sysfs
+(last patch) per Mark's request. It makes things fully
+configurable in the kernel and user space (UCM).
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 22f3d48163ff..175610bfa8c8 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -108,6 +108,14 @@ struct snd_ctl_file {
- 	struct list_head events;	/* waiting events for read */
- };
- 
-+struct snd_ctl_layer_ops {
-+	struct snd_ctl_layer_ops *next;
-+	const char *module_name;
-+	void (*lregister)(struct snd_card *card);
-+	void (*ldisconnect)(struct snd_card *card);
-+	void (*lnotify)(struct snd_card *card, unsigned int mask, struct snd_kcontrol *kctl, unsigned int ioff);
-+};
-+
- #define snd_ctl_file(n) list_entry(n, struct snd_ctl_file, list)
- 
- typedef int (*snd_kctl_ioctl_func_t) (struct snd_card * card,
-@@ -140,6 +148,10 @@ int snd_ctl_unregister_ioctl_compat(snd_kctl_ioctl_func_t fcn);
- #define snd_ctl_unregister_ioctl_compat(fcn)
- #endif
- 
-+int snd_ctl_request_layer(const char *module_name);
-+void snd_ctl_register_layer(struct snd_ctl_layer_ops *lops);
-+void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops);
-+
- int snd_ctl_get_preferred_subdevice(struct snd_card *card, int type);
- 
- static inline unsigned int snd_ctl_get_ioffnum(struct snd_kcontrol *kctl, struct snd_ctl_elem_id *id)
-diff --git a/sound/core/control.c b/sound/core/control.c
-index 8a5cedb0a4be..87630021e434 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -28,10 +28,12 @@ struct snd_kctl_ioctl {
- };
- 
- static DECLARE_RWSEM(snd_ioctl_rwsem);
-+static DECLARE_RWSEM(snd_ctl_layer_rwsem);
- static LIST_HEAD(snd_control_ioctls);
- #ifdef CONFIG_COMPAT
- static LIST_HEAD(snd_control_compat_ioctls);
- #endif
-+static struct snd_ctl_layer_ops *snd_ctl_layer;
- 
- static int snd_ctl_open(struct inode *inode, struct file *file)
- {
-@@ -195,10 +197,15 @@ void snd_ctl_notify_one(struct snd_card *card, unsigned int mask,
- 			struct snd_kcontrol *kctl, unsigned int ioff)
- {
- 	struct snd_ctl_elem_id id = kctl->id;
-+	struct snd_ctl_layer_ops *lops;
- 
- 	id.index += ioff;
- 	id.numid += ioff;
- 	snd_ctl_notify(card, mask, &id);
-+	down_read(&snd_ctl_layer_rwsem);
-+	for (lops = snd_ctl_layer; lops; lops = lops->next)
-+		lops->lnotify(card, mask, kctl, ioff);
-+	up_read(&snd_ctl_layer_rwsem);
- }
- EXPORT_SYMBOL(snd_ctl_notify_one);
- 
-@@ -1997,6 +2004,86 @@ EXPORT_SYMBOL_GPL(snd_ctl_get_preferred_subdevice);
- #define snd_ctl_ioctl_compat	NULL
- #endif
- 
-+/*
-+ * control layers (audio LED etc.)
-+ */
-+
-+/**
-+ * snd_ctl_request_layer - request to use the layer
-+ * @module_name: Name of the kernel module (NULL == build-in)
-+ *
-+ * Return an error code when the module cannot be loaded.
-+ */
-+int snd_ctl_request_layer(const char *module_name)
-+{
-+	struct snd_ctl_layer_ops *lops;
-+
-+	if (module_name == NULL)
-+		return 0;
-+	down_read(&snd_ctl_layer_rwsem);
-+	for (lops = snd_ctl_layer; lops; lops = lops->next)
-+		if (strcmp(lops->module_name, module_name) == 0)
-+			break;
-+	up_read(&snd_ctl_layer_rwsem);
-+	if (lops)
-+		return 0;
-+	return request_module(module_name);
-+}
-+EXPORT_SYMBOL_GPL(snd_ctl_request_layer);
-+
-+/**
-+ * snd_ctl_register_layer - register new control layer
-+ * @lops: operation structure
-+ *
-+ * The new layer can track all control elements and do additional
-+ * operations on top (like audio LED handling).
-+ */
-+void snd_ctl_register_layer(struct snd_ctl_layer_ops *lops)
-+{
-+	struct snd_card *card;
-+	int card_number;
-+
-+	down_write(&snd_ctl_layer_rwsem);
-+	lops->next = snd_ctl_layer;
-+	snd_ctl_layer = lops;
-+	up_write(&snd_ctl_layer_rwsem);
-+	for (card_number = 0; card_number < SNDRV_CARDS; card_number++) {
-+		card = snd_card_ref(card_number);
-+		if (card) {
-+			down_read(&card->controls_rwsem);
-+			lops->lregister(card);
-+			up_read(&card->controls_rwsem);
-+			snd_card_unref(card);
-+		}
-+	}
-+}
-+EXPORT_SYMBOL_GPL(snd_ctl_register_layer);
-+
-+/**
-+ * snd_ctl_disconnect_layer - disconnect control layer
-+ * @lops: operation structure
-+ *
-+ * It is expected that the information about tracked cards
-+ * is freed before this call (the disconnect callback is
-+ * not called here).
-+ */
-+void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops)
-+{
-+	struct snd_ctl_layer_ops *lops2, *prev_lops2;
-+
-+	down_write(&snd_ctl_layer_rwsem);
-+	for (lops2 = snd_ctl_layer, prev_lops2 = NULL; lops2; lops2 = lops2->next)
-+		if (lops2 == lops) {
-+			if (!prev_lops2)
-+				snd_ctl_layer = lops->next;
-+			else
-+				prev_lops2->next = lops->next;
-+			break;
-+		}
-+	up_write(&snd_ctl_layer_rwsem);
-+}
-+EXPORT_SYMBOL_GPL(snd_ctl_disconnect_layer);
-+
- /*
-  *  INIT PART
-  */
-@@ -2020,9 +2107,20 @@ static const struct file_operations snd_ctl_f_ops =
- static int snd_ctl_dev_register(struct snd_device *device)
- {
- 	struct snd_card *card = device->device_data;
-+	struct snd_ctl_layer_ops *lops;
-+	int err;
- 
--	return snd_register_device(SNDRV_DEVICE_TYPE_CONTROL, card, -1,
--				   &snd_ctl_f_ops, card, &card->ctl_dev);
-+	err = snd_register_device(SNDRV_DEVICE_TYPE_CONTROL, card, -1,
-+				  &snd_ctl_f_ops, card, &card->ctl_dev);
-+	if (err < 0)
-+		return err;
-+	down_read(&card->controls_rwsem);
-+	down_read(&snd_ctl_layer_rwsem);
-+	for (lops = snd_ctl_layer; lops; lops = lops->next)
-+		lops->lregister(card);
-+	up_read(&snd_ctl_layer_rwsem);
-+	up_read(&card->controls_rwsem);
-+	return 0;
- }
- 
- /*
-@@ -2032,6 +2130,7 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
- {
- 	struct snd_card *card = device->device_data;
- 	struct snd_ctl_file *ctl;
-+	struct snd_ctl_layer_ops *lops;
- 	unsigned long flags;
- 
- 	read_lock_irqsave(&card->ctl_files_rwlock, flags);
-@@ -2041,6 +2140,13 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
- 	}
- 	read_unlock_irqrestore(&card->ctl_files_rwlock, flags);
- 
-+	down_read(&card->controls_rwsem);
-+	down_read(&snd_ctl_layer_rwsem);
-+	for (lops = snd_ctl_layer; lops; lops = lops->next)
-+		lops->ldisconnect(card);
-+	up_read(&snd_ctl_layer_rwsem);
-+	up_read(&card->controls_rwsem);
-+
- 	return snd_unregister_device(&card->ctl_dev);
- }
- 
+The actual state ('route') evaluation is really easy
+(the minimal value check for all channels / controls / cards).
+If there's more complicated logic for a given hardware,
+the card driver may eventually export a new read-only
+sound control for the LED group and do the logic itself.
+
+The new LED trigger control code is completely separated
+and possibly optional (there's no symbol dependency).
+The full code separation allows eventually to move this
+LED trigger control to the user space in future.
+Actually it replaces the already present functionality
+in the kernel space (HDA drivers) and allows a quick adoption
+for the recent hardware (ASoC codecs including SoundWire).
+
+# lsmod | grep snd_ctl_led
+snd_ctl_led            24576  0
+
+The sound driver implementation is really easy:
+
+1) call snd_ctl_led_request() when control LED layer should be
+   automatically activated
+   / it calls module_request("snd-ctl-led") on demand /
+2) mark all related kcontrols with
+	SNDRV_CTL_ELEM_ACCESS_SPK_LED or
+	SNDRV_CTL_ELEM_ACCESS_MIC_LED
+
+v4 changes:
+  - the LED access flags are private to kernel now (no user space
+    API change)
+  - fixes (kctl management, sysfs cleanup)
+  - add the sysfs LED marking kcontrol management
+    - https://lore.kernel.org/alsa-devel/28fffebd-1ce9-7480-0f2f-ed8369abddf1@perex.cz/
+v3 changes:
+  - reorder the controls_rwsem use to fix the remaining mutex issue
+    card->controls_rwsem <-> snd_ctl_layer_rwsem
+v2 changes:
+  - fix the locking - remove the controls_rwsem read lock
+    in the element get (the consistency is already protected
+    with the global snd_ctl_led_mutex and possible partial
+    value writes are catched with the next value change
+    notification callback)
+  - rename state to brightness and show the brightness
+    unsigned integer value instead the text on/off string
+    (sync with the LED core routines)
+  - remove snd_ctl_led_hello() function (CI warning)
+  - make snd_ctl_led_get_by_access() function static (CI warning)
+  - move snd_ctl_layer_rwsem lock before the registraction
+    callback call in snd_ctl_register_layer() - optimization
+v1:
+  - https://lore.kernel.org/alsa-devel/20210211111400.1131020-1-perex@perex.cz/
+Original RFC:
+  - https://lore.kernel.org/alsa-devel/20210207201157.869972-1-perex@perex.cz/
+
+Cc: Hans de Goede <hdegoede@redhat.com>
+
+Jaroslav Kysela (6):
+  ALSA: control - introduce snd_ctl_notify_one() helper
+  ALSA: control - add layer registration routines
+  ALSA: control - add generic LED trigger module as the new control
+    layer
+  ALSA: HDA - remove the custom implementation for the audio LED trigger
+  ALSA: control - add sysfs support to the LED trigger module
+  ALSA: led control - add sysfs kcontrol LED marking layer
+
+ include/sound/control.h         |  35 +-
+ sound/core/Kconfig              |   6 +
+ sound/core/Makefile             |   2 +
+ sound/core/control.c            | 182 ++++++--
+ sound/core/control_led.c        | 770 ++++++++++++++++++++++++++++++++
+ sound/pci/hda/Kconfig           |   4 +-
+ sound/pci/hda/hda_codec.c       |  69 +--
+ sound/pci/hda/hda_generic.c     | 162 ++-----
+ sound/pci/hda/hda_generic.h     |  15 +-
+ sound/pci/hda/hda_local.h       |  16 +-
+ sound/pci/hda/patch_ca0132.c    |   4 +-
+ sound/pci/hda/patch_realtek.c   |   2 +-
+ sound/pci/hda/patch_sigmatel.c  |   6 +-
+ sound/pci/hda/thinkpad_helper.c |   2 +-
+ 14 files changed, 1011 insertions(+), 264 deletions(-)
+ create mode 100644 sound/core/control_led.c
+
 -- 
 2.29.2
