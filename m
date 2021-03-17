@@ -2,112 +2,122 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E638C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:20:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 71F27C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:20:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7351964F24
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:20:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7351964F24
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id 33F3D64F10
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:20:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 33F3D64F10
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=cerno.tech
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F31D716D3;
-	Thu, 18 Mar 2021 10:19:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F31D716D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6E4116AC;
+	Thu, 18 Mar 2021 10:19:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6E4116AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616059217;
-	bh=/wuFF0fhdkmmU++hDK+VnYgAMwL1UuBb2FgNXJnS/ts=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1616059244;
+	bh=0BP8cAWztylqalmk4/OoD2Cy3lwqhFZyUP90THNtZ1g=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ec0KHueZdIFPxwwGhUTIX8bjQfGj4VDzkd2HlwIfLUpdGWj5Dz33LWWixHDUtZ0/0
-	 aNkyvbMGcBEGK88A/msjTXIb8LTV72rityLhGs1ZPZmDKxcxgydkqvWnO/LVRNKVO1
-	 WnC2BE8NmjF/RkI5jT+gpAqfHNiroRjA5QPaXErY=
+	b=OzEnT3RX6uZZvAjuRRYEBNBVtJYxlN0onKex4dPipFuaFMiiMdnU1HeW0qUz6kfRY
+	 baMBd079BaixXebvvPsX69gSU9/wv69W1piAiqqKm+cMx9vTecNt6QnImwbTuDPpkb
+	 nVM7Aa1xQsuASwSFNzn17cXJs4LOMfWMBjglDPww=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CBFFF804B1;
+	by alsa1.perex.cz (Postfix) with ESMTP id D096DF804D1;
 	Thu, 18 Mar 2021 10:16:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B192EF8021C; Wed, 17 Mar 2021 10:00:15 +0100 (CET)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9FB40F8021C; Wed, 17 Mar 2021 10:44:44 +0100 (CET)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFC5AF80124
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 10:00:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFC5AF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C315F8013F
+ for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 10:44:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C315F8013F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="or4XyHJG"
-Received: by mail-wr1-x432.google.com with SMTP id e18so962590wrt.6
- for <alsa-devel@alsa-project.org>; Wed, 17 Mar 2021 02:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=subject:to:cc:references:from:message-id:date:user-agent
- :mime-version:in-reply-to:content-language:content-transfer-encoding;
- bh=NVFDyKO2ygUhA+HtmUiSLptg/TxB303zHN8TrRH0yhE=;
- b=or4XyHJGYy7z/dShZG1PvqNQ3+mrCRPDpPdx3PI6+1HwU8DEjPF4JQ3oy1zyni9pND
- +3mwGjlcdWHO6loLexzfwiDwlYaMrZ+Mat11LPLoJzLks0dNZDeVznd3o9Bkh22yAdxx
- aMAShraWmd/P7VcYr5ttJ5A1V0dgI7FmJsZjcsPD91Y2lyaioIkw3downPUsGLClM5aE
- bJk5cIPKAKbr3oI/YbZMh43PxIIf55zSoYn7FR3tkQ1vit7fyCDDmv1xHjvuoIGVV3Ok
- ZI5iNHKZQCuIiM7FKPo1g+jlfDUQ3SzWXk5/fUba8z2cTLeASOVi8vFa11WHyj2w8TI/
- lV1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:subject:to:cc:references:from:message-id:date
- :user-agent:mime-version:in-reply-to:content-language
- :content-transfer-encoding;
- bh=NVFDyKO2ygUhA+HtmUiSLptg/TxB303zHN8TrRH0yhE=;
- b=oGHZednlRgl5y2N7Fqiqdt/txOVxtaVUagV10t9PsCcmwvQeEfQaNpPdxI/CvPYwNY
- GHKzC6MnVo+1XWgJW80dLJYeaaZU6dURxo6daL/7ZVdXL/iaY0uzXuJEvMQN590wgrq5
- uSNuMpLdFPKzzOfpBLuxVPdTAE09SJrou8S3Ui6MOo3c1EOFxwRSLJb2EAVFiRIVmnvI
- GUgzLnWabtK2ffLvoFJ6GZX3N2WkhQmEAXxpzdHYF7r7RLr0+dQBL6qncJSLNVwXy5Sx
- EPPog6OZv6Kod/Xmp5UN/VbyH096rbzIVi0HS8PFP1OcYlMKB7AcQrL2RYymxAim6eTY
- msRA==
-X-Gm-Message-State: AOAM531dDkes7XssLlM9WHfXVMctOCnAUkoc/13M3eA6ORpP3P80cvKC
- TQZHu1PNfaFIM4ozrsvvBBy5hA==
-X-Google-Smtp-Source: ABdhPJyFsp2Dg+7R5QEB0wMODNdEp2hrkl7dZYkRMuhX4iedkaQnZgEMAu9IeLIWguFwdF0mzGxzDQ==
-X-Received: by 2002:a5d:4f0e:: with SMTP id c14mr3221240wru.78.1615971601574; 
- Wed, 17 Mar 2021 02:00:01 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.googlemail.com with ESMTPSA id l4sm24505097wrt.60.2021.03.17.01.59.59
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 17 Mar 2021 02:00:00 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="cAeuP0qb"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="srtYkEJc"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 42DB95804A4;
+ Wed, 17 Mar 2021 05:44:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute6.internal (MEProxy); Wed, 17 Mar 2021 05:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+ date:from:to:cc:subject:message-id:references:mime-version
+ :content-type:in-reply-to; s=fm2; bh=0BP8cAWztylqalmk4/OoD2Cy3lw
+ qhFZyUP90THNtZ1g=; b=cAeuP0qbO4eJljrqIMiebUowfsB/GxgB0fgTHUeF5Yo
+ +dFTnomigRMKK9PRko4dMH1zdWY+F8CZlLyyxbotj7dX6MhNo0ZdCfBIYlKvh+/Q
+ d3gw0kvUlYz+vN963+21XhyNQAmvwJjVEJA+avi6mYRcwb/KVLdURvi1B7dODlEU
+ qwo0pQOkSpU56PPi4NYkSD3fDTg0e80FKnqzVVH4HrLSduY507MOGgRp94x8tow8
+ C9HfLeh5qs5U1GUDOdKhbybH8VweO9ZHI/Nfv3WQtBMysN51MQalqCy7G6KdFGe4
+ mf58Y/uLDUegOKYAI0UMYq6LPHm6VBPkmbHqO3+RurQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-type:date:from:in-reply-to
+ :message-id:mime-version:references:subject:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=0BP8cA
+ Wztylqalmk4/OoD2Cy3lwqhFZyUP90THNtZ1g=; b=srtYkEJcS4huqv80LlbbSG
+ Fi8pxOzOhws71OZtEdfvdz4enBpQRhE0iI6Werq9aNVPnUT1M8U+utcOXh5XVeKQ
+ FokaGwGP35MMAOOqtri0m/vNjHo7TKirpcMZ/5W9e2L9Q2AF3sm0/WG+GT0NJggk
+ x83KKGNn2DhU8Bd9sU4Sgt1j3dm5XQtFyacw9sqD5kjEFms6c7sxEkUtKUvv63MW
+ qCQbrdMZ3s7LT10cwkeBrK/9NP5d5HvxG2zKV+2c3gCChb+8ufEt4coS7G9P7gdm
+ afb8Huog5c6refVYER6q+O7lbAN3g/n8yJC7Tc4bejsE73cF9Z1jUXn4fpW2Lq4Q
+ ==
+X-ME-Sender: <xms:ec9RYK39Y_a4zSfTwUaRQx1LJtTowhZfqZ55tBkolaY3hmRBQTPI7Q>
+ <xme:ec9RYNGM7ueV86Apfa1zFhVwr_eYaKeWpNprnytd5VORSYUGMtqFf5JVwUDGqEq2i
+ aqHVVd170LHaeJKjA4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefgedgtdejucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+ htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+ gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+ frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:ec9RYC4TIhkXMH2jEndCl15t4aT4tnjEM-i5V5FzoBn8t6HtdaEwrw>
+ <xmx:ec9RYL3qCCj83UuidkPt_WjshQ4_zjIBrTcOs3V7XXAW0QPplWZljQ>
+ <xmx:ec9RYNGEMZcMZqGZqtAf8jav8BKADI6fd14OggVtOw4i_pnVvBSC-w>
+ <xmx:fM9RYDRuhS2ysirc2Y7YeQnTiJcpzjxydTqzDoyqpnbGWb-Av1ZQ0w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr
+ [90.89.68.76])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 21F05108005C;
+ Wed, 17 Mar 2021 05:44:25 -0400 (EDT)
+Date: Wed, 17 Mar 2021 10:44:22 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
-To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Message-ID: <20210317094422.tlzbuvfanfwxenps@gilmour>
 References: <20210316194858.3527845-1-robh@kernel.org>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <265c3486-2c85-5c63-e1b5-9b88eaddbb14@linaro.org>
-Date: Wed, 17 Mar 2021 08:59:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="lj6yx5qimtjaxe7l"
+Content-Disposition: inline
 In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Thu, 18 Mar 2021 10:16:09 +0100
 Cc: alsa-devel@alsa-project.org,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Suman Anna <s-anna@ti.com>,
- Cheng-Yi Chiang <cychiang@chromium.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Suman Anna <s-anna@ti.com>, Cheng-Yi Chiang <cychiang@chromium.org>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Krzysztof Kozlowski <krzk@kernel.org>,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>,
  Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Ohad Ben-Cohen <ohad@wizery.com>, Odelu Kukatla <okukatla@codeaurora.org>,
- linux-pm@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ Ohad Ben-Cohen <ohad@wizery.com>, devicetree@vger.kernel.org,
+ Odelu Kukatla <okukatla@codeaurora.org>, linux-pm@vger.kernel.org,
  linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
  Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
  Benson Leung <bleung@chromium.org>, Alex Elder <elder@kernel.org>,
@@ -132,60 +142,65 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--lj6yx5qimtjaxe7l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 16/03/2021 19:48, Rob Herring wrote:
+On Tue, Mar 16, 2021 at 01:48:58PM -0600, Rob Herring wrote:
 > Users of common properties shouldn't have a type definition as the
 > common schemas already have one. Drop all the unnecessary type
 > references in the tree.
-> 
+>=20
 > A meta-schema update to catch these is pending.
-> 
-> Cc: Nicolas Saenz Julienne<nsaenzjulienne@suse.de>
-> Cc: Maxime Ripard<mripard@kernel.org>
-> Cc: Linus Walleij<linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski<bgolaszewski@baylibre.com>
-> Cc: Bjorn Andersson<bjorn.andersson@linaro.org>
-> Cc: Krzysztof Kozlowski<krzk@kernel.org>
-> Cc: Marc Kleine-Budde<mkl@pengutronix.de>
-> Cc: "David S. Miller"<davem@davemloft.net>
-> Cc: Jakub Kicinski<kuba@kernel.org>
-> Cc: Srinivas Kandagatla<srinivas.kandagatla@linaro.org>
-> Cc: Ohad Ben-Cohen<ohad@wizery.com>
-> Cc: Mark Brown<broonie@kernel.org>
-> Cc: Cheng-Yi Chiang<cychiang@chromium.org>
-> Cc: Benson Leung<bleung@chromium.org>
-> Cc: Zhang Rui<rui.zhang@intel.com>
-> Cc: Daniel Lezcano<daniel.lezcano@linaro.org>
-> Cc: Greg Kroah-Hartman<gregkh@linuxfoundation.org>
-> Cc: Stefan Wahren<wahrenst@gmx.net>
-> Cc: Masahiro Yamada<yamada.masahiro@socionext.com>
-> Cc: Odelu Kukatla<okukatla@codeaurora.org>
-> Cc: Alex Elder<elder@kernel.org>
-> Cc: Suman Anna<s-anna@ti.com>
-> Cc: Kuninori Morimoto<kuninori.morimoto.gx@renesas.com>
-> Cc: Dmitry Baryshkov<dmitry.baryshkov@linaro.org>
-> Cc:linux-gpio@vger.kernel.org
-> Cc:linux-pm@vger.kernel.org
-> Cc:linux-can@vger.kernel.org
-> Cc:netdev@vger.kernel.org
-> Cc:linux-remoteproc@vger.kernel.org
-> Cc:alsa-devel@alsa-project.org
-> Cc:linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring<robh@kernel.org>
-> ---
->   .../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml       | 5 +----
->   Documentation/devicetree/bindings/arm/cpus.yaml              | 2 --
->   .../bindings/display/allwinner,sun4i-a10-tcon.yaml           | 1 -
->   .../devicetree/bindings/gpio/socionext,uniphier-gpio.yaml    | 3 +--
->   .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 1 -
->   .../devicetree/bindings/interconnect/qcom,rpmh.yaml          | 1 -
->   .../bindings/memory-controllers/nvidia,tegra210-emc.yaml     | 2 +-
->   Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml   | 1 -
->   Documentation/devicetree/bindings/net/qcom,ipa.yaml          | 1 -
->   Documentation/devicetree/bindings/nvmem/nvmem-consumer.yaml  | 2 --
+>=20
+> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Cc: Ohad Ben-Cohen <ohad@wizery.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Stefan Wahren <wahrenst@gmx.net>
+> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Cc: Odelu Kukatla <okukatla@codeaurora.org>
+> Cc: Alex Elder <elder@kernel.org>
+> Cc: Suman Anna <s-anna@ti.com>
+> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-can@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-For nvmem parts,
+Acked-by: Maxime Ripard <maxime@cerno.tech>
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Thanks!
+Maxiem
 
---srini
+--lj6yx5qimtjaxe7l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYFHPdgAKCRDj7w1vZxhR
+xQMxAQCrXmT5FCI3eJYBXW/EUFlqbCTwnoDOAEjWcGLbj2XTCgEAxkEyHVxsELxK
+YT52x5rpTHartnwQ86HMToeCxMjKlAc=
+=93nZ
+-----END PGP SIGNATURE-----
+
+--lj6yx5qimtjaxe7l--
