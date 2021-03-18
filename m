@@ -3,70 +3,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81E27C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 16:09:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE7EEC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 16:09:58 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8A420601FF
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 16:09:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A420601FF
+	by mail.kernel.org (Postfix) with ESMTPS id 17BFB601FF
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 16:09:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17BFB601FF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 442871694;
-	Thu, 18 Mar 2021 17:08:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 442871694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EFA21699;
+	Thu, 18 Mar 2021 17:09:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EFA21699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616083745;
-	bh=r6oH2MlozEUiXnczTdoDAtdU88+YSt1xuhcRMdNkHXs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PSWDuZigjlL+DRGBkQfO2+F0/aLTXKe+oLOQBtE9ZE/dzQnZnbJtffSQmjlPhHqyL
-	 EVMo5PfgTceI53taNVO6G8Hr2CN31b3JKMe7vdQ1kXRUbeKyieL9fmtzGpScRwpJsc
-	 uq1r4b/p5n5+2JD1no+NZImus1MWsSJD05aMsqcA=
+	s=default; t=1616083796;
+	bh=dVtNYflFtvFlRKTdZYLo3FbZJPOmWz/QQ4tJP1rxfnU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=avIEwj1tGJlKhfW8ZX1Tm9h2uW+UGbxEOemqbq6szzhohjHLHmMeI/RQ4vNttQ4r9
+	 yb9xlMd2AXjnhORTo0AgDTfdmCbULMlU0LoPK+Gh8R/1cXPpGYvf71lMvHnkR0TIDv
+	 FSHPFdSLjsG3N+pL7kuRDJEFAEyBEAJAZSBSUzDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 711F5F80171;
-	Thu, 18 Mar 2021 17:08:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A6E9F80218;
+	Thu, 18 Mar 2021 17:08:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05FF3F80124; Thu, 18 Mar 2021 17:08:12 +0100 (CET)
+ id 9D331F8025E; Thu, 18 Mar 2021 17:08:18 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63F93F80124
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 17:08:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63F93F80124
-IronPort-SDR: kgo1kIwxobd6xV+ElqUMmI3U/ljCKIU4csedECI0ydvti1e3ksOUKNgZwqq/zfAJp1STJkxBUt
- VKVQF8C2FGAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="186360107"
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; d="scan'208";a="186360107"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8FB0FF800E0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 17:08:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FB0FF800E0
+IronPort-SDR: lZv7Rug9DU898m/b7xxLH3k8g+y6G27ttd4Vo+r1hh+cNW1ielWP5aOeWaT4JM5pIM6rE/abUf
+ B1NyjI85NcVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="186360138"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; d="scan'208";a="186360138"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2021 09:07:56 -0700
-IronPort-SDR: RgnhQZAw2paLgJLNe411KbBwiuaqqnXFGCNNA+rxArjGm7wmtqeE34TyJpWwxlxtFJDGTPMQU2
- ANDJschbuFTA==
+ 18 Mar 2021 09:07:59 -0700
+IronPort-SDR: m3Y/LtJO2FKtNkiSGW+gWoopwZAIyKiU5dVZx4wYXHqBPrlYHUcRg0IPyudM9HGP0HlcuBA+ww
+ p2mu500fCD3w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; d="scan'208";a="413142051"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; d="scan'208";a="413142092"
 Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by orsmga008.jf.intel.com with ESMTP; 18 Mar 2021 09:07:54 -0700
+ by orsmga008.jf.intel.com with ESMTP; 18 Mar 2021 09:07:58 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 0/3] Fix SND_HDA_PREALLOC issue
-Date: Thu, 18 Mar 2021 17:06:15 +0100
-Message-Id: <20210318160618.2504068-1-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH v2 2/3] ALSA: hda: Change AZX_MAX_BUF_SIZE from 1GB to 4MB
+Date: Thu, 18 Mar 2021 17:06:17 +0100
+Message-Id: <20210318160618.2504068-3-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210318160618.2504068-1-amadeuszx.slawinski@linux.intel.com>
+References: <20210318160618.2504068-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+Cc: Takashi Iwai <tiwai@suse.de>, Cezary Rojewski <cezary.rojewski@intel.com>,
+ alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -83,47 +86,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For context it started with user reporting failures when running arecord
-without any error or warning in dmesg (after fixing some configuration
-problems thet they had).
-https://bugzilla.kernel.org/show_bug.cgi?id=201251#c279
+When SND_HDA_PREALLOC_SIZE is set to 0, applications can request as much
+memory as there is allowed. With value of AZX_MAX_BUF_SIZE it is 1GB per
+stream, which is not realistic use case. Change it 4MB.
 
-After spending time investigating the issue it was narrowed to quite big
-setting of CONFIG_SND_HDA_PREALLOC_SIZE (4096).
-When looking at code
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/core/pcm_memory.c?id=6417f03132a6952cd17ddd8eaddbac92b61b17e0#n30
-there is a limit of memory per card:
-max_alloc_per_card = 32UL * 1024UL * 1024UL
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=201251#c322
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
 
-When SND_HDA_PREALLOC_SIZE is set to 4096 it only has memory to alloc
-for 8 frontends, while Skylake HDA card has 10 of them (6 playback and 4
-capture), so preallocated memory is exhausted while probing. In
-consequence 2 of FEs end without allocated memory.
+Changes:
 
-It can be workarounded on user side with setting SND_HDA_PREALLOC_SIZE
-to lower value, other is changing memory limit per card.
+v2: explain in comment that it is an artificial limit, as HW allows for
+bigger allocations
 
-However in order to not waste user memory, change maximum allocation
-size on HDA controller to 4MB and force automatical memory allocation
-insted of preallocated one.
-
-First patch adds prints, so similar issues can be easily identified in
-the future.
-Second changes maximum size of hda buffer to reasonable value of 4MB.
-And last one reverts patch which allowed setting prealloc size on X86
-platforms.
-
-Amadeusz Sławiński (3):
-  ALSA: pcm: Add debug print on memory allocation failure
-  ALSA: hda: Change AZX_MAX_BUF_SIZE from 1GB to 4MB
-  ALSA: hda: Revert "ALSA: hda: Allow setting preallocation again for
-    x86"
-
+---
  include/sound/hda_register.h | 8 ++++++--
- sound/core/pcm_memory.c      | 8 ++++++++
- sound/hda/Kconfig            | 7 +++----
- 3 files changed, 17 insertions(+), 6 deletions(-)
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 4f987b1f32f7..ad8b71b1dbb6 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -140,8 +140,12 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define BDL_SIZE		4096
+ #define AZX_MAX_BDL_ENTRIES	(BDL_SIZE / 16)
+ #define AZX_MAX_FRAG		32
+-/* max buffer size - no h/w limit, you can increase as you like */
+-#define AZX_MAX_BUF_SIZE	(1024*1024*1024)
++/*
++ * max buffer size - artificial 4MB limit per stream to avoid big allocations
++ * In theory it can be really big, but as it is per stream on systems with many streams memory could
++ * be quickly saturated if userspace requests maximum buffer size for each of them.
++ */
++#define AZX_MAX_BUF_SIZE	(4*1024*1024)
+ 
+ /* RIRB int mask: overrun[2], response[0] */
+ #define RIRB_INT_RESPONSE	0x01
 -- 
 2.25.1
 
