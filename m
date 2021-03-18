@@ -2,103 +2,65 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23D2AC433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 01:23:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDF23C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:14:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A353A64F04
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 01:23:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A353A64F04
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3319A64F24
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:14:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3319A64F24
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C718516BF;
-	Thu, 18 Mar 2021 02:22:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C718516BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id EFE9016AB;
+	Thu, 18 Mar 2021 10:14:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFE9016AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616030587;
-	bh=6TL3q/Z/gx7iwbQlwuQ4Otlg3YFkAtIjFfq+MDs2b5g=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1616058891;
+	bh=kvuGmeck3J2moWTibmW+k6g6XK3BbPCsrmUFCYlcZgQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sCtPpvg5k33pARU35b6Tj2k6SvXJo5FAW/h2FkBd142Pz5avKN/4us/foRkEcU1f7
-	 BvWR2AfoAnxHmm0jUiQjZ03XKVIzE3qlozyrXgQ22XrIflthLrl9p064qwcglJd/qg
-	 fyvsAPbyOhKdgXQWvlG18jpaRevXeFCG1zARQfvg=
+	b=nnjbW0GiIKaUxMgjZiWLl2WS/TsrsnCbkjH2XkP9vd1irei7DIS1iK3KC/VfQ3AsO
+	 X0aJvDIjDB5XxotTm7aMXfE0eb3peTbiZ5wJVHYatsSw+r4V7vUoOfI9bdGGLngtxx
+	 2KfYTtXR7zJAk7lxqjB58rM1RJBB1ukjRCyNQaZw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98ABFF80124;
-	Thu, 18 Mar 2021 02:21:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78780F80163;
+	Thu, 18 Mar 2021 10:14:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6614F80253; Thu, 18 Mar 2021 02:21:52 +0100 (CET)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7D1DBF80165; Thu, 18 Mar 2021 10:13:59 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C273EF80124
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 02:21:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C273EF80124
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12I1LkGY2017919,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
- by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 12I1LkGY2017919
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 18 Mar 2021 09:21:46 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 09:21:46 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Mar 2021 09:21:45 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef]) by
- RTEXMBS01.realtek.com.tw ([fe80::6caa:5fa6:24e2:bbef%7]) with mapi id
- 15.01.2106.013; Thu, 18 Mar 2021 09:21:45 +0800
-From: Jack Yu <jack.yu@realtek.com>
-To: "Lu, Brent" <brent.lu@intel.com>, Pierre-Louis Bossart
- <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org"
- <alsa-devel@alsa-project.org>,
- =?utf-8?B?a2VudF9jaGVuQHJlYWx0ZWsuY29tIFvpmbPlu7rlro9d?=
- <kent_chen@realtek.com>
-Subject: RE: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
- support
-Thread-Topic: [PATCH v3] ASoC: Intel: sof_rt5682: Add ALC1015Q-VB speaker amp
- support
-Thread-Index: AQHXGzY5g4Pry5OlPUKQGENVoO6uRKqHynaAgAEpDaA=
-Date: Thu, 18 Mar 2021 01:21:45 +0000
-Message-ID: <5c750391ceb349d2aaf403f038fc7394@realtek.com>
-References: <20210317110824.20814-1-brent.lu@intel.com>
- <af990f6f-3a8b-3a1e-a02a-3bfe96e4d80a@linux.intel.com>
- <DM6PR11MB364290806B23636B6D0618DF976A9@DM6PR11MB3642.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB364290806B23636B6D0618DF976A9@DM6PR11MB3642.namprd11.prod.outlook.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.102.167]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Oder Chiou <oder_chiou@realtek.com>,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>, "Rojewski,
- Cezary" <cezary.rojewski@intel.com>, "R,
- Dharageswari" <dharageswari.r@intel.com>, "Nujella,
- Sathyanarayana" <sathyanarayana.nujella@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jie
- Yang <yang.jie@linux.intel.com>, Takashi
- Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Fred Oh <fred.oh@linux.intel.com>,
- Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Libin Yang <libin.yang@linux.intel.com>,
- Rander Wang <rander.wang@linux.intel.com>, "Zhi, Yong" <yong.zhi@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D6E2F80124
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 10:13:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D6E2F80124
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id AE5DDADC5;
+ Thu, 18 Mar 2021 09:13:40 +0000 (UTC)
+Date: Thu, 18 Mar 2021 10:13:40 +0100
+Message-ID: <s5hwnu4j03f.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Aditya Srivastava <yashsri421@gmail.com>
+Subject: Re: [PATCH] ALSA: asihpi: fix comment syntax in file headers
+In-Reply-To: <20210317202144.20290-1-yashsri421@gmail.com>
+References: <20210317202144.20290-1-yashsri421@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ lukas.bulwahn@gmail.com, linux-kernel-mentees@lists.linuxfoundation.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,10 +76,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PiA+IFRoZSBjb2RlIGlzIGxvb2tzIGZpbmUsIGJ1dCBKYWNrIFl1IGFkZGVkIGEgc2VwYXJhdGUg
-cGF0Y2ggdGhhdCBtYWtlcw0KPiA+IFJUTDEwMTkgZXF1aXZhbGVudCB0byBSVEwxMDE1LCBzbyBz
-aG91bGQgdGhpcyBwYXRjaCBhbHNvIGhhbmRsZSB0aGUNCj4gPiBSVEwxMDE5IGNhc2U/DQo+IA0K
-PiBUaGUgdG9wb2xvZ3kgdXNlZCBieSB0aGlzIG1hY2hpbmUgZHJpdmVyIGlzIHVzaW5nIDQ4aywg
-NjRmcyBJMlMgZm9ybWF0Lg0KPiBSVDEwMTkgbmVlZHMgdG8gc3VwcG9ydCB0aGlzIGNvbmZpZ3Vy
-YXRpb24uIE5vdCBzdXJlIGlmIFJUMTAxOSBjb3VsZCBzdXBwb3J0DQo+IHRoYXQuDQo+IA0KDQpZ
-ZXMsIFJUMTAxOSBzdXBwb3J0cyA0OGssIDY0ZnMgSTJTIGZvcm1hdC4NCg==
+On Wed, 17 Mar 2021 21:21:44 +0100,
+Aditya Srivastava wrote:
+> 
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> There are files in sound/pci/asihpi which follow this syntax in their file
+> headers, i.e. start with '/**' like comments, which causes unexpected
+> warnings from kernel-doc.
+> 
+> E.g., running scripts/kernel-doc -none on sound/pci/asihpi/hpidspcd.h
+> causes this warning:
+> "warning: Cannot understand
+>  on line 4 - I thought it was a doc line"
+> 
+> Provide a simple fix by replacing the kernel-doc like comment syntax with
+> general format, i.e. "/*", to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+
+Applied now.  Thanks.
+
+
+Takashi
