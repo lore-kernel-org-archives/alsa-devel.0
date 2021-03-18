@@ -2,75 +2,125 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C8DE8C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDBAAC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:25:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1F5964E89
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:15:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1F5964E89
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 324ED64F18
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:25:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 324ED64F18
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F049D16AC;
-	Thu, 18 Mar 2021 16:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F049D16AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAF8F1695;
+	Thu, 18 Mar 2021 16:24:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF8F1695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616080554;
-	bh=RDUTefOhgWsIpiOxv7kqUxfBXS49FIbq1ZHIWXTp05Q=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616081148;
+	bh=DKtexApAT4xYMW57BILgTDB2KCrw2cbN4oybVrUA7SE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uiYSukV3773Xm21My5lLbhEmc9cyaN/hRjeS13JRWgfZRvGwNLiKJp3FUn+T29SyA
-	 m9BhNRq4cIVtyxqyTJtO9zem66tZnntOKo12raOY6cnUhUZyJ3DI5m3L4ut1psYPOm
-	 Axap3AnarG0LbJC7UY1uysdEdmyqsf0rQdp7wZus=
+	b=QJVsGwdeIDxaBHg6kPIrXxOm9/QaMNPRIJB5SAiVv2ae235vu6YBjErpuIbRxKlkk
+	 /EsqTOWQq8W0GX5KOSemfgKvnv8x6tvQ0XBb/pyXxItW9vy3M2HnCLs1X2gqphKVGH
+	 BgY+vzvSivza+qG6wS7mzNubK2NnpxyNwBN8/PFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70987F8032D;
-	Thu, 18 Mar 2021 16:13:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 390D8F80163;
+	Thu, 18 Mar 2021 16:24:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B7E4F8032C; Thu, 18 Mar 2021 16:13:39 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id BA2C7F80165; Thu, 18 Mar 2021 16:24:56 +0100 (CET)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12olkn2027.outbound.protection.outlook.com [40.92.22.27])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AED7BF80171
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 16:13:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AED7BF80171
-IronPort-SDR: zPaYaAmSuS5J5e5FLwGrSt3Z5l7RnKkSFml0FpjaAB1ARvlLidk6Wxk1oV8i6kEtLSdhgjzmtU
- FHL1P+3KLTdQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="209702410"
-X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; d="scan'208";a="209702410"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Mar 2021 08:13:22 -0700
-IronPort-SDR: wruxZErLuv4VgsrUZd/TYeM4LbzfwtLTdDQFHd3iwc67c648wG7yVE2xshxwnBw395w5YTo2v+
- 0DVphFAne+bg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,258,1610438400"; d="scan'208";a="606207207"
-Received: from pi-desktop.igk.intel.com ([10.237.148.102])
- by fmsmga005.fm.intel.com with ESMTP; 18 Mar 2021 08:13:21 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 2/3] ALSA: hda: Change AZX_MAX_BUF_SIZE from 1GB to 4MB
-Date: Thu, 18 Mar 2021 16:11:21 +0100
-Message-Id: <20210318151122.2493096-3-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210318151122.2493096-1-amadeuszx.slawinski@linux.intel.com>
-References: <20210318151122.2493096-1-amadeuszx.slawinski@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59ABBF800C8
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 16:24:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59ABBF800C8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com
+ header.b="I7loffI9"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yf0iXb05lvUJe5PzOV2dWBl0wnmF36PUJ9uBaIAXIQhLoBq/U2wCsC1N9ETM5qt01kdJq4isbhRVZORh0d5XQSL8PpkpzeiQ+sBWx9htZP5vjP6pEe8b4tMMK0czDlQxIjoGE3Kt1SlD8p0fge92pNdDglWE0RQQuQipK3snOheOOnKUr5b4/60Fo5sVNQq3c5CtRWHyqB7HRDQ2OSjviIeeqhrfqCIC/SdZUmNDxvid8YC1e5t96TnNnLVpWrcV3pUlKprdvE337T6vpXMGr/NvLPz3ROvyjeqlDyi0gLB4qhqCMqX8QBmvqQ1nrSsP2Y4hVV/o/5xBPzV8tjlCmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T9EoPdk+XNmqERkYLgpXVdHo7dv6ytDSV78sdXKTEKc=;
+ b=b/IGJxUlZ5HpQxKy0N1iWdw/hjeN2D4Xhdc9z+e/tZH1uEEAbIGZWDDKfT1Gm8VN+HOWHwxBAdT2rhK+5DktYDg/p96aOvMD1CGCIUX0Pq4je5LTi/RSBkA8gYfgFMhFlnTZNss/dru/7cogae0eOOKvK8gUuzmDWKSy/slHBJgxKjEK8KJxt5KjA+Q4AY6Pta+gmHF97JBomWqV16JqdOXSywmMJJNN73xxqXqcPIPld5G/dkYh5w20xFYcASiPev7/kSmttc3PwGpWkSnirG5UL6yxTa3fvkihNIEwYdNqDSCQSFuHauDNO6CQs959lMwadS1OPmxsKPptE8oZCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T9EoPdk+XNmqERkYLgpXVdHo7dv6ytDSV78sdXKTEKc=;
+ b=I7loffI96fI9/8WXZpw48ck7aSYVM1MH2+7xvDOiAom3CAxB8B/YmTHly6JDCe+K6MtWnUPSEKfqBG2iQr7mg4jcPfCYx0HXYUyI6iJ3lgBHcPN0untra9YnRpwJ+nUefj8P+pRP6G27fmeMNioj0pVGV0P61sDYFP3ZmWjr1hKLcTfbiAP25T7sZEO9nOGf/YnjnjlKUYqBxYzPIWLepGuBin16tD0GsN/80LaxKbD/QfbQDWt1RB1HWHVp+Hj1yT/e0M95kWTYTR+DbUhnOHMr9tr5YcmvEDjIzAVZp1ERxhEYFDV6uM1oumbUP6cocutnwhpEEbkMs1/cn+yHOg==
+Received: from DM6NAM12FT051.eop-nam12.prod.protection.outlook.com
+ (2a01:111:e400:fc64::47) by
+ DM6NAM12HT178.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc64::201)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9; Thu, 18 Mar
+ 2021 15:24:35 +0000
+Received: from SN6PR06MB5342.namprd06.prod.outlook.com
+ (2a01:111:e400:fc64::48) by DM6NAM12FT051.mail.protection.outlook.com
+ (2a01:111:e400:fc64::105) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9 via Frontend
+ Transport; Thu, 18 Mar 2021 15:24:35 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:6B46AB9EF793BF4131CE15E0EB4CD395764C6083F2700A079F923DFE331A99D2;
+ UpperCasedChecksum:899024BD154FF74C9991B28F582897A923203268ABFA3D85F09AF217DC55DC2D;
+ SizeAsReceived:7537; Count:46
+Received: from SN6PR06MB5342.namprd06.prod.outlook.com
+ ([fe80::fc38:a692:c2c8:f63e]) by SN6PR06MB5342.namprd06.prod.outlook.com
+ ([fe80::fc38:a692:c2c8:f63e%7]) with mapi id 15.20.3955.018; Thu, 18 Mar 2021
+ 15:24:35 +0000
+Date: Thu, 18 Mar 2021 10:24:30 -0500
+From: Chris Morgan <macromorgan@hotmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/3] ASoC: Add Rockchip rk817 audio CODEC support
+Message-ID: <SN6PR06MB534246E83550903553C0C380A5699@SN6PR06MB5342.namprd06.prod.outlook.com>
+References: <SN6PR06MB534267976CCAB77E25EF10A9A56A9@SN6PR06MB5342.namprd06.prod.outlook.com>
+ <20210318130610.GF5469@sirena.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318130610.GF5469@sirena.org.uk>
+X-TMN: [IY04RJLBGxMtXq+PXJ984ZXtiaLM2txl]
+X-ClientProxiedBy: SN4PR0501CA0025.namprd05.prod.outlook.com
+ (2603:10b6:803:40::38) To SN6PR06MB5342.namprd06.prod.outlook.com
+ (2603:10b6:805:f9::31)
+X-Microsoft-Original-Message-ID: <20210318152430.GA12526@wintermute.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Cezary Rojewski <cezary.rojewski@intel.com>,
- alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from wintermute.localdomain (76.183.134.35) by
+ SN4PR0501CA0025.namprd05.prod.outlook.com (2603:10b6:803:40::38) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.10 via Frontend
+ Transport; Thu, 18 Mar 2021 15:24:32 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 46
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 454da535-a570-439d-675a-08d8ea21ee3c
+X-MS-TrafficTypeDiagnostic: DM6NAM12HT178:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ilrs3wAO8dM2O76oaPRFOjVc8DtKV5a4xGkeELbePTmeiXkCC46FaTAVJ7YcsyFRRaKlGZNonlpaltIVQEzNfjih12cqDt4UrrCvYOR9nb+Y6y1/WHHwZkMXLSKcbD8xC4LTBVP7mc6L/5y1opnkE6LiuAHhpLBDzQCI+6FVMMLWZIoz7jNVb4D39cVWC5rjnksdgV1NICaB8LMisFqekJ8ofBV+QanQicHQihb/yyHiqdrYvP4US065lPPqP6cAVUcbazZemD4GfLQJSqNnjlK7b5WrvSzC9sVQLXHWyYpSjVBXK5y+uPEQBsGxlKJSW0fQPeejfVl1N1cg/AUN8tqR/BcMOxFjqT3hF+KtwWpUlGCR+/uawA2ruIofLWw5Pcj7kKG/+u9+YaDkcxKnZU+4Tgb+xMWp0m/ha0nee8M=
+X-MS-Exchange-AntiSpam-MessageData: 7aJWbDF1juCAFgsocSKFk05YryQmx3LtnqAwxPCvTGrysMotD6DRICxcQrKwUduX0pCqzRe4UehtDPHMAFkkV/nLfUlIRQxyF0Z/i0toGqXO2TG7YEKgtL1Kx4CRhlZf2et1Za0tUnFo09dCkYbSoQ==
+X-OriginatorOrg: hotmail.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 454da535-a570-439d-675a-08d8ea21ee3c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2021 15:24:34.5349 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT051.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM12HT178
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,32 +136,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When SND_HDA_PREALLOC_SIZE is set to 0, applications can request as much
-memory as there is allowed. With value of AZX_MAX_BUF_SIZE it is 1GB per
-stream, which is not realistic use case. Change it 4MB.
+On Thu, Mar 18, 2021 at 01:06:10PM +0000, Mark Brown wrote:
+> On Wed, Mar 17, 2021 at 03:21:15PM -0500, Chris Morgan wrote:
+> > Add support for the Rockchip rk817 audio codec integrated into the
+> > rk817 PMIC. This is based on the sources provided by Rockchip from
+> > their BSP kernel.
+> 
+> Modulo the issue with the compatible in the binding this looks good
+> apart from a couple of small nits:
+> 
+> > +static int rk817_set_component_pll(struct snd_soc_component *component,
+> > +		int pll_id, int source, unsigned int freq_in,
+> > +		unsigned int freq_out)
+> > +{
+> > +	snd_soc_component_write(component, RK817_CODEC_APLL_CFG1, 0x58);
+> 
+> This should really validate freq_in and freq_out, confirming that
+> they're whatever fixed values this register sequence is for (if you
+> don't know what freq_out actually is it's more OK to skip that than
+> freq_in I guess since the constraints on the DAI link should ensure we
+> end up with a sensible value).
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=201251#c322
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- include/sound/hda_register.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Unfortunately I don't know which values I should validate.  While the data
+sheet has these fields "documented" it doesn't have the units, so I don't know
+if I'm close in the minimum/maximum range or not.  I will add documentation to
+the routine for each step of what I'm doing at least though. If better
+documentation becomes available or a second implementation presents itself we
+can update this to validate.
 
-diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-index 4f987b1f32f7..68d420f3c49d 100644
---- a/include/sound/hda_register.h
-+++ b/include/sound/hda_register.h
-@@ -140,8 +140,8 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define BDL_SIZE		4096
- #define AZX_MAX_BDL_ENTRIES	(BDL_SIZE / 16)
- #define AZX_MAX_FRAG		32
--/* max buffer size - no h/w limit, you can increase as you like */
--#define AZX_MAX_BUF_SIZE	(1024*1024*1024)
-+/* max buffer size - 4MB limit per stream */
-+#define AZX_MAX_BUF_SIZE	(4*1024*1024)
- 
- /* RIRB int mask: overrun[2], response[0] */
- #define RIRB_INT_RESPONSE	0x01
--- 
-2.25.1
+https://rockchip.fr/RK817%20datasheet%20V1.01.pdf
 
+> 
+> > +	snd_soc_component_write(component, RK817_CODEC_APLL_CFG2, 0x2d);
+> > +	snd_soc_component_write(component, RK817_CODEC_APLL_CFG3, 0x0c);
+> > +	snd_soc_component_write(component, RK817_CODEC_APLL_CFG4, 0xa5);
+> > +
+> > +	return 0;
+> > +};
+> 
+> No ; at the end of the function definition.
+
+Acknowledged.
