@@ -6,76 +6,77 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F32C2C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 18:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57331C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 18:35:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9542464F1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 18:34:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9542464F1D
+	by mail.kernel.org (Postfix) with ESMTPS id C029B6023B
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 18:35:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C029B6023B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B68E168B;
-	Thu, 18 Mar 2021 19:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B68E168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EED961695;
+	Thu, 18 Mar 2021 19:34:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EED961695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616092482;
-	bh=O4+Jms1dbCSgB1akhHdOQ5yf5A0hiTEh3B7Z20RU4GA=;
+	s=default; t=1616092533;
+	bh=INUFglOg/4NcYEYdVHMwtMT3NNATeYQ4j3gJCSWjojA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jnVMcsSsvFSucutz7ZnCx9bx3ieW+97x+Z+d5bv9s3qQCxiBIY4bWKIejt6lJPc+S
-	 M6YJa3xTg8vwP9QTcvWbj6oCJtMdtpzQJss5eD8+AwxBkc4hwsC++Hp6vX8QowdIFa
-	 ewHiVsA6XFrwlasu+X9uzfwz1ogKf9o7B0l0kads=
+	b=qV0drRQMaG1LWs5rp+rfMaCqLhBjM9E5ZOr3D9oBoEjq/PAfCVdafArFolNein6ae
+	 Y4cR/5h8BqQvAmJ4nxGLi0+ebKekU6xJP0gjh22En1qbp6HtdXGhC4E3f6L2G5h882
+	 ng7bDBPTSJIlJIF/EugH5NZuS/7cLZB9REXD/5Ro=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47905F80171;
-	Thu, 18 Mar 2021 19:33:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77341F80218;
+	Thu, 18 Mar 2021 19:33:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5869F80171; Thu, 18 Mar 2021 19:33:47 +0100 (CET)
+ id 89486F80224; Thu, 18 Mar 2021 19:33:51 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A93EF800E0
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 19:33:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A93EF800E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0FCDF80163
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 19:33:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0FCDF80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mp9qwm36"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC65364F2A;
- Thu, 18 Mar 2021 18:33:39 +0000 (UTC)
+ header.b="W3R990pp"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B61C64F04;
+ Thu, 18 Mar 2021 18:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616092420;
- bh=O4+Jms1dbCSgB1akhHdOQ5yf5A0hiTEh3B7Z20RU4GA=;
+ s=k20201202; t=1616092426;
+ bh=INUFglOg/4NcYEYdVHMwtMT3NNATeYQ4j3gJCSWjojA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mp9qwm36j8JjKrggI16f+0NZFcgL2RVkdYrSYy9fpFo/marvn7rlk6VdbQ8gtXa9Q
- 9iMFlR8zQGYKbMTFkKEAMEtv4+QnFBYyVH1r5pOdjWf8N84DQCGv1ZjF2qFXeg50yF
- a5FZ85dpUUGP7Wjy/fUjRSjkDyq/BrLvEAPpWwu4IsYsj4m1GzL0Ecx/1/LmZM0WKw
- oTnae5tPPui4kGLeab3bqhCdWsz1Ms8dnsOjjyYX2+w6xv2TtYotss+QiIRlK1zLsO
- JhyldCBQBgVxZW2mwud7FXUBuvSdrFE62I8z0JRpFkLUAqSE8lt0iYk0RXJBIxzqoj
- Tqmzke6y7bqSQ==
+ b=W3R990ppNuoRbWXVfdPAWYN7kFdyxisgukohmfd44/69zUv0fBG/E+KdswzEABoG9
+ Pzp8UIas+g17K7ENA5aVBRKddCb1YW/kcSa9pFX2OFVw/KWqIz+RAClAByhetIPi6v
+ vQXf9+XVPnyeJTUO/KeTkaveljtbiH52P1eonULRyCmE/XMWr4eEDvbKU3l3ZhGzbG
+ Rumw4PqjX2ZzeUg208w/WhzmkG0EusavX+HAEVM9tzT/UvGGJO+D6Z9OCqbhOsdhOI
+ 0r90O8grcLG1If5sCnqjxixDeTjFV++ZOc+BE8N67EWrxkT3tODSNqdZz3cRyb5lYv
+ U8OarjWKvwcXA==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>,
- Thierry Reding <thierry.reding@gmail.com>,
- Paul Fertser <fercerpav@gmail.com>, Dmitry Osipenko <digetx@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v5 00/17] Fix reset controls and RPM of NVIDIA Tegra ASoC
- drivers
-Date: Thu, 18 Mar 2021 18:33:28 +0000
-Message-Id: <161609213718.41838.12060094271609265312.b4-ty@kernel.org>
+To: Nick Desaulniers <nick.desaulniers@gmail.com>
+Subject: Re: [PATCH v3] ASoC: Intel: Skylake: skl-topology: fix
+ -frame-larger-than
+Date: Thu, 18 Mar 2021 18:33:30 +0000
+Message-Id: <161609213720.41838.16025137962653847892.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210314154459.15375-1-digetx@gmail.com>
-References: <20210314154459.15375-1-digetx@gmail.com>
+In-Reply-To: <20210315013908.217219-1-nick.desaulniers@gmail.com>
+References: <CAHp75Vdy083+5K=4sViwg8uNJ1_6agECYbjMSFEGXX9VTO85WQ@mail.gmail.com>
+ <20210315013908.217219-1-nick.desaulniers@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ liam.r.girdwood@linux.intel.com, linux-kernel@vger.kernel.org,
+ cezary.rojewski@intel.com, amadeuszx.slawinski@linux.intel.com,
+ yang.jie@linux.intel.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
+ Julia.Lawall@inria.fr, Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Mark Brown <broonie@kernel.org>, mateusz.gorski@linux.intel.com,
+ andriy.shevchenko@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,14 +92,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 14 Mar 2021 18:44:42 +0300, Dmitry Osipenko wrote:
-> This series adds missing hardware reset controls to I2S and AC97 drivers,
-> corrects runtime PM usage and drivers probe/remove order. Currently drivers
-> happen to work properly because reset is implicitly deasserted by tegra-clk
-> driver, but clk driver shouldn't touch the resets and we need to fix it
-> because this breaks other Tegra drivers. Previously we fixed the resets of
-> the AHUB and HDMI codec drivers, but turned out that we missed the I2C and
-> AC97 drivers.
+On Sun, 14 Mar 2021 18:39:08 -0700, Nick Desaulniers wrote:
+> Fixes:
+> sound/soc/intel/skylake/skl-topology.c:3613:13: warning: stack frame
+> size of 1304 bytes in function 'skl_tplg_complete'
+> [-Wframe-larger-than=]
+> 
+> struct snd_ctl_elem_value is 1224 bytes in my configuration.
 > 
 > [...]
 
@@ -108,40 +108,8 @@ Applied to
 
 Thanks!
 
-[01/17] ASoC: tegra20: ac97: Add reset control
-        commit: a46b78247b852345ae4458711a4aec6744a7838c
-[02/17] ASoC: tegra20: i2s: Add reset control
-        commit: 9c648ef82d7d4696e80b286d37dae07b67a9a32d
-[03/17] ASoC: tegra30: i2s: Restore hardware state on runtime PM resume
-        commit: 0bbcecaaab15a74ba69f93df46c753f2a64eadca
-[04/17] reset: Add reset_control_bulk API
-        commit: 48d71395896d54eec989179dd265e569fcecb15a
-[05/17] ASoC: tegra30: ahub: Switch to use reset-bulk API
-        commit: 050086eb6dc945207b1db1d15cd81e9366dfd2f1
-[06/17] ASoC: tegra20: spdif: Correct driver removal order
-        commit: 0911f154a2ae264ee2a7c868c1267a102396d016
-[07/17] ASoC: tegra20: spdif: Remove handing of disabled runtime PM
-        commit: c53b396f0dd49a626ea2b1fc0a8b9e0a0bf95d4d
-[08/17] ASoC: tegra20: i2s: Add system level suspend-resume callbacks
-        commit: e33fdd9bee12be35d080bfd4acc9d1e3a0d04001
-[09/17] ASoC: tegra20: i2s: Correct driver removal order
-        commit: ca6e960ed6b10ba9236da8b3614574bb4524c65e
-[10/17] ASoC: tegra20: i2s: Use devm_clk_get()
-        commit: d3c6ef98dadd1e500445e4c5a9d684cbf3182c7d
-[11/17] ASoC: tegra20: i2s: Remove handing of disabled runtime PM
-        commit: 80ec4a4cb36d3f8bb56b5aa89faceb1145ef7aea
-[12/17] ASoC: tegra30: i2s: Correct driver removal order
-        commit: f852e1e4acf4ebde4c960bab6f89407fa18ca489
-[13/17] ASoC: tegra30: i2s: Use devm_clk_get()
-        commit: 52674aef9eb678f30d99f77fd53f6c564d5e2d92
-[14/17] ASoC: tegra30: i2s: Remove handing of disabled runtime PM
-        commit: b5f6f781fcb27b3ae5a2f04312a190115b5cbbd1
-[15/17] ASoC: tegra30: ahub: Reset global variable
-        commit: 5d956e3cb806870012c443bc265e6ac6188d3c36
-[16/17] ASoC: tegra30: ahub: Correct suspend-resume callbacks
-        commit: e2965c2ca139e780dc353cef1474103bb037136e
-[17/17] ASoC: tegra30: ahub: Remove handing of disabled runtime PM
-        commit: b5571449e6186bd37e8da16e7bce53f621c05e72
+[1/1] ASoC: Intel: Skylake: skl-topology: fix -frame-larger-than
+      commit: bef2897d31b97852d80b38e9376ed5ef3a90b309
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
