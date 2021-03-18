@@ -2,83 +2,106 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EE06C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 13:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0928FC433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 14:04:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CFDBF64F1C
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 13:53:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFDBF64F1C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id E632764E3F
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 14:04:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E632764E3F
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ED5C1680;
-	Thu, 18 Mar 2021 14:53:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ED5C1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0CF7168B;
+	Thu, 18 Mar 2021 15:03:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0CF7168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616075634;
-	bh=Ve2/nk1F/T+GCGAKVkxI6siAwFKoql1OZeOANplilpk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1616076279;
+	bh=dDmy1feZKcs3J/kf8CId2DGiJatVw52cKc9lne9UrXU=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vqi5/83vMuvRccPA9tsANAr4WRvWShn9dPujST1DP5YfQQrNT4HV4rumP1mMlYzDv
-	 nzd49xt6omHKZ/k+nJ55ZnPZDS/yXF3rpbnckM4bB60FJLgRj/GuJtLWu7oB+FuVLW
-	 i2acTbkbnDtGus5/K292G/W7SUiCBPp2UQ7YZmHs=
+	b=YqLrGD5SgWUlf5stwLZtEpYwyqW3IcUlCYDTEqzwiuIqQrdWYOqbleVLSc+GmFkem
+	 Ug4az7NvmodQqPB2N063ZYhV6Ke/sP8bWRBkgOnGnWZve48pcA2u6mU2kSErBh2osP
+	 BYH6Scem9XftjT3otKIM0So2BTgAt15nlxNak9Dw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DE51F80163;
-	Thu, 18 Mar 2021 14:53:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5386FF80163;
+	Thu, 18 Mar 2021 15:03:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B092F80165; Thu, 18 Mar 2021 14:53:02 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9F144F80165; Thu, 18 Mar 2021 15:03:47 +0100 (CET)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79E9DF800E0
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 14:52:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79E9DF800E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1230AF80124
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 15:03:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1230AF80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LbGrPpjF"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81FE564F1C;
- Thu, 18 Mar 2021 13:52:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616075576;
- bh=Ve2/nk1F/T+GCGAKVkxI6siAwFKoql1OZeOANplilpk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=LbGrPpjFvFY5bgXjGUkYQIlDF+JgGSMwDGGHs05lcoP6in3NJG8CApMpKgA1/PUxx
- fk+Icf+AQYzstcVrJyr1uuOvGgcY4ZGfddBSc8fkCBsiPGHClKrF3AnhLP6ZeMek54
- QROl2zHAGh2ZCZOomoCaQ10+sC6/oiE9g/Iwy2rv5I03ofndoHgwtDjKdtXRGlCb9v
- ureFi8aJUXKFqrely86AaiR90u/XdtZUlQPP8w+Dd4AjF7SPbV6Xhu4zJ208VBmIDg
- QLNMqw9C5MWnuFrexJ1U1Fow5YQJp662M69fD6qfAkZo8LgG3v64cQ54iQtNej1nFR
- Bv7vo5RuU8lnQ==
-Date: Thu, 18 Mar 2021 13:52:52 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Nick Desaulniers <nick.desaulniers@gmail.com>
-Subject: Re: [PATCH v3] ASoC: Intel: Skylake: skl-topology: fix
- -frame-larger-than
-Message-ID: <20210318135252.GA15895@sirena.org.uk>
-References: <CAHp75Vdy083+5K=4sViwg8uNJ1_6agECYbjMSFEGXX9VTO85WQ@mail.gmail.com>
- <20210315013908.217219-1-nick.desaulniers@gmail.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="kMTJZCsE"
+Received: by mail-wm1-x32f.google.com with SMTP id
+ f22-20020a7bc8d60000b029010c024a1407so5506180wml.2
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 07:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=subject:to:cc:references:from:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=ZReM8DwR8a2U3UBCVgcUkguF91LKjIlH9I+CymAeckw=;
+ b=kMTJZCsEswCTV0IOs2LrLlG8I4bWoY2TouGrqtp9oQ21v1tf9hXqjaM9r7R29cdCPj
+ zidW37grNEiC8HBmzNzEwSe7rwe2N7ctPv+GP1UC6UILZwS9QDYOWyIqkU9xBtKvtdrA
+ ERNskqdPrSC0IGGctXOc786wJx5TJwWEtpFWAlKg6C3Xw7Qd9mOPhgNlA2Jqub8/3G6t
+ qoNbCcDoGCB/0V6qc8uXO0PHyQXLe32BH8/tHb+PhDo+Om6guMWWrnAGDTcGGuKp+kzr
+ KB7MAi+kAxg6wO7OcnD8mAPIU93c7f0T5ylKb1ijs+Lb8gQS/9Kh8/hPRDWq0i7d3GZM
+ LELw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=ZReM8DwR8a2U3UBCVgcUkguF91LKjIlH9I+CymAeckw=;
+ b=gMgYxJCYpkCA3o46MGczZtAThGcfLOVoGxMD8lhOWmquQDgKPDNfmIVxPqok6P53dx
+ YSNuzD7LbuF9oBjmN3W8cWABzsYTC9coXSdZYNl6QIjz9iVTRcp0AjoII4/+NcntMdHQ
+ F0qYW9z9VXGx8XuPSu1LJY8ZuzEuyRXR20LtxOdcc9wyORMnMX4NprsmVS4Fkui5oWXL
+ aQ4yfyRuM4NFHkuO61K1eCVzDOun6PQWa3wgiJLp7o1CcUc17pf+AaLpZoSY9rCMXGpm
+ qvJ/gPjqGKd3/oyjV1SVcJ41CqJCGlth8YNSehmzNQWkl6NRCieRPlZRZ4yIM3VepV88
+ cFyg==
+X-Gm-Message-State: AOAM5310jvmtAw2f4iY7uH4KQUUzSGtGR/uF2NMb0Sbbds6n53Ju3BiM
+ iQouQoy1ltBH/KUFO+uhkY+ScA==
+X-Google-Smtp-Source: ABdhPJzGV4Gf91DcNI3fCVPWUVoFreAEUJAv0z7EsvQ3vusYi2GEvFl4vLVm9dliIy0X9/ZpQUWDyw==
+X-Received: by 2002:a7b:c3cd:: with SMTP id t13mr3774517wmj.109.1616076215547; 
+ Thu, 18 Mar 2021 07:03:35 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+ by smtp.googlemail.com with ESMTPSA id b186sm2466096wmc.44.2021.03.18.07.03.34
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 18 Mar 2021 07:03:35 -0700 (PDT)
+Subject: Re: ASoC topology loading vs card bind
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+References: <09c77d7e-3def-0643-b838-94d748529333@linaro.org>
+ <4a4c96df-b145-5bb7-ad91-e5d3644f704c@linux.intel.com>
+ <5b10ad71-44f0-d0f7-431e-18447e11596b@linaro.org>
+ <27b526b6-9432-f014-d639-d3c80af191d3@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <61df7314-0d88-6195-000b-e7c4258b5951@linaro.org>
+Date: Thu, 18 Mar 2021 14:03:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
-Content-Disposition: inline
-In-Reply-To: <20210315013908.217219-1-nick.desaulniers@gmail.com>
-X-Cookie: do {
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: guennadi.liakhovetski@linux.intel.com, cezary.rojewski@intel.com,
- amadeuszx.slawinski@linux.intel.com, yang.jie@linux.intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- liam.r.girdwood@linux.intel.com, Julia.Lawall@inria.fr,
- Andy Shevchenko <andy.shevchenko@gmail.com>, mateusz.gorski@linux.intel.com,
- tiwai@suse.com, andriy.shevchenko@linux.intel.com,
- pierre-louis.bossart@linux.intel.com
+In-Reply-To: <27b526b6-9432-f014-d639-d3c80af191d3@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,33 +118,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks Pierre for inputs,
 
-On Sun, Mar 14, 2021 at 06:39:08PM -0700, Nick Desaulniers wrote:
-> Fixes:
-> sound/soc/intel/skylake/skl-topology.c:3613:13: warning: stack frame
-> size of 1304 bytes in function 'skl_tplg_complete'
-> [-Wframe-larger-than=]
+On 18/03/2021 12:40, Pierre-Louis Bossart wrote:
+> 
+>> Am trying to load FE dais from topology file along with the graph 
+>> definition.
+>>
+>> Ex:
+>> Lets say we have a dai link in soundcard which has cpus->dai_name 
+>> pointing to an FE dai ("MultiMedia1") available in topology file.
+> 
+> Why would you want to do this? You are hard-coding an FE dailink in the 
+> machine driver, when it can be described in the topology.
 
-Changelogs like this look like Fixes: tags and confuse tools which
-attempt to parse them, please don't just put a Fixes: at the start of
-the line.
+TBH, there is no reason to do that, I was just trying out ASoC topology 
+on QCom platforms :-)
 
---1yeeQ81UyVL57Vl7
-Content-Type: application/pgp-signature; name="signature.asc"
+I will give that a go, hopefully that should help!
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBTWzMACgkQJNaLcl1U
-h9DNPQf/Ub0XFEPo2B9Zb6vwJ2ekYiSV9f5fi6blCU8XvdPmKPbarXfrB9bmnotr
-QOIiIeGxmzDtZ9oBncTT7isXsVeXsZE84KvUK+KNR9NZCsUIreZNz0zC6wFHwJAQ
-uwRp4XlbZaTySmrf0dwLtv6N0KMNXBk1i5t0P9Ra1tAb5m4MDAJ/sH45AIq6oryz
-bv1JEL2HrzmMUvxVX5z0PHl15b6tGH0l/XTIzoBATjvHvQzvuZLL80qA7u3ZTPRH
-Ed/gMjwCl2v7TGcWCeAtCqV+/ainIE49hg3JFti4MYMi46Yymr27w/IkQ4MU1Rkx
-jwJrd6gzeSoZp7WYDaYS+GVnkTJgHA==
-=8dZ2
------END PGP SIGNATURE-----
+> 
+> Look at the SOF machine drivers, they have ZERO FEs hard-coded, 
+> precisely because we want the topology to define FEs.
 
---1yeeQ81UyVL57Vl7--
+Do you have an example topology for this that I can take as reference?
+
+thanks,
+srini
+
+> 
+> And for legacy machine drivers, we also skip all FE dailinks and only 
+> use the ones from the topology.
