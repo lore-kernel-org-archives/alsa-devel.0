@@ -2,65 +2,77 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66DA9C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:33:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 795C2C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:45:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F03764E28
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:33:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F03764E28
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 4FE6964EF2
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 15:45:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FE6964EF2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EECB1694;
-	Thu, 18 Mar 2021 16:33:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EECB1694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 485671694;
+	Thu, 18 Mar 2021 16:44:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 485671694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616081636;
-	bh=yCsETw8kpVJErJYtB35DAJk8TiP8G2h6zEHEbf6Xap0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616082340;
+	bh=H78Oi/ME5U8JNikwOq6/5Bq4PBoCE8DdLPBBKKYmlBk=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mz4R+kTgepOKmGM6t0LN20a8pD8CQypR41kwXlGTlsJchQ4411PZwfUnEBr3D0/8e
-	 hen01qGgdRhMEb0iLA/aLx/vc8v8zpsluHxPvp3j+MelvixfC9LkTdCUD5U7W6PeDE
-	 YvaYmZfGfMGAFkqEf3lLSCJG5QuTv2rQXc4jJ0Mw=
+	b=UCRYsKCqauw7UxUuXf0NZBEh8AUZyfBOq6X8XJhdzgANiokYdk/aOfjzpoK+74g69
+	 wkmJkoiAmT8BdzGY+Mo8pkHeCWni97Ka7fe5YD/stFOD7CYaQfObNZ975SmSVnRJTr
+	 BbqGVzJtomEjxvCVaGMuZFrNdDnZJmpSWqOcVUnE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80D44F80163;
-	Thu, 18 Mar 2021 16:33:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F3B7F80163;
+	Thu, 18 Mar 2021 16:44:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07C21F80163; Thu, 18 Mar 2021 16:33:03 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8DF0CF80165; Thu, 18 Mar 2021 16:44:47 +0100 (CET)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46C4DF800E0
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 16:32:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46C4DF800E0
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1870FAC1F;
- Thu, 18 Mar 2021 15:32:53 +0000 (UTC)
-Date: Thu, 18 Mar 2021 16:32:52 +0100
-Message-ID: <s5hk0q4h3yz.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C52D8F800E0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 16:44:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C52D8F800E0
+IronPort-SDR: 2HKrJBASaF5VpKpk9HRMjrlZ8k77kHHLEDz7A5vz+9fVzX3tMDKlcPMiiM5INtMB9Dt5za4KAm
+ hPRfDJBYnCyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="168999219"
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; d="scan'208";a="168999219"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Mar 2021 08:44:37 -0700
+IronPort-SDR: z1nGGynXx86uEza18COfqujEAgE5vGMWAKGh+v5C41pTkg7l/q+D0roS9ESSMRleioXosjvqhg
+ eyDU4DEl71dQ==
+X-IronPort-AV: E=Sophos;i="5.81,259,1610438400"; d="scan'208";a="450522611"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.237.12.77])
+ ([10.237.12.77])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Mar 2021 08:44:35 -0700
 Subject: Re: [PATCH 3/3] ALSA: hda: Revert "ALSA: hda: Allow setting
  preallocation again for x86"
-In-Reply-To: <20210318151122.2493096-4-amadeuszx.slawinski@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
 References: <20210318151122.2493096-1-amadeuszx.slawinski@linux.intel.com>
  <20210318151122.2493096-4-amadeuszx.slawinski@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
+ <s5hk0q4h3yz.wl-tiwai@suse.de>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Message-ID: <c70b8f56-c6c3-cde1-40bf-f04765da56d7@linux.intel.com>
+Date: Thu, 18 Mar 2021 16:44:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <s5hk0q4h3yz.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
  alsa-devel@alsa-project.org
@@ -79,58 +91,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Mar 2021 16:11:22 +0100,
-Amadeusz Sławiński wrote:
+On 3/18/2021 4:32 PM, Takashi Iwai wrote:
+> On Thu, 18 Mar 2021 16:11:22 +0100,
+> Amadeusz Sławiński wrote:
+>>
+>> This reverts commit f8e4ae10de43fbb7ce85f79e04eca2988b6b2c40.
 > 
-> This reverts commit f8e4ae10de43fbb7ce85f79e04eca2988b6b2c40.
-
-It should be a format of commit ("description ...") as checkpatch.pl
-would complain.  The commit f8e4ae10de43 itself is a revert of commit
-c31427d0d21e, and you need to give an explanation why the
-revert-of-a-revert can work better at this time.
-
-
-thanks,
-
-Takashi
-
-> On systems where there is a lot of FrontEnds, when
-> CONFIG_SND_HDA_PREALLOC_SIZE != 0  ALSA core allocates memory for each
-> FE, which may cause out of memory problems due to per card limit. Force
-> config to 0 on X86, so memory will be allocated on as needed basis.
+> It should be a format of commit ("description ...") as checkpatch.pl
+> would complain.  The commit f8e4ae10de43 itself is a revert of commit
+> c31427d0d21e, and you need to give an explanation why the
+> revert-of-a-revert can work better at this time.
 > 
-> Bug: https://bugzilla.kernel.org/show_bug.cgi?id=201251#c322
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> ---
->  sound/hda/Kconfig | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+
+I don't mind improving it, however it seems like there is exception done 
+in checkpatch for "This reverts commit", so there is no warning on this 
+line.
+
+Will add explanation.
+
 > 
-> diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-> index 57595f1552c9..741179ccbd4e 100644
-> --- a/sound/hda/Kconfig
-> +++ b/sound/hda/Kconfig
-> @@ -21,17 +21,16 @@ config SND_HDA_EXT_CORE
->         select SND_HDA_CORE
->  
->  config SND_HDA_PREALLOC_SIZE
-> -	int "Pre-allocated buffer size for HD-audio driver"
-> +	int "Pre-allocated buffer size for HD-audio driver" if !SND_DMA_SGBUF
->  	range 0 32768
-> -	default 2048 if SND_DMA_SGBUF
-> +	default 0 if SND_DMA_SGBUF
->  	default 64 if !SND_DMA_SGBUF
->  	help
->  	  Specifies the default pre-allocated buffer-size in kB for the
->  	  HD-audio driver.  A larger buffer (e.g. 2048) is preferred
->  	  for systems using PulseAudio.  The default 64 is chosen just
->  	  for compatibility reasons.
-> -	  On x86 systems, the default is 2048 as a reasonable value for
-> -	  most of modern systems.
-> +	  On x86 systems, the default is zero as we need no preallocation.
->  
->  	  Note that the pre-allocation size can be changed dynamically
->  	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
-> -- 
-> 2.25.1
+> thanks,
 > 
+> Takashi
+> 
+>> On systems where there is a lot of FrontEnds, when
+>> CONFIG_SND_HDA_PREALLOC_SIZE != 0  ALSA core allocates memory for each
+>> FE, which may cause out of memory problems due to per card limit. Force
+>> config to 0 on X86, so memory will be allocated on as needed basis.
+>>
+>> Bug: https://bugzilla.kernel.org/show_bug.cgi?id=201251#c322
+>> Suggested-by: Takashi Iwai <tiwai@suse.de>
+>> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+>> ---
+>>   sound/hda/Kconfig | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
+>> index 57595f1552c9..741179ccbd4e 100644
+>> --- a/sound/hda/Kconfig
+>> +++ b/sound/hda/Kconfig
+>> @@ -21,17 +21,16 @@ config SND_HDA_EXT_CORE
+>>          select SND_HDA_CORE
+>>   
+>>   config SND_HDA_PREALLOC_SIZE
+>> -	int "Pre-allocated buffer size for HD-audio driver"
+>> +	int "Pre-allocated buffer size for HD-audio driver" if !SND_DMA_SGBUF
+>>   	range 0 32768
+>> -	default 2048 if SND_DMA_SGBUF
+>> +	default 0 if SND_DMA_SGBUF
+>>   	default 64 if !SND_DMA_SGBUF
+>>   	help
+>>   	  Specifies the default pre-allocated buffer-size in kB for the
+>>   	  HD-audio driver.  A larger buffer (e.g. 2048) is preferred
+>>   	  for systems using PulseAudio.  The default 64 is chosen just
+>>   	  for compatibility reasons.
+>> -	  On x86 systems, the default is 2048 as a reasonable value for
+>> -	  most of modern systems.
+>> +	  On x86 systems, the default is zero as we need no preallocation.
+>>   
+>>   	  Note that the pre-allocation size can be changed dynamically
+>>   	  via a proc file (/proc/asound/card*/pcm*/sub*/prealloc), too.
+>> -- 
+>> 2.25.1
+>>
+
