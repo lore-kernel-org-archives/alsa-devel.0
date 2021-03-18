@@ -3,106 +3,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CBC0C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CC5BC433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:33:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BB2CA64F40
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:33:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BB2CA64F40
+	by mail.kernel.org (Postfix) with ESMTPS id 6C72664F01
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:33:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C72664F01
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3E2A16BE;
-	Thu, 18 Mar 2021 11:32:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3E2A16BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2E2016D4;
+	Thu, 18 Mar 2021 11:33:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2E2016D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616063602;
-	bh=c9tLkcNIu5z/bkjAcPED5azNQrJVYIrVhlBaKivHoM4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YaKYx5HysYFQC3uXlzuFrkkNhak1SYxu8Fn+wnau+GxAzaE53ZafjfC7tjIpiG/ZE
-	 ZaUPgDVU4jtumiP1aPyO3fD276x1YZecvKQ64JwCXeb+5t2frcuG15/Lh1erpe4l/d
-	 qiG0TWH9yovqEWZ3q+D7EYokHXxEA4/dPrbDxXQ4=
+	s=default; t=1616063630;
+	bh=A2UyaBqw83fFKx90TJ1iK5jq7X3Cz2VhXbXZMo+Svn8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ozgqeu+sDkccT24px/GLGmriROQuVSCoMeBr0/5bBj9K5I/3l0KZNTnDlaz9xrZZW
+	 bFkjlGg9qaVxBxjJsgoy26uGQP1/8+gUJ3EtD1CdvFn5SmPK8Lvsml3LUIhi0TLbCl
+	 H7xkKU03VKsa2yQg80gMsmuwNv4vcKLH7SuICmyI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64564F804A9;
-	Thu, 18 Mar 2021 11:30:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C2A4F804AD;
+	Thu, 18 Mar 2021 11:30:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3121EF8032C; Thu, 18 Mar 2021 11:30:41 +0100 (CET)
+ id 16E76F8032C; Thu, 18 Mar 2021 11:30:42 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04832F800C8
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 11:30:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04832F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id B745EF800E0
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 11:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B745EF800E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="SVYH42K4"; 
+ header.b="XkbGA3HF"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="pxuTF8rw"
+ header.i=@messagingengine.com header.b="lq16IoH8"
 Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
- by mailout.west.internal (Postfix) with ESMTP id 6E71B1B14;
- Thu, 18 Mar 2021 06:30:25 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id 37F441B49;
+ Thu, 18 Mar 2021 06:30:19 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute7.internal (MEProxy); Thu, 18 Mar 2021 06:30:25 -0400
+ by compute7.internal (MEProxy); Thu, 18 Mar 2021 06:30:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=AjOYXZ58Q+cr+
- VClUUQ+0tm0jJD4/Rzv0HK7sxaudHc=; b=SVYH42K4JXDMbQXqbBJkGHgtc9zYF
- 5k4KdEUvI7nHpeOvyhbbkvZbgUBsxQkIFGQlxThbpqCCqpnLSa15D9+KxcLhPmx4
- li4m4sHmz2rorQNVfmlAipzIjt3gMtLANst24xMbfdwMRLqEmC3M7Nrxi57g2fqP
- jpdS/9Ia4symh+am0SIkRoG8+Inua073rheiVfb7nEQp/OfIvlFQUltaYL813BBn
- eW0bViDUwNtRzn3QxQe5z6PewRLaRRmx/UMtc+ddnQVXBDv9J3KgqOaROLH9/o7+
- pT5Kpp1UT3O4s0k6BJ8NwnGIyZccYxDNxRDUt5C9qv1PzoAGyvSffXo/g==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding; s=fm1; bh=jfATmVnpADUCUIMvtH3e1aOMkx
+ 9AelU3OY79GXBkDbI=; b=XkbGA3HFa6dT/B7E+8HmroYFIO6yOZB+AGvwZbIcs7
+ 7qk5Y1TwH/3RE4eUcl9ws3/hDltnMQ2EH+1W9TG6v9QT01xs24+wLm1rRHSBa9UG
+ NtA7WpfuP+OanQdS4ZmGd5SiOoirNbU0U/oP+bVkhk5NV10MQLqfKE5lKrSCxuxU
+ 0RI+YFs5v13AOi+QHYReQ3e74PsXeCpmjdA32HB8MQt3AAaJpn+/sI7/uxCyqeBi
+ jELsO5CALY8VhIYjFJLkm6xBPQl+MO0DxNKt08hUZTruW+F0EAIK0438SL3TSndd
+ 15DL8sE7SAw6ElfV1qO06NkqFZZTl4ZAFny2TY9PG8PQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=AjOYXZ58Q+cr+VClUUQ+0tm0jJD4/Rzv0HK7sxaudHc=; b=pxuTF8rw
- shPOn68uyUmJq/vZpgNDhL19TzvJyEZyR+NkuYg/p+ij9voSpc3zhbFHgZT5Q07j
- p7Irat0IGcdWIgibAE/DTVBfNdIbbS4VXNn5q49mRIpumExiQgCfAUWCGBOthnqJ
- 0fZnM+gkwBc3NWl1qWxFRF+/eFhUStuM92jHbuaGjPpqRBkl22Y1a1Bj3AAE6ubb
- KG3Fz7SedenjHLg7Z/Td3VL3Xtj2ssGL0GNJ7Gnp/z1erU/HUKBOhOQKN8VExmdR
- CsSEIBm61SNspM56+5YhtU2rXrq24tDmHrSTbDzhMvcMX1Q9WpEulAhOEJ0WMSi6
- nPKJyaZXK4WIOQ==
-X-ME-Sender: <xms:wCtTYOvLpz71sfnq7IsTrCXKPUd2KV8J0lZXVXeeMZLx96up04apIg>
- <xme:wCtTYD6r7EZwYbaXSDN83lQpD3hJtvUK4RdLPKsxU7vy2M950ot3hwVkNRDzeSrln
- -EedCisJon9RmW2X0k>
+ :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jfATmVnpADUCUIMvt
+ H3e1aOMkx9AelU3OY79GXBkDbI=; b=lq16IoH8eBiY8IFh4a2ivMzBjIbRsOXcY
+ 7yC8Jdwpr4k4Xr8qa3fKm2+ZIjBFJFR+cmvezI2WdKtGe2VHP3j5Ij24mbSwi5Ih
+ PDHjWPLt/s4Yyi1hqiRcjmyNE2lIR5uLOF6UGpW4+zycpV99hrQ/APNuQN7vKQJJ
+ FpZsTPPjne0kiFIXZQCmDr6j83IFqXL+ZI66XhEc1v05OILa2VjJ0rhiG6gjelJm
+ tSwzMiq+xw2azXO8BKgpG2YgyWvYZywFXR5l1LmWoFcCSLj8RAvrOHHvSanrV7Hz
+ MNSESz9yg1s/iMpDL9uAlaaznd/Jdh8SuzZI5bYcSW+hLls1vQS6Q==
+X-ME-Sender: <xms:uitTYLLFI1A5q74VIIYy16UidaqJURgjfIqXYV-T6inXxhYKZAGTrA>
+ <xme:uitTYCYhbxP9Acbm4A1goGU2MvqQV4HoRtHqNB6LlYBASsrkpsB3TVKbhQ7buYHvS
+ 9tUhs_XU4EI-PZ3HCE>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgudejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
- etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
- hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:wCtTYKeZzT5G9M3DVR3LmBIRen676WwjPhm--ZxrMbJYeBk-QM4FeA>
- <xmx:wCtTYAxdVmVViaku2m6TT46CKT5o37afs9Rhw7-mg-fQt4kh6X-s1g>
- <xmx:wCtTYP-eFGAAom5WjSo8KZY_PoSvGOqeLEcXzcTHbabGPRd4fSTQ-w>
- <xmx:wStTYMZ2rbJ1slKiq49DIxkgpvrlEy7fSa0-3n4LOWseQNV5Ihwvtw>
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+ dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
+ ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepudeikedtuddtie
+ efvdekuddvjeevffehtdevtdeuvedthfefhedvudejkefggfffnecuffhomhgrihhnpegr
+ lhhsrgdqphhrohhjvggtthdrohhrghdpghhithhhuhgsrdgtohhmnecukfhppedugedrfe
+ drieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+ rhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:uitTYNLE64ndWIIbchkfk-OlHuehzVfehosSGx5-QZBAomBt-00sAA>
+ <xmx:uitTYAD1MITDVddd6BiR1ZYvFSrDl45XJ64doT3wNHqHE5m4_xADDQ>
+ <xmx:uitTYCrShyvQtYlgP-1EyUAXg3eFlInTxaZARmaBEnL8YeX8Lu61nA>
+ <xmx:uitTYGImymJeV52ynxg1l0G42x9uD0Ucw8q8RyBXLJAgUqSNGsmEeg>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA id E202C1080057;
- Thu, 18 Mar 2021 06:30:23 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 17C081080069;
+ Thu, 18 Mar 2021 06:30:16 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [alsa-lib][PATCH 5/6] ctl: add API to compare a pair of control
- element IDs by one of algorithms according to tuple
-Date: Thu, 18 Mar 2021 19:30:12 +0900
-Message-Id: <20210318103013.265264-6-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 0/6] add API of equality and comparison for a pair
+ of control element IDs
+Date: Thu, 18 Mar 2021 19:30:07 +0900
+Message-Id: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
-References: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, tanjeff@cccmz.de
@@ -121,229 +118,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The structure for control element ID is compound one. It means that it's
-not possible to decide single algorithm to find order of a pair of
-control element IDs. For convenience of application developers, it's better
-to produce API to decide the order by useful algorithm.
+Hi,
 
-This commit adds API for one of comparison algorithms. The fields except
-for numid are used for the algorithm. The iface, device, subdevice,
-name, and index fields are compared in the order, by arithmetic way. I note
-that the structure includes some 'unsigned integer' type of fields. The
-subtraction of the fields brings integer overflow as long as the
-calculation is done in the same storage size of the type itself.
+This patchset is a fix for bug issued in the message thread[1].
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- include/control.h      |   1 +
- src/control/control.c  |  45 ++++++++++++++++-
- test/lsb/ctl-elem-id.c | 111 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 156 insertions(+), 1 deletion(-)
+In this development period, alsa-lib got new API as implementation for
+one of comparison algorithms to a pair of control element IDs. However,
+it has several issues.
 
-diff --git a/include/control.h b/include/control.h
-index 36953423..1b2cc0c6 100644
---- a/include/control.h
-+++ b/include/control.h
-@@ -427,6 +427,7 @@ void snd_ctl_elem_id_copy(snd_ctl_elem_id_t *dst, const snd_ctl_elem_id_t *src);
- int snd_ctl_elem_id_equal_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
- int snd_ctl_elem_id_equal_by_tuple(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
- int snd_ctl_elem_id_compare_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
-+int snd_ctl_elem_id_compare_by_tuple_arithmetic(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
- int snd_ctl_elem_id_compare(snd_ctl_elem_id_t *id1, const snd_ctl_elem_id_t *id2);
- unsigned int snd_ctl_elem_id_get_numid(const snd_ctl_elem_id_t *obj);
- snd_ctl_elem_iface_t snd_ctl_elem_id_get_interface(const snd_ctl_elem_id_t *obj);
-diff --git a/src/control/control.c b/src/control/control.c
-index 00009614..fbc6aeb7 100644
---- a/src/control/control.c
-+++ b/src/control/control.c
-@@ -90,7 +90,9 @@ is available.
- 
- Many algorithms can be defined to find ordered pair of #snd_ctl_elem_id_t.
- For one of the comparison algorithms according to the numid,
--snd_ctl_elem_id_compare_by_numid() is available.
-+snd_ctl_elem_id_compare_by_numid() is available. For one of the comparison
-+algorithms according to the tuple, snd_ctl_elem_id_compare_by_tuple_arithmetic()
-+is available. They are useful for qsort(3).
- 
- \section element_lists Element Lists
- 
-@@ -1893,6 +1895,47 @@ int snd_ctl_elem_id_compare_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
- 	return compare_unsigned_integer(l->numid, r->numid);
- }
- 
-+/**
-+ * \brief compare two arguments as ordered pair by one of algorithms according
-+ *	  to iface, device, subdevice, name, index fields.
-+ * \param l opaque pointer to element ID structure.
-+ * \param r opaque pointer to another element ID structure.
-+ * \retval positive if left is greater than right, negative if left is less
-+ *	   than right, zero if they equal.
-+ *
-+ * The structure underlying #snd_ctl_elem_id_t is compound one. The comparison
-+ * algorithm for it is not single and unique. The API implements one of
-+ * algorithm to find order in a pair of control element IDs, according to the
-+ * values of iface, device, subdevice, name, and index fields, by below logic:
-+ *
-+ *  - find order in iface field by this order; card, hwdep, mixer, pcm, rawmidi,
-+ *    timer, and sequencer.
-+ *  - find order in device field by arithmetic comparison of its value.
-+ *  - find order in subdevice field by arithmetic comparison of its value.
-+ *  - find order in name field by using unsigned characters, implemented in strcmp(3).
-+ *  - find order in index field by arithmetic comparison of its value.
-+ */
-+int snd_ctl_elem_id_compare_by_tuple_arithmetic(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	int res;
-+
-+	assert(l && r);
-+
-+	res = l->iface - r->iface;
-+	if (res != 0)
-+		return res;
-+	res = compare_unsigned_integer(l->device, r->device);
-+	if (res != 0)
-+		return res;
-+	res = compare_unsigned_integer(l->subdevice, r->subdevice);
-+	if (res != 0)
-+		return res;
-+	res = strcmp((const char *)l->name, (const char *)r->name);
-+	if (res != 0)
-+		return res;
-+	return compare_unsigned_integer(l->index, r->index);
-+}
-+
- /**
-  * \brief compare one #snd_ctl_elem_id_t to another
-  * \param id1 pointer to first id
-diff --git a/test/lsb/ctl-elem-id.c b/test/lsb/ctl-elem-id.c
-index 670ec252..02eb24fc 100644
---- a/test/lsb/ctl-elem-id.c
-+++ b/test/lsb/ctl-elem-id.c
-@@ -135,6 +135,106 @@ static void comparison_by_numid_3(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
- 	assert(snd_ctl_elem_id_compare_by_numid(l, r) < 0);
- }
- 
-+// Case 3.0. The left object with lesser entry in iface field than right object
-+//	     should result in negative.
-+static void comparison_by_tuple_arithmetic_0(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_CARD, 0, 1, "A", 2);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_HWDEP, 0, 1, "A", 2);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) < 0);
-+}
-+
-+// Case 3.1. The left object with greater entry in iface field than right object
-+//	     should result in positive.
-+static void comparison_by_tuple_arithmetic_1(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_SEQUENCER, 3, 4, "B", 5);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_TIMER, 3, 4, "B", 5);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) > 0);
-+}
-+
-+// Case 3.2. The left object with lesser value in device field than right object
-+//	     should result in negative.
-+static void comparison_by_tuple_arithmetic_2(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_CARD, 1, 7, "C", 8);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_CARD, 6, 7, "C", 8);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) < 0);
-+}
-+
-+
-+// Case 3.3. The left object with greater value in device field than right object
-+//	     should result in positive.
-+static void comparison_by_tuple_arithmetic_3(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_HWDEP, 9, 10, "D", 11);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_HWDEP, 1, 10, "D", 11);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) > 0);
-+}
-+
-+// Case 3.3. The left object with lesser value in subdevice field than right object
-+//	     should result in negative.
-+static void comparison_by_tuple_arithmetic_4(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_MIXER, 12, 1, "E", 14);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_MIXER, 12, 13, "E", 14);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) < 0);
-+}
-+
-+// Case 3.4. The left object with greater value in subdevice field than right object
-+//	     should result in positive.
-+static void comparison_by_tuple_arithmetic_5(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_PCM, 15, 16, "F", 17);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_PCM, 15, 1, "F", 17);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) > 0);
-+}
-+
-+// Case 3.5. The left object with name beginning lesser character in name field
-+//	     than right object should result in negative.
-+static void comparison_by_tuple_arithmetic_6(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_RAWMIDI, 18, 19, "A", 20);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_RAWMIDI, 18, 19, "H", 20);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) < 0);
-+}
-+
-+// Case 3.6. The left object with name beginning greater character in name field
-+//	     than right object should result in positive.
-+static void comparison_by_tuple_arithmetic_7(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_TIMER, 21, 22, "I", 23);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_TIMER, 21, 22, "A", 23);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) > 0);
-+}
-+
-+// Case 3.7. The left object with lesser value in index field than right object
-+//	     should result in negative.
-+static void comparison_by_tuple_arithmetic_8(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_SEQUENCER, 24, 25, "J", 1);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_SEQUENCER, 24, 25, "J", 26);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) < 0);
-+}
-+
-+// Case 3.8. The left object with greater value in index field than right object
-+//	     should result in positive.
-+static void comparison_by_tuple_arithmetic_9(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_CARD, 27, 28, "K", 29);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_CARD, 27, 28, "K", 1);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) > 0);
-+}
-+
-+// Case 3.9. The left object with the same values in iface, device, subdevice,
-+//	     name, and index fields as right object should result in zero.
-+static void comparison_by_tuple_arithmetic_10(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_HWDEP, 30, 31, "L", 32);
-+	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_HWDEP, 30, 31, "L", 32);
-+	assert(snd_ctl_elem_id_compare_by_tuple_arithmetic(l, r) == 0);
-+}
-+
- int main()
- {
- 	void (*entries[])(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r) = {
-@@ -150,6 +250,17 @@ int main()
- 		comparison_by_numid_1,
- 		comparison_by_numid_2,
- 		comparison_by_numid_3,
-+		comparison_by_tuple_arithmetic_0,
-+		comparison_by_tuple_arithmetic_1,
-+		comparison_by_tuple_arithmetic_2,
-+		comparison_by_tuple_arithmetic_3,
-+		comparison_by_tuple_arithmetic_4,
-+		comparison_by_tuple_arithmetic_5,
-+		comparison_by_tuple_arithmetic_6,
-+		comparison_by_tuple_arithmetic_7,
-+		comparison_by_tuple_arithmetic_8,
-+		comparison_by_tuple_arithmetic_9,
-+		comparison_by_tuple_arithmetic_10,
- 	};
- 	int count = sizeof(entries) / sizeof(*entries);
- 	int fd;
+At first, the name, 'snd_ctl_elem_id_compare()', is inappropriate since it
+implements one of comparison algorithms. The name itself implies the
+algorithm is single and unique for control element ID. However, the
+target structure, 'struct snd_ctl_elem_id', is hybrid and compound one.
+We can not find such single and unique comparison algorithm for it.
+
+Secondary, it subtracts a pair of values in fields of 'unsigned int' type
+in storage size of the type. It brings integer overflow.
+
+Tertiary, it has simple bug to compare subdevice field in the same structure.
+
+
+Essentially, equality is different from comparison. In a point of programming,
+implementation for comparison algorithm can have more overhead than
+implementation for equality. In this meaning, it's better to add different API
+for them.
+
+This patchset adds new API below:
+
+ * for equality
+   * snd_ctl_elem_id_equal_by_numid()
+   * snd_ctl_elem_id_equal_by_tuple()
+ * for each comparison algorithm
+   * snd_ctl_elem_id_compare_by_numid()
+   * snd_ctl_elem_id_compare_by_tuple_arithmetic()
+
+I've got bothered to decide the name of API for the case to use tuples.
+Here I use the word, 'tuple', which comes from documentation of alsa-lib[2].
+
+Furthermore, this patchset adds test program for them since equality and
+comparison are quite basic method to operate data. It's better to have no
+bug.
+
+Finally, the issued API, 'snd_ctl_elem_id_compare()' is dropped. After
+merging the patchset, I'm going to post additional patch to alsa-utils to
+fix issued line[3].
+
+[1] https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/181738.html
+[2] https://github.com/alsa-project/alsa-lib/blob/master/src/control/control.c#L80
+[3] https://github.com/alsa-project/alsa-utils/blob/master/alsactl/clean.c#L55
+
+Regards
+
+Takashi Sakamoto (6):
+  test: ctl-elem-id: add test program for future APIs relevant to
+    control element ID
+  ctl: add API to check equality between a pair of control element IDs
+    by numid
+  ctl: add API to check equality between a pair of control element IDs
+    by tuple
+  ctl: add API to compare a pair of control element IDs by numid
+  ctl: add API to compare a pair of control element IDs by one of
+    algorithms according to tuple
+  ctl: drop deprecated API to compare a pair of control element IDs
+
+ include/control.h      |   5 +-
+ src/control/control.c  | 135 ++++++++++++++----
+ test/lsb/Makefile.am   |   6 +-
+ test/lsb/ctl-elem-id.c | 301 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 418 insertions(+), 29 deletions(-)
+ create mode 100644 test/lsb/ctl-elem-id.c
+
 -- 
 2.27.0
 
