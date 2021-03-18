@@ -7,99 +7,99 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CAC6C433E6
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:32:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A91B3C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:33:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 525E864F18
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:32:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 525E864F18
+	by mail.kernel.org (Postfix) with ESMTPS id 21D8264F18
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:33:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 21D8264F18
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1C1216B0;
-	Thu, 18 Mar 2021 11:31:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1C1216B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62C9116CB;
+	Thu, 18 Mar 2021 11:32:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62C9116CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616063541;
-	bh=VelX9uALV9t7Sj6UQGnLe1hVD7pZAgx1N3HYuS6zsnI=;
+	s=default; t=1616063587;
+	bh=cxAscVz+agLs2HVe72q50Jcm1ehLDwk3XflI/3OP7gg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g8xSmTMyOS+2CJYgkVN47p17saVfnwsvslXs+AJFrK6DiHArVBHXlwmKrSy34GlIt
-	 pjhlX2jdot1NN13FWLVrkOgHHlPRycFGH3O+/jPKU0x4fTkaoaDjcSWpKmMapsiLSY
-	 cCpw5HfVWsD3tupvA6+5zPC41UxNYDqzr1LDQjrM=
+	b=EkRT6c0gMfUOvkVl9prSvlZ3rF1ngpkRPMrWGBhATvRI+k1uKnzfGDkO4dVoygE5k
+	 irfQIipdRyjumNcMl+EzHNzZP53rJkOxqw7b/x+ZHOuO34LzvOFCDbAfXKh3tHAyAq
+	 R8AK76cwia04/DHsFBZvW49Z+rS6rD48Px57UGUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D136F800C8;
-	Thu, 18 Mar 2021 11:30:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B0EBF80425;
+	Thu, 18 Mar 2021 11:30:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0482EF802E3; Thu, 18 Mar 2021 11:30:39 +0100 (CET)
+ id E4607F8032D; Thu, 18 Mar 2021 11:30:40 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4616F80218
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 11:30:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4616F80218
+ by alsa1.perex.cz (Postfix) with ESMTPS id 193A4F8023B
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 11:30:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 193A4F8023B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="l+DFRx3S"; 
+ header.b="Hne3fn9I"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="fFP6Da4R"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailout.west.internal (Postfix) with ESMTP id F19CA1B35;
- Thu, 18 Mar 2021 06:30:23 -0400 (EDT)
+ header.i=@messagingengine.com header.b="WYlq/7s5"
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+ by mailout.west.internal (Postfix) with ESMTP id C29AE1B58;
+ Thu, 18 Mar 2021 06:30:26 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute1.internal (MEProxy); Thu, 18 Mar 2021 06:30:24 -0400
+ by compute7.internal (MEProxy); Thu, 18 Mar 2021 06:30:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm1; bh=BRVXpS5Lo+p0e
- NUL8b/+gXXlnZjnzgI5UEULIR9o/84=; b=l+DFRx3StCFtzhZ1i/M2mUHFEpigi
- E3i/5q9w6pZTJdtHy2//ap3mGsIO3/SjQOP8uYH61NeYg7kHIU7jftWIJOBcv5c/
- 9rhOJq5VSAOARgWJ7Ko9e6w23BgRdGaxbOLHZsAB86gAhWPSArtGBhC5YHAL5lX8
- LdXsEsnmT27smlq6qhNYe8x8nNV9NdsUlUl379T8GvSxDmS9+UtWOBdbEdlOUMxy
- JydZ5Uqch8PtminZZRrNJo0WJcSbCwn68o/vC0atqdCjzw4Zw2PA6/9t4Djz9yR2
- OcwIwr3Mn1h4CWKxYwJkYze42VjyDhHB/mbOzHZXPij0r2MCe/8WXx74A==
+ :mime-version:content-transfer-encoding; s=fm1; bh=f6L1YIn1G7z89
+ hWlf3nQMmoJAA+CRalKervkbdlyh18=; b=Hne3fn9ILzOFsdKDEKa2j+1dFjRXp
+ bqLUgwgO9O9ywmvnyR4Zc0Dg+F+se5zmbkQzJp8UbmKRUgU1A/ApSFVReSHG3/ao
+ iKcMhrEWOIOmG9jKGR1fJDmklBjvZVxthjF3HsiuIFDg4dgS8SGUk1EIXCtnT5L+
+ k5Y6G92z79Lj/Gzr9VyuuzfyNqvK1wk1GQ4ZH+dkkkOmXbi5gFDB/4nlsfK9IMj8
+ zoxSnJLrfVAN4QWlcqRSdu4dgPBWoT8d6bficA8kmqlCw4gajTs/6GHf4dVLGLcG
+ 5Cfr12+XyDqxZ1p6mIfkOkWiG0IBS2JiZj7pYQ3UHAe94m3yXxu1FSl3w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:content-transfer-encoding:date:from
  :in-reply-to:message-id:mime-version:references:subject:to
  :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=BRVXpS5Lo+p0eNUL8b/+gXXlnZjnzgI5UEULIR9o/84=; b=fFP6Da4R
- znZilypEy4SAJA5wisfS16kLgEGZsO6P/cLKGTq8W4beiLMQUzhTq5F8yRqgIUAF
- Csm/r3RMSNpH0G4UNGixDeCWwom36rE5E29OimkisUmh0ut96TMYzNYD9lyLKCpF
- G9eahkIXeMxsOyPMjHMeCJByH3/rcgbLCssmMQm2/XnxDfyqe5Ks1Oi58z3BMW3J
- MUTHdTDYGVCPVMETpzusw2yYkyrOhkcok1dEtOswKFNcRqUzj5zQ/lIoiW9j5XTV
- wkH857EkBuxIldF+lwl9jPoSWk/yWVhjH9A/1FdekWbqjInJv3dR97elmMpw1P5N
- 3fnQthMV6SzE7g==
-X-ME-Sender: <xms:vytTYHQWTj_rxkoUL0qbmKr91SARzsKuS8nFc8I2-23pqCf4VWurLA>
- <xme:vytTYKTx_Oxpmv5t99qD9ujQPTtZPMb8UL2ots9x-YfOlpRycgjZI0zL57OdYJ55J
- TH0e89B_yEhv7vU3r8>
+ fm2; bh=f6L1YIn1G7z89hWlf3nQMmoJAA+CRalKervkbdlyh18=; b=WYlq/7s5
+ ZQDfbkBVjFtBd8luVdpgP/2hEBGpTvav7xSCcj84wfSS49GDwiY0ED7jqqYxtYOW
+ eTrah3Oj337Pgz/5D1Firg4t3jsoC2uEdlzflmaRiIjV+pL+VpynhWXU4gvqTucZ
+ o78QKtXKn0PKRDcKvL1cq0bRZ1fICHgSx+ktkIFdXendItZ1w/9p+wxM2KvlYjE/
+ Qgim3oKhT/WJCRLz5mPY2qVN7AF3kt+VlPM5hAkASdpM1yT1aKYsBSZG+g9T6ZCc
+ sMUhL3CpkPG/TI12Qv+oT7StA6mt4tr6UoDscwo5Ids+Lb5QCCVVFwY1izEc6xrf
+ fk+X3x9i5mwBAQ==
+X-ME-Sender: <xms:witTYAC6ZxaVHUdTK6FPJNA-24YdTbRus927cARpJcUX8hCYOlYXeQ>
+ <xme:witTYOYEKypl3bSLYPSWvjsMn8AS0b4NJABRFLquGowQ_1KMWHZgmtcPs4Abrsi9X
+ 0iXG_8uLVY4dhzV9yM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgudejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
  uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
  shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
  etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
- fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilh
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
  hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:vytTYM73EVnZ0XkcJK3LZya2HgRtIsU3nBHDZmQ358bFLt_9NrC8bA>
- <xmx:vytTYG3wLSsYBl_8qRsVt0rYo2KmkCcXaGo1vP6ihGcYErbn0Q6Q3A>
- <xmx:vytTYHCURinuotXovWAQurul34h9uq6hnYKBX5VwD39Gz9zi5ixgew>
- <xmx:vytTYEAkK3o4VhLCfJWZENOl9z68glwmT9RK4RsE-ok5Y6uWHvjiig>
+X-ME-Proxy: <xmx:witTYAnVimL3YVQ_ioMi6AI6hZeuzMOyNGUhOHcZLCz_3khWWgWQ5g>
+ <xmx:witTYLo1AKBqgH15WZEJR_QgoJAbgA_Zc-IlPZqXreQMy1xbeaA2rw>
+ <xmx:witTYKA1JeyAluOLrHhBlp1Y4n8p_BB7XuDDrJNni5_Aud7y0lyAqA>
+ <xmx:witTYMepo5ZiK9kzAUUzbLBLIS2JmYh7WMd_GraI3MtPES9UheQ1XA>
 Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
  [14.3.65.175])
- by mail.messagingengine.com (Postfix) with ESMTPA id 88912108006D;
- Thu, 18 Mar 2021 06:30:22 -0400 (EDT)
+ by mail.messagingengine.com (Postfix) with ESMTPA id 449B61080068;
+ Thu, 18 Mar 2021 06:30:25 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	perex@perex.cz
-Subject: [alsa-lib][PATCH 4/6] ctl: add API to compare a pair of control
- element IDs by numid
-Date: Thu, 18 Mar 2021 19:30:11 +0900
-Message-Id: <20210318103013.265264-5-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 6/6] ctl: drop deprecated API to compare a pair of
+ control element IDs
+Date: Thu, 18 Mar 2021 19:30:13 +0900
+Message-Id: <20210318103013.265264-7-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
 References: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
@@ -121,154 +121,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The structure for control element ID is compound one. It means that it's
-not possible to decide single algorithm to find order of a pair of
-control element IDs. For convenience of application developers, it's better
-to produce API to decide the order by useful algorithm.
+A commit 2cfe6addaef6 ("control: add snd_ctl_elem_id_compare()
+function") adds 'snd_ctl_elem_id_compare()' API, however the
+implementation has several bugs.
 
-This commit adds API for one of comparison algorithms. The value of
-numid field is used for the comparison. I note that the structure includes
-some 'unsigned integer' type of fields. The subtraction of the fields
-brings integer overflow as long as the calculation is done in the same
-storage size of the type itself.
+At first, the name is not inappropriate since it implements one of
+comparison algorithms. The name itself implies the algorithm is single
+and unique for control element ID.
+
+Secondary, it subtracts a pair of values in fields of 'unsigned int' type
+in storage size of the type. It brings integer overflow.
+
+Tertiary, it compares subdevice field in the same structure.
+
+Fortunately, the issued API is not public in any release. An alternative
+API, 'snd_ctl_elem_id_compare_by_name_arithmetic()', is already added with
+enough tests. This commit drops the issued API.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/control.h      |  1 +
- src/control/control.c  | 32 +++++++++++++++++++++++++++++++
- test/lsb/ctl-elem-id.c | 43 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 76 insertions(+)
+ include/control.h     |  1 -
+ src/control/control.c | 35 -----------------------------------
+ 2 files changed, 36 deletions(-)
 
 diff --git a/include/control.h b/include/control.h
-index 8aca67e6..36953423 100644
+index 1b2cc0c6..3975f4b7 100644
 --- a/include/control.h
 +++ b/include/control.h
-@@ -426,6 +426,7 @@ void snd_ctl_elem_id_clear(snd_ctl_elem_id_t *obj);
- void snd_ctl_elem_id_copy(snd_ctl_elem_id_t *dst, const snd_ctl_elem_id_t *src);
- int snd_ctl_elem_id_equal_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
+@@ -428,7 +428,6 @@ int snd_ctl_elem_id_equal_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
  int snd_ctl_elem_id_equal_by_tuple(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
-+int snd_ctl_elem_id_compare_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
- int snd_ctl_elem_id_compare(snd_ctl_elem_id_t *id1, const snd_ctl_elem_id_t *id2);
+ int snd_ctl_elem_id_compare_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
+ int snd_ctl_elem_id_compare_by_tuple_arithmetic(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
+-int snd_ctl_elem_id_compare(snd_ctl_elem_id_t *id1, const snd_ctl_elem_id_t *id2);
  unsigned int snd_ctl_elem_id_get_numid(const snd_ctl_elem_id_t *obj);
  snd_ctl_elem_iface_t snd_ctl_elem_id_get_interface(const snd_ctl_elem_id_t *obj);
+ unsigned int snd_ctl_elem_id_get_device(const snd_ctl_elem_id_t *obj);
 diff --git a/src/control/control.c b/src/control/control.c
-index 93f8f93d..00009614 100644
+index fbc6aeb7..1d83cb6a 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -88,6 +88,10 @@ snd_ctl_elem_id_equal_by_numid() is available. For equality check between a pair
- of #snd_ctl_elem_id_t according to the tuple, snd_ctl_elem_id_equal_by_tuple()
- is available.
- 
-+Many algorithms can be defined to find ordered pair of #snd_ctl_elem_id_t.
-+For one of the comparison algorithms according to the numid,
-+snd_ctl_elem_id_compare_by_numid() is available.
-+
- \section element_lists Element Lists
- 
- An element list can be used to obtain a list of all elements of the
-@@ -1861,6 +1865,34 @@ int snd_ctl_elem_id_equal_by_tuple(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
- 	       (l->index == r->index);
+@@ -1936,41 +1936,6 @@ int snd_ctl_elem_id_compare_by_tuple_arithmetic(snd_ctl_elem_id_t *l, snd_ctl_el
+ 	return compare_unsigned_integer(l->index, r->index);
  }
  
-+static int compare_unsigned_integer(unsigned int l, unsigned int r)
-+{
-+	if (l == r)
-+		return 0;
-+	else if (l < r)
-+		return -1;
-+	else
-+		return 1;
-+}
-+
-+/**
-+ * \brief compare two arguments as orderd items by algorithm according to numid.
-+ * \param l opaque pointer to element ID structure.
-+ * \param r opaque pointer to another element ID structure.
-+ * \retval positive if left is greater than right, negative if left is less
-+ *	   than right, zero if they equal.
-+ *
-+ * The structure underlying #snd_ctl_elem_id_t is compound one. The
-+ * comparison algorithm for it is not single and unique. The API implements
-+ * one of comparison algorithms, according to the value of numid field.
-+ */
-+int snd_ctl_elem_id_compare_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	assert(l && r);
-+
-+	return compare_unsigned_integer(l->numid, r->numid);
-+}
-+
+-/**
+- * \brief compare one #snd_ctl_elem_id_t to another
+- * \param id1 pointer to first id
+- * \param id2 pointer to second id
+- * \retval zero when values are identical, other value on a difference (like strcmp)
+- *
+- * This comparison ignores the numid part. The numid comparison can be easily
+- * implemented using snd_ctl_elem_id_get_numid() calls.
+- *
+- * The identifier fields are compared in this order: interface, device,
+- * subdevice, name, index.
+- *
+- * The return value can be used for sorting like qsort(). It gives persistent
+- * results.
+- */
+-int snd_ctl_elem_id_compare(snd_ctl_elem_id_t *id1, const snd_ctl_elem_id_t *id2)
+-{
+-	int d;
+-
+-	assert(id1 && id2);
+-	d = id1->iface - id2->iface;
+-	if (d != 0)
+-		return d;
+-	d = id1->device - id2->device;
+-	if (d != 0)
+-		return d;
+-	d = id2->subdevice - id2->subdevice;
+-	if (d != 0)
+-		return d;
+-	d = strcmp((const char *)id1->name, (const char *)id2->name);
+-	if (d != 0)
+-		return d;
+-	return id1->index - id2->index;
+-}
+-
  /**
-  * \brief compare one #snd_ctl_elem_id_t to another
-  * \param id1 pointer to first id
-diff --git a/test/lsb/ctl-elem-id.c b/test/lsb/ctl-elem-id.c
-index 39060a8e..670ec252 100644
---- a/test/lsb/ctl-elem-id.c
-+++ b/test/lsb/ctl-elem-id.c
-@@ -16,6 +16,8 @@
- 
- #include <unistd.h>
- 
-+#include <limits.h>
-+
- #include "../include/asoundlib.h"
- 
- static void set_elem_id_by_tuple(snd_ctl_elem_id_t *elem_id,
-@@ -96,6 +98,43 @@ static void equality_by_tuple_3(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
- 	assert(!snd_ctl_elem_id_equal_by_tuple(l, r));
- }
- 
-+// Case 2.0. The left object with less value in numid field than right object
-+//	     should result in negative value.
-+static void comparison_by_numid_0(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	snd_ctl_elem_id_set_numid(l, 0xdeadbeef);
-+	snd_ctl_elem_id_set_numid(r, 0xfeedc0de);
-+	assert(snd_ctl_elem_id_compare_by_numid(l, r) < 0);
-+}
-+
-+// Case 2.1. The left object with the same value in numid field as right object
-+//	     should result in zero.
-+static void comparison_by_numid_1(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	snd_ctl_elem_id_set_numid(l, 0xfeedc0de);
-+	snd_ctl_elem_id_set_numid(r, 0xfeedc0de);
-+	assert(snd_ctl_elem_id_compare_by_numid(l, r) == 0);
-+}
-+
-+// Case 2.2. The left object with greater value in numid field than right object
-+//	     should result in positive.
-+static void comparison_by_numid_2(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	snd_ctl_elem_id_set_numid(l, 0xfeedc0de);
-+	snd_ctl_elem_id_set_numid(r, 0xdeadbeef);
-+	assert(snd_ctl_elem_id_compare_by_numid(l, r) > 0);
-+}
-+
-+// Case 2.3. The left object with lesser value in numid field than right object
-+//	     should result in negative. The subtraction shoud be calculated in
-+//	     storage larger than the storage of 'unsigned int'.
-+static void comparison_by_numid_3(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
-+{
-+	snd_ctl_elem_id_set_numid(l, 0);
-+	snd_ctl_elem_id_set_numid(r, UINT_MAX);
-+	assert(snd_ctl_elem_id_compare_by_numid(l, r) < 0);
-+}
-+
- int main()
- {
- 	void (*entries[])(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r) = {
-@@ -107,6 +146,10 @@ int main()
- 		equality_by_tuple_1,
- 		equality_by_tuple_2,
- 		equality_by_tuple_3,
-+		comparison_by_numid_0,
-+		comparison_by_numid_1,
-+		comparison_by_numid_2,
-+		comparison_by_numid_3,
- 	};
- 	int count = sizeof(entries) / sizeof(*entries);
- 	int fd;
+  * \brief Get numeric identifier from a CTL element identifier
+  * \param obj CTL element identifier
 -- 
 2.27.0
 
