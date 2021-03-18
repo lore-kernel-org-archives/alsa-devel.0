@@ -2,83 +2,110 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD9D5C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB1E4C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:31:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F313E64F30
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 09:25:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F313E64F30
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 65AD864F18
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 10:31:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65AD864F18
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sakamocchi.jp
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 71B0C16AC;
-	Thu, 18 Mar 2021 10:24:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71B0C16AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A7C116A6;
+	Thu, 18 Mar 2021 11:30:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A7C116A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616059504;
-	bh=cc39uqGS35MP1b9h2pzCM/oMk1b7pmp5WkNyVzRzXIk=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616063486;
+	bh=+bf65RS+gRw1mHwHB+jQfeOipEbN2r4u1pCLQOZElbw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DvMf9sLWosk7hFMQFV4/AUlUEfOco0kIrKV3Nl1+UFUUOb/UaUiXhdDSVaNyP6LIw
-	 vC4T9EyhRC53lUB3dyIwBtAbezGkRFwRrRKpT6WBTMY2aL64iRUnW8pLH+7hirrocC
-	 Nt8BdjpDBRfbZt1/ITiq4XxhLRCeggl87zT1q2Oo=
+	b=hUAEkrWEWAGSRKYbeb5BaXgwZmx/WZSNp/F2GOpGq5SDRT9OQDtqo6ZO9QQ8i+xh3
+	 WMRAt4cXGTtn29GdytUTb2J5bbu3Xl+a4R/qbrwfXVdQ+mZGXGCz4xXe7+D3NgeYkF
+	 eELZ9Jb3knBuiIhz1oLWZCYtAEyTTtms2Th/Tr1c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6D96F80163;
-	Thu, 18 Mar 2021 10:24:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D915F80224;
+	Thu, 18 Mar 2021 11:30:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 798E6F804FE; Thu, 18 Mar 2021 10:16:29 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9E625F80165; Thu, 18 Mar 2021 11:30:33 +0100 (CET)
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
+ [64.147.123.21])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6C7AF804D8
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 10:16:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6C7AF804D8
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id F0AC2AC1E;
- Thu, 18 Mar 2021 09:16:12 +0000 (UTC)
-Message-ID: <13fafc4dbbb8b4e9c68c71aabcff08751123b0b2.camel@suse.de>
-Subject: Re: [PATCH] dt-bindings: Drop type references on common properties
-From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Date: Thu, 18 Mar 2021 10:16:10 +0100
-In-Reply-To: <20210316194858.3527845-1-robh@kernel.org>
-References: <20210316194858.3527845-1-robh@kernel.org>
-Content-Type: multipart/signed; micalg="pgp-sha256";
- protocol="application/pgp-signature"; boundary="=-09POy/eeqAoG7Dif8JG1"
-User-Agent: Evolution 3.38.4 
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9B8CF80163
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 11:30:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9B8CF80163
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="ASjv7rIV"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="u6/iFno2"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.west.internal (Postfix) with ESMTP id 94D9A1B30;
+ Thu, 18 Mar 2021 06:30:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute1.internal (MEProxy); Thu, 18 Mar 2021 06:30:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding; s=fm1; bh=vPPAzM9Nrw0k0
+ Th4S6xkOXo+qRGQvJLxs+A0lxcZ0Og=; b=ASjv7rIVh2tIgaMdlBoklHXdPlGI8
+ SY1Olo+mdCQ7p/mlgLLR3fwN+hxEW1aeL+vq/kjgOW3rrlAP/3ectgLCPHlbfOBv
+ 06lVeqdT0gc7uvLPIvRHljVYGyduQWDWD0WNNvtXIaffGtStDGksbjm4VYZosBXK
+ 2B+O/V92EVMizAZBaOolbzf6YcK+e349DaJwrEoiZz45C2ZfR390zgS0uX4ZVfxy
+ Akvi4IsGIR2lhuquy65yzpkxMyfMVd/K0jz2WqYOdjGF4cQD9SlJkR2GrDCNQ+GG
+ r4xLy/G87N39nydvxtW/BI9DpCZRH+d4C/e5tfDJ7bGsTleU54vVsweUA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:content-transfer-encoding:date:from
+ :in-reply-to:message-id:mime-version:references:subject:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; bh=vPPAzM9Nrw0k0Th4S6xkOXo+qRGQvJLxs+A0lxcZ0Og=; b=u6/iFno2
+ A5NATgeCtGx0LlR6x+wv4oOTBbfw5ZIzoIw2AQHMF2QxiBQC1uHfiNeRnE2xrH9g
+ R5+D23UTkb5aeEBAz89yyqRn2/n20ZsLqhpqdnW8kI7dTPyNokzxzmG3puk2N9Yb
+ OKplEBg882fHurQ5+uC72BO175XbFh5dnPJUg/8raSFASYclTjeq94bCBFk/UsQ4
+ w0scispSnVY4h172vef4bV8pqMqQ55UF1QjAcHC1um2EGq91XeJbVk0atnDulUEL
+ wZGbHBAJOo13xZpDrq8BSkgU4uzCkgf3nrWwke+GZlXw/Z5LqHhwRJ3GpMqkt40x
+ Vos3cZnJYzusrQ==
+X-ME-Sender: <xms:vitTYOrbjUCm791h3BocbcOb-VQS9j1qBcmZCUXFFmSa-oTAeXnG5w>
+ <xme:vitTYEZifYDWdBlE0b61nhYHSY9wZvSaLA713rT9AlgUBnqn3XT2ma_GT4Ep1JQPS
+ UNks4_G7eQdynh0eYA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefiedgudejucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepveefffefke
+ etgfevgeefleehfffhueejtdejveethfekveektdejjedvtdejhfejnecukfhppedugedr
+ fedrieehrddujeehnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilh
+ hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:vitTYGQ3lxIJDLyCF-itHu40jAvfHTh4qeDzC3xkLXTOM8727b8IGA>
+ <xmx:vitTYL7u55jZQ7jJs7_MZkyEOB8ukDFzg-F1ugjivJbpSaPYX8kahw>
+ <xmx:vitTYLxkOsR7tKx8828ox2ZMkXnpfgJfPy1aLjPJgXet_KQbjVkI7A>
+ <xmx:vitTYGTlmgB8V_KWCMFJkS6G0YpOC0cTErs5zb3a-JJLm8TdQ7Eo6g>
+Received: from workstation.flets-east.jp (ae065175.dynamic.ppp.asahi-net.or.jp
+ [14.3.65.175])
+ by mail.messagingengine.com (Postfix) with ESMTPA id 2E1B71080068;
+ Thu, 18 Mar 2021 06:30:21 -0400 (EDT)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de,
+	perex@perex.cz
+Subject: [alsa-lib][PATCH 3/6] ctl: add API to check equality between a pair
+ of control element IDs by tuple
+Date: Thu, 18 Mar 2021 19:30:10 +0900
+Message-Id: <20210318103013.265264-4-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
+References: <20210318103013.265264-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
-X-Mailman-Approved-At: Thu, 18 Mar 2021 10:24:13 +0100
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-remoteproc@vger.kernel.org,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Suman Anna <s-anna@ti.com>, Cheng-Yi Chiang <cychiang@chromium.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Krzysztof Kozlowski <krzk@kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Jakub Kicinski <kuba@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Ohad Ben-Cohen <ohad@wizery.com>, Odelu Kukatla <okukatla@codeaurora.org>,
- linux-pm@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
- Benson Leung <bleung@chromium.org>, Alex Elder <elder@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, Stefan Wahren <wahrenst@gmx.net>,
- netdev@vger.kernel.org, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- "David S. Miller" <davem@davemloft.net>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, tanjeff@cccmz.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,79 +121,132 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The structure for control element ID is hybrid. It has two ways to check
+equality; e.g. equality of fields except for numid. Just checking equality
+according to the fields, current alsa-lib take userspace applications to call
+functions referring to the fields several times. It's better to add optimized
+version of the equality check.
 
---=-09POy/eeqAoG7Dif8JG1
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This commit adds API to check the equality of fields for a pair of control
+element IDs.
 
-On Tue, 2021-03-16 at 13:48 -0600, Rob Herring wrote:
-> Users of common properties shouldn't have a type definition as the
-> common schemas already have one. Drop all the unnecessary type
-> references in the tree.
->=20
-> A meta-schema update to catch these is pending.
->=20
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Krzysztof Kozlowski <krzk@kernel.org>
-> Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Stefan Wahren <wahrenst@gmx.net>
-> Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-> Cc: Odelu Kukatla <okukatla@codeaurora.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Suman Anna <s-anna@ti.com>
-> Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-can@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-usb@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> =C2=A0.../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml       | 5 +-=
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
+ include/control.h      |  1 +
+ src/control/control.c  | 26 +++++++++++++++++++++++++-
+ test/lsb/ctl-elem-id.c | 36 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 62 insertions(+), 1 deletion(-)
 
-				^
-				|
-
-Reviewed-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-
-Regards,
-Nicolas
-
-
---=-09POy/eeqAoG7Dif8JG1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBTGloACgkQlfZmHno8
-x/7QBgf/X2Of8KHkQ7koHtulAqLWqHAwLmJ4UDf2ZhAm+Zpb3naXS4ZTQoQtZBv1
-7M+tRcB2B9eLSvYEYeWk9b3ainWXmwZA6NoAdda2c+KtEhEBlD1o2ZwHJ6Tt2RRW
-QbunvwfPBhoO3zNadU6v3x6sm5rw+lt/H1nSl8VnuujI1xI2+g0gjZPoeDbhQpVm
-FJLknBJjqlla9y1V90oh+tQ3b4R5HaHrxNEjEG/8OYFEL7GFFk282vTcrHhbGayu
-GN4wW0M04rFTlJ/GdO36Vr7zUUfU+/YqbbkglcoUh2UE2LButL3/31k/x6NetOws
-Ac1+8c7ZkXpssyBFvebQ4A/csN88Dw==
-=87aF
------END PGP SIGNATURE-----
-
---=-09POy/eeqAoG7Dif8JG1--
+diff --git a/include/control.h b/include/control.h
+index 260d7f30..8aca67e6 100644
+--- a/include/control.h
++++ b/include/control.h
+@@ -425,6 +425,7 @@ void snd_ctl_elem_id_free(snd_ctl_elem_id_t *obj);
+ void snd_ctl_elem_id_clear(snd_ctl_elem_id_t *obj);
+ void snd_ctl_elem_id_copy(snd_ctl_elem_id_t *dst, const snd_ctl_elem_id_t *src);
+ int snd_ctl_elem_id_equal_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
++int snd_ctl_elem_id_equal_by_tuple(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r);
+ int snd_ctl_elem_id_compare(snd_ctl_elem_id_t *id1, const snd_ctl_elem_id_t *id2);
+ unsigned int snd_ctl_elem_id_get_numid(const snd_ctl_elem_id_t *obj);
+ snd_ctl_elem_iface_t snd_ctl_elem_id_get_interface(const snd_ctl_elem_id_t *obj);
+diff --git a/src/control/control.c b/src/control/control.c
+index 6d1eda15..93f8f93d 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -84,7 +84,9 @@ rare). The numid can change on each boot. In case of an USB sound
+ card, the numid can also change when it is reconnected.
+ 
+ For equality check between a pair of #snd_ctl_elem_id_t according to the numid,
+-snd_ctl_elem_id_equal_by_numid() is available.
++snd_ctl_elem_id_equal_by_numid() is available. For equality check between a pair
++of #snd_ctl_elem_id_t according to the tuple, snd_ctl_elem_id_equal_by_tuple()
++is available.
+ 
+ \section element_lists Element Lists
+ 
+@@ -1837,6 +1839,28 @@ int snd_ctl_elem_id_equal_by_numid(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
+ 	return l->numid == r->numid;
+ }
+ 
++/**
++ * \brief check equality between two arguments according to iface, device,
++ *	  subdevice, name, and index fields.
++ * \param l opaque pointer to element ID structure.
++ * \param r opaque pointer to another element ID structure.
++ * \retval zero if they equal, else zero.
++ *
++ * The structure underlying #snd_ctl_elem_id_t is hybrid one. It has two ways to
++ * check equality. The API implements one of the ways, according to the values
++ * of iface, device, subdevice, name, and index fields.
++ */
++int snd_ctl_elem_id_equal_by_tuple(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
++{
++	assert(l && r);
++
++	return (l->iface == r->iface) &&
++	       (l->device == r->device) &&
++	       (l->subdevice == r->subdevice) &&
++	       !strcmp((const char *)l->name, (const char *)r->name) &&
++	       (l->index == r->index);
++}
++
+ /**
+  * \brief compare one #snd_ctl_elem_id_t to another
+  * \param id1 pointer to first id
+diff --git a/test/lsb/ctl-elem-id.c b/test/lsb/ctl-elem-id.c
+index f499b268..39060a8e 100644
+--- a/test/lsb/ctl-elem-id.c
++++ b/test/lsb/ctl-elem-id.c
+@@ -64,6 +64,38 @@ static void equality_by_numid_3(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
+ 	assert(!snd_ctl_elem_id_equal_by_numid(l, r));
+ }
+ 
++// Case 1.0. The same tuple should result in true positive.
++static void equality_by_tuple_0(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
++{
++	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_CARD, 1000, 1010, "something", 1020);
++	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_CARD, 1000, 1010, "something", 1020);
++	assert(snd_ctl_elem_id_equal_by_tuple(l, r));
++}
++
++// Case 1.1. The different conpounds should result in true positive.
++static void equality_by_tuple_1(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
++{
++	set_elem_id_by_tuple(l, SND_CTL_ELEM_IFACE_CARD, 1030, 1040, "something", 1050);
++	set_elem_id_by_tuple(r, SND_CTL_ELEM_IFACE_MIXER, 1031, 1042, "something", 1053);
++	assert(!snd_ctl_elem_id_equal_by_tuple(l, r));
++}
++
++// Case 1.2. The same value of numid field should result in false positive.
++static void equality_by_tuple_2(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
++{
++	snd_ctl_elem_id_set_numid(l, 0xfeedc0de);
++	snd_ctl_elem_id_set_numid(r, 0xfeedc0de);
++	assert(!snd_ctl_elem_id_equal_by_tuple(l, r));
++}
++
++// Case 1.3. The different value of numid field should result in false positive.
++static void equality_by_tuple_3(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r)
++{
++	snd_ctl_elem_id_set_numid(l, 0xfeedc0de);
++	snd_ctl_elem_id_set_numid(r, 0xdeadbeef);
++	assert(!snd_ctl_elem_id_equal_by_tuple(l, r));
++}
++
+ int main()
+ {
+ 	void (*entries[])(snd_ctl_elem_id_t *l, snd_ctl_elem_id_t *r) = {
+@@ -71,6 +103,10 @@ int main()
+ 		equality_by_numid_1,
+ 		equality_by_numid_2,
+ 		equality_by_numid_3,
++		equality_by_tuple_0,
++		equality_by_tuple_1,
++		equality_by_tuple_2,
++		equality_by_tuple_3,
+ 	};
+ 	int count = sizeof(entries) / sizeof(*entries);
+ 	int fd;
+-- 
+2.27.0
 
