@@ -2,63 +2,64 @@ Return-Path: <SRS0=hSU8=IQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 832F1C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 13:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EAB4C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 13:26:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0216864F04
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 13:21:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0216864F04
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
+	by mail.kernel.org (Postfix) with ESMTPS id 15F4A64F10
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Mar 2021 13:26:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 15F4A64F10
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C68761695;
-	Thu, 18 Mar 2021 14:20:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C68761695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA3D1663;
+	Thu, 18 Mar 2021 14:25:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA3D1663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616073670;
-	bh=MNGicR3pQBY+lqKuUwWVxIrwlJld1LsjIx7l83uKSng=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=p7AKKTwgTXRlc/3tvgz8W2wlNyU122Nx6BwpyFgQn22lRglXwNTWLl28tFUGvc7uW
-	 9y7Hj5vUxgqNXic6IS6uRL5VqjHHV8A3qHQtjVnEYhqDkqls6yfQc1I+GztI5w9zA1
-	 rgG1LLsqF2ZCp3lOYviqcG69QkQW6aCK6W0S5sM4=
+	s=default; t=1616073988;
+	bh=+zkoYRJr48oiwhkJr/gnvyLraJRW/pY2OaPywM59ddY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nGSIY05EByiTQMLBEXHFwuQPFK91iYlX9dXqBoi665bwO31f+0cRU0S0ke96xlc1l
+	 KoEgegXRGvrKX6efQ3JqvypMo5YgtfnWSjKXAblv+XDW9HfELZIGkCypZxOkpBzM7b
+	 h+GJ74M0Bmx/q8tfW2peoEpaNFWNPZO2kl8Wfs7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 452E5F80163;
-	Thu, 18 Mar 2021 14:20:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FF70F80124;
+	Thu, 18 Mar 2021 14:25:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD84BF80165; Thu, 18 Mar 2021 14:20:18 +0100 (CET)
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ id 30DA8F80165; Thu, 18 Mar 2021 14:25:36 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B82F8F800E0
- for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 14:20:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B82F8F800E0
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
- by youngberry.canonical.com with esmtpsa
- (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
- (envelope-from <colin.king@canonical.com>)
- id 1lMsZN-0001kM-0q; Thu, 18 Mar 2021 13:20:09 +0000
-From: Colin King <colin.king@canonical.com>
-To: Olivia Mackintosh <livvy@base.nu>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Fix unintentional sign extension issue
-Date: Thu, 18 Mar 2021 13:20:08 +0000
-Message-Id: <20210318132008.15266-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC6A3F80124
+ for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2021 14:25:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC6A3F80124
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id E5CECAB8C;
+ Thu, 18 Mar 2021 13:25:28 +0000 (UTC)
+Date: Thu, 18 Mar 2021 14:25:28 +0100
+Message-ID: <s5h35wsiofr.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.12-rc2
+In-Reply-To: <20210318124914.923FB64E28@mail.kernel.org>
+References: <20210318124914.923FB64E28@mail.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,44 +75,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, 18 Mar 2021 13:49:00 +0100,
+Mark Brown wrote:
+> 
+> The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+> 
+>   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.12-rc2
+> 
+> for you to fetch changes up to f9dc51cc6676e0360dfcb1836b3d426a3ccf3093:
+> 
+>   Merge series "Do not handle MCLK device clock in simple-card-utils" from Sameer Pujar <spujar@nvidia.com>: (2021-03-16 17:55:37 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.12
+> 
+> Quite a lot of mostly platform specific fixes here, the only one which
+> is generic is a fix for regressions on devices with more complex
+> clocking support with simple-card.  There's also a few new device IDs
+> and platform quirks.
 
-The shifting of the u8 integer device by 24 bits to the left will
-be promoted to a 32 bit signed int and then sign-extended to a
-64 bit unsigned long. In the event that the top bit of device is
-set then all then all the upper 32 bits of the unsigned long will
-end up as also being set because of the sign-extension. Fix this
-by casting device to an unsigned long before the shift.
+Pulled now.  Thanks.
 
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: a07df82c7990 ("ALSA: usb-audio: Add DJM750 to Pioneer mixer quirk")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/usb/mixer_quirks.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 5b77e8140ba6..f13cdfd8bd20 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -2926,7 +2926,7 @@ static int snd_djm_controls_put(struct snd_kcontrol *kctl, struct snd_ctl_elem_v
- 	u8 group = (private_value & SND_DJM_GROUP_MASK) >> SND_DJM_GROUP_SHIFT;
- 	u16 value = elem->value.enumerated.item[0];
- 
--	kctl->private_value = ((device << SND_DJM_DEVICE_SHIFT) |
-+	kctl->private_value = (((unsigned long)device << SND_DJM_DEVICE_SHIFT) |
- 			      (group << SND_DJM_GROUP_SHIFT) |
- 			      value);
- 
-@@ -2964,7 +2964,7 @@ static int snd_djm_controls_create(struct usb_mixer_interface *mixer,
- 		value = device->controls[i].default_value;
- 		knew.name = device->controls[i].name;
- 		knew.private_value = (
--			(device_idx << SND_DJM_DEVICE_SHIFT) |
-+			((unsigned long)device_idx << SND_DJM_DEVICE_SHIFT) |
- 			(i << SND_DJM_GROUP_SHIFT) |
- 			value);
- 		err = snd_djm_controls_update(mixer, device_idx, i, value);
--- 
-2.30.2
-
+Takashi
