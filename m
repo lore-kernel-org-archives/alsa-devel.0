@@ -2,79 +2,76 @@ Return-Path: <SRS0=UTIM=IR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7808C433E6
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 12:22:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B326C433E6
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 12:55:11 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8434664F79
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 12:22:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8434664F79
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 9A54364F6B
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 12:55:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A54364F6B
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78D9E167B;
-	Fri, 19 Mar 2021 13:21:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78D9E167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FBEF1672;
+	Fri, 19 Mar 2021 13:54:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FBEF1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616156549;
-	bh=9sLQc0kXtFuaRosJgHT6Og87yMV3BVy840SE12IzAFQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1616158507;
+	bh=VPjKr+IwUPCtNpbEe98uPyshtFbeqQlrR7Lb8Ts9T/c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t8wLo3newq0eardN4y9SdNNvilfpkE9iHC2eZBpocjVLELNz4ZL3mppQg8wt6Rwpx
-	 yMeAmasE35pUwQcF0xf9A91P2f2A/huGftULhOASyoeiqwOh+CrRKQ1bDHQThmPyNE
-	 24Pi/VH2aJoVBJHnk4lnso5RHY9s5NgTDW9Y8fMI=
+	b=G93BFZUmB8kQAxfq6GqWuItGFGhtG/4geIjtzAL+7KZc+ba11Mm0FiHcZdQy/OSci
+	 dZOrop96tN+3O5VPRyWHb410k2V3CAELxdUBAAY1s4FF4yy9PaRmq6uKyq029E4Woj
+	 1XA6Ik6XU4mwpW5obDMrd7G4bZ+lHbZgqRpxAjVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E812EF801F7;
-	Fri, 19 Mar 2021 13:21:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2098F80124;
+	Fri, 19 Mar 2021 13:54:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B96D4F8021C; Fri, 19 Mar 2021 13:21:36 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 182BEF8023C; Fri, 19 Mar 2021 13:54:15 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CA13F80124
- for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 13:21:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CA13F80124
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q2wT0o+w"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A8AE6146D;
- Fri, 19 Mar 2021 12:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616156489;
- bh=9sLQc0kXtFuaRosJgHT6Og87yMV3BVy840SE12IzAFQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=q2wT0o+w33CedTpTlIJq3LWp2W7cdl74qQl8ZS3olP5xq9YLd0UQH2VThwAwOwKND
- m47OwKyKhwRgqUqocMe1pmU0gcxwhzBGtmdO82pKdHL4ZUyDPnQa+i9Eaw1tLhgQx8
- CLz/u3IpZRRpb9N7LNyWbcnFOsZ/Lt4060MvIfM8blU2TgV+So4yfb9Su15Bz7BejF
- 8bzl8A4uJKN2KK3BZ6oQOk0T+gZXTlKt2lF8dDkh/cMTjifVBtO/qymmk4aSxqClJ5
- AZd4vNGRHo4i7J/Vd/lBvNbRUH7f7ywwl+8MQ4kCkIIzyZs3zj3DphFP/GNlcNVC8a
- c4/v+Nozg8lhw==
-Date: Fri, 19 Mar 2021 12:21:24 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 1/2] ASoC: rt715: add main capture switch and main
- capture volume
-Message-ID: <20210319122124.GB5619@sirena.org.uk>
-References: <20210319030337.16213-1-jack.yu@realtek.com>
- <2d55b97c-e781-552a-5064-5715443fb7e9@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43039F800BB
+ for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 13:54:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43039F800BB
+IronPort-SDR: HVutJuLTbR+XvamNIBwqBMmKorSd9lG+B2aBOC+ziBpEQI4jJMeNBNl0apw43tHL5VOoTjPtpJ
+ XEfuzPlqhFsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9927"; a="186540314"
+X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; d="scan'208";a="186540314"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Mar 2021 05:54:00 -0700
+IronPort-SDR: FiLC00qKu7QSIuFFPRS3AVT9cc95Xb+/a46WYrxrp4taJs+a4BI3dYT7g0cB7wWmdi90A3Uno/
+ 4dGojRyBvcGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,261,1610438400"; d="scan'208";a="441307084"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by FMSMGA003.fm.intel.com with ESMTP; 19 Mar 2021 05:53:57 -0700
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 2/2] ASoC: intel: sof_rt5682: use the topology mclk
+Date: Fri, 19 Mar 2021 14:49:50 +0200
+Message-Id: <20210319124950.3853994-2-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210319124950.3853994-1-kai.vehmanen@linux.intel.com>
+References: <20210319124950.3853994-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="61jdw2sOBCFtR2d/"
-Content-Disposition: inline
-In-Reply-To: <2d55b97c-e781-552a-5064-5715443fb7e9@perex.cz>
-X-Cookie: No purchase necessary.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: oder_chiou@realtek.com, Jack Yu <jack.yu@realtek.com>,
- alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com,
- derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+Content-Transfer-Encoding: 8bit
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ yung-chuan.liao@linux.intel.com, Keyon Jie <yang.jie@linux.intel.com>,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Daniel Baluta <daniel.baluta@gmail.com>, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,31 +87,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Keyon Jie <yang.jie@linux.intel.com>
 
---61jdw2sOBCFtR2d/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We should use the topology configured mclk if it existed, which can make
+sure we are aligned with the FW side about the mclk usage.
 
-On Fri, Mar 19, 2021 at 07:54:21AM +0100, Jaroslav Kysela wrote:
+Signed-off-by: Keyon Jie <yang.jie@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-> It's bad to map multiple controls to operate on top of the same registers
-> without any kind of synchronization.
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index f4b898c1719f..58548ea0d915 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -16,6 +16,7 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/sof.h>
+ #include <sound/rt5682.h>
+ #include <sound/soc-acpi.h>
+ #include "../../codecs/rt1015.h"
+@@ -268,10 +269,21 @@ static int sof_rt5682_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 
+ 		clk_id = RT5682_PLL1_S_MCLK;
+-		if (sof_rt5682_quirk & SOF_RT5682_MCLK_24MHZ)
++
++		/* get the tplg configured mclk. */
++		clk_freq = sof_dai_get_mclk(rtd);
++
++		/* mclk from the quirk is the first choice */
++		if (sof_rt5682_quirk & SOF_RT5682_MCLK_24MHZ) {
++			if (clk_freq != 24000000)
++				dev_warn(rtd->dev, "configure wrong mclk in tplg, please use 24MHz.\n");
+ 			clk_freq = 24000000;
+-		else
++		} else if (clk_freq == 0) {
++			/* use default mclk if not specified correct in topology */
+ 			clk_freq = 19200000;
++		} else if (clk_freq < 0) {
++			return clk_freq;
++		}
+ 	} else {
+ 		clk_id = RT5682_PLL1_S_BCLK1;
+ 		clk_freq = params_rate(params) * 50;
+-- 
+2.29.2
 
-Even with synchronization it's really something to do as a last resort.
-
---61jdw2sOBCFtR2d/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBUl0QACgkQJNaLcl1U
-h9CfVAf/Q4LUFJrV6i6zS7wAE3JrCY/PP3xz31m1acbAeiGTiGILODIwGYRrBH2E
-GU/afxYFRGvRRPn8DzVAUFo7YgkxNxajF1dne8lZ1GdFXQgZpBNk77TIzN3nne0k
-lRjdeznkegWrw8k66PeIPd/MLJ6HDtM6rhd9vs4pCrhjshy4cIVQ96ZzaL8ckls6
-g6BIJQx7ppgLj3ZuM/dc+PRg2e7V5MiMCNOSHFT9zRVtAYwHamJMddcpz2WIPsX0
-ml/doQ+6LCM6yzWiFiCNEiiaChEWTpk5k2Qkyfjv3bTzyCusYCv9/fs1y7xeeiBR
-Lr6oiR7oWiYN/CCXSjb1+XG5N3xlOA==
-=p2nu
------END PGP SIGNATURE-----
-
---61jdw2sOBCFtR2d/--
