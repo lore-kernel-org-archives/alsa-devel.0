@@ -8,118 +8,119 @@ X-Spam-Status: No, score=-14.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E51FC433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:16:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5192C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:16:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EBD646194D
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:16:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EBD646194D
+	by mail.kernel.org (Postfix) with ESMTPS id 7C21A6197A
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:16:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7C21A6197A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DC0C169D;
-	Fri, 19 Mar 2021 20:15:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DC0C169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B68561678;
+	Fri, 19 Mar 2021 20:15:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B68561678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616181374;
-	bh=+COaST4GXU0AhBW7zVYf8z7USG1yWfvVSnElBsjyitQ=;
+	s=default; t=1616181404;
+	bh=T5XKJI9aLzubXQKPulHC2+eDfMNiYZbj+qzeVAJFNuA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ov3yBlw5U8zZ8OvfR+5krhR3oEiEsCaDgTIjbzG4g4DZwm4M72cf6/1aSAV8Mps71
-	 420uTduJ6lq97wH2Wba6R+E+cXQw57N8uHw/JNJQM6EgC8Cq1vTDLVLGLloi9JUd2J
-	 bxbJV79mkFSKaaMFv3OmF2gTmlP/SVPkvALmHR48=
+	b=cD95mkF6G53ezqitQ4N13p8MatxqFUn3QE6QZPebxxUXT/8vLUCg4IMIODkaoqF5t
+	 HnoSjTP4NbLPWG4J2tpsOoZ607Zp4w5QvY5CFrou/8s5qi5kTCoyoKghwf9k2XZEaO
+	 NET2AFpEQU+HKHEerZwR/4aFnK9MZU8e+iNAaoXU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E03AEF8042F;
-	Fri, 19 Mar 2021 20:14:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8C86F80482;
+	Fri, 19 Mar 2021 20:14:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A2B3F8032B; Fri, 19 Mar 2021 20:14:21 +0100 (CET)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12olkn2070.outbound.protection.outlook.com [40.92.22.70])
+ id 1E8E0F802E3; Fri, 19 Mar 2021 20:14:22 +0100 (CET)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12olkn2098.outbound.protection.outlook.com [40.92.23.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0E85F801F7
- for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 20:14:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0E85F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADB17F80253
+ for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 20:14:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADB17F80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com
- header.b="o/DJh75H"
+ header.b="RNezHFzB"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g7O+JRe/6z7A8CQQ8HWXenMZNHRLLD+1VCjW3uiGAavQtseth9lg1gxFCWce+3ElPScTqyzHb2G0CKWTa8Ge5n13R2/CTcTLaKxkSY2TX/h2dOnWu1TnJfGtalTp97060CTofKxzOJWZQd3DOf7A4wW5iNVja8jXOaRzBx1TPWgVQ9GUkDKNiES638P/n3gmjX+DoO7Osf72r2Vooz1ZDT8tDu4QndL7O9C/TSWlInfkCTY+agq5HPav2PBhB1cTVJGAvg2BWFPzpdSzTJ5uq3TY8RhYJXB2Lqi2HSwBetDST5Q1TtvrBC+tVVFRucJe+daygGDHfnsMZFqLGAwF3A==
+ b=Rvx8dI9uQtmcOfu9tkN1yzs3fhkHt9oRVx4bvY3SnyuwanLmENpYMm04vPhn1Tz19LDpjZ9CrN/5SKSNjajsHd6P7rvlkFH0R2oxjf6SX89pSs2l4O60cQasdGLqho3ywEOduebYIzsXyGokNfv/xDsYOgwZ0lpLDkouyn6qPDEQD6q530gKHm9CP6QTcj8wdh2QuJUkdZw0m9iHZOq5xsMjzLBiMT1VGFIAClpJ9tFdDNILJa05x+FtV85PkTjx+nBr4Axvwh93OwhTl55Hr4iAvrJaJKZTGOTkrSfM4vV/6DOvkdbSyZd7njWCTe1YqO4ZX5cXLzatjxmHKbJYGw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N4BI+F3iZRW13oyBhU+EyOW8QomH1BmyNoTrfO8ZbIY=;
- b=gHW+fKeupu1r1IEGfyqoPfKPY00Ix3ij0CfQwAQFz5nWSADlM1KPT3ItdKd64etwQ4DmnPN+w8tUkOmJrjC0IINo00i+TY1lgP9rYs+2RSuiX+HI7Av0gIlzygYnkbnsq8us+uiK8WQ/DM/4qhHxfKjxuHS0oUZWRkp4XOhcgTMbblu/3I0IdB3dLDFGST/YpR2OBMmvf2RH05vqp/CDXj2wvus4D9cSPhIiVvMLfMg0QUFjN3Utjrl1vz21W6Ju4Vi79KkglOSebGVSFC+7hdCcfjwqqbhnxfryVoxO43unNUO4hvjX2HG2JeKJtwlR4NggkprIBTA2/cg+jBnGeQ==
+ bh=GuvtO9dQQBw8iP6fllwadI6ruugNJW4ZkBtN7eBuukE=;
+ b=FKIxk5Gv0DzpPgpK5XokI5EF1JZ9dNGLKPlR7Oj4UpZ1k/e4mJ5m4iZtL7H0UYYOVaFe2rW9OeH7oV9kA+Ffx8Iw3H6yIkSJH/INbaHQITPKRBRWczQDbZehxY0fOVb0cflKHWPTEyAEzXo4cETupwWKf5wa5GYx0uWw76iqFVdSSXXqk43M5AkBjU80KDpQ5rgC5wMnzhiiNHyWlj79DINQ8u2QMrVQK+xqLt439m7atV6uy0hMDzXOdzYQKoTuzKbl62toWVyl4iVteyltNJEQG1NIjJjwWaY5Nf6HHXaRIEBl4FJutWTtb7Om0lFqg+4zHJEemiG3Xj8dad7CIg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N4BI+F3iZRW13oyBhU+EyOW8QomH1BmyNoTrfO8ZbIY=;
- b=o/DJh75Hrhf1TAWP4aGL4yiAKysGVcghjXpsF3nlcpLdTMtDlzTUnpZc/RH07zdKxFsd8NmtqGR0Sc5SaxcoDGr0SIkCFvTSd08kLw7Ne8vafZkgWd3O+WYEszPBS2Ls6LHevvWa/s2FNjM2xI7JvjYb9jdr+jCRRX00o8RBfAoKId4Y7XtunkZeU9AS0GxAN6UXOFVKIatKkSAjYK3SlO12WrV2nCD3dtPEytYfyrKmfyKkkYWvvSGiNcUjpsip2AmlLkRU2wfKCO8Gcnp+vq6foES7ljNBAqdlSwS4iHfvq+Ljw1BwFcArsCZpYuQJMNatc5VMxp6RlSTduyzHcw==
+ bh=GuvtO9dQQBw8iP6fllwadI6ruugNJW4ZkBtN7eBuukE=;
+ b=RNezHFzBTfOPhzaJqOztQbBv80G17X0b/KlISXKfhYZzdTgPUP88GE+3N9go6Oe0Aa2PZTY9CMeOoQ52vIfhZ/9HqGtvWqEdi+SgdX1SWdHrBnEnpb2xy85mfYUQ/HqreNNMTqUWcBfKEcaVBnbqDfDdoyPW0tCCNDQg8PJgNNY+asy9i2l/vKRZ1t7KnEpoZcMA+9umTjLGL+0bmWA0UG9QuGMAHvoEAF8H410+WKUrIEFAy/beFfk3dqd+q7nDDNfzfKVVEfah1GtOVPH99L3hAyIYpS6BaaVqwUeJyMx+64S94Ltg/NJpL7LzVwP9GpA3asj4jklLZ8mnMVexsg==
 Received: from BN8NAM12FT062.eop-nam12.prod.protection.outlook.com
- (2a01:111:e400:fc66::41) by
- BN8NAM12HT048.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc66::304)
+ (2a01:111:e400:fc66::42) by
+ BN8NAM12HT182.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc66::371)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9; Fri, 19 Mar
- 2021 19:13:57 +0000
+ 2021 19:13:59 +0000
 Received: from SN6PR06MB5342.namprd06.prod.outlook.com
  (2a01:111:e400:fc66::53) by BN8NAM12FT062.mail.protection.outlook.com
  (2a01:111:e400:fc66::321) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9 via Frontend
- Transport; Fri, 19 Mar 2021 19:13:57 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:69FACDD8D5540BD23725B9DE9AF31774522DC4308E707015113188518E5D9225;
- UpperCasedChecksum:22E1292115BF39EDE6AA16A18337FD0AB22159D5E9864F1930F0FD2395E7D48A;
- SizeAsReceived:7525; Count:47
+ Transport; Fri, 19 Mar 2021 19:13:59 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:259F668122432ED6707CF4B2EBF307CD35350E5612882B1D7742594AE51B3E2E;
+ UpperCasedChecksum:522E1602EEF8D27C5E7B71F36B74A59E333593138A0CF9EBA14686D39112F3DA;
+ SizeAsReceived:7538; Count:47
 Received: from SN6PR06MB5342.namprd06.prod.outlook.com
  ([fe80::fc38:a692:c2c8:f63e]) by SN6PR06MB5342.namprd06.prod.outlook.com
  ([fe80::fc38:a692:c2c8:f63e%7]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 19:13:57 +0000
+ 19:13:59 +0000
 From: Chris Morgan <macromorgan@hotmail.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 2/4] ASoC: Add Rockchip rk817 audio CODEC support
-Date: Fri, 19 Mar 2021 14:13:35 -0500
-Message-ID: <SN6PR06MB534258C507ADE505523E146BA5689@SN6PR06MB5342.namprd06.prod.outlook.com>
+Subject: [PATCH v5 4/4] arm64: dts: rockchip: add rk817 codec to Odroid Go
+ Advance
+Date: Fri, 19 Mar 2021 14:13:37 -0500
+Message-ID: <SN6PR06MB5342E7BA29353D6FE817317FA5689@SN6PR06MB5342.namprd06.prod.outlook.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210319191337.9414-1-macromorgan@hotmail.com>
 References: <20210319191337.9414-1-macromorgan@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [O1bZ/Ymnu1hh2LrZtC3iLRj31XpCSjDQ]
+X-TMN: [lo/L+bFywOhKr0xfsaScNPWGlfr08sy+]
 X-ClientProxiedBy: SN1PR12CA0044.namprd12.prod.outlook.com
  (2603:10b6:802:20::15) To SN6PR06MB5342.namprd06.prod.outlook.com
  (2603:10b6:805:f9::31)
-X-Microsoft-Original-Message-ID: <20210319191337.9414-2-macromorgan@hotmail.com>
+X-Microsoft-Original-Message-ID: <20210319191337.9414-4-macromorgan@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from wintermute.localdomain (76.183.134.35) by
  SN1PR12CA0044.namprd12.prod.outlook.com (2603:10b6:802:20::15) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 19:13:55 +0000
+ 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 19:13:58 +0000
 X-MS-PublicTrafficType: Email
 X-IncomingHeaderCount: 47
 X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 9b399a0c-50f3-4445-050f-08d8eb0b245f
-X-MS-Exchange-SLBlob-MailProps: zswcL9HXbeXsGxgxUGH+YTsWg2A96AcwJs0vmYUkKo5w2KX+2LrHdrO3MyDnFRDUC2HnWuUp837KYES9FpRFnmRpqfpGA7TP3FyaoAfhMi3Zz2NL2u5VWxDBo8SENO47xa8MX0Q0kPMTNfQDyalpzylrTQ/TKy4njVoF9qA8/R+6pzaKp98+skF02srYg98TBj2HGnxQD5BtRYx8LbQ90cwrV/TyJ5hvrewWCESbiWeeLe3YTMBRJaC+qcHMiC9lGsKduUp6wbtMugquzNU9QQM58ObbA6pBvccKHM939FmZ0M7118pM+5HO2+4bFxyixdDVLfvLALFWNXuGAnGaffblXWVB3urAMVrDa9Cf8qzDoPyR/k1nQGvg6jdvn1cDgN3yV4z5+gJtOHz5yzdT2MQw01Qhloqnpy9oqfKQoCD1HiIhFE1KYnXv6igoRg6zofawm81IcLOPRhSFFveuOa9CCN1sGOTk+DspbNRBJz4Rqq3bLz9f3dDXV6VqnwksOYMk5YQNZETu2QqaGiNiuTfbwPAg2nCk5s5SqizpkUrmhVpry+9fnt9JlKccHPlkHPx5s68alpAkCSr7ATNMND1ZIKK2HrEXEsyHK4sL4uuF4iJk6JZS63AWa1Lje3OJJ92s7NN7d+8R1XTUCRjz+nx3/WWGATa/aQJ6rtcat8DyK/ERPhRHidKWg87/+Ndz8LsPioEAlsTHwWClt9qZD/hCEEeNvNDD3XCh7QRtjxNIlfXRwDP4GI0o14VSPxi5
-X-MS-TrafficTypeDiagnostic: BN8NAM12HT048:
+X-MS-Office365-Filtering-Correlation-Id: 1ce57db3-3627-4198-337e-08d8eb0b2618
+X-MS-Exchange-SLBlob-MailProps: zswcL9HXbeXsGxgxUGH+YTsWg2A96AcwnIOx/dBnQsrOkgZYjFa85BBezSd0UhgZG02bWlkI1R58fU8+XVLDIKCUifeUJmIMDZWdN7z2iMBvAf5S5e3YBMiGdgMG7aFFPVwc9R1hGX0E2irvKLPzqG6j8bu5BwRUk7Bp4ExN/usMGBi5JRholH3vWyzZHqGuuNYcgoMtGL0foUGXYKfJ8KtayIgWqHjp6a5ECYCKCqbr9xTZvCBgfnjNmMDOp7M4EaDny+ataGLafSOYbwBDdDw2eHN2GrE019GJu4zGKWCvXAJKMmbFqVFoBXg/WrtUq/pkHRSyqiyycrTOPYcdwj2KgAGMVEICd3A2aNaRQFhHa6zIHpYDDfk+cuCgiJYtiKXNR5iVpiGM1Bw5EMMS0X2FK8ofQQvkyYi5lxSqhgH2fPi7JeR5rVdorP+l5I3tmvdKhDAqyFrsdVahScpazo+trIcAocLUzgiiRcoB7jbNTCtE8h6stdGJPyesud52q42n2VG/Kh+JJt8+FYlQAosc0oXe5AZTJC21cD6Ao784+KCvhK3z4RSqUmDg3yVfcARxoTsuLJ3DbgGvFnXsKe7JuOsfxFSUC567sIqLf/gsYQAS8ow1i4bnUF6keIayOuA3Jru6yKPOMIJ6kBVt05uQNCcmEm6dDyxUAVAV+oWEtrkTKciLgFu5HfygP6xOdU9F9bZF6eElL4F8zLjI6oe3xg8X3T8gMss6OfiVRt8IiNVfjO4KMQP0t39QcVug
+X-MS-TrafficTypeDiagnostic: BN8NAM12HT182:
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TYlK1gquEeDWomg4mMZlAbOWsea44tVafoF96IcW1NddYilVUIYPGzNd1MsC0kKlNzFucz0TbSF5U4gmV+HpSOgcKpW4C11cxqG37yQR9nYNqgGHMN0+SMn6t2sc9P1CHp9h/B6L5brWN8QiFsXmN90WWnnDW5vAgisQlzRznkRYGsJ+TQPAypdEEl6CNSad2NLzAdRKiWgf0FgUk3cy1TKK1kzdtT2WR8GcLRj7a+1zsyu8Hv/lnkgYnyDgzY7yPhIFarUxp2bv/TQGs8gNOAZl6KLAwrANT5hjtmcjMC/Vz4HNTZh/brAjDx2Gtp3/LzxrQcRAS03gb2ioiQ3koaVw5/VQSFIi9fgfAfDPEdm0NC8bneR7H5bu+1UvMKrmhGq4HBGWyAiv0Ws/pxWsJw==
-X-MS-Exchange-AntiSpam-MessageData: tog9sYqrM6pFjoMHjsS9jc7zjuZZo7Nr4wl2n3c6dJgbEVJ/j71IpitMKD9d3VwXjEc1OMwVR4FQkLBhmZxHTjI9V1llGF1T3vYC1H1CKqgqWZKa8OEe/sKrbJvSsRvRlQi9LXU7AdabvsPcbxb+Jw==
+X-Microsoft-Antispam-Message-Info: yP9uAN7Enhxj8LoxMRyiJ6MjIwpPTIp2whdu25uuk4ih/PxkMN6AATIZ/HneoRb0qPSvPsomhemYiPdstsLO5anlZ3zeb9DJMBSXwrsKE2+SFOZ+uZp4xQeDYO2KI0hK5b93UTVFqKvMerwWjElLKtuoexZTZ9BypGC42Zjvpk+xfwnNiTSGEe4ACh10sLxcXlXA1QGedx81rX2ceitDzjmsuNXDMYE9s14FYWKFG5PKcQ/v0jBJ4B61ua0IJ5UyDCAXinhOiWLZljSy0A8aweetUab7eWwp7d4STnyRLLKmmNsaeHQxzEFdzCfNeIIDnyhObWNoEbOEvVg623YvZ6kdUwI0q6eXvgyom9yF/TJp2PUgMeGsE/loJ05uWf43hXmH7PJngCTdLeLVKW81gQ==
+X-MS-Exchange-AntiSpam-MessageData: WWI1LytkMmG7JPBYK6n+f96fPwnlZwUt9ugmWis51UerULCnpghYNRNmsQd8rmJ5W4iQnZm8Kp6xfl76jhtpOswz7zGrnF5vICoM0huucXOh1hJz3tklpnnH+tvjzAINvB5DFCSu/E3awDN0rK8ujg==
 X-OriginatorOrg: hotmail.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b399a0c-50f3-4445-050f-08d8eb0b245f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 19:13:57.0703 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ce57db3-3627-4198-337e-08d8eb0b2618
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 19:13:59.3450 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT062.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8NAM12HT048
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8NAM12HT182
 Cc: broonie@kernel.org, heiko@sntech.de, pierre-louis.bossart@linux.intel.com,
  Chris Morgan <macromorgan@hotmail.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -137,633 +138,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for the Rockchip rk817 audio codec integrated into the
-rk817 PMIC. This is based on the sources provided by Rockchip from
-their BSP kernel.
-
-Changes from v4:
-Switched to using parent regmap instead of private regmap.
-Removed of_compatible strings.
-Removed register definitions and moved them to the MFD driver.
+Add the new rk817 codec driver to the Odroid Go Advance.
 
 Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
 ---
- sound/soc/codecs/Kconfig       |   6 +
- sound/soc/codecs/Makefile      |   2 +
- sound/soc/codecs/rk817_codec.c | 560 +++++++++++++++++++++++++++++++++
- 3 files changed, 566 insertions(+)
- create mode 100644 sound/soc/codecs/rk817_codec.c
+ .../boot/dts/rockchip/rk3326-odroid-go2.dts   | 35 ++++++++++++++++++-
+ 1 file changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e4cf14e66a51..d835145ad65e 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -155,6 +155,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_PCM512x_I2C
- 	imply SND_SOC_PCM512x_SPI
- 	imply SND_SOC_RK3328
-+	imply SND_SOC_RK817
- 	imply SND_SOC_RT274
- 	imply SND_SOC_RT286
- 	imply SND_SOC_RT298
-@@ -1059,6 +1060,11 @@ config SND_SOC_RK3328
- 	tristate "Rockchip RK3328 audio CODEC"
- 	select REGMAP_MMIO
+diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+index 97fb93e1cc00..e48dcf430efc 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
+@@ -161,6 +161,29 @@ blue_led: led-0 {
+ 		};
+ 	};
  
-+config SND_SOC_RK817
-+	tristate "Rockchip RK817 audio CODEC"
-+	depends on MFD_RK808
-+	select REGMAP_I2C
-+
- config SND_SOC_RL6231
- 	tristate
- 	default y if SND_SOC_RT5514=y
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 81357dc62ea0..4e5e9b28775c 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -165,6 +165,7 @@ snd-soc-pcm512x-objs := pcm512x.o
- snd-soc-pcm512x-i2c-objs := pcm512x-i2c.o
- snd-soc-pcm512x-spi-objs := pcm512x-spi.o
- snd-soc-rk3328-objs := rk3328_codec.o
-+snd-soc-rk817-objs := rk817_codec.o
- snd-soc-rl6231-objs := rl6231.o
- snd-soc-rl6347a-objs := rl6347a.o
- snd-soc-rt1011-objs := rt1011.o
-@@ -479,6 +480,7 @@ obj-$(CONFIG_SND_SOC_PCM512x)	+= snd-soc-pcm512x.o
- obj-$(CONFIG_SND_SOC_PCM512x_I2C)	+= snd-soc-pcm512x-i2c.o
- obj-$(CONFIG_SND_SOC_PCM512x_SPI)	+= snd-soc-pcm512x-spi.o
- obj-$(CONFIG_SND_SOC_RK3328)	+= snd-soc-rk3328.o
-+obj-$(CONFIG_SND_SOC_RK817)	+= snd-soc-rk817.o
- obj-$(CONFIG_SND_SOC_RL6231)	+= snd-soc-rl6231.o
- obj-$(CONFIG_SND_SOC_RL6347A)	+= snd-soc-rl6347a.o
- obj-$(CONFIG_SND_SOC_RT1011)	+= snd-soc-rt1011.o
-diff --git a/sound/soc/codecs/rk817_codec.c b/sound/soc/codecs/rk817_codec.c
-new file mode 100644
-index 000000000000..0ad097db04bd
---- /dev/null
-+++ b/sound/soc/codecs/rk817_codec.c
-@@ -0,0 +1,560 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// rk817 ALSA SoC Audio driver
-+//
-+// Copyright (c) 2018, Fuzhou Rockchip Electronics Co., Ltd All rights reserved.
-+
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/mfd/rk808.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_gpio.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <sound/core.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+
-+struct rk817_codec_priv {
-+	struct snd_soc_component *component;
-+	struct rk808 *rk808;
-+	struct clk *mclk;
-+	unsigned int stereo_sysclk;
-+	bool mic_in_differential;
-+};
-+
-+/*
-+ * This sets the codec up with the values defined in the default implementation including the APLL
-+ * from the Rockchip vendor kernel. I do not know if these values are universal despite differing
-+ * from the default values defined above and taken from the datasheet, or implementation specific.
-+ * I don't have another implementation to compare from the Rockchip sources. Hard-coding for now.
-+ * Additionally, I do not know according to the documentation the units accepted for the clock
-+ * values, so for the moment those are left unvalidated.
-+ */
-+
-+static int rk817_init(struct snd_soc_component *component)
-+{
-+	struct rk817_codec_priv *rk817 = snd_soc_component_get_drvdata(component);
-+
-+	snd_soc_component_write(component, RK817_CODEC_DDAC_POPD_DACST, 0x02);
-+	snd_soc_component_write(component, RK817_CODEC_DDAC_SR_LMT0, 0x02);
-+	snd_soc_component_write(component, RK817_CODEC_DADC_SR_ACL0, 0x02);
-+	snd_soc_component_write(component, RK817_CODEC_DTOP_VUCTIME, 0xf4);
-+	if (rk817->mic_in_differential) {
-+		snd_soc_component_update_bits(component, RK817_CODEC_AMIC_CFG0, MIC_DIFF_MASK,
-+			MIC_DIFF_EN);
++	rk817-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,name = "rockchip,rk817-codec";
++		simple-audio-card,mclk-fs = <256>;
++		simple-audio-card,widgets =
++			"Microphone", "Mic Jack",
++			"Headphone", "Headphones",
++			"Speaker", "Speaker";
++		simple-audio-card,routing =
++			"MICL", "Mic Jack",
++			"Headphones", "HPOL",
++			"Headphones", "HPOR",
++			"Speaker", "SPKO";
++		simple-audio-card,hp-det-gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
++		simple-audio-card,cpu {
++			sound-dai = <&i2s1_2ch>;
++		};
++		simple-audio-card,codec {
++			sound-dai = <&rk817>;
++		};
 +	};
-+	return 0;
-+}
 +
-+static int rk817_set_component_pll(struct snd_soc_component *component,
-+		int pll_id, int source, unsigned int freq_in,
-+		unsigned int freq_out)
-+{
-+	/* Set resistor value and charge pump current for PLL. */
-+	snd_soc_component_write(component, RK817_CODEC_APLL_CFG1, 0x58);
-+	/* Set the PLL feedback clock divide value (values not documented). */
-+	snd_soc_component_write(component, RK817_CODEC_APLL_CFG2, 0x2d);
-+	/* Set the PLL pre-divide value (values not documented). */
-+	snd_soc_component_write(component, RK817_CODEC_APLL_CFG3, 0x0c);
-+	/* Set the PLL VCO output clock divide and PLL divided ratio of PLL High Clk (values not
-+	 * documented).
-+	 */
-+	snd_soc_component_write(component, RK817_CODEC_APLL_CFG4, 0xa5);
-+
-+	return 0;
-+}
-+
-+/*
-+ * DDAC/DADC L/R volume setting
-+ * 0db~-95db, 0.375db/step, for example:
-+ * 0x00: 0dB
-+ * 0xff: -95dB
-+ */
-+
-+static const DECLARE_TLV_DB_MINMAX(rk817_vol_tlv, -9500, 0);
-+
-+/*
-+ * PGA GAIN L/R volume setting
-+ * 27db~-18db, 3db/step, for example:
-+ * 0x0: -18dB
-+ * 0xf: 27dB
-+ */
-+
-+static const DECLARE_TLV_DB_MINMAX(rk817_gain_tlv, -1800, 2700);
-+
-+static const struct snd_kcontrol_new rk817_volume_controls[] = {
-+	SOC_DOUBLE_R_RANGE_TLV("Master Playback Volume", RK817_CODEC_DDAC_VOLL,
-+		RK817_CODEC_DDAC_VOLR, 0, 0x00, 0xff, 1, rk817_vol_tlv),
-+	SOC_DOUBLE_R_RANGE_TLV("Master Capture Volume", RK817_CODEC_DADC_VOLL,
-+		RK817_CODEC_DADC_VOLR, 0, 0x00, 0xff, 1, rk817_vol_tlv),
-+	SOC_DOUBLE_TLV("Mic Capture Gain", RK817_CODEC_DMIC_PGA_GAIN, 4, 0, 0xf, 0,
-+		rk817_gain_tlv),
-+};
-+
-+/* Since the speaker output and L headphone pin are internally the same, make audio path mutually
-+ * exclusive with a mux.
-+ */
-+
-+static const char *dac_mux_text[] = {
-+	"HP",
-+	"SPK",
-+};
-+
-+static SOC_ENUM_SINGLE_VIRT_DECL(dac_enum, dac_mux_text);
-+
-+static const struct snd_kcontrol_new dac_mux =
-+	SOC_DAPM_ENUM("Playback Mux", dac_enum);
-+
-+static const struct snd_soc_dapm_widget rk817_dapm_widgets[] = {
-+
-+	/* capture/playback common */
-+	SND_SOC_DAPM_SUPPLY("LDO Regulator", RK817_CODEC_AREF_RTCFG1, 6, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("IBIAS Block", RK817_CODEC_AREF_RTCFG1, 2, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("VAvg Buffer", RK817_CODEC_AREF_RTCFG1, 1, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("PLL Power", RK817_CODEC_APLL_CFG5, 0, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S TX1 Transfer Start", RK817_CODEC_DI2S_RXCMD_TSD, 5, 0, NULL, 0),
-+
-+	/* capture path common */
-+	SND_SOC_DAPM_SUPPLY("ADC Clock", RK817_CODEC_DTOP_DIGEN_CLKE, 7, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S TX Clock", RK817_CODEC_DTOP_DIGEN_CLKE, 6, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC Channel Enable", RK817_CODEC_DTOP_DIGEN_CLKE, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S TX Channel Enable", RK817_CODEC_DTOP_DIGEN_CLKE, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MIC Power On", RK817_CODEC_AMIC_CFG0, 6, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S TX3 Transfer Start", RK817_CODEC_DI2S_TXCR3_TXCMD, 7, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S TX3 Right Justified", RK817_CODEC_DI2S_TXCR3_TXCMD, 3, 0, NULL, 0),
-+
-+	/* capture path L */
-+	SND_SOC_DAPM_ADC("ADC L", "Capture", RK817_CODEC_AADC_CFG0, 7, 1),
-+	SND_SOC_DAPM_SUPPLY("PGA L Power On", RK817_CODEC_AMIC_CFG0, 5, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Boost L1", RK817_CODEC_AMIC_CFG0, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Boost L2", RK817_CODEC_AMIC_CFG0, 2, 0, NULL, 0),
-+
-+	/* capture path R */
-+	SND_SOC_DAPM_ADC("ADC R", "Capture", RK817_CODEC_AADC_CFG0, 6, 1),
-+	SND_SOC_DAPM_SUPPLY("PGA R Power On", RK817_CODEC_AMIC_CFG0, 4, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Boost R1", RK817_CODEC_AMIC_CFG0, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Mic Boost R2", RK817_CODEC_AMIC_CFG0, 3, 0, NULL, 0),
-+
-+	/* playback path common */
-+	SND_SOC_DAPM_SUPPLY("DAC Clock", RK817_CODEC_DTOP_DIGEN_CLKE, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S RX Clock", RK817_CODEC_DTOP_DIGEN_CLKE, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Channel Enable", RK817_CODEC_DTOP_DIGEN_CLKE, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("I2S RX Channel Enable", RK817_CODEC_DTOP_DIGEN_CLKE, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Bias", RK817_CODEC_ADAC_CFG1, 3, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("DAC Mute Off", RK817_CODEC_DDAC_MUTE_MIXCTL, 0, 1, NULL, 0),
-+
-+	/* playback path speaker */
-+	SND_SOC_DAPM_SUPPLY("Class D Mode", RK817_CODEC_DDAC_MUTE_MIXCTL, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("High Pass Filter", RK817_CODEC_DDAC_MUTE_MIXCTL, 7, 0, NULL, 0),
-+	SND_SOC_DAPM_DAC("SPK DAC", "Playback", RK817_CODEC_ADAC_CFG1, 2, 1),
-+	SND_SOC_DAPM_SUPPLY("Enable Class D", RK817_CODEC_ACLASSD_CFG1, 7, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Disable Class D Mute Ramp", RK817_CODEC_ACLASSD_CFG1, 6, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Class D Mute Rate 1", RK817_CODEC_ACLASSD_CFG1, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Class D Mute Rate 2", RK817_CODEC_ACLASSD_CFG1, 2, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Class D OCPP 2", RK817_CODEC_ACLASSD_CFG2, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Class D OCPP 3", RK817_CODEC_ACLASSD_CFG2, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Class D OCPN 2", RK817_CODEC_ACLASSD_CFG2, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Class D OCPN 3", RK817_CODEC_ACLASSD_CFG2, 0, 0, NULL, 0),
-+
-+	/* playback path headphones */
-+	SND_SOC_DAPM_SUPPLY("Headphone Charge Pump", RK817_CODEC_AHP_CP, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Headphone CP Discharge LDO", RK817_CODEC_AHP_CP, 3, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Headphone OStage", RK817_CODEC_AHP_CFG0, 6, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("Headphone Pre Amp", RK817_CODEC_AHP_CFG0, 5, 1, NULL, 0),
-+	SND_SOC_DAPM_DAC("DAC L", "Playback", RK817_CODEC_ADAC_CFG1, 1, 1),
-+	SND_SOC_DAPM_DAC("DAC R", "Playback", RK817_CODEC_ADAC_CFG1, 0, 1),
-+
-+	/* Mux for input/output path selection */
-+	SND_SOC_DAPM_MUX("Playback Mux", SND_SOC_NOPM, 1, 0, &dac_mux),
-+
-+	/* Pins for Simple Card Bindings */
-+	SND_SOC_DAPM_INPUT("MICL"),
-+	SND_SOC_DAPM_INPUT("MICR"),
-+	SND_SOC_DAPM_OUTPUT("HPOL"),
-+	SND_SOC_DAPM_OUTPUT("HPOR"),
-+	SND_SOC_DAPM_OUTPUT("SPKO"),
-+};
-+
-+static const struct snd_soc_dapm_route rk817_dapm_routes[] = {
-+
-+	/* capture path */
-+	/* left mic */
-+	{"ADC L", NULL, "LDO Regulator"},
-+	{"ADC L", NULL, "IBIAS Block"},
-+	{"ADC L", NULL, "VAvg Buffer"},
-+	{"ADC L", NULL, "PLL Power"},
-+	{"ADC L", NULL, "ADC Clock"},
-+	{"ADC L", NULL, "I2S TX Clock"},
-+	{"ADC L", NULL, "ADC Channel Enable"},
-+	{"ADC L", NULL, "I2S TX Channel Enable"},
-+	{"ADC L", NULL, "I2S TX1 Transfer Start"},
-+	{"MICL", NULL, "MIC Power On"},
-+	{"MICL", NULL, "PGA L Power On"},
-+	{"MICL", NULL, "Mic Boost L1"},
-+	{"MICL", NULL, "Mic Boost L2"},
-+	{"MICL", NULL, "I2S TX3 Transfer Start"},
-+	{"MICL", NULL, "I2S TX3 Right Justified"},
-+	{"ADC L", NULL, "MICL"},
-+
-+	/* right mic */
-+	{"ADC R", NULL, "LDO Regulator"},
-+	{"ADC R", NULL, "IBIAS Block"},
-+	{"ADC R", NULL, "VAvg Buffer"},
-+	{"ADC R", NULL, "PLL Power"},
-+	{"ADC R", NULL, "ADC Clock"},
-+	{"ADC R", NULL, "I2S TX Clock"},
-+	{"ADC R", NULL, "ADC Channel Enable"},
-+	{"ADC R", NULL, "I2S TX Channel Enable"},
-+	{"ADC R", NULL, "I2S TX1 Transfer Start"},
-+	{"MICR", NULL, "MIC Power On"},
-+	{"MICR", NULL, "PGA R Power On"},
-+	{"MICR", NULL, "Mic Boost R1"},
-+	{"MICR", NULL, "Mic Boost R2"},
-+	{"MICR", NULL, "I2S TX3 Transfer Start"},
-+	{"MICR", NULL, "I2S TX3 Right Justified"},
-+	{"ADC R", NULL, "MICR"},
-+
-+	/* playback path */
-+	/* speaker path */
-+	{"SPK DAC", NULL, "LDO Regulator"},
-+	{"SPK DAC", NULL, "IBIAS Block"},
-+	{"SPK DAC", NULL, "VAvg Buffer"},
-+	{"SPK DAC", NULL, "PLL Power"},
-+	{"SPK DAC", NULL, "I2S TX1 Transfer Start"},
-+	{"SPK DAC", NULL, "DAC Clock"},
-+	{"SPK DAC", NULL, "I2S RX Clock"},
-+	{"SPK DAC", NULL, "DAC Channel Enable"},
-+	{"SPK DAC", NULL, "I2S RX Channel Enable"},
-+	{"SPK DAC", NULL, "Class D Mode"},
-+	{"SPK DAC", NULL, "DAC Bias"},
-+	{"SPK DAC", NULL, "DAC Mute Off"},
-+	{"SPK DAC", NULL, "Enable Class D"},
-+	{"SPK DAC", NULL, "Disable Class D Mute Ramp"},
-+	{"SPK DAC", NULL, "Class D Mute Rate 1"},
-+	{"SPK DAC", NULL, "Class D Mute Rate 2"},
-+	{"SPK DAC", NULL, "Class D OCPP 2"},
-+	{"SPK DAC", NULL, "Class D OCPP 3"},
-+	{"SPK DAC", NULL, "Class D OCPN 2"},
-+	{"SPK DAC", NULL, "Class D OCPN 3"},
-+	{"SPK DAC", NULL, "High Pass Filter"},
-+
-+	/* headphone path L */
-+	{"DAC L", NULL, "LDO Regulator"},
-+	{"DAC L", NULL, "IBIAS Block"},
-+	{"DAC L", NULL, "VAvg Buffer"},
-+	{"DAC L", NULL, "PLL Power"},
-+	{"DAC L", NULL, "I2S TX1 Transfer Start"},
-+	{"DAC L", NULL, "DAC Clock"},
-+	{"DAC L", NULL, "I2S RX Clock"},
-+	{"DAC L", NULL, "DAC Channel Enable"},
-+	{"DAC L", NULL, "I2S RX Channel Enable"},
-+	{"DAC L", NULL, "DAC Bias"},
-+	{"DAC L", NULL, "DAC Mute Off"},
-+	{"DAC L", NULL, "Headphone Charge Pump"},
-+	{"DAC L", NULL, "Headphone CP Discharge LDO"},
-+	{"DAC L", NULL, "Headphone OStage"},
-+	{"DAC L", NULL, "Headphone Pre Amp"},
-+
-+	/* headphone path R */
-+	{"DAC R", NULL, "LDO Regulator"},
-+	{"DAC R", NULL, "IBIAS Block"},
-+	{"DAC R", NULL, "VAvg Buffer"},
-+	{"DAC R", NULL, "PLL Power"},
-+	{"DAC R", NULL, "I2S TX1 Transfer Start"},
-+	{"DAC R", NULL, "DAC Clock"},
-+	{"DAC R", NULL, "I2S RX Clock"},
-+	{"DAC R", NULL, "DAC Channel Enable"},
-+	{"DAC R", NULL, "I2S RX Channel Enable"},
-+	{"DAC R", NULL, "DAC Bias"},
-+	{"DAC R", NULL, "DAC Mute Off"},
-+	{"DAC R", NULL, "Headphone Charge Pump"},
-+	{"DAC R", NULL, "Headphone CP Discharge LDO"},
-+	{"DAC R", NULL, "Headphone OStage"},
-+	{"DAC R", NULL, "Headphone Pre Amp"},
-+
-+	/* mux path for output selection */
-+	{"Playback Mux", "HP", "DAC L"},
-+	{"Playback Mux", "HP", "DAC R"},
-+	{"Playback Mux", "SPK", "SPK DAC"},
-+	{"SPKO", NULL, "Playback Mux"},
-+	{"HPOL", NULL, "Playback Mux"},
-+	{"HPOR", NULL, "Playback Mux"},
-+};
-+
-+static int rk817_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+				int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct rk817_codec_priv *rk817 = snd_soc_component_get_drvdata(component);
-+
-+	rk817->stereo_sysclk = freq;
-+
-+	return 0;
-+}
-+
-+static int rk817_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+			     unsigned int fmt)
-+{
-+	struct snd_soc_component *component = codec_dai->component;
-+	unsigned int i2s_mst = 0;
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		i2s_mst |= RK817_I2S_MODE_SLV;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		i2s_mst |= RK817_I2S_MODE_MST;
-+		break;
-+	default:
-+		dev_err(component->dev, "%s : set master mask failed!\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_component_update_bits(component, RK817_CODEC_DI2S_CKM,
-+				      RK817_I2S_MODE_MASK, i2s_mst);
-+
-+	return 0;
-+}
-+
-+static int rk817_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		snd_soc_component_write(component, RK817_CODEC_DI2S_RXCR2,
-+					VDW_RX_16BITS);
-+		snd_soc_component_write(component, RK817_CODEC_DI2S_TXCR2,
-+					VDW_TX_16BITS);
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		snd_soc_component_write(component, RK817_CODEC_DI2S_RXCR2,
-+					VDW_RX_24BITS);
-+		snd_soc_component_write(component, RK817_CODEC_DI2S_TXCR2,
-+					VDW_TX_24BITS);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int rk817_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
-+{
-+	struct snd_soc_component *component = dai->component;
-+
-+	if (mute)
-+		snd_soc_component_update_bits(component,
-+					      RK817_CODEC_DDAC_MUTE_MIXCTL,
-+					      DACMT_MASK, DACMT_ENABLE);
-+	else
-+		snd_soc_component_update_bits(component,
-+					      RK817_CODEC_DDAC_MUTE_MIXCTL,
-+					      DACMT_MASK, DACMT_DISABLE);
-+
-+	return 0;
-+}
-+
-+#define RK817_PLAYBACK_RATES (SNDRV_PCM_RATE_8000 |\
-+			      SNDRV_PCM_RATE_16000 |	\
-+			      SNDRV_PCM_RATE_32000 |	\
-+			      SNDRV_PCM_RATE_44100 |	\
-+			      SNDRV_PCM_RATE_48000 |	\
-+			      SNDRV_PCM_RATE_96000)
-+
-+#define RK817_CAPTURE_RATES (SNDRV_PCM_RATE_8000 |\
-+			      SNDRV_PCM_RATE_16000 |	\
-+			      SNDRV_PCM_RATE_32000 |	\
-+			      SNDRV_PCM_RATE_44100 |	\
-+			      SNDRV_PCM_RATE_48000 |	\
-+			      SNDRV_PCM_RATE_96000)
-+
-+#define RK817_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			SNDRV_PCM_FMTBIT_S20_3LE |\
-+			SNDRV_PCM_FMTBIT_S24_LE |\
-+			SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_ops rk817_dai_ops = {
-+	.hw_params	= rk817_hw_params,
-+	.set_fmt	= rk817_set_dai_fmt,
-+	.set_sysclk	= rk817_set_dai_sysclk,
-+	.mute_stream	= rk817_digital_mute,
-+	.no_capture_mute	= 1,
-+};
-+
-+static struct snd_soc_dai_driver rk817_dai[] = {
-+	{
-+		.name = "rk817-hifi",
-+		.playback = {
-+			.stream_name = "Playback",
-+			.channels_min = 2,
-+			.channels_max = 8,
-+			.rates = RK817_PLAYBACK_RATES,
-+			.formats = RK817_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = RK817_CAPTURE_RATES,
-+			.formats = RK817_FORMATS,
-+		},
-+		.ops = &rk817_dai_ops,
-+	},
-+};
-+
-+static int rk817_probe(struct snd_soc_component *component)
-+{
-+	struct rk817_codec_priv *rk817 = snd_soc_component_get_drvdata(component);
-+	struct rk808 *rk808 = dev_get_drvdata(component->dev->parent);
-+	int ret;
-+
-+	snd_soc_component_init_regmap(component, rk808->regmap);
-+	rk817->component = component;
-+
-+	ret = snd_soc_component_write(component, RK817_CODEC_DTOP_LPT_SRST, 0x40);
-+
-+	rk817_init(component);
-+
-+	/* setting initial pll values so that we can continue to leverage simple-audio-card.
-+	 * The values aren't important since no parameters are used.
-+	 */
-+
-+	snd_soc_component_set_pll(component, 0, 0, 0, 0);
-+
-+	return 0;
-+}
-+
-+static void rk817_remove(struct snd_soc_component *component)
-+{
-+	snd_soc_component_exit_regmap(component);
-+}
-+
-+static const struct snd_soc_component_driver soc_codec_dev_rk817 = {
-+	.probe = rk817_probe,
-+	.remove = rk817_remove,
-+	.idle_bias_on = 1,
-+	.use_pmdown_time = 1,
-+	.endianness = 1,
-+	.non_legacy_dai_naming = 1,
-+	.controls = rk817_volume_controls,
-+	.num_controls = ARRAY_SIZE(rk817_volume_controls),
-+	.dapm_routes = rk817_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(rk817_dapm_routes),
-+	.dapm_widgets = rk817_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(rk817_dapm_widgets),
-+	.set_pll = rk817_set_component_pll,
-+};
-+
-+static int rk817_codec_parse_dt_property(struct device *dev,
-+					 struct rk817_codec_priv *rk817)
-+{
-+	struct device_node *node = dev->parent->of_node;
-+
-+	if (!node) {
-+		dev_err(dev, "%s() dev->parent->of_node is NULL\n",
-+			__func__);
-+		return -ENODEV;
-+	}
-+
-+	node = of_get_child_by_name(dev->parent->of_node, "codec");
-+	if (!node) {
-+		dev_err(dev, "%s() Can not get child: codec\n",
-+			__func__);
-+		return -ENODEV;
-+	}
-+
-+	rk817->mic_in_differential =
-+			of_property_read_bool(node, "mic-in-differential");
-+
-+	return 0;
-+}
-+
-+static int rk817_platform_probe(struct platform_device *pdev)
-+{
-+	struct rk808 *rk808 = dev_get_drvdata(pdev->dev.parent);
-+	struct rk817_codec_priv *rk817_codec_data;
-+	int ret;
-+
-+	if (!rk808) {
-+		dev_err(&pdev->dev, "%s : rk817 is NULL\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	rk817_codec_data = devm_kzalloc(&pdev->dev,
-+					sizeof(struct rk817_codec_priv),
-+					GFP_KERNEL);
-+	if (!rk817_codec_data)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, rk817_codec_data);
-+
-+	rk817_codec_data->rk808 = rk808;
-+
-+	ret = rk817_codec_parse_dt_property(&pdev->dev, rk817_codec_data);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "%s() parse device tree property error %d\n",
-+			__func__, ret);
-+		goto err_;
-+	}
-+
-+	rk817_codec_data->mclk = clk_get(pdev->dev.parent, "mclk");
-+	if (IS_ERR(rk817_codec_data->mclk)) {
-+		dev_err(&pdev->dev, "Unable to get mclk\n");
-+		ret = -ENXIO;
-+		goto err_;
-+	}
-+
-+	ret = clk_prepare_enable(rk817_codec_data->mclk);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "%s() clock prepare error %d\n",
-+			__func__, ret);
-+		goto err_;
-+	}
-+
-+	ret = devm_snd_soc_register_component(&pdev->dev, &soc_codec_dev_rk817,
-+					      rk817_dai, ARRAY_SIZE(rk817_dai));
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "%s() register codec error %d\n",
-+			__func__, ret);
-+		goto err_;
-+	}
-+
-+	return 0;
-+err_:
-+
-+	return ret;
-+}
-+
-+static int rk817_platform_remove(struct platform_device *pdev)
-+{
-+	struct rk817_codec_priv *rk817 = platform_get_drvdata(pdev);
-+
-+	clk_disable_unprepare(rk817->mclk);
-+
-+	return 0;
-+}
-+
-+MODULE_DEVICE_TABLE(of, rk817_codec_dt_ids);
-+
-+static struct platform_driver rk817_codec_driver = {
-+	.driver = {
-+		   .name = "rk817-codec",
-+		   },
-+	.probe = rk817_platform_probe,
-+	.remove = rk817_platform_remove,
-+};
-+
-+module_platform_driver(rk817_codec_driver);
-+
-+MODULE_DESCRIPTION("ASoC RK817 codec driver");
-+MODULE_AUTHOR("binyuan <kevan.lan@rock-chips.com>");
-+MODULE_LICENSE("GPL v2");
+ 	vccsys: vccsys {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc3v8_sys";
+@@ -266,10 +289,13 @@ rk817: pmic@20 {
+ 		interrupt-parent = <&gpio0>;
+ 		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&pmic_int>;
++		pinctrl-0 = <&pmic_int>, <&i2s1_2ch_mclk>;
+ 		wakeup-source;
+ 		#clock-cells = <1>;
+ 		clock-output-names = "rk808-clkout1", "xin32k";
++		clocks = <&cru SCLK_I2S1_OUT>;
++		clock-names = "mclk";
++		#sound-dai-cells = <0>;
+ 
+ 		vcc1-supply = <&vccsys>;
+ 		vcc2-supply = <&vccsys>;
+@@ -428,6 +454,11 @@ regulator-state-mem {
+ 				};
+ 			};
+ 		};
++
++		rk817_codec: codec {
++			mic-in-differential;
++			status = "okay";
++		};
+ 	};
+ };
+ 
+@@ -439,6 +470,8 @@ &i2c1 {
+ 
+ /* I2S 1 Channel Used */
+ &i2s1_2ch {
++	resets = <&cru SRST_I2S1>, <&cru SRST_I2S1_H>;
++	reset-names = "reset-m", "reset-h";
+ 	status = "okay";
+ };
+ 
 -- 
 2.25.1
 
