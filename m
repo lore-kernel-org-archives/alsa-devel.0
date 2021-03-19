@@ -2,141 +2,122 @@ Return-Path: <SRS0=UTIM=IR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.1 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,
 	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	UNWANTED_LANGUAGE_BODY,UPPERCASE_50_75,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 578AEC433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:15:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 264DFC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:16:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AA1716197A
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:15:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA1716197A
+	by mail.kernel.org (Postfix) with ESMTPS id F07056197D
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:16:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F07056197D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CCE41675;
-	Fri, 19 Mar 2021 20:14:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CCE41675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18F20167F;
+	Fri, 19 Mar 2021 20:15:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18F20167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616181309;
-	bh=XZYjb6QL+4pM8ZA9ca+Lq5CIeW+qjVc8y7Yo4tJKPLY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gJ2YrPaWGRIJEVlPMTEpupH1jlEeN1wpqSCL4nBn+EhnjOMHeKgFrXKDmPeQU6eUe
-	 qL+zGTeCP3lDHAK0roWJ0oUzNIeYp8A4XjKaL4UNzi9xsGA6u/BoiPffMht32XP+ZY
-	 wU7YQt0A38kZxt2oMoKAmyqvmu/JTqjkfspC2U8k=
+	s=default; t=1616181360;
+	bh=Upa8xkuEcUdgO+bzqPJezNXNEPhwH9cUBbb0mKoxmbM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=q9TKjbllFBkvyu3fNXhaLdjpoLMOXPyLRW9X1wX0S7nS49kDyw/I1xp/OfMdEwdVY
+	 0D+B7yal86o2MmZCu5fiUZxXVDeKpoiXg5R/MlIEBK96UKIgmRluct6HDW1iJgjU3M
+	 Qb0Pmz39GWA76RmhokQr9RbHC7oDY+XSUPZus90Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61310F8023C;
-	Fri, 19 Mar 2021 20:14:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6864F802CA;
+	Fri, 19 Mar 2021 20:14:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB18CF8023C; Fri, 19 Mar 2021 20:14:15 +0100 (CET)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12olkn2100.outbound.protection.outlook.com [40.92.21.100])
+ id C2DC6F800BB; Fri, 19 Mar 2021 20:14:19 +0100 (CET)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12olkn2070.outbound.protection.outlook.com [40.92.22.70])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BF48F80124
- for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 20:14:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BF48F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B557F800BB
+ for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 20:14:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B557F800BB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com
- header.b="LgUI1kRz"
+ header.b="gdqhD9dK"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nFU5KON7XckPXQ/zPIoveUFE5XKWMU9nI67U479W3vH8KLm7i8TNlW+W8JsV+ZH4udJHO+3zlSoVreUNu22+muNzPiNucxFZgLJ3LvfEkSsjSjCkcfE3iEqBA1m+ehr+FDB4ryPseKrfzUoU/ZjrnEs9jVevIqSz6J3uv/ihjllDUUpdlVsAcy0eGGdhKRuLfg86/7dbinQJdL5mxpzphjUeRcQW+1E18dOuCAwYUBB4JSbgow1DAvcBNw9gLzwMLKhMywcNnm1cUDCTUDHgsWaBtEez2FOlN2o4lpicu6HdmcwomQ1xNXfppjktrjrsgd6XveSOcWX/Rv+NfFQNUg==
+ b=YJkuB1S+o1zBuvGfb2JKGgWGXl5LVTVdpBMV7nxfTBJKJ3/NfsfSdkxTQIRnptseipSScQwkxoH0tGGxg3JldVO/xUi5whCa4WIGzu7Y6x9u5rb0t9wTvmReKhm4tUfKWw8y4kOSm6B+f/LDD9v1vjpydC5UJaxw+ubXtYBZR2+ktYNjj+uYKLHx8hgi7ZVPatiliGXkmnAuz3eBSh2qL+P4C2cG8rGWFvbz691sBGBMq7nGqN+BUDIlKDHUBjhi4VJtpUUZ5pWR4F/vxjlCP+IOaS2akp3FLmCMhy2Mt1V9Xx3+AhfKSLr9DHsG4ZjYJWwmRC4gR2INCHNMC5DbxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xF+i1am0mqGlM4sD1vKDBc5dgMNmfc7h7SdCjtsPQl0=;
- b=EZWFCRRWcHh5WQr3IbXuz4W/+ibQPUDksd/MljYYLwsuQGQny9Taw5rF4RYOGV25oZExStA+RQ0Twi4B1r/t7ujYv9rUIrdkLJk4/qyqh7MqJ17OB7kDeuOYGXGf1tFDSc4zqt/Cx3TtQAbvBYOvc3O23ODnL5JFEzki/B7+HS3hEanuvNjUPAJQ0KyYvDwoVYy7q8XnQn84DSFVuSPcuj1fn8EaTA647NX3sITTy9iuj+2aFeHoMMoKw4f4Rc1pW52W9TkhrULXeALYvPtqP6Fqh4VwyHjao38uxnAxA7jwa32HRzrSmWzR/mGSF/p49F87kWR4VlOnlCDuwBwNrg==
+ bh=PclFFJizvl89I+uhovAwAG2HrugwfyZ7fK9TdzVP4G4=;
+ b=adNvM9SMfUC3c27LlPDX0iU9uQUKOlCBg5wyS9hBgf+ffwbPT7tRwR3ZXCRC80OMBDNFGdOFVNcV/RKHHI7fZyGHzMnbzqVUeCZCNKuXgExiJrcmn0Xow8hfBoioDwfBLbqIvHIvC4XOfku4KQkzvJMjeJn0fomlOMdonfCghoPqKJOQ83evhjbCREUA135/9UJjJIIFu29Yvoa3oee5ngdEZbuDaYaV07JDDva7o6NuJFzdxPdOBdxwg68VfZQpSBTTHXRsrZ2YGhe17MWYS51q/4e6i9sBcNuVljpmoGC2DnQZaQZw3L154N9FLA7vV9q/NSEb2j62tp4m+0eLeA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xF+i1am0mqGlM4sD1vKDBc5dgMNmfc7h7SdCjtsPQl0=;
- b=LgUI1kRzOHF7dubTzyMO8xI19tbH/vJqXk3tO5JVbN3g6+R9oqmx/DKf3gaiQMWJOpLRaukLooGUkPABJtxvOZPs2liO0kWMycva4K35bfQkCQQXgWGsIYFGNelIvk7dycJcQ4un17CoElX46poiJbest99GBXTjccA0U+937p6o7/JP5DJ3wxtpGe+lm77eT+yz86XGOrwVl/d71j51RaZT7+UHXtN4huseFWP7Iy3PUMNOWjuuiR4yL4Q+8gUet7XryTaymjupg5A3DsRIfgZYJd5PKSU//WZLZOK94ZbC1bY3LTglCjCsCTlPdkdLeW3sqsghR9BsAQ2vGymjZQ==
+ bh=PclFFJizvl89I+uhovAwAG2HrugwfyZ7fK9TdzVP4G4=;
+ b=gdqhD9dKFrLykuZOdkdCuu/9Jr96v701Foj1zV0JXYX/5644QrO68w1KXSqcxZhmhQpTJLCre5CcO3BQXFko2IiSH4Fg5QgCpFpAVtgemrjktlkrSS9/3Ftno+/VLqcttK++F5i6ehjBHx7y/VpuLzWjWrMxTaBu0YSJncQAhUPnLvMqJXvvzwnrnX+Wlm/jfLEZqoHWWnSKr/3g5qoCHIo2M4KWSxXbScN2q/DTxPk2BZHkpld7tfhKSAebVKnPgZIQnGKxSIgNTrO9fV/lz8ZKjSgcmSH3ZTgjJZpdEqB1/HE2/KZHufg2Ojt1aIxVYK6UvE9XAICGU6ap9/c7rA==
 Received: from BN8NAM12FT062.eop-nam12.prod.protection.outlook.com
- (2a01:111:e400:fc66::50) by
- BN8NAM12HT152.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc66::438)
+ (2a01:111:e400:fc66::41) by
+ BN8NAM12HT048.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc66::304)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9; Fri, 19 Mar
- 2021 19:13:58 +0000
+ 2021 19:13:55 +0000
 Received: from SN6PR06MB5342.namprd06.prod.outlook.com
  (2a01:111:e400:fc66::53) by BN8NAM12FT062.mail.protection.outlook.com
  (2a01:111:e400:fc66::321) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9 via Frontend
- Transport; Fri, 19 Mar 2021 19:13:58 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:578469A77F0D4F4470BFB324BF7A2416D627D4ABDB06C6A57F7F803C971CFD54;
- UpperCasedChecksum:0D9005D7321A0F95E4C525492FBC6DFEEB1CE35D420D923829973328AA91334B;
- SizeAsReceived:7531; Count:47
+ Transport; Fri, 19 Mar 2021 19:13:55 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:43A34AC0507850892914D4D8127524594948569CD068CBC185E86342265D9D9A;
+ UpperCasedChecksum:4C72A9C8D67D99165ECC44552078B9D4445DEC238987D1C0C0D6FD8AC6C31193;
+ SizeAsReceived:7402; Count:45
 Received: from SN6PR06MB5342.namprd06.prod.outlook.com
  ([fe80::fc38:a692:c2c8:f63e]) by SN6PR06MB5342.namprd06.prod.outlook.com
  ([fe80::fc38:a692:c2c8:f63e%7]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
- 19:13:58 +0000
+ 19:13:55 +0000
 From: Chris Morgan <macromorgan@hotmail.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 3/4] dt-bindings: Add Rockchip rk817 audio CODEC support
-Date: Fri, 19 Mar 2021 14:13:36 -0500
-Message-ID: <SN6PR06MB5342F6C37745ECEDFBFBE978A5689@SN6PR06MB5342.namprd06.prod.outlook.com>
+Subject: [PATCH v5 1/4] mfd: Add Rockchip rk817 audio CODEC support
+Date: Fri, 19 Mar 2021 14:13:34 -0500
+Message-ID: <SN6PR06MB5342F55B21521532DA19587EA5689@SN6PR06MB5342.namprd06.prod.outlook.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210319191337.9414-1-macromorgan@hotmail.com>
-References: <20210319191337.9414-1-macromorgan@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [a8KuAtJ1LvODWzTNSnGxhtlDcN+dSRju]
+X-TMN: [brBSG+GdC8L/0AwOmszEomwwMxlNCEi3]
 X-ClientProxiedBy: SN1PR12CA0044.namprd12.prod.outlook.com
  (2603:10b6:802:20::15) To SN6PR06MB5342.namprd06.prod.outlook.com
  (2603:10b6:805:f9::31)
-X-Microsoft-Original-Message-ID: <20210319191337.9414-3-macromorgan@hotmail.com>
+X-Microsoft-Original-Message-ID: <20210319191337.9414-1-macromorgan@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 Received: from wintermute.localdomain (76.183.134.35) by
  SN1PR12CA0044.namprd12.prod.outlook.com (2603:10b6:802:20::15) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 19:13:57 +0000
+ 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 19:13:54 +0000
 X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 47
+X-IncomingHeaderCount: 45
 X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: d832b206-5f14-44e6-26ce-08d8eb0b255e
-X-MS-Exchange-SLBlob-MailProps: =?us-ascii?Q?FxEr8kVTuhr9YqQ01nJa/znbAevm76fKv6GkSNc/dX4T6XfKUS8OmlGfsH7A?=
- =?us-ascii?Q?1uGskvPs+fg9+YmR79fy153AUMfetEjU5uAUNg+7p7/ojpvgWs/p+NqhyTSf?=
- =?us-ascii?Q?IvETKUFqQGd133SAu3NzRnMRbDTehhB0m7x5CApO4IYi4niTW2gB5DztEu8f?=
- =?us-ascii?Q?KAg6JdULiA8yNu2g3zAgFtS+UHUrRck4F81Z8gQxJt9fdF3DKwF3DKhWXsC6?=
- =?us-ascii?Q?iI8b0tChb18dv+dDqhOmaRSDv4hKgmNa9RmdCeWMV5vHrHAHggPeh5XCXjgi?=
- =?us-ascii?Q?9pU++TrmsuktSRLWWsEwh5m/H6+dXPHx8SzxMmvR5PG/DdAL+Gl4Bym+eLE9?=
- =?us-ascii?Q?tHheZ+WzinGYo5CV3Hh+7Ag70ktqDVzll2PqA6miEDVLj32/OHb1U0COri+C?=
- =?us-ascii?Q?+l/5+Y171iuoXvxbOfZDID0C/Uj8vuDv0+nXVCWBp/hh6ZEXfZuO6CqxuYKF?=
- =?us-ascii?Q?8AefQZu0mWVW2zWKbVA6HBFgrnnnF7EVaM6Ijm3/zRELS37VbWhVeTIyuCjq?=
- =?us-ascii?Q?ulz81YGMtoa7btCMFwxfPZ0TX2gfCkoStlUvyE600QzWMQ63hcIQ9RkzPCOt?=
- =?us-ascii?Q?PYbiC6jD+JEyaZs4V/n4WC2/h5Uj326LL6gZlBQ4kJhfuIqO/M7r1sRB9013?=
- =?us-ascii?Q?vzKarCQmhtAabx76kJeSz2u1+94tVZIyoy1Mk2/OAOeQ5kulQ+OYbkS4xqRZ?=
- =?us-ascii?Q?JifFXSlwVNqi1cKzqpRGf0qXAvqlszI6ao+oMJI6+ZaYh+OTRUk80fYB/gdg?=
- =?us-ascii?Q?4SiYnIP8R6YxQmXT36MSU5CCmE23CaI5KawpB4tnE9VQRv9HgXCG9VDJG6MR?=
- =?us-ascii?Q?CiEgj6xEqpoG6cqC5LXiM5f7qXG47Jt3ovPl4GVWaAVKfIUxaNb1DCs4JAfA?=
- =?us-ascii?Q?5xSqc3WCtNBH6wBIsyvZerL+OHWlCW0bnwsOERlEjWngxIx0y2T/U3HiYC04?=
- =?us-ascii?Q?5M+mHedr9pClvoEJMD0PApHKNl0C+Nppr1aoE93P+Scqx9v9CZb02lHtmfaR?=
- =?us-ascii?Q?HdvlROUM4ra9ZaaJWetcuEcFQAgueu3zVG4H?=
-X-MS-TrafficTypeDiagnostic: BN8NAM12HT152:
+X-MS-Office365-Filtering-Correlation-Id: 69493a0a-33d2-48ce-0018-08d8eb0b2376
+X-MS-Exchange-SLBlob-MailProps: mBy7Mai7yE7CRTBaMPdSvo2GfMG4mSdlUA9MwktO30GraT6pW5dXbUlp2j1rr8zQnRpXqYbZxgjgByZxnYE2I4eNg4tx1xYjyaCCADHDA59LVYnZMRQJzpvASs7HzA2ld5oAx9XdJqPwhLj/w+ZMVpdL/CD2c9VvJmNaf2Yc2lWDI9gdn4dh0tSXvFPgkec+fz300XI1WOkv2N2HtsezfFDew+njhDkuZ62aYz3FnSa1Th73IyIAZmD6GwX5HTY5IpnJJC+ZgMAcKtGLzRgNEQjt3XA9HpkcfEdeLCOPj2xh3VQ7Y2l0cUVglHf9fU8CCD/646l7nUAJBAbipdMRzShp11ADYP4wvMdLeUuKHpcenmjhLJ0pXoyYXpiuIS2umb8PJVHO7kjv5fbWgBsSarxbDmgGsQLgE5fBp7DrmInYb093xTw3iu1InNeVOy0P4uX1tE62n7WWrU2XsUuJ5Supr2muzMZe8eSqXH/ib6hZ4UpAS+SvNxpK3wd+9oPrflpe8r03r0qwd+Bm5cjkQnxoo4DNql6qgTBqIqKqc7N5AhuIzyVt4xhG9/AkBHTe6WJ8FDLrLXnO06HT6RNvJ7Z0ZL+D1w5EYRrF9slqQXeflHTu7Y+QUbbGGGHOjmUQCHmB0hyinkHokFmmR+C1sZ0FZmRh/Fp53/VR3MHwG5nxeMiLC1i7ZCyv6d1bjcxqNeGiH5RbnsPSyj5tikKUg5NAnj/7dbA6
+X-MS-TrafficTypeDiagnostic: BN8NAM12HT048:
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xovgymdYR8JYNXOzacXz2BtSFS/MxrVJZkZMC0bjwFdzRHCIOr4h+OxMznCMZvmCZuzb5kCmMEXFsRbhTIhJcyhuUrRVtBuRoZfXkRQOEoh1K9F3OdPfQH5FC13tTy1CC6u2lcUEkkpce/glI9l6GaJomgWGgjuR0Ldt1gLbpsI5RIMYBKnbcr+ie8czAsRAVGliR03zxtqSkaZ4JYrKUpo1ObGgIkXP4nxcoXpC76oxX7ZjoPHc6lXmv7ZhnfEch+Apuk2lVrdHTjDJFws/cTvzccwgh35+TXUCX7BKZl4nusQZUhU/OsZvGsAWiTdNlRJ3dYxs0tZxE8bsAWT8j9H1pZ3WQwIzC4HNrwAovBtEoeeh2zJM6EXEXRMNmyGUZAwZSIN7jdbNost5P4ihuAuIHS0U50WzE8SMkLdyC3g=
-X-MS-Exchange-AntiSpam-MessageData: TTYJ69W3pofw0QwHBF+xKPYqpkB6f/qjbtc43EIM6u8afhR0e3tlu4kQMKYKbkRg1JgzHmrMszFxmqS4PbOv1ZTh9+kpAdEUWjwTYgZiM4DTurbvN9XeAXOpcioFPAyl2MNzu1MyeP/fgxjHpHUcAw==
+X-Microsoft-Antispam-Message-Info: i93/pDHU/k7XOL2sV+ASZ0QVY7nRn8UooHf0wMSOE6k2sT4Cr9nKzhH2ySiTsFb4whuD6V33XCW0FLogTQc4vj6ZsQv2YqOJfhPaCkaiTAnZuY8dX9DkGFWeIaTSogYQ7y51Sl5/i+9SywZCE9nRS0LdcH7wbynk0dZp0Of/jAJZyIINrA2/wJ2D+6WHn957weafHWkRCaQqnOIdkl+71Wm5EkkNfD/wgqFD4BP4s+Gq+ZbpV0ydzLBKnmwkaiYV51JE+3P/Ts0jtHdzQjC13SJyXGsKr6NFAHyHhOhxGpzExA1jiShR8p94DRtVCdcOX7XBP6bc7dSqQeiDkH8VKQL4Zwfi/Mk5qrWl/wNYQ0NIxDdGzPtIgJCClgD8u0BF/jAdYaAVOURavqEXr/VJTQ==
+X-MS-Exchange-AntiSpam-MessageData: 9TNtIDrkmZckdNbq2OQuWeFawme3MLgeWbu/LTuMojBWsZbzIyrfBjyse+O+LPFxxjRYMyNJDuNOOW6N7GMjlODxV3wOVkkPnjOqE+H6ne3GP4yDuBZ4UU5zOGcjOWxragzpIFJ1JmgLXaz1k3FjIA==
 X-OriginatorOrg: hotmail.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d832b206-5f14-44e6-26ce-08d8eb0b255e
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 19:13:58.2946 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69493a0a-33d2-48ce-0018-08d8eb0b2376
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 19:13:55.5232 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT062.eop-nam12.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8NAM12HT152
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8NAM12HT048
 Cc: broonie@kernel.org, heiko@sntech.de, pierre-louis.bossart@linux.intel.com,
  Chris Morgan <macromorgan@hotmail.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -154,80 +135,227 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Create dt-binding documentation to document rk817 codec.
+Add rk817 codec support cell to rk808 mfd driver.
+
+Changes from v4:
+Move register definitions from rk817_codec.h to main rk808.h register
+definitions.
+Add volatile register for codec bits.
+Add default values for codec bits.
+Removed of_compatible.
 
 Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
 ---
- .../bindings/sound/rockchip,rk817-codec.yaml  | 60 +++++++++++++++++++
- 1 file changed, 60 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml
+ drivers/mfd/rk808.c       | 89 +++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/rk808.h | 81 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 170 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml b/Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml
-new file mode 100644
-index 000000000000..845886e2fdf4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml
-@@ -0,0 +1,60 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/rockchip-rk817.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/mfd/rk808.c b/drivers/mfd/rk808.c
+index ad923dd4e007..b92f4c6f503e 100644
+--- a/drivers/mfd/rk808.c
++++ b/drivers/mfd/rk808.c
+@@ -65,6 +65,9 @@ static bool rk817_is_volatile_reg(struct device *dev, unsigned int reg)
+ 	switch (reg) {
+ 	case RK817_SECONDS_REG ... RK817_WEEKS_REG:
+ 	case RK817_RTC_STATUS_REG:
++#ifdef CONFIG_SND_SOC_RK817
++	case RK817_CODEC_DTOP_LPT_SRST:
++#endif
+ 	case RK817_INT_STS_REG0:
+ 	case RK817_INT_STS_REG1:
+ 	case RK817_INT_STS_REG2:
+@@ -163,6 +166,11 @@ static const struct mfd_cell rk817s[] = {
+ 		.num_resources = ARRAY_SIZE(rk817_rtc_resources),
+ 		.resources = &rk817_rtc_resources[0],
+ 	},
++#ifdef CONFIG_SND_SOC_RK817
++	{
++		.name = "rk817-codec",
++	},
++#endif
+ };
+ 
+ static const struct mfd_cell rk818s[] = {
+@@ -201,6 +209,87 @@ static const struct rk808_reg_data rk808_pre_init_reg[] = {
+ 
+ static const struct rk808_reg_data rk817_pre_init_reg[] = {
+ 	{RK817_RTC_CTRL_REG, RTC_STOP, RTC_STOP},
++#ifdef CONFIG_SND_SOC_RK817
++	/* Codec specific registers */
++	{ RK817_CODEC_DTOP_VUCTL, MASK_ALL, 0x03 },
++	{ RK817_CODEC_DTOP_VUCTIME, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DTOP_LPT_SRST, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DTOP_DIGEN_CLKE, MASK_ALL, 0x00 },
++	/* from vendor driver, CODEC_AREF_RTCFG0 not defined in data sheet */
++	{ RK817_CODEC_AREF_RTCFG0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_AREF_RTCFG1, MASK_ALL, 0x06 },
++	{ RK817_CODEC_AADC_CFG0, MASK_ALL, 0xc8 },
++	/* from vendor driver, CODEC_AADC_CFG1 not defined in data sheet */
++	{ RK817_CODEC_AADC_CFG1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_VOLL, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_VOLR, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_SR_ACL0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_ALC1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_ALC2, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_NG, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_HPF, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DADC_RVOLL, MASK_ALL, 0xff },
++	{ RK817_CODEC_DADC_RVOLR, MASK_ALL, 0xff },
++	{ RK817_CODEC_AMIC_CFG0, MASK_ALL, 0x70 },
++	{ RK817_CODEC_AMIC_CFG1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_PGA_GAIN, MASK_ALL, 0x66 },
++	{ RK817_CODEC_DMIC_LMT1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_LMT2, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_NG1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_NG2, MASK_ALL, 0x00 },
++	/* from vendor driver, CODEC_ADAC_CFG0 not defined in data sheet */
++	{ RK817_CODEC_ADAC_CFG0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_ADAC_CFG1, MASK_ALL, 0x07 },
++	{ RK817_CODEC_DDAC_POPD_DACST, MASK_ALL, 0x82 },
++	{ RK817_CODEC_DDAC_VOLL, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_VOLR, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_SR_LMT0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_LMT1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_LMT2, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_MUTE_MIXCTL, MASK_ALL, 0xa0 },
++	{ RK817_CODEC_DDAC_RVOLL, MASK_ALL, 0xff },
++	{ RK817_CODEC_DADC_RVOLR, MASK_ALL, 0xff },
++	{ RK817_CODEC_AMIC_CFG0, MASK_ALL, 0x70 },
++	{ RK817_CODEC_AMIC_CFG1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_PGA_GAIN, MASK_ALL, 0x66 },
++	{ RK817_CODEC_DMIC_LMT1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_LMT2, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_NG1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DMIC_NG2, MASK_ALL, 0x00 },
++	/* from vendor driver, CODEC_ADAC_CFG0 not defined in data sheet */
++	{ RK817_CODEC_ADAC_CFG0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_ADAC_CFG1, MASK_ALL, 0x07 },
++	{ RK817_CODEC_DDAC_POPD_DACST, MASK_ALL, 0x82 },
++	{ RK817_CODEC_DDAC_VOLL, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_VOLR, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_SR_LMT0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_LMT1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_LMT2, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DDAC_MUTE_MIXCTL, MASK_ALL, 0xa0 },
++	{ RK817_CODEC_DDAC_RVOLL, MASK_ALL, 0xff },
++	{ RK817_CODEC_DDAC_RVOLR, MASK_ALL, 0xff },
++	{ RK817_CODEC_AHP_ANTI0, MASK_ALL, 0x00 },
++	{ RK817_CODEC_AHP_ANTI1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_AHP_CFG0, MASK_ALL, 0xe0 },
++	{ RK817_CODEC_AHP_CFG1, MASK_ALL, 0x1f },
++	{ RK817_CODEC_AHP_CP, MASK_ALL, 0x09 },
++	{ RK817_CODEC_ACLASSD_CFG1, MASK_ALL, 0x69 },
++	{ RK817_CODEC_ACLASSD_CFG2, MASK_ALL, 0x44 },
++	{ RK817_CODEC_APLL_CFG0, MASK_ALL, 0x04 },
++	{ RK817_CODEC_APLL_CFG1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_APLL_CFG2, MASK_ALL, 0x30 },
++	{ RK817_CODEC_APLL_CFG3, MASK_ALL, 0x19 },
++	{ RK817_CODEC_APLL_CFG4, MASK_ALL, 0x65 },
++	{ RK817_CODEC_APLL_CFG5, MASK_ALL, 0x01 },
++	{ RK817_CODEC_DI2S_CKM, MASK_ALL, 0x01 },
++	{ RK817_CODEC_DI2S_RSD, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DI2S_RXCR1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DI2S_RXCR2, MASK_ALL, 0x17 },
++	{ RK817_CODEC_DI2S_RXCMD_TSD, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DI2S_TXCR1, MASK_ALL, 0x00 },
++	{ RK817_CODEC_DI2S_TXCR2, MASK_ALL, 0x17 },
++	{ RK817_CODEC_DI2S_TXCR3_TXCMD, MASK_ALL, 0x00 },
++#endif
+ 	{RK817_GPIO_INT_CFG, RK817_INT_POL_MSK, RK817_INT_POL_L},
+ 	{RK817_SYS_CFG(1), RK817_HOTDIE_TEMP_MSK | RK817_TSD_TEMP_MSK,
+ 					   RK817_HOTDIE_105 | RK817_TSD_140},
+diff --git a/include/linux/mfd/rk808.h b/include/linux/mfd/rk808.h
+index e07f6e61cd38..a96e6d43ca06 100644
+--- a/include/linux/mfd/rk808.h
++++ b/include/linux/mfd/rk808.h
+@@ -437,6 +437,87 @@ enum rk809_reg_id {
+ #define RK817_RTC_COMP_LSB_REG		0x10
+ #define RK817_RTC_COMP_MSB_REG		0x11
+ 
++/* RK817 Codec Registers */
++#define RK817_CODEC_DTOP_VUCTL		0x12
++#define RK817_CODEC_DTOP_VUCTIME	0x13
++#define RK817_CODEC_DTOP_LPT_SRST	0x14
++#define RK817_CODEC_DTOP_DIGEN_CLKE	0x15
++#define RK817_CODEC_AREF_RTCFG0		0x16
++#define RK817_CODEC_AREF_RTCFG1		0x17
++#define RK817_CODEC_AADC_CFG0		0x18
++#define RK817_CODEC_AADC_CFG1		0x19
++#define RK817_CODEC_DADC_VOLL		0x1a
++#define RK817_CODEC_DADC_VOLR		0x1b
++#define RK817_CODEC_DADC_SR_ACL0	0x1e
++#define RK817_CODEC_DADC_ALC1		0x1f
++#define RK817_CODEC_DADC_ALC2		0x20
++#define RK817_CODEC_DADC_NG		0x21
++#define RK817_CODEC_DADC_HPF		0x22
++#define RK817_CODEC_DADC_RVOLL		0x23
++#define RK817_CODEC_DADC_RVOLR		0x24
++#define RK817_CODEC_AMIC_CFG0		0x27
++#define RK817_CODEC_AMIC_CFG1		0x28
++#define RK817_CODEC_DMIC_PGA_GAIN	0x29
++#define RK817_CODEC_DMIC_LMT1		0x2a
++#define RK817_CODEC_DMIC_LMT2		0x2b
++#define RK817_CODEC_DMIC_NG1		0x2c
++#define RK817_CODEC_DMIC_NG2		0x2d
++#define RK817_CODEC_ADAC_CFG0		0x2e
++#define RK817_CODEC_ADAC_CFG1		0x2f
++#define RK817_CODEC_DDAC_POPD_DACST	0x30
++#define RK817_CODEC_DDAC_VOLL		0x31
++#define RK817_CODEC_DDAC_VOLR		0x32
++#define RK817_CODEC_DDAC_SR_LMT0	0x35
++#define RK817_CODEC_DDAC_LMT1		0x36
++#define RK817_CODEC_DDAC_LMT2		0x37
++#define RK817_CODEC_DDAC_MUTE_MIXCTL	0x38
++#define RK817_CODEC_DDAC_RVOLL		0x39
++#define RK817_CODEC_DDAC_RVOLR		0x3a
++#define RK817_CODEC_AHP_ANTI0		0x3b
++#define RK817_CODEC_AHP_ANTI1		0x3c
++#define RK817_CODEC_AHP_CFG0		0x3d
++#define RK817_CODEC_AHP_CFG1		0x3e
++#define RK817_CODEC_AHP_CP		0x3f
++#define RK817_CODEC_ACLASSD_CFG1	0x40
++#define RK817_CODEC_ACLASSD_CFG2	0x41
++#define RK817_CODEC_APLL_CFG0		0x42
++#define RK817_CODEC_APLL_CFG1		0x43
++#define RK817_CODEC_APLL_CFG2		0x44
++#define RK817_CODEC_APLL_CFG3		0x45
++#define RK817_CODEC_APLL_CFG4		0x46
++#define RK817_CODEC_APLL_CFG5		0x47
++#define RK817_CODEC_DI2S_CKM		0x48
++#define RK817_CODEC_DI2S_RSD		0x49
++#define RK817_CODEC_DI2S_RXCR1		0x4a
++#define RK817_CODEC_DI2S_RXCR2		0x4b
++#define RK817_CODEC_DI2S_RXCMD_TSD	0x4c
++#define RK817_CODEC_DI2S_TXCR1		0x4d
++#define RK817_CODEC_DI2S_TXCR2		0x4e
++#define RK817_CODEC_DI2S_TXCR3_TXCMD	0x4f
 +
-+title: Rockchip rk817 audio codec
++/* RK817_CODEC_DI2S_CKM */
++#define RK817_I2S_MODE_MASK		(0x1 << 0)
++#define RK817_I2S_MODE_MST		(0x1 << 0)
++#define RK817_I2S_MODE_SLV		(0x0 << 0)
 +
-+description:
-+  The rk817 codec is an I2C codec integrated with every Rockchip
-+  rk817 PMIC MFD.
++/* RK817_CODEC_DDAC_MUTE_MIXCTL */
++#define DACMT_MASK			(0x1 << 0)
++#define DACMT_ENABLE			(0x1 << 0)
++#define DACMT_DISABLE			(0x0 << 0)
 +
-+properties:
-+  compatible:
-+    enum:
-+      - rockchip,rk817-codec
++/* RK817_CODEC_DI2S_RXCR2 */
++#define VDW_RX_24BITS			(0x17)
++#define VDW_RX_16BITS			(0x0f)
 +
-+  "#sound-dai-cells":
-+    const: 1
++/* RK817_CODEC_DI2S_TXCR2 */
++#define VDW_TX_24BITS			(0x17)
++#define VDW_TX_16BITS			(0x0f)
 +
-+  clocks:
-+    maxItems: 1
++/* RK817_CODEC_AMIC_CFG0 */
++#define MIC_DIFF_MASK			(0x1 << 7)
++#define MIC_DIFF_DIS			(0x0 << 7)
++#define MIC_DIFF_EN			(0x1 << 7)
 +
-+  clock-names:
-+    const: "mclk"
-+
-+  mic-in-differential:
-+    description: the microphone is in differential mode.
-+    $ref: /schemas/types.yaml#/definitions/flag
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+rk817: pmic@20 {
-+	compatible = "rockchip,rk817";
-+	reg = <0x20>;
-+	interrupt-parent = <&gpio0>;
-+	interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pmic_int>, <&i2s_8ch_mclk>;
-+	#sound-dai-cells = <0>;
-+	clocks = <&cru SCLK_I2S_8CH_OUT>;
-+	clock-names = "mclk";
-+
-+	........
-+
-+	rk817_codec: codec {
-+			mic-in-differential;
-+			status = "okay";
-+	};
-+
-+	........
-+
-+};
+ #define RK817_POWER_EN_REG(i)		(0xb1 + (i))
+ #define RK817_POWER_SLP_EN_REG(i)	(0xb5 + (i))
+ 
 -- 
 2.25.1
 
