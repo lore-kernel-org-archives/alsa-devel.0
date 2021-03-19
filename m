@@ -2,66 +2,66 @@ Return-Path: <SRS0=UTIM=IR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,PDS_TONAME_EQ_TOLOCAL_SHORT,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 792A4C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 10:10:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95EB4C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 10:18:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 42B6B64E3F
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 10:10:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42B6B64E3F
+	by mail.kernel.org (Postfix) with ESMTPS id 4ABE064EEE
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 10:18:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4ABE064EEE
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 829201676;
-	Fri, 19 Mar 2021 11:09:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 829201676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12A4F167C;
+	Fri, 19 Mar 2021 11:18:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12A4F167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616148644;
-	bh=BfEdKB4jlk7oaKqc0gKnn2hiK6sqcvEMUrfrrB7rRRI=;
+	s=default; t=1616149136;
+	bh=HiTF9tiXLqbR+NANyDrpnqsO3kAxugSVTXXXHAT5k1w=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e/zXd0HWYPtyuAbe6j63DMxPU5OST9wfCw3WHg6ROvHIIMDrIRWnVEpVyhq+ocwnX
-	 A8s23cE9JFQrrTTB56fsg6maa2rvtIH7vsmF+DKwVGk0TfUSgKyIHigTI86lQwlnCj
-	 KNbjiSPr8Jp/SbREeFQkaWQ8kxBGzFkBUfsBPXn4=
+	b=VwLYeMsT1jdBZPjgp9OooXAjXJLFwMdWpW3ggxishNedRogRsdW0TZCAehPmqZ+nN
+	 +WOb+IfRqroQvz+4LKtQqZjmqWeseclrUo3rk55MH0ezGDXUQPEQK/iVfrJnHyTNEV
+	 TBk4Sjhp7Z6RkJxit8ieGf9xhpcRd4fBCuqHm7F8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14C96F801F7;
-	Fri, 19 Mar 2021 11:09:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 712A6F801F7;
+	Fri, 19 Mar 2021 11:18:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F525F8021C; Fri, 19 Mar 2021 11:09:52 +0100 (CET)
+ id B764CF8021C; Fri, 19 Mar 2021 11:18:03 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3119BF80124
- for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 11:09:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3119BF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4812AF80124
+ for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 11:17:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4812AF80124
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 578CFACC6;
- Fri, 19 Mar 2021 10:09:40 +0000 (UTC)
-Date: Fri, 19 Mar 2021 11:09:39 +0100
-Message-ID: <s5hmtuzfo9o.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id D484BAC2E;
+ Fri, 19 Mar 2021 10:17:55 +0000 (UTC)
+Date: Fri, 19 Mar 2021 11:17:55 +0100
+Message-ID: <s5hlfajfnvw.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: huangjianghui <huangjianghui@uniontech.com>
-Subject: Re: [PATCH] ALSA: hda: Fix spelling mistakes
-In-Reply-To: <20210319013854.48830-1-huangjianghui@uniontech.com>
-References: <20210319013854.48830-1-huangjianghui@uniontech.com>
+To: Hui Wang <hui.wang@canonical.com>
+Subject: Re: [PATCH v2 2/2] ALSA: hda/realtek: call alc_update_headset_mode()
+ in hp_automute_hook
+In-Reply-To: <20210319075903.6480-2-hui.wang@canonical.com>
+References: <20210319075903.6480-1-hui.wang@canonical.com>
+ <20210319075903.6480-2-hui.wang@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- linux-kernel@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
- Takashi Iwai <tiwai@suse.com>, Mohan Kumar <mkumard@nvidia.com>
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,12 +77,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Mar 2021 02:38:54 +0100,
-huangjianghui wrote:
+On Fri, 19 Mar 2021 08:59:03 +0100,
+Hui Wang wrote:
 > 
-> Signed-off-by: huangjianghui <huangjianghui@uniontech.com>
+> We found the alc_update_headset_mode() is not called on some machines
+> when unplugging the headset, as a result, the mode of the
+> ALC_HEADSET_MODE_UNPLUGGED can't be set, then the current_headset_type
+> is not cleared, if users plug a differnt type of headset next time,
+> the determine_headset_type() will not be called and the audio jack is
+> set to the headset type of previous time.
+> 
+> On the Dell machines which connect the dmic to the PCH, if we open
+> the gnome-sound-setting and unplug the headset, this issue will
+> happen. Those machines disable the auto-mute by ucm and has no
+> internal mic in the input source, so the update_headset_mode() will
+> not be called by cap_sync_hook or automute_hook when unplugging, and
+> because the gnome-sound-setting is opened, the codec will not enter
+> the runtime_suspend state, so the update_headset_mode() will not be
+> called by alc_resume when unplugging. In this case the
+> hp_automute_hook is called when unplugging, so add
+> update_headset_mode() calling to this function.
+> 
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> ---
+>  sound/pci/hda/patch_realtek.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 442e555de44c..c928704da20b 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -5447,6 +5447,7 @@ static void alc_update_headset_jack_cb(struct hda_codec *codec,
+>  				       struct hda_jack_callback *jack)
+>  {
+>  	snd_hda_gen_hp_automute(codec, jack);
+> +	alc_update_headset_mode(codec);
+>  }
 
-Thanks, applied.
+This change was described in the above, but ...
 
+>  
+>  static void alc_probe_headset_mode(struct hda_codec *codec)
+> @@ -5559,7 +5560,7 @@ static void alc288_update_headset_jack_cb(struct hda_codec *codec,
+>  {
+>  	struct alc_spec *spec = codec->spec;
+>  
+> -	alc_update_headset_jack_cb(codec, jack);
+> +	snd_hda_gen_hp_automute(codec, jack);
+>  	/* Headset Mic enable or disable, only for Dell Dino */
+>  	alc_update_gpio_data(codec, 0x40, spec->gen.hp_jack_present);
+
+This change isn't clear why it's needed from the description.
+Does it man that only ALC288 shouldn't call alc_update_headset_mode()
+by some reason?
+
+
+thanks,
 
 Takashi
