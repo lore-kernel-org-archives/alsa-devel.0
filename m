@@ -2,79 +2,143 @@ Return-Path: <SRS0=UTIM=IR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-14.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FORGED_HOTMAIL_RCVD2,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16BFAC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 18:12:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 578AEC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:15:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8879661954
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 18:12:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8879661954
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
+	by mail.kernel.org (Postfix) with ESMTPS id AA1716197A
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 19:15:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA1716197A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=hotmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 338741676;
-	Fri, 19 Mar 2021 19:11:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 338741676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CCE41675;
+	Fri, 19 Mar 2021 20:14:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CCE41675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616177552;
-	bh=Ocsc8BZ25Ib3RG1yUV+GWtusdsaiM4vGTciw88pDbpc=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1616181309;
+	bh=XZYjb6QL+4pM8ZA9ca+Lq5CIeW+qjVc8y7Yo4tJKPLY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t7sKBZqATW6t+SOW0vFN8OWggfIMQVNs6/A7UbPgg+M9NbtI7sTt2vjaFi0FeKPQV
-	 AUUgiHVduulpqusKnb9qHxGUd72F+u2GCko95ybquzd5fKZHXXmvV7HIxLvMClAdru
-	 gF+yaLaTFo7+JExNeCoUimdPmBuU1f0Xki7WaQgo=
+	b=gJ2YrPaWGRIJEVlPMTEpupH1jlEeN1wpqSCL4nBn+EhnjOMHeKgFrXKDmPeQU6eUe
+	 qL+zGTeCP3lDHAK0roWJ0oUzNIeYp8A4XjKaL4UNzi9xsGA6u/BoiPffMht32XP+ZY
+	 wU7YQt0A38kZxt2oMoKAmyqvmu/JTqjkfspC2U8k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D539F801F7;
-	Fri, 19 Mar 2021 19:11:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61310F8023C;
+	Fri, 19 Mar 2021 20:14:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD07FF8021C; Fri, 19 Mar 2021 19:11:40 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CB18CF8023C; Fri, 19 Mar 2021 20:14:15 +0100 (CET)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12olkn2100.outbound.protection.outlook.com [40.92.21.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51A12F80124
- for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 19:11:32 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 069DBA003F;
- Fri, 19 Mar 2021 19:11:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 069DBA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1616177492; bh=C7iyN8k86TZMDc8qtgZ4qdQmUe9RUpP9eCva1jyw7QI=;
- h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
- b=BLaR6I/Eog9VyCa1yVVOic/TuUiZ0pGKiuXEUJdpEQsdAE6w/UfYFIqIZQjf5rQet
- 7v4KPIv3UHbBKdt9JnjpchmrpCOEhNH2an2y0gsBCctARUxlVsGWN7MlcgdTwErh65
- wjaKf+6ZUdHRasfv/+Tpd/a3FcvXZJ7Nkc6Hezik=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 19 Mar 2021 19:11:28 +0100 (CET)
-Subject: Re: [PATCH v4 6/6] ALSA: led control - add sysfs kcontrol LED marking
- layer
-To: Hans de Goede <hdegoede@redhat.com>,
- ALSA development <alsa-devel@alsa-project.org>
-References: <20210317172945.842280-1-perex@perex.cz>
- <20210317172945.842280-7-perex@perex.cz>
- <a3ddb881-6580-cd25-ef3c-734e686e6942@redhat.com>
-From: Jaroslav Kysela <perex@perex.cz>
-Message-ID: <ba480ab5-80b7-d911-052b-53b1e8d43695@perex.cz>
-Date: Fri, 19 Mar 2021 19:11:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BF48F80124
+ for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 20:14:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BF48F80124
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com
+ header.b="LgUI1kRz"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nFU5KON7XckPXQ/zPIoveUFE5XKWMU9nI67U479W3vH8KLm7i8TNlW+W8JsV+ZH4udJHO+3zlSoVreUNu22+muNzPiNucxFZgLJ3LvfEkSsjSjCkcfE3iEqBA1m+ehr+FDB4ryPseKrfzUoU/ZjrnEs9jVevIqSz6J3uv/ihjllDUUpdlVsAcy0eGGdhKRuLfg86/7dbinQJdL5mxpzphjUeRcQW+1E18dOuCAwYUBB4JSbgow1DAvcBNw9gLzwMLKhMywcNnm1cUDCTUDHgsWaBtEez2FOlN2o4lpicu6HdmcwomQ1xNXfppjktrjrsgd6XveSOcWX/Rv+NfFQNUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xF+i1am0mqGlM4sD1vKDBc5dgMNmfc7h7SdCjtsPQl0=;
+ b=EZWFCRRWcHh5WQr3IbXuz4W/+ibQPUDksd/MljYYLwsuQGQny9Taw5rF4RYOGV25oZExStA+RQ0Twi4B1r/t7ujYv9rUIrdkLJk4/qyqh7MqJ17OB7kDeuOYGXGf1tFDSc4zqt/Cx3TtQAbvBYOvc3O23ODnL5JFEzki/B7+HS3hEanuvNjUPAJQ0KyYvDwoVYy7q8XnQn84DSFVuSPcuj1fn8EaTA647NX3sITTy9iuj+2aFeHoMMoKw4f4Rc1pW52W9TkhrULXeALYvPtqP6Fqh4VwyHjao38uxnAxA7jwa32HRzrSmWzR/mGSF/p49F87kWR4VlOnlCDuwBwNrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xF+i1am0mqGlM4sD1vKDBc5dgMNmfc7h7SdCjtsPQl0=;
+ b=LgUI1kRzOHF7dubTzyMO8xI19tbH/vJqXk3tO5JVbN3g6+R9oqmx/DKf3gaiQMWJOpLRaukLooGUkPABJtxvOZPs2liO0kWMycva4K35bfQkCQQXgWGsIYFGNelIvk7dycJcQ4un17CoElX46poiJbest99GBXTjccA0U+937p6o7/JP5DJ3wxtpGe+lm77eT+yz86XGOrwVl/d71j51RaZT7+UHXtN4huseFWP7Iy3PUMNOWjuuiR4yL4Q+8gUet7XryTaymjupg5A3DsRIfgZYJd5PKSU//WZLZOK94ZbC1bY3LTglCjCsCTlPdkdLeW3sqsghR9BsAQ2vGymjZQ==
+Received: from BN8NAM12FT062.eop-nam12.prod.protection.outlook.com
+ (2a01:111:e400:fc66::50) by
+ BN8NAM12HT152.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc66::438)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9; Fri, 19 Mar
+ 2021 19:13:58 +0000
+Received: from SN6PR06MB5342.namprd06.prod.outlook.com
+ (2a01:111:e400:fc66::53) by BN8NAM12FT062.mail.protection.outlook.com
+ (2a01:111:e400:fc66::321) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.9 via Frontend
+ Transport; Fri, 19 Mar 2021 19:13:58 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:578469A77F0D4F4470BFB324BF7A2416D627D4ABDB06C6A57F7F803C971CFD54;
+ UpperCasedChecksum:0D9005D7321A0F95E4C525492FBC6DFEEB1CE35D420D923829973328AA91334B;
+ SizeAsReceived:7531; Count:47
+Received: from SN6PR06MB5342.namprd06.prod.outlook.com
+ ([fe80::fc38:a692:c2c8:f63e]) by SN6PR06MB5342.namprd06.prod.outlook.com
+ ([fe80::fc38:a692:c2c8:f63e%7]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
+ 19:13:58 +0000
+From: Chris Morgan <macromorgan@hotmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v5 3/4] dt-bindings: Add Rockchip rk817 audio CODEC support
+Date: Fri, 19 Mar 2021 14:13:36 -0500
+Message-ID: <SN6PR06MB5342F6C37745ECEDFBFBE978A5689@SN6PR06MB5342.namprd06.prod.outlook.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210319191337.9414-1-macromorgan@hotmail.com>
+References: <20210319191337.9414-1-macromorgan@hotmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [a8KuAtJ1LvODWzTNSnGxhtlDcN+dSRju]
+X-ClientProxiedBy: SN1PR12CA0044.namprd12.prod.outlook.com
+ (2603:10b6:802:20::15) To SN6PR06MB5342.namprd06.prod.outlook.com
+ (2603:10b6:805:f9::31)
+X-Microsoft-Original-Message-ID: <20210319191337.9414-3-macromorgan@hotmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a3ddb881-6580-cd25-ef3c-734e686e6942@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from wintermute.localdomain (76.183.134.35) by
+ SN1PR12CA0044.namprd12.prod.outlook.com (2603:10b6:802:20::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 19:13:57 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 47
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: d832b206-5f14-44e6-26ce-08d8eb0b255e
+X-MS-Exchange-SLBlob-MailProps: =?us-ascii?Q?FxEr8kVTuhr9YqQ01nJa/znbAevm76fKv6GkSNc/dX4T6XfKUS8OmlGfsH7A?=
+ =?us-ascii?Q?1uGskvPs+fg9+YmR79fy153AUMfetEjU5uAUNg+7p7/ojpvgWs/p+NqhyTSf?=
+ =?us-ascii?Q?IvETKUFqQGd133SAu3NzRnMRbDTehhB0m7x5CApO4IYi4niTW2gB5DztEu8f?=
+ =?us-ascii?Q?KAg6JdULiA8yNu2g3zAgFtS+UHUrRck4F81Z8gQxJt9fdF3DKwF3DKhWXsC6?=
+ =?us-ascii?Q?iI8b0tChb18dv+dDqhOmaRSDv4hKgmNa9RmdCeWMV5vHrHAHggPeh5XCXjgi?=
+ =?us-ascii?Q?9pU++TrmsuktSRLWWsEwh5m/H6+dXPHx8SzxMmvR5PG/DdAL+Gl4Bym+eLE9?=
+ =?us-ascii?Q?tHheZ+WzinGYo5CV3Hh+7Ag70ktqDVzll2PqA6miEDVLj32/OHb1U0COri+C?=
+ =?us-ascii?Q?+l/5+Y171iuoXvxbOfZDID0C/Uj8vuDv0+nXVCWBp/hh6ZEXfZuO6CqxuYKF?=
+ =?us-ascii?Q?8AefQZu0mWVW2zWKbVA6HBFgrnnnF7EVaM6Ijm3/zRELS37VbWhVeTIyuCjq?=
+ =?us-ascii?Q?ulz81YGMtoa7btCMFwxfPZ0TX2gfCkoStlUvyE600QzWMQ63hcIQ9RkzPCOt?=
+ =?us-ascii?Q?PYbiC6jD+JEyaZs4V/n4WC2/h5Uj326LL6gZlBQ4kJhfuIqO/M7r1sRB9013?=
+ =?us-ascii?Q?vzKarCQmhtAabx76kJeSz2u1+94tVZIyoy1Mk2/OAOeQ5kulQ+OYbkS4xqRZ?=
+ =?us-ascii?Q?JifFXSlwVNqi1cKzqpRGf0qXAvqlszI6ao+oMJI6+ZaYh+OTRUk80fYB/gdg?=
+ =?us-ascii?Q?4SiYnIP8R6YxQmXT36MSU5CCmE23CaI5KawpB4tnE9VQRv9HgXCG9VDJG6MR?=
+ =?us-ascii?Q?CiEgj6xEqpoG6cqC5LXiM5f7qXG47Jt3ovPl4GVWaAVKfIUxaNb1DCs4JAfA?=
+ =?us-ascii?Q?5xSqc3WCtNBH6wBIsyvZerL+OHWlCW0bnwsOERlEjWngxIx0y2T/U3HiYC04?=
+ =?us-ascii?Q?5M+mHedr9pClvoEJMD0PApHKNl0C+Nppr1aoE93P+Scqx9v9CZb02lHtmfaR?=
+ =?us-ascii?Q?HdvlROUM4ra9ZaaJWetcuEcFQAgueu3zVG4H?=
+X-MS-TrafficTypeDiagnostic: BN8NAM12HT152:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xovgymdYR8JYNXOzacXz2BtSFS/MxrVJZkZMC0bjwFdzRHCIOr4h+OxMznCMZvmCZuzb5kCmMEXFsRbhTIhJcyhuUrRVtBuRoZfXkRQOEoh1K9F3OdPfQH5FC13tTy1CC6u2lcUEkkpce/glI9l6GaJomgWGgjuR0Ldt1gLbpsI5RIMYBKnbcr+ie8czAsRAVGliR03zxtqSkaZ4JYrKUpo1ObGgIkXP4nxcoXpC76oxX7ZjoPHc6lXmv7ZhnfEch+Apuk2lVrdHTjDJFws/cTvzccwgh35+TXUCX7BKZl4nusQZUhU/OsZvGsAWiTdNlRJ3dYxs0tZxE8bsAWT8j9H1pZ3WQwIzC4HNrwAovBtEoeeh2zJM6EXEXRMNmyGUZAwZSIN7jdbNost5P4ihuAuIHS0U50WzE8SMkLdyC3g=
+X-MS-Exchange-AntiSpam-MessageData: TTYJ69W3pofw0QwHBF+xKPYqpkB6f/qjbtc43EIM6u8afhR0e3tlu4kQMKYKbkRg1JgzHmrMszFxmqS4PbOv1ZTh9+kpAdEUWjwTYgZiM4DTurbvN9XeAXOpcioFPAyl2MNzu1MyeP/fgxjHpHUcAw==
+X-OriginatorOrg: hotmail.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d832b206-5f14-44e6-26ce-08d8eb0b255e
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 19:13:58.2946 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT062.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8NAM12HT152
+Cc: broonie@kernel.org, heiko@sntech.de, pierre-louis.bossart@linux.intel.com,
+ Chris Morgan <macromorgan@hotmail.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,69 +154,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dne 19. 03. 21 v 17:34 Hans de Goede napsal(a):
-> Hi,
-> 
-> On 3/17/21 6:29 PM, Jaroslav Kysela wrote:
->> We need to manage the kcontrol entries association for the LED trigger
->> from the user space. This patch adds a layer to the sysfs tree like:
->>
->> /sys/devices/virtual/sound/ctl-led/mic
->>    + card0
->>    |  + attach
->>    |  + detach
->>    |  ...
->>    + card1
->>       + attach
->>       ...
->>
->> Operations:
->>
->>   attach and detach
->>     - amixer style ID is accepted and easy strings for numid and
->>       simple names
->>   reset
->>     - reset all associated kcontrol entries
->>   list
->>     - list associated kcontrol entries (numid values only)
->>
->> Additional symlinks:
->>
->> /sys/devices/virtual/sound/ctl-led/mic/card0/card ->
->>   /sys/class/sound/card0
->>
->> /sys/class/sound/card0/controlC0/led-mic ->
->>   /sys/devices/virtual/sound/ctl-led/mic/card0
->>
->> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> 
-> Thank you so much for this patch.
-> 
-> I've given this new version a try, dropping my sound/soc/codecs/rt56??.c patches to set the access-flags directly.
-> 
-> And with these 3 lines in /etc/rc.d/rc.local I get nicely working control of the mute
-> LED build into the (detachable) USB-keyboard's mute hot-key:
-> 
-> modprobe snd_ctl_led
-> echo -n name="Speaker Channel Switch" > /sys/class/sound/card1/controlC1/led-speaker/attach
-> echo -n name="HP Channel Switch" > /sys/class/sound/card1/controlC1/led-speaker/attach
-> 
-> This needs to be replaced by some UCM profile code doing the equivalent of course,
-> but for a proof-of-concept test of the kernel API this introduces the above will do.
+Create dt-binding documentation to document rk817 codec.
 
-I added already the FixedBootSequence support to alsa-lib and alsactl and the "sysset" sequence command. But looking to this command now, it may be better to rename it to "sysw" ("double s" does not look so great).
+Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+---
+ .../bindings/sound/rockchip,rk817-codec.yaml  | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml
 
-> Only complaint which I have is the need to add "-n" to the echo commands,
-> it would be nice if set_led_id() would check if the copy which it stores in buf2
-> ends with "\n" and if it does if it would then strip that from the copy in buf2.
-
-Yes, I will fix that. It's possible to use the shorter string:
-
-echo "Speaker Channel Switch" > /sys/class/sound/card1/controlC1/led-speaker/attach
-
-
-				Jaroslav
-
+diff --git a/Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml b/Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml
+new file mode 100644
+index 000000000000..845886e2fdf4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rockchip,rk817-codec.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/rockchip-rk817.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip rk817 audio codec
++
++description:
++  The rk817 codec is an I2C codec integrated with every Rockchip
++  rk817 PMIC MFD.
++
++properties:
++  compatible:
++    enum:
++      - rockchip,rk817-codec
++
++  "#sound-dai-cells":
++    const: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: "mclk"
++
++  mic-in-differential:
++    description: the microphone is in differential mode.
++    $ref: /schemas/types.yaml#/definitions/flag
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++rk817: pmic@20 {
++	compatible = "rockchip,rk817";
++	reg = <0x20>;
++	interrupt-parent = <&gpio0>;
++	interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pmic_int>, <&i2s_8ch_mclk>;
++	#sound-dai-cells = <0>;
++	clocks = <&cru SCLK_I2S_8CH_OUT>;
++	clock-names = "mclk";
++
++	........
++
++	rk817_codec: codec {
++			mic-in-differential;
++			status = "okay";
++	};
++
++	........
++
++};
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.25.1
+
