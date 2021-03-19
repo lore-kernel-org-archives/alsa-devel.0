@@ -2,77 +2,77 @@ Return-Path: <SRS0=UTIM=IR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CA39C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 16:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CC9BC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 16:59:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CEA2661933
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 16:39:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEA2661933
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 6845861955
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Mar 2021 16:59:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6845861955
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FD0E1698;
-	Fri, 19 Mar 2021 17:38:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FD0E1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 207841678;
+	Fri, 19 Mar 2021 17:58:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 207841678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616171945;
-	bh=3A9Mrcmk8A9XWLKK6rVjytA8qsYQ+enej5Jso7g9Hts=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616173163;
+	bh=SnGX5SW+9DTm9fOc+muHWNYT0I25LaRiz85xek/qVrQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fiaamMHIWbLphJkXlf42Peh3sKje+fmrvIrTKRaJW7YWLxwiySSwVmRB0SfP4exax
-	 BG4lUN+Q2NmfG1Kac/yuVu3FsQCxH9JcwJgtxKFmk0CMwfgWzPSws2rDOuWV3yXliS
-	 cM22QQBhcRkTXwEdUgKEPsIHGEOH1B4tsah5iOyg=
+	b=PTWFBBnYNB4MJCDQ7s0KMZ+gtc9jZnKBxmgtmbvYWmppiDlRUbgKOFgmoIIi9d+sz
+	 +kRDC5/RTIrXQNXaYhWO2lwyPror1Arhz8xCGTtbTvh0Fo730AYy085IjqdqaaSDdy
+	 xRPhWrogu/R8LUuyyZWdfY980aMoqr7hdqS2wbEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA2E9F8032B;
-	Fri, 19 Mar 2021 17:37:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ED71F801F7;
+	Fri, 19 Mar 2021 17:58:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF2D9F8032C; Fri, 19 Mar 2021 17:37:27 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3A615F8021C; Fri, 19 Mar 2021 17:58:30 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1193F801F7
- for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 17:37:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1193F801F7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZhQdjEhG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9982E61983;
- Fri, 19 Mar 2021 16:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616171835;
- bh=3A9Mrcmk8A9XWLKK6rVjytA8qsYQ+enej5Jso7g9Hts=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZhQdjEhGW9FyAGjhPqJlZE4KnnlnbSCKMshI+n+FsL0WeYbrpISB+Ybg+SPlDRGqB
- kTVYIPkSi94gZxnzvpYpnrxTScSosNOGGtGsQMAQjXJMnU091num9sM4AuI+VokGlY
- wEiZ1slF8353nO7PYQjaFSlhuIUDUfqvjmTYT1Jt1bbY+ZtdC4ntfGIy4BTWyJY/2p
- 6vpIwcGA9cIDk+zp96nRghYn9jMTnIpWjmT1Ic2zyk7Q36wQABn0TqnQd3yL4aNgsw
- +ZB/o/SYB9h2bRehf2soOFbI2lS55rsg3HujUtoOF4ICyfZs40RuYdSDGiuD3XZLZk
- zc8OPfuQhALoA==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Oder Chiou <oder_chiou@realtek.com>,
- Jaroslav Kysela <perex@perex.cz>, Jack Yu <jack.yu@realtek.com>,
- 'w00385741 <weiyongjun1@huawei.com>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH -next] ASoC: rt1019: make symbol 'rt1019_i2c_driver' static
-Date: Fri, 19 Mar 2021 16:37:05 +0000
-Message-Id: <161617160659.9613.1258918288150245651.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210319094102.4185096-1-weiyongjun1@huawei.com>
-References: <20210319094102.4185096-1-weiyongjun1@huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5E87F800E0
+ for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2021 17:58:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5E87F800E0
+IronPort-SDR: JK0og8+iNDjwmvuvFDhwIUfFgLEVB1R7j2cgBIRiViQ7i6rlo/kmpKSlrAG7tXXR1Z5rEQjB4U
+ HdGa/tBO0NiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9928"; a="190022205"
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; d="scan'208";a="190022205"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Mar 2021 09:58:20 -0700
+IronPort-SDR: bxccxDNtBkOJpcorS5wqvftK5TV/i55eDdPQi+c3EWHe9/wNSNyiwB/hm0baidLvTSc1l/rSz0
+ IUe7soNxlBGw==
+X-IronPort-AV: E=Sophos;i="5.81,262,1610438400"; d="scan'208";a="406867257"
+Received: from dgerstma-mobl.amr.corp.intel.com (HELO [10.212.157.39])
+ ([10.212.157.39])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Mar 2021 09:58:19 -0700
+Subject: Re: [PATCH v3 2/7] ASoC: codecs: wcd-clsh: add new version support
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20210319092919.21218-1-srinivas.kandagatla@linaro.org>
+ <20210319092919.21218-3-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <26038ba1-e8f6-08e3-bee5-673d69d7decd@linux.intel.com>
+Date: Fri, 19 Mar 2021 10:23:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Hulk Robot <hulkci@huawei.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <20210319092919.21218-3-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: robh@kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,39 +88,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Mar 2021 09:41:02 +0000, 'w00385741 wrote:
-> The sparse tool complains as follows:
-> 
-> sound/soc/codecs/rt1019.c:927:19: warning:
->  symbol 'rt1019_i2c_driver' was not declared. Should it be static?
-> 
-> This symbol is not used outside of rt1019.c, so this
-> commit marks it static.
 
-Applied to
+> +static void wcd_clsh_v3_set_hph_mode(struct snd_soc_component *component,
+> +				  int mode)
+> +{
+> +	u8 val = 0;
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+initialization not needed.
 
-Thanks!
+> +
+> +	switch (mode) {
+> +	case CLS_H_NORMAL:
+> +		val = 0x00;
+> +		break;
+> +	case CLS_AB:
+> +	case CLS_H_ULP:
+> +		val = 0x0C;
+> +		break;
+> +	case CLS_AB_HIFI:
+> +	case CLS_H_HIFI:
+> +		val = 0x08;
+> +		break;
+> +	case CLS_H_LP:
+> +	case CLS_H_LOHIFI:
+> +	case CLS_AB_LP:
+> +	case CLS_AB_LOHIFI:
+> +		val = 0x04;
+> +		break;
+> +	default:
+> +		dev_err(component->dev, "%s:Invalid mode %d\n", __func__, mode);
+> +		return;
+> +	};
+> +
+> +	snd_soc_component_update_bits(component, WCD9XXX_ANA_HPH, 0x0C, val);
+> +}
+> +
+> +
 
-[1/1] ASoC: rt1019: make symbol 'rt1019_i2c_driver' static
-      commit: e6d8af6687fa7730885d5c8d8f62e75e8dff29f0
+extra line
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> +void wcd_clsh_set_hph_mode(struct wcd_clsh_ctrl *ctrl, int mode)
+> +{
+> +	struct snd_soc_component *comp = ctrl->comp;
+> +
+> +	if (ctrl->codec_version >= WCD937X)
+> +		wcd_clsh_v3_set_hph_mode(comp, mode);
+> +	else
+> +		wcd_clsh_v2_set_hph_mode(comp, mode);
+> +
+> +}
+> +
+>   static void wcd_clsh_set_flyback_current(struct snd_soc_component *comp,
+>   					 int mode)
+>   {
+> @@ -289,6 +388,130 @@ static void wcd_clsh_set_buck_regulator_mode(struct snd_soc_component *comp,
+>   					WCD9XXX_A_ANA_RX_REGULATOR_MODE_CLS_H);
+>   }
+>   
+> +static void wcd_clsh_v3_set_buck_regulator_mode(struct snd_soc_component *component,
+> +						int mode)
+> +{
+> +	snd_soc_component_update_bits(component, WCD9XXX_ANA_RX_SUPPLIES,
+> +			    0x02, 0x00);
+> +}
+> +
+> +static inline void wcd_clsh_v3_set_flyback_mode(struct snd_soc_component *component,
+> +						int mode)
+> +{
+> +	if (mode == CLS_H_HIFI || mode == CLS_H_LOHIFI ||
+> +	    mode == CLS_AB_HIFI || mode == CLS_AB_LOHIFI) {
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_ANA_RX_SUPPLIES,
+> +				0x04, 0x04);
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_FLYBACK_VNEG_CTRL_4,
+> +				0xF0, 0x80);
+> +	} else {
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_ANA_RX_SUPPLIES,
+> +				0x04, 0x00); /* set to Default */
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_FLYBACK_VNEG_CTRL_4,
+> +				0xF0, 0x70);
+> +	}
+> +}
+> +
+> +static inline void wcd_clsh_v3_force_iq_ctl(struct snd_soc_component *component,
+> +					 int mode, bool enable)
+> +{
+> +	if (enable) {
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_FLYBACK_VNEGDAC_CTRL_2,
+> +				0xE0, 0xA0);
+> +		/* 100usec delay is needed as per HW requirement */
+> +		usleep_range(100, 110);
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_CLASSH_MODE_3,
+> +				0x02, 0x02);
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_CLASSH_MODE_2,
+> +				0xFF, 0x1C);
+> +		if (mode == CLS_H_LOHIFI || mode == CLS_AB_LOHIFI) {
+> +			snd_soc_component_update_bits(component,
+> +					WCD9XXX_HPH_NEW_INT_PA_MISC2,
+> +					0x20, 0x20);
+> +			snd_soc_component_update_bits(component,
+> +					WCD9XXX_RX_BIAS_HPH_LOWPOWER,
+> +					0xF0, 0xC0);
+> +			snd_soc_component_update_bits(component,
+> +					WCD9XXX_HPH_PA_CTL1,
+> +					0x0E, 0x02);
+> +		}
+> +	} else {
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_HPH_NEW_INT_PA_MISC2,
+> +				0x20, 0x00);
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_RX_BIAS_HPH_LOWPOWER,
+> +				0xF0, 0x80);
+> +		snd_soc_component_update_bits(component,
+> +				WCD9XXX_HPH_PA_CTL1,
+> +				0x0E, 0x06);
+> +	}
+> +}
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+do you need the inline for the two functions above?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
