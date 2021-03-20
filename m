@@ -8,79 +8,78 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4EE2CC433C1
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 22:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AFC4C433DB
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 22:25:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9125D61490
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 22:25:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9125D61490
+	by mail.kernel.org (Postfix) with ESMTPS id 3A92E61933
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 22:25:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A92E61933
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17F7C83D;
-	Sat, 20 Mar 2021 23:24:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17F7C83D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9940839;
+	Sat, 20 Mar 2021 23:24:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9940839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616279138;
-	bh=WThy46y05IMN3kwEKDzuMtpW35OgqrDGx6DoolEj8oU=;
+	s=default; t=1616279147;
+	bh=aAB7xj0ogiFIczN6zcsNu4n46f/F/P0r1J5LUqDBlzw=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fTHxFHrB/vqpHdjkXrUsEN8RUfVfCRB3XQYnj91ufPRBf8/AthHrcTxuUI+Xx0dKz
-	 WDIiyKw7Q9AVJlLE+Bds5BoxRCe8A2XzER/StCouqf6K4EPF4l77NlLGuU9ojczevZ
-	 qqoHNcxTN4VhLKtepisvNi5M5CYK6bYtZv7cTMw8=
+	b=b31quz/yTxp1jBOvW4njp+uIEQdzQKiK3SOGcWJ/wsJfFrrlcRKCbMjkP5tkT6ATc
+	 kEefb/I6jgHGEbTE1CdxhPlOQ5leBuOMdrl8eXvMHTc3MlcqELYizJG2ozzIMUsOK6
+	 n69L1vlLTmcWRSp8g07yNjT2cvxHQtB68RLaql4I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87F44F80218;
-	Sat, 20 Mar 2021 23:24:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CB5DF802E3;
+	Sat, 20 Mar 2021 23:24:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1AEAF8023B; Sat, 20 Mar 2021 23:24:01 +0100 (CET)
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com
- [IPv6:2607:f8b0:4864:20::735])
+ id 2501BF8032B; Sat, 20 Mar 2021 23:24:10 +0100 (CET)
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com
+ [IPv6:2607:f8b0:4864:20::731])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F175EF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7955CF80118
  for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2021 23:23:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F175EF80171
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7955CF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="kHwHrADJ"
-Received: by mail-qk1-x735.google.com with SMTP id g20so6816350qkk.1
+ header.b="KXkFFVbv"
+Received: by mail-qk1-x731.google.com with SMTP id g15so6830203qkl.4
  for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2021 15:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=from:to:subject:date:message-id:in-reply-to:references:mime-version
  :content-transfer-encoding;
- bh=Hd04KDAsAoVDrVE+uWlazOzKpC3XA/RFKS+Mgm3wpmw=;
- b=kHwHrADJ1T8h9/lq7AZ3fi5FcBUS49ffIuFHnfIrC7p4Gxa3HhzTyWTez/FcxmKsPD
- E8rVBSu0x+av/SUccLsOzs6u0hig1OpFaOoAaE0GhFUX8TpisaumLGcYL4un5hHN0rZt
- zY00cXr7eXQ+D1WwCd/7KCTw4AICVBKTFQhnYOhelyk7IkdVdmrUH/tvTGvfLt/Or3E4
- iCUECbUg7OhW9RwAZI4BPCBncfbo7LtGOnAzLdNcNwWKqVmt/+bflYqwB/v8tgfxzhyD
- KUp8gdAgKlgmUbwGjffjMFCJZsPTzSbJmxdGHrY3M67IUDj4Q1TPcvOOHq1iHFDidU+P
- nepw==
+ bh=vdUN2b328BItSMlcqgEcX36NLs9U//nc/tlpRzp+rh4=;
+ b=KXkFFVbv47EIbYA8M9x/Sjmwf28xFI74XS7fKw8U1URuIeYjfGuajrsU/JM94MwbiZ
+ xuD6cBpk8ebKNMgr8Q7ffWA6YVTnp6hntyQ4ZPAxpnMI8sTKjLHxKf9OVH/N7ZMVBkFn
+ qviYmXqKa4LgCes3Qi3+nGI0TLxn2rmGckhaYQ1ThHF14+KBx3aDhcpP+3E0UH3T72Gb
+ iBhDFoLrOl/qTDDvByyuRFFqSxFEuTIdQXJb9cfpNCHbrDquXE5s1LNoxvETUaCMzpRX
+ WbPdXqlzzemq0T4A9pgdQCsnQfiGnWBkEUYGaSbffSOwOqK0pHqAbr7p81vX9KQGDHHH
+ tw9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Hd04KDAsAoVDrVE+uWlazOzKpC3XA/RFKS+Mgm3wpmw=;
- b=ml/DDRe6ocA1UjHP+moQ4dpWYU2siX5y1fDZ4pqTD8Ahg0VoGSZSLvsfPv4AP/YHsl
- GzgTrCU0hkBez5M6unC5auozVDzY4IiUrW0Sdf5CbaKvfFi5aVQWDXEEqjq1MNm7hL0x
- +wBBKe2x36I2sGcL4xqVoJME6iN8Cb02za9jiaji3pu/zEM/5quwjz2I6d0+nzwmh3MS
- J36yYMw2VutHn5cKony7RrZR31g9ju+LhPAtmuWntoUDWBpj8ZvWzv5Q426pASiwWhHo
- REDHLcxDwZba555HwPOG1CTus6rqYigXOkeu8mdTkPdRaC4vFYxK/czjISRNQidWh44O
- igyA==
-X-Gm-Message-State: AOAM533MzdgqU0ZnbRNG7O9jS1qRiNfWLlRzLu+r4Dh5Ekln7F6vCYfw
- 9GZJ4xYhTDkFQKPbILgoORw=
-X-Google-Smtp-Source: ABdhPJxSFtHpaAFOdOQkiJTHu8MClNtatv3LhSMMPVsWx7Gcma3AGIv4neNWLdkWfNOsKGcA44iIMg==
-X-Received: by 2002:a05:620a:4152:: with SMTP id
- k18mr4652122qko.446.1616279032069; 
- Sat, 20 Mar 2021 15:23:52 -0700 (PDT)
+ bh=vdUN2b328BItSMlcqgEcX36NLs9U//nc/tlpRzp+rh4=;
+ b=OccTpwpOYwHRPc04v/teMFZ9aTvKf+jmA99eDDuVrw70JxOjrpeqmt75Xq2i/EVtNY
+ J3d5aZ6OKIyTC1NHRmEu6iYxee3agOCwe1ruBMTrJgRBShSuCEYII6DoB1QFPtbRVmT3
+ L4dKw/0s+X+MSPCwCWmHfXfN7BXl66oaJn/FyldCd4Rf00B0/8Qvm+zDASiTvEuBDzpE
+ 8Rri/mjt5I3cd2azxmGWlLs4moQ9HRpSST7TSj11HA8DMPmLT1/hYJfpKAgtZVNEjdyn
+ tiLr2aOLrzDNTAvELazEgu6mtkWsDV9IDIsnl9Re6LgpBcu1HGD+BgIr2K/MuGenLWt+
+ bG3g==
+X-Gm-Message-State: AOAM531CMVR0QLTkaCrIjoH/EiqCKRvTZuwmsGub2jbTwvw8l/1LvZZ1
+ YZmu1ndGJiLpw4roldT5VmSKmhIyrMjL+g==
+X-Google-Smtp-Source: ABdhPJwIP8NEZjxbS95UPE9RkobVkAx7dNVTMrKz6G9W6bi8hQMQvMMH2xT3NmAOBed4gSB/oeNt7Q==
+X-Received: by 2002:a37:9a07:: with SMTP id c7mr4669713qke.352.1616279036105; 
+ Sat, 20 Mar 2021 15:23:56 -0700 (PDT)
 Received: from tong-desktop.local ([2601:5c0:c200:27c6:f925:bb4b:54d2:533])
- by smtp.googlemail.com with ESMTPSA id i6sm7570213qkk.31.2021.03.20.15.23.51
+ by smtp.googlemail.com with ESMTPSA id i6sm7570213qkk.31.2021.03.20.15.23.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 20 Mar 2021 15:23:51 -0700 (PDT)
+ Sat, 20 Mar 2021 15:23:55 -0700 (PDT)
 From: Tong Zhang <ztong0001@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Romain Perier <romain.perier@gmail.com>, Allen Pais <allen.lkml@gmail.com>,
@@ -90,9 +89,9 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  "Gustavo A. R. Silva" <gustavoars@kernel.org>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Naoki Hayama <naoki.hayama@lineo.co.jp>
-Subject: [PATCH v2 1/3] ALSA: hdsp: don't disable if not enabled
-Date: Sat, 20 Mar 2021 18:23:34 -0400
-Message-Id: <20210320222337.243368-2-ztong0001@gmail.com>
+Subject: [PATCH v2 2/3] ALSA: hdspm: don't disable if not enabled
+Date: Sat, 20 Mar 2021 18:23:35 -0400
+Message-Id: <20210320222337.243368-3-ztong0001@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210320222337.243368-1-ztong0001@gmail.com>
 References: <20210320222337.243368-1-ztong0001@gmail.com>
@@ -113,51 +112,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-hdsp wants to disable a not enabled pci device, which makes kernel
+hdspm wants to disable a not enabled pci device, which makes kernel
 throw a warning. Make sure the device is enabled before calling disable.
 
-[    1.758292] snd_hdsp 0000:00:03.0: disabling already-disabled device
-[    1.758327] WARNING: CPU: 0 PID: 180 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.766985] Call Trace:
-[    1.767121]  snd_hdsp_card_free+0x94/0xf0 [snd_hdsp]
-[    1.767388]  release_card_device+0x4b/0x80 [snd]
-[    1.767639]  device_release+0x3b/0xa0
-[    1.767838]  kobject_put+0x94/0x1b0
-[    1.768027]  put_device+0x13/0x20
-[    1.768207]  snd_card_free+0x61/0x90 [snd]
-[    1.768430]  snd_hdsp_probe+0x524/0x5e0 [snd_hdsp]
+[    1.786391] snd_hdspm 0000:00:03.0: disabling already-disabled device
+[    1.786400] WARNING: CPU: 0 PID: 182 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.795181] Call Trace:
+[    1.795320]  snd_hdspm_card_free+0x58/0xa0 [snd_hdspm]
+[    1.795595]  release_card_device+0x4b/0x80 [snd]
+[    1.795860]  device_release+0x3b/0xa0
+[    1.796072]  kobject_put+0x94/0x1b0
+[    1.796260]  put_device+0x13/0x20
+[    1.796438]  snd_card_free+0x61/0x90 [snd]
+[    1.796659]  snd_hdspm_probe+0x97b/0x1440 [snd_hdspm]
 
 Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 ---
- sound/pci/rme9652/hdsp.c | 10 ++++++----
+ sound/pci/rme9652/hdspm.c | 10 ++++++----
  1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index 4cf879c42dc4..d9879a5bd60e 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -5285,8 +5285,10 @@ static int snd_hdsp_create(struct snd_card *card,
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 8d900c132f0f..af3898c88bba 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -6582,8 +6582,10 @@ static int snd_hdspm_create(struct snd_card *card,
+ 	pci_set_master(hdspm->pci);
  
- 	pci_set_master(hdsp->pci);
- 
--	if ((err = pci_request_regions(pci, "hdsp")) < 0)
-+	if ((err = pci_request_regions(pci, "hdsp")) < 0) {
+ 	err = pci_request_regions(pci, "hdspm");
+-	if (err < 0)
++	if (err < 0) {
 +		pci_disable_device(pci);
  		return err;
 +	}
- 	hdsp->port = pci_resource_start(pci, 0);
- 	if ((hdsp->iobase = ioremap(hdsp->port, HDSP_IO_EXTENT)) == NULL) {
- 		dev_err(hdsp->card->dev, "unable to remap region 0x%lx-0x%lx\n",
-@@ -5387,10 +5389,10 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 	vfree(hdsp->fw_uploaded);
- 	iounmap(hdsp->iobase);
  
--	if (hdsp->port)
-+	if (hdsp->port) {
- 		pci_release_regions(hdsp->pci);
+ 	hdspm->port = pci_resource_start(pci, 0);
+ 	io_extent = pci_resource_len(pci, 0);
+@@ -6880,10 +6882,10 @@ static int snd_hdspm_free(struct hdspm * hdspm)
+ 	kfree(hdspm->mixer);
+ 	iounmap(hdspm->iobase);
+ 
+-	if (hdspm->port)
++	if (hdspm->port) {
+ 		pci_release_regions(hdspm->pci);
 -
--	pci_disable_device(hdsp->pci);
-+		pci_disable_device(hdsp->pci);
+-	pci_disable_device(hdspm->pci);
++		pci_disable_device(hdspm->pci);
 +	}
  	return 0;
  }
