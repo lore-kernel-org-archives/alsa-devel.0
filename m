@@ -2,69 +2,69 @@ Return-Path: <SRS0=zHol=IS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1B94C433C1
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 07:42:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 655B7C433C1
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 09:04:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D06061998
-	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 07:42:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D06061998
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 0AD9361978
+	for <alsa-devel@archiver.kernel.org>; Sat, 20 Mar 2021 09:03:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0AD9361978
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E50A167D;
-	Sat, 20 Mar 2021 08:41:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E50A167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93CFE1669;
+	Sat, 20 Mar 2021 10:03:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93CFE1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616226129;
-	bh=WBWK3EtUPpTpTJmpgUb+kzH/A7EP4Fwbgp7cbdYa2GM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616231037;
+	bh=iDNH2B/b2jn6rDjyLWAC9Ap6xCr+KAUVMkYo0odQAok=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L1E7ajPQtDlfa2wfRZmBMGPItYaBtLEkn67dtz0qWDOgyxS4aoKLY4WgSaqBflVlt
-	 UWBv9f50AQZ3J4+a+1DK3K4pqxoVH+tTfIux+SsWZwL384CvN29DJf+eDht/bg5d/L
-	 YAC60KsKULzmpjYiwysKJulkt1bpC5n3a1/dVsII=
+	b=Xq5sEIV6WhNU0IxC3ZyCf85e0DhxlITyq437d29oxvTjYOX69W9pgWfidwJqKeITY
+	 PH8/taR0z96Fcz1fJhzE6FxnlqCvxspOPadsahP6YwsOdHCsg/oT+c53C+ST4PUSQl
+	 vFmRh7IokskpMBCQaTTbh8buzZL+rktMSG+AZTfI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 784C0F80163;
-	Sat, 20 Mar 2021 08:41:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05B85F8012D;
+	Sat, 20 Mar 2021 10:03:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BE54F80165; Sat, 20 Mar 2021 08:41:17 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 3905EF80165; Sat, 20 Mar 2021 10:03:05 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4B54F80118
- for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2021 08:41:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4B54F80118
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 6DED4AC71;
- Sat, 20 Mar 2021 07:41:09 +0000 (UTC)
-Date: Sat, 20 Mar 2021 08:41:09 +0100
-Message-ID: <s5h35wqff1m.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v4 6/6] ALSA: led control - add sysfs kcontrol LED marking
- layer
-In-Reply-To: <3820909c-29ce-9f3f-d1e6-c4611e06abe4@redhat.com>
-References: <20210317172945.842280-1-perex@perex.cz>
- <20210317172945.842280-7-perex@perex.cz>
- <a3ddb881-6580-cd25-ef3c-734e686e6942@redhat.com>
- <s5h5z1nf47r.wl-tiwai@suse.de>
- <3820909c-29ce-9f3f-d1e6-c4611e06abe4@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46A03F800BB
+ for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2021 10:02:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46A03F800BB
+Received: from [123.112.71.70] (helo=[192.168.0.106])
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <hui.wang@canonical.com>)
+ id 1lNXVT-00019g-PW; Sat, 20 Mar 2021 09:02:52 +0000
+Subject: Re: [PATCH v2 2/2] ALSA: hda/realtek: call alc_update_headset_mode()
+ in hp_automute_hook
+To: Takashi Iwai <tiwai@suse.de>
+References: <20210319075903.6480-1-hui.wang@canonical.com>
+ <20210319075903.6480-2-hui.wang@canonical.com> <s5hlfajfnvw.wl-tiwai@suse.de>
+From: Hui Wang <hui.wang@canonical.com>
+Message-ID: <da978bec-89e8-03e0-a3b2-44a9910d4514@canonical.com>
+Date: Sat, 20 Mar 2021 17:02:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <s5hlfajfnvw.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,108 +80,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Mar 2021 23:08:33 +0100,
-Hans de Goede wrote:
-> 
-> Hi,
-> 
-> On 3/19/21 6:22 PM, Takashi Iwai wrote:
-> > On Fri, 19 Mar 2021 17:34:39 +0100,
-> > Hans de Goede wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 3/17/21 6:29 PM, Jaroslav Kysela wrote:
-> >>> We need to manage the kcontrol entries association for the LED trigger
-> >>> from the user space. This patch adds a layer to the sysfs tree like:
-> >>>
-> >>> /sys/devices/virtual/sound/ctl-led/mic
-> >>>    + card0
-> >>>    |  + attach
-> >>>    |  + detach
-> >>>    |  ...
-> >>>    + card1
-> >>>       + attach
-> >>>       ...
-> >>>
-> >>> Operations:
-> >>>
-> >>>   attach and detach
-> >>>     - amixer style ID is accepted and easy strings for numid and
-> >>>       simple names
-> >>>   reset
-> >>>     - reset all associated kcontrol entries
-> >>>   list
-> >>>     - list associated kcontrol entries (numid values only)
-> >>>
-> >>> Additional symlinks:
-> >>>
-> >>> /sys/devices/virtual/sound/ctl-led/mic/card0/card ->
-> >>>   /sys/class/sound/card0
-> >>>
-> >>> /sys/class/sound/card0/controlC0/led-mic ->
-> >>>   /sys/devices/virtual/sound/ctl-led/mic/card0
-> >>>
-> >>> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> >>
-> >> Thank you so much for this patch.
-> >>
-> >> I've given this new version a try, dropping my sound/soc/codecs/rt56??.c patches to set the access-flags directly.
-> >>
-> >> And with these 3 lines in /etc/rc.d/rc.local I get nicely working control of the mute
-> >> LED build into the (detachable) USB-keyboard's mute hot-key:
-> >>
-> >> modprobe snd_ctl_led
-> >> echo -n name="Speaker Channel Switch" > /sys/class/sound/card1/controlC1/led-speaker/attach
-> >> echo -n name="HP Channel Switch" > /sys/class/sound/card1/controlC1/led-speaker/attach
-> >>
-> >> This needs to be replaced by some UCM profile code doing the equivalent of course,
-> >> but for a proof-of-concept test of the kernel API this introduces the above will do.
-> > 
-> > IMO, that's the question: how we'll enable this in future.  If the
-> > binding of the control/mute mapping is provided via UCM, it's supposed
-> > to be changeable by each user.  Then the current sysfs permission
-> > doesn't fit.  OTOH, if it's 0666, it's accessible to all users even
-> > remotely, which is worse than the access with the normal sound device
-> > file.  Or if it's supposed to be changed via udev stuff or systemd?
-> > Or is it just for debugging?
-> > 
-> > Through a quick glance over the series, I'm fine to take those
-> > patches, but the only concern is the sysfs entries.  Basically, once
-> > when we use sysfs entries, it's set in stone.  So we should be very
-> > clear about our strategy how to deploy the control/mute mapping
-> > regarding using those sysfs entries.
-> > 
-> > OTOH, if the interface is thought for debugging or development
-> > purpose, it could be done in debugfs, which we can keep playing in
-> > further development, too.
-> > 
-> > And, BTW, the mute LED mode setup doesn't have to be sysfs entries;
-> > we'd need primarily only the flags for inverted LED behavior, and
-> > those are only two, so it could be simply module options.  Then it's
-> > even easier for users to set up than tweaking sysfs entries.
-> 
-> The flexibility offered by this new sysfs API is necessary for the ASoC
-> codec drivers, because Mark does not want to have which controls are
-> tied to the LED triggers hard-coded inside the codec drivers.
 
-The hard-coded mapping itself isn't always bad things, IMO.  Of
-course, it's a question whether to be done in the codec driver in a
-fixed routing.  A machine driver would fit well, instead; i.e. instead
-of the control-access bit flag, just bind statically from the machine
-driver after instantiating the kctl objects like sysfs does.
-
-> So as Jaroslav mentions in his reply, the plan is to have the UCM
-> profiles contain commands to setup the LED triggers to this new
-> sysfs API.
-
-IIUC, this won't be only UCM but also the combination of udev +
-alsactl + UCM, right?
-
-Would other OS can follow a similar pattern?  Let's check that first
-(although I myself think this should be feasible).
-
-
-thanks,
-
-Takashi
+On 3/19/21 6:17 PM, Takashi Iwai wrote:
+> On Fri, 19 Mar 2021 08:59:03 +0100,
+> Hui Wang wrote:
+>> We found the alc_update_headset_mode() is not called on some machines
+>> when unplugging the headset, as a result, the mode of the
+>> ALC_HEADSET_MODE_UNPLUGGED can't be set, then the current_headset_type
+>> is not cleared, if users plug a differnt type of headset next time,
+>> the determine_headset_type() will not be called and the audio jack is
+>> set to the headset type of previous time.
+>>
+>> On the Dell machines which connect the dmic to the PCH, if we open
+>> the gnome-sound-setting and unplug the headset, this issue will
+>> happen. Those machines disable the auto-mute by ucm and has no
+>> internal mic in the input source, so the update_headset_mode() will
+>> not be called by cap_sync_hook or automute_hook when unplugging, and
+>> because the gnome-sound-setting is opened, the codec will not enter
+>> the runtime_suspend state, so the update_headset_mode() will not be
+>> called by alc_resume when unplugging. In this case the
+>> hp_automute_hook is called when unplugging, so add
+>> update_headset_mode() calling to this function.
+>>
+>> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_realtek.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>> index 442e555de44c..c928704da20b 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -5447,6 +5447,7 @@ static void alc_update_headset_jack_cb(struct hda_codec *codec,
+>>   				       struct hda_jack_callback *jack)
+>>   {
+>>   	snd_hda_gen_hp_automute(codec, jack);
+>> +	alc_update_headset_mode(codec);
+>>   }
+> This change was described in the above, but ...
+>
+>>   
+>>   static void alc_probe_headset_mode(struct hda_codec *codec)
+>> @@ -5559,7 +5560,7 @@ static void alc288_update_headset_jack_cb(struct hda_codec *codec,
+>>   {
+>>   	struct alc_spec *spec = codec->spec;
+>>   
+>> -	alc_update_headset_jack_cb(codec, jack);
+>> +	snd_hda_gen_hp_automute(codec, jack);
+>>   	/* Headset Mic enable or disable, only for Dell Dino */
+>>   	alc_update_gpio_data(codec, 0x40, spec->gen.hp_jack_present);
+> This change isn't clear why it's needed from the description.
+> Does it man that only ALC288 shouldn't call alc_update_headset_mode()
+> by some reason?
+Oh, I thought this is a normal audio jack, doesn't support 
+headphone/headset and microphone. Will fix it in the v3.
+>
+> thanks,
+>
+> Takashi
