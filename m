@@ -2,66 +2,70 @@ Return-Path: <SRS0=WNy5=IU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B1FC433C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 044EBC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:22:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 248EB6198E
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:21:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 248EB6198E
+	by mail.kernel.org (Postfix) with ESMTPS id 06AAC61984
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:22:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06AAC61984
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99CAC15F9;
-	Mon, 22 Mar 2021 12:20:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99CAC15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FC08165D;
+	Mon, 22 Mar 2021 12:21:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FC08165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616412106;
-	bh=ONUUPTpDmXmjHAD4piW6gWdU6fhXzpO6Qnp7IzY9bxY=;
+	s=default; t=1616412143;
+	bh=o9mRKEgI0iZ01MrGeUGt1lNLPPf5/wEiCSi0j7eglHs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l71/IRbNPAcHKni7sS/EPaYf/I8dIXBfxyXo+rSiln5WuboU4rqljsPTvOxhyJIZX
-	 VPuA783/YUplbks45WSnwsT0gcunuD9AgrtwAXGQV9E1Wr+UmyXp1q/reS5LUnxQvU
-	 Iu1b8bAO4D20B12Ss7K5HZEIUgj0WSEoel2Z58Mo=
+	b=R2OTTwEz9V72pdKCCrQrJVDUnEYrkgjNEbzY24koFc7LwVGirai8rRvb1L7sMDkF2
+	 +M8E9k1DxSXHukoJT5VWkDa5mjb8/bhQv/5zWARiRn6G+rz9gcVNoR/wF2Hurb/zrL
+	 X8ThU81LVfT8Lq4eyUnIk33QUUEpHIO3tr6/+D2w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F928F801EB;
-	Mon, 22 Mar 2021 12:20:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06ABFF801D5;
+	Mon, 22 Mar 2021 12:21:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE51AF801EC; Mon, 22 Mar 2021 12:20:08 +0100 (CET)
+ id 0148BF80246; Mon, 22 Mar 2021 12:21:31 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59D10F80156
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 12:20:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59D10F80156
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8723F801D5
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 12:21:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8723F801D5
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1E1D3ADAA;
- Mon, 22 Mar 2021 11:20:01 +0000 (UTC)
-Date: Mon, 22 Mar 2021 12:20:01 +0100
-Message-ID: <s5h7dlze8pq.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 84530ADAA;
+ Mon, 22 Mar 2021 11:21:22 +0000 (UTC)
+Date: Mon, 22 Mar 2021 12:21:22 +0100
+Message-ID: <s5h5z1je8nh.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH v3 2/2] ALSA: hda/realtek: call alc_update_headset_mode()
- in hp_automute_hook
-In-Reply-To: <20210320091542.6748-2-hui.wang@canonical.com>
-References: <20210320091542.6748-1-hui.wang@canonical.com>
- <20210320091542.6748-2-hui.wang@canonical.com>
+To: Tong Zhang <ztong0001@gmail.com>
+Subject: Re: [PATCH v3 0/3] ALSA: rme9652 don't disable device if not enabled
+In-Reply-To: <20210321153840.378226-1-ztong0001@gmail.com>
+References: <s5htup4exbl.wl-tiwai@suse.de>
+ <20210321153840.378226-1-ztong0001@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com, stable@vger.kernel.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Leon Romanovsky <leon@kernel.org>, Naoki Hayama <naoki.hayama@lineo.co.jp>,
+ Tom Rix <trix@redhat.com>, Allen Pais <allen.lkml@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Joe Perches <joe@perches.com>,
+ Mark Brown <broonie@kernel.org>, Romain Perier <romain.perier@gmail.com>,
+ linux-kernel@vger.kernel.org, Jasmin Fazlic <superfassl@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,31 +81,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 20 Mar 2021 10:15:42 +0100,
-Hui Wang wrote:
+On Sun, 21 Mar 2021 16:38:37 +0100,
+Tong Zhang wrote:
 > 
-> We found the alc_update_headset_mode() is not called on some machines
-> when unplugging the headset, as a result, the mode of the
-> ALC_HEADSET_MODE_UNPLUGGED can't be set, then the current_headset_type
-> is not cleared, if users plug a differnt type of headset next time,
-> the determine_headset_type() will not be called and the audio jack is
-> set to the headset type of previous time.
+> This series fixes issues in hdsp and hdspm. The drivers in question want
+> to disable a device that is not enabled on error path.
 > 
-> On the Dell machines which connect the dmic to the PCH, if we open
-> the gnome-sound-setting and unplug the headset, this issue will
-> happen. Those machines disable the auto-mute by ucm and has no
-> internal mic in the input source, so the update_headset_mode() will
-> not be called by cap_sync_hook or automute_hook when unplugging, and
-> because the gnome-sound-setting is opened, the codec will not enter
-> the runtime_suspend state, so the update_headset_mode() will not be
-> called by alc_resume when unplugging. In this case the
-> hp_automute_hook is called when unplugging, so add
-> update_headset_mode() calling to this function.
+> v2: add fix to rme9652
+> v3: change checks to pci_is_enabled()
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> Tong Zhang (3):
+>   ALSA: hdsp: don't disable if not enabled
+>   ALSA: hdspm: don't disable if not enabled
+>   ALSA: rme9652: don't disable if not enabled
 
-Applied, thanks.
+Now applied all three patches.  Thanks.
 
 
 Takashi
