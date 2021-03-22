@@ -2,64 +2,65 @@ Return-Path: <SRS0=WNy5=IU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD4EC433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B6FAC433C1
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:27:46 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0ADE26198E
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:26:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ADE26198E
+	by mail.kernel.org (Postfix) with ESMTPS id 137506198E
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:27:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 137506198E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95F1D9F6;
-	Mon, 22 Mar 2021 12:25:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95F1D9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 963771657;
+	Mon, 22 Mar 2021 12:26:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 963771657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616412398;
-	bh=BI/yhBjUPeGGBABykLKQy/haKDOjfa40/rkpWjDEqeg=;
+	s=default; t=1616412463;
+	bh=u5I/QUVEWOeZJU7vtJNdFk7AL2KeLbzyWvH/t/RtWnQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C1bD1nVOESbhCWYeb0uGjYuluvfC0mErtI4uE/9tz5D/FmnKg/fefEpqTd4HLbdns
-	 RbU6pWN0PdnO/6EYsjZaO1iPRGMgtxRMa/GZK/E/2Nvu9HoqG6hBjL1gbGbxYu03aj
-	 TqiRpqyBrafPIspEgp5sic7/z/rNeBQgIR/8mbFo=
+	b=FvyXOX67x0nqJfg50l/g2FDN98yZpkZDXAsg/WVdji3JVNDvjKCtRQkmFShVBviWo
+	 p1A8dJ4SdjpLbUGaMnAW9zeuuelbiY14x4uuOnaAw2C/Xec80eYbfkqahaHm/LgX7V
+	 ISMhO4cBzKJOXqFkzKDtQaMJq2MwDmBSAlO6t8wk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C432F80156;
-	Mon, 22 Mar 2021 12:25:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27A35F801D5;
+	Mon, 22 Mar 2021 12:26:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC62FF80156; Mon, 22 Mar 2021 12:25:46 +0100 (CET)
+ id 872ADF801EC; Mon, 22 Mar 2021 12:26:51 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7244BF80156
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 12:25:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7244BF80156
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57712F80156
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 12:26:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57712F80156
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3D0BFAD4A;
- Mon, 22 Mar 2021 11:25:40 +0000 (UTC)
-Date: Mon, 22 Mar 2021 12:25:39 +0100
-Message-ID: <s5h35wne8gc.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 20AF5ADD7;
+ Mon, 22 Mar 2021 11:26:45 +0000 (UTC)
+Date: Mon, 22 Mar 2021 12:26:45 +0100
+Message-ID: <s5h1rc7e8ei.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Fengfei Xi <xi.fengfei@h3c.com>
-Subject: Re: [PATCH] sound: remove unnecessary blank
-In-Reply-To: <20210321085948.11491-1-xi.fengfei@h3c.com>
-References: <20210321085948.11491-1-xi.fengfei@h3c.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] ALSA: core: avoid -Wempty-body warnings
+In-Reply-To: <20210322103128.547199-1-arnd@kernel.org>
+References: <20210322103128.547199-1-arnd@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,40 +76,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 21 Mar 2021 09:59:48 +0100,
-Fengfei Xi wrote:
+On Mon, 22 Mar 2021 11:31:10 +0100,
+Arnd Bergmann wrote:
 > 
-> Remove unnecessary blank when calling kmalloc_array().
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
+> Building with 'make W=1' shows some warnings about empty function-style
+> macros:
+> 
+> sound/core/pcm_memory.c: In function 'preallocate_pages':
+> sound/core/pcm_memory.c:236:49: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   236 |                 preallocate_info_init(substream);
+> 
+> sound/core/seq_device.c: In function 'snd_seq_device_dev_register':
+> sound/core/seq_device.c:163:41: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>   163 |                 queue_autoload_drivers();
+> 
+> Change them to empty inline functions, which are more robust here.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Thanks for the patch.
-
-We apply this kind of trivial coding-style fix only if it'd improve
-the readability significantly or when it's a preliminary work for the
-other actual fixes.  So if you'd work on this driver further, let us
-know.
+Thanks, applied.
 
 
 Takashi
-
-> ---
->  sound/oss/dmasound/dmasound_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
-> index 49679aa86..78bb9dfe2 100644
-> --- a/sound/oss/dmasound/dmasound_core.c
-> +++ b/sound/oss/dmasound/dmasound_core.c
-> @@ -421,7 +421,7 @@ static int sq_allocate_buffers(struct sound_queue *sq, int num, int size)
->  		return 0;
->  	sq->numBufs = num;
->  	sq->bufSize = size;
-> -	sq->buffers = kmalloc_array (num, sizeof(char *), GFP_KERNEL);
-> +	sq->buffers = kmalloc_array(num, sizeof(char *), GFP_KERNEL);
->  	if (!sq->buffers)
->  		return -ENOMEM;
->  	for (i = 0; i < num; i++) {
-> -- 
-> 2.17.1
-> 
