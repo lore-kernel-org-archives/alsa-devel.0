@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66383C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 02:49:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8217DC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 02:49:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CB71761939
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 02:49:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CB71761939
+	by mail.kernel.org (Postfix) with ESMTPS id 97BA361878
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 02:49:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 97BA361878
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8246A15F2;
-	Mon, 22 Mar 2021 03:48:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8246A15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34BC2950;
+	Mon, 22 Mar 2021 03:49:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34BC2950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616381389;
-	bh=9u+/kqtUI5X/V+e3VyiCKi4LXMBiCxsoujSulJCIIAE=;
+	s=default; t=1616381394;
+	bh=B5sGPpbYHMRrbP3+h7jF74WDUZloSUbWQYHHD6DRgek=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XkTXFM/5YcMzwhHpdy4sR3Qk62C0AHpuDJl+2t2VXxP1NmyQdNwN8NplpVtuEcVl3
-	 DfB0h/7v6C5IoXyZbhihqrItoVDZAUlVzRLhpk4p2ufRmGSzPqj4OAPjMhod8uglsP
-	 7eAcfY+SisctDsTrfx1FEdkdZ7+LtTSUku/0BiC0=
+	b=OBaG2Cl8ucfmr8fknD2C8W2lhyEUQVlcEPAdgZK3//Y89ndhKhoot3EPoNJJwuF0G
+	 RBtLYNPuN76wU1YK03qlAbSKoN1onr4u1n4gz1RudAWWqd6Yikrs2cF28rgQxgFImv
+	 F8NMXHfS2O2XKXHo7qSLfFDc2Dx1bbdJI/zM2TW8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3659DF80268;
-	Mon, 22 Mar 2021 03:48:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0ABBF802A0;
+	Mon, 22 Mar 2021 03:48:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 414FBF8026D; Mon, 22 Mar 2021 03:48:29 +0100 (CET)
+ id 6FDA7F802E3; Mon, 22 Mar 2021 03:48:48 +0100 (CET)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 5128DF80118
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 03:48:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5128DF80118
-Date: 22 Mar 2021 11:48:15 +0900
-X-IronPort-AV: E=Sophos;i="5.81,266,1610377200"; d="scan'208";a="75858055"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 22 Mar 2021 11:48:15 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 90345F8028D
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 03:48:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90345F8028D
+Date: 22 Mar 2021 11:48:40 +0900
+X-IronPort-AV: E=Sophos;i="5.81,266,1610377200"; d="scan'208";a="75858102"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 22 Mar 2021 11:48:40 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 44C844001DC2;
- Mon, 22 Mar 2021 11:48:15 +0900 (JST)
-Message-ID: <874kh3aopc.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 39B4E415CFE5;
+ Mon, 22 Mar 2021 11:48:40 +0900 (JST)
+Message-ID: <8735wnaoon.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/3] ASoC: soc.h: add asoc_link_to_cpu/codec/platform() macro
+Subject: [PATCH 2/3] ASoC: soc.h: fixup return timing for
+ snd_soc_fixup_dai_links_platform_name()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <875z1jaopx.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,64 +75,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We shouldn't use dai_link->cpus/codecs/platforms directly,
-because these are array now to supporting multi CPU/Codec/Platform.
-This patch adds asoc_link_to_xxx() macro for it.
+Current snd_soc_fixup_dai_links_platform_name() creates name first (A),
+and checks setup target pointer (B), and set it (C).
+We should check target pointer first IMO.
+This patch exchange the order to (B) -> (A) -> (C).
+
+	int snd_soc_fixup_dai_links_platform_name(...)
+	{
+		...
+		/* set platform name for each dailink */
+		for_each_card_prelinks(card, i, dai_link) {
+(A)			name = devm_kstrdup(...);
+			if (!name)
+				return -ENOMEM;
+
+(B)			if (!dai_link->platforms)
+				return -EINVAL;
+
+			/* only single platform is supported for now */
+(C)			dai_link->platforms->name = name;
+		}
+
+		return 0;
+	}
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/soc.h | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
+ include/sound/soc.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 78609ab331c8..e4161071f300 100644
+index e4161071f300..200815ca4112 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -716,20 +716,38 @@ struct snd_soc_dai_link {
- 	struct snd_soc_dobj dobj; /* For topology */
- #endif
- };
-+
-+static inline struct snd_soc_dai_link_component*
-+asoc_link_to_cpu(struct snd_soc_dai_link *link, int n) {
-+	return &(link)->cpus[n];
-+}
-+
-+static inline struct snd_soc_dai_link_component*
-+asoc_link_to_codec(struct snd_soc_dai_link *link, int n) {
-+	return &(link)->codecs[n];
-+}
-+
-+static inline struct snd_soc_dai_link_component*
-+asoc_link_to_platform(struct snd_soc_dai_link *link, int n) {
-+	return &(link)->platforms[n];
-+}
-+
- #define for_each_link_codecs(link, i, codec)				\
- 	for ((i) = 0;							\
--	     ((i) < link->num_codecs) && ((codec) = &link->codecs[i]);	\
-+	     ((i) < link->num_codecs) &&				\
-+		     ((codec) = asoc_link_to_codec(link, i));		\
- 	     (i)++)
+@@ -1280,13 +1280,13 @@ int snd_soc_fixup_dai_links_platform_name(struct snd_soc_card *card,
  
- #define for_each_link_platforms(link, i, platform)			\
- 	for ((i) = 0;							\
- 	     ((i) < link->num_platforms) &&				\
--	     ((platform) = &link->platforms[i]);			\
-+		     ((platform) = asoc_link_to_platform(link, i));	\
- 	     (i)++)
+ 	/* set platform name for each dailink */
+ 	for_each_card_prelinks(card, i, dai_link) {
++		if (!dai_link->platforms)
++			return -EINVAL;
++
+ 		name = devm_kstrdup(card->dev, platform_name, GFP_KERNEL);
+ 		if (!name)
+ 			return -ENOMEM;
  
- #define for_each_link_cpus(link, i, cpu)				\
- 	for ((i) = 0;							\
--	     ((i) < link->num_cpus) && ((cpu) = &link->cpus[i]);	\
-+	     ((i) < link->num_cpus) &&					\
-+		     ((cpu) = asoc_link_to_cpu(link, i));		\
- 	     (i)++)
- 
- /*
+-		if (!dai_link->platforms)
+-			return -EINVAL;
+-
+ 		/* only single platform is supported for now */
+ 		dai_link->platforms->name = name;
+ 	}
 -- 
 2.25.1
 
