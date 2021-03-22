@@ -2,78 +2,93 @@ Return-Path: <SRS0=WNy5=IU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E62A5C433DB
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 13:03:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08F5EC433C1
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 13:35:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1566861930
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 13:03:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1566861930
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 37A026192E
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 13:35:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37A026192E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41D5F167A;
-	Mon, 22 Mar 2021 14:02:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D5F167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18B519F6;
+	Mon, 22 Mar 2021 14:34:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18B519F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616418210;
-	bh=3FwD+iGdMY6tDr9Btv3T+UB2LLTX6/F6BH6nIYPTdZw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1616420105;
+	bh=Up8NqiwQzN4KckuQKLNR6euPBOCGFEgdn3k5fSJBIqw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kdkiOWiDr4B1YUAvbQwAfWZvojMWeWvxwdaj7vuMDQ23zAWm0EN6/xGLnJYzqYO+8
-	 Kqmp6wQ8hreVdxSenM6p/mkeAnBtNeI5C6cY20NufWRUo+tOEdm1DwTAVj+B7jbCAh
-	 6dYIvhj6E7gqX8Yz0Prl+5jrjL+9x9CNV0NYrHBQ=
+	b=dzPTUQ0an/cCLdxZoQ4d+Z81QFPwTCSAAoPZ6CBihumLiDfI2qv71TW3ysbjAvbcx
+	 WDUxbrrusDWglo6xO6gik93zYrJcABZL/UovMEDStZI9s/Xa0ATg8SwM/ClHar9JtF
+	 ugjErTz5huueuKA7EXBCixHXfbGQ7J4nUqIl5ysU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1779FF804A9;
-	Mon, 22 Mar 2021 14:01:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A87CF8016B;
+	Mon, 22 Mar 2021 14:34:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CAAAF804AA; Mon, 22 Mar 2021 14:01:22 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2C1C9F8016B; Mon, 22 Mar 2021 14:34:13 +0100 (CET)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7796EF8049C
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 14:01:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7796EF8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB9B4F8012F
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 14:33:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB9B4F8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qQRyNER9"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B88661931;
- Mon, 22 Mar 2021 13:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616418073;
- bh=3FwD+iGdMY6tDr9Btv3T+UB2LLTX6/F6BH6nIYPTdZw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qQRyNER9d/VX0hx58Ntm+5Do9XbEi9VUlrAh3B1efx+JxfKFgrL/zaMOSV11lMduY
- Tjy6ufaLZCOXItsyiMApliRuZOG8lPe6RpKgyWbLaWfgLWE/ig9YCbgk6QRxwHn0Rd
- 0k0YIB5sLdhFexm6zDbkt6KAhx9yHLMnngy1KJFD63qAs3inLYvZGVGVhLXPALw7jN
- osXDCMgqIooqZzB2BNa5Mi1Qc+YO9kwYgUSTcstuoFuuMfvEAEVf3vsotTSqtzBgb/
- 90IyKCtYvoCgqXo3BqnPOq71GRRQKmF0SVkZfbKUgZuOENhXTQiCNJrrPxY3u17h2A
- ClFcEPtZf6EDg==
-Date: Mon, 22 Mar 2021 13:01:07 +0000
-From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com
-Subject: Re: [PATCH 1/2] ASoC: rt5682: Add a mclk name property to the device
- tree
-Message-ID: <20210322130107.GC4681@sirena.org.uk>
-References: <20210322124706.17303-1-derek.fang@realtek.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="zVfozITb"
+Received: by mail-lj1-x229.google.com with SMTP id f16so21113670ljm.1
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 06:33:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=0WPnh+9BruSzYQXPNbQjjx8XWnL6ZcqnHNniGVHI2ic=;
+ b=zVfozITby6X5m9cVgVI4NHg5AGR4Yo8qfxBadC5vuclSxXdMiAnlP8/q6gcc671q6M
+ yoDHGQPlbQQbAPghxNLjwU32gH0oFgO4TE9mFrkbcUhq17oA4SI8FJhejv7q+DDBNBmL
+ vObdz/8gDuN+3y8LqnOWSgZjxLgNPg8e4yn1e/3StGUsLWcd3Qq6ylFIoxFEhIyHeGhf
+ FYm2Gl2MqwbCf41PqRcGMWZkLam4KKDt86jlJBewNZGxf0qd2KHTH7X3g9UxMJl8aaYL
+ FZmOd+e675px7yqiZ6HcGMOElUtSA+J4U4KZ0BXSl6Gqz5n6jZFHThyr9/dD4FeO/Y+p
+ kG1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=0WPnh+9BruSzYQXPNbQjjx8XWnL6ZcqnHNniGVHI2ic=;
+ b=UG1GcigSPta8DZ1qCshIUC5WYh/Hdl7Zz7SG6Ik8zlegrwl7KTPMZR0lU61d26xsw6
+ dOgnthKj1L+u5qyl8+a2bW6Ho2nAQajo7D7xAkbevBVs4ZYd6e/YUlBGC0YpsWjhKYcb
+ zmxMx7mseIJxV+4P+0IcXuRB8zKYb1+9M87ZbKhpGS3I6OB91X8iz0BFKIA4ff8+g3UL
+ +aK4+Jv+m8mzSVUZubEoRR1UZkClweO3VoSkYI8rpNYiMR1R5sduyd3uMm8TFC6Jc1zn
+ Ckf94bjls0cz08e/IefhM0ol6JfWYcZpsbIMwqEA4kvTzIITQMYszgXNgVIY2X4gIyWw
+ Yueg==
+X-Gm-Message-State: AOAM530n0S4HcCkX4T+AtYmJ/n23W95h/2QXpZIo51ahTuS06MQHpHsD
+ /Q/PLjhGUSv8Qr6/Jd2hvAdbCUBpEKDEyLR/2nNisA==
+X-Google-Smtp-Source: ABdhPJz0oc64Kx9cMP677X5vUFdOcCeCOUsWcX+1Bc1alVrv+fsS4ITQzDOa0UVfYhR9B41iluJDnEVhOWCLRUDi0tE=
+X-Received: by 2002:a2e:864a:: with SMTP id i10mr9253577ljj.467.1616420037816; 
+ Mon, 22 Mar 2021 06:33:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="NU0Ex4SbNnrxsi6C"
-Content-Disposition: inline
-In-Reply-To: <20210322124706.17303-1-derek.fang@realtek.com>
-X-Cookie: A friend in need is a pest indeed.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, lgirdwood@gmail.com, "derek.fang" <derek@realtek.com>,
- shumingf@realtek.com, flove@realtek.com
+References: <202103191536.9cD1TuQQ-lkp@intel.com>
+ <CAHp75Vchoe2Z00ODh_AWos3Chfa1AoQMjZw7aD=5cGsTFtK7hQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vchoe2Z00ODh_AWos3Chfa1AoQMjZw7aD=5cGsTFtK7hQ@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 22 Mar 2021 14:33:46 +0100
+Message-ID: <CACRpkda5ofCs=nkpZXVyekw2LoeYZUNrFTu1iGPt47ZSMa-6eg@mail.gmail.com>
+Subject: Re: include/linux/unaligned/be_byteshift.h:46:19: error: redefinition
+ of 'get_unaligned_be32'
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,32 +104,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, Mar 19, 2021 at 10:57 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Fri, Mar 19, 2021 at 9:05 AM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi Linus,
+> >
+> > FYI, the error/warning still remains.
+(...)
+> >    In file included from include/linux/build_bug.h:5,
+> >                     from include/linux/bitfield.h:10,
+> >                     from drivers/iio/magnetometer/yamaha-yas530.c:22:
+>
+> Isn't it fixed already somewhere?
 
---NU0Ex4SbNnrxsi6C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It is, I think Jonathan already applied the fix, it is just waiting to
+percolate up
+to Greg and then to Torvals:
+https://lore.kernel.org/linux-iio/20210221154511.75b3d8a6@archlinux/
 
-On Mon, Mar 22, 2021 at 08:47:05PM +0800, derek.fang@realtek.com wrote:
+>> Kconfig warnings: (for reference only)
+>>    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>>    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
+>>    Selected by
+>>    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
+>>    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
+>
+> This one though is interesting.
 
-> +- realtek,mclk-name : Specify the mclk name that codec uses as clock provider.
+This looks like nothing to me :/
+As confused as ever about Kconfig.
 
-This is really non-idiomatic interface design for the device tree (or
-anything really) - the names for the clocks are defined at the device
-scope, it doesn't make sense to have a property like this.
-
---NU0Ex4SbNnrxsi6C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBYlRIACgkQJNaLcl1U
-h9BLfQf+L7jG4wM7HgLIIwBVtJNU0+zd1k3tiByax/G8cWZf2Qw7hpo2HNS1m5/b
-5ac+ZAsoJch/PpEj0dw1fT2nmXh/O5W8za7irosFtmkz3sf1CL/qa4hQY1uBBBfC
-CNkkJu/o/zEerejzDMNXclbEaoK306wCTFHtbKHTZKHPFbNrt8Fx7VoYTrAP0hHn
-NgV7n5nBxZoxjIqnhlm0XjW4I5NrgYc/Q6V7hsioS5ju+O17uNPTtQd+yhHF4RfP
-0qlRzg3GqSceQfBX0DaaQLC6wPGMbxtRfcZ9fe1dvKEXKuOF8K5UJ0yOPJUkVeUy
-TTPTu6k5a7y7FGr2FP0jaz8VGpxgJg==
-=GxoQ
------END PGP SIGNATURE-----
-
---NU0Ex4SbNnrxsi6C--
+Yours,
+Linus Walleij
