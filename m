@@ -2,64 +2,64 @@ Return-Path: <SRS0=WNy5=IU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 418F7C433C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCD4EC433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:26:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CE9061992
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:24:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CE9061992
+	by mail.kernel.org (Postfix) with ESMTPS id 0ADE26198E
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 11:26:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0ADE26198E
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E8F0950;
-	Mon, 22 Mar 2021 12:24:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E8F0950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95F1D9F6;
+	Mon, 22 Mar 2021 12:25:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95F1D9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616412294;
-	bh=M6GY3/w9Zmt72XdkqAfDrInCgrGmfv7jzv/Ppp7brqE=;
+	s=default; t=1616412398;
+	bh=BI/yhBjUPeGGBABykLKQy/haKDOjfa40/rkpWjDEqeg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cd8O+29eYMrEuVjKPig8LSod5ZGb7lfafnm31Lo+K9alIup+iKJQxf+7HL9EaE4t7
-	 dumLyjRRecfgDETuzz3n3TILKfTEbHEyfA2A21KH4LvLgeLyLj3RkT+qnCOA78V4rR
-	 DaVC6Rcp0cLMRJnttqCCz9y09NbCXDYUYBYgu7PM=
+	b=C1bD1nVOESbhCWYeb0uGjYuluvfC0mErtI4uE/9tz5D/FmnKg/fefEpqTd4HLbdns
+	 RbU6pWN0PdnO/6EYsjZaO1iPRGMgtxRMa/GZK/E/2Nvu9HoqG6hBjL1gbGbxYu03aj
+	 TqiRpqyBrafPIspEgp5sic7/z/rNeBQgIR/8mbFo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29D88F80156;
-	Mon, 22 Mar 2021 12:24:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C432F80156;
+	Mon, 22 Mar 2021 12:25:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11D80F8016B; Mon, 22 Mar 2021 12:24:03 +0100 (CET)
+ id CC62FF80156; Mon, 22 Mar 2021 12:25:46 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1A3FF8012F
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 12:23:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1A3FF8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7244BF80156
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 12:25:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7244BF80156
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id BCCA6ADD7;
- Mon, 22 Mar 2021 11:23:59 +0000 (UTC)
-Date: Mon, 22 Mar 2021 12:23:59 +0100
-Message-ID: <s5h4kh3e8j4.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 3D0BFAD4A;
+ Mon, 22 Mar 2021 11:25:40 +0000 (UTC)
+Date: Mon, 22 Mar 2021 12:25:39 +0100
+Message-ID: <s5h35wne8gc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/3] ALSA: bebob: enable MIDI message transmission for
- multiple ports
-In-Reply-To: <20210321032831.340278-1-o-takashi@sakamocchi.jp>
-References: <20210321032831.340278-1-o-takashi@sakamocchi.jp>
+To: Fengfei Xi <xi.fengfei@h3c.com>
+Subject: Re: [PATCH] sound: remove unnecessary blank
+In-Reply-To: <20210321085948.11491-1-xi.fengfei@h3c.com>
+References: <20210321085948.11491-1-xi.fengfei@h3c.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,35 +75,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 21 Mar 2021 04:28:28 +0100,
-Takashi Sakamoto wrote:
+On Sun, 21 Mar 2021 09:59:48 +0100,
+Fengfei Xi wrote:
 > 
-> Hi,
+> Remove unnecessary blank when calling kmalloc_array().
 > 
-> Although below models supported by ALSA bebob driver have multiple MIDI
-> ports, the driver just adds one pair of MIDI ports for ALSA Rawmidi
-> interface:
-> 
->  * M-Audio ProjectMix I/O
->  * ESI Quatafire 610
-> 
-> The cause comes from two bugs:
-> 
->  * The driver registers the number of MIDI conformant data channels into
->    AM824 data block processing layer, instead of the number of MIDI
->    ports.
->  * For Quatafire, the driver counts plugs with MIDI type, however the
->    number of physical MIDI ports is expressed in the number of channels
->    on the plugs.
-> 
-> This patchset enables MIDI message transmission for multiple ports.
-> 
-> Takashi Sakamoto (3):
->   ALSA: bebob: code refactoring for stream format detection
->   ALSA: bebob: detect the number of available MIDI ports
->   ALSA: bebob: enable to deliver MIDI messages for multiple ports
+> Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
 
-Applied all three patches now.  Thanks.
+Thanks for the patch.
+
+We apply this kind of trivial coding-style fix only if it'd improve
+the readability significantly or when it's a preliminary work for the
+other actual fixes.  So if you'd work on this driver further, let us
+know.
 
 
 Takashi
+
+> ---
+>  sound/oss/dmasound/dmasound_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+> index 49679aa86..78bb9dfe2 100644
+> --- a/sound/oss/dmasound/dmasound_core.c
+> +++ b/sound/oss/dmasound/dmasound_core.c
+> @@ -421,7 +421,7 @@ static int sq_allocate_buffers(struct sound_queue *sq, int num, int size)
+>  		return 0;
+>  	sq->numBufs = num;
+>  	sq->bufSize = size;
+> -	sq->buffers = kmalloc_array (num, sizeof(char *), GFP_KERNEL);
+> +	sq->buffers = kmalloc_array(num, sizeof(char *), GFP_KERNEL);
+>  	if (!sq->buffers)
+>  		return -ENOMEM;
+>  	for (i = 0; i < num; i++) {
+> -- 
+> 2.17.1
+> 
