@@ -2,71 +2,123 @@ Return-Path: <SRS0=WNy5=IU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1141C433C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 14:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5BC8C433C1
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 14:56:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 48F3B6191C
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 14:43:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 48F3B6191C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 65D226192E
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 14:56:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65D226192E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADB2D15E2;
-	Mon, 22 Mar 2021 15:42:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADB2D15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 815B7950;
+	Mon, 22 Mar 2021 15:55:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 815B7950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616424216;
-	bh=OnZwwsjicXbPxrnDfqxneFa7HbQhz2isO8W/Ce2c/E4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EZxJo+tPz1aJMeX4sPyNaqMH7DrQ/8Bn4ojicF/CJtosmGc2h3xbWD/33/BVr+w0v
-	 VVWjboo4IMQ3AkOxe4ruR+FjqGslwM626cOr/Rr9vfuvzYgSvZXFRIkqJE9ICaQONA
-	 Gpw5Yb2ofyX1sTtLYQHUgC41zn6m5b93VbD5/CUA=
+	s=default; t=1616424958;
+	bh=f0LhVGAjziPUWgYfdUYTXO86Awg7VC+S6hQ0Aum1IR4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=r9O2CFaMGtV9XfznUzJB5u2aa764NrKggfg2pdirz9dV4EI91nOJYqvvgghyvUfdq
+	 nKjh8GpfnUoL6YmVqWSiUtSoDIvzwdQjCAvivfinv8SUBeiwYu3e61d3fWhjYBY49o
+	 xbGZ1LTBUyzBOCzVM8bCj5J/avdWcdnN3a0bO298=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B4AEF80156;
-	Mon, 22 Mar 2021 15:42:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2BE4F80156;
+	Mon, 22 Mar 2021 15:55:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8164F8016B; Mon, 22 Mar 2021 15:42:44 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 81E73F8016B; Mon, 22 Mar 2021 15:55:06 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6B32F80155
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 15:42:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6B32F80155
-IronPort-SDR: whkCFiIeCdNR1++rSOVjGcAy7bMgdk4fSVWeQ+P4fbfkFGdXjqGpqg4sTpuaUkt0eyCYj1Nfd9
- i/9Hz7K5UqFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189685359"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; d="scan'208";a="189685359"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2021 07:42:32 -0700
-IronPort-SDR: 42waDhGS7euAc9bzydNIgyQJgn2c//Tgfw+kBfXj+AuyNlvaHv2Z1eTmqfIxU6OAG1l7c5eXMV
- /YJeZJcDfoVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; d="scan'208";a="607376510"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga005.fm.intel.com with ESMTP; 22 Mar 2021 07:42:30 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH] ASoC: SOF: Intel: hda: drop display power on/off in D0i3 flows
-Date: Mon, 22 Mar 2021 16:38:30 +0200
-Message-Id: <20210322143830.3880293-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id D214AF80107
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 15:55:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D214AF80107
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="WlKWfvY0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1616424901;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=m6iQUjQycK1sTABfq5tlKr+irKk0x/vcI8pphi4WOdU=;
+ b=WlKWfvY0HFyuf3zCHNejAfCY/2Y94+Q9BpqtD/yXi8hVHgC1TfCzZ8f6+ch8SUb9qS8FH6
+ iPmASY9RThFvdSN+syCvrJx/1B7OtFCFr8AZ+VuYCmfh+jOqvVJgzDMmG8v262+VHwD6i1
+ lU+ybE9PIZ7YddM/zblETLRLePvPS/4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-19-CCb6vbTUOtOWf5kS6bkckA-1; Mon, 22 Mar 2021 10:54:58 -0400
+X-MC-Unique: CCb6vbTUOtOWf5kS6bkckA-1
+Received: by mail-ed1-f69.google.com with SMTP id h5so27604161edf.17
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 07:54:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=m6iQUjQycK1sTABfq5tlKr+irKk0x/vcI8pphi4WOdU=;
+ b=OX9LIl6yW0JafJwmgDjsDL+HfOmC4+jP7i3KH9UO7hyGsan5etgIEAO0VtdaEKp8es
+ rIvblzw67Yw6KBq8Hao2OKPrU6t+HXQ0y6+Cf41pA3uYDVMyKgt88aiUi4lHGoPQ9Kl/
+ 44IqVS/3T5rmhmq6MX2GuZSn8Mj4ryOLjWT3ztxIYiQw+b336XbnSA586BEy7VbINM75
+ NlbU0UVu2YG5i6jp5DP/86a304W1Mf9BCGLwEGMmGr77mrkNBWxcDTgawzQVVwdZ70Sy
+ UeO2gp4K4b0lMaxHxn5d68XGZC7yxDrY/UT3ll6mhk0NXDCfRHot4WDpkcD6cPg92mPE
+ u++Q==
+X-Gm-Message-State: AOAM5334yrgJD9Nf1wuw9EoyRTbed7Ez5PQD5yzf9Kg+PldAA8NyVeUa
+ Ox6vLxzEx3XBYtRpmiFB07WJnWj9lnkMlS+nPBcyw2E+KKOMxsAEJnEM1zZO1v3IUi0XSm7ike3
+ ZnDbJLUirm/IH4OStZyKFbZzvTXSqEoUAkqPAFl4Ofny5/gURf01zVR4nrXTUjmwbjbM4Dj/xAL
+ s=
+X-Received: by 2002:a17:906:1a4b:: with SMTP id
+ j11mr135870ejf.55.1616424897046; 
+ Mon, 22 Mar 2021 07:54:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFJgvoAB5IhBaexAdxZrh2Nx4yd/dRDvJg0PcoQDjNPJcStUY7NDLa0ZRc5dFHgvEe3T69wA==
+X-Received: by 2002:a17:906:1a4b:: with SMTP id
+ j11mr135842ejf.55.1616424896822; 
+ Mon, 22 Mar 2021 07:54:56 -0700 (PDT)
+Received: from x1.localdomain
+ (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+ by smtp.gmail.com with ESMTPSA id cy5sm11549738edb.46.2021.03.22.07.54.56
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 22 Mar 2021 07:54:56 -0700 (PDT)
+Subject: Re: [GIT PULL] Immutable branch between MFD and Extcon due for the
+ v5.13 merge window
+To: Lee Jones <lee.jones@linaro.org>
+References: <20210307151807.35201-1-hdegoede@redhat.com>
+ <20210322144025.GW2916463@dell>
+From: Hans de Goede <hdegoede@redhat.com>
+Message-ID: <83f9ff3c-ab92-cabf-6746-19b15c3f7661@redhat.com>
+Date: Mon, 22 Mar 2021 15:54:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
- lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+In-Reply-To: <20210322144025.GW2916463@dell>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, Mark Brown <broonie@kernel.org>,
+ Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ MyungJoo Ham <myungjoo.ham@samsung.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,49 +134,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Controller needs to ensure display power is enabled only for
-HDA controller reset. Drop the display power-up/down calls from
-D0i3 entry/exit paths.
+Hi,
 
-This was previously not possible as codec drivers could not resume the
-links, and instead controller kept the reference to display power. The
-state of display power had be maintained in the D0i3 entry/exit code.
-With commit 87fc20e4a0cb ("ASoC: SOF: Intel: hda: use hdac_ext
-fine-grained link management"), this is no longer needed and the code
-can be cleaned up.
+On 3/22/21 3:40 PM, Lee Jones wrote:
+> Enjoy!
+> 
+> The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+> 
+>   Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-extcon-v5.13
+> 
+> for you to fetch changes up to a908a716696eee75bf85199cde2b0989290536d1:
+> 
+>   ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c (2021-03-18 11:46:15 +0000)
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Keyon Jie <yang.jie@intel.com>
----
- sound/soc/sof/intel/hda-dsp.c | 5 -----
- 1 file changed, 5 deletions(-)
+Thank you.
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 6e24e1cb13f9..df4cb29b9a1b 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -727,8 +727,6 @@ int hda_dsp_resume(struct snd_sof_dev *sdev)
- 
- 	/* resume from D0I3 */
- 	if (sdev->dsp_power_state.state == SOF_DSP_PM_D0) {
--		hda_codec_i915_display_power(sdev, true);
--
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 		/* power up links that were active before suspend */
- 		list_for_each_entry(hlink, &bus->hlink_list, list) {
-@@ -839,9 +837,6 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, u32 target_state)
- 	cancel_delayed_work_sync(&hda->d0i3_work);
- 
- 	if (target_state == SOF_DSP_PM_D0) {
--		/* we can't keep a wakeref to display driver at suspend */
--		hda_codec_i915_display_power(sdev, false);
--
- 		/* Set DSP power state */
- 		ret = snd_sof_dsp_set_power_state(sdev, &target_dsp_state);
- 		if (ret < 0) {
+Mark can you merge this into your ASoC tree and merge patches 7-13 of:
+https://lore.kernel.org/alsa-devel/20210307151807.35201-1-hdegoede@redhat.com/
 
-base-commit: bf939446c357242b3306e88c5f48976940d29679
--- 
-2.29.2
+?
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+> ----------------------------------------------------------------
+> Immutable branch between MFD and Extcon due for the v5.13 merge window
+> 
+> ----------------------------------------------------------------
+> Hans de Goede (6):
+>       mfd: arizona: Drop arizona-extcon cells
+>       extcon: arizona: Fix some issues when HPDET IRQ fires after the jack has been unplugged
+>       extcon: arizona: Fix various races on driver unbind
+>       extcon: arizona: Fix flags parameter to the gpiod_get("wlf,micd-pol") call
+>       extcon: arizona: Always use pm_runtime_get_sync() when we need the device to be awake
+>       ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c
+> 
+>  MAINTAINERS                                        |  3 +-
+>  drivers/extcon/Kconfig                             |  8 ---
+>  drivers/extcon/Makefile                            |  1 -
+>  drivers/mfd/arizona-core.c                         | 20 -------
+>  .../soc/codecs/arizona-jack.c                      | 63 +++++++++++-----------
+>  5 files changed, 34 insertions(+), 61 deletions(-)
+>  rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (98%)
+> 
 
