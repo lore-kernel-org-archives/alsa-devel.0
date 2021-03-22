@@ -7,70 +7,72 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 61498C433C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 16:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 728F4C433C1
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 16:40:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 941ED61983
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 16:39:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 941ED61983
+	by mail.kernel.org (Postfix) with ESMTPS id 676B46157F
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Mar 2021 16:40:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 676B46157F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23A90852;
-	Mon, 22 Mar 2021 17:38:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23A90852
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDF8B166C;
+	Mon, 22 Mar 2021 17:39:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF8B166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616431182;
-	bh=85L6X2n4pYlF2a8S2JW5e2BcOyYjdKNIhWYZsWZ18yo=;
+	s=default; t=1616431217;
+	bh=EkrMpy2wrIpOzgaV47V1Xwi1WBT3pLcDeqd+iehi2Jo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dr6R5KFClGvsR+VAvwNWuv/K2nRdUu/b0IrMsmbH393eowuJxJVtOHVZ4FZ+Y4fc/
-	 JdUmtLc+4uZasWPQQ2VBknjbuzChSPVrjJiH5e+q7sC21f8r8C1wrE8nVOs+0xdv5o
-	 lbhpa50PPiXzL+cOud1T17/95mNjZC243dm4764g=
+	b=NtvAZ/HXOE/jZ9WNs+ZZjtESHFDxV3JCseHWC6jZd9/hoRcjX/84aYJV1Ny1iXXSb
+	 38Uy969EOzN1t7U7Q0e7uuC5ilBziUuHaemJt9QWsWXEnt93RPEgWDSB/54QFdXevL
+	 zkFK9Am4QpIbFS1gGT2Uncdd2zyDhUoQzIWxpFEU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68C5BF801EB;
-	Mon, 22 Mar 2021 17:38:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2830EF802E3;
+	Mon, 22 Mar 2021 17:38:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BCE2F802E3; Mon, 22 Mar 2021 17:38:00 +0100 (CET)
+ id 5AF6AF8032C; Mon, 22 Mar 2021 17:38:00 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8A6EF80107
- for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 17:37:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8A6EF80107
-IronPort-SDR: dk0VVfJ+w59qsEfxt5e/dMiEX5cA5jT2v4BTqIUu+aFgWax1LHmo7828X/4efO7M5uMK+XebwP
- Xgz1ohYlWi/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="210376606"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; d="scan'208";a="210376606"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEE7CF8012F
+ for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2021 17:37:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEE7CF8012F
+IronPort-SDR: vEM3mPJr0ysLKBeMKyHdvjI0i8c9Dq21vIY9HpgaAdDP3D0RxmGTkq1PEPRQmVfgPhYGmjavw8
+ mzp2cztfaNDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="210376621"
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; d="scan'208";a="210376621"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2021 09:37:42 -0700
-IronPort-SDR: X+E8/3bCDBkD+5KJQml426Q0k7b4+Jas1Ib7L5D1lJFXN74hRlV1ZEyirLaom+mf41yFmteZM6
- rRIkdFLIddNA==
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; d="scan'208";a="407899081"
+ 22 Mar 2021 09:37:44 -0700
+IronPort-SDR: nnKhsYmJq+/gZ6MXRCkebPuzoMV09dKcbi2giaO9/t8Mua0kFtYjNgDSSfNrZusElVGrIm137u
+ SnIO4thHXg5g==
+X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; d="scan'208";a="407899100"
 Received: from josemari-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.40.21])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2021 09:37:41 -0700
+ 22 Mar 2021 09:37:43 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/8] ASoC: SOF: core: harden shutdown helper
-Date: Mon, 22 Mar 2021 11:37:22 -0500
-Message-Id: <20210322163728.16616-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/8] ASoC: SOF: Intel: TGL: set shutdown callback to
+ hda_dsp_shutdown
+Date: Mon, 22 Mar 2021 11:37:24 -0500
+Message-Id: <20210322163728.16616-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210322163728.16616-1-pierre-louis.bossart@linux.intel.com>
 References: <20210322163728.16616-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+Cc: Libin Yang <libin.yang@intel.com>, tiwai@suse.de,
+ Pan Xiuli <xiuli.pan@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,43 +88,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the probe is handled in a workqueue, we must use
-cancel_work_sync() in the shutdown helper to avoid possible race
-conditions.
+From: Libin Yang <libin.yang@intel.com>
 
-We must also take care of possible errors happening in a probe
-workqueue or during pm_runtime resume (called e.g. before shutdown for
-PCI devices). We should really only try to access hardware registers
-and initiate IPCs if the DSP is fully booted.
+According to hardware spec and PMC FW requirement, the DSP must be
+in D3 state before entering S5. Define the shutdown function to use
+snd_sof_suspend as shutdown callback to make sure DSP is in D3 state.
 
-Fixes: daff7f1478e12 ("ASoC: SOF: add snd_sof_device_shutdown() helper for shutdown")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 44a4cfad8d78 ("ASoC: SOF: Intel: tgl: do thorough remove at .shutdown() callback")
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-dsp.c | 6 ++++++
+ sound/soc/sof/intel/hda.h     | 1 +
+ sound/soc/sof/intel/tgl.c     | 2 +-
+ 3 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
-index 495295a34c3a..7005353602c4 100644
---- a/sound/soc/sof/core.c
-+++ b/sound/soc/sof/core.c
-@@ -400,7 +400,13 @@ int snd_sof_device_shutdown(struct device *dev)
- {
- 	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
- 
--	return snd_sof_shutdown(sdev);
-+	if (IS_ENABLED(CONFIG_SND_SOC_SOF_PROBE_WORK_QUEUE))
-+		cancel_work_sync(&sdev->probe_work);
-+
-+	if (sdev->fw_state == SOF_FW_BOOT_COMPLETE)
-+		return snd_sof_shutdown(sdev);
-+
-+	return 0;
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 1f1ce7036764..09a5d9040a90 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -896,6 +896,12 @@ int hda_dsp_suspend(struct snd_sof_dev *sdev, u32 target_state)
+ 	return snd_sof_dsp_set_power_state(sdev, &target_dsp_state);
  }
- EXPORT_SYMBOL(snd_sof_device_shutdown);
  
++int hda_dsp_shutdown(struct snd_sof_dev *sdev)
++{
++	sdev->system_suspend_target = SOF_SUSPEND_S3;
++	return snd_sof_suspend(sdev->dev);
++}
++
+ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev)
+ {
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 7c7579daee7f..ae80725b0e33 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -517,6 +517,7 @@ int hda_dsp_resume(struct snd_sof_dev *sdev);
+ int hda_dsp_runtime_suspend(struct snd_sof_dev *sdev);
+ int hda_dsp_runtime_resume(struct snd_sof_dev *sdev);
+ int hda_dsp_runtime_idle(struct snd_sof_dev *sdev);
++int hda_dsp_shutdown(struct snd_sof_dev *sdev);
+ int hda_dsp_set_hw_params_upon_resume(struct snd_sof_dev *sdev);
+ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags);
+ void hda_ipc_dump(struct snd_sof_dev *sdev);
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index 419f05ba1920..3e46fac53f78 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -25,7 +25,7 @@ const struct snd_sof_dsp_ops sof_tgl_ops = {
+ 	/* probe/remove/shutdown */
+ 	.probe		= hda_dsp_probe,
+ 	.remove		= hda_dsp_remove,
+-	.shutdown	= hda_dsp_remove,
++	.shutdown	= hda_dsp_shutdown,
+ 
+ 	/* Register IO */
+ 	.write		= sof_io_write,
 -- 
 2.25.1
 
