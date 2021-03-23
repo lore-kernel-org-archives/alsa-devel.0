@@ -6,71 +6,73 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6835EC433C1
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:13:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 546FAC433C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:14:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D29D4619D5
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:13:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D29D4619D5
+	by mail.kernel.org (Postfix) with ESMTPS id 288F2619B3
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:14:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 288F2619B3
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AF2F1666;
-	Tue, 23 Mar 2021 23:12:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AF2F1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 707531679;
+	Tue, 23 Mar 2021 23:13:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707531679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616537605;
-	bh=IuxcZXDuH7ciWf6IKC7i07wcDMw4N/IhodCrroOKVY4=;
+	s=default; t=1616537657;
+	bh=8jHtcyQnu/VSZYfYhOCQiM7CrK40g6+TchzXrIUIuug=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ovz1ndRbpSsDZGFh8mWgZ4RCsPqdcHCW0beX+Uu2XFb7DCvixQD40Yl+YWJNoFm6G
-	 gknYoZDNxwdqTgdSgxJE7TCAUtCer0UO3OuxQc07XeWU4c6fT08rGNEeCWS29d2sg0
-	 nq5bXGWZISeusl9+wBAv5/P4UY0BvsZ3vgyFMZnk=
+	b=c7m63VAueBNKKN8A+Y2lZiRMXyaDtA6nvWfjIxrYIStEU7vn7m742KEVEq9SxKu/W
+	 5EZwpNy/VvMcOkHG63grU6qFwFo/a37i+vKuOXfWm9zNCBCJWQGBh5d9bwLpms9d8G
+	 g5BhuJ7c9meCfwXfQr1A9kHL7iHiEX1HBcy2THqA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9C4FF80257;
-	Tue, 23 Mar 2021 23:12:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13B24F8026D;
+	Tue, 23 Mar 2021 23:12:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F5CFF80268; Tue, 23 Mar 2021 23:12:33 +0100 (CET)
+ id 69393F8025F; Tue, 23 Mar 2021 23:12:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15ABCF800EE
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 23:12:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15ABCF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B5ECF80257
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 23:12:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B5ECF80257
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AgETlZwU"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00718619CB;
- Tue, 23 Mar 2021 22:12:24 +0000 (UTC)
+ header.b="fRgyxtLW"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F136A61879;
+ Tue, 23 Mar 2021 22:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616537545;
- bh=IuxcZXDuH7ciWf6IKC7i07wcDMw4N/IhodCrroOKVY4=;
+ s=k20201202; t=1616537548;
+ bh=8jHtcyQnu/VSZYfYhOCQiM7CrK40g6+TchzXrIUIuug=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=AgETlZwU8+7/LhLRSt9NTyJz5lJfbsYZ/KKbI8CdK0KdlNj8yvKk8D8nPyC4Ku/nR
- LQAGLFsED2QRZKKQO+teTWii8SJ4edOeXOEfB6hIVUgtp9uDSU096ySGEwqbfNJJwH
- 0uDra+TE34Ggm1iUas3/iltVLauwvujEIccpttdTX/3WeSVLNk9bjpXFVbxVhfhLw2
- /DEU4vjbYQyeOu2gWNlG7RlreObYUXp4nFXEeGE+1nDESw/LzCNNdMk3nbFzIn4FfJ
- kfKEvPnvKbKtLsy/BKl7f+q59OR0tkj5qfTeBpEKLLbJ7P7onrcTNJB/ob0JFQXMLT
- cl1VoTIpFWrbA==
+ b=fRgyxtLW3cqQO38t9DeYJvCeUKmJOLFEXGoVcUj2ED73u1drKmzrMkW9d1e56dsGZ
+ LFg0YhT1CtUBILN1bBXBzPHTFgMabgxcRYIC9KVmUhQBI4YpL0SEiUicIcDbi6YwDY
+ BuEkP/ehHozo5d0ay517os4rXsoWwt1f76C9nEAF3+5w3VmSMFwtS4nrDOkMphptWq
+ /RyoV59+M5ltj7VNJcg3WMb6Xq7xP3ntaSwPECI/BkWx+3K57x5mYz5rCIdcSHpanC
+ YZfFZXydf5auT138CSZKvsz+ihRt+tBCmt+0DQVzyuLCsOlDLbAWgIvN9M6qomDuTB
+ yJJAXmjJasLPQ==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 0/8] ASoC: SOF: Intel: shutdown and core handling
- corrections
-Date: Tue, 23 Mar 2021 22:12:12 +0000
-Message-Id: <161653747938.32729.8614811581903341680.b4-ty@kernel.org>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda: drop display power on/off in D0i3
+ flows
+Date: Tue, 23 Mar 2021 22:12:13 +0000
+Message-Id: <161653747938.32729.17016573143292707136.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210322163728.16616-1-pierre-louis.bossart@linux.intel.com>
-References: <20210322163728.16616-1-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210322143830.3880293-1-kai.vehmanen@linux.intel.com>
+References: <20210322143830.3880293-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>
+Cc: yung-chuan.liao@linux.intel.com, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com, Mark Brown <broonie@kernel.org>,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,15 +88,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Mar 2021 11:37:20 -0500, Pierre-Louis Bossart wrote:
-> This patchset fixes a logical flow in the core status, improves
-> shutdown support on Intel SOF platforms with an HDaudio controller and
-> cleans-up ElkhartLake support.
+On Mon, 22 Mar 2021 16:38:30 +0200, Kai Vehmanen wrote:
+> Controller needs to ensure display power is enabled only for
+> HDA controller reset. Drop the display power-up/down calls from
+> D0i3 entry/exit paths.
 > 
-> Guennadi Liakhovetski (1):
->   ASoC: SOF: Intel: HDA: fix core status verification
-> 
-> [...]
+> This was previously not possible as codec drivers could not resume the
+> links, and instead controller kept the reference to display power. The
+> state of display power had be maintained in the D0i3 entry/exit code.
+> With commit 87fc20e4a0cb ("ASoC: SOF: Intel: hda: use hdac_ext
+> fine-grained link management"), this is no longer needed and the code
+> can be cleaned up.
 
 Applied to
 
@@ -102,22 +106,8 @@ Applied to
 
 Thanks!
 
-[1/8] ASoC: SOF: Intel: HDA: fix core status verification
-      commit: 927280909fa7d8e61596800d82f18047c6cfbbe4
-[2/8] ASoC: SOF: core: harden shutdown helper
-      commit: 91ec48f540f83022377723a774a0a37a630801af
-[3/8] ASoC: SOF: Intel: TGL: fix EHL ops
-      commit: 3c429f861ed483517a0a352281a16503bcc60b55
-[4/8] ASoC: SOF: Intel: TGL: set shutdown callback to hda_dsp_shutdown
-      commit: 22aa9e021ad1ee7ce640270e75f4bdccff65d287
-[5/8] ASoC: SOF: Intel: ICL: set shutdown callback to hda_dsp_shutdown
-      commit: 4939e49ea5804f89941df86d35f1a1e1cd8b435b
-[6/8] ASoC: SOF: Intel: CNL: set shutdown callback to hda_dsp_shutdown
-      commit: b0503e8410e5ee43da116772576dbdeb2a414e0b
-[7/8] ASoC: SOF: Intel: APL: set shutdown callback to hda_dsp_shutdown
-      commit: d3aa96bf349882763b9903e5800d2e83fc086886
-[8/8] ASoC: SOF: Intel: move ELH chip info
-      commit: 8bb84ca873d2222ca220e58a097090775b1fd8df
+[1/1] ASoC: SOF: Intel: hda: drop display power on/off in D0i3 flows
+      commit: dfb81e3b5f47aa0ea5e4832eeb720bc22f07d0c1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
