@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E360DC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 20:57:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DDDFC433E0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 21:00:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0CBFD619CE
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 20:57:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0CBFD619CE
+	by mail.kernel.org (Postfix) with ESMTPS id 8C0DF61994
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 21:00:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8C0DF61994
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A8181663;
-	Tue, 23 Mar 2021 21:56:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A8181663
+	by alsa0.perex.cz (Postfix) with ESMTPS id C19D1165D;
+	Tue, 23 Mar 2021 21:59:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C19D1165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616533024;
-	bh=/zkSo02U6CpimDARC9HCP05PtBc7+VuI1pNmhrZCbpE=;
+	s=default; t=1616533248;
+	bh=fvhhZ/i0URukqg83DsN5iXqGXtolXJyKx2goS7r5OfA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O9tPLTJ1U1P8qXjCkD10ud8T1Wlt4JbvBBNjRk4qUb+3FViuvNkV5klMsxbFs9kWQ
-	 8KN1DkMu8t3XVh7PhSJhV4TzDVI/efRw4ZvjE2355xtVBFqIL5YZ2I3ZWWHhd7vBMq
-	 h9GEGE8Q4FRnw1s0T3J3lBPUCKPpSQxMReBCrIJs=
+	b=iifNzDrsRsfOSxwheMIx9Oz1fWNCCdkTTe4ilbyGpWl9a1rKf/CQl8mBw/rigGoMT
+	 wPRJqp5vhXLR3te4JqAfgo5qhmK5QPvmIvZaJXQbSNXtsrQ1q+E+1gna1ESL4nHtLB
+	 b4rP5KyOok5rXaIoPCB+SGdPFBRCxMGxGkwhRnfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03908F80104;
-	Tue, 23 Mar 2021 21:56:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D0E2F80257;
+	Tue, 23 Mar 2021 21:59:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02C5EF8025F; Tue, 23 Mar 2021 21:56:12 +0100 (CET)
+ id 44D43F8025F; Tue, 23 Mar 2021 21:59:52 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BA5CEF80104
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 21:56:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA5CEF80104
+ by alsa1.perex.cz (Postfix) with ESMTP id 24E75F80104
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 21:59:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24E75F80104
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
+From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1616532963879401922-webhooks-bot@alsa-project.org>
-References: <1616532963879401922-webhooks-bot@alsa-project.org>
+In-Reply-To: <1616533188374738932-webhooks-bot@alsa-project.org>
+References: <1616533188374738932-webhooks-bot@alsa-project.org>
 Subject: Intro and prep for Topology2.0
-Message-Id: <20210323205612.02C5EF8025F@alsa1.perex.cz>
-Date: Tue, 23 Mar 2021 21:56:12 +0100 (CET)
+Message-Id: <20210323205952.44D43F8025F@alsa1.perex.cz>
+Date: Tue, 23 Mar 2021 21:59:52 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,9 +66,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib pull request #129 was opened from ranj063:
+alsa-project/alsa-lib pull request #129 was edited from ranj063:
 
-This pull request includes the preparatory commits paving the way for introducing Topology2.0. An example implementation of topology with Topology2.0 can be found here:
+This pull request includes the preparatory commits paving the way for introducing Topology2.0. Existing alsatplg compiler
+functionality is unmodified.
+
+An example implementation of topology with Topology2.0 can be found here:
 https://github.com/thesofproject/sof/pull/3936
 
    **Introduction to Topology 2.0**
