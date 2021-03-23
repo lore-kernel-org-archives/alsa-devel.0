@@ -2,94 +2,77 @@ Return-Path: <SRS0=iUFt=IV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E16DCC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 11:46:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C2D6C433C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 12:17:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 26182619BA
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 11:46:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 26182619BA
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0803B619B3
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 12:16:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0803B619B3
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A863D1666;
-	Tue, 23 Mar 2021 12:45:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A863D1666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 970AC1660;
+	Tue, 23 Mar 2021 13:16:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 970AC1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616499987;
-	bh=HUy9SuzJ1x+SoyTBE/9oxiQt7Vd1okainUo64cODfVY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616501816;
+	bh=9IhcIYUFkj6abO+vQ+MfUH/I1dxEbPt/1I1jSSlmOc8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X/RqGD2BsQqHpL9+Kz9Xhi4fzTveT3nH7sJa39knPxSp32IILzdJ/vijMtF7E99A7
-	 GExG3Fqdk6/v4E/l4AKn+7kIm5lZVDix67ZblSONocjbSFL11mX5KsOeuGCqcU9MWc
-	 k4Wmr237Z6Uo+LmUUIB3rE1ZnY43VDshmSdgYVcU=
+	b=B+vARSBpdOgWbjTiBaBa7oVILi5PYu8di5lTaBD4qxVZijHR8NmC+Na1AzXTCAnEf
+	 D2kGijwUXlpYxMLERk1w6mKAzgVCmy/BU00UiW6ZwH67rFNbv/rMzXsC2S4pJRYfzu
+	 UjhHCCoBjyHZw3vCmeks/ljXQr8i19ySYCbujwIg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5533F80482;
-	Tue, 23 Mar 2021 12:44:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15BA1F80257;
+	Tue, 23 Mar 2021 13:16:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49335F8042F; Tue, 23 Mar 2021 12:44:11 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A3B2CF8025F; Tue, 23 Mar 2021 13:16:04 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 986A9F80279
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 12:44:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 986A9F80279
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="nCienpYj"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1616499842; x=1648035842;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=HUy9SuzJ1x+SoyTBE/9oxiQt7Vd1okainUo64cODfVY=;
- b=nCienpYjJyc09QTtRGuvjvqcsea7VyM5oRBwL7fEuaEGV0dN//GEgvym
- YgDnI8NlZsbxRr9DM0MNCbg64O+98HeKNvectz/htFf+VCZHyZbiAsKE1
- nUSG0kqDIN8U+lYgalYj0QWGVLV3yHkUUX671c187IwbN6jbtqEHwbvLc
- rjeBqSH1huryOrlLlvv54/lqqEv80TUttjEjmd6/BZVwdjyZl5wEidGrU
- Df/Zu1AvAnNSfIssKY6Ua8Z9aU+3Wll1WsF4gut+6iLv3cF7c5MKnYdDR
- mv1ezBJGeFSAEMB1AhaB0/aDB/YyNmlFWIOCmw+R3D81UP7lFR4jMp91S Q==;
-IronPort-SDR: MVAniebYcvsWxLwTvxXjqZa7Y1SrowUrybCZbN1JE+JZylWTioWDMb7DcOp2Tbyw1Lw1Wrb/ls
- HIBgtV84aLofnnTktzSur++2ycD/O6dEoHiFvNYxZw0wKLoG12O9wPwIBlqZS1+Bt6VDA43rmn
- 6eiSFNFYFK77CnLOWVt0OgJIwjyb7mPOCokgutRLRmg92XqU4wMCP0jlnyrrtmJDeCRVbeY1uU
- xTMTDadkw5H0wOKdBfscchq+xkJ6mGGgrIQ4dCp7r50TEmp3EvexQyFwb1C35WSsdR5SqxNlib
- EU8=
-X-IronPort-AV: E=Sophos;i="5.81,271,1610434800"; d="scan'208";a="111004697"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 23 Mar 2021 04:43:59 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 23 Mar 2021 04:43:58 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 23 Mar 2021 04:43:55 -0700
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To: <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 3/3] ASoC: soc-pcm: apply BE HW constraint rules
-Date: Tue, 23 Mar 2021 13:43:27 +0200
-Message-ID: <20210323114327.3969072-4-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E14DDF800EE
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 13:15:51 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 2729FA0040;
+ Tue, 23 Mar 2021 13:15:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 2729FA0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1616501751; bh=L7RtC/J9cVnv8GxX8+4LxNg4WgklUuLLCUAYCPtdAPA=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=Cct2tPYRtka1uAOJe3Kr8EryGViDEEB/mRyJYxpy6msE9ADZUzSEwgeiFo+NIwE9a
+ Rbqswpf84YnohsVdSvY3toeWTU3E2z1T1CzNBPoAuFNTTNXFTNGseEmV/OuFhJ+UC0
+ rc8z+A45mutcMSB/GXOirO1vQf+VlmvY2S5c0+HQ=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 23 Mar 2021 13:15:43 +0100 (CET)
+Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <a0c862ec-44ba-52e0-551c-0347166ac4e9@perex.cz>
+Date: Tue, 23 Mar 2021 13:15:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: gustavoars@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- mirq-linux@rere.qmqm.pl, broonie@kernel.org,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+In-Reply-To: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: gustavoars@kernel.org, mirq-linux@rere.qmqm.pl, broonie@kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,137 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apply the HW constraint rules added by the BE DAIs. The constraint rules
-are applied after the fixup is called for the HW parameters. This way, if
-the HW parameters do not correspond with the HW capabilities, the
-constraint rules will return an error. The mask and the interval
-constraints are the same as the ones used for FE. The DAI link
-dpcm_merged_* flags are used to check if the FE and BE must share the same
-HW parameters.
+Dne 23. 03. 21 v 12:43 Codrin Ciubotariu napsal(a):
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- include/sound/pcm.h     |  2 ++
- sound/core/pcm_native.c | 17 +++++++++++++----
- sound/soc/soc-pcm.c     | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 45 insertions(+), 4 deletions(-)
+> To achieve this, the first thing needed is to detect whether a HW
+> constraint rule is enforced by a FE or a BE DAI. This means that
+> snd_pcm_hw_rule_add() needs to be able to differentiate between the two
+> type of DAIs. For this, the runtime pointer to struct snd_pcm_runtime is
+> replaced with a pointer to struct snd_pcm_substream, to be able to reach
+> substream->pcm->internal to differentiate between FE and BE DAIs.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 198d37d04d78..b56a4435439a 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -987,6 +987,8 @@ int snd_pcm_hw_rule_div(struct snd_pcm_hw_params *params,
- 			struct snd_pcm_hw_rule *rule);
- 
- int snd_pcm_hw_refine(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params);
-+int constrain_params_by_rules(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params);
- 
- int snd_pcm_hw_constraint_mask64(struct snd_pcm_runtime *runtime, snd_pcm_hw_param_t var,
- 				 u_int64_t mask);
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index d6f14162bce5..2ff6e182c7f5 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -22,6 +22,7 @@
- #include <sound/pcm_params.h>
- #include <sound/timer.h>
- #include <sound/minors.h>
-+#include <sound/soc.h>
- #include <linux/uio.h>
- #include <linux/delay.h>
- 
-@@ -326,11 +327,10 @@ static int constrain_interval_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int constrain_params_by_rules(struct snd_pcm_substream *substream,
--				     struct snd_pcm_hw_params *params)
-+int constrain_params_by_rules(struct snd_pcm_substream *substream,
-+			      struct snd_pcm_hw_params *params)
- {
--	struct snd_pcm_hw_constraints *constrs =
--					&substream->runtime->hw_constraints;
-+	struct snd_pcm_hw_constraints *constrs;
- 	unsigned int k;
- 	unsigned int *rstamps;
- 	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
-@@ -342,6 +342,14 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	bool again;
- 	int changed, err = 0;
- 
-+	if (substream->pcm->internal) {
-+		struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+
-+		constrs = &rtd->dpcm[substream->stream].hw_constraints;
-+	} else {
-+		constrs = &substream->runtime->hw_constraints;
-+	}
-+
- 	/*
- 	 * Each application of rule has own sequence number.
- 	 *
-@@ -446,6 +454,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	kfree(rstamps);
- 	return err;
- }
-+EXPORT_SYMBOL(constrain_params_by_rules);
- 
- static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
- 				     struct snd_pcm_hw_params *params)
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index dae246918e0d..5bd71d48c0de 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1934,11 +1934,25 @@ int dpcm_be_dai_hw_params(struct snd_soc_pcm_runtime *fe, int stream)
- 		memcpy(&dpcm->hw_params, &fe->dpcm[stream].hw_params,
- 				sizeof(struct snd_pcm_hw_params));
- 
-+		/* copy FE mask and interval constraints */
-+		memcpy(&be->dpcm[stream].hw_constraints.masks,
-+		       &be_substream->runtime->hw_constraints.masks,
-+		       sizeof(be_substream->runtime->hw_constraints.masks));
-+		memcpy(&be->dpcm[stream].hw_constraints.intervals,
-+		       &be_substream->runtime->hw_constraints.intervals,
-+		       sizeof(be_substream->runtime->hw_constraints.intervals));
-+
- 		/* perform any hw_params fixups */
- 		ret = snd_soc_link_be_hw_params_fixup(be, &dpcm->hw_params);
- 		if (ret < 0)
- 			goto unwind;
- 
-+		/* apply constrain rules */
-+		dpcm->hw_params.rmask = ~0U;
-+		ret = constrain_params_by_rules(be_substream, &dpcm->hw_params);
-+		if (ret < 0)
-+			goto unwind;
-+
- 		/* copy the fixed-up hw params for BE dai */
- 		memcpy(&be->dpcm[stream].hw_params, &dpcm->hw_params,
- 		       sizeof(struct snd_pcm_hw_params));
-@@ -2002,6 +2016,22 @@ static int dpcm_fe_dai_hw_params(struct snd_pcm_substream *substream,
- 
- 	memcpy(&fe->dpcm[stream].hw_params, params,
- 			sizeof(struct snd_pcm_hw_params));
-+	if (!fe->dai_link->dpcm_merged_format) {
-+		snd_mask_any(hw_param_mask(&fe->dpcm[stream].hw_params,
-+					   SNDRV_PCM_HW_PARAM_FORMAT));
-+		snd_interval_any(hw_param_interval(&fe->dpcm[stream].hw_params,
-+						   SNDRV_PCM_HW_PARAM_SAMPLE_BITS));
-+		snd_interval_any(hw_param_interval(&fe->dpcm[stream].hw_params,
-+						   SNDRV_PCM_HW_PARAM_FRAME_BITS));
-+	}
-+	if (!fe->dai_link->dpcm_merged_chan) {
-+		snd_interval_any(hw_param_interval(&fe->dpcm[stream].hw_params,
-+						   SNDRV_PCM_HW_PARAM_CHANNELS));
-+	}
-+	if (!fe->dai_link->dpcm_merged_rate) {
-+		snd_interval_any(hw_param_interval(&fe->dpcm[stream].hw_params,
-+						   SNDRV_PCM_HW_PARAM_RATE));
-+	}
- 	ret = dpcm_be_dai_hw_params(fe, stream);
- 	if (ret < 0)
- 		goto out;
+Think about other not-so-invasive solution. What about to use
+'runtime->private_data' (struct snd_soc_pcm_runtime *) to determine FE / BE?
+
+					Jaroslav
 -- 
-2.27.0
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
