@@ -2,66 +2,69 @@ Return-Path: <SRS0=iUFt=IV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFF80C433C1
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 05:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EAC5C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 05:09:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4F34E61925
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 05:08:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4F34E61925
+	by mail.kernel.org (Postfix) with ESMTPS id 6781F619A0
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 05:09:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6781F619A0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09EC1886;
-	Tue, 23 Mar 2021 06:07:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09EC1886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D3DD1607;
+	Tue, 23 Mar 2021 06:08:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D3DD1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616476093;
-	bh=XCJppjgfKhfQ0uVvDhmUaAztn901iBsfjkO8hZmiEuI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hsI5/oqdF0SKWoZm/XkhXix23xR+8LUVG3CYVNkjq7t2ClZmtqDX0/RSTK2lca942
-	 roeClIpzX7QY+CSbjRqk0yCaQU+f7+7dQ8SfEPgSgghpmQcKHmlJOIT9ANYnirWpTa
-	 b8PG9yfWOqq434cDhQE13KJbFVPNE/S/7BcOkmTY=
+	s=default; t=1616476144;
+	bh=tHDNjEv+lZtOQdCXRVlxI1AueFsyBEH6DDiJsskcbv0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gwr1pUXHbTbIEBujEc9eCxYzXD0zGmWR3E9WRKpPNckl6vL2YNlCmGY95n9IK9K9Z
+	 xfyaZCcoWjmwL51d337emsAGNqt5mjxzav+UomejsuGQMR1esPfL1T21FluwzuiI1o
+	 573h5ryPolbavijdUNAFTXws6YWqqnJPIwdgVFGo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CA21F80268;
-	Tue, 23 Mar 2021 06:07:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11308F8025F;
+	Tue, 23 Mar 2021 06:07:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7005F80268; Tue, 23 Mar 2021 06:07:20 +0100 (CET)
+ id 94429F8028D; Tue, 23 Mar 2021 06:07:27 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36646F80155
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 06:07:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36646F80155
-IronPort-SDR: E/tDMzwEeHGMFuNUqTjKDIMci4T2+T3nNuXwZ+E4sJHACNtXbPyhGoLZA1j2AMEgS8hJ2bsA2o
- SwDfVSw2/mmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189805376"
-X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; d="scan'208";a="189805376"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EB72F80257
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 06:07:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EB72F80257
+IronPort-SDR: Duc36UAAD5pefFq4dElkpQXQ+RtmKmGx3S6xznYnIh24+CuPl8xZIRUEfhZQtdAdRLWbAMuI8O
+ i78YNao2xYAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189805380"
+X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; d="scan'208";a="189805380"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2021 22:07:10 -0700
-IronPort-SDR: tOsgc3BtFl5qVr7E0ignpugOAoXwAZGiasoF7KP/P7EEL6XRQ9jVqk7k1eHtSbh3ApSkAtnlB5
- eJktu3V66UNw==
-X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; d="scan'208";a="414800900"
+ 22 Mar 2021 22:07:12 -0700
+IronPort-SDR: 2g+QbbLTG9piWLLnkm6TrIcb4ktNShOK5MGWU9XimSPag/ptxen6c2QGdV7ejFvWxXuWROapG8
+ 7mtnXOfCLmiw==
+X-IronPort-AV: E=Sophos;i="5.81,270,1610438400"; d="scan'208";a="414800903"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2021 22:07:09 -0700
+ 22 Mar 2021 22:07:11 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 0/2] soundwire: configure block packing mode with new
-Date: Tue, 23 Mar 2021 13:06:59 +0800
-Message-Id: <20210323050701.23760-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 1/2] soundwire: add definition for DPn BlockPackingMode
+Date: Tue, 23 Mar 2021 13:07:00 +0800
+Message-Id: <20210323050701.23760-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210323050701.23760-1-yung-chuan.liao@linux.intel.com>
+References: <20210323050701.23760-1-yung-chuan.liao@linux.intel.com>
 Cc: vkoul@kernel.org, alsa-devel@alsa-project.org,
  pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -79,27 +82,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The existing code multiply a channel number by zero (SDW_BLK_GRP_CNT_1),
-and the result is used to configure the block packing mode. Sampling
-grouping and channel packing are two separate concepts in SoundWire.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-In addition, the bandwidth allocation allocates a vertical slice for
-each stream, which makes the use of the PER_CHANNEL packing mode
-irrelevant.
+For some reason we don't have an enum for this concept. Add
+definitions following Table 102 of the SoundWire 1.2 specification.
 
-Let's use the proper definition for block packing mode (PER_PORT).
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ include/linux/soundwire/sdw.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-This change has no functional impact though since the net result is
-the same configuration of the DPN_BlockCtrl3 register, when implemented.
-
-Pierre-Louis Bossart (2):
-  soundwire: add definition for DPn BlockPackingMode
-  soundwire: generic_allocation: fix confusion between group and packing
-
- drivers/soundwire/generic_bandwidth_allocation.c | 7 +++----
- include/linux/soundwire/sdw.h                    | 6 ++++++
- 2 files changed, 9 insertions(+), 4 deletions(-)
-
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index eaa1486bdca9..350436db6ddb 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -125,6 +125,12 @@ enum sdw_dpn_grouping {
+ 	SDW_BLK_GRP_CNT_4 = 3,
+ };
+ 
++/* block packing mode enum */
++enum sdw_dpn_pkg_mode {
++	SDW_BLK_PKG_PER_PORT = 0,
++	SDW_BLK_PKG_PER_CHANNEL = 1
++};
++
+ /**
+  * enum sdw_stream_type: data stream type
+  *
 -- 
 2.17.1
 
