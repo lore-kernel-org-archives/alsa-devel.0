@@ -2,80 +2,86 @@ Return-Path: <SRS0=iUFt=IV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 748F8C433C1
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:14:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FD16C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:48:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A4714619D2
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:14:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A4714619D2
+	by mail.kernel.org (Postfix) with ESMTPS id 88A41619DF
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:48:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 88A41619DF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 220BA1683;
-	Tue, 23 Mar 2021 23:13:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 220BA1683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2680B166C;
+	Tue, 23 Mar 2021 23:47:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2680B166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616537661;
-	bh=xJqjy+7weTlzSdZIQvB4cKpexVA+CmBfz/5tmXRjPCI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616539690;
+	bh=LW4OV8a7cwu0zZwmn+GN+Lh5+/A3HUavCJOAtGJcdy0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L3Xv9n7zpHb4xjL5S3++AZjnKsj7j0F4Q7ZkL3lVamKzR125kp+PM0yd6r58KNV+5
-	 LGQmPj2SBOiPUZULExr/YphlbXFvetM0knloSWezMyZywSZKOPOrFoLr0RaBtd1Idp
-	 0F9iY8cV3G+d4MFbJw3JHTEHNzS0skxXRM79c5U8=
+	b=RBnocpu31wtvDepEr/lfr7H8sYWsyuEWl9aAmOQk4+YVy+PbXS6aBX8TCd++wO6w3
+	 JGJHBirjmsIVZxiM+BIYAF5XgKWgMJHpXQwCxXcnj2XFKtiEJ1jeXXHOQU4331mNKQ
+	 yqq7UJ9WkOU95YsqNrNOQ8ltL9aXPo5Asqgn1BOk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 017DEF80104;
-	Tue, 23 Mar 2021 23:12:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADE5EF80104;
+	Tue, 23 Mar 2021 23:47:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49572F8026D; Tue, 23 Mar 2021 23:12:36 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2FBC8F8025F; Tue, 23 Mar 2021 23:47:18 +0100 (CET)
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com
+ [209.85.166.171])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D0A3F800EE
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 23:12:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D0A3F800EE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tceejv7M"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE245619C3;
- Tue, 23 Mar 2021 22:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616537551;
- bh=xJqjy+7weTlzSdZIQvB4cKpexVA+CmBfz/5tmXRjPCI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tceejv7McpSNYJf1CFHE+FPQOuP/4eL8tqYhMg8FI1eBVsyhY0MP0IyAsSxbQJrWs
- 1f5bHr81ChfTi3n3YlpROvkaWqJiBquopCiZqi7rb2ln4Azzoth4Pk/gLARA5tgG2u
- Bxwz4YqJ6RfiTh2gBmTFs2n8/MrP6KgRRX6tPaEPpBi99vTP+bfdkqs/MaBiT/nJ4L
- /mPP2c/dK0JKOvRU7sdOsX//3oSBFsocwUp42GZLsEEtKlvIEPJmJAZGKWr0iqUJb+
- s8rUQrpJmA+8jk01LRDk5QJy4Y3zgGakTX99a3oq0rTfXsTs2//OQs42CU3n5wcJ8s
- Dtsk8+Xwc9SDg==
-From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, alsa-devel@alsa-project.org, peter.ujfalusi@ti.com,
- kuninori.morimoto.gx@renesas.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- lgirdwood@gmail.com, patches@opensource.cirrus.com, daniel.baluta@nxp.com,
- gustavoars@kernel.org, ckeepax@opensource.cirrus.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: wm8960: Fix wrong bclk and lrclk with pll enabled
- for some chips
-Date: Tue, 23 Mar 2021 22:12:14 +0000
-Message-Id: <161653747938.32729.14710605922324529557.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1616150926-22892-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1616150926-22892-1-git-send-email-shengjiu.wang@nxp.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBCCAF80104
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 23:47:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBCCAF80104
+Received: by mail-il1-f171.google.com with SMTP id l5so19682580ilv.9
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 15:47:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=6AvTzTJOE2gdHJ0jAl+cPe+wrFwOXJMa+4lkL1LoiVc=;
+ b=LY4EwS/4nIwtm8xE8F5nWblAyZ/K0s6694+p2krhM9XAGyEKc0r9kOXcSU5hUGwtyY
+ 3l0fpcQQkvCZLiUp9gsE8cTRLTpvSHYfCnDXNuijCNh+E1OY06WpckvNksv4R3V/neC2
+ 068MdPVVFDqq1cJbmLW18Aw0SUDUNoNY7gA3lfrcoltqSkbHkMLbxVs/ROO9jiLBIrEn
+ jjUHllvbwEy2Ui2LgvCzFkNJH9uDsokHh1OhYWz7WLwPK2YljXrwy2y2N6IVOn7rbyOT
+ yDTdnAxfpkk5fmW6lLDX2Jl8+bUo6OpTVBFsEIcAkWIDjuUz1rX6h6lQcTT0OFm8YJD2
+ Kdng==
+X-Gm-Message-State: AOAM530vknMKy6i9ay4OOfkRbIq1fvNQgQg3uNVHfjO6+8PTYi/UjY+w
+ IEeGf375+Pbr00co2NFw8Q==
+X-Google-Smtp-Source: ABdhPJxKDO7Wh/viLDxew90U7hRX/c7nWyGGJAhip302aaAmxwMw11ciA4E5DtW5YvV9Mu7WUEYoxA==
+X-Received: by 2002:a92:dc83:: with SMTP id c3mr378452iln.167.1616539629624;
+ Tue, 23 Mar 2021 15:47:09 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+ by smtp.gmail.com with ESMTPSA id e2sm120890iov.26.2021.03.23.15.47.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 23 Mar 2021 15:47:08 -0700 (PDT)
+Received: (nullmailer pid 1490458 invoked by uid 1000);
+ Tue, 23 Mar 2021 22:47:07 -0000
+Date: Tue, 23 Mar 2021 16:47:07 -0600
+From: Rob Herring <robh@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v4 1/9] dt-bindings: soundwire: qcom: clarify data port
+ bus parameters
+Message-ID: <20210323224707.GA1490400@robh.at.kernel.org>
+References: <20210312120009.22386-1-srinivas.kandagatla@linaro.org>
+ <20210312120009.22386-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312120009.22386-2-srinivas.kandagatla@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ vkoul@kernel.org, sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,43 +97,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 19 Mar 2021 18:48:46 +0800, Shengjiu Wang wrote:
-> The input MCLK is 12.288MHz, the desired output sysclk is 11.2896MHz
-> and sample rate is 44100Hz, with the configuration pllprescale=2,
-> postscale=sysclkdiv=1, some chip may have wrong bclk
-> and lrclk output with pll enabled in master mode, but with the
-> configuration pllprescale=1, postscale=2, the output clock is correct.
+On Fri, 12 Mar 2021 12:00:01 +0000, Srinivas Kandagatla wrote:
+> Some of the parameters for data ports are not applicable or not implemented
+> in IP. So mark them as invalid/not applicable in DT so that controller is
+> aware of this.
 > 
-> >From Datasheet, the PLL performs best when f2 is between
-> 90MHz and 100MHz when the desired sysclk output is 11.2896MHz
-> or 12.288MHz, so sysclkdiv = 2 (f2/8) is the best choice.
+> Add comment to these bindings to provide more clarity on the values!
 > 
-> [...]
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/soundwire/qcom,sdw.txt           | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: wm8960: Fix wrong bclk and lrclk with pll enabled for some chips
-      commit: 16b82e75c15a7dbd564ea3654f3feb61df9e1e6f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Acked-by: Rob Herring <robh@kernel.org>
