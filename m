@@ -2,75 +2,80 @@ Return-Path: <SRS0=iUFt=IV=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C6DCDC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 07:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C89BC433C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 09:30:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 86F446191F
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 07:39:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 86F446191F
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
+	by mail.kernel.org (Postfix) with ESMTPS id AC68361582
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 09:30:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AC68361582
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECF001607;
-	Tue, 23 Mar 2021 08:38:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECF001607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A97586F;
+	Tue, 23 Mar 2021 10:29:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A97586F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616485172;
-	bh=eJD7MkMG7NvGUc4AsQ76v4Rl/p1aebxzY1jJ29gQGu0=;
+	s=default; t=1616491804;
+	bh=URRr5aKlBAxVg0ntGgJQpmDFUocijKwevITWU5tvtOc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ce6WpOzJ9XFbclIy09uMObALAzx35aYKvMPX7ESDTfWHziKxslm4BKT36u1p6kOGf
-	 lhtJwRcOnOMV7/vCAdi9YDndn75sz1thkNSz5f4g6XInVuSvmyc4PdnAih5N5CP3I0
-	 n9ZjfdD5VSg7Y+WNJodbndpwxpjqYbadHBWEjeGI=
+	b=rqc5d09mYnSmvB/Y1m8+eWNW6zEvcwMiA8jrDBcrervHq/o8ep25K4gRkH8SrWAQl
+	 pzLjMBdJtFJhQJFTkNuSN2z1OMOrbSKlc1mjLLiMbw0+2N3JmS/E2BpDpIo2Ozxg5W
+	 TVMKBmUPaQcla8GH9VIpon2g+1m3lsCU4VH/iQso=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E1FDF8026D;
-	Tue, 23 Mar 2021 08:38:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61F93F80257;
+	Tue, 23 Mar 2021 10:29:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D5ACF80279; Tue, 23 Mar 2021 08:38:10 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4958FF8025F; Tue, 23 Mar 2021 10:28:48 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 052FFF80268
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 08:38:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 052FFF80268
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="yr3/V827"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1FD1619BD;
- Tue, 23 Mar 2021 07:37:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1616485079;
- bh=eJD7MkMG7NvGUc4AsQ76v4Rl/p1aebxzY1jJ29gQGu0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=yr3/V827tTXRCgJPvBNjMw164mvK31A6S3uBlyW/qc4i/7xZYi/6W6cUkl0BvVcp7
- fmOave11vFP0Lnh+mj/zGv9xtCef9VO3aiSVZR8yFggqs/rjNFS5q2Yj/aMkkuDCJU
- oNNejvC7GJCy+nvo/rtm/95dGUDr9Xi1pL3IHzhI=
-Date: Tue, 23 Mar 2021 08:37:56 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-Message-ID: <YFma1ClahDe2bZhR@kroah.com>
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
- <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36A82F80104
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 10:28:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36A82F80104
+IronPort-SDR: 71pp7Tz30EuXk2xcZ9AWgS3zJ3NI/QiIpgvFSEuPIS3aIPGTj85LtC02sq11yyhixdPuXZwSrw
+ 4PXjYwrHHkng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="189842033"
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; d="scan'208";a="189842033"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Mar 2021 02:28:32 -0700
+IronPort-SDR: zUzoIO+8x9t1jUO2KUMLx4QsGUIQE5vj3QLqY6Q1v3OlO8ZrJ6kCZIkfPvmmw9kUfIdZqEdIPM
+ ZuvGNpKGIrNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,271,1610438400"; d="scan'208";a="513676832"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+ by fmsmga001.fm.intel.com with SMTP; 23 Mar 2021 02:28:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation);
+ Tue, 23 Mar 2021 11:28:27 +0200
+Date: Tue, 23 Mar 2021 11:28:27 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Handle device properties with software node
+ API
+Message-ID: <YFm0u9k/DNy5URsR@kuha.fi.intel.com>
+References: <20210322110638.2681-1-heikki.krogerus@linux.intel.com>
+ <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, hui.wang@canonical.com,
- srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+In-Reply-To: <786795eb-6832-fd7d-4674-65be394c083d@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
+ alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,89 +91,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 23, 2021 at 12:18:46PM +0530, Vinod Koul wrote:
-> On 23-03-21, 08:43, Bard Liao wrote:
-> > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Mon, Mar 22, 2021 at 10:02:40AM -0500, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 3/22/21 6:06 AM, Heikki Krogerus wrote:
+> > The function device_add_properties() is going to be removed.
+> > Replacing it with software node API equivalents.
 > > 
-> > Now that the auxiliary_bus exists, there's no reason to use platform
-> > devices as children of a PCI device any longer.
-> > 
-> > This patch refactors the code by extending a basic auxiliary device
-> > with Intel link-specific structures that need to be passed between
-> > controller and link levels. This refactoring is much cleaner with no
-> > need for cross-pointers between device and link structures.
-> > 
-> > Note that the auxiliary bus API has separate init and add steps, which
-> > requires more attention in the error unwinding paths. The main loop
-> > needs to deal with kfree() and auxiliary_device_uninit() for the
-> > current iteration before jumping to the common label which releases
-> > everything allocated in prior iterations.
-> > 
-> > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> > Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 > > ---
-> >  drivers/soundwire/Kconfig           |   1 +
-> >  drivers/soundwire/intel.c           |  52 ++++----
-> >  drivers/soundwire/intel.h           |  14 +-
-> >  drivers/soundwire/intel_init.c      | 190 +++++++++++++++++++---------
-> >  include/linux/soundwire/sdw_intel.h |   6 +-
-> >  5 files changed, 175 insertions(+), 88 deletions(-)
+> > Hi,
 > > 
-> > diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-> > index 016e74230bb7..2b7795233282 100644
-> > --- a/drivers/soundwire/Kconfig
-> > +++ b/drivers/soundwire/Kconfig
-> > @@ -25,6 +25,7 @@ config SOUNDWIRE_INTEL
-> >  	tristate "Intel SoundWire Master driver"
-> >  	select SOUNDWIRE_CADENCE
-> >  	select SOUNDWIRE_GENERIC_ALLOCATION
-> > +	select AUXILIARY_BUS
-> >  	depends on ACPI && SND_SOC
-> >  	help
-> >  	  SoundWire Intel Master driver.
-> > diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> > index d2254ee2fee2..039a101982c9 100644
-> > --- a/drivers/soundwire/intel.c
-> > +++ b/drivers/soundwire/intel.c
-> > @@ -11,7 +11,7 @@
-> >  #include <linux/module.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/io.h>
-> > -#include <linux/platform_device.h>
-> > +#include <linux/auxiliary_bus.h>
-> >  #include <sound/pcm_params.h>
-> >  #include <linux/pm_runtime.h>
-> >  #include <sound/soc.h>
-> > @@ -1331,9 +1331,10 @@ static int intel_init(struct sdw_intel *sdw)
-> >  /*
-> >   * probe and init
-> >   */
-> > -static int intel_master_probe(struct platform_device *pdev)
-> > +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
-> >  {
-> > -	struct device *dev = &pdev->dev;
-> > +	struct device *dev = &auxdev->dev;
-> > +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
+> > This patch depends on a fix from mainline, available in v5.12-rc4:
+> > 
+> > 	2a92c90f2ecc ("software node: Fix device_add_software_node()")
+> > 
+> > Cheers,
+> > ---
+> >   sound/soc/intel/boards/bytcht_es8316.c      |  2 +-
+> >   sound/soc/intel/boards/bytcr_rt5640.c       |  2 +-
+> >   sound/soc/intel/boards/bytcr_rt5651.c       |  2 +-
+> >   sound/soc/intel/boards/sof_sdw_rt711.c      | 20 +++++++++++++++-----
+> >   sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 20 +++++++++++++++-----
+> >   5 files changed, 33 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+> > index 06df2d46d910b..4a9817a95928c 100644
+> > --- a/sound/soc/intel/boards/bytcht_es8316.c
+> > +++ b/sound/soc/intel/boards/bytcht_es8316.c
+> > @@ -544,7 +544,7 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+> >   		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
+> >   	if (cnt) {
+> > -		ret = device_add_properties(codec_dev, props);
+> > +		ret = device_create_managed_software_node(codec_dev, props, NULL);
 > 
-> Do we need another abstractions for resources here, why not aux dev
-> creation set the resources required and we skip this step...
+> I don't think this is correct. This is using the codec_dev device, but this
+> property is created in the machine driver - different device. I think the
+> proper fix is to remove the property in the machine driver .remove()
+> callback, as done below for the SoundWire case, and not to rely on devm_
+> with the wrong device.
 > 
-> >  	struct sdw_intel *sdw;
-> >  	struct sdw_cdns *cdns;
-> >  	struct sdw_bus *bus;
-> > @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
-> >  	cdns = &sdw->cdns;
-> >  	bus = &cdns->bus;
-> >  
-> > -	sdw->instance = pdev->id;
-> > -	sdw->link_res = dev_get_platdata(dev);
-> > +	sdw->instance = auxdev->id;
+> there was a thread between July and October on this in
+> https://github.com/thesofproject/linux/pull/2306/
 > 
-> so auxdev has id and still we pass id as argument :( Not sure if folks
-> can fix this now
+> It seems that we need to restart this work.
+> 
+> Heikki, do you mind if I take your patches (keeping you as the author) and
+> rework+test them with the SOF tree + CI ?
 
-That's odd, yeah, it should be fixed.
+OK by me (though, I'm not sure about the author part after that).
 
-greg k-h
+
+thanks,
+
+-- 
+heikki
