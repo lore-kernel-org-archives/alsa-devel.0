@@ -2,70 +2,78 @@ Return-Path: <SRS0=3oXn=IW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 468D7C433C1
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:16:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 25330C433C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:51:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 917B661A02
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:16:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 917B661A02
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7E4BD61A07
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:51:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E4BD61A07
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2024D1683;
-	Wed, 24 Mar 2021 11:15:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2024D1683
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EB2B1669;
+	Wed, 24 Mar 2021 11:50:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EB2B1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616580998;
-	bh=sR/vniZNFTQpkj64gNp3cuDdjKEhXWfoSNFpY1QeFvg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616583094;
+	bh=/DCxC4MVMwIyzSFr6RbtguBXrzP9DLGR2jAPymHThME=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M3uMQYqVN2QxpbVG2a+ECZGjPgebneoyhZzFKONSC2IxdPsiHmFQ5wLoa61TJVuow
-	 JjrWfe01ng2LvxH2YswowHnJaQSo/b96wbt6JYHyQv5pQmIhP4W+vEhb98CiJceH+1
-	 W0gme4rh/O1x1nQ0bpzIYiItYl2VG283zDTfbSH4=
+	b=lJOtGybY/Q8xrZYW4yJJmOFFfkOHxRynIzf6jpglf1z20+mTmeSH5VZ7wbIcVBJQi
+	 RbL15bGAITNEli4gXdH+zPA9EO8xJxTrTjOxivMrieIjB4MzxBlXQAkFyuglmSGDpp
+	 m2EF0tVGjPOt0hvyr8R6ZDIBEG+j/btpY61j4smQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22193F804B1;
-	Wed, 24 Mar 2021 11:13:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE9F8F80156;
+	Wed, 24 Mar 2021 11:50:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4FC3F80425; Wed, 24 Mar 2021 11:13:18 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D0247F8016B; Wed, 24 Mar 2021 11:50:41 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69BEEF8016B
- for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 11:13:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69BEEF8016B
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 86EB120274A;
- Wed, 24 Mar 2021 11:13:03 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
- [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F0C8202727;
- Wed, 24 Mar 2021 11:12:59 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C7AF34033B;
- Wed, 24 Mar 2021 11:12:31 +0100 (CET)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org
-Subject: [PATCH 2/6] ASoC: fsl_spdif: Don't use devm_regmap_init_mmio_clk
-Date: Wed, 24 Mar 2021 17:58:44 +0800
-Message-Id: <1616579928-22428-3-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B3A3F80104
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 11:50:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B3A3F80104
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="O/bb6DGf"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C01561993;
+ Wed, 24 Mar 2021 10:50:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1616583034;
+ bh=/DCxC4MVMwIyzSFr6RbtguBXrzP9DLGR2jAPymHThME=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=O/bb6DGfhUw3ZD/fBgjnliOhlyeWcJEfnOPKuMY1sWDr2uonei9+EPjyNb0WvtAH5
+ +hGC29q8lYpEuAQbAQU98/VRNx8lOL7DaAhno/4kJbOuLgx4MGaFxB/BVmDSY+Be1S
+ Kx28X42Dlv0d/APh7T2603xisumy4BGcKZKHeczJfL4CijroP7D3/PfgQjCPkFKcu7
+ bZN1jp5Vgd+ENJDx6SFnaBEG7ap6ig4bwQpnwnp8QDFDCQkfDQ8LbmdLBgbEdDnIFy
+ ACqGWTK1zMR/LG3yP0o3oP34Jv3Sa1DjN6cu7su40Pd72A1kiQxZSCx1MwWqZdP0O3
+ oqmlTTyLnm/Yw==
+Date: Wed, 24 Mar 2021 16:20:30 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
+Message-ID: <YFsZdiVQpLfsWmv2@vkoul-mobl.Dlink>
+References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+ <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink> <YFma1ClahDe2bZhR@kroah.com>
+ <aa9cfc49-913e-b3ba-1d92-2fab55bf4fa7@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa9cfc49-913e-b3ba-1d92-2fab55bf4fa7@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Greg KH <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+ srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,39 +89,94 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When there is power domain bind with core clock,
+On 23-03-21, 12:29, Pierre-Louis Bossart wrote:
+> Thanks Greg and Vinod for the reviews
+> 
+> > > > -static int intel_master_probe(struct platform_device *pdev)
+> > > > +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
+> > > >   {
+> > > > -	struct device *dev = &pdev->dev;
+> > > > +	struct device *dev = &auxdev->dev;
+> > > > +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
+> > > 
+> > > Do we need another abstractions for resources here, why not aux dev
+> > > creation set the resources required and we skip this step...
+> 
+> Not sure what resources you are referring to?
 
-The call flow:
-devm_regmap_init_mmio_clk
-   - clk_prepare()
-       - clk_pm_runtime_get()
+Resources in the sdw_intel_link_dev which are sdw_intel_link_res. They
+should be resources for auxdev and if you do that lets you get rid of
+this abstraction.
 
-cause the power domain of clock always be enabled after
-regmap_init(). which impact the power consumption.
+> 
+> this is just a container_of() and the documented way of extending the auxbus
+> (see https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#example-usage)
+> 
+> 
+> struct sdw_intel_link_dev {
+> 	struct auxiliary_device auxdev;
+> 	struct sdw_intel_link_res link_res;
+> };
+> 
+> #define auxiliary_dev_to_sdw_intel_link_dev(auxiliary_dev) \
+> 	container_of(auxiliary_dev, struct sdw_intel_link_dev, auxdev)
+> 
+> > > >   	struct sdw_intel *sdw;
+> > > >   	struct sdw_cdns *cdns;
+> > > >   	struct sdw_bus *bus;
+> > > > @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
+> > > >   	cdns = &sdw->cdns;
+> > > >   	bus = &cdns->bus;
+> > > > -	sdw->instance = pdev->id;
+> > > > -	sdw->link_res = dev_get_platdata(dev);
+> > > > +	sdw->instance = auxdev->id;
+> > > 
+> > > so auxdev has id and still we pass id as argument :( Not sure if folks
+> > > can fix this now
+> > 
+> > That's odd, yeah, it should be fixed.
+> 
+> I think we are talking about different things?
+> 
+> this is defined in mod_devicetable.h:
+> 
+> struct auxiliary_device_id {
+> 	char name[AUXILIARY_NAME_SIZE];
+> 	kernel_ulong_t driver_data;
+> };
+> 
+> and used for the driver probe:
+> 
+> 	ret = auxdrv->probe(auxdev, auxiliary_match_id(auxdrv->id_table, auxdev));
+> 
+> but there is a separate id:
+> 
+> struct auxiliary_device {
+> 	struct device dev;
+> 	const char *name;
+> 	u32 id;
+> };
+> 
+> which is set during the device initialization in intel_init.c
+> 
+> 	/* we don't use an IDA since we already have a link ID */
+> 	auxdev->id = link_id;
+> 
+> In the auxiliary bus design, the parent has to take care of managing this
+> id, be it with an IDA or as we do here with a physical link ID that is
+> unique.
 
-So use devm_regmap_init_mmio instead of
-devm_regmap_init_mmio_clk,but explicitly enable
-clock when it is used.
+Aha, maybe both of them should not be 'id' to avoid this confusion!
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_spdif.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+That also reminds me that we have duplicate info:
 
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 1cd3441d1c03..c631de325a6e 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1294,8 +1294,7 @@ static int fsl_spdif_probe(struct platform_device *pdev)
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
--	spdif_priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
--			"core", regs, &fsl_spdif_regmap_config);
-+	spdif_priv->regmap = devm_regmap_init_mmio(&pdev->dev, regs, &fsl_spdif_regmap_config);
- 	if (IS_ERR(spdif_priv->regmap)) {
- 		dev_err(&pdev->dev, "regmap init failed\n");
- 		return PTR_ERR(spdif_priv->regmap);
++       sdw->instance = auxdev->id;
++       bus->link_id = auxdev->id;
+
+drop the local driver instance and use bus->link_id please
+
+> in short, I don't see how I could change the code given the differences in
+> concepts?
+
 -- 
-2.27.0
-
+~Vinod
