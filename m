@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95F88C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD17AC433C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:14:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B271619AB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:14:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B271619AB
+	by mail.kernel.org (Postfix) with ESMTPS id 65A3A619BB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:14:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65A3A619BB
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBD4F1669;
-	Wed, 24 Mar 2021 11:13:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBD4F1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE837167A;
+	Wed, 24 Mar 2021 11:14:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE837167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616580843;
-	bh=VUvfQr5YDTKJ4ZK0gM1L/vV+Zl745EKeuxRJgCsH7Jk=;
+	s=default; t=1616580897;
+	bh=YMWb2aRF4SBczlaoExG+lU7RZmbJ4pxR5FOYxkujGio=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ouOVEplcZDM2ugRRmgnQr9xPRm2Bd7imhmR9rCvNi20hGEBQPlmATgl8tYZZIpy9O
-	 1GFxHxlRF2w5ItnRiTVB7e8mBJ910wObbXMp+V8xJuUPQkm3m7YtI3uBueGWvEZ9Nk
-	 LiURmVQi4ih38VwmWndfwctzLIoG+wetQIB/BSK8=
+	b=jRMAIwk75t39tMqcbT4eOUP2e7eeQNrQ4axWqOKjj1WvyM8hpWz14ZfaV36s+VZeM
+	 c5p+AQBWlq64FcDxfYKsbknqYt5OHT4bNu9V+1UzAzfCk1OS+YUvjL/A+G+FCoahx0
+	 aHlMTEmsl2tALsSuLiHZWSEQ2xKDEzHRwXxgpohs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5227CF80104;
-	Wed, 24 Mar 2021 11:13:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FE4DF801D5;
+	Wed, 24 Mar 2021 11:13:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0302F8025D; Wed, 24 Mar 2021 11:13:11 +0100 (CET)
+ id 01E36F80246; Wed, 24 Mar 2021 11:13:11 +0100 (CET)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 665F4F80156
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62780F80104
  for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 11:13:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 665F4F80156
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62780F80104
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B1CC5202742;
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B0EA520273F;
  Wed, 24 Mar 2021 11:13:03 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F108202739;
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6FC7420273E;
  Wed, 24 Mar 2021 11:12:59 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C910D40339;
- Wed, 24 Mar 2021 11:12:30 +0100 (CET)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id CF5844033C;
+ Wed, 24 Mar 2021 11:12:32 +0100 (CET)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org
-Subject: [PATCH 1/6] ASoC: fsl_esai: Don't use devm_regmap_init_mmio_clk
-Date: Wed, 24 Mar 2021 17:58:43 +0800
-Message-Id: <1616579928-22428-2-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 3/6] ASoC: fsl_asrc: Don't use devm_regmap_init_mmio_clk
+Date: Wed, 24 Mar 2021 17:58:45 +0800
+Message-Id: <1616579928-22428-4-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
@@ -81,11 +81,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When there is power domain bind with bus clock,
+When there is power domain bind with mem clock,
 
 The call flow:
 devm_regmap_init_mmio_clk
-    - clk_prepare()
+   - clk_prepare()
        - clk_pm_runtime_get()
 
 cause the power domain of clock always be enabled after
@@ -97,42 +97,56 @@ clock when it is used.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_esai.c | 48 ++++++++++++++++++++++++++++++----------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ sound/soc/fsl/fsl_asrc.c | 57 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 44 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 41b154417b92..c0d4f3c5dbb1 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -945,6 +945,9 @@ static const struct regmap_config fsl_esai_regmap_config = {
- 	.cache_type = REGCACHE_FLAT,
- };
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index 63d236ef5c4d..0e1ad8efebd3 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -1008,6 +1008,9 @@ static int fsl_asrc_get_fifo_addr(u8 dir, enum asrc_pair_index index)
+ 	return REG_ASRDx(dir, index);
+ }
  
-+static int fsl_esai_runtime_resume(struct device *dev);
-+static int fsl_esai_runtime_suspend(struct device *dev);
++static int fsl_asrc_runtime_resume(struct device *dev);
++static int fsl_asrc_runtime_suspend(struct device *dev);
 +
- static int fsl_esai_probe(struct platform_device *pdev)
+ static int fsl_asrc_probe(struct platform_device *pdev)
  {
  	struct device_node *np = pdev->dev.of_node;
-@@ -969,8 +972,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
+@@ -1039,8 +1042,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
  
--	esai_priv->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
--			"core", regs, &fsl_esai_regmap_config);
-+	esai_priv->regmap = devm_regmap_init_mmio(&pdev->dev, regs, &fsl_esai_regmap_config);
- 	if (IS_ERR(esai_priv->regmap)) {
- 		dev_err(&pdev->dev, "failed to init regmap: %ld\n",
- 				PTR_ERR(esai_priv->regmap));
-@@ -1039,11 +1041,23 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 	asrc->paddr = res->start;
+ 
+-	asrc->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "mem", regs,
+-						 &fsl_asrc_regmap_config);
++	asrc->regmap = devm_regmap_init_mmio(&pdev->dev, regs, &fsl_asrc_regmap_config);
+ 	if (IS_ERR(asrc->regmap)) {
+ 		dev_err(&pdev->dev, "failed to init regmap\n");
+ 		return PTR_ERR(asrc->regmap);
+@@ -1117,12 +1119,6 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 		}
  	}
  
- 	dev_set_drvdata(&pdev->dev, esai_priv);
+-	ret = fsl_asrc_init(asrc);
+-	if (ret) {
+-		dev_err(&pdev->dev, "failed to init asrc %d\n", ret);
+-		return ret;
+-	}
 -
- 	spin_lock_init(&esai_priv->lock);
+ 	asrc->channel_avail = 10;
+ 
+ 	ret = of_property_read_u32(np, "fsl,asrc-rate",
+@@ -1161,21 +1157,56 @@ static int fsl_asrc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	platform_set_drvdata(pdev, asrc);
+-	pm_runtime_enable(&pdev->dev);
+ 	spin_lock_init(&asrc->lock);
+-	regcache_cache_only(asrc->regmap, true);
 +	pm_runtime_enable(&pdev->dev);
 +	if (!pm_runtime_enabled(&pdev->dev)) {
-+		ret = fsl_esai_runtime_resume(&pdev->dev);
++		ret = fsl_asrc_runtime_resume(&pdev->dev);
 +		if (ret)
 +			goto err_pm_disable;
 +	}
@@ -143,79 +157,63 @@ index 41b154417b92..c0d4f3c5dbb1 100644
 +		goto err_pm_get_sync;
 +	}
 +
- 	ret = fsl_esai_hw_init(esai_priv);
- 	if (ret)
--		return ret;
++	ret = fsl_asrc_init(asrc);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to init asrc %d\n", ret);
 +		goto err_pm_get_sync;
- 
- 	esai_priv->tx_mask = 0xFFFFFFFF;
- 	esai_priv->rx_mask = 0xFFFFFFFF;
-@@ -1054,24 +1068,33 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 	regmap_write(esai_priv->regmap, REG_ESAI_RSMA, 0);
- 	regmap_write(esai_priv->regmap, REG_ESAI_RSMB, 0);
- 
++	}
++
 +	ret = pm_runtime_put_sync(&pdev->dev);
 +	if (ret < 0)
 +		goto err_pm_get_sync;
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_esai_component,
- 					      &fsl_esai_dai, 1);
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_asrc_component,
+ 					      &fsl_asrc_dai, 1);
  	if (ret) {
- 		dev_err(&pdev->dev, "failed to register DAI: %d\n", ret);
+ 		dev_err(&pdev->dev, "failed to register ASoC DAI\n");
 -		return ret;
 +		goto err_pm_get_sync;
  	}
  
- 	INIT_WORK(&esai_priv->work, fsl_esai_hw_reset);
- 
--	pm_runtime_enable(&pdev->dev);
--
--	regcache_cache_only(esai_priv->regmap, true);
--
- 	ret = imx_pcm_dma_init(pdev, IMX_ESAI_DMABUF_SIZE);
--	if (ret)
-+	if (ret) {
- 		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
-+		goto err_pm_get_sync;
-+	}
- 
- 	return ret;
+ 	return 0;
 +
 +err_pm_get_sync:
 +	if (!pm_runtime_status_suspended(&pdev->dev))
-+		fsl_esai_runtime_suspend(&pdev->dev);
++		fsl_asrc_runtime_suspend(&pdev->dev);
 +err_pm_disable:
 +	pm_runtime_disable(&pdev->dev);
 +	return ret;
++}
++
++static int fsl_asrc_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		fsl_asrc_runtime_suspend(&pdev->dev);
++
++	return 0;
  }
  
- static int fsl_esai_remove(struct platform_device *pdev)
-@@ -1079,6 +1102,9 @@ static int fsl_esai_remove(struct platform_device *pdev)
- 	struct fsl_esai *esai_priv = platform_get_drvdata(pdev);
- 
- 	pm_runtime_disable(&pdev->dev);
-+	if (!pm_runtime_status_suspended(&pdev->dev))
-+		fsl_esai_runtime_suspend(&pdev->dev);
-+
- 	cancel_work_sync(&esai_priv->work);
- 
- 	return 0;
-@@ -1092,7 +1118,6 @@ static const struct of_device_id fsl_esai_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, fsl_esai_dt_ids);
- 
 -#ifdef CONFIG_PM
- static int fsl_esai_runtime_resume(struct device *dev)
+ static int fsl_asrc_runtime_resume(struct device *dev)
  {
- 	struct fsl_esai *esai = dev_get_drvdata(dev);
-@@ -1160,7 +1185,6 @@ static int fsl_esai_runtime_suspend(struct device *dev)
+ 	struct fsl_asrc *asrc = dev_get_drvdata(dev);
+@@ -1252,7 +1283,6 @@ static int fsl_asrc_runtime_suspend(struct device *dev)
  
  	return 0;
  }
 -#endif /* CONFIG_PM */
  
- static const struct dev_pm_ops fsl_esai_pm_ops = {
- 	SET_RUNTIME_PM_OPS(fsl_esai_runtime_suspend,
+ static const struct dev_pm_ops fsl_asrc_pm = {
+ 	SET_RUNTIME_PM_OPS(fsl_asrc_runtime_suspend, fsl_asrc_runtime_resume, NULL)
+@@ -1291,6 +1321,7 @@ MODULE_DEVICE_TABLE(of, fsl_asrc_ids);
+ 
+ static struct platform_driver fsl_asrc_driver = {
+ 	.probe = fsl_asrc_probe,
++	.remove = fsl_asrc_remove,
+ 	.driver = {
+ 		.name = "fsl-asrc",
+ 		.of_match_table = fsl_asrc_ids,
 -- 
 2.27.0
 
