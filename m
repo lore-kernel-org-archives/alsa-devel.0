@@ -2,79 +2,82 @@ Return-Path: <SRS0=3oXn=IW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFEF1C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:30:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E39E8C433C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:33:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7ADA61992
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:30:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7ADA61992
+	by mail.kernel.org (Postfix) with ESMTPS id 0526F61A06
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:33:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0526F61A06
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 705FA1691;
-	Wed, 24 Mar 2021 16:29:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 705FA1691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CB5B168C;
+	Wed, 24 Mar 2021 16:32:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CB5B168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616599799;
-	bh=BDivL1dqCC2YL/EKoozjWfLJ6v43uAGn13AGcdHgcy8=;
+	s=default; t=1616599983;
+	bh=ymR+Z1PMbaqcW5BkuKKBSWBEthwd6TzAxY7ie0c+X94=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R0tFZfbrzWAQ2OhMNvfX/SXZcGaZkOVrWg7jNT6CJAYtO0gL03fXdhLNm4Nakpmjn
-	 eAxddatnXjNio5ujmm+8TteeFJ/ElbI7GS0bVylQdaR9x0bqgH3S73rWRrKCZBCDx1
-	 vopf/PtbnSxwd6nk76FMoXgMSCp3qwv/KPpDZ3LQ=
+	b=cxkosOj91B0k149S4DhwxC3t83ryMrC4qenbyYzDb6mQmYqpry3hQKK7ox7/VIYPC
+	 2/YKZ1qrRpIRKm4HMJhwcGfjNtlf8BEkC6fvk9vy+y/1h/YrqP+0ecv81KTLvHhQNt
+	 bjlitVuMJpgMulBDc+oGgvAyDJdJIUXQjYVIb4/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2AA9F80156;
-	Wed, 24 Mar 2021 16:29:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFF4DF80156;
+	Wed, 24 Mar 2021 16:32:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 196EDF8016B; Wed, 24 Mar 2021 16:28:41 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 1B836F801D5; Wed, 24 Mar 2021 16:32:11 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C0B1F800FF
- for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 16:28:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C0B1F800FF
-IronPort-SDR: 3EGhOkxq/yy+ijDrtWzzPhFMVH64JCZsTqr1vqP4pG4JobKW5Cdxbmuz6iaFxbRKDcW/hsIuwP
- MCLJ9gR5eD4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190822637"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; d="scan'208";a="190822637"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21B01F80156
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 16:32:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21B01F80156
+IronPort-SDR: n2M7Oc6OTSfVME5z+UkNA64emZsj7pEC21i7NIcwFfFiOf0naEne0vbE4vuipa0TG938uxmzLs
+ jkfZXnHEqWpg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="188427872"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; d="scan'208";a="188427872"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2021 08:28:27 -0700
-IronPort-SDR: er4V/IKDDaAmR7rV06PSvxdd4lrYBvh7XsGshGR0sfWHXCMc3L7/x+jYrtpKIvi+b6UuWtryNt
- leyVWupht4Lw==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; d="scan'208";a="608142641"
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2021 08:32:01 -0700
+IronPort-SDR: AxDddmw+YCYh7g59uN05Wg4w8oePcVqXDwKx1lEhT5IyOtWrqMeutIvUjD66w96loCyKAr3uVl
+ SkldLBgMij2A==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; d="scan'208";a="608143696"
 Received: from mailunda-mobl.amr.corp.intel.com (HELO [10.209.33.48])
  ([10.209.33.48])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Mar 2021 08:28:26 -0700
-Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-To: Codrin.Ciubotariu@microchip.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
- <7364fb08-fe43-167d-a083-db4a6234222c@linux.intel.com>
- <2e9d903f-dd76-5b22-77ea-5fc42be306fd@microchip.com>
+ 24 Mar 2021 08:32:00 -0700
+Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
+To: Vinod Koul <vkoul@kernel.org>
+References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
+ <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink> <YFma1ClahDe2bZhR@kroah.com>
+ <aa9cfc49-913e-b3ba-1d92-2fab55bf4fa7@linux.intel.com>
+ <YFsZdiVQpLfsWmv2@vkoul-mobl.Dlink>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <95d0f1c1-5a89-837f-b1dc-42482a3b1250@linux.intel.com>
-Date: Wed, 24 Mar 2021 10:28:24 -0500
+Message-ID: <c3534676-f8df-b9ce-582d-3cf02db4d02c@linux.intel.com>
+Date: Wed, 24 Mar 2021 10:03:42 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <2e9d903f-dd76-5b22-77ea-5fc42be306fd@microchip.com>
+In-Reply-To: <YFsZdiVQpLfsWmv2@vkoul-mobl.Dlink>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: gustavoars@kernel.org, tiwai@suse.com, broonie@kernel.org,
- lgirdwood@gmail.com, mirq-linux@rere.qmqm.pl
+Cc: alsa-devel@alsa-project.org, Greg KH <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, hui.wang@canonical.com,
+ srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,32 +94,126 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> I am using hw_params_fixup, but it's not enough. The first thing I do is
-> to not add the BE HW constraint rules in runtime->hw_constraints,
-> because this will potentially affect the FE HW params. If the FE does
-> sampling rate conversion, for example, applying the sampling rate
-> constrain rules from a BE codec on FE is useless. The second thing I do
-> is to apply these BE HW constraint rules to the BE HW params. It's true
-> that the BE HW params can be fine tuned via hw_params_fixup (topology,
-> device-tree or even static parameters) and set in such a way that avoid
-> the BE HW constraints, so we could ignore the constraint rules added by
-> their drivers. It's not every elegant and running the BE HW constraint
-> rules for the fixup BE HW params can be a sanity check. Also, I am
-> thinking that if the FE does no conversion (be_hw_params_fixup missing)
-> and more than one BEs are available, applying the HW constraint rules on
-> the same set of BE HW params could rule out the incompatible BE DAI
-> links and start the compatible ones only. I am not sure this is a real
-> usecase.
 
-Even after a second cup of coffee I was not able to follow why the 
-hw_params_fixup was not enough? That paragraph is rather dense.
+On 3/24/21 5:50 AM, Vinod Koul wrote:
+> On 23-03-21, 12:29, Pierre-Louis Bossart wrote:
+>> Thanks Greg and Vinod for the reviews
+>>
+>>>>> -static int intel_master_probe(struct platform_device *pdev)
+>>>>> +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
+>>>>>    {
+>>>>> -	struct device *dev = &pdev->dev;
+>>>>> +	struct device *dev = &auxdev->dev;
+>>>>> +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
+>>>>
+>>>> Do we need another abstractions for resources here, why not aux dev
+>>>> creation set the resources required and we skip this step...
+>>
+>> Not sure what resources you are referring to?
+> 
+> Resources in the sdw_intel_link_dev which are sdw_intel_link_res. They
+> should be resources for auxdev and if you do that lets you get rid of
+> this abstraction.
 
-And to be frank I don't fully understand the problem statement above: 
-"separate the FE HW constraints from the BE HW constraints". We have 
-existing solutions with a DSP-based SRC adjusting FE rates to what is 
-required by the BE dailink.
+Sorry Vinod, I am not following your line of thought. We must be talking 
+of different things or having a different understanding of what the 
+auxiliary device is.
 
-Maybe it would help to show examples of what you can do today and what 
-you cannot, so that we are on the same wavelength on what the 
-limitations are and how to remove them?
+The auxiliary device is deliberately minimal by design and does not 
+contain domain-specific information/resources/pointers/pdata as the 
+platform_device does. You extend it by defining a larger structure that 
+contains an auxiliary device and whatever domain-specific 
+fields/structures/domains are needed, then use container_of to access it.
+
+It's not just Intel doing this, the first example from Mellanox uses the 
+same pattern, albeit with a single pointer instead of the structure we used.
+
+see e.g. 
+https://elixir.bootlin.com/linux/latest/source/include/linux/mlx5/driver.h#L545
+
+So I am not sure what you mean by 'rid of this abstraction' when this 
+abstraction is pretty much the way things were designed?
+
+Maybe an example of what sort of structure you had in mind would help?
+
+
+>> this is just a container_of() and the documented way of extending the auxbus
+>> (see https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#example-usage)
+>>
+>>
+>> struct sdw_intel_link_dev {
+>> 	struct auxiliary_device auxdev;
+>> 	struct sdw_intel_link_res link_res;
+>> };
+>>
+>> #define auxiliary_dev_to_sdw_intel_link_dev(auxiliary_dev) \
+>> 	container_of(auxiliary_dev, struct sdw_intel_link_dev, auxdev)
+>>
+>>>>>    	struct sdw_intel *sdw;
+>>>>>    	struct sdw_cdns *cdns;
+>>>>>    	struct sdw_bus *bus;
+>>>>> @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
+>>>>>    	cdns = &sdw->cdns;
+>>>>>    	bus = &cdns->bus;
+>>>>> -	sdw->instance = pdev->id;
+>>>>> -	sdw->link_res = dev_get_platdata(dev);
+>>>>> +	sdw->instance = auxdev->id;
+>>>>
+>>>> so auxdev has id and still we pass id as argument :( Not sure if folks
+>>>> can fix this now
+>>>
+>>> That's odd, yeah, it should be fixed.
+>>
+>> I think we are talking about different things?
+>>
+>> this is defined in mod_devicetable.h:
+>>
+>> struct auxiliary_device_id {
+>> 	char name[AUXILIARY_NAME_SIZE];
+>> 	kernel_ulong_t driver_data;
+>> };
+>>
+>> and used for the driver probe:
+>>
+>> 	ret = auxdrv->probe(auxdev, auxiliary_match_id(auxdrv->id_table, auxdev));
+>>
+>> but there is a separate id:
+>>
+>> struct auxiliary_device {
+>> 	struct device dev;
+>> 	const char *name;
+>> 	u32 id;
+>> };
+>>
+>> which is set during the device initialization in intel_init.c
+>>
+>> 	/* we don't use an IDA since we already have a link ID */
+>> 	auxdev->id = link_id;
+>>
+>> In the auxiliary bus design, the parent has to take care of managing this
+>> id, be it with an IDA or as we do here with a physical link ID that is
+>> unique.
+> 
+> Aha, maybe both of them should not be 'id' to avoid this confusion!
+
+the function definition follows the expected prototype
+
+struct auxiliary_driver {
+         int (*probe)(struct auxiliary_device *,
+                      const struct auxiliary_device_id *id);
+
+we can rename the argument to e.g. dev_id if that helps. Suggestions 
+welcome.
+
+> That also reminds me that we have duplicate info:
+> 
+> +       sdw->instance = auxdev->id;
+> +       bus->link_id = auxdev->id;
+> 
+> drop the local driver instance and use bus->link_id please
+
+if you are referring to sdw->instance, it could probably be removed, but 
+that would need to be a separate cleanup changing cadence_master.c as 
+well. this patch only changes pdev->id with auxdev->id and provides only 
+the transition from platform device to auxiliary device.
 
