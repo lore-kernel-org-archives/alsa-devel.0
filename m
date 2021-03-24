@@ -7,60 +7,60 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F846C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:15:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42444C433C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:15:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2391F619E4
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:15:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2391F619E4
+	by mail.kernel.org (Postfix) with ESMTPS id 5B549619E4
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:15:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5B549619E4
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CA4C168B;
-	Wed, 24 Mar 2021 11:14:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CA4C168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED91F168F;
+	Wed, 24 Mar 2021 11:15:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED91F168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616580939;
-	bh=Y9EupM2btN5z4PV9HGonj4uNir+RLMmHwYVlvgKqvzU=;
+	s=default; t=1616580951;
+	bh=P1F0Ve1rTCJ7C//sOPmNVnEfsm+BFOo0eYONrg2JflE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WRJIOvnDIF02xKKkyjo1/3MM17i+wbjjFSU+eqTKIKwpOWnlDAq8W1ytwqAR3XSBI
-	 RYqJUwzUil0frBoxj5FPvnHFzIQUVbEIvNfxoAiWeWA07aeoO3t4bzvFjlLyCndCs/
-	 o5f7MGA6djOFRWbIyWnzm3gg1wh01TOdrCEd0tbc=
+	b=OGHeqQX0Zna/tpVon6koxL1+DWQpzfEU7NJz6Hkanwa+cwatT8qOHsf6UUTw+3LpP
+	 84d34+UZLkUPVniLZy83sOh1FacZJuee9DCRhS7Lu7nVxLmL8vKMIEBgTtcxa6QiJ/
+	 sFODdeRrDYBj+5XKSNwCdVZhJw+iFl+nbsFlgI1I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D58B3F80425;
-	Wed, 24 Mar 2021 11:13:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 894B7F804A9;
+	Wed, 24 Mar 2021 11:13:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2E47F802E3; Wed, 24 Mar 2021 11:13:16 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id CDA3DF8012B; Wed, 24 Mar 2021 11:13:16 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C69CF8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22BB9F801EC
  for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 11:13:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C69CF8012B
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 86608202748;
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22BB9F801EC
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 840281A27E6;
  Wed, 24 Mar 2021 11:13:03 +0100 (CET)
 Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
  [165.114.16.14])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7D23320273F;
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7CBA61A27E1;
  Wed, 24 Mar 2021 11:12:59 +0100 (CET)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 21B2040340;
- Wed, 24 Mar 2021 11:12:35 +0100 (CET)
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id ECDE64033E;
+ Wed, 24 Mar 2021 11:12:33 +0100 (CET)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
  festevam@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
  alsa-devel@alsa-project.org
-Subject: [PATCH 5/6] ASoC: fsl_audmix: Don't use devm_regmap_init_mmio_clk
-Date: Wed, 24 Mar 2021 17:58:47 +0800
-Message-Id: <1616579928-22428-6-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 4/6] ASoC: fsl_easrc: Don't use devm_regmap_init_mmio_clk
+Date: Wed, 24 Mar 2021 17:58:46 +0800
+Message-Id: <1616579928-22428-5-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
@@ -81,12 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When there is power domain bind with ipg clock,
+When there is power domain bind with mem clock,
 
 The call flow:
 devm_regmap_init_mmio_clk
-   - clk_prepare()
-       - clk_pm_runtime_get()
+  - clk_prepare()
+      - clk_pm_runtime_get()
 
 cause the power domain of clock always be enabled after
 regmap_init(). which impact the power consumption.
@@ -97,23 +97,23 @@ clock when it is used.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_audmix.c | 3 +--
+ sound/soc/fsl/fsl_easrc.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index 8dc44dec7956..f931288e256c 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -476,8 +476,7 @@ static int fsl_audmix_probe(struct platform_device *pdev)
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 600e0d670ca6..5e33afe87c4a 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1896,8 +1896,7 @@ static int fsl_easrc_probe(struct platform_device *pdev)
  
--	priv->regmap = devm_regmap_init_mmio_clk(dev, "ipg", regs,
--						 &fsl_audmix_regmap_config);
-+	priv->regmap = devm_regmap_init_mmio(dev, regs, &fsl_audmix_regmap_config);
- 	if (IS_ERR(priv->regmap)) {
- 		dev_err(dev, "failed to init regmap\n");
- 		return PTR_ERR(priv->regmap);
+ 	easrc->paddr = res->start;
+ 
+-	easrc->regmap = devm_regmap_init_mmio_clk(dev, "mem", regs,
+-						  &fsl_easrc_regmap_config);
++	easrc->regmap = devm_regmap_init_mmio(dev, regs, &fsl_easrc_regmap_config);
+ 	if (IS_ERR(easrc->regmap)) {
+ 		dev_err(dev, "failed to init regmap");
+ 		return PTR_ERR(easrc->regmap);
 -- 
 2.27.0
 
