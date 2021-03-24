@@ -1,97 +1,98 @@
-Return-Path: <SRS0=iUFt=IV=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=3oXn=IW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12FE3C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:50:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F032C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 01:45:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D54C3619D3
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Mar 2021 22:50:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D54C3619D3
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=chromium.org
+	by mail.kernel.org (Postfix) with ESMTPS id E38CF619E8
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 01:45:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E38CF619E8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26DC3166C;
-	Tue, 23 Mar 2021 23:50:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26DC3166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id B86E41672;
+	Wed, 24 Mar 2021 02:44:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B86E41672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616539855;
-	bh=/JC2WWMUs5g3ESmAYEusP1t/wdE8qRVZLNmpwAENbac=;
+	s=default; t=1616550335;
+	bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dMWSOArfZ2o6ClDcGksyEwz59I5EEfZGZvmxNhzC+7PGTTKe41+vJD3Z6FcVyvK49
-	 DA2dCz305xVLQxeUb5N09rEz2Eqvr6PcRzprgAf7BTcCZ3m5TSPvfzFkXn7whfr86X
-	 jMUADCUwsuiqunWM/X/IxmQPeoQkMcLB5soPt9RM=
+	b=ZLpfLOnu2YcVoYyHBiEJG2jbCUaBFkosiI0WvDwaQes1qnPYIOIEvQ913KvIgBfpl
+	 dwbbNXk3s2hBCKSInGuLxUvjNqK+C/5f/P5PWu/KIuL5goafFLbY5Y9YW4c/bmgppQ
+	 8XdRaoeGOUvaH5OJmt/m8uKJcngO1T2SQPq+yyqI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADD00F80155;
-	Tue, 23 Mar 2021 23:50:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37F69F80257;
+	Wed, 24 Mar 2021 02:44:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA9F4F8025F; Tue, 23 Mar 2021 23:50:01 +0100 (CET)
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com
- [IPv6:2607:f8b0:4864:20::e2d])
+ id B87F5F8025F; Wed, 24 Mar 2021 02:44:43 +0100 (CET)
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com
+ [IPv6:2607:f8b0:4864:20::833])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B89FF80155
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 23:49:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B89FF80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id 559D7F800EE
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 02:44:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 559D7F800EE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="OMPN7pUF"
-Received: by mail-vs1-xe2d.google.com with SMTP id l13so10296874vst.8
- for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 15:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jxs+sx48"
+Received: by mail-qt1-x833.google.com with SMTP id y2so14061287qtw.13
+ for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2021 18:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=xZj17CbAhPV0BOUrIhSGjBZvBrtI35jH8ivTaVwdIvs=;
- b=OMPN7pUFEP9QlCz9mzW11sDqR+bcXJJU+VyoL0Ord/LhAiMnbFp3U1gv1A53UVpRo3
- pGZ7S+AQGUipcnv4rpM55wPOC2LuQmES4Zh5K/Ed2tm0cC4F4U6SBgDKG0RRKhHgzaaa
- mhvuWUUSf6q20jx4PHOfcirPyv1oQ/eI5OtVw=
+ :cc; bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
+ b=jxs+sx48jY9q1YOqNTS5XanF/iwJIMQahFq2kPojEMaYK2PVxwqZlQhUeIqPn6uX+C
+ uPd3UPHLHesuU6uyioUWJWdwhVeHFDdNbab/L6NbQbZorUVtrC3fGAW7AT2gyb7OeFF7
+ a0pJXJsE5K78tzkjvzGrY5tGpnGP2QWLYAEbR9MO+xUg4OnhYuwlkpGuUHnGxvW1Xf0F
+ Njq7V77lwVapKjMUz+PdZmbY7AiY+4DrD8v2Rb6cChRjFlqPzU5BBy9+ZnZ9lA8qYlrO
+ PtHItO/31nOvGJcKnCH54eqozZTWHuW9qz/dphkZ1DkvgZtYK1gVdV9FZoNYRgphoLvR
+ 4RWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=xZj17CbAhPV0BOUrIhSGjBZvBrtI35jH8ivTaVwdIvs=;
- b=dy4kNCAN6jrsdjif4bFkyTfVXaqLBq0KdzZKR2gMffPolaDIZhSJY1JkUUTmqkbE+8
- dvmkMA5NzILRmJjMW3hXiYkKQe+lEANxw2BrOoavJtJI8RHkODYJuPet7OiYlrG7b2Jk
- XuKX7+bkiilo04R7JnP2E3tAemsJKgjgXoXo91wJMcsUyHFapCB9HCn4Bq2/tXwxB9ju
- dQfEk1Yno9dMvAhxaWWbbfOMLZC9m6enU1TcoDjKytLh8F12561n6cLT0CEJnH7PKx9D
- B31UXpyCgTcVojiCDDmtx5uuLW+sKXrqfUtHzq8fPVMrmYGOyz2suD6NcpLXi2gQbME9
- 5hqA==
-X-Gm-Message-State: AOAM5332gxIZMcinvsmXLx1kKORgEgRF99n6bLkR48awwq5O+VxbQUHM
- i0uWWmkN2dqY9s4odMgFdSSyAE60lXu44gyl1CBIsA==
-X-Google-Smtp-Source: ABdhPJwckSkJtU1LzKoFGeFTfaM4SDYgjQVY67jVUWs75Uxv4Iu0h6f7t2CEPRK6PcZLsMfytIvJPqfZHk0X6tK6g/g=
-X-Received: by 2002:a05:6102:ce:: with SMTP id u14mr249633vsp.28.1616539792777; 
- Tue, 23 Mar 2021 15:49:52 -0700 (PDT)
+ bh=ptioshG+2dIFNP/OQB4kxeiMvcEgTk3PcQJ8b1Wlui4=;
+ b=m2ikGKazuJGiBn9wxUX0t3ux1SejNYhcr6LRWZntm4ECXdBnvrWOmzAjpEadmqAZTc
+ 3rNdaw4jdSO2rQJTXcRcCqXJOSLUYXSXfoNNP9HdYt4WG3ooNO0PZ6T/J6AWVudQWLPm
+ /uiIXdG6aIdsfwYqtyLjItWZDG0IAR/k9MoPj0SVcYX7xkEBFcO6jVxOBuMjYDI3RBtV
+ ektkDcyb+AMSKaomreqwFm/URbj7VcH5r2E79vTej0s8xAKqscb+ndzarWGWLzwjbUj/
+ rKjF/GszVMX0M8UYGx3XPdIDHKOPi1BZnSlvke9PkBwbClVK5YQWaHD52Pq5BfjOvXDv
+ QtZg==
+X-Gm-Message-State: AOAM530/dbKIfnJ8andjPZocZ9yc//oJe3pkJ/u300AMEB2OoWYHFq9t
+ XOEFb+a5ujNxlZVcFdYNU3QzDtnGp6qwKI492WU=
+X-Google-Smtp-Source: ABdhPJxKcSdyS8HdLo4YR2hVKK5rxuhzXy8eprlF7YHHz/jSjMiCSwpeP9ucbyty5m4+XA51q4tdpxfvnQwtNvV9v2w=
+X-Received: by 2002:a05:622a:454:: with SMTP id
+ o20mr1067602qtx.292.1616550277946; 
+ Tue, 23 Mar 2021 18:44:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210317172945.842280-1-perex@perex.cz>
- <20210317172945.842280-7-perex@perex.cz>
- <a3ddb881-6580-cd25-ef3c-734e686e6942@redhat.com>
- <s5h5z1nf47r.wl-tiwai@suse.de>
- <3820909c-29ce-9f3f-d1e6-c4611e06abe4@redhat.com>
- <s5h35wqff1m.wl-tiwai@suse.de>
- <a2018c94-8731-de29-e447-92457176a1b4@redhat.com>
- <s5hy2eidul2.wl-tiwai@suse.de>
- <a9a62884-da5b-ef2a-10ec-e414e6784677@perex.cz>
- <CAOReqxh-ztd-FWvhoipUbkhzfhZCyH5KY8v1VwjswNFH7OnARg@mail.gmail.com>
-In-Reply-To: <CAOReqxh-ztd-FWvhoipUbkhzfhZCyH5KY8v1VwjswNFH7OnARg@mail.gmail.com>
-From: Dylan Reid <dgreid@chromium.org>
-Date: Tue, 23 Mar 2021 15:49:40 -0700
-Message-ID: <CAEUnVG6ZO+kiPMnebG6pq3NkRqvP80Q8cB5bPJdgPt9DUgALzw@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] ALSA: led control - add sysfs kcontrol LED marking
- layer
-To: Curtis Malainey <cujomalainey@google.com>
+References: <1615341642-3797-1-git-send-email-shengjiu.wang@nxp.com>
+ <20210310132404.GB4746@sirena.org.uk>
+In-Reply-To: <20210310132404.GB4746@sirena.org.uk>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Wed, 24 Mar 2021 09:44:26 +0800
+Message-ID: <CAA+D8ANXcyJ+GrEqTNuoNJ4wGCQfqjRkhcevt-eXSrNj_V128w@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] ASoC: wm8960: Remove bitclk relax condition in
+ wm8960_configure_sysclk
+To: Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>,
- ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, gustavoars@kernel.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ patches@opensource.cirrus.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ daniel.baluta@nxp.com, linux-kernel <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,46 +108,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Mar 23, 2021 at 2:40 PM Curtis Malainey <cujomalainey@google.com>
-wrote:
+Hi Mark
 
-> On Mon, Mar 22, 2021 at 7:16 AM Jaroslav Kysela <perex@perex.cz> wrote:
+On Wed, Mar 10, 2021 at 9:26 PM Mark Brown <broonie@kernel.org> wrote:
 >
-> > Dne 20. 03. 21 v 10:48 Takashi Iwai napsal(a):
-> >
-> > >> With other OS you mean e.g. Android?  Android has device-specific
-> > >> init-scripts which can either call alsactl or directly do the
-> > >> echo-s.
-> > >
-> > > Also ChromeOS.  I'd like to get a general consensus before moving
-> > > forward.
-> >
-> > Where are ChromeOS people? They could join to the discussion which is
-> > floating
-> > few months now. Perhaps, the gmail's spam filter does not allow them to
-> > communicate with us ;-)
-> >
-> > Hi Sorry, i missed this was directly to dgreid and me. Will try to get up
-> to speed on this.
+> On Wed, Mar 10, 2021 at 10:00:42AM +0800, Shengjiu Wang wrote:
 >
+> > changes in resend v2
+> > - Add acked-by Charles
+>
+> Please don't resend for acks, it just makes for more noise.
 
-Sorry, this one wasn't gmail's fault, it was my manual filtering of emails
-about LEDs:)
+ok, but could you please review this patch?
 
-Chrome OS is supportive of user space control when possible. We will work
-with partners to establish a standard in Chrome OS for mute LED meaning
-(built in, headset, usb, etc). Having user space control allows different
-ecosystems to make different policy decisions. For us, the UCM-specified
-mute on/off will be driven exclusively by the audio daemon.
-
-
->
-> Curtis
->
-> >                                                 Jaroslav
-> >
-> > --
-> > Jaroslav Kysela <perex@perex.cz>
-> > Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-> >
->
+Best regards
+wang shengjiu
