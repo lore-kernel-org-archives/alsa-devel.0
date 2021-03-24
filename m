@@ -2,78 +2,163 @@ Return-Path: <SRS0=3oXn=IW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25330C433C1
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:51:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C445C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 11:17:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E4BD61A07
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:51:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E4BD61A07
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id D25A961A09
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 11:17:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D25A961A09
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=infinera.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EB2B1669;
-	Wed, 24 Mar 2021 11:50:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EB2B1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE4251669;
+	Wed, 24 Mar 2021 12:16:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE4251669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616583094;
-	bh=/DCxC4MVMwIyzSFr6RbtguBXrzP9DLGR2jAPymHThME=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1616584649;
+	bh=mZAY0MdwfzELZ56oTWufNoSs6hDmqque8T8XCEU9vdM=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lJOtGybY/Q8xrZYW4yJJmOFFfkOHxRynIzf6jpglf1z20+mTmeSH5VZ7wbIcVBJQi
-	 RbL15bGAITNEli4gXdH+zPA9EO8xJxTrTjOxivMrieIjB4MzxBlXQAkFyuglmSGDpp
-	 m2EF0tVGjPOt0hvyr8R6ZDIBEG+j/btpY61j4smQ=
+	b=lKgMRIwnElbuWNCEK5yYnVbeMKmxbZ9NV/JqhnWBlZuNyDI6gZ9Wv/KUl8EOyoatA
+	 Cjb4z3IuoM3wqkZzsE/yVuqzDEE8A0jPI/bVQsN5weMA96aPm3vbmNz6b1vh0mJ82m
+	 KxydnGZMHdEm31t87HVhAPkVIs4fs4OXbqBRldM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE9F8F80156;
-	Wed, 24 Mar 2021 11:50:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40809F80156;
+	Wed, 24 Mar 2021 12:16:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0247F8016B; Wed, 24 Mar 2021 11:50:41 +0100 (CET)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2FEC9F8016B; Wed, 24 Mar 2021 12:16:38 +0100 (CET)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10on2040.outbound.protection.outlook.com [40.107.94.40])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B3A3F80104
- for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 11:50:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B3A3F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F3F5F800FF
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 12:16:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F3F5F800FF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O/bb6DGf"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C01561993;
- Wed, 24 Mar 2021 10:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616583034;
- bh=/DCxC4MVMwIyzSFr6RbtguBXrzP9DLGR2jAPymHThME=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=O/bb6DGfhUw3ZD/fBgjnliOhlyeWcJEfnOPKuMY1sWDr2uonei9+EPjyNb0WvtAH5
- +hGC29q8lYpEuAQbAQU98/VRNx8lOL7DaAhno/4kJbOuLgx4MGaFxB/BVmDSY+Be1S
- Kx28X42Dlv0d/APh7T2603xisumy4BGcKZKHeczJfL4CijroP7D3/PfgQjCPkFKcu7
- bZN1jp5Vgd+ENJDx6SFnaBEG7ap6ig4bwQpnwnp8QDFDCQkfDQ8LbmdLBgbEdDnIFy
- ACqGWTK1zMR/LG3yP0o3oP34Jv3Sa1DjN6cu7su40Pd72A1kiQxZSCx1MwWqZdP0O3
- oqmlTTyLnm/Yw==
-Date: Wed, 24 Mar 2021 16:20:30 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-Message-ID: <YFsZdiVQpLfsWmv2@vkoul-mobl.Dlink>
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
- <YFmPTkNkX6QPWiCa@vkoul-mobl.Dlink> <YFma1ClahDe2bZhR@kroah.com>
- <aa9cfc49-913e-b3ba-1d92-2fab55bf4fa7@linux.intel.com>
+ dkim=pass (1024-bit key) header.d=infinera.com header.i=@infinera.com
+ header.b="RVrE564F"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uqozw2z1I2pWE83sonkhvRR0tdrIJGDx5V1WcrW3nw7VCyeKYU8THbvI/qE+xGWeVdYUkgHcGb1FysYsRzA/c6OGartZYbnnYyaWLHe55bSIqlN9LB1Rbd3IMT8o1hJGSB2ThlSem26JcUgGaAxLS3sd9av+NpMY4nrVLccTBbFiPXP/6d4TszlN8rxuikzit/ix0Jdm8I9Nk2x2etvlYV4T2vUxGQKiGEPyukio06KMWYGFnIaOuiVrJPQ1YHUVH3zyKulpZejYzeDaVuIJA3kmccEc6ah9FrQk3SA5ov2MRezytOqBXsxa5N6xqOXt56NlQkEwwdfcL6JybGelyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mZAY0MdwfzELZ56oTWufNoSs6hDmqque8T8XCEU9vdM=;
+ b=RndzEOSF8yC6fz9MJRRp0Ef1CTUT1fc55VzjgZkFvpDxEOqz2EVZnqr8+lxrKIezyPjBhbVqv52Z/Plnlo5/Mbr3pnk441gRvF7OR9ehHlNUeKd0io7titNsjVE/0irDRWltB0IQIpghHl2yaIE4911JRBRkpvLOvdy0ZiuBQwrLAAAD3kHMsszfGG+TS+Ghm+RL/dQ2JziAkGyc+QNBcJyzXsgnWIOdP6GuapcsroVwvyjdkDpVGAqFY0Sll8/OQXfTwuikbM+iknjEonUb/BAr0RO4ZxkUZfle+VcyoQ9sXFzrqjRLCSmA31AYaIy/aRa65jK/iFue1yrnNtoxiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mZAY0MdwfzELZ56oTWufNoSs6hDmqque8T8XCEU9vdM=;
+ b=RVrE564FpztpB1MBQ/RNDCu/xnpOLKxIiMsYPPvdxAOzgSI/XrfYRwT3KQ6N4Le9MMtBRlOiFTU15LV9GpBLeVsnsAaoGSNpbSUcpCJsUvyGkuxpuNSJwK9LVBfOBBgArEwcOMAq4Bozkq9okmfo0OEPIcG5hR6+21fEUmWvI5Y=
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ (2603:10b6:910:45::21) by CY4PR1001MB2392.namprd10.prod.outlook.com
+ (2603:10b6:910:43::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 24 Mar
+ 2021 11:16:12 +0000
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79]) by CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::fcfe:f4e4:1d73:6d79%5]) with mapi id 15.20.3955.027; Wed, 24 Mar 2021
+ 11:16:12 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "ikjn@chromium.org" <ikjn@chromium.org>, "perex@perex.cz"
+ <perex@perex.cz>, "alsa-devel@alsa-project.org"
+ <alsa-devel@alsa-project.org>, "tiwai@suse.com" <tiwai@suse.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Apply sample rate quirk to Logitech
+ Connect
+Thread-Topic: [PATCH] ALSA: usb-audio: Apply sample rate quirk to Logitech
+ Connect
+Thread-Index: AQHXIJu5KknmGOLeWU+zwJhqGFj8lKqS/PcA
+Date: Wed, 24 Mar 2021 11:16:12 +0000
+Message-ID: <c21de867cf4ccbfcc8cf555c78dc70dd3a47dfe8.camel@infinera.com>
+References: <20210324105153.2322881-1-ikjn@chromium.org>
+In-Reply-To: <20210324105153.2322881-1-ikjn@chromium.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.39.3 
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=infinera.com;
+x-originating-ip: [88.131.87.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 964065bb-0e1e-43ca-b9ef-08d8eeb63b95
+x-ms-traffictypediagnostic: CY4PR1001MB2392:
+x-microsoft-antispam-prvs: <CY4PR1001MB23921F092030D8EBB7C3D841F4639@CY4PR1001MB2392.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CBxqBktL1y8SrfGpswbNsDXX3TM4K7DvXV8G1rsDy9Ywt07EP5mDVjunYRD0eaEWdBatMXGXJ2lpvlMzMziOUolIusfPmDXxUnvDLOIIfxmru7rr7d4b84wqhIDXNtKyKd69ZjSV6nt7bZSfBMGU53hHPon5tlIlDQaJ9ZyJaEENb4gfYFUJBzA2pYrAAPDjQpnCjqcHkjFK310SljRrKiBw/FytMeDPNZPOa95JTpjlTUVCXGrXEE/I56QkmBPbiJyFaYSutRl3dZyeC3/0yYc4Tx1Rr2WOsTPnyXHiyPE8l/wUvWCenFuk/us1xhB3XYw1+YztTDkyGvycLoXQu0SFozzelrzJulfaB6sZf/M0nOKOwx7EAgVuAnFE9hZYGKSPtzzthaFJ8gjgThJlUBZp3zwIDQXkEn2nSRar4g7LWFp40gYJ3eRnU8TJHB3Lp0GL0+2ZWOTlf5FCbSbzzkwVlf9GglGGZrf82iytDzFOQ3v88NnK1gUC/aNfQQW48HslzeOkdHVD63FeHKVPF1YGPsE6/i8Fhjc6i1jOJgZ1V+oB4NMcg8HxYz71IXIuabDouY0qjEoNW4ZOQ0uXeTwjvnlgDByUwpBdAp2UnajyfYFYDcsD5KXdtr9s3vCAdrspUa6FtreGO+m0fodcWxWhdvvXSQtFv8enZ+PAVt6DdsV/6adHTjSkTJJpbO7D9G+T518DG22AUWu0fEQSi2ircZbuUYTQ5JfNtglqjiw=
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CY4PR1001MB2389.namprd10.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(4636009)(366004)(396003)(376002)(39860400002)(346002)(136003)(71200400001)(6512007)(83380400001)(4744005)(8676002)(478600001)(110136005)(76116006)(4326008)(54906003)(6506007)(966005)(2906002)(316002)(8936002)(38100700001)(7416002)(36756003)(26005)(86362001)(91956017)(66476007)(66556008)(5660300002)(64756008)(66446008)(66946007)(6486002)(2616005)(186003);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SG1uUHZXWFJWMnc0UU5MRUxwaERkMDhRWUpFNzg0ZU1kczhEU2VMUFg5MXBJ?=
+ =?utf-8?B?KzFXc3Z5ck11d3YzS1hZRDhCM2hyNEt2cG5uTVZ0OEdNYllrU0g4dEl0RVRk?=
+ =?utf-8?B?YUpNYnhBMXZNN3RJSnJjbWxmTk9IeFFnUU1ONi9wbDVYNzNCNnFwZkJ0VFY1?=
+ =?utf-8?B?N0xaYTJDSy92aWFKdEJyRVd0M3ltT2RVK25FTEc2NHJlQ25DeU1JMktzdXdM?=
+ =?utf-8?B?OUpiNDVNREsrcHJwR2xvN21NT01DRWhEQmJUTVZtUkFMRmRRQ0lyVTRDaVJU?=
+ =?utf-8?B?M1VUL0pURWhsSW1JdUlNZStWUmJlNEJ4UWd5VnNuUFlPc3phdEJjVmZhbVBz?=
+ =?utf-8?B?T3FZc0tZQnYzU1d1NXpWVC9oSlNCVUVlOG9rTU1BSGdnMW9nd2tQbk5uWTVr?=
+ =?utf-8?B?eDB5YmtXcjczUjlXVGdWRmxTNndITG12L1ZBQ0F2VElwY08rRzBqblY2Vjgz?=
+ =?utf-8?B?MlQxL1E4YjBidXgra05OaldVVEcyaitoL2owNzdJUGhTTzhHK21ES1dyenNB?=
+ =?utf-8?B?VmtNQmpRK3ZhSWVkcSt5R0l4UDBHS3NTSStLNzRaWmVxSUNYbXppK1RtbFhn?=
+ =?utf-8?B?K1VrNVE5V05KeWRJZ0lOUWhPRWdDdHpnSmdscFVPSkVUdUozMkx4RFFjN0Fi?=
+ =?utf-8?B?MUw1UzV5aERxY2gzYTB2TUxrV2pzbkNicU9jMkE5STNick1VRkRHQ1g4NXdz?=
+ =?utf-8?B?bVZtQ0c0WHcrcGJoZWIwSGx5ZFFNdlhKYStnN0ZkYnQ0RktTVEtpZkEyN0xj?=
+ =?utf-8?B?eDY3UTMzc0ZBdDlvYk8rblIyNFJ6ekxhTngydzdoNlVVTkJidmMwOFZCUzVn?=
+ =?utf-8?B?VXhtYlI5OHp5S1JWVE54WlJLdjk0bnBJQ0IxaU5iU1JrS0hpQ2x1NjhKMkx4?=
+ =?utf-8?B?WUJhSXpLbzdpeTlCdXUvWERsaHJwR1lzNklUQ0JLdnV4Rzd3VEhES05GRGpR?=
+ =?utf-8?B?UE9hcG95ZjBOY2ZqSFFmL0MwZjUxTnNpNmhFWGZMQjhGRU12QTNSMmlVNWhC?=
+ =?utf-8?B?VnFLL2xOdldEcFZacHRnV1k0OUswaE0xcHgzQmFXL2UvUDRlVm44aUgvVTV1?=
+ =?utf-8?B?UEFuaEpZMllQYU9SdWg3WlBpWmRreVNRK2VSRjlieHdOR2I0VmRoLy9iK0sz?=
+ =?utf-8?B?WW9FaEtaVGI0MGh2dWE1eEtOT2x4NmUyWGNnVFdNK21uRmF5RmdSb0NBQ1ZJ?=
+ =?utf-8?B?ZlRJbS9hY3Bwc2ZUdEltT3JrczhWWThHQnZITUQzSG5OTWxDSUFob0xocTBK?=
+ =?utf-8?B?MWVFZnZxU1RhLzJqMDVvUXBaaWVPUnBxaHFYcmdjRkJ1SnlMeSttWThpWHlS?=
+ =?utf-8?B?cmluVDNTNjgwN28vdDRZTDZCbDJhTDdiZ1dZdi8rL3VDMWVBN253REFiNVNG?=
+ =?utf-8?B?VGZaSkxwQ05LVU5TRkl6ejZnRXVzRVhKN1lqMCtFRXdVRnJnRFQxRUx6Zi9R?=
+ =?utf-8?B?NlU5WVBrR2NjaFBYVCtWV2x6d3Y4M2dYdFg0YUZuSmxqc1BXV3h1NEhmSm5E?=
+ =?utf-8?B?cHJyTVZXWGFoL0phc1NPU2Z2NlhYMEdjd0xtMUdrcjRlSGRkR25ZaTRMZVpi?=
+ =?utf-8?B?RkFLWjdoelZxM3VXL1lPc2pDQVcwNHRvbHJJQTk0S0I2cHlNTnBPMG5BbmVm?=
+ =?utf-8?B?RlRwNmhMZUh0b2dQUTBHM0ZvQzgwTmZ0a0ljNlhwK21wSjE0eHVudmtwbC9Y?=
+ =?utf-8?B?dFZob0FRREZIa3NWWGFteHdBb1Mrb05wYkZCTTJ6WmxTOVBoUFJ1SnpPNDVm?=
+ =?utf-8?Q?Au644AThlxKOfeDVVuaj9eKQ5PmVFXwWiGHY4NX?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D7EDB0973A9737449E149A4E14253906@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa9cfc49-913e-b3ba-1d92-2fab55bf4fa7@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Greg KH <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, hui.wang@canonical.com,
- srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 964065bb-0e1e-43ca-b9ef-08d8eeb63b95
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2021 11:16:12.2819 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y0iXgm8vPGeicGF+SEzGlZ8w+ZYx13mSfx5e1Sxya7KWr09zm6zCH7yPTN35S+i7W7ltfM8XYMEiJlImiTAd+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2392
+Cc: "linux-kernel@vger.kernel" <linux-kernel@vger.kernel>,
+ "livvy@base.nu" <livvy@base.nu>,
+ "dylan_robinson@motu.com" <dylan_robinson@motu.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "alexander@tsoy.me" <alexander@tsoy.me>,
+ "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+ "grpintar@gmail.com" <grpintar@gmail.com>,
+ "dmitry@d-systems.ee" <dmitry@d-systems.ee>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,94 +174,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23-03-21, 12:29, Pierre-Louis Bossart wrote:
-> Thanks Greg and Vinod for the reviews
-> 
-> > > > -static int intel_master_probe(struct platform_device *pdev)
-> > > > +static int intel_link_probe(struct auxiliary_device *auxdev, const struct auxiliary_device_id *id)
-> > > >   {
-> > > > -	struct device *dev = &pdev->dev;
-> > > > +	struct device *dev = &auxdev->dev;
-> > > > +	struct sdw_intel_link_dev *ldev = auxiliary_dev_to_sdw_intel_link_dev(auxdev);
-> > > 
-> > > Do we need another abstractions for resources here, why not aux dev
-> > > creation set the resources required and we skip this step...
-> 
-> Not sure what resources you are referring to?
-
-Resources in the sdw_intel_link_dev which are sdw_intel_link_res. They
-should be resources for auxdev and if you do that lets you get rid of
-this abstraction.
-
-> 
-> this is just a container_of() and the documented way of extending the auxbus
-> (see https://www.kernel.org/doc/html/latest/driver-api/auxiliary_bus.html#example-usage)
-> 
-> 
-> struct sdw_intel_link_dev {
-> 	struct auxiliary_device auxdev;
-> 	struct sdw_intel_link_res link_res;
-> };
-> 
-> #define auxiliary_dev_to_sdw_intel_link_dev(auxiliary_dev) \
-> 	container_of(auxiliary_dev, struct sdw_intel_link_dev, auxdev)
-> 
-> > > >   	struct sdw_intel *sdw;
-> > > >   	struct sdw_cdns *cdns;
-> > > >   	struct sdw_bus *bus;
-> > > > @@ -1346,14 +1347,14 @@ static int intel_master_probe(struct platform_device *pdev)
-> > > >   	cdns = &sdw->cdns;
-> > > >   	bus = &cdns->bus;
-> > > > -	sdw->instance = pdev->id;
-> > > > -	sdw->link_res = dev_get_platdata(dev);
-> > > > +	sdw->instance = auxdev->id;
-> > > 
-> > > so auxdev has id and still we pass id as argument :( Not sure if folks
-> > > can fix this now
-> > 
-> > That's odd, yeah, it should be fixed.
-> 
-> I think we are talking about different things?
-> 
-> this is defined in mod_devicetable.h:
-> 
-> struct auxiliary_device_id {
-> 	char name[AUXILIARY_NAME_SIZE];
-> 	kernel_ulong_t driver_data;
-> };
-> 
-> and used for the driver probe:
-> 
-> 	ret = auxdrv->probe(auxdev, auxiliary_match_id(auxdrv->id_table, auxdev));
-> 
-> but there is a separate id:
-> 
-> struct auxiliary_device {
-> 	struct device dev;
-> 	const char *name;
-> 	u32 id;
-> };
-> 
-> which is set during the device initialization in intel_init.c
-> 
-> 	/* we don't use an IDA since we already have a link ID */
-> 	auxdev->id = link_id;
-> 
-> In the auxiliary bus design, the parent has to take care of managing this
-> id, be it with an IDA or as we do here with a physical link ID that is
-> unique.
-
-Aha, maybe both of them should not be 'id' to avoid this confusion!
-
-That also reminds me that we have duplicate info:
-
-+       sdw->instance = auxdev->id;
-+       bus->link_id = auxdev->id;
-
-drop the local driver instance and use bus->link_id please
-
-> in short, I don't see how I could change the code given the differences in
-> concepts?
-
--- 
-~Vinod
+T24gV2VkLCAyMDIxLTAzLTI0IGF0IDE4OjUxICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
+TG9naXRlY2ggQ29uZmVyZW5jZUNhbSBDb25uZWN0IGlzIGEgY29tcG91bmQgVVNCIGRldmljZSB3
+aXRoIFVWQyBhbmQNCj4gVUFDLiBOb3QgMTAwJSByZXByb2R1Y2libGUgYnV0IHNvbWV0aW1lcyBp
+dCBrZWVwcyByZXNwb25kaW5nIFNUQUxMIHRvDQo+IGV2ZXJ5IGNvbnRyb2wgdHJhbnNmZXIgb25j
+ZSBpdCByZWNlaXZlcyBnZXRfZnJlcSByZXF1ZXN0Lg0KPiANCj4gVGhpcyBwYXRjaCBhZGRzIDA0
+NmQ6MHgwODRjIHRvIGEgc25kX3VzYl9nZXRfc2FtcGxlX3JhdGVfcXVpcmsgbGlzdC4NCj4gDQo+
+IEJ1Z3ppbGxhOiBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIw
+MzQxOQ0KPiBTaWduZWQtb2ZmLWJ5OiBJa2pvb24gSmFuZyA8aWtqbkBjaHJvbWl1bS5vcmc+DQoN
+Ck1vc3QgTG9naXRlY2ggVVNCIGhlYWRzZXQgSSBnb3QgbmVlZHMgYSBkZWxheSBpbiBzbmRfdXNi
+X2N0bF9tc2dfcXVpcmsoKQ0KSGF2ZSB5b3UgdHJpZWQgdG8gYWRkIHNheSAyMCBtcyBkZWxheSBp
+biB0aGVyZT8NCg0KIEpvY2tlDQoNCg==
