@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12010C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:15:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B5B8C433C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:21:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 798EC61A0D
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:15:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 798EC61A0D
+	by mail.kernel.org (Postfix) with ESMTPS id A8DA261A06
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:21:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A8DA261A06
 Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C14031682;
-	Wed, 24 Mar 2021 16:14:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C14031682
+	by alsa0.perex.cz (Postfix) with ESMTPS id F38D8168D;
+	Wed, 24 Mar 2021 16:20:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F38D8168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616598912;
-	bh=8diqm8vQseSm1u7D0y+dOrk4Ot3XztsutbhzjfYZ3VI=;
+	s=default; t=1616599302;
+	bh=J9k2hdq5qoUZRfrMWPZrofJwqONWk4Ge5nFQ0hUoMuo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z9yHlSHOdUjVMf4uysRb3CSquF95blJdLX26FaL3UjCuwZaAkVdC3ZF106+9SaEcc
-	 UPj/w2CU2L+mSQcCC2w1Z8k5auniO3v4zlav3omGIFtxBB9Gz4ZYbV2AcaGgar9ex2
-	 KZGvMWL8ugKKe90z3wnoQa7Eg29BlM9XND2axKic=
+	b=aWVpwcpq+mxxnhIcsncaiZaQ02Oeb6TTa1emF/F0VFh96PCZmPsayI7s+KC8Ec4AV
+	 IRLaQ+a8DicbEBGGognw4T+ZhAd2a/SKo9/jh0j6xeuFQT7swMtAobrWJ1ulLb2jrp
+	 BY5H6djUqiUv4G6xWxp4S4O2WX4IN9NIt9Swimmc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4793EF80156;
-	Wed, 24 Mar 2021 16:14:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 820EEF80156;
+	Wed, 24 Mar 2021 16:20:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 234A1F8016B; Wed, 24 Mar 2021 16:14:20 +0100 (CET)
+ id 0A894F8016B; Wed, 24 Mar 2021 16:20:50 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 59EBEF800FF
- for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 16:14:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59EBEF800FF
+ by alsa1.perex.cz (Postfix) with ESMTP id 80121F80104
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 16:20:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80121F80104
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1616598850847470045-webhooks-bot@alsa-project.org>
-References: <1616598850847470045-webhooks-bot@alsa-project.org>
+In-Reply-To: <1616599245855740070-webhooks-bot@alsa-project.org>
+References: <1616599245855740070-webhooks-bot@alsa-project.org>
 Subject: man: Correct "rate" option
-Message-Id: <20210324151420.234A1F8016B@alsa1.perex.cz>
-Date: Wed, 24 Mar 2021 16:14:20 +0100 (CET)
+Message-Id: <20210324152050.0A894F8016B@alsa1.perex.cz>
+Date: Wed, 24 Mar 2021 16:20:50 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,7 +68,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 alsa-project/alsa-utils pull request #83 was edited from nootc:
 
-https://github.com/alsa-project/alsa-utils/issues/82
+Resolves https://github.com/alsa-project/alsa-utils/issues/82
 Change "rate" option from "-c" to "-r".
 
 Request URL   : https://github.com/alsa-project/alsa-utils/pull/83
