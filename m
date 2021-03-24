@@ -2,77 +2,55 @@ Return-Path: <SRS0=3oXn=IW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44563C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:08:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12010C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:15:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 89BBE619A4
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:07:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 89BBE619A4
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 798EC61A0D
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 15:15:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 798EC61A0D
+Authentication-Results: mail.kernel.org; dmarc=pass (p=none dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4CBC1682;
-	Wed, 24 Mar 2021 16:07:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4CBC1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id C14031682;
+	Wed, 24 Mar 2021 16:14:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C14031682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616598476;
-	bh=2y0H8+WbPuWwSgk8jMWps3spXMdcPuTqQhnluEr49gU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616598912;
+	bh=8diqm8vQseSm1u7D0y+dOrk4Ot3XztsutbhzjfYZ3VI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RiOHHMKI9fnBswCTP+WXTgjQkRAx/qZQJVXkdnsOloWIuXLraPOOpisf8CowzkfKs
-	 TaIl8EP6C8fscRQCKaCDWJBDp6YEJ+x7o72Bkz0qCwCscBN2uNI4+PtIeqbkSKF870
-	 d3sLohclurUCL8nNORa5y+23+f074RNzP6pIbKoU=
+	b=Z9yHlSHOdUjVMf4uysRb3CSquF95blJdLX26FaL3UjCuwZaAkVdC3ZF106+9SaEcc
+	 UPj/w2CU2L+mSQcCC2w1Z8k5auniO3v4zlav3omGIFtxBB9Gz4ZYbV2AcaGgar9ex2
+	 KZGvMWL8ugKKe90z3wnoQa7Eg29BlM9XND2axKic=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55BC5F80156;
-	Wed, 24 Mar 2021 16:07:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4793EF80156;
+	Wed, 24 Mar 2021 16:14:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18225F8016B; Wed, 24 Mar 2021 16:07:05 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5B09F80104
- for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 16:06:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5B09F80104
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 727D0AD9F;
- Wed, 24 Mar 2021 15:06:48 +0000 (UTC)
-Date: Wed, 24 Mar 2021 16:06:48 +0100
-Message-ID: <s5heeg4oak7.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Subject: Re: Adding movable PCIe BARs support in snd_hda_intel
-In-Reply-To: <d9bc41d7-bbad-24e3-6ad3-90e6dd8466c4@amd.com>
-References: <e25017c6-e5e4-7a24-e793-14a2e70a434e@amd.com>
- <fe61113f-5b8e-53a0-23fc-65246eb08ac3@amd.com>
- <s5hwntyaylg.wl-tiwai@suse.de>
- <ca35a9c1-82d8-8be6-21e7-b5242a2d884c@amd.com>
- <s5him5hc443.wl-tiwai@suse.de>
- <30b36220-ff0f-d04c-1fca-349b3ff3a19b@amd.com>
- <s5h8s6dbyr1.wl-tiwai@suse.de>
- <9758cd4c-1246-a4ab-74eb-0e060248a00b@amd.com>
- <s5h35wlbwye.wl-tiwai@suse.de>
- <06b2dae2-a5ea-0cc8-891f-2aaff64ae260@amd.com>
- <s5hv99gan2r.wl-tiwai@suse.de>
- <d9bc41d7-bbad-24e3-6ad3-90e6dd8466c4@amd.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>,
- alsa-devel@alsa-project.org,
- Sergei Miroshnichenko <s.miroshnichenko@yadro.com>,
- "Christian.Koenig@amd.com" <Christian.Koenig@amd.com>
+ id 234A1F8016B; Wed, 24 Mar 2021 16:14:20 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 59EBEF800FF
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 16:14:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59EBEF800FF
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1616598850847470045-webhooks-bot@alsa-project.org>
+References: <1616598850847470045-webhooks-bot@alsa-project.org>
+Subject: man: Correct "rate" option
+Message-Id: <20210324151420.234A1F8016B@alsa1.perex.cz>
+Date: Wed, 24 Mar 2021 16:14:20 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,41 +66,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Mar 2021 15:53:33 +0100,
-Andrey Grodzovsky wrote:
-> 
-> Appreciate you investing the effort in helping on this.
-> I will start to merge it now as it doesn't apply cleanly on my branch.
-> 
-> If I understand correctly your main HW access prevention mechanism during
-> the PCI prepare-rescan period is by bailing out on IOCTLs with the check
-> of power state == SNDRV_CTL_POWER_D0 or waiting when a user process closes
-> it's device file descriptor in patches 2 and 5. For command submission
-> prevention you use the freeze flag from patch 6.
-> If I haven't missed anything I don't see how those all protect when
-> new device is plugged while any of those operations are already in
-> flight. What prevents concurrent HW access from an IOCTL already
-> running
-> and HW suspend and MMIO unampping in rescan_preapre which starts after
-> IOCTL began ?
+alsa-project/alsa-utils pull request #83 was edited from nootc:
 
-The call of snd_pcm_suspend_all() is the key.  That puts all PCM
-streams in the stopped and suspended state.  And the codec devices as
-well as the controller device will be put into the suspended state.
-So, for the PCM side, this should be fine with it, I guess.
+https://github.com/alsa-project/alsa-utils/issues/82
+Change "rate" option from "-c" to "-r".
 
-However, after sending the patches, I noticed that they won't suffice
-for the pending control calls.  For the control get/put callbacks that
-have been pending before setting the power_state=D3hot, they would
-still kick off the runtime PM and bad things may happen.  Due to that,
-the bus.frozen flag won't work reliably, I'm afraid.
-
-So, in that part, we need the code to sync the execution of the
-pending get/put calls in addition.  Maybe refcounting the control
-ioctls that are involved with get/put calls
-(SNDRV_CTL_IOCTL_ELEM_READ, _WRITE, maybe with _TLV_READ, too) and
-wait for those ioctls finishing before actually starting the codec
-suspend procedure.
-
-
-Takashi
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/83
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/83.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
