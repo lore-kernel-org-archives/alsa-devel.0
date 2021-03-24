@@ -2,189 +2,75 @@ Return-Path: <SRS0=3oXn=IW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B52C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 09:52:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C01C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:01:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 623E7619F2
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 09:52:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 623E7619F2
-Authentication-Results: mail.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=microchip.com
+	by mail.kernel.org (Postfix) with ESMTPS id 3E6CC619F2
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Mar 2021 10:01:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3E6CC619F2
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EFD11669;
-	Wed, 24 Mar 2021 10:51:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EFD11669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76BD6166E;
+	Wed, 24 Mar 2021 11:00:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76BD6166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616579543;
-	bh=P0JRU7l1WQ02PLWixrsz98vJaF2/SNRcK4oftwaFhQU=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1616580073;
+	bh=5CfAq6XncUXlyHcs/aBRPbeeOdbKqesfpKEnDB5dNLk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UOyZU8NDcxhGFKJNf83d8oC9ruMCc0NdOXhcluxOuhHJaUFRpmuwcqi96V+VOVIXi
-	 OGRxH/Y2ca6wdYEsqwa4Ik2GHKGsG3YAm/PxDG+84FKEJxSzOnY0p7UrdBAq9D84Ab
-	 rqcvxJOnStXLMlsUytzc7AbCb21F5YrvAv5s5yyY=
+	b=vFp5tGOEUgFi2PBDDAzwNWGmERLBE1ywziUQFXAkgp0heU7xZDqpFxEh2beTpUdwp
+	 JuqAqI9S1iEeomIAuZlVPP2ESVREDHJghLBpGhhCNSicUH+7VKfkEy/mAVAc5zlOId
+	 IAAng8ffhQAPjK8cOIhrEzsHPZLBLCKwxK2fqEdc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF36FF8012B;
-	Wed, 24 Mar 2021 10:51:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BADD4F80156;
+	Wed, 24 Mar 2021 11:00:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E518CF8016B; Wed, 24 Mar 2021 10:51:30 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id ED6B3F8016B; Wed, 24 Mar 2021 11:00:21 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E3B5F8012B
- for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 10:51:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E3B5F8012B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="NadEt+gm"; 
- dkim=pass (1024-bit key) header.d=microchiptechnology.onmicrosoft.com
- header.i=@microchiptechnology.onmicrosoft.com header.b="kHVc7mEC"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1616579488; x=1648115488;
- h=from:to:cc:subject:date:message-id:references:
- in-reply-to:content-id:content-transfer-encoding: mime-version;
- bh=P0JRU7l1WQ02PLWixrsz98vJaF2/SNRcK4oftwaFhQU=;
- b=NadEt+gmeVsIo4FTw+arpzLRSgQFLL6Apc/wTGbbeVLiiz/PzBF5xDXd
- 2cmBd/GbdmH1YGYOkmAWujclOB9aRnbrBj4GtqFw4DA8/ZhnkriWCBrhe
- E3mLhBo0BTuqF5ywXsHeEOxlXPORonIDoCgiAcr4qS+E09tF9WKeIojVN
- fs4raBR19X5A4ASkf2kTmSfC1BfHENd5ce+zo4+4fpc4D9GNMTxwyR1YY
- SJi9LnAqCRQlrbqbdwFQQgW3EXp9yY/xXaYmQ7LKpdFHUDR9WrmJE8/FW
- DEFuavyT3nRL4YC+Zj21xZw6qpleccTP//+oiio2nNSwu1ltp8Lvy9d43 g==;
-IronPort-SDR: MrdLT5YDqcp8eP9MKCTYXFu9IziHmfoJDn7tt8E0WSqAJtFjZFPGX9gcnpD58nAkHBn1/16h+H
- WuvXKhRCGnyzRwagjvbs2438zNvrWav7zx2b+szIJt5aixKKmqr48cCPFlJ1rzGYtdko6ZsDQ+
- BloAlfOyUpVEdmfa0IpUyvseLcFH5M0tXMh7PJjm2Ffvl9zkNH6u25YA4y6/uBZGeWSeqsZC3G
- uT4z+fsWudSDBEbag0RF0wzoIEwKen/+68tUjmfa17/1qHm458NlRtps41YWZU8zFboW56edQe
- BjU=
-X-IronPort-AV: E=Sophos;i="5.81,274,1610434800"; d="scan'208";a="48680159"
-Received: from smtpout.microchip.com (HELO email.microchip.com)
- ([198.175.253.82])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 24 Mar 2021 02:51:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 24 Mar 2021 02:51:17 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, 
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Wed, 24 Mar 2021 02:51:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JKUzox4c3YNlPHiRmjwR0MVBPskaYR7jC0vwIT4SPHXxUINyciMQ0TftRl2eEqBF4a35okBmXRW/5iyvcYTuGScoVCA/ZcPIvDaJD+RLbuX7QNxdLo4DcJ5ti2mGhGngPoVvrDFXB8WP87oBHLFm3dwRRTW7n+of8u64hHQVUW8+gzATpi4d1zdSIdsN6slQRxt+gV4MXAEGx2kGdlKhamcmr/0h0UVUZo4a7GdbrAVP/BQUtrR1nMIWP6A5vg+ob1UubMLYFkvQb5uk2BLsaxirHesTjXUaZD22HAlaR/1JONdchME8yuE782O6twDWom3j5pj945rO7gSpJc5Riw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P0JRU7l1WQ02PLWixrsz98vJaF2/SNRcK4oftwaFhQU=;
- b=IrG+7PivvwfFar0UWEmQAZIG+7JPvDIpBRaGiC6Bk+c/Ok7Rz96v5Y/QtdwdnMdx3LKLBvC0UzlzSM3SxJsgOJO6FFOaWjsLNbwxhzffW4PmQeWd3eOj1MsjggNn9p7GjfNatALgRbASwB9CkwoeaUii98M78jlhblT2mhBv3teYzaq0dCTuFBM3LXEExP3gyhMrOuI0Rca++m6DALv24NVA2Ue33ddQgqQHobB4Um0xV/KAapeCAJ0dcTPbLwANhLaMr/sMscZLfZpM5e8P2ac4lFq2VtTm6aTEw602kRRLMO5PFZzEFkUJYW+38HD9u68dSOclYGa1HJJxNHYyNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P0JRU7l1WQ02PLWixrsz98vJaF2/SNRcK4oftwaFhQU=;
- b=kHVc7mEC7DIrMtlg7TyfRS2R/wu2BvmZzCWMNyo0HBPGOwSGLoAQ7pEydEqfNsrrSF0Nwr8h+UGgtepZWAYyYeWfnlhMHVL8rL0UyBA5z7ozWTsrWlas2e2+FR8SYvW8TNbh0UiqKwkGLvbtu5RcyctoleyeQ2/HAr+juyU1cwk=
-Received: from BYAPR11MB3254.namprd11.prod.outlook.com (2603:10b6:a03:7c::19)
- by SJ0PR11MB4816.namprd11.prod.outlook.com (2603:10b6:a03:2ad::13)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Wed, 24 Mar
- 2021 09:51:15 +0000
-Received: from BYAPR11MB3254.namprd11.prod.outlook.com
- ([fe80::6c10:a3fe:3cd1:54c0]) by BYAPR11MB3254.namprd11.prod.outlook.com
- ([fe80::6c10:a3fe:3cd1:54c0%4]) with mapi id 15.20.3977.025; Wed, 24 Mar 2021
- 09:51:15 +0000
-From: <Codrin.Ciubotariu@microchip.com>
-To: <pierre-louis.bossart@linux.intel.com>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-Thread-Topic: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-Thread-Index: AQHXH9nLKm9Vc1LsR0iPwMHUtMwvV6qR9PqAgADxxgA=
-Date: Wed, 24 Mar 2021 09:51:14 +0000
-Message-ID: <2e9d903f-dd76-5b22-77ea-5fc42be306fd@microchip.com>
-References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
- <7364fb08-fe43-167d-a083-db4a6234222c@linux.intel.com>
-In-Reply-To: <7364fb08-fe43-167d-a083-db4a6234222c@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [2a02:2f0a:c30e:ba00:d73d:bc0:2e7e:9fa7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6dedb999-1a2e-491f-aeb1-08d8eeaa5d52
-x-ms-traffictypediagnostic: SJ0PR11MB4816:
-x-microsoft-antispam-prvs: <SJ0PR11MB48161E1811C0A7299B7AEAA8E7639@SJ0PR11MB4816.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZDMdxZWjF31VaNaB7Bcp2uKJhXo15/Rt32pjwCkLDeI1pA3By2+NkJONXR+5lx5Gv8dxGqp3g5tjL1DC9l1YbxQT39UxArZgohMD3hyGpFEskFfvM3S3SmPFfMUvazo6tyQSELO4ujgR60RK3rp6z8+W3ivEag/MUa8+C0xlz48+MrQb82Bo4ZfItmmpn/JgkY5q9JfSRzgJsXZTJzkCHPQAgsfBgIjIBT3IBhN6hJIqObQfY+NMCSGcpBuV9B50BrjaB2AfXqICbamuT0+Uoi7Tgr7nNpTak5DN8ixzPAN8EmMLThdRkU+n2MYBhF0syyz3boOgOKtmDFmqNVjzacwuusVUWmME8Zr9n7UtkebwMVtltLBD0mz1IcHE+odQz0edY8gFNsy6X3Mt8pUZQ5ncNbwzHd+i4qtq0CXd3AzhkY8q6O4fGV/QO+VD436/Zh9OFanBh3takp0mnXaU6mOXIa/N64Kr00XC1u3RmFtAfKs+AHt0SUa5NvQcT4Ix9Ctq/WhFrasUsf9kr9wYYSPMh7/P178MNHXn8hGFKAq3nJwybcIIXbW+qYYSWx35KqVYsAUMMDvFzUtfMwBjk8YmYedO1W+PI8c9E8pJfdPibqWhXxjvE8MttPl4PQKE/znjYo+W9jgBHdmeG5u9GwH+P3Mc6y99/UhQGxBNpbv799MLL30NfFIqDtlr8m92su9/KVTuxkPHbnVmkO69u6cBb1/1x1Gvhh8hdhzB5WU=
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:BYAPR11MB3254.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(366004)(346002)(376002)(136003)(396003)(39860400002)(91956017)(186003)(76116006)(5660300002)(8936002)(31696002)(2616005)(66476007)(66446008)(6512007)(2906002)(86362001)(66946007)(64756008)(478600001)(66556008)(83380400001)(54906003)(316002)(110136005)(8676002)(31686004)(6486002)(71200400001)(38100700001)(36756003)(53546011)(6506007)(4326008)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata: =?utf-8?B?MUI2RTNHemJRVkkzV3diYTVORng4TnFkOHpnZ0RyUXcrdG5GeGdBVVg2SUcz?=
- =?utf-8?B?a21ZU1pwSUUzQ0lnSjdDWHRNSVk1NnM0THhRbSttbll5TFR5NTBzR0JaaXNW?=
- =?utf-8?B?ODZ4RFlrdnNxUm8yYjkxVnJpMk9pVDRrOGhjRnJKaFRqM25Qclo5OHpXTjVL?=
- =?utf-8?B?QkpkSHNzS3NkN3dmM1VvV1VudzdGYURibmUzMVd4K05hZ3FiMFlkWGxjOHBy?=
- =?utf-8?B?blBQMUNqUjVlcDMzM2tEb0pDQXNzT2QyYTJjRUJ1NFlrZzQ5aE1xUEtiNWp1?=
- =?utf-8?B?cUFxK1FpSXF0MldoeElKOHhpckhuS1VRbENvTGJLWG4zV0Q2SEJDNnZUVDZs?=
- =?utf-8?B?RkxWRmVsSEUwTk91TWg3U0lBbHdzaU1zR2J0MnpiR21kTWRBSFlNT0NUenFy?=
- =?utf-8?B?TXY1UlJHSW1pUHE0UyszclE5N20xY3pmK1BzdDNGaUVIcGwvK1lWbys3RURz?=
- =?utf-8?B?clk2N2tURUd3T2w3WTV3NjBtR09na3FkbitkanFjZ0dEckQ4NVEwSzRhSWpC?=
- =?utf-8?B?OXdoK1N3L29qa25mV3FCYUdKSldqQlpVQ0Z6ZkJOYm1tb0l4STFGQ3BoVnlZ?=
- =?utf-8?B?ZmhPWUhuSUlDMC9YUzVlVmVkNlVsUnorRUw0OVh2aElRZ0lTTHFGOEdRdlF4?=
- =?utf-8?B?em95M25lYXRMa2VtZXVLMmRxMG53SXRyMFdRRThWMURhSXB4ejRublY4NWVh?=
- =?utf-8?B?eXRrZGRYcjJnemFNOGJGUlNtek0vVmxPYVR0SGlES2RJU1plM2dOekdTTjk2?=
- =?utf-8?B?WnVYcDBoYi9lRGRET3Rid09scmF6Q3RoOG5CSitLdnRCYitPajlUeXliWnRK?=
- =?utf-8?B?TXJVN0ZyVXlqb2xOTHJtWk52OGk4MjhFM0tHWXhqRzAxc2JKeUFhenpKejRa?=
- =?utf-8?B?dGFPenVCaXMyd3EzODBlNmxRMElwWlBMUEFkTnk4b2xBMU8ybnFzcjI2L2xo?=
- =?utf-8?B?bUdCS2lSNUI2SmM3MXJXMHM1UThJR1BGWDdGd1BLdmtVUWxpVE1jd2NGMnJt?=
- =?utf-8?B?bHFBdFNzSVZYTm5xVWdIeWpzRmdrNUE1QjhEQXJPYU0zNWtoMTlNUEc2SGQ2?=
- =?utf-8?B?alpUTWU0bkJIZnpveGVvd2RlUkNQeVYvVWZteWZFdFF4dDVzM2s0cTN0R09S?=
- =?utf-8?B?NGtsTGxYRjhDanF4ZnN3QjVnQ3J2bGt1aEhSY1pvdWZOSDBpaDZ4bk5FUTZH?=
- =?utf-8?B?VlhKM2ZZSVVsaEs2cmZsUTlZQXMvSFhXRFFHTkRUNndOM1Nxckc4L3pYTEp1?=
- =?utf-8?B?bEMrc2tGeW01MGc4UjhLNm50eVBIVlhFNjhpSzhXZGN5M1F2b0h0UFZxVTZh?=
- =?utf-8?B?OWxwd3FYd0dzamVLU1RKNU1TaXpkaFFQbktRK04raEJLMzBFUkxBN1g2SmxQ?=
- =?utf-8?B?MWxtZ3Fha3NGeGJ4WGRQZDFtSGNNNVJzTVdnaldyTnJZVXBCK2VpaG1sQzJW?=
- =?utf-8?B?YlRzUnB6dkpyK3dZZUorVS9GNFQwWHkzdkNEbmxvcnNlSmZoZ3ZucktvYnZk?=
- =?utf-8?B?NFgvV0k5V3JEbm5XTEM5ZFdDZkNsS0NjQWI2QnVXU2pvWFJiU3BnU0x4elZ4?=
- =?utf-8?B?UFNIWEpHdWhlby9qcGljVEpzOTNERnMxNm93cUVYeks3Mm1UM0F3eDdCWTVo?=
- =?utf-8?B?SFVTRUtrUk1QMjdvNnJ4Y1NYUTFSUVhWNTNYMlFWcUhLSE9WT1dFcktxdXE0?=
- =?utf-8?B?WFJSNjdyaWJhWDlZaTBXNUtSQTd1RXhNYWxyTkpLaDd3RElVZm9xTGVGeFI0?=
- =?utf-8?B?c29JRVdMOXU1RjJxSDVUOGRSWi9hRGJIZENDS04vdjd5TldxN0xmaERUUjll?=
- =?utf-8?Q?zT1Z+rN/Uq22z3nhAWfU9759Ogf1p953bP0lI=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C445D3029CDF3B47897DA40777761007@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3254.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6dedb999-1a2e-491f-aeb1-08d8eeaa5d52
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Mar 2021 09:51:14.9166 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dbcqoSCEnpUmeRUVa+XohVkhuzg9CcqLwe3u3PCdQEDPkLfMhJ0ew3DPENPpU1R023bqOQn6q7u/4KmTZgOvy/4JyAjlHjFOqWs0pXzh868=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4816
-Cc: lgirdwood@gmail.com, broonie@kernel.org, mirq-linux@rere.qmqm.pl,
- gustavoars@kernel.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72130F80104
+ for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2021 11:00:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72130F80104
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 2DC81AC1D;
+ Wed, 24 Mar 2021 10:00:12 +0000 (UTC)
+Date: Wed, 24 Mar 2021 11:00:12 +0100
+Message-ID: <s5hv99gan2r.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+Subject: Re: Adding movable PCIe BARs support in snd_hda_intel
+In-Reply-To: <06b2dae2-a5ea-0cc8-891f-2aaff64ae260@amd.com>
+References: <e25017c6-e5e4-7a24-e793-14a2e70a434e@amd.com>
+ <fe61113f-5b8e-53a0-23fc-65246eb08ac3@amd.com>
+ <s5hwntyaylg.wl-tiwai@suse.de>
+ <ca35a9c1-82d8-8be6-21e7-b5242a2d884c@amd.com>
+ <s5him5hc443.wl-tiwai@suse.de>
+ <30b36220-ff0f-d04c-1fca-349b3ff3a19b@amd.com>
+ <s5h8s6dbyr1.wl-tiwai@suse.de>
+ <9758cd4c-1246-a4ab-74eb-0e060248a00b@amd.com>
+ <s5h35wlbwye.wl-tiwai@suse.de>
+ <06b2dae2-a5ea-0cc8-891f-2aaff64ae260@amd.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: multipart/mixed; boundary="Multipart_Wed_Mar_24_11:00:12_2021-1"
+Cc: "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>,
+ alsa-devel@alsa-project.org,
+ Sergei Miroshnichenko <s.miroshnichenko@yadro.com>,
+ "Christian.Koenig@amd.com" <Christian.Koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -200,166 +86,544 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-T24gMjMuMDMuMjAyMSAyMToyNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6DQo+IEVYVEVS
-TkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3Mg
-eW91IGtub3cgDQo+IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIDMvMjMvMjEgNjo0MyBB
-TSwgQ29kcmluIENpdWJvdGFyaXUgd3JvdGU6DQo+PiBIVyBjb25zdHJhaW50cyBhcmUgbmVlZGVk
-IHRvIHNldCBsaW1pdGF0aW9ucyBmb3IgSFcgcGFyYW1ldGVycyB1c2VkIHRvDQo+PiBjb25maWd1
-cmUgdGhlIERBSXMuIEFsbCBEQUlzIG9uIHRoZSBzYW1lIGxpbmsgbXVzdCBhZ3JlZSB1cG9uIHRo
-ZSBIVw0KPj4gcGFyYW1ldGVycywgc28gdGhlIHBhcmFtZXRlcnMgYXJlIGFmZmVjdGVkIGJ5IHRo
-ZSBEQUlzJyBmZWF0dXJlcyBhbmQNCj4+IHRoZWlyIGxpbWl0YXRpb25zLiBJbiBjYXNlIG9mIERQ
-Q00sIHRoZSBGRSBEQUlzIGNhbiBiZSB1c2VkIHRvIHBlcmZvcm0NCj4+IGRpZmZlcmVudCBraW5k
-IG9mIGNvbnZlcnNpb25zLCBzdWNoIGFzIGZvcm1hdCBvciByYXRlIGNoYW5naW5nLCBicmluZ2lu
-Zw0KPj4gdGhlIGF1ZGlvIHN0cmVhbSB0byBhIGNvbmZpZ3VyYXRpb24gc3VwcG9ydGVkIGJ5IGFs
-bCB0aGUgREFJcyBvZiB0aGUgQkUncw0KPj4gbGluay4gRm9yIHRoaXMgcmVhc29uLCB0aGUgbGlt
-aXRhdGlvbnMgb2YgdGhlIEJFIERBSXMgYXJlIG5vdCBhbHdheXMNCj4+IGltcG9ydGFudCBmb3Ig
-dGhlIEhXIHBhcmFtZXRlcnMgYmV0d2VlbiB1c2VyLXNwYWNlIGFuZCBGRSwgb25seSBmb3IgdGhl
-DQo+PiBwYXJhdGVtZXJzIGJldHdlZW4gRkUgYW5kIEJFIERBSSBsaW5rcy4gVGhpcyBicmluZ3Mg
-dXMgdG8gdGhpcyBwYXRjaC1zZXQsDQo+PiB3aGljaCBhaW1zIHRvIHNlcGFyYXRlIHRoZSBGRSBI
-VyBjb25zdHJhaW50cyBmcm9tIHRoZSBCRSBIVyBjb25zdHJhaW50cy4NCj4+IFRoaXMgd2F5LCB0
-aGUgRkUgY2FuIGJlIHVzZWQgdG8gcGVyZm9ybSBtb3JlIGVmZmljaWVudCBIVyBjb252ZXJzaW9u
-cywgb24NCj4+IHRoZSBpbml0aWFsIGF1ZGlvIHN0cmVhbSBwYXJhbWV0ZXJzLCB0byBwYXJhbWV0
-ZXJzIHN1cHBvcnRlZCBieSB0aGUgQkUNCj4+IERBSXMuDQo+PiBUbyBhY2hpZXZlIHRoaXMsIHRo
-ZSBmaXJzdCB0aGluZyBuZWVkZWQgaXMgdG8gZGV0ZWN0IHdoZXRoZXIgYSBIVw0KPj4gY29uc3Ry
-YWludCBydWxlIGlzIGVuZm9yY2VkIGJ5IGEgRkUgb3IgYSBCRSBEQUkuIFRoaXMgbWVhbnMgdGhh
-dA0KPj4gc25kX3BjbV9od19ydWxlX2FkZCgpIG5lZWRzIHRvIGJlIGFibGUgdG8gZGlmZmVyZW50
-aWF0ZSBiZXR3ZWVuIHRoZSB0d28NCj4+IHR5cGUgb2YgREFJcy4gRm9yIHRoaXMsIHRoZSBydW50
-aW1lIHBvaW50ZXIgdG8gc3RydWN0IHNuZF9wY21fcnVudGltZSBpcw0KPj4gcmVwbGFjZWQgd2l0
-aCBhIHBvaW50ZXIgdG8gc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtLCB0byBiZSBhYmxlIHRvIHJl
-YWNoDQo+PiBzdWJzdHJlYW0tPnBjbS0+aW50ZXJuYWwgdG8gZGlmZmVyZW50aWF0ZSBiZXR3ZWVu
-IEZFIGFuZCBCRSBEQUlzLg0KPj4gVGhpcyBjaGFuZ2UgYWZmZWN0cyBtYW55IHNvdW5kIGRyaXZl
-cnMgKGFuZCBvbmUgZ3B1IGRybSBkcml2ZXIpLg0KPj4gQWxsIHRoZXNlIGNoYW5nZXMgYXJlIGlu
-Y2x1ZGVkIGluIHRoZSBmaXJzdCBwYXRjaCwgdG8gaGF2ZSBhIGJldHRlcg0KPj4gb3ZlcnZpZXcg
-b2YgdGhlIGltcGxpY2F0aW9ucyBjcmVhdGVkIGJ5IHRoaXMgY2hhbmdlLg0KPj4gVGhlIHNlY29u
-ZCBwYXRjaCBhZGRzIGEgbmV3IHN0cnVjdCBzbmRfcGNtX2h3X2NvbnN0cmFpbnRzIHVuZGVyIHN0
-cnVjdA0KPj4gc25kX3NvY19kcGNtX3J1bnRpbWUsIHdoaWNoIGlzIHVzZWQgdG8gc3RvcmUgdGhl
-IEhXIGNvbnN0cmFpbnQgcnVsZXMNCj4+IGFkZGVkIGJ5IHRoZSBCRSBEQUlzLiBUaGlzIHN0cnVj
-dHVyZSBpcyBpbml0aWFsaXplZCB3aXRoIGEgc3Vic2V0IG9mIHRoZQ0KPj4gcnVudGltZSBjb25z
-dHJhaW50IHJ1bGVzIHdoaWNoIGRvZXMgbm90IGluY2x1ZGUgdGhlIHJ1bGVzIHRoYXQgYWZmZWN0
-DQo+PiB0aGUgYnVmZmVyIG9yIHBlcmlvZCBzaXplLiBzbmRfcGNtX2h3X3J1bGVfYWRkKCkgd2ls
-bCBhZGQgdGhlIEJFIHJ1bGVzDQo+PiB0byB0aGUgbmV3IHN0cnVjdCBzbmRfcGNtX2h3X2NvbnN0
-cmFpbnRzLg0KPj4gVGhlIHRoaXJkIGFuZCBsYXN0IHBhdGNoIHdpbGwgYXBwbHkgdGhlIEJFIHJ1
-bGUgY29uc3RyYWludHMsIGFmdGVyIHRoZQ0KPj4gZml4dXAgY2FsbGJhY2suIElmIHRoZSBmaXh1
-cCBIVyBwYXJhbWV0ZXJzIGRvIG5vdCByZXNwZWN0IHRoZSBCRQ0KPj4gY29uc3RyYWludCBydWxl
-cywgdGhlIHJ1bGVzIHdpbGwgZXhpdCB3aXRoIGFuIGVycm9yLiBUaGUgRkUgbWFzayBhbmQNCj4+
-IGludGVydmFsIGNvbnN0cmFpbnRzIGFyZSBjb3BpZWQgdG8gdGhlIEJFIG9uZXMsIHRvIHNhdGlz
-ZnkgdGhlDQo+PiBkYWlfbGluay0+ZHBjbV9tZXJnZWRfKiBmbGFncy4gVGhlIGRhaV9saW5rLT5k
-cGNtX21lcmdlZF8qIGZsYWdzIGFyZQ0KPj4gdXNlZCB0byBrbm93IGlmIHRoZSBGRSBkb2VzIGZv
-cm1hdCBvciBzYW1wbGluZyByYXRlIGNvbnZlcnNpb24uDQo+Pg0KPj4gSSB0ZXN0ZWQgd2l0aCBh
-ZDE5MzQgYW5kIHdtODczMSBjb2RlY3MgYXMgQkVzLCB3aXRoIGEgbm90LXlldC1tYWlubGluZWQN
-Cj4+IEFTUkMgYXMgRkUsIHRoYXQgY2FuIGFsc28gZG8gZm9ybWF0IGNvbnZlcnNpb24uIEkgcmVh
-bGl6ZSB0aGF0IHRoZQ0KPj4gY2hhbmdlIHRvIHNuZF9wY21faHdfcnVsZV9hZGQoKSBoYXMgYSBi
-aWcgaW1wYWN0LCBldmVuIHRob3VnaCBhbGwgdGhlDQo+PiBkcml2ZXJzIHVzZSBzbmRfcGNtX2h3
-X3J1bGVfYWRkKCkgd2l0aCBzdWJzdHJlYW0tPnJ1bnRpbWUsIHNvIHBhc3NpbmcNCj4+IHN1YnN0
-cmVhbSBpbnN0ZWFkIG9mIHJ1bnRpbWUgaXMgbm90IHRoYXQgcmlza3kuDQo+IA0KPiBjYW4geW91
-IHVzZSB0aGUgQkUgaHdfcGFyYW1zX2ZpeHVwIGluc3RlYWQ/DQo+IA0KPiBUaGF0J3Mgd2hhdCB3
-ZSB1c2UgZm9yIFNPRi4NCj4gDQo+IFRoZSBGRSBod19wYXJhbXMgYXJlIHByb3BhZ2F0ZWQgdG8g
-dGhlIEJFLCBhbmQgdGhlbiB0aGUgQkUgY2FuIHVwZGF0ZQ0KPiB0aGUgaHdfcGFyYW1zIGJhc2Vk
-IG9uIGl0cyBvd24gbGltaXRhdGlvbnMgYW5kIHBhc3MgdGhlIHJlc3VsdA0KPiBkb3duc3RyZWFt
-LCBlLmcuIHRvIGEgY29kZWMuDQo+IA0KPiBJJ2xsIGNvcHkgYmVsb3cgbXkgdW5kZXJzdGFuZGlu
-ZyBvZiB0aGUgZmxvdywgd2hpY2ggd2UgZGlzY3Vzc2VkDQo+IHJlY2VudGx5IGluIHRoZSBTT0Yg
-dGVhbToNCj4gDQo+IG15IHVuZGVyc3RhbmRpbmcgaXMgdGhhdCB3ZSBzdGFydCB3aXRoIHRoZSBm
-cm9udC1lbmQgaHdfcGFyYW1zIGFzIHRoZQ0KPiBiYXNpcyBmb3IgdGhlIGJhY2stZW5kIGh3X3Bh
-cmFtcy4NCj4gDQo+IHN0YXRpYyBpbnQgZHBjbV9mZV9kYWlfaHdfcGFyYW1zKHN0cnVjdCBzbmRf
-cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLA0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMpDQo+IHsNCj4gIMKgwqDCoCBz
-dHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqZmUgPSBhc29jX3N1YnN0cmVhbV90b19ydGQoc3Vi
-c3RyZWFtKTsNCj4gIMKgwqDCoCBpbnQgcmV0LCBzdHJlYW0gPSBzdWJzdHJlYW0tPnN0cmVhbTsN
-Cj4gDQo+ICDCoMKgwqAgbXV0ZXhfbG9ja19uZXN0ZWQoJmZlLT5jYXJkLT5tdXRleCwgU05EX1NP
-Q19DQVJEX0NMQVNTX1JVTlRJTUUpOw0KPiAgwqDCoMKgIGRwY21fc2V0X2ZlX3VwZGF0ZV9zdGF0
-ZShmZSwgc3RyZWFtLCBTTkRfU09DX0RQQ01fVVBEQVRFX0ZFKTsNCj4gDQo+ICDCoMKgwqAgbWVt
-Y3B5KCZmZS0+ZHBjbVtzdHJlYW1dLmh3X3BhcmFtcywgcGFyYW1zLA0KPiAgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBzaXplb2Yoc3RydWN0IHNuZF9wY21faHdfcGFyYW1zKSk7DQo+ICDCoMKgwqAg
-cmV0ID0gZHBjbV9iZV9kYWlfaHdfcGFyYW1zKGZlLCBzdHJlYW0pOw0KPiA8PDwgdGhlIEJFIGlz
-IGhhbmRsZWQgZmlyc3QuDQo+ICDCoMKgwqAgaWYgKHJldCA8IDApIHsNCj4gIMKgwqDCoMKgwqDC
-oMKgIGRldl9lcnIoZmUtPmRldiwiQVNvQzogaHdfcGFyYW1zIEJFIGZhaWxlZCAlZFxuIiwgcmV0
-KTsNCj4gIMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPiAgwqDCoMKgIH0NCj4gDQo+ICDCoMKg
-wqAgZGV2X2RiZyhmZS0+ZGV2LCAiQVNvQzogaHdfcGFyYW1zIEZFICVzIHJhdGUgJWQgY2hhbiAl
-eCBmbXQgJWRcbiIsDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZlLT5kYWlfbGluay0+bmFt
-ZSwgcGFyYW1zX3JhdGUocGFyYW1zKSwNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGFyYW1z
-X2NoYW5uZWxzKHBhcmFtcyksIHBhcmFtc19mb3JtYXQocGFyYW1zKSk7DQo+IA0KPiAgwqDCoMKg
-IC8qIGNhbGwgaHdfcGFyYW1zIG9uIHRoZSBmcm9udGVuZCAqLw0KPiAgwqDCoMKgIHJldCA9IHNv
-Y19wY21faHdfcGFyYW1zKHN1YnN0cmVhbSwgcGFyYW1zKTsNCj4gDQo+IHRoZW4gZWFjaCBCRSB3
-aWxsIGJlIGNvbmZpZ3VyZWQNCj4gDQo+IGludCBkcGNtX2JlX2RhaV9od19wYXJhbXMoc3RydWN0
-IHNuZF9zb2NfcGNtX3J1bnRpbWUgKmZlLCBpbnQgc3RyZWFtKQ0KPiB7DQo+ICDCoMKgwqAgc3Ry
-dWN0IHNuZF9zb2NfZHBjbSAqZHBjbTsNCj4gIMKgwqDCoCBpbnQgcmV0Ow0KPiANCj4gIMKgwqDC
-oCBmb3JfZWFjaF9kcGNtX2JlKGZlLCBzdHJlYW0sIGRwY20pIHsNCj4gDQo+ICDCoMKgwqDCoMKg
-wqDCoCBzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqYmUgPSBkcGNtLT5iZTsNCj4gIMKgwqDC
-oMKgwqDCoMKgIHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqYmVfc3Vic3RyZWFtID0NCj4gIMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgc25kX3NvY19kcGNtX2dldF9zdWJzdHJlYW0oYmUsIHN0cmVh
-bSk7DQo+IA0KPiAgwqDCoMKgwqDCoMKgwqAgLyogaXMgdGhpcyBvcCBmb3IgdGhpcyBCRSA/ICov
-DQo+ICDCoMKgwqDCoMKgwqDCoCBpZiAoIXNuZF9zb2NfZHBjbV9iZV9jYW5fdXBkYXRlKGZlLCBi
-ZSwgc3RyZWFtKSkNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29udGludWU7DQo+IA0KPiAg
-wqDCoMKgwqDCoMKgwqAgLyogY29weSBwYXJhbXMgZm9yIGVhY2ggZHBjbSAqLw0KPiAgwqDCoMKg
-wqDCoMKgwqAgbWVtY3B5KCZkcGNtLT5od19wYXJhbXMsICZmZS0+ZHBjbVtzdHJlYW1dLmh3X3Bh
-cmFtcywNCj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzaXplb2Yoc3RydWN0IHNu
-ZF9wY21faHdfcGFyYW1zKSk7DQo+IA0KPiAgwqDCoMKgwqDCoMKgwqAgLyogcGVyZm9ybSBhbnkg
-aHdfcGFyYW1zIGZpeHVwcyAqLw0KPiAgwqDCoMKgwqDCoMKgwqAgcmV0ID0gc25kX3NvY19saW5r
-X2JlX2h3X3BhcmFtc19maXh1cChiZSwgJmRwY20tPmh3X3BhcmFtcyk7DQo+IA0KPiBUaGUgZml4
-dXAgaXMgdGhlIGtleSwgaW4gU09GIHRoaXMgaXMgd2hlcmUgd2UgYXJlIGdvaW5nIHRvIGxvb2sg
-Zm9yDQo+IGluZm9ybWF0aW9uIGZyb20gdGhlIHRvcG9sb2d5Lg0KPiANCj4gLyogZml4dXAgdGhl
-IEJFIERBSSBsaW5rIHRvIG1hdGNoIGFueSB2YWx1ZXMgZnJvbSB0b3BvbG9neSAqLw0KPiBpbnQg
-c29mX3BjbV9kYWlfbGlua19maXh1cChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRkLCBz
-dHJ1Y3QNCj4gc25kX3BjbV9od19wYXJhbXMgKnBhcmFtcykNCj4gew0KPiAgwqDCoMKgIHN0cnVj
-dCBzbmRfaW50ZXJ2YWwgKnJhdGUgPSBod19wYXJhbV9pbnRlcnZhbChwYXJhbXMsDQo+ICDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIFNORFJWX1BDTV9IV19QQVJBTV9SQVRFKTsNCj4gIMKgwqDCoCBz
-dHJ1Y3Qgc25kX2ludGVydmFsICpjaGFubmVscyA9IGh3X3BhcmFtX2ludGVydmFsKHBhcmFtcywN
-Cj4gIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgU05EUlZf
-UENNX0hXX1BBUkFNX0NIQU5ORUxTKTsNCj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX21hc2sgKmZtdCA9
-IGh3X3BhcmFtX21hc2socGFyYW1zLA0KPiBTTkRSVl9QQ01fSFdfUEFSQU1fRk9STUFUKTsNCj4g
-IMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCA9DQo+ICDCoMKgwqDC
-oMKgwqDCoCBzbmRfc29jX3J0ZGNvbV9sb29rdXAocnRkLCBTT0ZfQVVESU9fUENNX0RSVl9OQU1F
-KTsNCj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvZl9kYWkgKmRhaSA9DQo+ICDCoMKgwqDCoMKgwqDC
-oCBzbmRfc29mX2ZpbmRfZGFpKGNvbXBvbmVudCwgKGNoYXIgKilydGQtPmRhaV9saW5rLT5uYW1l
-KTsNCj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kcGNtICpkcGNtOw0KPiANCj4gIMKgwqDCoCAv
-KiBubyB0b3BvbG9neSBleGlzdHMgZm9yIHRoaXMgQkUsIHRyeSBhIGNvbW1vbiBjb25maWd1cmF0
-aW9uICovDQo+ICDCoMKgwqAgaWYgKCFkYWkpIHsNCj4gIMKgwqDCoMKgwqDCoMKgIGRldl93YXJu
-KGNvbXBvbmVudC0+ZGV2LA0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJ3YXJuaW5nOiBu
-byB0b3BvbG9neSBmb3VuZCBmb3IgQkUgREFJICVzIGNvbmZpZ1xuIiwNCj4gIMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBydGQtPmRhaV9saW5rLT5uYW1lKTsNCj4gDQo+ICDCoMKgwqDCoMKgwqDC
-oCAvKsKgIHNldCA0OGssIHN0ZXJlbywgMTZiaXRzIGJ5IGRlZmF1bHQgKi8NCj4gIMKgwqDCoMKg
-wqDCoMKgIHJhdGUtPm1pbiA9IDQ4MDAwOw0KPiAgwqDCoMKgwqDCoMKgwqAgcmF0ZS0+bWF4ID0g
-NDgwMDA7DQo+IA0KPiAgwqDCoMKgwqDCoMKgwqAgY2hhbm5lbHMtPm1pbiA9IDI7DQo+ICDCoMKg
-wqDCoMKgwqDCoCBjaGFubmVscy0+bWF4ID0gMjsNCj4gDQo+ICDCoMKgwqDCoMKgwqDCoCBzbmRf
-bWFza19ub25lKGZtdCk7DQo+ICDCoMKgwqDCoMKgwqDCoCBzbmRfbWFza19zZXRfZm9ybWF0KGZt
-dCwgU05EUlZfUENNX0ZPUk1BVF9TMTZfTEUpOw0KPiANCj4gIMKgwqDCoMKgwqDCoMKgIHJldHVy
-biAwOw0KPiAgwqDCoMKgIH0NCj4gDQo+ICDCoMKgwqAgLyogcmVhZCBmb3JtYXQgZnJvbSB0b3Bv
-bG9neSAqLw0KPiAgwqDCoMKgIHNuZF9tYXNrX25vbmUoZm10KTsNCj4gDQo+ICDCoMKgwqAgc3dp
-dGNoIChkYWktPmNvbXBfZGFpLmNvbmZpZy5mcmFtZV9mbXQpIHsNCj4gIMKgwqDCoCBjYXNlIFNP
-Rl9JUENfRlJBTUVfUzE2X0xFOg0KPiAgwqDCoMKgwqDCoMKgwqAgc25kX21hc2tfc2V0X2Zvcm1h
-dChmbXQsIFNORFJWX1BDTV9GT1JNQVRfUzE2X0xFKTsNCj4gIMKgwqDCoMKgwqDCoMKgIGJyZWFr
-Ow0KPiAgwqDCoMKgIGNhc2UgU09GX0lQQ19GUkFNRV9TMjRfNExFOg0KPiAgwqDCoMKgwqDCoMKg
-wqAgc25kX21hc2tfc2V0X2Zvcm1hdChmbXQsIFNORFJWX1BDTV9GT1JNQVRfUzI0X0xFKTsNCj4g
-IMKgwqDCoMKgwqDCoMKgIGJyZWFrOw0KPiAgwqDCoMKgIGNhc2UgU09GX0lQQ19GUkFNRV9TMzJf
-TEU6DQo+ICDCoMKgwqDCoMKgwqDCoCBzbmRfbWFza19zZXRfZm9ybWF0KGZtdCwgU05EUlZfUENN
-X0ZPUk1BVF9TMzJfTEUpOw0KPiAgwqDCoMKgwqDCoMKgwqAgYnJlYWs7DQo+ICDCoMKgwqAgZGVm
-YXVsdDoNCj4gIMKgwqDCoMKgwqDCoMKgIGRldl9lcnIoY29tcG9uZW50LT5kZXYsICJlcnJvcjog
-Tm8gYXZhaWxhYmxlIERBSSBmb3JtYXQhXG4iKTsNCj4gIMKgwqDCoMKgwqDCoMKgIHJldHVybiAt
-RUlOVkFMOw0KPiAgwqDCoMKgIH0NCj4gDQo+ICDCoMKgwqAgLyogcmVhZCByYXRlIGFuZCBjaGFu
-bmVscyBmcm9tIHRvcG9sb2d5ICovDQo+ICDCoMKgwqAgc3dpdGNoIChkYWktPmRhaV9jb25maWct
-PnR5cGUpIHsNCj4gIMKgwqDCoCBjYXNlIFNPRl9EQUlfSU5URUxfU1NQOg0KPiAgwqDCoMKgwqDC
-oMKgwqAgcmF0ZS0+bWluID0gZGFpLT5kYWlfY29uZmlnLT5zc3AuZnN5bmNfcmF0ZTsNCj4gIMKg
-wqDCoMKgwqDCoMKgIHJhdGUtPm1heCA9IGRhaS0+ZGFpX2NvbmZpZy0+c3NwLmZzeW5jX3JhdGU7
-DQo+ICDCoMKgwqDCoMKgwqDCoCBjaGFubmVscy0+bWluID0gZGFpLT5kYWlfY29uZmlnLT5zc3Au
-dGRtX3Nsb3RzOw0KPiAgwqDCoMKgwqDCoMKgwqAgY2hhbm5lbHMtPm1heCA9IGRhaS0+ZGFpX2Nv
-bmZpZy0+c3NwLnRkbV9zbG90czsNCg0KSSBhbSB1c2luZyBod19wYXJhbXNfZml4dXAsIGJ1dCBp
-dCdzIG5vdCBlbm91Z2guIFRoZSBmaXJzdCB0aGluZyBJIGRvIGlzIA0KdG8gbm90IGFkZCB0aGUg
-QkUgSFcgY29uc3RyYWludCBydWxlcyBpbiBydW50aW1lLT5od19jb25zdHJhaW50cywgDQpiZWNh
-dXNlIHRoaXMgd2lsbCBwb3RlbnRpYWxseSBhZmZlY3QgdGhlIEZFIEhXIHBhcmFtcy4gSWYgdGhl
-IEZFIGRvZXMgDQpzYW1wbGluZyByYXRlIGNvbnZlcnNpb24sIGZvciBleGFtcGxlLCBhcHBseWlu
-ZyB0aGUgc2FtcGxpbmcgcmF0ZSANCmNvbnN0cmFpbiBydWxlcyBmcm9tIGEgQkUgY29kZWMgb24g
-RkUgaXMgdXNlbGVzcy4gVGhlIHNlY29uZCB0aGluZyBJIGRvIA0KaXMgdG8gYXBwbHkgdGhlc2Ug
-QkUgSFcgY29uc3RyYWludCBydWxlcyB0byB0aGUgQkUgSFcgcGFyYW1zLiBJdCdzIHRydWUgDQp0
-aGF0IHRoZSBCRSBIVyBwYXJhbXMgY2FuIGJlIGZpbmUgdHVuZWQgdmlhIGh3X3BhcmFtc19maXh1
-cCAodG9wb2xvZ3ksIA0KZGV2aWNlLXRyZWUgb3IgZXZlbiBzdGF0aWMgcGFyYW1ldGVycykgYW5k
-IHNldCBpbiBzdWNoIGEgd2F5IHRoYXQgYXZvaWQgDQp0aGUgQkUgSFcgY29uc3RyYWludHMsIHNv
-IHdlIGNvdWxkIGlnbm9yZSB0aGUgY29uc3RyYWludCBydWxlcyBhZGRlZCBieSANCnRoZWlyIGRy
-aXZlcnMuIEl0J3Mgbm90IGV2ZXJ5IGVsZWdhbnQgYW5kIHJ1bm5pbmcgdGhlIEJFIEhXIGNvbnN0
-cmFpbnQgDQpydWxlcyBmb3IgdGhlIGZpeHVwIEJFIEhXIHBhcmFtcyBjYW4gYmUgYSBzYW5pdHkg
-Y2hlY2suIEFsc28sIEkgYW0gDQp0aGlua2luZyB0aGF0IGlmIHRoZSBGRSBkb2VzIG5vIGNvbnZl
-cnNpb24gKGJlX2h3X3BhcmFtc19maXh1cCBtaXNzaW5nKSANCmFuZCBtb3JlIHRoYW4gb25lIEJF
-cyBhcmUgYXZhaWxhYmxlLCBhcHBseWluZyB0aGUgSFcgY29uc3RyYWludCBydWxlcyBvbiANCnRo
-ZSBzYW1lIHNldCBvZiBCRSBIVyBwYXJhbXMgY291bGQgcnVsZSBvdXQgdGhlIGluY29tcGF0aWJs
-ZSBCRSBEQUkgDQpsaW5rcyBhbmQgc3RhcnQgdGhlIGNvbXBhdGlibGUgb25lcyBvbmx5LiBJIGFt
-IG5vdCBzdXJlIHRoaXMgaXMgYSByZWFsIA0KdXNlY2FzZS4NCg0KVGhhbmsgeW91IGZvciB5b3Vy
-IGluc2lnaHRzIQ0KDQpCZXN0IHJlZ2FyZHMsDQpDb2RyaW4NCg==
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: text/plain; charset=US-ASCII
+
+On Tue, 23 Mar 2021 19:25:53 +0100,
+Andrey Grodzovsky wrote:
+> 
+> >> This will cover IOCTLs and any
+> >> mmapped accesses i guess. Interrupts we discussed above. What above any
+> >> possible background kernel work going on in dedicated threads or work
+> >> items ? Any pointers there what should be blocked and waited for ?
+> >
+> > An alternative idea would be the analogy of the system suspend /
+> > resume.  That is, we forcibly suspend the devices at first somehow,
+> > and also restricts the further accesses by some way.  Then do remap,
+> 
+> But that the point I guess, how you block further accesses without those
+> big locks, during S3 i believe user mode gets suspended before the
+> driver and so you don't need to worry about concurrent IOCTLs when going
+> through suspend sequence
+
+ALSA core still has some legacy card-level power management code,
+which was introduced many years ago at the time we still managed the
+power state via an extra ioctl (hence working individually from the
+base PM code), and a few pieces are still effective for this kind of
+purposes.  Through a quick glance, a couple of places need band-aids,
+but the rest should work.
+
+A bit more difficult problem is the floating control API calls.  The
+get/put calls might be still in flight when we perform the PCI
+rescan.  This has to be filtered out additionally.
+
+Below are a patch series I cooked quickly.  Totally untested, just
+checked the compilation.  The first patch is a fix I'll merge in
+anyway, while the rest are RFC.
+
+
+thanks,
+
+Takashi
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0001-ALSA-hda-Re-add-dropped-snd_poewr_change_state-calls.patch"
+Content-Transfer-Encoding: 7bit
+
+From 52e2fad720c04345499e165be92063897cf64914 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 Mar 2021 08:53:56 +0100
+Subject: [PATCH 1/7] ALSA: hda: Re-add dropped snd_poewr_change_state() calls
+
+The card power state change via snd_power_change_state() at the system
+suspend/resume seems dropped mistakenly during the PM code rewrite.
+The card power state doesn't play much role nowadays but it's still
+referred in a few places such as the HDMI codec driver.
+
+This patch restores them, but in a more appropriate place now in the
+prepare and complete callbacks.
+
+Fixes: f5dac54d9d93 ("ALSA: hda: Separate runtime and system suspend")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 5eea130dcf0a..c4146e8617de 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1025,6 +1025,7 @@ static int azx_prepare(struct device *dev)
+ 
+ 	chip = card->private_data;
+ 	chip->pm_prepared = 1;
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 
+ 	flush_work(&azx_bus(chip)->unsol_work);
+ 
+@@ -1040,6 +1041,7 @@ static void azx_complete(struct device *dev)
+ 	struct azx *chip;
+ 
+ 	chip = card->private_data;
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 	chip->pm_prepared = 0;
+ }
+ 
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0002-ALSA-control-Add-power-state-check-commonly-for-ioct.patch"
+Content-Transfer-Encoding: 7bit
+
+From 57afd6d49b994e10e24f421abe517bde590ee120 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 Mar 2021 09:02:33 +0100
+Subject: [PATCH 2/7] ALSA: control: Add power state check commonly for ioctl
+ handlers
+
+The card power state check can be better put in the common ioctl
+handler, as basically we want to prevent ioctls during the power off
+state.  Although this situation won't happen normally, it'll be
+helpful for catching in the future faked suspend that is needed for
+PCI rescan.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/control.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 5165741a8400..70b60dbc6b93 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1709,6 +1709,9 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ 	card = ctl->card;
+ 	if (snd_BUG_ON(!card))
+ 		return -ENXIO;
++	err = snd_power_wait(card, SNDRV_CTL_POWER_D0);
++	if (err < 0)
++		return err;
+ 	switch (cmd) {
+ 	case SNDRV_CTL_IOCTL_PVERSION:
+ 		return put_user(SNDRV_CTL_VERSION, ip) ? -EFAULT : 0;
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0003-ALSA-control-Drop-superfluous-snd_power_wait-calls.patch"
+Content-Transfer-Encoding: 7bit
+
+From 5e3fa9ca4e28acd21e492a36127b99f99a9cbb5d Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 Mar 2021 09:03:39 +0100
+Subject: [PATCH 3/7] ALSA: control: Drop superfluous snd_power_wait() calls
+
+Now the card power state is checked in the common ioctl handler, drop
+the same redundant checks in each ioctl.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/control.c | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 70b60dbc6b93..bfe9aceaaf76 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1015,9 +1015,6 @@ static int snd_ctl_elem_info_user(struct snd_ctl_file *ctl,
+ 
+ 	if (copy_from_user(&info, _info, sizeof(info)))
+ 		return -EFAULT;
+-	result = snd_power_wait(ctl->card, SNDRV_CTL_POWER_D0);
+-	if (result < 0)
+-		return result;
+ 	result = snd_ctl_elem_info(ctl, &info);
+ 	if (result < 0)
+ 		return result;
+@@ -1085,10 +1082,6 @@ static int snd_ctl_elem_read_user(struct snd_card *card,
+ 	if (IS_ERR(control))
+ 		return PTR_ERR(control);
+ 
+-	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
+-	if (result < 0)
+-		goto error;
+-
+ 	down_read(&card->controls_rwsem);
+ 	result = snd_ctl_elem_read(card, control);
+ 	up_read(&card->controls_rwsem);
+@@ -1146,10 +1139,6 @@ static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
+ 		return PTR_ERR(control);
+ 
+ 	card = file->card;
+-	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
+-	if (result < 0)
+-		goto error;
+-
+ 	down_write(&card->controls_rwsem);
+ 	result = snd_ctl_elem_write(card, file, control);
+ 	up_write(&card->controls_rwsem);
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0004-ALSA-control-Minor-optimization-for-SNDRV_CTL_IOCTL_.patch"
+Content-Transfer-Encoding: 7bit
+
+From ec3c3ca67004483a7dbc02dc1807aae9a179306f Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 Mar 2021 09:04:05 +0100
+Subject: [PATCH 4/7] ALSA: control: Minor optimization for
+ SNDRV_CTL_IOCTL_POWER_STATE
+
+The SNDRV_CTL_IOCTL_POWER_STATE is an obsoleted ioctl and now
+practically it returns always D0.  Do some minor optimization.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/control.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sound/core/control.c b/sound/core/control.c
+index bfe9aceaaf76..b9701b31de0e 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -1744,11 +1744,7 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ 	case SNDRV_CTL_IOCTL_POWER:
+ 		return -ENOPROTOOPT;
+ 	case SNDRV_CTL_IOCTL_POWER_STATE:
+-#ifdef CONFIG_PM
+-		return put_user(card->power_state, ip) ? -EFAULT : 0;
+-#else
+ 		return put_user(SNDRV_CTL_POWER_D0, ip) ? -EFAULT : 0;
+-#endif
+ 	}
+ 	down_read(&snd_ioctl_rwsem);
+ 	list_for_each_entry(p, &snd_control_ioctls, list) {
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0005-ALSA-pcm-Block-the-release-until-the-system-resume-f.patch"
+Content-Transfer-Encoding: 7bit
+
+From 9502e76fcd9bf4ea3307811d40f5ac2be8725044 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 Mar 2021 09:05:25 +0100
+Subject: [PATCH 5/7] ALSA: pcm: Block the release until the system resume
+ finishes
+
+The normal PCM operations are already blocked during the card power
+off state in the PCM common ioctl handler, but the release isn't
+covered.  As the PCM stream release may also access the hardware,
+let's block the release until the card power turns on.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm_native.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 17a85f4815d5..664d2975def4 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2799,6 +2799,10 @@ static int snd_pcm_release(struct inode *inode, struct file *file)
+ 	if (snd_BUG_ON(!substream))
+ 		return -ENXIO;
+ 	pcm = substream->pcm;
++
++	/* block until the device gets woken up as it may touch the hardware */
++	snd_power_wait(pcm->card, SNDRV_CTL_POWER_D0);
++
+ 	mutex_lock(&pcm->open_mutex);
+ 	snd_pcm_release_substream(substream);
+ 	kfree(pcm_file);
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0006-ALSA-hda-Add-frozen-flag-for-prohibiting-hardware-ac.patch"
+Content-Transfer-Encoding: 7bit
+
+From f49966c9be8d1f7d58b14b2394264b412127e31e Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 Mar 2021 09:13:29 +0100
+Subject: [PATCH 6/7] ALSA: hda: Add frozen flag for prohibiting hardware
+ access
+
+The PCI rescan feature we're going to implement requires the prohibit
+of the hardware access during rescan and remap.  This patch introduce
+a flag, frozen, to hdac_bus for preventing the CORB/RIRB accesses, as
+well as the helper function to flip it up/down.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/hdaudio.h |  2 ++
+ sound/hda/hdac_bus.c    | 13 ++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 22af68b01426..b270dd1f63ac 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -333,6 +333,7 @@ struct hdac_bus {
+ 
+ 	/* operation state */
+ 	bool chip_init:1;		/* h/w initialized */
++	bool frozen:1;			/* h/w access prohibited */
+ 
+ 	/* behavior flags */
+ 	bool aligned_mmio:1;		/* aligned MMIO access */
+@@ -377,6 +378,7 @@ struct hdac_bus {
+ int snd_hdac_bus_init(struct hdac_bus *bus, struct device *dev,
+ 		      const struct hdac_bus_ops *ops);
+ void snd_hdac_bus_exit(struct hdac_bus *bus);
++void snd_hdac_bus_freeze(struct hdac_bus *bus, bool freeze);
+ int snd_hdac_bus_exec_verb_unlocked(struct hdac_bus *bus, unsigned int addr,
+ 				    unsigned int cmd, unsigned int *res);
+ 
+diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
+index 71db8592b33d..91e8f3c25a08 100644
+--- a/sound/hda/hdac_bus.c
++++ b/sound/hda/hdac_bus.c
+@@ -75,6 +75,14 @@ void snd_hdac_bus_exit(struct hdac_bus *bus)
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_bus_exit);
+ 
++void snd_hdac_bus_freeze(struct hdac_bus *bus, bool frozen)
++{
++	mutex_lock(&bus->cmd_mutex);
++	bus->frozen = frozen;
++	mutex_unlock(&bus->cmd_mutex);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_bus_freeze);
++
+ /**
+  * snd_hdac_bus_exec_verb - execute a HD-audio verb on the given bus
+  * @bus: bus object
+@@ -90,7 +98,10 @@ int snd_hdac_bus_exec_verb(struct hdac_bus *bus, unsigned int addr,
+ 	int err;
+ 
+ 	mutex_lock(&bus->cmd_mutex);
+-	err = snd_hdac_bus_exec_verb_unlocked(bus, addr, cmd, res);
++	if (bus->frozen)
++		err = -EBADFD;
++	else
++		err = snd_hdac_bus_exec_verb_unlocked(bus, addr, cmd, res);
+ 	mutex_unlock(&bus->cmd_mutex);
+ 	return err;
+ }
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1
+Content-Type: application/octet-stream; type=patch
+Content-Disposition: attachment; filename="0007-ALSA-hda-Add-support-for-BARs-move-on-PCI-rescan.patch"
+Content-Transfer-Encoding: 7bit
+
+From 6f35db2b5744de28dbf9b75eb2e62cc9015b17fd Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Tue, 16 Mar 2021 23:01:02 -0400
+Subject: [PATCH 7/7] ALSA: hda: Add support for BARs move on PCI rescan
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_controller.c |   9 +++
+ sound/pci/hda/hda_controller.h |   1 +
+ sound/pci/hda/hda_intel.c      | 111 ++++++++++++++++++++++++++++++---
+ 3 files changed, 112 insertions(+), 9 deletions(-)
+
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index ca2f2ecd1488..5e32aa78aa32 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1057,6 +1057,15 @@ void azx_stop_chip(struct azx *chip)
+ }
+ EXPORT_SYMBOL_GPL(azx_stop_chip);
+ 
++void azx_suspend_streams(struct azx *chip)
++{
++	struct azx_pcm *apcm;
++
++	list_for_each_entry(apcm, &chip->pcm_list, list)
++		snd_pcm_suspend_all(apcm->pcm);
++}
++EXPORT_SYMBOL_GPL(azx_suspend_streams);
++
+ /*
+  * interrupt handler
+  */
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index 68f9668788ea..d40a5d87d34e 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -212,5 +212,6 @@ int azx_probe_codecs(struct azx *chip, unsigned int max_slots);
+ int azx_codec_configure(struct azx *chip);
+ int azx_init_streams(struct azx *chip);
+ void azx_free_streams(struct azx *chip);
++void azx_suspend_streams(struct azx *chip);
+ 
+ #endif /* __SOUND_HDA_CONTROLLER_H */
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index c4146e8617de..a710a4108dd8 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1868,6 +1868,26 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	return 0;
+ }
+ 
++static int azx_request_pci_regions(struct azx *chip)
++{
++	struct hdac_bus *bus = azx_bus(chip);
++	struct pci_dev *pci = chip->pci;
++	int err;
++
++	err = pci_request_regions(pci, "ICH HD audio");
++	if (err < 0)
++		return err;
++	chip->region_requested = 1;
++
++	bus->addr = pci_resource_start(pci, 0);
++	bus->remap_addr = pci_ioremap_bar(pci, 0);
++	if (bus->remap_addr == NULL) {
++		dev_err(&pci->dev, "ioremap error\n");
++		return -ENXIO;
++	}
++	return 0;
++}
++
+ static int azx_first_init(struct azx *chip)
+ {
+ 	int dev = chip->dev_index;
+@@ -1888,17 +1908,9 @@ static int azx_first_init(struct azx *chip)
+ 	}
+ #endif
+ 
+-	err = pci_request_regions(pci, "ICH HD audio");
++	err = azx_request_pci_regions(chip);
+ 	if (err < 0)
+ 		return err;
+-	chip->region_requested = 1;
+-
+-	bus->addr = pci_resource_start(pci, 0);
+-	bus->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (bus->remap_addr == NULL) {
+-		dev_err(card->dev, "ioremap error\n");
+-		return -ENXIO;
+-	}
+ 
+ 	if (chip->driver_type == AZX_DRIVER_SKL)
+ 		snd_hdac_bus_parse_capabilities(bus);
+@@ -2416,6 +2428,84 @@ static void azx_shutdown(struct pci_dev *pci)
+ 		azx_stop_chip(chip);
+ }
+ 
++static bool azx_bar_fixed(struct pci_dev *pdev, int resno)
++{
++	return false;
++}
++
++static void azx_rescan_prepare(struct pci_dev *pdev)
++{
++	struct snd_card *card = pci_get_drvdata(pdev);
++	struct azx *chip = card->private_data;
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++	struct hdac_bus *bus = azx_bus(chip);
++	struct hda_codec *codec;
++
++	// FIXME: need unlock/lock dance as in azx_remove()?
++	flush_work_sync(&hda->probe_work);
++
++	if (hda->freed || hda->init_failed)
++		return;
++
++	if (chip->running) {
++		pm_runtime_get_sync(&pdev->dev);
++		azx_prepare(&pdev->dev);
++		azx_suspend_streams(chip);
++		list_for_each_codec(codec, &chip->bus) {
++			pm_runtime_suspend(hda_codec_dev(codec));
++			pm_runtime_disable(hda_codec_dev(codec));
++		}
++		snd_hdac_bus_freeze(bus, true);
++		azx_suspend(&pdev->dev);
++	}
++
++	/* Unmap MMIO and release BAR resource */
++	iounmap(bus->remap_addr);
++	if (chip->region_requested) {
++		pci_release_regions(chip->pci);
++		chip->region_requested = 0;
++	}
++}
++
++static void azx_rescan_done(struct pci_dev *pdev)
++{
++	struct snd_card *card = pci_get_drvdata(pdev);
++	struct azx *chip = card->private_data;
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++	struct hdac_bus *bus = azx_bus(chip);
++	struct hdac_stream *azx_dev;
++	struct hda_codec *codec;
++	int err;
++
++	if (hda->freed || hda->init_failed)
++		return;
++
++	/* Reassign BAR and remap */
++	err = azx_request_pci_regions(chip);
++	if (err < 0) {
++		dev_err(card->dev, "Rescan failed: disabling the device\n");
++		card->shutdown = 1;
++		chip->init_failed = true;
++		// FIXME: any better handling?
++		return;
++	}
++
++	// FIXME: should be in hdac_stream.c
++	list_for_each_entry(azx_dev, &bus->stream_list, list)
++		azx_dev->sd_addr = bus->remap_addr + (0x20 * azx_dev->index + 0x80);
++
++	if (chip->running) {
++		azx_resume(&pdev->dev);
++		snd_hdac_bus_freeze(bus, false);
++		list_for_each_codec(codec, &chip->bus) {
++			pm_runtime_enable(hda_codec_dev(codec));
++			pm_runtime_resume(hda_codec_dev(codec));
++		}
++		azx_complete(&pdev->dev);
++		pm_runtime_put_sync(&pdev->dev);
++	}
++}
++
+ /* PCI IDs */
+ static const struct pci_device_id azx_ids[] = {
+ 	/* CPT */
+@@ -2783,6 +2873,9 @@ static struct pci_driver azx_driver = {
+ 	.driver = {
+ 		.pm = AZX_PM_OPS,
+ 	},
++	.rescan_prepare	= azx_rescan_prepare,
++	.rescan_done	= azx_rescan_done,
++	.bar_fixed	= azx_bar_fixed,
+ };
+ 
+ module_pci_driver(azx_driver);
+-- 
+2.26.2
+
+
+--Multipart_Wed_Mar_24_11:00:12_2021-1--
