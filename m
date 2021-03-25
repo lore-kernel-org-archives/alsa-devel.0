@@ -3,67 +3,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B104C433C1
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:20:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCF40C433C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:22:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4993B61A1F
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:20:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4993B61A1F
+	by mail.kernel.org (Postfix) with ESMTPS id A394B61A1F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 07:22:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A394B61A1F
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38C0A1655;
-	Thu, 25 Mar 2021 08:20:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38C0A1655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03E45165E;
+	Thu, 25 Mar 2021 08:21:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03E45165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616656853;
-	bh=b634OF2iH4tofD8QvG1px8uzD//iFkp/+IhhmFCJjI0=;
+	s=default; t=1616656937;
+	bh=yd4W5u91YoDxliNsST3yKvZL1UDac4eTGUaK8VVVs90=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qNw96ojt7/JEbqxIe061+ijX+IV7DRB3Xts1mlHDDr7TPtBF9MeTaKghXouiIc4MG
-	 E2TZnzc/dGvEDshYovzzLYsy0+BpMzwNojB/9phfv2AKTbIa8xUYZ7wA4VbbGUAq8L
-	 QfGuCMnZ3vMYvVPiq2nn0YgcDVINOaxNIVpif4ag=
+	b=nZ/PxHHIAxmGCQyXWOftc06uyQxdPgzFKoBbc/C/aq+7vNQ27+93yRQ84JPV5T5Cz
+	 1iRsQwu6FygmuMMiBEvRVs4KLObPuDIuDqbiREfxcfV+RkgT1tx9qaNd1GTjzk3rdx
+	 2Grb3P+kcWjxORKgkVmgj0UjkaXoP8JGTw2XvBqU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF336F80257;
-	Thu, 25 Mar 2021 08:20:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82AADF80257;
+	Thu, 25 Mar 2021 08:21:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F67CF8025F; Thu, 25 Mar 2021 08:20:00 +0100 (CET)
+ id 33453F80268; Thu, 25 Mar 2021 08:21:24 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFC17F80104
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 08:19:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFC17F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7696F80104
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 08:21:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7696F80104
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 3AE8FAA55;
- Thu, 25 Mar 2021 07:19:55 +0000 (UTC)
-Date: Thu, 25 Mar 2021 08:19:54 +0100
-Message-ID: <s5hzgyrn1id.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 66D9BAA55;
+ Thu, 25 Mar 2021 07:21:17 +0000 (UTC)
+Date: Thu, 25 Mar 2021 08:21:17 +0100
+Message-ID: <s5hy2ebn1g2.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: usb-audio: Check connector value on resume
-In-Reply-To: <20210324171410.285848-2-kai.heng.feng@canonical.com>
-References: <20210324171410.285848-1-kai.heng.feng@canonical.com>
- <20210324171410.285848-2-kai.heng.feng@canonical.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda/hdmi: fix max DP-MST dev_num for Intel TGL+
+ platforms
+In-Reply-To: <20210324172337.51730-1-kai.vehmanen@linux.intel.com>
+References: <20210324172337.51730-1-kai.vehmanen@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Lars-Peter Clausen <lars@metafoo.de>, open list <linux-kernel@vger.kernel.org>,
- Chris Chiu <chiu@endlessm.com>, tiwai@suse.com, Tom Yan <tom.ty89@gmail.com>,
- Joe Perches <joe@perches.com>
+Cc: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+ alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,92 +78,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Mar 2021 18:14:08 +0100,
-Kai-Heng Feng wrote:
+On Wed, 24 Mar 2021 18:23:37 +0100,
+Kai Vehmanen wrote:
 > 
-> Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
-> error and the other two functions of the USB audio, Line In and Line
-> Out, work just fine.
+> Increase the device select range to 4 on platforms supporting
+> 4 concurrent displays.
 > 
-> The mic starts to work again after running userspace app like "alsactl
-> store". Following the lead, the evidence shows that as soon as connector
-> status is queried, the mic can work again.
+> This fixes a problem in scenario where total of 4 displays are active,
+> and 3 of these are audio capable DP receivers and connected to a DP-MST
+> hub. Due to incorrect range for device select, audio could not be played
+> to the 3rd monitor in DP-MST hub.
 > 
-> So also check connector value on resume to "wake up" the USB audio to
-> make it functional.
-> 
-> This can be device specific, however I think this generic approach may
-> benefit more than one device.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> BugLink: https://github.com/thesofproject/linux/issues/2798
+> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 
-Just to be sure: this workaround is always needed no matter whether
-reset_resume is set or not?  If so, it's better to change the resume
-callback to take reset_resume argument and call it always.  The
-resume_connector() can be folded into there.
+Thanks, applied.
 
-
-thanks,
 
 Takashi
-
-> ---
->  sound/usb/mixer.c | 18 ++++++++++++++++++
->  sound/usb/mixer.h |  1 +
->  2 files changed, 19 insertions(+)
-> 
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 98f5417a70e4..6a553d891b0f 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -3631,11 +3631,28 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
->  	return 0;
->  }
->  
-> +static int resume_connector(struct usb_mixer_elem_list *list)
-> +{
-> +	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
-> +
-> +	if (cval->val_type != USB_MIXER_BOOLEAN || cval->channels != 1)
-> +		return 0;
-> +
-> +	return get_connector_value(cval, NULL, NULL);
-> +}
-> +
->  int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
->  {
->  	struct usb_mixer_elem_list *list;
->  	int id, err;
->  
-> +	for (id = 0; id < MAX_ID_ELEMS; id++) {
-> +		for_each_mixer_elem(list, mixer, id) {
-> +			if (list->resume_connector)
-> +				list->resume_connector(list);
-> +		}
-> +	}
-> +
->  	if (reset_resume) {
->  		/* restore cached mixer values */
->  		for (id = 0; id < MAX_ID_ELEMS; id++) {
-> @@ -3664,5 +3681,6 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
->  	list->dump = snd_usb_mixer_dump_cval;
->  #ifdef CONFIG_PM
->  	list->resume = restore_mixer_value;
-> +	list->resume_connector = resume_connector;
->  #endif
->  }
-> diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-> index c29e27ac43a7..843ccff0eea3 100644
-> --- a/sound/usb/mixer.h
-> +++ b/sound/usb/mixer.h
-> @@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
->  	bool is_std_info;
->  	usb_mixer_elem_dump_func_t dump;
->  	usb_mixer_elem_resume_func_t resume;
-> +	usb_mixer_elem_resume_func_t resume_connector;
->  };
->  
->  /* iterate over mixer element list of the given unit id */
-> -- 
-> 2.30.2
-> 
