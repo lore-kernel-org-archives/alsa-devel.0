@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46B97C433E1
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:31:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 69178C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:31:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A1F5161A33
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:31:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1F5161A33
+	by mail.kernel.org (Postfix) with ESMTPS id CEEC761A1F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:31:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CEEC761A1F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 347741698;
-	Thu, 25 Mar 2021 12:30:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 347741698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5752A16A4;
+	Thu, 25 Mar 2021 12:30:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5752A16A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616671886;
-	bh=KtmsC9HXqP6iYRKpMA/dcq7ZYWgWJI8JVT0f7dUZJiI=;
+	s=default; t=1616671905;
+	bh=crRjDxmp3zNjym0hEGFt4MwtW1zM13RGuXWCQIuYlXY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r9Ru71jJKBp9OgePtbeYJDXIUHCEJxuPqALUunEGHI1m2qao/KBa/4vzgGatITDo7
-	 CRcm+Zq1LiLRHk4ZvuB6d2lFoWNeuVSEsiUQT3EBYSlhNyWH+j8jUV3VKcU6NToQ51
-	 uvlzybUzcY6AEiyO4+Et4cUD5pJBVVgGVkQqth70=
+	b=IkzURd96DxKQhHJZ/RrQgZJE6l026gXU0cknnDuXqLzWx9V4yZcezryw6FgH9XzEn
+	 0sRH/UMDDGRQBctfnD8sM/wwM0l9F5s4EsgQOYBqJLGetW9IYxcRBQFyJYMWRVNcjy
+	 eQApnAAunPmKY70zvNInEO1qtCpQ+lZ6vvl9Zfx4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCAD2F80515;
-	Thu, 25 Mar 2021 12:26:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1C8BF8050F;
+	Thu, 25 Mar 2021 12:26:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07430F8025F; Thu, 25 Mar 2021 12:26:25 +0100 (CET)
+ id D0DFEF80510; Thu, 25 Mar 2021 12:26:26 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B572AF80103
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:25:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B572AF80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57753F804FA
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:26:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57753F804FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pzhZOlTL"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 355A961A35;
- Thu, 25 Mar 2021 11:25:16 +0000 (UTC)
+ header.b="ZUuZ8NNB"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4208261A37;
+ Thu, 25 Mar 2021 11:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671516;
- bh=KtmsC9HXqP6iYRKpMA/dcq7ZYWgWJI8JVT0f7dUZJiI=;
+ s=k20201202; t=1616671577;
+ bh=crRjDxmp3zNjym0hEGFt4MwtW1zM13RGuXWCQIuYlXY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pzhZOlTL3Hm/VwQjf/pJkVSeZn52nDrusqnr+JvAUU99mKY36CoczplpWnKlohYA2
- NCqJeFGrXxdJhSIJwmTpcXJBGn85RBQp40xjoshy1km5Ozo6PBggSDUtr8PmlKV8TT
- BRjRnrsc0K195mTSgkSyvdRPHohEJwRqu2AreeKD4JVtujn3IL07g2QXAR0R9UoELt
- czW8cPMZcwkOyJQexRUsO4ipklYVMyxLlxHvm/v6OLYIZJSC8gMJhDxBoBYyGLsSjI
- QJ8TVuwO2AOBfvZUQT9Rxr+TxeAUXFsoyCnwX7YVC8AldsiJw503V32rNN0rWJKgJS
- Vg6CuYdmMsswQ==
+ b=ZUuZ8NNBL3hM/4ROS3zjENWKnxSwigMUKiG/8wxCU9/hBiRGbIrTxO7LRHobtOuez
+ Z8R+cLxaKafliQzj3OwuxKW6u7Lzo9dcLE02FZQO6n9hxzZjE/UagVsR2sB28RC9O6
+ L+gnWrB7jE+PkvrTp3EjFZxfKyB70yBRRrkEp6e8iIQDdgoHeKnipOqmwBTNQsCwqG
+ P/p4mLEh4DU1GtwcX23kP7SSgP5UFBsxJHlwG0HHJ4wagjyFQvU6s/TthvAPVZFkYn
+ anZImAJPq4Lvnn2Vma51vQoMupcYsniCJdTqci7/f/GYf919zRJ5PuDpRC3L15xjp2
+ etbOenuoWk2xg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 13/44] ASoC: es8316: Simplify adc_pga_gain_tlv
+Subject: [PATCH AUTOSEL 5.10 13/39] ASoC: es8316: Simplify adc_pga_gain_tlv
  table
-Date: Thu, 25 Mar 2021 07:24:28 -0400
-Message-Id: <20210325112459.1926846-13-sashal@kernel.org>
+Date: Thu, 25 Mar 2021 07:25:32 -0400
+Message-Id: <20210325112558.1927423-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
-References: <20210325112459.1926846-1-sashal@kernel.org>
+In-Reply-To: <20210325112558.1927423-1-sashal@kernel.org>
+References: <20210325112558.1927423-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -110,7 +110,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index f9ec5cf82599..ec2f11ff8a84 100644
+index bd5d230c5df2..609459077f9d 100644
 --- a/sound/soc/codecs/es8316.c
 +++ b/sound/soc/codecs/es8316.c
 @@ -63,13 +63,8 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
