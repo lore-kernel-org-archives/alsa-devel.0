@@ -2,69 +2,69 @@ Return-Path: <SRS0=ofI3=IX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 171B6C43459
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D932DC433F2
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:28:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 767B161A70
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:27:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 767B161A70
+	by mail.kernel.org (Postfix) with ESMTPS id 56C1461A78
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:28:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56C1461A78
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D99D0168D;
-	Thu, 25 Mar 2021 12:26:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D99D0168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 899E0167A;
+	Thu, 25 Mar 2021 12:27:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 899E0167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616671662;
-	bh=ms20fgAjE4ZdsIu+BDxgwfLClmgujadJWc2NWvyUMm4=;
+	s=default; t=1616671692;
+	bh=L3NRVQFzOmKFOR61LZK7HBF3n7Wrvuw1pzKN9hGnFNw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N/3+v6IHeSqRq+0lGtvPzMVRwX0IL57SGck5D3NbwaLPAw0wm5jldC2N3pKptYezm
-	 fvgKWQ4qkwjjurNtDN+2xLZC3kKYP/lotcHjSm77H8cR4eKlCHT9kGIxx0primBgjQ
-	 hUJLf1MUF7XoEeXJ7ndLZNl7MHNmWHk+Tp9Jp9z4=
+	b=ETU0Gkb1Qp47GXI+nj2xGqFgSHDZkz4O83YoTOt3lTDScBJ01aHHyctsRNvsFwfxI
+	 LW2gQC6AIg4pxLCKgd7Yp+e9aP49DtvvOKKVYSNkrrZ4B4WLspHxqRJlIWrBgaVQJU
+	 OavA9Ul5Vvw5ae6CDsAtzkKXiBa8OOLFRTKBMs5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1759CF80431;
-	Thu, 25 Mar 2021 12:25:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CA7CF802E3;
+	Thu, 25 Mar 2021 12:25:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5240F80475; Thu, 25 Mar 2021 12:25:28 +0100 (CET)
+ id AA251F804B0; Thu, 25 Mar 2021 12:25:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22ABBF80290
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:25:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22ABBF80290
+ by alsa1.perex.cz (Postfix) with ESMTPS id 280E4F802E3
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:25:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 280E4F802E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b1v1fkU0"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99CB861A27;
- Thu, 25 Mar 2021 11:25:18 +0000 (UTC)
+ header.b="FBA3NsbH"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6490961A17;
+ Thu, 25 Mar 2021 11:25:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671519;
- bh=ms20fgAjE4ZdsIu+BDxgwfLClmgujadJWc2NWvyUMm4=;
+ s=k20201202; t=1616671523;
+ bh=L3NRVQFzOmKFOR61LZK7HBF3n7Wrvuw1pzKN9hGnFNw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=b1v1fkU0Oja4VlAKkuM23Ldd8E05x7mix6/M3yIQNcqFWwSTNXSZhrm0P6Uj+Nbqi
- 8H5M24whrAJ6mGs+wKnAR7haY49f/a7dmhqAAVtbLZjSeG8a6qS6MoQUmF6L4nxzt6
- +rIgpGfaMl4apx8OdNqOl/Axyg49Jr55MKZ4sZs4DObayB2YkyUFOuu/BiRDdFLDM3
- zOWYZ00+LiPYEQZmVhcsI1Q5+PVRV6EMZ1ZwP8pf7zB6fBr3DQ98GkRQsWiwddqJvE
- 7etQImxHpKNnLBHW+wcXx47RU3EyRaSGsHo23lnpe8gUxgg8L7RdAwp5yRW77QXkk8
- 5Xm53iuABJC2Q==
+ b=FBA3NsbH1Dk8YY8aFPX02+u2vwDdYOh5LSqfPMzRXHNmPceHFFrUOfEQJWO6YGDsn
+ DlHTE3vPOWO0YTBlhg7bV05pVz+eCkC8omjpYSntAYtoDWIj8QHZIraN46bglDCSZR
+ YRSk0iYCFTBb8kbIS+QJZCCTY27W/ozK4+HTXX6dZ6IflFc4dxS7tfiPKufOLciShx
+ FjwOI5rzuaNIAwJ9EM2nMghqx5cQO0V9Y94/zCT6ALjKm5/t+PXkXA5lPz1a/T9NwV
+ Juzr0WYVumJP0HEyNeXx0I28MS3IVV6y3BEreZ5CI2YBqIAbyIIG2nD0A0M+b/eGhn
+ iRnFDiKixcHSA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 15/44] ASoC: cs42l42: Fix Bitclock polarity
- inversion
-Date: Thu, 25 Mar 2021 07:24:30 -0400
-Message-Id: <20210325112459.1926846-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 18/44] ASoC: cs42l42: Always wait at least 3ms
+ after reset
+Date: Thu, 25 Mar 2021 07:24:33 -0400
+Message-Id: <20210325112459.1926846-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
 References: <20210325112459.1926846-1-sashal@kernel.org>
@@ -92,83 +92,53 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 
-[ Upstream commit e793c965519b8b7f2fea51a48398405e2a501729 ]
+[ Upstream commit 19325cfea04446bc79b36bffd4978af15f46a00e ]
 
-The driver was setting bit clock polarity opposite to intended polarity.
-Also simplify the code by grouping ADC and DAC clock configurations into
-a single field.
+This delay is part of the power-up sequence defined in the datasheet.
+A runtime_resume is a power-up so must also include the delay.
 
 Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-2-tanureal@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20210305173442.195740-6-tanureal@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 20 ++++++++------------
- sound/soc/codecs/cs42l42.h | 11 ++++++-----
- 2 files changed, 14 insertions(+), 17 deletions(-)
+ sound/soc/codecs/cs42l42.c | 3 ++-
+ sound/soc/codecs/cs42l42.h | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 210fcbedf241..df0d5fec0287 100644
+index d5078ce79fad..4d82d24c7828 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -797,27 +797,23 @@ static int cs42l42_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	/* Bitclock/frame inversion */
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF:
-+		asp_cfg_val |= CS42L42_ASP_SCPOL_NOR << CS42L42_ASP_SCPOL_SHIFT;
- 		break;
- 	case SND_SOC_DAIFMT_NB_IF:
--		asp_cfg_val |= CS42L42_ASP_POL_INV <<
--				CS42L42_ASP_LCPOL_IN_SHIFT;
-+		asp_cfg_val |= CS42L42_ASP_SCPOL_NOR << CS42L42_ASP_SCPOL_SHIFT;
-+		asp_cfg_val |= CS42L42_ASP_LCPOL_INV << CS42L42_ASP_LCPOL_SHIFT;
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
--		asp_cfg_val |= CS42L42_ASP_POL_INV <<
--				CS42L42_ASP_SCPOL_IN_DAC_SHIFT;
- 		break;
- 	case SND_SOC_DAIFMT_IB_IF:
--		asp_cfg_val |= CS42L42_ASP_POL_INV <<
--				CS42L42_ASP_LCPOL_IN_SHIFT;
--		asp_cfg_val |= CS42L42_ASP_POL_INV <<
--				CS42L42_ASP_SCPOL_IN_DAC_SHIFT;
-+		asp_cfg_val |= CS42L42_ASP_LCPOL_INV << CS42L42_ASP_LCPOL_SHIFT;
- 		break;
+@@ -1794,7 +1794,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
+ 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
+ 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
+ 	}
+-	mdelay(3);
++	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+ 
+ 	/* Request IRQ */
+ 	ret = devm_request_threaded_irq(&i2c_client->dev,
+@@ -1919,6 +1919,7 @@ static int cs42l42_runtime_resume(struct device *dev)
  	}
  
--	snd_soc_component_update_bits(component, CS42L42_ASP_CLK_CFG,
--				CS42L42_ASP_MODE_MASK |
--				CS42L42_ASP_SCPOL_IN_DAC_MASK |
--				CS42L42_ASP_LCPOL_IN_MASK, asp_cfg_val);
-+	snd_soc_component_update_bits(component, CS42L42_ASP_CLK_CFG, CS42L42_ASP_MODE_MASK |
-+								      CS42L42_ASP_SCPOL_MASK |
-+								      CS42L42_ASP_LCPOL_MASK,
-+								      asp_cfg_val);
+ 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
++	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
  
- 	return 0;
- }
+ 	regcache_cache_only(cs42l42->regmap, false);
+ 	regcache_sync(cs42l42->regmap);
 diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 9e3cc528dcff..1f0d67c95a9a 100644
+index 9b017b76828a..866d7c873e3c 100644
 --- a/sound/soc/codecs/cs42l42.h
 +++ b/sound/soc/codecs/cs42l42.h
-@@ -258,11 +258,12 @@
- #define CS42L42_ASP_SLAVE_MODE		0x00
- #define CS42L42_ASP_MODE_SHIFT		4
- #define CS42L42_ASP_MODE_MASK		(1 << CS42L42_ASP_MODE_SHIFT)
--#define CS42L42_ASP_SCPOL_IN_DAC_SHIFT	2
--#define CS42L42_ASP_SCPOL_IN_DAC_MASK	(1 << CS42L42_ASP_SCPOL_IN_DAC_SHIFT)
--#define CS42L42_ASP_LCPOL_IN_SHIFT	0
--#define CS42L42_ASP_LCPOL_IN_MASK	(1 << CS42L42_ASP_LCPOL_IN_SHIFT)
--#define CS42L42_ASP_POL_INV		1
-+#define CS42L42_ASP_SCPOL_SHIFT		2
-+#define CS42L42_ASP_SCPOL_MASK		(3 << CS42L42_ASP_SCPOL_SHIFT)
-+#define CS42L42_ASP_SCPOL_NOR		3
-+#define CS42L42_ASP_LCPOL_SHIFT		0
-+#define CS42L42_ASP_LCPOL_MASK		(3 << CS42L42_ASP_LCPOL_SHIFT)
-+#define CS42L42_ASP_LCPOL_INV		3
+@@ -740,6 +740,7 @@
+ #define CS42L42_FRAC2_VAL(val)	(((val) & 0xff0000) >> 16)
  
- #define CS42L42_ASP_FRM_CFG		(CS42L42_PAGE_12 + 0x08)
- #define CS42L42_ASP_STP_SHIFT		4
+ #define CS42L42_NUM_SUPPLIES	5
++#define CS42L42_BOOT_TIME_US	3000
+ 
+ static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
+ 	"VA",
 -- 
 2.30.1
 
