@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8155EC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:32:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BCB2C433C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:32:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C2AD761962
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:32:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C2AD761962
+	by mail.kernel.org (Postfix) with ESMTPS id A791A61962
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:32:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A791A61962
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E7A816AD;
-	Thu, 25 Mar 2021 12:31:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E7A816AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA66D16A5;
+	Thu, 25 Mar 2021 12:32:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA66D16A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616671951;
-	bh=5mITberqG7UgwW6RZuOELf841627VhEq59zXJ/OyvFo=;
+	s=default; t=1616671971;
+	bh=QzOHOeJxuTMzMkr+1Bqy/LrnBegZu/BBTzh3ZpebcP4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=voOLcB9RSYLX8I5S/hleww1/XfyYl/2kv2qsz3bLx2KZ4x+Tygzusly+j9KNFhAgK
-	 KunJv7TZsGygkhCoJPo9NYj6JU0eP+raKS5Lh/wRtTQxpvCS35/lDaw4QJ0Z7iK7us
-	 P/p+qw1Hf2rUEHWVPpRWtHV6dsFnyIANGrNKS5Lc=
+	b=Jnb95GvFx4MoQs2ate8or+1LYrhQOuq1OfeyNQULdu48aEQ/DODWRut7Ir+aM04go
+	 tsz7vQaORRiuT2NoPW3NPziuzHBkwyZA/KIVQI2sTheO+NsOXhjpeHkSek+yf3rFRX
+	 vdX+0AkKTr9lasG3hWUfKXxmK+eX2Fm/fhecb6JA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 604A8F8051E;
-	Thu, 25 Mar 2021 12:26:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4746F80525;
+	Thu, 25 Mar 2021 12:26:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA420F8050F; Thu, 25 Mar 2021 12:26:25 +0100 (CET)
+ id 332ABF80518; Thu, 25 Mar 2021 12:26:33 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1C75F80104
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:25:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1C75F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id B137CF804F3
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:26:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B137CF804F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Np3dwTTu"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5637961A2C;
- Thu, 25 Mar 2021 11:25:17 +0000 (UTC)
+ header.b="CV3D00mr"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82AA261A3A;
+ Thu, 25 Mar 2021 11:26:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671518;
- bh=5mITberqG7UgwW6RZuOELf841627VhEq59zXJ/OyvFo=;
+ s=k20201202; t=1616671578;
+ bh=QzOHOeJxuTMzMkr+1Bqy/LrnBegZu/BBTzh3ZpebcP4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Np3dwTTufqkJ+YhSer5+jF9dTewgZGePyFfA0S9F4/zuenuL9a43UtbA6xQN7k5L4
- P57OjoHBY1lqEpr947wOnYsHDKvNwBn35yDIejgZIP0Tj+uHEBf+85k4h+y2misLah
- EtbPQBzOJDhCirdjhGXNk6b74ChQc9iIdfYGvEaU7sJZagiDkb3JmS35bU3i6ieGRZ
- PaJOoJ012n7yRRBaDWtCbbUJxvyb9J1XIkFDAAxLgK5ud4lPoKLOH6YOaH4vCdTfe0
- EJX47URzrmaetDfcEGVK2JIRiEaUKAjoyQtQcT2FdsHA10RwVDyVIsHYtZRtsFCNpo
- czaXn1PiGnrbg==
+ b=CV3D00mryNWfuWlCQg2YrWEbAi3+BpHDGs/cQAACd25fFpAJpJDMlT88J8nmgXPPa
+ z51Ee5WByv7cGUspnz2iT8zMnj1NW7SW13Xmy9qGGk0XN98aukSKZp1/u3sy1c6E8R
+ QPpEdnFsNa3l4JjMmjw1zdIkRreuRrCpS3E3r0aDkV/QGNZw3/WFHtlo7vAs5suXuw
+ dROFrRgUVkpdfidKz9qmmBBkY/RCtsnH4kfdw3/4DSUOOni2r5lzjbcVnj6a0NAZB9
+ zPFR2+cbIiVKfO/oMreo3vGv50xxLDS8CbI8sjN/oSfKylGpgu1y8OBhj/a/URezdD
+ S1eQ01Zla1MXQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 14/44] ASoC: soc-core: Prevent warning if no DMI
+Subject: [PATCH AUTOSEL 5.10 14/39] ASoC: soc-core: Prevent warning if no DMI
  table is present
-Date: Thu, 25 Mar 2021 07:24:29 -0400
-Message-Id: <20210325112459.1926846-14-sashal@kernel.org>
+Date: Thu, 25 Mar 2021 07:25:33 -0400
+Message-Id: <20210325112558.1927423-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
-References: <20210325112459.1926846-1-sashal@kernel.org>
+In-Reply-To: <20210325112558.1927423-1-sashal@kernel.org>
+References: <20210325112558.1927423-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -114,7 +114,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f6d4e99b590c..0cffc9527e28 100644
+index 05a085f6dc7c..bf65cba232e6 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
 @@ -31,6 +31,7 @@
@@ -123,9 +123,9 @@ index f6d4e99b590c..0cffc9527e28 100644
  #include <linux/dmi.h>
 +#include <linux/acpi.h>
  #include <sound/core.h>
+ #include <sound/jack.h>
  #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -1573,6 +1574,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+@@ -1581,6 +1582,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
  	if (card->long_name)
  		return 0; /* long name already set by driver or from DMI */
  
