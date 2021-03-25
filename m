@@ -2,55 +2,69 @@ Return-Path: <SRS0=ofI3=IX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77B13C433E0
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 13:09:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC518C433C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 13:42:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 184EB619FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 13:09:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 184EB619FE
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4767D61A21
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 13:42:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4767D61A21
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01C001655;
-	Thu, 25 Mar 2021 14:08:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01C001655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C1AB1657;
+	Thu, 25 Mar 2021 14:42:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C1AB1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616677745;
-	bh=VQcZLzYMkHa8FD2jFS3O5lgpPWvgS7ByarsOJOeUyFw=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1616679774;
+	bh=STwjGzt4hqyw7m621PBfcEoEWaJ8SLDHSsvMDZ7L7HA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lCKgjruHY9qlXiXxzBu9C/TiOLgrklQGJP6i6UZYXs6GY0UyWGMO5Oj5MrE4OWiix
-	 58U0vJ7rh9z10yQMfyVojjVNfs4o+Wh9DILzllKmo42voiB5FnENVct+EansnIMemP
-	 fUMD4eX8sQOMOxu01uSdChlW0OXGP5z/WJSig0Rk=
+	b=tqNRgYjBwhdVtS7EePRpCluCloSf76MBWoObQQ1SvzHc5ajig4Jzr1/ISgyUJMyWb
+	 6ga1FzEz+nJutuQKIUtSje5HoWW5LKDFawi7JTamrU2709SZ5k/Laogw3pGTOscmcM
+	 dRSHE+KgLk3mwdIKmk62ddLs524Kxyudbrg3Bgr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72CDBF80257;
-	Thu, 25 Mar 2021 14:08:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C4A8F80257;
+	Thu, 25 Mar 2021 14:42:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C702BF8025F; Thu, 25 Mar 2021 14:08:12 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 16048F800FF
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 14:07:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16048F800FF
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1616677677271270037-webhooks-bot@alsa-project.org>
-References: <1616677677271270037-webhooks-bot@alsa-project.org>
-Subject: Directions please...
-Message-Id: <20210325130812.C702BF8025F@alsa1.perex.cz>
-Date: Thu, 25 Mar 2021 14:08:12 +0100 (CET)
+ id 29318F8025F; Thu, 25 Mar 2021 14:42:02 +0100 (CET)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E67AF800FF
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 14:41:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E67AF800FF
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id B34ABAD6D;
+ Thu, 25 Mar 2021 13:41:44 +0000 (UTC)
+Date: Thu, 25 Mar 2021 14:41:43 +0100
+Message-ID: <s5hczvnmju0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 2/2] ALSA: usb-audio: Check connector value on resume
+In-Reply-To: <20210325121250.133009-2-kai.heng.feng@canonical.com>
+References: <20210325121250.133009-1-kai.heng.feng@canonical.com>
+ <20210325121250.133009-2-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Pavel Skripkin <paskripkin@gmail.com>,
+ Chris Chiu <chiu@endlessm.com>, tiwai@suse.com,
+ Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>,
+ Tom Yan <tom.ty89@gmail.com>, open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,20 +80,136 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #84 was opened from giggywithit:
+On Thu, 25 Mar 2021 13:12:48 +0100,
+Kai-Heng Feng wrote:
+> 
+> Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
+> error and the other two functions of the USB audio, Line In and Line
+> Out, work just fine.
+> 
+> The mic starts to work again after running userspace app like "alsactl
+> store". Following the lead, the evidence shows that as soon as connector
+> status is queried, the mic can work again.
+> 
+> So also check connector value on resume to "wake up" the USB audio to
+> make it functional.
+> 
+> This can be device specific, however I think this generic approach may
+> benefit more than one device.
+> 
+> While at it, also remove reset-resume path to consolidate mixer resume
+> path.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+>  - Remove reset-resume.
+>  - Fold the connector checking to the mixer resume callback.
 
-Hello
+That's not what I meant exactly...  I meant to put both into the
+single resume callback, but handle each part conditionally depending
+on reset_resume argument.
 
-I design and build audio equipment and would like to know where or how I would go about getting access to the sound states to control a GPIO for a raspberry Pi.
+But this turned out to need more changes in mixer_quirks.c
+unnecessarily.  Maybe adding the two resume functions is a better
+approach in the end, but not for the specific connection thing but
+generically both resume and reset_resume callbacks.  Something like
+below.
 
-What I would like ideally is to control a GPIO state based upon actual non-zero data playback.
-My desire is to use the GPIO to control a mute function to silence the interactive periods in DAC activity.
-I know little to nothing about programming but imagine the function is intelligent enough to discern the difference between an open device and actual music playback.
-Other methods keep open the device to keep from switching off and on, however, I am looking for a more professional and detailed method to create.
 
-Any pointers helpful
-thank you
-S
+thanks,
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/84
-Repository URL: https://github.com/alsa-project/alsa-utils
+Takashi
+
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b004b2e63a5d..1dab281bb269 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3615,20 +3615,43 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
+ 	return 0;
+ }
+ 
++static int default_mixer_resume(struct usb_mixer_elem_list *list)
++{
++	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
++
++	/* get connector value to "wake up" the USB audio */
++	if (cval->val_type == USB_MIXER_BOOLEAN && cval->channels == 1)
++		get_connector_value(cval, NULL, NULL);
++
++	return 0;
++}
++
++static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
++{
++	int err = default_mixer_resume(list);
++
++	if (err < 0)
++		return err;
++	return restore_mixer_value(list);
++}
++
+ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+ {
+ 	struct usb_mixer_elem_list *list;
++	usb_mixer_elem_resume_func_t f;
+ 	int id, err;
+ 
+-	if (reset_resume) {
+-		/* restore cached mixer values */
+-		for (id = 0; id < MAX_ID_ELEMS; id++) {
+-			for_each_mixer_elem(list, mixer, id) {
+-				if (list->resume) {
+-					err = list->resume(list);
+-					if (err < 0)
+-						return err;
+-				}
++	/* restore cached mixer values */
++	for (id = 0; id < MAX_ID_ELEMS; id++) {
++		for_each_mixer_elem(list, mixer, id) {
++			if (reset_resume)
++				f = list->reset_resume;
++			else
++				f = list->resume;
++			if (f) {
++				err = list->resume(list);
++				if (err < 0)
++					return err;
+ 			}
+ 		}
+ 	}
+@@ -3647,6 +3670,7 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
+ 	list->id = unitid;
+ 	list->dump = snd_usb_mixer_dump_cval;
+ #ifdef CONFIG_PM
+-	list->resume = restore_mixer_value;
++	list->resume = default_mixer_resume;
++	list->reset_resume = default_mixer_reset_resume;
+ #endif
+ }
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index c29e27ac43a7..e5a01f17bf3c 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
+ 	bool is_std_info;
+ 	usb_mixer_elem_dump_func_t dump;
+ 	usb_mixer_elem_resume_func_t resume;
++	usb_mixer_elem_resume_func_t reset_resume;
+ };
+ 
+ /* iterate over mixer element list of the given unit id */
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ffd922327ae4..b7f9c2fded05 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
+ 		*listp = list;
+ 	list->mixer = mixer;
+ 	list->id = id;
+-	list->resume = resume;
++	list->reset_resume = resume;
+ 	kctl = snd_ctl_new1(knew, list);
+ 	if (!kctl) {
+ 		kfree(list);
