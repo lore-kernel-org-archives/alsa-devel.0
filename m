@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77953C433C1
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03C59C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:44:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D39E56191D
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:43:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D39E56191D
+	by mail.kernel.org (Postfix) with ESMTPS id 73428619D5
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:44:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 73428619D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D186171A;
-	Thu, 25 Mar 2021 12:42:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D186171A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E919E1720;
+	Thu, 25 Mar 2021 12:43:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E919E1720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616672623;
-	bh=FYgPAvocIRQywXGu4UeZ45yb+UK+2LKhv8hfMFDGmz0=;
+	s=default; t=1616672640;
+	bh=mF5bYN2j0m5UzvpKLhrq4THLsPdyEBsxGdzThF1SPSo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lMmoodtDIv+tbYRBI0j5xiMQsvMT6PPT7Y4Bj9UElJkw1jir1Rgq8Nh4BbjVLxNsf
-	 QrkFt2ZjOmEhTPYlMA2GTRT/7xbifmDWyZaDMsxA9/EG3Km0jtLnYEwm3hTJbZ/lRr
-	 3udgRxbp9htcKXeaQRJyir4sIX7nyS2MZXtg7IK4=
+	b=lwADAPyntKUS4n+44xjufApXnkd0/6fVtkWcXpASEDMCUbMJpb8UOjJzXdi1dX3Lo
+	 3eGPqHNX179eUtTYpHZ6Grbe1FKs9X0tPlqHibJKOG8pvkM6wR5ptP0vqJPm1COR3A
+	 23+rnheHuix9vot+WiXvw8Yt7B2YmiwHJNsm6y7M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A97BCF804A9;
-	Thu, 25 Mar 2021 12:29:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C669F804B1;
+	Thu, 25 Mar 2021 12:29:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56B26F805F4; Thu, 25 Mar 2021 12:28:17 +0100 (CET)
+ id 178B2F805FE; Thu, 25 Mar 2021 12:28:21 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3BCD7F805EA
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BCD7F805EA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72EB4F805E8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72EB4F805E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s/f19HOp"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72D0461A71;
- Thu, 25 Mar 2021 11:27:59 +0000 (UTC)
+ header.b="WDIBl5As"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AB1961A6C;
+ Thu, 25 Mar 2021 11:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671680;
- bh=FYgPAvocIRQywXGu4UeZ45yb+UK+2LKhv8hfMFDGmz0=;
+ s=k20201202; t=1616671678;
+ bh=mF5bYN2j0m5UzvpKLhrq4THLsPdyEBsxGdzThF1SPSo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=s/f19HOpa2Fn6oUzQ+uewMpGrsDcWS9EDMWdW7WQfOI/N29Ng7L2It27lkT5iOPJE
- XzEB4sBLGGHDVHwtyDMgus9BHDvSVJXmRwHUFeGfqhdRXAnYyhw0tb80j7TRDX46Ar
- n7EheyI79Ix5NBJTh4LsrZobooNx65xPcH0tyU1qFVgfVPFUam67z0UguBUFo7EJ8h
- AiTZyfbjx+PYZGwyJPFsi8Lh5LWBrNwQCioVEw8+8X61u0+vyp42JaqLMyisNGVS/k
- Fsxpwh2W/le2lbVhYjfBanlWZmd8n3uu3eIv5LKu+Ux/3yMUMD02lwZSLst6zmOtCG
- eRo+My3NKS2AA==
+ b=WDIBl5As+RsFPGNbNSrVe9HRZHfuAlS9cxyNtoL1dbnUbTOi5dGK5UiXxm7PTI3us
+ WRnLcGuI+NrUBWU0kH30pOerUMpuO7l3QfZBt+vKjRy3fXDAA9mbWNNN6Kevz+3nMe
+ m/dvwpvYyXVHq+WU9MQQoLaEwmWLcYNhs1n8gj6O9d7xeDMkehmMwWMbzU/q5ZAm6j
+ iuMbukesJ1MUac6qCV5AH8Fq1usJxZjfwmg0vZQ+uoQKdRgD4C5X2zigCVn7sp/CC7
+ q0mvWhoLtIG1ugOA8/DUHgD1k4UNLUu8eJlvk9WvUWFhwfrglNlQSKezWcND89ACGe
+ 8FPs4ikBffq9Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 06/16] ASoC: es8316: Simplify adc_pga_gain_tlv
- table
-Date: Thu, 25 Mar 2021 07:27:41 -0400
-Message-Id: <20210325112751.1928421-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 05/16] ASoC: sgtl5000: set DAP_AVC_CTRL register
+ to correct default value on probe
+Date: Thu, 25 Mar 2021 07:27:40 -0400
+Message-Id: <20210325112751.1928421-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325112751.1928421-1-sashal@kernel.org>
 References: <20210325112751.1928421-1-sashal@kernel.org>
@@ -72,8 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, Benjamin Rood <benjaminjrood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,46 +90,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Benjamin Rood <benjaminjrood@gmail.com>
 
-[ Upstream commit bb18c678754ce1514100fb4c0bf6113b5af36c48 ]
+[ Upstream commit f86f58e3594fb0ab1993d833d3b9a2496f3c928c ]
 
-Most steps in this table are steps of 3dB (300 centi-dB), so we can
-simplify the table.
+According to the SGTL5000 datasheet [1], the DAP_AVC_CTRL register has
+the following bit field definitions:
 
-This not only reduces the amount of space it takes inside the kernel,
-this also makes alsa-lib's mixer code actually accept the table, where
-as before this change alsa-lib saw the "ADC PGA Gain" control as a
-control without a dB scale.
+| BITS  | FIELD       | RW | RESET | DEFINITION                        |
+| 15    | RSVD        | RO | 0x0   | Reserved                          |
+| 14    | RSVD        | RW | 0x1   | Reserved                          |
+| 13:12 | MAX_GAIN    | RW | 0x1   | Max Gain of AVC in expander mode  |
+| 11:10 | RSVD        | RO | 0x0   | Reserved                          |
+| 9:8   | LBI_RESP    | RW | 0x1   | Integrator Response               |
+| 7:6   | RSVD        | RO | 0x0   | Reserved                          |
+| 5     | HARD_LMT_EN | RW | 0x0   | Enable hard limiter mode          |
+| 4:1   | RSVD        | RO | 0x0   | Reserved                          |
+| 0     | EN          | RW | 0x0   | Enable/Disable AVC                |
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210228160441.241110-1-hdegoede@redhat.com
+The original default value written to the DAP_AVC_CTRL register during
+sgtl5000_i2c_probe() was 0x0510.  This would incorrectly write values to
+bits 4 and 10, which are defined as RESERVED.  It would also not set
+bits 12 and 14 to their correct RESET values of 0x1, and instead set
+them to 0x0.  While the DAP_AVC module is effectively disabled because
+the EN bit is 0, this default value is still writing invalid values to
+registers that are marked as read-only and RESERVED as well as not
+setting bits 12 and 14 to their correct default values as defined by the
+datasheet.
+
+The correct value that should be written to the DAP_AVC_CTRL register is
+0x5100, which configures the register bits to the default values defined
+by the datasheet, and prevents any writes to bits defined as
+'read-only'.  Generally speaking, it is best practice to NOT attempt to
+write values to registers/bits defined as RESERVED, as it generally
+produces unwanted/undefined behavior, or errors.
+
+Also, all credit for this patch should go to my colleague Dan MacDonald
+<dmacdonald@curbellmedical.com> for finding this error in the first
+place.
+
+[1] https://www.nxp.com/docs/en/data-sheet/SGTL5000.pdf
+
+Signed-off-by: Benjamin Rood <benjaminjrood@gmail.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Link: https://lore.kernel.org/r/20210219183308.GA2117@ubuntu-dev
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/codecs/sgtl5000.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 949dbdc0445e..0410f2e5183c 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -56,13 +56,8 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
- 	1, 1, TLV_DB_SCALE_ITEM(0, 0, 0),
- 	2, 2, TLV_DB_SCALE_ITEM(250, 0, 0),
- 	3, 3, TLV_DB_SCALE_ITEM(450, 0, 0),
--	4, 4, TLV_DB_SCALE_ITEM(700, 0, 0),
--	5, 5, TLV_DB_SCALE_ITEM(1000, 0, 0),
--	6, 6, TLV_DB_SCALE_ITEM(1300, 0, 0),
--	7, 7, TLV_DB_SCALE_ITEM(1600, 0, 0),
--	8, 8, TLV_DB_SCALE_ITEM(1800, 0, 0),
--	9, 9, TLV_DB_SCALE_ITEM(2100, 0, 0),
--	10, 10, TLV_DB_SCALE_ITEM(2400, 0, 0),
-+	4, 7, TLV_DB_SCALE_ITEM(700, 300, 0),
-+	8, 10, TLV_DB_SCALE_ITEM(1800, 300, 0),
- );
- 
- static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpout_vol_tlv,
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index d64cb28e8dc5..b7a0002d9872 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -75,7 +75,7 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_DAP_EQ_BASS_BAND4,		0x002f },
+ 	{ SGTL5000_DAP_MAIN_CHAN,		0x8000 },
+ 	{ SGTL5000_DAP_MIX_CHAN,		0x0000 },
+-	{ SGTL5000_DAP_AVC_CTRL,		0x0510 },
++	{ SGTL5000_DAP_AVC_CTRL,		0x5100 },
+ 	{ SGTL5000_DAP_AVC_THRESHOLD,		0x1473 },
+ 	{ SGTL5000_DAP_AVC_ATTACK,		0x0028 },
+ 	{ SGTL5000_DAP_AVC_DECAY,		0x0050 },
 -- 
 2.30.1
 
