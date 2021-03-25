@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C43BDC433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:45:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34591C433C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:45:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 37E70619D5
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:45:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 37E70619D5
+	by mail.kernel.org (Postfix) with ESMTPS id 2DB15619FF
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:45:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DB15619FF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2CD116BF;
-	Thu, 25 Mar 2021 12:44:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2CD116BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9774016EB;
+	Thu, 25 Mar 2021 12:44:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9774016EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616672708;
-	bh=UFjtXGfMkx8GBJhmElNVLGQq4L9FRPjeQOHTH9erKlQ=;
+	s=default; t=1616672735;
+	bh=4EzE0/5PiUG0FQh2YymOCuCK4bnBMYZvG1RH3dzwT3c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rdsAL7ygzgmcgjsVY0NIkJLkRFWOJXhw9jbhh5axUVWuM3NlAZIoymipTFLYRhsWu
-	 i9E+WA6Jo/Xyr//XIodplhdLeUoTG/s03VGdm9+MWkONHzXo25WiZHyBngbKwlJuRM
-	 +Oz+rLG8iObYqLSdSSfVUDAHy6PJFPrQIPiTmLag=
+	b=oJZeX9tZnSfvRSYQ84n51zLaYkJxTo74ADYDx6yvsnZX+qpRyrdJfCvA0xGi/gxQ3
+	 A2mkJyjftzl/WGmoyjlT7GzZlEs4OJqjE5Feapmtq7sz3VwXCCVbA1KA4jKFzlTRcp
+	 Hh7d0Fczl6sv3jfK5HTTEmrreIpfLSzNJbDG/vKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E766F805FB;
-	Thu, 25 Mar 2021 12:29:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5DFE2F80615;
+	Thu, 25 Mar 2021 12:29:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B810F80603; Thu, 25 Mar 2021 12:28:24 +0100 (CET)
+ id 2D6ABF805E0; Thu, 25 Mar 2021 12:28:34 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57208F805ED
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57208F805ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2CBCBF805E8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CBCBF805E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZJIuVmLG"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F26E961A6F;
- Thu, 25 Mar 2021 11:28:01 +0000 (UTC)
+ header.b="RyzDQSwA"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 256E161A6B;
+ Thu, 25 Mar 2021 11:28:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671682;
- bh=UFjtXGfMkx8GBJhmElNVLGQq4L9FRPjeQOHTH9erKlQ=;
+ s=k20201202; t=1616671699;
+ bh=4EzE0/5PiUG0FQh2YymOCuCK4bnBMYZvG1RH3dzwT3c=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ZJIuVmLGsRLUbmbHgSYtcyoE1ZhVP2ZVE3yC8P7+vy/adTC2T2a6o76a4wKFU/APW
- IbG4E4ZgsKpEDcgMGgGomvRK5lZkgPx5QHyWvtWEnW2r5kh2r/2Es0hIosZwRLkYds
- ZkTTN2BNbVZh/C9BI/LovEDCCaMm9Itgzvv/kDwDaifw2Cl0+6rAbSoCtxI/+RfMmU
- cg3IwAM05rw3Z2wtfnmuBHC3O/oMviH6eDYQspF4V7ZmDXdfJCcty4oF6n25T9LUG1
- smqZpiZvdIKaEt9Ogal2Hizx8s+m5zjcsMgUW+DhPpDp/ErHYPWFb87jilQ+IRppJH
- 8XHGnVZFyT9aw==
+ b=RyzDQSwAn7pfCmPSxZA5rptDCnq7WWm5hugG/0l0s5CsZspBe2mGkQFIxpiypfI7K
+ 2vN+5gMO9VjZx0KtoFYI4MEnwGmi7fYv6awEowOM2X+i2ZcGpmF0aXmMVjtsaT9IPO
+ 9jG6K7hPkdVjENE5IeZ2gFZaCM4e03Fv1mmHngTc4Lw/i2fuUvU3yqB24RoEdJB5id
+ 0foupKoS/xbqlMBJlepOLSp0AvUNqCrGcrBHW333EZNg7d8oepgV3FvihniEAGE7CT
+ 96zkJDBN+LeEkavmCIp5hXLeNvSjrXO0D3OA4rL0MF3nF9uSvHewq0C1EVIK4lRMTv
+ OOjU6dvoprAOw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 08/16] ASoC: cs42l42: Always wait at least 3ms
- after reset
-Date: Thu, 25 Mar 2021 07:27:43 -0400
-Message-Id: <20210325112751.1928421-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 04/13] ASoC: rt5651: Fix dac- and adc- vol-tlv
+ values being off by a factor of 10
+Date: Thu, 25 Mar 2021 07:28:04 -0400
+Message-Id: <20210325112814.1928637-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325112751.1928421-1-sashal@kernel.org>
-References: <20210325112751.1928421-1-sashal@kernel.org>
+In-Reply-To: <20210325112814.1928637-1-sashal@kernel.org>
+References: <20210325112814.1928637-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,55 +89,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 19325cfea04446bc79b36bffd4978af15f46a00e ]
+[ Upstream commit eee51df776bd6cac10a76b2779a9fdee3f622b2b ]
 
-This delay is part of the power-up sequence defined in the datasheet.
-A runtime_resume is a power-up so must also include the delay.
+The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
+not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
+apps which translate the dB scale to a linear scale. With the logarithmic
+dB scale being of by a factor of 10 we loose all precision in the lower
+area of the range when apps translate things to a linear scale.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-6-tanureal@opensource.cirrus.com
+E.g. the 0 dB default, which corresponds with a value of 47 of the
+0 - 127 range for the control, would be shown as 0/100 in alsa-mixer.
+
+Since the centi-dB values used in the TLV struct cannot represent the
+0.375 dB step size used by these controls, change the TLV definition
+for them to specify a min and max value instead of min + stepsize.
+
+Note this mirrors commit 3f31f7d9b540 ("ASoC: rt5670: Fix dac- and adc-
+vol-tlv values being off by a factor of 10") which made the exact same
+change to the rt5670 codec driver.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210226143817.84287-3-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 3 ++-
- sound/soc/codecs/cs42l42.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5651.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index ec322fda3c18..39adb2fdd003 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1809,7 +1809,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
- 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
- 	}
--	mdelay(3);
-+	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index f0c9e2562474..acd5c30694e8 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -287,9 +287,9 @@ static bool rt5651_readable_register(struct device *dev, unsigned int reg)
+ }
  
- 	/* Request IRQ */
- 	ret = devm_request_threaded_irq(&i2c_client->dev,
-@@ -1936,6 +1936,7 @@ static int cs42l42_runtime_resume(struct device *dev)
- 	}
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -6562, 0);
+ static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
++static const DECLARE_TLV_DB_MINMAX(adc_vol_tlv, -1762, 3000);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
  
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
-+	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
- 
- 	regcache_cache_only(cs42l42->regmap, false);
- 	regcache_sync(cs42l42->regmap);
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index d87a0a5322d5..3d5fa343db96 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -743,6 +743,7 @@
- #define CS42L42_FRAC2_VAL(val)	(((val) & 0xff0000) >> 16)
- 
- #define CS42L42_NUM_SUPPLIES	5
-+#define CS42L42_BOOT_TIME_US	3000
- 
- static const char *const cs42l42_supply_names[CS42L42_NUM_SUPPLIES] = {
- 	"VA",
+ /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
 -- 
 2.30.1
 
