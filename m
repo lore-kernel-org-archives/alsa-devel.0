@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 874E5C433C1
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:30:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4615C433DB
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:31:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB14C61A1F
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:30:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB14C61A1F
+	by mail.kernel.org (Postfix) with ESMTPS id E7D396023F
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:31:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E7D396023F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BE321684;
-	Thu, 25 Mar 2021 12:29:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BE321684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 611B21674;
+	Thu, 25 Mar 2021 12:30:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 611B21674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616671848;
-	bh=3F0Zf1sBrXgtrBaMTcuVrmud3xpRfN7FsXDEqWOY014=;
+	s=default; t=1616671866;
+	bh=nfTH1J1fuXegxMf/SijIzYXi+3eykq7e58KlDwExEg4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YI9847rnIw1Uu2ZDCHhIAwsIp7Vzs8wgSDFWg3F6XiVL0xkrF2eCa0rbFdbds49gV
-	 ZH6FA/6JhBULXS8ATuhgfDqOfEBalW/745BBy+U0itU4TkXTlWWkk1ABWxIDcb9eC+
-	 aFd7n+olYPOKNhKNcBamfobeaYBtUwAW8uBbecpw=
+	b=Xj2GsgjA3ufNVqQ5KVqhic6trY1z5p3Jm3tYghrCYTS+mRAvYPB+VsocyWccty3qL
+	 NVNiu0sEyfe5Ugf6xJUIc8CsGsEJbC234x49Nw51dsiBVujFUifGQwf79QIef43xCt
+	 G2Abr+ETafUoyJ+TMMwwM2i6DNuYyjW88VFwQTng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 603B8F80507;
-	Thu, 25 Mar 2021 12:26:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87152F80510;
+	Thu, 25 Mar 2021 12:26:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9710F804FE; Thu, 25 Mar 2021 12:26:22 +0100 (CET)
+ id F1AC2F80104; Thu, 25 Mar 2021 12:26:25 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0650F80424
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:26:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0650F80424
+ by alsa1.perex.cz (Postfix) with ESMTPS id 905A8F80268
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:25:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 905A8F80268
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HErt1/F+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CFBD61A33;
- Thu, 25 Mar 2021 11:26:13 +0000 (UTC)
+ header.b="uPaLC34V"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1A2361A2E;
+ Thu, 25 Mar 2021 11:25:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671574;
- bh=3F0Zf1sBrXgtrBaMTcuVrmud3xpRfN7FsXDEqWOY014=;
+ s=k20201202; t=1616671513;
+ bh=nfTH1J1fuXegxMf/SijIzYXi+3eykq7e58KlDwExEg4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=HErt1/F+zkQDbTuqruOdXRsSKidWdB13jLiJQoMbNsHr9WY+RGfQ9bXmaQfVdt8M1
- eFzfR4BY/eIkb9j1PWDYWiPqD3PCXluzcCw4B6YNbo9FZkR0MccuRRG9I9s9pVuOho
- 0kg2dNtMwrevZxZdoPmuQZgvBm91uLrOXJwYDaSlIT6CPDAZpdbgVT8p2MQdk9oQY0
- m/tPl4z2CpkE4TcZRR0Zuf50kyTwcuKn8615baq6IEO3L9yC/DnrKlDXah/yrIQYn+
- qxv9Qy+1S5fPjK1hnZjufPSJG1oHfYIkEGWzWSgCJbSJULOB+sudp205vaGuNdPsEg
- CoyoxbzeL3kyQ==
+ b=uPaLC34V2weRcvFim66CVmwAm5YEQo+MHhQb5RvCAnjTqI28Lgn1J0gY68iFG8w23
+ g+S4wiYfPeF1AJLRbsCi6tvuCXKcpXPRSncod0KWYR6UicfVk1+ic/fM3PK8a7k0dp
+ OjRc+GM8UHJkvyJWsOT3qvth487aEUGo5AKkdzXw48+9pGfXE1wlA7MCftaHY9l9E6
+ +mGV0mwUPjpWI6lfjWIcuKyfnFh7WeW7+d5lG399ofl1ifHSI++QR0scaN48bzPhLW
+ 5NXKu3wtLM0e9gZBDi5dLfmFzBXzPWhZPVBKi3LY4o8+L6HOllSKBQLBv3+9vUWRGw
+ 19rcSlV9HvIRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 11/39] ASoC: rt5651: Fix dac- and adc- vol-tlv
+Subject: [PATCH AUTOSEL 5.11 10/44] ASoC: rt5640: Fix dac- and adc- vol-tlv
  values being off by a factor of 10
-Date: Thu, 25 Mar 2021 07:25:30 -0400
-Message-Id: <20210325112558.1927423-11-sashal@kernel.org>
+Date: Thu, 25 Mar 2021 07:24:25 -0400
+Message-Id: <20210325112459.1926846-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325112558.1927423-1-sashal@kernel.org>
-References: <20210325112558.1927423-1-sashal@kernel.org>
+In-Reply-To: <20210325112459.1926846-1-sashal@kernel.org>
+References: <20210325112459.1926846-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -91,7 +91,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit eee51df776bd6cac10a76b2779a9fdee3f622b2b ]
+[ Upstream commit cfa26ed1f9f885c2fd8f53ca492989d1e16d0199 ]
 
 The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
 not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
@@ -111,18 +111,18 @@ vol-tlv values being off by a factor of 10") which made the exact same
 change to the rt5670 codec driver.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210226143817.84287-3-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20210226143817.84287-2-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 4 ++--
+ sound/soc/codecs/rt5640.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index d198e191fb0c..e59fdc81dbd4 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -285,9 +285,9 @@ static bool rt5651_readable_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 1414ad15d01c..a5674c227b3a 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -339,9 +339,9 @@ static bool rt5640_readable_register(struct device *dev, unsigned int reg)
  }
  
  static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
