@@ -7,63 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40E67C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:44:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAFC6C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:44:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 741C36191D
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:44:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 741C36191D
+	by mail.kernel.org (Postfix) with ESMTPS id 52D6D619D5
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:44:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 52D6D619D5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3D3C1707;
-	Thu, 25 Mar 2021 12:43:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3D3C1707
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9F411696;
+	Thu, 25 Mar 2021 12:43:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9F411696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616672664;
-	bh=23kLld7vC2edAg0gR/TXLd//rfdBEkphcIlKJdwOYNI=;
+	s=default; t=1616672681;
+	bh=pvBf/YINN+E8y4O0oiMRslXg0ySwZRGzzI2+yh2S1eU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XRx1Xbac/bxquGwplOVwpI+AErMStOJE/5bIsSXtvK/xLXhS5ygA3xEX3n3uCXJau
-	 q0wlHyI8ry8KSZgZBBYK1e8uJMCIKOhyBRZoW5Cie/Bq1qBfJhCStvHgeLd5NzRweb
-	 hD7Mwvd5KkoyN2O1qo7fIqQ9bF/V/705o0zTvemE=
+	b=X9CT6+Sy5OdcXQ+aKL1NZFZvE5AZ1/XZFDuhnkNaDA1p+xcum/isU9kWN3u6cX7Ts
+	 /ex4faRVaybDX1GOsb009jULIacM+8zetcZmUBZjiWpqZjD2G6bzAtUwacUCErg66s
+	 k+Xb5VEieNwz8x4FMIjDqnaM4QrZ2KL1ZVAbc508=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE6E9F804D8;
-	Thu, 25 Mar 2021 12:29:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC947F805EB;
+	Thu, 25 Mar 2021 12:29:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4990F80600; Thu, 25 Mar 2021 12:28:22 +0100 (CET)
+ id 1FCFFF8060D; Thu, 25 Mar 2021 12:28:28 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8255BF805EB
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8255BF805EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B3A2F805E0
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B3A2F805E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Wt5J8fsN"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9956361A64;
- Thu, 25 Mar 2021 11:28:00 +0000 (UTC)
+ header.b="c+Ag9xme"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4487C61A70;
+ Thu, 25 Mar 2021 11:28:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671681;
- bh=23kLld7vC2edAg0gR/TXLd//rfdBEkphcIlKJdwOYNI=;
+ s=k20201202; t=1616671692;
+ bh=pvBf/YINN+E8y4O0oiMRslXg0ySwZRGzzI2+yh2S1eU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Wt5J8fsNO3Bghhe3wl2CUtLcqoDXoIKlEY7vytoI2YvZ591cuRNBG2yRlfn4IInfa
- F7ispwa645ZDD33XH4KV7+KjHw74+K8l64Svp9lPFcb20+ZSeJxeirva/Hq6LlqDfB
- mFTLeAg9NU/n9Vy1VluBUMKRXt0U1XgdLMWCHddWPG5LHG6p4zVVpQh+jYResUy7EZ
- igwJwxd8klLuQ6Rej9IrEloWJ+d4nG9gydFyBk+jmdgXkHQVm8225IXP98bQHiOHBl
- g4A+BO+GDQa8KXNPUqKBPRFSLKxxvP+arn2mzAneuijPeGAQrLfco2KxCfLHPoNyGG
- ZNNPVjaq3MDew==
+ b=c+Ag9xme0uYEfjT32PH+qZZbPnANNaHgu2s7VFhgYjOxHoXTPq7LTiIYChirXp5P0
+ K9ZJzfUVckrl+fEVd5qKJyLR7wmdTVHRWWCizxuH0AFK03MAQ2J4v6c81DzvGHEY66
+ yO2KNaziG28jbst923rVI0GaHRYwIu/44S52GA1DjysAk4OYHdMQzeP4PEInBs+0k2
+ U3iPfK97a5V1fV8+YiBT0W7emud0tGJbPNZ9tk7IA9++pulEbtE+6o3Or3d0YU2eAH
+ m4fNP5ES0RgsM7rY7XLNIRqpr16Q4A5VWXMjxFUUtLK6I8YaYmC80k99tUCWaTsoBy
+ p4QpfS+Ah1LFw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 07/16] ASoC: cs42l42: Fix mixer volume control
-Date: Thu, 25 Mar 2021 07:27:42 -0400
-Message-Id: <20210325112751.1928421-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 15/16] ASoC: rt5659: Update MCLK rate in
+ set_sysclk()
+Date: Thu, 25 Mar 2021 07:27:50 -0400
+Message-Id: <20210325112751.1928421-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325112751.1928421-1-sashal@kernel.org>
 References: <20210325112751.1928421-1-sashal@kernel.org>
@@ -71,9 +72,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc: Sasha Levin <sashal@kernel.org>, Sameer Pujar <spujar@nvidia.com>,
+ Mark Brown <broonie@kernel.org>, Michael Walle <michael@walle.cc>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,42 +90,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
+From: Sameer Pujar <spujar@nvidia.com>
 
-[ Upstream commit 72d904763ae6a8576e7ad034f9da4f0e3c44bf24 ]
+[ Upstream commit dbf54a9534350d6aebbb34f5c1c606b81a4f35dd ]
 
-The minimum value is 0x3f (-63dB), which also is mute
+Simple-card/audio-graph-card drivers do not handle MCLK clock when it
+is specified in the codec device node. The expectation here is that,
+the codec should actually own up the MCLK clock and do necessary setup
+in the driver.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210305173442.195740-4-tanureal@opensource.cirrus.com
+Suggested-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/1615829492-8972-3-git-send-email-spujar@nvidia.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5659.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index a2324a0e72ee..ec322fda3c18 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -405,7 +405,7 @@ static const struct regmap_config cs42l42_regmap = {
- };
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index fa66b11df8d4..ae626d57c1ad 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -3391,12 +3391,17 @@ static int rt5659_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5659_priv *rt5659 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int reg_val = 0;
++	int ret;
  
- static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
--static DECLARE_TLV_DB_SCALE(mixer_tlv, -6200, 100, false);
-+static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
+ 	if (freq == rt5659->sysclk && clk_id == rt5659->sysclk_src)
+ 		return 0;
  
- static const char * const cs42l42_hpf_freq_text[] = {
- 	"1.86Hz", "120Hz", "235Hz", "466Hz"
-@@ -462,7 +462,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_DAC_HPF_EN_SHIFT, true, false),
- 	SOC_DOUBLE_R_TLV("Mixer Volume", CS42L42_MIXER_CHA_VOL,
- 			 CS42L42_MIXER_CHB_VOL, CS42L42_MIXER_CH_VOL_SHIFT,
--				0x3e, 1, mixer_tlv)
-+				0x3f, 1, mixer_tlv)
- };
- 
- static int cs42l42_hpdrv_evt(struct snd_soc_dapm_widget *w,
+ 	switch (clk_id) {
+ 	case RT5659_SCLK_S_MCLK:
++		ret = clk_set_rate(rt5659->mclk, freq);
++		if (ret)
++			return ret;
++
+ 		reg_val |= RT5659_SCLK_SRC_MCLK;
+ 		break;
+ 	case RT5659_SCLK_S_PLL1:
 -- 
 2.30.1
 
