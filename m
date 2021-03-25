@@ -2,83 +2,66 @@ Return-Path: <SRS0=ofI3=IX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87387C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 16:39:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6268C433E0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 17:00:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4B30B61A25
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 16:39:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B30B61A25
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 6537A61A2A
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 17:00:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6537A61A2A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F05615E5;
-	Thu, 25 Mar 2021 17:38:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F05615E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D29B51655;
+	Thu, 25 Mar 2021 17:59:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D29B51655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616690388;
-	bh=9lAFDvnSQJdI6yI+0TUmdQzyLp5NnTzx4cCSMTiBfZs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jT1oe4eb18oY76KTsy7ReexQKyJzNokyIviVvrQsNfb7kgWguSVK6Kt5+veHiTNKg
-	 eXhIVt1bBVvZdgKFbCwtjUTO/IIzwiUX5/bOtsW4RTc8yr/tUBSlyuweMTWfZxJ56P
-	 Yc7DGV8hdSVSxlAP1WAfbGCWz1zLN02Glx+Cqf1M=
+	s=default; t=1616691645;
+	bh=HbT7oOQtcw7TZHVbTmgnrevi/YOxCIk7cXg5e1aXQJ0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FZ1XT4vqz+E1OR7AUG7lEGxEGcY6kjL7lzkL5hFpkf5fHfJb+jGIMhp3o43uoXGR4
+	 G5oPo3h3f6SPEw/hP96qGa/bIuNw/5Y1XXpXi2hN/O9c/2U7ysvwFJuysDiBhYmxvR
+	 uktTBiAXWSMppDLYi9az/JqyMRMGfOauF8XVaVfE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19103F80257;
-	Thu, 25 Mar 2021 17:38:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 509DCF80257;
+	Thu, 25 Mar 2021 17:59:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D097AF8025F; Thu, 25 Mar 2021 17:38:55 +0100 (CET)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D06C5F8025F; Thu, 25 Mar 2021 17:59:52 +0100 (CET)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E4076F80103
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 17:38:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4076F80103
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id E55A2AC16;
- Thu, 25 Mar 2021 16:38:51 +0000 (UTC)
-Date: Thu, 25 Mar 2021 17:38:51 +0100
-Message-ID: <s5hwntvkx2c.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Subject: Re: Adding movable PCIe BARs support in snd_hda_intel
-In-Reply-To: <cc6da2bc-268d-b9e9-a609-cb29276f24a8@amd.com>
-References: <e25017c6-e5e4-7a24-e793-14a2e70a434e@amd.com>
- <fe61113f-5b8e-53a0-23fc-65246eb08ac3@amd.com>
- <s5hwntyaylg.wl-tiwai@suse.de>
- <ca35a9c1-82d8-8be6-21e7-b5242a2d884c@amd.com>
- <s5him5hc443.wl-tiwai@suse.de>
- <30b36220-ff0f-d04c-1fca-349b3ff3a19b@amd.com>
- <s5h8s6dbyr1.wl-tiwai@suse.de>
- <9758cd4c-1246-a4ab-74eb-0e060248a00b@amd.com>
- <s5h35wlbwye.wl-tiwai@suse.de>
- <06b2dae2-a5ea-0cc8-891f-2aaff64ae260@amd.com>
- <s5hv99gan2r.wl-tiwai@suse.de>
- <d9bc41d7-bbad-24e3-6ad3-90e6dd8466c4@amd.com>
- <s5heeg4oak7.wl-tiwai@suse.de>
- <f97a59cb-869e-3e0f-305d-6d4a673f49c3@amd.com>
- <s5h8s6cnva3.wl-tiwai@suse.de>
- <65039cab-5561-aa9c-f270-8fa968a78f42@amd.com>
- <s5h5z1foh2q.wl-tiwai@suse.de>
- <cc6da2bc-268d-b9e9-a609-cb29276f24a8@amd.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>,
- alsa-devel@alsa-project.org,
- Sergei Miroshnichenko <s.miroshnichenko@yadro.com>,
- "Christian.Koenig@amd.com" <Christian.Koenig@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76359F80103
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 17:59:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76359F80103
+Received: from 1-171-92-165.dynamic-ip.hinet.net ([1.171.92.165]
+ helo=localhost) by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <kai.heng.feng@canonical.com>)
+ id 1lPTKM-0003UD-BU; Thu, 25 Mar 2021 16:59:23 +0000
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH v3 1/2] ALSA: usb-audio: Carve out connector value checking
+ into a helper
+Date: Fri, 26 Mar 2021 00:59:12 +0800
+Message-Id: <20210325165918.22593-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Chris Chiu <chiu@endlessm.com>,
+ open list <linux-kernel@vger.kernel.org>, Tom Yan <tom.ty89@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,56 +77,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Mar 2021 17:13:41 +0100,
-Andrey Grodzovsky wrote:
-> 
-> 
-> 
-> On 2021-03-25 2:58 a.m., Takashi Iwai wrote:
-> > On Wed, 24 Mar 2021 22:43:24 +0100,
-> > Andrey Grodzovsky wrote:
-> >>
-> >> Few comments -
-> >>
-> >> 1) Why we don't use snd_power_wait_and_ref in patch 3 in the common
-> >> handler ?
-> >> Don't we want the PCI rescan sequence to 'wait for' any in flight
-> >> taks that might be accessing registers and not only read/write/tlv
-> >> accesses ?
-> >
-> > Right, we don't need to block all ioctls, but only the ones that may
-> > access the hardware.  So basically the patches 3-5 can be dropped if
-> > we take the patch 6.  The current patch was written on top of the
-> > previous series, that's why it has both.
-> >
-> >> 2) Possible deadlock -
-> >> In azx_rescan_prepare - you put the card into SNDRV_CTL_POWER_D3hot
-> >> first and then 'wait for' all in flight tasks with the refcount.
-> >> The in flight tasks on the other hand, using snd_power_wait_and_ref,
-> >> may have already bumped up the refcount and now 'wait for' the card
-> >> to go into SNDRV_CTL_POWER_D0 which can't happen since PCI rescan
-> >> waits for the refocunt to drop to 0 before proceeding.
-> >>
-> >> Instead of snd_power_wait_and_ref can't we just call snd_power_ref
-> >> in common IOCTL before checking for power_state != SNDRV_CTL_POWER_D0 ?
-> >> Or is it because you don't want to fail IOCTLs ?
-> >
-> > No, this is the intended behavior and should work as-is because
-> > snd_power_wait_and_ref() drops the refcount in the loop before
-> > sleeping.  The inc before the state check is a must for covering the
-> > possible race, and ditto for changing the power_state to D3hot before
-> > syncing.
-> 
-> Ohh, missed the refcount dec in the wait loop... My bad.
-> 
-> On boot the latest patch-set was throwing refcount warnings since
-> u are not supposed to inc from zerro count and so I fixed
-> with the attached patch. That way seems to work fine.
+This is preparation for next patch, no functional change intended.
 
-Ah, I completely forgot about the oddness of refcount_t.
-Then I guess it's simpler to replace with atomic_*() instead.
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v3:
+ - No change.
+v2:
+ - Only return early when ret < 0.
 
+ sound/usb/mixer.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
 
-thanks,
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b004b2e63a5d..5a2d9a768f70 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1446,13 +1446,11 @@ static int mixer_ctl_master_bool_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-/* get the connectors status and report it as boolean type */
+-static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+-				   struct snd_ctl_elem_value *ucontrol)
++static int get_connector_value(struct usb_mixer_elem_info *cval,
++			       char *name, int *val)
+ {
+-	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+ 	struct snd_usb_audio *chip = cval->head.mixer->chip;
+-	int idx = 0, validx, ret, val;
++	int idx = 0, validx, ret;
+ 
+ 	validx = cval->control << 8 | 0;
+ 
+@@ -1467,21 +1465,24 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+ 		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+ 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				      validx, idx, &uac2_conn, sizeof(uac2_conn));
+-		val = !!uac2_conn.bNrChannels;
++		if (val)
++			*val = !!uac2_conn.bNrChannels;
+ 	} else { /* UAC_VERSION_3 */
+ 		struct uac3_insertion_ctl_blk uac3_conn;
+ 
+ 		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+ 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				      validx, idx, &uac3_conn, sizeof(uac3_conn));
+-		val = !!uac3_conn.bmConInserted;
++		if (val)
++			*val = !!uac3_conn.bmConInserted;
+ 	}
+ 
+ 	snd_usb_unlock_shutdown(chip);
+ 
+ 	if (ret < 0) {
+-		if (strstr(kcontrol->id.name, "Speaker")) {
+-			ucontrol->value.integer.value[0] = 1;
++		if (name && strstr(name, "Speaker")) {
++			if (val)
++				*val = 1;
+ 			return 0;
+ 		}
+ error:
+@@ -1491,6 +1492,21 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+ 		return filter_error(cval, ret);
+ 	}
+ 
++	return ret;
++}
++
++/* get the connectors status and report it as boolean type */
++static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_elem_info *cval = kcontrol->private_data;
++	int ret, val;
++
++	ret = get_connector_value(cval, kcontrol->id.name, &val);
++
++	if (ret < 0)
++		return ret;
++
+ 	ucontrol->value.integer.value[0] = val;
+ 	return 0;
+ }
+-- 
+2.30.2
 
-Takashi
