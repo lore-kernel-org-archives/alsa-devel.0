@@ -2,85 +2,84 @@ Return-Path: <SRS0=ofI3=IX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ED000C433C1
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 21:19:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64331C433C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 22:06:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 79DB261A24
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 21:19:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 79DB261A24
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9C47061A32
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 22:06:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C47061A32
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E523950;
-	Thu, 25 Mar 2021 22:18:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E523950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39CDF15E0;
+	Thu, 25 Mar 2021 23:05:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39CDF15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616707161;
-	bh=MgwTaJQ/Ae1Q2qJEiK9USPCXK2MjvICfwAo3wYph+Xo=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=l9P7r9JstNwTCCLNEXZv69ga+r5Yh78LwlVfsFndf1kO78ELyKTEhx+SbazkSRlzP
-	 B7ePYu1VThS/Xx7wiYzUnshazE7bGV2Xoa4vi0iKCDyPRO/nmjVKQJ86nNovXLhJIG
-	 9W9Q6pzaBrIfisE5JCUKUkzNfWaUHVQtQ0gwiXhM=
+	s=default; t=1616709990;
+	bh=6+q3to1KGDjTPQgOHHatA4fjsVRvMTmGyxluBkC2S7w=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=deAEihiBPnc2+5efRqd/0ytnKcLQ49OC8d8NSQ8tb3mK95/HAWJtLLo1unkwO4YGH
+	 nuWOAr5AjRQOVgEJi7W3fzfCXAstvwQkiI4h0GFdNZlqb0dxsrbZG1Izh2PbqESn7C
+	 fvlvVq2Z0p5E6NzgUkuMzZSjLS1EvXAORfItYmlw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E25DF80257;
-	Thu, 25 Mar 2021 22:18:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F61EF80257;
+	Thu, 25 Mar 2021 23:05:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F127F8025F; Thu, 25 Mar 2021 22:18:29 +0100 (CET)
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
- [IPv6:2a00:1450:4864:20::62a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 981DAF8025F; Thu, 25 Mar 2021 23:05:37 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E9ECF80104
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 22:18:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E9ECF80104
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Ut98W81+"
-Received: by mail-ej1-x62a.google.com with SMTP id l4so5225430ejc.10
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 14:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:from:date:message-id:subject:to;
- bh=CrKd6TOtt6buHU6ITw+buJRhjTWlCAO62NKAG+10WtI=;
- b=Ut98W81+IiJkqg+W/zbXJpGTzGP8LrpSyaoU6JKqqIGQJ0DfYcul0bnOHEY+dSrON2
- 5MVGUafKNeX7XR7FDKbJYaeCOYok2XnGTO+okOriAr/CKIvy006fQB7HM+N/IKUlfLaJ
- awr6Su2e38em8peBOE2T+dvLfbI0uCP+EwF9rp+W5pa/tyOFcZE/UZlBpJQjtSRItapK
- nV8x8k4bUQ6LL0kyLYOdTjp0UiNx6BqGlAxfn1Y/SRj21EAiqTnV7AjDwA2GHUdScn+F
- v5zMH69ZOWLKhWgvITRvnZwFjnjhuSahe2D7GEoqPTLDqJv9wYbgSZIkAMntJan3LW34
- 6wqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
- bh=CrKd6TOtt6buHU6ITw+buJRhjTWlCAO62NKAG+10WtI=;
- b=Jh4ntyNghUcOUaIlIm8ub+ovrTy3/wJCuLNnMk8FG9musCO2FixFt/Rldv6aqJ8JvX
- xn03Qovu4LqeVgOVdYek/iQGRxZgtLlXwMujBj2oBD69COZNgtKpijzy0/JV+y2dXaoU
- m5aFrWqq9bBA8jSMGs4zQzhDeB0Rf4qKQF5ZrD1mwWItaelGWxq4rod0XtWTG25vsw6c
- rF4QQwQlvYtAnQEx0th2GrPIGc62EZHGjvjJZxfJEtnyWf7ZLzvt+zXYPw2wl8vRjmbV
- UYBy/VE+zB0DtC8njRTCjF9kCI2ETXkfXQdX1o9WIa27l94NCdR5WNVOpTmsC7BUhHFe
- VMWA==
-X-Gm-Message-State: AOAM532q9pLHP2mjc4LWW3fWt5g5UTCtmS7j9YhR2i9+NgWvM1gazeWK
- 9rStj0wJqHaf+nWFMM9mrbmcqH9PxNKEfRoeP9xFZoDN3Zc=
-X-Google-Smtp-Source: ABdhPJwYFRsqWWqZg5NZbrQhSP0D9qnRszKLtrCAu2PnIrMDBBt+n/Hmbt9pK9cIPXMzphgLPd4pc/Ljomde1stcAFY=
-X-Received: by 2002:a17:906:4146:: with SMTP id
- l6mr12034960ejk.295.1616707095165; 
- Thu, 25 Mar 2021 14:18:15 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D91DBF80104
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:05:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D91DBF80104
+IronPort-SDR: rWeii6xtXy2vinq/xcrMrKwrcMZbP2mALfZwXxj7wjtG7w5aWx/saM096LCqekgt51wrYkIlpL
+ OGK2AaHk2XoA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="171007622"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; d="scan'208";a="171007622"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2021 15:05:18 -0700
+IronPort-SDR: MiCpfJtfxmT4m7nNPkk5SxFFItGVy2HpO2jvDSzN7ok6D8Hrh1wFcGvH5SO/39R4P1Z43mEXTC
+ 3kxnyInXa7rA==
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; d="scan'208";a="391920481"
+Received: from ericwon-mobl.amr.corp.intel.com (HELO [10.212.8.91])
+ ([10.212.8.91])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Mar 2021 15:05:17 -0700
+Subject: Re: [PATCH 1/2] ASoC: Intel: kbl: Add MST route change to kbl machine
+ drivers
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "Gopal, Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
+References: <20210324175200.44922-1-vamshi.krishna.gopal@intel.com>
+ <20210324175200.44922-2-vamshi.krishna.gopal@intel.com>
+ <2ee1a18e-8771-b8f7-0452-f96403bd7fe4@linux.intel.com>
+ <SN6PR11MB28770F2E69C6D27984F3674FD6629@SN6PR11MB2877.namprd11.prod.outlook.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a7ae7c3c-b80d-2a31-8482-b5b8d6da5dfa@linux.intel.com>
+Date: Thu, 25 Mar 2021 17:05:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-From: Lucas <jaffa225man@gmail.com>
-Date: Thu, 25 Mar 2021 16:18:03 -0500
-Message-ID: <CAOsVg8r+7utMRpxkwpsRoPCqFX3Q9GfRsSskKwuAZ1tLiCSLTQ@mail.gmail.com>
-Subject: RE: Patch for some Roland devices' USB digital audio
-To: alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+In-Reply-To: <SN6PR11MB28770F2E69C6D27984F3674FD6629@SN6PR11MB2877.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "N, Harshapriya" <harshapriya.n@intel.com>, "M R,
+ Sathya Prakash" <sathya.prakash.m.r@intel.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "biernacki@google.com" <biernacki@google.com>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,105 +95,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sorry, I should've realized that embedded plaintext patches are preferred,
-as I've been on the linux-media list since forever.  This should improve
-the ability to find the pertinent devices too, so here it is again:
 
-A couple days ago, I found this excellent informational post, and that Mike
-Oliphant's patch is in mainline now:
-http://blog.nostatic.org/2020/01/getting-boss-gt-1-effects-processor-to.html
 
-Since I was fairly certain it applies to the Roland devices I own, I added
-my USB IDs.  Wonderfully, now USB audio capture seems to be working
-perfectly from the three devices I can test: the INTEGRA-7, Boutique D-05,
-& VG-99!
 
-I don't know if the D-05 and VG-99 have digital audio playback/output, as I
-only tried it with the INTEGRA-7.  It does work, but only when the
-INTEGRA-7's "Sampling Rate" is set to "44.1 kHz" and "Ext Part Source
-Select" is set to "USB AUDIO".
+>>>
+>>> -	{ "HDMI", NULL, "hif5 Output" },
+>>> -	{ "DP", NULL, "hif6 Output" },
+>>> -
+>>
+>> ... this doesn't:
+>>
+>> other machine drivers use this:
+>>
+>> 	{"HDMI1", NULL, "hif5-0 Output"},
+>> 	{"HDMI2", NULL, "hif6-0 Output"},
+>> 	{"HDMI2", NULL, "hif7-0 Output"},
+>>
+> Hello Pierre,
+> Thanks for reviewing the patch.
+> I looked through the change you suggested in bxt_da7219_max98357a.c machine, but I noticed  hif6-0 Output and hif7-0 Output are having same port HDMI2, This looks not correct.
 
-I searched a bit for other Roland devices people have had USB digital audio
-issues with over the years, and took the liberty of adding them to the
-patch too.  Likely there are still many more, especially in the Boutique
-line, but I couldn't find their USB IDs.
+D'oh! You're right, this makes no sense to me either. I see 4 
+occurrences in the code.
 
-I hope this can be added to the mainline kernel too, as this support should
-help many that have struggled.  I, certainly, have been hoping somebody
-would figure this out for quite a while, and even bought a USB
-through/monitoring device to try to develop it myself (sadly, the software
-supporting that has its own bugs, so I probably should've just used
-wireshark).  Suffice it to say, I'm quite happy to have this figured out,
-and to not have to delve into stuff I know nothing about! :)
+bxt_da7219_max98357a.c:	{"HDMI1", NULL, "hif5-0 Output"},
+bxt_da7219_max98357a.c:	{"HDMI2", NULL, "hif6-0 Output"},
+bxt_da7219_max98357a.c:	{"HDMI2", NULL, "hif7-0 Output"},
 
-Thanks,
+bxt_rt298.c:	{"HDMI1", NULL, "hif5-0 Output"},
+bxt_rt298.c:	{"HDMI2", NULL, "hif6-0 Output"},
+bxt_rt298.c:	{"HDMI2", NULL, "hif7-0 Output"},
 
-  Lucas
+bxt_rt298.c:	{"HDMI1", NULL, "hif5-0 Output"},
+bxt_rt298.c:	{"HDMI2", NULL, "hif6-0 Output"},
+bxt_rt298.c:	{"HDMI2", NULL, "hif7-0 Output"},
 
-The patch follows:
-diff -Nur ./linux-5.11.9.orig/sound/usb/implicit.c
-./linux-5.11.9.roland/sound/usb/implicit.c
---- ./linux-5.11.9.orig/sound/usb/implicit.c 2021-03-24 05:54:19.000000000
--0500
-+++ ./linux-5.11.9.roland/sound/usb/implicit.c 2021-03-25
-03:05:33.414870404 -0500
-@@ -71,13 +71,27 @@
-   .ep_num = 0x84, .iface = 0 }, /* MOTU MicroBook II */
+glk_rt5682_max98357a.c:	{ "HDMI1", NULL, "hif5-0 Output" },
+glk_rt5682_max98357a.c:	{ "HDMI2", NULL, "hif6-0 Output" },
+glk_rt5682_max98357a.c:	{ "HDMI2", NULL, "hif7-0 Output" },
 
-  /* No quirk for playback but with capture quirk (see below) */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x00a6), /* Roland JUNO-G */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x00ad), /* Roland SH-201 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x00b2), /* Roland VG-99 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x00c7), /* Roland V-Synth GT */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x0111), /* Roland GAIA SH-01 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x0120), /* Roland OCTA-CAPTURE */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x012b), /* Roland DUO-CAPTURE */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x012f), /* Roland QUAD-CAPTURE */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x0130), /* BOSS BR-80 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x0138), /* BOSS RC-300 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x013e), /* Roland R-26 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x015b), /* Roland INTEGRA-7 */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x0171),   /* BOSS RC-505 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x017c),   /* Roland TR-8 */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x0185), /* BOSS GP-10 */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x0189), /* BOSS GT-100v2 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x01b5), /* Roland JP-08 */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x01d6), /* BOSS GT-1 */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x01d8), /* BOSS Katana */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x01e5), /* BOSS GT-001 */
-+ IMPLICIT_FB_SKIP_DEV(0x0582, 0x01ff), /* Roland D-05 */
-  IMPLICIT_FB_SKIP_DEV(0x0582, 0x0203),   /* BOSS AD-10 */
+Harsha and team, the HDMI2 duplicates seem like recurring copy/paste 
+mistakes, can you double check what the intent was? If this is indeed 
+unintentional, we probably need a patch per file with a Fixes tag to 
+have this applied to the stable kernel.
 
-  {} /* terminator */
-@@ -85,13 +99,27 @@
-
- /* Implicit feedback quirk table for capture: only FIXED type */
- static const struct snd_usb_implicit_fb_match capture_implicit_fb_quirks[]
-= {
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x00a6, 0x0d, 0x01), /* Roland JUNO-G */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x00ad, 0x0d, 0x01), /* Roland SH-201 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x00b2, 0x0d, 0x01), /* Roland VG-99 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x00c7, 0x0d, 0x01), /* Roland V-Synth GT */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x0111, 0x0d, 0x01), /* Roland GAIA SH-01 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x0120, 0x0d, 0x01), /* Roland OCTA-CAPTURE
-*/
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x012b, 0x0d, 0x01), /* Roland DUO-CAPTURE
-*/
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x012f, 0x0d, 0x01), /* Roland QUAD-CAPTURE
-*/
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x0130, 0x0d, 0x01), /* BOSS BR-80 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x0138, 0x0d, 0x01), /* BOSS RC-300 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x013e, 0x0d, 0x01), /* Roland R-26 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x015b, 0x0d, 0x01), /* Roland INTEGRA-7 */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x0171, 0x0d, 0x01), /* BOSS RC-505 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x017c, 0x0d, 0x01), /* Roland TR-8 */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x0185, 0x0d, 0x01), /* BOSS GP-10 */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x0189, 0x0d, 0x01), /* BOSS GT-100v2 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x01b5, 0x0d, 0x01), /* Roland JP-08 */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x01d6, 0x0d, 0x01), /* BOSS GT-1 */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x01d8, 0x0d, 0x01), /* BOSS Katana */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x01e5, 0x0d, 0x01), /* BOSS GT-001 */
-+ IMPLICIT_FB_FIXED_DEV(0x0582, 0x01ff, 0x0d, 0x01), /* Roland D-05 */
-  IMPLICIT_FB_FIXED_DEV(0x0582, 0x0203, 0x0d, 0x01), /* BOSS AD-10 */
-
-  {} /* terminator */
+Thanks!
