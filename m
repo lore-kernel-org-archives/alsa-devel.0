@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38C78C433DB
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77953C433C1
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:43:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9AF5861A0A
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:43:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9AF5861A0A
+	by mail.kernel.org (Postfix) with ESMTPS id D39E56191D
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Mar 2021 11:43:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D39E56191D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A7061714;
-	Thu, 25 Mar 2021 12:42:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A7061714
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D186171A;
+	Thu, 25 Mar 2021 12:42:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D186171A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616672596;
-	bh=OpEccYSIEvDifJWbaGyRKbJQ280uBLcrokr4+CzDmsY=;
+	s=default; t=1616672623;
+	bh=FYgPAvocIRQywXGu4UeZ45yb+UK+2LKhv8hfMFDGmz0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ks+I0SK7Ihf3K+tPOlqs+6AYB7hkDxm5yQeW4txy3m5MNPflEk13xd5L8tcXeCVAZ
-	 pBFI9DS6FbGz/QOhda2v0QyZ4u2NUZPp3JZ+kUfyezeElj5OvTXDMvtXmiB4WvgcLm
-	 SEZ02MX8ZqqHlBmBHzohjxMf+cUPwxc4xWl/ERfo=
+	b=lMmoodtDIv+tbYRBI0j5xiMQsvMT6PPT7Y4Bj9UElJkw1jir1Rgq8Nh4BbjVLxNsf
+	 QrkFt2ZjOmEhTPYlMA2GTRT/7xbifmDWyZaDMsxA9/EG3Km0jtLnYEwm3hTJbZ/lRr
+	 3udgRxbp9htcKXeaQRJyir4sIX7nyS2MZXtg7IK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50DC8F80601;
-	Thu, 25 Mar 2021 12:28:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A97BCF804A9;
+	Thu, 25 Mar 2021 12:29:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B945F805F5; Thu, 25 Mar 2021 12:28:17 +0100 (CET)
+ id 56B26F805F4; Thu, 25 Mar 2021 12:28:17 +0100 (CET)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50B0FF805E3
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:27:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50B0FF805E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BCD7F805EA
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 12:28:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BCD7F805EA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="K/fmfJLa"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB44E61A5D;
- Thu, 25 Mar 2021 11:27:56 +0000 (UTC)
+ header.b="s/f19HOp"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72D0461A71;
+ Thu, 25 Mar 2021 11:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1616671677;
- bh=OpEccYSIEvDifJWbaGyRKbJQ280uBLcrokr4+CzDmsY=;
+ s=k20201202; t=1616671680;
+ bh=FYgPAvocIRQywXGu4UeZ45yb+UK+2LKhv8hfMFDGmz0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=K/fmfJLaS/mhaHkUH/2pvyzb2PmCZ0oqDjCXAJO0xSwvvhteblyHDL3fR6mj2soM1
- hgtAN5gcWSTHFZdL2XytPpHuJAg4iNJJixoGRnwrdJXzUGKAaJBmqLzO3lwyKBEthP
- 8FsvS4pvIkWQoLoVwJL4wGu9j/IwWqo+TpQ7hzF9+W+T72rYy/T4WlpEM5iKlIoBSF
- copJCSg/fPWEp0rZie2ABQ0ztWvy/EBza2oWEVk7YQRgC+1qhXWOB9hQnKzM9KF14D
- sv7zwhVBYtFQkR55kroEE13PFWg2/vXSlrCWu4FmrqqSYGTIJTp9TIlJyO1xbZgtbQ
- +4U8uJ9NjwFTw==
+ b=s/f19HOpa2Fn6oUzQ+uewMpGrsDcWS9EDMWdW7WQfOI/N29Ng7L2It27lkT5iOPJE
+ XzEB4sBLGGHDVHwtyDMgus9BHDvSVJXmRwHUFeGfqhdRXAnYyhw0tb80j7TRDX46Ar
+ n7EheyI79Ix5NBJTh4LsrZobooNx65xPcH0tyU1qFVgfVPFUam67z0UguBUFo7EJ8h
+ AiTZyfbjx+PYZGwyJPFsi8Lh5LWBrNwQCioVEw8+8X61u0+vyp42JaqLMyisNGVS/k
+ Fsxpwh2W/le2lbVhYjfBanlWZmd8n3uu3eIv5LKu+Ux/3yMUMD02lwZSLst6zmOtCG
+ eRo+My3NKS2AA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 04/16] ASoC: rt5651: Fix dac- and adc- vol-tlv
- values being off by a factor of 10
-Date: Thu, 25 Mar 2021 07:27:39 -0400
-Message-Id: <20210325112751.1928421-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 06/16] ASoC: es8316: Simplify adc_pga_gain_tlv
+ table
+Date: Thu, 25 Mar 2021 07:27:41 -0400
+Message-Id: <20210325112751.1928421-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210325112751.1928421-1-sashal@kernel.org>
 References: <20210325112751.1928421-1-sashal@kernel.org>
@@ -91,49 +91,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit eee51df776bd6cac10a76b2779a9fdee3f622b2b ]
+[ Upstream commit bb18c678754ce1514100fb4c0bf6113b5af36c48 ]
 
-The adc_vol_tlv volume-control has a range from -17.625 dB to +30 dB,
-not -176.25 dB to + 300 dB. This wrong scale is esp. a problem in userspace
-apps which translate the dB scale to a linear scale. With the logarithmic
-dB scale being of by a factor of 10 we loose all precision in the lower
-area of the range when apps translate things to a linear scale.
+Most steps in this table are steps of 3dB (300 centi-dB), so we can
+simplify the table.
 
-E.g. the 0 dB default, which corresponds with a value of 47 of the
-0 - 127 range for the control, would be shown as 0/100 in alsa-mixer.
-
-Since the centi-dB values used in the TLV struct cannot represent the
-0.375 dB step size used by these controls, change the TLV definition
-for them to specify a min and max value instead of min + stepsize.
-
-Note this mirrors commit 3f31f7d9b540 ("ASoC: rt5670: Fix dac- and adc-
-vol-tlv values being off by a factor of 10") which made the exact same
-change to the rt5670 codec driver.
+This not only reduces the amount of space it takes inside the kernel,
+this also makes alsa-lib's mixer code actually accept the table, where
+as before this change alsa-lib saw the "ADC PGA Gain" control as a
+control without a dB scale.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210226143817.84287-3-hdegoede@redhat.com
+Link: https://lore.kernel.org/r/20210228160441.241110-1-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/es8316.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 57c2add323c4..38510fd06458 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -287,9 +287,9 @@ static bool rt5651_readable_register(struct device *dev, unsigned int reg)
- }
+diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
+index 949dbdc0445e..0410f2e5183c 100644
+--- a/sound/soc/codecs/es8316.c
++++ b/sound/soc/codecs/es8316.c
+@@ -56,13 +56,8 @@ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(adc_pga_gain_tlv,
+ 	1, 1, TLV_DB_SCALE_ITEM(0, 0, 0),
+ 	2, 2, TLV_DB_SCALE_ITEM(250, 0, 0),
+ 	3, 3, TLV_DB_SCALE_ITEM(450, 0, 0),
+-	4, 4, TLV_DB_SCALE_ITEM(700, 0, 0),
+-	5, 5, TLV_DB_SCALE_ITEM(1000, 0, 0),
+-	6, 6, TLV_DB_SCALE_ITEM(1300, 0, 0),
+-	7, 7, TLV_DB_SCALE_ITEM(1600, 0, 0),
+-	8, 8, TLV_DB_SCALE_ITEM(1800, 0, 0),
+-	9, 9, TLV_DB_SCALE_ITEM(2100, 0, 0),
+-	10, 10, TLV_DB_SCALE_ITEM(2400, 0, 0),
++	4, 7, TLV_DB_SCALE_ITEM(700, 300, 0),
++	8, 10, TLV_DB_SCALE_ITEM(1800, 300, 0),
+ );
  
- static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -4650, 150, 0);
--static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -65625, 375, 0);
-+static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -6562, 0);
- static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -3450, 150, 0);
--static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -17625, 375, 0);
-+static const DECLARE_TLV_DB_MINMAX(adc_vol_tlv, -1762, 3000);
- static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
- 
- /* {0, +20, +24, +30, +35, +40, +44, +50, +52} dB */
+ static const SNDRV_CTL_TLVD_DECLARE_DB_RANGE(hpout_vol_tlv,
 -- 
 2.30.1
 
