@@ -7,85 +7,86 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28394C433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08C1BC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:45:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3DD0E61A05
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DD0E61A05
+	by mail.kernel.org (Postfix) with ESMTPS id 7B824619F9
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7B824619F9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9AF8168D;
-	Fri, 26 Mar 2021 07:43:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9AF8168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 168C7166A;
+	Fri, 26 Mar 2021 07:44:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 168C7166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616741082;
-	bh=g4IZTUMhwSimVZ2maGJk3FKSvLNCupsvKyFnRTnDhPY=;
+	s=default; t=1616741098;
+	bh=sWk9mM0/YY3y42/OAFbo9tEX7ut2YsPJu1Qzf68gH6k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pM3n60fReQUIn4pX3I1ApyK4Rx7GUB8Xr/Ge4mR4psSxOgqZpDcJTBpGGUXoqOrCy
-	 CAeAXxo3cLbFpoeSESrgx72tSzogmkSIeinvrj0MZJMMpGf53P+kQOSjKjxlcTHp8v
-	 kAJ9IMJ+TamlsiIuxYwOUSjgMNpJFZZrfChIIK2c=
+	b=Dem+nERCuvUm/O7CvmObNJSZk9kImZa/G9p2sQZHYoXC7AgDwSB17eQG94C92JG5e
+	 nNLBOxaKRZyl5p0WdtQwJOyt7OdN2mU56SnnLNBa/G6rmIzhB/GVqce5iPY8KEPEzP
+	 AgzmKopZY7+Q6V1A8dvaEyB146WhqQzdaoCj8JkY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91D47F804B0;
-	Fri, 26 Mar 2021 07:41:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1878FF804BD;
+	Fri, 26 Mar 2021 07:42:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8134AF804A9; Fri, 26 Mar 2021 07:41:50 +0100 (CET)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
+ id 7E93EF804AA; Fri, 26 Mar 2021 07:41:52 +0100 (CET)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AD2BF802DB
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AD2BF802DB
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA585F80156
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA585F80156
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="xvmNm1nf"
-Received: by mail-ed1-x530.google.com with SMTP id o19so5078405edc.3
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:25 -0700 (PDT)
+ header.b="CKI6N9Bx"
+Received: by mail-ej1-x630.google.com with SMTP id l4so6735047ejc.10
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=9w26BSmosHoWqHb4DQ0FR/rFMhDz7pjkPie7BkwBXHY=;
- b=xvmNm1nflRIeRx4LkKSGcrElPaSbjF1kN6QdiXw9op+BvHN1V7Jsui3LT/t16Kksh/
- RUKvfI4eDhhoJ7iFtaSpqk5mNYgh/mQMq+14xsE7KfK7Q5E1StGvvuuTh63rEXc8O2up
- xr2yn98r4/w8XonH/U89vhJmJjUYwbBTtcVjWPO5CGb84EBxwRcwz6IM0ikFDD6eSa4A
- aHS69DHtyqniONA1PeBfIi+aWSvUGlgndvZdtXEW2C7fbQE9p1jXoCogP1n/nfiYQu15
- I6cN5/AFcIC4KJsLnQkdf6iGTeWj6aU//HBeFGmilGb0K8y8jLPEYwM780wVxR5wDltp
- Xh+g==
+ bh=JLx96J3P/z7SpklWGlSLOqViHHl5WXETT/eud7VOrQ4=;
+ b=CKI6N9BxqTu7oc5cHbfAFTArbxQlLX407WNFxN/5fyZPddgwYnH+Lx7G6s8WXLxhnV
+ /CNczXVcxGg3nppzl86S9e6pUrpRmZ9fX8fR4rxZy7HK+JKvzreZCCziTSNHQJJLBZso
+ 2Es5mqKlyhjOn8n9XSMcjkn/EvAidELHMetKLpURwr+s2PLg89DiRmh8UVaO/9u0/qfD
+ NejsgeU4GDFCpDT0Y4yxy28zAx3WAo+Y1QH3nXCtbmxC46USX8s6l1KZd+QjRk3Zh9eI
+ f4VVIyuu1LQI9714F09FCQbzSa474qAF1YTILTtc0s3qv2bHhBYI7qxUljqXSBGnC6kp
+ ZMBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=9w26BSmosHoWqHb4DQ0FR/rFMhDz7pjkPie7BkwBXHY=;
- b=aau6mkVjW1w2mh/T45OQehaZcHl4KNiUteTdOinfThcDKE1Sb87dc54P4BTxs98zPO
- udDptRPEl3H6FFzMy19kxVtD9sFKlSu6Ub0ZkVee0do1WE3suS3XqLWV7/OFFrVOcfuz
- aZPgDoZhgzjbyZRsNG1znBzA9EnaG7jAiRoSPNyCxYkrj0Kdabw71V6x3IoI/jdz9XR0
- S//mNOa9+77CC89twFCMb55xyJZLJmdqWbnupIzciIg3as7nq0NDdOF6hleilWBXTsfU
- nEmNE0CKJyuSNmhtSaOJmnP/qGET9BCPGizCFot+rCabbp3LL8Yz9c3sNeFL1wssO2uG
- ZICw==
-X-Gm-Message-State: AOAM530qydJr5k49VrCwR6U36oiHQYSDjBmqlIcAj8yHCioRsEHjK4aw
- OSMfC/8ERjBUoED7pvZFycQYcQ==
-X-Google-Smtp-Source: ABdhPJyD6ZXOo0uH2byplvxKFOGNhtYjssgC3vW/C5IOn2jogunBIlScXNTSvyOG9QEfJsqJvAUPCA==
-X-Received: by 2002:a05:6402:104c:: with SMTP id
- e12mr12739081edu.108.1616740880178; 
- Thu, 25 Mar 2021 23:41:20 -0700 (PDT)
+ bh=JLx96J3P/z7SpklWGlSLOqViHHl5WXETT/eud7VOrQ4=;
+ b=kFgFrf28WWxA48X2KvYDNN8yp16cZr5n2jmUyfeoTqmun3/3j9V0kbMwsFLr6L8gxd
+ oomJOEAiLKmV5zy0DUzqahifNtlsZMuNNH/CcpH1dLNFuVVSbhzcQrp2DBL4Dy/e2Et6
+ QJKzd6OfFJkYOfHKxRM+KFRt67WkSXccd10rZUIaHWD3PithaS6Sz2LuyWaPJPML5Ls6
+ AycAUrgYvb4NdNcodjcUy7RZrg3VfqRNS9tn0YoJQwp6yWjOR2sCY5Qra4tMR1bJwZJ/
+ em25teVk9Ls56w59h2cYAh1WSiyu5T+V7CBU0MUCU+GDN+oFL25QRg1qqWzlU+ckpEu5
+ pcnA==
+X-Gm-Message-State: AOAM532fC43uwqQgSyOGq1gGl6o5NubG0KCZUIvY4uEBJSfV3lfBX3rf
+ AJdxe9hZ4CF2T3zEVLIVk4+jJg==
+X-Google-Smtp-Source: ABdhPJwArwbmYX2WVpvAdXSWymAKUlKCWbcQVbY6eaqoujoHbsmPNTo3r6OZ7jXq/ljDTeTdhvlCLg==
+X-Received: by 2002:a17:906:a44f:: with SMTP id
+ cb15mr13350392ejb.420.1616740885771; 
+ Thu, 25 Mar 2021 23:41:25 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.19
+ by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Mar 2021 23:41:19 -0700 (PDT)
+ Thu, 25 Mar 2021 23:41:25 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
-Subject: [PATCH v5 4/9] soundwire: qcom: start the clock during initialization
-Date: Fri, 26 Mar 2021 06:39:39 +0000
-Message-Id: <20210326063944.31683-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 9/9] soundwire: qcom: wait for enumeration to be complete
+ in probe
+Date: Fri, 26 Mar 2021 06:39:44 +0000
+Message-Id: <20210326063944.31683-10-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
 References: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
@@ -110,36 +111,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Start the clock during initialization, doing this explicitly
-will add more clarity when we are adding clock stop feature.
-
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/qcom.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/soundwire/qcom.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 43ec22a5e332..2bcb4362f0e0 100644
+index c6c923329b15..706d44200a36 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -47,6 +47,8 @@
- #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
- #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
- #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
-+#define SWRM_MCP_BUS_CTRL					0x1044
-+#define SWRM_MCP_BUS_CLK_START					BIT(1)
- #define SWRM_MCP_CFG_ADDR					0x1048
- #define SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK		GENMASK(21, 17)
- #define SWRM_DEF_CMD_NO_PINGS					0x1f
-@@ -343,6 +345,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	u32p_replace_bits(&val, SWRM_DEF_CMD_NO_PINGS, SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK);
- 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
+@@ -123,6 +123,7 @@ struct qcom_swrm_ctrl {
+ 	struct regmap *regmap;
+ 	void __iomem *mmio;
+ 	struct completion broadcast;
++	struct completion enumeration;
+ 	struct work_struct slave_work;
+ 	/* Port alloc/free lock */
+ 	struct mutex port_lock;
+@@ -417,6 +418,7 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
+ 		}
+ 	}
  
-+	ctrl->reg_write(ctrl, SWRM_MCP_BUS_CTRL, SWRM_MCP_BUS_CLK_START);
- 	/* Configure number of retries of a read/write cmd */
- 	if (ctrl->version > 0x01050001) {
- 		/* Only for versions >= 1.5.1 */
++	complete(&ctrl->enumeration);
+ 	return 0;
+ }
+ 
+@@ -1155,6 +1157,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(&pdev->dev, ctrl);
+ 	mutex_init(&ctrl->port_lock);
+ 	init_completion(&ctrl->broadcast);
++	init_completion(&ctrl->enumeration);
+ 
+ 	ctrl->bus.ops = &qcom_swrm_ops;
+ 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+@@ -1201,6 +1204,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	qcom_swrm_init(ctrl);
++	wait_for_completion_timeout(&ctrl->enumeration,
++				    msecs_to_jiffies(TIMEOUT_MS));
+ 	ret = qcom_swrm_register_dais(ctrl);
+ 	if (ret)
+ 		goto err_master_add;
 -- 
 2.21.0
 
