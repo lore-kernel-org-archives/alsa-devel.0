@@ -2,57 +2,60 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B51BC433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:26:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29ABEC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:27:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EC08761A42
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:26:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EC08761A42
+	by mail.kernel.org (Postfix) with ESMTPS id E399E61A2A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:27:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E399E61A2A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90EC215DC;
-	Fri, 26 Mar 2021 04:25:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90EC215DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF470165D;
+	Fri, 26 Mar 2021 04:26:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF470165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616729193;
-	bh=086OJ0fw8sQ1A0Py7VLrw5OQfeBQg5pPTAqQhOa4BEI=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hY/p47hYmwgGz/1ZBpWiY0K+rI7HxYQesKLesaFuUJQW4yHuMs4JbIMdDOb8t1dng
-	 XYZ9xOM0I6xFcS2GvOW7ngAvAnR8+xdVyaYrXj26a03mMeCM43mJtjzbBg3yJ5k/gh
-	 3b7Jy2wg+97FDjf7yb4IgoLIivyEROIjot1sV1ms=
+	s=default; t=1616729247;
+	bh=jUAF/XKaOUmCX3OFnWxUi47cFOhXx0s/77zBfyOAWlY=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AuxL45OpxdjV3AiT00yp2Ime8xs494otkYwy+FS5PgziKcj2PrsyS7qasGPUjfs+S
+	 +tKqI+ZsN+aj1O3nqCxtvGqqlDDgtqLWwCz+JK7CTWXuq3Z4n72NwqcGheHxAAVEBF
+	 fx9UcUB79TAeY9n9E5k4Hg+anUbYJ0UeiALnr1xA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 177DEF80156;
-	Fri, 26 Mar 2021 04:25:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DE0DF8032C;
+	Fri, 26 Mar 2021 04:26:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79994F8016B; Fri, 26 Mar 2021 04:25:41 +0100 (CET)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 89754F80104
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 04:25:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89754F80104
-Date: 26 Mar 2021 12:25:24 +0900
-X-IronPort-AV: E=Sophos;i="5.81,279,1610377200"; d="scan'208";a="76343845"
+ id 16B34F8032C; Fri, 26 Mar 2021 04:26:08 +0100 (CET)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 406B6F80240
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 04:25:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 406B6F80240
+Date: 26 Mar 2021 12:25:57 +0900
+X-IronPort-AV: E=Sophos;i="5.81,279,1610377200"; d="scan'208";a="76117669"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 26 Mar 2021 12:25:24 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 26 Mar 2021 12:25:57 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 56D8140104F3;
- Fri, 26 Mar 2021 12:25:24 +0900 (JST)
-Message-ID: <87eeg21tqz.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id CACFB400A115;
+ Fri, 26 Mar 2021 12:25:57 +0900 (JST)
+Message-ID: <87czvm1tq2.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/6] ASoC: simple-card: cleanup and prepare for Multi
- CPU/Codec support
+Subject: [PATCH 1/6] ASoC: simple-card-utils.c: remove old comment
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87eeg21tqz.wl-kuninori.morimoto.gx@renesas.com>
+References: <87eeg21tqz.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -72,32 +75,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Mark
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-I want to add new audio-graph-card2 driver which can support
-not only DPCM, but also Multi-CPU/Codec, and Codec2Codec.
-And it is also supporting user customization.
+commit adb76b5b9c474 ("ASoC: soc-core: remove legacy style dai_link")
+removed snd_soc_init_multicodec(). The comment on asoc_simple_init_priv()
+is no longer needed. This patch removes it.
 
-But before supporting such driver, we need to cleanup existing
-simple-card / audio-graph, because these and new driver are
-sharing code.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/generic/simple-card-utils.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-This patch-set are cleanup and prepare for Multi-CPU/Codec support.
-
-Kuninori Morimoto (6):
-  ASoC: simple-card-utils.c: remove old comment
-  ASoC: simple-card-utils: alloc dai_link information for CPU/Codec/Platform
-  ASoC: audio-graph: count DAI / link numbers as in order
-  ASoC: audio-graph: cleanup graph_for_each_link()
-  ASoC: simple-card: count DAI / link numbers as in order
-  ASoC: simple-card: cleanup graph_for_each_link()
-
- include/sound/simple_card_utils.h     |   7 +-
- sound/soc/generic/audio-graph-card.c  | 112 +++++++++++++------------
- sound/soc/generic/simple-card-utils.c |  20 +++--
- sound/soc/generic/simple-card.c       | 115 +++++++++++++++-----------
- 4 files changed, 143 insertions(+), 111 deletions(-)
-
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 06c2512b6f2d..6897455219d1 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -617,11 +617,6 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 	}
+ 
+ 	/*
+-	 * Use snd_soc_dai_link_component instead of legacy style
+-	 * It is codec only. but cpu/platform will be supported in the future.
+-	 * see
+-	 *	soc-core.c :: snd_soc_init_multicodec()
+-	 *
+ 	 * "platform" might be removed
+ 	 * see
+ 	 *	simple-card-utils.c :: asoc_simple_canonicalize_platform()
 -- 
 2.25.1
 
