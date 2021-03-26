@@ -2,101 +2,95 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0D83C433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:46:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED40C433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:46:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 64EAB619F8
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:46:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 64EAB619F8
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
+	by mail.kernel.org (Postfix) with ESMTPS id B864B619F8
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:46:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B864B619F8
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3A67167F;
-	Fri, 26 Mar 2021 07:45:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3A67167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 602C41689;
+	Fri, 26 Mar 2021 07:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 602C41689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616741172;
-	bh=VqDjOTIFZqwAXbPIIzjvF2Zl91Se0O8aM8sxV4R7EUw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aNCNBUp4RtqdbCJHpa0q99xhHKTdp98vWrz8i6n7O3fVCgb0AwaKKGZbtkXTep7Um
-	 eE/GEr2dPaj5qFERwrbFkSWcG7kf7LXJM8UKgOIrKNHLXyjo2Js2exkFrCeem8UwNX
-	 5e9xdroJr9CYmGTquz6+11hOWhysSbYnjOGNmHYI=
+	s=default; t=1616741199;
+	bh=iCYqzB/l1XSuf0YfN20bJvOYLEthnpRvKmuf7fkQRhw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=aly1ir6xt20MoN3ppBCHZgXKNOZv0tgf6qbRb/wc8rokAWQRICoNZnhxT9WTtb9gK
+	 hIRydWmvEiZqf2c37yGZyMmcvb9v/B6KdwirjIXGFBJHyCGPrSSwLs8T/WanY/vDWm
+	 p77e+fH0NK6DyGr2vYZTLrCyJRyKuwe1TbswCxyw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14129F804E7;
-	Fri, 26 Mar 2021 07:42:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A154F80156;
+	Fri, 26 Mar 2021 07:45:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15D9EF804E4; Fri, 26 Mar 2021 07:42:10 +0100 (CET)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
+ id 30242F801EB; Fri, 26 Mar 2021 07:45:20 +0100 (CET)
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com
+ [IPv6:2607:f8b0:4864:20::f2f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A48FDF801EB
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A48FDF801EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8693FF801D5
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:45:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8693FF801D5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="r/SymDir"
-Received: by mail-ed1-x532.google.com with SMTP id e7so5037776edu.10
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=P8VaQolGFCOR51eNrv/jk6ZLBrbbZ7X7Ltpf1LoAnjQ=;
- b=r/SymDirP7YsfplabAthL2rjNIEsp2UpQhJ6IQeQAt3/I84Eynq5qj3dKhWsBQR25L
- EBBsBag5vV+/5jRLbAvlnNuKJfLDGFuctI6aeFt8PvZSCh6r1xcAO2czt/JbOeomouuc
- aW0dptOiPwQYDJiYCZkgHXSdkJpNqoGgQxnldzOvvj0NGKKnn0Qg1Po74+7FMe5YbLCv
- tNCDYWEdxvXieEB0EVWMuDx/nh11yG+8tnj58Q639qX0mSHLMcVe4XYVLMQ52Uob4PuR
- rrJS+hycvoLfGbgY6Gr4k/vE3013BDdBejvCU0kPC2go8TstO2TooFkSAiHnmL5aRvw1
- 5Lig==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FFkb7IcZ"
+Received: by mail-qv1-xf2f.google.com with SMTP id t16so2423815qvr.12
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:45:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7bLoqfBiZVQk0YIeIKhgPKBtJ507LhBAmlJ/A5xeilw=;
+ b=FFkb7IcZ05aM6s5rziT8HAuHISXf5fGUGlz5QF5iHFqcrZ2riRz6i1o9Om5SofPLt+
+ 5/sM1WNetUR3dozt7vsUwv0cFmAaTGeosZmnESSMMw8ncfwpVh6eOiGIxm0I+x1R+moN
+ 6PA3YyOUl5ttzJvKrS8dAjwEogBUgO1hcs+giQZkpIw7UiWVl+VDV+pIzW1l/Zmj1ZpQ
+ SOorvKNLa2zICFJ6N1XANaZgxi/lzU3cZfs0rxpmUMpLCJgQdup15tC3k2BnxSNJRfkD
+ Paz1//jmolGZxVgXfkK9nPcO8RwBnzAVvJwjCTxA2qodD5pdMu5GPy4XCa3qwDLBUES5
+ EWfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=P8VaQolGFCOR51eNrv/jk6ZLBrbbZ7X7Ltpf1LoAnjQ=;
- b=CDtApNGk8UjmcBLYTiLhd3WtoeNTNI+bUAvl1TsDN5s+yjIBgdueXIDvWvmpGnzoo5
- H88sb+q5is34lWAGfUb9yiMSUV7ItkNKIZhwjce4fFORShnJeP56wiSw5KCO/slr3EZK
- edqeVlHjSfwYS94rjb0cdjyknEKU48Y/qPemUFgdMmd7uinrSHCREySYOL+rlUa1g0wG
- dhyBWF/a9cZ0P6fJGrM31IJVNYQCO5BI6objwWed/rrCIjje6nh/Yxo5PMS8sT/KRuHo
- ryBdVx9Nc2LWS2U0SUDY3wlB9G8jXfq3EOFRZkysiSYIgbDaDq98n+oXRR1+aVzL0oZ9
- y/6w==
-X-Gm-Message-State: AOAM530v0FerENgytjz2/PEesXIkN2savDZraKnfy38tO9zMt1vdwLez
- MduEQPx18JEMgNgKVS37iPnj6g==
-X-Google-Smtp-Source: ABdhPJw0rOE3qXvEVF6WI9EL9K/FwKG5NOBkx2tZumsUnD+MCA3hyDs5WB9yIpydUIEdhMFsax2CNA==
-X-Received: by 2002:a05:6402:2695:: with SMTP id
- w21mr13146872edd.99.1616740883626; 
- Thu, 25 Mar 2021 23:41:23 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.22
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=7bLoqfBiZVQk0YIeIKhgPKBtJ507LhBAmlJ/A5xeilw=;
+ b=txfsx0fP/OVQlrqd1DwrYYsADWNM/qCkaf1qr/boP7ci43uxk89h9J27zUkgJJxzgk
+ rV4UZHOHk4hjJD1S3cL7TW0OkRyz29H+3iPNP4iq9s4H+ZGS3XZkkGETJMVZ3P/arOJq
+ yffuyAEaHO1nowDosORNzhLc1Nw2xDBw98PoJBb0KN2KK7xsNn/AzRQ/j0eMbaYPCnMq
+ 7FSbSGNF6trtPfb6dexHwHltYhX6ssLVTE/4mHZDG8obW7TTk/j2N/pSeHSns0eSUH/Z
+ 6X6h3iJN6858JVX+i3ULbQSGxcsj9U/2cKfaPUbXvpXGf9MA9IKlg6eAy4TyvTRHErf7
+ uK0g==
+X-Gm-Message-State: AOAM533VYlq2wkuLjdAM5s1XQJnERAe12ppuSpcueZj/ZLeZfPEguKfh
+ iZ40Xzm2PzrrjVR6t3cqIGU=
+X-Google-Smtp-Source: ABdhPJyEOv5nlQlCy87iUnxGvRQ2JRfM21w3HIYPDsa93cn6J9KXQrXRp5KsUhdMsnByc3LR8XTOFA==
+X-Received: by 2002:ad4:4ab0:: with SMTP id i16mr11854813qvx.1.1616741107529; 
+ Thu, 25 Mar 2021 23:45:07 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+ by smtp.gmail.com with ESMTPSA id b12sm5316693qti.43.2021.03.25.23.45.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Mar 2021 23:41:23 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org
-Subject: [PATCH v5 7/9] soundwire: export sdw_compare_devid,
- sdw_extract_slave_id and sdw_slave_add
-Date: Fri, 26 Mar 2021 06:39:42 +0000
-Message-Id: <20210326063944.31683-8-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
-References: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
+ Thu, 25 Mar 2021 23:45:06 -0700 (PDT)
+From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To: perex@perex.cz, tiwai@suse.com, unixbhaskar@gmail.com,
+ mirq-linux@rere.qmqm.pl, broonie@kernel.org, gustavoars@kernel.org,
+ viro@zeniv.linux.org.uk, joe@perches.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH V4] ALSA: pcm:  Fix couple of typos
+Date: Fri, 26 Mar 2021 12:12:11 +0530
+Message-Id: <20210326064211.6509-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: robh@kernel.org, alsa-devel@alsa-project.org,
- kernel test robot <lkp@intel.com>, devicetree@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com
+Cc: rdunlap@infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,70 +106,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Exporting these three functions makes sense as it can be used by
-other controllers like Qualcomm during auto-enumeration!
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+s/unconditonally/unconditionally/
+s/succesful/successful/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/soundwire/bus.c       | 4 +++-
- drivers/soundwire/slave.c     | 1 +
- include/linux/soundwire/sdw.h | 2 ++
- 3 files changed, 6 insertions(+), 1 deletion(-)
+ Changes from V3:
+  Yet another try to make it work
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 46885429928a..6d7708964735 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -603,7 +603,7 @@ static struct sdw_slave *sdw_get_slave(struct sdw_bus *bus, int i)
- 	return NULL;
+ sound/core/pcm_native.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 17a85f4815d5..8dbe86cf2e4f 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1425,7 +1425,7 @@ static int snd_pcm_do_stop(struct snd_pcm_substream *substream,
+ 		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
+ 		substream->runtime->stop_operating = true;
+ 	}
+-	return 0; /* unconditonally stop all substreams */
++	return 0; /* unconditionally stop all substreams */
  }
- 
--static int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id)
-+int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id)
+
+ static void snd_pcm_post_stop(struct snd_pcm_substream *substream,
+@@ -1469,7 +1469,7 @@ EXPORT_SYMBOL(snd_pcm_stop);
+  * After stopping, the state is changed to SETUP.
+  * Unlike snd_pcm_stop(), this affects only the given stream.
+  *
+- * Return: Zero if succesful, or a negative error code.
++ * Return: Zero if successful, or a negative error code.
+  */
+ int snd_pcm_drain_done(struct snd_pcm_substream *substream)
  {
- 	if (slave->id.mfg_id != id.mfg_id ||
- 	    slave->id.part_id != id.part_id ||
-@@ -614,6 +614,7 @@ static int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL(sdw_compare_devid);
- 
- /* called with bus_lock held */
- static int sdw_get_device_num(struct sdw_slave *slave)
-@@ -698,6 +699,7 @@ void sdw_extract_slave_id(struct sdw_bus *bus,
- 		"SDW Slave class_id 0x%02x, mfg_id 0x%04x, part_id 0x%04x, unique_id 0x%x, version 0x%x\n",
- 		id->class_id, id->mfg_id, id->part_id, id->unique_id, id->sdw_version);
- }
-+EXPORT_SYMBOL(sdw_extract_slave_id);
- 
- static int sdw_program_device_num(struct sdw_bus *bus)
- {
-diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-index 180f38bd003b..92850e150d36 100644
---- a/drivers/soundwire/slave.c
-+++ b/drivers/soundwire/slave.c
-@@ -88,6 +88,7 @@ int sdw_slave_add(struct sdw_bus *bus,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(sdw_slave_add);
- 
- #if IS_ENABLED(CONFIG_ACPI)
- 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 2f52d6609076..f9003ba056ba 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -1011,5 +1011,7 @@ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
- int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
- int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
- int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
-+void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
- 
- #endif /* __SOUNDWIRE_H */
--- 
-2.21.0
+--
+2.26.2
 
