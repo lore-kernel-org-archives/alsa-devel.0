@@ -2,133 +2,86 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 492BDC433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:29:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B4B0C433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:30:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A7B6C619E5
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:29:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7B6C619E5
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=amd.com
+	by mail.kernel.org (Postfix) with ESMTPS id 843E061A02
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:30:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 843E061A02
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=diwic.se
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFCDB1679;
-	Fri, 26 Mar 2021 17:28:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFCDB1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACA591669;
+	Fri, 26 Mar 2021 17:29:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACA591669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616776155;
-	bh=litwcx81N2auY66l32y+utK2fU4VRTFlSN4+Ed7wVlU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1616776221;
+	bh=gH70cjLGUC1q11CyzMy79Ndo99QbRAYSQZ7/0n9IXl4=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uI+zhpD3IZ0kD2Y/J3r9JORtyuicLySLOTivJVLkZEUw9dMNWZnEhe06ONxrVQ3jX
-	 e3PofwF7Is0Oja/7/urxWwOm8PgDcdkSn1VqixzGeQeP0K890ogoQQNyGDq3oMKZGX
-	 JvoBzMBApZ998zupnRfDI5WK0s+QBCWeW1chyFFw=
+	b=C6Fv7jWkuUGSqAZfuHnYg1L70KWNIU5EVRLk+1ZQv/+OIQ3O8r81kuKsZIhgMz0/r
+	 Eq9KztNJpcaFM4TOT9SebG/csZEd04KpIxNB1c5XDoLi2mPOWYRwI2PWFSha8DW7nZ
+	 73OoMTsRZg55/o+YQM3QQ3YK6xZ/b8AMH8Cax+0s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62A45F801EB;
-	Fri, 26 Mar 2021 17:27:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 443D6F80104;
+	Fri, 26 Mar 2021 17:29:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37D51F801EC; Fri, 26 Mar 2021 17:27:53 +0100 (CET)
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-eopbgr760043.outbound.protection.outlook.com [40.107.76.43])
+ id DFA26F801D5; Fri, 26 Mar 2021 17:29:27 +0100 (CET)
+Received: from ns4.inleed.net (mailout4.inleed.net
+ [IPv6:2a0b:dc80:cafe:104::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68A1DF8016B
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 17:27:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68A1DF8016B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42F38F80104
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 17:29:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42F38F80104
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="C/C+77Gy"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ENGBsCOyg9GaFZENHyGFp276tP4sov0jTcIqp+Bok3YiC4q26/KK/g3MA+lris8++MxV/ahBi6AV/109yFs7i3zY+eqs8u9qtdtTJCSG00c1YYE8a2yfSxrCr50R+OLUSkE1c3QO2DGorlpW9O5ToMX08do3I3/CnYZ4gRiokgQ3Y1/IhiLBm3N6lKuOFN7+T4V6lbfhsxcBx6mRVhCmIBRbKvuDlG3HcElD6IqN5XiT3KY3XhsPfYGBwQSymWdqcRG57rtJjVQYQETRP+BfaOY4lF2mPxCSxrvmFRFy5N3BQH7tZHpBhlt3MoCBpDouV/zChu521nbq7eB/tFxqoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GUqWEL/gUy0HtRnKLFEWGFRN9dGdj2BLcaFu7dob4H4=;
- b=HjwkHaawmrIL9nqaEOLvbdd0V5pE7YDCEIrGwwAb6m+ZSfbwNcieeqn6B/inI4yJwBL4BqP8qYjS298Qd7khn8lUGd5IMI2ezb8o5v2F12ajlPvGVClzpEzXAbfQzwddsJVBhvb2ihRwtVeLoxq95bxWZph2p7TFwjJtDWmkUqhG8Fdwp62SU+cNUKil+v6LI6MAvH8qk3D6oe7FCFQ6s980ik0BX8rXWKvGCvAt3hbsKrtmTAGFI3ig2r8yz+m0F4//LQLNWxpYqegIEnii2OCFBuUVC2RrZyH0rsffkOU1VTddKXPbep/aLic4fqu8hzQAfThqAw5sanZTT4L2hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GUqWEL/gUy0HtRnKLFEWGFRN9dGdj2BLcaFu7dob4H4=;
- b=C/C+77GyzFw5Cquy/xw3lSzYrjqCqXTYDg6D6GXffUUHHnU1dFUBTq7tWznPBEoM1qV23dC7+y3q2v/w9gR4xFLc4pef4gDfW27wqzr6hZIqsqdDTagQgXrQg568ehgVDHAjWg3IxzwcmV7kOGn9cl1uGOcB2HOsCI0hWVBihqQ=
-Received: from DS7PR05CA0003.namprd05.prod.outlook.com (2603:10b6:5:3b9::8) by
- CH2PR12MB3989.namprd12.prod.outlook.com (2603:10b6:610:23::21) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.25; Fri, 26 Mar 2021 16:27:24 +0000
-Received: from DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b9:cafe::de) by DS7PR05CA0003.outlook.office365.com
- (2603:10b6:5:3b9::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend
- Transport; Fri, 26 Mar 2021 16:27:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT034.mail.protection.outlook.com (10.13.173.47) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3955.18 via Frontend Transport; Fri, 26 Mar 2021 16:27:23 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 26 Mar
- 2021 11:27:23 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
- Transport; Fri, 26 Mar 2021 11:27:19 -0500
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 2/2] ASoC: amd: fix acpi dependency kernel warning
-Date: Fri, 26 Mar 2021 22:14:31 +0530
-Message-ID: <1616777074-5151-2-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
+ dkim=pass (2048-bit key) header.d=diwic.se header.i=@diwic.se
+ header.b="CYCSPesa"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=diwic.se;
+ s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:
+ Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=URVgvNxmipf97JmXlN5qB5H/JZ4t4kcUc0U6R9JOgKA=; b=CYCSPesarN60cQN0dUuXjaQBNe
+ GYa4KUHmPGUM5E+hT+i+udqlCOr9PvF4NRt27AcVsehU2ajdpQ0sgIUMP68DtrHamzrnD6l8XlcF4
+ CAmzOU8eQrkVuy3XuRdqsKpCd/wOvDWvFWK+Ee4PW96nLL9KckgS6CQoabQkrf1XcyqZa+AqBaBk0
+ Yag3th8ayzz7f/z3HXF5+56sdxqNaJVH6wsBXjqs9W6ERsRfGM5HcZleShXdQzpGv2dDw0mM/bJr0
+ uR5WpkY/rJGLcNnrG8MV80XydjH5+dockxZqjV0qJMQSYU4wfkXCh24SCD/Q8adUlRLrDSV8C7OWt
+ QC9cpDAw==;
+Received: from c83-254-143-147.bredband.comhem.se ([83.254.143.147]
+ helo=[192.168.5.7]) by ns4.inleed.net with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.94)
+ (envelope-from <coding@diwic.se>)
+ id 1lPpKl-009z8i-IW; Fri, 26 Mar 2021 17:29:15 +0100
+Subject: Re: [PATCH v2] sound: rawmidi: Add framing mode
+To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+References: <20210324054253.34642-1-coding@diwic.se>
+ <20210324124430.GA3711@workstation>
+ <057ef387-9ee1-2678-29ce-d644f2a3a90a@diwic.se>
+ <20210326044615.GA51246@workstation> <s5hr1k2l56t.wl-tiwai@suse.de>
+From: David Henningsson <coding@diwic.se>
+Message-ID: <2ca71809-9872-bfee-c19d-76b6ce143212@diwic.se>
+Date: Fri, 26 Mar 2021 17:29:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ece15673-90d6-493e-02ac-08d8f074098c
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3989:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB398904346387A64D28500BCF97619@CH2PR12MB3989.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:126;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ieq21zqiS4WaADq6zVwTzEmudHWO1x07Gd2LBp+UF3/WPXe91e5/pyEsNxWe+Q+YQ9ti9imW4zHzlpfLH9g07eMNQFZB8cHlOIT2qBoT1SY0mpieMwk7B5XtcU8MJLdtH9RH9hrVcv6hAgzT4TpGIIsLCM6M5PT7KpzMnC27MUXs0Eiy8q1BDOm1Xw+P9+ew/Q8tPqzEq6wEuBmUF5u5Lc/4G/jFyF2JD+UPHFugpuForGp5p52I2m9GLdPL4wtjYOt60vXkqeOKmOyO4T0Yv52J1X6fui7zNbw9baly21jRbNa5yJBQvIjo/j2eV3ILa8mENDdTEbvD6uLdT29n7Mu4/RYJ4BNrqKyJRgqgu3TJrbd+E45+mdEOPRcO2dr9dj0h9wt1FV8JwISLAtvadpZvtwnEbRUkEcC6g+QETGLS1mVmjEOoT9BCvihNpJqW8FUaqfpQo69q0xkIbZN2ghubhtorIs2eCeJkv2wvQFFVlTuPcJAEiNYlX7tKG4kLqR2f9AadltbNflG7S4A5JDj9xbS9T83FaY5xks5vlIFSi3J5kgbEsLFZkTLbTO54zziJklA/jOVkrZhegH3L8kD4H6fJrVhIcFFX4JQy3JTmUuq9EJtM3VKE1PKWIoTPiB8ZDskyVa/mPeLcxKzGXLRk79wOOft1TUgcJNBPrSWwafk/l9KlPv4ApP5go0Gr
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(4636009)(396003)(39860400002)(376002)(136003)(346002)(36840700001)(46966006)(47076005)(81166007)(86362001)(336012)(70206006)(36756003)(426003)(2616005)(83380400001)(4744005)(70586007)(8676002)(82310400003)(8936002)(5660300002)(82740400003)(356005)(110136005)(6666004)(7696005)(478600001)(4326008)(316002)(2906002)(54906003)(26005)(36860700001)(186003)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 16:27:23.8949 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ece15673-90d6-493e-02ac-08d8f074098c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3989
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sunil-kumar.Dommati@amd.com, Arnd Bergmann <arnd@arndb.de>, open
- list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+In-Reply-To: <s5hr1k2l56t.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Authenticated-Id: coding@diwic.se
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -144,34 +97,141 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix ACPI dependency kernel warning produced by powerpc
-allyesconfig.
+Hi Takashi and Takashi,
 
-sound/soc/amd/acp-da7219-max98357a.c:684:28: warning:
-'cz_rt5682_card' defined but not used [-Wunused-variable]
+On 2021-03-26 08:55, Takashi Iwai wrote:
+> On Fri, 26 Mar 2021 05:46:15 +0100,
+> Takashi Sakamoto wrote:
+>> Hi David,
+>>
+>> On Wed, Mar 24, 2021 at 04:57:31PM +0100, David Henningsson wrote:
+>>>> However, the timing jitter of IRQ handler invocation is issued in this
+>>>> case, as well as PCM interface, even if the data rate of MIDI physical
+>>>> layer is quite low nowadays (31.25 Kbit / sec ~= 3906.25 byte / sec).
+>>>> As long as I experienced, in actual running Linux system, the invocation
+>>>> of IRQ handler has no guarantee for timing jitter, mainly due to CPU level
+>>>> IRQ mask (like spin_lock). Therefore the interval of each invocation is not
+>>>> so precise to decide event timestamp, at least for time slot comes from
+>>>> MIDI physical layer.
+>>>>
+>>>> Nevertheless, I think your idea is enough interesting, with conditions to
+>>>> deliver information from driver (or driver developer) to applications
+>>>> (ALSA Sequencer or userspace applications). Even if we have some
+>>>> limitation and restriction to precise timestamp, it's worth to work for
+>>>> it. It seems to be required that improvements at interface level and
+>>>> documentation about how to use the frame timestamp you implemented.
+>>> Right, so first, I believe the most common way to transport midi these days
+>>> is through USB, where the 31.25 Kbit/sec limit does not apply: instead we
+>>> have a granularity of 1/8 ms but many messages can fit in each one. So that
+>>> limit is - for many if not most cases - gone.
+>>>
+>>> Second; you're probably right in that there is still some jitter w r t when
+>>> the IRQ fires. That is regrettable, but the earlier we get that timestamp
+>>> the better, so a timestamp in IRQ context would at least be better than in a
+>>> workqueue that fires after the IRQ, or in userspace that possibly has
+>>> scheduling delays.
+>>>
+>>> Btw, I checked the "struct urb" and there was no timestamp in there, so I
+>>> don't know how to get a better timestamp than in snd_rawmidi_receive. But
+>>> maybe other interfaces (PCI, Firewire etc) offers something better.
+>> Hm. Regardless of type of hardware; e.g. OHCI/EHCI/xHCI, 1394 OHCI, or
+>> PCI-e extension card, for software to process sampled data, it's always
+>> issue that the jitter between triggering IRQ (hardware side) and invoking
+>> IRQ handler (processor side). As an actual example, let me share my
+>> experience in 1394 OHCI.
+>>
+>>
+>> 1394 OHCI controller is governed by 24.576 Mhz clock (or double depending
+>> on vendors). In IEEE 1394, ishcornous service is 8,000 times per second.
+>> 1394 OHCI specification allows software to schedule hardware IRQ per
+>> isochronous cycle.
+>>
+>> Once ALSA firewire stack is programmed to schedule the hardwar IRQ evenry
+>> 16 isochronous cycle. The corresponding IRQ handler is expected to invoke
+>> every 2 milli second. As long as I tested in usual desktop environment[2],
+>> the jitter is between 150 micro second and 4.7 milli second. In the worst
+>> case, it's 6.0 milli seconds. The above is also the same wnen using
+>> 'threadirqs'.
+>>
+>> When using 'isolcpus' and arranging 'smp_affinity' to reduce load from one
+>> of processor core to invoke the IRQ handler, the interval is 2 milli
+>> second with +- several nano seconds, therefore the 1394 OHCI controller
+>> can trigger hardware IRQ so precise. The jitter comes from processor side.
+>> I think many running contexts on the same processor core masks IRQ so
+>> often and the jitter is not deterministic.
+>>
+>> Here, what I'd like to tell you is that we can not handle the system time
+>> as is as timestamp of received MIDI messages, as long as relying on IRQ
+>> context. We need some arrangements to construct better timestamp with some
+>> compensations. In this point, the 3rd version of patch is not enough[3],
+>> in my opinion.
 
-sound/soc/amd/acp-da7219-max98357a.c:671:28: warning: 'cz_card'
-defined but not used [-Wunused-variable]
+Interesting measurements. While several ms of jitter is not ideal, I 
+have a few counter arguments why I still believe we should merge this patch:
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  1) I don't think we should let the perfect be the enemy of the good 
+here, just because we cannot eliminate *all* jitter does not mean we 
+should not try to eliminate as much jitter as we can.
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 43f5d29..256c192 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -11,7 +11,7 @@ config SND_SOC_AMD_CZ_DA7219MX98357_MACH
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_ADAU7002
- 	select REGULATOR
--	depends on SND_SOC_AMD_ACP && I2C && GPIOLIB
-+	depends on SND_SOC_AMD_ACP && I2C && GPIOLIB && ACPI
- 	help
- 	 This option enables machine driver for DA7219, RT5682 and MAX9835.
- 
--- 
-2.7.4
+  2) an unprivileged process (that cannot get RT_PRIO scheduling) might 
+have a wakeup jitter of a lot more than a few ms, so for that type of 
+process it would be a big improvement. And sometimes even RT_PRIO 
+processes have big delays due to preempt_disable etc.
+
+  3) The jitter will depend on the hardware, and other hardware might 
+have better (or worse) IRQ jitter.
+
+  4) If this patch gets accepted, it might show other kernel developers 
+that IRQ jitter matters to us, and that in turn might improve the 
+chances of getting IRQ jitter improvement patches in, in case someone 
+else wants to help solving that problem.
+
+
+>>
+>> My intension is not to discourage you, but it's better to have more care.
+>> As one of the care, I think we can use extension of
+>> 'struct snd_rawmidi_status' to deliver some useful information to ALSA
+>> rawmidi applications, or including other parameters to the frame structure.
+>> But I don't have ideas about what information should be delivered,
+>> sorry...
+> Well, the question is how much accuracy is wanted, and it's relatively
+> low for MIDI -- at least v1, which was defined many decades ago for a
+> slow serial line.
+>
+> That said, the patch set was designed for providing the best-effort
+> timestamping in software, and that's supposed to be enough for normal
+> use cases.  If there is any device that is with the hardware
+> timestamping, in theory, we could provide the similar data stream in
+> the same format but maybe with a different timestamp type.
+>
+> But actually I'd like to see some measurement how much we can improve
+> the timestamp accuracy by shifting the post office.  This may show
+> interesting numbers.
+
+Sorry, I don't know the idiom "shifting the post office" and neither 
+does the urban dictionary, so I have no idea what this means. :-)
+
+>
+> Also, one thing to be more considered is the support for MIDI v2 in
+> future.  I haven't seen any development so far (and no device
+> available around), so I cannot comment on this much more, but it'd be
+> worth to take a quick look before defining the solid API/ABI.
+
+I had a quick look at MIDI 2.0. It offers something called "Jitter 
+reduction timestamps". After some searching I found that its resolution 
+is 16 bit, and in units of 1/31250 seconds [1]. So the suggested 
+timestamp format of secs + nsecs would suit us well for that case, I 
+believe. When implemented, MIDI 2.0 jitter reduction timestamps would be 
+another clock ID on top of the existing frame format (or a new frame 
+format, if we prefer).
+
+A midi 2.0 UMP (Universal Midi Packet) seems to be 4, 8, 12 or 16 bytes, 
+excluding the timestamp. If we want to fit that format with the existing 
+patch, we could increase the frame to 32 bytes so we can fit more data 
+per packet. Do you think we should do that? Otherwise I think Patch v3 
+is ready for merging.
+
+// David
+
+[1] https://imitone.com/discover-midi/
 
