@@ -2,67 +2,67 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2CFBCC433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 07:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA43C433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:02:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B2B9A61A38
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 07:56:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B2B9A61A38
+	by mail.kernel.org (Postfix) with ESMTPS id C782F61A05
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:02:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C782F61A05
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DA9B1616;
-	Fri, 26 Mar 2021 08:55:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DA9B1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9558015DC;
+	Fri, 26 Mar 2021 09:01:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9558015DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616745407;
-	bh=QISsBOMZNyQYcAGwlw2PIpOTCbYlgBBtH8GXdRv918U=;
+	s=default; t=1616745718;
+	bh=N9qOrr4eR6pH6vwo/Lv/K6t4qTBGJ8kjZ/8o9BYAIwE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xb6yZ4mZkZJfoLgaf66qPb82UkDDR4v90YRxGl+dSON/l5G9STnvRnaqjpO+TVEpf
-	 H73Hvdy5YLoyhcqXhtfSbtzIcAnsRTKpwbb+1ayJm5GIy/aW7SHFz+MX3cbPdlqSW4
-	 GlaVnLhqSQI/XrUEUpECwkNk87WLFjyPpIsQfZX0=
+	b=ImhwI1M03pLnjCHpillN0eCiuwJgo+Atz6toIgTMuDBKsV7jOU8IpqZwUcxDjr93q
+	 EoP4osx4hMCIOvk1QkKADGkCVP+MLb//paxGs2XfpTYf6m6xcoyp2UzzuLsiH5RURj
+	 eZamkL5IVOxBinccVpd3I8yPMgcwb1P5IBgnN6Ns=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 35104F800D0;
-	Fri, 26 Mar 2021 08:55:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 833F0F80156;
+	Fri, 26 Mar 2021 09:01:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22D0CF8016B; Fri, 26 Mar 2021 08:55:54 +0100 (CET)
+ id 36C9FF800D0; Fri, 26 Mar 2021 09:00:56 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BFB1F800D0
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 08:55:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BFB1F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A875F800D0
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 09:00:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A875F800D0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 2D1D0ADEF;
- Fri, 26 Mar 2021 07:55:39 +0000 (UTC)
-Date: Fri, 26 Mar 2021 08:55:38 +0100
-Message-ID: <s5hr1k2l56t.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 4B95CAE03;
+ Fri, 26 Mar 2021 08:00:37 +0000 (UTC)
+Date: Fri, 26 Mar 2021 09:00:37 +0100
+Message-ID: <s5hpmzml4yi.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2] sound: rawmidi: Add framing mode
-In-Reply-To: <20210326044615.GA51246@workstation>
-References: <20210324054253.34642-1-coding@diwic.se>
- <20210324124430.GA3711@workstation>
- <057ef387-9ee1-2678-29ce-d644f2a3a90a@diwic.se>
- <20210326044615.GA51246@workstation>
+To: Muhammad Usama Anjum <musamaanjum@gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Don't store returned value and check for
+ errors
+In-Reply-To: <20210325083641.GA644957@LEGION>
+References: <20210325083641.GA644957@LEGION>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, David Henningsson <coding@diwic.se>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ colin.king@canonical.com, dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,112 +78,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 26 Mar 2021 05:46:15 +0100,
-Takashi Sakamoto wrote:
+On Thu, 25 Mar 2021 09:36:41 +0100,
+Muhammad Usama Anjum wrote:
 > 
-> Hi David,
+> The returned value by create_autodetect_quirk isn't being used other
+> than in the success check on next line. Remove the return value
+> assignement. Check for error values instead of success check.
 > 
-> On Wed, Mar 24, 2021 at 04:57:31PM +0100, David Henningsson wrote:
-> > > However, the timing jitter of IRQ handler invocation is issued in this
-> > > case, as well as PCM interface, even if the data rate of MIDI physical
-> > > layer is quite low nowadays (31.25 Kbit / sec ~= 3906.25 byte / sec).
-> > > As long as I experienced, in actual running Linux system, the invocation
-> > > of IRQ handler has no guarantee for timing jitter, mainly due to CPU level
-> > > IRQ mask (like spin_lock). Therefore the interval of each invocation is not
-> > > so precise to decide event timestamp, at least for time slot comes from
-> > > MIDI physical layer.
-> > > 
-> > > Nevertheless, I think your idea is enough interesting, with conditions to
-> > > deliver information from driver (or driver developer) to applications
-> > > (ALSA Sequencer or userspace applications). Even if we have some
-> > > limitation and restriction to precise timestamp, it's worth to work for
-> > > it. It seems to be required that improvements at interface level and
-> > > documentation about how to use the frame timestamp you implemented.
-> > 
-> > Right, so first, I believe the most common way to transport midi these days
-> > is through USB, where the 31.25 Kbit/sec limit does not apply: instead we
-> > have a granularity of 1/8 ms but many messages can fit in each one. So that
-> > limit is - for many if not most cases - gone.
-> > 
-> > Second; you're probably right in that there is still some jitter w r t when
-> > the IRQ fires. That is regrettable, but the earlier we get that timestamp
-> > the better, so a timestamp in IRQ context would at least be better than in a
-> > workqueue that fires after the IRQ, or in userspace that possibly has
-> > scheduling delays.
-> > 
-> > Btw, I checked the "struct urb" and there was no timestamp in there, so I
-> > don't know how to get a better timestamp than in snd_rawmidi_receive. But
-> > maybe other interfaces (PCI, Firewire etc) offers something better.
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+> ---
+>  sound/usb/quirks.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Hm. Regardless of type of hardware; e.g. OHCI/EHCI/xHCI, 1394 OHCI, or
-> PCI-e extension card, for software to process sampled data, it's always
-> issue that the jitter between triggering IRQ (hardware side) and invoking
-> IRQ handler (processor side). As an actual example, let me share my
-> experience in 1394 OHCI.
-> 
-> 
-> 1394 OHCI controller is governed by 24.576 Mhz clock (or double depending
-> on vendors). In IEEE 1394, ishcornous service is 8,000 times per second.
-> 1394 OHCI specification allows software to schedule hardware IRQ per
-> isochronous cycle.
-> 
-> Once ALSA firewire stack is programmed to schedule the hardwar IRQ evenry
-> 16 isochronous cycle. The corresponding IRQ handler is expected to invoke
-> every 2 milli second. As long as I tested in usual desktop environment[2],
-> the jitter is between 150 micro second and 4.7 milli second. In the worst
-> case, it's 6.0 milli seconds. The above is also the same wnen using
-> 'threadirqs'.
-> 
-> When using 'isolcpus' and arranging 'smp_affinity' to reduce load from one
-> of processor core to invoke the IRQ handler, the interval is 2 milli
-> second with +- several nano seconds, therefore the 1394 OHCI controller
-> can trigger hardware IRQ so precise. The jitter comes from processor side.
-> I think many running contexts on the same processor core masks IRQ so
-> often and the jitter is not deterministic.
-> 
-> Here, what I'd like to tell you is that we can not handle the system time
-> as is as timestamp of received MIDI messages, as long as relying on IRQ
-> context. We need some arrangements to construct better timestamp with some
-> compensations. In this point, the 3rd version of patch is not enough[3],
-> in my opinion.
-> 
-> My intension is not to discourage you, but it's better to have more care.
-> As one of the care, I think we can use extension of
-> 'struct snd_rawmidi_status' to deliver some useful information to ALSA
-> rawmidi applications, or including other parameters to the frame structure.
-> But I don't have ideas about what information should be delivered,
-> sorry...
+> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+> index 9e5e37eff10e..5ce5f4ecb9d0 100644
+> --- a/sound/usb/quirks.c
+> +++ b/sound/usb/quirks.c
+> @@ -425,9 +425,9 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+>  							USB_CLASS_VENDOR_SPEC)
+>  			continue;
+>  
+> -		err = create_autodetect_quirk(chip, iface, driver);
+> -		if (err >= 0)
+> -			usb_driver_claim_interface(driver, iface, (void *)-1L);
+> +		if (create_autodetect_quirk(chip, iface, driver) < 0)
+> +			continue;
+> +		usb_driver_claim_interface(driver, iface, (void *)-1L);
 
-Well, the question is how much accuracy is wanted, and it's relatively
-low for MIDI -- at least v1, which was defined many decades ago for a
-slow serial line.
+Hm, basically this change is only for readability (the code
+optimization makes almost no sense), and the readability itself isn't
+improved significantly by this change, either.
 
-That said, the patch set was designed for providing the best-effort
-timestamping in software, and that's supposed to be enough for normal
-use cases.  If there is any device that is with the hardware
-timestamping, in theory, we could provide the similar data stream in
-the same format but maybe with a different timestamp type.
-
-But actually I'd like to see some measurement how much we can improve
-the timestamp accuracy by shifting the post office.  This may show
-interesting numbers.
-
-Also, one thing to be more considered is the support for MIDI v2 in
-future.  I haven't seen any development so far (and no device
-available around), so I cannot comment on this much more, but it'd be
-worth to take a quick look before defining the solid API/ABI.
+That is, I'm fine to take this, but OTOH, I see no compelling reason
+to do so...
 
 
 thanks,
 
 Takashi
-
-> 
-> [1] https://github.com/systemd/systemd/pull/19124
-> [2] I used stock image of Ubuntu 19.10 desktop for the trial.
-> [3] https://mailman.alsa-project.org/pipermail/alsa-devel/2021-March/182842.html
-> 
-> Thanks
-> 
-> Takashi Sakamoto
-> 
