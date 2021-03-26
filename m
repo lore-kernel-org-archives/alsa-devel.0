@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82E28C433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:20:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59462C433E0
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:20:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8310A61A2D
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:20:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8310A61A2D
+	by mail.kernel.org (Postfix) with ESMTPS id F3D8961A1A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:20:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F3D8961A1A
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A30B1657;
-	Fri, 26 Mar 2021 10:19:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A30B1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 697441686;
+	Fri, 26 Mar 2021 10:19:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 697441686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616750416;
-	bh=x2BzfGO7ObGB5s+MLtTv0MH0jc4PISdJRUtK/ppfoqE=;
+	s=default; t=1616750433;
+	bh=rr+W4loCV8q1qYV4riq34EeY36dwTZQgF4bPqX3XNMs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XNqQ+fCWZSJXGEE3+q2jD1qJvw4bKpGJzGcL6AxhOfZp+JztzsMpwionkw9Xthb6C
-	 WrGV/KDL/a5IdWfNMZgmExFaMO+NDpLiIzh274AEwwHhGlCqKbc7i1RNhVVJt4SAxZ
-	 mVSW7JLBGPoaiUnJjtXKs+IpsGoNfWSdLqWQjtL8=
+	b=LqRYAW49tALY/Gu1sPp9NgCcF1bATYPQq93zhaXXL+RlWkJoVGwb53kdoyl7p9k1f
+	 Tksw1ts0yLPLm7sRrinbAoh7wnaWOnFfCVHxTNU0qFfWgFtoxsY7zev22LtRUw4VQh
+	 yh/0HzbXKbE0KAVC+vEQ0mUAkjqs5Fp6niJicHOk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3698BF804DA;
-	Fri, 26 Mar 2021 10:16:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25B51F804E5;
+	Fri, 26 Mar 2021 10:16:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC0C1F804BD; Fri, 26 Mar 2021 10:16:10 +0100 (CET)
+ id CE426F8016B; Fri, 26 Mar 2021 10:16:10 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF860F801EB
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 10:15:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF860F801EB
-IronPort-SDR: 8JQ9t3DYGGJ+XG6nBaQepf19TapuAB/G5Q0TUWaE3cmYctdkGHSbV3GhGnRFz9jWgcu8/ZhNEA
- JiXjuFRv2wog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276249437"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="276249437"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 082ABF804AF
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 10:16:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 082ABF804AF
+IronPort-SDR: guQ8wwKQJWYw2Np9yE/vW8xcwG3+huVExkZ/Lg+CwtSYDKXDMrszCuj6gutiW+8ABHUCnzHLqQ
+ 6ayk4ql+uWAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276249477"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="276249477"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 02:15:39 -0700
-IronPort-SDR: pQW47v0JFARr6JLBn0yoFidywlZkX2laYcBYO1f3AY0YiJ6VwYa1ENOIR5tKzggUHB8yu/VQVj
- Drx6fv2A3RXA==
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="416463153"
+ 26 Mar 2021 02:16:01 -0700
+IronPort-SDR: M665LzqAs62gKIsLvNEs8YcCr5sZKpj6cYgCE7zVV7hbiTMlS0nPjsNdu2EoGfl36nx3n50csl
+ nr3Xk9vBWaxQ==
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="416463248"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 02:15:36 -0700
+ 26 Mar 2021 02:15:58 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [RESEND PATCH 04/11] soundwire: bus: demote clock stop prepare log to
- dev_dbg()
-Date: Fri, 26 Mar 2021 17:15:07 +0800
-Message-Id: <20210326091514.20751-5-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH 11/11] soundwire: stream: remove useless bus
+ initializations
+Date: Fri, 26 Mar 2021 17:15:14 +0800
+Message-Id: <20210326091514.20751-12-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
 References: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
@@ -87,33 +87,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-There is no real reason to provide this information except for debug
-sessions, hence dev_dbg() is a better fit.
+There is no need to assign a pointer to NULL if it's only used in a
+loop and assigned within that loop.
 
-Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 4 ++--
+ drivers/soundwire/stream.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index d39e5baa3e64..8b6d8fe934ae 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -906,8 +906,8 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
- 		}
- 		val &= SDW_SCP_STAT_CLK_STP_NF;
- 		if (!val) {
--			dev_info(bus->dev, "clock stop prep/de-prep done slave:%d",
--				 dev_num);
-+			dev_dbg(bus->dev, "clock stop prep/de-prep done slave:%d",
-+				dev_num);
- 			return 0;
- 		}
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 6a682179cd05..9c064b672745 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1449,7 +1449,7 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+ static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
+ {
+ 	struct sdw_master_runtime *m_rt;
+-	struct sdw_bus *bus = NULL;
++	struct sdw_bus *bus;
  
+ 	/* Iterate for all Master(s) in Master list */
+ 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+@@ -1471,7 +1471,7 @@ static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
+ static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
+ {
+ 	struct sdw_master_runtime *m_rt;
+-	struct sdw_bus *bus = NULL;
++	struct sdw_bus *bus;
+ 
+ 	/* Iterate for all Master(s) in Master list */
+ 	list_for_each_entry_reverse(m_rt, &stream->master_list, stream_node) {
 -- 
 2.17.1
 
