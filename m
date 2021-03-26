@@ -7,86 +7,85 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A518C433E1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28394C433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9F87961984
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9F87961984
+	by mail.kernel.org (Postfix) with ESMTPS id 3DD0E61A05
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:44:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DD0E61A05
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D9361686;
-	Fri, 26 Mar 2021 07:43:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D9361686
+	by alsa0.perex.cz (Postfix) with ESMTPS id C9AF8168D;
+	Fri, 26 Mar 2021 07:43:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9AF8168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616741045;
-	bh=w69K7tGU/eap72vjQyFnQmb5L3HMb7Je1LYFe9Pxxlg=;
+	s=default; t=1616741082;
+	bh=g4IZTUMhwSimVZ2maGJk3FKSvLNCupsvKyFnRTnDhPY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mmyQQYCrs4kuGWGX+X5tYKV3BKmzB4J53DOxae1X2jzIp2cJl04Q3gkF5eJzg+Ws0
-	 5P86kl35sxxlMcF2Yc1t4QFFzmRK5mxPIzKnr6f6MTCUpTm6BIpSzqfWEqoeOMw2FY
-	 ynDkb5ghLNrklBk12I6mSDw+TKx5lj8FwSCkeXVc=
+	b=pM3n60fReQUIn4pX3I1ApyK4Rx7GUB8Xr/Ge4mR4psSxOgqZpDcJTBpGGUXoqOrCy
+	 CAeAXxo3cLbFpoeSESrgx72tSzogmkSIeinvrj0MZJMMpGf53P+kQOSjKjxlcTHp8v
+	 kAJ9IMJ+TamlsiIuxYwOUSjgMNpJFZZrfChIIK2c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F3ADF802DB;
-	Fri, 26 Mar 2021 07:41:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91D47F804B0;
+	Fri, 26 Mar 2021 07:41:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0535EF80423; Fri, 26 Mar 2021 07:41:39 +0100 (CET)
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com
- [IPv6:2a00:1450:4864:20::62c])
+ id 8134AF804A9; Fri, 26 Mar 2021 07:41:50 +0100 (CET)
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
+ [IPv6:2a00:1450:4864:20::530])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0123FF80103
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0123FF80103
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4AD2BF802DB
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AD2BF802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="qjhlG4wd"
-Received: by mail-ej1-x62c.google.com with SMTP id hq27so6747318ejc.9
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:18 -0700 (PDT)
+ header.b="xvmNm1nf"
+Received: by mail-ed1-x530.google.com with SMTP id o19so5078405edc.3
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=yrsv2Wcm36Tutr6ABacUE+c4Ip9KYPFLtfy7d1EDOFI=;
- b=qjhlG4wd7NnoVdhmdpvNGRBsWEAKlQySfl7HAD0qjkEc2eE+7+0gvIqVN2VnL9KWww
- ziCyek6NYmVp29kUsuX+iBfiDsOtpuyp0j6umrwI/K6qMU2aSDUPI9ekIrZ1hoGLYWa6
- bkcxlwuQj93e2f3or6+m//LzXiR910hLPcg9VW+PcatN++lJMfCU18iJSJpEH8tVT0yR
- BjEKHj9pfI7QQbXTDGp7MA8yv3ucp/9b7DmstwSTbRcKwziz5LsdxKXUHkxv6M0Jy79M
- kyf/Vm6JMtI/lCqaHPythHnvvQ5Kjd4yyUe2R1G2wEKk7NaqbSOwtyTM5xWPhoaBXwii
- cTqQ==
+ bh=9w26BSmosHoWqHb4DQ0FR/rFMhDz7pjkPie7BkwBXHY=;
+ b=xvmNm1nflRIeRx4LkKSGcrElPaSbjF1kN6QdiXw9op+BvHN1V7Jsui3LT/t16Kksh/
+ RUKvfI4eDhhoJ7iFtaSpqk5mNYgh/mQMq+14xsE7KfK7Q5E1StGvvuuTh63rEXc8O2up
+ xr2yn98r4/w8XonH/U89vhJmJjUYwbBTtcVjWPO5CGb84EBxwRcwz6IM0ikFDD6eSa4A
+ aHS69DHtyqniONA1PeBfIi+aWSvUGlgndvZdtXEW2C7fbQE9p1jXoCogP1n/nfiYQu15
+ I6cN5/AFcIC4KJsLnQkdf6iGTeWj6aU//HBeFGmilGb0K8y8jLPEYwM780wVxR5wDltp
+ Xh+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=yrsv2Wcm36Tutr6ABacUE+c4Ip9KYPFLtfy7d1EDOFI=;
- b=cnZTnhcHZkBNTraahne+biVmdAt+0ofRrknubjyX+A9rL+z1UUCi47a0D9E819g5bA
- 3QwmV/BWNqy2V8O5xxSmgK6VAU3dW7pBlPM0/vMDGESZgMiClIdz+1lq0jadXBtQQD9f
- NC7aOuHBTFCd8DaE3tc7OxJbYoed+v/ge06uc0MuYJr9TM2nzaPbgDuUklv5ExGRwwTn
- bhplRNfWxAof4jhAU2RoFrYh/m6qfDeyD8kNXcAEbE/GOTV/fUrHRrjp5eNL/M9FxSdG
- E9AygO7/BqiKeAg54wAgmprgOfOaFFa2VzZQIuxTRP+ZcADBGIrDbLVfVD4GnQWps/6e
- /VIA==
-X-Gm-Message-State: AOAM530kU1Wgi6oFJTfS1eD8phhQCabnTr7/J+9kvzsG54qKm4l+OtDp
- WX/DNEeJXWb8Jt9O+vtXzvS5OQ==
-X-Google-Smtp-Source: ABdhPJzwgIumxxq+7pVgmJOP4JOTnurTSD9MX90XEZGmgTtyjE+ZfTST3dXZrZEHqtcf5suFk6LDKA==
-X-Received: by 2002:a17:906:9bdb:: with SMTP id
- de27mr13819151ejc.459.1616740878072; 
- Thu, 25 Mar 2021 23:41:18 -0700 (PDT)
+ bh=9w26BSmosHoWqHb4DQ0FR/rFMhDz7pjkPie7BkwBXHY=;
+ b=aau6mkVjW1w2mh/T45OQehaZcHl4KNiUteTdOinfThcDKE1Sb87dc54P4BTxs98zPO
+ udDptRPEl3H6FFzMy19kxVtD9sFKlSu6Ub0ZkVee0do1WE3suS3XqLWV7/OFFrVOcfuz
+ aZPgDoZhgzjbyZRsNG1znBzA9EnaG7jAiRoSPNyCxYkrj0Kdabw71V6x3IoI/jdz9XR0
+ S//mNOa9+77CC89twFCMb55xyJZLJmdqWbnupIzciIg3as7nq0NDdOF6hleilWBXTsfU
+ nEmNE0CKJyuSNmhtSaOJmnP/qGET9BCPGizCFot+rCabbp3LL8Yz9c3sNeFL1wssO2uG
+ ZICw==
+X-Gm-Message-State: AOAM530qydJr5k49VrCwR6U36oiHQYSDjBmqlIcAj8yHCioRsEHjK4aw
+ OSMfC/8ERjBUoED7pvZFycQYcQ==
+X-Google-Smtp-Source: ABdhPJyD6ZXOo0uH2byplvxKFOGNhtYjssgC3vW/C5IOn2jogunBIlScXNTSvyOG9QEfJsqJvAUPCA==
+X-Received: by 2002:a05:6402:104c:: with SMTP id
+ e12mr12739081edu.108.1616740880178; 
+ Thu, 25 Mar 2021 23:41:20 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.17
+ by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Mar 2021 23:41:17 -0700 (PDT)
+ Thu, 25 Mar 2021 23:41:19 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
-Subject: [PATCH v5 2/9] soundwire: qcom: add support to missing transport
- params
-Date: Fri, 26 Mar 2021 06:39:37 +0000
-Message-Id: <20210326063944.31683-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 4/9] soundwire: qcom: start the clock during initialization
+Date: Fri, 26 Mar 2021 06:39:39 +0000
+Message-Id: <20210326063944.31683-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
 References: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
@@ -111,204 +110,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some of the transport parameters derived from device tree
-are not fully parsed by the driver.
-
-This patch adds support to parse those missing parameters.
+Start the clock during initialization, doing this explicitly
+will add more clarity when we are adding clock stop feature.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/qcom.c | 107 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 95 insertions(+), 12 deletions(-)
+ drivers/soundwire/qcom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 39222b04a2e0..d05e41f68658 100644
+index 43ec22a5e332..2bcb4362f0e0 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -54,7 +54,13 @@
- #define SWRM_MCP_SLV_STATUS					0x1090
- #define SWRM_MCP_SLV_STATUS_MASK				GENMASK(1, 0)
- #define SWRM_DP_PORT_CTRL_BANK(n, m)	(0x1124 + 0x100 * (n - 1) + 0x40 * m)
-+#define SWRM_DP_PORT_CTRL_2_BANK(n, m)	(0x1128 + 0x100 * (n - 1) + 0x40 * m)
-+#define SWRM_DP_BLOCK_CTRL_1(n)		(0x112C + 0x100 * (n - 1))
-+#define SWRM_DP_BLOCK_CTRL2_BANK(n, m)	(0x1130 + 0x100 * (n - 1) + 0x40 * m)
-+#define SWRM_DP_PORT_HCTRL_BANK(n, m)	(0x1134 + 0x100 * (n - 1) + 0x40 * m)
- #define SWRM_DP_BLOCK_CTRL3_BANK(n, m)	(0x1138 + 0x100 * (n - 1) + 0x40 * m)
-+#define SWRM_DIN_DPn_PCM_PORT_CTRL(n)	(0x1054 + 0x100 * (n - 1))
-+
- #define SWRM_DP_PORT_CTRL_EN_CHAN_SHFT				0x18
- #define SWRM_DP_PORT_CTRL_OFFSET2_SHFT				0x10
- #define SWRM_DP_PORT_CTRL_OFFSET1_SHFT				0x08
-@@ -73,12 +79,20 @@
- #define QCOM_SDW_MAX_PORTS	14
- #define DEFAULT_CLK_FREQ	9600000
- #define SWRM_MAX_DAIS		0xF
-+#define SWR_INVALID_PARAM 0xFF
-+#define SWR_HSTOP_MAX_VAL 0xF
-+#define SWR_HSTART_MIN_VAL 0x0
+@@ -47,6 +47,8 @@
+ #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
+ #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
++#define SWRM_MCP_BUS_CTRL					0x1044
++#define SWRM_MCP_BUS_CLK_START					BIT(1)
+ #define SWRM_MCP_CFG_ADDR					0x1048
+ #define SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK		GENMASK(21, 17)
+ #define SWRM_DEF_CMD_NO_PINGS					0x1f
+@@ -343,6 +345,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 	u32p_replace_bits(&val, SWRM_DEF_CMD_NO_PINGS, SWRM_MCP_CFG_MAX_NUM_OF_CMD_NO_PINGS_BMSK);
+ 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
  
- struct qcom_swrm_port_config {
- 	u8 si;
- 	u8 off1;
- 	u8 off2;
- 	u8 bp_mode;
-+	u8 hstart;
-+	u8 hstop;
-+	u8 word_length;
-+	u8 blk_group_count;
-+	u8 lane_control;
- };
- 
- struct qcom_swrm_ctrl {
-@@ -396,8 +410,11 @@ static int qcom_swrm_port_params(struct sdw_bus *bus,
- 				 struct sdw_port_params *p_params,
- 				 unsigned int bank)
- {
--	/* TBD */
--	return 0;
-+	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
-+
-+	return ctrl->reg_write(ctrl, SWRM_DP_BLOCK_CTRL_1(p_params->num),
-+			       p_params->bps - 1);
-+
- }
- 
- static int qcom_swrm_transport_params(struct sdw_bus *bus,
-@@ -405,20 +422,45 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
- 				      enum sdw_reg_bank bank)
- {
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
-+	struct qcom_swrm_port_config *pcfg;
- 	u32 value;
- 	int reg = SWRM_DP_PORT_CTRL_BANK((params->port_num), bank);
- 	int ret;
- 
--	value = params->offset1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
--	value |= params->offset2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
--	value |= params->sample_interval - 1;
-+	pcfg = &ctrl->pconfig[params->port_num - 1];
-+
-+	value = pcfg->off1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
-+	value |= pcfg->off2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
-+	value |= pcfg->si;
- 
- 	ret = ctrl->reg_write(ctrl, reg, value);
- 
--	if (!ret && params->blk_pkg_mode) {
--		reg = SWRM_DP_BLOCK_CTRL3_BANK(params->port_num, bank);
-+	if (pcfg->lane_control != SWR_INVALID_PARAM) {
-+		reg = SWRM_DP_PORT_CTRL_2_BANK(params->port_num, bank);
-+		value = pcfg->lane_control;
-+		ret = ctrl->reg_write(ctrl, reg, value);
-+	}
-+
-+	if (pcfg->blk_group_count != SWR_INVALID_PARAM) {
-+		reg = SWRM_DP_BLOCK_CTRL2_BANK(params->port_num, bank);
-+		value = pcfg->blk_group_count;
-+		ret = ctrl->reg_write(ctrl, reg, value);
-+	}
-+
-+	if (pcfg->hstart != SWR_INVALID_PARAM
-+			&& pcfg->hstop != SWR_INVALID_PARAM) {
-+		reg = SWRM_DP_PORT_HCTRL_BANK(params->port_num, bank);
-+		value = (pcfg->hstop << 4) | pcfg->hstart;
-+		ret = ctrl->reg_write(ctrl, reg, value);
-+	} else {
-+		reg = SWRM_DP_PORT_HCTRL_BANK(params->port_num, bank);
-+		value = (SWR_HSTOP_MAX_VAL << 4) | SWR_HSTART_MIN_VAL;
-+		ret = ctrl->reg_write(ctrl, reg, value);
-+	}
- 
--		ret = ctrl->reg_write(ctrl, reg, 1);
-+	if (pcfg->bp_mode != SWR_INVALID_PARAM) {
-+		reg = SWRM_DP_BLOCK_CTRL3_BANK(params->port_num, bank);
-+		ret = ctrl->reg_write(ctrl, reg, pcfg->bp_mode);
- 	}
- 
- 	return ret;
-@@ -468,10 +510,13 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
- 		list_for_each_entry(p_rt, &m_rt->port_list, port_node) {
- 			pcfg = &ctrl->pconfig[p_rt->num - 1];
- 			p_rt->transport_params.port_num = p_rt->num;
--			p_rt->transport_params.sample_interval = pcfg->si + 1;
--			p_rt->transport_params.offset1 = pcfg->off1;
--			p_rt->transport_params.offset2 = pcfg->off2;
--			p_rt->transport_params.blk_pkg_mode = pcfg->bp_mode;
-+			if (pcfg->word_length != SWR_INVALID_PARAM) {
-+				sdw_fill_port_params(&p_rt->port_params,
-+					     p_rt->num,  pcfg->word_length + 1,
-+					     SDW_PORT_FLOW_MODE_ISOCH,
-+					     SDW_PORT_DATA_MODE_NORMAL);
-+			}
-+
- 		}
- 
- 		list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-@@ -489,6 +534,18 @@ static int qcom_swrm_compute_params(struct sdw_bus *bus)
- 				p_rt->transport_params.offset1 = pcfg->off1;
- 				p_rt->transport_params.offset2 = pcfg->off2;
- 				p_rt->transport_params.blk_pkg_mode = pcfg->bp_mode;
-+				p_rt->transport_params.blk_grp_ctrl = pcfg->blk_group_count;
-+
-+				p_rt->transport_params.hstart = pcfg->hstart;
-+				p_rt->transport_params.hstop = pcfg->hstop;
-+				p_rt->transport_params.lane_ctrl = pcfg->lane_control;
-+				if (pcfg->word_length != SWR_INVALID_PARAM) {
-+					sdw_fill_port_params(&p_rt->port_params,
-+						     p_rt->num,
-+						     pcfg->word_length + 1,
-+						     SDW_PORT_FLOW_MODE_ISOCH,
-+						     SDW_PORT_DATA_MODE_NORMAL);
-+				}
- 				i++;
- 			}
- 		}
-@@ -744,6 +801,11 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
- 	u8 off2[QCOM_SDW_MAX_PORTS];
- 	u8 si[QCOM_SDW_MAX_PORTS];
- 	u8 bp_mode[QCOM_SDW_MAX_PORTS] = { 0, };
-+	u8 hstart[QCOM_SDW_MAX_PORTS];
-+	u8 hstop[QCOM_SDW_MAX_PORTS];
-+	u8 word_length[QCOM_SDW_MAX_PORTS];
-+	u8 blk_group_count[QCOM_SDW_MAX_PORTS];
-+	u8 lane_control[QCOM_SDW_MAX_PORTS];
- 	int i, ret, nports, val;
- 
- 	ctrl->reg_read(ctrl, SWRM_COMP_PARAMS, &val);
-@@ -791,11 +853,32 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
- 
- 	ret = of_property_read_u8_array(np, "qcom,ports-block-pack-mode",
- 					bp_mode, nports);
-+
-+	memset(hstart, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
-+	of_property_read_u8_array(np, "qcom,ports-hstart", hstart, nports);
-+
-+	memset(hstop, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
-+	of_property_read_u8_array(np, "qcom,ports-hstop", hstop, nports);
-+
-+	memset(word_length, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
-+	of_property_read_u8_array(np, "qcom,ports-word-length", word_length, nports);
-+
-+	memset(blk_group_count, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
-+	of_property_read_u8_array(np, "qcom,ports-block-group-count", blk_group_count, nports);
-+
-+	memset(lane_control, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
-+	of_property_read_u8_array(np, "qcom,ports-lane-control", lane_control, nports);
-+
- 	for (i = 0; i < nports; i++) {
- 		ctrl->pconfig[i].si = si[i];
- 		ctrl->pconfig[i].off1 = off1[i];
- 		ctrl->pconfig[i].off2 = off2[i];
- 		ctrl->pconfig[i].bp_mode = bp_mode[i];
-+		ctrl->pconfig[i].hstart = hstart[i];
-+		ctrl->pconfig[i].hstop = hstop[i];
-+		ctrl->pconfig[i].word_length = word_length[i];
-+		ctrl->pconfig[i].blk_group_count = blk_group_count[i];
-+		ctrl->pconfig[i].lane_control = lane_control[i];
- 	}
- 
- 	return 0;
++	ctrl->reg_write(ctrl, SWRM_MCP_BUS_CTRL, SWRM_MCP_BUS_CLK_START);
+ 	/* Configure number of retries of a read/write cmd */
+ 	if (ctrl->version > 0x01050001) {
+ 		/* Only for versions >= 1.5.1 */
 -- 
 2.21.0
 
