@@ -2,71 +2,67 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDCE2C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E75CC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:14:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id A0D4B61A4C
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:13:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A0D4B61A4C
+	by mail.kernel.org (Postfix) with ESMTPS id 4E3CE61A38
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:14:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4E3CE61A38
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 026BF166D;
-	Fri, 26 Mar 2021 09:12:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 026BF166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3A9615DC;
+	Fri, 26 Mar 2021 09:13:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3A9615DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616746384;
-	bh=+GQmykiozUkSGRnDXvAIDbifa4p9zsyrGYgO0dvBtCU=;
+	s=default; t=1616746461;
+	bh=UE50WBhnHr/gVEnRPy5A6YLNGx/btjXmd/vED1SVzAU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d4SaoCkaWP/guDrxv1kBet9Iz0/Ncq4MWgEbjmV/359fN0cHD24ZnMTrMYPju5gP/
-	 PunHXlwwOvLUyytGCZtCvG71tG7qG2lokH+CubtuAhl0dsaQC2NAsSMZBdrJZu6hO7
-	 02JrDbBprrPWNmt4BNnCDtqXuOZwFJISjYiMFDs0=
+	b=BKIELQRKOAxVgaAoR6TH9CYsJqzf/CTFpxOeH9lNIX17GYpGn/GXx/7T0xMFtvPr/
+	 uTm6iknl5Cbm63xAA4OaG9WNBZPPOK/8BJ20YcxjTpd+gkCCk4SRrfnGmqcsW6d874
+	 ncqdv7fvOwtHBNFcmuwjPE7VNvVVGyTYIEvGBtCo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8A3BF800D0;
-	Fri, 26 Mar 2021 09:11:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3964DF80156;
+	Fri, 26 Mar 2021 09:13:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16BBCF801EC; Fri, 26 Mar 2021 09:11:27 +0100 (CET)
+ id 8CA91F8016B; Fri, 26 Mar 2021 09:13:29 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7001AF800D0
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 09:11:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7001AF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70C32F80103
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 09:13:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70C32F80103
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 03947ADE3;
- Fri, 26 Mar 2021 08:11:21 +0000 (UTC)
-Date: Fri, 26 Mar 2021 09:11:20 +0100
-Message-ID: <s5hk0pul4gn.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 2E0AFAD8D;
+ Fri, 26 Mar 2021 08:13:26 +0000 (UTC)
+Date: Fri, 26 Mar 2021 09:13:25 +0100
+Message-ID: <s5hh7kyl4d6.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v3 2/2] ALSA: usb-audio: Check connector value on resume
-In-Reply-To: <20210325165918.22593-2-kai.heng.feng@canonical.com>
-References: <20210325165918.22593-1-kai.heng.feng@canonical.com>
- <20210325165918.22593-2-kai.heng.feng@canonical.com>
+To: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH V4] ALSA: pcm:  Fix couple of typos
+In-Reply-To: <20210326064211.6509-1-unixbhaskar@gmail.com>
+References: <20210326064211.6509-1-unixbhaskar@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- Lars-Peter Clausen <lars@metafoo.de>, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
- open list <linux-kernel@vger.kernel.org>, Thomas Ebeling <penguins@bollie.de>,
- Chris Chiu <chiu@endlessm.com>, tiwai@suse.com, Tom Yan <tom.ty89@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- =?UTF-8?B?RnJh?= =?UTF-8?B?bnRpxaFlayBLdcSNZXJh?= <franta-linux@frantovo.cz>,
- Joe Perches <joe@perches.com>, Olivia Mackintosh <livvy@base.nu>
+Cc: alsa-devel@alsa-project.org, rdunlap@infradead.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, gustavoars@kernel.org,
+ mirq-linux@rere.qmqm.pl, broonie@kernel.org, viro@zeniv.linux.org.uk,
+ joe@perches.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,138 +78,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Mar 2021 17:59:13 +0100,
-Kai-Heng Feng wrote:
+On Fri, 26 Mar 2021 07:42:11 +0100,
+Bhaskar Chowdhury wrote:
 > 
-> Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
-> error and the other two functions of the USB audio, Line In and Line
-> Out, work just fine.
 > 
-> The mic starts to work again after running userspace app like "alsactl
-> store". Following the lead, the evidence shows that as soon as connector
-> status is queried, the mic can work again.
+> s/unconditonally/unconditionally/
+> s/succesful/successful/
 > 
-> So also check connector value on resume to "wake up" the USB audio to
-> make it functional.
-> 
-> This can be device specific, however I think this generic approach may
-> benefit more than one device.
-> 
-> Now the resume callback checks connector, and a new callback,
-> reset_resume, to also restore switches and volumes.
-> 
-> Suggested-by: Takashi Iwai <tiwai@suse.de>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Changes from V3:
+>   Yet another try to make it work
 
 Applied now.  Thanks.
 
 
 Takashi
-
-> ---
-> v3:
->  - New callback to handle resume and reset-resume separately.
-> 
-> v2:
->  - Remove reset-resume.
->  - Fold the connector checking to the mixer resume callback.
-> 
->  sound/usb/mixer.c        | 44 +++++++++++++++++++++++++++++++---------
->  sound/usb/mixer.h        |  1 +
->  sound/usb/mixer_quirks.c |  2 +-
->  3 files changed, 36 insertions(+), 11 deletions(-)
-> 
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 5a2d9a768f70..2faf5767c7f8 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -3631,20 +3631,43 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
->  	return 0;
->  }
->  
-> +static int default_mixer_resume(struct usb_mixer_elem_list *list)
-> +{
-> +	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
-> +
-> +	/* get connector value to "wake up" the USB audio */
-> +	if (cval->val_type == USB_MIXER_BOOLEAN && cval->channels == 1)
-> +		get_connector_value(cval, NULL, NULL);
-> +
-> +	return 0;
-> +}
-> +
-> +static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
-> +{
-> +	int err = default_mixer_resume(list);
-> +
-> +	if (err < 0)
-> +		return err;
-> +	return restore_mixer_value(list);
-> +}
-> +
->  int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
->  {
->  	struct usb_mixer_elem_list *list;
-> +	usb_mixer_elem_resume_func_t f;
->  	int id, err;
->  
-> -	if (reset_resume) {
-> -		/* restore cached mixer values */
-> -		for (id = 0; id < MAX_ID_ELEMS; id++) {
-> -			for_each_mixer_elem(list, mixer, id) {
-> -				if (list->resume) {
-> -					err = list->resume(list);
-> -					if (err < 0)
-> -						return err;
-> -				}
-> +	/* restore cached mixer values */
-> +	for (id = 0; id < MAX_ID_ELEMS; id++) {
-> +		for_each_mixer_elem(list, mixer, id) {
-> +			if (reset_resume)
-> +				f = list->reset_resume;
-> +			else
-> +				f = list->resume;
-> +			if (f) {
-> +				err = f(list);
-> +				if (err < 0)
-> +					return err;
->  			}
->  		}
->  	}
-> @@ -3663,6 +3686,7 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
->  	list->id = unitid;
->  	list->dump = snd_usb_mixer_dump_cval;
->  #ifdef CONFIG_PM
-> -	list->resume = restore_mixer_value;
-> +	list->resume = default_mixer_resume;
-> +	list->reset_resume = default_mixer_reset_resume;
->  #endif
->  }
-> diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-> index c29e27ac43a7..e5a01f17bf3c 100644
-> --- a/sound/usb/mixer.h
-> +++ b/sound/usb/mixer.h
-> @@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
->  	bool is_std_info;
->  	usb_mixer_elem_dump_func_t dump;
->  	usb_mixer_elem_resume_func_t resume;
-> +	usb_mixer_elem_resume_func_t reset_resume;
->  };
->  
->  /* iterate over mixer element list of the given unit id */
-> diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-> index ffd922327ae4..b7f9c2fded05 100644
-> --- a/sound/usb/mixer_quirks.c
-> +++ b/sound/usb/mixer_quirks.c
-> @@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
->  		*listp = list;
->  	list->mixer = mixer;
->  	list->id = id;
-> -	list->resume = resume;
-> +	list->reset_resume = resume;
->  	kctl = snd_ctl_new1(knew, list);
->  	if (!kctl) {
->  		kfree(list);
-> -- 
-> 2.30.2
-> 
