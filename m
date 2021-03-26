@@ -7,86 +7,84 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AFC7C433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1171CC433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:43:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B259561A33
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:43:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B259561A33
+	by mail.kernel.org (Postfix) with ESMTPS id B4ED161984
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 06:43:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B4ED161984
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52D3311C;
-	Fri, 26 Mar 2021 07:42:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52D3311C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1731F167F;
+	Fri, 26 Mar 2021 07:43:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1731F167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616740997;
-	bh=YCP8WkWr44GjDP9iVcTb5GWXDSSKqtkjpFq8cYb8UhQ=;
+	s=default; t=1616741032;
+	bh=CXpjNFshmTlvtMF+A+V6zb1j4wuWQU5C/mGhSHKQrO0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OGKqBjHCi51uh1PVr3JR26Z7Gr032cxrrgil6XfH93JMTUn6VnNgAUMbHCa1b3ZSJ
-	 Tp+6FpiXekMXgmdCd0XksO+6laAcTlnFvM2SWWP0KODEEpJ4O1psZS37POa18yzmAJ
-	 Cn4QE0q1wyZm1L4ktnY6/9x21B9+HOn9RHjn8omE=
+	b=hNYd/XwI6AX8iKOBphWRGJHwkIGKVDMf+JLwDYUxdFjxFNtc+4U5XxD0M3NvoTjL2
+	 kHpCFj5V3KzR6CkfKvAXl5kWF+VQD8I8D6wN3S802ou+rFSLejZDRbx3E5USH5xO8y
+	 01zYpfgYzmI5CfRgYbGiScythfjA0w7FEeNrrFJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B3CFF80423;
-	Fri, 26 Mar 2021 07:41:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95861F80424;
+	Fri, 26 Mar 2021 07:41:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C2AEF8032D; Fri, 26 Mar 2021 07:41:31 +0100 (CET)
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
- [IPv6:2a00:1450:4864:20::636])
+ id 2BFB7F80424; Fri, 26 Mar 2021 07:41:39 +0100 (CET)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 960F0F8016B
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 960F0F8016B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AC81F801EC
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 07:41:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AC81F801EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="TtM2fa7P"
-Received: by mail-ej1-x636.google.com with SMTP id r12so6773677ejr.5
- for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:19 -0700 (PDT)
+ header.b="JoyAMkb/"
+Received: by mail-ed1-x532.google.com with SMTP id dm8so5084553edb.2
+ for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2021 23:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=pBsk7JwZ/LZ6cSzAnPDMM/93PskvajNpLm1bjDKAXDA=;
- b=TtM2fa7PbzOgQLB4fpw6IimpLrH2OIlw5m0waALp7JmZ+C3gb5XD8n3yBIREwNonVa
- eiYQVl4WckcL3VU5o6QVL9+Gt21DvsXfwX83rwmtT0IvG/p2VEz3u5m9IjoEA+B004RT
- g+GbAD9CBQbkk/Yaa2PmOIEq1C8DIPunDBpI2xttCSBMJG8BG7nj+xtBxiJp07agBWdY
- 2SYEGcnSUiOqGU0hsvdaYPL4c1pQ81TDFomf619Eo6/we+hcPB44KSSX92+wxneFaQi/
- 3YulS9egaP/f79BP6NJ3BF/VuYgahZqoyMrzJYyfntol5uOV1EzXjFSdErmobMSOeNpM
- bAEw==
+ bh=n+0SLp5bys43157dIPELL3xi2LwO4Hd+7UwWQjJAfcc=;
+ b=JoyAMkb/CytOSLNJEkTp63AUySgtJVGlnaeGsk3LbwZYQOUMwTiruvczpg6DNGjQAR
+ o2xW20EAm6R97lv/lkN9XhJpXrCG7VdGuguIC9RaarehuzEEBD+7XEBarraCKEMT7ROY
+ egLuGyKcaRR6rHzi4GD+jHywLlrp3U7IBrp7cV+HM0/vJ5mMX1FNeZCJA0O7jSiSPpkH
+ R7S1wmIsroPI16FceH7EUrzdGvKF279UYYG1plhjmwqiPggvV6KDp1GuW1dk/VutwnwZ
+ mkoOhY0EHq+CL84h1BG52bSoRKSFGH7JJsuAKPlvXthKrp0nttl7aI+nwUyTRcKfX4Py
+ nJnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=pBsk7JwZ/LZ6cSzAnPDMM/93PskvajNpLm1bjDKAXDA=;
- b=bHdQLKMN/UOejgK1j3SQrcABBmK43vn49XytbrBr6CxrIhpD7ajpS57pMIlLIfgXaA
- LTsp20mie0mkUUxK61CGUeTL/JTeD0qad0kU9NA3ixjDOPInCb9aq+z5OiPNgdmfIt6y
- nXci/rIgX6DFuHmGsDq4ZH1vNkSPWS8BIpAY2XJUdCmZ7YNM0BRY+5IXcHWMoJGPad0Q
- cLecZuJp9YWLBM2frSwRJu7xinTlwLhdgSPjy7H3j1itA3IAcnZN6LMaktwiX0ATu/sw
- /PKQ6M0xPzKR7udReC0bS12+zwWR+psht6fVgrxP+XoWRJ0mQMrTteomFOxysQS1OPU9
- DsAQ==
-X-Gm-Message-State: AOAM531UDrLd2j0abZrFxOa5lxFRJlke7/5+Xf7ibR7mI+NKfHbUyHEs
- 4OnAcUwbMmjv823xDK9OWvcmGw==
-X-Google-Smtp-Source: ABdhPJxM2pWHo5EX4fBrgBkHiE+kpNUhbDi/gLNPEs47hwEYC7Gt7x5YLuJrgOtzXhNHd3tDFabfDA==
-X-Received: by 2002:a17:906:72d1:: with SMTP id
- m17mr13391086ejl.118.1616740879057; 
- Thu, 25 Mar 2021 23:41:19 -0700 (PDT)
+ bh=n+0SLp5bys43157dIPELL3xi2LwO4Hd+7UwWQjJAfcc=;
+ b=W02TU8+6DpzHSZ/mckSi2FlK6s5Vf53kt/1F4ajXG3hu1eK5OSyiW/zlsRMRp6wQa2
+ 8tBzOtffQg2GEwRNO0WTPEjeoXFKypuZWm90pP7e4jTrpM+zce8Cs42BlJpIccOlNjJm
+ mUsXHdEwKy5QzuUAlUSad7ghu58EjMZ/ZUXXbvsIKiYMKtRMU8EouNqzTiMvsfQHKl5t
+ TEKPEeGMvDpYa2OaZBStXiLSEXj8rcwJjyUpf5c35wgHG013NgMVaOIEkd73oPJ+qXcY
+ VXM54U9pH6o7J3wG9LBFcoxEHDoxs2wn9UZ2XG/4AGOnoDatNvXGCfmadGgWLyUphTJC
+ crsA==
+X-Gm-Message-State: AOAM531TxckKz71RWkYj14h3RNwPNwVPR2NsH8GbSQrckt5Hy8xFgVgx
+ OZzX45wF1BLEbl8MuwkAb3ISKA==
+X-Google-Smtp-Source: ABdhPJxnl8ZN+PJsjTE3BJgo9Bt+T9JJECuyMydl6w79Db+GZYloOGFIvDVWfA1MXWoE2s2RWTv/Ug==
+X-Received: by 2002:aa7:dd99:: with SMTP id g25mr12937150edv.230.1616740884618; 
+ Thu, 25 Mar 2021 23:41:24 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.18
+ by smtp.gmail.com with ESMTPSA id ci22sm125325ejc.54.2021.03.25.23.41.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Mar 2021 23:41:18 -0700 (PDT)
+ Thu, 25 Mar 2021 23:41:24 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: vkoul@kernel.org
-Subject: [PATCH v5 3/9] soundwire: qcom: set continue execution flag for
- ignored commands
-Date: Fri, 26 Mar 2021 06:39:38 +0000
-Message-Id: <20210326063944.31683-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 8/9] soundwire: qcom: add auto enumeration support
+Date: Fri, 26 Mar 2021 06:39:43 +0000
+Message-Id: <20210326063944.31683-9-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
 References: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
@@ -111,44 +109,157 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-version 1.5.1 and higher IPs of this controller required to set
-continue execution on ignored command flag. This patch sets this flag.
+Qualcomm SoundWire controller supports Auto Enumeration of the
+devices within the IP. This patch enables support for this feature.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/qcom.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/soundwire/qcom.c | 86 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 81 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d05e41f68658..43ec22a5e332 100644
+index 6a563fb52444..c6c923329b15 100644
 --- a/drivers/soundwire/qcom.c
 +++ b/drivers/soundwire/qcom.c
-@@ -40,6 +40,7 @@
- #define SWRM_CMD_FIFO_CMD					0x308
- #define SWRM_CMD_FIFO_STATUS					0x30C
- #define SWRM_CMD_FIFO_CFG_ADDR					0x314
-+#define SWRM_CONTINUE_EXEC_ON_CMD_IGNORE			BIT(31)
- #define SWRM_RD_WR_CMD_RETRIES					0x7
+@@ -57,6 +57,8 @@
  #define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
+ #define SWRM_RD_FIFO_CMD_ID_MASK				GENMASK(11, 8)
  #define SWRM_ENUMERATOR_CFG_ADDR				0x500
-@@ -343,7 +344,15 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_1(m)		(0x530 + 0x8 * (m))
++#define SWRM_ENUMERATOR_SLAVE_DEV_ID_2(m)		(0x534 + 0x8 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_ADDR(m)		(0x101C + 0x40 * (m))
+ #define SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK			GENMASK(2, 0)
+ #define SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK			GENMASK(7, 3)
+@@ -143,6 +145,7 @@ struct qcom_swrm_ctrl {
+ 	enum sdw_slave_status status[SDW_MAX_DEVICES];
+ 	int (*reg_read)(struct qcom_swrm_ctrl *ctrl, int reg, u32 *val);
+ 	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
++	u32 slave_status;
+ };
  
- 	/* Configure number of retries of a read/write cmd */
--	ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR, SWRM_RD_WR_CMD_RETRIES);
-+	if (ctrl->version > 0x01050001) {
-+		/* Only for versions >= 1.5.1 */
-+		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR,
-+				SWRM_RD_WR_CMD_RETRIES |
-+				SWRM_CONTINUE_EXEC_ON_CMD_IGNORE);
-+	} else {
-+		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR,
-+				SWRM_RD_WR_CMD_RETRIES);
+ struct qcom_swrm_data {
+@@ -342,6 +345,7 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	int i;
+ 
+ 	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
++	ctrl->slave_status = val;
+ 
+ 	for (i = 0; i < SDW_MAX_DEVICES; i++) {
+ 		u32 s;
+@@ -352,10 +356,74 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+ 	}
+ }
+ 
++static void qcom_swrm_set_slave_dev_num(struct sdw_bus *bus,
++					struct sdw_slave *slave, int devnum)
++{
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++	u32 status;
++
++	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &status);
++	status = (status >> (devnum * SWRM_MCP_SLV_STATUS_SZ));
++	status &= SWRM_MCP_SLV_STATUS_MASK;
++
++	if (status == SDW_SLAVE_ATTACHED) {
++		if (slave)
++			slave->dev_num = devnum;
++		mutex_lock(&bus->bus_lock);
++		set_bit(devnum, bus->assigned);
++		mutex_unlock(&bus->bus_lock);
 +	}
++}
++
++static int qcom_swrm_enumerate(struct sdw_bus *bus)
++{
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++	struct sdw_slave *slave, *_s;
++	struct sdw_slave_id id;
++	u32 val1, val2;
++	bool found;
++	u64 addr;
++	int i;
++	char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
++
++	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
++		/*SCP_Devid5 - Devid 4*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
++
++		/*SCP_Devid3 - DevId 2 Devid 1 Devid 0*/
++		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_2(i), &val2);
++
++		if (!val1 && !val2)
++			break;
++
++		addr = buf2[1] | (buf2[0] << 8) | (buf1[3] << 16) |
++			((u64)buf1[2] << 24) | ((u64)buf1[1] << 32) |
++			((u64)buf1[0] << 40);
++
++		sdw_extract_slave_id(bus, addr, &id);
++		found = false;
++		/* Now compare with entries */
++		list_for_each_entry_safe(slave, _s, &bus->slaves, node) {
++			if (sdw_compare_devid(slave, id) == 0) {
++				qcom_swrm_set_slave_dev_num(bus, slave, i);
++				found = true;
++				break;
++			}
++		}
++
++		if (!found) {
++			qcom_swrm_set_slave_dev_num(bus, NULL, i);
++			sdw_slave_add(bus, &id, NULL);
++		}
++	}
++
++	return 0;
++}
++
+ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ {
+ 	struct qcom_swrm_ctrl *swrm = dev_id;
+-	u32 value, intr_sts, intr_sts_masked;
++	u32 value, intr_sts, intr_sts_masked, slave_status;
+ 	u32 i;
+ 	u8 devnum = 0;
+ 	int ret = IRQ_HANDLED;
+@@ -384,8 +452,15 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+ 			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
+ 				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
+ 					__func__);
+-				qcom_swrm_get_device_status(swrm);
+-				sdw_handle_slave_status(&swrm->bus, swrm->status);
++				swrm->reg_read(swrm, SWRM_MCP_SLV_STATUS, &slave_status);
++				if (swrm->slave_status == slave_status) {
++					dev_err(swrm->dev, "Slave status not changed %x\n",
++						slave_status);
++				} else {
++					qcom_swrm_get_device_status(swrm);
++					qcom_swrm_enumerate(&swrm->bus);
++					sdw_handle_slave_status(&swrm->bus, swrm->status);
++				}
+ 				break;
+ 			case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+ 				dev_err_ratelimited(swrm->dev,
+@@ -472,8 +547,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
  
- 	/* Set IRQ to PULSE */
- 	ctrl->reg_write(ctrl, SWRM_COMP_CFG_ADDR,
+ 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
+ 
+-	/* Disable Auto enumeration */
+-	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
++	/* Enable Auto enumeration */
++	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 1);
+ 
+ 	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+ 	/* Mask soundwire interrupts */
+@@ -507,6 +582,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN,
+ 				SWRM_INTERRUPT_STATUS_RMSK);
+ 	}
++	ctrl->slave_status = 0;
+ 	return 0;
+ }
+ 
 -- 
 2.21.0
 
