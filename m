@@ -2,86 +2,132 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25DD2C433DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BBFAC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:28:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4631761A0D
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:26:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4631761A0D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8D3F161A0D
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 16:28:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D3F161A0D
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=amd.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1611165E;
-	Fri, 26 Mar 2021 17:25:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1611165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B9111669;
+	Fri, 26 Mar 2021 17:27:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B9111669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616775958;
-	bh=FF7/BB++tI2amDIlM5ItEdiF9ZWA+H/8ySMG0+YQvwo=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sHvldb5fdW80qaI/A4sCXqGMdwosU3UtaE7tikjb3u/0l9jtbc4s/SwAOgdFh2+OG
-	 5Uvbax1fk68FlCMb6Bh4yCbzi3YUQ6p58KTQmmtk6zHIqPURy5rNbT1vnXkED9z9j8
-	 tzVX2nxSoLmgOD/99/RZmDGoo9FV51K07jR0AUBo=
+	s=default; t=1616776103;
+	bh=ZSDpa3PzhSOPIn1WhsMVuxKbHP9D87nC93LuqZWwYbo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VDwkSI0hpxyAthGR/dC22Yj5cTGYN8/B/XuUSvdw+jCFX+jOTRCfG2RqC1UAj7hET
+	 6mOp7sC7HEJT1gCmcOnqbtyuBVC7XWmwBS+m1jf2zL9GZzgmULHGm+7GVJvM4NvI8p
+	 uN60KoJq+ATToACJFBWbPnT+RdmEg/GxNtl9kkCU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15AC2F80156;
-	Fri, 26 Mar 2021 17:25:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F08BFF80156;
+	Fri, 26 Mar 2021 17:27:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9AE58F8016B; Fri, 26 Mar 2021 17:25:05 +0100 (CET)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id BE368F8016B; Fri, 26 Mar 2021 17:27:31 +0100 (CET)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam11on2069.outbound.protection.outlook.com [40.107.236.69])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B86DBF80104
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 17:24:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B86DBF80104
-IronPort-SDR: dYU3SzO6asOALBSCHXs4SLDw8YqSAsWcDJ0oiunymLKUfXdUyKAZwNBEHwiPnG0krUUPDV5fSV
- dslUJYnDTtew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="252530473"
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; d="scan'208";a="252530473"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 09:24:51 -0700
-IronPort-SDR: ccSVrBGzoKh5mP8SxuOFXDz87BSeqVxPwOM342JchlsoMfb1rq2jgWzAXHLQ+y1eNEN/f/64kH
- xB6W47jCc+xA==
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; d="scan'208";a="443869822"
-Received: from ttle1-mobl.amr.corp.intel.com (HELO [10.212.227.242])
- ([10.212.227.242])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 09:24:50 -0700
-Subject: Re: [PATCH] soundwire: intel: move to auxiliary bus
-To: Greg KH <gregkh@linuxfoundation.org>
-References: <20210323004325.19727-1-yung-chuan.liao@linux.intel.com>
- <YFmatyAoMZmBmkuZ@kroah.com>
- <777b4ca6-0d51-285d-549f-6ef768f2a523@linux.intel.com>
- <YFo0WW8hOsHesSFC@kroah.com>
- <35cc8d35-a778-d8b2-bee3-bb53f8a6c51e@linux.intel.com>
- <YFsG00+iDV/A4i3y@kroah.com>
- <357d9576-f79a-0ea6-eee4-292e27597565@linux.intel.com>
- <YFtchhxHDjfbyY46@kroah.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <e76719e4-57aa-2a19-c9e4-469bab4ef1ca@linux.intel.com>
-Date: Fri, 26 Mar 2021 11:24:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94B30F80103
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 17:27:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94B30F80103
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="ib+/X6sT"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G0+v5q8GT8daoQBty+vCMiROXrOdyfI8ZRMiyflqGHxPl1rJcAQxd9x0eFccAi38hkFVV2c1+XeGbnakmnBtrZCCIr8SLgmSCMvpvQJMU46wVRB2yo6Qnb3di89G/SpIW80p4sok4RuexG8kv+GbT9t9Os86n3kWHr5zhuTn1ryFaHVxed+2KiS8AM2n3ZJY0PqhE8e9mtbZEpi2wjYaBGCtj8S+1mt+JTjXKvllsmhH8XZFA1aQHfCR+6SgXBRX1YBSsXQpIn8KcCE/5mXUFKX5DFBjGujj39EoqqS9jXANLTgbShin7l2xfOJCsHhL8e0WerTUAfqBigK6mo+YlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OUPOVDzeOM1lnX3E6O81aEglFvA7amf6FgUqTfe5F0o=;
+ b=YGxJ/Pvpb4CYcRZMl6p2DmAnod+y7mOT5aTr9lT9KLjW9L7+IO07xbZ7pUTa+sxY8GR7DU+dr5x427tZM66ExqSMzk+ezQq4dlz4NaTULNNdvpLdIC2DmW6ZNk7Go6fW7MKVm8CvkD6rwBd1Xe152ehnB3sGFx4QuyIZspkyGbk8qccGJqqehUd/hnXtc18cJIDN+nJn1z18pZ5Of32cT4yR3GneJ3N9/vbGR54b4FoIotxDSfRPLOG2/R3eMjApQN6BE/jx++jLyJmvYfSq/NqoV+TcUQSt3gaVZ/+8PDbLzOSvX1LYDmqLYoFSKrEpRF8Zfr936jTTowMAJxPpwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OUPOVDzeOM1lnX3E6O81aEglFvA7amf6FgUqTfe5F0o=;
+ b=ib+/X6sTvi1e4WIxozFRCMxODfRHlmTGe/QEI55MtuXFj+d22tvDOoUA9uwxX8BkvGBu7HaswrmzoacO+X1di+asBAVnQWdgSfPPoRsiNl3eRHEKlaBuFfT7XSaGLosLRuRdqzazz8kd8pCDGZrcR0ByBWIGBZt17aPd74eAe18=
+Received: from BN6PR20CA0055.namprd20.prod.outlook.com (2603:10b6:404:151::17)
+ by DM6PR12MB4435.namprd12.prod.outlook.com (2603:10b6:5:2a6::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Fri, 26 Mar
+ 2021 16:27:17 +0000
+Received: from BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:151:cafe::ea) by BN6PR20CA0055.outlook.office365.com
+ (2603:10b6:404:151::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend
+ Transport; Fri, 26 Mar 2021 16:27:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT012.mail.protection.outlook.com (10.13.177.55) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3955.18 via Frontend Transport; Fri, 26 Mar 2021 16:27:17 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 26 Mar
+ 2021 11:27:16 -0500
+Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
+ Transport; Fri, 26 Mar 2021 11:27:12 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH RESEND 1/2] ASoC: amd: update spdx license for acp machine
+ driver
+Date: Fri, 26 Mar 2021 22:14:30 +0530
+Message-ID: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <YFtchhxHDjfbyY46@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org,
- linux-kernel@vger.kernel.org, hui.wang@canonical.com, vkoul@kernel.org,
- srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
- bard.liao@intel.com
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 351bd0a9-05e4-4bc5-8bc1-08d8f0740589
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4435:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4435A165FE926C18DF3B8CB597619@DM6PR12MB4435.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5uLMib+6UwL38BikGyjQsqNYE7Mp4vW4VfgZPAIIA4f2JoE44KNQ05RHZYZWfDHybE/IJY0r8QgjGVQGxnuhFvAiTwIlXJsJA3sLI+i/82F7VcUY6b3TeZe17iOfRlKwRAwGtUdr/IY4fq3R/UqoJGZaEz9O4bmTV0X806G++7nxbRgE0uKP17pTmg9lJrzATiSc8Sn6uuiiL5P/OPeEBsQqwiK5atwibvD9rO2pMQiLt4g2AkLpPwQGI9arYa8uvPs1FslwGHQSS0TSOXsN6GoMG3nF7K+Tjn+d+XZ9L60fwKSq2s6zaheLufI4MfZV3UNYqNFY7WvzhINQnKaxLxSL63xGjKpr4j4M8R+gLnl6mQt29Lg+cbCq+Ssq2m680GL1rxO4QMeYlOnS5xsUMUcF3HSqbFPPPPg3Qyb7sYCmUIR0Tbdh5zHoPohzFG9jc7TTQloOVnomA8mWjkVjgg0p4C/FFs3qjIyxX2l8obQw2HaOJ7q46AHhD4tAJLJhnRjGPmIu9RzSzXpvcnwhakXpQ9dJ/zPBW538+gt1c9T7B0QvIqSuhrjYMOZgaZjKQV5lm7hHFeUI9Fxv2BNiXwuuf1fD4XV/37GZZCyL15JqL0bFzArIC51jznHrAVe6HSa9amEKc/0EqJSIZCutYj5ExzweigQbcNpw5dzO5E4XPn6TqTfPy5oqGom1h1Ms
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(4636009)(376002)(346002)(136003)(396003)(39860400002)(36840700001)(46966006)(15650500001)(83380400001)(2906002)(81166007)(8936002)(5660300002)(356005)(426003)(8676002)(4326008)(70586007)(336012)(70206006)(2616005)(6666004)(82740400003)(26005)(316002)(186003)(82310400003)(110136005)(86362001)(36756003)(478600001)(47076005)(36860700001)(7696005)(54906003)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 16:27:17.2258 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 351bd0a9-05e4-4bc5-8bc1-08d8f0740589
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4435
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sunil-kumar.Dommati@amd.com,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Chuhong Yuan <hslester96@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,23 +143,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+update SPDX license for acp machine driver.
 
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ sound/soc/amd/acp-da7219-max98357a.c | 29 +++++------------------------
+ 1 file changed, 5 insertions(+), 24 deletions(-)
 
-On 3/24/21 10:36 AM, Greg KH wrote:
-> On Wed, Mar 24, 2021 at 09:55:01AM -0500, Pierre-Louis Bossart wrote:
->> Note at this point it would mean an API change and impact the existing
->> Nvidia/Mellanox code, we are using the same sequence as them
-> 
-> THere is no "stable api" in the kernel, so if something has to change,
-> that's fine, we can change the users at the same time, not an issue.
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index e65e007..84e3906 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -1,27 +1,8 @@
+-/*
+- * Machine driver for AMD ACP Audio engine using DA7219 & MAX98357 codec
+- *
+- * Copyright 2017 Advanced Micro Devices, Inc.
+- *
+- * Permission is hereby granted, free of charge, to any person obtaining a
+- * copy of this software and associated documentation files (the "Software"),
+- * to deal in the Software without restriction, including without limitation
+- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+- * and/or sell copies of the Software, and to permit persons to whom the
+- * Software is furnished to do so, subject to the following conditions:
+- *
+- * The above copyright notice and this permission notice shall be included in
+- * all copies or substantial portions of the Software.
+- *
+- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+- * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+- * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+- * OTHER DEALINGS IN THE SOFTWARE.
+- *
+- */
++// SPDX-License-Identifier: MIT
++//
++// Machine driver for AMD ACP Audio engine using DA7219, RT5682 & MAX98357 codec
++//
++//Copyright 2017-2021 Advanced Micro Devices, Inc.
+ 
+ #include <sound/core.h>
+ #include <sound/soc.h>
+-- 
+2.7.4
 
-What I meant is that this requires consensus to make a change, and so 
-far I haven't seen any burning desire from the contributors to revisit 
-the 2-step sequence.
-
-I will however modify the code in this patch to implement a SoundWire 
-'linkdev' register/unregister function, it'll be much easier to review 
-and maintain, and will follow the same pattern as the mlx5 code (all 
-errors and domain-specific initializations handled in the same 
-function). Draft code being tested is at 
-https://github.com/thesofproject/linux/pull/2809
