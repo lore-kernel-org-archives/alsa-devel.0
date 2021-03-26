@@ -2,70 +2,76 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04F6BC433E0
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 22:01:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E03AC433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 22:01:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C97F61A43
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 22:00:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C97F61A43
+	by mail.kernel.org (Postfix) with ESMTPS id 50EEC61A38
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 22:01:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 50EEC61A38
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 017E81663;
-	Fri, 26 Mar 2021 23:00:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 017E81663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FBFC167E;
+	Fri, 26 Mar 2021 23:00:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FBFC167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616796056;
-	bh=q6YnRjaBFhAfPu170ptoxqbLkp+sJcMYRdkGVkPT3ME=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R3bpftUQ4QBZNEF+uBXXaHcnON5fCPpTNFrtwjplMBVTt89ahxCooawjIzFOA6/A1
-	 AyCNweWpM7RObeY2wFJJAYbIe5rZbIbN20QoueCImetaeL6g6duHtWzqy0A0cQqlo4
-	 HzBLzuz4XoKRXB4VNqvN9FfW9xmZdc0AE5en8o0U=
+	s=default; t=1616796107;
+	bh=eR60m5WUsZSn66SKXMR3vSb8UbM89XiJ55fyh0EZPrE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sI60MM4sJPUYANept9WZVAM1od5q2c0fyHrGhDcoZymshoNkXF7ONqSbdCBi+CtvH
+	 NGuh1sAGlKmPcsJZpD/7XwnHsBCIIv50p8tEiI56Hd3wG0SecCrdiD2F2LL8LhTW6V
+	 mSf+LU3a+O/dWxf7q3JoxMSBe+zf2Het7eavOQzE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DEA8F801EB;
-	Fri, 26 Mar 2021 23:00:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFFA1F8032B;
+	Fri, 26 Mar 2021 23:00:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E057F80103; Fri, 26 Mar 2021 22:59:58 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 4F653F802DB; Fri, 26 Mar 2021 23:00:05 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E882FF80103
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 22:59:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E882FF80103
-IronPort-SDR: cZEAyGT0tylZ7mhVjsL0FvFK1rYH7I7TrZedaYV2Y9HwfTsqT9OPX5HS8MqWlZ3ydJY3ohG+vf
- T7j9QMQ5PPqg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="276371062"
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; d="scan'208";a="276371062"
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA249F80103
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 22:59:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA249F80103
+IronPort-SDR: S1pyx2ILhwRAZI59ydiY3VjevqU8B7nsvPfqimJtZAbCoCa9v+771Kc8IcIlxX09Hurd5z6ggJ
+ EQhOU/NWp6jQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="211396684"
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; d="scan'208";a="211396684"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 14:59:46 -0700
-IronPort-SDR: cvMv4ltXgyHozMqp91iGvXNe2CgxJp9zV41gu6oqhn+hdNgV0W7BgUpFBc2rba+G634N9a7x+n
- M7eW3ftuOfng==
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; d="scan'208";a="416706637"
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Mar 2021 14:59:54 -0700
+IronPort-SDR: Je863sflGveU/77pmbgCmYiQNuc7PUjcdUxpiLAjQaJIPqabbQQaTx5EKNHYVRLp2gvh70oQNi
+ Rtltnk7ZomtQ==
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; d="scan'208";a="416706667"
 Received: from zcmahone-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.255.231.203])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 14:59:45 -0700
+ 26 Mar 2021 14:59:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 00/17] ASoC: remove cppcheck warnings for multiple SOCs
-Date: Fri, 26 Mar 2021 16:59:10 -0500
-Message-Id: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/17] ASoC: amd: renoir: acp3x-pdm-dma: remove unnecessary
+ assignments
+Date: Fri, 26 Mar 2021 16:59:11 -0500
+Message-Id: <20210326215927.936377-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
+References: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Hui Wang <hui.wang@canonical.com>,
+ broonie@kernel.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,49 +87,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Trivial cleanups to make cppcheck less verbose.
+cppcheck warning:
 
-There should be no functionality change, except for the 'sti_uniperif'
-patch where an error check was added.
+sound/soc/amd/renoir/acp3x-pdm-dma.c:132:17: style: Variable
+'pdm_dma_enable' is assigned a value that is never
+used. [unreadVariable]
+ pdm_dma_enable = 0x00;
+                ^
+sound/soc/amd/renoir/acp3x-pdm-dma.c:156:18: style: Variable
+'pdm_dma_enable' is assigned a value that is never
+used. [unreadVariable]
+  pdm_dma_enable = 0x00;
+                 ^
 
-Pierre-Louis Bossart (17):
-  ASoC: amd: renoir: acp3x-pdm-dma: remove unnecessary assignments
-  ASoC: atmel: fix shadowed variable
-  ASoC: atmel: atmel-i2s: remove useless initialization
-  ASoC: bcm: cygnus_ssp: remove useless initialization
-  ASoC: meson: axg-tdmin: remove useless assignment
-  ASoC: meson: axg-tdmout: remove useless assignment
-  ASoC: pxa: remove useless assignment
-  ASoC: sti: sti_uniperif: add missing error check
-  ASoC: sti: uniperif: align function prototypes
-  ASoC: stm: stm32_adfsdm: fix snprintf format string
-  ASoC: sunxi: sun8i-codec: clarify expression
-  ASoC: tegra: tegra20_das: clarify expression
-  ASoC: tegra: tegra20_das: align function prototypes
-  ASoC: ti: omap-abe-twl6040: remove useless assignment
-  ASoC: ti: omap-mcsp: remove duplicate test
-  ASoC: ux500: mop500: rename shadowing variable
-  ASoC: ux500: mop500: align function prototype
+indeed those values are never used because the timeout is reset.
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
  sound/soc/amd/renoir/acp3x-pdm-dma.c | 2 --
- sound/soc/atmel/atmel-classd.c       | 6 +++---
- sound/soc/atmel/atmel-i2s.c          | 2 +-
- sound/soc/bcm/cygnus-ssp.c           | 2 +-
- sound/soc/meson/axg-tdmin.c          | 2 +-
- sound/soc/meson/axg-tdmout.c         | 2 +-
- sound/soc/pxa/mmp-pcm.c              | 2 +-
- sound/soc/sti/sti_uniperif.c         | 2 ++
- sound/soc/sti/uniperif.h             | 4 ++--
- sound/soc/stm/stm32_adfsdm.c         | 2 +-
- sound/soc/sunxi/sun8i-codec.c        | 2 +-
- sound/soc/tegra/tegra20_das.c        | 8 ++++----
- sound/soc/tegra/tegra20_das.h        | 6 +++---
- sound/soc/ti/omap-abe-twl6040.c      | 2 +-
- sound/soc/ti/omap-mcbsp.c            | 3 +--
- sound/soc/ux500/mop500.c             | 6 +++---
- sound/soc/ux500/mop500_ab8500.h      | 2 +-
- 17 files changed, 27 insertions(+), 28 deletions(-)
+ 1 file changed, 2 deletions(-)
 
+diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+index 7b14d9a81b97..1acd20439399 100644
+--- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
++++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+@@ -129,7 +129,6 @@ static int start_pdm_dma(void __iomem *acp_base)
+ 	enable_pdm_clock(acp_base);
+ 	rn_writel(pdm_enable, acp_base + ACP_WOV_PDM_ENABLE);
+ 	rn_writel(pdm_dma_enable, acp_base + ACP_WOV_PDM_DMA_ENABLE);
+-	pdm_dma_enable = 0x00;
+ 	timeout = 0;
+ 	while (++timeout < ACP_COUNTER) {
+ 		pdm_dma_enable = rn_readl(acp_base + ACP_WOV_PDM_DMA_ENABLE);
+@@ -153,7 +152,6 @@ static int stop_pdm_dma(void __iomem *acp_base)
+ 	if (pdm_dma_enable & 0x01) {
+ 		pdm_dma_enable = 0x02;
+ 		rn_writel(pdm_dma_enable, acp_base + ACP_WOV_PDM_DMA_ENABLE);
+-		pdm_dma_enable = 0x00;
+ 		timeout = 0;
+ 		while (++timeout < ACP_COUNTER) {
+ 			pdm_dma_enable = rn_readl(acp_base +
 -- 
 2.25.1
 
