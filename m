@@ -7,61 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB13CC433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:17:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECC17C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:18:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0582C61A1A
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:17:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0582C61A1A
+	by mail.kernel.org (Postfix) with ESMTPS id E951061A2D
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:18:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E951061A2D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 830A7165D;
-	Fri, 26 Mar 2021 10:16:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 830A7165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B00E167D;
+	Fri, 26 Mar 2021 10:17:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B00E167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616750248;
-	bh=vNYnOm7y7Kt1dAzlr/nJsJg2bWbCC1/A9yB5tP6h+Sw=;
+	s=default; t=1616750284;
+	bh=fgGsgsJqjbBBhZksJNtNwNNXJ3IB09PE7EkyhiGweeM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GAu3U/51uqizEtmSBEvXz8L1ci7AkjINn2R/7ZcOAP9Utr2jBZAGbw/67NKc0FFL1
-	 ubWkgOn/LxFmHHHvsxwj2O2b8u1zW9jJcwOUd3RXQYOt8K765MpAiIoh8ZqYpcUEGG
-	 XCj4vths3a9KHR3FpqUVG6iEHbASV8vyTz7CpxjE=
+	b=gehlMKbpAmwqx/5tAAx+KezOouMUNPUz+glOp8/prOgpycGYWLSKYwXmx7oJoeFFg
+	 PI8JR6VlCD6Ck5i5e0T0H2Ad56GqFHkGr4UOCN0M1Jig7Qrt/+92prAGH6ei7ggaw3
+	 jUGlYXu+GFuSqD63KGTkYRsai+hsCjmuFJCEvBfc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18B3BF8032B;
-	Fri, 26 Mar 2021 10:15:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58A6EF8032C;
+	Fri, 26 Mar 2021 10:15:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A9F4F800D0; Fri, 26 Mar 2021 10:15:45 +0100 (CET)
+ id 875B0F8032C; Fri, 26 Mar 2021 10:15:49 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9ACAF801D5
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 10:15:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9ACAF801D5
-IronPort-SDR: Ya1qnMb+6hsLYEOmoBZw+6xrNNWtllwF7GcWP/evpBEKnuGsjft9TVLtcxLboVhdPjn+4jEhmL
- ZBGLeUT1u7Eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276249429"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="276249429"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E214F802DB
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 10:15:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E214F802DB
+IronPort-SDR: YnVVtah4dZrdD8wkYvGj6pUxUAygT2iarPUlCoNmm0Xek+DY8zvsOeDHXDCbPzLIyDIxcISYaf
+ JKeuIDQKWd0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276249441"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="276249441"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 02:15:33 -0700
-IronPort-SDR: RF5j6OdW2lolHQ5vDF/92d3zBfcEV2xiffnyqc6SlcHhSoFO9Os8VizvW+SjZ1r9PETWRco5YM
- aE1fsPvIx7zw==
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="416463117"
+ 26 Mar 2021 02:15:42 -0700
+IronPort-SDR: a+Ips0hBo8a/YVK4bEK2GPju3/bfUOE/mDrHpqDvrPQp3AgeFwQHQDLf0k2NsYQjGBmds7yvKO
+ OjXHLnxErFow==
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="416463167"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 02:15:30 -0700
+ 26 Mar 2021 02:15:39 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [RESEND PATCH 02/11] soundwire: bus: test read status
-Date: Fri, 26 Mar 2021 17:15:05 +0800
-Message-Id: <20210326091514.20751-3-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH 05/11] soundwire: bus: uniquify dev_err() for SCP_INT
+ access
+Date: Fri, 26 Mar 2021 17:15:08 +0800
+Message-Id: <20210326091514.20751-6-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
 References: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
@@ -86,53 +87,50 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-In the existing code we may read a negative error value but still mask
-it and write it back.
+We have multiple cases where we read/write SCP_INT registers, but the
+same error message in all cases. Add a distinct error message for each
+case to help debug.
 
-Make sure all reads are tested and errors not propagated further.
-
+Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/soundwire/bus.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 04eb879de145..1c01cc192cbd 100644
+index 8b6d8fe934ae..a38b017f7a54 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -875,8 +875,12 @@ static int sdw_slave_clk_stop_prepare(struct sdw_slave *slave,
- 		if (wake_en)
- 			val |= SDW_SCP_SYSTEMCTRL_WAKE_UP_EN;
- 	} else {
--		val = sdw_read_no_pm(slave, SDW_SCP_SYSTEMCTRL);
--
-+		ret = sdw_read_no_pm(slave, SDW_SCP_SYSTEMCTRL);
-+		if (ret < 0) {
-+			dev_err(&slave->dev, "SDW_SCP_SYSTEMCTRL read failed:%d\n", ret);
-+			return ret;
-+		}
-+		val = ret;
- 		val &= ~(SDW_SCP_SYSTEMCTRL_CLK_STP_PREP);
- 	}
+@@ -1636,7 +1636,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 		ret = sdw_read_no_pm(slave, SDW_SCP_INT1);
+ 		if (ret < 0) {
+ 			dev_err(&slave->dev,
+-				"SDW_SCP_INT1 read failed:%d\n", ret);
++				"SDW_SCP_INT1 recheck read failed:%d\n", ret);
+ 			goto io_err;
+ 		}
+ 		_buf = ret;
+@@ -1644,7 +1644,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, _buf2);
+ 		if (ret < 0) {
+ 			dev_err(&slave->dev,
+-				"SDW_SCP_INT2/3 read failed:%d\n", ret);
++				"SDW_SCP_INT2/3 recheck read failed:%d\n", ret);
+ 			goto io_err;
+ 		}
  
-@@ -895,8 +899,12 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
- 	int val;
- 
- 	do {
--		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT) &
--			SDW_SCP_STAT_CLK_STP_NF;
-+		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT);
-+		if (val < 0) {
-+			dev_err(bus->dev, "SDW_SCP_STAT bread failed:%d\n", val);
-+			return val;
-+		}
-+		val &= SDW_SCP_STAT_CLK_STP_NF;
- 		if (!val) {
- 			dev_info(bus->dev, "clock stop prep/de-prep done slave:%d",
- 				 dev_num);
+@@ -1652,7 +1652,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 			ret = sdw_read_no_pm(slave, SDW_DP0_INT);
+ 			if (ret < 0) {
+ 				dev_err(&slave->dev,
+-					"SDW_DP0_INT read failed:%d\n", ret);
++					"SDW_DP0_INT recheck read failed:%d\n", ret);
+ 				goto io_err;
+ 			}
+ 			sdca_cascade = ret & SDW_DP0_SDCA_CASCADE;
 -- 
 2.17.1
 
