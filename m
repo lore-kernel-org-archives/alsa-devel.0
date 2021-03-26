@@ -2,67 +2,78 @@ Return-Path: <SRS0=Z4e1=IY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AA43C433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C856C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:08:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C782F61A05
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C782F61A05
+	by mail.kernel.org (Postfix) with ESMTPS id 543F361A45
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 08:08:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 543F361A45
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9558015DC;
-	Fri, 26 Mar 2021 09:01:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9558015DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A8CC1616;
+	Fri, 26 Mar 2021 09:07:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A8CC1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616745718;
-	bh=N9qOrr4eR6pH6vwo/Lv/K6t4qTBGJ8kjZ/8o9BYAIwE=;
+	s=default; t=1616746106;
+	bh=l9dmB1L2m1ibml1R3dI1WvihkEDxava5R/Ok0xEdyIc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ImhwI1M03pLnjCHpillN0eCiuwJgo+Atz6toIgTMuDBKsV7jOU8IpqZwUcxDjr93q
-	 EoP4osx4hMCIOvk1QkKADGkCVP+MLb//paxGs2XfpTYf6m6xcoyp2UzzuLsiH5RURj
-	 eZamkL5IVOxBinccVpd3I8yPMgcwb1P5IBgnN6Ns=
+	b=pOQdLhwqQJLX2mneVBi2SeP8DtRqEVfkULhwige1MS1SUgcl0KgkormjFDk3k7WEI
+	 Pp0yup0VrWU0gVSIWFEEM/YU8lSSnqIf7UgdACH3FdTbnWwGOloHMcwRhI4z+W+gfZ
+	 Zix/oWnqpe11R7JW5NGkHSD/y5RaopWoyKk8bsyc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 833F0F80156;
-	Fri, 26 Mar 2021 09:01:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF674F80156;
+	Fri, 26 Mar 2021 09:07:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36C9FF800D0; Fri, 26 Mar 2021 09:00:56 +0100 (CET)
+ id C5DB8F8016B; Fri, 26 Mar 2021 09:07:27 +0100 (CET)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A875F800D0
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 09:00:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A875F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49BE6F800D0
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 09:07:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49BE6F800D0
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 4B95CAE03;
- Fri, 26 Mar 2021 08:00:37 +0000 (UTC)
-Date: Fri, 26 Mar 2021 09:00:37 +0100
-Message-ID: <s5hpmzml4yi.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id BEC80ADFB;
+ Fri, 26 Mar 2021 08:07:19 +0000 (UTC)
+Date: Fri, 26 Mar 2021 09:07:19 +0100
+Message-ID: <s5hmtuql4nc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Muhammad Usama Anjum <musamaanjum@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Don't store returned value and check for
- errors
-In-Reply-To: <20210325083641.GA644957@LEGION>
-References: <20210325083641.GA644957@LEGION>
+To: Dylan Reid <dgreid@chromium.org>
+Subject: Re: [PATCH v4 6/6] ALSA: led control - add sysfs kcontrol LED marking
+ layer
+In-Reply-To: <CAEUnVG6ZO+kiPMnebG6pq3NkRqvP80Q8cB5bPJdgPt9DUgALzw@mail.gmail.com>
+References: <20210317172945.842280-1-perex@perex.cz>
+ <20210317172945.842280-7-perex@perex.cz>
+ <a3ddb881-6580-cd25-ef3c-734e686e6942@redhat.com>
+ <s5h5z1nf47r.wl-tiwai@suse.de>
+ <3820909c-29ce-9f3f-d1e6-c4611e06abe4@redhat.com>
+ <s5h35wqff1m.wl-tiwai@suse.de>
+ <a2018c94-8731-de29-e447-92457176a1b4@redhat.com>
+ <s5hy2eidul2.wl-tiwai@suse.de>
+ <a9a62884-da5b-ef2a-10ec-e414e6784677@perex.cz>
+ <CAOReqxh-ztd-FWvhoipUbkhzfhZCyH5KY8v1VwjswNFH7OnARg@mail.gmail.com>
+ <CAEUnVG6ZO+kiPMnebG6pq3NkRqvP80Q8cB5bPJdgPt9DUgALzw@mail.gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- colin.king@canonical.com, dan.carpenter@oracle.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Curtis Malainey <cujomalainey@google.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,41 +89,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Mar 2021 09:36:41 +0100,
-Muhammad Usama Anjum wrote:
+On Tue, 23 Mar 2021 23:49:40 +0100,
+Dylan Reid wrote:
 > 
-> The returned value by create_autodetect_quirk isn't being used other
-> than in the success check on next line. Remove the return value
-> assignement. Check for error values instead of success check.
+> On Tue, Mar 23, 2021 at 2:40 PM Curtis Malainey <cujomalainey@google.com>
+> wrote:
 > 
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
->  sound/usb/quirks.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>     On Mon, Mar 22, 2021 at 7:16 AM Jaroslav Kysela <perex@perex.cz> wrote:
+>    
+>     > Dne 20. 03. 21 v 10:48 Takashi Iwai napsal(a):
+>     >
+>     > >> With other OS you mean e.g. Android?  Android has device-specific
+>     > >> init-scripts which can either call alsactl or directly do the
+>     > >> echo-s.
+>     > >
+>     > > Also ChromeOS.  I'd like to get a general consensus before moving
+>     > > forward.
+>     >
+>     > Where are ChromeOS people? They could join to the discussion which is
+>     > floating
+>     > few months now. Perhaps, the gmail's spam filter does not allow them to
+>     > communicate with us ;-)
+>     >
+>     > Hi Sorry, i missed this was directly to dgreid and me. Will try to get
+>     up
+>     to speed on this.
 > 
-> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> index 9e5e37eff10e..5ce5f4ecb9d0 100644
-> --- a/sound/usb/quirks.c
-> +++ b/sound/usb/quirks.c
-> @@ -425,9 +425,9 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
->  							USB_CLASS_VENDOR_SPEC)
->  			continue;
->  
-> -		err = create_autodetect_quirk(chip, iface, driver);
-> -		if (err >= 0)
-> -			usb_driver_claim_interface(driver, iface, (void *)-1L);
-> +		if (create_autodetect_quirk(chip, iface, driver) < 0)
-> +			continue;
-> +		usb_driver_claim_interface(driver, iface, (void *)-1L);
+> Sorry, this one wasn't gmail's fault, it was my manual filtering of emails
+> about LEDs:)
+> 
+> Chrome OS is supportive of user space control when possible. We will work with
+> partners to establish a standard in Chrome OS for mute LED meaning (built in,
+> headset, usb, etc). Having user space control allows different ecosystems to
+> make different policy decisions. For us, the UCM-specified mute on/off will be
+> driven exclusively by the audio daemon.
 
-Hm, basically this change is only for readability (the code
-optimization makes almost no sense), and the readability itself isn't
-improved significantly by this change, either.
+OK, thanks for a green signal.  So there doesn't seem any big concerns
+about the implementation, so far.
 
-That is, I'm fine to take this, but OTOH, I see no compelling reason
-to do so...
+Just to be sure, Mark, do you see any possible issues for Android and
+other embedded deployment in this approach (sysfs + some init stuff +
+UCM)?
 
-
-thanks,
 
 Takashi
