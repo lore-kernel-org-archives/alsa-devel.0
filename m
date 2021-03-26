@@ -7,62 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A55EC433C1
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:18:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 680D0C433DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:18:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DB8A861A1D
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:18:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DB8A861A1D
+	by mail.kernel.org (Postfix) with ESMTPS id B5C1761A1D
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 09:18:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B5C1761A1D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40B001687;
-	Fri, 26 Mar 2021 10:17:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40B001687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 316A4166D;
+	Fri, 26 Mar 2021 10:18:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 316A4166D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616750328;
-	bh=ENTpHK6VGrD+ljZ8D1fLqkhMfemtgnKSTxiRwa1aUUg=;
+	s=default; t=1616750337;
+	bh=9wXS+FOOFXlq4FGnAiANBuwVydOQuekZq48QvTK1Y4g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X9jBm4JnUzcRg/GG6Tbe2XdOsUkDw+FTZnIIELvUI65t1+sxjo2uGi5rkY9h2lL/+
-	 omhhy5OZAYl66TBG7djOOXni77XPN5xOjzAHA8u+rg8554ZmTd362ntWxIPsqReyGU
-	 PbVeIw1JrZJUYYGyZd7qW/+j3j89tOb1gszXfZcM=
+	b=WoFqmEszvEY+/EElRjOjC8NY6UkxuzH8HEyi6fF8dezym2dEO3TF/ZZnqdJ7tOf49
+	 chwY/bxFGfNt1jk2Dr6Fjxjm/EAoLk1SGUpmJuMe/STuEWYasr4YptosSLx7cmWHoM
+	 uS3ZUlqQMWTG2QVJMvfS2Zp4RtPahQFpv9f/irTc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59319F804AA;
-	Fri, 26 Mar 2021 10:16:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92148F804AC;
+	Fri, 26 Mar 2021 10:16:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB307F80482; Fri, 26 Mar 2021 10:15:56 +0100 (CET)
+ id BD053F804B1; Fri, 26 Mar 2021 10:16:05 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03E9BF802E3
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 10:15:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03E9BF802E3
-IronPort-SDR: 8Rm5261D1HA1qv5U6mVFn/G3qNUX11DOYhs3iFEMD/hBR/exXoKsA+3BG8xGITGu1z/p6U4+2D
- NzzyiMN/PxTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276249454"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="276249454"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1408EF80475
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 10:15:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1408EF80475
+IronPort-SDR: Umr82vaUnDLGzZVGcxp8nX7UAfbpROAR4JcO05VkQz96wtEWfbyJvLeqwVHGoOTh4GiP9hITfR
+ GkKvuXkGaXYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276249464"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="276249464"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 02:15:48 -0700
-IronPort-SDR: gknePH7WVlzzkNOKPcLV7P5BbGCZwE5pT/6APW03UVEmTyT4+2sy2ISqzONPsn/oPruZKDu8tp
- P3t0eGQA3IuQ==
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="416463209"
+ 26 Mar 2021 02:15:55 -0700
+IronPort-SDR: nxcj55m2pwyMy1xxNTYqeREYtDRixWCHy7t1X7t6ONe2X6e2osSv84j9264L6VFcvvaG4Qh4+1
+ 9qjMsLgkgWGA==
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; d="scan'208";a="416463230"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Mar 2021 02:15:45 -0700
+ 26 Mar 2021 02:15:52 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [RESEND PATCH 07/11] soundwire: generic_bandwidth_allocation: remove
- useless init
-Date: Fri, 26 Mar 2021 17:15:10 +0800
-Message-Id: <20210326091514.20751-8-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH 09/11] soundwire: qcom: check of_property_read status
+Date: Fri, 26 Mar 2021 17:15:12 +0800
+Message-Id: <20210326091514.20751-10-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
 References: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
@@ -87,9 +86,15 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Cppcheck complains about two possible null pointer dereferences, but
-it's more like there are unnecessary initializations before walking
-through a list.
+Cppcheck complains:
+
+drivers/soundwire/qcom.c:773:6: style: Variable 'ret' is assigned a
+value that is never used. [unreadVariable]
+ ret = of_property_read_u8_array(np, "qcom,ports-block-pack-mode",
+     ^
+
+The return value is checked for all other cases, not sure why it was
+missed here.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
@@ -97,31 +102,23 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/generic_bandwidth_allocation.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soundwire/qcom.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
-index a9abb9722fde..805f5b6ebe86 100644
---- a/drivers/soundwire/generic_bandwidth_allocation.c
-+++ b/drivers/soundwire/generic_bandwidth_allocation.c
-@@ -143,7 +143,7 @@ static void sdw_compute_master_ports(struct sdw_master_runtime *m_rt,
- static void _sdw_compute_port_params(struct sdw_bus *bus,
- 				     struct sdw_group_params *params, int count)
- {
--	struct sdw_master_runtime *m_rt = NULL;
-+	struct sdw_master_runtime *m_rt;
- 	int hstop = bus->params.col - 1;
- 	int block_offset, port_bo, i;
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 9cce09cba068..277f711e374d 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -772,6 +772,9 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
  
-@@ -169,7 +169,7 @@ static int sdw_compute_group_params(struct sdw_bus *bus,
- 				    struct sdw_group_params *params,
- 				    int *rates, int count)
- {
--	struct sdw_master_runtime *m_rt = NULL;
-+	struct sdw_master_runtime *m_rt;
- 	int sel_col = bus->params.col;
- 	unsigned int rate, bps, ch;
- 	int i, column_needed = 0;
+ 	ret = of_property_read_u8_array(np, "qcom,ports-block-pack-mode",
+ 					bp_mode, nports);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < nports; i++) {
+ 		ctrl->pconfig[i].si = si[i];
+ 		ctrl->pconfig[i].off1 = off1[i];
 -- 
 2.17.1
 
