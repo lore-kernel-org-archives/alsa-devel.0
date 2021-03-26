@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E84BC433E2
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:27:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7D76C433C1
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:28:08 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9BBF961A28
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:27:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BBF961A28
+	by mail.kernel.org (Postfix) with ESMTPS id 2018D61A2A
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Mar 2021 03:28:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2018D61A2A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 332091684;
-	Fri, 26 Mar 2021 04:26:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 332091684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 962E615DC;
+	Fri, 26 Mar 2021 04:27:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 962E615DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616729255;
-	bh=kpF3vOOF7IeNzwndGbUFv2X1O30WBin5Hpm7H1cGJmo=;
+	s=default; t=1616729286;
+	bh=H/UelChSB7UORVUH3I7ymFDVjZsbGBiYa4VbB4vLAzI=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=reLGES9iDPnlheSHZasGT3nLKONDbtUL6uHmpN9FP5MHtfJuPn0ns7WhKAYaBd/4j
-	 GvZSugVYQo8xiVxpyWWE5muXL0My45+y/P1V8H7pa3dv3YY5YHFqtmA0XtbbDIdf6t
-	 iEIDrw1Yc1s7vLIOGYD7SvCNuEpF0hQeDM6P0v6E=
+	b=urWD5sPjYmCO92/Qjw9qf5blCBkigrqpgrqY34jn0zeyiVFHqCQaddDqGYjvU8bZI
+	 SxdEaz4jGxH6MV1IS+9UAfxpcj4wMEU7SOSEUA4ZA3fvTRg+jYLo/8YG3+oMdSjfb4
+	 JhUxvQXl+3gFYZDN2QhopLPzRqYuA4XOidROJpOI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F55AF80425;
-	Fri, 26 Mar 2021 04:26:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7CDBF80431;
+	Fri, 26 Mar 2021 04:26:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52F30F80425; Fri, 26 Mar 2021 04:26:11 +0100 (CET)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 38404F802E3
- for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 04:26:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38404F802E3
-Date: 26 Mar 2021 12:26:06 +0900
-X-IronPort-AV: E=Sophos;i="5.81,279,1610377200"; d="scan'208";a="76117694"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 26 Mar 2021 12:26:06 +0900
+ id CFAADF80424; Fri, 26 Mar 2021 04:26:17 +0100 (CET)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5D304F8032D
+ for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2021 04:26:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D304F8032D
+Date: 26 Mar 2021 12:26:11 +0900
+X-IronPort-AV: E=Sophos;i="5.81,279,1610377200"; d="scan'208";a="76343900"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 26 Mar 2021 12:26:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id E624C41A2E15;
- Fri, 26 Mar 2021 12:26:04 +0900 (JST)
-Message-ID: <87blb61tpv.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 02FC240104F3;
+ Fri, 26 Mar 2021 12:26:11 +0900 (JST)
+Message-ID: <87a6qq1tpp.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/6] ASoC: simple-card-utils: alloc dai_link information for
- CPU/Codec/Platform
+Subject: [PATCH 3/6] ASoC: audio-graph: count DAI / link numbers as in order
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87eeg21tqz.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,93 +74,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-simple-card / audio-graph are assuming single CPU/Codec/Platform on
-dai_link. Because of it, it is difficult to support Multi-CPU/Codec.
+audio-graph checks DT links 2 times. 1st is for counting DAIs / links
+to allocating memory, 2nd is for detecting DAIs.
+To detecting DAIs as CPU-dummy -> dummy-Codec order when DPCM case,
+it uses loops 2 times at 2nd DT link check.
+But it doesn't do it at 1st DT link check.
 
-This patch allocs CPU/Codec/Platform dai_link imformation
-instead of using existing props information. It can update to
-multi-CPU/Codec, but is still assuming single-CPU/Codec for now.
+	for (li.cpu = 1; li.cpu >= 0; li.cpu--) {
+		/*
+		 * Detect all CPU first, and Detect all Codec 2n
+		 *
+		 * In Normal sound case, all DAIs are detected
+		 * as "CPU-Codec".
+		 *
+		 * In DPCM sound case,
+		 * all CPUs   are detected as "CPU-dummy", and
+		 * all Codecs are detected as "dummy-Codec".
+		 * To avoid random sub-device numbering,
+		 * detect "dummy-Codec" in last;
+		 */
+		ret = graph_for_each_link(...);
+		...
+	}
+
+To prepare supporting multi-CPU/Codec, and code cleanup,
+this patch use same loop for 1st DT link check, too.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/simple_card_utils.h     |  7 ++++---
- sound/soc/generic/simple-card-utils.c | 15 +++++++++++----
- 2 files changed, 15 insertions(+), 7 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 29 ++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index ba4a3e1897b9..86e46cbf9e14 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -43,9 +43,9 @@ struct asoc_simple_priv {
- 	struct simple_dai_props {
- 		struct asoc_simple_dai *cpu_dai;
- 		struct asoc_simple_dai *codec_dai;
--		struct snd_soc_dai_link_component cpus;   /* single cpu */
--		struct snd_soc_dai_link_component codecs; /* single codec */
--		struct snd_soc_dai_link_component platforms;
-+		struct snd_soc_dai_link_component *cpus;
-+		struct snd_soc_dai_link_component *codecs;
-+		struct snd_soc_dai_link_component *platforms;
- 		struct asoc_simple_data adata;
- 		struct snd_soc_codec_conf *codec_conf;
- 		unsigned int mclk_fs;
-@@ -54,6 +54,7 @@ struct asoc_simple_priv {
- 	struct asoc_simple_jack mic_jack;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_dai *dais;
-+	struct snd_soc_dai_link_component *dlcs;
- 	struct snd_soc_codec_conf *codec_conf;
- 	struct gpio_desc *pa_gpio;
- 	const struct snd_soc_ops *ops;
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 6897455219d1..f05954529dfc 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -601,13 +601,15 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 	struct snd_soc_dai_link *dai_link;
- 	struct simple_dai_props *dai_props;
- 	struct asoc_simple_dai *dais;
-+	struct snd_soc_dai_link_component *dlcs;
- 	struct snd_soc_codec_conf *cconf = NULL;
- 	int i;
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 8c5cdcdc8713..3a967c520b01 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -617,6 +617,10 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
  
- 	dai_props = devm_kcalloc(dev, li->link, sizeof(*dai_props), GFP_KERNEL);
- 	dai_link  = devm_kcalloc(dev, li->link, sizeof(*dai_link),  GFP_KERNEL);
- 	dais      = devm_kcalloc(dev, li->dais, sizeof(*dais),      GFP_KERNEL);
--	if (!dai_props || !dai_link || !dais)
-+	dlcs      = devm_kcalloc(dev, li->link * 3, sizeof(*dai_props), GFP_KERNEL);
-+	if (!dai_props || !dai_link || !dais || !dlcs)
- 		return -ENOMEM;
- 
- 	if (li->conf) {
-@@ -622,17 +624,22 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 	 *	simple-card-utils.c :: asoc_simple_canonicalize_platform()
- 	 */
- 	for (i = 0; i < li->link; i++) {
--		dai_link[i].cpus		= &dai_props[i].cpus;
-+		dai_props[i].cpus	= dlcs + (3 * i) + 0;
-+		dai_props[i].codecs	= dlcs + (3 * i) + 1;
-+		dai_props[i].platforms	= dlcs + (3 * i) + 2;
++	/* Do it only CPU turn */
++	if (!li->cpu)
++		return 0;
 +
-+		dai_link[i].cpus		= dai_props[i].cpus;
- 		dai_link[i].num_cpus		= 1;
--		dai_link[i].codecs		= &dai_props[i].codecs;
-+		dai_link[i].codecs		= dai_props[i].codecs;
- 		dai_link[i].num_codecs		= 1;
--		dai_link[i].platforms		= &dai_props[i].platforms;
-+		dai_link[i].platforms		= dai_props[i].platforms;
- 		dai_link[i].num_platforms	= 1;
- 	}
+ 	li->link += 1; /* 1xCPU-Codec */
+ 	li->dais += 2; /* 1xCPU + 1xCodec */
  
- 	priv->dai_props		= dai_props;
- 	priv->dai_link		= dai_link;
- 	priv->dais		= dais;
-+	priv->dlcs		= dlcs;
- 	priv->codec_conf	= cconf;
+@@ -633,10 +637,22 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
  
- 	card->dai_link		= priv->dai_link;
+-	li->link++; /* 1xCPU-dummy */
+-	li->dais++; /* 1xCPU */
++	/*
++	 * Codec endpoint can be NULL for pluggable audio HW.
++	 * Platform DT can populate the Codec endpoint depending on the
++	 * plugged HW.
++	 */
++	if (!li->cpu && !codec_ep)
++		return 0;
++
++	/* Do it all CPU endpoint, and 1st Codec endpoint */
++	if (!li->cpu && dup_codec)
++		return 0;
+ 
+-	if (!dup_codec && codec_ep) {
++	if (li->cpu) {
++		li->link++; /* 1xCPU-dummy */
++		li->dais++; /* 1xCPU */
++	} else if (!dup_codec && codec_ep) {
+ 		li->link++; /* 1xdummy-Codec */
+ 		li->conf++; /* 1xdummy-Codec */
+ 		li->dais++; /* 1xCodec */
+@@ -698,9 +714,10 @@ static void graph_get_dais_count(struct asoc_simple_priv *priv,
+ 	 *	=> 4 DAIs  = 2xCPU + 2xCodec
+ 	 *	=> 1 ccnf  = 1xdummy-Codec
+ 	 */
+-	graph_for_each_link(priv, li,
+-			    graph_count_noml,
+-			    graph_count_dpcm);
++	for (li->cpu = 1; li->cpu >= 0; li->cpu--)
++		graph_for_each_link(priv, li,
++				    graph_count_noml,
++				    graph_count_dpcm);
+ 	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
+ 		li->link, li->dais, li->conf);
+ }
 -- 
 2.25.1
 
