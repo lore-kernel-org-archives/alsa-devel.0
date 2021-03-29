@@ -4,70 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57498C433C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Mar 2021 03:34:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 46A62C433DB
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Mar 2021 03:50:16 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DAB7D6192C
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Mar 2021 03:34:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DAB7D6192C
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=zte.com.cn
+	by mail.kernel.org (Postfix) with ESMTPS id CFF8261931
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Mar 2021 03:50:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CFF8261931
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7797715E5;
-	Mon, 29 Mar 2021 05:33:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7797715E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 933BC852;
+	Mon, 29 Mar 2021 05:49:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 933BC852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1616988846;
-	bh=C30JKT7rHyDnJv8JTTkNh0AM4xyhP8kfaUX/0kcwp1A=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1616989812;
+	bh=HFNamVLKea1Pduy0trDqKYLKorPU44Tx4mWBafmSltM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=aak06NHEVnBwvQ+a6jKI1mpF78iFoJ+npUqGkkkHk/ob91vmdF2v84kd/4znYVFBw
-	 Y7H04Lnm8CqWq5LxSfRh5R5RN//8X2OON1E6hre0VIjjYm+s430IPATe87A7GeV8hA
-	 JuX5YhV/pxz+q/Yo0NibR2XgDaeoi1G9cEkY4A5E=
+	b=nWz+96u45Oj8rLjBcRPqKuR60v5LqmprV43GrQIowZvJcYXqf+G+ew4Z743DpMcr7
+	 Yb6vXfCzIs+8nmbRsNibE1DEfRDoRXitL3LR2f11UDbvby2+CbCala4d7GlKu+9Zxb
+	 JOYz6CiPEsyd/Gbd6bYpdWhRYX1UYT7lu/QXUBNc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2269F80157;
-	Mon, 29 Mar 2021 05:33:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E4DCF80157;
+	Mon, 29 Mar 2021 05:49:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC0D4F80141; Mon, 29 Mar 2021 05:33:13 +0200 (CEST)
-Received: from mxct.zte.com.cn (mx7.zte.com.cn [202.103.147.169])
+ id 5B010F8015A; Mon, 29 Mar 2021 05:49:11 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18BAFF800B9
- for <alsa-devel@alsa-project.org>; Mon, 29 Mar 2021 05:33:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18BAFF800B9
-Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
- by Forcepoint Email with ESMTPS id 17FB47B9E187D20EAB8B;
- Mon, 29 Mar 2021 11:32:57 +0800 (CST)
-Received: from kjyxapp04.zte.com.cn ([10.30.12.203])
- by mse-fl2.zte.com.cn with SMTP id 12T3WeRd088418;
- Mon, 29 Mar 2021 11:32:40 +0800 (GMT-8)
- (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain (unknown [10.234.72.110])
- by smtp (Zmail) with SMTP; Mon, 29 Mar 2021 11:32:40 +0800
-X-Zmail-TransId: 3e8860614a57021-c6673
-From: root <wang.yi59@zte.com.cn>
-To: perex@perex.cz
-Subject: [PATCH] ALSA: core: remove redundant spin_lock pair in
- snd_card_disconnect
-Date: Mon, 29 Mar 2021 11:36:47 +0800
-Message-Id: <1616989007-34429-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-Mime-Version: 1.0
-X-MAIL: mse-fl2.zte.com.cn 12T3WeRd088418
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: base64 
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: wang.yi59@zte.com.cn, alsa-devel@alsa-project.org, wang.liang82@zte.com.cn,
- tiwai@suse.com, linux-kernel@vger.kernel.org, Jia Zhou <zhou.jia2@zte.com.cn>,
- xue.zhihong@zte.com.cn
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25F50F800B9
+ for <alsa-devel@alsa-project.org>; Mon, 29 Mar 2021 05:49:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25F50F800B9
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D2CD91A0E0D;
+ Mon, 29 Mar 2021 05:49:00 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 70DEE1A0C82;
+ Mon, 29 Mar 2021 05:48:56 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8B5A140291;
+ Mon, 29 Mar 2021 05:48:50 +0200 (CEST)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_rpmsg: initialise pointers to NULL
+Date: Mon, 29 Mar 2021 11:34:28 +0800
+Message-Id: <1616988868-971-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,20 +78,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-RnJvbTogSmlhIFpob3UgPHpob3UuamlhMkB6dGUuY29tLmNuPg0KDQptb2RpZmljYXRpb24gaW4g
-Y29tbWl0IDJhM2Y3MjIxYWNkZCAoIkFMU0E6IGNvcmU6IEZpeCBjYXJkIHJhY2VzIGJldHdlZW4N
-CnJlZ2lzdGVyIGFuZCBkaXNjb25uZWN0IikgcmVzdWx0aW5nIGluIHRoaXMgcHJvYmxlbS4NCg0K
-U2lnbmVkLW9mZi1ieTogSmlhIFpob3UgPHpob3UuamlhMkB6dGUuY29tLmNuPg0KU2lnbmVkLW9m
-Zi1ieTogWWkgV2FuZyA8d2FuZy55aTU5QHp0ZS5jb20uY24+DQotLS0NCiBzb3VuZC9jb3JlL2lu
-aXQuYyB8IDIgLS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdp
-dCBhL3NvdW5kL2NvcmUvaW5pdC5jIGIvc291bmQvY29yZS9pbml0LmMNCmluZGV4IDAxOGNlNGVm
-MS4uOWY1MjcwYzkwIDEwMDY0NA0KLS0tIGEvc291bmQvY29yZS9pbml0LmMNCisrKyBiL3NvdW5k
-L2NvcmUvaW5pdC5jDQpAQCAtMzkwLDEwICszOTAsOCBAQCBpbnQgc25kX2NhcmRfZGlzY29ubmVj
-dChzdHJ1Y3Qgc25kX2NhcmQgKmNhcmQpDQogCQlyZXR1cm4gMDsNCiAJfQ0KIAljYXJkLT5zaHV0
-ZG93biA9IDE7DQotCXNwaW5fdW5sb2NrKCZjYXJkLT5maWxlc19sb2NrKTsNCiANCiAJLyogcmVw
-bGFjZSBmaWxlLT5mX29wIHdpdGggc3BlY2lhbCBkdW1teSBvcGVyYXRpb25zICovDQotCXNwaW5f
-bG9jaygmY2FyZC0+ZmlsZXNfbG9jayk7DQogCWxpc3RfZm9yX2VhY2hfZW50cnkobWZpbGUsICZj
-YXJkLT5maWxlc19saXN0LCBsaXN0KSB7DQogCQkvKiBpdCdzIGNyaXRpY2FsIHBhcnQsIHVzZSBl
-bmRsZXNzIGxvb3AgKi8NCiAJCS8qIHdlIGhhdmUgbm8gcm9vbSB0byBmYWlsICovDQotLSANCjIu
-MTguNA==
+This fixes the following sparse warnings:
+
+sound/soc/fsl/fsl_rpmsg.c:45:45: sparse: sparse: Using plain integer as NULL pointer
+sound/soc/fsl/fsl_rpmsg.c:45:56: sparse: sparse: Using plain integer as NULL pointer
+
+Fixes: b73d9e6225e8 ("ASoC: fsl_rpmsg: Add CPU DAI driver for audio base on rpmsg")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ sound/soc/fsl/fsl_rpmsg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
+index 2d09d8850e2c..ea5c973e2e84 100644
+--- a/sound/soc/fsl/fsl_rpmsg.c
++++ b/sound/soc/fsl/fsl_rpmsg.c
+@@ -42,7 +42,7 @@ static int fsl_rpmsg_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	struct fsl_rpmsg *rpmsg = snd_soc_dai_get_drvdata(dai);
+-	struct clk *p = rpmsg->mclk, *pll = 0, *npll = 0;
++	struct clk *p = rpmsg->mclk, *pll = NULL, *npll = NULL;
+ 	u64 rate = params_rate(params);
+ 	int ret = 0;
+ 
+-- 
+2.17.1
 
