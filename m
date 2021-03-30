@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 99706C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 05:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89DA5C433C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 05:28:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D29A614A7
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 05:27:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D29A614A7
+	by mail.kernel.org (Postfix) with ESMTPS id 76B2061878
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 05:27:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 76B2061878
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC54B1681;
-	Tue, 30 Mar 2021 07:26:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC54B1681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B542168F;
+	Tue, 30 Mar 2021 07:27:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B542168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617082068;
-	bh=t8F6EtQjfqpQKgK7paP2FVyQ4UcRINfpShKjYkQppQI=;
+	s=default; t=1617082078;
+	bh=bDjwTgy6ny6ofEdUxZ1hUSA+Qc+29ETdlr4/kRO63r4=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W8cbbQcRpMzeNPsP38tn+/r+EMpbOsyuyYxhRWUvacv99C0Vs5n0BRTzDz5K1rIc4
-	 gQXEbSlj+VC5bDvBlI7mjtV4ISep5QtbUGIEIqMvRVTaazqcr8woMY14tUZP6tN9FC
-	 zv9R6+wQ6AwyfSZ2v1PXGvRdNnmA8mI1BpRdr0so=
+	b=SPBUNpYqK5BvK15H9nGV88BOKoEv6yKAJAJjlY4YmSuKVz+4YKgRGOpN33hAtrw5m
+	 MC1K2e0nZwoORic5Ly/mQM2/2JnoGeLok5S/RkHxZg99oXgRJGmyBcnQ/uKs5jiBKD
+	 ksIJqNL77MXwplF7LAaAzhDoSdHysDKx2xMDD7LI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41A1BF8014E;
-	Tue, 30 Mar 2021 07:26:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A964BF8027D;
+	Tue, 30 Mar 2021 07:26:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C5DBF8027B; Tue, 30 Mar 2021 07:26:40 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id C12C7F8014E
- for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 07:26:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C12C7F8014E
-Date: 30 Mar 2021 14:26:28 +0900
-X-IronPort-AV: E=Sophos;i="5.81,289,1610377200"; d="scan'208";a="76478771"
+ id C5042F802E3; Tue, 30 Mar 2021 07:26:44 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id EAACDF8027D
+ for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 07:26:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAACDF8027D
+Date: 30 Mar 2021 14:26:38 +0900
+X-IronPort-AV: E=Sophos;i="5.81,289,1610377200"; d="scan'208";a="76704794"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 30 Mar 2021 14:26:28 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 30 Mar 2021 14:26:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 947C84006192;
- Tue, 30 Mar 2021 14:26:28 +0900 (JST)
-Message-ID: <87sg4dxldn.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id A81144006192;
+ Tue, 30 Mar 2021 14:26:38 +0900 (JST)
+Message-ID: <87r1jxxldd.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/2] ASoC: soc-core: add comment for rtd freeing
+Subject: [PATCH 2/2] ASoC: soc-core: use device_unregister() if rtd allocation
+ failed
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87tuotxlen.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,50 +75,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We don't need to mind freeing for rtd,
-because it was created from devm_kzalloc(dev, xxx) which is rtd->dev.
+Because soc_free_pcm_runtime(rtd) checks rtd pointer and freeing
+rtd->xxx, it doesn't work correctly in case of rtd allocation failed.
 
-This means, if rtd->dev was freed, rtd will be also freed
-automatically.
-
-	soc_new_pcm_runtime(...)
-	{
-		...
-		rtd = devm_kzalloc(dev, ...);
-		rtd->dev = dev;
-		...
-	}
-
-This explanation was missing at soc_free_pcm_runtime() comment.
-This patch indicates it.
+We need to use device_unregister(dev) in such case.
+This patch fixup it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/soc-core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4d7e0d8f7269..e71aa1c92e66 100644
+index e71aa1c92e66..92d1d9240d4d 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -413,6 +413,14 @@ static void soc_free_pcm_runtime(struct snd_soc_pcm_runtime *rtd)
- 	 * it is alloced *before* rtd.
- 	 * see
- 	 *	soc_new_pcm_runtime()
-+	 *
-+	 * We don't need to mind freeing for rtd,
-+	 * because it was created from dev (= rtd->dev)
-+	 * see
-+	 *	soc_new_pcm_runtime()
-+	 *
-+	 *		rtd = devm_kzalloc(dev, ...);
-+	 *		rtd->dev = dev
- 	 */
- 	device_unregister(rtd->dev);
- }
+@@ -470,8 +470,10 @@ static struct snd_soc_pcm_runtime *soc_new_pcm_runtime(
+ 						 dai_link->num_codecs +
+ 						 dai_link->num_platforms),
+ 			   GFP_KERNEL);
+-	if (!rtd)
+-		goto free_rtd;
++	if (!rtd) {
++		device_unregister(dev);
++		return NULL;
++	}
+ 
+ 	rtd->dev = dev;
+ 	INIT_LIST_HEAD(&rtd->list);
 -- 
 2.25.1
 
