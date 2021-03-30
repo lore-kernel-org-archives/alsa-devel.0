@@ -2,72 +2,59 @@ Return-Path: <SRS0=2x8D=I4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30AC3C433C1
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 03:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45871C433C1
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 05:27:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7D46D600EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 03:08:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7D46D600EF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id A042C61878
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 05:26:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A042C61878
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F6AD168D;
-	Tue, 30 Mar 2021 05:07:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F6AD168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 441231607;
+	Tue, 30 Mar 2021 07:26:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441231607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617073726;
-	bh=ALa1tJ6P/PU2kDS8odXVSuGQlW8WjGNlYmhkkuQK1mY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jehNa4mU/TqnknGvLBf7eKMJSq/tBPMiRXWna7C3QcBFU5r9JnCsdGSylxg3oR07K
-	 bbBdxPOP4490ntqjvAqCoS5EXuiXco/aPwrV1Hfu1a0yHYtfF0baiCPi4CmCHmto0M
-	 1c3WRrqx0TWmHYf+d3jm2xwARgQC0epgjupT5KRM=
+	s=default; t=1617082017;
+	bh=fba45OXmX32g0gpi25zjqt7p9ZyiSrcEmTlC054sLtk=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uXGBENFmwHRagTcaWZjK6mWr8g5RejaRycANoFWehzVeEYj1uGzm84jdiOW/YaQNl
+	 n1KO0b8PNHkO8LygbO0l3uu6c+EjR3vYvCgD/y2GZ5bUX5vXoP0fEJ6JKmpk6tCEpN
+	 BQ2gjyTa5k3PdkZVpRFzaL1yyvtrg3PV0B+HjKco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA3C6F802CA;
-	Tue, 30 Mar 2021 05:07:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAA06F8023E;
+	Tue, 30 Mar 2021 07:26:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49345F80141; Tue, 30 Mar 2021 05:07:01 +0200 (CEST)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0E17F8023E
- for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 05:06:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0E17F8023E
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8Z6z5klQzyNF0;
- Tue, 30 Mar 2021 11:04:43 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 30 Mar 2021 11:06:41 +0800
-From: Zhen Lei <thunder.leizhen@huawei.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- "Rob Herring" <robh+dt@kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, 
- devicetree <devicetree@vger.kernel.org>, linux-kernel
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: dt-bindings: renesas,
- rsnd: Clear warning 'ports' does not match any of the regexes
-Date: Tue, 30 Mar 2021 11:06:31 +0800
-Message-ID: <20210330030631.2253-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210330030631.2253-1-thunder.leizhen@huawei.com>
-References: <20210330030631.2253-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Zhen Lei <thunder.leizhen@huawei.com>
+ id BB986F80240; Tue, 30 Mar 2021 07:26:04 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2D0B5F8014E
+ for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 07:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D0B5F8014E
+Date: 30 Mar 2021 14:25:52 +0900
+X-IronPort-AV: E=Sophos;i="5.81,289,1610377200"; d="scan'208";a="76478737"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 30 Mar 2021 14:25:52 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id BEB954006192;
+ Tue, 30 Mar 2021 14:25:52 +0900 (JST)
+Message-ID: <87tuotxlen.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 0/2] ASoC: soc-core: tidyup error handling for rtd
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,32 +70,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently, the property "ports" is always present. So mark it as true, and
-let audio-graph-card.yaml to check it.
 
-Otherwise, warnings similar to the following will be reported:
-arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dt.yaml: \
-sound@ec500000: 'ports' does not match any of the regexes: \
-'^rcar_sound,ctu$', '^rcar_sound,dai$', '^rcar_sound,dvc$', ...
+Hi Mark
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 1 +
- 1 file changed, 1 insertion(+)
+These are small clanup patches for soc-core.
+[1/2] patch adds missing explanation, and
+[2/2] patch fixup error handling of rtd.
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-index 487aeabd1f0e65b..d3c2899843aee58 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-@@ -112,6 +112,7 @@ properties:
-         - pattern: '^clk_(a|b|c|i)$'
- 
-   port: true
-+  ports: true
- 
- # use patternProperties to avoid naming "xxx,yyy" issue
- patternProperties:
+Kuninori Morimoto (2):
+  ASoC: soc-core: add comment for rtd freeing
+  ASoC: soc-core: use device_unregister() if rtd allocation failed
+
+ sound/soc/soc-core.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
 -- 
-1.8.3
-
+2.25.1
 
