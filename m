@@ -2,83 +2,84 @@ Return-Path: <SRS0=2x8D=I4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF94C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 17:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4058FC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 17:24:55 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F34C7619CB
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 17:10:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F34C7619CB
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 836B661985
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 17:24:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 836B661985
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5D471675;
-	Tue, 30 Mar 2021 19:09:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5D471675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 735AF1670;
+	Tue, 30 Mar 2021 19:24:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 735AF1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617124230;
-	bh=uIEg22xT2klEz+m34gGB1p2VL2itTxZRE/biPoxhASk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1617125091;
+	bh=vEG71IZo4thI+qUBenkHb6hVj6LBK3N7CJWtjcNTLXs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=los71AuJV1BnfNzRECjWq0RMfqtjYXby9Qy7huzDS8YLCPGZBBQA5VnuFvW/ip+bN
-	 N3KHrBS6RsiB9w+M+b3qEDHDRDBtouck9zWRdJo5dO9JGoTfI8YbYkHgRgmOTJQ6bL
-	 YeFsI4Fs1E2Sk+/esNuXXz5LIoS/BwzG/ZD/xgiQ=
+	b=cbNQHejpwa/yf/9QSfThmINpfICZ4Y/9hSlcQl+dufySuX0BHXjV9XLUG54Omg82S
+	 apt1563BiFUKOzpFprrrhnFfTGCSZRiepUieFn3rybhDiptXRQyx717R/xYBVEipXk
+	 udUZoj2J8LIC02/JhU0sRK605bjMiyGftA5LV3zk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A974F8023E;
-	Tue, 30 Mar 2021 19:09:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD74FF8023E;
+	Tue, 30 Mar 2021 19:24:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2317EF80240; Tue, 30 Mar 2021 19:09:38 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 6D9DFF80240; Tue, 30 Mar 2021 19:23:59 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8BC7F800B9
- for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 19:09:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8BC7F800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IjnYc0sd"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 368E3619AA;
- Tue, 30 Mar 2021 17:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617124169;
- bh=uIEg22xT2klEz+m34gGB1p2VL2itTxZRE/biPoxhASk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=IjnYc0sdh0ArAatNW9i5fDsriXvLFH9V1aYiC+u2/doWA0xDk0F899sDkDOOhjsed
- nJc4n3ZlQ7Av9KDRpoS3lfZUxrsygnyoHxOVbuu5Q6r1DdV5EKNFYapI+IFfrL2D4B
- iabYvL+fls+lmtHuBstUX0sWIlxxma93FcJZHNtr0SU8T68rUr/CU9dGOW2/VDXrQ2
- MRoCN0ddE3Ur6Pv46UEUQ43l42UVrrebDFeb2/jvF3fHLjV1RFuu2Z7Xy6n43VQlYJ
- Ycc+IrwJ8n9Nen1ocz1k4VP5QhprGA/LUgScv7ddU5bCL/k7/myjYc2vu7Ykx6xbiV
- EnmYmJbtaQOqw==
-Date: Tue, 30 Mar 2021 18:09:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jack Yu <jack.yu@realtek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2819AF80141
+ for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 19:23:52 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0FC40A003F;
+ Tue, 30 Mar 2021 19:23:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 0FC40A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1617125032; bh=rDdyaE1z6iA7X4zB+eVlnCo3h0Hzjbw7JMoAtQL89ic=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=YHH9dM80kxAR9uzkJWukofXotowNW9yqwNRu27IO4k278m48nEX2iXPpWbpq3ibrP
+ AvbEI/M6Wdlc5+otL2qvGn8Qfprqkb5brvqrtKV0PN9niUqv208le0Rj0ZYBEyspkV
+ oZprZzv5CEOOId8Ejqr1MciA9uDNUnGw4voWKGjg=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 30 Mar 2021 19:23:40 +0200 (CEST)
 Subject: Re: [PATCH v2 2/3] ASoC: rt715: remove kcontrols which no longer be
  used
-Message-ID: <20210330170915.GH4976@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>, Jack Yu <jack.yu@realtek.com>
 References: <5c314f5512654aca9fff0195f77264de@realtek.com>
+ <20210330170915.GH4976@sirena.org.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <cb29ed5c-44b1-c1ce-b704-8b93ac9f7a43@perex.cz>
+Date: Tue, 30 Mar 2021 19:23:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="OgApRN/oydYDdnYz"
-Content-Disposition: inline
-In-Reply-To: <5c314f5512654aca9fff0195f77264de@realtek.com>
-X-Cookie: Memory fault - where am I?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210330170915.GH4976@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Oder Chiou <oder_chiou@realtek.com>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "lars@metafoo.de" <lars@metafoo.de>,
  "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
- Derek =?utf-8?B?W+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
- "bard.liao@intel.com" <bard.liao@intel.com>,
- Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>,
+ =?UTF-8?B?RGVyZWsgW+aWueW+t+e+qV0=?= <derek.fang@realtek.com>,
  "Flove\(HsinFu\)" <flove@realtek.com>,
+ =?UTF-8?B?U2h1bWluZyBb6IyD5pu46YqYXQ==?= <shumingf@realtek.com>,
+ "bard.liao@intel.com" <bard.liao@intel.com>,
  "pierre-louis.bossart@intel.com" <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -95,30 +96,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Dne 30. 03. 21 v 19:09 Mark Brown napsal(a):
+> On Mon, Mar 29, 2021 at 06:54:00AM +0000, Jack Yu wrote:
+>> Using new kcontrols "Capture Switch" and "Capture Volume" instead,
+>> remove kcontrols which no longer be used.
+> 
+> Is this going to disrupt any UCM profiles?
 
---OgApRN/oydYDdnYz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes (the rt715 prefix is from the SOF driver):
 
-On Mon, Mar 29, 2021 at 06:54:00AM +0000, Jack Yu wrote:
-> Using new kcontrols "Capture Switch" and "Capture Volume" instead,
-> remove kcontrols which no longer be used.
+# RT715 specific volume control settings
 
-Is this going to disrupt any UCM profiles?
+BootSequence [
+	cset "name='rt715 DMIC3 Boost' 2"
+	cset "name='rt715 DMIC4 Boost' 2"
+	cset "name='rt715 ADC 24 Mux' 3"
+	cset "name='rt715 ADC 25 Mux' 4"
+	cset "name='rt715 ADC 27 Capture Switch' 1"
+	cset "name='rt715 ADC 07 Capture Switch' 1"
+	cset "name='rt715 ADC 07 Capture Volume' 58"
+]
 
---OgApRN/oydYDdnYz
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm actually working on a pure user-space solution to allow remapping at the
+control API level. Those universal codecs can be used for multiple stereo
+inputs or multiple channel inputs. The codec driver does not know the target
+mapping without the additional hints - DMI / machine checks.
 
------BEGIN PGP SIGNATURE-----
+				Jaroslav
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjWzoACgkQJNaLcl1U
-h9Cpugf/QeJnZVvHq2t17gLkZNZ3GI8IukKhWJjOES0D/RO1UCS3ZLZ9JNCIYDCU
-PYE3MqNern5kNEGTtSLjPlp/RtHblLX4dUhomdbAjHAOgYF5lAiW/0R+nOde0HRv
-uO+RsoBwQwQjyDz26B8uil4LP/klm0B1iFyGQO8Pw5P0+BRUdGBfpyzaj4e+HlRC
-2TSxkcESodyNyHH31tG8zB3cQ0PCzO1JFc4+0zAGHU5hgN7W3bgipynxFTehJWsJ
-JUZV+1pd3MW0d3bw+typ3Dsvo2IhMouhEpeUdwPtr4RkuuQ4WA3H1PNIolO9wvDJ
-0ApLFl8UGv+O/JYFFcCrqmHRTayAcg==
-=uFIl
------END PGP SIGNATURE-----
-
---OgApRN/oydYDdnYz--
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
