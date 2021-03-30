@@ -2,87 +2,66 @@ Return-Path: <SRS0=2x8D=I4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77CF0C433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 15:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D30AC433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 15:50:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 056A7619CF
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 15:36:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 056A7619CF
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 11BE8619C5
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 15:50:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 11BE8619C5
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C675167A;
-	Tue, 30 Mar 2021 17:35:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C675167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C76A167A;
+	Tue, 30 Mar 2021 17:49:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C76A167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617118604;
-	bh=nMNslYbP7bsoxUxRERQoAOXe4dowyalkqJZsnQN81Uk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1617119401;
+	bh=6xyxyP5SsV17NYP0kBERZ3hxlx3TfNVDek0Scn8frHA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eiDj1j3PF5qriNN4Lkk150/VjVx03WZLN1jjS+lYWIQ/RKC/nVFlSnSlP/4kqe9Fq
-	 kYIIMJdt3cZ82aJOnGVUiByzPH74wwtrfrTs2yRsTNYWdM/Qj/RgMIFvTR4sbRpCLh
-	 W12nsPtdDvOVNcvKsIhQT82dyPv0XBODg6fpMTWo=
+	b=LXWcbDMyUklmFzCdc4v6uNdFw+1PXO6AuOjJzXU2SNHa9XfHP8M1pU+itpPBwdZYd
+	 cMs5fdCJuByxt2kjFolOmAKgM3PMfhUzrF9/ziNM7kf6E6HYlmYwsWwZALyMDhN4ra
+	 H+deQLM02/YAOAhdlyB7Pb4YFAfQeY/xZ2S3kV2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D14B6F80141;
-	Tue, 30 Mar 2021 17:35:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 782FDF80141;
+	Tue, 30 Mar 2021 17:49:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4386DF800B9; Tue, 30 Mar 2021 17:35:52 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 6C9ADF80240; Tue, 30 Mar 2021 17:49:08 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9ED3DF800B9
- for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 17:35:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9ED3DF800B9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="m+KJceb+"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7738619A7;
- Tue, 30 Mar 2021 15:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617118545;
- bh=nMNslYbP7bsoxUxRERQoAOXe4dowyalkqJZsnQN81Uk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=m+KJceb+4H44bWJcmqmsx8kpjhc0T+EFlJeJuTwyk2s+ML8d8mWeJt+GpP1agJZL+
- 54k8PHVJlw6HVPBNX61mb+yHGQlQVWwGcdmrWa5iT09GRbvJOc4TRGHRgj1q4kEkQc
- GvZP7xqE3SULPPZNK+DTG6mb4tjre8Y7H/T9C/4QKoYygZZfnS2aMeBfJYa6pk2g0s
- xHyfPzWyRgFFRQ1ILIVTVxVy8PXDlBTMECNrKLqtz7s/zSSLxvnJ7pkaDmqmblrGaT
- 9y2g3BfhOM/vBG3ano+5tVksJ6JOh1uHxJR9G5SpmbA9Mc5bGRBM2PgFQwH6qKDWLr
- 1bcYGwdtds7zg==
-Date: Tue, 30 Mar 2021 16:35:34 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH] ASoC: amd: Add support for ALC1015P codec in acp3x
- machine driver
-Message-ID: <20210330153534.GF4976@sirena.org.uk>
-References: <1617095628-8324-1-git-send-email-Vijendar.Mukunda@amd.com>
- <82817878-a30d-2b0c-07f8-48bcca3ebc80@linux.intel.com>
- <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="MZf7D3rAEoQgPanC"
-Content-Disposition: inline
-In-Reply-To: <a55c7a75-22ab-31fc-81b3-ed8fa24027f4@amd.com>
-X-Cookie: Memory fault - where am I?
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org,
- Sunil-kumar.Dommati@amd.com, kent_chen@realtek.com,
- Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>,
- Tzung-Bi Shih <tzungbi@google.com>, open list <linux-kernel@vger.kernel.org>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Alexander.Deucher@amd.com,
- Arnd Bergmann <arnd@arndb.de>, shumingf@realtek.com, flove@realtek.com,
- Akshu Agrawal <akshu.agrawal@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 951B0F80141
+ for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 17:49:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 951B0F80141
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id B34C9AE15;
+ Tue, 30 Mar 2021 15:49:04 +0000 (UTC)
+Date: Tue, 30 Mar 2021 17:49:04 +0200
+Message-ID: <s5h5z18hcb3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v4 0/6] ALSA: control - add generic LED API
+In-Reply-To: <20210317172945.842280-1-perex@perex.cz>
+References: <20210317172945.842280-1-perex@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Curtis Malainey <cujomalainey@google.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Dylan Reid <dgreid@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,46 +77,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 17 Mar 2021 18:29:39 +0100,
+Jaroslav Kysela wrote:
+> 
+> This patchset tries to resolve the diversity in the audio LED
+> control among the ALSA drivers. A new control layer registration
+> is introduced which allows to run additional operations on
+> top of the elementary ALSA sound controls.
+> 
+> A new control access group (three bits in the access flags)
+> was introduced to carry the LED group information for
+> the sound controls. The low-level sound drivers can just
+> mark those controls using this access group. This information
+> is not exported to the user space, but user space can
+> manage the LED sound control associations through sysfs
+> (last patch) per Mark's request. It makes things fully
+> configurable in the kernel and user space (UCM).
+> 
+> The actual state ('route') evaluation is really easy
+> (the minimal value check for all channels / controls / cards).
+> If there's more complicated logic for a given hardware,
+> the card driver may eventually export a new read-only
+> sound control for the LED group and do the logic itself.
+> 
+> The new LED trigger control code is completely separated
+> and possibly optional (there's no symbol dependency).
+> The full code separation allows eventually to move this
+> LED trigger control to the user space in future.
+> Actually it replaces the already present functionality
+> in the kernel space (HDA drivers) and allows a quick adoption
+> for the recent hardware (ASoC codecs including SoundWire).
+> 
+> # lsmod | grep snd_ctl_led
+> snd_ctl_led            24576  0
+> 
+> The sound driver implementation is really easy:
+> 
+> 1) call snd_ctl_led_request() when control LED layer should be
+>    automatically activated
+>    / it calls module_request("snd-ctl-led") on demand /
+> 2) mark all related kcontrols with
+> 	SNDRV_CTL_ELEM_ACCESS_SPK_LED or
+> 	SNDRV_CTL_ELEM_ACCESS_MIC_LED
+> 
+> v4 changes:
+>   - the LED access flags are private to kernel now (no user space
+>     API change)
+>   - fixes (kctl management, sysfs cleanup)
+>   - add the sysfs LED marking kcontrol management
+>     - https://lore.kernel.org/alsa-devel/28fffebd-1ce9-7480-0f2f-ed8369abddf1@perex.cz/
+> v3 changes:
+>   - reorder the controls_rwsem use to fix the remaining mutex issue
+>     card->controls_rwsem <-> snd_ctl_layer_rwsem
+> v2 changes:
+>   - fix the locking - remove the controls_rwsem read lock
+>     in the element get (the consistency is already protected
+>     with the global snd_ctl_led_mutex and possible partial
+>     value writes are catched with the next value change
+>     notification callback)
+>   - rename state to brightness and show the brightness
+>     unsigned integer value instead the text on/off string
+>     (sync with the LED core routines)
+>   - remove snd_ctl_led_hello() function (CI warning)
+>   - make snd_ctl_led_get_by_access() function static (CI warning)
+>   - move snd_ctl_layer_rwsem lock before the registraction
+>     callback call in snd_ctl_register_layer() - optimization
+> v1:
+>   - https://lore.kernel.org/alsa-devel/20210211111400.1131020-1-perex@perex.cz/
+> Original RFC:
+>   - https://lore.kernel.org/alsa-devel/20210207201157.869972-1-perex@perex.cz/
+> 
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> 
+> Jaroslav Kysela (6):
+>   ALSA: control - introduce snd_ctl_notify_one() helper
+>   ALSA: control - add layer registration routines
+>   ALSA: control - add generic LED trigger module as the new control
+>     layer
+>   ALSA: HDA - remove the custom implementation for the audio LED trigger
+>   ALSA: control - add sysfs support to the LED trigger module
+>   ALSA: led control - add sysfs kcontrol LED marking layer
 
---MZf7D3rAEoQgPanC
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As we seem agreeing with this approach, I merged this patch set as is
+now for 5.13.  For the further development, let's put changes over
+there.
 
-On Tue, Mar 30, 2021 at 09:12:11PM +0530, Mukunda,Vijendar wrote:
-> On 3/30/21 7:52 PM, Pierre-Louis Bossart wrote:
+An immutable branch was created on top of the clean 5.12-rc5, and
+tagged as mute-led-rework, too.
 
-> > > =A0 static const struct acpi_device_id acp3x_audio_acpi_match[] =3D {
-> > > =A0=A0=A0=A0=A0 { "AMDI5682", (unsigned long)&acp3x_5682},
-> > > =A0=A0=A0=A0=A0 { "AMDI1015", (unsigned long)&acp3x_1015},
-> > > +=A0=A0=A0 { "AMDP1015", (unsigned long)&acp3x_1015p},
+Mark, please pull from there if you need to patch further ASoC changes
+that are relevant with the feature.
 
-> > This isn't a valid ACPI ID. AMDP does not exist in
 
-=2E..
+Thanks!
 
-> > There was a similar issue with Intel platforms using this part, we had
-> > to use a different HID.
-
-> Is it okay if i use "AMDI1016" for ALC1015P?
-
-That's valid, though obviously you might regret that later on if someone
-releases a CODEC with a 1016 name (equally well ACPI being what it is
-there's no good options for naming).
-
---MZf7D3rAEoQgPanC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBjRUUACgkQJNaLcl1U
-h9BCzQf/StVuObimo3H3q9bs6c5tTcFh1Iy8jt/jk6W6jV3j7f5XUhNvmMHqCFWy
-e7siS5UjGpCDRbZDIC+QnNZvt3t5krLRijboULo8jAreEkMisQLv6X3nNKoXMSmY
-wnSrnJpzwIFKcqUrCeLejk8KAgtvHwxKFQc5u7MEXrDQCCzgIU809WbtgmpPd+VV
-mwpyT59KIHjzrSJPZ+29Oco3XFm7YM22pLs0RBNki3OnG4jWy9wJu6Ppk/47RQIo
-iilrSirO96NhP2w6T/dDxf1x0fo9aa7Exbd7kYvV05PZBPXJq2cVUR+LIqc26o/y
-+wCtkJBgWlnyqlLNavuKel4pWEgeZw==
-=LM1I
------END PGP SIGNATURE-----
-
---MZf7D3rAEoQgPanC--
+Takashi
