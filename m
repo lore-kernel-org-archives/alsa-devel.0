@@ -2,75 +2,67 @@ Return-Path: <SRS0=2x8D=I4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64D5AC433DB
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 08:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 324C5C433DB
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 08:48:24 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 25C2B6191B
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 08:44:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 25C2B6191B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4B27260249
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Mar 2021 08:48:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4B27260249
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=canonical.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03AE41675;
-	Tue, 30 Mar 2021 10:43:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03AE41675
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD6741671;
+	Tue, 30 Mar 2021 10:47:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD6741671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617093847;
-	bh=BzVGzxF47npQxoaPhUx9SUpW2ax62qrGKvP/1FIKvQY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qegB44UJqs2otaEghfSh6gfUjYIVzHPZAB3XotpgaNJyPSvqphu5m349/uGPcQEzz
-	 hFeFyxL2mgZDd/DZuUp24jeajHOpMtVxeobU94n5Dj2J+JMoU9xhxfMM68yhFOfHFo
-	 OFs3/0bhKsZwD/0QzGHEsmfw6o+ZWj8+6qEGGwrc=
+	s=default; t=1617094101;
+	bh=5Ilm/rUSajrzN2749gIk43pBgtjV9hfhn9rsu6w7PBc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BNxAh3qC/ZTqOWBivMPiM9b5DLJTIpa4FETvu/t9SDD2YxHPWTkJHmmr/iQTdqkXa
+	 PVd9CUPTSpOAIQJ6Lj+COwb+Neo9RnkNQEmeLSP3viFe1sWNXyYKS9PgRt+VbZ4lIt
+	 PH3D4lDTW9QEB55Hmost2Q6yjetofW+n3HW3hiMY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96A7EF8023E;
-	Tue, 30 Mar 2021 10:43:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57525F8023E;
+	Tue, 30 Mar 2021 10:47:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 306B0F80240; Tue, 30 Mar 2021 10:43:14 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 661A1F80240; Tue, 30 Mar 2021 10:47:30 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A177EF80141
- for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 10:43:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A177EF80141
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VE57U+us"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 291ED61919;
- Tue, 30 Mar 2021 08:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617093789;
- bh=BzVGzxF47npQxoaPhUx9SUpW2ax62qrGKvP/1FIKvQY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=VE57U+us+WY2P7L75NyhztMPzKv47qlr7zFsI5g4VEu/PGQgC7xXcGldZ5myuSx97
- FAFZuCT6YDQC14wM6lTEZ0NZqCkv6qqnY0SiBku0HR2MYI03pj7x2gn5UZDxkiQ9hl
- PRVayX9J4rxOfKc/3mksaBV8qzQVXmVY2nBu42qNs84OlFOYbJQWz5/mdysb95q1xQ
- reLoX0cMiTVDPaoo/N/ZU5uqILVqaAdQSYwpceTNJXvv49SqtXxpnPwMNI9dsAQMkm
- hHymudupflnovj1MSU7neN1lI/RcUocquJ/0RkEvWwuniyvf0n+UX0qnIVwcP+P9Ft
- NF8Fj6wAsEURw==
-Date: Tue, 30 Mar 2021 14:13:04 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v5 6/9] soundwire: qcom: add support to new interrupts
-Message-ID: <YGLkmM4QCjkpg8/6@vkoul-mobl.Dlink>
-References: <20210326063944.31683-1-srinivas.kandagatla@linaro.org>
- <20210326063944.31683-7-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A1EEF800B9
+ for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2021 10:47:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A1EEF800B9
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+ by youngberry.canonical.com with esmtpsa
+ (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128) (Exim 4.86_2)
+ (envelope-from <colin.king@canonical.com>)
+ id 1lRA1m-0004fg-PJ; Tue, 30 Mar 2021 08:47:10 +0000
+From: Colin King <colin.king@canonical.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Argus Lin <argus.lin@mediatek.com>, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Subject: [PATCH][next] ASoC: mediatek: mt6359: Fix spelling mistake "reate" ->
+ "create"
+Date: Tue, 30 Mar 2021 09:47:10 +0100
+Message-Id: <20210330084710.997731-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326063944.31683-7-srinivas.kandagatla@linaro.org>
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,36 +78,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 26-03-21, 06:39, Srinivas Kandagatla wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> -	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR, sts);
-> +	do {
-> +		for (i = 0; i < SWRM_INTERRUPT_MAX; i++) {
-> +			value = intr_sts_masked & (1 << i);
+There is a spelling mistake in a dev_err error message. Fix it.
 
-BIT(i) istead of shifiting?
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/mt6359-accdet.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +			if (!value)
-> +				continue;
-> +
-> +			switch (value) {
-> +			case SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ:
-> +				devnum = qcom_swrm_get_alert_slave_dev_num(swrm);
-> +				if (devnum < 0) {
-> +					dev_err_ratelimited(swrm->dev,
-> +					    "no slave alert found.spurious interrupt\n");
-> +				} else {
-> +					sdw_handle_slave_status(&swrm->bus, swrm->status);
-> +				}
->  
-> -	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED)
-> -		complete(&ctrl->broadcast);
-> +				break;
-> +			case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
-> +			case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
-> +				dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
-> +					__func__);
-
-This should be debug
+diff --git a/sound/soc/codecs/mt6359-accdet.c b/sound/soc/codecs/mt6359-accdet.c
+index 0bef6eaad5ad..4222aed013f1 100644
+--- a/sound/soc/codecs/mt6359-accdet.c
++++ b/sound/soc/codecs/mt6359-accdet.c
+@@ -1019,7 +1019,7 @@ static int mt6359_accdet_probe(struct platform_device *pdev)
+ 	priv->jd_workqueue = create_singlethread_workqueue("mt6359_accdet_jd");
+ 	INIT_WORK(&priv->jd_work, mt6359_accdet_jd_work);
+ 	if (!priv->jd_workqueue) {
+-		dev_err(&pdev->dev, "Failed to reate jack detect workqueue\n");
++		dev_err(&pdev->dev, "Failed to create jack detect workqueue\n");
+ 		ret = -1;
+ 		goto err_eint_wq;
+ 	}
 -- 
-~Vinod
+2.30.2
+
