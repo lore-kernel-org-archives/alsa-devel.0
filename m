@@ -2,69 +2,77 @@ Return-Path: <SRS0=wMTJ=I5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66C01C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 18:09:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F42CC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 18:10:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D109860238
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 18:09:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D109860238
+	by mail.kernel.org (Postfix) with ESMTPS id 6DD8A60FF0
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 18:10:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6DD8A60FF0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EC1F1669;
-	Wed, 31 Mar 2021 20:08:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EC1F1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id D63681657;
+	Wed, 31 Mar 2021 20:09:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D63681657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617214145;
-	bh=QDHNpeNCdikZ3aR70vvJXIDTtgdbXzHPHMAydXp3jUo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=u7Daaf2J3FYotgw7JYXfyqTc3a/pGY0zL8Y3CXXzpaPqVqpdn7mG8VLnFkuOP/hzo
-	 xbFhM1UQ6wUHb0DrrIYp5n2BV/KBqTVLRHeAkeTcggNUKb5tidLecgKk9TqGxJZJii
-	 StSueSeWw+8vKCn+Ve2miPBbjPlFL+YaJ57hfN/A=
+	s=default; t=1617214220;
+	bh=ARpih9knWOZ+mtWe+eCc5H1pBP1zHghWiGqNw17PlkQ=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VZC1loevYOtZ6JeojE8xaBfqf7L8tm8bbcZZ3GFCB91MAjbKarTpkfuL6HrPHwiN6
+	 9wEvhHYmZwt6ozpvZjaGRUBCmSKx41hSs/j9tab/iAFOL0i+JsKvHq/vALJdDTgMDL
+	 aCJ/hlhTjHEzgQjChmA9UCv1x7JxkzDjXM2wdw+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9BA4DF8016E;
-	Wed, 31 Mar 2021 20:07:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AF25F8015A;
+	Wed, 31 Mar 2021 20:09:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30A33F8020C; Wed, 31 Mar 2021 20:07:38 +0200 (CEST)
+ id 2D306F80166; Wed, 31 Mar 2021 20:09:29 +0200 (CEST)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 042CDF8016E
- for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 20:07:31 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB8D1F8015A
+ for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 20:09:25 +0200 (CEST)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8FB22A0040;
- Wed, 31 Mar 2021 20:07:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8FB22A0040
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 50375A003F;
+ Wed, 31 Mar 2021 20:09:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 50375A003F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1617214051; bh=duEazCV0Ib10+w/eVt5xAYmeSBDAOY/SAMGLTLLK2uU=;
- h=From:To:Cc:Subject:Date:From;
- b=TKosBR00OYE+ebMIulXUujPLgHpwlxDMSNEbwY0t50ZBbOf3TDiXkRRjPfwX+XCwc
- b3c8+13dXf7XtC+N3m6l+F4hUQc24R0oQKcAons5ACbkFs4GLAlSvoNVkQiKv/5t2x
- FiorqbRbz0YB4TM5Rro8btEZWk5Q7Tkhc5IQn86c=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ t=1617214165; bh=cVlBUFphs/dnp74K2p5kRDyfBDi3OUtOUvGdNmBLsP4=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=sBeAQc3JNSuqQS+Lcy4Gncbk+pJfATshMepPkXFUdX1HwkUhHIm1/haAjQb1Hfz1v
+ 06blgNKsS56DwNFOFLb6Xs5AJa9bKGph6vBV7HxOpgXnDXj9M5tPNyrbEXSi3W7iVs
+ qtfeT3BowNx5VOWrz/mJ6T/G6Dr0NJa8tC8mCyKk=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 31 Mar 2021 20:07:28 +0200 (CEST)
+ Wed, 31 Mar 2021 20:09:19 +0200 (CEST)
+Subject: Re: ALSA: control - add layer registration routines
+To: Colin Ian King <colin.king@canonical.com>
+References: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
 From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] ALSA: control led - improve the set_led_id() parser
-Date: Wed, 31 Mar 2021 20:07:25 +0200
-Message-Id: <20210331180725.663623-1-perex@perex.cz>
-X-Mailer: git-send-email 2.30.2
+Message-ID: <51ba335d-45ac-b50d-2ec6-333afd1daebf@perex.cz>
+Date: Wed, 31 Mar 2021 20:09:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,44 +88,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It may be possible that the string pointer does not move
-when parsing. Add a code which detects this state and
-simply break the parser loop in this case.
+Dne 31. 03. 21 v 17:17 Colin Ian King napsal(a):
+> Hi,
+> 
+> Static analysis on linux-next with Coverity has detected a potential
+> issue in the following commit:
+> 
+> commit 3f0638a0333bfdd0549985aa620f2ab69737af47
+> Author: Jaroslav Kysela <perex@perex.cz>
+> Date:   Wed Mar 17 18:29:41 2021 +0100
+> 
+>     ALSA: control - add layer registration routines
+> 
+> The static analysis is as follows:
+> 
+> 2072 void snd_ctl_disconnect_layer(struct snd_ctl_layer_ops *lops)
+> 2073 {
+> 2074        struct snd_ctl_layer_ops *lops2, *prev_lops2;
+> 2075
+> 2076        down_write(&snd_ctl_layer_rwsem);
+> 
+>     assignment: Assigning: prev_lops2 = NULL.
+> 
+> 2077        for (lops2 = snd_ctl_layer, prev_lops2 = NULL; lops2; lops2
+> = lops2->next)
+> 2078                if (lops2 == lops) {
+> 
+>     null: At condition prev_lops2, the value of prev_lops2 must be NULL.
+>     dead_error_condition: The condition !prev_lops2 must be true.
+> 
+> 2079                        if (!prev_lops2)
+> 2080                                snd_ctl_layer = lops->next;
+> 2081                        else
+> 
+>     'Constant' variable guards dead code (DEADCODE) dead_error_line:
+>     Execution cannot reach this statement: prev_lops2->next = lops->next;.
+>     Local variable prev_lops2 is assigned only once, to a constant
+> value, making it effectively constant throughout its scope. If this is
+> not the intent, examine the logic to see if there is a missing
+> assignment that would make prev_lops2 not remain constant.
+> 
+> 2082                                prev_lops2->next = lops->next;
+> 2083                        break;
+> 2084                }
+> 2085        up_write(&snd_ctl_layer_rwsem);
+> 2086 }
+> 
+> I couldn't quite figure out the original intent of the prev_lops use, so
+> I'd thought I'd report this issue as the code does look incorrect.
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/core/control_led.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Thank you. I submitted the fix here:
 
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index d4fb8b873f34..788fd9e275e0 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -506,7 +506,7 @@ static char *parse_iface(char *s, unsigned int *val)
- static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, size_t count,
- 			  bool attach)
- {
--	char buf2[256], *s;
-+	char buf2[256], *s, *os;
- 	size_t len = max(sizeof(s) - 1, count);
- 	struct snd_ctl_elem_id id;
- 	int err;
-@@ -517,6 +517,7 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
- 	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 	s = buf2;
- 	while (*s) {
-+		os = s;
- 		if (!strncasecmp(s, "numid=", 6)) {
- 			s = parse_uint(s + 6, &id.numid);
- 		} else if (!strncasecmp(s, "iface=", 6)) {
-@@ -546,6 +547,8 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
- 		}
- 		if (*s == ',')
- 			s++;
-+		if (s == os)
-+			break;
- 	}
- 
- 	err = snd_ctl_led_set_id(led_card->number, &id, led_card->led->group, attach);
+https://lore.kernel.org/alsa-devel/20210331180702.663489-1-perex@perex.cz/
+
+					Jaroslav
+
 -- 
-2.30.2
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
