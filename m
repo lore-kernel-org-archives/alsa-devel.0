@@ -2,75 +2,55 @@ Return-Path: <SRS0=wMTJ=I5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE664C433DB
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 07:12:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8354C433DB
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 07:21:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 60AE8619DD
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 07:12:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60AE8619DD
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+	by mail.kernel.org (Postfix) with ESMTPS id 34D28619AB
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 07:21:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 34D28619AB
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 041C21675;
-	Wed, 31 Mar 2021 09:11:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 041C21675
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA675847;
+	Wed, 31 Mar 2021 09:20:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA675847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617174729;
-	bh=QieTUbKCjqtXoQZgvu8uSGq9FqWK13uB2RvihS14WzI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HhfwY/ln4Y4kK3RiorfMJr2yL6N5yU1BL4u75CJ3lsHUy5IR3IlXCw5vreR+Sikl3
-	 yFUI213ZKSSbSMfVRzChbnUjrI74mJetvbBnIKCQOgS/bngv/4lfOCYfiQSuuLZIYQ
-	 s1PAxIpw6QvKnWk8ybvOWe+ugBo/n+zWkgBmf+lo=
+	s=default; t=1617175278;
+	bh=s2PUQNlEV3FmGqNJwaZL4y2iYS/TiHjlrDi9auYIQ9o=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=D16VAQSWCfonQ/puCo5ECSsYm89kZpFtp8ys2EyMUY9RxrZO+/o99ptfzp9RwvQOn
+	 dY/AqgjuFcrC1bXgFoH5GYVTNXxKGmoSzUqALCy1WvhFR2qMVX56XRzsMRVtCUHuvr
+	 oHJAswbxv7BD96qQ6dUAfgyyTcDRqTdBmnTG5PA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 877F7F8013C;
-	Wed, 31 Mar 2021 09:11:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39593F8015A;
+	Wed, 31 Mar 2021 09:20:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A98F7F80166; Wed, 31 Mar 2021 09:11:16 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B768F8013C
- for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 09:10:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B768F8013C
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 12V7Aqu36002573,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 12V7Aqu36002573
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 31 Mar 2021 15:10:52 +0800
-Received: from localhost.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 31 Mar 2021 15:10:51 +0800
-From: Jack Yu <jack.yu@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh@kernel.org>
-Subject: [PATCH] dt-bindings: sound: add address-cells and size-cells
- information
-Date: Wed, 31 Mar 2021 15:10:46 +0800
-Message-ID: <20210331071046.12526-1-jack.yu@realtek.com>
-X-Mailer: git-send-email 2.29.0
+ id 442F9F80166; Wed, 31 Mar 2021 09:20:26 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 85316F8013C
+ for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 09:20:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85316F8013C
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-Cc: oder_chiou@realtek.com, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, lars@metafoo.de, kent_chen@realtek.com,
- Jack Yu <jack.yu@realtek.com>, kenny_chen@realtek.com,
- linux-kernel@vger.kernel.org, derek.fang@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1617175213942497015-webhooks-bot@alsa-project.org>
+References: <1617175213942497015-webhooks-bot@alsa-project.org>
+Subject: Bus error with alsaloop
+Message-Id: <20210331072026.442F9F80166@alsa1.perex.cz>
+Date: Wed, 31 Mar 2021 09:20:26 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,27 +66,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add address-cells and size-cells information to fix warnings
-for rt1019.yaml.
+alsa-project/alsa-utils issue #85 was opened from philipp-fischer:
 
-Signed-off-by: Jack Yu <jack.yu@realtek.com>
----
- Documentation/devicetree/bindings/sound/rt1019.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+## Behaviour
+alsaloop crashes with a bus error (SIGBUS) immediately
 
-diff --git a/Documentation/devicetree/bindings/sound/rt1019.yaml b/Documentation/devicetree/bindings/sound/rt1019.yaml
-index c24c29eafa54..3d5a91a942f4 100644
---- a/Documentation/devicetree/bindings/sound/rt1019.yaml
-+++ b/Documentation/devicetree/bindings/sound/rt1019.yaml
-@@ -26,6 +26,8 @@ additionalProperties: false
- examples:
-   - |
-     i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-         rt1019: codec@28 {
-             compatible = "realtek,rt1019";
-             reg = <0x28>;
--- 
-2.29.0
+```
+pi@pi-snapserver:~ $ alsaloop -C hw:2,0 -P hw:3,0
+Bus error
+```
 
+## Analysis and debugging
+
+Very verbose output:
+```
+pi@pi-snapserver:~ $ alsaloop -C hw:2,0 -P hw:3,0 -vvvvvvvvvvvvvvvvv
+!!!Scheduler set to Round Robin with priority 99 FAILED!
+playback hw:3,0: buffer_size=1920
+playback hw:3,0: period_size=240
+capture hw:2,0: buffer_size=1920
+capture hw:2,0: period_size=240
+playback hw:3,0: avail_min2=1560
+capture hw:2,0: avail_min2=120
+Hardware PCM card 3 'ICUSBAUDIO7D' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 1920
+  period_size  : 240
+  period_time  : 5000
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 1560
+  period_event : 0
+  start_threshold  : 2147483647
+  stop_threshold   : 1920
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 2013265920
+  appl_ptr     : 0
+  hw_ptr       : 0
+Hardware PCM card 2 'ICUSBAUDIO7D' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 1920
+  period_size  : 240
+  period_time  : 5000
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 240
+  period_event : 0
+  start_threshold  : 2147483647
+  stop_threshold   : 1920
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 2013265920
+  appl_ptr     : 0
+  hw_ptr       : 0
+Latency 480 frames, 10000.000us, 10.000000ms (100.0000Hz)
+playback hw:3,0/capture hw:2,0 sync type: SAMPLERATE (SRC_SINC_FASTEST)
+playback hw:3,0/capture hw:2,0: capt->buffer_size = 3840, play->buffer_size = 3840
+playback hw:3,0/capture hw:2,0: Samplerate src_ratio update1: 1.00000000
+New pitch for playback hw:3,0/capture hw:2,0: 1.00000000 (min/max samples = 0/0)
+playback hw:3,0/capture hw:2,0: silence queued 480 samples
+pool took 3074us
+playback hw:3,0/capture hw:2,0: pollfds handle
+playback hw:3,0: delay 480 / 3840 / 0
+capture hw:2,0: delay 0 / 3840 / 0
+playback hw:3,0/capture hw:2,0: prevents = 0x4, crevents = 0x0
+playback hw:3,0/capture hw:2,0: queued 480/0 samples
+playback hw:3,0: end delay 480 / 3840 / 0
+capture hw:2,0: end delay 0 / 3840 / 0
+playback hw:3,0/capture hw:2,0: processing time 59us
+pool took 13us
+[...]
+playback hw:3,0/capture hw:2,0: pollfds handle
+playback hw:3,0: delay 323 / 3840 / 0
+capture hw:2,0: delay 0 / 3840 / 0
+playback hw:3,0/capture hw:2,0: prevents = 0x4, crevents = 0x0
+playback hw:3,0/capture hw:2,0: queued 323/0 samples
+playback hw:3,0: end delay 323 / 3840 / 0
+capture hw:2,0: end delay 0 / 3840 / 0
+playback hw:3,0/capture hw:2,0: processing time 212us
+pool took 5us
+playback hw:3,0/capture hw:2,0: pollfds handle
+playback hw:3,0: delay 323 / 3840 / 0
+capture hw:2,0: delay 48 / 3840 / 0
+playback hw:3,0/capture hw:2,0: prevents = 0x4, crevents = 0x0
+Bus error
+```
+
+Debugging with backtrace (binary without dbg symbols):
+```
+[...]
+Program received signal SIGBUS, Bus error.
+0xb6dbd394 in src_short_to_float_array () from /lib/arm-linux-gnueabihf/libsamplerate.so.0
+(gdb) bt
+#0  0xb6dbd394 in src_short_to_float_array () from /lib/arm-linux-gnueabihf/libsamplerate.so.0
+#1  0x00016a20 in ?? ()
+Backtrace stopped: previous frame identical to this frame (corrupt stack?)
+(gdb)
+```
+
+So the error seems to happen in `libsamplerate.so`
+
+Switching the sync method to "SIMPLE" prevents the error from happening as alsaloop doesn't seem to make use of libsamplerate in this case.
+The following modes run without failing but don't give the desired results:
+
+```
+pi@pi-snapserver:~ $ alsaloop -C hw:2,0 -P hw:3,0 -S 0  # SYNC_TYPE_NONE
+pi@pi-snapserver:~ $ alsaloop -C hw:2,0 -P hw:3,0 -S 1  # SYNC_TYPE_SIMPLE
+pi@pi-snapserver:~ $ alsaloop -C hw:2,0 -P hw:3,0 -S 2  # SYNC_TYPE_CAPTRATESHIFT
+pi@pi-snapserver:~ $ alsaloop -C hw:2,0 -P hw:3,0 -S 3  # SYNC_TYPE_PLAYRATESHIFT
+```
+
+Only `SYNC_TYPE_SAMPLERATE` and `SYNC_TYPE_AUTO` (which selects SYNC_TYPE_SAMPLERATE) fail.
+
+The modes `SYNC_TYPE_NONE` and `SYNC_TYPE_SIMPLE` don't crash for me, but they don't work and result in increasing latency until the fifos reset. (Which is another issue I guess)
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/85
+Repository URL: https://github.com/alsa-project/alsa-utils
