@@ -2,90 +2,80 @@ Return-Path: <SRS0=wMTJ=I5=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E033C433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 14:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCAFC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 14:42:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 47F6460FF0
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 14:30:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 47F6460FF0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 1D5E561009
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Mar 2021 14:42:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D5E561009
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D09F01690;
-	Wed, 31 Mar 2021 16:29:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D09F01690
+	by alsa0.perex.cz (Postfix) with ESMTPS id A15C81671;
+	Wed, 31 Mar 2021 16:41:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A15C81671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617201023;
-	bh=HgKPHto8mHkCjyi5ILlZVzWSGyN6br21F84QT/vL+3Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1617201754;
+	bh=t9gaxHXzMkc3vmfJuA6SyCsF4VG3xgcsJQyJtsfuvU8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sQyeLC4i4HyQIpzpVQtmaPKVciWmIXoJnh1fB7+40qicOfu0baQ6rpRJTZuY2/oD5
-	 PJEKTBMk5x0ta/ALWmVZHz91KvxVQpl/tBk1cI5NtqACXbTUiNuNq+zo9dLDAo5iPx
-	 j5YIKDetcMMswWwq0FTmJiC/50XKbvsOtj+fKoD4=
+	b=Xv6D/XRbHwJfFYdQq5YET4/MsNA9mrIaWgKEr8R/aQjLLRUZWSqKwwbC0nZbFG5NH
+	 E1gS6X43axE4I3Net/cW2oZxV0cB6FcHmiVcCx90+kMbrAuDd+I62JAw/Kxq+GgGX/
+	 sY4B3uQ9JQ3qtBuESMYGG7kvpaGr4gkx5NhFYJxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 191B5F8032D;
-	Wed, 31 Mar 2021 16:28:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D879F8015A;
+	Wed, 31 Mar 2021 16:41:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13D00F8020C; Wed, 31 Mar 2021 16:28:06 +0200 (CEST)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com
- [209.85.210.45])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EA3D1F80166; Wed, 31 Mar 2021 16:41:42 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3BAEF8016E
- for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 16:28:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3BAEF8016E
-Received: by mail-ot1-f45.google.com with SMTP id
- y19-20020a0568301d93b02901b9f88a238eso19089987oti.11
- for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 07:28:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=a5L9Gfl5bF9CWxUCr8sVjvHZWCe8RrXgbQdGFig1nYs=;
- b=FVobW2c0EeXFs2umQ4Z0CAd+jbSkkVvJbQLP45q9x9z4yIsQbGaZxvvl+N/CEC9GQ0
- 8MstQI3EhS5phzuxONpHaUwmll7yXgBLwm4DpQVNfWjy/9eszd2CTxOjmYG41yS2yMVs
- GbJSPidyu20ppy9fVOz4iqTRbekC4oPVW9ueoylKk20CUaxlqM0NnrQxHjLVDtvvQWOZ
- 8KdVtblsmePmqeit/aAbu90FOQJjq8iQG2GN14BJgcxQOn5Pzw/GuPlk0drx+27HckLe
- Fw8oztz6T+IGKFux9WAqjbvrh+V5BNQ80urP8AAk4ENIlSqmC0S4QftaFx9m2RYIyOAA
- x3Ag==
-X-Gm-Message-State: AOAM531CeszEqP43ZzIWzmXTI8mTOwmRUMQ5yHbm6974UG1yJ27B8w19
- vkFb38E6t13+7aCJ1NkUQA==
-X-Google-Smtp-Source: ABdhPJyOs4V5V3Q3Hn8BauTqhypFGiAuWczQrsYjG6DCb8QtcbtJDsu+mU39XCkUHElkU3lAcJXO9g==
-X-Received: by 2002:a9d:68d7:: with SMTP id i23mr3005001oto.133.1617200879927; 
- Wed, 31 Mar 2021 07:27:59 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.googlemail.com with ESMTPSA id v136sm451146oie.15.2021.03.31.07.27.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 31 Mar 2021 07:27:56 -0700 (PDT)
-From: Rob Herring <robh@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 3/3] ASoC: dt-bindings: socionext: Use audio-graph-port
- schema
-Date: Wed, 31 Mar 2021 09:27:48 -0500
-Message-Id: <20210331142748.2163272-4-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210331142748.2163272-1-robh@kernel.org>
-References: <20210331142748.2163272-1-robh@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E33BCF8013F
+ for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2021 16:41:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E33BCF8013F
+IronPort-SDR: 527X29pfYBgdZbQeYLS0lJTFy6YiLyVnSKnabbpTzMtnI+4cOOX67tvOJJHiKNcF9QQLgNi9dX
+ Ml1nvu71GBtA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="179553698"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; d="scan'208";a="179553698"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Mar 2021 07:41:26 -0700
+IronPort-SDR: vkzzsBYmQzWnxqIFwGewwH9SSQ55VgOas4ODz/oxJGoOE9M2SSm5/UdqrUfAr/5aPV/ogqjQBr
+ lorrFe695/ig==
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; d="scan'208";a="610536384"
+Received: from erikberx-mobl4.amr.corp.intel.com (HELO [10.212.230.42])
+ ([10.212.230.42])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Mar 2021 07:41:25 -0700
+Subject: Re: [PATCH] soundwire: qcom: use signed variable for error return
+To: Vinod Koul <vkoul@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+References: <20210331072111.2945945-1-vkoul@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9cdef4e9-a38a-6c77-1b23-739f85384b12@linux.intel.com>
+Date: Wed, 31 Mar 2021 09:41:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Sameer Pujar <spujar@nvidia.com>, linux-kernel@vger.kernel.org,
- Jonathan Hunter <jonathanh@nvidia.com>, Lubomir Rintel <lkundrak@v3.sk>,
- Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
+In-Reply-To: <20210331072111.2945945-1-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,59 +91,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the Socionext audio schemas to use audio-graph-port.yaml schema
-for 'port' nodes.
 
-The number and numbering of port nodes should be documented, but is not.
-Leave a FIXME here so others don't copy.
 
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/sound/socionext,uniphier-aio.yaml | 8 +++-----
- .../bindings/sound/socionext,uniphier-evea.yaml           | 8 +++-----
- 2 files changed, 6 insertions(+), 10 deletions(-)
+On 3/31/21 2:21 AM, Vinod Koul wrote:
+> We get warning for using a unsigned variable being compared to less than
+> zero. The comparison is correct as it checks for errors from previous
+> call to qcom_swrm_get_alert_slave_dev_num(), so we should use a signed
+> variable instead.
+> 
+> drivers/soundwire/qcom.c: qcom_swrm_irq_handler() warn: impossible
+> condition '(devnum < 0) => (0-255 < 0)'
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   drivers/soundwire/qcom.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index b08ecb9b418c..55ed133c6704 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -428,7 +428,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>   	struct qcom_swrm_ctrl *swrm = dev_id;
+>   	u32 value, intr_sts, intr_sts_masked, slave_status;
+>   	u32 i;
+> -	u8 devnum = 0;
+> +	s8 devnum = 0;
 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-index 4987eb91f2ab..55ae198220f4 100644
---- a/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-aio.yaml
-@@ -46,11 +46,9 @@ properties:
- 
- patternProperties:
-   "^port@[0-9]$":
--    type: object
--    properties:
--      endpoint: true
--    required:
--      - endpoint
-+    description: FIXME, Need to define what each port is.
-+    $ref: audio-graph-port.yaml#
-+    unevaluatedProperties: false
- 
- additionalProperties: false
- 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-index 228168f685cf..48ddfcbbcbae 100644
---- a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-@@ -40,11 +40,9 @@ properties:
- 
- patternProperties:
-   "^port@[0-9]$":
--    type: object
--    properties:
--      endpoint: true
--    required:
--      - endpoint
-+    description: FIXME, Need to define what each port is.
-+    $ref: audio-graph-port.yaml#
-+    unevaluatedProperties: false
- 
- additionalProperties: false
- 
--- 
-2.27.0
+it's not great to store negative error codes with s8. That works in this 
+specific case because the function only returns -EINVAL.
 
+We actually have zero occurrences of s8 in the drivers/soundwire/ code.
+
+>   	int ret = IRQ_HANDLED;
+>   
+>   	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
+> 
