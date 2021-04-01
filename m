@@ -2,57 +2,56 @@ Return-Path: <SRS0=rMx/=I6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63E04C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 04:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BDE7C433B4
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 04:19:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6EC946101A
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 04:19:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6EC946101A
+	by mail.kernel.org (Postfix) with ESMTPS id 6CE17606A5
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 04:19:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6CE17606A5
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 186FC16C5;
-	Thu,  1 Apr 2021 06:18:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 186FC16C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id E73F616C1;
+	Thu,  1 Apr 2021 06:18:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E73F616C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617250745;
-	bh=XXlKH2nMurDWIbxQ7v+8G5QHu/ndv5OQJCOwL2RksiM=;
+	s=default; t=1617250765;
+	bh=UlKfQf7wmGmjjCfWSDIlGPpJHoSh1h6jqQupjZv37nk=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lbpP3ARnc+MEbOv7q4F9ghOUwyx4lgj6xi4vZPoLghZaAC26uvVuI4vf71/JHNVoK
-	 IH/1b4VXwYrK7mdU/5b+Esfxx/KBOzXlONMON2isuwkZoS4mQBMHWgE5LSLwp16RxS
-	 fq1z/ggwNASR4hIrMh/ySKr+DlcCea/Q81eCB29w=
+	b=GoM2c+1rQdZrjClzswT6lKK51gig5UBLxX+d18sI1A5v51cd2pPnyWJMgrSR2GNH3
+	 q/kBTrVKUF81FGHNvQqZNrZCFIqBt0r+BUHlpERyhuP3bJd44f1/HNheSMkIK+5tV2
+	 QQuIx2SvcwZnEv93deho9j8qyUPwVyw9NW++3BTA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C452F804D1;
-	Thu,  1 Apr 2021 06:16:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2738F804DF;
+	Thu,  1 Apr 2021 06:16:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3531F80424; Thu,  1 Apr 2021 06:16:19 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor1.renesas.com
+ id 5A8BEF804DF; Thu,  1 Apr 2021 06:16:22 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id E9A75F804D1
- for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 06:16:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9A75F804D1
-Date: 01 Apr 2021 13:16:11 +0900
-X-IronPort-AV: E=Sophos;i="5.81,295,1610377200"; d="scan'208";a="76723887"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 01 Apr 2021 13:16:11 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 32F95F8032C
+ for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 06:16:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32F95F8032C
+Date: 01 Apr 2021 13:16:17 +0900
+X-IronPort-AV: E=Sophos;i="5.81,295,1610377200"; d="scan'208";a="76950167"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 01 Apr 2021 13:16:17 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C265940134F5;
- Thu,  1 Apr 2021 13:16:11 +0900 (JST)
-Message-ID: <87mtuiod10.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DDEBB41860A4;
+ Thu,  1 Apr 2021 13:16:17 +0900 (JST)
+Message-ID: <87lfa2od0u.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 07/14] ASoC: simple-card-utils: care multi DAI at
- asoc_simple_clean_reference()
+Subject: [PATCH 08/14] ASoC: simple-card-utils: indicate dai_fmt if exist
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87wntmod33.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,42 +74,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-ASoC is now supporting multi DAI, but, current
-simple-card / audio-graph are assuming fixed single DAI.
-
-This patch cares multi DAI at asoc_simple_clean_reference()
-for of_node_put().
+link->dai_fmt might be 0.
+Don't indicate it in such case when debugging.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/simple-card-utils.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ include/sound/simple_card_utils.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index fad9c7f37d2b..6efe3757eff8 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -451,11 +451,15 @@ EXPORT_SYMBOL_GPL(asoc_simple_canonicalize_cpu);
- int asoc_simple_clean_reference(struct snd_soc_card *card)
- {
- 	struct snd_soc_dai_link *dai_link;
--	int i;
-+	struct snd_soc_dai_link_component *cpu;
-+	struct snd_soc_dai_link_component *codec;
-+	int i, j;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 23f17ccc7908..080fe7eb560f 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -222,9 +222,8 @@ static inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
  
- 	for_each_card_prelinks(card, i, dai_link) {
--		of_node_put(dai_link->cpus->of_node);
--		of_node_put(dai_link->codecs->of_node);
-+		for_each_link_cpus(dai_link, j, cpu)
-+			of_node_put(cpu->of_node);
-+		for_each_link_codecs(dai_link, j, codec)
-+			of_node_put(codec->of_node);
- 	}
- 	return 0;
- }
+ 		if (link->name)
+ 			dev_dbg(dev, "dai name = %s\n", link->name);
+-
+-		dev_dbg(dev, "dai format = %04x\n", link->dai_fmt);
+-
++		if (link->dai_fmt)
++			dev_dbg(dev, "dai format = %04x\n", link->dai_fmt);
+ 		if (props->adata.convert_rate)
+ 			dev_dbg(dev, "convert_rate = %d\n",
+ 				props->adata.convert_rate);
 -- 
 2.25.1
 
