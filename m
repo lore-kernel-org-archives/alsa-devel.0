@@ -2,105 +2,68 @@ Return-Path: <SRS0=rMx/=I6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CF90C43460
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 12:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E6EC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 13:52:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8FD19611CD
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 12:41:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8FD19611CD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
+	by mail.kernel.org (Postfix) with ESMTPS id 95F3B6124A
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 13:51:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95F3B6124A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7899D1689;
-	Thu,  1 Apr 2021 14:40:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7899D1689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38D2D16A3;
+	Thu,  1 Apr 2021 15:51:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38D2D16A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617280878;
-	bh=ZRbBTkU4p5+NeIjvastSxXEsdxHQOC22xlVRgl47yfc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rY1mt8o3yECM2BPDusQVsIvU45ryatzS7QkFKBl3Ldg5eLHz+edL7Y6W55JEei10y
-	 EOo0hLp6gCwmU71Prt8MEJshImTu/TL5hV2iKeZeJP2kaEis25XkIhCrYyvgCW/VEg
-	 ekNVFIrdZk/3Wymv5tMyGZhbggD7NSeGhaMF++Ag=
+	s=default; t=1617285117;
+	bh=vIWsoGc/7kO3mT6qBLpMoH1pK4iQTV9HksBAUWhvzug=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=S8LsJb1nTMOBbB18PT08tNWOIa7MgrSRGL+HCGuxZ5TgIxOhNheWUXhG6e7VCnrQn
+	 61jwDL1yMbnrc6lLuo5mOtTyD3/qhHy2dyOe209mUbNgbS/Z1SqUs7NQfra/8T+NW7
+	 xh/FlsBdNsTrLkMeAT+pAm0UdoNJOqkXjFe4td2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04A55F80240;
-	Thu,  1 Apr 2021 14:40:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8F0AF80240;
+	Thu,  1 Apr 2021 15:51:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5851EF8026B; Thu,  1 Apr 2021 14:40:26 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 7A61BF8026B; Thu,  1 Apr 2021 15:51:05 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE867F8013C
- for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 14:40:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE867F8013C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="JBN2pNqg"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
- 131CQciw030126; Thu, 1 Apr 2021 07:40:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=ykBmYInzEvGFT1JMPiXc1lkaeT/jxWDhFNP9Q/A6/08=;
- b=JBN2pNqg6a9pM8wgveEEAANKekva129o80Za/JlxEa8yD9XTaahdQCrZWxWqWjBwfcYA
- 0XYzN9+i9q1Ss9rGlQnUB195BidXC4ru+YqBxESdQ4N7OZLyoJecSdcAkjJpuyEvnTvt
- FNJaZW69K+/zJ8SgI/MnMCZ50GOWsh0fhKFwGI5udmLIsQlczCRU/3VhYx97IEAzXf1k
- LYUXLt17d7ZQyRHP+iKYdWEtgulGMPeNxam5CdJ2GKWfv803Y1Sz7l19l4npFT2ajTIH
- 1saSDKNKacvdUPxwIl2wJKSfGee1JrZJWiO+bDuNW66PDn2kQr8QOI45ayj7ASVEpdWS JA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
- by mx0a-001ae601.pphosted.com with ESMTP id 37n2948wfu-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 01 Apr 2021 07:40:16 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 1 Apr 2021
- 13:40:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 1 Apr 2021 13:40:14 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7C81E11D6;
- Thu,  1 Apr 2021 12:40:13 +0000 (UTC)
-Date: Thu, 1 Apr 2021 12:40:13 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 32/32] pinctrl: update pin-control.rst references
-Message-ID: <20210401124013.GT106851@ediswmail.ad.cirrus.com>
-References: <cover.1617279355.git.mchehab+huawei@kernel.org>
- <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f056e1e16adff1df42416f0033fdb730169edf44.1617279356.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: Io7iL6F3WDP7ZvGws1tN_zCpZy0zXWMf
-X-Proofpoint-ORIG-GUID: Io7iL6F3WDP7ZvGws1tN_zCpZy0zXWMf
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=979
- phishscore=0
- bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 clxscore=1011 adultscore=0 impostorscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2104010088
-Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>,
- Drew Fustini <drew@beagleboard.org>, patches@opensource.cirrus.com,
- Linus Walleij <linus.walleij@linaro.org>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Lee Jones <lee.jones@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id F264BF8013C
+ for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 15:50:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F264BF8013C
+IronPort-SDR: Ewf1oKjAyXTXFdI1iVbKXBr4AJgtWmEPMGWl4VUFNrFSJu8MehOHJ/qHAE6CxWhhdJmw/3HaxB
+ Dp8UMNeA6rnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9941"; a="190012990"
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; d="scan'208";a="190012990"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Apr 2021 06:50:51 -0700
+IronPort-SDR: GvgRgX9wXWHCBDmx/8nuUa19/NhDFzAFMx7GMhb3HcOE/ghAl28B4c6XIu8uoMLUHpZ9UF48ZV
+ O2Fh1wY+PRVg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,296,1610438400"; d="scan'208";a="412688994"
+Received: from cooperch-pc1.itwn.intel.com ([10.5.215.29])
+ by fmsmga008.fm.intel.com with ESMTP; 01 Apr 2021 06:50:50 -0700
+From: mac.chiang@intel.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: Intel: Boards: cml_da7219_max98390: add capture stream
+ for echo reference
+Date: Thu,  1 Apr 2021 22:00:13 +0800
+Message-Id: <1617285613-29457-1-git-send-email-mac.chiang@intel.com>
+X-Mailer: git-send-email 2.7.4
+Cc: mac.chiang@intel.com, broonie@kernel.org, yang.jie@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,18 +79,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Apr 01, 2021 at 02:17:52PM +0200, Mauro Carvalho Chehab wrote:
-> Changeset 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> renamed: Documentation/driver-api/pinctl.rst
-> to: Documentation/driver-api/pin-control.rst.
-> 
-> Update the cross-references accordingly.
-> 
-> Fixes: 5513b411ea5b ("Documentation: rename pinctl to pin-control")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
+From: Mac Chiang <mac.chiang@intel.com>
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+enable speaker capture dai link for feedback path
 
-Thanks,
-Charles
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+---
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 0c0a7178..9ffef39 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -813,6 +813,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
+ 				if (ctx->spkamp == SPKAMP_MAX98390) {
+ 					broxton_dais[i].codecs = max98390_codec;
+ 					broxton_dais[i].num_codecs = ARRAY_SIZE(max98390_codec);
++					broxton_dais[i].dpcm_capture = 1;
+ 				}
+ 			}
+ 			/* DIALOG_CODEC is connected to SSP0 */
+-- 
+2.7.4
+
