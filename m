@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A457C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 08:07:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AFC9C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 08:08:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BD575610A0
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 08:07:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BD575610A0
+	by mail.kernel.org (Postfix) with ESMTPS id 8A45E60FD9
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 08:08:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8A45E60FD9
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5D44167D;
-	Thu,  1 Apr 2021 10:06:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5D44167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E8E81695;
+	Thu,  1 Apr 2021 10:07:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E8E81695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617264452;
-	bh=nzocXhncquS9lpXkbGZdKowTEJFQfWPN6/99y2q19WU=;
+	s=default; t=1617264503;
+	bh=AjU0z7d3en9u8VUCYO2QRrYsAlNh7WlhEBKo7lqTJAA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LpZoUAOAd1IegoHGOSJ+FPqOXm/7uCSMFe+06aws1F+wPmiVDfZ6Z3LtyZ3N2oulL
-	 Nm5NJca/IeGoy2flynew3kUKAFmWxxf8gJ7Te3j/rNPOUm/axpFARhzTWI8yD0JWqG
-	 p1tK26eBi/SOJNTH5a/LWYFhAc9gK4FZlJttkUbU=
+	b=pNP5tKsKEKVHE8iFAVZzKn15f92zFDrbSQ68oJNJGBS0Q4qXXOcl0DklSqh1e/+xF
+	 qtHi4sFemVCBCzzT5DCakmrTRAdtk9T00DYiCM14SvPlKBW5jg4wfHaNPmvSJeP35Q
+	 u6c8JD9f6LnUVQZMH2HxPl1y27C7oYxSsx4h7Rg4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 081A8F8026B;
-	Thu,  1 Apr 2021 10:06:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CB78F8026F;
+	Thu,  1 Apr 2021 10:06:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE381F8026B; Thu,  1 Apr 2021 10:06:39 +0200 (CEST)
+ id A582FF8027B; Thu,  1 Apr 2021 10:06:45 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BDA4F8013C
- for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 10:06:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BDA4F8013C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E356F80117
+ for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 10:06:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E356F80117
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 367E4AF3B;
- Thu,  1 Apr 2021 08:06:27 +0000 (UTC)
-Date: Thu, 01 Apr 2021 10:06:27 +0200
-Message-ID: <s5hsg4ae8e4.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 1A173AF44;
+ Thu,  1 Apr 2021 08:06:39 +0000 (UTC)
+Date: Thu, 01 Apr 2021 10:06:39 +0200
+Message-ID: <s5hr1jue8ds.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: control - add the missing prev_lops2 initialization
-In-Reply-To: <20210331180702.663489-1-perex@perex.cz>
-References: <20210331180702.663489-1-perex@perex.cz>
+Subject: Re: [PATCH] ALSA: control led - improve the set_led_id() parser
+In-Reply-To: <20210331180725.663623-1-perex@perex.cz>
+References: <20210331180725.663623-1-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -75,14 +75,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 31 Mar 2021 20:07:02 +0200,
+On Wed, 31 Mar 2021 20:07:25 +0200,
 Jaroslav Kysela wrote:
 > 
-> As static analysis reported, the prev_lops2 should contain
-> the previous lops2 pointer in snd_ctl_disconnect_layer().
+> It may be possible that the string pointer does not move
+> when parsing. Add a code which detects this state and
+> simply break the parser loop in this case.
 > 
-> Link: https://lore.kernel.org/alsa-devel/96e9bd5c-c8db-0db8-b393-fbf4a047dc80@canonical.com/
-> Fixes: 3f0638a0333b ("ALSA: control - add layer registration routines")
 > Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
 Applied, thanks.
