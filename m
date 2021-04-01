@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C703C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:21:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F305C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:21:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 526B8610A5
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:21:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 526B8610A5
+	by mail.kernel.org (Postfix) with ESMTPS id BBA906108B
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:21:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BBA906108B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1BF2168E;
-	Thu,  1 Apr 2021 12:20:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1BF2168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E49316AD;
+	Thu,  1 Apr 2021 12:20:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E49316AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617272477;
-	bh=S+Tn7YNmjASauhVBdQ1246mt1jLCt7fRaSlFTe22c4s=;
+	s=default; t=1617272507;
+	bh=AmB1o+YWSRbCC5rBIMr9eV2iGuWSsMgF97x7uR85EQo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hurcn6JRRUCw0ZcnHWAl6ArdDvpJFVZAsJgrSyNcJA+9J7zU36EizGQrQ6DfQCma+
-	 w20yzZSzRKyeABok45qGghQIAo2jCTLaD1pa2rR2j+/+Ot17Epp0/QSZQ735vVXZSn
-	 g4OHIOl6ZkjKj1HXHF3eYfAzC5XOcKtzAaXdZRRk=
+	b=p7MrLas1QNCv+kk9smAFLN71N5KV5PYZ+CECYXjWidgtuMkTzyvZWZqWG2LUhDW2Z
+	 DOO9WUf7EqBBj+MTg0/uzanimiNc3pmGAzD3xrszeqMnDN2Luj+TwutX2omyVqFHxK
+	 zUN3EyZ+YBm0/EZC9svr4Fz3K0vE9m9FDlnpIB9U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EA74F804DF;
-	Thu,  1 Apr 2021 12:17:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D7D4F804E3;
+	Thu,  1 Apr 2021 12:17:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C29EF804B1; Thu,  1 Apr 2021 12:17:26 +0200 (CEST)
+ id A7A83F804DF; Thu,  1 Apr 2021 12:17:31 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D1D6F80482
- for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 12:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D1D6F80482
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E079F804B4
+ for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 12:17:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E079F804B4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AatGBe4t"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C855610A5;
- Thu,  1 Apr 2021 10:17:20 +0000 (UTC)
+ header.b="Dsoj+rrd"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB92610A5;
+ Thu,  1 Apr 2021 10:17:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617272240;
- bh=S+Tn7YNmjASauhVBdQ1246mt1jLCt7fRaSlFTe22c4s=;
+ s=k20201202; t=1617272247;
+ bh=AmB1o+YWSRbCC5rBIMr9eV2iGuWSsMgF97x7uR85EQo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=AatGBe4tS15dPxNCmeS2JEP+92IQYxix/mtkxcqzonfvoJMmgk81tH+F+XcOmXWTq
- eVIuK7ERkmilvZq/T/l0FKcDdAj3j/VAFrTAmtsRQvUEkgPoEHyeui90i6qybNFPkx
- hnb6u+tqqHk57kFnjRCkD6lrpFDfm+wxJ6sb8I2A3LW6FAVYMs+WzOHqAODvV/Jb00
- OdXVpbuYZh8754L/aiQHUtpxxfFsIHrQihqp85Wy6Eed/FCAhwhMxfP3Rs48EGKf6E
- y7KJ62jOoBlYsfTx4c4XglrqKp5O61o6k8EbZ97bcd1+ecrNgNADvmdIfsfainFlUj
- qvtZTARIXZOwg==
+ b=Dsoj+rrdJF9ppMxZKT5232A20cdMkd46EL2qtMSxBhdBw9NWPY9s8HSC2sifjxauR
+ uIKBdzztLdpFG40jz41n1xUoG0ZbwZbvMNlsijP8/fNio48c5LmHsQD9XLY+n7vSFZ
+ GNiJ8+xRnv8w9Gd6Mxd8l1yQn0eis1u+PqaIUu741DnJEXGqA0srKOH6qGFCgj+PZC
+ v/Jvv1moItfAPqWrPtvu/5C8nT33LdW3EtBXw5Wgl2A1tUoqilwlK4PmLs+0hVFY/+
+ OVO6909QoTdw+wIj8HbfBqZP4gXiOoLlicHo4OfpSF+I+t9tR36COiAqhj6iuh+UjB
+ /W+Fp/Gg0J/gg==
 From: Mark Brown <broonie@kernel.org>
-To: Chen-Yu Tsai <wens@csie.org>, bage@linutronix.de,
- Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH] ASoC: sunxi: sun4i-codec: fill ASoC card owner
-Date: Thu,  1 Apr 2021 11:16:25 +0100
-Message-Id: <161726938994.2219.266176095597087685.b4-ty@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+Subject: Re: [RFC PATCH 0/2] ASoC: remove cppchecks warnings on lm49453 and
+ da732x
+Date: Thu,  1 Apr 2021 11:16:27 +0100
+Message-Id: <161726938995.2219.309801757681001460.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210331145915.12545-1-bage@linutronix.de>
-References: <20210331145915.12545-1-bage@linutronix.de>
+In-Reply-To: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
+References: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org
+Cc: tiwai@suse.de, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,39 +87,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 31 Mar 2021 16:59:15 +0200, bage@linutronix.de wrote:
-> card->owner is a required property and since commit 81033c6b584b ("ALSA:
-> core: Warn on empty module") a warning is issued if it is empty. Add it.
-> This fixes following warning observed on Lamobo R1:
+On Fri, 26 Mar 2021 17:16:17 -0500, Pierre-Louis Bossart wrote:
+> There are the last two patches in the cleanups, this time I am not
+> sure what the code does and what the proper fix might be. Feedback
+> welcome.
 > 
-> WARNING: CPU: 1 PID: 190 at sound/core/init.c:207 snd_card_new+0x430/0x480 [snd]
-> Modules linked in: sun4i_codec(E+) sun4i_backend(E+) snd_soc_core(E) ...
-> CPU: 1 PID: 190 Comm: systemd-udevd Tainted: G         C  E     5.10.0-1-armmp #1 Debian 5.10.4-1
-> Hardware name: Allwinner sun7i (A20) Family
-> [<c0ce8544>] (dump_backtrace) from [<c0ce88f0>] (show_stack+0x20/0x24)
-> [<c0ce88d0>] (show_stack) from [<c0ceda20>] (dump_stack+0xc8/0xdc)
-> [<c0ced958>] (dump_stack) from [<c034d49c>] (__warn+0xfc/0x158)
-> [<c034d3a0>] (__warn) from [<c0ce966c>] (warn_slowpath_fmt+0x70/0xe4)
-> [<c0ce9600>] (warn_slowpath_fmt) from [<bf48f604>] (snd_card_new+0x430/0x480 [snd])
-> [<bf48f1d4>] (snd_card_new [snd]) from [<bf53340c>] (snd_soc_bind_card+0x3a8/0xa30 [snd_soc_core])
-> [<bf533064>] (snd_soc_bind_card [snd_soc_core]) from [<bf533b8c>] (snd_soc_register_card+0xf8/0x108 [snd_soc_core])
-> [<bf533a94>] (snd_soc_register_card [snd_soc_core]) from [<bf55b888>] (sun4i_codec_probe+0x224/0x45c [sun4i_codec])
-> [<bf55b664>] (sun4i_codec_probe [sun4i_codec]) from [<c09879b4>] (platform_drv_probe+0x58/0xa8)
-> [<c098795c>] (platform_drv_probe) from [<c0984dc8>] (really_probe+0x108/0x510)
-> [<c0984cc0>] (really_probe) from [<c0985674>] (driver_probe_device+0x100/0x1d0)
-> [<c0985574>] (driver_probe_device) from [<c0985a74>] (device_driver_attach+0xb8/0xc0)
-> [<c09859bc>] (device_driver_attach) from [<c0985b18>] (__driver_attach+0x9c/0x150)
-> [<c0985a7c>] (__driver_attach) from [<c09825c8>] (bus_for_each_dev+0x84/0xd0)
-> [<c0982544>] (bus_for_each_dev) from [<c09844bc>] (driver_attach+0x2c/0x30)
-> [<c0984490>] (driver_attach) from [<c0983e70>] (bus_add_driver+0x120/0x20c)
-> [<c0983d50>] (bus_add_driver) from [<c098670c>] (driver_register+0x98/0x128)
-> [<c0986674>] (driver_register) from [<c0987908>] (__platform_driver_register+0x50/0x58)
-> [<c09878b8>] (__platform_driver_register) from [<bf566024>] (sun4i_codec_driver_init+0x24/0x1000 [sun4i_codec])
-> [<bf566000>] (sun4i_codec_driver_init [sun4i_codec]) from [<c030293c>] (do_one_initcall+0x50/0x274)
-> [<c03028ec>] (do_one_initcall) from [<c040d45c>] (do_init_module+0x70/0x294)
-> [<c040d3ec>] (do_init_module) from [<c040f9f4>] (load_module+0x2258/0x263c)
-> [<c040d79c>] (load_module) from [<c04100c0>] (sys_finit_module+0xc8/0x12c)
-> [<c040fff8>] (sys_finit_module) from [<c03002a4>] (__sys_trace_return+0x0/0x1c)
+> Pierre-Louis Bossart (2):
+>   ASoC: lm49453: fix useless assignment before return
+>   ASoC: da732x: simplify code
+> 
+> [...]
 
 Applied to
 
@@ -127,8 +104,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: sunxi: sun4i-codec: fill ASoC card owner
-      commit: 7c0d6e482062eb5c06ecccfab340abc523bdca00
+[1/2] ASoC: lm49453: fix useless assignment before return
+      commit: 458c23c509f66c5950da7e5496ea952ad15128f7
+[2/2] ASoC: da732x: simplify code
+      commit: 945b0b58c5d7c6640f9aad2096e4675bc7f5371c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
