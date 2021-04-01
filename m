@@ -2,79 +2,77 @@ Return-Path: <SRS0=rMx/=I6=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06D66C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 16:18:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6855C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 16:48:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 56581611BD
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 16:18:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 56581611BD
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 49E7F61382
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 16:48:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 49E7F61382
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C43DF16C5;
-	Thu,  1 Apr 2021 18:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C43DF16C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1710716B3;
+	Thu,  1 Apr 2021 18:47:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1710716B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617293880;
-	bh=zp3Tpu+kUph5azbHKo/cVTxK4hhcTlET7aKDSzeCMns=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1617295684;
+	bh=f3yZ/9sfR8caygUqeEk+iSpCs9WAqRkd59lqpXyjtlo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XPsOjhrAk7cTcqUjJhSh92dQ5Yphnr3vxfj/0nJ0mdpZK3fR4CCKCplG2bLe7SKRx
-	 ICooSM+UQovP3bWqVcZiqQacwI9UiVDCs9hwYOv/sKkAzKMuPVThfkKxOccJbzybk2
-	 b3TszuFz5zIAjP9kvhhRdiLtVTuaDMnA3Ur11wUk=
+	b=Ov49+f9HKRpPjnGQeNs7jT0zyVV4bfzzkWjGk6KGxDYGfRpFWRp1QqKhBpD5n1JBU
+	 AAfJMTBENWESNxnyVC//4qUDlWliOigwstkHjOv6zr2uY2Se3DXf9emlK69v0rje3D
+	 9hGSRmFG95FtIdUY3F0PmrrCbVdwQ3R3lkzSMNsU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D4EF8027B;
-	Thu,  1 Apr 2021 18:16:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FE51F80240;
+	Thu,  1 Apr 2021 18:47:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB09EF8013F; Thu,  1 Apr 2021 18:16:16 +0200 (CEST)
+ id 5D6A7F8026B; Thu,  1 Apr 2021 18:47:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68E1AF8013F
- for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 18:16:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68E1AF8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B425F8013C
+ for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 18:47:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B425F8013C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lNvRf4e1"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B32FA61378;
- Thu,  1 Apr 2021 16:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617293765;
- bh=zp3Tpu+kUph5azbHKo/cVTxK4hhcTlET7aKDSzeCMns=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=lNvRf4e1Nfc9GKuGcUaN0ir9vETDIpMi2U79MnBc+Q9xG1hMQob7fpW60rM/cjylH
- szalDlN1ciZWkh+Q0ZIo0gqLQ7OxmpIynxKR16ev4hbo/5inHWcwz8upmKy1HuQwZU
- HjHqQ9+9qXmHBfCjTTKgqEOn47JAou1pLETdRxbPJNpUdZQZgETOBtAfPdWJWeeOMq
- kMBrc7EO7Wf/OEiVc/6ekKGT/7wgFOa5N5jAtmF3LXIKrl5NWhnZBNo8nZv6SAU4Vk
- e249Fxae46RERG1LghVZl5E6vGnxmP7qA6zVMtM7tHaZDORrgl9PGffEuuwEwRwpNv
- m3Q8Gd1ZH88gA==
-From: Mark Brown <broonie@kernel.org>
-To: devicetree <devicetree@vger.kernel.org>,
- alsa-devel <alsa-devel@alsa-project.org>,
- Zhen Lei <thunder.leizhen@huawei.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: intel,
- keembay-i2s: Fix a dt_binding_check warning
-Date: Thu,  1 Apr 2021 17:15:47 +0100
-Message-Id: <161729333651.31618.6325079972879808660.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210329081435.2200-1-thunder.leizhen@huawei.com>
-References: <20210329081435.2200-1-thunder.leizhen@huawei.com>
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="y2qmaWu7"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A326138E;
+ Thu,  1 Apr 2021 16:46:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1617295620;
+ bh=f3yZ/9sfR8caygUqeEk+iSpCs9WAqRkd59lqpXyjtlo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=y2qmaWu7xE5U8wJYR/J0QQzSKnLxAJNwTm8015Yyk28A+wnnGi7/RAYrFhSADnUID
+ EDyTPjkesEekvBMbPtDLYSQFNU3NVzUCLXja5bLtlz3H71Kqd/BfydWKSIHUWQXhSo
+ EkQ6CWkVqe9OE05P5LS1DcAtw1P3OAIHCCyg0heY=
+Date: Thu, 1 Apr 2021 18:46:57 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 1/2] soundwire: add macro to selectively change error
+ levels
+Message-ID: <YGX5AUQi41z52xk8@kroah.com>
+References: <20210331011355.14313-1-yung-chuan.liao@linux.intel.com>
+ <20210331011355.14313-2-yung-chuan.liao@linux.intel.com>
+ <YGV1HYL+XcVmxfQG@vkoul-mobl.Dlink>
+ <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0834b9fc-9b3a-1184-fed2-6f9c7e66c6fb@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ hui.wang@canonical.com, Vinod Koul <vkoul@kernel.org>, sanyog.r.kale@intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, rander.wang@linux.intel.com,
+ bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,38 +88,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Mar 2021 16:14:35 +0800, Zhen Lei wrote:
-> The property "dmas" contains two items: DMA "TX" and "RX" channel,
-> Therefore, its value also needs to be written in two parts.
+On Thu, Apr 01, 2021 at 09:30:27AM -0500, Pierre-Louis Bossart wrote:
 > 
-> Otherwise, below YAML check warning is reported:
-> Documentation/devicetree/bindings/sound/intel,keembay-i2s.example.dt.yaml:\
-> i2s@20140000: dmas: [[4294967295, 29, 4294967295, 33]] is too short
+> 
+> On 4/1/21 2:24 AM, Vinod Koul wrote:
+> > On 31-03-21, 09:13, Bard Liao wrote:
+> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > 
+> > > We sometimes discard -ENODATA when reporting errors and lose all
+> > > traces of issues in the console log, add a macro to add use dev_dbg()
+> > > in such cases.
+> > > 
+> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > > Reviewed-by: Rander Wang <rander.wang@intel.com>
+> > > Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > > ---
+> > >   drivers/soundwire/bus.h | 8 ++++++++
+> > >   1 file changed, 8 insertions(+)
+> > > 
+> > > diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+> > > index 40354469860a..8370216f95d4 100644
+> > > --- a/drivers/soundwire/bus.h
+> > > +++ b/drivers/soundwire/bus.h
+> > > @@ -227,4 +227,12 @@ int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 val
+> > >   void sdw_clear_slave_status(struct sdw_bus *bus, u32 request);
+> > >   int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
+> > > +#define sdw_dev_dbg_or_err(dev, is_err, fmt, ...)			\
+> > > +	do {								\
+> > > +		if (is_err)						\
+> > > +			dev_err(dev, fmt, __VA_ARGS__);			\
+> > > +		else							\
+> > > +			dev_dbg(dev, fmt, __VA_ARGS__);			\
+> > > +	} while (0)
+> > 
+> > I see a variant in sof code and now here, why not add in a
+> > dev_dbg_or_err() and use everywhere?
+> 
+> Good point, I hesitated back and forth on specific v. generic macro.
+> 
+> The main reason why I added this macro for SoundWire is that quite a few
+> subsystems have their own debug functions (DRM, ACPI, etc), and I wasn't
+> sure if there was any appetite to add more options in
+> include/linux/dev_printk.h. SOF also uses a different format due to history.
 
-Applied to
+It is better if those other subsystems move to using the common kernel
+debug functions.  Historically they were all separate, there is no good
+reason for them to be that way today.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+So please do not create custom subsystem debug macros like this just for
+this tiny set of drivers.
 
-Thanks!
+My bigger issue with this is that this macro is crazy.  Why do you need
+debugging here at all for this type of thing?  That's what ftrace is
+for, do not sprinkle code with "we got this return value from here!" all
+over the place like what this does.
 
-[1/1] ASoC: intel, keembay-i2s: Fix a dt_binding_check warning
-      commit: 52cad756b777e82fabe05c728cc62b63b3c61fd3
+thanks,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+greg k-h
