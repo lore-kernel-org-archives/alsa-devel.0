@@ -4,71 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F371EC433B4
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:22:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BE55C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:22:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 55887610A5
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:22:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 55887610A5
+	by mail.kernel.org (Postfix) with ESMTPS id B868C6108B
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Apr 2021 10:22:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B868C6108B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD54F1698;
-	Thu,  1 Apr 2021 12:21:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD54F1698
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18C0116B8;
+	Thu,  1 Apr 2021 12:21:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18C0116B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617272522;
-	bh=iGe2D6LmDdlgkmtGlkeKkA0BI73HLks02AeTtmGexeQ=;
+	s=default; t=1617272547;
+	bh=od8Rq9Kf78i1K8wp62RqoniFQY5B9m9Qer/wU2HFhRE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nchq0akKeOpGnMbeLWvUXYh7hPtoJ49V8uLE0wVH1/fvHcXosXDI2dPjvj2VpVEKd
-	 MBNOIezilJNX7cN/+BgnguSzZJYSfFVE+iknt9DelLcPluRfHUX5FVN7upLMazpyn/
-	 2/5k1+IBfp7EcZlfzQeA048vKpZS9LoM/JanotJs=
+	b=VX7u6OsLaBV6mVbNTCuzvODOwM/v81NsDJV0FXTJbxEODJnRNWZuyeZygGKfjPAz6
+	 vgvO5tFnYaaOI7jr19zRtyLun+NJ36UcmcpnePeWefVwNBXISvxegeVSIeebZu6vIP
+	 M/HSZ613/ZYqOQZN4ww+TYbqaSDy8vEWKxpT16No=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F2B5EF804E6;
-	Thu,  1 Apr 2021 12:17:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEFCFF804ED;
+	Thu,  1 Apr 2021 12:17:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0708F804E3; Thu,  1 Apr 2021 12:17:34 +0200 (CEST)
+ id 61452F804E5; Thu,  1 Apr 2021 12:17:37 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2EAC3F804B1
- for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 12:17:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EAC3F804B1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7ECD6F804E0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Apr 2021 12:17:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7ECD6F804E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CNr++wyo"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F2F610CB;
- Thu,  1 Apr 2021 10:17:29 +0000 (UTC)
+ header.b="G2zA2X6s"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76BC761056;
+ Thu,  1 Apr 2021 10:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617272250;
- bh=iGe2D6LmDdlgkmtGlkeKkA0BI73HLks02AeTtmGexeQ=;
+ s=k20201202; t=1617272253;
+ bh=od8Rq9Kf78i1K8wp62RqoniFQY5B9m9Qer/wU2HFhRE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=CNr++wyovjzSXGlXGahNRn/Km+uHzzxSPHMQYhZqTqhoVfGL/hJdHhn3BUfHscxWn
- j09PKw+v+sTtUuF5lmr0O83focANOYr+Y4lZke1fL8mmjohgU3SpmSD91IPfXTKDYj
- oEiZ3n0fAR03Gfpa5SextKvLLkwoyEC/0b6RgYtFjjw2fUwELOTK/z/gRTXWzhwBPh
- 8wjdJ4rG/6rRUXPnmkzcHJTwwmDy3aSU9G5BZSQSkYefyzxoNyAlno5+Qkgt8sCXGe
- 9Nlii35snv4jJXXYP57/VgXSezDbGmdndl2+NqhcmjR8i6OLOvTBH86wXIpnBZ/lhF
- no7f+gf0MTAGA==
+ b=G2zA2X6s3PuWdSwbpQtYM1poOxuprTTUtDIxOUM4i9DGRNpTsmPKSc3hVkfCU9ibP
+ aaGR+xg7bNkoonkxd32NsnsO8j3iwJakkcVzoARHWJkqSIO3WTnAS45723NHKRp5b5
+ udEwtt0J8WFXitafA7IWUJBB2ieCx1bKh0VjRMDh3u1tO7sEBcNmtcXpRmAdWCAI3Q
+ TjO7wATmCNmBCEWTHhBgMt5lxFoY7h0Fsnic9pMFwWoF5ji+prlzLLpJ8JRH3tdd2b
+ E1CPJ94GogTLI/umXEce1RhY/ZzU7pde93xC5pRwDMBTMBatQZ96niENjoz4vfrO6s
+ l4ma2vgwqi6Mg==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/2] ASoC: soc-core: tidyup error handling for rtd
-Date: Thu,  1 Apr 2021 11:16:28 +0100
-Message-Id: <161726938995.2219.15320712658549513721.b4-ty@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 0/3] ASoC: dt-bindings: Rework audio-graph-port schema
+Date: Thu,  1 Apr 2021 11:16:29 +0100
+Message-Id: <161726938993.2219.16015630418592937478.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <87tuotxlen.wl-kuninori.morimoto.gx@renesas.com>
-References: <87tuotxlen.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20210323163634.877511-1-robh@kernel.org>
+References: <20210323163634.877511-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Lubomir Rintel <lkundrak@v3.sk>, Sameer Pujar <spujar@nvidia.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-tegra@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,14 +90,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 30 Mar 2021 14:25:52 +0900, Kuninori Morimoto wrote:
-> These are small clanup patches for soc-core.
-> [1/2] patch adds missing explanation, and
-> [2/2] patch fixup error handling of rtd.
+On Tue, 23 Mar 2021 10:36:31 -0600, Rob Herring wrote:
+> This series refactors the audio-graph-port.yaml schema moving the
+> 'port' node out of the schema and updating to use graph.yaml schema.
+> This allows users to define what each 'port' node is like other graph
+> binding users.
 > 
-> Kuninori Morimoto (2):
->   ASoC: soc-core: add comment for rtd freeing
->   ASoC: soc-core: use device_unregister() if rtd allocation failed
+> Rob
 > 
 > [...]
 
@@ -101,10 +106,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: soc-core: add comment for rtd freeing
-      commit: f1b3ee789f4b7a41ad93ff42d4efbae607622ae7
-[2/2] ASoC: soc-core: use device_unregister() if rtd allocation failed
-      commit: 5fa7553dcd83c576c589fd3e617dc599e4fe15dc
+[1/3] ASoC: dt-bindings: Move port/ports properties out of audio-graph-port.yaml
+      commit: 9c1e0439ada9973ec99cc1e0887eb84fd26444b8
+[2/3] ASoC: dt-bindings: Use OF graph schema
+      commit: ec1c8302178a946986bb7b52ac7bb9ccdcdf7d92
+[3/3] ASoC: dt-bindings: socionext: Use audio-graph-port schema
+      commit: f1321c9766b2c9e79de268225e291dead0a8f969
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
