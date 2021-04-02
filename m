@@ -2,95 +2,80 @@ Return-Path: <SRS0=kQrV=I7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E53AC433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:11:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97EB4C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:59:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 65E616108B
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:11:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65E616108B
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	by mail.kernel.org (Postfix) with ESMTPS id 4BEDD6113E
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:59:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4BEDD6113E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09F1D169B;
-	Fri,  2 Apr 2021 16:10:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09F1D169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0888E16B0;
+	Fri,  2 Apr 2021 16:58:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0888E16B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617372692;
-	bh=q4wus+GJJS9/PRzFUHNJiuFyPOKjipoBqGgZjbYTf/U=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1617375566;
+	bh=Am0q1P8UNYbHjWYj9gFUrWeEiyq4mBrA98hmFT5A6Gs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eq5p/CBG7C+be26vMgFuhFJQYuXnoJ4bnKXgWI2WObsVdAnIdYkNud3UW31MzdRmL
-	 vaFw7BLU2fwMYeG4DCimnMGmq0V/dHjPCPIfQZILgJEVVl6Sd9awpeSgBqi2KDj6oR
-	 fD3wxO+gqhqTB/skBV8FzG61j6eGnFLCO3m+JY3Y=
+	b=fC85tEylAeGXm1hT4vU7DMAPasECr0Y4I3NE7aAv3yjMbzvIvs3a9zfVtwJ/GPFLZ
+	 ntdSh05CHU2YVeN5cGF6E1lcekxoYRx3rid21E6z8VfhVngG1y38Z8S3JFOVsQOOZo
+	 GHjOFGRZ/VoQROqB2ZZklBGSYnqpfmh5LBQ13dc0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58351F804B2;
-	Fri,  2 Apr 2021 16:08:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 646F6F8016E;
+	Fri,  2 Apr 2021 16:58:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B0E8F804B1; Fri,  2 Apr 2021 16:08:14 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [63.128.21.124])
+ id 8883BF801DB; Fri,  2 Apr 2021 16:58:32 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83B2AF804A9
- for <alsa-devel@alsa-project.org>; Fri,  2 Apr 2021 16:08:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83B2AF804A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="Cmm2+4NA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1617372490;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=xagzWtcrjXa7tWV4qvokbELw24BLh2MJrLryeFCobWg=;
- b=Cmm2+4NAJyjak+qgC9qRjBo1CF7O/BnGB0DMojMimDux0JI18IzbUf8q03ghpd8Ifbrrm8
- RZBBsohBoPJCtZjlsT+Rc/scZ3v9uauqdG3syKI7DqXLnFk+xrqcSPwmacm1Z1QEu/jjKf
- tnDyBDuy02k13qPhYOPnq7bvWTtTx+U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-w3Pt6REpPlyVyc8HztVcxg-1; Fri, 02 Apr 2021 10:08:07 -0400
-X-MC-Unique: w3Pt6REpPlyVyc8HztVcxg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
- [10.5.11.22])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC9B6107B041;
- Fri,  2 Apr 2021 14:08:05 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-163.ams2.redhat.com
- [10.36.112.163])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 0727710023AC;
- Fri,  2 Apr 2021 14:08:03 +0000 (UTC)
-From: Hans de Goede <hdegoede@redhat.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59894F800F5
+ for <alsa-devel@alsa-project.org>; Fri,  2 Apr 2021 16:58:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59894F800F5
+IronPort-SDR: NbjM0xKMtRKzZwdCZVehM+j2X1S/GBMMuxLtdQgSinJ/XpNtStgJ5gjI30NZIaqvNkSG9uhYHR
+ tsS4E9/UzoOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9942"; a="192584122"
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; d="scan'208";a="192584122"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Apr 2021 07:58:16 -0700
+IronPort-SDR: gLEOV2nBC7+99WhhCeCR3IZ438Wo3H5CTGcLjgbdv7JamRG7yjqyC/NS/kd8MjE1RgFuCzQgZl
+ cfVesLBf0kog==
+X-IronPort-AV: E=Sophos;i="5.81,300,1610438400"; d="scan'208";a="611325089"
+Received: from nvizzusi-mobl.amr.corp.intel.com (HELO [10.213.177.76])
+ ([10.213.177.76])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Apr 2021 07:58:15 -0700
+Subject: Re: [PATCH 0/6] ASoC: rt5670/Intel: Add support for Bay Trail CR /
+ Dell Venue 10 Pro 5055 tablet
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 6/6] ASoC: Intel: cht_bsw_rt5672: Set card.components string
-Date: Fri,  2 Apr 2021 16:07:47 +0200
-Message-Id: <20210402140747.174716-7-hdegoede@redhat.com>
-In-Reply-To: <20210402140747.174716-1-hdegoede@redhat.com>
 References: <20210402140747.174716-1-hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <37abb47e-1408-9704-36da-899893f04133@linux.intel.com>
+Date: Fri, 2 Apr 2021 09:47:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"
-Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Bard Liao <bard.liao@intel.com>
+In-Reply-To: <20210402140747.174716-1-hdegoede@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,28 +91,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set the card.components string using the new rt5670_components() helper
-which returns a components string based on the DMI quirks inside the
-rt5670 codec driver.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/cht_bsw_rt5672.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index 10d5ed20e4e8..e358632f50d7 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -493,6 +493,8 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	if (ret_val)
- 		return ret_val;
- 
-+	snd_soc_card_cht.components = rt5670_components();
-+
- 	drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
- 	if (IS_ERR(drv->mclk)) {
- 		dev_err(&pdev->dev,
--- 
-2.30.2
+On 4/2/21 9:07 AM, Hans de Goede wrote:
+> Hi All,
+> 
+> Here is a patch series to enable sound on the Dell Venue 10 Pro 5055 tablet
+> this series also includes 2 generic improvements to rt5672 support:
+> 
+> 1. Add support for boards using Bay Trail CR (SSP0) in combination with a rt5672 codec
+> 2. Set the card's components string based on the DMI info, so that we don't need to
+> duplicate the DMI quirks in userspace (in the UCM profile)
+> 
+> I've a patch to add support for the components string to the UCM profile for
+> these boards available here:
+> https://github.com/jwrdegoede/alsa-ucm-conf/commit/fedacc2bdc530b6febac665db27aab60e03ec840
+> 
+> I will submit this upstream once the kernel side has landed.
+
+LGTM, thanks Hans
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
