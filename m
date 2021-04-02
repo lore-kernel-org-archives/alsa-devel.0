@@ -7,78 +7,78 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4074C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:10:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C96C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:11:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5A912610CF
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:10:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5A912610CF
+	by mail.kernel.org (Postfix) with ESMTPS id 536A5610CF
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:11:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 536A5610CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7C0A16BA;
-	Fri,  2 Apr 2021 16:10:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7C0A16BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3E7616B9;
+	Fri,  2 Apr 2021 16:10:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3E7616B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617372658;
-	bh=MAuZiQ0xtHqNwXGKT2o1mCW/EU3TvdS3/qMUHkC+XNU=;
+	s=default; t=1617372676;
+	bh=9KZwjtLzdtkq/bkCcPkhFzfYzicgPXD2aMCgQwZ+Egg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Du5ndF6hjPP49MzsD0kfYZBLdtSUJhYzkPVy/68xoRH2NwGgkAs72/9d+AKGx0kx7
-	 F2AbwjRSMfOst7XStKFTlMRGSd5ltZozH+ACq9Zl8t0CDiPj+HD/9zCYXh5mpbI2s+
-	 RMritcA5rPa85LYW9PgEkBejBkXBrcUGeH+bDcZE=
+	b=BaTclIuh8HVsoRzea7RzqScf0doifFEuhM4pLyDBffW33rDRNKvMuTEFof4QQmu6A
+	 XSZ/ovIHwG/K87kZRHghCHazO0E6N02n7fdrmVp+oi09l+Y16CvS37fsn9g5TZd4jU
+	 bQLiuf6/pZLZU/dm12eXv1ZjyGbvsk1wkPp83jo4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0116BF804AB;
-	Fri,  2 Apr 2021 16:08:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A6C9F804B0;
+	Fri,  2 Apr 2021 16:08:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF650F8032D; Fri,  2 Apr 2021 16:08:08 +0200 (CEST)
+ id D9C99F80430; Fri,  2 Apr 2021 16:08:10 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
  (us-smtp-delivery-124.mimecast.com [170.10.133.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 777D5F80264
- for <alsa-devel@alsa-project.org>; Fri,  2 Apr 2021 16:08:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 777D5F80264
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63789F800F5
+ for <alsa-devel@alsa-project.org>; Fri,  2 Apr 2021 16:08:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63789F800F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="TAcMEA6C"
+ header.b="ChyedQaM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1617372484;
+ s=mimecast20190719; t=1617372486;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ENRKA+6coSsZS+5LXJiPfgWNzLHNpOsDBz4nM/tagBs=;
- b=TAcMEA6C1Gny3sWJE4H8p0SQg2vc6c1kch0BIq1VTKt5pHhhy6XPWGdJHInfmUKS4AtcXK
- xr+QfbSDspeFjHEXxe0p9oYyEjY3Gi5o3bu7n0q3vmWu9eiXfAZVei1XO4Gmb9gQhs93wv
- sBySOVWTpqkYTl1Kz+jDcZ7zGmxpOu0=
+ bh=yupgr+dPktl52RsV/7IIxREVkeDIuIOkdDo+dkoT+pw=;
+ b=ChyedQaMs6I7Yxmq2SnW8CfBj6Fqxk/5NKcyCTBVMwop+w43AjbG0S5mTyZ/h3Xvk3A6LC
+ clIaqdjK931In7oWP3l+Y4KCvccBNc369VtGVzrwz65doOtBl9OfPlAO/5CAHJZIjrlcEf
+ 12luN983QZK2MYod4zfiFPCI2AQd8vE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42--5qzkbrCM6O31-wJq72nTQ-1; Fri, 02 Apr 2021 10:08:03 -0400
-X-MC-Unique: -5qzkbrCM6O31-wJq72nTQ-1
+ us-mta-270-2J55ykNWOBKyIPX8h3aIHA-1; Fri, 02 Apr 2021 10:08:05 -0400
+X-MC-Unique: 2J55ykNWOBKyIPX8h3aIHA-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
  [10.5.11.22])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C21AA107ACCA;
- Fri,  2 Apr 2021 14:08:01 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B780F180FCA1;
+ Fri,  2 Apr 2021 14:08:03 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-163.ams2.redhat.com
  [10.36.112.163])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 1C3DE10023AC;
- Fri,  2 Apr 2021 14:07:59 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 10DA710023B2;
+ Fri,  2 Apr 2021 14:08:01 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/6] ASoC: rt5670: Add a quirk for the Dell Venue 10 Pro 5055
-Date: Fri,  2 Apr 2021 16:07:45 +0200
-Message-Id: <20210402140747.174716-5-hdegoede@redhat.com>
+Subject: [PATCH 5/6] ASoC: rt5670: Add a rt5670_components() helper
+Date: Fri,  2 Apr 2021 16:07:46 +0200
+Message-Id: <20210402140747.174716-6-hdegoede@redhat.com>
 In-Reply-To: <20210402140747.174716-1-hdegoede@redhat.com>
 References: <20210402140747.174716-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -106,37 +106,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a quirk with the jack-detect and dmic settings necessary to make
-jack-detect and the builtin mic work on Dell Venue 10 Pro 5055 tablets.
+The rt5670 codec driver uses DMI quirks to configure the DMIC data-pins,
+which means that it knows which DMIC interface is used on a specific
+device.
+
+ATM we duplicate this DMI matching inside the UCM profiles to select
+the right DMIC interface. Add a rt5670_components() helper which the
+machine-driver can use to set the components string of the card so
+that UCM can get the info from the components string.
+
+This way we only need to add new DMI quirks in one place.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5670.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/rt5670.c | 39 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/rt5670.h |  2 ++
+ 2 files changed, 41 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 4063aac2a443..dd69d874bad2 100644
+index dd69d874bad2..db7b33e8ce8a 100644
 --- a/sound/soc/codecs/rt5670.c
 +++ b/sound/soc/codecs/rt5670.c
-@@ -2980,6 +2980,18 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
- 						 RT5670_GPIO1_IS_IRQ |
- 						 RT5670_JD_MODE3),
- 	},
-+	{
-+		.callback = rt5670_quirk_cb,
-+		.ident = "Dell Venue 10 Pro 5055",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 10 Pro 5055"),
-+		},
-+		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
-+						 RT5670_DMIC2_INR |
-+						 RT5670_GPIO1_IS_IRQ |
-+						 RT5670_JD_MODE1),
-+	},
- 	{
- 		.callback = rt5670_quirk_cb,
- 		.ident = "Aegex 10 tablet (RU2)",
+@@ -3007,6 +3007,45 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
+ 	{}
+ };
+ 
++const char *rt5670_components(void)
++{
++	unsigned long quirk;
++	bool dmic1 = false;
++	bool dmic2 = false;
++	bool dmic3 = false;
++
++	if (quirk_override) {
++		quirk = quirk_override;
++	} else {
++		dmi_check_system(dmi_platform_intel_quirks);
++		quirk = rt5670_quirk;
++	}
++
++	if ((quirk & RT5670_DMIC1_IN2P) ||
++	    (quirk & RT5670_DMIC1_GPIO6) ||
++	    (quirk & RT5670_DMIC1_GPIO7))
++		dmic1 = true;
++
++	if ((quirk & RT5670_DMIC2_INR) ||
++	    (quirk & RT5670_DMIC2_GPIO8))
++		dmic2 = true;
++
++	if (quirk & RT5670_DMIC3_GPIO5)
++		dmic3 = true;
++
++	if (dmic1 && dmic2)
++		return "cfg-spk:2 cfg-mic:dmics12";
++	else if (dmic1)
++		return "cfg-spk:2 cfg-mic:dmic1";
++	else if (dmic2)
++		return "cfg-spk:2 cfg-mic:dmic2";
++	else if (dmic3)
++		return "cfg-spk:2 cfg-mic:dmic3";
++
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(rt5670_components);
++
+ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+diff --git a/sound/soc/codecs/rt5670.h b/sound/soc/codecs/rt5670.h
+index 6fb3c369ee98..5b230897f630 100644
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -2024,4 +2024,6 @@ void rt5670_jack_suspend(struct snd_soc_component *component);
+ void rt5670_jack_resume(struct snd_soc_component *component);
+ int rt5670_set_jack_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *jack);
++const char *rt5670_components(void);
++
+ #endif /* __RT5670_H__ */
 -- 
 2.30.2
 
