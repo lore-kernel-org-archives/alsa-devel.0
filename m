@@ -2,84 +2,84 @@ Return-Path: <SRS0=kQrV=I7=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6A38C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 48B5EC433ED
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:09:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id EDF95610E7
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:09:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EDF95610E7
+	by mail.kernel.org (Postfix) with ESMTPS id 65FED610E7
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Apr 2021 14:09:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65FED610E7
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3658516B5;
-	Fri,  2 Apr 2021 16:08:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3658516B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03BC616B3;
+	Fri,  2 Apr 2021 16:09:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03BC616B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617372586;
-	bh=/o6FCBsm6dLZctVAuB61ncDUNMEpNDgIl46VQEmdSdc=;
+	s=default; t=1617372591;
+	bh=pAe5ao4siIvO3aMdwIilotCqPSvP8N/dv8edS3Fyu4w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rl3RV0mqdDX4ZbemCuMNDJPj0zkeWyF47SGZ+vCih6EmWtQVqYXkqy9YdTYxOp3F2
-	 f2h/CZL8wkIl/Yjog8xRFKfTPbwnZbe/FQH9oI5qTD/c4X6up2ETGYYROGaUBKCpsv
-	 U51p6Ta1fr2JTuKsWruz6Lkynjgu/entHkC67JAk=
+	b=o3b6kTtgnCpwhfuumLV5Y7NIeyZxaRDJ+bePaoZkhKCq0vCy5oh7jRpsvp8HBtBxk
+	 yyOh8yen2DvZudUgpLNZU/sWHacVuZggMkSELuzWL02vhVzQkwALG1hdL+w32woI2S
+	 DjDJD8HKpgYNSoGF8zznrfd7B7aP4Nf/JI/Ra2pc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6DE0F80254;
-	Fri,  2 Apr 2021 16:08:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30A34F8032C;
+	Fri,  2 Apr 2021 16:08:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F5DDF80254; Fri,  2 Apr 2021 16:08:02 +0200 (CEST)
+ id C13F6F80259; Fri,  2 Apr 2021 16:08:04 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [63.128.21.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FAA1F80166
- for <alsa-devel@alsa-project.org>; Fri,  2 Apr 2021 16:07:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FAA1F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38131F8016E
+ for <alsa-devel@alsa-project.org>; Fri,  2 Apr 2021 16:08:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38131F8016E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="JV0TWJ26"
+ header.b="gTggCSRx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1617372476;
+ s=mimecast20190719; t=1617372479;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=+r6dprQaNFKXXZm9OtqxoiuVb+akwSVfbsMDg1EgoAg=;
- b=JV0TWJ26UcC5GZX+N8yQ05t8ZcubIk+KG0q8mmsxsPbHOB+y8RbKey50NQRWS8QQ8e5Uh3
- b2s7N+csPBAviGzMhVyGGOdzuH+9iKZX6Je52CdFOJIQyqJuICYkZu9ZNZh1nBOx4UuBRv
- KqPmqt4D+ONUbjiaQUxYmVFtSGsy3is=
+ bh=ZG8KiOPa/IuiUM1nVPwN33CDdNGX4bIYDrRRy/V77eY=;
+ b=gTggCSRxC7/or373HMKW+yfV5/6u0yimkmHk3KisY1Kz+/M2qQK2Q4gHQHByICN0G8j66z
+ YiK8e3dgunjWTrT6P7uODCHgVtTdQ264zqaLUBWe44x2voblacIWROvl+U4l7XRk4He0rF
+ Bsvy9fXDCZ2UYoqgy/QY0HqedIgJIt4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-W1_l808jPP2kiEVdkg8GWA-1; Fri, 02 Apr 2021 10:07:54 -0400
-X-MC-Unique: W1_l808jPP2kiEVdkg8GWA-1
+ us-mta-572-e4LcWwLbMLeYMqVjnhR0YQ-1; Fri, 02 Apr 2021 10:07:57 -0400
+X-MC-Unique: e4LcWwLbMLeYMqVjnhR0YQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com
  [10.5.11.22])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 838BD1005D57;
- Fri,  2 Apr 2021 14:07:52 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C7D0107ACCA;
+ Fri,  2 Apr 2021 14:07:56 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-163.ams2.redhat.com
  [10.36.112.163])
- by smtp.corp.redhat.com (Postfix) with ESMTP id CF15510023B2;
- Fri,  2 Apr 2021 14:07:50 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id BDD0310023AC;
+ Fri,  2 Apr 2021 14:07:54 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Cezary Rojewski <cezary.rojewski@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/6] ASoC: Intel: Unify the thinkpad10 and aegex10 byt-match
- quirks
-Date: Fri,  2 Apr 2021 16:07:42 +0200
-Message-Id: <20210402140747.174716-2-hdegoede@redhat.com>
+Subject: [PATCH 3/6] ASoC: Intel: cht_bsw_rt5672: Add support for Bay Trail CR
+ / SSP0
+Date: Fri,  2 Apr 2021 16:07:44 +0200
+Message-Id: <20210402140747.174716-4-hdegoede@redhat.com>
 In-Reply-To: <20210402140747.174716-1-hdegoede@redhat.com>
 References: <20210402140747.174716-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -107,116 +107,172 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no reason to have separate quirk-handlers / byt_machine_id-s
-for these.
+The rt5672 codec is used on some Bay Trail CR boards, on these SoCs SSP2
+is not available and SSP0 should be used instead. At support for this.
 
-These are both cases of BYT devices with a 10EC5640 ACPI HID while using
-a rt5672 codec.
-
-The Dell Venue 10 Pro 5055 is another example of such a device, instead
-of adding a third byt_machine_id definition for this Dell model, make
-change the 2 existing cases into a generic BYT_RT5672 byt_machine_id
-in preparation for adding a quirk for the Dell Venue 10 Pro 5055.
+This has been tested on a Dell Venue 10 Pro 5055.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- .../intel/common/soc-acpi-intel-byt-match.c   | 32 +++++++------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 75 ++++++++++++++++++++-----
+ 1 file changed, 61 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-index d1febbb53b70..4596d128fff5 100644
---- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-@@ -11,13 +11,12 @@
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index 10c88ef2f85d..10d5ed20e4e8 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -21,6 +21,7 @@
+ #include <sound/soc-acpi.h>
+ #include "../../codecs/rt5670.h"
+ #include "../atom/sst-atom-controls.h"
++#include "../common/soc-intel-quirks.h"
  
- static unsigned long byt_machine_id;
  
--#define BYT_THINKPAD_10  1
-+#define BYT_RT5672       1
- #define BYT_POV_P1006W   2
--#define BYT_AEGEX_10     3
- 
--static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
-+static int byt_rt5672_quirk_cb(const struct dmi_system_id *id)
- {
--	byt_machine_id = BYT_THINKPAD_10;
-+	byt_machine_id = BYT_RT5672;
- 	return 1;
- }
- 
-@@ -27,36 +26,30 @@ static int byt_pov_p1006w_quirk_cb(const struct dmi_system_id *id)
- 	return 1;
- }
- 
--static int byt_aegex10_quirk_cb(const struct dmi_system_id *id)
--{
--	byt_machine_id = BYT_AEGEX_10;
--	return 1;
--}
--
- static const struct dmi_system_id byt_table[] = {
- 	{
--		.callback = byt_thinkpad10_quirk_cb,
-+		.callback = byt_rt5672_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 8"),
- 		},
- 	},
- 	{
--		.callback = byt_thinkpad10_quirk_cb,
-+		.callback = byt_rt5672_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 10"),
- 		},
- 	},
- 	{
--		.callback = byt_thinkpad10_quirk_cb,
-+		.callback = byt_rt5672_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Tablet B"),
- 		},
- 	},
- 	{
--		.callback = byt_thinkpad10_quirk_cb,
-+		.callback = byt_rt5672_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Miix 2 10"),
-@@ -75,7 +68,7 @@ static const struct dmi_system_id byt_table[] = {
- 	},
- 	{
- 		/* Aegex 10 tablet (RU2) */
--		.callback = byt_aegex10_quirk_cb,
-+		.callback = byt_rt5672_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "AEGEX"),
- 			DMI_MATCH(DMI_PRODUCT_VERSION, "RU2"),
-@@ -84,8 +77,8 @@ static const struct dmi_system_id byt_table[] = {
- 	{ }
+ /* The platform clock #3 outputs 19.2Mhz clock to codec as I2S MCLK */
+@@ -31,6 +32,7 @@ struct cht_mc_private {
+ 	struct snd_soc_jack headset;
+ 	char codec_name[SND_ACPI_I2C_ID_LEN];
+ 	struct clk *mclk;
++	bool use_ssp0;
  };
  
--/* The Thinkapd 10 and Aegex 10 tablets have the same ID problem */
--static struct snd_soc_acpi_mach byt_thinkpad_10 = {
-+/* Various devices use an ACPI id of 10EC5640 while using a rt5672 codec */
-+static struct snd_soc_acpi_mach byt_rt5672 = {
- 	.id = "10EC5640",
- 	.drv_name = "cht-bsw-rt5672",
- 	.fw_filename = "intel/fw_sst_0f28.bin",
-@@ -110,9 +103,8 @@ static struct snd_soc_acpi_mach *byt_quirk(void *arg)
- 	dmi_check_system(byt_table);
+ /* Headset jack detection DAPM pins */
+@@ -121,16 +123,26 @@ static const struct snd_soc_dapm_route cht_audio_map[] = {
+ 	{"Ext Spk", NULL, "SPOLN"},
+ 	{"Ext Spk", NULL, "SPORP"},
+ 	{"Ext Spk", NULL, "SPORN"},
++	{"Headphone", NULL, "Platform Clock"},
++	{"Headset Mic", NULL, "Platform Clock"},
++	{"Int Mic", NULL, "Platform Clock"},
++	{"Ext Spk", NULL, "Platform Clock"},
++};
++
++static const struct snd_soc_dapm_route cht_audio_ssp0_map[] = {
++	{"AIF1 Playback", NULL, "ssp0 Tx"},
++	{"ssp0 Tx", NULL, "modem_out"},
++	{"modem_in", NULL, "ssp0 Rx"},
++	{"ssp0 Rx", NULL, "AIF1 Capture"},
++};
++
++static const struct snd_soc_dapm_route cht_audio_ssp2_map[] = {
+ 	{"AIF1 Playback", NULL, "ssp2 Tx"},
+ 	{"ssp2 Tx", NULL, "codec_out0"},
+ 	{"ssp2 Tx", NULL, "codec_out1"},
+ 	{"codec_in0", NULL, "ssp2 Rx"},
+ 	{"codec_in1", NULL, "ssp2 Rx"},
+ 	{"ssp2 Rx", NULL, "AIF1 Capture"},
+-	{"Headphone", NULL, "Platform Clock"},
+-	{"Headset Mic", NULL, "Platform Clock"},
+-	{"Int Mic", NULL, "Platform Clock"},
+-	{"Ext Spk", NULL, "Platform Clock"},
+ };
  
- 	switch (byt_machine_id) {
--	case BYT_THINKPAD_10:
--	case BYT_AEGEX_10:
--		return &byt_thinkpad_10;
-+	case BYT_RT5672:
-+		return &byt_rt5672;
- 	case BYT_POV_P1006W:
- 		return &byt_pov_p1006w;
- 	default:
+ static const struct snd_kcontrol_new cht_mc_controls[] = {
+@@ -197,6 +209,18 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 				| RT5670_AD_MONO_R_FILTER,
+ 				RT5670_CLK_SEL_I2S1_ASRC);
+ 
++	if (ctx->use_ssp0) {
++		ret = snd_soc_dapm_add_routes(&runtime->card->dapm,
++					      cht_audio_ssp0_map,
++					      ARRAY_SIZE(cht_audio_ssp0_map));
++	} else {
++		ret = snd_soc_dapm_add_routes(&runtime->card->dapm,
++					      cht_audio_ssp2_map,
++					      ARRAY_SIZE(cht_audio_ssp2_map));
++	}
++	if (ret)
++		return ret;
++
+         ret = snd_soc_card_jack_new(runtime->card, "Headset",
+ 				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
+ 				    SND_JACK_BTN_1 | SND_JACK_BTN_2,
+@@ -239,18 +263,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			    struct snd_pcm_hw_params *params)
+ {
++	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+-	int ret;
++	int ret, bits;
+ 
+ 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
+ 
+-	/* set SSP2 to 24-bit */
+-	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++	if (ctx->use_ssp0) {
++		/* set SSP0 to 16-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
++		bits = 16;
++	} else {
++		/* set SSP2 to 24-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++		bits = 24;
++	}
+ 
+ 	/*
+ 	 * The default mode for the cpu-dai is TDM 4 slot. The default mode
+@@ -274,6 +306,12 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		return ret;
+ 	}
+ 
++	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_cpu(rtd, 0), 0x3, 0x3, 2, bits);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -414,6 +452,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	const char *platform_name;
+ 	struct acpi_device *adev;
+ 	bool sof_parent;
++	int dai_index = 0;
+ 	int i;
+ 
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_KERNEL);
+@@ -422,19 +461,27 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 
+ 	strcpy(drv->codec_name, RT5672_I2C_DEFAULT);
+ 
++	/* find index of codec dai */
++	for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
++		if (!strcmp(cht_dailink[i].codecs->name, RT5672_I2C_DEFAULT)) {
++			dai_index = i;
++			break;
++		}
++	}
++
+ 	/* fixup codec name based on HID */
+ 	adev = acpi_dev_get_first_match_dev(mach->id, NULL, -1);
+ 	if (adev) {
+ 		snprintf(drv->codec_name, sizeof(drv->codec_name),
+ 			 "i2c-%s", acpi_dev_name(adev));
+ 		put_device(&adev->dev);
+-		for (i = 0; i < ARRAY_SIZE(cht_dailink); i++) {
+-			if (!strcmp(cht_dailink[i].codecs->name,
+-				    RT5672_I2C_DEFAULT)) {
+-				cht_dailink[i].codecs->name = drv->codec_name;
+-				break;
+-			}
+-		}
++		cht_dailink[dai_index].codecs->name = drv->codec_name;
++	}
++
++	/* Use SSP0 on Bay Trail CR devices */
++	if (soc_intel_is_byt() && mach->mach_params.acpi_ipc_irq_index == 0) {
++		cht_dailink[dai_index].cpus->dai_name = "ssp0-port";
++		drv->use_ssp0 = true;
+ 	}
+ 
+ 	/* override plaform name, if required */
 -- 
 2.30.2
 
