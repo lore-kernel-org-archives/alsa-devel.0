@@ -2,59 +2,67 @@ Return-Path: <SRS0=qvmA=JD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA457C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:39:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2B58C433B4
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:49:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F00ED613BD
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:39:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F00ED613BD
+	by mail.kernel.org (Postfix) with ESMTPS id D60516128A
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:49:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D60516128A
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 808EF84C;
-	Tue,  6 Apr 2021 13:38:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 808EF84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BA1284A;
+	Tue,  6 Apr 2021 13:49:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BA1284A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617709181;
-	bh=K7BNh/3Zfv5ZIO+wuAGtRdVz41gXrxzJwpCfGUBmHO4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vFqaZsNQKTkM9hSizIC6L8RUuCWqb9KxyfN7UUBAHoRaSyWXJXkTbkoQbP3MqtCJQ
-	 rFbQ/vWTB5PxB+QotyTnFccg1aFwxGzBUVSlXo4MtW4dzNoluWseU0Ga1i2XoAVT8C
-	 xxjf0+s30fYSJSl88Z2qyLQYH+D+xW78ejHjn2H0=
+	s=default; t=1617709792;
+	bh=WJSj+HgV6dEQmS5kv7eHVFmu23Zn3M4Uq/W/7NzzlEk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qEnT64G7ZdjONBzfZbDdzqrro3bd4wE7rzPSLVnDQctmpWWGYJtVrojhh0JdXHitx
+	 dQXxjJKpHaxuYCQBfeCYs0IUNAygwBqmDpihruWDknSrRmmkeBFdSxKiO7VwL9cfXz
+	 zbwe8p0s4U0b32VQBOtI205F6O9+u23QafGzyPM0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DF44F80169;
-	Tue,  6 Apr 2021 13:38:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FB01F80169;
+	Tue,  6 Apr 2021 13:49:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 748F7F8020B; Tue,  6 Apr 2021 13:38:50 +0200 (CEST)
+ id 9A28AF800E3; Tue,  6 Apr 2021 13:48:59 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EF88F800E3
- for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 13:38:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EF88F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78F1EF800E3
+ for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 13:48:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78F1EF800E3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DF3B2B15B
- for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 11:38:38 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 0F824B178;
+ Tue,  6 Apr 2021 11:48:51 +0000 (UTC)
+Date: Tue, 06 Apr 2021 13:48:50 +0200
+Message-ID: <s5hsg43bplp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Drop implicit fb quirk entries dubbed for
- capture
-Date: Tue,  6 Apr 2021 13:38:37 +0200
-Message-Id: <20210406113837.32041-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Geraldo <geraldogabriel@gmail.com>
+Subject: Re: [PATCH v2] Pioneer devices: engage implicit feedback sync for
+ playback
+In-Reply-To: <CAEsQvcs9LcciAYjoB64Kt_VaSww4EAW4-qN0ED5jDA0GeeTtDg@mail.gmail.com>
+References: <CAEsQvcs9LcciAYjoB64Kt_VaSww4EAW4-qN0ED5jDA0GeeTtDg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, dmitry@d-systems.ee, fabian@lesniak-it.de,
+ ard@kwaak.net, marcan@marcan.st, franta-linux@frantovo.cz, dmanlfc@gmail.com,
+ livvy@base.nu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,51 +78,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The implicit feedback quirk table contains the entries that also
-appear in the capture quirks, and those are all handled to be
-skipped.  For the code simplicity, drop the duped entries in the
-playback quirk table, and check the match with the capture quirk table
-instead.
+On Mon, 05 Apr 2021 15:49:20 +0200,
+Geraldo wrote:
+> 
+> Dear Linux users of Pioneer gear, please disregard v1 of this patch and test
+> this instead if at all possible.
+> 
+> My initial assessment that we needed to let the capture EP be opened twice was
+> clearly proven wrong by further testing. This is good because if we really
+> needed that it would require a lot of reengineering inside ALSA.
+> 
+> One thing that still boggles my mind though is why we need a special Pioneer
+> case inside snd_usb_parse_implicit_fb_quirk that returns 1 like a capture
+> quirk was found.
+> 
+> This is a highly experimental patch on top of 5.12-rc6 that's supposed to
+> engage implicit feedback sync on the playback for Pioneer devices. Without
+> implicit feedback sync the inputs started glitching due to clock drift in
+> about an hour in my Pioneer DJ DDJ-SR2.
+> 
+> Once again I'd like to thank Takashi Iwai. He's the true author of the bulk of
+> this code, I just adapted it and coerced it into working.
+> 
+> Signed-off-by: Geraldo Nascimento <geraldogabriel@gmail.com>
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212519
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Thanks for the patch!
+
+It's interesting that Pioneer devices would actually work with the
+implicit feedback mode.  It seems that the key point is to skip the
+capture side; IIRC, we checked applying the quirk to the playback
+side, but this wasn't enough or not properly working on some devices.
+
+If that's the case, I believe a patch like below would be safer and
+more inconsistent: it checks the device from both playback and capture
+quirks with the same helper function.
+
+Could you check whether this one works?   (It's totally untested.)
+
+
+thanks,
+
+Takashi
+
 ---
- sound/usb/implicit.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
-
-diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
-index 11a85e66aa96..19622c58b72b 100644
 --- a/sound/usb/implicit.c
 +++ b/sound/usb/implicit.c
-@@ -70,16 +70,6 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
- 	  .type = IMPLICIT_FB_FIXED,
- 	  .ep_num = 0x84, .iface = 0 },		/* MOTU MicroBook II */
+@@ -167,18 +167,27 @@ static int add_roland_implicit_fb(struct snd_usb_audio *chip,
+ 				       ifnum, alts);
+ }
  
--	/* No quirk for playback but with capture quirk (see below) */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x0130),	/* BOSS BR-80 */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x0171),   /* BOSS RC-505 */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x0185),	/* BOSS GP-10 */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x0189),	/* BOSS GT-100v2 */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x01d6),	/* BOSS GT-1 */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x01d8),	/* BOSS Katana */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x01e5),	/* BOSS GT-001 */
--	IMPLICIT_FB_SKIP_DEV(0x0582, 0x0203),   /* BOSS AD-10 */
--
- 	{} /* terminator */
- };
+-/* Playback and capture EPs on Pioneer devices share the same iface/altset,
+- * but they don't seem working with the implicit fb mode well, hence we
+- * just return as if the sync were already set up.
++/* Playback and capture EPs on Pioneer devices share the same iface/altset
++ * for the implicit feedback operation
+  */
+-static int skip_pioneer_sync_ep(struct snd_usb_audio *chip,
+-				struct audioformat *fmt,
+-				struct usb_host_interface *alts)
++static bool is_pioneer_implicit_fb(struct snd_usb_audio *chip,
++				   struct usb_host_interface *alts)
++
+ {
+ 	struct usb_endpoint_descriptor *epd;
  
-@@ -278,6 +268,11 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
- 		}
++	if (USB_ID_VENDOR(chip->usb_id) != 0x2b73 &&
++	    USB_ID_VENDOR(chip->usb_id) != 0x08e4)
++		return false;
++	if (alts->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC)
++		return false;
+ 	if (alts->desc.bNumEndpoints != 2)
+-		return 0;
++		return false;
++
++	epd = get_endpoint(alts, 0);
++	if (!usb_endpoint_is_isoc_out(epd) ||
++	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
++		return false;
+ 
+ 	epd = get_endpoint(alts, 1);
+ 	if (!usb_endpoint_is_isoc_in(epd) ||
+@@ -187,8 +196,9 @@ static int skip_pioneer_sync_ep(struct snd_usb_audio *chip,
+ 	     USB_ENDPOINT_USAGE_DATA &&
+ 	     (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
+ 	     USB_ENDPOINT_USAGE_IMPLICIT_FB))
+-		return 0;
+-	return 1; /* don't handle with the implicit fb, just skip sync EP */
++		return false;
++
++	return true;
+ }
+ 
+ static int __add_generic_implicit_fb(struct snd_usb_audio *chip,
+@@ -297,13 +307,11 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
  	}
  
-+	/* Don't apply playback quirks for the devices with capture quirk */
-+	p = find_implicit_fb_entry(chip, capture_implicit_fb_quirks, alts);
-+	if (p && p->type == IMPLICIT_FB_FIXED)
-+		return 0; /* no quirk */
-+
- 	/* Generic UAC2 implicit feedback */
- 	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
- 	    alts->desc.bInterfaceClass == USB_CLASS_AUDIO &&
--- 
-2.26.2
+ 	/* Pioneer devices with vendor spec class */
+-	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
+-	    alts->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
+-	    (USB_ID_VENDOR(chip->usb_id) == 0x2b73 || /* Pioneer */
+-	     USB_ID_VENDOR(chip->usb_id) == 0x08e4    /* Pioneer */)) {
+-		if (skip_pioneer_sync_ep(chip, fmt, alts))
+-			return 1;
+-	}
++	if (is_pioneer_implicit_fb(chip, alts))
++		return add_implicit_fb_sync_ep(chip, fmt,
++					       get_endpoint(alts, 1)->bEndpointAddress,
++					       1, alts->desc.bInterfaceNumber,
++					       alts);
+ 
+ 	/* Try the generic implicit fb if available */
+ 	if (chip->generic_implicit_fb)
+@@ -324,6 +332,8 @@ static int audioformat_capture_quirk(struct snd_usb_audio *chip,
+ 	if (p && p->type == IMPLICIT_FB_FIXED)
+ 		return add_implicit_fb_sync_ep(chip, fmt, p->ep_num, 0,
+ 					       p->iface, NULL);
++	if (is_pioneer_implicit_fb(chip, alts))
++		return 1; /* skip */
+ 	return 0;
+ }
+ 
 
