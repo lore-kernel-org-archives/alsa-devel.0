@@ -6,72 +6,75 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59946C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 17:42:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8352C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 17:42:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 54923613C4
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 17:41:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 54923613C4
+	by mail.kernel.org (Postfix) with ESMTPS id 3B0276113C
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 17:42:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B0276113C
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6449166F;
-	Tue,  6 Apr 2021 19:41:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6449166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7085A83E;
+	Tue,  6 Apr 2021 19:41:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7085A83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617730917;
-	bh=fdAqLNrecElI7SK1mBUMrgnZscfzo3KjrO++6q3ijUw=;
+	s=default; t=1617730952;
+	bh=gLki/Xmys1/KD/LzsvZQ8VQy1gbMhA3oTJt1qS4L15w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cqvp4uMW2SoI8I4/P5gW4LtDT8th1LfK6nnlLXc74hGdWcwtvB5MbudIT9w3uSCDx
-	 Cd05sUFDkydwfbYd7RN9Zuyll3De9CuA/9nwTlQM7a0XigskzDXl3Jc0bhNtt39VY0
-	 5O53/LOZCFV1vPmhJYhFptbZUS/9n5QGIu9XNeJE=
+	b=GvzdYRb74Suod8Dvznx4E1dCAUqDad8E8ZeFYnYuFEGZYqpG9O786BvctTMIDrfYg
+	 t51MrZfjJ4OBfv/YQmsLP0PqA0QvPYFJjDrDzwxKvsTOOzASxg8IePTtc0yATMmJ77
+	 E6pJiq3lPipAzgz2yKK8JpbKi0xt+MZBsjn8Q1KM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 959C5F8032C;
-	Tue,  6 Apr 2021 19:40:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F934F80424;
+	Tue,  6 Apr 2021 19:40:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76724F8025D; Tue,  6 Apr 2021 19:40:13 +0200 (CEST)
+ id 88679F80249; Tue,  6 Apr 2021 19:40:10 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1132F800E3
- for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 19:40:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1132F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB636F80169
+ for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 19:40:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB636F80169
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GYbKikOh"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB4B6113C;
- Tue,  6 Apr 2021 17:39:59 +0000 (UTC)
+ header.b="cgPyYReC"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF8B7613E5;
+ Tue,  6 Apr 2021 17:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617730799;
- bh=fdAqLNrecElI7SK1mBUMrgnZscfzo3KjrO++6q3ijUw=;
+ s=k20201202; t=1617730805;
+ bh=gLki/Xmys1/KD/LzsvZQ8VQy1gbMhA3oTJt1qS4L15w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=GYbKikOhhiysJWkDX+3LzDOabPHHhiIIrp9uumWVERifH/ftmzrth1/l3zQwOrahC
- wuYUoYSjzpkCwPVCN568qcijOziRaXTNBI993oGuInUaeB3FfVujTFbAsNUb6btirA
- zGPJpb/6sVxX+TfCror3X0h9xR4d9ONPL7/vuZKzfle8iyANhLBYgeJHfgnw9gkafG
- GnpnsETRi1n38kMDOEvVEwQrFWGL58yMITRAVZKCo/dVMJY0DS0P1HgZ9UpepcrjQ+
- 8ELmynkzUn4nB0sgoQmMI8OwMJny4kCbjrakFIXl/EgFem6V8SXPbTyvMmaJIv6ypK
- B5cheXiizoI5A==
+ b=cgPyYReCuO5YST0aI+xw1Kl1DutdnYyZSvPM4OYYK6GBNZTzvObQDwemy9efjLLOH
+ Bs/Boy5472poeWiP7bg5qA03vSrVKiV128Fw00IO7bRRLXDhyH/T1wcUyl+8fFlgsD
+ Wkxe1qTb20wh7lXgZA2g06l05Hs8fk8+8V7+dh4TXftjyal+lztRib1Ym5OoL0nC8x
+ US2lfygxBe7boBmpthLZzfr7+60oa0KeUY/R1ifDArPEk0PFR0vkmJZXHBh6mIt+bK
+ Rb1wKDcF9eepBPyZ1qQ7WAHLF6nT1D6+8Y9PM12X3QHfUNmJ0czh3Bn1+DslNc0fZA
+ E/0Rn+nYKIzDw==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
-	vamshi.krishna.gopal@intel.com
-Subject: Re: [PATCH v3 0/2] kbl_da7219_max9357a machine changes for wov and MST
-Date: Tue,  6 Apr 2021 18:39:38 +0100
-Message-Id: <161773049108.51713.2659365364910873959.b4-ty@kernel.org>
+To: Annaliese McDermond <nh6z@nh6z.net>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ "tiwai@suse.com" <tiwai@suse.com>, "perex@perex.cz" <perex@perex.cz>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v2 0/2] ASoC: tlv320aic32x4: Bugfixes for tlv320aic32x4
+ driver
+Date: Tue,  6 Apr 2021 18:39:40 +0100
+Message-Id: <161773049107.51713.3511483011411927627.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210405124835.71247-1-vamshi.krishna.gopal@intel.com>
-References: <20210405124835.71247-1-vamshi.krishna.gopal@intel.com>
+In-Reply-To: <010101788984f9d0-64bcaa85-ce13-49dc-bfc6-892a6a4e411e-000000@us-west-2.amazonses.com>
+References: <20210331182125.413693-1-nh6z@nh6z.net>
+ <010101788984f9d0-64bcaa85-ce13-49dc-bfc6-892a6a4e411e-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: harshapriya.n@intel.com, mac.chiang@intel.com,
- Mark Brown <broonie@kernel.org>, sathya.prakash.m.r@intel.com,
- biernacki@google.com, pierre-louis.bossart@intel.com
+Cc: "team@nwdigitalradio.com" <team@nwdigitalradio.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,14 +90,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 5 Apr 2021 18:18:33 +0530, vamshi.krishna.gopal@intel.com wrote:
-> This patch series about creating dailink for Wake on voice functionality
-> and also adding MST route changes.
+On Wed, 31 Mar 2021 18:21:36 +0000, Annaliese McDermond wrote:
+> These are a couple of bugfixes for the tlv320aic32x4 driver
+> that we discovered after the Raspberry Pi Foundation's move to
+> the 5.10 kernel.
 > 
-> changes in v3:
-> 
-> -Remove DP from widgets
-> -Add MST support in other routing table for kbl_rt5663_max98927.c
+> The first increases the maximum value in the regmap configuration
+> so that the powerup command actually works.
 > 
 > [...]
 
@@ -104,10 +106,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: Intel: kbl: Add MST route change to kbl machine drivers
-      commit: c7c19ec098b862a688291f5a1101f7de6e4b0a6c
-[2/2] ASoc: Intel: board: add BE DAI link for WoV
-      commit: 74ed9e9bfb7343b0a6710b651df66f3d68551110
+[1/2] ASoC: tlv320aic32x4: Increase maximum register in regmap
+      commit: 29654ed8384e9dbaf4cfba689dbcb664a6ab4bb7
+[2/2] ASoC: tlv320aic32x4: Register clocks before registering component
+      commit: 1ca1156cfd69530e6b7cb99943baf90c8bd871a5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
