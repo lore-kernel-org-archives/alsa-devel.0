@@ -2,70 +2,79 @@ Return-Path: <SRS0=qvmA=JD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCA96C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 14:27:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52E27C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 14:45:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B1C0613AE
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 14:27:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B1C0613AE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=aksignal.cz
+	by mail.kernel.org (Postfix) with ESMTPS id E4AAC613C4
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 14:45:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E4AAC613C4
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9ACA167A;
-	Tue,  6 Apr 2021 16:26:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9ACA167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD22484C;
+	Tue,  6 Apr 2021 16:44:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD22484C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617719247;
-	bh=QstVuYYTeeoCBHhCSLyhC7r1+dQh2QJrIKkLBmRaGkk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1617720340;
+	bh=i71hhYw3F74gnofXNvpnYOIGFdLIheWYnd7NNTeKahQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EnWVX2W5eI57696LVar/s0SfTFwD67wRfzAKlY53wFOo1/6n1my856eNVqpd1svEl
-	 65uXFyINQ1GZjUWaTJO9fwODUxF6jMz9Pje6XLwb0tiCyKxqnT9yJ3ohKwpRSvPlrO
-	 KRrTWxjXgPEICbaUuPJF11VvlRusF4TQPgxAgTWI=
+	b=NxQJ6BfdQpMEWb85svJR9sjZmkhmhNFotBSV510OLYy9PG3RDPuoAOwJoqd9OR3Y+
+	 djovYwQPi53015lbYzTy0AW5ClVgTppKWcq68WpnV1Xj/5mGKpGtMVgIEkV+W3TZsu
+	 RbNIdz9LVV7C6M83uSh0Arkl9j6s4/BH9NkabYBY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B015F80475;
-	Tue,  6 Apr 2021 16:25:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3989EF80169;
+	Tue,  6 Apr 2021 16:44:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECD16F80424; Tue,  6 Apr 2021 16:25:00 +0200 (CEST)
-Received: from router.aksignal.cz (router.aksignal.cz [62.44.4.214])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2598DF8020B; Tue,  6 Apr 2021 16:44:48 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78707F8020B
- for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 16:24:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78707F8020B
-Received: from localhost (localhost [127.0.0.1])
- by router.aksignal.cz (Postfix) with ESMTP id 284903FA2D;
- Tue,  6 Apr 2021 16:24:45 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
- by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
- with LMTP id 7hwGtQXMom-Q; Tue,  6 Apr 2021 16:24:43 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
- (Authenticated sender: jiri.prchal@aksignal.cz)
- by router.aksignal.cz (Postfix) with ESMTPSA id 4ABDD3FA2B;
- Tue,  6 Apr 2021 16:24:43 +0200 (CEST)
-From: Jiri Prchal <jiri.prchal@aksignal.cz>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: codecs: tlv320aic3x: move model definitions
-Date: Tue,  6 Apr 2021 16:24:36 +0200
-Message-Id: <20210406142439.102396-2-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210406142439.102396-1-jiri.prchal@aksignal.cz>
-References: <20210406142439.102396-1-jiri.prchal@aksignal.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78688F800E1
+ for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 16:44:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78688F800E1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qhi6RZIp"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591A961262;
+ Tue,  6 Apr 2021 14:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1617720280;
+ bh=i71hhYw3F74gnofXNvpnYOIGFdLIheWYnd7NNTeKahQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qhi6RZIpRu437fNY1V89wm49ZAPtfkZQS9GpDbBUcNVSn8qbUAZda4YjESeWNvDq3
+ UB8GQc+FZRxQlkF0zg6MynNfUfCLbPV0pG7/jVSiuRjSbzf0SBwKpcupMD72Yd/66I
+ vbGJ1LX+yAa6HQdWx0RrOa+vZtYV927jx8G9L6uw2bNk4PAnFMzA+LHyHlWl298OKY
+ rMFp0d3ypXu0C5sICPGiAN6oXrojUnDUuctfyLFXNjkG32Ht7IPMF05JxiPxi7mPDQ
+ iJTp2xO0Ze8zUYnG/fYMFU/XllqwRZelUMETPaziKcPkhqJbjGDwnpfDjwzYTwHt2T
+ /YXDV9TXr0OtQ==
+Date: Tue, 6 Apr 2021 15:44:23 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?utf-8?B?SmnFmcOt?= Prchal <jiri.prchal@aksignal.cz>
+Subject: Re: [PATCH 3/5] SOC Codecs: TLV320AIC3X add SPI: I2C code
+Message-ID: <20210406144423.GK6443@sirena.org.uk>
+References: <20210406105018.59463-1-jiri.prchal@aksignal.cz>
+ <20210406105018.59463-4-jiri.prchal@aksignal.cz>
+ <20210406121326.GG6443@sirena.org.uk>
+ <888ec87b-d79c-163b-ffa2-899362dec9e3@aksignal.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Jiri Prchal <jiri.prchal@aksignal.cz>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="d6d1KVhp94hk3Jrm"
+Content-Disposition: inline
+In-Reply-To: <888ec87b-d79c-163b-ffa2-899362dec9e3@aksignal.cz>
+X-Cookie: BARBARA STANWYCK makes me nervous!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,46 +90,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Model definitions moved to header file.
-Preparation for SPI and I2C separated files.
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
----
- sound/soc/codecs/tlv320aic3x.c | 4 ----
- sound/soc/codecs/tlv320aic3x.h | 5 +++++
- 2 files changed, 5 insertions(+), 4 deletions(-)
+--d6d1KVhp94hk3Jrm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index db1444127444..812f0f117fd3 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -82,10 +82,6 @@ struct aic3x_priv {
- 	int master;
- 	int gpio_reset;
- 	int power;
--#define AIC3X_MODEL_3X 0
--#define AIC3X_MODEL_33 1
--#define AIC3X_MODEL_3007 2
--#define AIC3X_MODEL_3104 3
- 	u16 model;
- 
- 	/* Selects the micbias voltage */
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 66d3580cf2b1..21dd6edf1059 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -9,6 +9,11 @@
- #ifndef _AIC3X_H
- #define _AIC3X_H
- 
-+#define AIC3X_MODEL_3X 0
-+#define AIC3X_MODEL_33 1
-+#define AIC3X_MODEL_3007 2
-+#define AIC3X_MODEL_3104 3
-+
- /* AIC3X register space */
- #define AIC3X_CACHEREGNUM		110
- 
--- 
-2.25.1
+On Tue, Apr 06, 2021 at 04:05:21PM +0200, Ji=C5=99=C3=AD Prchal wrote:
+> On 06. 04. 21 14:13, Mark Brown wrote:
+> > On Tue, Apr 06, 2021 at 12:50:16PM +0200, Jiri Prchal wrote:
 
+> > > +++ b/sound/soc/codecs/tlv320aic3x-i2c.c
+> > > @@ -0,0 +1,72 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/*
+> > > + * ALSA SoC TLV320AIC3x codec driver I2C interface
+
+> > Please make the entire comment a C++ one so things look more
+> > intentional.
+
+> OK,
+> but coding style checker complains:
+> WARNING: Improper SPDX comment style for
+> 'sound/soc/codecs/tlv320aic3x-i2c.c', please use '//' instead
+> #64: FILE: sound/soc/codecs/tlv320aic3x-i2c.c:1:
+> +/* SPDX-License-Identifier: GPL-2.0-only
+
+That's a C style comment not a C++ one.
+
+--d6d1KVhp94hk3Jrm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBsc8cACgkQJNaLcl1U
+h9BFzgf8CZ4Y6v17Mwd6/Fg+syQA9DTpHepM/rGytLPnA14bbj6PbDRmbmHs/U3D
+5R+184xEB+8ISUBCixqXtEyqgyC84OJEups/jRn7WQn14k+2TzWKSI1TDGpFfrfx
+l0y16rOYE6Le21fYzHLuNQ6mYDGPMln0NtKGDcepS1U5rjN2HLiu4YB8vxl4kJ0U
+PwbtrGhrZqp5HMvOq9CmUUYubKPth6OjwnyWBx7o8guve3Y1FtJ0j/Rv9JB++H6X
+EiPgU/3lO04efyiRAILpFCSwQk790j+p5KEuJRMPR0yYFDkE54gyS4cB3/bnoJbW
+2Que0l0ppPJ3KWUit0uZd377lj2EPw==
+=Q6cA
+-----END PGP SIGNATURE-----
+
+--d6d1KVhp94hk3Jrm--
