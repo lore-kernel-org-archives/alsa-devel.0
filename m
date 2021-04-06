@@ -2,55 +2,67 @@ Return-Path: <SRS0=qvmA=JD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 238F2C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 09:54:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88942C43461
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 10:51:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57CAE613C8
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 09:54:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57CAE613C8
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id CDDF5613C6
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 10:51:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CDDF5613C6
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=aksignal.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFC2415F9;
-	Tue,  6 Apr 2021 11:53:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFC2415F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DEC982E;
+	Tue,  6 Apr 2021 12:50:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DEC982E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617702850;
-	bh=C+XaHH86s2a/XYUcPX3FshyWmNs8DvLOmyrNdBINv3M=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rhC82lhk89Vk/3qD9tTFwEPcoGxtWIOHub/GGi/6wjMUCbDSjZ2QHsYjilP2giS+9
-	 W5iy6xMx51G4SIP22W3vwSB8r2GMv+O7UbYsaBjAR5BS/oJHMaDnIIWDEdncF+qprB
-	 CaLUfSugiNQnV64vK3AV2BgXi+PRLG086yq8mB6M=
+	s=default; t=1617706279;
+	bh=Es88WWcD5Q2zE95rq3vvLPfdn+SKGzeYIko/RTCxKMk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=p4lHCKyfDbmLb5HQBAPOeNZgJUqGIdMafz7Ehtv93zM1BgcS3z6gPCF9BjjoqozDm
+	 R7gpEvfEzlVPd4AfceRcBJX+Qk2hJ9FSD8uBziiBd5XXrIRwqc3R2A7OyPFrtpAYQG
+	 BX9K2tj+E9Pi/GXuZNxxUW6l9Hyi1w/LQGm93ppQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56DCCF800E3;
-	Tue,  6 Apr 2021 11:53:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C70E8F80258;
+	Tue,  6 Apr 2021 12:50:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C0D0F8020B; Tue,  6 Apr 2021 11:53:17 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6C09CF800E3
- for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 11:53:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C09CF800E3
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+ id 32696F80259; Tue,  6 Apr 2021 12:50:27 +0200 (CEST)
+Received: from router.aksignal.cz (router.aksignal.cz [62.44.4.214])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17CD1F800E1
+ for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 12:50:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17CD1F800E1
+Received: from localhost (localhost [127.0.0.1])
+ by router.aksignal.cz (Postfix) with ESMTP id 043743FA31;
+ Tue,  6 Apr 2021 12:50:23 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+ by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+ with LMTP id 86KLOr3Xijov; Tue,  6 Apr 2021 12:50:22 +0200 (CEST)
+Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
+ (Authenticated sender: jiri.prchal@aksignal.cz)
+ by router.aksignal.cz (Postfix) with ESMTPSA id 59C4A3FA29;
+ Tue,  6 Apr 2021 12:50:22 +0200 (CEST)
+From: Jiri Prchal <jiri.prchal@aksignal.cz>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1617702783779664993-webhooks-bot@alsa-project.org>
-References: <1617702783779664993-webhooks-bot@alsa-project.org>
-Subject: snd_pcm_htimestamp returns time past since last boot not clock time
-Message-Id: <20210406095317.3C0D0F8020B@alsa1.perex.cz>
-Date: Tue,  6 Apr 2021 11:53:17 +0200 (CEST)
+Subject: [PATCH 0/5] SOC Codecs: TLV320AIC3X add SPI support
+Date: Tue,  6 Apr 2021 12:50:13 +0200
+Message-Id: <20210406105018.59463-1-jiri.prchal@aksignal.cz>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ Jiri Prchal <jiri.prchal@aksignal.cz>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,134 +78,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #131 was opened from RonaldAJ:
+This patches add support of SPI to TLV320AIC3X codecs.
 
-While on a PC snd_pcm_htimestamp returns the clock time since the epoch, under Raspbian on an RPI it returns the time since the last boot. (A similar issue was described here: https://stackoverflow.com/questions/45841230/alsa-retrieving-audio-buffer-timestamps).
+Jiri Prchal (5):
+  SOC Codecs: TLV320AIC3X add SPI: move thinks to header file
+  SOC Codecs: TLV320AIC3X add SPI: main source code for I2C and SPI
+  SOC Codecs: TLV320AIC3X add SPI: I2C code
+  SOC Codecs: TLV320AIC3X add SPI: SPI code
+  SOC Codecs: TLV320AIC3X add SPI: configuration and compile
 
-The problem shows if we run a slightly modified version of recordtest.py using the latest pyalsaaudio versions.
+ sound/soc/codecs/Kconfig           |  11 +++
+ sound/soc/codecs/Makefile          |   4 ++
+ sound/soc/codecs/tlv320aic3x-i2c.c |  72 ++++++++++++++++++++
+ sound/soc/codecs/tlv320aic3x-spi.c |  77 +++++++++++++++++++++
+ sound/soc/codecs/tlv320aic3x.c     | 105 ++++++++---------------------
+ sound/soc/codecs/tlv320aic3x.h     |  13 ++++
+ 6 files changed, 204 insertions(+), 78 deletions(-)
+ create mode 100644 sound/soc/codecs/tlv320aic3x-i2c.c
+ create mode 100644 sound/soc/codecs/tlv320aic3x-spi.c
 
-```
-#!/usr/bin/env python3
-# -*- mode: python; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-
+-- 
+2.25.1
 
-## recordtest.py
-##
-## This is an example of a simple sound capture script.
-##
-## The script opens an ALSA pcm device for sound capture, sets
-## various attributes of the capture, and reads in a loop,
-## writing the data to standard out.
-##
-## To test it out do the following:
-## python recordtest.py out.raw # talk to the microphone
-## aplay -r 8000 -f S16_LE -c 1 out.raw
-
-#!/usr/bin/env python
-
-from __future__ import print_function
-
-import sys
-import time
-import getopt
-import alsaaudio
-
-def usage():
-	print('usage: recordtest.py [-d <device>] <file>', file=sys.stderr)
-	sys.exit(2)
-
-if __name__ == '__main__':
-
-	device = 'default'
-
-	opts, args = getopt.getopt(sys.argv[1:], 'd:')
-	for o, a in opts:
-		if o == '-d':
-			device = a
-
-	if not args:
-		usage()
-
-	f = open(args[0], 'wb')
-
-	# Open the device in nonblocking capture mode in mono, with a sampling rate of 44100 Hz 
-	# and 16 bit little endian samples
-	# The period size controls the internal number of frames per period.
-	# The significance of this parameter is documented in the ALSA api.
-	# For our purposes, it is suficcient to know that reads from the device
-	# will return this many frames. Each frame being 2 bytes long.
-	# This means that the reads below will return either 320 bytes of data
-	# or 0 bytes of data. The latter is possible because we are in nonblocking
-	# mode.
-	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NONBLOCK, 
-		channels=1, rate=44100, format=alsaaudio.PCM_FORMAT_S16_LE, 
-		periodsize=160, device=device)
-
-	print(inp.info())
-	# help(inp.htimestamp)
-
-	loops = 100000
-	while loops > 0:
-		loops -= 1
-		# Read data from device
-		l, data = inp.read()
-		if l:
-			print(l, inp.htimestamp(), time.time())
-			f.write(data)
-			time.sleep(.001)
-```
-
-When executed on an RPi it yields:
-```
-{'name': 'plugsnoop:1,0', 'state': 'PREPARED', 'access_type': 'RW_INTERLEAVED', ' (call value) type': 1, ' (call value) type_name': 'CAPTURE', ' (call value) mode': 1, ' (call value) mode_name': 'PCM_NONBLOCK', 'format': 2, 'format_name': 'S16_LE', 'format_description': 'Signed 16 bit Little Endian', 'subformat_name': 'STD', 'subformat_description': 'Standard', 'channels': 1, 'rate': 44100, 'period_time': 21333, 'period_size': 940, 'buffer_time': 0, 'buffer_size': 4704, 'get_periods': 0, 'rate_numden': (44100, 1), 'significant_bits': 16, 'is_batch': True, 'is_block_transfer': True, 'is_double': False, 'is_half_duplex': False, 'is_joint_duplex': False, 'can_overrange': False, 'can_mmap_sample_resolution': False, 'can_pause': False, 'can_resume': False, 'can_sync_start': False}
-940 (5596, 851796145, 0) 1617702646.0637105
-940 (5596, 872796030, 0) 1617702646.084714
-940 (5596, 893795916, 0) 1617702646.105702
-940 (5596, 915796158, 0) 1617702646.1277127
-940 (5596, 936795314, 0) 1617702646.1486921
-940 (5596, 957795199, 0) 1617702646.1697078
-940 (5596, 979795858, 0) 1617702646.191694
-940 (5597, 795171, 0) 1617702646.212712
-...
-```
-I read that for the timestamp function to work there should be hardware support. But here we have it half working. 
-
-This behavior is shown if I use the following in my .asoundrc
-
-```
-pcm.plugsnoop {
-    type plug
-
-    @args [ CARD DEV ]
-
-    @args.CARD {
-        type string
-    }
-
-    @args.DEV {
-        type integer
-    }
-
-    slave { 
-        pcm {
-                @func concat
-                strings [
-                    "dsnoop:"
-                    $CARD
-                    ","
-                    $DEV
-                ]
-            }
-    }
-}
-```
-and call it with:
-`python recordtest.py -d plugsnoop:1,0 test.raw`
-
-Using plughw all timestamps become zero.
-
-The attached microphone is an USB microphone: GoMic by SAMSON.
-
-Is there a  fix or workaround for this behavior which gives me clocktime instead of seconds since last boot?
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/131
-Repository URL: https://github.com/alsa-project/alsa-lib
