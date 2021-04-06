@@ -2,66 +2,59 @@ Return-Path: <SRS0=qvmA=JD=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E698C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:35:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29C84C43460
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:36:38 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F0D5D613CB
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:35:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F0D5D613CB
+	by mail.kernel.org (Postfix) with ESMTPS id 22FB361396
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Apr 2021 11:36:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 22FB361396
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1F4784C;
-	Tue,  6 Apr 2021 13:34:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1F4784C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 693581661;
+	Tue,  6 Apr 2021 13:35:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 693581661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617708939;
-	bh=Y56LcbRD4EdP1pMZcD77cD1gX0LYodl6fOFlie0on8M=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=c4xJJpRD97RLnCQFR3MPNGdqSQGf3yMYlQavafiOzv6jPmOwHRPeVlw8YwiGTkxVN
-	 PFxs/lGoST/IRKTXmRwisXwKJHMGmj9+3RCAhseVUKrBrqDHA5udEVLdBVx556jyPu
-	 +p4jC8MDHUY2lE/rx6SnCchdOX4l8PjOvzTqy98Q=
+	s=default; t=1617708995;
+	bh=i20Agn+0A+DkyiS6kayiYY2KlWEBeQDXoE0PKppv0XM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=sfNP1G3i2Si9/t+0tqExGSjn0hNEREuye2Gy0uzOc7Vkbx8LRSZcTiDbTVPLgQPvL
+	 KvJvoztjJQIOcaGg3rfASZeM4ociLnlPRne/BFEYpwnDDy6HnQNnJHuomzoNS3Rl0Z
+	 yAdkMObOG5TK2ZRksWqNMT805IksjovyixciQvSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6051EF80169;
-	Tue,  6 Apr 2021 13:34:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9024DF800E3;
+	Tue,  6 Apr 2021 13:35:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A0C6F8020B; Tue,  6 Apr 2021 13:34:47 +0200 (CEST)
+ id 3ECA1F80249; Tue,  6 Apr 2021 13:35:43 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DBB6F800E1
- for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 13:34:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DBB6F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01D6DF80246
+ for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 13:35:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01D6DF80246
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D7B35B14C;
- Tue,  6 Apr 2021 11:34:38 +0000 (UTC)
-Date: Tue, 06 Apr 2021 13:34:38 +0200
-Message-ID: <s5hv98zbq9d.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id EB7BBB032
+ for <alsa-devel@alsa-project.org>; Tue,  6 Apr 2021 11:35:35 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 2/2] ALSA: control - off by one in store_mode()
-In-Reply-To: <70b1e440-030c-9cbf-e193-79f2955a5331@perex.cz>
-References: <YGcDOtrimR46vr0k@mwanda>
- <70b1e440-030c-9cbf-e193-79f2955a5331@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Dan Carpenter <dan.carpenter@oracle.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Add error checks for
+ usb_driver_claim_interface() calls
+Date: Tue,  6 Apr 2021 13:35:34 +0200
+Message-Id: <20210406113534.30455-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,21 +70,127 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 02 Apr 2021 19:52:43 +0200,
-Jaroslav Kysela wrote:
-> 
-> Dne 02. 04. 21 v 13:42 Dan Carpenter napsal(a):
-> > If count is 16 then this will put the NUL terminator one element beyond
-> > the end of the array.
-> > 
-> > Fixes: cb17fe0045aa ("ALSA: control - add sysfs support to the LED trigger module")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> No idea why I added + 1... Thanks for your correction.
-> 
-> Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+There are a few calls of usb_driver_claim_interface() but all of those
+miss the proper error checks, as reported by Coverity.  This patch
+adds those missing checks.
 
-Applied now.  Thanks.
+Along with it, replace the magic pointer with -1 with a constant
+USB_AUDIO_IFACE_UNUSED for better readability.
 
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Addresses-Coverity-ID: 1475943 ("Error handling issues")
+Addresses-Coverity-ID: 1475944 ("Error handling issues")
+Addresses-Coverity-ID: 1475945 ("Error handling issues")
+Fixes: b1ce7ba619d9 ("ALSA: usb-audio: claim autodetected PCM interfaces all at once")
+Fixes: e5779998bf8b ("ALSA: usb-audio: refactor code")
+Link: https://lore.kernel.org/r/202104051059.FB7F3016@keescook
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/card.c     | 14 +++++++-------
+ sound/usb/quirks.c   | 16 ++++++++++++----
+ sound/usb/usbaudio.h |  2 ++
+ 3 files changed, 21 insertions(+), 11 deletions(-)
 
-Takashi
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 0826a437f8fc..7b7526d3a56e 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -181,9 +181,8 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 				ctrlif, interface);
+ 			return -EINVAL;
+ 		}
+-		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
+-
+-		return 0;
++		return usb_driver_claim_interface(&usb_audio_driver, iface,
++						  USB_AUDIO_IFACE_UNUSED);
+ 	}
+ 
+ 	if ((altsd->bInterfaceClass != USB_CLASS_AUDIO &&
+@@ -203,7 +202,8 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 
+ 	if (! snd_usb_parse_audio_interface(chip, interface)) {
+ 		usb_set_interface(dev, interface, 0); /* reset the current interface */
+-		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
++		return usb_driver_claim_interface(&usb_audio_driver, iface,
++						  USB_AUDIO_IFACE_UNUSED);
+ 	}
+ 
+ 	return 0;
+@@ -862,7 +862,7 @@ static void usb_audio_disconnect(struct usb_interface *intf)
+ 	struct snd_card *card;
+ 	struct list_head *p;
+ 
+-	if (chip == (void *)-1L)
++	if (chip == USB_AUDIO_IFACE_UNUSED)
+ 		return;
+ 
+ 	card = chip->card;
+@@ -992,7 +992,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 	struct usb_mixer_interface *mixer;
+ 	struct list_head *p;
+ 
+-	if (chip == (void *)-1L)
++	if (chip == USB_AUDIO_IFACE_UNUSED)
+ 		return 0;
+ 
+ 	if (!chip->num_suspended_intf++) {
+@@ -1022,7 +1022,7 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ 	struct list_head *p;
+ 	int err = 0;
+ 
+-	if (chip == (void *)-1L)
++	if (chip == USB_AUDIO_IFACE_UNUSED)
+ 		return 0;
+ 
+ 	atomic_inc(&chip->active); /* avoid autopm */
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index ae667cf77e61..63f27ce64bcb 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -55,8 +55,12 @@ static int create_composite_quirk(struct snd_usb_audio *chip,
+ 		if (!iface)
+ 			continue;
+ 		if (quirk->ifnum != probed_ifnum &&
+-		    !usb_interface_claimed(iface))
+-			usb_driver_claim_interface(driver, iface, (void *)-1L);
++		    !usb_interface_claimed(iface)) {
++			err = usb_driver_claim_interface(driver, iface,
++							 USB_AUDIO_IFACE_UNUSED);
++			if (err < 0)
++				return err;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -426,8 +430,12 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+ 			continue;
+ 
+ 		err = create_autodetect_quirk(chip, iface, driver);
+-		if (err >= 0)
+-			usb_driver_claim_interface(driver, iface, (void *)-1L);
++		if (err >= 0) {
++			err = usb_driver_claim_interface(driver, iface,
++							 USB_AUDIO_IFACE_UNUSED);
++			if (err < 0)
++				return err;
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 60b9dd7df6bb..8794c8658ab9 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -61,6 +61,8 @@ struct snd_usb_audio {
+ 	struct media_intf_devnode *ctl_intf_media_devnode;
+ };
+ 
++#define USB_AUDIO_IFACE_UNUSED	((void *)-1L)
++
+ #define usb_audio_err(chip, fmt, args...) \
+ 	dev_err(&(chip)->dev->dev, fmt, ##args)
+ #define usb_audio_warn(chip, fmt, args...) \
+-- 
+2.26.2
+
