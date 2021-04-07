@@ -2,98 +2,80 @@ Return-Path: <SRS0=4JIF=JE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C63BC433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 15:00:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 042A1C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 15:16:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E6CCC61382
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 15:00:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E6CCC61382
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+	by mail.kernel.org (Postfix) with ESMTPS id 9BF1661262
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 15:16:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9BF1661262
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DACF91662;
-	Wed,  7 Apr 2021 16:59:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DACF91662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93FBD83E;
+	Wed,  7 Apr 2021 17:16:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93FBD83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617807623;
-	bh=5ugmSE94N8Ele9/1HxOALx1D0geWTS1gL/lYzcWXWgU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pc3eloQ8mwHuJWyRney3t1MyUGTbCzTw5QFhdXeJtBVXY8suYruO7HajqU0D1zUaQ
-	 ySkrsRioUgYooZJsk65M/3P3Rct4FhgOqrlm5Gsn/eTptbzl2iIeP7K1V4QcunE0Gq
-	 mdPhZY1bevbdx7MPYrejPSjmGtFJalfRT4vRK2vk=
+	s=default; t=1617808612;
+	bh=94PRIMWG4V3sgv4oARYxnmjhrvLu3NubLdmmO0Dgjuo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bYZST4SXlljQ6Pvk0TKgEbKLCh0IBHU/zYUrLNE8d0KZDHnM384HEZHPZw64Kq19l
+	 E/JzfMGWBZOhnliOOrOplICVFle6z4jm/7GhHN1S9haod7St2YORsfrGq+u4Qf1g2+
+	 qKl7syePAHsSWzRmMbLK8kFG6jaU0gm/MRGarasc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7200BF80162;
-	Wed,  7 Apr 2021 16:59:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 916ADF80124;
+	Wed,  7 Apr 2021 17:16:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D301F8016A; Wed,  7 Apr 2021 16:59:32 +0200 (CEST)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DB685F8016A; Wed,  7 Apr 2021 17:15:59 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E92A9F80162
- for <alsa-devel@alsa-project.org>; Wed,  7 Apr 2021 16:59:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E92A9F80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DC68F80124
+ for <alsa-devel@alsa-project.org>; Wed,  7 Apr 2021 17:15:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DC68F80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="zZoVhHro"
-Received: by mail-ed1-x532.google.com with SMTP id m3so11433237edv.5
- for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2021 07:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20150623.gappssmtp.com; s=20150623;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RhiVLxZ189Mfi2/3w2wk+mT3BSMHUmXI5aQWXNu5k2c=;
- b=zZoVhHro6L2LnmIIbWv4pad71Bvb0y4XyBmWu6P/hmrzntRYC0UoynxC+JhP2SKoXn
- UEzcesZpmt7p760jdD0RYi8NswCaIA3X+aKJW5tmY70iG49QyQW34o0HeYE/Iw7QuTxj
- a6GSlrLvuch1v7YuT1uXu0mApwSkZSjjeEO8Zf0820ze9vQ5dP1wqwTcGU5V0mtXEw8V
- cIziaxSKFvXB+k0Zi4h7WVHuTkIw23lFacZs7QDfM4n1zLia7x5pw+yD1CpWlDFQe3Hn
- QRkm2ORd+tRA4G1Zp3DrSUB7MkfwTPo2P+DOk7H3u9YsZZXwbIr0rIELnx3PdBGjYecq
- d5Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=RhiVLxZ189Mfi2/3w2wk+mT3BSMHUmXI5aQWXNu5k2c=;
- b=DbVEDI/+fV1UfhgPr8nzUvVRncLlJhJqFfR5uf8RgqlYgoQsMa3ZldCHC/Q9ccl4wL
- GVpUVi0Et5RhHhlY7APPyNjeYZkLuOpTKv4YAktfF+TUa6VkTvaf8qdm40hn7MGIJP1R
- cUuG2XPqEyxPUztNe+3bjL8XWUCaHflnEj7+dSzgrYEYIkw+LoS06dGn3WC7oBhnFzdK
- yUJJ4UX0nNybN2xbEM22yiC/ENaUz97IaudNZC/D22w6MpwwdG+HvqTD5yyyyrTc+M1G
- duL8ZjbRBM22u0muk32UA7KKdt7xO13XpZaq2exskzSR+zOmssQJGW1qW+UvIvPTqYaB
- sKzw==
-X-Gm-Message-State: AOAM531QgdoO274ZXjVgU6g9W/AxDiOHbv07RTLOWwobT/rPAn8gx+j8
- EYRDCaBfa580sC5oQ207ptVlgA==
-X-Google-Smtp-Source: ABdhPJxzmktfBJNJzlo7KcK7eCSOqr9CD9XKZcsYIEH7+/H04DXrYXnpi/VBjAARwmgiCznZjmuALA==
-X-Received: by 2002:a05:6402:1606:: with SMTP id
- f6mr4867670edv.216.1617807563889; 
- Wed, 07 Apr 2021 07:59:23 -0700 (PDT)
-Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
- by smtp.googlemail.com with ESMTPSA id
- pj18sm6144647ejb.101.2021.04.07.07.59.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Apr 2021 07:59:23 -0700 (PDT)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: meson: axg-fifo: add NO_PERIOD_WAKEUP support
-Date: Wed,  7 Apr 2021 16:59:14 +0200
-Message-Id: <20210407145914.311479-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.30.2
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="BF4g7p0G"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5764B61222;
+ Wed,  7 Apr 2021 15:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1617808551;
+ bh=94PRIMWG4V3sgv4oARYxnmjhrvLu3NubLdmmO0Dgjuo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=BF4g7p0GvM/lL5494Bp3z0or+u55EH1ofQEvNHjxLj+3XFtOLnH2ISD6pmDUnUq+I
+ gHc6wiOwVnWBBjROSmxmEaPuvwrp6DcXa5bIjh3wt5+fMj7OCH101qsGf9hQhIsV2Q
+ QIfX4rbNgx2fI4DZ+ET4nYzsuXX8z1FLgecYf0yZpybvjzQFDrDKMM+uqKUOVUxQwP
+ 0gRQX1u5wM0ZV1ly4QlWEuzuD53BmxKwIJ5YiXHZSGafS5a8bI765b+sJddaXfL81F
+ tnZB8N/hcv/RQrQNyzNfv89gpLntv/UML2/GLiJ3qGVRfolY0V/Y5VzJw2VsAUJ1L6
+ y8MSVCCUIPiew==
+Date: Wed, 7 Apr 2021 16:15:34 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Perry Yuan <Perry.Yuan@dell.com>
+Subject: Re: [PATCH v6 2/2] ASoC: rt715:add micmute led state control supports
+Message-ID: <20210407151534.GE5510@sirena.org.uk>
+References: <20210404083159.1620-1-Perry_Yuan@Dell.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
- Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="4Epv4kl9IRBfg3rk"
+Content-Disposition: inline
+In-Reply-To: <20210404083159.1620-1-Perry_Yuan@Dell.com>
+X-Cookie: Dry clean only.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, mgross@linux.intel.com,
+ hdegoede@redhat.com, lgirdwood@gmail.com, Mario.Limonciello@dell.com,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ platform-driver-x86@vger.kernel.org, pobrn@protonmail.com,
+ mario.limonciello@outlook.com, Dell.Client.Kernel@dell.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,55 +91,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On the AXG family, the fifo irq is not necessary for the HW to operate.
-It is just used to notify that a period has elapsed. If userpace does not
-care for these wakeups (such as pipewire), we are just wasting CPU cycles.
 
-Add support for NO_PERIOD_WAKEUP and disable irq when they are no needed.
+--4Epv4kl9IRBfg3rk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/axg-fifo.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+On Sun, Apr 04, 2021 at 04:31:59PM +0800, Perry Yuan wrote:
 
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index b2e867113226..b9af2d513e09 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -27,8 +27,8 @@ static struct snd_pcm_hardware axg_fifo_hw = {
- 		 SNDRV_PCM_INFO_MMAP |
- 		 SNDRV_PCM_INFO_MMAP_VALID |
- 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
--		 SNDRV_PCM_INFO_PAUSE),
--
-+		 SNDRV_PCM_INFO_PAUSE |
-+		 SNDRV_PCM_INFO_NO_PERIOD_WAKEUP),
- 	.formats = AXG_FIFO_FORMATS,
- 	.rate_min = 5512,
- 	.rate_max = 192000,
-@@ -113,7 +113,7 @@ int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
- {
- 	struct snd_pcm_runtime *runtime = ss->runtime;
- 	struct axg_fifo *fifo = axg_fifo_data(ss);
--	unsigned int burst_num, period, threshold;
-+	unsigned int burst_num, period, threshold, irq_en;
- 	dma_addr_t end_ptr;
- 
- 	period = params_period_bytes(params);
-@@ -142,10 +142,11 @@ int axg_fifo_pcm_hw_params(struct snd_soc_component *component,
- 	regmap_field_write(fifo->field_threshold,
- 			   threshold ? threshold - 1 : 0);
- 
--	/* Enable block count irq */
-+	/* Enable irq if necessary  */
-+	irq_en = runtime->no_period_wakeup ? 0 : FIFO_INT_COUNT_REPEAT;
- 	regmap_update_bits(fifo->map, FIFO_CTRL0,
- 			   CTRL0_INT_EN(FIFO_INT_COUNT_REPEAT),
--			   CTRL0_INT_EN(FIFO_INT_COUNT_REPEAT));
-+			   CTRL0_INT_EN(irq_en));
- 
- 	return 0;
- }
--- 
-2.30.2
+> +static bool micmute_led_set;
+> +static int  dmi_matched(const struct dmi_system_id *dmi)
+> +{
+> +	micmute_led_set = 1;
+> +	return 1;
+> +}
 
+This isn't how we usually record DMI quirks, usually we'd query once on
+probe and store the data in the driver data struct - see other users for
+examples.
+
+> @@ -358,6 +388,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
+>  	unsigned int mask = (1 << fls(max)) - 1;
+
+> +	dmi_check_system(micmute_led_dmi_table);
+> +	if (invert && micmute_led_set) {
+
+This check for invert is odd and could probably use a comment.
+
+--4Epv4kl9IRBfg3rk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBtzJUACgkQJNaLcl1U
+h9Dpcwf9F6efsgl8SxB48L2h93SnAp+aXJZGvsihl3talmxVNg7zmoGcUoHsDMU8
+Q48ZaYHXa2Zehw7UMpBlQ1Iww60W43c3yVSv5xS9C5FZdr7pvn0fjVhVX121uSTt
+BeTI2r8BH0ndjb29prof+duUTHGBx+I81NjAC7aK26EIcnkHZqREM1dhVbJtSd+I
+p+ofEZVpTswy5qECN1/JtYf6QvlRJ3x0QOCaq8E4Sj1URTRP3NCMSJH9h/WaItae
+sJvELh1IcUMel0ElT1TEtf/fgDZVgiQh3PmRkA6qtrqturKrWSw61T99EE80Rn7j
+ZsK6s1vQEXo5vslhtx5JoOGtK8wDTQ==
+=w3kO
+-----END PGP SIGNATURE-----
+
+--4Epv4kl9IRBfg3rk--
