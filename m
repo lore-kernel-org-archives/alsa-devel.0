@@ -2,91 +2,76 @@ Return-Path: <SRS0=4JIF=JE=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E08C8C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:25:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39183C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:27:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 109AB611EE
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:25:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 109AB611EE
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nostatic.org
+	by mail.kernel.org (Postfix) with ESMTPS id 9D7D8611CC
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Apr 2021 20:27:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9D7D8611CC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62110167A;
-	Wed,  7 Apr 2021 22:25:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62110167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A4C01662;
+	Wed,  7 Apr 2021 22:26:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A4C01662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617827157;
-	bh=prW651DXliGGv+xRRLKLAo+tX3mVlEXfWTLY+FJBKpM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1617827268;
+	bh=hhSwEIiRpS2DqdUTQ61WIoCRvLh6PsG+8huacQb3mew=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FAWZA4G+xxMWcykQLJeI8j46muEixWspJU9kUSBFYZzeyt58amqPkqlN0NCDGnuU1
-	 qw9hwAS4DVwsa3m56X/PkNYRancUpvzWxhjE7aED1MUNGcpzapXKbXb7zcBXuRzS6B
-	 eYajO1gXFG2kENHTNCXyxhNFODUXgwSrB3qXR0Yw=
+	b=Vfd7zXOSlJNIDukCkWsfOq7msa2nRkft5S69RRCf/RqEhyvS9wYDm4tJ7MgJWTwes
+	 MTN/LE8dL1as0Oo+OaF4qXv0lln29LUqQgO/U0cnAuSsWSAOWjriU0f39nKqyOedM8
+	 pkehyFmLJ0ZBRBqWGcAkdCj3yo+FY8nzQb0wBElw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB29CF801F5;
-	Wed,  7 Apr 2021 22:25:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5C0DF8016A;
+	Wed,  7 Apr 2021 22:26:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EA41F80245; Wed,  7 Apr 2021 22:25:05 +0200 (CEST)
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com
- [IPv6:2607:f8b0:4864:20::b36])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E4671F8016A; Wed,  7 Apr 2021 22:26:55 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98484F80162
- for <alsa-devel@alsa-project.org>; Wed,  7 Apr 2021 22:25:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98484F80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A498F80124
+ for <alsa-devel@alsa-project.org>; Wed,  7 Apr 2021 22:26:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A498F80124
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=nostatic-org.20150623.gappssmtp.com
- header.i=@nostatic-org.20150623.gappssmtp.com header.b="KdcZh3LV"
-Received: by mail-yb1-xb36.google.com with SMTP id o10so96898ybb.10
- for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2021 13:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=nostatic-org.20150623.gappssmtp.com; s=20150623;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=xQNfUDgg7ItQIyvLaUVxAj6zvvDPBubPFY3bTgN/Xo4=;
- b=KdcZh3LVi8d7N85GWDmASpNjOGW/+oQOZMGFNdddjGiMKJgBOSA/uVZDiaxZR4wEco
- UoyTgDqqRtM+4qJFf19WqWLngn1RWesmkc43QHgqizRGE2VmdMoqg0GseAHX0YfC211L
- ncqEbxlEVBeDAHoBaciXJnnyViTakBD9tNs+4VEH8QRPetP+4llM2DCnu+uXiL2lK7OU
- mwiWUMpTq71HL8haM3Ms2Z2Tuh8C1LGb5W/ypKGpiHXcz1TpeysvFh1mz+6qNN+BhvJc
- pUbZvPgYsWb1UOyYX3lNptG8oqkeSCgq2sHiEz3bFdAztKR9wi05efwWMjmR/BS+neIc
- xdgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=xQNfUDgg7ItQIyvLaUVxAj6zvvDPBubPFY3bTgN/Xo4=;
- b=pto+mcEP7eBjWFx9Vr8ZA2SezNF7V70V+HwIP4R0Z35ZYsF6gqw7Vouc1EfrkhsKRX
- mfJm3zxs6E5S04rYSsHJt7iEfE0xVImsNiWC3/ZFWhpG1WjbuMzWlDSGa0N+X8yDOG1G
- Zf5A0PNyLS7Ii4oz7cg9dLZ/mDvqLLPT/DWWW+oIe1ZKOfMtMe5BhK3rkc7U0fbtDpOz
- e/VrIm56cR/1Abs4pZZJn+d0o3UunrFx34JjIalFm9kPENyietDR8ehzG+Q45pOfSDaR
- 1IZ655cw9RkJDfMQ/dFx8rP9YfkZb8C5/K6FLJHbnmIHyjCEt1axx+1nQJfkdUihkXOa
- NYMw==
-X-Gm-Message-State: AOAM531JpB08Z6B+ZnkQgUvXtU7tTt+8ksa/f86FO1aHMsB4QD2HgTsj
- jZwjX6FIaTQ18NpG79VuYSsEKVzoTQZxB1FVDO+3Hw==
-X-Google-Smtp-Source: ABdhPJwaUDxgU6pFdNsOrjjbo3Q1HnBpjkJ6UYiPDB++T+5m8tCeh3y/Wvbh3dM+Diem0CkVmUbMV/nTLPbNdEVp8rA=
-X-Received: by 2002:a25:6d83:: with SMTP id i125mr6681944ybc.417.1617827101198; 
- Wed, 07 Apr 2021 13:25:01 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MfUNOg/D"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF06D611C1;
+ Wed,  7 Apr 2021 20:26:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1617827211;
+ bh=hhSwEIiRpS2DqdUTQ61WIoCRvLh6PsG+8huacQb3mew=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=MfUNOg/DryAKcb+XuiDNOZsFxcFaABotIU+7EjRUqKSJTyXyzcnwwOuCccSFOOx01
+ P+rD4vL6w0EkcMp8RKLN4eRDB2zkqkK/RPOPAy8JwAUyaUYXKB1L8VsY5KZ+loNM7H
+ pTuJlSzA40pVLY6mu9sCczApMz1FkZZ0DL8uoN07qwaaVdlfO3W9wtGL8OBiFE7UaR
+ 6CbD1FTd/tlE4bmQTLA4CAyltFIpwp1ROhlS/Ny6yyuCkjnR1MrMHPBD3veGp8+NvA
+ VwZV32xBRnGp3fLpIOeX6s2udf9NyNA1ATfx4DcBlShP6ZiEdoMshrXoWYqFteZVbu
+ O+mZk72Pg0UvA==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: meson: axg-frddr: set fifo depth according to the
+ period
+Date: Wed,  7 Apr 2021 21:26:21 +0100
+Message-Id: <161782703231.42756.1997457817107247439.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210407145714.311138-1-jbrunet@baylibre.com>
+References: <20210407145714.311138-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
-References: <CAHXb3begced9GYCQ4a6qLOK2PrQR9gHeSvb3HAG29DVpZ+vwiQ@mail.gmail.com>
- <CAEsQvcu5freEXMFwBRH0aQsT9=ngvOY_SkA6dmfs_YVvMYYuJw@mail.gmail.com>
- <CAOsVg8p5vefJhR=+8XE+3HoSG0DRp_DF_f9W4zKdzGfJwmGr0w@mail.gmail.com>
-In-Reply-To: <CAOsVg8p5vefJhR=+8XE+3HoSG0DRp_DF_f9W4zKdzGfJwmGr0w@mail.gmail.com>
-From: Mike Oliphant <oliphant@nostatic.org>
-Date: Wed, 7 Apr 2021 13:24:50 -0700
-Message-ID: <CAHXb3bdX8=yEVHFPkeM6N51qi-fAdSmnfw5fJcPcd6oApyZXuQ@mail.gmail.com>
-Subject: Re: Implicit feedback on BOSS GT-1, the saga continues...
-To: Lucas <jaffa225man@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+ Kevin Hilman <khilman@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,69 +87,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Lucas,
+On Wed, 7 Apr 2021 16:57:14 +0200, Jerome Brunet wrote:
+> When the period is small, using all the FRDDR fifo depth increases the
+> latency of the playback because the following device won't start pulling
+> data until the fifo reaches the depth set. We can adjust this depth so trim
+> it down for small periods.
 
-These are the changes I have made for the GT-1. Note that I also disabled
-the capture implicit feedback since it does not seem to be needed (although
-it still works for me if it is enabled).
+Applied to
 
-If you think about it, it makes sense that playback is using capture for
-implicit feedback, and not vice versa.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Mike
+Thanks!
 
----
+[1/1] ASoC: meson: axg-frddr: set fifo depth according to the period
+      commit: 6f68accaa8641b70b698da659216f82f87537869
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 102d53515..99d8b50d4 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1375,7 +1375,7 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint
-*ep)
-        if (!ep_state_update(ep, EP_STATE_STOPPED, EP_STATE_RUNNING))
-                goto __error;
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--       if (snd_usb_endpoint_implicit_feedback_sink(ep)) {
-+       if (false) { //snd_usb_endpoint_implicit_feedback_sink(ep)) {
-                for (i = 0; i < ep->nurbs; i++) {
-                        struct snd_urb_ctx *ctx = ep->urb + i;
-                        list_add_tail(&ctx->ready_list,
-&ep->ready_playback_urbs);
-diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
-index 11a85e66a..ee4243421 100644
---- a/sound/usb/implicit.c
-+++ b/sound/usb/implicit.c
-@@ -75,7 +75,7 @@ static const struct snd_usb_implicit_fb_match
-playback_implicit_fb_quirks[] = {
-        IMPLICIT_FB_SKIP_DEV(0x0582, 0x0171),   /* BOSS RC-505 */
-        IMPLICIT_FB_SKIP_DEV(0x0582, 0x0185),   /* BOSS GP-10 */
-        IMPLICIT_FB_SKIP_DEV(0x0582, 0x0189),   /* BOSS GT-100v2 */
--       IMPLICIT_FB_SKIP_DEV(0x0582, 0x01d6),   /* BOSS GT-1 */
-+       IMPLICIT_FB_GENERIC_DEV(0x0582, 0x01d6),        /* BOSS GT-1 */
-        IMPLICIT_FB_SKIP_DEV(0x0582, 0x01d8),   /* BOSS Katana */
-        IMPLICIT_FB_SKIP_DEV(0x0582, 0x01e5),   /* BOSS GT-001 */
-        IMPLICIT_FB_SKIP_DEV(0x0582, 0x0203),   /* BOSS AD-10 */
-@@ -89,7 +89,7 @@ static const struct snd_usb_implicit_fb_match
-capture_implicit_fb_quirks[] = {
-        IMPLICIT_FB_FIXED_DEV(0x0582, 0x0171, 0x0d, 0x01), /* BOSS RC-505 */
-        IMPLICIT_FB_FIXED_DEV(0x0582, 0x0185, 0x0d, 0x01), /* BOSS GP-10 */
-        IMPLICIT_FB_FIXED_DEV(0x0582, 0x0189, 0x0d, 0x01), /* BOSS GT-100v2
-*/
--       IMPLICIT_FB_FIXED_DEV(0x0582, 0x01d6, 0x0d, 0x01), /* BOSS GT-1 */
-+//     IMPLICIT_FB_FIXED_DEV(0x0582, 0x01d6, 0x0d, 0x01), /* BOSS GT-1 */
-        IMPLICIT_FB_FIXED_DEV(0x0582, 0x01d8, 0x0d, 0x01), /* BOSS Katana */
-        IMPLICIT_FB_FIXED_DEV(0x0582, 0x01e5, 0x0d, 0x01), /* BOSS GT-001 */
-        IMPLICIT_FB_FIXED_DEV(0x0582, 0x0203, 0x0d, 0x01), /* BOSS AD-10 */
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-On Wed, Apr 7, 2021 at 1:18 PM Lucas <jaffa225man@gmail.com> wrote:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> I didn't notice anything wrong when I added my Roland device IDs to your
-> patch's method.  Its information can be found here, but I really doubt it
-> applies to your issue, other than Takashi Iwai's simplified
-> capture-quirk-only table patch (which Geraldo already mentioned):
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=212519
->
-> Since I built my patch upon your previous patch, is there anything I can
-> do to test it on my devices for you?
->
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
