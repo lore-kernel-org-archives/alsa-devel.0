@@ -7,54 +7,57 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0C17C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8600C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:24:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 201FD610CF
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:24:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 201FD610CF
+	by mail.kernel.org (Postfix) with ESMTPS id 194AF610CF
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:24:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 194AF610CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8A716CD;
-	Thu,  8 Apr 2021 08:23:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8A716CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDEAD16D4;
+	Thu,  8 Apr 2021 08:23:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDEAD16D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617863048;
-	bh=N4gnLRaGl4x1uKJnI32Ba1NKKneWMUvy1ANTBZ1Idz0=;
+	s=default; t=1617863082;
+	bh=fp10y8y8cqvwRksOO4JKHieyu19khlk8YR4ZnzLA39g=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=WbNO1C0MN2A2pHnaqPmuqLaPq2B+kZtpNyytynR/WLlqXcwIbEsdpGUjYiPvTD61/
-	 b8KzbH1MQgnZQNIDOTQr5AYlEJvDE9AyKMY5PVwP9fISkEv899d8xCfxg2/4Nwdkni
-	 fpfOfV/DRoNmk0CUUkWejkn9HU8McqaAsoo5bqb0=
+	b=m13KV72lvgQi/mm7M9edbopinHzS7Z1Ri+Z7skfOiTnnWy/ICDje3g3WevwgEu0HX
+	 fiFiLv2xeXHHLkl5N3F/u/+uY0x8QkKvu9bXi5VZiTrfQIISpQ8k8JtBHis4k1NvY6
+	 nIefpS0y9kKbVR/lvQ76YFSfyZgoOJpcE9q50TlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1EAAF804FB;
-	Thu,  8 Apr 2021 08:18:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05631F80511;
+	Thu,  8 Apr 2021 08:19:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDFA5F804E5; Thu,  8 Apr 2021 08:18:54 +0200 (CEST)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ id 33504F804E5; Thu,  8 Apr 2021 08:18:57 +0200 (CEST)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43974F80169
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43974F80169
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
- by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FG9xS0Q1QzpVj9;
- Thu,  8 Apr 2021 14:15:56 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 14:18:35 +0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E50EF804A9
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:18:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E50EF804A9
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FG9xP3J4rzPnyy;
+ Thu,  8 Apr 2021 14:15:53 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 14:18:31 +0800
 From: Ye Bin <yebin10@huawei.com>
-To: <yebin10@huawei.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH -next] ASoC: rt1019: constify static struct snd_soc_dai_ops
-Date: Thu, 8 Apr 2021 14:27:01 +0800
-Message-ID: <20210408062701.803865-1-yebin10@huawei.com>
+To: <yebin10@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, "Pierre-Louis
+ Bossart" <pierre-louis.bossart@linux.intel.com>, Hui Wang
+ <hui.wang@canonical.com>
+Subject: [PATCH -next] ASoC: amd: renoir: acp3x-pdm-dma: constify static
+ struct snd_soc_dai_ops
+Date: Thu, 8 Apr 2021 14:26:58 +0800
+Message-ID: <20210408062658.803724-1-yebin10@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -85,20 +88,20 @@ const to allow the compiler to put it in read-only memory.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- sound/soc/codecs/rt1019.c | 2 +-
+ sound/soc/amd/renoir/acp3x-pdm-dma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt1019.c b/sound/soc/codecs/rt1019.c
-index 5138f028d9f2..f64bb7302720 100644
---- a/sound/soc/codecs/rt1019.c
-+++ b/sound/soc/codecs/rt1019.c
-@@ -823,7 +823,7 @@ static int rt1019_probe(struct snd_soc_component *component)
- #define RT1019_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S8)
+diff --git a/sound/soc/amd/renoir/acp3x-pdm-dma.c b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+index 1acd20439399..4c2810e58dce 100644
+--- a/sound/soc/amd/renoir/acp3x-pdm-dma.c
++++ b/sound/soc/amd/renoir/acp3x-pdm-dma.c
+@@ -356,7 +356,7 @@ static int acp_pdm_dai_trigger(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
  
--static struct snd_soc_dai_ops rt1019_aif_dai_ops = {
-+static const struct snd_soc_dai_ops rt1019_aif_dai_ops = {
- 	.hw_params = rt1019_hw_params,
- 	.set_fmt = rt1019_set_dai_fmt,
- 	.set_sysclk = rt1019_set_dai_sysclk,
+-static struct snd_soc_dai_ops acp_pdm_dai_ops = {
++static const struct snd_soc_dai_ops acp_pdm_dai_ops = {
+ 	.trigger   = acp_pdm_dai_trigger,
+ };
+ 
 
