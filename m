@@ -7,57 +7,54 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A83AC433B4
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:22:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5052CC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:22:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 951096113E
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:22:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 951096113E
+	by mail.kernel.org (Postfix) with ESMTPS id 696CD61181
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:22:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 696CD61181
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31A7A168D;
-	Thu,  8 Apr 2021 08:21:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31A7A168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CFEC816A1;
+	Thu,  8 Apr 2021 08:21:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFEC816A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617862924;
-	bh=2VJloWMPrSOKSQudZ1kfjXSHkmeJXrjpviyls7kF08I=;
+	s=default; t=1617862945;
+	bh=8d98iTxRlj7CWNyP+WJIPpqqzy9rQprGNOANqgp6Ef4=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=kyuWiBkFR+/2PuCMUbo9Qnw59XK2OBYkyTbAka9GKSa8/zrCtH/Bkc2fc4ro8me3H
-	 7pMdcSxIetCDjMHP5627mzK2mAmj5AJ+TcBhnNcYD2+P+hyYVZc2zhOseCBvX4wmPN
-	 Zey325eY+uHz9LJA6bBXy78UCnZkLFMNhEfz7HU4=
+	b=V9B8GDEE5c+cORJwsBp4OGdFE4s0vQ7cAL2PQ30ssvbsY2534DvB/ZKbMhi05AkUT
+	 m60VPjLN6M/I8KCh6WrUSVMIWg1LzJA7711YpTCh+UPQmAkMkd/SfTDbsnIGrT1Lvf
+	 CNVMWguryW+ldn0QDLUjezI2xlaz8AZrU5ZhdeH0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 520B4F804D8;
-	Thu,  8 Apr 2021 08:18:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BEC8F804E2;
+	Thu,  8 Apr 2021 08:18:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEF9DF80482; Thu,  8 Apr 2021 08:18:44 +0200 (CEST)
+ id E09A2F80169; Thu,  8 Apr 2021 08:18:44 +0200 (CEST)
 Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E9C0F80249
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:18:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E9C0F80249
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
- by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FG9x76b11zPnxZ;
- Thu,  8 Apr 2021 14:15:39 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 14:18:19 +0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDDA7F80246
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:18:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDDA7F80246
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+ by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FG9xr08jMzyNjj;
+ Thu,  8 Apr 2021 14:16:16 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 14:18:21 +0800
 From: Ye Bin <yebin10@huawei.com>
-To: <yebin10@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>, Dan Murphy <dmurphy@ti.com>, Kuninori Morimoto
- <kuninori.morimoto.gx@renesas.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Alexander A.
- Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH -next] ASoC: tas2770: Constify static struct snd_soc_dai_ops
-Date: Thu, 8 Apr 2021 14:26:46 +0800
-Message-ID: <20210408062646.803053-1-yebin10@huawei.com>
+To: <yebin10@huawei.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH -next] ASoC: rt711-sdca: Constify static struct snd_soc_dai_ops
+Date: Thu, 8 Apr 2021 14:26:47 +0800
+Message-ID: <20210408062647.803141-1-yebin10@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -88,20 +85,20 @@ const to allow the compiler to put it in read-only memory.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- sound/soc/codecs/tas2770.c | 2 +-
+ sound/soc/codecs/rt711-sdca.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index 781bf9cc4faa..172e79cbe0da 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -464,7 +464,7 @@ static int tas2770_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	return 0;
- }
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index 381893b640c6..bfb7f1c8ec8f 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -1268,7 +1268,7 @@ static int rt711_sdca_pcm_hw_free(struct snd_pcm_substream *substream,
+ #define RT711_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+ 			SNDRV_PCM_FMTBIT_S24_LE)
  
--static struct snd_soc_dai_ops tas2770_dai_ops = {
-+static const struct snd_soc_dai_ops tas2770_dai_ops = {
- 	.mute_stream = tas2770_mute,
- 	.hw_params  = tas2770_hw_params,
- 	.set_fmt    = tas2770_set_fmt,
+-static struct snd_soc_dai_ops rt711_sdca_ops = {
++static const struct snd_soc_dai_ops rt711_sdca_ops = {
+ 	.hw_params	= rt711_sdca_pcm_hw_params,
+ 	.hw_free	= rt711_sdca_pcm_hw_free,
+ 	.set_sdw_stream	= rt711_sdca_set_sdw_stream,
 
