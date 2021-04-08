@@ -2,67 +2,78 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F28CC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:26:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E637BC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:41:53 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 57226610CF
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:26:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 57226610CF
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=aksignal.cz
+	by mail.kernel.org (Postfix) with ESMTPS id 0EE396113B
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:41:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0EE396113B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D855916D5;
-	Thu,  8 Apr 2021 08:25:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D855916D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD1BD16BC;
+	Thu,  8 Apr 2021 08:40:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD1BD16BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617863159;
-	bh=/Pf7gptIKvFpRxx8OUKcpfm/E4qI+642KBMYMSo/xGI=;
+	s=default; t=1617864109;
+	bh=esvwhCK6UlTXiQqeJQxMX8Mpz8SBfr3v1x0zh2fpR9A=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=pfsLm90mh/zDvJsZmcPF7r9/j8vvdh9qsA8v/+Y+Bc58YFqQn3YXZ0FsP+owUrzGe
-	 5sJWZDimthjGQZmgBYOQsAZ8Mk+t/gJM5MkmVQmmFcvo/U7JDNqqHoxT8oqBbJnQic
-	 JA1ah9xWS1bnCxdsHYoIChtYgbJPIrk7wcwM4uUU=
+	b=Inq2LAM+nnfuWHnZPy06JqseZwJtkcbLSJgr8P/tQVbqm+CSbF0Q7GjyaVuYACWN9
+	 EVxtu3H7ZDK8Xfkl+XDga4cqxlVPKaM2/DrhX4dsqBSCZAn9hyjQJoWllVtGQkx0Nj
+	 mRWhx47ijZ/NLouODm/TTJmgLzg36x8OzlS3ogII=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 100FEF80169;
-	Thu,  8 Apr 2021 08:25:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 360E8F8012F;
+	Thu,  8 Apr 2021 08:40:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACC43F8020B; Thu,  8 Apr 2021 08:25:06 +0200 (CEST)
-Received: from router.aksignal.cz (router.aksignal.cz [62.44.4.214])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92410F800BD
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:24:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92410F800BD
-Received: from localhost (localhost [127.0.0.1])
- by router.aksignal.cz (Postfix) with ESMTP id 92E4F420E1;
- Thu,  8 Apr 2021 08:24:55 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
- by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
- with LMTP id Sp3bXXX5El-r; Thu,  8 Apr 2021 08:24:54 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
- (Authenticated sender: jiri.prchal@aksignal.cz)
- by router.aksignal.cz (Postfix) with ESMTPSA id 30D07420E0;
- Thu,  8 Apr 2021 08:24:54 +0200 (CEST)
-From: Jiri Prchal <jiri.prchal@aksignal.cz>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: codecs: tlv320aic3x: add AIC3106
-Date: Thu,  8 Apr 2021 08:24:50 +0200
-Message-Id: <20210408062450.7835-1-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Jiri Prchal <jiri.prchal@aksignal.cz>, Liam Girdwood <lgirdwood@gmail.com>
+ id D7F28F8020B; Thu,  8 Apr 2021 08:40:57 +0200 (CEST)
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+ by alsa1.perex.cz (Postfix) with ESMTP id 43E01F8012F
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:40:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E01F8012F
+Received: from localhost.localdomain (unknown [10.192.24.118])
+ by mail-app4 (Coremail) with SMTP id cS_KCgBn+kVkpW5g2xebAA--.11207S4;
+ Thu, 08 Apr 2021 14:40:40 +0800 (CST)
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+To: dinghao.liu@zju.edu.cn,
+	kjlu@umn.edu
+Subject: [PATCH] [v2] ASoC: codecs: Fix runtime PM imbalance in tas2552_probe
+Date: Thu,  8 Apr 2021 14:40:34 +0800
+Message-Id: <20210408064036.6691-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBn+kVkpW5g2xebAA--.11207S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF1kKrWfWry7uFWfZrWDArb_yoWDZwcEgw
+ 4rW3yru34rZr47KryUu3y5Za93Zrs5Cr1UGr9YqF1UJr1UAa1kGr1DXrn7uF45ur4xAa1f
+ JFnIgF12y3ySkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+ 9fnUUIcSsGvfJTRUUUbVxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+ wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+ vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+ jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+ x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+ XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+ 8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+ 0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+ 1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+ 14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+ IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+ 6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+ 73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0JBlZdtTTcOQAAsv
+Cc: alsa-devel@alsa-project.org,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>,
+ "Alexander A. Klimov" <grandmaster@al2klimov.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,68 +89,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In DT binding is mentioned that this driver is compatible with 3106.
-So added compatibility string and model number.
+There is a rumtime PM imbalance between the error handling path
+after devm_snd_soc_register_component() and all other error
+handling paths. Add a PM runtime increment to balance refcount.
 
-Signed-off-by: Jiri Prchal <jiri.prchal@aksignal.cz>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- sound/soc/codecs/tlv320aic3x-i2c.c | 2 ++
- sound/soc/codecs/tlv320aic3x-spi.c | 2 ++
- sound/soc/codecs/tlv320aic3x.h     | 1 +
- 3 files changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic3x-i2c.c b/sound/soc/codecs/tlv320aic3x-i2c.c
-index 4535bb8dbadc..cd0558ed4dd4 100644
---- a/sound/soc/codecs/tlv320aic3x-i2c.c
-+++ b/sound/soc/codecs/tlv320aic3x-i2c.c
-@@ -40,6 +40,7 @@ static const struct i2c_device_id aic3x_i2c_id[] = {
- 	{ "tlv320aic33", AIC3X_MODEL_33 },
- 	{ "tlv320aic3007", AIC3X_MODEL_3007 },
- 	{ "tlv320aic3104", AIC3X_MODEL_3104 },
-+	{ "tlv320aic3106", AIC3X_MODEL_3106 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, aic3x_i2c_id);
-@@ -49,6 +50,7 @@ static const struct of_device_id aic3x_of_id[] = {
- 	{ .compatible = "ti,tlv320aic33" },
- 	{ .compatible = "ti,tlv320aic3007" },
- 	{ .compatible = "ti,tlv320aic3104" },
-+	{ .compatible = "ti,tlv320aic3106" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, aic3x_of_id);
-diff --git a/sound/soc/codecs/tlv320aic3x-spi.c b/sound/soc/codecs/tlv320aic3x-spi.c
-index bd78ab0910da..8c7b6bb9223f 100644
---- a/sound/soc/codecs/tlv320aic3x-spi.c
-+++ b/sound/soc/codecs/tlv320aic3x-spi.c
-@@ -45,6 +45,7 @@ static const struct spi_device_id aic3x_spi_id[] = {
- 	{ "tlv320aic33", AIC3X_MODEL_33 },
- 	{ "tlv320aic3007", AIC3X_MODEL_3007 },
- 	{ "tlv320aic3104", AIC3X_MODEL_3104 },
-+	{ "tlv320aic3106", AIC3X_MODEL_3106 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, aic3x_spi_id);
-@@ -54,6 +55,7 @@ static const struct of_device_id aic3x_of_id[] = {
- 	{ .compatible = "ti,tlv320aic33" },
- 	{ .compatible = "ti,tlv320aic3007" },
- 	{ .compatible = "ti,tlv320aic3104" },
-+	{ .compatible = "ti,tlv320aic3106" },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, aic3x_of_id);
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 00908f1734a7..7e0063913017 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -20,6 +20,7 @@ int aic3x_remove(struct device *dev);
- #define AIC3X_MODEL_33 1
- #define AIC3X_MODEL_3007 2
- #define AIC3X_MODEL_3104 3
-+#define AIC3X_MODEL_3106 4
+Changelog:
+
+v2: - Add a PM runtime increment to fix it instead of moving
+      the PM related operations after the registration.
+---
+ sound/soc/codecs/tas2552.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index bd00c35116cd..700baa6314aa 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -730,8 +730,10 @@ static int tas2552_probe(struct i2c_client *client,
+ 	ret = devm_snd_soc_register_component(&client->dev,
+ 				      &soc_component_dev_tas2552,
+ 				      tas2552_dai, ARRAY_SIZE(tas2552_dai));
+-	if (ret < 0)
++	if (ret < 0) {
+ 		dev_err(&client->dev, "Failed to register component: %d\n", ret);
++		pm_runtime_get_noresume(&client->dev);
++	}
  
- /* AIC3X register space */
- #define AIC3X_CACHEREGNUM		110
+ 	return ret;
+ }
 -- 
-2.25.1
+2.17.1
 
