@@ -2,56 +2,61 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7F60C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC4F0C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:30:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 16221611C2
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:29:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 16221611C2
+	by mail.kernel.org (Postfix) with ESMTPS id CA349611C2
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:29:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA349611C2
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF3DA1658;
-	Thu,  8 Apr 2021 06:28:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF3DA1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 688ED1679;
+	Thu,  8 Apr 2021 06:29:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 688ED1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617856147;
-	bh=0JBD6rM/AqfS9LGlzkD3bGjXIcUwh2VNb9WMhIyl3is=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TzEXMMcQlAoiAwDzz8zY9qrsYk/++KCgrwmozZ+j5kQtykdUJtxs0t3l0oIJHOBEc
-	 NhKM+0mfddMEQzcAxJVOduOsVvvEuUh2cOYtvvyhDLcsBSP+fabLZSmSmzckSN4huC
-	 vblD96+QWP5PZ8IQ0shgcunZRbXYTzYOAsiRMqoE=
+	s=default; t=1617856198;
+	bh=UjQRLOYET1EkLaUpsbORhce5IIq5ucp/bIeiyks/bDc=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=N/jnUJNvEZVnSe03aoIeJ33U9xHLH07BVDufXWnRcaiWKoY9oZPORNUxWvcw7rNsY
+	 KRibNxApsOJcKwZHCAOF5b4qXU4C53RJbvtlV0Ol6Iitp7Mi7zTrYKb6P9w4/OhcbJ
+	 BX87bzNZ5qcFOtzpHYYJl1BmsfesBO/aNGuFnrWQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B98FF80169;
-	Thu,  8 Apr 2021 06:28:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3B53F80249;
+	Thu,  8 Apr 2021 06:28:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67392F8020B; Thu,  8 Apr 2021 06:28:12 +0200 (CEST)
+ id 425CCF80259; Thu,  8 Apr 2021 06:28:48 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id A410DF8012F
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 06:27:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A410DF8012F
-Date: 08 Apr 2021 13:27:54 +0900
-X-IronPort-AV: E=Sophos;i="5.82,205,1613401200"; d="scan'208";a="77618188"
+ by alsa1.perex.cz (Postfix) with ESMTP id 3D0CDF8020B
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 06:28:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D0CDF8020B
+Date: 08 Apr 2021 13:28:38 +0900
+X-IronPort-AV: E=Sophos;i="5.82,205,1613401200"; d="scan'208";a="77618254"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 08 Apr 2021 13:27:54 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 08 Apr 2021 13:28:38 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B3E01400F787;
- Thu,  8 Apr 2021 13:27:54 +0900 (JST)
-Message-ID: <877dld1jud.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 08A6D400F787;
+ Thu,  8 Apr 2021 13:28:38 +0900 (JST)
+Message-ID: <875z0x1jt5.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/5] ASoC: rsnd: tidyup Renesas sound
+Subject: [PATCH 1/5] ASoC: rsnd: call rsnd_ssi_master_clk_start() from
+ rsnd_ssi_init()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <877dld1jud.wl-kuninori.morimoto.gx@renesas.com>
+References: <877dld1jud.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,22 +75,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+Current rsnd needs to call .prepare (P) for clock settings,
+.trigger for playback start (S) and stop (E).
+It should be called as below from SSI point of view.
 
-These are tidyup patches for Renesas sound drivers.
+	P -> S -> E -> P -> S -> E -> ...
 
-Kuninori Morimoto (5):
-  ASoC: rsnd: call rsnd_ssi_master_clk_start() from rsnd_ssi_init()
-  ASoC: rsnd: check all BUSIF status when error
-  ASoC: rsnd: add rsnd_ssi_busif_err_status_clear()
-  ASoC: rsnd: add rsnd_ssi_busif_err_irq_enable/disable()
-  ASoC: rsnd: add usage for SRC
+But, if you used MIXer, below case might happen
 
- sound/soc/sh/rcar/src.c |   9 ++
- sound/soc/sh/rcar/ssi.c | 225 ++++++++++++++++++----------------------
- 2 files changed, 110 insertions(+), 124 deletions(-)
+	              (2)
+	1: P -> S ---> E -> ...
+	2:         P ----> S -> ...
+	          (1)     (3)
 
+P(1) setups clock, but E(2) resets it. and starts playback (3).
+In such case, it will reports "SSI parent/child should use same rate".
+
+rsnd_ssi_master_clk_start() which is the main function at (P)
+was called from rsnd_ssi_init() (= S) before,
+but was moved by below patch to rsnd_soc_dai_prepare() (= P) to avoid
+using clk_get_rate() which shouldn't be used under atomic context.
+
+	commit 4d230d1271064 ("ASoC: rsnd: fixup not to call clk_get/set
+				under non-atomic")
+
+Because of above patch, rsnd_ssi_master_clk_start() is now called at (P)
+which is for non atomic context. But (P) is assuming that spin lock is
+*not* used.
+One issue now is rsnd_ssi_master_clk_start() is checking ssi->xxx
+which should be protected by spin lock.
+
+After above patch, adg.c had below patch for other reasons.
+
+	commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate()
+				under atomic context")
+
+clk_get_rate() is used at probe() timing by this patch.
+In other words, rsnd_ssi_master_clk_start() is no longer using
+clk_get_rate() any more.
+
+This means we can call it from rsnd_ssi_init() (= S) again which is
+protected by spin lock.
+This patch re-move it to under spin lock, and solves
+1. checking ssi->xxx without spin lock issue.
+2. clk setting / device start / device stop race condition.
+
+Reported-by: Linh Phung T. Y. <linh.phung.jy@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/sh/rcar/ssi.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index d071cec25f71..048d53566127 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -506,10 +506,15 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 			 struct rsnd_priv *priv)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	int ret;
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+ 
++	ret = rsnd_ssi_master_clk_start(mod, io);
++	if (ret < 0)
++		return ret;
++
+ 	ssi->usrcnt++;
+ 
+ 	rsnd_mod_power_on(mod);
+@@ -1060,13 +1065,6 @@ static int rsnd_ssi_pio_pointer(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_ssi_prepare(struct rsnd_mod *mod,
+-			    struct rsnd_dai_stream *io,
+-			    struct rsnd_priv *priv)
+-{
+-	return rsnd_ssi_master_clk_start(mod, io);
+-}
+-
+ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.name		= SSI_NAME,
+ 	.probe		= rsnd_ssi_common_probe,
+@@ -1079,7 +1077,6 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.pointer	= rsnd_ssi_pio_pointer,
+ 	.pcm_new	= rsnd_ssi_pcm_new,
+ 	.hw_params	= rsnd_ssi_hw_params,
+-	.prepare	= rsnd_ssi_prepare,
+ 	.get_status	= rsnd_ssi_get_status,
+ };
+ 
+@@ -1166,7 +1163,6 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
+ 	.pcm_new	= rsnd_ssi_pcm_new,
+ 	.fallback	= rsnd_ssi_fallback,
+ 	.hw_params	= rsnd_ssi_hw_params,
+-	.prepare	= rsnd_ssi_prepare,
+ 	.get_status	= rsnd_ssi_get_status,
+ };
+ 
 -- 
 2.25.1
 
