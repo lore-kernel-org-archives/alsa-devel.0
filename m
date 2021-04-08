@@ -2,79 +2,77 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4684FC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 12:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 295D9C433B4
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 12:29:41 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9DB9161165
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 12:06:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9DB9161165
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id 874E761106
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 12:29:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 874E761106
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52B5F1607;
-	Thu,  8 Apr 2021 14:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52B5F1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BAEF15F9;
+	Thu,  8 Apr 2021 14:28:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BAEF15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617883589;
-	bh=afXTCtARz9Gmj7IjD/ZmH4dX6cQEUNfqiPtU97/H75w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1617884977;
+	bh=I2Pu6767lUQHrWaA8yQGY9b14KgvUkSN1iUXerPoMHo=;
+	h=Subject:From:To:References:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sIIvbUDkWsljUacZ2sUFROZyC8gFIgxak7RJ2mLsZNR7NDqXpLsIWGhP0lsMC9pYR
-	 4z2yPlOtmbcFxIAo6T1a/bOqkYa2CVe7wQahNVASquhRyRklhNwp2ofNQz9WNjyq4s
-	 jxDYNKmfbSrs1YnLQtYaK20YlEirs1/Eh5FsX81E=
+	b=QrUE02rwU7M9mYEqwwZlVdrIBHTuV3maYVWxzRkmO3JzIxA5meng+c6qUbr71R1nV
+	 Xu/6CKHZBK62idNPyJUFZ+UBkL4nNY3N3psNpJ6PDqU4NcWXq1+Z++rP7IdotIMAfK
+	 EVZmEOUPS9+KghrUKTa2j8pcKmIFtd5u3HvwkHcQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC44BF80162;
-	Thu,  8 Apr 2021 14:05:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E24BF80169;
+	Thu,  8 Apr 2021 14:28:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D29AEF8020B; Thu,  8 Apr 2021 14:05:36 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 585C1F8020B; Thu,  8 Apr 2021 14:28:30 +0200 (CEST)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC195F80162
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 14:05:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC195F80162
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="h/suy8mJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19DBD611EF;
- Thu,  8 Apr 2021 12:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617883520;
- bh=afXTCtARz9Gmj7IjD/ZmH4dX6cQEUNfqiPtU97/H75w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=h/suy8mJ6so+yXKCralDGHC7fkSPoNyqQ2IgKRYjC3e3l1zZC2u0L2ysyUeTuo/rY
- 3RY9AlEmzdTgg+lt/YzaFyQ7jXAmE1h5eV0Bukqes3cI0uFMyxseM2Zhi6ouPbZIUq
- ZPJW+DgAKcqg34SAElB21QuY/MrHnxLtyfsp0TXufP7taTmm4ZX4MWmWQH71ngyB8j
- mhR2IPmvfNRyAFLwNRlj9VaJL03xkz77u/LlSeTgeTp2a/JqBBYbKAkzZcJqw5+ZEm
- TJFTu/UoD9mSYWJRzv0gGV/t0lLpt+eATwGocagMY6pCG2mM7gW72TDtjb3pfuZZYV
- uO9DmCr9uTBfw==
-Date: Thu, 8 Apr 2021 13:05:02 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: core - add more card sysfs entries
-Message-ID: <20210408120502.GA4516@sirena.org.uk>
-References: <20210408094314.1322802-1-perex@perex.cz>
- <20210408103819.GA40407@workstation> <s5h35w182a5.wl-tiwai@suse.de>
- <45acc908-3603-3479-9fb2-5206339a9ace@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7320F800BD
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 14:28:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7320F800BD
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGL8S4DC9z7tyl;
+ Thu,  8 Apr 2021 20:26:00 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.202) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0;
+ Thu, 8 Apr 2021 20:28:09 +0800
+Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: renesas, rsnd: Clear warning
+ 'ports' does not match any of the regexes
+From: "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To: Rob Herring <robh@kernel.org>
+References: <20210331091616.2306-1-thunder.leizhen@huawei.com>
+ <20210331091616.2306-3-thunder.leizhen@huawei.com>
+ <20210401202056.GA947212@robh.at.kernel.org>
+ <a1aed23d-a9d2-5e05-b1f5-3b48ac8d17f1@huawei.com>
+Message-ID: <15a406ba-b288-c98c-46f1-36933c11fb11@huawei.com>
+Date: Thu, 8 Apr 2021 20:28:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
-Content-Disposition: inline
-In-Reply-To: <45acc908-3603-3479-9fb2-5206339a9ace@perex.cz>
-X-Cookie: Editing is a rewording activity.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: Takashi Iwai <tiwai@suse.de>,
- ALSA development <alsa-devel@alsa-project.org>,
- Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <a1aed23d-a9d2-5e05-b1f5-3b48ac8d17f1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
+Cc: devicetree <devicetree@vger.kernel.org>,
+ alsa-devel <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,35 +89,75 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---bg08WKrSYDhXBjb5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Apr 08, 2021 at 01:21:52PM +0200, Jaroslav Kysela wrote:
+On 2021/4/7 10:04, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2021/4/2 4:20, Rob Herring wrote:
+>> On Wed, Mar 31, 2021 at 05:16:16PM +0800, Zhen Lei wrote:
+>>> Currently, if there are more than two ports, or if there is only one port
+>>> but other properties(such as "#address-cells") is required, these ports
+>>> are placed under the "ports" node. So add the schema of property "ports".
+>>
+>> A given binding should just use 'ports' or 'port' depending on it's 
+>> need. Supporting both forms is needless complexity.
 
-> Yes, it's for UCM, but even if we don't consider this purpose, the kernel API
-> should return some reasonable information rather than very generic (or empty)
-> strings which are used in the native ALSA utilities for example. So, I think
-> that we should allow to "fix" this info also from the user space rather than
-> to extend the existing API.
+Hi Rob:
+I don't think of a good way to avoid "port" and "ports" to be used at the same time.
+Should I disable the use of "port"? Convert the two usages of "port" into "ports".
+But usually no one will use both of them in one dts file. And even if it's used at
+the same time, it's not a big mistake. So I decided not to test it.
 
-Half the point with UCM was supposed to be to rewrite the control names
-we get from the devices into standard things that are useful for
-userspace, having to remap things for UCM doesn't sound right.
+> 
+> Right, I'll adjust this patch again.
+> 
+>>
+>>> Otherwise, warnings similar to the following will be reported:
+>>> arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dt.yaml: \
+>>> sound@ec500000: 'ports' does not match any of the regexes: \
+>>> '^rcar_sound,ctu$', '^rcar_sound,dai$', '^rcar_sound,dvc$', ...
+>>>
+>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+>>> index 384191ee497f534..a42992fa687d3f3 100644
+>>> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+>>> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+>>> @@ -115,6 +115,11 @@ properties:
+>>>      $ref: audio-graph-port.yaml#
+>>>      unevaluatedProperties: false
+>>>  
+>>> +  ports:
+>>
+>>        $ref: /schemas/graph.yaml#/properties/ports
+> 
+> OK, thanks
+> 
+>>
+>>> +    patternProperties:
+>>> +      '^port@[0-9]':
+>>> +        $ref: "#/properties/port"
+>>
+>> Then this should be: $ref: audio-graph-port.yaml#
+> 
+> OK, thanks
+> 
+>>
+>> Also, what each port is should be defined, but that's a separate 
+>> problem.
+>>
+>>> +
+>>>  # use patternProperties to avoid naming "xxx,yyy" issue
+>>>  patternProperties:
+>>>    "^rcar_sound,dvc$":
+>>> -- 
+>>> 1.8.3
+>>>
+>>>
+>>
+>> .
+>>
 
---bg08WKrSYDhXBjb5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBu8W4ACgkQJNaLcl1U
-h9Awcwf+NBwQtJflBAgMOJvvuAiBVxerBbjkCjS7hcK/kpT7p3AbcnvppIK7DsPH
-vZ1ADVJP0o4my1v3ihQKGj0OAnoFZ1bKxF0l4iY98Hw0fnb0fiLdaZbKmQma7sFS
-dG6H+1nf7ixzdlSUikzZLPxMW20w3GIc7zZcyxtQ4dCrgsIp0qSqCzxX74tGEisP
-smtTyCOgKNmcm8W6uJ6eM3C3uYhYWGfGb2KFHRhJb8ehNNmbotx4WEShz7U8QQzo
-adgbdK3jmzDT7GFeYpWngbkGhvsJRPGXQwRTrnkKykhObymezmdgpH1UYxzMGynr
-yGYJzc2orGLl4JVXAuyhTV5q8P45MA==
-=5LjR
------END PGP SIGNATURE-----
-
---bg08WKrSYDhXBjb5--
