@@ -2,99 +2,69 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E06A1C43460
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53340C433B4
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:19:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 4FDCA61165
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:10:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4FDCA61165
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 1F40C61168
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 06:19:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F40C61168
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C0CD84D;
-	Thu,  8 Apr 2021 08:09:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C0CD84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA687166C;
+	Thu,  8 Apr 2021 08:18:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA687166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617862241;
-	bh=jjNzmaBW6HAl1H68mUeCA/VZEgqDypH7gdgZWbvPZsQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=V2HtxRrO7fOpG2khpxS+wh4B49Vnyz0iSTdORlR7TLjihdWBFiIIYjvBbecT+RwBT
-	 oSB4xRbKdjmIh1/TuryE9ML5rWXGLk8abE/FgpcsYISJ0/2C7Ft6+9BCrLm5FttL6y
-	 fTZ6lZF41eSVRugfehAR7T07iSLDNxhABZ1obOcw=
+	s=default; t=1617862767;
+	bh=Loa10A1ZIonCUCVyG19TUOtbR/XQ4aeKZcWmuOrv23M=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jWFgp9S2cTubNhFiN8R51GieJvQZvt/Uijn90GbQolzt52sYVCqpN7jW4hx/vdCwm
+	 qg5JZn9ABZHs8TlcP2bEA4rcP7GpfjUgqkNDNf3MRluLu8g2/dOdAcENLN7/c3uzya
+	 r+NvKqk1ZRgH6CuXYIfmQY4F+PJjhnuy4BP6KCpg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0517CF80169;
-	Thu,  8 Apr 2021 08:09:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0992F8025D;
+	Thu,  8 Apr 2021 08:18:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E6C5F8020B; Thu,  8 Apr 2021 08:09:49 +0200 (CEST)
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com
- [IPv6:2607:f8b0:4864:20::734])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 21405F80246; Thu,  8 Apr 2021 08:18:35 +0200 (CEST)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A22E3F80162
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:09:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A22E3F80162
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="AwB0cNwB"
-Received: by mail-qk1-x734.google.com with SMTP id q26so1119199qkm.6
- for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2021 23:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=dAyROF48Hwwrms3OnAIeZIykmBtOR69RlGEuHK9Gyv8=;
- b=AwB0cNwBe7vqm1cQBrVUMMCH5OZN79S/GnQvVTk7AscTCFLLIpOr58QNiXp0BENuTe
- I7wBYTsuf9DDDk5Jef/KGkJ+eFupiLRcMj2RIQ98raq68zBTxaNKulSnk2HRnPUbpIDd
- b+eBddAn1UyN/HhFPTezH5N+UFTRO913Pjdi3efYfXHJQNgn2aifRj5jRSDKei0i1usi
- weTWB/ARF9Vd3SyjRIs5ItGoCvlNKYukTLvQd/+Ait4wSPN+onmNDOki5JXxYRHeVXKg
- Nhx6P5Pp86NbHIkeGCbGgollrwjbLlgTo+zCPR/4pWhL/P5i5l0KXfdouE5C9uzo2YNU
- 5ZRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=dAyROF48Hwwrms3OnAIeZIykmBtOR69RlGEuHK9Gyv8=;
- b=HqTXruW6jj17BkQa+ONQWmRVT0R0OBOrELwXvQchUDTG2X46AxgPeUXa+gO5zqfwUG
- miMYpzJ9ej0VlyD4g/YLJCg5j/puUFAih4MNmjfZ7uFyjfguN9qJiqu1xsfeoTQ4YhIR
- LB6Z+kbH7s5Xm4b/2osmaekL2DWHG7EyKDd5drxjX4OMTlRfgigJES7JJwRqZaTjiN/h
- UXUD/OVQSUNjgSIrHFKTX4eDTEMMIP395C/KIOaTVQBFztAjRbIDf4foxhivB7l3ViHu
- Qc3yBYo+GHm7epimpPp9FfVflMUw2mg9MEPvY7VBRq40T0b7juOOx9s4v0G0Q39QpbCh
- cFCw==
-X-Gm-Message-State: AOAM531hGI6Uv24/86G6U+e0WsoGGL74pr3unm9rADI8zIQAbITkwz6F
- sSpIriSpbGd2tlkhCdQCxWtUV1s9UAIv2HBPMFc=
-X-Google-Smtp-Source: ABdhPJyJ8kUPEKGsByO9sfR2zLTHMIqc1CwZF5iLNy3UKVQs2OcGfXiIPVYuCaN6cs1ZXIkEEPxPAuDcjGnJo7U8RRU=
-X-Received: by 2002:a05:620a:486:: with SMTP id
- 6mr6621971qkr.193.1617862172141; 
- Wed, 07 Apr 2021 23:09:32 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 565B7F800BD
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 08:18:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 565B7F800BD
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+ by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FG9xm3MD6z93Zp;
+ Thu,  8 Apr 2021 14:16:12 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 14:18:15 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <yebin10@huawei.com>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@codeaurora.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH -next] ASoC: codecs: lpass-wsa-macro: constify static struct
+ snd_soc_dai_ops
+Date: Thu, 8 Apr 2021 14:26:42 +0800
+Message-ID: <20210408062642.802846-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <CAHXb3begced9GYCQ4a6qLOK2PrQR9gHeSvb3HAG29DVpZ+vwiQ@mail.gmail.com>
- <CAEsQvcu5freEXMFwBRH0aQsT9=ngvOY_SkA6dmfs_YVvMYYuJw@mail.gmail.com>
- <CAHXb3bddyVMXrZHxmtz5AM4j7TRwWSbZcLM94JjcbOMfrd4+2g@mail.gmail.com>
- <CAEsQvcs+-O_eGW928eLdbde9EhWiD3qxjCuv2iW477DZDprkBw@mail.gmail.com>
- <CAHXb3beRycUteezmWRqO0u3kZnV8TbCNAqfO3ksjVoJ6WSrdBw@mail.gmail.com>
- <CAEsQvcuBYnY_k1Rd8US5qrDKcJas62Q5kA4P0NSEJODBCcZMuw@mail.gmail.com>
- <CAHXb3bfD_YivP3r4wOeb8bcXmAU+_+eeZwudW6f1pxfYtpnq1g@mail.gmail.com>
- <CAEsQvcsCJUi8eP_t8MGUKf0zSf7Zmqiof8b0fmk-XhZtUScbmg@mail.gmail.com>
- <CAEsQvcspNZFS4gbS=dQ1enkshVnG+-=xvoc8kskmoweTQjQhRw@mail.gmail.com>
- <CAOsVg8raD8enyWELM4w17dZCe=1Vy2s+7RLszVko4aRLmj7jDA@mail.gmail.com>
-In-Reply-To: <CAOsVg8raD8enyWELM4w17dZCe=1Vy2s+7RLszVko4aRLmj7jDA@mail.gmail.com>
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-Date: Thu, 8 Apr 2021 03:14:13 -0300
-Message-ID: <CAEsQvcsz2Na9epF24urfqt5ZxFUU6efCj9hzV6x-a1mY_dfrUA@mail.gmail.com>
-Subject: Re: Implicit feedback on BOSS GT-1, the saga continues...
-To: Lucas <jaffa225man@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Mike Oliphant <oliphant@nostatic.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
+Cc: Hulk Robot <hulkci@huawei.com>, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,30 +80,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Em Qui, 8 de abr de 2021 02:36, Lucas <jaffa225man@gmail.com> escreveu:
+The snd_soc_dai_ops structures is only stored in the ops field of a
+snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
+const to allow the compiler to put it in read-only memory.
 
-> Well, I just got back from testing Mike's suggestion of setting the Roland
-> Boutique D-05 as a playback quirk, disabling its capture quirk, and setting
-> that endpoint test section to always be skipped.  Sure, enough, the D-05's
-> playback is now perfectly crystal clear without the crackles associated
-> with an LP record.
->
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ sound/soc/codecs/lpass-wsa-macro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I know that feeling and it is wonderful.
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index e37c8148c0de..e79a70386b4b 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1031,7 +1031,7 @@ static int wsa_macro_get_channel_map(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops wsa_macro_dai_ops = {
++static const struct snd_soc_dai_ops wsa_macro_dai_ops = {
+ 	.hw_params = wsa_macro_hw_params,
+ 	.get_channel_map = wsa_macro_get_channel_map,
+ };
 
-
-> This is just a guess until I recompile again, but my capture from the D-05
-> reports a read error, seemingly just as the vanilla mainline kernel does,
-> and I think it's because I disabled its capture quirk line.  So, it seems
-> to me that the D-05 needs both quirk table entries, whether or not the GT-1
-> does.
->
-
-Looking back to Mike's 2019 post
-https://mailman.alsa-project.org/pipermail/alsa-devel/2020-January/161733.html
-we see the output of lsusb -v for the BOSS GT-1 and clearly we see that
-0x8e is the implicit feedback sync EP, at least if we are to trust lsusb
--v. Therefore Mike is on the right track that the GT-1 implicit feedback
-sync is for playback only.
-
->
