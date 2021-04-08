@@ -2,66 +2,78 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30938C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 11:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 112A4C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 11:23:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B8BC961151
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 11:06:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B8BC961151
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 491E8610E5
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 11:22:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 491E8610E5
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB2AB15F2;
-	Thu,  8 Apr 2021 13:05:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB2AB15F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E373843;
+	Thu,  8 Apr 2021 13:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E373843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617879984;
-	bh=TEZaJVoyzAZA3AoYJ5O69qVkDxIVeFn3DyKBwZbidKU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1617880978;
+	bh=8vGboLGcjBLdL6MJY+70vq4F2370Drh3TUOd2TgXsJM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h8F5TbaBI5jS4AVcjZBQUwnQLehppJkvqpoxaW34T19Nnq8BHQ3y4WMJ+XM9HlfgC
-	 +9yXU+gVUKv0vRsiIlcpOi9F5BaIadTXR+oMd/CTxH1pTTyGaq1DbuRvAW0/RuUaWX
-	 DZLnVjIVbrgH1sX23ZL+7PjOmj/K12mEHPB1o1oY=
+	b=WBjnHJ/nc79niwBXZkeMk5vusqmCz9dWOGjXRgiMcyRGuOFryqY5KJEMWBBNuD99V
+	 +8mjCZbxjl1KHjaRG0h7jz2CpCjXlYCHy7vX7+BHeCjIpV8UaUFWyDbZAF/JFm8Dl3
+	 9X/BRoA/JCS1Zd90EdDr5ulbb3HPiEgT5cPAVV4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B235F80169;
-	Thu,  8 Apr 2021 13:05:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 722A5F80169;
+	Thu,  8 Apr 2021 13:22:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64BBDF8020B; Thu,  8 Apr 2021 13:05:32 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 278A9F8020B; Thu,  8 Apr 2021 13:22:05 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C0A1F80162
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 13:05:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C0A1F80162
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DBADFB02E;
- Thu,  8 Apr 2021 11:05:22 +0000 (UTC)
-Date: Thu, 08 Apr 2021 13:05:22 +0200
-Message-ID: <s5h35w182a5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7EA2F8012F
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 13:21:58 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BD072A003F;
+ Thu,  8 Apr 2021 13:21:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz BD072A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1617880917; bh=P2Qy9u8HgF/GEeGrO92dqrH5Rlvcn2v/3ZUoBae8U6A=;
+ h=Subject:To:References:From:Cc:Date:In-Reply-To:From;
+ b=Yf2NbFOFHkQN9slZwmryR03elut/slTGI9lkdbriYbBhlG0I7eapT4hH08t4KzJFR
+ pmEDI5rKHzMS5Xnt4k+PaNxCgoMtcPCKxAYg8uQ7wfgNObnyw7h6KK/mLeVKCfBYVv
+ OjGA91i8dzpePcv3jcZrrCSgPm5THenczpfLoTgQ=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Thu,  8 Apr 2021 13:21:52 +0200 (CEST)
 Subject: Re: [PATCH] ALSA: core - add more card sysfs entries
-In-Reply-To: <20210408103819.GA40407@workstation>
+To: Takashi Iwai <tiwai@suse.de>
 References: <20210408094314.1322802-1-perex@perex.cz>
- <20210408103819.GA40407@workstation>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <20210408103819.GA40407@workstation> <s5h35w182a5.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <45acc908-3603-3479-9fb2-5206339a9ace@perex.cz>
+Date: Thu, 8 Apr 2021 13:21:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <s5h35w182a5.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: ALSA development <alsa-devel@alsa-project.org>,
  Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,22 +89,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 08 Apr 2021 12:38:19 +0200,
-Takashi Sakamoto wrote:
+Dne 08. 04. 21 v 13:05 Takashi Iwai napsal(a):
+> On Thu, 08 Apr 2021 12:38:19 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> It should be done to emit snd_ctl_event when changing card parameters.
+>> Silent change is the worst since many userspace applications can refer
+>> to them in advance.
 > 
-> It should be done to emit snd_ctl_event when changing card parameters.
-> Silent change is the worst since many userspace applications can refer
-> to them in advance.
+> Agreed.  The changes of those names during operation is fairly
+> intrusive, and can bring many side-effects.
 
-Agreed.  The changes of those names during operation is fairly
-intrusive, and can bring many side-effects.
+The event may be nice, indeed. The locking is also not so safe. But it should
+be implemented separately.
 
-Any reason that mixername and co have to be changeable inevitably?
-If that's about UCM profile and its selection of the hardware
-configuration, can it be another additional information instead of
-overwriting the existing strings set by the driver?
+> Any reason that mixername and co have to be changeable inevitably?
+> If that's about UCM profile and its selection of the hardware
+> configuration, can it be another additional information instead of
+> overwriting the existing strings set by the driver?
 
+Thanks for the discussion. I expected it. The ASoC drivers set all those
+parameters in an inconsistent way (nobody verifies that) and I just propose to
+fix things at boot in the user space. The goal is not to allow the random user
+changes, but to modify this settings via udev in a persistent way. Also,
+another firmware can really make the card different from the user space view.
 
-thanks,
+Yes, it's for UCM, but even if we don't consider this purpose, the kernel API
+should return some reasonable information rather than very generic (or empty)
+strings which are used in the native ALSA utilities for example. So, I think
+that we should allow to "fix" this info also from the user space rather than
+to extend the existing API.
 
-Takashi
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
