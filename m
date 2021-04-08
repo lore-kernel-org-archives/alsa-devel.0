@@ -2,80 +2,98 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F43C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 15:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A86C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 15:57:56 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 431D061151
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 15:33:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 431D061151
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 0BA6061139
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 15:57:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BA6061139
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=nostatic.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D182846;
-	Thu,  8 Apr 2021 17:32:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D182846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00C4E846;
+	Thu,  8 Apr 2021 17:57:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00C4E846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617896014;
-	bh=cdxzXpA+uLf8pLQKmA8qF75iHLDWIUzco3m6yvidPHA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1617897473;
+	bh=MhPMEw9dF+Cxd3VsA/Q64HaCj+4qAYIJ8sUgweT8tAs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jhf/wYQX+skC0p7I032EaIntXSA8/prO8QhH8k14myyuySMWmJq8x8h9gmjaK3upa
-	 G2nWtrlmyr9Ti3+kPq2Y/nhgSYdN7q66xecztiw/2lVheDgSnF6HeA4uUlujSNTWY1
-	 0XERNQM3KHTNjL3O5AzLTqcZcNNgQMgAa6FfkWyU=
+	b=JosIJKgUTGP9xA6ztDjkgWKmgpS9hci5Y6mIpT9UUI1wdLvylCTwxEOS497PI1DY5
+	 JOwsoQXPHFgQFT66/R6h1+rKRZ31XyMFM0jn9Re7B09E9kXxA9pmu2OhtDsqHx+Ujq
+	 IhHaraTmLhnU3+qWVCRHKpimgDMxKCiSPdq3p0Ec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8416EF80169;
-	Thu,  8 Apr 2021 17:32:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68D5DF80169;
+	Thu,  8 Apr 2021 17:57:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF618F8020B; Thu,  8 Apr 2021 17:32:41 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C3B84F8020B; Thu,  8 Apr 2021 17:57:00 +0200 (CEST)
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com
+ [IPv6:2607:f8b0:4864:20::b29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2DB4F8012F
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 17:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2DB4F8012F
-IronPort-SDR: 7th+Pgt7uuY96/rJUkxD+MUKDDSpIeR64nS7+x9Q/YpEQ9FecD2GcfVpiQA59XHrUxgvPSvFCB
- ygXOAhO7DA+w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193682994"
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; d="scan'208";a="193682994"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Apr 2021 08:32:32 -0700
-IronPort-SDR: PtnTpvQsFIsmztLMayGgbauJRCJ6abowomed6VHmi6FrDCnJRbtnNv+BnLdAAVh23nIAlZPRQB
- C0zqBRwc6yhg==
-X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; d="scan'208";a="610128148"
-Received: from raltaraw-mobl1.amr.corp.intel.com (HELO [10.212.106.80])
- ([10.212.106.80])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Apr 2021 08:32:31 -0700
-Subject: Re: [PATCH] ALSA: core - add more card sysfs entries
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
- Mark Brown <broonie@kernel.org>
-References: <20210408094314.1322802-1-perex@perex.cz>
- <20210408103819.GA40407@workstation> <s5h35w182a5.wl-tiwai@suse.de>
- <45acc908-3603-3479-9fb2-5206339a9ace@perex.cz>
- <20210408120502.GA4516@sirena.org.uk> <s5hpmz47w3i.wl-tiwai@suse.de>
- <56c874ae-e801-63df-19fa-a1325f6104ca@perex.cz>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <3107db1d-f97d-539a-05db-6f880b762f00@linux.intel.com>
-Date: Thu, 8 Apr 2021 10:32:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8EAD5F800BD
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 17:56:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EAD5F800BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=nostatic-org.20150623.gappssmtp.com
+ header.i=@nostatic-org.20150623.gappssmtp.com header.b="tD9kDmOA"
+Received: by mail-yb1-xb29.google.com with SMTP id x189so3255390ybg.5
+ for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2021 08:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nostatic-org.20150623.gappssmtp.com; s=20150623;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=yj5fujlEed/xhWOfYiPDGk/QU1qBQCR+mRgAD+imNI8=;
+ b=tD9kDmOAOUN9dor8ZIv4f9zzrsZyBG2Zt8si3mjfFlxqYrQTZZLxr8LK8OXnvPSf6c
+ rdnwTrjERQSX4sY5qwSu1EABBwTwlpcwTYtSR0K8LKqvS2L6xB0cwLejlR5mFKNWfnHb
+ Tt8umv8DzIZYEKul5T8xc9YevDPjYnuf84AqPKu+0AfaNBsbZzadN7kcNsc8A6LsXfHx
+ OkfpZKyIePtllNZMuu87x1xK0cnTrUl3UZ4XtC6V62rjuFWW8NvIU4WXYxkMCoXaLuNg
+ cuvDrGxLXi+ejwK4jrZMUdq8VZAR/traAWUw8ed4VPHqRHZU0ksnuLxHCye8ju7h7yDN
+ YmIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=yj5fujlEed/xhWOfYiPDGk/QU1qBQCR+mRgAD+imNI8=;
+ b=cl2rFHYtiCIZnPSdVRMrDdA0kqhDfgnsptKGikCmNa/dqtxKTSoTvnxjfvYPKu40i8
+ UsHgmSzne8NLoFaMkhJbhLZZ48XVswbjUcvTgRIkGzGR07Ff4x2brHmMap76Ak+C6moh
+ q8ICF9/meN7+7xzBHIEK+88NOaRCEezU3Wv+AF39rzx+SlkfCTKch5rZ8IIka3JLOdEy
+ Uy++kkxkIxqXRAvWnWt99fMtjZ+p7jzDDfldqEiES3iJmI8gaTPEJG6zntc/zhTC3DR7
+ +T9/6hGNnHv5SEO8fh6MCSCac5T/3IBtdn4hIyuDTOwgCv7f2TsJYfbiPdgsq8vG03HK
+ KOCQ==
+X-Gm-Message-State: AOAM533rQasRDEu1/7ry866Fu2MymDT2hm6dek0DrkqrE/tqCXgLByWj
+ /+e2AlejxlFTpJ8qEZfjGDooGUESN71Jq/1hbP/LEg==
+X-Google-Smtp-Source: ABdhPJxTPuSKmoj99CA8YiI825Z2IqUwB87GDClBjN7gQtZVGbsUWXhSQGMK2XuzSEU7N0InU8LoKrQxMrUX3YHyYwI=
+X-Received: by 2002:a25:5004:: with SMTP id e4mr12230469ybb.144.1617897414208; 
+ Thu, 08 Apr 2021 08:56:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <56c874ae-e801-63df-19fa-a1325f6104ca@perex.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Cc: ALSA development <alsa-devel@alsa-project.org>
+References: <CAHXb3begced9GYCQ4a6qLOK2PrQR9gHeSvb3HAG29DVpZ+vwiQ@mail.gmail.com>
+ <CAEsQvcu5freEXMFwBRH0aQsT9=ngvOY_SkA6dmfs_YVvMYYuJw@mail.gmail.com>
+ <CAHXb3bddyVMXrZHxmtz5AM4j7TRwWSbZcLM94JjcbOMfrd4+2g@mail.gmail.com>
+ <CAEsQvcs+-O_eGW928eLdbde9EhWiD3qxjCuv2iW477DZDprkBw@mail.gmail.com>
+ <CAHXb3beRycUteezmWRqO0u3kZnV8TbCNAqfO3ksjVoJ6WSrdBw@mail.gmail.com>
+ <CAEsQvcuBYnY_k1Rd8US5qrDKcJas62Q5kA4P0NSEJODBCcZMuw@mail.gmail.com>
+ <CAHXb3bfD_YivP3r4wOeb8bcXmAU+_+eeZwudW6f1pxfYtpnq1g@mail.gmail.com>
+ <CAEsQvcsCJUi8eP_t8MGUKf0zSf7Zmqiof8b0fmk-XhZtUScbmg@mail.gmail.com>
+ <CAEsQvcspNZFS4gbS=dQ1enkshVnG+-=xvoc8kskmoweTQjQhRw@mail.gmail.com>
+ <CAOsVg8raD8enyWELM4w17dZCe=1Vy2s+7RLszVko4aRLmj7jDA@mail.gmail.com>
+In-Reply-To: <CAOsVg8raD8enyWELM4w17dZCe=1Vy2s+7RLszVko4aRLmj7jDA@mail.gmail.com>
+From: Mike Oliphant <oliphant@nostatic.org>
+Date: Thu, 8 Apr 2021 08:56:45 -0700
+Message-ID: <CAHXb3bc0XSc4g8p-Fd-c80p=o+ZNeP=QAf5tKF=3VvXS1q5+Ew@mail.gmail.com>
+Subject: Re: Implicit feedback on BOSS GT-1, the saga continues...
+To: Lucas <jaffa225man@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Geraldo Nascimento <geraldogabriel@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,24 +109,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Lucas - great to hear that the endpoint patch fixed your crackles!
 
+I'm curious if you get any different results enabling feedback on the
+capture endpoint. I'm also curious about the output from "lsusb -v" for
+your device and whether the implicit feedback setup looks like the GT-1.
 
-On 4/8/21 10:01 AM, Jaroslav Kysela wrote:
-> When we have a common standard layer for the plug-and-play handling (udev), we
-> should concentrate to allow changing / refining of this information there.
-> Those strings are not used for anything else than the user space. So from my
-> view, there's no reason to create another mechanism to handle the overrides.
-> It should be a safe, fast, flexible and_optional_  solution. The udev can
-> alter the sysfs attributes directly without any hassle with the file
-> modifications or looking for another way to pass / store this information
-> somewhere.
+I'm not exactly sure what it even means to have the capture endpoint set up
+with implicit feedback as most of the implicit feedback code seems to deal
+only with playback. The bit of code in endpoint.c that I patched out, for
+example, only runs on playback endpoints.
 
-There's one part where I am lost.
+I *think* the existing code may effectively just be completely turning off
+implicit feedback for these devices. This results in audio playback/capture
+that "works", but is susceptible to pops/crackles due to small timing
+mismatches.
 
-The initial idea of udev what to modify kernel parameters to pick a 
-different path for firmware/topology before probing the PCI driver. At 
-that point there is no card and no sysfs attributes just yet, they will 
-be added at a later point during the probe itself.
+Mike
 
-So are we talking about a second set of rules that would be applied when 
-the card is created?
+On Wed, Apr 7, 2021 at 10:36 PM Lucas <jaffa225man@gmail.com> wrote:
+
+> Well, I just got back from testing Mike's suggestion of setting the Roland
+> Boutique D-05 as a playback quirk, disabling its capture quirk, and setting
+> that endpoint test section to always be skipped.  Sure, enough, the D-05's
+> playback is now perfectly crystal clear without the crackles associated
+> with an LP record.
+>
+> This is just a guess until I recompile again, but my capture from the D-05
+> reports a read error, seemingly just as the vanilla mainline kernel does,
+> and I think it's because I disabled its capture quirk line.  So, it seems
+> to me that the D-05 needs both quirk table entries, whether or not the GT-1
+> does.
+>
