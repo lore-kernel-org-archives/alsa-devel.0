@@ -2,73 +2,76 @@ Return-Path: <SRS0=iyFA=JF=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96F91C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 16:56:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5558EC433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 16:57:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDE8561131
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 16:56:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDE8561131
+	by mail.kernel.org (Postfix) with ESMTPS id 7536A610A2
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 16:57:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7536A610A2
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 689F21680;
-	Thu,  8 Apr 2021 18:55:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 689F21680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 195381675;
+	Thu,  8 Apr 2021 18:56:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 195381675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617900997;
-	bh=h4A8xv/MNQfhumA+4ItLD4esOyC+p118rlAyNp6WzlI=;
+	s=default; t=1617901033;
+	bh=4vNBqTIGCb/8qQv/K/ms6AXhnIvVc+DnHaOtoVRBGUI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FU+RlnRXJtmG3dlUhRfaTrunAbbstszFwvVRAaSTLLlTGz2ytf1FogKcIbbR8YYIz
-	 I4Cr5zZUebmlhdMxPWJPHLNGFgD7kJ7OvaJKUnRMvYobReaJUYeHmMSukMwaiw7R9H
-	 P7IEO4hzQWOA4Fml1kvKKnIsUVBHGDQD3rPHNZXk=
+	b=oVFH9LV/2PLjL5lWj4rwSU0M7EVi6fg84CTjEWV3dcrj6m/LGmgMDiBl9vbVvqhFi
+	 QzyeeOet+36amCGOWB32oymB401OZ89oty0fBIcU+Bm/gHqjuyk+nOpIUdzcR0WmWM
+	 ohat200pRgOixlksy7PDmHTUbgZdYqCZj/Yh3r/4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98B4FF800BD;
-	Thu,  8 Apr 2021 18:55:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00D6AF80424;
+	Thu,  8 Apr 2021 18:55:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89608F8032D; Thu,  8 Apr 2021 18:55:34 +0200 (CEST)
+ id 0A56EF8032D; Thu,  8 Apr 2021 18:55:36 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F35D6F80169
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 18:55:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F35D6F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B149F80162
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 18:55:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B149F80162
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s1fB1pQo"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC536113B;
- Thu,  8 Apr 2021 16:55:26 +0000 (UTC)
+ header.b="U/54ZWdo"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C177610A2;
+ Thu,  8 Apr 2021 16:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617900927;
- bh=h4A8xv/MNQfhumA+4ItLD4esOyC+p118rlAyNp6WzlI=;
+ s=k20201202; t=1617900929;
+ bh=4vNBqTIGCb/8qQv/K/ms6AXhnIvVc+DnHaOtoVRBGUI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=s1fB1pQoHz0zdd895J8jOMuJInvOvp2zHsU/GDDu1+4jjEiPLxtOUHDvCttcgfP+X
- 23a4YY+XtU3StPgPr6qQIPLld3Do/Cqh7pA1GtUF3ffUVxKBZ91KHjCsqrNeEL3EqS
- UL3WkvNcd4v9ULvTSxhU4tfJw7pOU8VzLVSw7y7IxSn3Zo9mpEhrzGwWl/v8tYi+00
- PIHtxelrMY+tZVP2LIoUvQuJnvAgPvJsXmABFQV92oBN5Fs+FbSSHwAYZPnl9mNdjC
- zEH7WlZODVq6ThUPG4RuQ9QpbdBBBhn7eXnALoZyGfZHtANpl9nRvFTbzE82WcbuZ0
- Zfj7wtz44zv8g==
+ b=U/54ZWdoKgguJBTHf0+ggKjy31FqpMuf6SJEXosYL+WxXhCGpGYWYFM+HK/giXfxA
+ 4JKv5E+zeWILu91l257WF23h+89KWCvNJX95lGn/GOzlHz/FS8YzqgQtAhR6XjJFTZ
+ HJEPeh5m1+KBrYletcVadaxnWFj6N73/vWjWIarXkJmvJMvpoxgHmazMmlDYx+RZYc
+ dI27+uxdSSznDTpVaSjYFXlM/9msCem4x5ZaUQXZpcrHtmJBwWE5OIBxH2o7Wt0Ehv
+ 0CGN+tf3Xolkln7S0f9qY+rnDX/ZWRfnQdYrnVS6avmWXAc/FTyM9bK1eX5L/SFHrb
+ QVTkuRETBgurw==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 00/14] ASoC: simple-card-utils: prepare for multi support
-Date: Thu,  8 Apr 2021 17:54:37 +0100
-Message-Id: <161790012549.16915.13451581314570528791.b4-ty@kernel.org>
+To: Jiri Prchal <jiri.prchal@aksignal.cz>,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ASoC: codecs: tlv320aic3x: add AIC3106
+Date: Thu,  8 Apr 2021 17:54:38 +0100
+Message-Id: <161790012550.16915.6349508250294418185.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <87wntmod33.wl-kuninori.morimoto.gx@renesas.com>
-References: <87wntmod33.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20210408062450.7835-1-jiri.prchal@aksignal.cz>
+References: <20210408062450.7835-1-jiri.prchal@aksignal.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,16 +87,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01 Apr 2021 13:14:56 +0900, Kuninori Morimoto wrote:
-> I want to add new audio-graph-card2 driver which can support
-> not only DPCM, but also Multi-CPU/Codec, and Codec2Codec.
-> And it is also supporting audio-graph-card2 base custom driver.
-> 
-> But before supporting such driver, we need to cleanup existing
-> simple-card / audio-graph, because these and new driver are
-> sharing code.
-> 
-> [...]
+On Thu, 8 Apr 2021 08:24:50 +0200, Jiri Prchal wrote:
+> In DT binding is mentioned that this driver is compatible with 3106.
+> So added compatibility string and model number.
 
 Applied to
 
@@ -101,34 +97,8 @@ Applied to
 
 Thanks!
 
-[01/14] ASoC: simple-card-utils: enable flexible CPU/Codec/Platform
-        commit: f2138aed231c88d5c4fa8d06aa15ad19685087c2
-[02/14] ASoC: simple-card-utils: share dummy DAI and reduce memory
-        commit: 205eb17eddb473c3159743c7d3aaf68db37b7231
-[03/14] ASoC: simple-card-utils: setup dai_props cpu_dai/codec_dai at initial timing
-        (no commit info)
-[04/14] ASoC: simple-card-utils: remove li->dais/li->conf
-        (no commit info)
-[05/14] ASoC: simple-card-utils: use for_each_prop_xxx()
-        (no commit info)
-[06/14] ASoC: simple-card-utils: remove asoc_simple_parse_xxx()
-        (no commit info)
-[07/14] ASoC: simple-card-utils: care multi DAI at asoc_simple_clean_reference()
-        (no commit info)
-[08/14] ASoC: simple-card-utils: indicate dai_fmt if exist
-        (no commit info)
-[09/14] ASoC: simple-card-utils: indicate missing CPU/Codec numbers for debug
-        (no commit info)
-[10/14] ASoC: simple-card-utils: add simple_props_to_xxx() macro
-        (no commit info)
-[11/14] ASoC: simple-card-utils: multi support at asoc_simple_canonicalize_cpu/platform()
-        (no commit info)
-[12/14] ASoC: simple-card-utils: tidyup debug info for clock
-        (no commit info)
-[13/14] ASoC: simple-card-utils: tidyup dev_dbg() to use 1 line
-        (no commit info)
-[14/14] ASoC: simple-card-utils: tidyup asoc_simple_parse_convert()
-        (no commit info)
+[1/1] ASoC: codecs: tlv320aic3x: add AIC3106
+      commit: a0bc855ffdb55cbb9fbf7fa9611d17f19db889a8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
