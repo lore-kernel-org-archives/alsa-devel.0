@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0ED2C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:30:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FE50C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:31:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D94361181
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:30:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D94361181
+	by mail.kernel.org (Postfix) with ESMTPS id 5D385611C0
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Apr 2021 04:31:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D385611C0
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCB72168C;
-	Thu,  8 Apr 2021 06:30:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCB72168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC3751690;
+	Thu,  8 Apr 2021 06:30:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC3751690
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617856253;
-	bh=+vz9lM87H5rLM8NvDLv2FrGyYfz+y5jMjie40SD6UMA=;
+	s=default; t=1617856278;
+	bh=N3MxgCOimYAfCWGgrRMTnu70QxJURYTw92QPIzAQb9w=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fD45Tpfia/QVzwmTfIUBC/oLJkYClgGbgLoCDMDlXhrIuiIpCspPOqlgHxCXDe+nK
-	 gpw7mQJ73765IeM3vowlGjoTJIrcGnWIGG7Tn7C1yF+oopKDzV2dWZOaasnpXeVK4r
-	 HOe9HnmGozoHpnHUm3BZ2V/kujjMPP0QCbpmC1Hg=
+	b=o95JHp/UyK7P/nZyysnqjjhHCQjmMPKDT+Cm122lXalLT9rteM/KyUiBHM492NS5r
+	 3JZPpYjUOwEjdbAkUE4onduz6l4arSQTqyR3q2e9dRqpIRpsJO/DHrnhmxj32+8k1e
+	 9OyDt5zbSf8rb0WS8cEuYaf6FyRahz/iFo4PTsNM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9DA6F802C9;
-	Thu,  8 Apr 2021 06:29:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6C91F8049C;
+	Thu,  8 Apr 2021 06:29:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04C9BF8032D; Thu,  8 Apr 2021 06:29:16 +0200 (CEST)
+ id 1102CF80423; Thu,  8 Apr 2021 06:29:23 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 76E86F80169
- for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 06:29:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76E86F80169
-Date: 08 Apr 2021 13:29:08 +0900
-X-IronPort-AV: E=Sophos;i="5.82,205,1613401200"; d="scan'208";a="77618305"
+ by alsa1.perex.cz (Postfix) with ESMTP id 400DCF804AA
+ for <alsa-devel@alsa-project.org>; Thu,  8 Apr 2021 06:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 400DCF804AA
+Date: 08 Apr 2021 13:29:15 +0900
+X-IronPort-AV: E=Sophos;i="5.82,205,1613401200"; d="scan'208";a="77618315"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 08 Apr 2021 13:29:08 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 08 Apr 2021 13:29:15 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 4706641B413E;
- Thu,  8 Apr 2021 13:29:08 +0900 (JST)
-Message-ID: <871rbl1jsb.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id C169A41B413E;
+ Thu,  8 Apr 2021 13:29:15 +0900 (JST)
+Message-ID: <87zgy9z9es.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 4/5] ASoC: rsnd: add rsnd_ssi_busif_err_irq_enable/disable()
+Subject: [PATCH 5/5] ASoC: rsnd: add usage for SRC
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <877dld1jud.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,169 +77,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Current ssi.c has duplicated code to control BUSIF
-over/under run interrupt.
-This patch adds new rsnd_ssi_busif_err_irq_enable/disable()
-and share the code.
+This patch add missing usage comment for SRC.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Yongbo Zhang <giraffesnn123@gmail.com>
-Cc: Chen Li <licheng0822@thundersoft.com>
 ---
- sound/soc/sh/rcar/ssi.c | 112 ++++++++++++++++------------------------
- 1 file changed, 45 insertions(+), 67 deletions(-)
+ sound/soc/sh/rcar/src.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 4af024917f03..e29482c26d6a 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -359,6 +359,47 @@ static void rsnd_ssi_master_clk_stop(struct rsnd_mod *mod,
- 	rsnd_adg_ssi_clk_stop(mod);
- }
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 585ffba0244b..628af8f3920d 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -5,6 +5,15 @@
+ // Copyright (C) 2013 Renesas Solutions Corp.
+ // Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
  
-+/* enable busif buffer over/under run interrupt. */
-+#define rsnd_ssi_busif_err_irq_enable(mod)  rsnd_ssi_busif_err_irq_ctrl(mod, 1)
-+#define rsnd_ssi_busif_err_irq_disable(mod) rsnd_ssi_busif_err_irq_ctrl(mod, 0)
-+static void rsnd_ssi_busif_err_irq_ctrl(struct rsnd_mod *mod, int enable)
-+{
-+	u32 sys_int_enable = 0;
-+	int id = rsnd_mod_id(mod);
-+	int i;
++/*
++ * You can use Synchronous Sampling Rate Convert (if no DVC)
++ *
++ *	amixer set "SRC Out Rate" on
++ *	aplay xxx.wav &
++ *	amixer set "SRC Out Rate" 96000 // convert rate to 96000Hz
++ *	amixer set "SRC Out Rate" 22050 // convert rate to 22050Hz
++ */
 +
-+	switch (id) {
-+	case 0:
-+	case 1:
-+	case 2:
-+	case 3:
-+	case 4:
-+		for (i = 0; i < 4; i++) {
-+			sys_int_enable = rsnd_mod_read(mod, SSI_SYS_INT_ENABLE(i * 2));
-+			if (enable)
-+				sys_int_enable |= 0xf << (id * 4);
-+			else
-+				sys_int_enable &= ~(0xf << (id * 4));
-+			rsnd_mod_write(mod,
-+				       SSI_SYS_INT_ENABLE(i * 2),
-+				       sys_int_enable);
-+		}
-+		break;
-+	case 9:
-+		for (i = 0; i < 4; i++) {
-+			sys_int_enable = rsnd_mod_read(mod, SSI_SYS_INT_ENABLE((i * 2) + 1));
-+			if (enable)
-+				sys_int_enable |= 0xf << 4;
-+			else
-+				sys_int_enable &= ~(0xf << 4);
-+			rsnd_mod_write(mod,
-+				       SSI_SYS_INT_ENABLE((i * 2) + 1),
-+				       sys_int_enable);
-+		}
-+		break;
-+	}
-+}
-+
- static bool rsnd_ssi_busif_err_status_clear(struct rsnd_mod *mod)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-@@ -421,9 +462,6 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	u32 wsr		= ssi->wsr;
- 	int width;
- 	int is_tdm, is_tdm_split;
--	int id = rsnd_mod_id(mod);
--	int i;
--	u32 sys_int_enable = 0;
- 
- 	is_tdm		= rsnd_runtime_is_tdm(io);
- 	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
-@@ -499,36 +537,8 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	}
- 
- 	/* enable busif buffer over/under run interrupt. */
--	if (is_tdm || is_tdm_split) {
--		switch (id) {
--		case 0:
--		case 1:
--		case 2:
--		case 3:
--		case 4:
--			for (i = 0; i < 4; i++) {
--				sys_int_enable = rsnd_mod_read(mod,
--					SSI_SYS_INT_ENABLE(i * 2));
--				sys_int_enable |= 0xf << (id * 4);
--				rsnd_mod_write(mod,
--					       SSI_SYS_INT_ENABLE(i * 2),
--					       sys_int_enable);
--			}
--
--			break;
--		case 9:
--			for (i = 0; i < 4; i++) {
--				sys_int_enable = rsnd_mod_read(mod,
--					SSI_SYS_INT_ENABLE((i * 2) + 1));
--				sys_int_enable |= 0xf << 4;
--				rsnd_mod_write(mod,
--					       SSI_SYS_INT_ENABLE((i * 2) + 1),
--					       sys_int_enable);
--			}
--
--			break;
--		}
--	}
-+	if (is_tdm || is_tdm_split)
-+		rsnd_ssi_busif_err_irq_enable(mod);
- 
- init_end:
- 	ssi->cr_own	= cr_own;
-@@ -585,8 +595,6 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	int is_tdm, is_tdm_split;
--	int id = rsnd_mod_id(mod);
--	u32 sys_int_enable = 0;
- 
- 	is_tdm		= rsnd_runtime_is_tdm(io);
- 	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
-@@ -612,38 +620,8 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
- 	}
- 
- 	/* disable busif buffer over/under run interrupt. */
--	if (is_tdm || is_tdm_split) {
--		int i;
--
--		switch (id) {
--		case 0:
--		case 1:
--		case 2:
--		case 3:
--		case 4:
--			for (i = 0; i < 4; i++) {
--				sys_int_enable = rsnd_mod_read(mod,
--						SSI_SYS_INT_ENABLE(i * 2));
--				sys_int_enable &= ~(0xf << (id * 4));
--				rsnd_mod_write(mod,
--					       SSI_SYS_INT_ENABLE(i * 2),
--					       sys_int_enable);
--			}
--
--			break;
--		case 9:
--			for (i = 0; i < 4; i++) {
--				sys_int_enable = rsnd_mod_read(mod,
--					SSI_SYS_INT_ENABLE((i * 2) + 1));
--				sys_int_enable &= ~(0xf << 4);
--				rsnd_mod_write(mod,
--					       SSI_SYS_INT_ENABLE((i * 2) + 1),
--					       sys_int_enable);
--			}
--
--			break;
--		}
--	}
-+	if (is_tdm || is_tdm_split)
-+		rsnd_ssi_busif_err_irq_disable(mod);
- 
- 	return 0;
- }
+ /*
+  * you can enable below define if you don't need
+  * SSI interrupt status debug message when debugging
 -- 
 2.25.1
 
