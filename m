@@ -2,66 +2,77 @@ Return-Path: <SRS0=zNzy=JG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0AD8C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:10:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58CADC433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:23:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9B25360C3D
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:10:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9B25360C3D
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 09E16611CA
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:23:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09E16611CA
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32B041658;
-	Fri,  9 Apr 2021 18:09:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32B041658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 655661616;
+	Fri,  9 Apr 2021 18:22:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 655661616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617984599;
-	bh=8dHB3cvduNdxcSScgVxsWAwEQo/waRNWkJT9Hd1FZXg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1617985424;
+	bh=jPtwCdjas7UcgJa3S63Vm71N+Er87zCsoCvLPFklp+M=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WO+f0ZJKwbd642HsAlHijKI5xzVmuZQyrrTlhy5K/DSiawm6rCJMZitto6XKEVo/m
-	 wokYGqDxG+P9qO0LYEIKIbOH0nIRAY7PAyUt4vmnLuoC36qFC3ZvAgtfzzHRHafpMA
-	 g5/w2xhyLvh+UPpBr7xK1fell2zEI1tjTVgDWBXU=
+	b=uijtxm0vFRVqadw1NqCRRKt87J/75dY5FWbpJ+/Bi/2sGBITdtJHZ5TQDs/eSbV4i
+	 QO4swSgmkBhWDVdrQwlMQPbWlN9vtjQ9djVD1VM+heUYFqYxAl2K6UO9fK69A8mob0
+	 mbixxJnJJX3j26/Vd3xwFi0mxc36olyoa4PD8TVI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B734AF80168;
-	Fri,  9 Apr 2021 18:09:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2FEFF80168;
+	Fri,  9 Apr 2021 18:22:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C854F8016A; Fri,  9 Apr 2021 18:09:06 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9189CF80113; Fri,  9 Apr 2021 18:22:51 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C71D3F80113
- for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 18:09:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C71D3F80113
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id F2B8BB0D1;
- Fri,  9 Apr 2021 16:09:02 +0000 (UTC)
-Date: Fri, 09 Apr 2021 18:09:02 +0200
-Message-ID: <s5hsg3z4ezl.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v3] ALSA: control: Add memory consumption limit to user
- controls
-In-Reply-To: <s5h5z0v67wh.wl-tiwai@suse.de>
-References: <20210408103149.40357-1-o-takashi@sakamocchi.jp>
- <20210408105025.GB40407@workstation> <s5h1rbl80yy.wl-tiwai@suse.de>
- <20210409022735.GA3776@workstation> <s5h5z0v67wh.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: multipart/mixed; boundary="Multipart_Fri_Apr__9_18:09:02_2021-1"
-Cc: alsa-devel@alsa-project.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DD7DF80113
+ for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 18:22:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DD7DF80113
+IronPort-SDR: GB/MPn5VOixWqsPvN/zV2Tdm8Pyu7fURSp3fc6WVfwgNB+dF0pasjP7zrfsFcEXRKc4rv2IzoH
+ UP8Rljq3YagQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173272829"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; d="scan'208";a="173272829"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2021 09:22:32 -0700
+IronPort-SDR: VaQNFTTlcncnSAeVCU4i7GQ4isH2oSsQWCJ8+4m2g35L4aaY6wP5VRPb3AEEXzkj49/rHGB66D
+ F0UWNVjupBwA==
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; d="scan'208";a="380705479"
+Received: from ravikira-mobl1.amr.corp.intel.com (HELO [10.212.11.141])
+ ([10.212.11.141])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2021 09:22:31 -0700
+Subject: Re: [PATCH] ASoC: Intel: bytcr_wm5102: remove useless variable
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, cezary.rojewski@intel.com
+References: <1617948506-84638-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <ec10b000-34da-b4e8-8fa4-abb366557646@linux.intel.com>
+Date: Fri, 9 Apr 2021 10:37:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <1617948506-84638-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ yang.jie@linux.intel.com, tiwai@suse.com, liam.r.girdwood@linux.intel.com,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,129 +88,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---Multipart_Fri_Apr__9_18:09:02_2021-1
-Content-Type: text/plain; charset=US-ASCII
 
-On Fri, 09 Apr 2021 12:59:10 +0200,
-Takashi Iwai wrote:
+
+On 4/9/21 1:08 AM, Jiapeng Chong wrote:
+> Fix the following gcc warning:
 > 
-> On Fri, 09 Apr 2021 04:27:35 +0200,
-> Takashi Sakamoto wrote:
-> > 
-> > 4. Add `max_user_ctl_alloc_size` kobject attribute to the control device
-> > 
-> > In the patch, a new module parameter 'max_user_ctl_alloc_size' is added.
-> > In the item, I use the value of this parameter as initial value per
-> > control device. The value per control device can be changed via sysfs
-> > node.
-> > 
-> > The `max_user_ctl_alloc_size` is really the attribute of control device,
-> > so I think it acceptable. Additionally, 'curr_user_ctl_alloc_size' is
-> > also added so that userspace applications get current status.
+> sound/soc/intel/boards/bytcr_wm5102.c:216:40: warning:
+> ‘byt_wm5102_dai_params’ defined but not used.
 > 
-> So that's the primary purpose?  Then it makes sense, yeah.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-You meant something like below, right?
+Thanks for the patch.
 
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Takashi
-
-
---Multipart_Fri_Apr__9_18:09:02_2021-1
-Content-Type: application/octet-stream; type=patch
-Content-Disposition: attachment; filename="user-ctl-sysfs.diff"
-Content-Transfer-Encoding: 7bit
-
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 1f9aef0adbc9..e7c947c934b0 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -100,6 +100,7 @@ struct snd_card {
- 	struct rw_semaphore controls_rwsem;	/* controls list lock */
- 	rwlock_t ctl_files_rwlock;	/* ctl_files list lock */
- 	int controls_count;		/* count of all controls */
-+	size_t user_ctl_max_size;	/* max memory allocation for user controls */
- 	size_t user_ctl_alloc_size;	// current memory allocation by user controls.
- 	struct list_head controls;	/* all controls for this card */
- 	struct list_head ctl_files;	/* active control files */
-diff --git a/sound/core/control.c b/sound/core/control.c
-index a076c08c21b6..38706261c11b 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -1269,7 +1269,7 @@ struct user_element {
- // check whether the addition (in bytes) of user ctl element may overflow the limit.
- static bool check_user_elem_overflow(struct snd_card *card, ssize_t add)
- {
--	return (ssize_t)card->user_ctl_alloc_size + add > max_user_ctl_alloc_size;
-+	return (ssize_t)card->user_ctl_alloc_size + add > card->user_ctl_max_size;
- }
- 
- static int snd_ctl_elem_user_info(struct snd_kcontrol *kcontrol,
-@@ -2199,6 +2199,55 @@ static int snd_ctl_dev_free(struct snd_device *device)
- 	return 0;
- }
- 
-+/*
-+ * sysfs entries
-+ */
-+static ssize_t
-+user_ctl_max_size_show(struct device *dev, struct device_attribute *attr,
-+		       char *buf)
-+{
-+	struct snd_card *card = container_of(dev, struct snd_card, ctl_dev);
-+
-+	return scnprintf(buf, PAGE_SIZE, "%ld\n", card->user_ctl_max_size);
-+}
-+
-+static ssize_t
-+user_ctl_max_size_store(struct device *dev, struct device_attribute *attr,
-+			const char *buf, size_t count)
-+{
-+	struct snd_card *card = container_of(dev, struct snd_card, ctl_dev);
-+	unsigned long size;
-+	int err;
-+
-+	err = kstrtoul(buf, 0, &size);
-+	if (err)
-+		return err;
-+	if (size >= 32 * 1024 * 1024 || size < card->user_ctl_alloc_size)
-+		return -EINVAL;
-+	card->user_ctl_max_size = size;
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(user_ctl_max_size);
-+
-+static ssize_t
-+user_ctl_alloc_size_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct snd_card *card = container_of(dev, struct snd_card, ctl_dev);
-+
-+	return scnprintf(buf, PAGE_SIZE, "%ld\n", card->user_ctl_alloc_size);
-+}
-+
-+static DEVICE_ATTR_RO(user_ctl_alloc_size);
-+
-+static struct attribute *ctl_dev_attrs[] = {
-+	&dev_attr_user_ctl_max_size.attr,
-+	&dev_attr_user_ctl_alloc_size.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(ctl_dev);
-+
- /*
-  * create control core:
-  * called from init.c
-@@ -2218,7 +2267,9 @@ int snd_ctl_create(struct snd_card *card)
- 		return -ENXIO;
- 
- 	snd_device_initialize(&card->ctl_dev, card);
-+	card->ctl_dev.groups = ctl_dev_groups;
- 	dev_set_name(&card->ctl_dev, "controlC%d", card->number);
-+	card->user_ctl_max_size = max_user_ctl_alloc_size;
- 
- 	err = snd_device_new(card, SNDRV_DEV_CONTROL, card, &ops);
- 	if (err < 0)
-
---Multipart_Fri_Apr__9_18:09:02_2021-1--
+> ---
+>   sound/soc/intel/boards/bytcr_wm5102.c | 8 --------
+>   1 file changed, 8 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+> index f38850e..fd584e3 100644
+> --- a/sound/soc/intel/boards/bytcr_wm5102.c
+> +++ b/sound/soc/intel/boards/bytcr_wm5102.c
+> @@ -213,14 +213,6 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
+>   	return 0;
+>   }
+>   
+> -static const struct snd_soc_pcm_stream byt_wm5102_dai_params = {
+> -	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+> -	.rate_min = 48000,
+> -	.rate_max = 48000,
+> -	.channels_min = 2,
+> -	.channels_max = 2,
+> -};
+> -
+>   static int byt_wm5102_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+>   				  struct snd_pcm_hw_params *params)
+>   {
+> 
