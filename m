@@ -2,68 +2,72 @@ Return-Path: <SRS0=zNzy=JG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93293C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 06:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5D1DC433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 07:40:35 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9C8546113A
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 06:09:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9C8546113A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id 386B961179
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 07:40:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 386B961179
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3CDE15DC;
-	Fri,  9 Apr 2021 08:08:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3CDE15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3BAA41;
+	Fri,  9 Apr 2021 09:39:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3BAA41
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617948575;
-	bh=G99Go0YsV3POnYTKDceG1/q4B1FPWIwAIqcT9hVAJNQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SJL3e9QaE3Bm0A054bhzVYXny1+vCJVnWNXbcv4dIxWbsT6Rs+N4WRSIhY2bqzpJX
-	 TIxfd4o+LuvR8zz+1HHVNJgGEPtftnSMruSlfdrWWrJ2Jh7LHQiE85IawhR421dm37
-	 Ml1NeoSh39uboYk6tkQ/gizXdKy1jcWtaR8swAbI=
+	s=default; t=1617954031;
+	bh=4z+00jRt9OT6XdaLkDcbF4fxQSEQQWv09jk0QzyvIEs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Lcuyee/v2wYaJ42JkUv0DCiAaN3GELEEWK2rK9lrlc5C2hv1sIAbjVH9OqTzbaET7
+	 bszxc7qjh26S8ZmPgCLpDbOGg2owy2vrhFJ8TBQaiVh7daZFSq7nf6Y6H74mBbI/sQ
+	 UIydqAuBuGNlOzipWQS2iQiuVlcm4TtaUD2+TeJE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F8D8F80168;
-	Fri,  9 Apr 2021 08:08:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44FB1F80168;
+	Fri,  9 Apr 2021 09:39:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6EBDCF80113; Fri,  9 Apr 2021 08:08:42 +0200 (CEST)
-Received: from out30-130.freemail.mail.aliyun.com
- (out30-130.freemail.mail.aliyun.com [115.124.30.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 44EBFF8016A; Fri,  9 Apr 2021 09:39:37 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5354F800EE
- for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 08:08:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5354F800EE
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R931e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04426;
- MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=10; SR=0;
- TI=SMTPD_---0UUyCm9A_1617948507; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com
- fp:SMTPD_---0UUyCm9A_1617948507) by smtp.aliyun-inc.com(127.0.0.1);
- Fri, 09 Apr 2021 14:08:33 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: cezary.rojewski@intel.com
-Subject: [PATCH] ASoC: Intel: bytcr_wm5102: remove useless variable
-Date: Fri,  9 Apr 2021 14:08:26 +0800
-Message-Id: <1617948506-84638-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- yang.jie@linux.intel.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
- liam.r.girdwood@linux.intel.com, broonie@kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id C193FF80113
+ for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 09:39:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C193FF80113
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 178C8AFE8;
+ Fri,  9 Apr 2021 07:39:30 +0000 (UTC)
+Date: Fri, 09 Apr 2021 09:39:29 +0200
+Message-ID: <s5hv98v6h5a.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: core - add more card sysfs entries
+In-Reply-To: <b0258a67-79ca-50cd-e6c5-74514ba8a3c5@linux.intel.com>
+References: <20210408094314.1322802-1-perex@perex.cz>
+ <20210408103819.GA40407@workstation> <s5h35w182a5.wl-tiwai@suse.de>
+ <45acc908-3603-3479-9fb2-5206339a9ace@perex.cz>
+ <20210408120502.GA4516@sirena.org.uk>
+ <s5hpmz47w3i.wl-tiwai@suse.de>
+ <56c874ae-e801-63df-19fa-a1325f6104ca@perex.cz>
+ <3107db1d-f97d-539a-05db-6f880b762f00@linux.intel.com>
+ <3b33595e-777c-90b2-6d65-346c9bf6e003@perex.cz>
+ <b0258a67-79ca-50cd-e6c5-74514ba8a3c5@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,36 +83,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix the following gcc warning:
+On Thu, 08 Apr 2021 20:51:41 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> >>> When we have a common standard layer for the plug-and-play handling (udev), we
+> >>> should concentrate to allow changing / refining of this information there.
+> >>> Those strings are not used for anything else than the user space. So from my
+> >>> view, there's no reason to create another mechanism to handle the overrides.
+> >>> It should be a safe, fast, flexible and_optional_  solution. The udev can
+> >>> alter the sysfs attributes directly without any hassle with the file
+> >>> modifications or looking for another way to pass / store this information
+> >>> somewhere.
+> >>
+> >> There's one part where I am lost.
+> >>
+> >> The initial idea of udev what to modify kernel parameters to pick a
+> >> different path for firmware/topology before probing the PCI driver. At
+> >
+> > This may be a problematic point. The kernel cmdline cannot be modified from
+> > udev (as far as I know). The module parameters can be set using modprobe's
+> > config files or when loaded with sysfs attributes (/sys/module/*/parameters).
+> > Eventually, you can call the modprobe command with custom module parameters
+> > when the appropriate MODALIAS is probed.
+> >
+> > Perhaps, I'm missing something here, too. Some example udev rules may help.
+> 
+> see the example shared by Curtis
+> 
+> SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0xa0c8",
+> ATTR{class}=="0x040100", ATTRS{[dmi/id]board_name}=="Eldrid",
+> RUN+="/sbin/modprobe snd_sof_pci tplg_path=intel/sof-tplg/pdm1"
+> 
+> Those 'path' parameters would have to be set prior to creating the
+> card, making them writable via sysfs would not work, the firmware and
+> topology are already loaded and changing the paths would have no
+> effect.
 
-sound/soc/intel/boards/bytcr_wm5102.c:216:40: warning:
-‘byt_wm5102_dai_params’ defined but not used.
+Couldn't the driver probe the firmware files with some device-specific
+string suffix at first?  e.g. the driver can issue request_firmware()
+with $base_file-$dmi_board at first, then falls back to the generic
+$base_file.  A similar method was already used in Broadcom WiFi
+driver.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- sound/soc/intel/boards/bytcr_wm5102.c | 8 --------
- 1 file changed, 8 deletions(-)
+Also, the driver may do request_firmware() with a fixed path for the
+custom firmware at first (e.g. "intel/sof-tplg-custom"); then a system
+integrator may set up a specific configuration even that doesn't match
+with DMI or whatever identifier.
 
-diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
-index f38850e..fd584e3 100644
---- a/sound/soc/intel/boards/bytcr_wm5102.c
-+++ b/sound/soc/intel/boards/bytcr_wm5102.c
-@@ -213,14 +213,6 @@ static int byt_wm5102_init(struct snd_soc_pcm_runtime *runtime)
- 	return 0;
- }
- 
--static const struct snd_soc_pcm_stream byt_wm5102_dai_params = {
--	.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	.rate_min = 48000,
--	.rate_max = 48000,
--	.channels_min = 2,
--	.channels_max = 2,
--};
--
- static int byt_wm5102_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 				  struct snd_pcm_hw_params *params)
- {
--- 
-1.8.3.1
 
+Takashi
