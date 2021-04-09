@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D452DC433B4
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F023C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:04:01 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2BF88610A8
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:03:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2BF88610A8
+	by mail.kernel.org (Postfix) with ESMTPS id 99981610CF
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:04:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 99981610CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 642BC166F;
-	Sat, 10 Apr 2021 00:02:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642BC166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBE501694;
+	Sat, 10 Apr 2021 00:03:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBE501694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618005804;
-	bh=KuTupBgI05Ma4/2bnXrtTVfEnWLOYcuRBOggjYi9BQ8=;
+	s=default; t=1618005839;
+	bh=wFirM4FCTNolF1QVetF9b3zGBiumFy4+eU2wfJX+gRI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=soTnl0HTDLThHNTrS2jw+nrsDbQRzvFT0Fyb1k9zA+PCzcA+8Rjbpu0IbA/UsA5uL
-	 5sYloLGfy6jI95cOrRoh4AVowf73rGHC8OuFBli+c2mjFuYvgRsdt42IEWZskqxCDW
-	 9aYt+ZqQtJpRiDuzPTKEal2D6zyTY3SRomw2X6Q4=
+	b=Us9oF5/EjzO0n7yXsZgD8m0LaVfcIrY4pn9dn83jU8vtKImjy5//0xuk8ypwEwShN
+	 JBs5eIMG4SSCl1Oh3XmDtvCVkESaueYtd/QYCjJOEKYkHxau4w50WODg4axt8RdT6O
+	 uUgnHbwWA2E8IzNoZjwcCmqywQHHkErs1VuRsaQw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95B07F80424;
-	Sat, 10 Apr 2021 00:01:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32480F80260;
+	Sat, 10 Apr 2021 00:01:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33979F8032C; Sat, 10 Apr 2021 00:01:47 +0200 (CEST)
+ id D2B64F80431; Sat, 10 Apr 2021 00:01:50 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 006D6F801F5
- for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 00:01:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 006D6F801F5
-IronPort-SDR: aUI6I1kIL5pe2aQBH3tm+TyUq+AICbQUffInDzQJ5JhbKweHX+9N75hzbDbjPPrHbCkhe18mwo
- RRFcEeolFMkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="214284729"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="214284729"
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE288F80162
+ for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 00:01:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE288F80162
+IronPort-SDR: ogjBV2ATX2ozYEKBJKXae1zMu+o5B7hVeYMo9VFdbUqOYaxvhtzY3ZLCQuJjyIbKzVtOSkyXEX
+ a7491gNjmbig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="214284730"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="214284730"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2021 15:01:36 -0700
-IronPort-SDR: 4ZuvmOdWxUDnQMLi/oaT2ryt7E2PupBp6zaWCSwcJTo/9drTSr4XR0NNZKOkLyRIX2T013qpko
- 8m+eJaUVNI7A==
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="599290614"
+ 09 Apr 2021 15:01:37 -0700
+IronPort-SDR: oTEMVFqbH0lsalEd4AqA7SL0rMXvxLk22Wpfy9/yxnqyXGytxEZMx6IdpkgWXSyHlQycWFcR9B
+ 6cQL8F7MdiZQ==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="599290630"
 Received: from ukorat-mobl2.amr.corp.intel.com (HELO rsridh-mobl1.localdomain)
  ([10.212.104.152])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2021 15:01:34 -0700
+ 09 Apr 2021 15:01:36 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/6] ASoC: soc-acpi: add new fields for mach_params
-Date: Fri,  9 Apr 2021 15:01:17 -0700
-Message-Id: <20210409220121.1542362-3-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: SOF: change signature of set_mach_params() callback
+Date: Fri,  9 Apr 2021 15:01:18 -0700
+Message-Id: <20210409220121.1542362-4-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210409220121.1542362-1-ranjani.sridharan@linux.intel.com>
 References: <20210409220121.1542362-1-ranjani.sridharan@linux.intel.com>
@@ -88,41 +88,166 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-We currently have an ugly way of handling the SOF nocodec mode, with
-blatant violations between layers. To create the nocodec card, let's
-add two new fields and the existing mach_params structure, that way
-there will be no differences with regular cards.
+To set additional parameters, we need to have access to sdev, not the
+plain vanilla struct device pointer.
+
+No functionality change.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/soc-acpi.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/sof/intel/bdw.c |  4 ++--
+ sound/soc/sof/intel/byt.c | 18 +++++++++---------
+ sound/soc/sof/intel/hda.c |  4 ++--
+ sound/soc/sof/intel/hda.h |  2 +-
+ sound/soc/sof/ops.h       |  6 ++----
+ sound/soc/sof/sof-audio.c |  4 ++--
+ sound/soc/sof/sof-priv.h  |  2 +-
+ 7 files changed, 19 insertions(+), 21 deletions(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index c45075024c30..2f3fa385c092 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -63,6 +63,8 @@ static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
-  * @common_hdmi_codec_drv: use commom HDAudio HDMI codec driver
-  * @link_mask: links enabled on the board
-  * @links: array of link _ADR descriptors, null terminated
-+ * @num_dai_drivers: number of elements in @dai_drivers
-+ * @dai_drivers: pointer to dai_drivers, used e.g. in nocodec mode
-  */
- struct snd_soc_acpi_mach_params {
- 	u32 acpi_ipc_irq_index;
-@@ -72,6 +74,8 @@ struct snd_soc_acpi_mach_params {
- 	bool common_hdmi_codec_drv;
- 	u32 link_mask;
- 	const struct snd_soc_acpi_link_adr *links;
-+	u32 num_dai_drivers;
-+	struct snd_soc_dai_driver *dai_drivers;
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index fd5ae628732d..28e049ac9c5e 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -559,12 +559,12 @@ static void bdw_machine_select(struct snd_sof_dev *sdev)
+ }
+ 
+ static void bdw_set_mach_params(const struct snd_soc_acpi_mach *mach,
+-				struct device *dev)
++				struct snd_sof_dev *sdev)
+ {
+ 	struct snd_soc_acpi_mach_params *mach_params;
+ 
+ 	mach_params = (struct snd_soc_acpi_mach_params *)&mach->mach_params;
+-	mach_params->platform = dev_name(dev);
++	mach_params->platform = dev_name(sdev->dev);
+ }
+ 
+ /* Broadwell DAIs */
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 2846fdec9d95..bed26d96dc50 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -427,15 +427,6 @@ static void byt_machine_select(struct snd_sof_dev *sdev)
+ 	sof_pdata->machine = mach;
+ }
+ 
+-static void byt_set_mach_params(const struct snd_soc_acpi_mach *mach,
+-				struct device *dev)
+-{
+-	struct snd_soc_acpi_mach_params *mach_params;
+-
+-	mach_params = (struct snd_soc_acpi_mach_params *)&mach->mach_params;
+-	mach_params->platform = dev_name(dev);
+-}
+-
+ /* Baytrail DAIs */
+ static struct snd_soc_dai_driver byt_dai[] = {
+ {
+@@ -506,6 +497,15 @@ static struct snd_soc_dai_driver byt_dai[] = {
+ },
  };
  
- /**
++static void byt_set_mach_params(const struct snd_soc_acpi_mach *mach,
++				struct snd_sof_dev *sdev)
++{
++	struct snd_soc_acpi_mach_params *mach_params;
++
++	mach_params = (struct snd_soc_acpi_mach_params *)&mach->mach_params;
++	mach_params->platform = dev_name(sdev->dev);
++}
++
+ /*
+  * Probe and remove.
+  */
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 5317dfa4a4bf..065b85285450 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1213,12 +1213,12 @@ static int hda_sdw_machine_select(struct snd_sof_dev *sdev)
+ #endif
+ 
+ void hda_set_mach_params(const struct snd_soc_acpi_mach *mach,
+-			 struct device *dev)
++			 struct snd_sof_dev *sdev)
+ {
+ 	struct snd_soc_acpi_mach_params *mach_params;
+ 
+ 	mach_params = (struct snd_soc_acpi_mach_params *)&mach->mach_params;
+-	mach_params->platform = dev_name(dev);
++	mach_params->platform = dev_name(sdev->dev);
+ }
+ 
+ void hda_machine_select(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index ae80725b0e33..4d44f8910393 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -763,7 +763,7 @@ extern const struct sof_intel_dsp_desc adls_chip_info;
+ /* machine driver select */
+ void hda_machine_select(struct snd_sof_dev *sdev);
+ void hda_set_mach_params(const struct snd_soc_acpi_mach *mach,
+-			 struct device *dev);
++			 struct snd_sof_dev *sdev);
+ 
+ /* PCI driver selection and probe */
+ int hda_pci_intel_probe(struct pci_dev *pci, const struct pci_device_id *pci_id);
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index 5099ad03df72..323a0b3f561b 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -497,12 +497,10 @@ snd_sof_machine_select(struct snd_sof_dev *sdev)
+ 
+ static inline void
+ snd_sof_set_mach_params(const struct snd_soc_acpi_mach *mach,
+-			struct device *dev)
++			struct snd_sof_dev *sdev)
+ {
+-	struct snd_sof_dev *sdev = dev_get_drvdata(dev);
+-
+ 	if (sof_ops(sdev) && sof_ops(sdev)->set_mach_params)
+-		sof_ops(sdev)->set_mach_params(mach, dev);
++		sof_ops(sdev)->set_mach_params(mach, sdev);
+ }
+ 
+ static inline const struct snd_sof_dsp_ops
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 928d7a46d820..5d13bafd4736 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -475,7 +475,7 @@ int sof_machine_check(struct snd_sof_dev *sdev)
+ 	/* find machine */
+ 	snd_sof_machine_select(sdev);
+ 	if (sof_pdata->machine) {
+-		snd_sof_set_mach_params(sof_pdata->machine, sdev->dev);
++		snd_sof_set_mach_params(sof_pdata->machine, sdev);
+ 		return 0;
+ 	}
+ 
+@@ -500,7 +500,7 @@ int sof_machine_check(struct snd_sof_dev *sdev)
+ 		return ret;
+ 
+ 	sof_pdata->machine = mach;
+-	snd_sof_set_mach_params(sof_pdata->machine, sdev->dev);
++	snd_sof_set_mach_params(sof_pdata->machine, sdev);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index ad0d7ba2708c..fd8423172d8f 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -259,7 +259,7 @@ struct snd_sof_dsp_ops {
+ 				   void *pdata); /* optional */
+ 	void (*machine_select)(struct snd_sof_dev *sdev); /* optional */
+ 	void (*set_mach_params)(const struct snd_soc_acpi_mach *mach,
+-				struct device *dev); /* optional */
++				struct snd_sof_dev *sdev); /* optional */
+ 
+ 	/* DAI ops */
+ 	struct snd_soc_dai_driver *drv;
 -- 
 2.25.1
 
