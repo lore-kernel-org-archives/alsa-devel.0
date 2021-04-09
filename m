@@ -2,66 +2,67 @@ Return-Path: <SRS0=zNzy=JG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF6A4C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 14:17:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ADADCC433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 14:18:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 51407610C8
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 14:17:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 51407610C8
+	by mail.kernel.org (Postfix) with ESMTPS id CD14961165
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 14:18:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CD14961165
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFC331616;
-	Fri,  9 Apr 2021 16:16:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFC331616
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2A4E165E;
+	Fri,  9 Apr 2021 16:18:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2A4E165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617977829;
-	bh=Vkg4nebeTUqvLyXZyZrI1lwr1B/CBWQe6YguOASsMzU=;
+	s=default; t=1617977935;
+	bh=Iu+0JMY/s99+mllfokIcg7PDlP7+uHg9nByhlHz8wLQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iJPu8djUMzaVu3RxBqhuh2F/MCD5J/I9+hdqKBmQXb45rngPMZrDTVxne9X/77Xkc
-	 RDK1F/GHIEdoZxRqyuaaHatlxS/r5i0pe+47G5NMerf7U11WIUMCuD7K6fe4Q0ooVM
-	 YV3138SkQox6xvTB7V3yS3LmqNmjFbCYALeCdozg=
+	b=TG1dEH+QoNQAVcNQ/a4GOkC1kYwFXHToQaE2kpOF7XNqZFWqM5Dt7O4xqpXdkjlAc
+	 uVZJh/++2y46D6Be/etMQPHUI0Uj5FU8k2ovFSnoo4mnNglUoQC9txG6cpSNkayq+1
+	 KdsMvwx11Hqs2OqaQrjE8XPHjAge/GUFotKv/ci4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6194FF80168;
-	Fri,  9 Apr 2021 16:16:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80B84F80168;
+	Fri,  9 Apr 2021 16:18:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6192AF8016A; Fri,  9 Apr 2021 16:16:18 +0200 (CEST)
+ id 69A97F8016D; Fri,  9 Apr 2021 16:18:03 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84658F80113
- for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 16:16:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84658F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 839C4F80168
+ for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 16:18:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 839C4F80168
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 00FE2AD2D;
- Fri,  9 Apr 2021 14:16:10 +0000 (UTC)
-Date: Fri, 09 Apr 2021 16:16:09 +0200
-Message-ID: <s5h35vz5ys6.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 39E1AB0BD;
+ Fri,  9 Apr 2021 14:18:00 +0000 (UTC)
+Date: Fri, 09 Apr 2021 16:18:00 +0200
+Message-ID: <s5h1rbj5yp3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 1/2 v2] ALSA: control - double free in snd_ctl_led_init()
-In-Reply-To: <YHBJ4frGxErWB182@mwanda>
-References: <ec7285f6-a257-d7a4-5cae-b36c95ef9efd@perex.cz>
- <YHBJ4frGxErWB182@mwanda>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v3] ALSA: control: Add memory consumption limit to user
+ controls
+In-Reply-To: <1c2da980-1f63-c6fe-a4c0-005a1ed5bc19@perex.cz>
+References: <20210408103149.40357-1-o-takashi@sakamocchi.jp>
+ <20210408105025.GB40407@workstation> <s5h1rbl80yy.wl-tiwai@suse.de>
+ <20210409022735.GA3776@workstation> <s5h5z0v67wh.wl-tiwai@suse.de>
+ <1c2da980-1f63-c6fe-a4c0-005a1ed5bc19@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,20 +78,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 09 Apr 2021 14:34:41 +0200,
-Dan Carpenter wrote:
+On Fri, 09 Apr 2021 15:34:14 +0200,
+Jaroslav Kysela wrote:
 > 
-> "group - 1" was intended here instead of "group".  The current error
-> handling will double free the first item in the array and leak the last
-> item.
+> Dne 09. 04. 21 v 12:59 Takashi Iwai napsal(a):
 > 
-> Fixes: cb17fe0045aa ("ALSA: control - add sysfs support to the LED trigger module")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> v2: The first patch wasn't right.  It fixed the leak but left the double
-> free.
+> >> 5. add any mechanism to bind lifetime of user-defined element set to user
+> >>    process
+> >>
+> >> At present, the lifetime of user-defined element set is bound to card
+> >> itself. However, it's convenient to user processes to bind the lifetime
+> >> to process itself. I add any mechanism for it.
+> >>
+> >> For recent years I've made some patches in house but never arrive at the
+> >> best one. In the patches, I utilize access flags but in general the
+> >> maintenance of lifetime is not easy issue. I tackle again in this time.
+> > 
+> > It sounds interesting, but I don't know how easily you can manage it.
+> > The driver doesn't care much about the user process lifetime, but
+> > mostly concentrate on the file handle...
+> 
+> It should be easy to trace which process created the user element and
+> automatically remove this element when the process close the file descriptor.
+> Something like 'bind lifetime of the control to the active control file
+> descriptor'.
 
-Applied now.  Thanks.
+If it's tied only with the file handle, it's easy.  But I thought this
+is about the process?
 
 
 Takashi
