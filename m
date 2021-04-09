@@ -6,69 +6,71 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2C38C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:26:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15C29C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:27:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 601746054E
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:26:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 601746054E
+	by mail.kernel.org (Postfix) with ESMTPS id D8B126108B
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 16:27:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D8B126108B
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4091169A;
-	Fri,  9 Apr 2021 18:25:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4091169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63D681658;
+	Fri,  9 Apr 2021 18:26:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63D681658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1617985605;
-	bh=jcbldu1ul/VSB6rFr22ct4ta75KZy0CatcE5UZRDVNk=;
+	s=default; t=1617985629;
+	bh=w+nXh2oIb5hqSWOu4tiw3dzfprfvGxaBt69rGr9Q1nY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vh+8BRkD5T/Gmk5tIg9R12guhpWW5v14TihxziVc5kcM2dQw7z25HOZqIz/X/MZi3
-	 X2PLe9MvdpRuPdwiO73klSKuAvFhv2tDCEZylym5dzxELtE3HkTrEqR5eYjx2/Mz8O
-	 kXHpU8bj2yBuHL2sUxsfVDyIHDMjIzAI+7QLL/w8=
+	b=IOoj9utjkg57acVsDgT+H1CbaUWAmbJKFMJ1qMuWaETkeQwjWCKZZelZko7YhZe3C
+	 isRXIKX0jjUjrGIUv3sHWSC14zWO9h9LKHc6UJOIWbqXJe3Un6HgeyOx38jZfkc+UW
+	 vMaNgDhqLFZEHotx+yktmUnCmFdmh5HXFrmXhlJA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EED03F804B4;
-	Fri,  9 Apr 2021 18:24:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B9A9F804D1;
+	Fri,  9 Apr 2021 18:24:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AAC04F80430; Fri,  9 Apr 2021 18:24:03 +0200 (CEST)
+ id B4F3BF80482; Fri,  9 Apr 2021 18:24:06 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C3B1F80260
- for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 18:23:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C3B1F80260
+ by alsa1.perex.cz (Postfix) with ESMTPS id 989A0F80423
+ for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 18:24:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 989A0F80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qwCY2e7j"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF5706103E;
- Fri,  9 Apr 2021 16:23:56 +0000 (UTC)
+ header.b="RR3U+UZj"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8690961105;
+ Fri,  9 Apr 2021 16:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1617985437;
- bh=jcbldu1ul/VSB6rFr22ct4ta75KZy0CatcE5UZRDVNk=;
+ s=k20201202; t=1617985440;
+ bh=w+nXh2oIb5hqSWOu4tiw3dzfprfvGxaBt69rGr9Q1nY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qwCY2e7jrzOrOj0FmSBD7ue82mDVIioekQ+M+OsspYTSXtzB/pzt2S/xwfPSz8LsY
- FUkxc/1vvPOhs6KZUs8QUVzSLdIo0d2K7fjjS/WlrzkmkH5xwKRBVxsMh+c5vZ0LnF
- InVGuJ/emFvUhfLyjv9bugjrEaure40WnQlBb0FTN/fD/4Pb9MfBO/nq8hc0pQwxda
- 2hBOcCDCW8We/yr4VwKaGHc7NwjleFZIsjFfF4DHk9MQpGt7SYDl7nuIlI5D1mcREj
- C8noYCQiiez5SXAzUST2+Gqzi7gyc1e2g4y3XpGBjUxbvAISnaL8BGov9bXtEH7mIQ
- V0PNgACml9lqg==
+ b=RR3U+UZjV5gSNpDog2Gi8Z0yHSEqRLYlja1j410PVpsAiWXU4xlMATHJn+o1s0BZ+
+ wbblBgZYLWzTwHMIWrLzHFlmbIHH6UNLfYvO1pbopPOKNN94NnaJa+YUnJta0m4DUq
+ zaHb6T3deeXoZsuXv/CeauII8jX+Kmq/dATfMJx6spN3GyiM5wfO2zJN11DHQFY6lc
+ XAlvW+jv4XcUNGN1GU2dq3P64BQRyml7mwMiPHfJ1qbsnKLelntih+7pGJm+G2nSHr
+ 5ARrR+86GMO5ja7WlEA6reT96G00P+N2rGdvOx/5FuMwOyIRkb9+cUNGPhY7dhNSDD
+ on/SPGtJIz7Mg==
 From: Mark Brown <broonie@kernel.org>
 To: Jaroslav Kysela <perex@perex.cz>,
+ Colin Ian King <colin.king@canonical.com>,
+ Yang Li <yang.lee@linux.alibaba.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Ye Bin <yebin10@huawei.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH -next] ASoC: codecs: lpass-tx-macro: constify static
+Subject: Re: [PATCH -next] ASoC: codecs: lpass-rx-macro: constify static
  struct snd_soc_dai_ops
-Date: Fri,  9 Apr 2021 17:22:53 +0100
-Message-Id: <161798344184.47643.3287951626356572940.b4-ty@kernel.org>
+Date: Fri,  9 Apr 2021 17:22:54 +0100
+Message-Id: <161798344183.47643.18319707456149836234.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210408062657.803668-1-yebin10@huawei.com>
-References: <20210408062657.803668-1-yebin10@huawei.com>
+In-Reply-To: <20210408062650.803309-1-yebin10@huawei.com>
+References: <20210408062650.803309-1-yebin10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -90,7 +92,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 8 Apr 2021 14:26:57 +0800, Ye Bin wrote:
+On Thu, 8 Apr 2021 14:26:50 +0800, Ye Bin wrote:
 > The snd_soc_dai_ops structures is only stored in the ops field of a
 > snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
 > const to allow the compiler to put it in read-only memory.
@@ -101,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: lpass-tx-macro: constify static struct snd_soc_dai_ops
-      commit: 81df40a0807fed36f0f1f1eaeef2a780773934c2
+[1/1] ASoC: codecs: lpass-rx-macro: constify static struct snd_soc_dai_ops
+      commit: 857b602a3424a7d9ef875f8f137ddcb68de41c6f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
