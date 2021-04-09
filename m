@@ -2,65 +2,65 @@ Return-Path: <SRS0=zNzy=JG=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A60EC433ED
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 21:47:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC12DC433B4
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:02:30 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D421061165
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 21:47:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D421061165
+	by mail.kernel.org (Postfix) with ESMTPS id B62C7610CF
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Apr 2021 22:02:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B62C7610CF
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 715AC165E;
-	Fri,  9 Apr 2021 23:46:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 715AC165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C43D41662;
+	Sat, 10 Apr 2021 00:01:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C43D41662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618004861;
-	bh=RhCrKmOUrCbiW8OPSk9AMAV2tgmgNC1DVJQpPLgZBY8=;
+	s=default; t=1618005747;
+	bh=WQx0ka2Wi1uIADmhZiDHECsmbc0jX5kONjkDxrWjm7M=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=VZY4sblEKab78TziBLjxZjVJITMiJ5NX7UtUxwJN4CUp+aNjCYE839I8BxZA33u/Q
-	 aj+kJcSYlSE/ZIQ++owA4Vv4nn6uBv7jEYxxwHfM7xKoU5eNNrAdc/2X3T7n010dNg
-	 TAC5+xUNJptN7JyX0VtjNXFueGkI4PKRwcZ05BBU=
+	b=JjHszQsBfTPnmrf3tbcXBGM7/xasXAv7uaXhwoF9v1U60gPS0rJaf5P0kBb/vYxF8
+	 XDSk1tx59S+RFE9udBnXasacG5Otw1jmb8YbU37vR5ui9M13Mva6mN5XGtHEjTypdH
+	 56jtGA+0bBs6v2iAAGpNZMXJMog4XtCqjiZ0HE10=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5EF4F80168;
-	Fri,  9 Apr 2021 23:46:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01665F80168;
+	Sat, 10 Apr 2021 00:01:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07C49F8016A; Fri,  9 Apr 2021 23:46:49 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id D85F5F8016A; Sat, 10 Apr 2021 00:01:34 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 871B4F80162
- for <alsa-devel@alsa-project.org>; Fri,  9 Apr 2021 23:46:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 871B4F80162
-IronPort-SDR: bOSN5VXJ8F19UZREtaZO+FbbS1m2FSMHNcedWMAwTqPnxFhM5+0kxdoFaaOI+PmsXs2fZh3AOQ
- ZvYUv+C06APg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="214282866"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="214282866"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2021 14:46:25 -0700
-IronPort-SDR: CBhPTMpUnqqR9m7kMhjsv+++p2eAwUPmGt5eFQfFj6jF4qFn1OQa4pfJjwsENZraHlHqKMVdqB
- LEOEX6eXYY0A==
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="531138879"
-Received: from drlopezi-mobl2.amr.corp.intel.com (HELO
- rsridh-mobl1.localdomain) ([10.255.64.121])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Apr 2021 14:46:25 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9196EF800EE
+ for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 00:01:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9196EF800EE
+IronPort-SDR: 3n9Gl4XDZVTFOFI1w5VFh6JU7dem32x2FIHA14WkrrA9DN0pQhq+djsEX0x/CFbo19qDnaYhAj
+ ARsXb0uxRfHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="255178278"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="255178278"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2021 15:01:28 -0700
+IronPort-SDR: GtcrCU1JxpdNFUuoLHkdH9my3js9dz4+AshS/PFqiHalq+7benscPeVOCMA2+oDDhsiYeNzut8
+ 2QkuYDoyv2Pg==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; d="scan'208";a="599290584"
+Received: from ukorat-mobl2.amr.corp.intel.com (HELO rsridh-mobl1.localdomain)
+ ([10.212.104.152])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Apr 2021 15:01:28 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: HDA: Add access description in __snd_hda_add_vmaster
-Date: Fri,  9 Apr 2021 14:46:16 -0700
-Message-Id: <20210409214616.1539685-1-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 0/6] ASoC: SOF: simplify nocodec mode
+Date: Fri,  9 Apr 2021 15:01:15 -0700
+Message-Id: <20210409220121.1542362-1-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -81,28 +81,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add description for access parameter in __snd_hda_add_vmaster()
-to prevent the compilation warning:
-warning: Function parameter or member 'access' not described in '__snd_hda_add_vmaster'
+This set of patches simplify the implementation
+of nocodec mode in SOF.
 
-Fixes: e65bf99718b5 ("ALSA: HDA - remove the custom implementation for the audio LED trigger")
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/pci/hda/hda_codec.c | 1 +
- 1 file changed, 1 insertion(+)
+Pierre-Louis Bossart (6):
+  ASoC: SOF: add Kconfig option for probe workqueues
+  ASoC: soc-acpi: add new fields for mach_params
+  ASoC: SOF: change signature of set_mach_params() callback
+  ASoC: SOF: Intel: update set_mach_params()
+  ASoC: SOF: pcm: export snd_pcm_dai_link_fixup
+  ASOC: SOF: simplify nocodec mode
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index e54e39b35709..a31009afc025 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1938,6 +1938,7 @@ static int add_follower(struct hda_codec *codec,
-  * @followers: follower control names (optional)
-  * @suffix: suffix string to each follower name (optional)
-  * @init_follower_vol: initialize followers to unmute/0dB
-+ * @access: kcontrol access rights
-  * @ctl_ret: store the vmaster kcontrol in return
-  *
-  * Create a virtual master control with the given name.  The TLV data
+ include/sound/soc-acpi.h  |  4 ++++
+ include/sound/sof.h       |  3 ---
+ sound/soc/sof/Kconfig     | 11 +++++++++++
+ sound/soc/sof/intel/bdw.c |  8 ++++++--
+ sound/soc/sof/intel/byt.c | 22 +++++++++++++---------
+ sound/soc/sof/intel/hda.c |  8 ++++++--
+ sound/soc/sof/intel/hda.h |  2 +-
+ sound/soc/sof/nocodec.c   | 39 +++++++++++++++++++++------------------
+ sound/soc/sof/ops.h       |  6 ++----
+ sound/soc/sof/pcm.c       |  1 +
+ sound/soc/sof/sof-audio.c | 34 +++++++++++++++-------------------
+ sound/soc/sof/sof-priv.h  |  2 +-
+ 12 files changed, 81 insertions(+), 59 deletions(-)
+
 -- 
 2.25.1
 
