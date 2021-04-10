@@ -7,86 +7,86 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91F49C433ED
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 11:15:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58D05C433B4
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 11:16:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0FD7A610CC
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 11:15:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0FD7A610CC
+	by mail.kernel.org (Postfix) with ESMTPS id 74906610CC
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 11:16:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 74906610CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB5E8165E;
-	Sat, 10 Apr 2021 13:15:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB5E8165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 194461679;
+	Sat, 10 Apr 2021 13:15:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 194461679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618053356;
-	bh=8A1YPTSnDuKVDZ+sq1kCg0aKNP8XMXYqT+PB+5SRS2s=;
+	s=default; t=1618053392;
+	bh=p932I4kYOrGf2dFNEWq2zkjWF3ouBS2knhY8Ph1Gev4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K6bVsNBHVhkW78MsIGKKe9s5C8/jS0QJSQkRCWddWhVPgUOS/T1m4G8reTVpzknxM
-	 xplMu7hAYQsk3rX1h6Hc3p+yeyPM2ppeQTwSx+CRyc2VTaD2J9pOs5uzaG+a4zqrq0
-	 6PVn0GGVUbSvshnmIFZjOx4db8wNOLW+S2dGNqFM=
+	b=tvR3NrBYPU837PljXq1bIywIz6CsqNSoCMywQFniMg+e5RiuK3nKqcNzxjfXp0u5S
+	 GuT7+Ikc3T8q4LZ+ZPIauqQo07xvSrqcMfQ3AcyZz9thT1H5Aqoe+FJNZob1uPk9Iu
+	 zJtRIKE60DrEC5j3s9NHZ8oRL82CZF9ee9l6rg0E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F414F802C8;
-	Sat, 10 Apr 2021 13:14:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D97CF80424;
+	Sat, 10 Apr 2021 13:14:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7420FF80169; Sat, 10 Apr 2021 13:14:14 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ id EBE74F8032C; Sat, 10 Apr 2021 13:14:16 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4599BF800EE
- for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 13:14:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4599BF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CD04F800BC
+ for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 13:14:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CD04F800BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="A3xrc6nv"
-Received: by mail-wm1-x32d.google.com with SMTP id
- o20-20020a05600c4fd4b0290114265518afso4255057wmq.4
- for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 04:14:05 -0700 (PDT)
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="cXylEKo+"
+Received: by mail-wm1-x32c.google.com with SMTP id
+ g18-20020a7bc4d20000b0290116042cfdd8so6060270wmk.4
+ for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 04:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20150623.gappssmtp.com; s=20150623;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=TP8T7u/GZFTrtgKPlRTZREBN4itlWMrED3RXVnj2Hvk=;
- b=A3xrc6nvjZqOxDDtK7Wx3wmDtTLWfx71NNoOx2Eq7lEMJwyrIsFIVSq5FFPUIcibcp
- rkSQB+P1yoi1YGs+ip7cvj3aJ3M7f8k2hlVQOPTwGQsjEQLYe7b/nDCE03dmnjDBU7c3
- waSD8DKKGazkEEHzmZo9dX22J9wwfcSztUkq1n/+1OKe6lswa3gTn4325ZxgAwWE4j+4
- K0ovXowaDT5Qb3NCmmbghjL2prSKgJbRzwDGoFMkfD64WqZ/iMIVpvQ8pqe0hx3n0M3f
- 9EaQHGHdiIMARyC3N/GUrt0NuuMpS9W836Bq34pUCMcVQQOvN86EJ8mGAEoVJvLLM9L9
- Xrlw==
+ bh=/A1ey0fLWzt4WfgOVIBJQ6OOA/NjG5WdKypO2QtjLjk=;
+ b=cXylEKo+G+FGoGWw/Pc7EvcipCQMgdCwsCVSuOn0lNMElci4Uwgw6QgfFeBTzpxfv9
+ EtSFvasQCMjEjVFW/9G2U7CsPYrf5PfziFhGF3dNFZMr3uMkU82tc6C1Wwbv7VA0KHc8
+ ojOqmLZSFhtzbh6iDgmLFjhW/LiWXjoubdAIO0mu6YJGyBTKNHA8a0ldQsuPeAQrhqDN
+ ozDkZ2wc/vJzx52g7FMIIU9DsjeYj/hlKPMGLvGLGNjPKrdUbdRQbNWuqfl2G08X56/L
+ l2oehw6RUsJc9un73dH43V3lZTAbXU6OThn4MWGYBzBt2C5qKNd7ydWlTgpGS4bAYyk0
+ KBRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=TP8T7u/GZFTrtgKPlRTZREBN4itlWMrED3RXVnj2Hvk=;
- b=f/RRs5ZGMJ05WzE9lnJD7CE76BcokdaSBxdGXgK7rw4TNimNUlAX4FBYRNdGK15098
- Zc/5p+4zr0HsCBJuAHD4H66T9RqhOHb3ECW+SorZX1xG+LurDmgDLt7eXH2YXR1fhsXC
- 6y4atXbFr6XkXcPj4NzrODArvw7kdT/Iv/BQChCwZiO84LhPrx66N/dXozZu9bpnsCF+
- 0kdCW7BrCZLTngW4o1kMRk2qSSoKXCkw0ds1V6zwtjxlgwz4fw4BN1YwjmMeiE+OKhyn
- sT9mGqYlSE0NdZ/Bfpd82yDo+s0lLRGvUqT0vqxLbUvd1B21AYm6/pKALi9lRxwbHShh
- 08YA==
-X-Gm-Message-State: AOAM530r8teU2OuQAk0jpuTNziEacxBskU9cQkkofGSgAxlL4/c51beL
- fXxwWcomHZhPG0HNsZFqMIRcpzkXdwqsvUSZ
-X-Google-Smtp-Source: ABdhPJw9q7x+1VOwDxzk2hAmfo7HajBJAxPBRPLtfyVt6RgWc3TQJxduuAimU7XHHgvYNPMwoLvJMQ==
-X-Received: by 2002:a1c:2704:: with SMTP id n4mr18029046wmn.143.1618053244789; 
- Sat, 10 Apr 2021 04:14:04 -0700 (PDT)
+ bh=/A1ey0fLWzt4WfgOVIBJQ6OOA/NjG5WdKypO2QtjLjk=;
+ b=uP0MjlK8MdP0VOTHvtOn48bqeKKhwOi9MGXghzJLjGn0JJJSCvAx0jRwbvqGLonomE
+ sL7elHTStBMnmr6Z6R1ptADuomlAksODsUwYbuKfy66AYAwFqIlsWGIv6k/PywEaLAIb
+ ZOfmEVJb0poSAmj/K2H4CtJab4yVL05LdTwt6aM/oA62ibh62GIrSZBcJ3eKR+JLAZ7+
+ /yFrLZ6UbfQfRuA/J5zLFAL4tnK7wlzm3fY6bXjHrMA50yWqKBpw8DEoGyMxTgt7UOnI
+ iodg3MlBfsdVf0DVUtij+c5VUt6up5AkglOkqG2nFZ5wXTFlI+bKOIzvMcdIUHKVujBY
+ 8Iiw==
+X-Gm-Message-State: AOAM530fpz9y4TKLPUNmwh6UnbOo/qjL20tBMZAZSxvbpZ0waCcXgnC0
+ RzH1erxMRtuzxVKDxfW/DkX4UMkKZn5Qlq8T
+X-Google-Smtp-Source: ABdhPJxnYmdRljzrAfTykkmUmv8lKocSDXkd37oY600OclPmJY0gM661zX+6NBdKcwz/FMnSFZ4huA==
+X-Received: by 2002:a1c:6446:: with SMTP id y67mr255983wmb.145.1618053243628; 
+ Sat, 10 Apr 2021 04:14:03 -0700 (PDT)
 Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
- by smtp.googlemail.com with ESMTPSA id s8sm8370117wrn.97.2021.04.10.04.14.04
+ by smtp.googlemail.com with ESMTPSA id s8sm8370117wrn.97.2021.04.10.04.14.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 10 Apr 2021 04:14:04 -0700 (PDT)
+ Sat, 10 Apr 2021 04:14:03 -0700 (PDT)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 4/5] ASoC: lpass: use the clock provider API
-Date: Sat, 10 Apr 2021 13:13:55 +0200
-Message-Id: <20210410111356.467340-5-jbrunet@baylibre.com>
+Subject: [PATCH 2/5] ASoC: wcd934x: use the clock provider API
+Date: Sat, 10 Apr 2021 13:13:53 +0200
+Message-Id: <20210410111356.467340-3-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210410111356.467340-1-jbrunet@baylibre.com>
 References: <20210410111356.467340-1-jbrunet@baylibre.com>
@@ -110,57 +110,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Clock providers should be registered using the clk_hw API.
+Clock providers should use the clk_hw API
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/lpass-va-macro.c  | 2 +-
- sound/soc/codecs/lpass-wsa-macro.c | 9 +++------
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wcd934x.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
-index 5294c57b2cd4..56b887301172 100644
---- a/sound/soc/codecs/lpass-va-macro.c
-+++ b/sound/soc/codecs/lpass-va-macro.c
-@@ -1343,7 +1343,7 @@ static int va_macro_register_fsgen_output(struct va_macro *va)
+diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
+index 5fe403307b72..ae3ea136a9f8 100644
+--- a/sound/soc/codecs/wcd934x.c
++++ b/sound/soc/codecs/wcd934x.c
+@@ -2116,11 +2116,13 @@ static struct clk *wcd934x_register_mclk_output(struct wcd934x_codec *wcd)
+ 	wcd->hw.init = &init;
+ 
+ 	hw = &wcd->hw;
+-	ret = clk_hw_register(wcd->dev->parent, hw);
++	ret = devm_clk_hw_register(wcd->dev->parent, hw);
  	if (ret)
- 		return ret;
+ 		return ERR_PTR(ret);
  
--	return of_clk_add_provider(np, of_clk_src_simple_get, va->hw.clk);
-+	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, &va->hw);
- }
- 
- static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index e79a70386b4b..acb95e83c788 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -2337,10 +2337,9 @@ static const struct clk_ops swclk_gate_ops = {
- 	.recalc_rate = swclk_recalc_rate,
- };
- 
--static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
-+static int wsa_macro_register_mclk_output(struct wsa_macro *wsa)
- {
- 	struct device *dev = wsa->dev;
--	struct device_node *np = dev->of_node;
- 	const char *parent_clk_name;
- 	const char *clk_name = "mclk";
- 	struct clk_hw *hw;
-@@ -2358,11 +2357,9 @@ static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
- 	hw = &wsa->hw;
- 	ret = clk_hw_register(wsa->dev, hw);
- 	if (ret)
--		return ERR_PTR(ret);
--
 -	of_clk_add_provider(np, of_clk_src_simple_get, hw->clk);
-+		return ret;
++	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, hw);
++	if (ret)
++		return ERR_PTR(ret);
  
--	return NULL;
-+	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, hw);
+ 	return NULL;
  }
- 
- static const struct snd_soc_component_driver wsa_macro_component_drv = {
 -- 
 2.30.2
 
