@@ -6,57 +6,58 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F336EC433B4
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 08:48:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6400FC433B4
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 08:57:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0BE4761105
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 08:48:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0BE4761105
+	by mail.kernel.org (Postfix) with ESMTPS id 0B26A61105
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Apr 2021 08:57:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B26A61105
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDDFF10E;
-	Sat, 10 Apr 2021 10:47:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDDFF10E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FEB815E5;
+	Sat, 10 Apr 2021 10:56:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FEB815E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618044500;
-	bh=pDbr+5Y+4XUmRFwJpmi49H+7z3S/cC3Y3d3qkQ2kR2I=;
+	s=default; t=1618045057;
+	bh=cWLc9JczdvjQ9n4mIbklc/jSEmkRwX/TuRn4cV5jldU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wn/2gIxGglL1jl1n0QIkZxgF78V1O7Wwr8zlm2uGRAOWQLBgqVCCX0DgSHpXsm4CP
-	 GYdIU8Bje7BVD/MTAJ/AIs1C4EAHYrFEkj3tcMUpgY5r8mH+V9MxLWfbpScYiU/R7s
-	 WEJg2yHwvIdmbtf33EC8huWEopaNbXy/ChgpjMUU=
+	b=Ce5O5/h6l5l+QNLBU/sJGohje5/2xYxZlbRHjQt4nZdyUkUtlKTwv+JVei0HvDre5
+	 VrTXtFyGlpJ9baOMQvRuEkvti3Es18USz4MOo42kIcJpSXbyNp6q5FMgvyHYGMwnEY
+	 QXEiTDuX+l+/9CWsmk2vR9Z6m+1bBTQKgTiGjAgo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3530EF80113;
-	Sat, 10 Apr 2021 10:47:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E641DF80169;
+	Sat, 10 Apr 2021 10:56:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 52283F8020B; Sat, 10 Apr 2021 10:47:28 +0200 (CEST)
+ id C8863F8020B; Sat, 10 Apr 2021 10:56:38 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0819F80113
- for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 10:47:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0819F80113
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10DAFF800EE
+ for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2021 10:56:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10DAFF800EE
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id A5993AFC1;
- Sat, 10 Apr 2021 08:47:22 +0000 (UTC)
-Date: Sat, 10 Apr 2021 10:47:22 +0200
-Message-ID: <s5hblam4jc5.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 66E6CAF2F;
+ Sat, 10 Apr 2021 08:56:35 +0000 (UTC)
+Date: Sat, 10 Apr 2021 10:56:35 +0200
+Message-ID: <s5ha6q64iws.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH v3] ALSA: control: Add memory consumption limit to user
  controls
-In-Reply-To: <20210410082016.GA10316@workstation>
+In-Reply-To: <20210410082218.GB10316@workstation>
 References: <20210408103149.40357-1-o-takashi@sakamocchi.jp>
  <20210408105025.GB40407@workstation> <s5h1rbl80yy.wl-tiwai@suse.de>
  <20210409022735.GA3776@workstation> <s5h5z0v67wh.wl-tiwai@suse.de>
- <s5hsg3z4ezl.wl-tiwai@suse.de> <20210410082016.GA10316@workstation>
+ <1c2da980-1f63-c6fe-a4c0-005a1ed5bc19@perex.cz>
+ <s5h1rbj5yp3.wl-tiwai@suse.de> <20210410082218.GB10316@workstation>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -78,45 +79,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 10 Apr 2021 10:20:16 +0200,
+On Sat, 10 Apr 2021 10:22:18 +0200,
 Takashi Sakamoto wrote:
 > 
-> On Fri, Apr 09, 2021 at 06:09:02PM +0200, Takashi Iwai wrote:
-> > On Fri, 09 Apr 2021 12:59:10 +0200,
-> > Takashi Iwai wrote:
+> On Fri, Apr 09, 2021 at 04:18:00PM +0200, Takashi Iwai wrote:
+> > On Fri, 09 Apr 2021 15:34:14 +0200,
+> > Jaroslav Kysela wrote:
 > > > 
-> > > On Fri, 09 Apr 2021 04:27:35 +0200,
-> > > Takashi Sakamoto wrote:
-> > > > 
-> > > > 4. Add `max_user_ctl_alloc_size` kobject attribute to the control device
-> > > > 
-> > > > In the patch, a new module parameter 'max_user_ctl_alloc_size' is added.
-> > > > In the item, I use the value of this parameter as initial value per
-> > > > control device. The value per control device can be changed via sysfs
-> > > > node.
-> > > > 
-> > > > The `max_user_ctl_alloc_size` is really the attribute of control device,
-> > > > so I think it acceptable. Additionally, 'curr_user_ctl_alloc_size' is
-> > > > also added so that userspace applications get current status.
+> > > Dne 09. 04. 21 v 12:59 Takashi Iwai napsal(a):
 > > > 
-> > > So that's the primary purpose?  Then it makes sense, yeah.
+> > > >> 5. add any mechanism to bind lifetime of user-defined element set to user
+> > > >>    process
+> > > >>
+> > > >> At present, the lifetime of user-defined element set is bound to card
+> > > >> itself. However, it's convenient to user processes to bind the lifetime
+> > > >> to process itself. I add any mechanism for it.
+> > > >>
+> > > >> For recent years I've made some patches in house but never arrive at the
+> > > >> best one. In the patches, I utilize access flags but in general the
+> > > >> maintenance of lifetime is not easy issue. I tackle again in this time.
+> > > > 
+> > > > It sounds interesting, but I don't know how easily you can manage it.
+> > > > The driver doesn't care much about the user process lifetime, but
+> > > > mostly concentrate on the file handle...
+> > > 
+> > > It should be easy to trace which process created the user element and
+> > > automatically remove this element when the process close the file descriptor.
+> > > Something like 'bind lifetime of the control to the active control file
+> > > descriptor'.
 > > 
-> > You meant something like below, right?
+> > If it's tied only with the file handle, it's easy.  But I thought this
+> > is about the process?
 > 
-> If you were carefully reading my items in the order, you would have
-> realized that the patch includes problem to share attribute group
-> table between several modules...
+> The 'lifetime' relates any operations from userspace relevant to
+> element. In the point, it's not so easy. It's better to see the list of
+> ioctl request to ALSA control character device, guys.
 
-Which several modules...?  The control API is mandatory, hence it
-can't be separated from each card core stuff.  So splitting to another
-module makes no sense, as I already replied earlier.
+I'm lost.  What makes so difficult if the element is tied with the
+file descriptor?  You'd nuke the corresponding element at
+snd_ctl_release(), and it should be enough.
 
-> Device attribute is one of userspace interface expected to be stable. I'd
-> like to avoid careless changes which our known developer tends to do.
-
-Sure, it has to be set on stone once after put in the tree.
-However, currently it's just a brain storming phase, and no need to
-grumble for a dreadful future vision.
+If it's not tied with the file descriptor, it's indeed difficult, but
+it has nothing to do with the number of ioctl implementations.
 
 
 Takashi
