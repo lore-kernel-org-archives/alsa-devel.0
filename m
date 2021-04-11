@@ -2,57 +2,57 @@ Return-Path: <SRS0=VSUR=JI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A37BC433ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B3A4C433ED
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:57:44 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C7D3B61205
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:57:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7D3B61205
+	by mail.kernel.org (Postfix) with ESMTPS id B906360FD7
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:57:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B906360FD7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64701166E;
-	Mon, 12 Apr 2021 01:56:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64701166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52972167A;
+	Mon, 12 Apr 2021 01:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52972167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618185428;
-	bh=k6Hii3gy/Aa4wO93NvmzwJ5wuhbjg67wemoTOODq+M8=;
+	s=default; t=1618185462;
+	bh=F+b4Kbrcg1tBvCjaVkBAVc+8yApQNM1msVy4O8G4/kg=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=omxtZ0N/KdIYx+KFs+vohe8ArYvx0n6l1HyqXARwU2PFBuyYJ5E9J1BwKmGxXGUEW
-	 nGC0oCZmRlgsWCsACXmGA1IoHgj7YnyNV30p+cKGBo7ngnTLcfpVgya0Dk1OIJixO2
-	 vij5sBqJcKHr+vxCL1JpbvHLu3Du+tqUh3/77AQk=
+	b=TtgbkYWZQY4FG9/plhq+5w31z+fTnt07lNrzJ9eXS6LGiMTbEFkQLSC5on1V09ISp
+	 u6FPHINTuqxfpBHmCl2i4BGDsKKz7mNUekbq8dPz/ARr6rzsQDwSIYXHcrweZaijUg
+	 4VgLAhw45C1lC+kFmO1snYJA7TDYUQj0DBmi4/6w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 461CEF80424;
-	Mon, 12 Apr 2021 01:53:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC4C2F804FE;
+	Mon, 12 Apr 2021 01:53:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6808BF804F1; Mon, 12 Apr 2021 01:52:58 +0200 (CEST)
+ id CD35FF804FC; Mon, 12 Apr 2021 01:53:07 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7E081F80424
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E081F80424
-Date: 12 Apr 2021 08:52:55 +0900
-X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713143"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:55 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 8102FF804FC
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:53:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8102FF804FC
+Date: 12 Apr 2021 08:53:00 +0900
+X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713146"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:53:00 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0B3A5400262A;
- Mon, 12 Apr 2021 08:52:55 +0900 (JST)
-Message-ID: <87fszwwf8o.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 110D940E2576;
+ Mon, 12 Apr 2021 08:53:00 +0900 (JST)
+Message-ID: <87eefgwf8j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 11/12] ASoC: simple-card-utils: tidyup dev_dbg() to use 1
- line
+Subject: [PATCH v2 12/12] ASoC: simple-card-utils: tidyup
+ asoc_simple_parse_convert()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,39 +77,84 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-We can use 100 char now for 1 line.
-This patch tidyup unreadable dev_dbg() message.
+dev is not used. This patch removes it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/simple_card_utils.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ include/sound/simple_card_utils.h     |  3 +--
+ sound/soc/generic/audio-graph-card.c  | 10 +++++-----
+ sound/soc/generic/simple-card-utils.c |  3 +--
+ sound/soc/generic/simple-card.c       |  8 ++++----
+ 4 files changed, 11 insertions(+), 13 deletions(-)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index bf068803eb1f..20c22bffe091 100644
+index 20c22bffe091..fac3b832d982 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -241,17 +241,14 @@ static inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
- 		if (link->dai_fmt)
- 			dev_dbg(dev, "dai format = %04x\n", link->dai_fmt);
- 		if (props->adata.convert_rate)
--			dev_dbg(dev, "convert_rate = %d\n",
--				props->adata.convert_rate);
-+			dev_dbg(dev, "convert_rate = %d\n", props->adata.convert_rate);
- 		if (props->adata.convert_channels)
--			dev_dbg(dev, "convert_channels = %d\n",
--				props->adata.convert_channels);
-+			dev_dbg(dev, "convert_channels = %d\n", props->adata.convert_channels);
- 		for_each_prop_codec_conf(props, j, cnf)
- 			if (cnf->name_prefix)
- 				dev_dbg(dev, "name prefix = %s\n", cnf->name_prefix);
- 		if (props->mclk_fs)
--			dev_dbg(dev, "mclk-fs = %d\n",
--				props->mclk_fs);
-+			dev_dbg(dev, "mclk-fs = %d\n", props->mclk_fs);
- 	}
+@@ -160,8 +160,7 @@ int asoc_simple_clean_reference(struct snd_soc_card *card);
+ 
+ void asoc_simple_convert_fixup(struct asoc_simple_data *data,
+ 				      struct snd_pcm_hw_params *params);
+-void asoc_simple_parse_convert(struct device *dev,
+-			       struct device_node *np, char *prefix,
++void asoc_simple_parse_convert(struct device_node *np, char *prefix,
+ 			       struct asoc_simple_data *data);
+ 
+ int asoc_simple_parse_routing(struct snd_soc_card *card,
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index e6b64fdbdc76..0582fe296471 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -180,11 +180,11 @@ static void graph_parse_convert(struct device *dev,
+ 	struct device_node *ports = of_get_parent(port);
+ 	struct device_node *node = of_graph_get_port_parent(ep);
+ 
+-	asoc_simple_parse_convert(dev, top,   NULL,   adata);
+-	asoc_simple_parse_convert(dev, node,  PREFIX, adata);
+-	asoc_simple_parse_convert(dev, ports, NULL,   adata);
+-	asoc_simple_parse_convert(dev, port,  NULL,   adata);
+-	asoc_simple_parse_convert(dev, ep,    NULL,   adata);
++	asoc_simple_parse_convert(top,   NULL,   adata);
++	asoc_simple_parse_convert(node,  PREFIX, adata);
++	asoc_simple_parse_convert(ports, NULL,   adata);
++	asoc_simple_parse_convert(port,  NULL,   adata);
++	asoc_simple_parse_convert(ep,    NULL,   adata);
+ 
+ 	of_node_put(port);
+ 	of_node_put(ports);
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index a15956c25858..e1b7b30a4c8c 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -32,8 +32,7 @@ void asoc_simple_convert_fixup(struct asoc_simple_data *data,
  }
- #else
+ EXPORT_SYMBOL_GPL(asoc_simple_convert_fixup);
+ 
+-void asoc_simple_parse_convert(struct device *dev,
+-			       struct device_node *np,
++void asoc_simple_parse_convert(struct device_node *np,
+ 			       char *prefix,
+ 			       struct asoc_simple_data *data)
+ {
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 06b2d6a7f48d..bf5ddf1ea65f 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -84,10 +84,10 @@ static void simple_parse_convert(struct device *dev,
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *node = of_get_parent(np);
+ 
+-	asoc_simple_parse_convert(dev, top,  PREFIX, adata);
+-	asoc_simple_parse_convert(dev, node, PREFIX, adata);
+-	asoc_simple_parse_convert(dev, node, NULL,   adata);
+-	asoc_simple_parse_convert(dev, np,   NULL,   adata);
++	asoc_simple_parse_convert(top,  PREFIX, adata);
++	asoc_simple_parse_convert(node, PREFIX, adata);
++	asoc_simple_parse_convert(node, NULL,   adata);
++	asoc_simple_parse_convert(np,   NULL,   adata);
+ 
+ 	of_node_put(node);
+ }
 -- 
 2.25.1
 
