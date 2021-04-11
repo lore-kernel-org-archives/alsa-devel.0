@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3DADC433B4
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:54:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC096C433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:54:31 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F1D2D61205
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:54:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1D2D61205
+	by mail.kernel.org (Postfix) with ESMTPS id 4353361205
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:54:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4353361205
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53582166B;
-	Mon, 12 Apr 2021 01:53:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53582166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6D6E82A;
+	Mon, 12 Apr 2021 01:53:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6D6E82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618185256;
-	bh=N/ACaCIPipZq3R95N2mWa/t0hntjvacnEif4jfAVdIc=;
+	s=default; t=1618185269;
+	bh=2iCQniHtAMeTYWLGvEBsfuNxk/LxYJNkacK4EMrvyu0=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=did0pOT1g0eVEZhO1Fh2X1lCYzvm+PCGRlWwzk1GrSs0gGZF13ZSqvLJ2957LssAR
-	 CQ8OxNNzux3c8D6TBKQZlkFDZ7nl/f0BcA/sBFuz1mZXL/FJRrTw2AIEeTpV+AAon4
-	 jIK0rPabiehPJnsgoOZscpZIiq2Jbz6o16ZGtiH4=
+	b=K8PEMc9w4yejDmVCq0QoLdv2iHIKPubWQtW2j+IEFNyk3cseWVx/Saxbt/1dzHb2l
+	 cQdg8Z4YTlfIi4d3aswqe1ntP31iSpEJxc0UCd9c7e1PG3VnEOpQtzxkoOeyqCGU3s
+	 5NPQsvhMZoS8Qs51jnIvLttsbjGeQsNXo8onNA3g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 320EEF80482;
-	Mon, 12 Apr 2021 01:52:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45418F804AB;
+	Mon, 12 Apr 2021 01:52:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 984E5F80430; Mon, 12 Apr 2021 01:52:14 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 9B738F800EE
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B738F800EE
-Date: 12 Apr 2021 08:52:04 +0900
-X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77939396"
+ id C8F74F804AC; Mon, 12 Apr 2021 01:52:17 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 08925F800EE
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08925F800EE
+Date: 12 Apr 2021 08:52:13 +0900
+X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713100"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:04 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:13 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 734C0400262A;
- Mon, 12 Apr 2021 08:52:04 +0900 (JST)
-Message-ID: <87sg3wwfa3.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 880244008C46;
+ Mon, 12 Apr 2021 08:52:13 +0900 (JST)
+Message-ID: <87pmz0wf9u.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 02/12] ASoC: simple-card-utils: remove li->dais/li->conf
+Subject: [PATCH v2 04/12] ASoC: simple-card-utils: remove
+ asoc_simple_parse_xxx()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,193 +75,176 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-li->dais is same as number of CPU + Codec,
-li->conf is same as number of Codec when dummy-Codec.
+ASoC is now supporting multi DAI, but, current
+simple-card / audio-graph are assuming fixed single DAI.
 
-li->dais/li->conf are no longer needed.
-This patch removes these.
+Now, asoc_simple_parse_xxx() macro is assuming single DAI.
+To support multi-CPU/Codec, this patch unpack asoc_simple_parse_xxx()
+macro, and uses "&dai_link->cpus[i]" instead of "dai_link->cpus".
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/simple_card_utils.h     |  2 --
- sound/soc/generic/audio-graph-card.c  | 10 +---------
- sound/soc/generic/simple-card-utils.c | 14 ++++++++++----
- sound/soc/generic/simple-card.c       | 11 +----------
- 4 files changed, 12 insertions(+), 25 deletions(-)
+ include/sound/simple_card_utils.h    | 11 -----------
+ sound/soc/generic/audio-graph-card.c | 16 ++++++++--------
+ sound/soc/generic/simple-card.c      | 18 +++++++++---------
+ 3 files changed, 17 insertions(+), 28 deletions(-)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 6635283a8160..da9d7e3665a8 100644
+index de40f09d226f..23f17ccc7908 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -75,9 +75,7 @@ struct asoc_simple_priv {
- #define simple_priv_to_link(priv, i)	(simple_priv_to_card(priv)->dai_link + (i))
+@@ -120,10 +120,6 @@ int asoc_simple_set_dailink_name(struct device *dev,
+ int asoc_simple_parse_card_name(struct snd_soc_card *card,
+ 				char *prefix);
  
- struct link_info {
--	int dais; /* number of dai  */
- 	int link; /* number of link */
--	int conf; /* number of codec_conf */
- 	int cpu;  /* turn for CPU / Codec */
- 	struct prop_nums num[SNDRV_MINOR_DEVICES];
- };
+-#define asoc_simple_parse_clk_cpu(dev, node, dai_link, simple_dai)		\
+-	asoc_simple_parse_clk(dev, node, simple_dai, dai_link->cpus)
+-#define asoc_simple_parse_clk_codec(dev, node, dai_link, simple_dai)	\
+-	asoc_simple_parse_clk(dev, node, simple_dai, dai_link->codecs)
+ int asoc_simple_parse_clk(struct device *dev,
+ 			  struct device_node *node,
+ 			  struct asoc_simple_dai *simple_dai,
+@@ -136,13 +132,6 @@ int asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd);
+ int asoc_simple_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 				   struct snd_pcm_hw_params *params);
+ 
+-#define asoc_simple_parse_cpu(node, dai_link, is_single_link)	\
+-	asoc_simple_parse_dai(node, dai_link->cpus, is_single_link)
+-#define asoc_simple_parse_codec(node, dai_link)	\
+-	asoc_simple_parse_dai(node, dai_link->codecs, NULL)
+-#define asoc_simple_parse_platform(node, dai_link)	\
+-	asoc_simple_parse_dai(node, dai_link->platforms, NULL)
+-
+ #define asoc_simple_parse_tdm(np, dai)			\
+ 	snd_soc_of_parse_tdm_slot(np,	&(dai)->tx_slot_mask,	\
+ 					&(dai)->rx_slot_mask,	\
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 5ce5b7d62ee0..3a5bef2a91d3 100644
+index 3a5bef2a91d3..145f8a19c9e8 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -552,7 +552,7 @@ int audio_graph_parse_of(struct asoc_simple_priv *priv, struct device *dev)
+@@ -247,11 +247,11 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
  
- 	memset(&li, 0, sizeof(li));
- 	graph_get_dais_count(priv, &li);
--	if (!li.link || !li.dais)
-+	if (!li.link)
- 		return -EINVAL;
+ 		dai = dai_props->cpu_dai;
  
- 	ret = asoc_simple_init_priv(priv, &li);
-@@ -622,7 +622,6 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
- 	li->num[li->link].platforms	= 1;
+-		ret = asoc_simple_parse_cpu(ep, dai_link, &is_single_links);
++		ret = asoc_simple_parse_dai(ep, dai_link->cpus, &is_single_links);
+ 		if (ret)
+ 			goto out_put_node;
  
- 	li->link += 1; /* 1xCPU-Codec */
--	li->dais += 2; /* 1xCPU + 1xCodec */
+-		ret = asoc_simple_parse_clk_cpu(dev, ep, dai_link, dai);
++		ret = asoc_simple_parse_clk(dev, ep, dai, dai_link->cpus);
+ 		if (ret < 0)
+ 			goto out_put_node;
  
- 	dev_dbg(dev, "Count As Normal\n");
+@@ -290,11 +290,11 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai =   dai_props->codec_dai;
+ 		cconf = dai_props->codec_conf;
  
-@@ -646,13 +645,10 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
- 		li->num[li->link].platforms	= 1;
+-		ret = asoc_simple_parse_codec(ep, dai_link);
++		ret = asoc_simple_parse_dai(ep, dai_link->codecs, NULL);
+ 		if (ret < 0)
+ 			goto out_put_node;
  
- 		li->link++; /* 1xCPU-dummy */
--		li->dais++; /* 1xCPU */
- 	} else {
- 		li->num[li->link].codecs	= 1;
+-		ret = asoc_simple_parse_clk_codec(dev, ep, dai_link, dai);
++		ret = asoc_simple_parse_clk(dev, ep, dai, dai_link->codecs);
+ 		if (ret < 0)
+ 			goto out_put_node;
  
- 		li->link++; /* 1xdummy-Codec */
--		li->conf++; /* 1xdummy-Codec */
--		li->dais++; /* 1xCodec */
- 	}
+@@ -371,11 +371,11 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		return ret;
  
- 	dev_dbg(dev, "Count As DPCM\n");
-@@ -663,8 +659,6 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
- static void graph_get_dais_count(struct asoc_simple_priv *priv,
- 				 struct link_info *li)
- {
--	struct device *dev = simple_priv_to_dev(priv);
--
- 	/*
- 	 * link_num :	number of links.
- 	 *		CPU-Codec / CPU-dummy / dummy-Codec
-@@ -714,8 +708,6 @@ static void graph_get_dais_count(struct asoc_simple_priv *priv,
- 	graph_for_each_link(priv, li,
- 			    graph_count_noml,
- 			    graph_count_dpcm);
--	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
--		li->link, li->dais, li->conf);
- }
+-	ret = asoc_simple_parse_cpu(cpu_ep, dai_link, &single_cpu);
++	ret = asoc_simple_parse_dai(cpu_ep, dai_link->cpus, &single_cpu);
+ 	if (ret < 0)
+ 		return ret;
  
- int audio_graph_card_probe(struct snd_soc_card *card)
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index ca74dfa58458..59b4fb2bd586 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -597,7 +597,7 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 	struct asoc_simple_dai *dais;
- 	struct snd_soc_dai_link_component *dlcs;
- 	struct snd_soc_codec_conf *cconf = NULL;
--	int i, dai_num = 0, dlc_num = 0;
-+	int i, dai_num = 0, dlc_num = 0, cnf_num = 0;
+-	ret = asoc_simple_parse_codec(codec_ep, dai_link);
++	ret = asoc_simple_parse_dai(codec_ep, dai_link->codecs, NULL);
+ 	if (ret < 0)
+ 		return ret;
  
- 	dai_props = devm_kcalloc(dev, li->link, sizeof(*dai_props), GFP_KERNEL);
- 	dai_link  = devm_kcalloc(dev, li->link, sizeof(*dai_link),  GFP_KERNEL);
-@@ -613,6 +613,9 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+@@ -387,11 +387,11 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		return ret;
  
- 		dai_num += cc;
- 		dlc_num += cc + li->num[i].platforms;
-+
-+		if (!li->num[i].cpus)
-+			cnf_num += li->num[i].codecs;
- 	}
+-	ret = asoc_simple_parse_clk_cpu(dev, cpu_ep, dai_link, cpu_dai);
++	ret = asoc_simple_parse_clk(dev, cpu_ep, cpu_dai, dai_link->cpus);
+ 	if (ret < 0)
+ 		return ret;
  
- 	dais = devm_kcalloc(dev, dai_num, sizeof(*dais),      GFP_KERNEL);
-@@ -620,12 +623,15 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 	if (!dais || !dlcs)
- 		return -ENOMEM;
+-	ret = asoc_simple_parse_clk_codec(dev, codec_ep, dai_link, codec_dai);
++	ret = asoc_simple_parse_clk(dev, codec_ep, codec_dai, dai_link->codecs);
+ 	if (ret < 0)
+ 		return ret;
  
--	if (li->conf) {
--		cconf = devm_kcalloc(dev, li->conf, sizeof(*cconf), GFP_KERNEL);
-+	if (cnf_num) {
-+		cconf = devm_kcalloc(dev, cnf_num, sizeof(*cconf), GFP_KERNEL);
- 		if (!cconf)
- 			return -ENOMEM;
- 	}
- 
-+	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
-+		li->link, dai_num, cnf_num);
-+
- 	/* dummy CPU/Codec */
- 	priv->dummy.of_node	= NULL;
- 	priv->dummy.dai_name	= "snd-soc-dummy-dai";
-@@ -640,7 +646,7 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 	card->dai_link		= priv->dai_link;
- 	card->num_links		= li->link;
- 	card->codec_conf	= cconf;
--	card->num_configs	= li->conf;
-+	card->num_configs	= cnf_num;
- 
- 	for (i = 0; i < li->link; i++) {
- 		if (li->num[i].cpus) {
 diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 30da8272fbc0..7665bbf2a6c0 100644
+index 7665bbf2a6c0..6a55b8672166 100644
 --- a/sound/soc/generic/simple-card.c
 +++ b/sound/soc/generic/simple-card.c
-@@ -495,7 +495,6 @@ static int simple_count_noml(struct asoc_simple_priv *priv,
- 	li->num[li->link].platforms	= 1;
+@@ -148,11 +148,11 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
  
- 	li->link += 1;
--	li->dais += 2;
+ 		dai = dai_props->cpu_dai;
  
- 	return 0;
- }
-@@ -517,13 +516,10 @@ static int simple_count_dpcm(struct asoc_simple_priv *priv,
- 		li->num[li->link].platforms	= 1;
+-		ret = asoc_simple_parse_cpu(np, dai_link, &is_single_links);
++		ret = asoc_simple_parse_dai(np, dai_link->cpus, &is_single_links);
+ 		if (ret)
+ 			goto out_put_node;
  
- 		li->link++; /* CPU-dummy */
--		li->dais++;
- 	} else {
- 		li->num[li->link].codecs	= 1;
+-		ret = asoc_simple_parse_clk_cpu(dev, np, dai_link, dai);
++		ret = asoc_simple_parse_clk(dev, np, dai, dai_link->cpus);
+ 		if (ret < 0)
+ 			goto out_put_node;
  
- 		li->link++; /* dummy-Codec */
--		li->dais++;
--		li->conf++;
- 	}
+@@ -176,11 +176,11 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai   = dai_props->codec_dai;
+ 		cconf = dai_props->codec_conf;
  
- 	return 0;
-@@ -587,17 +583,12 @@ static void simple_get_dais_count(struct asoc_simple_priv *priv,
- 		li->num[0].platforms	= 1;
+-		ret = asoc_simple_parse_codec(np, dai_link);
++		ret = asoc_simple_parse_dai(np, dai_link->codecs, NULL);
+ 		if (ret < 0)
+ 			goto out_put_node;
  
- 		li->link = 1;
--		li->dais = 2;
--		li->conf = 0;
- 		return;
- 	}
+-		ret = asoc_simple_parse_clk_codec(dev, np, dai_link, dai);
++		ret = asoc_simple_parse_clk(dev, np, dai, dai_link->codecs);
+ 		if (ret < 0)
+ 			goto out_put_node;
  
- 	simple_for_each_link(priv, li,
- 			     simple_count_noml,
- 			     simple_count_dpcm);
--
--	dev_dbg(dev, "link %d, dais %d, ccnf %d\n",
--		li->link, li->dais, li->conf);
- }
+@@ -260,15 +260,15 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
  
- static int simple_soc_probe(struct snd_soc_card *card)
-@@ -637,7 +628,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 	simple_parse_mclk_fs(top, cpu, codec, dai_props, prefix);
  
- 	memset(&li, 0, sizeof(li));
- 	simple_get_dais_count(priv, &li);
--	if (!li.link || !li.dais)
-+	if (!li.link)
- 		return -EINVAL;
+-	ret = asoc_simple_parse_cpu(cpu, dai_link, &single_cpu);
++	ret = asoc_simple_parse_dai(cpu, dai_link->cpus, &single_cpu);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
- 	ret = asoc_simple_init_priv(priv, &li);
+-	ret = asoc_simple_parse_codec(codec, dai_link);
++	ret = asoc_simple_parse_dai(codec, dai_link->codecs, NULL);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_parse_platform(plat, dai_link);
++	ret = asoc_simple_parse_dai(plat, dai_link->platforms, NULL);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+@@ -280,11 +280,11 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_parse_clk_cpu(dev, cpu, dai_link, cpu_dai);
++	ret = asoc_simple_parse_clk(dev, cpu, cpu_dai, dai_link->cpus);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_parse_clk_codec(dev, codec, dai_link, codec_dai);
++	ret = asoc_simple_parse_clk(dev, codec, codec_dai, dai_link->codecs);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
 -- 
 2.25.1
 
