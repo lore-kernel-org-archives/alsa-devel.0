@@ -2,57 +2,57 @@ Return-Path: <SRS0=VSUR=JI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC770C433B4
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:55:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A747C433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:56:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C72B461205
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:55:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C72B461205
+	by mail.kernel.org (Postfix) with ESMTPS id 8009860FD7
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:56:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8009860FD7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53839166B;
-	Mon, 12 Apr 2021 01:55:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53839166B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AF73167A;
+	Mon, 12 Apr 2021 01:55:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AF73167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618185350;
-	bh=s7I2gdMoj4Ed/2Fe8UvciY2im/X6Zxyul/md3Y8r/OA=;
+	s=default; t=1618185365;
+	bh=j9l8VV+lzJVUJQAxCepIAHttpttTu0fKQtMNqHplA1I=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K4Wz9pz1Rp5TmBgFE5+xCYOM9YmyQhUCSgVKQHGOPtwuIJQrzy88XMyI7VETrEuHC
-	 oVh3NcVv9fCqW9UoEJOydhgtEd3inS6NZdMi2K4RJsQl0Npn/Sh5lMBQHiXPuljBcb
-	 GLpAzFiTfvucwaZI/G+NgZlsJxX00mx932yUOMRo=
+	b=djSpqg86W2j1TYmOJA2keV9172wDYkPHZV/YiJM3nJC6l1AVCxpfLpgRNZgrONirc
+	 +0QBeuiXkla5A+rhbZhqkib6XwCGF5qzL08PIV2KCqKAeopRL87ZZVs6vgOjlqxfEB
+	 3lJ6n707DejqEfNdzSuT74pygV5kT0c0rAXWV0vY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECB71F804E1;
-	Mon, 12 Apr 2021 01:52:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ACA1F804E5;
+	Mon, 12 Apr 2021 01:52:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65A68F804E2; Mon, 12 Apr 2021 01:52:31 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 5D251F804DF
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D251F804DF
-Date: 12 Apr 2021 08:52:27 +0900
-X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713116"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:27 +0900
+ id 65B15F804E6; Mon, 12 Apr 2021 01:52:40 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 52C85F804E4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52C85F804E4
+Date: 12 Apr 2021 08:52:32 +0900
+X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77939458"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:32 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 2552A4008C47;
- Mon, 12 Apr 2021 08:52:27 +0900 (JST)
-Message-ID: <87lf9owf9g.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1922740E2576;
+ Mon, 12 Apr 2021 08:52:32 +0900 (JST)
+Message-ID: <87k0p8wf9b.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 07/12] ASoC: simple-card-utils: indicate missing CPU/Codec
- numbers for debug
+Subject: [PATCH v2 08/12] ASoC: simple-card-utils: add simple_props_to_xxx()
+ macro
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,30 +77,72 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Now ALSA is supporting multi-CPU/Codec,
-thus, we want to know number of CPU/Codec when debugging.
-This patch indicates it.
+We shouldn't use dai_props->cpus/codecs/cpu_dai/codec_dai/codec_conf
+directly, because these are array to supporting multi CPU/Codec/Platform.
+This patch adds asoc_link_to_xxx() macro for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/simple_card_utils.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/simple_card_utils.h | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 080fe7eb560f..e366e432c475 100644
+index e366e432c475..78b6cf0194d2 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -215,8 +215,10 @@ static inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
+@@ -74,32 +74,45 @@ struct asoc_simple_priv {
+ #define simple_priv_to_dev(priv)	(simple_priv_to_card(priv)->dev)
+ #define simple_priv_to_link(priv, i)	(simple_priv_to_card(priv)->dai_link + (i))
  
- 		dev_dbg(dev, "DAI%d\n", i);
++#define simple_props_to_dlc_cpu(props, i)	((props)->cpus + i)
++#define simple_props_to_dlc_codec(props, i)	((props)->codecs + i)
++#define simple_props_to_dlc_platform(props, i)	((props)->platforms + i)
++
++#define simple_props_to_dai_cpu(props, i)	((props)->cpu_dai + i)
++#define simple_props_to_dai_codec(props, i)	((props)->codec_dai + i)
++#define simple_props_to_codec_conf(props, i)	((props)->codec_conf + i)
++
+ #define for_each_prop_dlc_cpus(props, i, cpu)				\
+ 	for ((i) = 0;							\
+-	     ((i) < (props)->num.cpus) && ((cpu) = &(props)->cpus[i]);	\
++	     ((i) < (props)->num.cpus) &&				\
++		     ((cpu) = simple_props_to_dlc_cpu(props, i));	\
+ 	     (i)++)
+-#define for_each_prop_dlc_codecs(props, i, codec)				\
++#define for_each_prop_dlc_codecs(props, i, codec)			\
+ 	for ((i) = 0;							\
+-	     ((i) < (props)->num.codecs) && ((codec) = &(props)->codecs[i]); \
++	     ((i) < (props)->num.codecs) &&				\
++		     ((codec) = simple_props_to_dlc_codec(props, i));	\
+ 	     (i)++)
+ #define for_each_prop_dlc_platforms(props, i, platform)			\
+ 	for ((i) = 0;							\
+-	     ((i) < (props)->num.platforms) && ((platform) = &(props)->platforms[i]); \
++	     ((i) < (props)->num.platforms) &&				\
++		     ((platform) = simple_props_to_dlc_platform(props, i)); \
+ 	     (i)++)
+ #define for_each_prop_codec_conf(props, i, conf)			\
+ 	for ((i) = 0;							\
+ 	     ((i) < (props)->num.codecs) &&				\
+ 		     (props)->codec_conf &&				\
+-		     ((conf) = &(props)->codec_conf[i]);		\
++		     ((conf) = simple_props_to_codec_conf(props, i));	\
+ 	     (i)++)
  
-+		dev_dbg(dev, "cpu num = %d\n", link->num_cpus);
- 		for_each_prop_dai_cpu(props, j, dai)
- 			asoc_simple_debug_dai(priv, "cpu", dai);
-+		dev_dbg(dev, "codec num = %d\n", link->num_codecs);
- 		for_each_prop_dai_codec(props, j, dai)
- 			asoc_simple_debug_dai(priv, "codec", dai);
+ #define for_each_prop_dai_cpu(props, i, cpu)				\
+ 	for ((i) = 0;							\
+-	     ((i) < (props)->num.cpus) && ((cpu) = &(props)->cpu_dai[i]); \
++	     ((i) < (props)->num.cpus) &&				\
++		     ((cpu) = simple_props_to_dai_cpu(props, i));	\
+ 	     (i)++)
+ #define for_each_prop_dai_codec(props, i, codec)			\
+ 	for ((i) = 0;							\
+-	     ((i) < (props)->num.codecs) && ((codec) = &(props)->codec_dai[i]); \
++	     ((i) < (props)->num.codecs) &&				\
++		     ((codec) = simple_props_to_dai_codec(props, i));	\
+ 	     (i)++)
  
+ struct link_info {
 -- 
 2.25.1
 
