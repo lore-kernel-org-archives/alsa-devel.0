@@ -2,56 +2,61 @@ Return-Path: <SRS0=VSUR=JI=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BA1FC433ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DAE7C433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:53:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D982E61206
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:52:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D982E61206
+	by mail.kernel.org (Postfix) with ESMTPS id 23E0760FD7
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:53:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 23E0760FD7
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78087823;
-	Mon, 12 Apr 2021 01:51:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78087823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AB7411C;
+	Mon, 12 Apr 2021 01:52:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AB7411C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618185164;
-	bh=9OJJu4rhenxRtwFcrZ3Ud9YVAu/VHHlEJw5o9a35gUc=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qVOjx1zLMflIodWHPQMMwVZc4HS9YiaTCd/e0Stqm32gU0MCCSGDUocxQ9hcnnEf5
-	 lkgjPNKO12zn0pTWwu1Fb0nKYRCtk/lHAV6mfeoAAFDcdfCnd0sH6Yd3g3HLtNVNb7
-	 Poqbd9vr2Q+mBQ3LV5kl3eMH9AYsxua8i8ExqsPs=
+	s=default; t=1618185217;
+	bh=1GyFL8cXyLzeGl7+yHCQAdQwcT1VBlbgmy11D4MUlTY=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=k9qppdFXOksVIJUtz6ZzKVVbHQADD0MSscfQJCW50S2VtlrDl+tlkFyVhF0q1CYl5
+	 MYPOXmD2O60MXSeon7KZ9u7rVyxLE5CUPhWUEvdgvekFKDdP+PmdzIlO9mFp+Y6/6v
+	 kC0zrRe0F78obVsylGYHrRFnOWn8jbLsprkYLWAI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CDB61F8021D;
-	Mon, 12 Apr 2021 01:51:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0E13F80423;
+	Mon, 12 Apr 2021 01:52:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCCB7F8022B; Mon, 12 Apr 2021 01:51:52 +0200 (CEST)
+ id 890CAF80423; Mon, 12 Apr 2021 01:52:08 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B03B3F800EE
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:51:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B03B3F800EE
-Date: 12 Apr 2021 08:51:40 +0900
-X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713025"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:51:40 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 8506BF80260
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8506BF80260
+Date: 12 Apr 2021 08:51:59 +0900
+X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713049"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:51:59 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id CE13140DC550;
- Mon, 12 Apr 2021 08:51:40 +0900 (JST)
-Message-ID: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id B715F400262A;
+ Mon, 12 Apr 2021 08:51:59 +0900 (JST)
+Message-ID: <87tuocwfa8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 00/12] ASoC: simple-card-utils: prepare for multi support
+Subject: [PATCH v2 01/12] ASoC: simple-card-utils: setup dai_props
+ cpu_dai/codec_dai at initial timing
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,48 +75,174 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+We couldn't setup dai_props cpu_dai/codec_dai at the initial timing,
+because "counting DAIs loop" and "detecting DAIs loop" were different.
+But we can do it now, because these are using same loops.
 
-This patch-set is for v2 of Multi-CPU/Codec support,
-and some cleanups.
-v1 had patch-conflict on simple-card / audio-graph with below.
-v2 was solved it.
+This patch setups dai_props cpu_dai/codec_dai at the initial timing.
+It can removes triky code from simple-card / audio-graph.
 
-	fa74c223b6fd78a5314b4c61b9abdbed3c2185b4
-	("ASoC: simple-card: fix possible uninitialized single_cpu local variable")
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ sound/soc/generic/audio-graph-card.c  | 19 +++++--------------
+ sound/soc/generic/simple-card-utils.c | 10 ++++++++++
+ sound/soc/generic/simple-card.c       | 24 +++++-------------------
+ 3 files changed, 20 insertions(+), 33 deletions(-)
 
-I want to add new audio-graph-card2 driver which can support
-not only DPCM, but also Multi-CPU/Codec, and Codec2Codec.
-And it is also supporting audio-graph-card2 base custom driver.
-
-But before supporting such driver, we need to cleanup existing
-simple-card / audio-graph, because these and new driver are
-sharing code.
-
-Link: https://lore.kernel.org/r/87wntmod33.wl-kuninori.morimoto.gx@renesas.com
-Link: https://lore.kernel.org/r/20210408141639.GA39604@sirena.org.uk
-
-Kuninori Morimoto (12):
-  ASoC: simple-card-utils: setup dai_props cpu_dai/codec_dai at initial timing
-  ASoC: simple-card-utils: remove li->dais/li->conf
-  ASoC: simple-card-utils: use for_each_prop_xxx()
-  ASoC: simple-card-utils: remove asoc_simple_parse_xxx()
-  ASoC: simple-card-utils: care multi DAI at asoc_simple_clean_reference()
-  ASoC: simple-card-utils: indicate dai_fmt if exist
-  ASoC: simple-card-utils: indicate missing CPU/Codec numbers for debug
-  ASoC: simple-card-utils: add simple_props_to_xxx() macro
-  ASoC: simple-card-utils: multi support at asoc_simple_canonicalize_cpu/platform()
-  ASoC: simple-card-utils: tidyup debug info for clock
-  ASoC: simple-card-utils: tidyup dev_dbg() to use 1 line
-  ASoC: simple-card-utils: tidyup asoc_simple_parse_convert()
-
- include/sound/simple_card_utils.h     | 107 ++++++++++------
- sound/soc/generic/audio-graph-card.c  |  64 ++++------
- sound/soc/generic/simple-card-utils.c | 174 ++++++++++++++++----------
- sound/soc/generic/simple-card.c       |  70 ++++-------
- 4 files changed, 226 insertions(+), 189 deletions(-)
-
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 7be2c2cb253e..5ce5b7d62ee0 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -245,8 +245,7 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai_link->dynamic		= 1;
+ 		dai_link->dpcm_merged_format	= 1;
+ 
+-		dai =
+-		dai_props->cpu_dai	= &priv->dais[li->dais++];
++		dai = dai_props->cpu_dai;
+ 
+ 		ret = asoc_simple_parse_cpu(ep, dai_link, &is_single_links);
+ 		if (ret)
+@@ -288,11 +287,8 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai_link->no_pcm		= 1;
+ 		dai_link->be_hw_params_fixup	= asoc_simple_be_hw_params_fixup;
+ 
+-		dai =
+-		dai_props->codec_dai	= &priv->dais[li->dais++];
+-
+-		cconf =
+-		dai_props->codec_conf	= &priv->codec_conf[li->conf++];
++		dai =   dai_props->codec_dai;
++		cconf = dai_props->codec_conf;
+ 
+ 		ret = asoc_simple_parse_codec(ep, dai_link);
+ 		if (ret < 0)
+@@ -358,19 +354,14 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+ 	struct device_node *top = dev->of_node;
+-	struct asoc_simple_dai *cpu_dai;
+-	struct asoc_simple_dai *codec_dai;
++	struct asoc_simple_dai *cpu_dai = dai_props->cpu_dai;
++	struct asoc_simple_dai *codec_dai = dai_props->codec_dai;
+ 	int ret, single_cpu = 0;
+ 
+ 	dev_dbg(dev, "link_of (%pOF)\n", cpu_ep);
+ 
+ 	li->link++;
+ 
+-	cpu_dai			=
+-	dai_props->cpu_dai	= &priv->dais[li->dais++];
+-	codec_dai		=
+-	dai_props->codec_dai	= &priv->dais[li->dais++];
+-
+ 	/* Factor to mclk, used in hw_params() */
+ 	graph_parse_mclk_fs(top, cpu_ep,   dai_props);
+ 	graph_parse_mclk_fs(top, codec_ep, dai_props);
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 64b1ff5bafda..ca74dfa58458 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -649,8 +649,10 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 			dai_link[i].cpus	= dlcs;
+ 			dai_props[i].num.cpus	=
+ 			dai_link[i].num_cpus	= li->num[i].cpus;
++			dai_props[i].cpu_dai	= dais;
+ 
+ 			dlcs += li->num[i].cpus;
++			dais += li->num[i].cpus;
+ 		} else {
+ 			/* DPCM Be's CPU = dummy */
+ 			dai_props[i].cpus	=
+@@ -665,8 +667,16 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 			dai_link[i].codecs	= dlcs;
+ 			dai_props[i].num.codecs	=
+ 			dai_link[i].num_codecs	= li->num[i].codecs;
++			dai_props[i].codec_dai	= dais;
+ 
+ 			dlcs += li->num[i].codecs;
++			dais += li->num[i].codecs;
++
++			if (!li->num[i].cpus) {
++				/* DPCM Be's Codec */
++				dai_props[i].codec_conf = cconf;
++				cconf += li->num[i].codecs;
++			}
+ 		} else {
+ 			/* DPCM Fe's Codec = dummy */
+ 			dai_props[i].codecs	=
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 9132c0ea05af..30da8272fbc0 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -146,8 +146,7 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai_link->dynamic		= 1;
+ 		dai_link->dpcm_merged_format	= 1;
+ 
+-		dai =
+-		dai_props->cpu_dai	= &priv->dais[li->dais++];
++		dai = dai_props->cpu_dai;
+ 
+ 		ret = asoc_simple_parse_cpu(np, dai_link, &is_single_links);
+ 		if (ret)
+@@ -174,11 +173,8 @@ static int simple_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 		dai_link->no_pcm		= 1;
+ 		dai_link->be_hw_params_fixup	= asoc_simple_be_hw_params_fixup;
+ 
+-		dai =
+-		dai_props->codec_dai	= &priv->dais[li->dais++];
+-
+-		cconf =
+-		dai_props->codec_conf	= &priv->codec_conf[li->conf++];
++		dai   = dai_props->codec_dai;
++		cconf = dai_props->codec_conf;
+ 
+ 		ret = asoc_simple_parse_codec(np, dai_link);
+ 		if (ret < 0)
+@@ -234,8 +230,8 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, li->link);
+ 	struct simple_dai_props *dai_props = simple_priv_to_props(priv, li->link);
+-	struct asoc_simple_dai *cpu_dai;
+-	struct asoc_simple_dai *codec_dai;
++	struct asoc_simple_dai *cpu_dai	= dai_props->cpu_dai;
++	struct asoc_simple_dai *codec_dai = dai_props->codec_dai;
+ 	struct device_node *top = dev->of_node;
+ 	struct device_node *cpu = NULL;
+ 	struct device_node *node = NULL;
+@@ -257,11 +253,6 @@ static int simple_dai_link_of(struct asoc_simple_priv *priv,
+ 	snprintf(prop, sizeof(prop), "%splat", prefix);
+ 	plat = of_get_child_by_name(node, prop);
+ 
+-	cpu_dai			=
+-	dai_props->cpu_dai	= &priv->dais[li->dais++];
+-	codec_dai		=
+-	dai_props->codec_dai	= &priv->dais[li->dais++];
+-
+ 	ret = asoc_simple_parse_daifmt(dev, node, codec,
+ 				       prefix, &dai_link->dai_fmt);
+ 	if (ret < 0)
+@@ -670,8 +661,6 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 		struct snd_soc_dai_link *dai_link = priv->dai_link;
+ 		struct simple_dai_props *dai_props = priv->dai_props;
+ 
+-		int dai_idx = 0;
+-
+ 		cinfo = dev->platform_data;
+ 		if (!cinfo) {
+ 			dev_err(dev, "no info for asoc-simple-card\n");
+@@ -687,9 +676,6 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 			return -EINVAL;
+ 		}
+ 
+-		dai_props->cpu_dai	= &priv->dais[dai_idx++];
+-		dai_props->codec_dai	= &priv->dais[dai_idx++];
+-
+ 		cpus			= dai_link->cpus;
+ 		cpus->dai_name		= cinfo->cpu_dai.name;
+ 
 -- 
 2.25.1
 
