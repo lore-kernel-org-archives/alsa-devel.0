@@ -7,51 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58BAAC433ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A37BC433ED
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:57:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C23DB60FD7
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:56:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C23DB60FD7
+	by mail.kernel.org (Postfix) with ESMTPS id C7D3B61205
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Apr 2021 23:57:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C7D3B61205
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6308E1675;
-	Mon, 12 Apr 2021 01:55:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6308E1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64701166E;
+	Mon, 12 Apr 2021 01:56:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64701166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618185408;
-	bh=jHzPRXGm9Y9yi/LLYH8AYuKhlvkOI5YSBIsRLD/Yjjs=;
+	s=default; t=1618185428;
+	bh=k6Hii3gy/Aa4wO93NvmzwJ5wuhbjg67wemoTOODq+M8=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tSXj6tOOdZTgTFyKlu3fVWUHlAiEeA49jEsOB3niNVi4HG3bBrtJu3zsffPz0kUY2
-	 QiMu68sUNH9MUseoc2xuX0Q/O+/xvFjF91Sq7AFRAgixCl01C1GRQbRFTZCuevNHvS
-	 4+xk15MoWQMAS8Y1MkuwosqnL8LZWGjXolguqDgQ=
+	b=omxtZ0N/KdIYx+KFs+vohe8ArYvx0n6l1HyqXARwU2PFBuyYJ5E9J1BwKmGxXGUEW
+	 nGC0oCZmRlgsWCsACXmGA1IoHgj7YnyNV30p+cKGBo7ngnTLcfpVgya0Dk1OIJixO2
+	 vij5sBqJcKHr+vxCL1JpbvHLu3Du+tqUh3/77AQk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46384F804EB;
-	Mon, 12 Apr 2021 01:52:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 461CEF80424;
+	Mon, 12 Apr 2021 01:53:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5D44F804EB; Mon, 12 Apr 2021 01:52:55 +0200 (CEST)
+ id 6808BF804F1; Mon, 12 Apr 2021 01:52:58 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7C769F80254
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C769F80254
-Date: 12 Apr 2021 08:52:50 +0900
-X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713138"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:50 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id 7E081F80424
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 01:52:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E081F80424
+Date: 12 Apr 2021 08:52:55 +0900
+X-IronPort-AV: E=Sophos;i="5.82,214,1613401200"; d="scan'208";a="77713143"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 12 Apr 2021 08:52:55 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id C5E86411AF74;
- Mon, 12 Apr 2021 08:52:50 +0900 (JST)
-Message-ID: <87h7kcwf8t.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 0B3A5400262A;
+ Mon, 12 Apr 2021 08:52:55 +0900 (JST)
+Message-ID: <87fszwwf8o.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 10/12] ASoC: simple-card-utils: tidyup debug info for clock
+Subject: [PATCH v2 11/12] ASoC: simple-card-utils: tidyup dev_dbg() to use 1
+ line
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87v98swfar.wl-kuninori.morimoto.gx@renesas.com>
@@ -74,48 +75,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-simple-card / audio-graph can use clock as dai->clk or dai->sysclk.
-These related information should be indicated at same position.
-This patch tidyup it.
+We can use 100 char now for 1 line.
+This patch tidyup unreadable dev_dbg() message.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/simple_card_utils.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/sound/simple_card_utils.h | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index cccd9987a1b4..bf068803eb1f 100644
+index bf068803eb1f..20c22bffe091 100644
 --- a/include/sound/simple_card_utils.h
 +++ b/include/sound/simple_card_utils.h
-@@ -191,12 +191,6 @@ static inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
- 	if (dai->name)
- 		dev_dbg(dev, "%s dai name = %s\n",
- 			name, dai->name);
--	if (dai->sysclk)
--		dev_dbg(dev, "%s sysclk = %d\n",
--			name, dai->sysclk);
--
--	dev_dbg(dev, "%s direction = %s\n",
--		name, dai->clk_direction ? "OUT" : "IN");
- 
- 	if (dai->slots)
- 		dev_dbg(dev, "%s slots = %d\n", name, dai->slots);
-@@ -208,6 +202,12 @@ static inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
- 		dev_dbg(dev, "%s rx slot mask = %d\n", name, dai->rx_slot_mask);
- 	if (dai->clk)
- 		dev_dbg(dev, "%s clk %luHz\n", name, clk_get_rate(dai->clk));
-+	if (dai->sysclk)
-+		dev_dbg(dev, "%s sysclk = %dHz\n",
-+			name, dai->sysclk);
-+	if (dai->clk || dai->sysclk)
-+		dev_dbg(dev, "%s direction = %s\n",
-+			name, dai->clk_direction ? "OUT" : "IN");
+@@ -241,17 +241,14 @@ static inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
+ 		if (link->dai_fmt)
+ 			dev_dbg(dev, "dai format = %04x\n", link->dai_fmt);
+ 		if (props->adata.convert_rate)
+-			dev_dbg(dev, "convert_rate = %d\n",
+-				props->adata.convert_rate);
++			dev_dbg(dev, "convert_rate = %d\n", props->adata.convert_rate);
+ 		if (props->adata.convert_channels)
+-			dev_dbg(dev, "convert_channels = %d\n",
+-				props->adata.convert_channels);
++			dev_dbg(dev, "convert_channels = %d\n", props->adata.convert_channels);
+ 		for_each_prop_codec_conf(props, j, cnf)
+ 			if (cnf->name_prefix)
+ 				dev_dbg(dev, "name prefix = %s\n", cnf->name_prefix);
+ 		if (props->mclk_fs)
+-			dev_dbg(dev, "mclk-fs = %d\n",
+-				props->mclk_fs);
++			dev_dbg(dev, "mclk-fs = %d\n", props->mclk_fs);
+ 	}
  }
- 
- static inline void asoc_simple_debug_info(struct asoc_simple_priv *priv)
+ #else
 -- 
 2.25.1
 
