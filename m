@@ -2,69 +2,74 @@ Return-Path: <SRS0=Xjxi=JJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BD18C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1FE3C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:17:25 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AD7D56121F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:16:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AD7D56121F
+	by mail.kernel.org (Postfix) with ESMTPS id F1C436121F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:17:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F1C436121F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5930950;
-	Mon, 12 Apr 2021 18:15:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5930950
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7699F9F6;
+	Mon, 12 Apr 2021 18:16:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7699F9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618244192;
-	bh=cONklcI8XhZawLSgHPeE1dx9toCiT5HiBPe+Hf1wI1c=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nzNhHfTyFSBsNXn08s2qhSBPJuL338x+mMBmmimE8XZ9PbYu2OVwG04bYkGj5+AO8
-	 fHKlrvFPLc7gw/IslzxgGqaYcBooGf/vjLAWqH1er39pYoEbBrKRaeDbeyBSsRiCLF
-	 x5kkECFUHnG9Jezh0JZUogzTlalz1yJPjJH2a6/I=
+	s=default; t=1618244243;
+	bh=n21mR6dtHHeli3TTIB/TXingKw6jRAyKSlJOGqUV8H8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UQFcfkj02N1SR9VqOZ2LBRsuZn9skgNGzW2fCYgg3MH8q8ockJBCdg+muBfk3m7cc
+	 WGzTECUfF0kWY3XSJI+NCmdoU4OaQoHza+ezw1qR2c4Br1zQyeiIKqkv8BCU1FrLOS
+	 56B+Ku9+8QGUNEFWUnvlN6Vfh7xLhYRp9pEeCfH0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18CC0F80269;
-	Mon, 12 Apr 2021 18:15:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EAAD3F8013D;
+	Mon, 12 Apr 2021 18:15:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06A78F80273; Mon, 12 Apr 2021 18:15:40 +0200 (CEST)
+ id 9E822F8013D; Mon, 12 Apr 2021 18:15:43 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE079F8025B
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 18:15:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE079F8025B
-IronPort-SDR: iEkIfs1KByJklvnj4d/wBOmdQdJtdIQTadJkoE1XWJlcfrCmwdIAGcKtyXAW/SZa47urYZR/ZE
- o3N/p1Au5zXA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181355506"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; d="scan'208";a="181355506"
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA520F8013D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 18:15:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA520F8013D
+IronPort-SDR: 4CfmiBoF+8/yPyhnt1XtgGOsS0UlQ629nZvlE4bbQY2gtZRtL2ijMn6P2Sph9g7BXEzXCCgETh
+ xZEEbxKtuOUw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181355512"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; d="scan'208";a="181355512"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Apr 2021 09:15:29 -0700
-IronPort-SDR: /S1zrLG5879c36pltVPl0smBVrcEuT6RgqJ0wRBhjKaaH8X1X3WjjEA/fcE4wqqAjkd0nwDlXe
- MrFMcm4D5vLw==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; d="scan'208";a="398428893"
+ 12 Apr 2021 09:15:30 -0700
+IronPort-SDR: q7TzRFQmjFg/pxHU8IIelMk6YOK53HBATnSRprIjnXra9TMHV64SHurW0Lw3LQPILz2qix/Wj9
+ A7B3uREi3/0w==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; d="scan'208";a="398428910"
 Received: from pvquach-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.124.143])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Apr 2021 09:15:28 -0700
+ 12 Apr 2021 09:15:29 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ASoC: SOF: Intel: descriptor corrections for TGL and ADL
-Date: Mon, 12 Apr 2021 11:15:17 -0500
-Message-Id: <20210412161519.13508-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: SOF: Intel: add missing use_acpi_target_states for
+ TGL platforms
+Date: Mon, 12 Apr 2021 11:15:18 -0500
+Message-Id: <20210412161519.13508-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210412161519.13508-1-pierre-louis.bossart@linux.intel.com>
+References: <20210412161519.13508-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, Libin Yang <libin.yang@intel.com>, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -81,19 +86,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-One missed property for TigerLake and need for separate descriptors
-between ADL-S and the other flavors.
+From: Libin Yang <libin.yang@intel.com>
 
-Libin Yang (1):
-  ASoC: SOF: Intel: add missing use_acpi_target_states for TGL platforms
+All Intel TigerLake platforms should support the feature of getting
+the system state from acpi to deal with S0ix support.
 
-Sathya Prakash M R (1):
-  ASoC: SOF: Intel: Update ADL P to use its own descriptor
+This was missed in previous commits, likely due to copy/paste from
+older code.
 
- sound/soc/sof/intel/pci-tgl.c | 20 +++++++++++++++++++-
- sound/soc/sof/intel/tgl.c     |  2 +-
- 2 files changed, 20 insertions(+), 2 deletions(-)
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/intel/pci-tgl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
+index 38bc353f7313..77cc037655f1 100644
+--- a/sound/soc/sof/intel/pci-tgl.c
++++ b/sound/soc/sof/intel/pci-tgl.c
+@@ -39,6 +39,7 @@ static const struct sof_dev_desc tgl_desc = {
+ static const struct sof_dev_desc tglh_desc = {
+ 	.machines               = snd_soc_acpi_intel_tgl_machines,
+ 	.alt_machines		= snd_soc_acpi_intel_tgl_sdw_machines,
++	.use_acpi_target_states	= true,
+ 	.resindex_lpe_base      = 0,
+ 	.resindex_pcicfg_base   = -1,
+ 	.resindex_imr_base      = -1,
+@@ -71,6 +72,7 @@ static const struct sof_dev_desc ehl_desc = {
+ static const struct sof_dev_desc adls_desc = {
+ 	.machines               = snd_soc_acpi_intel_adl_machines,
+ 	.alt_machines           = snd_soc_acpi_intel_adl_sdw_machines,
++	.use_acpi_target_states	= true,
+ 	.resindex_lpe_base      = 0,
+ 	.resindex_pcicfg_base   = -1,
+ 	.resindex_imr_base      = -1,
 -- 
 2.25.1
 
