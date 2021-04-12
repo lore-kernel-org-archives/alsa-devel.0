@@ -7,62 +7,62 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02AF8C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 08:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24D14C43600
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 08:57:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id B78596124C
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 08:49:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B78596124C
+	by mail.kernel.org (Postfix) with ESMTPS id 9059161366
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 08:56:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9059161366
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linuxfoundation.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A91F86F;
-	Mon, 12 Apr 2021 10:48:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A91F86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8C6541;
+	Mon, 12 Apr 2021 10:56:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8C6541
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618217339;
-	bh=xhs+SsmSF64uQH9OVphNr1Utkklte6Lv+tSQ+ntyfBI=;
+	s=default; t=1618217817;
+	bh=WkaTW1C20k2shJoRhpuSBF0Gwi2dFK3SAcd21D52GGk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QchmqszFZ9vsq4M0KTPCEMu1COhdo3RQt7YTh6XwJ/MNZGKagstNAcf9UaSneDNbu
-	 oQIoFjwg5VXUKnzibLkjxJHiMsFDyxcXdSLXKTaud4gLX9RUoti8qchoVhRonltA1w
-	 TtWum9SQg3PeEhdGNbWPA+CafaDJ+xPE1gk0OgnA=
+	b=TRKfcg/ZJjVHyOwR14g4CgeDJo8rCL2bfjUq5LYXsXFHMSoh+ZbLtenQC2BfmQbkM
+	 FPqwlNxHNyF5t5QdAggV0V2YIX/0ttd0Oaq48GOyscBgaSaI9DQoFePVBFgSYIbSCJ
+	 PJzygfKGW2L+bDsCQy2sUBp82upayZbkQm3NY8Ds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AEDE9F8025B;
-	Mon, 12 Apr 2021 10:48:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B2BAF800FF;
+	Mon, 12 Apr 2021 10:56:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E84F5F80269; Mon, 12 Apr 2021 10:48:06 +0200 (CEST)
+ id C965FF80269; Mon, 12 Apr 2021 10:56:05 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0361EF800D3
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 10:47:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0361EF800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A9C4F800FF
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 10:55:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A9C4F800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="KXo0/e9Z"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58B706127B;
- Mon, 12 Apr 2021 08:47:57 +0000 (UTC)
+ header.i=@linuxfoundation.org header.b="Vepq7YKZ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DADBF60241;
+ Mon, 12 Apr 2021 08:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1618217277;
- bh=xhs+SsmSF64uQH9OVphNr1Utkklte6Lv+tSQ+ntyfBI=;
+ s=korg; t=1618217750;
+ bh=WkaTW1C20k2shJoRhpuSBF0Gwi2dFK3SAcd21D52GGk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=KXo0/e9ZIvTo+SzpIvMuFiZ0/Q9hWRYwA19C59801T+vjgsh9P4zmm0R8k2S24sam
- 51tx7gS7Xx468G30jSyerZMAqzs3EL0p2K3SKmo/30mNS7fLlvkRkv3on3X/b0QcTN
- etBMeGD9lKvzVdrtMhNfAqYc6OZ5rhFP/x+wE6EU=
+ b=Vepq7YKZ/XZ+fVLDEGt/hujFMsjZiB8xy7Fux96OnBw+0rvkjBIl7diMVVkzYWXzM
+ bd5azMkt60sTSroFNVVH5Tk7nkUEMWDXuc+EuKqtqlGp3fN+JLyxNojLN7LTXEoTTK
+ HWqvvtEeIQCy6rCxRwg74NbUkf2oGArX5wMJ7REM=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 5.4 068/111] ASoC: sunxi: sun4i-codec: fill ASoC card owner
-Date: Mon, 12 Apr 2021 10:40:46 +0200
-Message-Id: <20210412084006.523607018@linuxfoundation.org>
+Subject: [PATCH 5.10 130/188] ASoC: sunxi: sun4i-codec: fill ASoC card owner
+Date: Mon, 12 Apr 2021 10:40:44 +0200
+Message-Id: <20210412084017.966657384@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -118,7 +118,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index ee448d5e07a6..c4021d6ac9df 100644
+index 6c13cc84b3fb..2173991c13db 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
 @@ -1364,6 +1364,7 @@ static struct snd_soc_card *sun4i_codec_create_card(struct device *dev)
