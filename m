@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C258C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05619C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:28:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 703BC61379
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:28:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 703BC61379
+	by mail.kernel.org (Postfix) with ESMTPS id 78C496135D
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 16:28:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 78C496135D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06C4C1682;
-	Mon, 12 Apr 2021 18:27:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06C4C1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FD741680;
+	Mon, 12 Apr 2021 18:27:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FD741680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618244904;
-	bh=4ha8hzvQewrAkYWKaJdNQ2KOkMlMHpc8eBqJkj1wlRY=;
+	s=default; t=1618244929;
+	bh=N6y0vS8nap5fLAM3SCcQMa3bNFJDtzlQRqEbIjrzUuo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Aei8NdyJS23Dcor1GNM+K9dZvLb0MHmY1Fh2nwIWBIPV3/GDza0pa7SRYgmcFVUeG
-	 1BZpf1/GM9TSrsOLWeqvJMq82ypxdl0hZftBZCuGwiFfedSW2YE/6xeBftvkLRUyIk
-	 HqXG8aswGx+xkDMQ9rTdh0qbJtj1fNxMGKFIn9YA=
+	b=h6R2aZqKUxf0FfJrr2Lcdpr0G1MywSkgOIVlLQQVj8aPNWvXcZR0f/EAzmVBqWJMw
+	 gBcdc5ns5fieWGp+54w+U8m3lw+RO+SXVNbmc3P+TJ7YiyaA2KyaJlsHQEmH1URIm4
+	 Wv95ffwr+JF52Ch/5FCV9vUT1XOnZA4wti11jZpU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33646F80271;
-	Mon, 12 Apr 2021 18:27:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F04DFF80273;
+	Mon, 12 Apr 2021 18:27:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E020F80277; Mon, 12 Apr 2021 18:27:20 +0200 (CEST)
+ id 38178F8032D; Mon, 12 Apr 2021 18:27:55 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E195DF80269
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 18:27:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E195DF80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2990F8032C
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 18:27:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2990F8032C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IX0VDMEA"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F92613D7;
- Mon, 12 Apr 2021 16:27:14 +0000 (UTC)
+ header.b="qg/4e02g"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E4BB61381;
+ Mon, 12 Apr 2021 16:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618244835;
- bh=4ha8hzvQewrAkYWKaJdNQ2KOkMlMHpc8eBqJkj1wlRY=;
+ s=k20201202; t=1618244867;
+ bh=N6y0vS8nap5fLAM3SCcQMa3bNFJDtzlQRqEbIjrzUuo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=IX0VDMEAP2wQrG5dHlZCFs59lW4hfwsav52JetRQF7vfKjwD7d12vcTv+QFl6CCcP
- O0+BNrF6wfo8Dvp0DP+7VirmjdZclvpw0hKuMOocfOGxQ0uSDAwKeU64/bv9/nTNKU
- igzKutNVYmCgEBQKNTST7VL76tuJoulRpJL9ZTYRCV2TTmIWL2CoYgtNAC8sYknnM1
- jxiUimVETdoAg+jAYc2Odp78eNw9CacItTu5kPmRRDqVfXXRdSUCMiD4PzIwtsvVbB
- Vcj+IcgLLcRwsCRBen0lBhT+2TF2F2oOhTU8wwoCtE0CVNIi1V8eG0OA+9kSzSWGTD
- EK1Qqzb5jLoUw==
+ b=qg/4e02gLwDvUIyToSLsyrs6c4kp903FGuLWdB/ReYxMRBTsmXHV8qvx5Zx7pmwtT
+ pRiTOhtsmN7s2waTtS+BivYnwwy9EN6L1o9m0iU01fsOIUj+Y3togM+Lm3hFt7JWQH
+ 62j7TYTqWLDzpvdGK+CWcuHQmBP1mN9HpLrNIK7+6QWpa4vVFExc0w/bPP26LdyIXv
+ wdTeBzjhDXanCGX3QuMTgoE0fi1+1Hwq1D44aUaq9sjruHV0cpsX4ZGTCQbGeKQUm7
+ g1NqD3Hf66hQeWvCzoFq10OnddIDCXP4NQeds2pqc0sBXRlOBsDB1EaysosbIaX9U5
+ VxsMLFDWeuCUA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 08/23] ASoC: fsl_esai: Fix TDM slot setup for I2S
+Subject: [PATCH AUTOSEL 4.4 08/23] ASoC: fsl_esai: Fix TDM slot setup for I2S
  mode
-Date: Mon, 12 Apr 2021 12:26:49 -0400
-Message-Id: <20210412162704.315783-8-sashal@kernel.org>
+Date: Mon, 12 Apr 2021 12:27:21 -0400
+Message-Id: <20210412162736.316026-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162704.315783-1-sashal@kernel.org>
-References: <20210412162704.315783-1-sashal@kernel.org>
+In-Reply-To: <20210412162736.316026-1-sashal@kernel.org>
+References: <20210412162736.316026-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -111,10 +111,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index fa64cc2b1729..94bf497092b2 100644
+index 40075b9afb79..fad711a3f4b4 100644
 --- a/sound/soc/fsl/fsl_esai.c
 +++ b/sound/soc/fsl/fsl_esai.c
-@@ -495,11 +495,13 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+@@ -488,11 +488,13 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
  				   ESAI_SAICR_SYNC, esai_priv->synchronous ?
  				   ESAI_SAICR_SYNC : 0);
  
