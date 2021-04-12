@@ -2,72 +2,68 @@ Return-Path: <SRS0=Xjxi=JJ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81386C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 10:09:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E356C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 10:15:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D078561288
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 10:09:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D078561288
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=huawei.com
+	by mail.kernel.org (Postfix) with ESMTPS id 7959F61278
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 10:15:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7959F61278
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65FD5167A;
-	Mon, 12 Apr 2021 12:08:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65FD5167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2356710E;
+	Mon, 12 Apr 2021 12:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2356710E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618222153;
-	bh=gwloCHxB/Xn7kRKmL5pkdZAAPl4ImRhy5M4XC4YpqP4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1618222553;
+	bh=lHuh9qqSJwzyXBYnmMRTqrvTxLVSnY3Cb1vwC5hmdkU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YgIP3Mgvkp9LzLg4d4MgWbT7vTWvtVsaI8EmK6rqN5mVZ/YrP9MNEw7P/mg0HXqvk
-	 8/AvEXKSM7JbNeoJdOUVBaN9WxqMr28GXa0X5QcLWf788cgD8jPgT6ToAvRtu6mek+
-	 mptK+28nHR+/5y2SEzA//dmJILjOQc3h1QnW4z0M=
+	b=NgctyMw2dBA6jgjrLsgX5QH/8ZfTuuW0h5PZM53H9dC2yp4e2PBpBAHNZ7dab7BoP
+	 HAVgbnLhJMvfCdpQ07Yk/JPtO0AbDo8A0+2FMzWEyTE8z26zJwlT147BMM/Obh7lYa
+	 9uV1RlimrVYvTu+WTDpMD4xFk6EODA/Ta1cp9/bE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF185F8032C;
-	Mon, 12 Apr 2021 12:07:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB144F8025B;
+	Mon, 12 Apr 2021 12:15:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29A4FF8027C; Mon, 12 Apr 2021 12:07:29 +0200 (CEST)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+ id 72CABF80269; Mon, 12 Apr 2021 12:14:59 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DF6BF8025B
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 12:07:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DF6BF8025B
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
- by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FJkrD3ZtdzlXMT;
- Mon, 12 Apr 2021 18:05:16 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 18:06:59 +0800
-From: Zhen Lei <thunder.leizhen@huawei.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- "Rob Herring" <robh+dt@kernel.org>, alsa-devel <alsa-devel@alsa-project.org>, 
- devicetree <devicetree@vger.kernel.org>, linux-kernel
- <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/2] ASoC: dt-bindings: renesas,
- rsnd: Clear warning 'ports' does not match any of the regexes
-Date: Mon, 12 Apr 2021 18:06:38 +0800
-Message-ID: <20210412100638.3349-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210412100638.3349-1-thunder.leizhen@huawei.com>
-References: <20210412100638.3349-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A25CCF8013D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 12:14:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A25CCF8013D
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id ADC23AF11;
+ Mon, 12 Apr 2021 10:14:46 +0000 (UTC)
+Date: Mon, 12 Apr 2021 12:14:46 +0200
+Message-ID: <s5hblaj3j3d.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Geraldo Nascimento <geraldogabriel@gmail.com>
+Subject: Re: [PATCH v2] Behringer UFX1604 / UFX1204: get rid of unneeded
+ implicit feedback and pops and clicks while on 96000hz
+In-Reply-To: <CAEsQvctCoHpe8U5HY70d++mcoYQw5gbd7zdLpkcOGyzgU0PLEQ@mail.gmail.com>
+References: <CAEsQvcvF7LnO8PxyyCxuRCx=7jNeSCvFAd-+dE0g_rd1rOxxdw@mail.gmail.com>
+ <s5h8s5q4irr.wl-tiwai@suse.de>
+ <CAEsQvctCoHpe8U5HY70d++mcoYQw5gbd7zdLpkcOGyzgU0PLEQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Zhen Lei <thunder.leizhen@huawei.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,54 +79,127 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently, if there are more than two ports, or if there is only one port
-but other properties(such as "#address-cells") is required, these ports
-are placed under the "ports" node. So add the schema of property "ports".
+On Sat, 10 Apr 2021 22:27:15 +0200,
+Geraldo Nascimento wrote:
+> 
+> OK, Dr. Iwai, only briefly tested but at least on my setup, JACK starts at
+> 96000hz and I am able to record my voice in Ardour 6, with no pops and clicks
+> detected.
+> 
+> I'll record a full acapella just to be sure, but these 96000Hz pops and clicks
+> I used to experience - with that implicit feedback hack on by the way - tended
+> to be evident within seconds, not intermittent and very annoying.
+> 
+> Now I turned the implicit feedback hack off for both the UFX1604 and the
+> UFX1204 on my tree and with your two lines of code I have crystal clear sound.
+> 
+> I took the liberty to comment your clever hack inside clock.c and the pops /
+> clicks problem reappears on 96000Hz. PulseAudio users (see 
+> https://bugzilla.kernel.org/show_bug.cgi?id=199327 ) will generally run at
+> 44100Hz and won't be affected so much by noise because the clock selector will
+> be "tied" to the standard 48000Hz of these mixer desks DAC, in that invalid
+> state but close enough to the main clock rate.
+> 
+> Henceforth the general confusion where people complain the forced implicit
+> feedback made PulseAudio break for their UFX1604 / UFX1204, but they do not
+> experience noise. This approach should solve both problems by disabling
+> implicit feedback on the synchronous endpoints but making sure the sound is
+> crystal clear even at 96000Hz.
 
-Otherwise, warnings similar to the following will be reported:
-arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dt.yaml: \
-sound@ec500000: 'ports' does not match any of the regexes: \
-'^rcar_sound,ctu$', '^rcar_sound,dai$', '^rcar_sound,dvc$', ...
+Is the PA breakage still seen in the very latest kernel?  There have
+been a few issues due to the changes but they should have been already
+covered.
 
-A given binding should just use 'ports' or 'port' depending on it's need.
-Both are not allowed at the same time. The check is done in "allOf".
+Apart from that, the choice of implicit feedback was taken at the
+commit 5e35dc0338d8 in a few years ago for UFX1024.  I don't remember
+the details, but judging from the lsusb output, the devices don't look
+like a typical device that requires the implicit feedback (that has
+usually ASYNC for both directions).  So, as long as it's confirmed
+that the proper clock selector setup fixes the problem, we can drop
+the implicit feedback quirks.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- .../devicetree/bindings/sound/renesas,rsnd.yaml      | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+However, it's better to split the patches; one for the fix for the
+missing clock selector setup, another is the drop of the implciit fb
+quirk for Behringer devices.
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-index 384191ee497f534..32b10fc3789eeac 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-@@ -115,6 +115,12 @@ properties:
-     $ref: audio-graph-port.yaml#
-     unevaluatedProperties: false
- 
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+    patternProperties:
-+      '^port@[0-9]':
-+        $ref: audio-graph-port.yaml#
-+
- # use patternProperties to avoid naming "xxx,yyy" issue
- patternProperties:
-   "^rcar_sound,dvc$":
-@@ -258,6 +264,12 @@ required:
-   - "#sound-dai-cells"
- 
- allOf:
-+  - if:
-+      required:
-+        - ports
-+    then:
-+      properties:
-+        port: false
-   - if:
-       properties:
-         compatible:
--- 
-2.26.0.106.g9fadedd
+In anyway, let's see whether the fix works for others.  Then we can go
+forward and apply the fixes to the upstream.
 
 
+thanks,
+
+Takashi
+
+> 
+> Thank you,
+> Geraldo
+> 
+> Em Sáb, 10 de abr de 2021 05:59, Takashi Iwai <tiwai@suse.de> escreveu:
+> 
+>     On Sat, 10 Apr 2021 03:36:14 +0200,
+>     Geraldo Nascimento wrote:
+>     >
+>     > More complete patch disabling unneeded implicit feedback and setting
+>     > clock selector to default clock on rate change for UFX1604
+>     >
+>     > After re-reading https://bugzilla.kernel.org/show_bug.cgi?id=199327 it
+>     > is even more clear to me that implicit feedback for the
+>     > UFX1604/UFX1204 needs to be disabled.
+>     >
+>     > This is a more complete patch that disables that and for the UFX1604
+>     > only sets the clock selector to its pin 1 default clock synced to the
+>     > USB SOF upon rate change. This is needed because apparently the
+>     > endpoints are hardwired to the clock selector and after we change the
+>     > rate on the main USB SOF synced clock the clock selector is left in a
+>     > halfway state in regards to the sampling rate.
+>     >
+>     > That's why the pops and clicks aren't evident at stock 48000Hz, become
+>     > slightly audible at 44100Hz and detestable at 96000Hz. Seems the clock
+>     > selector needs a nudge or it will screw up the sync.
+>     >
+>     > Unfortunately I don't have access to the lsusb -v of the UFX1204 soI'm
+>     > waiting for someone to share it here in the list or in the bugzilla
+>     > thread. This patch needs some more love from the community.
+>     >
+>     > ---
+>     >
+>     > This one has been bugging me for quite a while. I went deep hard in
+>     > the guts of ALSA to try to solve it, and it turned out to be a minor
+>     > thing apparently. The problem is old, and every UFX1604 Linux user can
+>     > attest that it's impossible to use 96000hz in DUPLEX mode without
+>     > annoying pops and clicks on the capture stream.
+>     >
+>     > The fix is simple: after we alter the CLOCK_SOURCE to match our sample
+>     > rate, let's tell the CLOCK_SELECTOR we want CLOCK_SOURCE 212 (synced
+>     > to USB SOF) on pin 1. Solves the problem for me, no more pops and
+>     > clicks while on 96000hz.
+>     >
+>     > ---
+>     >
+>     > Signed-off-by: Geraldo Nascimento <geraldogabriel@gmail.com>
+>    
+>     Thanks for the patch.
+>    
+>     But we'd like to avoid the setup with a magic ID number.
+>     Judging from what it achieves, does the change like below give the
+>     similar effect?
+>    
+>     We might need to apply it conditionally, so this is just meant for
+>     testing.
+> 
+>     Takashi
+>    
+>     --- a/sound/usb/clock.c
+>     +++ b/sound/usb/clock.c
+>     @@ -324,6 +324,8 @@ static int __uac_clock_find_source(struct
+>     snd_usb_audio *chip,
+>                     ret = __uac_clock_find_source(chip, fmt,
+>                                                   selector->baCSourceID[ret -
+>     1],
+>                                                   visited, validate);
+>     +               if (ret > 0)
+>     +                       uac_clock_selector_set_val(chip, entity_id, cur);
+>                     if (!validate || ret > 0 || !chip->autoclock)
+>                             return ret;
+> 
+> 
