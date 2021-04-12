@@ -6,66 +6,67 @@ X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0FC3C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 19:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95EB1C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 19:04:23 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 18F7561350
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 19:04:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 18F7561350
+	by mail.kernel.org (Postfix) with ESMTPS id 0DBC061350
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Apr 2021 19:04:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0DBC061350
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DB921675;
-	Mon, 12 Apr 2021 21:03:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DB921675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 953AD167D;
+	Mon, 12 Apr 2021 21:03:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 953AD167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618254243;
-	bh=EAI5bX3nJvpw+S9ljR6U7378Iwh40xX6EArGTbD3oT8=;
+	s=default; t=1618254261;
+	bh=F4gTDTpxIjl+nx0umiKmI7BvmyGY0MWoRT3gO2/gBNg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MQf4YNKJE8/8ykxCW5p9h1O8pJSShTNEEifjboOMS0hRuiz9Ix6Kqxo1G7uw3OFuS
-	 B3FPEnLSc80T8immTY1oSZ3BB1igBIh02LloPsl/YeBZKu0YOUeKslvVPRjFYW85eA
-	 yZ26zHMF6d4wE5/XW7+SKN6Vps7AUqrwBmCP93IQ=
+	b=OhwN1e64r7vEY+LmdbB7fNdp0jACmkWuU3ktapEMAwFfLKxW0q2ETbw//9M94LMMN
+	 R80F5pgNLuvgzK5bAq/i8/hJAP7RSzZep8fPcDqJ7EJJ3uLurTxJfxCL8rP16jqEPM
+	 5cLQl0LWs5NojDYBklPQBgzYR85qGYXVrbfUFQ04=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1360DF8042F;
+	by alsa1.perex.cz (Postfix) with ESMTP id BCC01F804AB;
 	Mon, 12 Apr 2021 21:01:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94CC7F80431; Mon, 12 Apr 2021 21:01:43 +0200 (CEST)
+ id 86FABF80482; Mon, 12 Apr 2021 21:01:45 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 239CDF802D2
- for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 21:01:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 239CDF802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B5EBF8042F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Apr 2021 21:01:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B5EBF8042F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DXyc8EyL"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 196D66105A;
- Mon, 12 Apr 2021 19:01:36 +0000 (UTC)
+ header.b="Vt2eUtgN"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB4A61352;
+ Mon, 12 Apr 2021 19:01:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618254097;
- bh=EAI5bX3nJvpw+S9ljR6U7378Iwh40xX6EArGTbD3oT8=;
+ s=k20201202; t=1618254100;
+ bh=F4gTDTpxIjl+nx0umiKmI7BvmyGY0MWoRT3gO2/gBNg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DXyc8EyL7dgjQx35WWKR9n+AnewW+pN1HsYqk5QHr6+QKrdCfJ8hM+SI3rPFmtciK
- G520pJE9+N0PTOq6J/V8NdDQK6uyucqp78VcjYDlDky7CKsMFNSowSAB9vJa3xzTa1
- wM1/Ug1BrKrggjnZe+bKnxC3nYDlXkA6dWrJsolo6YdFLcAm6m+O8tMY93JnjtgUid
- nMCYCuWViwmgTk4lM2qQe7l/v+HZWwsl8C1yNLs2n2z8Tm9ayuXODWP8IV3t5pKnW0
- mpAsjeyQeubQ+beXFuqVIOVzcRDxrspisw747vtUSMF5NEZdVI+CYU5dIKpc+SPEsC
- NzwfDOzn0Yk9Q==
+ b=Vt2eUtgN5c9C+kvNXZnAVST2gP5z2QBhTJvMFqBOpvafSZh5phs2vi6ODR6Vqx+dO
+ 2Awo4AfKqtEHpeWGPzU8aNb1TFPA+rZ4CuS9qzk0OLlBh3VsyP6RExd7Qhs1eRwVfD
+ ZAD6g6hm7sykRVwjLxxtbnGbnMf4xRZh8jx4Vep5Hcq/w6bGvdjTmwaLaTPzpK6/2U
+ hzFW4n5nFBjUtM6DL49WeD6Cn4+PT/XxatmPm9K+XsWi2kLqdGPCgjepmSv9UkHJ6Q
+ DRv03Jfq31EdnltgOuuktaQKyL/3WSMQzJ9a3rkAjbsWRex0JaZWtlLRayT901xLBs
+ Ox3gCEuQfjiew==
 From: Mark Brown <broonie@kernel.org>
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org
-Subject: Re: [PATCH 0/6] ASoC: SOF: simplify nocodec mode
-Date: Mon, 12 Apr 2021 20:01:02 +0100
-Message-Id: <161825392629.52100.14605857397021532223.b4-ty@kernel.org>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Intel: descriptor corrections for TGL and
+ ADL
+Date: Mon, 12 Apr 2021 20:01:03 +0100
+Message-Id: <161825392630.52100.4693285955114573632.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210409220121.1542362-1-ranjani.sridharan@linux.intel.com>
-References: <20210409220121.1542362-1-ranjani.sridharan@linux.intel.com>
+In-Reply-To: <20210412161519.13508-1-pierre-louis.bossart@linux.intel.com>
+References: <20210412161519.13508-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -85,17 +86,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 9 Apr 2021 15:01:15 -0700, Ranjani Sridharan wrote:
-> This set of patches simplify the implementation
-> of nocodec mode in SOF.
+On Mon, 12 Apr 2021 11:15:17 -0500, Pierre-Louis Bossart wrote:
+> One missed property for TigerLake and need for separate descriptors
+> between ADL-S and the other flavors.
 > 
-> Pierre-Louis Bossart (6):
->   ASoC: SOF: add Kconfig option for probe workqueues
->   ASoC: soc-acpi: add new fields for mach_params
->   ASoC: SOF: change signature of set_mach_params() callback
->   ASoC: SOF: Intel: update set_mach_params()
->   ASoC: SOF: pcm: export snd_pcm_dai_link_fixup
->   ASOC: SOF: simplify nocodec mode
+> Libin Yang (1):
+>   ASoC: SOF: Intel: add missing use_acpi_target_states for TGL platforms
+> 
+> Sathya Prakash M R (1):
+>   ASoC: SOF: Intel: Update ADL P to use its own descriptor
 > 
 > [...]
 
@@ -105,18 +104,10 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: SOF: add Kconfig option for probe workqueues
-      commit: e4330cae2a8cf4e4f3004947794bdd549e32cede
-[2/6] ASoC: soc-acpi: add new fields for mach_params
-      commit: ca6a0122557faa4fa01d6dbfa742870c33c46218
-[3/6] ASoC: SOF: change signature of set_mach_params() callback
-      commit: 17e9d6b0a395a1d8973a9e1d20db88d791e157b1
-[4/6] ASoC: SOF: Intel: update set_mach_params()
-      commit: 974cccf490ebbc0c7ea0d19edd88542cef174d38
-[5/6] ASoC: SOF: pcm: export snd_pcm_dai_link_fixup
-      commit: f3f3af1743350fdc7c373772fb3740dc223db8e5
-[6/6] ASOC: SOF: simplify nocodec mode
-      commit: 4c1cc83fcc7e02f6f6f76da2ea66af86a95fd675
+[1/2] ASoC: SOF: Intel: add missing use_acpi_target_states for TGL platforms
+      commit: 1b9889974ce93dea50d010972a93c0eb529ac612
+[2/2] ASoC: SOF: Intel: Update ADL P to use its own descriptor
+      commit: 4ad03f894b3c96d77e51474f0c9731793fac412e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
