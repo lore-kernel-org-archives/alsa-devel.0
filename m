@@ -2,78 +2,65 @@ Return-Path: <SRS0=Dyxj=JK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 807F6C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 15:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6923FC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 15:28:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DDC496117A
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 15:13:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DDC496117A
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id CBE096128C
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 15:28:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CBE096128C
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CFFC1671;
-	Tue, 13 Apr 2021 17:12:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CFFC1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA7871676;
+	Tue, 13 Apr 2021 17:27:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA7871676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618326779;
-	bh=2mrmh7KWeWnO3AgGPTiEPrsluOYYVwNB/gzeJ2AAmJc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1618327696;
+	bh=KvTpyfzQYTfEhFIpQ+NItDIOPsDD6KWwl0bA7wEUNjA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sr7MpxcS7h90MnlkkPyqeujY9bAWG8qk9M1vPou4n2t8FYZ97BO0MYoXXFco+ExYf
-	 lGsvknL9eWzRVAPDEwA+Q7p0ZPmhbUb8hSGzt/AIDAHLXbj4Mql3l9RQWVBM86hWqv
-	 8JJhX+Zm2wFWeZ31hk95gNvahBY7BRsbcyNSos6E=
+	b=nVrbdKB2XZ3+e5KdPCdN45ydD6Xp7BYu7sC+x/oJXmtP74+sYyFRTa+OrqCeuuNHm
+	 Dic1yHBmyEyp+fOfEJxPNrW8EAyur0BcB62gIEqMpXfYnVU5ZzjIYsFa3SE0PrbWID
+	 o0AVvSR5cAJRoqjFqH5UL5+K/7GiSAkdapx838F8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C20CF804AB;
-	Tue, 13 Apr 2021 17:10:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 343D6F800EB;
+	Tue, 13 Apr 2021 17:27:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B801F80475; Tue, 13 Apr 2021 17:10:15 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ id 88036F8022B; Tue, 13 Apr 2021 17:27:21 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 676B0F800FF
- for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2021 17:09:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 676B0F800FF
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bht0AWlK"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 417CF613B6;
- Tue, 13 Apr 2021 15:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618326560;
- bh=2mrmh7KWeWnO3AgGPTiEPrsluOYYVwNB/gzeJ2AAmJc=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bht0AWlKxDnXY7xXGf9zBminX8JaUxZmolH/VsR+q7RN72k80Z6js0ybi135ERVrk
- XI3zkfLXZ1uoCCBDFBWkemj37ULTNeb2lqytJZqdoPYpQ8oiDAogk9Wkzjf/sHFvCR
- U/qhJUdY4I8fHe3T9AOWSmxMgx1AKZj868Veh6Il5T1euBsklGTxXGQqZ94rbsfyYS
- t4RzcicjkmiosXa9MA8G3UQ1OXSrGfqi2Wsx7lPTCatn5+tIeYdr950mj34Dd78N+s
- ehI5+QfOQXBsMnMysXUDFr4wKylXzXy+wKaJu84MrR/4b8OLw9EFZFDg0FSKfoUrw/
- kVFomZsah9Qbw==
-From: Mark Brown <broonie@kernel.org>
-To: david.rhodes@cirrus.com,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, tiwai@suse.com,
- perex@perex.cz, lgirdwood@gmail.com, james.schulman@cirrus.com
-Subject: Re: [PATCH] ASoC: cs35l36: Fix an error handling path in
- 'cs35l36_i2c_probe()'
-Date: Tue, 13 Apr 2021 16:08:53 +0100
-Message-Id: <161832446010.49152.18429371778012715101.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <9fec48e75bc1d3c92626e6f6aca2344bda223379.1618145790.git.christophe.jaillet@wanadoo.fr>
-References: <9fec48e75bc1d3c92626e6f6aca2344bda223379.1618145790.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 262E2F800EB
+ for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2021 17:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 262E2F800EB
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id 5AFD2B250;
+ Tue, 13 Apr 2021 15:27:17 +0000 (UTC)
+Date: Tue, 13 Apr 2021 17:27:17 +0200
+Message-ID: <s5hy2dmw6ga.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: David Henningsson <coding@diwic.se>
+Subject: Re: [PATCH v4] sound: rawmidi: Add framing mode
+In-Reply-To: <e912ae71-5b52-8b1f-b3fa-b9bb6420be29@diwic.se>
+References: <20210410120229.1172054-1-coding@diwic.se>
+ <s5him4r3k1d.wl-tiwai@suse.de>
+ <e912ae71-5b52-8b1f-b3fa-b9bb6420be29@diwic.se>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,34 +76,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 11 Apr 2021 14:57:13 +0200, Christophe JAILLET wrote:
-> If 'devm_regmap_init_i2c()' fails, there is no need to goto err. We should
-> return directly as already done by the surrounding error handling paths.
+On Mon, 12 Apr 2021 21:32:37 +0200,
+David Henningsson wrote:
+> 
+> > One thing I'm considering is how to inform the current framing and the
+> > timestamp mode to user-space.  Currently we have only the ioctl to set
+> > the values but not to inquiry.
+> 
+> Yes, this is the same as we do with PCM. There is no ioctl to get
+> current hw/sw params either.
+> 
+> > Should we put those new information into the info or the status ioctl?
+> 
+> I would prefer neither, because it is not necessary and creates an
+> inconsistency with PCM.
 
-Applied to
+Well, honestly speaking, ALSA PCM API design is no best one you should
+refer to...  IMO, it should have had the symmetric get function, too.
+I guess it worked without such ioctl because the current PCM status is
+exposed via proc file.  Without a way for inquiry of the current
+status, we may have had trouble for debugging.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+In that sense, it might make sense to extend the proc entry of the
+rawmidi status output, too.
 
-Thanks!
+> > If so, it might be also helpful to inform the frame byte size
+> > explicitly there, instead of assuming only a constant.
+> 
+> If userspace has verified the kernel protocol version and successfully
+> calledSNDRV_RAWMIDI_IOCTL_PARAMS with the framing
+> byte/bitfield/whatever set, then userspace can be sure that the frames
+> are according to the snd_rawmidi_framing_tstamp struct. Knowing the
+> frame byte size but not knowing the exact format is of no use to
+> userspace anyway, right?
 
-[1/1] ASoC: cs35l36: Fix an error handling path in 'cs35l36_i2c_probe()'
-      commit: cdf20c3ef0e90b962e62ae7d835d7f46333285bc
+Sure, if any, the kernel should inform all stuff, the frame type, the
+clock type, and the frame size.  But practically seen, this might be
+not often inquired, if we define the frame struct explicitly as a part
+of user-space API, too.  Then sizeof() already gives the proper size.
+Of course, that depends on how to provide the user-space API.  We may
+provide again an opaque API, too.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
