@@ -2,55 +2,76 @@ Return-Path: <SRS0=Dyxj=JK=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71AAFC43460
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 11:19:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2E9FC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 11:19:12 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 9A0F361249
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 11:19:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 9A0F361249
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7AD2461019
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Apr 2021 11:19:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7AD2461019
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AE071661;
-	Tue, 13 Apr 2021 13:18:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AE071661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18DBD167B;
+	Tue, 13 Apr 2021 13:18:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18DBD167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618312746;
-	bh=Ggg5vMGda2O56aVM8b+hLFP0AcDRptk3Jnagnq4XULI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1618312751;
+	bh=OvNQM6IzRqdh+yn7nQwJNg/YLF9PnNkxrdQ/ThWGjc8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H0ysM88Did6qDU65A9b6h+ND8RZ5usEABlU05QU5yVJ8dtYXERtc62OOuPGso9BIv
-	 eedwV+sG5rznnf8p62Ckv7mnVJY0T8Yj/PVWt6jgWmMaKb6+TI+C3g6HpHCDoDu3ti
-	 2FocoyK3lYttN/BZvKVx26I41xAdbYep9/ap3Hy4=
+	b=ZWiYv0E2VvsWlKCW3WwQgd3eSEC9GbL788KAQSEh7dHJqN0tl57jl6qUA2zbKMNkd
+	 CuKLC75SVxOTDMP8GOcuewxyyWqagnK96fWxbBIIAhBFCuLMdN5nxEFuvcGAgNl3XF
+	 YUc5r3fqlOo9Bf2G/U8T0DHYuDOZkXBGUYv/stfw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB3F9F8023A;
-	Tue, 13 Apr 2021 13:17:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A832DF8032B;
+	Tue, 13 Apr 2021 13:18:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CE0CF80254; Tue, 13 Apr 2021 13:17:51 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 72315F8022D
- for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2021 13:17:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72315F8022D
+ id 2A444F8032C; Tue, 13 Apr 2021 13:18:09 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C4DDF80260
+ for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2021 13:18:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C4DDF80260
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="htgGNyWt"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3A0861042;
+ Tue, 13 Apr 2021 11:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1618312682;
+ bh=OvNQM6IzRqdh+yn7nQwJNg/YLF9PnNkxrdQ/ThWGjc8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=htgGNyWtADlGcCPiJP5fBSZhNRgAP9DbAFrZhvgLiryC1QRZlhGvJXNZDD+IIoBNI
+ YUUNKK/nXIE9FpLQXqnHcHRSUiJl03dgeG6ns3XsK3sIdyO22ABpkHgjvuA616eeAU
+ wT2975oa+rTorepMsYpRm2/xf2k0xLd6GUTFQ3Wbu9sy3uslPOBpT1Veubj8PJhsVt
+ 4ykAGmiFYX0Cect+JMR6Eh3OxDz0VGjxseL0INNTq7YDGCCyce8Ws06dhz7G9Cl8T9
+ +qPNBcUezQhHnLQgyLUXPgo0brB3b1Pmj2q9VmQ9Rvk3DOqKPCnW7qCG41MiG8sUom
+ mvbKSM/MDDwmw==
+Date: Tue, 13 Apr 2021 12:17:40 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: ak5558: correct reset polarity
+Message-ID: <20210413111740.GC5586@sirena.org.uk>
+References: <1618293991-6611-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1618312664145020962-webhooks-bot@alsa-project.org>
-References: <1618312664145020962-webhooks-bot@alsa-project.org>
-Subject: rockchip/veyron sound level issues
-Message-Id: <20210413111751.1CE0CF80254@alsa1.perex.cz>
-Date: Tue, 13 Apr 2021 13:17:51 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="IpbVkmxF4tDyP/Kb"
+Content-Disposition: inline
+In-Reply-To: <1618293991-6611-1-git-send-email-shengjiu.wang@nxp.com>
+X-Cookie: Shake well before using.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
+ lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,25 +87,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #87 was opened from kapouer:
 
-Hi,
+--IpbVkmxF4tDyP/Kb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-setup:
-> asus c201 (speedy veyron)
-> linux 5.10.28 or 5.11.13
-> debian bullseye: alsa 1.2.4, asa-ucm-conf (and topology) installed, pulseaudio 14.2, gnome 3.38 on wayland
+On Tue, Apr 13, 2021 at 02:06:31PM +0800, Shengjiu Wang wrote:
 
-what works:
-- jack input/output using headset
+> Reset (aka power off) happens when the reset gpio is made active.
+> Change function name to ak5558_reset to match devicetree property
+> "reset-gpios".
 
-problems:
-- speaker output is somewhat low even at 100% (feels like 50%)
-- microphone is so low that it cannot detect sound (smashing the mic hole with a stick is detected but barely audible)
-- last time i checked hdmi was working - i need to check again though
+Please split the fix to polarity out from the refactoring, the
+refactoring completely dominates this patch so it's very hard to review.
 
-What can i provide ?
-pulseaudio -vvvvvv ?
+--IpbVkmxF4tDyP/Kb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/87
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB1fdQACgkQJNaLcl1U
+h9AZMQf8C+Dzhlre7G7rflNnG0xa6JsHdDP7W7C7EqGltU5gMyqxmtEyDgrvbO4y
+2ww8ck76dmT6S4xm8QWVfkxuSWGFntwg52fZzCqg/lIirPusSY8FI5fEZAhjQTDs
+Y9Biodef+9uS23aH4Ga7qwQ6da1tVAPOOVsMwAf6dwVB65qMQIwzvyu1ZXPC/itD
+OX1rMqBRVEWzpTBRhd5gqOLCiSran9pTOreC3GxVAZ8H/gPpKbwiZDBSjMMkW8hI
+emSeeHsb/qeeuoBd64tFgiS/5l9SRuP/fNeJ0ZebUjWekKg+jZ/REgVAVQgKSuzV
+OdpFIr7Si0sE/VHdvtMnG/uH1prYAg==
+=85l7
+-----END PGP SIGNATURE-----
+
+--IpbVkmxF4tDyP/Kb--
