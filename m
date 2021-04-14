@@ -4,62 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F1C8C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 06:15:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A34FEC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 06:49:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 94177611C9
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 06:15:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 94177611C9
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id 28DF16120E
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 06:49:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 28DF16120E
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=nxp.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 562B816C1;
-	Wed, 14 Apr 2021 08:14:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 562B816C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3A6216C6;
+	Wed, 14 Apr 2021 08:48:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3A6216C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618380944;
-	bh=iDJAhoGcF3lDVqxP+Uzet9MGxbwLrPGBBt/rNFzk0RE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ChWLUFUR9RYg3SV8GKTNb+S1nEtOy4tuMoTYBXLFjskIHAVNG0y8UKjQZmMevW+DS
-	 9jcwx/Sox8UXqj2xp1AirpCi6V6rqAnXb7+qIbr3wy4xor+qqB5Upd29OUW4ABnH/H
-	 RM4cSYRGGr9Ed+SXPVxWuZuAxtaC7TP0tKTH8nXg=
+	s=default; t=1618382983;
+	bh=4tD8Z2C1vXCo+vLuwlPOMdGDepRcu9Ittwjb2Vo1iZ8=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=k6mD1mu7HoNLRXxIRXs4jiha6qNVe/K7sfV+WsyB2dpQgWEeCYLyG831n15pgDkb8
+	 lnd3oFgmwHdFvPbof6gaGujilaUHfYttrOOUoJGKtfODoJgBmsTMI+8FjCRXJQCV+f
+	 lKTckXnYwKGTDvH9Rh1byps37ZFPE11X0f66KIeQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5B62F8025B;
-	Wed, 14 Apr 2021 08:14:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE637F8025B;
+	Wed, 14 Apr 2021 08:48:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4BEDF80269; Wed, 14 Apr 2021 08:14:52 +0200 (CEST)
-Received: from out30-132.freemail.mail.aliyun.com
- (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+ id C8335F80271; Wed, 14 Apr 2021 08:48:50 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AE15F80128
- for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 08:14:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AE15F80128
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R131e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04423; MF=yang.lee@linux.alibaba.com;
- NM=1; PH=DS; RN=10; SR=0; TI=SMTPD_---0UVWLJQ4_1618380884; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com
- fp:SMTPD_---0UVWLJQ4_1618380884) by smtp.aliyun-inc.com(127.0.0.1);
- Wed, 14 Apr 2021 14:14:44 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: james.schulman@cirrus.com
-Subject: [PATCH] ASoC: cs35l35: remove unused including <linux/version.h>
-Date: Wed, 14 Apr 2021 14:14:43 +0800
-Message-Id: <1618380883-114841-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- patches@opensource.cirrus.com, tiwai@suse.com, broonie@kernel.org,
- Yang Li <yang.lee@linux.alibaba.com>, david.rhodes@cirrus.com,
- linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B3EAF8025B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 08:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B3EAF8025B
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0E9FB2028ED;
+ Wed, 14 Apr 2021 08:48:40 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com
+ [165.114.16.14])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5751E2028EF;
+ Wed, 14 Apr 2021 08:48:37 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AE7D5402F0;
+ Wed, 14 Apr 2021 08:48:33 +0200 (CEST)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 -next 2/2] ASoC: ak5558: change function name to
+ ak5558_reset
+Date: Wed, 14 Apr 2021 14:33:44 +0800
+Message-Id: <1618382024-31725-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1618382024-31725-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1618382024-31725-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,27 +80,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix the following versioncheck warning:
-./sound/soc/codecs/cs35l35.c: 12 linux/version.h not needed.
+Change function name to ak5558_reset to match devicetree property
+"reset-gpios".
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/codecs/cs35l35.c | 1 -
- 1 file changed, 1 deletion(-)
+changes in v2:
+- split patches to two patches
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 55d529a..5d361c7 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -9,7 +9,6 @@
+ sound/soc/codecs/ak5558.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
+
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index f24d91b728dd..34aed80db0eb 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -318,21 +318,12 @@ static struct snd_soc_dai_driver ak5552_dai = {
+ 	.ops = &ak5558_dai_ops,
+ };
  
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
+-static void ak5558_power_off(struct ak5558_priv *ak5558)
++static void ak5558_reset(struct ak5558_priv *ak5558, bool active)
+ {
+ 	if (!ak5558->reset_gpiod)
+ 		return;
+ 
+-	gpiod_set_value_cansleep(ak5558->reset_gpiod, 1);
+-	usleep_range(1000, 2000);
+-}
+-
+-static void ak5558_power_on(struct ak5558_priv *ak5558)
+-{
+-	if (!ak5558->reset_gpiod)
+-		return;
+-
+-	gpiod_set_value_cansleep(ak5558->reset_gpiod, 0);
++	gpiod_set_value_cansleep(ak5558->reset_gpiod, active);
+ 	usleep_range(1000, 2000);
+ }
+ 
+@@ -340,7 +331,7 @@ static int ak5558_probe(struct snd_soc_component *component)
+ {
+ 	struct ak5558_priv *ak5558 = snd_soc_component_get_drvdata(component);
+ 
+-	ak5558_power_on(ak5558);
++	ak5558_reset(ak5558, false);
+ 	return ak5558_set_mcki(component);
+ }
+ 
+@@ -348,7 +339,7 @@ static void ak5558_remove(struct snd_soc_component *component)
+ {
+ 	struct ak5558_priv *ak5558 = snd_soc_component_get_drvdata(component);
+ 
+-	ak5558_power_off(ak5558);
++	ak5558_reset(ak5558, true);
+ }
+ 
+ static int __maybe_unused ak5558_runtime_suspend(struct device *dev)
+@@ -356,7 +347,7 @@ static int __maybe_unused ak5558_runtime_suspend(struct device *dev)
+ 	struct ak5558_priv *ak5558 = dev_get_drvdata(dev);
+ 
+ 	regcache_cache_only(ak5558->regmap, true);
+-	ak5558_power_off(ak5558);
++	ak5558_reset(ak5558, true);
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(ak5558->supplies),
+ 			       ak5558->supplies);
+@@ -375,8 +366,8 @@ static int __maybe_unused ak5558_runtime_resume(struct device *dev)
+ 		return ret;
+ 	}
+ 
+-	ak5558_power_off(ak5558);
+-	ak5558_power_on(ak5558);
++	ak5558_reset(ak5558, true);
++	ak5558_reset(ak5558, false);
+ 
+ 	regcache_cache_only(ak5558->regmap, false);
+ 	regcache_mark_dirty(ak5558->regmap);
 -- 
-1.8.3.1
+2.27.0
 
