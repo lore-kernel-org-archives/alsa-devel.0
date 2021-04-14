@@ -2,64 +2,76 @@ Return-Path: <SRS0=Xywd=JL=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A51BDC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 09:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C83F9C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 10:10:20 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C27CA61249
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 09:45:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C27CA61249
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id AA39A613C1
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 10:10:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA39A613C1
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=perex.cz
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD54916DE;
-	Wed, 14 Apr 2021 11:44:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD54916DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80EEB16E3;
+	Wed, 14 Apr 2021 12:09:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80EEB16E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618393531;
-	bh=C78gfFG7ZqCwa3mBe/eU3YTvZeeAgSihOjbngiPViLk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1618395016;
+	bh=g2KV6uvwNqFARQXIXbq65Ig8hncGpD4Dog8hoL/E+uA=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Aa6GpDFhQABifbCTLnWvafftzq43yS6AhTJE7ncLPFC+qCctvLNebycU/j+mFQRH+
-	 w1agZon1emV0IFQYRVvpiLJhr3xc0fshMY9m5GqOxBMhY2ZQVH81Zg7oksu2Ysg1UG
-	 dtk9lyG2B2ejaWmh5E/pH5wDEPI6XT9XizFJnrZk=
+	b=laD1ROocldmByx0C+t/+v1f8oKrSJm6xBVTSJxUF6syEepzax2ziwE0OABECLJmLH
+	 yvyyoskao3bHk2XkG4tAGOQK9JnuK8IxL3NK6Jo8NcT5XbOJpjgLib7pRy5rA3/5Cm
+	 5Rg3lFOOMRFYSG6U6cTUWpbll6kmlyuMsyuATiSI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73782F8025B;
-	Wed, 14 Apr 2021 11:44:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E28DF80128;
+	Wed, 14 Apr 2021 12:09:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAB82F80269; Wed, 14 Apr 2021 11:44:38 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ id 094A2F80269; Wed, 14 Apr 2021 12:09:24 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44114F80128
- for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 11:44:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44114F80128
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 1C87DAD09;
- Wed, 14 Apr 2021 09:44:31 +0000 (UTC)
-Date: Wed, 14 Apr 2021 11:44:30 +0200
-Message-ID: <s5h35vtw681.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D97BDF80128
+ for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 12:09:12 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id EB71FA0042;
+ Wed, 14 Apr 2021 12:09:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz EB71FA0042
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1618394952; bh=e4fAy7lUi0PnLjEQ2qQZEzndZLAmkdL48azaHRS2g8U=;
+ h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+ b=yMSF909KeOIrdLb/YW6Ch1f1EMA2Ynd6iZgGIuqSSK2o1eOZ7Y5WDJWWhyM+p0EcB
+ mCoh7/HThWIPpCPI7PhTWKuiWBELV0+a/ZkbBVUnexNZdD3GIuzlb01uytsZUA3Va8
+ JFq0frlKTHKT4QEw3ApsFGQkQWSE+yuKI36AiACU=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed, 14 Apr 2021 12:09:07 +0200 (CEST)
 Subject: Re: [PATCH] ALSA: control_led - fix the stack usage (control element
  ops)
-In-Reply-To: <20210414093031.1934261-1-perex@perex.cz>
+To: Takashi Iwai <tiwai@suse.de>
 References: <20210414093031.1934261-1-perex@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
+ <s5h35vtw681.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Message-ID: <7624e19b-d618-0dcd-8798-989a1375614f@perex.cz>
+Date: Wed, 14 Apr 2021 12:09:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <s5h35vtw681.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Cc: Nathan Chancellor <nathan@kernel.org>,
  ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -77,153 +89,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 14 Apr 2021 11:30:31 +0200,
-Jaroslav Kysela wrote:
+Dne 14. 04. 21 v 11:44 Takashi Iwai napsal(a):
+> On Wed, 14 Apr 2021 11:30:31 +0200,
+> Jaroslav Kysela wrote:
+>>
+>> It's a bad idea to allocate big structures on the stack. Allocate
+>> the required structures on demand and cache them in the led
+>> structure.
+>>
+>> Fixes: 22d8de62f11b ("ALSA: control - add generic LED trigger module as the new control layer")
+>> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>> Cc: Nathan Chancellor <nathan@kernel.org>
+>> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 > 
-> It's a bad idea to allocate big structures on the stack. Allocate
-> the required structures on demand and cache them in the led
-> structure.
+> Thanks for the patch.
 > 
-> Fixes: 22d8de62f11b ("ALSA: control - add generic LED trigger module as the new control layer")
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-Thanks for the patch.
-
-But, wouldn't it be simpler if we just add snd_ctl_elem_info and
-_value in snd_ctl_led object itself?
-
--- 8< --
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -38,6 +38,8 @@ struct snd_ctl_led {
- 	enum led_audio trigger_type;
- 	enum snd_ctl_led_mode mode;
- 	struct snd_ctl_led_card *cards[SNDRV_CARDS];
-+	struct snd_ctl_elem_info elem_info;
-+	struct snd_ctl_elem_value elem_value;
- };
- 
- struct snd_ctl_led_ctl {
-
--- 8< --
-
-Then we need no extra kmalloc.  I guess snd_ctl_led_get() shall be
-called almost always, so we won't save much even if we allocate
-dynamically.
-
-
-thanks,
-
-Takashi
-
-
-> ---
->  sound/core/control_led.c | 52 ++++++++++++++++++++++++----------------
->  1 file changed, 32 insertions(+), 20 deletions(-)
+> But, wouldn't it be simpler if we just add snd_ctl_elem_info and
+> _value in snd_ctl_led object itself?
 > 
-> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> index 93b201063c7d..9d1612b1a6ff 100644
+> -- 8< --
 > --- a/sound/core/control_led.c
 > +++ b/sound/core/control_led.c
-> @@ -37,6 +37,7 @@ struct snd_ctl_led {
->  	unsigned int group;
+> @@ -38,6 +38,8 @@ struct snd_ctl_led {
 >  	enum led_audio trigger_type;
 >  	enum snd_ctl_led_mode mode;
-> +	void *info_and_value;
 >  	struct snd_ctl_led_card *cards[SNDRV_CARDS];
+> +	struct snd_ctl_elem_info elem_info;
+> +	struct snd_ctl_elem_value elem_value;
 >  };
 >  
-> @@ -94,34 +95,41 @@ static struct snd_ctl_led *snd_ctl_led_get_by_access(unsigned int access)
->  	return &snd_ctl_leds[group];
->  }
->  
-> -static int snd_ctl_led_get(struct snd_ctl_led_ctl *lctl)
-> +static int snd_ctl_led_get(struct snd_ctl_led *led, struct snd_ctl_led_ctl *lctl)
->  {
->  	struct snd_kcontrol *kctl = lctl->kctl;
-> -	struct snd_ctl_elem_info info;
-> -	struct snd_ctl_elem_value value;
-> +	struct snd_ctl_elem_info *info = led->info_and_value;
-> +	struct snd_ctl_elem_value *value;
->  	unsigned int i;
->  	int result;
->  
-> -	memset(&info, 0, sizeof(info));
-> -	info.id = kctl->id;
-> -	info.id.index += lctl->index_offset;
-> -	info.id.numid += lctl->index_offset;
-> -	result = kctl->info(kctl, &info);
-> +	if (info == NULL) {
-> +		info = kmalloc(sizeof(*info) + sizeof(*value), GFP_KERNEL);
-> +		if (info == NULL)
-> +			return -1;
-> +		led->info_and_value = info;
-> +	}
-> +	value = (void *)(info + 1);
-> +	memset(info, 0, sizeof(*info));
-> +	info->id = kctl->id;
-> +	info->id.index += lctl->index_offset;
-> +	info->id.numid += lctl->index_offset;
-> +	result = kctl->info(kctl, info);
->  	if (result < 0)
->  		return -1;
-> -	memset(&value, 0, sizeof(value));
-> -	value.id = info.id;
-> -	result = kctl->get(kctl, &value);
-> +	memset(value, 0, sizeof(*value));
-> +	value->id = info->id;
-> +	result = kctl->get(kctl, value);
->  	if (result < 0)
->  		return -1;
-> -	if (info.type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-> -	    info.type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
-> -		for (i = 0; i < info.count; i++)
-> -			if (value.value.integer.value[i] != info.value.integer.min)
-> +	if (info->type == SNDRV_CTL_ELEM_TYPE_BOOLEAN ||
-> +	    info->type == SNDRV_CTL_ELEM_TYPE_INTEGER) {
-> +		for (i = 0; i < info->count; i++)
-> +			if (value->value.integer.value[i] != info->value.integer.min)
->  				return 1;
-> -	} else if (info.type == SNDRV_CTL_ELEM_TYPE_INTEGER64) {
-> -		for (i = 0; i < info.count; i++)
-> -			if (value.value.integer64.value[i] != info.value.integer64.min)
-> +	} else if (info->type == SNDRV_CTL_ELEM_TYPE_INTEGER64) {
-> +		for (i = 0; i < info->count; i++)
-> +			if (value->value.integer64.value[i] != info->value.integer64.min)
->  				return 1;
->  	}
->  	return 0;
-> @@ -149,7 +157,7 @@ static void snd_ctl_led_set_state(struct snd_card *card, unsigned int access,
->  	list_for_each_entry(lctl, &led->controls, list) {
->  		if (lctl->kctl == kctl && lctl->index_offset == ioff)
->  			found = true;
-> -		UPDATE_ROUTE(route, snd_ctl_led_get(lctl));
-> +		UPDATE_ROUTE(route, snd_ctl_led_get(led, lctl));
->  	}
->  	if (!found && kctl && card) {
->  		lctl = kzalloc(sizeof(*lctl), GFP_KERNEL);
-> @@ -159,7 +167,7 @@ static void snd_ctl_led_set_state(struct snd_card *card, unsigned int access,
->  			lctl->kctl = kctl;
->  			lctl->index_offset = ioff;
->  			list_add(&lctl->list, &led->controls);
-> -			UPDATE_ROUTE(route, snd_ctl_led_get(lctl));
-> +			UPDATE_ROUTE(route, snd_ctl_led_get(led, lctl));
->  		}
->  	}
->  	mutex_unlock(&snd_ctl_led_mutex);
-> @@ -300,6 +308,10 @@ static void snd_ctl_led_clean(struct snd_card *card)
->  				snd_ctl_led_ctl_destroy(lctl);
->  				goto repeat;
->  			}
-> +		if (!card) {
-> +			kfree(led->info_and_value);
-> +			led->info_and_value = NULL;
-> +		}
->  	}
->  }
->  
-> -- 
-> 2.30.2
+>  struct snd_ctl_led_ctl {
 > 
+> -- 8< --
+> 
+> Then we need no extra kmalloc.  I guess snd_ctl_led_get() shall be
+> called almost always, so we won't save much even if we allocate
+> dynamically.
+
+The idea was to allocate this structure purely on demand. We can have the case
+where some LED group is inactive (no speaker LED for example) or the LED
+functionality is not used at all even if the module is loaded. And it's true
+that those structures requires some more bytes.
+
+Another option is just to make the structures in snd_ctl_led_get() static -
+two line patch. The calls are protected with snd_ctl_led_mutex . But it may be
+problematic if we do a finer mutex locking per LED group in the future.
+
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
