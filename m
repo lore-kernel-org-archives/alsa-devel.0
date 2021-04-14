@@ -7,85 +7,86 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9346CC433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 15:51:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 322EEC43461
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 15:51:19 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 45A9661242
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 15:51:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 45A9661242
+	by mail.kernel.org (Postfix) with ESMTPS id 87785611F0
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 15:51:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 87785611F0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linaro.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7EAF01671;
-	Wed, 14 Apr 2021 17:50:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EAF01671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26E031673;
+	Wed, 14 Apr 2021 17:50:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26E031673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618415473;
-	bh=qJNcjS1UKoQYxkYBRpVxqqPXkv3+B6i2njufYFbofk0=;
+	s=default; t=1618415477;
+	bh=gKYlUs0eUWBlYJEIra1788YCzOATdHXWdV/trnietk0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CN9BzIknKWY2foERegDd9BMrATJmXP/anv25IC08aSGxn3TL+fG/GWv/lhsVCBcTX
-	 zCjr51/+5OUpRXGzRwZp/dBAXZPbInvvPy0af/I1/vRyWlbffbRpj9xypDkm1xrxw6
-	 LgVLYdfcmuf6MkrX+6Rtt2JxV+haFu0k2iGmP2e0=
+	b=MFSJ7YSHNUelRef1C/9/90VmIkHpSzO0v2NfqSBFLsoR/2V2LUa6u3PzK2E5jt1jx
+	 tZabvROL2sF9YUd4q7XZu09M95WE76ldK23zmkMtOgSOeH123U5OaAHgwC9qXr8ijO
+	 f1+3+drM0lRw/ufc1rg19ntPMdbEehsBUGcMCgZQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DD18F802A9;
-	Wed, 14 Apr 2021 17:49:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B75CBF80273;
+	Wed, 14 Apr 2021 17:49:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 335A2F8032D; Wed, 14 Apr 2021 17:49:34 +0200 (CEST)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
+ id 5E1E6F80430; Wed, 14 Apr 2021 17:49:41 +0200 (CEST)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAA77F8025B
- for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 17:49:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAA77F8025B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24BD6F80278
+ for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 17:49:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24BD6F80278
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Il2kAK6D"
-Received: by mail-ej1-x62e.google.com with SMTP id v6so30859466ejo.6
- for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 08:49:25 -0700 (PDT)
+ header.b="w3P0MHZg"
+Received: by mail-ej1-x62a.google.com with SMTP id e14so32109738ejz.11
+ for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 08:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=aqR7BlF4HSnnBDnstX8+p5EmjKpi9oGoXkglRwnfXtQ=;
- b=Il2kAK6DaEhXk+Qu28VBaiON0vWv1u/STSJGWLYoCZQo86bwM/AkbYBHlq3XXu/uYy
- AX5uN7c/OBVfvb+tei4O5wbQkaZ77VhCfd8qHxqzA4lHJx5KFVouATL5e8vI850X23or
- +Tdt9nLraopIL8QvLgifNX9y7GxjD0fuJsJtcUUcBZBWAeCFqXL5cBn0rGBNYiBRPBuI
- e1y7zSEiPSgPSp5T718r35LzOPabgcrf4Uhq3omH8KpVpUUxjZ/TSBd4Xwh2u5x1URlG
- HNy5u2bt65Q9kBNw950LI1detP/eJl55k76NZgkNg4fCN4o2IUesYji3AYJgtF/r0nHi
- THoQ==
+ bh=X9klurVQ9zaPgZiimhz9hUIzAK6dPBY5bXiVGcul6OE=;
+ b=w3P0MHZgxNgpNfFYAq2gmPdZrV7GUG+M5QtlVg6DAc8uPqNt93EKgxKPFCjkJ35Q7F
+ gmPG+NEEm/uO2i7CkLyIp4plI6sV/IG7gHmngXfZ+QtF+SuPMQ3iujXnmWYlUO+lBBig
+ 6fuEWVzhrcSBZSdoVB3vBzOUJ4MN0I4IMlo4OmwZOH2PeMl0mry4dsDaMWnMSE41OojN
+ 16/D0CZ4guSwifAAKV0r6b7OGE45Qq5sj/tjOpAdAlG5RnROkQW5UvdshCSm4v495FFZ
+ fUeSQzePBsCFpJzL2VT0m6qU/LBnE4ISp1nevv9dAU5HZht2xOE75ru6s1k1Hl/4+wlh
+ I/+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=aqR7BlF4HSnnBDnstX8+p5EmjKpi9oGoXkglRwnfXtQ=;
- b=OE8C4GXaX44a2v2KiscB9hxs/FqUOI5cZmZc4z/aqw34S3CbnBkfawJxDR3L9YPoH9
- QZjVLS729i6Ht5SJIMSlivluEy3BV8k3wWKfCNvL4Jrm/mAUb069KK1eVBOAXVqS9bqT
- POI2HmG3L2eJNBokamZkBeHfFmQMzvkd7g3CZvT7yl0/PTjj8fofviJa0XRTWrNmQ7Bf
- eoF4FTtGYwVU8lwCTavCmf6dZUdPO3Sb2WRYTDvZNkgbzr6iVlz13Cmeq/8e7mUEBmgx
- YVjU+HjY1e4yGzPGFFoyPuhx3xqhjzWXvMRoJHcSWmqc9bA+KE9Gpile38f3ZtLZoZTT
- kaqQ==
-X-Gm-Message-State: AOAM530yoPkLCrSDlRTsN2EI1J6cHRKq/0hrclC5SKOq4U917562Sk84
- 4oaqKKmAl+p593xiKugBq/HjZA==
-X-Google-Smtp-Source: ABdhPJzWZ53gfi0xzVnwwXXBQEC/fU5WKuwlHPkPefaXJjw9xj0tfy9UvIFAmGFbr1grNOvT9H7zoA==
-X-Received: by 2002:a17:906:d8c:: with SMTP id
- m12mr15958347eji.347.1618415364624; 
- Wed, 14 Apr 2021 08:49:24 -0700 (PDT)
+ bh=X9klurVQ9zaPgZiimhz9hUIzAK6dPBY5bXiVGcul6OE=;
+ b=dEUpQu8IOAfiPcOHs37DidtZT/wkiMCM347q4pWmmaEWqys79hW//AG1YR2iaxLMB0
+ YeYdTEhOSTdFdSDKCzXLbcxZMmU1hlJLgPHBBlAI92rO85h3NEJYac42U0KiKfgXfB5Z
+ KHHD0IugadJWaZNxo0evigdwzyuuzSxNEtUjtUnMYQouxCMFVad9tTS8V6vTQkvSDrsT
+ T/+7J6AUiA4HemAdGK18AQJExiMScbIMVLd4FETdDlhzVeEpKhwH8wsDwll4P3KJ5bgf
+ NgWqCFc1nzVXR7QzE8Tbici8K8EKQyO+pVOSxd5HcfNLRotv2WdRTQHsE1TDaYEdVOL/
+ r+Og==
+X-Gm-Message-State: AOAM531cA4ldzIFLuOtowD1MQC7vSK/yUStzKnJdiclyMumUU35qOMlI
+ WRWDJuR94WfwSZgV+GpTU30lFw==
+X-Google-Smtp-Source: ABdhPJzopcPuHp+P53ubCJe/TbePBdtumhDcyarmzsRWLkCWIDduTL0agiZLzwZxLHSC0aA/ZAzg5w==
+X-Received: by 2002:a17:906:ecb8:: with SMTP id
+ qh24mr39510393ejb.162.1618415368378; 
+ Wed, 14 Apr 2021 08:49:28 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
- by smtp.gmail.com with ESMTPSA id q12sm10495540ejy.91.2021.04.14.08.49.23
+ by smtp.gmail.com with ESMTPSA id q12sm10495540ejy.91.2021.04.14.08.49.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 14 Apr 2021 08:49:24 -0700 (PDT)
+ Wed, 14 Apr 2021 08:49:27 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v4 1/9] ASoC: dt-bindings: wcd938x: add bindings for wcd938x
-Date: Wed, 14 Apr 2021 16:48:37 +0100
-Message-Id: <20210414154845.21964-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 4/9] ASoC: dt-bindings: wcd938x-sdw: add bindings for
+ wcd938x-sdw
+Date: Wed, 14 Apr 2021 16:48:40 +0100
+Message-Id: <20210414154845.21964-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
 References: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
@@ -109,195 +110,79 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
-connected over SoundWire. This device has two SoundWire device RX and
-TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
-7 x TX diff inputs, 8 DMICs, MBHC.
+connected over SoundWire. This device has two SoundWire devices RX and
+TX respectively. This bindings is for those slave devices on WCD9380/WCD9385.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,wcd938x.yaml          | 176 ++++++++++++++++++
- 1 file changed, 176 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+ .../bindings/sound/qcom,wcd938x-sdw.yaml      | 61 +++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
 new file mode 100644
-index 000000000000..4c8fa8290af0
+index 000000000000..fff33c65491b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-@@ -0,0 +1,176 @@
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+@@ -0,0 +1,61 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/qcom,wcd938x.yaml#
++$id: http://devicetree.org/schemas/sound/qcom,wcd938x-sdw.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Bindings for Qualcomm WCD9380/WCD9385 Audio Codec
++title: Bindings for Qualcomm SoundWire Slave devices on WCD9380/WCD9385
 +
 +maintainers:
 +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
 +description: |
 +  Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC.
-+  It has RX and TX Soundwire slave devices.
++  It has RX and TX Soundwire slave devices. This bindings is for the
++  slave devices.
 +
 +properties:
 +  compatible:
++    const: sdw20217010d00
++
++  reg:
++    maxItems: 1
++
++  qcom,direction:
++    description: direction of the SoundWire device instance
 +    enum:
-+      - qcom,wcd9380-codec
-+      - qcom,wcd9385-codec
++      - rx
++      - tx
 +
-+  reset-gpios:
-+    description: GPIO spec for reset line to use
-+    maxItems: 1
-+
-+  vdd-buck-supply:
-+    description: A reference to the 1.8V buck supply
-+
-+  vdd-rxtx-supply:
-+    description: A reference to the 1.8V rx supply
-+
-+  vdd-io-supply:
-+    description: A reference to the 1.8V I/O supply
-+
-+  qcom,tx-device:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 1
-+    description: A reference to Soundwire tx device phandle
-+
-+  qcom,rx-device:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 1
-+    description: A reference to Soundwire rx device phandle
-+
-+  qcom,micbias1-microvolt:
-+    description: micbias1 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias2-microvolt:
-+    description: micbias2 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias3-microvolt:
-+    description: micbias3 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,micbias4-microvolt:
-+    description: micbias4 voltage
-+    minimum: 1800000
-+    maximum: 2850000
-+
-+  qcom,mbhc-hphl-switch:
-+    description: Indicates that HPHL switch type is normally closed
-+    type: boolean
-+
-+  qcom,mbhc-ground-switch:
-+    description: Indicates that Headset Ground switch type is normally closed
-+    type: boolean
-+
-+  qcom,mbhc-button0-vthreshold-microvolt:
-+    description: Voltage threshold value headset button0
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button1-vthreshold-microvolt:
-+    description: Voltage threshold value headset button1
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button2-vthreshold-microvolt:
-+    description: Voltage threshold value headset button2
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button3-vthreshold-microvolt:
-+    description: Voltage threshold value headset button3
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button4-vthreshold-microvolt:
-+    description: Voltage threshold value headset button4
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button5-vthreshold-microvolt:
-+    description: Voltage threshold value headset button5
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button6-vthreshold-microvolt:
-+    description: Voltage threshold value headset button6
-+    minimum: 0
-+    maximum: 500000
-+
-+  qcom,mbhc-button7-vthreshold-microvolt:
-+    description: Voltage threshold value headset button7
-+    minimum: 0
-+    maximum: 500000
-+
-+  '#sound-dai-cells':
-+    const: 1
++  qcom,port-mapping:
++    description: |
++      Specifies static port mapping between slave and master ports.
++      In the order of slave port index.
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 4
++    maxItems: 5
 +
 +required:
 +  - compatible
-+  - reset-gpios
-+  - qcom,tx-device
-+  - qcom,rx-device
-+  - qcom,micbias1-microvolt
-+  - qcom,micbias2-microvolt
-+  - qcom,micbias3-microvolt
-+  - qcom,micbias4-microvolt
-+  - qcom,mbhc-hphl-switch
-+  - qcom,mbhc-ground-switch
-+  - "#sound-dai-cells"
++  - reg
++  - qcom,direction
++  - qcom,port-mapping
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    codec {
-+        compatible = "qcom,wcd9380-codec";
-+        reset-gpios = <&tlmm 32 0>;
-+        #sound-dai-cells = <1>;
-+        qcom,tx-device = <&wcd938x_tx>;
-+        qcom,rx-device = <&wcd938x_rx>;
-+        qcom,micbias1-microvolt = <1800000>;
-+        qcom,micbias2-microvolt = <1800000>;
-+        qcom,micbias3-microvolt = <1800000>;
-+        qcom,micbias4-microvolt = <1800000>;
-+        qcom,mbhc-hphl-switch;
-+        qcom,mbhc-ground-switch;
-+        qcom,mbhc-button0-vthreshold-microvolt = <75000>;
-+        qcom,mbhc-button1-vthreshold-microvolt = <150000>;
-+        qcom,mbhc-button2-vthreshold-microvolt = <237000>;
-+        qcom,mbhc-button3-vthreshold-microvolt = <500000>;
-+        qcom,mbhc-button5-vthreshold-microvolt = <500000>;
-+        qcom,mbhc-button6-vthreshold-microvolt = <500000>;
-+        qcom,mbhc-button7-vthreshold-microvolt = <500000>;
-+    };
-+
-+    /* ... */
-+
 +    soundwire@3230000 {
 +        #address-cells = <2>;
 +        #size-cells = <0>;
 +        reg = <0x03230000 0x2000>;
-+        wcd938x_tx: codec@0,3 {
++
++        codec@0,3 {
 +            compatible = "sdw20217010d00";
 +            reg  = <0 3>;
 +            qcom,direction = "tx";
 +            qcom,port-mapping = <2 3 4 5>;
 +        };
-+
-+        wcd938x_rx: codec@0,4 {
-+            compatible = "sdw20217010d00";
-+            reg  = <0 4>;
-+            qcom,direction = "rx";
-+            qcom,port-mapping = <1 2 3 4 5>;
-+        };
-+
 +    };
 +
 +...
