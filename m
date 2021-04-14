@@ -3,69 +3,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D6A3C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 12:23:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA608C433ED
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 12:24:47 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CA1E6117A
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 12:23:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CA1E6117A
+	by mail.kernel.org (Postfix) with ESMTPS id 278D461107
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Apr 2021 12:24:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 278D461107
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FCEF1661;
-	Wed, 14 Apr 2021 14:22:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FCEF1661
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3C941689;
+	Wed, 14 Apr 2021 14:23:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C941689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618403020;
-	bh=siWxyXiAUw52kRPXdd3SAmnaco9ozAEpETgj5PV4bYA=;
+	s=default; t=1618403085;
+	bh=W7zQAI+k+kWNK7XZtp6tKEUpXPRoKRwRxZ6Fp67UrxM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ph5wkfyjrvpBA3PUSuOTouNqClMOA9i+N3giIrx0H0p+8dZgjLEvzKmw65+FfQBa7
-	 V11m41FNDTfKoHV0Qz4qgatkGPwFlXHrAlvHVvOrgKzYu+Kumxgvuv94J79yVsKe6E
-	 sXT3HfKG0+i/c08U0+zCswSPes4XZtuLkl4tTCqE=
+	b=c+LILuuBwDInLl2g+RWRvO4eyjygkDRWW33E4IuB0/oFjIN/IAjjvNtk5BatlbQ/m
+	 1Qx912Rr5jYH/2cBUfMwDK5fDdLmcp1UaD7C7vYZ4Qo0YkNdjZHxjcjjOX2qcsmkM5
+	 ZIEaoaAJxCb9TXBf6k1+CEt+BJ2hTSYjk0E22PH0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AD5EF8025B;
-	Wed, 14 Apr 2021 14:22:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3075FF8025B;
+	Wed, 14 Apr 2021 14:23:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29F15F80269; Wed, 14 Apr 2021 14:22:48 +0200 (CEST)
+ id 70033F80273; Wed, 14 Apr 2021 14:23:54 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 826D8F80128
- for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 14:22:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 826D8F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7222F8025B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2021 14:23:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7222F8025B
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 617B5AFC1;
- Wed, 14 Apr 2021 12:22:35 +0000 (UTC)
-Date: Wed, 14 Apr 2021 14:22:35 +0200
-Message-ID: <s5hpmyxukc4.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 7E654ABE2;
+ Wed, 14 Apr 2021 12:23:47 +0000 (UTC)
+Date: Wed, 14 Apr 2021 14:23:46 +0200
+Message-ID: <s5ho8ehuka5.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: Re: [2/2]ALSA: hda: add Zhaoxin HDAC non-snoop support: patch a
- design limitation
-In-Reply-To: <0f1c89c9728f4310b4e84e4c74df02c6@zhaoxin.com>
-References: <0f1c89c9728f4310b4e84e4c74df02c6@zhaoxin.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: control_led - fix the stack usage (control element
+ ops)
+In-Reply-To: <20210414105858.1937710-1-perex@perex.cz>
+References: <20210414105858.1937710-1-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>,
- "Zhuangzhuang He\(SH-RD\)" <ZhuangzhuangHe@zhaoxin.com>,
- "Leo Liu\(XA-RD\)" <LeoLiu@zhaoxin.com>,
- "Cobe Chen\(BJ-RD\)" <CobeChen@zhaoxin.com>,
- "Tim Guo\(BJ-RD\)" <TimGuo@zhaoxin.com>,
- "Tony W. Wang\(XA-RD\)" <TonyWWang@zhaoxin.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Nathan Chancellor <nathan@kernel.org>,
+ ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,55 +77,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 14 Apr 2021 14:00:23 +0200,
-Hans Hu(SH-RD) wrote:
+On Wed, 14 Apr 2021 12:58:58 +0200,
+Jaroslav Kysela wrote:
 > 
-> Hi Takashi,
+> It's a bad idea to allocate big structures on the stack.
+> Mark the variables as static and add a note for the locking.
 > 
-> ZHAOXIN HDAC controller has one design limitation when it works in non-snoop mode. This design limitation is: hardware can't guarantee that the write CORB cycle always completes first before the write CORBWP cycle. Here is the error scene:
-> int snd_hdac_bus_send_cmd(struct hdac_bus *bus, unsigned int val)
-> {
-> ...
->         bus->corb.buf[wp] = cpu_to_le32(val);         // cycle_1:  write value to CORB
->         snd_hdac_chip_writew(bus, CORBWP, wp);     // cycle_2:  write wp to CORBWP
-> ...
-> }
-> Normally, after cycle_2, DMA engine will start working and get data from CORB and sent it out. But if cycle_1 haven’t finished yet at this time(limitation occurs), which means the value haven’t been written into CORB, then DMA engine will get unexpected value, then error occurred. (feels like one kind of CORB underrun).
-> 
-> If we add one read CORB cycle between cycle_1 and cycle_2, cycle_1 and cycle_2 operations will be synchronized, this limitation will be fixed. We have written a draft patch based on this situation and hope to be accepted, the patch example is as follows:
-> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-> index 22af68b..c338db00 100644
-> --- a/include/sound/hdaudio.h
-> +++ b/include/sound/hdaudio.h
-> @@ -339,6 +339,7 @@ struct hdac_bus {
->         bool sync_write:1;              /* sync after verb write */
->         bool use_posbuf:1;              /* use position buffer */
->         bool snoop:1;                   /* enable snooping */
-> +       bool no_snoop_corb_sync:1;
->         bool align_bdle_4k:1;           /* BDLE align 4K boundary */
->         bool reverse_assign:1;          /* assign devices in reverse order */
->         bool corbrp_self_clear:1;       /* CORBRP clears itself after reset */
-> diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-> index 062da7a..6c90cdd 100644
-> --- a/sound/hda/hdac_controller.c
-> +++ b/sound/hda/hdac_controller.c
-> @@ -167,6 +167,8 @@ int snd_hdac_bus_send_cmd(struct hdac_bus *bus, unsigned int val)
-> 
->         bus->rirb.cmds[addr]++;
->         bus->corb.buf[wp] = cpu_to_le32(val);
-> +       if (bus->no_snoop_corb_sync)
-> +               val = bus->corb.buf[wp];
->         snd_hdac_chip_writew(bus, CORBWP, wp);
+> Fixes: 22d8de62f11b ("ALSA: control - add generic LED trigger module as the new control layer")
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Just wondering whether using WRITE_ONCE() macro would be enough?
-e.g.
-	WRITE_ONCE(bus->corb.buf[wp], cpu_to_le32(val));
+Applied now (with a removal of the duplicated sign-off).
 
-Also, no_snoop_corb_sync is a bit confusing.  What you do is rather
-sync of the written value, so it can be taken as if other way round.
-Maybe no_coherent_corb_write or such would be better understandable.
+Thanks!
 
-
-thanks,
 
 Takashi
