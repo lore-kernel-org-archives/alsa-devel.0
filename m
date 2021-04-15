@@ -2,75 +2,62 @@ Return-Path: <SRS0=rm39=JM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6C7A3C433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 05:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66FFDC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 06:25:13 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 95D30611AB
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 05:28:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 95D30611AB
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+	by mail.kernel.org (Postfix) with ESMTPS id 747BD60231
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 06:25:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 747BD60231
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5430E1661;
-	Thu, 15 Apr 2021 07:27:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5430E1661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 575811662;
+	Thu, 15 Apr 2021 08:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 575811662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618464493;
-	bh=E0NXjV1QcWnB0nzyM6JheEd3n+XzG7vZ705oJrc23IA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=b9PjPVCHAyVCz/aAOdlACP6MPDgCwSA+sX0Omd2byexih+NUcqVtMeMYHx+VYJ0rv
-	 K4DgLTUMpePRPsqNzIZ5Xl+COeNDLpdetwsTmtKNSilmqTHVmy7kdNegg0QmKPYLqo
-	 aUzBx5q88fNU6IIopBqieNPI4eNR7N631xnbym0Q=
+	s=default; t=1618467908;
+	bh=0ZsBGRgfSZ9IPOFf7UYLgxbetl0/EURAw23dgCLlsyg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=MYCgtQ//Qh9K7+ROoLV7Y2Bt6MCSN7Xktxelcnnv8JWRDsg4U7J/XKR9lWJLCxqBk
+	 Hs6VqIZRceyx79naDjyNqFOFePI4ntElFro8YXdXMaQ3C5iorXOJ0VS7nFgyflJLZr
+	 Lh08CNgE05Uw/ViI+GHbMIFVc1fI44uGtzPxSU3U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D46D6F8021D;
-	Thu, 15 Apr 2021 07:27:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA897F8021D;
+	Thu, 15 Apr 2021 08:24:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36125F800ED; Thu, 15 Apr 2021 07:27:21 +0200 (CEST)
-Received: from desiato.infradead.org (desiato.infradead.org
- [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2E93F800ED
- for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 07:27:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2E93F800ED
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="gs7eGgnM"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
- :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=FMTd8I8cM7ZBmOYcdPGq5q1CD9LHK5h6uuZ0K6Eod94=; b=gs7eGgnMpOvl7mf1Md8+Hgyu+u
- zr9W8DMqYp0bX7sUfA2mOC5r0JWxkLSSkGLLFzsELCUJrw/Sy5VCu402GbwsSVA1s+G6GqXw/l6MD
- bPXN+rM5fIz8fb9gYZm2mFSHXlJgZCDe27CCACKBAROSr3xUUrdRCKr0S/omkGV7gNFZ61YbksKfh
- g149DSC4YV4TUBEtZSEunvbW4/Dcu8k/DoIbVGQgeruIungJF7d+C9Kwff19mwKeh4IZWp5IYD+Wt
- /pKbSICrXfRHe4rtHeX0qynsueOPE3/yfVkKWCrCKrJj2G9ZBNaW3A0Qba7bp/BwD7XVhK9UaF0IO
- UnIN2Vxg==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
- by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
- id 1lWuWi-00Eu5H-3E; Thu, 15 Apr 2021 05:26:54 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: virtio: correct the function name in kernel-doc comment
-Date: Wed, 14 Apr 2021 22:26:45 -0700
-Message-Id: <20210415052645.14465-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
- virtualization@lists.linux-foundation.org,
- Anton Yakovlev <anton.yakovlev@opensynergy.com>,
- "Michael S. Tsirkin" <mst@redhat.com>
+ id A3895F8022B; Thu, 15 Apr 2021 08:24:14 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id DC9A9F80128
+ for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 08:24:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC9A9F80128
+Date: 15 Apr 2021 15:24:01 +0900
+X-IronPort-AV: E=Sophos;i="5.82,223,1613401200"; d="scan'208";a="78370583"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 15 Apr 2021 15:24:01 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 0BE2841C6935;
+ Thu, 15 Apr 2021 15:24:01 +0900 (JST)
+Message-ID: <878s5kysji.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: soc-pcm: fixup soc_pcm_params_symmetry()
+In-Reply-To: <87a6q0z4xt.wl-kuninori.morimoto.gx@renesas.com>
+References: <87a6q0z4xt.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,28 +73,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix kernel-doc warning that the wrong function name is used in a
-kernel-doc comment:
 
-../sound/virtio/virtio_ctl_msg.c:70: warning: expecting prototype for virtsnd_ctl_msg_request(). Prototype was for virtsnd_ctl_msg_response() instead
+Hi Mark
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Cc: alsa-devel@alsa-project.org
+> commit 3a9067211122 ("ASoC: soc-pcm: cleanup soc_pcm_params_symmetry()")
+> cleanups soc_pcm_params_symmetry() by addig new
+> __soc_pcm_params_symmetry() macro.
+> 
+> It checks symmetry first, and checks each DAI settings if symmetry
+> was true.
+> But original code checked
+> 
+> 	symmetric_rate		: DAI_Link / CPU         (A)
+> 	symmetric_channels	: DAI_Link / CPU / Codec (B)
+> 	symmetric_sample_bits	: DAI_Link / CPU / Codec (B)
+> 
+> 	(A) was using for_each_rtd_cpu_dais()
+> 	(B) was using for_each_rtd_dais()
+> 
+> Current code is using (B) for all symmetric_xxx. This is bug.
+
+Oops ?
+More older verion was
+
+	symmetric_rate		: DAI_Link / CPU / Codec (B)
+	symmetric_channels	: DAI_Link / CPU / Codec (B)
+	symmetric_sample_bits	: DAI_Link / CPU / Codec (B)
+
+but commit c840f7698d26 ("ASoC: soc-pcm: Merge for_each_rtd_cpu/codec_dais()")
+had bug, and code become
+
+	symmetric_rate		: DAI_Link / CPU         (A)
+	symmetric_channels	: DAI_Link / CPU / Codec (B)
+	symmetric_sample_bits	: DAI_Link / CPU / Codec (B)
+
+And commit 3a9067211122 ("ASoC: soc-pcm: cleanup soc_pcm_params_symmetry()")
+back again
+
+	symmetric_rate		: DAI_Link / CPU / Codec (B)
+	symmetric_channels	: DAI_Link / CPU / Codec (B)
+	symmetric_sample_bits	: DAI_Link / CPU / Codec (B)
+
+Does this issue had been happen since older versoin ??
+
+	# aplay 44100.wav
+	# aplay 44100.wav
+=>	[kernel] be.ak4613-hifi: ASoC: unmatched rate symmetry: 44100 - 48000
+	[kernel] be.ak4613-hifi: ASoC: hw_params BE failed -22
+
+If so, correct solution should be (A2)
+
+	(A1) Symmetric checks CPU only
+	(A2) Symmetric checks both CPU / Codec, but ignores dummy-DAI
+
+Thank you for your help !!
+
+Best regards
 ---
- sound/virtio/virtio_ctl_msg.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20210414.orig/sound/virtio/virtio_ctl_msg.c
-+++ linux-next-20210414/sound/virtio/virtio_ctl_msg.c
-@@ -61,7 +61,7 @@ void *virtsnd_ctl_msg_request(struct vir
- }
- 
- /**
-- * virtsnd_ctl_msg_request() - Get a pointer to the response header.
-+ * virtsnd_ctl_msg_response() - Get a pointer to the response header.
-  * @msg: Control message.
-  *
-  * Context: Any context.
+Kuninori Morimoto
