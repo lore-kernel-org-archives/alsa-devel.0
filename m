@@ -2,72 +2,65 @@ Return-Path: <SRS0=rm39=JM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E088BC433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 07:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35CD7C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 08:56:26 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 32A1A611F1
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 07:58:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32A1A611F1
+	by mail.kernel.org (Postfix) with ESMTPS id B7214611CD
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 08:56:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B7214611CD
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B5FC165D;
-	Thu, 15 Apr 2021 09:57:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B5FC165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 211D8165D;
+	Thu, 15 Apr 2021 10:55:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 211D8165D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618473526;
-	bh=/qlSNqQ5b09fpxjKdvLT2EYcIeFq30igc4oFDU+nay0=;
+	s=default; t=1618476982;
+	bh=lVKUSmbW3Dp2I7hMkF+/RIAQuJieaR1SrjDMJ/p3BoI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dV4EBT3ra56HimwAThc1vJMw5MVD/qu2vNTU3AqTfxzsFPX3BPjnVrVxQ5urcp1uC
-	 /fjFoobxcChXjmKtzXZWTJYNYnnx5D2/CB1TcW7hGh41kSt9NfpVbVjLDLLMqMNI87
-	 sU2OoFZRsEqjKiUjj3xtwGVVmQEUxgIu7UB4+kgo=
+	b=oORmimxIzCUj2lh6gTgGUahyYnyNotZQwG6GXGNtUXUc2TwapGq1w2wz/QjV2zOVO
+	 RCmy1DPmad/K08OKJCVcXCA5KUdKcJ566B8fx5JtrgwwEl8mYBbjMHUvZAtijyNUzc
+	 0wfuEin7SvUMYYNl3BH/Zly7fXmyJF5BfcmPA0ew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75AEBF80430;
-	Thu, 15 Apr 2021 09:56:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 865B3F800FF;
+	Thu, 15 Apr 2021 10:55:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3B13F8049C; Thu, 15 Apr 2021 09:56:45 +0200 (CEST)
+ id A46AFF8022B; Thu, 15 Apr 2021 10:55:29 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C781F80430
- for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 09:56:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C781F80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F3B2F800FF
+ for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 10:55:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F3B2F800FF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 83BA4B166;
- Thu, 15 Apr 2021 07:56:40 +0000 (UTC)
-Date: Thu, 15 Apr 2021 09:56:40 +0200
-Message-ID: <s5hr1jct1zb.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id B7519B036;
+ Thu, 15 Apr 2021 08:55:22 +0000 (UTC)
+Date: Thu, 15 Apr 2021 10:55:22 +0200
+Message-ID: <s5hmtu0sz9h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: Re: =?UTF-8?B?562U5aSNOg==?= [2/2]ALSA: hda: add Zhaoxin HDAC
- non-snoop support: patch a design limitation
-In-Reply-To: <1bbe710807f9426a83aeba5be0d85c4a@zhaoxin.com>
-References: <0f1c89c9728f4310b4e84e4c74df02c6@zhaoxin.com>
- <s5hpmyxukc4.wl-tiwai@suse.de>
- <1bbe710807f9426a83aeba5be0d85c4a@zhaoxin.com>
+To: "Gong, Sishuai" <sishuai@purdue.edu>
+Subject: Re: [Problem] A data race in snd_ctl_elem_add()
+In-Reply-To: <FEEBF384-44BE-42CF-8FB3-93470933F64F@purdue.edu>
+References: <FEEBF384-44BE-42CF-8FB3-93470933F64F@purdue.edu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>,
- "Zhuangzhuang He\(SH-RD\)" <ZhuangzhuangHe@zhaoxin.com>,
- "Leo Liu\(XA-RD\)" <LeoLiu@zhaoxin.com>,
- "Cobe Chen\(BJ-RD\)" <CobeChen@zhaoxin.com>,
- "Tim Guo\(BJ-RD\)" <TimGuo@zhaoxin.com>,
- "Tony W. Wang\(XA-RD\)" <TonyWWang@zhaoxin.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "tiwai@suse.com" <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,76 +76,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 15 Apr 2021 04:26:18 +0200,
-Hans Hu(SH-RD) wrote:
+On Thu, 15 Apr 2021 03:47:14 +0200,
+Gong, Sishuai wrote:
 > 
-> >On Wed, 14 Apr 2021 14:00:23 +0200,
-> >Hans Hu(SH-RD) wrote:
-> >>
-> >> Hi Takashi,
-> >>
-> >> ZHAOXIN HDAC controller has one design limitation when it works in non-snoop mode. This design limitation is: hardware can't guarantee that the write CORB cycle always completes first before the write CORBWP cycle. Here is the error scene:
-> >> int snd_hdac_bus_send_cmd(struct hdac_bus *bus, unsigned int val) {
-> >> ...
-> >>         bus->corb.buf[wp] = cpu_to_le32(val);         // cycle_1:  write value to CORB
-> >>         snd_hdac_chip_writew(bus, CORBWP, wp);     // cycle_2:  write wp to CORBWP
-> >> ...
-> >> }
-> >> Normally, after cycle_2, DMA engine will start working and get data from CORB and sent it out. But if cycle_1 haven’t finished yet at this time(limitation occurs), which means the value haven’t been written into CORB, then DMA engine will get unexpected value, then error occurred. (feels like one kind of CORB underrun).
-> >>
-> >> If we add one read CORB cycle between cycle_1 and cycle_2, cycle_1 and cycle_2 operations will be synchronized, this limitation will be fixed. We have written a draft patch based on this situation and hope to be accepted, the patch example is as follows:
-> >> diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h index
-> >> 22af68b..c338db00 100644
-> >> --- a/include/sound/hdaudio.h
-> >> +++ b/include/sound/hdaudio.h
-> >> @@ -339,6 +339,7 @@ struct hdac_bus {
-> >>         bool sync_write:1;              /* sync after verb write */
-> >>         bool use_posbuf:1;              /* use position buffer */
-> >>         bool snoop:1;                   /* enable snooping */
-> >> +       bool no_snoop_corb_sync:1;
-> >>         bool align_bdle_4k:1;           /* BDLE align 4K boundary */
-> >>         bool reverse_assign:1;          /* assign devices in reverse order */
-> >>         bool corbrp_self_clear:1;       /* CORBRP clears itself after reset */
-> >> diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-> >> index 062da7a..6c90cdd 100644
-> >> --- a/sound/hda/hdac_controller.c
-> >> +++ b/sound/hda/hdac_controller.c
-> >> @@ -167,6 +167,8 @@ int snd_hdac_bus_send_cmd(struct hdac_bus *bus,
-> >> unsigned int val)
-> >>
-> >>         bus->rirb.cmds[addr]++;
-> >>         bus->corb.buf[wp] = cpu_to_le32(val);
-> >> +       if (bus->no_snoop_corb_sync)
-> >> +               val = bus->corb.buf[wp];
-> >>         snd_hdac_chip_writew(bus, CORBWP, wp);
-> >
-> >Just wondering whether using WRITE_ONCE() macro would be enough?
-> >e.g.
-> >WRITE_ONCE(bus->corb.buf[wp], cpu_to_le32(val));
-> >Also, no_snoop_corb_sync is a bit confusing.  What you do is rather sync of the written value, so it can be taken as if other way round.
-> >Maybe no_coherent_corb_write or such would be better understandable.
-> >
-> >
-> >thanks,
-> >
-> >Takashi
+> Hi,
 > 
-> Thanks for your suggestion, it's my fault not clearly explain the root case about this limitation, which is, these two kind of instructions have independent physical paths, even C2M instruction(cycle_1) already retired before C2P instruction(cycle_2 with non-snoop) start, hardware still can't guarantee the coherence.
-> But we can use WRITE_ONCE() to enhance the patch and to prevent it from being optimized by the compiler.
+> We found a data race in sound/core/control.c in linux-5.12-rc3 and we are able to reproduce it under x86. 
+> In general, we found when 2 kernel threads are both running snd_ctl_elem_add(),
+> one may read a stale value of card->user_ctl_count, as shown below.
+> 
+> Currently, we haven’t found any explicit errors due to this data race, but it looks the reader threads 
+> may operate in an inconsistent  state, where card->user_ctl_count + 1 is actually bigger 
+> than MAX_USER_CONTROLS, so we want to point it out.
+>  
+> Thread 1					Thread 2
+> //snd_ctl_elem_add()		//snd_ctl_elem_add()
+> 						if (card->user_ctl_count + 1 > MAX_USER_CONTROLS)
+> 							return -ENOMEM;
+> 						
+> card->user_ctl_count++;
+> unlock:
+> up_write(&card->controls_rwsem);
+> return err;
 
-Well, I'm not entirely sure whether WRITE_ONCE() would really work in
-this case.  I know some other chips require the explicit read
-(e.g. i915 driver), and this might be the case, too. 
-So it's just a question and something worth to check.
+Thanks for the report.  Indeed this is a race at read.
 
->  +       if (bus->no_coherent_corb_write)
->  +               WRITE_ONCE(cpu_to_le32(val), bus->corb.buf[wp]);
-> This limitation only appears in the non-snoop mode, does this need to be reflected in the variable name?
+OTOH, it's not much serious since this check is only for a sort of
+soft-limit to avoid the memory exhaustion.  If any, we can add the
+same card->user_ctl_count check just before __snd_ctl_add_replace()
+call, but maybe not worth for extra work.
 
-I suggested renaming just because the term "sync" is a bit confusing.
-We have already sync_write flag that is meant for a completely
-different "sync" meaning (to sync with the response for each verb
-write).
+To be noted, the relevant code was already changed significantly for
+5.13 (currently in for-next branch), hence the fix I mentioned in the
+above won't be applicable.  And, I noticed that a similar problem is
+seen there, even worse -- a race may happen at the write side in this
+case, which needs a fix.  Will take a deeper look later.
 
 
 thanks,
