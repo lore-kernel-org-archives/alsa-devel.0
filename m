@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB23DC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 18:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A6AC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 18:36:50 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C5746109D
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 18:36:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C5746109D
+	by mail.kernel.org (Postfix) with ESMTPS id 214DA6109D
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 18:36:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 214DA6109D
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA7BA1678;
-	Thu, 15 Apr 2021 20:35:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA7BA1678
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6491F1688;
+	Thu, 15 Apr 2021 20:35:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6491F1688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618511772;
-	bh=83uSrJMWjSqSZ9BD3xARZb9r0aBoYp5dH2qyOsRxM/8=;
+	s=default; t=1618511807;
+	bh=DIjc359eJQvUuEAXonYp4ayJobMO/jbmR85gSygggvg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=onwO4NIKq7xAaF1O7Ad/1Fsilr2A/gPKlkML9siQjSZeWo8BST90RMFOLG3aIVcEf
-	 R79b6CNoR6cxiTeZxaue1tN1OsmS5w4B0S5CssGbGFX5ED4XzcsxrpLsC6O6NPJX4N
-	 qh6yy0HZq7sEH900Gv9ayoU0rs9txZYipEdMhyOY=
+	b=RmLKj7jjSa66lANG9Sw6iS0O/FBCBnwMx57RlbjocMNA/rkNKFBXRZ4Rpdcph64Og
+	 AHyPARGCxTPN0KpjsYlU1X3U/9wvxY6HUZhdxPfVf/6GSRBwwpvPF+38N3vMQ503fL
+	 JNJhmkcq0v0pVJB51C2QhahUvwKMOnMsf7HDj5FQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BFAFF8032C;
-	Thu, 15 Apr 2021 20:34:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3A50F80423;
+	Thu, 15 Apr 2021 20:34:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59FB9F8025C; Thu, 15 Apr 2021 20:34:29 +0200 (CEST)
+ id 6BB9BF80424; Thu, 15 Apr 2021 20:34:32 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88701F8022D
- for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 20:34:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88701F8022D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23975F8021D
+ for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 20:34:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23975F8021D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rlSLzMBO"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DAE760E09;
- Thu, 15 Apr 2021 18:34:24 +0000 (UTC)
+ header.b="cFf1N+RA"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 280D6611CD;
+ Thu, 15 Apr 2021 18:34:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618511664;
- bh=83uSrJMWjSqSZ9BD3xARZb9r0aBoYp5dH2qyOsRxM/8=;
+ s=k20201202; t=1618511667;
+ bh=DIjc359eJQvUuEAXonYp4ayJobMO/jbmR85gSygggvg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=rlSLzMBOBnvYxX4mVAylQFmVnkViFYyC28sznY6gnE8/gzpu2HCAMC7ohapnfPf+m
- rah2nbmPp48wMcQHQbbN3z6bi+pxO0Wj+rXx1jIln1p0NbGkFuAlhh8l0LmVpzbEik
- dRn8H5+TNLrDx9xCFjh+1F1sYYtIGt93TjKBYG5DV0lTCdPLz7JMED/lbP0hyuT3J0
- JpHiTMHfAJhK8+C6X6cI00LhuuwYWAQjS24VtUACW1DqK6VqIeZPxAeKWuVYNx/BGl
- /+7stLz1Hexbq/8Ep7RywjfuyhtqEQx3ylBzTzY3rPl77Y/kGb7dQBZzPuk8RGK0ou
- RFy8hdLIen88Q==
+ b=cFf1N+RAHcgMOxD7jOIxal/ixnnS9l8SrlF482aXeUDCq6/ssN2O1HVN9d3H6l77q
+ IH3i1gCkMqiix+Bpi/LuoeJ3teu0jkl/GTuDODfgUZCsFtYfRXBZ+uDb8JSDwtD5j3
+ WlGqlbjoy9D8EJQcRNHOlyiyI/u5lqt6tL8mTKRQcnguBA88fhaHUOoaoE9ie7xptm
+ d8zncHj/UbVZyKSVIxz3jJVUpeZrDh3xY+9ikVWKy5yLh2nbYrYxzkE2LxWtl6uB3Q
+ fze2RyRxGVXNOQPexxf30iInvksiop9UOO5kzg4UU8Va9B3h6VI0nybNmCYp0yIMZ7
+ kPaxQZW3hjZQg==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/5] ASoC: simple-card/audio-graph: adjust to multi
- CPU/Codec
-Date: Thu, 15 Apr 2021 19:33:45 +0100
-Message-Id: <161851148785.23061.17374902278973371383.b4-ty@kernel.org>
+To: Lukasz Majczak <lma@semihalf.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Harsha Priya <harshapriya.n@intel.com>,
+ Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+Subject: Re: [PATCH v1] ASoC: Intel: kbl_da7219_max98927: Fix
+ kabylake_ssp_fixup function
+Date: Thu, 15 Apr 2021 19:33:46 +0100
+Message-Id: <161851148785.23061.12027153189842499464.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <87r1jdzsaj.wl-kuninori.morimoto.gx@renesas.com>
-References: <87r1jdzsaj.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20210415124347.475432-1-lma@semihalf.com>
+References: <20210415124347.475432-1-lma@semihalf.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ upstream@semihalf.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,16 +89,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 14 Apr 2021 08:19:32 +0900, Kuninori Morimoto wrote:
-> These patches adjusts to multi CPU/Codec on simple-card / audio-graph.
-> This is part of prepare for new audio-graph-card2.
+On Thu, 15 Apr 2021 14:43:47 +0200, Lukasz Majczak wrote:
+> kabylake_ssp_fixup function uses snd_soc_dpcm to identify the
+> codecs DAIs. The HW parameters are changed based on the codec DAI of the
+> stream. The earlier approach to get snd_soc_dpcm was using container_of()
+> macro on snd_pcm_hw_params.
 > 
-> Kuninori Morimoto (5):
->   ASoC: simple-card: remove unused variable from simple_parse_of()
->   ASoC: simple-card: use asoc_link_to_xxx() macro
->   ASoC: simple-card: use simple_props_to_xxx() macro
->   ASoC: audio-graph: use asoc_link_to_xxx() macro
->   ASoC: audio-graph: use simple_props_to_xxx() macro
+> The structures have been modified over time and snd_soc_dpcm does not have
+> snd_pcm_hw_params as a reference but as a copy. This causes the current
+> driver to crash when used.
 > 
 > [...]
 
@@ -104,16 +107,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: simple-card: remove unused variable from simple_parse_of()
-      commit: 8cbea89e2fba2f92937cd15211490b62f14a46ff
-[2/5] ASoC: simple-card: use asoc_link_to_xxx() macro
-      commit: 5bb5ac71e3f4f85500b96ea03e54bf6e2d8be3f2
-[3/5] ASoC: simple-card: use simple_props_to_xxx() macro
-      commit: 2c33e20ffd68df097d61fad9b87dc6276354b139
-[4/5] ASoC: audio-graph: use asoc_link_to_xxx() macro
-      commit: 7ed5920995cea34d66e4af00c7f468cc933251cf
-[5/5] ASoC: audio-graph: use simple_props_to_xxx() macro
-      commit: ae0727ab77419d550d6f68b698ce37ef2bf315df
+[1/1] ASoC: Intel: kbl_da7219_max98927: Fix kabylake_ssp_fixup function
+      commit: a523ef731ac6674dc07574f31bf44cc5bfa14e4d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
