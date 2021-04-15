@@ -2,74 +2,75 @@ Return-Path: <SRS0=rm39=JM=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E93FCC433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 17:54:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B95DAC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 17:54:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 5D71361132
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 17:54:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5D71361132
+	by mail.kernel.org (Postfix) with ESMTPS id BC768613B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Apr 2021 17:54:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BC768613B0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05E871691;
-	Thu, 15 Apr 2021 19:53:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05E871691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D809167C;
+	Thu, 15 Apr 2021 19:53:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D809167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618509244;
-	bh=Y2VUWYraSN5FyUcYUeBh1M7kKcw5J7BRqrpQwrz/wn0=;
+	s=default; t=1618509277;
+	bh=iT2avPf8ykFFu7OyRxk2NFxtbxSQnL/F9tfX2rBQK6I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SNVXz/TOh3nDrEtb+ly7XZHZZnhvicl1KF1+HtnQsBHGVnPARXArwFURWkVVh7NxY
-	 DFf4aTQgnPx9N0AjITuuQavXARJ+x0vTkikN5FBsZgrrhTBbAUSwLZ/luiK44ydqym
-	 nt6OjOQ45o+EJ4opKsjy0R6wXIHoIN7zVseF/O8c=
+	b=Llq7WZ0D6PRlXjJwYALFJ2LJnZypgXgcaSuIAPO6cM63AbjjV1qwBghKpcZrEuLx8
+	 QMgWbf9ojbyZanNJJSt0rzVG/o2F/El2KOQj69Axng6l5Xug7cWNNV9BTaHQs4AO9T
+	 DB4Wl/O1ppcSgUO54MiI2JHBXYcg1TCVSo3gaUeI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FFD2F804AF;
-	Thu, 15 Apr 2021 19:50:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46E85F804B2;
+	Thu, 15 Apr 2021 19:51:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C42F1F8023A; Thu, 15 Apr 2021 19:50:53 +0200 (CEST)
+ id 5D745F80424; Thu, 15 Apr 2021 19:50:55 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40C8CF800ED
- for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 19:50:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40C8CF800ED
-IronPort-SDR: p06yD5sDTsKeZiIPtkxlHCJFACQS4XUfYI+SV3KlbVyVR0VXDQj11XK3FBX6toMme8DVw36vch
- 4gPjPkOMEFgg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="174400797"
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; d="scan'208";a="174400797"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40130F802A9
+ for <alsa-devel@alsa-project.org>; Thu, 15 Apr 2021 19:50:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40130F802A9
+IronPort-SDR: MQY7khyQJDBI7vZCJ8OxRvo66PP2WUmYleUSbDWAGVP4hRCvOkTHrCYdsgsSSY7Q76YGqvfyQL
+ 8ez20Iipz01A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="174400811"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; d="scan'208";a="174400811"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2021 10:50:37 -0700
-IronPort-SDR: B6WUZB5c7d1/p/vWquKOFIg5xRi5jfAun1DRdQJ/VEibbt+rrFM6uWLcoeGc8m7tvl0OzAPmY1
- w5v4rSqv5zlw==
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; d="scan'208";a="382804653"
+ 15 Apr 2021 10:50:41 -0700
+IronPort-SDR: IbO0/bCZepDAdIQmCIrBSUWWkL1B5FdS9V2Ju5pVEceZFGnM0gflDVPJP/LaTXJqNku+JDCajz
+ 5FNRCvqh7UzA==
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; d="scan'208";a="382804684"
 Received: from lesterhu-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.33.4])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Apr 2021 10:50:36 -0700
+ 15 Apr 2021 10:50:41 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/9] ASoC: Intel: Boards: tgl_max98373: Add BT offload support
-Date: Thu, 15 Apr 2021 12:50:07 -0500
-Message-Id: <20210415175013.192862-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/9] ASoC: Intel: sof_sdw: add mutual exclusion between PCH
+ DMIC and RT715
+Date: Thu, 15 Apr 2021 12:50:11 -0500
+Message-Id: <20210415175013.192862-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210415175013.192862-1-pierre-louis.bossart@linux.intel.com>
 References: <20210415175013.192862-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de, Libin Yang <libin.yang@intel.com>, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,92 +86,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yong Zhi <yong.zhi@intel.com>
+When external RT714/715 devices are used for capture, we don't want
+the PCH DMICs to be used.
 
-BT audio offload is internally configured with virtual GPIOs,
-the port assignment is fixed on SSP2 for TGL/ADL platforms.
+Any information provided by the SOF platform driver or DMI quirks will
+be overridden.
 
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Libin Yang <libin.yang@intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 42 +++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c        | 19 +++++++++++++++++--
+ sound/soc/intel/boards/sof_sdw_common.h |  1 +
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 58548ea0d915..5e8f1022a21a 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -50,6 +50,13 @@
- #define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(17)
- #define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(18)
- 
-+/* BT audio offload: reserve 3 bits for future */
-+#define SOF_BT_OFFLOAD_SSP_SHIFT		19
-+#define SOF_BT_OFFLOAD_SSP_MASK		(GENMASK(21, 19))
-+#define SOF_BT_OFFLOAD_SSP(quirk)	\
-+	(((quirk) << SOF_BT_OFFLOAD_SSP_SHIFT) & SOF_BT_OFFLOAD_SSP_MASK)
-+#define SOF_SSP_BT_OFFLOAD_PRESENT		BIT(22)
-+
- /* Default: MCLK on, MCLK 19.2M, SSP0  */
- static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
- 					SOF_RT5682_SSP_CODEC(0);
-@@ -591,6 +598,13 @@ static struct snd_soc_dai_link_component rt1015_components[] = {
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index ecd3f90f4bbe..85a2797c2550 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -353,6 +353,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.part_id = 0x714,
+ 		.version_id = 3,
+ 		.direction = {false, true},
++		.ignore_pch_dmic = true,
+ 		.dai_name = "rt715-aif2",
+ 		.init = sof_sdw_rt715_sdca_init,
  	},
- };
+@@ -360,6 +361,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.part_id = 0x715,
+ 		.version_id = 3,
+ 		.direction = {false, true},
++		.ignore_pch_dmic = true,
+ 		.dai_name = "rt715-aif2",
+ 		.init = sof_sdw_rt715_sdca_init,
+ 	},
+@@ -367,6 +369,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.part_id = 0x714,
+ 		.version_id = 2,
+ 		.direction = {false, true},
++		.ignore_pch_dmic = true,
+ 		.dai_name = "rt715-aif2",
+ 		.init = sof_sdw_rt715_init,
+ 	},
+@@ -374,6 +377,7 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.part_id = 0x715,
+ 		.version_id = 2,
+ 		.direction = {false, true},
++		.ignore_pch_dmic = true,
+ 		.dai_name = "rt715-aif2",
+ 		.init = sof_sdw_rt715_init,
+ 	},
+@@ -729,7 +733,8 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
+ 			      int *cpu_id, bool *group_generated,
+ 			      struct snd_soc_codec_conf *codec_conf,
+ 			      int codec_count,
+-			      int *codec_conf_index)
++			      int *codec_conf_index,
++			      bool *ignore_pch_dmic)
+ {
+ 	const struct snd_soc_acpi_link_adr *link_next;
+ 	struct snd_soc_dai_link_component *codecs;
+@@ -782,6 +787,9 @@ static int create_sdw_dailink(struct device *dev, int *be_index,
+ 	if (codec_index < 0)
+ 		return codec_index;
  
-+static struct snd_soc_dai_link_component dummy_component[] = {
-+	{
-+		.name = "snd-soc-dummy",
-+		.dai_name = "snd-soc-dummy-dai",
-+	}
-+};
++	if (codec_info_list[codec_index].ignore_pch_dmic)
++		*ignore_pch_dmic = true;
 +
- static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 							  int ssp_codec,
- 							  int ssp_amp,
-@@ -780,6 +794,31 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			if (!links[id].cpus->dai_name)
- 				goto devm_err;
- 		}
-+		id++;
-+	}
-+
-+	/* BT audio offload */
-+	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT) {
-+		int port = (sof_rt5682_quirk & SOF_BT_OFFLOAD_SSP_MASK) >>
-+				SOF_BT_OFFLOAD_SSP_SHIFT;
-+
-+		links[id].id = id;
-+		links[id].cpus = &cpus[id];
-+		links[id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-+							  "SSP%d Pin", port);
-+		if (!links[id].cpus->dai_name)
-+			goto devm_err;
-+		links[id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-BT", port);
-+		if (!links[id].name)
-+			goto devm_err;
-+		links[id].codecs = dummy_component;
-+		links[id].num_codecs = ARRAY_SIZE(dummy_component);
-+		links[id].platforms = platform_component;
-+		links[id].num_platforms = ARRAY_SIZE(platform_component);
-+		links[id].dpcm_playback = 1;
-+		links[id].dpcm_capture = 1;
-+		links[id].no_pcm = 1;
-+		links[id].num_cpus = 1;
+ 	cpu_dai_index = *cpu_id;
+ 	for_each_pcm_streams(stream) {
+ 		char *name, *cpu_name;
+@@ -913,6 +921,7 @@ static int sof_card_dai_links_create(struct device *dev,
+ 	const struct snd_soc_acpi_link_adr *adr_link;
+ 	struct snd_soc_dai_link_component *cpus;
+ 	struct snd_soc_codec_conf *codec_conf;
++	bool ignore_pch_dmic = false;
+ 	int codec_conf_count;
+ 	int codec_conf_index = 0;
+ 	bool group_generated[SDW_MAX_GROUPS];
+@@ -1019,7 +1028,8 @@ static int sof_card_dai_links_create(struct device *dev,
+ 					 sdw_cpu_dai_num, cpus, adr_link,
+ 					 &cpu_id, group_generated,
+ 					 codec_conf, codec_conf_count,
+-					 &codec_conf_index);
++					 &codec_conf_index,
++					 &ignore_pch_dmic);
+ 		if (ret < 0) {
+ 			dev_err(dev, "failed to create dai link %d", be_id);
+ 			return -ENOMEM;
+@@ -1087,6 +1097,10 @@ static int sof_card_dai_links_create(struct device *dev,
+ DMIC:
+ 	/* dmic */
+ 	if (dmic_num > 0) {
++		if (ignore_pch_dmic) {
++			dev_warn(dev, "Ignoring PCH DMIC\n");
++			goto HDMI;
++		}
+ 		cpus[cpu_id].dai_name = "DMIC01 Pin";
+ 		init_dai_link(dev, links + link_id, be_id, "dmic01",
+ 			      0, 1, // DMIC only supports capture
+@@ -1105,6 +1119,7 @@ static int sof_card_dai_links_create(struct device *dev,
+ 		INC_ID(be_id, cpu_id, link_id);
  	}
  
- 	return links;
-@@ -869,6 +908,9 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
- 		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
++HDMI:
+ 	/* HDMI */
+ 	if (hdmi_num > 0) {
+ 		idisp_components = devm_kcalloc(dev, hdmi_num,
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index f3cb6796363e..ea60e8ed215c 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -56,6 +56,7 @@ struct sof_sdw_codec_info {
+ 	int amp_num;
+ 	const u8 acpi_id[ACPI_ID_LEN];
+ 	const bool direction[2]; // playback & capture support
++	const bool ignore_pch_dmic;
+ 	const char *dai_name;
+ 	const struct snd_soc_ops *ops;
  
-+	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
-+		sof_audio_card_rt5682.num_links++;
-+
- 	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
- 					      dmic_be_num, hdmi_num);
- 	if (!dai_links)
 -- 
 2.25.1
 
