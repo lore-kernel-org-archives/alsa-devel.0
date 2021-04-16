@@ -2,84 +2,110 @@ Return-Path: <SRS0=6+tk=JN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3611FC433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 16:33:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BC61C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 16:36:54 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B71961002
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 16:32:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B71961002
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id C980D61026
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 16:36:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C980D61026
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=lenovo.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D90616BE;
-	Fri, 16 Apr 2021 18:32:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D90616BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04CBC9F6;
+	Fri, 16 Apr 2021 18:36:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04CBC9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618590777;
-	bh=jur2fTEdYRNCY9C314G21CAjYJzcRNFZKz3QbNsHrdw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1618591011;
+	bh=FjX1o8frfgWet8o9FFJV7JQ1xc81FAeBxyIRuaoh3L8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NBa9oBZjI6OCitQ8uVAFy+wV/6hVYlM5Dk74AtAWG7H35Xtsa7B8SBu2x8bUcRrm3
-	 m+8mh/noiKIEhuPtl0l+2XJrpxtUt4n2Y4IZh1u1KwFpgr5adUuAYmLlLWgHFIPFMW
-	 FRl8+FGCg9X3X+Sz9cm2YkjP6mmP8S6GQ3hGOIoQ=
+	b=eUYO6/kByEy8AdwDN7c57j6toBhLtCpMxAzEyeYa2r7DTYjfH0Gr4gQVRUiozNlnw
+	 Bj9xtB52ipXpjUa+S1oKp8aCi4Ya3Obp8JK/JkIfQ9DfjP1gwpAPeDSoXZbOF9b7GJ
+	 iUBPFRzhbzlOkdRU+UVSbCOxplb7+HzQXgmRXb7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBC70F80254;
-	Fri, 16 Apr 2021 18:32:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8DC60F80254;
+	Fri, 16 Apr 2021 18:36:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9908FF8025B; Fri, 16 Apr 2021 18:32:04 +0200 (CEST)
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2DE6BF8025B; Fri, 16 Apr 2021 18:35:59 +0200 (CEST)
+Received: from mail1.bemta23.messagelabs.com (mail1.bemta23.messagelabs.com
+ [67.219.246.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BCF7F80128
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 18:31:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BCF7F80128
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SQ2M3ReX"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3618861002;
- Fri, 16 Apr 2021 16:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618590715;
- bh=jur2fTEdYRNCY9C314G21CAjYJzcRNFZKz3QbNsHrdw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=SQ2M3ReXMpR06PJpEQU1pIiWAML+ojYlvdMpWtZb/6H63Zqh6KzyNlLHZUP6KJEQs
- /T6ufATom9vfHolMAM3+jK9RkdImi4MjQ7wDCPzHVovNwskoE4oL1CgJgaIyTzPwp4
- 3jAalUaJZjxcURIwwMWZQEJeC0813m7D5sWfkAnkSskX0ykTqhDcph1f55A71TMj7v
- C84uSqwkbBW6Te65lXxLibl9uUgzPexzTluts03UW0Q08QihHgGKZpqcGJ/4r2Ks0P
- vsEJxsnC8csgLKEcpvTRULqwbFtH035ZT2E5PQyaZdn+4wZP7cvn0J+dGNo7KRv8dx
- +IOSaVG6A0RxQ==
-Date: Fri, 16 Apr 2021 17:31:31 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Codrin.Ciubotariu@microchip.com
-Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-Message-ID: <20210416163131.GI5560@sirena.org.uk>
-References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
- <a0c862ec-44ba-52e0-551c-0347166ac4e9@perex.cz>
- <5e1fb981-48c1-7d5a-79a6-ba54bac26165@microchip.com>
- <4f401536-5a66-0d65-30cb-7ecf6b235539@microchip.com>
- <20210415161743.GH5514@sirena.org.uk>
- <1aff49d4-5691-67cb-3fe7-979d476f1edb@microchip.com>
- <20210415172554.GI5514@sirena.org.uk>
- <ad5d556b-601f-c6f6-347e-86a235237c02@microchip.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FEC3F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 18:35:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FEC3F800FF
+Received: from [100.112.2.115] (using TLSv1.2 with cipher
+ DHE-RSA-AES256-GCM-SHA384 (256 bits))
+ by server-1.bemta.az-b.us-east-1.aws.symcld.net id F0/15-44756-8ECB9706;
+ Fri, 16 Apr 2021 16:35:52 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleJIrShJLcpLzFFi42LJePGQR/fZnso
+ Eg+VPlC2uXDzEZLHi+yUWi85d/awWv/4/Y7L4cXgSs8XLzW+YHNg8NnxuYvPoff6F1WPeyUCP
+ fW+XsXk8fruZ3WPz6eoAtijWzLyk/IoE1ow1H04zFxwTqfj49Q9rA+NXgS5GLg4hgf+MEvsWN
+ bFBOC8YJS4tegPkcHIIC0RKHGl5zApiiwgcYZS4f1UBxGYW0JXYOnUCO0TDbEaJdT9fMYMk2A
+ S0JbZs+QXWzCtgK9G0ZT8jiM0ioCrxe+UNJhBbVCBcovfKbVaIGkGJkzOfsIDYnALOEie7e4H
+ mcAAt0JRYv0sfYpe4xK0n85kgbHmJ5q2zwUokBBQkZuzwBglLCCRI9Px7xDaBUXAWkqGzEAbN
+ QjJoFpJBCxhZVjGaJRVlpmeU5CZm5ugaGhjoGhoa6RrqGhqZ6CVW6SbplRbrpiYWl+ga6iWWF
+ +sVV+Ym56To5aWWbGIERlJKAWPNDsYFbz7oHWKU5GBSEuVdHFWZIMSXlJ9SmZFYnBFfVJqTWn
+ yIUYaDQ0mCt2AXUE6wKDU9tSItMwcY1TBpCQ4eJRHeJxuB0rzFBYm5xZnpEKlTjIpS4rxqu4E
+ SAiCJjNI8uDZYIrnEKCslzMvIwMAgxFOQWpSbWYIq/4pRnINRSZiXH5iWhHgy80rgpr8CWswE
+ tHj3fLDFJYkIKakGJut84Zz4CJaC9mk3NfRdmu/PiP47w/+u8gaOJYfubnq95VTry6WbJrJOX
+ vk0M8KY9X/oD9MPxp67NlyacnYj55UbE5g1X3/q2aqxs+d3oSOLSufvVfJ6C3KPWD9n6N6kVd
+ rIE5H9sWbOzwk/6q9dWB0vuMdzUfnzW30ZnBucM5Q9r8oHJMnvPr/72a+7Uycs11xUd16uR/d
+ CUYPU2672Hdu/zeN6pq3bH/7zb438rhOS10MqXz86ynqBIfMeR+9cAQaFgJDZL/5cYOxPdinO
+ Vj3/t3bS25D3vrbvHxv1KpaaVol/8TvVUbzh6JHoA2vZpgqIx1yt0rV1XWyYylD9xlpr+qbc6
+ OetxQv3P9obFavEUpyRaKjFXFScCAAYq8jjnwMAAA==
+X-Env-Sender: markpearson@lenovo.com
+X-Msg-Ref: server-19.tower-396.messagelabs.com!1618590950!738394!1
+X-Originating-IP: [104.232.225.12]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.60.3; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 27291 invoked from network); 16 Apr 2021 16:35:50 -0000
+Received: from unknown (HELO lenovo.com) (104.232.225.12)
+ by server-19.tower-396.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384
+ encrypted SMTP; 16 Apr 2021 16:35:50 -0000
+Received: from reswpmail01.lenovo.com (unknown [10.62.32.20])
+ (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by Forcepoint Email with ESMTPS id 5E78B1C1608C7402D869;
+ Fri, 16 Apr 2021 12:35:50 -0400 (EDT)
+Received: from localhost.localdomain (10.38.63.175) by reswpmail01.lenovo.com
+ (10.62.32.20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Fri, 16 Apr
+ 2021 12:35:49 -0400
+Subject: Re: [External] Re: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo
+ Ideapad S740
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>,
+ <alsa-devel@alsa-project.org>, Kailang Yang <kailang@realtek.com>
+References: <20210416081211.20059-1-tiwai@suse.de>
+ <be178038-8e42-34db-3804-f27240b2d488@perex.cz>
+ <a5fee517-c12e-1cb0-755f-453d6bb47795@linux.intel.com>
+From: Mark Pearson <markpearson@lenovo.com>
+Message-ID: <bde38bb8-599d-9d4b-a515-9c2e12d120ed@lenovo.com>
+Date: Fri, 16 Apr 2021 12:35:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="+ZmrHH5cGjskQnY1"
-Content-Disposition: inline
-In-Reply-To: <ad5d556b-601f-c6f6-347e-86a235237c02@microchip.com>
-X-Cookie: Snow Day -- stay home.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, gustavoars@kernel.org,
- mirq-linux@rere.qmqm.pl
+In-Reply-To: <a5fee517-c12e-1cb0-755f-453d6bb47795@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.38.63.175]
+X-ClientProxiedBy: reswpmail04.lenovo.com (10.62.32.23) To
+ reswpmail01.lenovo.com (10.62.32.20)
+Cc: Ryan Prescott <ryan@cousinscomputers.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,46 +122,58 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---+ZmrHH5cGjskQnY1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 16, 2021 at 04:03:05PM +0000, Codrin.Ciubotariu@microchip.com w=
-rote:
+On 16/04/2021 12:05, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 4/16/21 3:47 AM, Jaroslav Kysela wrote:
+>> Dne 16. 04. 21 v 10:12 Takashi Iwai napsal(a):
+>>> Lenovo Ideapad S740 requires quite a few COEF setups to make its
+>>> speakers working.  The verb table was provided from Ryan Prescott as
+>>> the result of investigation via qemu:
+>>>   
+>>> https://github.com/ryanprescott/realtek-verb-tools/wiki/How-to-sniff-verbs-from-a-Windows-sound-driver
+>>>
+>>
+>> [Cc: to Kailang / Realtek]
+>>
+>> I believe that this sequence contains I2C writes to amplifier chips.
+>> It would
+>> be really helpful, if Realtek can provide more information for the I2C
+>> master
+>> interface for their codecs (describe basic I2C I/O).
+> 
+> The biggest problem is to figure what address/value pairs to write with
+> I2C into the amplifiers, and here the catch is that those I2C/I2S
+> amplifiers may or may not be sourced from Realtek, and it'd be difficult
+> for Realtek to provide documentation on their competition, wouldn't it?
 
-> Thank you for the links! So basically the machine driver disappears and=
-=20
-> all the components will be visible in user-space.
+Is this something, at least for our platforms, that we (Lenovo) should
+be able to give guidance on more easily, perhaps working with the HW vendor?
 
-Not entirely - you still need something to say how they're wired
-together but it'll be a *lot* simpler for anything that currently used
-DPCM.
+I know I've had limited joy here previously on our non-Linux certified
+platforms, but the more concise and targeted I make the request to the
+HW/FW team the more likely I am to get success. Nothing is guaranteed
+and if I go in with "audio doesn't work" they'll ignore me, but if I'm
+asking for some specific information (which isn't proprietary) I'm more
+likely to succeed, especially if it's details that they likely already
+have documented. I'm definitely happy to at least try and do that - but
+I've had trouble thus far knowing how to frame that request to get the
+details needed.
 
-> If there is a list with the 'steps' or tasks to achieve this? I can try=
-=20
-> to pitch in.
+It's been brilliant watching the debug of the S740 and I really want to
+take advantage of this work to help out on our systems where we've been
+stuck before.
 
-Not really written down that I can think of.  I think the next steps
-that I can think of right now are unfortunately bigger and harder ones,
-mainly working out a way to represent digital configuration as a graph
-that can be attached to/run in parallel with DAPM other people might
-have some better ideas though.  Sorry, I appreciate that this isn't
-super helpful :/
+As an aside (and probably this should be a different thread) if anybody
+in the audio community would be interested in doing a training session
+for the Lenovo Linux team so we can better understand how to make audio
+better and contribute let me know. It's such a complicated subsystem and
+knowing how everything hooks together, and what needs to be done where,
+is something I haven't figured out yet. I believe we'd pay for your time
+if that's required - I just need an expert who has the time and interest
+to run a session :) The aim would be to get to the stage where we can
+contribute and make audio better on our platforms generally - so it
+would hopefully be a win-win. If that hit's anybodies interest let me know.
 
---+ZmrHH5cGjskQnY1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB5u+MACgkQJNaLcl1U
-h9C7gwf+LLB68ItVQbC2IRYlF2Sl8tu40UQ5YKNuZNaWzg6h195x+OiLY3Wb5Ok3
-h90k1H+NLLAj2VLjychn83Z6gS617Zmm9Ti41SjGp7glW2aCdzzPXkRlTUvuxYf5
-alsSTimD5tFa5PqiM1YWu3l9BKVOrM9cG7qdNKHjaJDuEdiDUF1F80Xskey8/yga
-7vO/kGT+0qmtS/oECPf2JSsYlPcWjKMS3Zph74/j70WlHWuSSf6iazxZUZW8eHid
-6E3dM6KGD51C2ZqYgv9HzyDmd7lcAkpEZWAOSvVA+w91B+NSDCGiL8Ps5NBEwRdw
-j+dYkIs39Iq8VrPxC7QP/a7IVea29A==
-=3vRx
------END PGP SIGNATURE-----
-
---+ZmrHH5cGjskQnY1--
+Mark
