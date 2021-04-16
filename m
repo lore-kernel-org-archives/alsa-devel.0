@@ -2,80 +2,86 @@ Return-Path: <SRS0=6+tk=JN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 23752C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30510C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:57:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 17BBA6137D
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:37:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 17BBA6137D
+	by mail.kernel.org (Postfix) with ESMTPS id 6658061026
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:57:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6658061026
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85A4416F4;
-	Fri, 16 Apr 2021 20:36:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85A4416F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54F6D16B6;
+	Fri, 16 Apr 2021 20:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54F6D16B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618598248;
-	bh=xzFQWr3GHUCkLcTFnvtPe0lXb2d9F9cekwg4SyrI2L4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1618599423;
+	bh=1kZCSmcNQa1J+GonGQfZhdrjKIZ0OsbQn8hQK+NdOHM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=osJp7HpazKWNwdXQMoWhnUXCOinrQsZpePDXJ+g4y27eg/VOjfOw20CaDG2tt44mz
-	 wNl4hNpEnMZEHZ0b0sWn07LlMDffO2qRYZEweA5wK1pI2VsVZeF/5ou5jAbAAwH8QW
-	 WWbaA4n4SBzDD2kf5osaniqkYiLme0lL7x+oEYkI=
+	b=LxSZ9IHPLUEwGiXqDMhkAcxt96kEWcEmkAglOVe0/zGj+rptmsZ89EgkhEP2MwFvw
+	 FVeFdQnymhPZrlV5FxZ+9tMAVsxrOgwnhUpJWbig+R1GUhpmFK1KO1vjwYV9dZ2cep
+	 oIzPJ7NGYQWkRaj8BNpCJdWem1pMSTjy20YA6SOk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAA97F80424;
-	Fri, 16 Apr 2021 20:35:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7299F80254;
+	Fri, 16 Apr 2021 20:56:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5DD4F8032C; Fri, 16 Apr 2021 20:35:11 +0200 (CEST)
+ id E1C1AF80254; Fri, 16 Apr 2021 20:56:09 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FCB8F800FF
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 20:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FCB8F800FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E6E5F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 20:56:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E6E5F800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pm3mB6BJ"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E745610FC;
- Fri, 16 Apr 2021 18:35:02 +0000 (UTC)
+ header.b="JOo+Zu5z"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 629E76137D;
+ Fri, 16 Apr 2021 18:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618598102;
- bh=xzFQWr3GHUCkLcTFnvtPe0lXb2d9F9cekwg4SyrI2L4=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pm3mB6BJZMAxqlpDRw1yIMVssEs6RROrTAQJ2EIH6rYw9QkoAJwpcHzMyeoDqeqUA
- y4cGL+uYH35Y2dmolvBNqEfq0vC6RFjTMae1fj7+kvDa1dr/G7AURuvjpziNGq5PLJ
- Qo/D47A+rJm4KouN2yyc9gSpLy+PkaXaA6z5haOrda7K6iJS9oACY4aYRT6/5lMH5J
- TsuXo2AlpfbBdLchyBy/fdXFrnc7xmjD1OqNZKnr4BYWBafy+Bopyx/ElySNsCQpF2
- UGe8V+Kejwy/8GfKMVhIK5nwSGSdI8zRDTciSZLIuODwF5J++WOEwaW8R/pKP2KeVJ
- y+U/pH3VQNjrg==
+ s=k20201202; t=1618599363;
+ bh=1kZCSmcNQa1J+GonGQfZhdrjKIZ0OsbQn8hQK+NdOHM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JOo+Zu5zo8SbYf30nqdzlRqoroMAxcThNit390r5Tb5bDKx8/DwMT1XfjvcHOOjQY
+ BYwCyafdFO4lW5Y8IYCDhHedc2IZMyyIT/ykPxZuAd22Gf/eFMbOYNBL63TfQu1Cit
+ 2K729RSo0I/5l1hGP6JyQoE+ymNYS2oCXVge9SCt6wPVbatM+oqjjmciJQl8svau83
+ fIQvGf7EsaQZ9cPSha8Vu2iNgUT38djGu7xsYNQ4rwZf/nua6xi1hP24H/RLO22Gb2
+ /5KDCmeGdxifnqGdu5PhB4+/JJpEdW4xKAga8hJiQ1F/rryPMeVtI4uprZ2jVd5y7k
+ pXwGC/a4o/H0A==
+Date: Fri, 16 Apr 2021 19:55:38 +0100
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com,
-	Jack Yu <jack.yu@realtek.com>
-Subject: Re: [PATCH v2 1/3] ASoC: rt715: add main capture switch and main
- capture volume
-Date: Fri, 16 Apr 2021 19:34:32 +0100
-Message-Id: <161859792865.33058.12955492794472446951.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <dfd43a8db04e4d52a889d6f5c1262173@realtek.com>
-References: <dfd43a8db04e4d52a889d6f5c1262173@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
+Message-ID: <20210416185538.GK5560@sirena.org.uk>
+References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+ <a0c862ec-44ba-52e0-551c-0347166ac4e9@perex.cz>
+ <5e1fb981-48c1-7d5a-79a6-ba54bac26165@microchip.com>
+ <4f401536-5a66-0d65-30cb-7ecf6b235539@microchip.com>
+ <20210415161743.GH5514@sirena.org.uk>
+ <1aff49d4-5691-67cb-3fe7-979d476f1edb@microchip.com>
+ <20210415172554.GI5514@sirena.org.uk>
+ <ad5d556b-601f-c6f6-347e-86a235237c02@microchip.com>
+ <20210416163131.GI5560@sirena.org.uk>
+ <79161044-26b2-729a-b831-b79cc238e239@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
- lars@metafoo.de, Mark Brown <broonie@kernel.org>,
- =?UTF-8?q?Derek=20=5B=E6=96=B9=E5=BE=B7=E7=BE=A9=5D?= <derek.fang@realtek.com>,
- "Flove\(HsinFu\)" <flove@realtek.com>,
- =?UTF-8?q?Shuming=20=5B=E8=8C=83=E6=9B=B8=E9=8A=98=5D?= <shumingf@realtek.com>,
- bard.liao@intel.com, pierre-louis.bossart@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="IJAclU0AInkryoed"
+Content-Disposition: inline
+In-Reply-To: <79161044-26b2-729a-b831-b79cc238e239@linux.intel.com>
+X-Cookie: Snow Day -- stay home.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, gustavoars@kernel.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, Codrin.Ciubotariu@microchip.com,
+ mirq-linux@rere.qmqm.pl
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,34 +97,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Mar 2021 06:53:54 +0000, Jack Yu wrote:
-> Add main capture switch and main capture volume control.
-> Main capture control has its own channel value respectivelly.
 
-Applied to
+--IJAclU0AInkryoed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Apr 16, 2021 at 11:47:01AM -0500, Pierre-Louis Bossart wrote:
+> On 4/16/21 11:31 AM, Mark Brown wrote:
 
-Thanks!
+> > Not really written down that I can think of.  I think the next steps
+> > that I can think of right now are unfortunately bigger and harder ones,
+> > mainly working out a way to represent digital configuration as a graph
+> > that can be attached to/run in parallel with DAPM other people might
+> > have some better ideas though.  Sorry, I appreciate that this isn't
+> > super helpful :/
 
-[1/3] ASoC: rt715: add main capture switch and main capture volume
-      commit: dcca646c4977d885af3466b454df97b9cb0e0d26
+> I see a need for this in our future SoundWire/SDCA work. So far I was
+> planning to model the entities as 'widgets' and lets DAPM propagate
+> activation information for power management, however there are also bits of
+> information in 'Clusters' (number of channels and spatial relationships)
+> that could change dynamically and would be interesting to propagate across
+> entities, so that when we get a stream of data on the bus we know what it
+> is.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Yes, I was thinking along similar lines last time I looked at it - I was
+using the term digital domains.  You'd need some impedence matching
+objects for things like SRCs, and the ability to flag which
+configuration matters within a domain (eg, a lot of things will covert
+to the maximum supported bit width for internal operation so bit width
+only matters on external interfaces) but I think for a first pass we can
+get away with forcing everything other than what DPCM has as front ends
+into static configurations.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--IJAclU0AInkryoed
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB53aoACgkQJNaLcl1U
+h9AjXwf8DoTi095BQdPyG6MdHHkUr8bV9FidEFClOYOI1e/xKgrYp3ID9Y2OMXfN
+HggivgwaRMlU0Nm4Xn9MaJgs+7UjzmpUKug0awt8As1Fvns+/Tx9HckQeLuyE2BR
+k9I9LsePWek//oCD7towwntbfS514of7x/2fZC75xILNy4kDZKAxItWIsrQUu38E
+PyQoM5vflQBVIjRAyGDMb7bbDlLWq6ATifN+AxGfNYcv1Rl9EAyk+7ROyHGwE3/o
+mfYEcULGMgch8O/lx4HYxl0UVsWPa+svZ/gi702Q+e77ZbVIrcaIFbjNULApq0Cp
+1bPDheOOQFWTTs8x7NwuFjO+ELQE9Q==
+=Vm0r
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
+--IJAclU0AInkryoed--
