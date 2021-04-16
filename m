@@ -7,53 +7,53 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DBC70C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 10:40:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BC49C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 10:43:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1FE166115B
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 10:40:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1FE166115B
+	by mail.kernel.org (Postfix) with ESMTPS id 234BA6115B
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 10:43:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 234BA6115B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8AC6167A;
-	Fri, 16 Apr 2021 12:39:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8AC6167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 814621683;
+	Fri, 16 Apr 2021 12:42:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 814621683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618569616;
-	bh=/n7jOlkwiAZmgzzlzSSrFVBdxkXRvD/i1U3zgwKzPsY=;
+	s=default; t=1618569783;
+	bh=6hV2oFjHKpt3q9ZhHr2dzut9PvecyqFDk91aZxfwZRo=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QH1Qzfil62zbbq9yDjY2RZJyG2JJmGSWr4vdnSeNPsxZnodwcGPyjRwlsyHoPr+iu
-	 fCfOIT8OhHreCK29s0ZUQQnGt5xEwj9WUgPmTnbsii+fR7LWrBhEeihQjI1INHvOFx
-	 5nRie3SONh0+tqTpBQKA05eez4AjXQypmI0Q5hhI=
+	b=iHQX/cjem/bH9B0KY5zJdAdKF1qRCsqcJRqJ5FBARdybbMkeuqZN5Ljls5fLIJCmt
+	 Y+Tr2jeYgew+36k/Piy4N7ydViU7xF2iXjjq8PgFVsXSNhaWwuaYEPDgJuLekRpFv/
+	 jalrFZhomwlKnOGJt0V7dYEYa//nT+FBC2IqVpbo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FC9EF80254;
-	Fri, 16 Apr 2021 12:39:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D06F3F800FF;
+	Fri, 16 Apr 2021 12:42:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5CD7F8025B; Fri, 16 Apr 2021 12:39:24 +0200 (CEST)
+ id 60423F80269; Fri, 16 Apr 2021 12:42:11 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EB5EF80128
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 12:39:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EB5EF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7096BF800FF
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 12:41:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7096BF800FF
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 28A35AFC9;
- Fri, 16 Apr 2021 10:39:11 +0000 (UTC)
-Date: Fri, 16 Apr 2021 12:39:11 +0200
-Message-ID: <s5hmttyqzsg.wl-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id 59572AFEC;
+ Fri, 16 Apr 2021 10:41:57 +0000 (UTC)
+Date: Fri, 16 Apr 2021 12:41:57 +0200
+Message-ID: <s5hlf9iqznu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Yang Li <yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH] ALSA: isa: Fix inconsistent indenting
-In-Reply-To: <1618567198-5120-1-git-send-email-yang.lee@linux.alibaba.com>
-References: <1618567198-5120-1-git-send-email-yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH] ALSA: seq: oss: Fix inconsistent indenting
+In-Reply-To: <1618567244-5704-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1618567244-5704-1-git-send-email-yang.lee@linux.alibaba.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -75,39 +75,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 16 Apr 2021 11:59:58 +0200,
+On Fri, 16 Apr 2021 12:00:44 +0200,
 Yang Li wrote:
 > 
 > Kernel test robot throws below warning ->
 > 
 > smatch warnings:
-> sound/isa/opti9xx/opti92x-ad1848.c:191 snd_opti9xx_init() warn:
+> sound/core/seq/oss/seq_oss_event.c:297 note_on_event() warn:
 > inconsistent indenting
-> sound/isa/opti9xx/opti92x-ad1848.c:488 snd_opti9xx_init() warn:
-> inconsistent indenting
+> 
+> Fixed the inconsistent indenting.
 > 
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  sound/isa/opti9xx/opti92x-ad1848.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  sound/core/seq/oss/seq_oss_event.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-> index 08e61d9..234f023 100644
-> --- a/sound/isa/opti9xx/opti92x-ad1848.c
-> +++ b/sound/isa/opti9xx/opti92x-ad1848.c
-> @@ -188,7 +188,7 @@ static int snd_opti9xx_init(struct snd_opti9xx *chip,
->  		chip->mc_base_size = opti9xx_mc_size[hardware];
->  	}
->  #else
-> -		chip->mc_base_size = opti9xx_mc_size[hardware];
-> +	chip->mc_base_size = opti9xx_mc_size[hardware];
->  #endif
+> diff --git a/sound/core/seq/oss/seq_oss_event.c b/sound/core/seq/oss/seq_oss_event.c
+> index 7b7c925..9a42713 100644
+> --- a/sound/core/seq/oss/seq_oss_event.c
+> +++ b/sound/core/seq/oss/seq_oss_event.c
+> @@ -294,7 +294,7 @@
+>  				/* set volume to zero -- note off */
+>  			//	type = SNDRV_SEQ_EVENT_NOTEOFF;
+>  			//else
+> -				if (info->ch[ch].vel)
+> +			if (info->ch[ch].vel)
+>  				/* sample already started -- volume change */
+>  				type = SNDRV_SEQ_EVENT_KEYPRESS;
 
-No, it's not correct.
-
-The ifdef is a bit tricky here but the line you changed belongs
-to the else section.
+The line was aligned with the commented if block.
+If any, we should rather clean up and re-format the whole block.
+(But, OTOH, you shouldn't remove the stuff without understanding
+the context.)
 
 
 thanks,
