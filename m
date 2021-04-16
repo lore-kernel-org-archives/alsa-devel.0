@@ -7,80 +7,75 @@ X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E18FC433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:21:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F287C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:31:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 005EC6137D
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:21:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 005EC6137D
+	by mail.kernel.org (Postfix) with ESMTPS id 53362610FC
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 18:31:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 53362610FC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC08016D5;
-	Fri, 16 Apr 2021 20:20:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC08016D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B11AB16D9;
+	Fri, 16 Apr 2021 20:31:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B11AB16D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618597309;
-	bh=Pxo0SV+UUf2GwO86bCCjw8IDhjIuTrZtAacApZYdYB8=;
+	s=default; t=1618597916;
+	bh=2/Yo2Q6LNCvueXME0kVoAWDZ4cgMK43uGRA4u7ewj3g=;
 	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SESGoKVPIVO4EITD6ZNJdyBWNGqh3FkKoQsfoJ1/aH8+pm2boUjzD6s8cRXHn6gM+
-	 4MacK2c9xOy2cu9oh33K2iXre4wmt2Skqzu9QlPsbdHMr0I0uqpKThMU7FnGyzuHyQ
-	 ejy+3FX9wb0eyIh8WYWHnmWBf2T0vdFoZtcZ/BCk=
+	b=G2bMe7M8Bt+ndfct8y1cGvLdxN94FoVC96tNnm4Az4TqGr++QEMqL/1eo1T4OL7am
+	 /tU5RBH2Yns0rTsWcO8an456BGIG0UOJnwI7JTNuhjTnZ2PIKWuB7IwWYrtriKwjXd
+	 8/Esb2J63zy9gkAD+ysih215mXAOSYLpz+sO5elQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C912F80254;
-	Fri, 16 Apr 2021 20:20:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0F92F80254;
+	Fri, 16 Apr 2021 20:31:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5C5FF8025B; Fri, 16 Apr 2021 20:20:56 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id E6D09F8025B; Fri, 16 Apr 2021 20:31:02 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFBB1F800FF
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 20:20:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFBB1F800FF
-IronPort-SDR: JEDIisc27Fy+yDCvv0NknOyL2lktt1cDPcJUZMUS6MyD9osAEnD0WkCo27g9Bz7sqJctfGMdCQ
- OtYis+hoV9kw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="195195001"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; d="scan'208";a="195195001"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33FEAF80128
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 20:30:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33FEAF80128
+IronPort-SDR: JGpgmx1KXJoKkBI8L+k35f6zc0ZiiCaLZ377tkWk1Sb3hk8LW8NR0u0Z+MTN641QrjzEzrciTB
+ ISgJjXLob3iA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="280404300"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; d="scan'208";a="280404300"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Apr 2021 11:20:35 -0700
-IronPort-SDR: 8JH/wrhdnfF+kjURjC6Ozss1arp1ZZz7rh2Q11JZjMVqzDrTb+lwYiQIdzxSaJy37svU/9R9dp
- ZImzXwfK/v0Q==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; d="scan'208";a="616026100"
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Apr 2021 11:30:55 -0700
+IronPort-SDR: XMKpGc6kLnFxEI4nuJAWV8vFw2+KwwKwwS0m7g78MgL17RB7ZDM2klcuGLzJDTPEM13Fdwbc3Z
+ mhiQtSNvU6/A==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; d="scan'208";a="616028797"
 Received: from jaolanlo-mobl.amr.corp.intel.com (HELO [10.212.2.231])
  ([10.212.2.231])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Apr 2021 11:20:33 -0700
-Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-To: Mark Brown <broonie@kernel.org>, Codrin.Ciubotariu@microchip.com
-References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
- <a0c862ec-44ba-52e0-551c-0347166ac4e9@perex.cz>
- <5e1fb981-48c1-7d5a-79a6-ba54bac26165@microchip.com>
- <4f401536-5a66-0d65-30cb-7ecf6b235539@microchip.com>
- <20210415161743.GH5514@sirena.org.uk>
- <1aff49d4-5691-67cb-3fe7-979d476f1edb@microchip.com>
- <20210415172554.GI5514@sirena.org.uk>
- <ad5d556b-601f-c6f6-347e-86a235237c02@microchip.com>
- <20210416163131.GI5560@sirena.org.uk>
+ 16 Apr 2021 11:30:54 -0700
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo Ideapad S740
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+References: <20210416081211.20059-1-tiwai@suse.de>
+ <be178038-8e42-34db-3804-f27240b2d488@perex.cz>
+ <a5fee517-c12e-1cb0-755f-453d6bb47795@linux.intel.com>
+ <s5h5z0mgpsu.wl-tiwai@suse.de>
+ <b04b5f9b-1b19-e216-793a-dde9c3d66371@perex.cz>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <79161044-26b2-729a-b831-b79cc238e239@linux.intel.com>
-Date: Fri, 16 Apr 2021 11:47:01 -0500
+Message-ID: <2198c50a-848a-546e-7dd8-42e155e4c0a0@linux.intel.com>
+Date: Fri, 16 Apr 2021 13:30:53 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210416163131.GI5560@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <b04b5f9b-1b19-e216-793a-dde9c3d66371@perex.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, gustavoars@kernel.org, tiwai@suse.com,
- mirq-linux@rere.qmqm.pl
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Ryan Prescott <ryan@cousinscomputers.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,37 +92,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+>>>> I believe that this sequence contains I2C writes to amplifier chips. It would
+>>>> be really helpful, if Realtek can provide more information for the I2C master
+>>>> interface for their codecs (describe basic I2C I/O).
+>>>
+>>> The biggest problem is to figure what address/value pairs to write
+>>> with I2C into the amplifiers, and here the catch is that those I2C/I2S
+>>> amplifiers may or may not be sourced from Realtek, and it'd be
+>>> difficult for Realtek to provide documentation on their competition,
+>>> wouldn't it?
+>>
+>> Sure, that's another problem.  But currently it's not clear even how
+>> to communicate via I2C/whatever to the underlying chip, as it's done
+>> via the vendor-specific COEF verb.  At least this could be opened, I
+>> hope.
+> 
+> The nice thing if we know the I2C master communication is that we can create
+> I2C bus in the HDA driver and do run i2cdetect to detect the connected chips.
+> Yes, it's partial information, but it's far more better than this unreadable
+> coef implementation.
 
-On 4/16/21 11:31 AM, Mark Brown wrote:
-> On Fri, Apr 16, 2021 at 04:03:05PM +0000, Codrin.Ciubotariu@microchip.com wrote:
-> 
->> Thank you for the links! So basically the machine driver disappears and
->> all the components will be visible in user-space.
-> 
-> Not entirely - you still need something to say how they're wired
-> together but it'll be a *lot* simpler for anything that currently used
-> DPCM.
-> 
->> If there is a list with the 'steps' or tasks to achieve this? I can try
->> to pitch in.
-> 
-> Not really written down that I can think of.  I think the next steps
-> that I can think of right now are unfortunately bigger and harder ones,
-> mainly working out a way to represent digital configuration as a graph
-> that can be attached to/run in parallel with DAPM other people might
-> have some better ideas though.  Sorry, I appreciate that this isn't
-> super helpful :/
-
-I see a need for this in our future SoundWire/SDCA work. So far I was 
-planning to model the entities as 'widgets' and lets DAPM propagate 
-activation information for power management, however there are also bits 
-of information in 'Clusters' (number of channels and spatial 
-relationships) that could change dynamically and would be interesting to 
-propagate across entities, so that when we get a stream of data on the 
-bus we know what it is.
-
-when we discussed the multi-configuration support for BT offload, it 
-also became apparent that we don't fully control the sample rate changes 
-between FE and BE, we only control the start and ends. I fully agree 
-that the division between front- and back-ends is becoming limiting and 
-DPCM is not only complicated but difficult to stretch further.
+Ah yes, now I see the idea. Very interesting indeed. It would help quite 
+a bit if we can detect the devices and then go back to the OEMs to ask 
+"can you give us the commands for device #42". In the absence of 
+information, it would help filter the sequences extracted with scripts.
