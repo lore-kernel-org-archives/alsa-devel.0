@@ -7,52 +7,52 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD852C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 02:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93650C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 02:01:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2F8BB6117A
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 02:01:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2F8BB6117A
+	by mail.kernel.org (Postfix) with ESMTPS id 75DF46115B
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 02:01:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75DF46115B
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 159B61686;
-	Fri, 16 Apr 2021 04:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 159B61686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0228C1693;
+	Fri, 16 Apr 2021 04:00:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0228C1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618538466;
-	bh=bIkQZLWsj7/4ez90kEkxYEEnlzG0Md7sF3mcQum4rhc=;
+	s=default; t=1618538475;
+	bh=KZsXSnlVypuXkSy1lFTgdctNC3Y/bme2Y8DNngYFuoA=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lNzDmdDRXh6FWzSMw02ns1FC+TjoK7rD1ZT6sM9E62kyB1OOALQlNj3F/bMxWXng7
-	 BVFNSZfW+lyhJ5R0SaLjt7x5Y0dElssgPGQzhR1t2W9L1O3uNORB4y8rJvB8oaxPR7
-	 oOszhFonks+WwOACnRH8KxWKluIUComkwDGMJLQk=
+	b=AnjJdWuyEUCVUy8GfjAJeOP8W+rH9QLfERwzLsRav5gZAoRu0RnUKSZYlQKxdDTMY
+	 Wk1xVKi8B8GnICvdC7aCWP2bHKMSxXC+7hXZxnOb0CxsfJaW03Wx+SxinLVw1RE7qQ
+	 MLfjmYW7qX8TQFI9YZDmcMXh991p5aA4lVXs6BAg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78A59F80271;
-	Fri, 16 Apr 2021 03:59:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B468F80128;
+	Fri, 16 Apr 2021 04:00:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24B90F80273; Fri, 16 Apr 2021 03:59:57 +0200 (CEST)
+ id ED430F80273; Fri, 16 Apr 2021 04:00:19 +0200 (CEST)
 Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id C591AF80254
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 03:59:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C591AF80254
-Date: 16 Apr 2021 10:59:48 +0900
-X-IronPort-AV: E=Sophos;i="5.82,226,1613401200"; d="scan'208";a="78459041"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie5.idc.renesas.com with ESMTP; 16 Apr 2021 10:59:48 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id E4EA3F80278
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 04:00:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4EA3F80278
+Date: 16 Apr 2021 11:00:11 +0900
+X-IronPort-AV: E=Sophos;i="5.82,226,1613401200"; d="scan'208";a="78459157"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie5.idc.renesas.com with ESMTP; 16 Apr 2021 11:00:11 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 06E3540178B9;
- Fri, 16 Apr 2021 10:59:48 +0900 (JST)
-Message-ID: <8735vryoob.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A2284415D3D3;
+ Fri, 16 Apr 2021 11:00:11 +0900 (JST)
+Message-ID: <871rbbyono.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 1/4] ASoC: soc-pcm: don't use "name" on
- __soc_pcm_params_symmetry() macro
+Subject: [PATCH 2/4] ASoC: soc-pcm: indicate DAI name if
+ soc_pcm_params_symmetry() failed
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <874kg7yopb.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,48 +77,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-__soc_pcm_params_symmetry() macro is using "name" as parameter
-which will be exchanged to rate/channles/sample_bit, like below
-
-	dai->name => dai->rate
-	dai->name => dai->channels
-	dai->name => dai->sample_bit
-
-But, dai itself has "name". This means
-
-	1) It is very confusable naming
-	2) It can't use dai->name
-
-This patch use "xxx" instead of "name"
+It indicates unmatched symmetry value, but not indicates on which DAI.
+This patch indicates it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-pcm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/soc-pcm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index ad13dc6bba12..e1bca2165668 100644
+index e1bca2165668..09d63cbbc602 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -386,16 +386,16 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+@@ -384,6 +384,7 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *cpu_dai;
+ 	unsigned int symmetry, i;
  
++	d.name = __func__;
  	soc_pcm_set_dai_params(&d, params);
  
--#define __soc_pcm_params_symmetry(name)					\
--	symmetry = rtd->dai_link->symmetric_##name;			\
-+#define __soc_pcm_params_symmetry(xxx)					\
-+	symmetry = rtd->dai_link->symmetric_##xxx;			\
- 	for_each_rtd_dais(rtd, i, dai)					\
--		symmetry |= dai->driver->symmetric_##name;		\
-+		symmetry |= dai->driver->symmetric_##xxx;		\
- 									\
+ #define __soc_pcm_params_symmetry(xxx)					\
+@@ -394,8 +395,8 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
  	if (symmetry)							\
  		for_each_rtd_cpu_dais(rtd, i, cpu_dai)			\
--			if (cpu_dai->name && cpu_dai->name != d.name) {	\
-+			if (cpu_dai->xxx && cpu_dai->xxx != d.xxx) {	\
- 				dev_err(rtd->dev, "ASoC: unmatched %s symmetry: %d - %d\n", \
--					#name, cpu_dai->name, d.name);	\
-+					#xxx, cpu_dai->xxx, d.xxx);	\
+ 			if (cpu_dai->xxx && cpu_dai->xxx != d.xxx) {	\
+-				dev_err(rtd->dev, "ASoC: unmatched %s symmetry: %d - %d\n", \
+-					#xxx, cpu_dai->xxx, d.xxx);	\
++				dev_err(rtd->dev, "ASoC: unmatched %s symmetry: %s:%d - %s:%d\n", \
++					#xxx, cpu_dai->name, cpu_dai->xxx, d.name, d.xxx); \
  				return -EINVAL;				\
  			}
  
