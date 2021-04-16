@@ -2,81 +2,77 @@ Return-Path: <SRS0=6+tk=JN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BAD1C43460
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 15:56:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83993C43460
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 16:03:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id DFC76610EA
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 15:56:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org DFC76610EA
+	by mail.kernel.org (Postfix) with ESMTPS id 01190613B0
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 16:03:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 01190613B0
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E130816A4;
-	Fri, 16 Apr 2021 17:55:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E130816A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68FBC16A1;
+	Fri, 16 Apr 2021 18:02:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68FBC16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618588601;
-	bh=JEJzzQ+tdLRQxK9H7PGh2vMSOhSroN+byz9JFysxcq8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1618589005;
+	bh=q4kPNWGjHCevb/ygPjzMGTBbhWSbFDh1WRbjYpeW124=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gIzGPRjNIS9V5Gp7Z1FQ3hnyNM+cFFkXZq/mHwRHZi+8Du0njFI1TCM8yRnptRgqC
-	 AWUytzaR4UslSgMiYJPuRID7nE30SMdW5dxz6vis6YqXsMMrbYGdxgzZdeTS94uo0f
-	 UrRB1o+NaUo/Oi1Wcb9c7XwR9whiJaKUKvJXpS/o=
+	b=V9RhnrupfzTCH0EHFlXGZMJAGAEwCAbssBLSsjprWCPrB8wvqQGYGxHwmLbSMYkSx
+	 vjyZK6hbN8pzlKOshFMAOWgz4n2NSJu8WNQIhmfp0646mm+XWjOsRLja1F5S7/H5uD
+	 dVaM78BUHLgeHk3ZV45U7EhI7Wpc9Vfo7KixTH/4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C1A3F80254;
-	Fri, 16 Apr 2021 17:55:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D40A3F80254;
+	Fri, 16 Apr 2021 18:02:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AC23F8025B; Fri, 16 Apr 2021 17:55:49 +0200 (CEST)
+ id 31E4FF8025B; Fri, 16 Apr 2021 18:02:33 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8F9BF80128
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 17:55:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8F9BF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id A12E4F800FF
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 18:02:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A12E4F800FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uxWk475Q"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 246AE6113D;
- Fri, 16 Apr 2021 15:55:38 +0000 (UTC)
+ header.b="TtyiQr1b"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E304611C2;
+ Fri, 16 Apr 2021 16:02:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1618588539;
- bh=JEJzzQ+tdLRQxK9H7PGh2vMSOhSroN+byz9JFysxcq8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uxWk475Q0YILN9uDHYFrNZQ8ukASmPIutEUmTOAFlTe984ffKwEEMIVVCub3ibQu0
- KBv33XMEEdYyEE8BBnNRgIgnsAQ/7bhuLIRKoY7DC8nsino2sFLfD0tlkVZS6k/Bbp
- cag8aUF27tY/+zPe4R1crDKp3W5QV/BvhkyhaM/FLShmEi5Xv/gHEGYFTWZBdUDfrI
- fut3nOygjzko26A7GbnNfADKExCr3HeXcxH27I+4eiQggI5GmedKEj1JC6LLxc8pDJ
- k2KwJMm4khokBX7Pi7YlxxCaQazItCB7f6gpYDbv+VhfJ7TMRqmHHc/he8sQvssyLm
- 757hrI1pJqOYQ==
-Date: Fri, 16 Apr 2021 16:55:15 +0100
+ s=k20201202; t=1618588947;
+ bh=q4kPNWGjHCevb/ygPjzMGTBbhWSbFDh1WRbjYpeW124=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=TtyiQr1bDYOghs5OG6PVl85zQsOUIXKnZ9ERTtTuDS9Y22iKbjjuZyyqYUMtgD1si
+ FQNKEtmULjmEMqtnlEYbve+/94BDTwb3fmd65bRvSryislh7f+YXzXXnS3i4vosRQt
+ fxBYn+BtZlhfMu8IcoO4cbGBesxbOeRrs2nu4s7aDUvnDs8sMWToKQSQdzLuqky1u+
+ LnwneSSaYYRrJD+QauVRKsPp9kpPhvrUGgsgrBbV4sUExY7+iQQ9/4yt2XgoOScl39
+ 16Qmc/V0sc8ZnXTBA7nhOYiSH9KVmsyuI/LSnpjhbuwpvxuYEEL5IG/btLYnc5nnrZ
+ HJ1rztQPNqNeA==
 From: Mark Brown <broonie@kernel.org>
-To: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH 1/2] ASoC: simple-card-utils: Propagate errors on too
- many links
-Message-ID: <20210416155515.GG5560@sirena.org.uk>
-References: <20210416071147.2149109-1-thierry.reding@gmail.com>
- <1303b932-5226-0ee6-8f41-fd896908b045@nvidia.com>
+To: alsa-devel@alsa-project.org,
+	Daniel Baluta <daniel.baluta@oss.nxp.com>
+Subject: Re: [RESEND PATCH v2] ASoC: core: Don't set platform name when
+ of_node is set
+Date: Fri, 16 Apr 2021 17:01:47 +0100
+Message-Id: <161858869853.28833.2706372682626143806.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210414101212.65573-1-daniel.baluta@oss.nxp.com>
+References: <20210414101212.65573-1-daniel.baluta@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="RDS4xtyBfx+7DiaI"
-Content-Disposition: inline
-In-Reply-To: <1303b932-5226-0ee6-8f41-fd896908b045@nvidia.com>
-X-Cookie: Snow Day -- stay home.
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Cc: alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: lgirdwood@gmail.com, shengjiu.wang@nxp.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ Mark Brown <broonie@kernel.org>, linux-imx@nxp.com, daniel.baluta@nxp.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,51 +88,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 14 Apr 2021 13:12:12 +0300, Daniel Baluta wrote:
+> A DAI link has 3 components:
+> 	* CPU
+> 	* platform
+> 	* codec(s)
+> 
+> A component is specified via:
+> 	* name
+> 	* of_node
+> 	* dai_name
+> 
+> [...]
 
---RDS4xtyBfx+7DiaI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Fri, Apr 16, 2021 at 03:49:34PM +0100, Jon Hunter wrote:
->=20
-> On 16/04/2021 08:11, Thierry Reding wrote:
-> > From: Thierry Reding <treding@nvidia.com>
-> >=20
-> > The DAI counting code doesn't propagate errors when the number of
-> > maximum links is exceeded, which causes subsequent initialization code
-> > to continue to run and that eventually leads to memory corruption with
-> > the code trying to access memory that is out of bounds.
-> >=20
-> > Fix this by propgating errors when the maximum number of links is
->=20
-> s/propgating/propagating
->=20
-> > reached, which ensures that the driver fails to load and prevents the
-> > memory corruption.
-> >=20
-> > Fixes: f2138aed231c ("ASoC: simple-card-utils: enable flexible CPU/Code=
-c/Platform")
-> > Signed-off-by: Thierry Reding <treding@nvidia.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+Thanks!
 
---RDS4xtyBfx+7DiaI
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: core: Don't set platform name when of_node is set
+      commit: d97140033948363ffdf5ed71dd2366f717e120e7
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB5s2IACgkQJNaLcl1U
-h9AY5Qf/fknqCPfwrUTMIAXJVdVHFkSouCqz2DiWvpg5eePtbojW0X1Ot5RQ0Pwn
-OaDVL5DdzXQ/gVk2EOp2Piv2NNlAnKGNuEApKMhpI64XGRIgXAp32ZoTJwqHCfnV
-GEL7zMXWr0/ddIpDxnB75RRfM85U1so+KFC1zYX0MQJkr6WxQeMn5/vNxUfg8XiP
-EU63NDsfcsaklSP6CoZeFNFfqcyHbueD5ZLUAdx6tQ3g8lklzIPbVQvDMpkUz4OU
-CpC5HQbj0IZlATSPQsk5fkhv8yud+MJXH+k1YmQeRdEU5u8p00odp8FKd6uyS/+D
-bNmX4wcz08PitzQEH8IWBG0nJ6t18w==
-=tM5Y
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---RDS4xtyBfx+7DiaI--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
