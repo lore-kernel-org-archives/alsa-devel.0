@@ -2,75 +2,87 @@ Return-Path: <SRS0=6+tk=JN=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E62C5C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 19:15:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEF60C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 19:40:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0565C613BB
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 19:15:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0565C613BB
+	by mail.kernel.org (Postfix) with ESMTPS id AE8C0613C5
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Apr 2021 19:40:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE8C0613C5
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2239516F8;
-	Fri, 16 Apr 2021 21:14:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2239516F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7005E16EF;
+	Fri, 16 Apr 2021 21:39:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7005E16EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618600518;
-	bh=9HWTJYgQ0zZxrKQklwvKwYEHylPAQrFQncOTHIUkhwg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1618602029;
+	bh=xG3Vw5PJm1M0X9ootQB/NIPL+ZYZPPqD3eUKnIz+/GE=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=goMZ7iM53Y0UKa3pH29bBF8OC/mb4XLKVkNDND16B+lqjWEsvS0WT+zp//kb5TYlm
-	 3kSm/r3PRDe2MxFz7YaSsvQwzJRoQHBxqKeTNuiipt04Fhb97U47MhrVxjpY9owVOy
-	 pqxiOPemxsIK0jzY5DhAqWvW/zsjpPMnS7+QdPMQ=
+	b=oAR3jZyGMCrhA5g28lzUrv+k40a1O2aMB4gEFgDjdHuGwjESZOnQ3pMRIWnh29gZ3
+	 70EVyrUDGetcocIfUN7MH1hGTEBuAU7joa+wUQPRvbg+msa+2dXciBZke0UDUBorYS
+	 Kzm7yENLtt6+2yzEhQKQzl83atiI/bLQLLWNEw6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20C4EF8042F;
-	Fri, 16 Apr 2021 21:13:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EECBAF800B9;
+	Fri, 16 Apr 2021 21:39:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0637F8025B; Fri, 16 Apr 2021 21:13:15 +0200 (CEST)
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ id 40C3BF8025B; Fri, 16 Apr 2021 21:39:37 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AC7FF8025B
- for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 21:12:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AC7FF8025B
-IronPort-SDR: 3TXaR/ureSViL/yYLz42XdXfihuf8fRz3NbkRVsW9ftV3SnMlKiKL351m2fszVQQv3lKclGDFd
- KZJH20buAAfw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="256407102"
-X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; d="scan'208";a="256407102"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Apr 2021 12:11:59 -0700
-IronPort-SDR: x+WCM+OG11nFALj1ANcaCehUs4OikLkzTGBvvWYhL34zyabeCKVdzpqZNt2bhuAZUhDedJS68S
- sED/GWl5LUhQ==
-X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; d="scan'208";a="612838749"
-Received: from paulsoum-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.66.118])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Apr 2021 12:11:58 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB516F800B9
+ for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2021 21:39:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB516F800B9
+IronPort-SDR: htO3FkUm7QcnuTvgTzzm0sZBS5Pc2R2VDo4oRGarzieuJw4KIhQn1MlI2kElCoNCkmkl58XGxK
+ tF7pp1sdv5yA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="191906415"
+X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; d="scan'208";a="191906415"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Apr 2021 12:39:27 -0700
+IronPort-SDR: TgYFmc1TUDQHE1/z0EdC61yKFSvMHL4BM/zw1xlFAfqE10/PxRQ7Cr3rgOxqfx8BZJ4e0upa3K
+ azOAIRmfVJ2Q==
+X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; d="scan'208";a="453452132"
+Received: from ganeshsu-mobl.amr.corp.intel.com (HELO [10.254.191.217])
+ ([10.254.191.217])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Apr 2021 12:39:27 -0700
+Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
+To: Mark Brown <broonie@kernel.org>
+References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
+ <a0c862ec-44ba-52e0-551c-0347166ac4e9@perex.cz>
+ <5e1fb981-48c1-7d5a-79a6-ba54bac26165@microchip.com>
+ <4f401536-5a66-0d65-30cb-7ecf6b235539@microchip.com>
+ <20210415161743.GH5514@sirena.org.uk>
+ <1aff49d4-5691-67cb-3fe7-979d476f1edb@microchip.com>
+ <20210415172554.GI5514@sirena.org.uk>
+ <ad5d556b-601f-c6f6-347e-86a235237c02@microchip.com>
+ <20210416163131.GI5560@sirena.org.uk>
+ <79161044-26b2-729a-b831-b79cc238e239@linux.intel.com>
+ <20210416185538.GK5560@sirena.org.uk>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/5] ASoC: codecs: lpass-rx-macro: remove useless return
-Date: Fri, 16 Apr 2021 14:11:43 -0500
-Message-Id: <20210416191144.27006-5-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210416191144.27006-1-pierre-louis.bossart@linux.intel.com>
-References: <20210416191144.27006-1-pierre-louis.bossart@linux.intel.com>
+Message-ID: <dfcf8b69-6ede-7344-79c0-cb572e03359c@linux.intel.com>
+Date: Fri, 16 Apr 2021 14:39:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de,
- Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
- Daniel Baluta <daniel.baluta@gmail.com>, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210416185538.GK5560@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, gustavoars@kernel.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, Codrin.Ciubotariu@microchip.com,
+ mirq-linux@rere.qmqm.pl
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,42 +98,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
 
-sound/soc/codecs/lpass-rx-macro.c:1626:9: warning: Identical condition
-and return expression 'ret', return value is always 0
-[identicalConditionAfterEarlyExit]
- return ret;
-        ^
-sound/soc/codecs/lpass-rx-macro.c:1623:6: note: If condition 'ret' is
-true, the function will return/exit
- if (ret)
-     ^
-sound/soc/codecs/lpass-rx-macro.c:1626:9: note: Returning identical
-expression 'ret'
- return ret;
-        ^
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
----
- sound/soc/codecs/lpass-rx-macro.c | 2 --
- 1 file changed, 2 deletions(-)
+On 4/16/21 1:55 PM, Mark Brown wrote:
+> On Fri, Apr 16, 2021 at 11:47:01AM -0500, Pierre-Louis Bossart wrote:
+>> On 4/16/21 11:31 AM, Mark Brown wrote:
+> 
+>>> Not really written down that I can think of.  I think the next steps
+>>> that I can think of right now are unfortunately bigger and harder ones,
+>>> mainly working out a way to represent digital configuration as a graph
+>>> that can be attached to/run in parallel with DAPM other people might
+>>> have some better ideas though.  Sorry, I appreciate that this isn't
+>>> super helpful :/
+> 
+>> I see a need for this in our future SoundWire/SDCA work. So far I was
+>> planning to model the entities as 'widgets' and lets DAPM propagate
+>> activation information for power management, however there are also bits of
+>> information in 'Clusters' (number of channels and spatial relationships)
+>> that could change dynamically and would be interesting to propagate across
+>> entities, so that when we get a stream of data on the bus we know what it
+>> is.
+> 
+> Yes, I was thinking along similar lines last time I looked at it - I was
+> using the term digital domains.  You'd need some impedence matching
+> objects for things like SRCs, and the ability to flag which
+> configuration matters within a domain (eg, a lot of things will covert
+> to the maximum supported bit width for internal operation so bit width
+> only matters on external interfaces) but I think for a first pass we can
+> get away with forcing everything other than what DPCM has as front ends
+> into static configurations.
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 8e6a47f152ad..b0ebfc8d180c 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -1620,8 +1620,6 @@ static int rx_macro_set_interpolator_rate(struct snd_soc_dai *dai,
- 		return ret;
- 
- 	ret = rx_macro_set_mix_interpolator_rate(dai, rate_val, sample_rate);
--	if (ret)
--		return ret;
- 
- 	return ret;
- }
--- 
-2.25.1
+You lost me on the last sentence. did you mean "forcing everything into 
+static configurations except for what DPCM has as front-ends"?
 
+It may already be too late for static configurations, Intel, NXP and 
+others have started to enable cases where the dailink configuration varies.
+
+FWIW both the USB and SDCA class document are very careful with the 
+notion of constraints and whether an entity is implemented in the analog 
+or digital domains. There are 'clock sources' that may be used in 
+specific terminals but no notion of explicit SRC in the graph to leave 
+implementers a lot of freedom. There is a notion of 'Usage' that 
+describes e.g. FullBand or WideBand without defining what the 
+representation is. The bit width is also not described except where 
+necessary (history buffers and external bus-facing interfaces). Like you 
+said it's mostly the boundaries of the domains that matter.
