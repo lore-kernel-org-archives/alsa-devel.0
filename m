@@ -7,71 +7,71 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 276EBC433B4
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Apr 2021 13:49:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 551F2C433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Apr 2021 13:50:21 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3B60161057
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Apr 2021 13:49:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3B60161057
+	by mail.kernel.org (Postfix) with ESMTPS id CA5F361057
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Apr 2021 13:50:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA5F361057
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gatech.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAC3D16A0;
-	Sun, 18 Apr 2021 15:48:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAC3D16A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59E1D16AA;
+	Sun, 18 Apr 2021 15:49:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59E1D16AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618753783;
-	bh=1CjRm5ecSlygOf9UWKFV6kZydosGPNtVOybVRYxAbao=;
+	s=default; t=1618753819;
+	bh=1PgFdV9G2QWDdVY4MaKTvreupi1RSiujyPWDLI79ZAQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mjeeh7a0nt8oKfSRvcXjjTsXpk8K0TkG1LztpiavjrYAflV9/w9P6xVL02cLa1gI9
-	 40nzeVGnDgGZapopH8UgyIvlnedG4lea3aUDmYUb8TVdMkz6OZJXFMsupKUViSoTrO
-	 x3zHe+K/zckBfKOtXnnDvl7YO00axvst2huQaiZ0=
+	b=i2N7Kp7Sw+EqBQVI7gHLc+ZTLmaKB3TazTNyqRAcZYOQl5JXIhCPixMNSo+wh7fP9
+	 ydm4V8YmD9eORSKtRbmMD8nIN87TQpR3ZnELJw1X2+MsdfhOeXWgMLaWo0F3F1c2f+
+	 JmZLT6oKHkXlVr688ZYzkBSwRTixl+5wKSfFVcA4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BD7AF80431;
-	Sun, 18 Apr 2021 15:47:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 432EEF804A9;
+	Sun, 18 Apr 2021 15:48:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E79CF80253; Sun, 18 Apr 2021 15:47:57 +0200 (CEST)
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com
- [209.85.222.173])
+ id 38BFBF80273; Sun, 18 Apr 2021 15:47:57 +0200 (CEST)
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com
+ [209.85.219.54])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E21FF80253
- for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2021 15:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E21FF80253
-Received: by mail-qk1-f173.google.com with SMTP id u20so1298930qku.10
- for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2021 06:47:04 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2F2DF80273
+ for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2021 15:47:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2F2DF80273
+Received: by mail-qv1-f54.google.com with SMTP id dp18so11048969qvb.5
+ for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2021 06:47:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=W6Zca4GVJY1fggJs5iafYXFuVE85I8IMOERxrI28jD8=;
- b=G1lJSpWLyenT27qti8nnrYq2MtXLTTz2+C4t4icy4Q/EojfcChvZ5QiLLeXAFHBmvG
- JhuvY0kOCMynGmLD/3FFJTw9ZHwcNOfOKxTLb5N3rRFczx6GYZ8KEFBuMZt/HFWcZmHq
- nZQpucpEV/i4k/+TuymxVro2HxVxz1k1xM46cSTENXJ/L9nXFq4ChgxrgjocMMD1HcuM
- uEXFilW/oO1xztqkUudlbvu343KnEp/VYGWvLSViuyxPTv7pXdraUG9LFzATHMsbiG8t
- SqKbJSVyBtfIJe6ebAL8sXvcKsETe2opK1dcf2XliM3cpvCv/WRYzVZaQuIzu/oFcLR/
- PmKw==
-X-Gm-Message-State: AOAM532gFkVu4h2/7gPMTC+WUpgxLes/SDPqKXG2V0S4gp1Ko+6vmZNV
- yTE1j3s1f8G9sinj6ePplXY=
-X-Google-Smtp-Source: ABdhPJz/cCWYxz+Q7XrC4BWia1woqDR4nMpolxZi0gZGfeldAQFyGM+X6tEWTuUgN1KZRv97N8G3QQ==
-X-Received: by 2002:a37:8a01:: with SMTP id m1mr8036277qkd.85.1618753623229;
- Sun, 18 Apr 2021 06:47:03 -0700 (PDT)
+ bh=i2s1yyziAApLNMk5wHeYSLF57BtVllGzKRDg9f231Go=;
+ b=iGOXBLoIdnzz9AxW3HEMihKIS2HSfX9imEuV3387pFI5+Xwu9skAMLxDOJ20L8QTMv
+ pdK9FeXJB52gkUpYC/TdleeylFsF9mBAuiYP8r4yEtsZJBgIX0DKaEftrFBZjfToWiL8
+ 8aANghNYf51u3YUBS9C/FQcgsPX3a3MILMY9Ew1+Yjdyl59fI5Xv3mpb3BPz9AWFIxY1
+ rU6XK7WT0e/LCKv9KRIgnQn4mIsfV3Jfxt3IBXfUuZ5ZSoM45likl4B9JyREIE9uo0TW
+ asDYaTRuAzN3sWg3UOOgJDiswSaBBFt/ztkNSiyAgH572kZiWo/tQqT3+UQzYZ5IXxvV
+ 3E2Q==
+X-Gm-Message-State: AOAM533xL0DTmo2H3r1lM2fgURu2Plq00ph0l1eECyPkv2IjbqNuFmhd
+ z4lAX3colwquG4YWuQ+R/jc=
+X-Google-Smtp-Source: ABdhPJyvY/4h1w1CFLpq3liDdP2Gm0Lr8cQNt5IW11+QoBDJ121UBaGRz2k3quHDp/fzjATFWNz0Ow==
+X-Received: by 2002:a0c:f452:: with SMTP id h18mr12447612qvm.27.1618753622528; 
+ Sun, 18 Apr 2021 06:47:02 -0700 (PDT)
 Received: from localhost.localdomain ([2601:184:417f:5b5f::f3be:e978])
- by smtp.gmail.com with ESMTPSA id p23sm3927937qtl.8.2021.04.18.06.47.02
+ by smtp.gmail.com with ESMTPSA id p23sm3927937qtl.8.2021.04.18.06.47.01
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 18 Apr 2021 06:47:03 -0700 (PDT)
+ Sun, 18 Apr 2021 06:47:02 -0700 (PDT)
 From: David Ward <david.ward@gatech.edu>
 To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/5] ASoC: rt286: Make RT286_SET_GPIO_* readable and writable
-Date: Sun, 18 Apr 2021 09:46:57 -0400
-Message-Id: <20210418134658.4333-5-david.ward@gatech.edu>
+Subject: [PATCH 3/5] ASoC: rt298: Configure combo jack for headphones
+Date: Sun, 18 Apr 2021 09:46:56 -0400
+Message-Id: <20210418134658.4333-4-david.ward@gatech.edu>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210418134658.4333-1-david.ward@gatech.edu>
 References: <20210418134658.4333-1-david.ward@gatech.edu>
@@ -96,29 +96,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The GPIO configuration cannot be applied if the registers are inaccessible.
-This prevented the headset mic from working on the Dell XPS 13 9343.
+During jack detection, the combo jack is configured for a CTIA headset, and
+then for an OMTP headset, while sensing the mic connection. If a mic is not
+found in either case, the combo jack should be re-configured for headphones
+only. This is consistent with the HDA driver behavior.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=114171
 Signed-off-by: David Ward <david.ward@gatech.edu>
 ---
- sound/soc/codecs/rt286.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/rt298.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 67a5affdb705..45e4a48ef5bf 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -171,6 +171,9 @@ static bool rt286_readable_register(struct device *dev, unsigned int reg)
- 	case RT286_PROC_COEF:
- 	case RT286_SET_AMP_GAIN_ADC_IN1:
- 	case RT286_SET_AMP_GAIN_ADC_IN2:
-+	case RT286_SET_GPIO_MASK:
-+	case RT286_SET_GPIO_DIRECTION:
-+	case RT286_SET_GPIO_DATA:
- 	case RT286_SET_POWER(RT286_DAC_OUT1):
- 	case RT286_SET_POWER(RT286_DAC_OUT2):
- 	case RT286_SET_POWER(RT286_ADC_IN1):
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 32cc9b6287d2..c592c40a7ab3 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -267,11 +267,16 @@ static int rt298_jack_detect(struct rt298_priv *rt298, bool *hp, bool *mic)
+ 				msleep(300);
+ 				regmap_read(rt298->regmap,
+ 					RT298_CBJ_CTRL2, &val);
+-				if (0x0070 == (val & 0x0070))
++				if (0x0070 == (val & 0x0070)) {
+ 					*mic = true;
+-				else
++				} else {
+ 					*mic = false;
++					regmap_update_bits(rt298->regmap,
++						RT298_CBJ_CTRL1,
++						0xfcc0, 0xc400);
++				}
+ 			}
++
+ 			regmap_update_bits(rt298->regmap,
+ 				RT298_DC_GAIN, 0x200, 0x0);
+ 
 -- 
 2.31.1
 
