@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B737AC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:05:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0869EC433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:05:22 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3D59D610CB
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:05:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3D59D610CB
+	by mail.kernel.org (Postfix) with ESMTPS id 32D84610CB
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:05:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 32D84610CB
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFB9B1696;
-	Mon, 19 Apr 2021 04:04:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFB9B1696
+	by alsa0.perex.cz (Postfix) with ESMTPS id C255F16A0;
+	Mon, 19 Apr 2021 04:04:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C255F16A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618797913;
-	bh=eCNB78QelM/dMTnPjYybFNKI1UU83F6eyq1JLC8BHAU=;
+	s=default; t=1618797919;
+	bh=AtrdGs8dGv+1b0Czxl1+ZaeTmMLo1pSTz9hH4X0fuPY=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K+m5Abcmc/Stjd83BvKDxNh1qkfQbNfH06Q/DDKg6pou5FsyXJYILmPq90zuXL96f
-	 bbTMleb4NipaQX+EmwmoyRrNIx4Z3DUU+FDGW3Qx9HNS3RNUGPluPLs2v9fGNb2wOe
-	 8zCymSJi0al211Bq8CZyGBH9tjHqBJiF4ooWwsCk=
+	b=sLK7QXtsheqo80svXPeVscgjHGgzl97JxJrs62RW8tI093i2ADvMbtwnHWSx+WJpK
+	 v+wRxLie6sqLl+wyAp3j/7kjIZBF61ZF270dFxXQKD7qIV+QeDxr0hhxBA6lufOn3F
+	 TYwroFhzAU+3GsOW91EiLzBzu85aR1kcnC0Dr4Vw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FC2CF804A9;
-	Mon, 19 Apr 2021 04:02:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55E7AF804AD;
+	Mon, 19 Apr 2021 04:02:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E9C6F804AA; Mon, 19 Apr 2021 04:02:43 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id F1ACCF80430
- for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 04:02:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1ACCF80430
-Date: 19 Apr 2021 11:02:38 +0900
-X-IronPort-AV: E=Sophos;i="5.82,232,1613401200"; d="scan'208";a="78473908"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 19 Apr 2021 11:02:38 +0900
+ id CB0FDF804AE; Mon, 19 Apr 2021 04:02:46 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id AA287F804AA
+ for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 04:02:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA287F804AA
+Date: 19 Apr 2021 11:02:43 +0900
+X-IronPort-AV: E=Sophos;i="5.82,232,1613401200"; d="scan'208";a="78696753"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 19 Apr 2021 11:02:43 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id B1775415539E;
- Mon, 19 Apr 2021 11:02:38 +0900 (JST)
-Message-ID: <87tuo33ubl.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 3B02C40078BB;
+ Mon, 19 Apr 2021 11:02:43 +0900 (JST)
+Message-ID: <87sg3n3ubg.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 5/6] ASoC: audio-graph: remove unused "node" from
- graph_parse_mclk_fs()
+Subject: [PATCH 6/6] ASoC: audio-graph: remove Platform support
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,36 +74,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-graph_parse_mclk_fs() has "node", but is not used.
-This patch removes unused "node"
+Platform was one of mandatory component on ASoC before,
+and audio-graph-card was assuming that CPU and Platform were
+same driver.
+
+But it is no longer mandatory on ASoC.
+Current ASoC will just ignore if Platform and CPU were same
+or doplicated component.
+
+Of course ASoC is supporting Platform, but current
+audio-graph-card doesn't support detecting it from DT.
+
+This means current audio-graph-card operation for Platform so far
+is 100% useless. This patch removes it.
+We can respawn it when we need it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/generic/audio-graph-card.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 029611c19c15..5594eab9902e 100644
+index 5594eab9902e..3c4915d1e528 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -195,7 +195,6 @@ static void graph_parse_mclk_fs(struct device_node *top,
- {
- 	struct device_node *port	= of_get_parent(ep);
- 	struct device_node *ports	= of_get_parent(port);
--	struct device_node *node	= of_graph_get_port_parent(ep);
+@@ -223,7 +223,6 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	struct asoc_simple_dai *dai;
+ 	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+ 	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+-	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+ 	int ret;
  
- 	of_property_read_u32(top,	"mclk-fs", &props->mclk_fs);
- 	if (of_node_name_eq(ports, "ports"))
-@@ -205,7 +204,6 @@ static void graph_parse_mclk_fs(struct device_node *top,
+ 	port	= of_get_parent(ep);
+@@ -275,7 +274,6 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
  
- 	of_node_put(port);
- 	of_node_put(ports);
--	of_node_put(node);
+ 		/* card->num_links includes Codec */
+ 		asoc_simple_canonicalize_cpu(cpus, is_single_links);
+-		asoc_simple_canonicalize_platform(platforms, cpus);
+ 	} else {
+ 		struct snd_soc_codec_conf *cconf;
+ 
+@@ -354,7 +352,6 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 	struct asoc_simple_dai *codec_dai = simple_props_to_dai_codec(dai_props, 0);
+ 	struct snd_soc_dai_link_component *cpus = asoc_link_to_cpu(dai_link, 0);
+ 	struct snd_soc_dai_link_component *codecs = asoc_link_to_codec(dai_link, 0);
+-	struct snd_soc_dai_link_component *platforms = asoc_link_to_platform(dai_link, 0);
+ 	int ret, single_cpu = 0;
+ 
+ 	dev_dbg(dev, "link_of (%pOF)\n", cpu_ep);
+@@ -405,7 +402,6 @@ static int graph_dai_link_of(struct asoc_simple_priv *priv,
+ 	dai_link->init = asoc_simple_dai_init;
+ 
+ 	asoc_simple_canonicalize_cpu(cpus, single_cpu);
+-	asoc_simple_canonicalize_platform(platforms, cpus);
+ 
+ 	return 0;
  }
+@@ -621,7 +617,6 @@ static int graph_count_noml(struct asoc_simple_priv *priv,
  
- static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 	li->num[li->link].cpus		= 1;
+ 	li->num[li->link].codecs	= 1;
+-	li->num[li->link].platforms	= 1;
+ 
+ 	li->link += 1; /* 1xCPU-Codec */
+ 
+@@ -644,7 +639,6 @@ static int graph_count_dpcm(struct asoc_simple_priv *priv,
+ 
+ 	if (li->cpu) {
+ 		li->num[li->link].cpus		= 1;
+-		li->num[li->link].platforms	= 1;
+ 
+ 		li->link++; /* 1xCPU-dummy */
+ 	} else {
 -- 
 2.25.1
 
