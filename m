@@ -6,61 +6,55 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D64E5C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 22:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7111AC433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 23:54:37 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E340761363
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 22:36:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E340761363
+	by mail.kernel.org (Postfix) with ESMTPS id 65FA66127C
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 23:54:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 65FA66127C
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DEDB1679;
-	Tue, 20 Apr 2021 00:35:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DEDB1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 006DF1678;
+	Tue, 20 Apr 2021 01:53:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 006DF1678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618871785;
-	bh=i6eB2vX9kzk8QzGdnn1PQry5U6ZO3x/6652XvuddTss=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=D8gU6MgQkr7YYsxfMqW+5y8tCJn6K1N9oo+BJ3sRbBXppLa/gcDWEZS9PtDhOAgWT
-	 Oobk2E3If+0k16Nnd/bj4X8DTUg6KSEDgSbHti4IiJXG7ltK7/gy5toHTxVUOswgi5
-	 M1yWdEKCZyuO07Dcy9/FwoH7NX6sZbCGGa5+7zaE=
+	s=default; t=1618876473;
+	bh=o7fe9KQB9zf6cAzZcfno4u1bKDehPwJxplg2igO2skA=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VSDXg9eEW2oHVROULKKR+EixAPsK8/m1/ZZd0/hkIhX1huTnc3DS0Wj+ToFJu2KMl
+	 EF4yHM1ypUUOY+tRi3F5KsYifpm2n07eqBRVPGJomljt3HBtabmMCethRMTkECdlkE
+	 LkJ306qKdIci7B+Tbx+GGUgA4JbgP51HzrVzi09w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0830AF8019B;
-	Tue, 20 Apr 2021 00:35:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45365F8019B;
+	Tue, 20 Apr 2021 01:53:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB6EBF80227; Tue, 20 Apr 2021 00:35:32 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id CD57EF80164
- for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 00:35:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD57EF80164
-Date: 20 Apr 2021 07:35:25 +0900
-X-IronPort-AV: E=Sophos;i="5.82,235,1613401200"; d="scan'208";a="78795894"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Apr 2021 07:35:25 +0900
+ id 3CAF7F80227; Tue, 20 Apr 2021 01:53:40 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id D84B9F8014D
+ for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 01:53:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D84B9F8014D
+Date: 20 Apr 2021 08:53:29 +0900
+X-IronPort-AV: E=Sophos;i="5.82,235,1613401200"; d="scan'208";a="78579564"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 20 Apr 2021 08:53:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2CE88411B71B;
- Tue, 20 Apr 2021 07:35:25 +0900 (JST)
-Message-ID: <87h7k152du.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 6F791400940B;
+ Tue, 20 Apr 2021 08:53:29 +0900 (JST)
+Message-ID: <87fszl4yrq.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: htl10@users.sourceforge.net
-Subject: Re: ASoc / PCM recording-related regression between v5.4 and v5.5
-In-Reply-To: <1772063602.5910217.1618841824599@mail.yahoo.com>
-References: <148484793.4894421.1618654607945.ref@mail.yahoo.com>
- <148484793.4894421.1618654607945@mail.yahoo.com>
- <877dkz5hz1.wl-kuninori.morimoto.gx@renesas.com>
- <1772063602.5910217.1618841824599@mail.yahoo.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Question about soc_pcm_pointer()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,25 +71,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Hin-Tak
+Hi ALSA ML
 
+I noticed that current soc-pcm.c :: soc_pcm_pointer() is adding
+both CPU-DAI's max delay (= A)
+and Codec-DAI's max delay (= B).
 
-> it was not setting .non_legacy_dai_naming - this was a 4.16 change . The similar hardware but working
-> sibling device has one single ADC codec, while the broken device has two such ADC codec plus a 3rd DAC
-> codec; I see that this flag started to matter in v5.6 for codec2codec links . I don't know if this
-> qualifies as a codec 2 codec link - it is running two 4-mic ADC in parallel to read from 6 mics...
-> 
-> Anyway, I tried putting that flag in, but it has not fix problem with 5.10, so I am back to trimming
-> the difference between v5.4 and v5.5 slowly.
+	static snd_pcm_uframes_t soc_pcm_pointer(...)
+	{
+		...
+ ^		for_each_rtd_cpu_dais(rtd, i, cpu_dai)
+(A) 			cpu_delay = max(cpu_delay, ...);
+ v		delay += cpu_delay;
 
-v5.3 has other big change on ALSA SoC for each driver.
-Out-of-tree might get this effect.
+ ^		for_each_rtd_codec_dais(rtd, i, codec_dai)
+(B)			codec_delay = max(codec_delay, ...);
+ v		delay += codec_delay;
 
-	ASoC: xxxx: use modern dai_link style
+		runtime->delay = delay;
+		...
+	}
 
-For example,
-05ab66178cb27ee795aa458b43818d2caa2d3953
-("ASoC: mediatek: mt8173-rt5650-rt5676: use modern dai_link style")
+But I guess All-DAI's max delay is very enough for it.
+What do you think ?
 
 Thank you for your help !!
 
