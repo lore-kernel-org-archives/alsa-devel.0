@@ -2,55 +2,71 @@ Return-Path: <SRS0=gP9u=JQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28CFCC433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 07:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 833B6C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 07:16:28 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2E5FD6102A
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 07:09:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2E5FD6102A
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id 7706E610A1
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 07:16:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7706E610A1
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EE0916BD;
-	Mon, 19 Apr 2021 09:08:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EE0916BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1CE516B2;
+	Mon, 19 Apr 2021 09:15:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1CE516B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618816166;
-	bh=CimjLUgwW9e0kxiJldRS/KJey9vbcMYc6NhqDR8vM3o=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1618816585;
+	bh=LKoEq95jiSMlqGLX9/l2GQvT739mgwD3+OEYWzvX2fU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=loqx02s2ATOqkk6ln3PX2MsduF1s/QxKpeQbw+qVufUk/KJiAnVTr8ngRuPsjL5ms
-	 eErtVo78Db7/hIqnV8Oka8RUbrUGWZe4737euuSkTHqWswrWq9wc0m8vRNo/mAQBhI
-	 i0p7E2q1mXuRbLyfrn96R+Feex0LkbCbazOyfo+4=
+	b=rEinocyVi9XaDFupo7kOjwsNxZmdh7S1B25pMX+gcMw2SqnK9PHWp8TJWhJjSa86M
+	 NX3PCv6zr++b+oBRusYCPHJGn/MOkki8EGr/gUVElmE6oHCnQ4JPIpWyONFgfStBIM
+	 UsIrKYWKxB1yhrzJO5y+gNoSK9lvJzLR2H03iYBk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31770F80227;
-	Mon, 19 Apr 2021 09:08:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29963F80164;
+	Mon, 19 Apr 2021 09:15:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EDA97F80274; Mon, 19 Apr 2021 09:08:22 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 41960F80164
- for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 09:08:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41960F80164
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1618816095057609081-webhooks-bot@alsa-project.org>
-References: <1618816095057609081-webhooks-bot@alsa-project.org>
-Subject: [RFC] ucm2: rt711-sdca: remove 'rt711 FU0F Capture Switch' setting
-Message-Id: <20210419070822.EDA97F80274@alsa1.perex.cz>
-Date: Mon, 19 Apr 2021 09:08:22 +0200 (CEST)
+ id 720E5F80227; Mon, 19 Apr 2021 09:15:33 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFE37F80164
+ for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 09:15:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFE37F80164
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+ by mx2.suse.de (Postfix) with ESMTP id A6E28AD4A;
+ Mon, 19 Apr 2021 07:15:20 +0000 (UTC)
+Date: Mon, 19 Apr 2021 09:15:20 +0200
+Message-ID: <s5hlf9eg2yf.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Geraldo Nascimento <geraldogabriel@gmail.com>
+Subject: Re: [PATCH v2] Pioneer devices: engage implicit feedback sync for
+ playback
+In-Reply-To: <CAEsQvctoF1MeGLyUiPZpfRC50kMY+8nnQ12OphPO8NvMUFj_hQ@mail.gmail.com>
+References: <CAEsQvcs9LcciAYjoB64Kt_VaSww4EAW4-qN0ED5jDA0GeeTtDg@mail.gmail.com>
+ <20210409110745.kbr5z2jinsaur2ac@base.nu>
+ <s5ha6pygqfz.wl-tiwai@suse.de>
+ <20210417222630.dpqju7bowvks5nnq@base.nu>
+ <s5hpmysf374.wl-tiwai@suse.de>
+ <20210418124301.scwvjqxwanlarko6@base.nu>
+ <CAEsQvctoF1MeGLyUiPZpfRC50kMY+8nnQ12OphPO8NvMUFj_hQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Olivia Mackintosh <livvy@base.nu>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,14 +82,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #89 was edited from libinyang:
+On Sun, 18 Apr 2021 16:16:56 +0200,
+Geraldo Nascimento wrote:
+> 
+> Em Dom, 18 de abr de 2021 09:45, Olivia Mackintosh <livvy@base.nu> escreveu:
+> 
+>     > As a blind shot: might the stall be avoided by passing the recently
+>     > introduced chip->playback_first flag?  The revised patch is below.
+>    
+>     This appears to fix the issue, thank you! I am curious as to why this is
+>     not required for Geraldo's DDJ-SR2.
+> 
+> Heh, sometimes I think Takashi Iwai is psychic ;-)
 
-The rt711-sdca codec driver removes the 'rt711 FU0F Capture Switch'
-kcontrol. So we need to remove the setting of 'rt711 FU0F Capture Switch'
-correspondingly.
+Heh, it was our luck that we've worked on the similar problem very
+recently.
 
-Signed-off-by: Libin Yang <libin.yang@intel.com>
+> Just kidding, he's "just" very talented and very experienced. Anyway, the
+> DDJ-SR2 is originally a Serato controller. It still requires two MIDI SysEx
+> messages to unmute the RCA inputs - engaging "Serato Mode" in marketing-speak.
+> 
+> My point is that Pioneer may be a little more compliant / a little less
+> deviant from the UAC2 standard when designing gear for use with third-party
+> software.
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/89
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/89.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+I think many devices require the implicit feedback seem following this
+pattern: for such devices, the full-duplex streams are mandatory,
+i.e. both streams have to be started always.  And the implicit
+feedback is triggered at the later point for a proper sync.
+
+>     My initial thought was that certain devices that restrict capture unless
+>     regular SysEx/Control URBs are sent may mean that Playback first support
+>     is required (e.g. 750, 850, 450). Please correct me if this intuition is
+>     incorrect.
+
+As mentioned previously, it might be the difference of the PCM
+parameters to be deployed.  I guess Geraldo didn't test speaker-test
+program but maybe only the standard sound backends like JACK, etc.
+
+In anyway, I'm going to format and submit the proper patch for
+merging.
+
+
+thanks,
+
+Takashi
