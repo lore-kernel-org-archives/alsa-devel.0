@@ -2,56 +2,61 @@ Return-Path: <SRS0=gP9u=JQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F6CDC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 382B1C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:03:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7DCD4610CB
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:02:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7DCD4610CB
+	by mail.kernel.org (Postfix) with ESMTPS id 183C8610CA
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:03:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 183C8610CA
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CACC15E2;
-	Mon, 19 Apr 2021 04:02:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CACC15E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DD17168D;
+	Mon, 19 Apr 2021 04:02:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DD17168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618797774;
-	bh=UqTvv7bjWkulmu7IioYO7vVjreRiEuk5c56FwjSKD7o=;
-	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VZI67tp6FZVHAPFgbv0vuQ0MFhFwVDh0O8sCuWZZzz6ywWUf33oZvX4K7ESNeoHbi
-	 AwAmwSvJ7ckmaap9RTWFcsQWVGH0HcL3yePYrkShxzHAcX3uAygNqmm+4nfqDJWV7t
-	 VW6/7esCUEqp01tgSmHTB81MavO0Dr8YF/cYFoKg=
+	s=default; t=1618797825;
+	bh=9zgNzRtyxeMV4p253yoHmQMVfHCVroax8tnEXsY9x68=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZN2mfso+YJe7YIgZE7JWirqr5HiGBTgCwQDqj7gYNzrOKnuGzvV10isBQtOjYGlgu
+	 kqCDX80kqchTWefxunC9O7Qw4znHvO0RRzL8ig1J8O9OdmY6KfKB45oELnHfEZVV5w
+	 JUWRHLcVhHz/xs9fXIdqvc6W6BW7W/11RL8XVIfM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 091BBF8019B;
-	Mon, 19 Apr 2021 04:02:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0222DF80256;
+	Mon, 19 Apr 2021 04:02:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6CC28F80227; Mon, 19 Apr 2021 04:02:03 +0200 (CEST)
+ id 9E0D0F80276; Mon, 19 Apr 2021 04:02:28 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id B73A1F80164
- for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 04:01:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B73A1F80164
-Date: 19 Apr 2021 11:01:56 +0900
-X-IronPort-AV: E=Sophos;i="5.82,232,1613401200"; d="scan'208";a="78473814"
+ by alsa1.perex.cz (Postfix) with ESMTP id 5BB8FF80164
+ for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 04:02:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BB8FF80164
+Date: 19 Apr 2021 11:02:19 +0900
+X-IronPort-AV: E=Sophos;i="5.82,232,1613401200"; d="scan'208";a="78473866"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie6.idc.renesas.com with ESMTP; 19 Apr 2021 11:01:56 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 19 Apr 2021 11:02:19 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 774E74155072;
- Mon, 19 Apr 2021 11:01:56 +0900 (JST)
-Message-ID: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id CB333415539F;
+ Mon, 19 Apr 2021 11:02:19 +0900 (JST)
+Message-ID: <87zgxv3uc4.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 0/6] ASoC: audio-graph: cleanups
+Subject: [PATCH 1/6] ASoC: audio-graph: move audio_graph_card_probe() to
+ simple-card-utils.c
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
+In-Reply-To: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
+References: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
@@ -70,37 +75,125 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Hi Mark
+audio-graph-card2 can reuse audio_graph_card_probe().
+This patch moves it to simple-card-utils.c.
 
-These patches cleanups audio-graph.
-This is part of prepare for new audio-graph-card2.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+---
+ include/sound/graph_card.h               |  2 --
+ include/sound/simple_card_utils.h        |  3 +++
+ sound/soc/generic/audio-graph-card.c     | 19 +------------------
+ sound/soc/generic/simple-card-utils.c    | 17 +++++++++++++++++
+ sound/soc/tegra/tegra_audio_graph_card.c |  2 +-
+ 5 files changed, 22 insertions(+), 21 deletions(-)
 
-Kuninori Morimoto (6):
-  ASoC: audio-graph: move audio_graph_card_probe() to simple-card-utils.c
-  ASoC: audio-graph: move audio_graph_remove() to simple-card-utils.c
-  ASoC: audio-graph: check ports if exists
-  ASoC: audio-graph: remove "audio-graph-card," preix support
-  ASoC: audio-graph: remove unused "node" from graph_parse_mclk_fs()
-  ASoC: audio-graph: remove Platform support
-
- include/sound/graph_card.h               |  4 --
- include/sound/simple_card_utils.h        |  3 ++
- sound/soc/generic/audio-graph-card.c     | 52 ++++--------------------
- sound/soc/generic/simple-card-utils.c    | 25 ++++++++++++
- sound/soc/generic/simple-card.c          |  7 ----
- sound/soc/tegra/tegra_audio_graph_card.c |  4 +-
- 6 files changed, 38 insertions(+), 57 deletions(-)
-
+diff --git a/include/sound/graph_card.h b/include/sound/graph_card.h
+index 013784467bec..9c2feb792742 100644
+--- a/include/sound/graph_card.h
++++ b/include/sound/graph_card.h
+@@ -9,8 +9,6 @@
+ 
+ #include <sound/simple_card_utils.h>
+ 
+-int audio_graph_card_probe(struct snd_soc_card *card);
+-
+ int audio_graph_parse_of(struct asoc_simple_priv *priv, struct device *dev);
+ 
+ int audio_graph_remove(struct platform_device *pdev);
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index e318a2d4ac44..656c7e30b6e4 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -178,6 +178,9 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
+ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ 			       struct link_info *li);
+ 
++int asoc_graph_card_probe(struct snd_soc_card *card);
++
++
+ #ifdef DEBUG
+ static inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
+ 					 char *name,
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index c7369beee805..2d004a980f0c 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -717,23 +717,6 @@ static int graph_get_dais_count(struct asoc_simple_priv *priv,
+ 				   graph_count_dpcm);
+ }
+ 
+-int audio_graph_card_probe(struct snd_soc_card *card)
+-{
+-	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
+-	int ret;
+-
+-	ret = asoc_simple_init_hp(card, &priv->hp_jack, NULL);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = asoc_simple_init_mic(card, &priv->mic_jack, NULL);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(audio_graph_card_probe);
+-
+ static int graph_probe(struct platform_device *pdev)
+ {
+ 	struct asoc_simple_priv *priv;
+@@ -748,7 +731,7 @@ static int graph_probe(struct platform_device *pdev)
+ 	card = simple_priv_to_card(priv);
+ 	card->dapm_widgets	= graph_dapm_widgets;
+ 	card->num_dapm_widgets	= ARRAY_SIZE(graph_dapm_widgets);
+-	card->probe		= audio_graph_card_probe;
++	card->probe		= asoc_graph_card_probe;
+ 
+ 	if (of_device_get_match_data(dev))
+ 		priv->dpcm_selectable = 1;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index e1b7b30a4c8c..ed2cad6d9ac1 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -740,6 +740,23 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_init_priv);
+ 
++int asoc_graph_card_probe(struct snd_soc_card *card)
++{
++	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
++	int ret;
++
++	ret = asoc_simple_init_hp(card, &priv->hp_jack, NULL);
++	if (ret < 0)
++		return ret;
++
++	ret = asoc_simple_init_mic(card, &priv->mic_jack, NULL);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_graph_card_probe);
++
+ /* Module information */
+ MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
+ MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
+diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
+index 47b319504c8c..35d008b5d373 100644
+--- a/sound/soc/tegra/tegra_audio_graph_card.c
++++ b/sound/soc/tegra/tegra_audio_graph_card.c
+@@ -184,7 +184,7 @@ static int tegra_audio_graph_card_probe(struct snd_soc_card *card)
+ 		return PTR_ERR(priv->clk_plla_out0);
+ 	}
+ 
+-	return audio_graph_card_probe(card);
++	return asoc_graph_card_probe(card);
+ }
+ 
+ static int tegra_audio_graph_probe(struct platform_device *pdev)
 -- 
 2.25.1
 
-
-
-
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
