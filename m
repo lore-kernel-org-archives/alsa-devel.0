@@ -2,79 +2,132 @@ Return-Path: <SRS0=gP9u=JQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEE13C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 16:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0DC7C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 16:43:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3A4BA610A1
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 16:42:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3A4BA610A1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=diwic.se
+	by mail.kernel.org (Postfix) with ESMTPS id 177A7611EE
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 16:43:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 177A7611EE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=ucr.edu
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C2301684;
-	Mon, 19 Apr 2021 18:41:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C2301684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6736A167F;
+	Mon, 19 Apr 2021 18:42:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6736A167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618850546;
-	bh=ht67IqLi06iM5pB+qSCwzqtsWKcE6rVAYaFzO1MQ3wE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1618850587;
+	bh=gBllu+gIAsiFsfATANdtT05MzauI4Jr3lLVOaXnXCxs=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Vl7vt3kUIsc9e9PNsWoOwOamJYQn1HNm7gShTj3H2CipxjzFHJSiCrAcqhY2Kn2T9
-	 6Ego2PM0Ksbf81TmGHpCg6mPxPfOVHhmC58KeTpL5a9HrpCgTnkyr3HwnN9ZoMLXH/
-	 YtFiSe2oHAP/TYLoBluXkYQBPegcYv36hzlvsxYo=
+	b=VOiWOiue6EEvF8FbmO1JnxGbdWseVrHsAGOYCletgNJQnZRvkgkSAfBg/e0kr7EKI
+	 +8MMjdumd3UODx538YZYmnzXUwY6huHn6De4RLQoYK6r3rkwUVUO+XI43JGGPfJUHa
+	 hKZQbY03wV7DBrSBXuGLbdjZNM6CYq8MfLW4HcQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BD8BF8025A;
-	Mon, 19 Apr 2021 18:40:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB3C4F80227;
+	Mon, 19 Apr 2021 18:42:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A03AF80274; Mon, 19 Apr 2021 18:40:57 +0200 (CEST)
-Received: from ns4.inleed.net (mailout4.inleed.net
- [IPv6:2a0b:dc80:cafe:104::1])
+ id E5562F80276; Mon, 19 Apr 2021 18:42:15 +0200 (CEST)
+Received: from mx6.ucr.edu (mx.ucr.edu [138.23.62.71])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E93DF8019B
- for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 18:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E93DF8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9B20F800C5
+ for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 18:42:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9B20F800C5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=diwic.se header.i=@diwic.se
- header.b="g15zwCyU"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=diwic.se;
- s=x; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:
- From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:
- Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
- References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
- List-Owner:List-Archive; bh=6oNfgbQzvTfqZkX1R5TZgrC3SP/iajbZ7G7oNqn9koM=; b=g
- 15zwCyU63zF6u59bWSkJPt02KX9gSOm3Bx94G6RnOk8wJI+dVumVCh3UFP1UWNueszfi0nEYr7801
- I5LoEmpSc+PWPJfpFCna0T0KgmxjJZdns0wYCClt7htXCsTwGjiB9lG+WVyTQ36AQk64Iwr3Pj3oY
- snnahI8tVlk5C+AqiOlAaolmdBlh9/12jr3O7yf1+/dy/sjVoDkBgSUfCfPKhcgjL1cA1sXzYIFvM
- OscOmt5tUFtpn4xxZ7vHzHr8KLN7XIkKdk6ngpWr828x2oFiagsFV8XiWkk9K72BiB/gtjKDBdzKj
- dqRCNNw1AGM2u6qPOzV6Uy/0eBz/z6myA==;
-Received: from c83-254-143-147.bredband.comhem.se ([83.254.143.147]
- helo=localhost.localdomain)
- by ns4.inleed.net with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.94)
- (envelope-from <coding@diwic.se>)
- id 1lYWx2-005otZ-AL; Mon, 19 Apr 2021 18:40:44 +0200
-From: David Henningsson <coding@diwic.se>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de,
-	perex@perex.cz
-Subject: [PATCH v6] sound: rawmidi: Add framing mode
-Date: Mon, 19 Apr 2021 18:40:23 +0200
-Message-Id: <20210419164023.159967-1-coding@diwic.se>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu
+ header.b="l9oOQnhU"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+ t=1618850530; x=1650386530;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=jSFunXbDMrqQ45wSfZrNYAgGyt66/xcoQui7W98yh7k=;
+ b=l9oOQnhUye9F3BbvMHsORr9ubJVGdvlAhnch5Z5V1MgK2VM3a/7VvtJr
+ aQYjkvkfeVm7RjJavQHcGj1eUqNK/c6rJWgpBZMJnv+ZgET6r8U6wdHaN
+ 9MCMvEyiVy8VyiJxk+itRkvW4qYkkMAdEHQ5pqdmYqJalvUOIt27WvPYu
+ vTXvZsZu3/WnVY40l/U9HH66kpKafrT7N22NNnEsx+6vjcW6JNGQcFlPe
+ avVVncuGJU2hg4w6F6zTcnQ86BO31PDHrWWK7V6cuQjTy2fY3yGiAF8wS
+ o2POlx8UN/2uae2+JLHLGt8+kF+zrKywJXSgQSskMb1mvguBgQGgoe4N4 w==;
+IronPort-SDR: KfhaDHjSvzRvsf5iLTSHNDAlLGRQQTQgc/8bjSJ6eIIjDI2mu+2XFzFgedBotBMpKyvt3KOGzl
+ oTePbWiTsXROtpOj+aSy6nXwHl3z+t+mFwKuSnBfUPYJsAf+QRcu0jS1w8sOg2G99k3laAV7rd
+ c5frsMc3AYdmdKY9vtKRurO77OoTG25HOKDVhrnNiyBZ+J67JREvstIGD0AbihYNkbCuJHdzhc
+ IoGT9gdqK89DQO+cJM9EsiG3+Dj5gDp/p+HREVKgkcSbaY1XnYyMOgCo+E6osmMQ4hf5ck9BGQ
+ 7ac=
+X-IPAS-Result: =?us-ascii?q?A2EkAACUsn1gf0fYVdFaHAEBAQEBAQcBARIBAQQEAQGBf?=
+ =?us-ascii?q?gcBAQsBgSKCVWuEQ4EehwaKW4IQAZEthiSBfAIJAQEBDzQEAQGGRwIlNAkOA?=
+ =?us-ascii?q?gMBAQEDAgMBAQEBAQYBAQEBAQEFBAEBAhABAW6FF0aCOCkBhAQRbwYHAzQCJ?=
+ =?us-ascii?q?BIBBQEiARIihVcFjkWPFYEEPYsxgTKBAYgNAQkNgUQSgSgBhwABAYJdhByCJ?=
+ =?us-ascii?q?4ETNoI2dIQJg1CCYQSCR4EOW4JIUwEBAY9ejXqcLAEGAoJ1GZFbizEjpQEBL?=
+ =?us-ascii?q?Y9VhRyjUxAjgTGCFDMaJX8GZ4FLUBkOnQwkLzgCBgEJAQEDCYpJgkYBAQ?=
+IronPort-PHdr: A9a23:Ob7ryhaY9CBfx8qmgonjnjr/LTHk0IqcDmYuwqpisKpHd+GZx7+nA
+ na3zctkgFKBZ4jH8fUM07OQ7/mxHzZYvd3e4DgrS99lb1c9k8IYnggtUoauKHbQC7rUVRE8B
+ 9lIT1R//nu2YgB/Ecf6YEDO8DXptWZBUhrwOhBoKevrB4Xck9q41/yo+53Ufg5EmCexbal9I
+ RmrqQjdrNcajZdtJ6o+yBbEoWZDdvhLy29vOV+dhQv36N2q/J5k/SRQuvYh+NBFXK7nYak2T
+ qFWASo/PWwt68LlqRfMTQ2U5nsBSWoWiQZHAxLE7B7hQJj8tDbxu/dn1ymbOc32Sq00WSin4
+ qx2RhLklDsLOjgk+2zMlMd+kLxUrw6gpxxnwo7bfoeVNOZlfqjAed8WXHdNUtpNWyBEBI63c
+ okBAPcbPetAoIbzp1UAoxijCweyGOzi0SVHimPs0KAgz+gtDQPL0Qo9FNwOqnTUq9D1Ob8QX
+ uC0zajIzSjDb/RL0jj+6IjHaBEhquyLULNwcMvRyVMgFwLZglmMp4HoJC6V2fgXs2SB8eVvS
+ P+vhnchpgpsrTeh2t0ihZPVhoIJ1F/E7yN5zZ4oKNC5RkB3fcOpHZ9SuiyEOIZ7Td0vTn1mt
+ Ss7xLAKpIC2cSwFxZkp2xLTdeKLf5aU7xzsSuudPTN1iXZ5dL6jgRu57EuuyvXkW8WqzFpHq
+ jBJn9rMu3wXyRDf98mKRuF/80u83zuEyhrd5fteIU8ukKrWM5shwrktmZUNqUnDBSr2mFnuj
+ K+Ra0Uk5vCk6+T5bbXioZ+RL4p0hRv/MqQqg8C/GeY4PhUXU2iV++mwyafv/UL+QLVNgf02l
+ rfWvIrGKsQco661Gw5V0oA95BajFzqqzsgUkH0dIF9GeB+LlZblN0zPLfziD/qznkygkDJxy
+ PDHOr3hDI/NLn/GkLr5fbd86k5cxxAyzdxD+55ZBKoMIO/vVU/rrtDXEAI2MxGsz+b9FNp9z
+ p8eWX6IAqKBKqzStUSI6fg2L+aReoAVpijyK/w+6vH0iX85gkUScbCx3ZsNb3C4HOppLFmFY
+ Xb2hdcBC2gK7UICS7nIgUeFSjpaeT6RTrkx4jhzXJqrF4rTbpigmrGRmiypSNkeb2RdAxWAH
+ Gnlc62NX+wFLTqIJc1smSBCUqKuD8cd3BKnrw/7g5t4J+ucrjEZqpvi/MNo/OCVnhY3o29aF
+ cOYhlCMXWFpmSs6RzY3lPRus0x0yw/bioBliOYeGNBOsaAaGjwmPILRmrQpQ+v5XRjMK5LQE
+ A7Ofw==
+IronPort-HdrOrdr: A9a23:4Nb9V6y3EoSGRNflokrjKrPwp71zdoIgy1knxilNYDZSddGVkN
+ 3roeQD2XbP+VEscVwphNzoAtjifVry7phwiLNwAZ6HfC3L/FSlN5tj64yK+VzdMgnz7PRU26
+ slU4UWMqyTMXFAgcz34Ba1Hr8bqbHtzImTmezcw31xJDsaDp1I0gERMHf+LmRGACdDQb40Do
+ CV6MYCnSepZHh/VKmGL0hAce7EqdjG0L/FQTpDPR4o7wGSkSilgYSRLzGomjkZVT1LzfMZ9X
+ Xd1zb++r6ov5iApSP05ivp455bmMTsx7J4aKKxtvQ=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
+ d="scan'208,217";a="208966466"
+Received: from mail-pj1-f71.google.com ([209.85.216.71])
+ by smtpmx6.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;
+ 19 Apr 2021 09:41:45 -0700
+Received: by mail-pj1-f71.google.com with SMTP id
+ h15-20020a17090a054fb02900c66a1b9826so18220377pjf.8
+ for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 09:41:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=THALAKT+8krVRXjHm8S5RMPhGROlVpuPvbtAPCfoXVE=;
+ b=MXnNfotsoXXBcn6wNOMveMO1WnJqWZak4xwX9cowEbT9H9nIddgC9xspbDLdZnQ4oT
+ l0OdUOVHX2BET5+3wEfkcNFbX0zdMD7YDz5ORe9o+ksWI2C83l9wFtek7/jHRqPt/Fjs
+ mGd9cZJIF0cLD1SOTn8QHAio+DYv1Gi15oqmjVrpobN9a5CAaxBUBUBvgc1nLrAp+kIh
+ Xusfb7zSxtoTfTKX+4/YWQtEgj2bcviVjD4dQrjuOjqjt7x1PnaVIW6NKwQWj6xeGlki
+ bA1nEe4YPS9PKvmpYtuGCy/YxiT8sV+JYuA4CdZjoJeUBIKx2WcOjsMyOZvkXnzgplcy
+ nkDA==
+X-Gm-Message-State: AOAM5325vUxmvApPi1DoKsELm0gTlCkEvE14nR8215N0EVl2XNOFV4MX
+ Z6vSW46MdqINQTdwL/GV6Zw82mFDKdm09vlVYOURsiTvJhhJCuqsI3n+c46jfJgu5wI2/4Igtq9
+ bhbpTQzba7XbY0dFpdGIb/AfAu/J4x0F7pg2ZXfmc
+X-Received: by 2002:a63:fb12:: with SMTP id o18mr12454586pgh.438.1618850503968; 
+ Mon, 19 Apr 2021 09:41:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGVVA14w9cd00bzTIqGvJsXABtgR3UNwt3E3wk2wdGuq27iMVtJMez5tf5FxVDxI3/68gIDM1NaIVZSoVI4ZY=
+X-Received: by 2002:a63:fb12:: with SMTP id o18mr12454563pgh.438.1618850503708; 
+ Mon, 19 Apr 2021 09:41:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Id: coding@diwic.se
-Cc: David Henningsson <coding@diwic.se>
+From: Yizhuo Zhai <yzhai003@ucr.edu>
+Date: Mon, 19 Apr 2021 09:41:33 -0700
+Message-ID: <CABvMjLQqYA60BpBs+yvE5q9He+4hutb_4vAPX1nt2nu14Lp-xg@mail.gmail.com>
+Subject: [PATCH] ALSA: ctxfi: Avoid writing uninitialized variable in
+ uaa_to_xfi()
+To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, 
+ Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,270 +143,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This commit adds a new framing mode that frames all MIDI data into
-32-byte frames with a timestamp.
+Inside the function uaa_to_xfi(), variable "l_timer" could be
+uninitialized if pci_bus_read_config_dword() returns
+PCIBIOS_BAD_REGISTER_NUMBER. However, it is write back to PCI
+config space via pci_write_config_dword(), which is potentially
+unsafe.
 
-The main benefit is that we can get accurate timestamps even if
-userspace wakeup and processing is not immediate.
-
-Testing on a Celeron N3150 with this mode has a max jitter of 2.8 ms,
-compared to the in-kernel seq implementation which has a max jitter
-of 5 ms during idle and much worse when running scheduler stress tests
-in parallel.
-
-Signed-off-by: David Henningsson <coding@diwic.se>
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
 ---
+ sound/pci/ctxfi/cthw20k1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes since v5: Added realtime clock and changed params struct according to
-Jaroslav's wishes.
-
-This version of the patch has been compile tested only.
-
- include/sound/rawmidi.h     |  2 +
- include/uapi/sound/asound.h | 30 ++++++++++++-
- sound/core/rawmidi.c        | 86 ++++++++++++++++++++++++++++++++++++-
- sound/core/rawmidi_compat.c |  4 +-
- 4 files changed, 118 insertions(+), 4 deletions(-)
-
-diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-index 334842daa904..989e1517332d 100644
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -81,6 +81,8 @@ struct snd_rawmidi_substream {
- 	bool opened;			/* open flag */
- 	bool append;			/* append flag (merge more streams) */
- 	bool active_sensing;		/* send active sensing when close */
-+	unsigned int framing;		/* whether to frame input data */
-+	unsigned int clock_type;	/* clock source to use for input framing */
- 	int use_count;			/* use counter (for output) */
- 	size_t bytes;
- 	struct snd_rawmidi *rmidi;
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 535a7229e1d9..773a00c0a1d8 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -710,7 +710,7 @@ enum {
-  *  Raw MIDI section - /dev/snd/midi??
-  */
- 
--#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 1)
-+#define SNDRV_RAWMIDI_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 2)
- 
- enum {
- 	SNDRV_RAWMIDI_STREAM_OUTPUT = 0,
-@@ -736,12 +736,38 @@ struct snd_rawmidi_info {
- 	unsigned char reserved[64];	/* reserved for future use */
- };
- 
-+#define SNDRV_RAWMIDI_MODE_FRAMING_MASK		(7<<0)
-+#define SNDRV_RAWMIDI_MODE_FRAMING_SHIFT	0
-+#define SNDRV_RAWMIDI_MODE_FRAMING_NONE		(0<<0)
-+#define SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP	(1<<0)
-+#define SNDRV_RAWMIDI_MODE_CLOCK_MASK		(7<<3)
-+#define SNDRV_RAWMIDI_MODE_CLOCK_SHIFT		3
-+#define SNDRV_RAWMIDI_MODE_CLOCK_NONE		(0<<3)
-+#define SNDRV_RAWMIDI_MODE_CLOCK_REALTIME	(1<<3)
-+#define SNDRV_RAWMIDI_MODE_CLOCK_MONOTONIC	(2<<3)
-+#define SNDRV_RAWMIDI_MODE_CLOCK_MONOTONIC_RAW	(3<<3)
-+
-+#define SNDRV_RAWMIDI_FRAMING_DATA_LENGTH 16
-+
-+struct snd_rawmidi_framing_tstamp {
-+	/* For now, frame_type is always 0. Midi 2.0 is expected to add new
-+	 * types here. Applications are expected to skip unknown frame types.
-+	 */
-+	u8 frame_type;
-+	u8 length; /* number of valid bytes in data field */
-+	u8 reserved[2];
-+	u32 tv_nsec;		/* nanoseconds */
-+	u64 tv_sec;		/* seconds */
-+	u8 data[SNDRV_RAWMIDI_FRAMING_DATA_LENGTH];
-+} __attribute__((packed));
-+
- struct snd_rawmidi_params {
- 	int stream;
- 	size_t buffer_size;		/* queue size in bytes */
- 	size_t avail_min;		/* minimum avail bytes for wakeup */
- 	unsigned int no_active_sensing: 1; /* do not send active sensing byte in close() */
--	unsigned char reserved[16];	/* reserved for future use */
-+	unsigned int mode;		/* For input data only, frame incoming data */
-+	unsigned char reserved[12];	/* reserved for future use */
- };
- 
- #ifndef __KERNEL__
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index aca00af93afe..5d5f4363e887 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -680,9 +680,12 @@ static int resize_runtime_buffer(struct snd_rawmidi_runtime *runtime,
- 				 bool is_input)
+diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
+index 0cea4982ed7d..7c3436499974 100644
+--- a/sound/pci/ctxfi/cthw20k1.c
++++ b/sound/pci/ctxfi/cthw20k1.c
+@@ -1789,7 +1789,7 @@ static struct capabilities hw_capabilities(struct hw
+*hw)
+ static int uaa_to_xfi(struct pci_dev *pci)
  {
- 	char *newbuf, *oldbuf;
-+	unsigned int framing = params->mode & SNDRV_RAWMIDI_MODE_FRAMING_MASK;
- 
- 	if (params->buffer_size < 32 || params->buffer_size > 1024L * 1024L)
- 		return -EINVAL;
-+	if (framing == SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP && (params->buffer_size & 0x1f) != 0)
-+		return -EINVAL;
- 	if (params->avail_min < 1 || params->avail_min > params->buffer_size)
- 		return -EINVAL;
- 	if (params->buffer_size != runtime->buffer_size) {
-@@ -720,7 +723,18 @@ EXPORT_SYMBOL(snd_rawmidi_output_params);
- int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
- 			     struct snd_rawmidi_params *params)
- {
-+	unsigned int framing = params->mode & SNDRV_RAWMIDI_MODE_FRAMING_MASK;
-+	unsigned int clock_type = params->mode & SNDRV_RAWMIDI_MODE_CLOCK_MASK;
-+
-+	if (framing == SNDRV_RAWMIDI_MODE_FRAMING_NONE && clock_type != SNDRV_RAWMIDI_MODE_CLOCK_NONE)
-+		return -EINVAL;
-+	else if (clock_type > SNDRV_RAWMIDI_MODE_CLOCK_MONOTONIC_RAW)
-+		return -EINVAL;
-+	if (framing > SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP)
-+		return -EINVAL;
- 	snd_rawmidi_drain_input(substream);
-+	substream->framing = framing;
-+	substream->clock_type = clock_type;
- 	return resize_runtime_buffer(substream->runtime, params, true);
- }
- EXPORT_SYMBOL(snd_rawmidi_input_params);
-@@ -963,6 +977,61 @@ static int snd_rawmidi_control_ioctl(struct snd_card *card,
- 	return -ENOIOCTLCMD;
- }
- 
-+static int receive_with_tstamp_framing(struct snd_rawmidi_substream *substream,
-+			const unsigned char *buffer, int src_count, const struct timespec64 *tstamp)
-+{
-+	struct snd_rawmidi_runtime *runtime = substream->runtime;
-+	struct snd_rawmidi_framing_tstamp *dest_ptr;
-+	struct snd_rawmidi_framing_tstamp frame = { .tv_sec = tstamp->tv_sec, .tv_nsec = tstamp->tv_nsec };
-+	int dest_frames = 0;
-+	int frame_size = sizeof(struct snd_rawmidi_framing_tstamp);
-+
-+	BUILD_BUG_ON(frame_size != 0x20);
-+	if (snd_BUG_ON((runtime->hw_ptr & 0x1f) != 0))
-+		return -EINVAL;
-+
-+	while (src_count > 0) {
-+		if ((int)(runtime->buffer_size - runtime->avail) < frame_size) {
-+			runtime->xruns += src_count;
-+			break;
-+		}
-+		if (src_count >= SNDRV_RAWMIDI_FRAMING_DATA_LENGTH)
-+			frame.length = SNDRV_RAWMIDI_FRAMING_DATA_LENGTH;
-+		else {
-+			frame.length = src_count;
-+			memset(frame.data, 0, SNDRV_RAWMIDI_FRAMING_DATA_LENGTH);
-+		}
-+		memcpy(frame.data, buffer, frame.length);
-+		buffer += frame.length;
-+		src_count -= frame.length;
-+		dest_ptr = (struct snd_rawmidi_framing_tstamp *) (runtime->buffer + runtime->hw_ptr);
-+		*dest_ptr = frame;
-+		runtime->avail += frame_size;
-+		runtime->hw_ptr += frame_size;
-+		runtime->hw_ptr %= runtime->buffer_size;
-+		dest_frames++;
-+	}
-+	return dest_frames * frame_size;
-+}
-+
-+static struct timespec64 get_framing_tstamp(struct snd_rawmidi_substream *substream)
-+{
-+	struct timespec64 ts64 = {0, 0};
-+
-+	switch (substream->clock_type) {
-+	case SNDRV_RAWMIDI_MODE_CLOCK_MONOTONIC_RAW:
-+		ktime_get_raw_ts64(&ts64);
-+		break;
-+	case SNDRV_RAWMIDI_MODE_CLOCK_MONOTONIC:
-+		ktime_get_ts64(&ts64);
-+		break;
-+	case SNDRV_RAWMIDI_MODE_CLOCK_REALTIME:
-+		ktime_get_real_ts64(&ts64);
-+		break;
-+	}
-+	return ts64;
-+}
-+
- /**
-  * snd_rawmidi_receive - receive the input data from the device
-  * @substream: the rawmidi substream
-@@ -977,6 +1046,7 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
- 			const unsigned char *buffer, int count)
- {
- 	unsigned long flags;
-+	struct timespec64 ts64 = get_framing_tstamp(substream);
- 	int result = 0, count1;
- 	struct snd_rawmidi_runtime *runtime = substream->runtime;
- 
-@@ -987,8 +1057,11 @@ int snd_rawmidi_receive(struct snd_rawmidi_substream *substream,
- 			  "snd_rawmidi_receive: input is not active!!!\n");
- 		return -EINVAL;
- 	}
-+
- 	spin_lock_irqsave(&runtime->lock, flags);
--	if (count == 1) {	/* special case, faster code */
-+	if (substream->framing == SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP) {
-+		result = receive_with_tstamp_framing(substream, buffer, count, &ts64);
-+	} else if (count == 1) {	/* special case, faster code */
- 		substream->bytes++;
- 		if (runtime->avail < runtime->buffer_size) {
- 			runtime->buffer[runtime->hw_ptr++] = buffer[0];
-@@ -1534,6 +1607,7 @@ static __poll_t snd_rawmidi_poll(struct file *file, poll_table *wait)
- /*
-  */
- 
-+
- static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 				       struct snd_info_buffer *buffer)
- {
-@@ -1541,6 +1615,8 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 	struct snd_rawmidi_substream *substream;
- 	struct snd_rawmidi_runtime *runtime;
- 	unsigned long buffer_size, avail, xruns;
-+	unsigned int clock_type;
-+	static const char *clock_names[4] = { "none", "realtime", "monotonic", "monotonic raw" };
- 
- 	rmidi = entry->private_data;
- 	snd_iprintf(buffer, "%s\n\n", rmidi->name);
-@@ -1596,6 +1672,14 @@ static void snd_rawmidi_proc_info_read(struct snd_info_entry *entry,
- 					    "  Avail        : %lu\n"
- 					    "  Overruns     : %lu\n",
- 					    buffer_size, avail, xruns);
-+				if (substream->framing == SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP) {
-+					clock_type = substream->clock_type >> SNDRV_RAWMIDI_MODE_CLOCK_SHIFT;
-+					if (!snd_BUG_ON(clock_type >= sizeof(clock_names)))
-+						snd_iprintf(buffer,
-+							    "  Framing      : tstamp\n"
-+							    "  Clock type   : %s\n",
-+							    clock_names[clock_type]);
-+				}
- 			}
- 		}
- 	}
-diff --git a/sound/core/rawmidi_compat.c b/sound/core/rawmidi_compat.c
-index 7397130976d0..68a93443583c 100644
---- a/sound/core/rawmidi_compat.c
-+++ b/sound/core/rawmidi_compat.c
-@@ -13,7 +13,8 @@ struct snd_rawmidi_params32 {
- 	u32 buffer_size;
- 	u32 avail_min;
- 	unsigned int no_active_sensing; /* avoid bit-field */
--	unsigned char reserved[16];
-+	unsigned int mode;
-+	unsigned char reserved[12];
- } __attribute__((packed));
- 
- static int snd_rawmidi_ioctl_params_compat(struct snd_rawmidi_file *rfile,
-@@ -25,6 +26,7 @@ static int snd_rawmidi_ioctl_params_compat(struct snd_rawmidi_file *rfile,
- 	if (get_user(params.stream, &src->stream) ||
- 	    get_user(params.buffer_size, &src->buffer_size) ||
- 	    get_user(params.avail_min, &src->avail_min) ||
-+	    get_user(params.mode, &src->mode) ||
- 	    get_user(val, &src->no_active_sensing))
- 		return -EFAULT;
- 	params.no_active_sensing = val;
+        unsigned int bar0, bar1, bar2, bar3, bar4, bar5;
+-       unsigned int cmd, irq, cl_size, l_timer, pwr;
++       unsigned int cmd, irq, cl_size, l_timer = ~0, pwr;
+        unsigned int is_uaa;
+        unsigned int data[4] = {0};
+        unsigned int io_base;
 -- 
-2.25.1
+2.31.1
 
+-- 
+Kind Regards,
+
+*Yizhuo Zhai*
+
+*Computer Science, Graduate Student*
+*University of California, Riverside *
