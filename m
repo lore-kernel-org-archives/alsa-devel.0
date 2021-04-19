@@ -7,52 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C6C3C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 966E6C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:04:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id F2F24610CB
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:03:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F2F24610CB
+	by mail.kernel.org (Postfix) with ESMTPS id 1A753610CC
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 02:04:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1A753610CC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AAF01695;
-	Mon, 19 Apr 2021 04:03:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AAF01695
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1FA4169A;
+	Mon, 19 Apr 2021 04:03:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1FA4169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618797830;
-	bh=x4xmEhleBOCrzq3lxK2v5yYuowZsODui5mZHCtl4Tys=;
+	s=default; t=1618797865;
+	bh=sciEh6JTENWYjzuWMzsTyg9u1n2qhxRIwioSctv5OMQ=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qy8vXimqgg2oi5201ov1z28C0/lT/VgPtDxBgIgnS1MMdsmgSvarJSEyt2bs1zWi0
-	 qCLJ/6jXN7eESm4qXxqmYkNdcrj/cOFDfqiqUXZNfoRoXhAZsYuaKV7hHmvqcEtd+p
-	 Sy5qrl5PjME/q9amFuMxdp7k6mgsV4jQSn0FVVms=
+	b=tvfIQujb8p3yPTZ7foEc80YHnOtDvUeqUiOWFdjDi2nySJ7bc08HSwnWX5Cv57mYQ
+	 BE8Xh9E4KY2eNVWz8fsxSSFCgFVEDezHkoEHtUTR9peP+Ybdx6Dmd6lwF/qfMqBvdI
+	 v14b7MbbEgzoNPrJXpTjM5Z2sjltqmSOGPHm9cp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 918E6F80164;
-	Mon, 19 Apr 2021 04:02:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51DF8F80424;
+	Mon, 19 Apr 2021 04:02:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D53C8F8032D; Mon, 19 Apr 2021 04:02:33 +0200 (CEST)
+ id 30AAFF8032C; Mon, 19 Apr 2021 04:02:34 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id EBE0DF8025A
- for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 04:02:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBE0DF8025A
-Date: 19 Apr 2021 11:02:25 +0900
-X-IronPort-AV: E=Sophos;i="5.82,232,1613401200"; d="scan'208";a="78473875"
+ by alsa1.perex.cz (Postfix) with ESMTP id 7FC36F80164
+ for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2021 04:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FC36F80164
+Date: 19 Apr 2021 11:02:29 +0900
+X-IronPort-AV: E=Sophos;i="5.82,232,1613401200"; d="scan'208";a="78473885"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 19 Apr 2021 11:02:25 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 19 Apr 2021 11:02:29 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 61BBF40078C9;
- Mon, 19 Apr 2021 11:02:25 +0900 (JST)
-Message-ID: <87y2df3uby.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id EB4B140078BB;
+ Mon, 19 Apr 2021 11:02:29 +0900 (JST)
+Message-ID: <87wnsz3ubu.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 2/6] ASoC: audio-graph: move audio_graph_remove() to
- simple-card-utils.c
+Subject: [PATCH 3/6] ASoC: audio-graph: check ports if exists
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <871rb758x7.wl-kuninori.morimoto.gx@renesas.com>
@@ -75,126 +74,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-audio-graph-card2 can reuse  audio_graph_remove() / asoc_simple_remove().
-This patch moves it to simple-card-utils.c.
+"endpoint" and "port" are always exists, but there is no guarantee
+for "ports". This patch checks "ports" if exists, otherwise,
+it might set un-expected settings.
+
+This patch also do align to 100 char in 1 line.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- include/sound/graph_card.h               |  2 --
- include/sound/simple_card_utils.h        |  2 +-
- sound/soc/generic/audio-graph-card.c     | 10 +---------
- sound/soc/generic/simple-card-utils.c    |  8 ++++++++
- sound/soc/generic/simple-card.c          |  7 -------
- sound/soc/tegra/tegra_audio_graph_card.c |  2 +-
- 6 files changed, 11 insertions(+), 20 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/graph_card.h b/include/sound/graph_card.h
-index 9c2feb792742..6f10bfb0d5ee 100644
---- a/include/sound/graph_card.h
-+++ b/include/sound/graph_card.h
-@@ -11,6 +11,4 @@
- 
- int audio_graph_parse_of(struct asoc_simple_priv *priv, struct device *dev);
- 
--int audio_graph_remove(struct platform_device *pdev);
--
- #endif /* __GRAPH_CARD_H */
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 656c7e30b6e4..51b3b485a92e 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -177,10 +177,10 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
- 			       int is_hp, char *prefix, char *pin);
- int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 			       struct link_info *li);
-+int asoc_simple_remove(struct platform_device *pdev);
- 
- int asoc_graph_card_probe(struct snd_soc_card *card);
- 
--
- #ifdef DEBUG
- static inline void asoc_simple_debug_dai(struct asoc_simple_priv *priv,
- 					 char *name,
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 2d004a980f0c..54e8be90b109 100644
+index 54e8be90b109..0006c71f4f69 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -739,14 +739,6 @@ static int graph_probe(struct platform_device *pdev)
- 	return audio_graph_parse_of(priv, dev);
- }
+@@ -182,7 +182,8 @@ static void graph_parse_convert(struct device *dev,
  
--int audio_graph_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	return asoc_simple_clean_reference(card);
--}
--EXPORT_SYMBOL_GPL(audio_graph_remove);
--
- static const struct of_device_id graph_of_match[] = {
- 	{ .compatible = "audio-graph-card", },
- 	{ .compatible = "audio-graph-scu-card",
-@@ -762,7 +754,7 @@ static struct platform_driver graph_card = {
- 		.of_match_table = graph_of_match,
- 	},
- 	.probe = graph_probe,
--	.remove = audio_graph_remove,
-+	.remove = asoc_simple_remove,
- };
- module_platform_driver(graph_card);
+ 	asoc_simple_parse_convert(top,   NULL,   adata);
+ 	asoc_simple_parse_convert(node,  PREFIX, adata);
+-	asoc_simple_parse_convert(ports, NULL,   adata);
++	if (of_node_name_eq(ports, "ports"))
++		asoc_simple_parse_convert(ports, NULL, adata);
+ 	asoc_simple_parse_convert(port,  NULL,   adata);
+ 	asoc_simple_parse_convert(ep,    NULL,   adata);
  
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index ed2cad6d9ac1..fa1247f0dda1 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -740,6 +740,14 @@ int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_init_priv);
+@@ -200,7 +201,8 @@ static void graph_parse_mclk_fs(struct device_node *top,
+ 	struct device_node *node	= of_graph_get_port_parent(ep);
  
-+int asoc_simple_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+
-+	return asoc_simple_clean_reference(card);
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_remove);
-+
- int asoc_graph_card_probe(struct snd_soc_card *card)
- {
- 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 8b9964d25757..ece7dac3e8c5 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -705,13 +705,6 @@ static int asoc_simple_probe(struct platform_device *pdev)
- 	return ret;
- }
+ 	of_property_read_u32(top,	"mclk-fs", &props->mclk_fs);
+-	of_property_read_u32(ports,	"mclk-fs", &props->mclk_fs);
++	if (of_node_name_eq(ports, "ports"))
++		of_property_read_u32(ports, "mclk-fs", &props->mclk_fs);
+ 	of_property_read_u32(port,	"mclk-fs", &props->mclk_fs);
+ 	of_property_read_u32(ep,	"mclk-fs", &props->mclk_fs);
  
--static int asoc_simple_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	return asoc_simple_clean_reference(card);
--}
--
- static const struct of_device_id simple_of_match[] = {
- 	{ .compatible = "simple-audio-card", },
- 	{ .compatible = "simple-scu-audio-card",
-diff --git a/sound/soc/tegra/tegra_audio_graph_card.c b/sound/soc/tegra/tegra_audio_graph_card.c
-index 35d008b5d373..1f2c5018bf5a 100644
---- a/sound/soc/tegra/tegra_audio_graph_card.c
-+++ b/sound/soc/tegra/tegra_audio_graph_card.c
-@@ -244,7 +244,7 @@ static struct platform_driver tegra_audio_graph_card = {
- 		.of_match_table = graph_of_tegra_match,
- 	},
- 	.probe = tegra_audio_graph_probe,
--	.remove = audio_graph_remove,
-+	.remove = asoc_simple_remove,
- };
- module_platform_driver(tegra_audio_graph_card);
- 
+@@ -311,8 +313,8 @@ static int graph_dai_link_of_dpcm(struct asoc_simple_priv *priv,
+ 					      "prefix");
+ 		snd_soc_of_parse_node_prefix(node, cconf, codecs->of_node,
+ 					     PREFIX "prefix");
+-		snd_soc_of_parse_node_prefix(ports, cconf, codecs->of_node,
+-					     "prefix");
++		if (of_node_name_eq(ports, "ports"))
++			snd_soc_of_parse_node_prefix(ports, cconf, codecs->of_node, "prefix");
+ 		snd_soc_of_parse_node_prefix(port, cconf, codecs->of_node,
+ 					     "prefix");
+ 	}
 -- 
 2.25.1
 
