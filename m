@@ -2,68 +2,66 @@ Return-Path: <SRS0=gP9u=JQ=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ED0CC433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 22:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3E37C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 22:23:29 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id AE6C461363
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 22:16:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE6C461363
+	by mail.kernel.org (Postfix) with ESMTPS id 1F6AA61008
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Apr 2021 22:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1F6AA61008
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 639331679;
-	Tue, 20 Apr 2021 00:15:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 639331679
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63AFD1679;
+	Tue, 20 Apr 2021 00:22:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63AFD1679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618870592;
-	bh=uTfQ2F+Iea16eazWuHbBUKC+gJuewI+QjP5Ax/Xl22k=;
+	s=default; t=1618871006;
+	bh=jT52OoZ4nIzrUGQL44J8let0Fbl5nQ5FNDL7GID5EXI=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s8cFtPKiEWlwe/3ksHS3cnlDgEVNpbQd5vKhO2Br6G/OGT1COKL71U/sfh09bGe9t
-	 +KpvW4fnnOXX6GMvry4SM+exeER9OBLaqLAbWbH2xPFZro71T9wEYKlxi06/P9wUA7
-	 W7DaRtIR7NdNNJ64k7AovwBU7qsKNkwTm2I76IiM=
+	b=nmHGMLwW8u8Q9h/4sVal1IPhFd8orbtchV1+cGq/dgZvd1kCvRf6O+xHmG5zVK28B
+	 uf0z5Az/zAAChiXKfcmJAAQiCIPMPC//vj1g6QoOXlsUp3Ov1cpyg/nxyas84poYPb
+	 9/CT3EuluKThfpv1QGuMHlTNv3emx/e7liO13gJY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6C7BF8019B;
-	Tue, 20 Apr 2021 00:15:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D73DDF8019B;
+	Tue, 20 Apr 2021 00:22:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6EE9F80227; Tue, 20 Apr 2021 00:15:39 +0200 (CEST)
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
- [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 17851F800C5
- for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 00:15:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17851F800C5
-Date: 20 Apr 2021 07:15:31 +0900
-X-IronPort-AV: E=Sophos;i="5.82,235,1613401200"; d="scan'208";a="78794972"
+ id A2253F8019B; Tue, 20 Apr 2021 00:22:33 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
+ [210.160.252.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 22AA3F8014D
+ for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 00:22:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22AA3F8014D
+Date: 20 Apr 2021 07:22:19 +0900
+X-IronPort-AV: E=Sophos;i="5.82,235,1613401200"; d="scan'208";a="78572987"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
- by relmlie5.idc.renesas.com with ESMTP; 20 Apr 2021 07:15:31 +0900
+ by relmlie6.idc.renesas.com with ESMTP; 20 Apr 2021 07:22:19 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir6.idc.renesas.com (Postfix) with ESMTP id 253A0411556E;
- Tue, 20 Apr 2021 07:15:31 +0900 (JST)
-Message-ID: <87k0ox53b0.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id 79F3E41170FA;
+ Tue, 20 Apr 2021 07:22:19 +0900 (JST)
+Message-ID: <87im4h52zo.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: simple-card-utils: Increase maximum number of
- links to 128
-In-Reply-To: <20210419150811.GC5645@sirena.org.uk>
-References: <20210416071147.2149109-1-thierry.reding@gmail.com>
- <20210416071147.2149109-2-thierry.reding@gmail.com>
- <8735vn59sw.wl-kuninori.morimoto.gx@renesas.com>
- <YH2Y/rd2/q5qHvnz@orome.fritz.box>
- <20210419150811.GC5645@sirena.org.uk>
+To: Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH] ASoC: simple-card-utils: Allocate link info structure on
+ heap
+In-Reply-To: <20210419164117.1422242-1-thierry.reding@gmail.com>
+References: <20210419164117.1422242-1-thierry.reding@gmail.com>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -81,21 +79,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Thierry, Mark
+Hi Thierry
 
-> > The data structure seems to be only used during initialization, so
-> > something like a kzalloc()/kfree() pair doesn't seem like it would
-> > hurt much performance-wise. Add in the devm_ variants and the code
-> > complexity should also remain moderately low.
+Thank you for the patch
+
+> From: Thierry Reding <treding@nvidia.com>
 > 
-> Yes, that'd be much better - ideally we wouldn't have a fixed limit of
-> any kind but that's a more involved change and quite possibly more
-> trouble than it's worth.
+> struct link_info can grow fairly large and may cause the stack frame
+> size to be exceeded when allocated on the stack. Some architectures
+> such as 32-bit ARM, RISC-V or PowerPC have small stack frames where
+> this causes a compiler warning, so allocate these structures on the
+> heap instead of the stack.
+> 
+> Fixes: 343e55e71877 ("ASoC: simple-card-utils: Increase maximum number of links to 128")
+> Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> ---
 
-Using "fixed array style" was very easy for me (*^o^*).
-
-OK, let's use kzalloc()/kfree() style.
-I can try it.
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
 Thank you for your help !!
 
