@@ -2,99 +2,78 @@ Return-Path: <SRS0=gQoH=JR=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0579BC433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 16:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86747C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 16:20:40 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1CC7F613B0
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 16:10:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1CC7F613B0
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id B98DF613CD
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 16:20:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B98DF613CD
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BFC91686;
-	Tue, 20 Apr 2021 18:09:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BFC91686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 702621687;
+	Tue, 20 Apr 2021 18:19:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 702621687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618935036;
-	bh=jnWoJw1kdf/DjxWJniNevj3j2Sub2kxK5/dOra+HYx0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1618935637;
+	bh=wo0Ma+Ga1AFTjgDUVkyTQw4kODt/cwUCMSS14hRgUNg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ANBCsMADO7uHcuin7qxpzbZR6qEphODpODWnQVVQKYKlDejbus4bKmKv1JKByolUS
-	 7HgJY+5yVOcbS1DU6pWvuecg8iIBBHmWkh98m64f/sQrP34DvkB1sg4+t0HgAm2NfO
-	 +AXxbMolDtk8HgFazBvdQ8Aqt2o5fnEmZGZTG1Ks=
+	b=r8YFcXrRDpdMdIRvNmpBImz5f8iVQIihNNvXfA/TpoNvFPpcH814MLh98PTysYhBO
+	 GTVXUMAPXFuPNK/bHQ5LaGutXZmMGcw93UL+SWq5WnpyewVDVdlehAaErf7MVBeEum
+	 k18u3npRBjKA5DQ1So0HKBJ5Jm6X/WaBW7I2QCGA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44576F80278;
-	Tue, 20 Apr 2021 18:08:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5D04F80168;
+	Tue, 20 Apr 2021 18:19:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0182DF8049C; Tue, 20 Apr 2021 18:08:20 +0200 (CEST)
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com
- [IPv6:2607:f8b0:4864:20::22e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 19FF1F80253; Tue, 20 Apr 2021 18:19:46 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28BDBF80278
- for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 18:08:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28BDBF80278
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03E5BF800FE
+ for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 18:19:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03E5BF800FE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="G7jm/Yam"
-Received: by mail-oi1-x22e.google.com with SMTP id d25so1951810oij.5
- for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2021 09:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=12xoJC8I/0jBFBQ6uTjCdcTJY4GOeJNX+Bl1LJtzWP8=;
- b=G7jm/Yam0WwdVJCS/CDN+oXqZYSYYvANUNbi9M8uORILKNhtccbkQZWZFKWtYUh5zu
- fmXD4CB0/BQ1fmiNaDsgT/HtN7kekBsqKNfBNW/fwrll71WbOsGTX6Y6+7Et3XjziFWd
- nyVxkMKd6R46UT1KZ1n+/uPTcsrUkswjCAjQ4Jz1N0i4mm+ogzi0kfCQ/Oh4Z8sSc+dk
- IcYypzam4YUViIWFLkJD6YyC4EiL0EpeKVNYRkcxTr7UArkGuwenscO0m8tQ1DOMK4+Y
- FZh9KQXdhbXosPujic/K3gF+TOdXdXiZSGTbDlq5Gf4z9D0TmUS86dllE5azjIfLzdRk
- lDhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=12xoJC8I/0jBFBQ6uTjCdcTJY4GOeJNX+Bl1LJtzWP8=;
- b=SZUQ4iGgKSqr4rD5CbVT8TDp1IwLyZ6q6me+OZdmvZ+ajo8L1g3009jJmfxQAmb5pT
- BGfJ8NUOLMRky2+UO7eTq91WMWnWegaok4YHJrOO+/wLamEwr8nU/MhHL+yhwacdml/v
- KlkKp84tDEHg28XyLjTy7BRGAXpsbPFHZRI2njzoJD/17PmQzveRR1nDTJfsIAbK2Xqm
- HIXT/v+M90xkj0yaLKnRA4I7a3nzOnJiihOhowSx8w6i3Xfn+GFBzsZPQBmJnCseblJ1
- w0V/vg7bna//JIKZUkhE88s8+2tdAa6mdmt0kKVKDyKh7KTHHilmDHbBy60t1u4BhVCk
- IuBg==
-X-Gm-Message-State: AOAM531BlmWLRpxjEeSRx6uhCmiULkjcazVfOP/iwrddeIVf7mSfeSSx
- gu1OKWJG5mGFV/ZI+OM1Bw7cfL5sghA=
-X-Google-Smtp-Source: ABdhPJxnIsUzsLKcT2K+8x1/eiGdYFczArt58MVmcFmfXRNXcC94kQ2ecJEGomo5nvJVw4qw+hWk4w==
-X-Received: by 2002:a05:6808:1444:: with SMTP id
- x4mr3736124oiv.142.1618934888333; 
- Tue, 20 Apr 2021 09:08:08 -0700 (PDT)
-Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
- [76.183.134.35])
- by smtp.gmail.com with ESMTPSA id y6sm4497057otk.42.2021.04.20.09.08.07
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 20 Apr 2021 09:08:07 -0700 (PDT)
-From: Chris Morgan <macroalpha82@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: [v7 4/4] arm64: dts: rockchip: add rk817 codec to Odroid Go
-Date: Tue, 20 Apr 2021 11:07:47 -0500
-Message-Id: <20210420160747.22942-4-macroalpha82@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210420160747.22942-1-macroalpha82@gmail.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="us9AuT+e"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9CCF613CD;
+ Tue, 20 Apr 2021 16:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1618935580;
+ bh=wo0Ma+Ga1AFTjgDUVkyTQw4kODt/cwUCMSS14hRgUNg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=us9AuT+exCEr0zbASBxHw2qmmSsVS6/zUm+sHeS71IHEbaYbXR4fDkSmiu/75SZTF
+ 6+G6RPoo++S67ORiwwURUJp1//a4XjxY05+h27MdruM4uqj3z724dJM0Q/Buf/zTTq
+ unTpAaffQ0S67azl9QCQMqn6OKiYI2x2Dis1VptuWdu7lUDh6uKPcc2IHHXTXecB7q
+ u2LNLBzEyg62emP49CkuXf1eaIv6GnhYob09eUIvoiLNtVMfA2c6ddACYxKm9PbB7j
+ 7sd1hMU1M2HZTpxYqpUlVGxcv1cH9wdZCG91ghvjlWfmn9tSHNBWsrJXOzoPMeRKpP
+ MjOwZ1LAUfg6Q==
+Date: Tue, 20 Apr 2021 17:19:13 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Chris Morgan <macroalpha82@gmail.com>
+Subject: Re: [v7 2/4] ASoC: Add Rockchip rk817 audio CODEC support
+Message-ID: <20210420161913.GF6073@sirena.org.uk>
 References: <20210420160747.22942-1-macroalpha82@gmail.com>
+ <20210420160747.22942-2-macroalpha82@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, heiko@sntech.de,
- devicetree@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org,
- lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, broonie@kernel.org,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="udcq9yAoWb9A4FsZ"
+Content-Disposition: inline
+In-Reply-To: <20210420160747.22942-2-macroalpha82@gmail.com>
+X-Cookie: Falling rock.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ heiko@sntech.de, devicetree@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
  Chris Morgan <macromorgan@hotmail.com>, jbx6244@gmail.com,
  lee.jones@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -112,117 +91,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Chris Morgan <macromorgan@hotmail.com>
 
-Add the new rk817 codec driver to the Odroid Go Advance.
+--udcq9yAoWb9A4FsZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
----
-Changes in v7:
- - Removed ifdef around register definitions for MFD.
- - Replaced codec documentation with updates to MFD documentation.
- - Reordered elements in example to comply with upstream rules.
- - Added binding update back for Odroid Go Advance as requested.
- - Submitting patches from gmail now.
-Changes in v6:
- - Included additional project maintainers for correct subsystems.
- - Removed unneeded compatible from DT documentation.
- - Removed binding update for Odroid Go Advance (will do in seperate series).
-Changes in v5:
- - Move register definitions from rk817_codec.h to main rk808.h register
-   definitions.
- - Add volatile register for codec bits.
- - Add default values for codec bits.
- - Removed of_compatible from mtd driver (not necessary).
- - Switched to using parent regmap instead of private regmap for codec.
-Changes in v4:
- - Created set_pll() call.
- - Created user visible gain control in mic.
- - Check for return value of clk_prepare_enable().
- - Removed duplicate clk_prepare_enable().
- - Split DT documentation to separate commit.
-Changes in v3:
- - Use DAPM macros to set audio path.
- - Updated devicetree binding (as every rk817 has this codec chip).
- - Changed documentation to yaml format.
- - Split MFD changes to separate commit.
-Changes in v2:
- - Fixed audio path registers to solve some bugs.
+On Tue, Apr 20, 2021 at 11:07:45AM -0500, Chris Morgan wrote:
+> From: Chris Morgan <macromorgan@hotmail.com>
+>=20
+> Add support for the Rockchip rk817 audio codec integrated into the
+> rk817 PMIC. This is based on the sources provided by Rockchip from
+> their BSP kernel.
+>=20
+> Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
+> ---
 
- .../boot/dts/rockchip/rk3326-odroid-go2.dts   | 36 +++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+If you've not made substantial changes to a patch you should carry
+forwards any tags you've got when resending so reviewers know they don't
+need to do things again.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 97fb93e1cc00..5356bcf6d99c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -161,6 +161,29 @@ blue_led: led-0 {
- 		};
- 	};
- 
-+	rk817-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "rockchip,rk817-codec";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,widgets =
-+			"Microphone", "Mic Jack",
-+			"Headphone", "Headphones",
-+			"Speaker", "Speaker";
-+		simple-audio-card,routing =
-+			"MICL", "Mic Jack",
-+			"Headphones", "HPOL",
-+			"Headphones", "HPOR",
-+			"Speaker", "SPKO";
-+		simple-audio-card,hp-det-gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s1_2ch>;
-+		};
-+		simple-audio-card,codec {
-+			sound-dai = <&rk817>;
-+		};
-+	};
-+
- 	vccsys: vccsys {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc3v8_sys";
-@@ -265,11 +288,14 @@ rk817: pmic@20 {
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio0>;
- 		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
-+		clock-output-names = "rk808-clkout1", "xin32k";
-+		clock-names = "mclk";
-+		clocks = <&cru SCLK_I2S1_OUT>;
- 		pinctrl-names = "default";
--		pinctrl-0 = <&pmic_int>;
-+		pinctrl-0 = <&pmic_int>, <&i2s1_2ch_mclk>;
- 		wakeup-source;
- 		#clock-cells = <1>;
--		clock-output-names = "rk808-clkout1", "xin32k";
-+		#sound-dai-cells = <0>;
- 
- 		vcc1-supply = <&vccsys>;
- 		vcc2-supply = <&vccsys>;
-@@ -428,6 +454,10 @@ regulator-state-mem {
- 				};
- 			};
- 		};
-+
-+		rk817_codec: codec {
-+			mic-in-differential;
-+		};
- 	};
- };
- 
-@@ -439,6 +469,8 @@ &i2c1 {
- 
- /* I2S 1 Channel Used */
- &i2s1_2ch {
-+	resets = <&cru SRST_I2S1>, <&cru SRST_I2S1_H>;
-+	reset-names = "reset-m", "reset-h";
- 	status = "okay";
- };
- 
--- 
-2.25.1
+--udcq9yAoWb9A4FsZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB+/wEACgkQJNaLcl1U
+h9D6Iwf+L1DybQOPGsl6KtAAhQp17fNdKFCqL5+Uil1WOS6NbkToX2lb+DZOK09u
+r77tLW80Zlelg1tgjPZNPXWztxH+NMtVq2fyuxvKsHOHkACMLMRYpLgCSgjctYA1
+n1pxh74sIshX+rRt5UO40Erek04i3sTq3Z8fS/r/SN3xaDqowhtXgur3dGsfWwlb
+TJCqKeAYDlkR7KDxJ+vdanOWIQ8kmHSPwrKNLePrjD8YAx0iTRut7oSbG6EoeFWr
+kQ8ZY4dLohmQ8sKjoAlGMqw21MuME4hFmgZuelwpCU0IV2QGqgq2s8wEQQ0SuBZE
+W+01hbiShhGlSmt4IGCfYt+xp+yuAw==
+=a2sH
+-----END PGP SIGNATURE-----
+
+--udcq9yAoWb9A4FsZ--
