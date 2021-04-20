@@ -6,63 +6,59 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E451C433ED
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 22:33:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8E3DC433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 22:36:32 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D17E7613C7
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 22:33:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D17E7613C7
+	by mail.kernel.org (Postfix) with ESMTPS id BECD261405
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Apr 2021 22:36:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BECD261405
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D6D01689;
-	Wed, 21 Apr 2021 00:32:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D6D01689
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8315168E;
+	Wed, 21 Apr 2021 00:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8315168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618958017;
-	bh=WBqkNq8uhbM5OFsZYiPvfpmNILB2ZmhzrcVVJMl0TdQ=;
+	s=default; t=1618958189;
+	bh=+DXqzlNv6zUU6/rwn1l3aPI4sTfkERtbKDsMKJb6ndg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JTmHibp4Os+h70icaL8pwqBGrpUcu0Ka+nFPQ8d8RLUjqhx9ktvz3IIO6A9d5xL+f
-	 QezUqvicwYJacfkoIaTo/VWQ+kHbB7az12Lbx492/zJoNr7hqtlLm3ySEN66DuKyJa
-	 PG/P41ASq8wx7dKPopUfvv+pmajL7cHn1KqQZpCc=
+	b=l7RB8b1lWVh39i8Wcz3YxarDgISYg0ov7C2LuHRkW8XVgdy+T2II26Kkn5VdqNFuS
+	 QihqjPr+eAtJ2kENqBqOt/pTIMqFybQU9hea2+/3SuDg/ZzkvxlLR3Tr02BNcXNn/I
+	 tjuV73sQqoeBqPfpdDcUCJ4p9cnxtVmtEtPwkCco=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DAB4F80168;
-	Wed, 21 Apr 2021 00:32:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62EACF800FE;
+	Wed, 21 Apr 2021 00:35:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9F85F80253; Wed, 21 Apr 2021 00:32:43 +0200 (CEST)
+ id 8C21FF800FE; Wed, 21 Apr 2021 00:35:37 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
  [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 9253BF800FE
- for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 00:32:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9253BF800FE
-Date: 21 Apr 2021 07:32:30 +0900
-X-IronPort-AV: E=Sophos;i="5.82,238,1613401200"; d="scan'208";a="78699766"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 21 Apr 2021 07:32:30 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id E2467F80164
+ for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 00:35:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2467F80164
+Date: 21 Apr 2021 07:35:28 +0900
+X-IronPort-AV: E=Sophos;i="5.82,238,1613401200"; d="scan'208";a="78699950"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 21 Apr 2021 07:35:28 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4D8AD40104E1;
- Wed, 21 Apr 2021 07:32:30 +0900 (JST)
-Message-ID: <87mttsio3l.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id A83DB4125BEB;
+ Wed, 21 Apr 2021 07:35:28 +0900 (JST)
+Message-ID: <87lf9cinyn.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Hin-Tak Leung <htl10@users.sourceforge.net>
-Subject: Re: ASoc / PCM recording-related regression between v5.4 and v5.5
-In-Reply-To: <1177185277.6505734.1618917489204@mail.yahoo.com>
-References: <148484793.4894421.1618654607945.ref@mail.yahoo.com>
- <148484793.4894421.1618654607945@mail.yahoo.com>
- <877dkz5hz1.wl-kuninori.morimoto.gx@renesas.com>
- <1772063602.5910217.1618841824599@mail.yahoo.com>
- <87h7k152du.wl-kuninori.morimoto.gx@renesas.com>
- <1177185277.6505734.1618917489204@mail.yahoo.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: Question about soc_pcm_pointer()
+In-Reply-To: <20210420124403.GA6073@sirena.org.uk>
+References: <87fszl4yrq.wl-kuninori.morimoto.gx@renesas.com>
+ <20210420124403.GA6073@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,35 +75,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Hin-Tak
+Hi Mark
 
-> I am bisecting down to 5 asoc related commits now, and currently building "ASoC: pcm_dmaengine: Extra snd_dmaengine_pcm_refine_runtime_hwpararms". The breakage is between
-> "...remove snd_soc_soc_rtdcom_del_all()" and "Merge branch asoc-5.4 into asoc-5.5". It takes about an hour to do a clean build.
+> > I noticed that current soc-pcm.c :: soc_pcm_pointer() is adding
+> > both CPU-DAI's max delay (= A)
+> > and Codec-DAI's max delay (= B).
+(snip)
+> > But I guess All-DAI's max delay is very enough for it.
+> > What do you think ?
 > 
-> I think it is either that hwparams commit or the next one, "use different sequence..."?
-> 
-> I shall be able to tell you for sure in a few more hours / next day.
-> 
-> Any thoughts on those two?
+> We're looking for the delay through the full audio path so it needs to
+> be the maximum of the DAIs doing transmit and the maximum of the DAIs
+> doing receive (ie, all CPUs and all CODECs) rather than just the maximum
+> of all DAIs.
 
-After "ASoC: soc-core: remove snd_soc_rtdcom_del_all()" patch (= A),
-it will merge snd_pcm_ops to component driver (= B),
-and many drivers switch to use it (= C).
-After that, original snd_pcm_ops will be removed (= D).
-If your out-of-tree is still using it, this can help you ?
-
-(A)	353e16bf60458fae5927cf04ff668fc152fff465
-	("ASoC: soc-core: remove snd_soc_rtdcom_del_all()")
-
-(B)	e2cb4a14541dba3587bb78e0f62da27a0e1ad399
-	("ASoC: soc-core: merge snd_pcm_ops member to component driver")
-
-(C)	9dcefa7232d3fd5a7141454849d46ed24c7af867
-	("ASoC: sh: rsnd: remove snd_pcm_ops")
-
-(D)	e9067bb502787869dabe385727baff233024097b
-	("ASoC: soc-component: remove snd_pcm_ops from component driver")
-
+OK, thank you for your feedback.
 
 Thank you for your help !!
 
