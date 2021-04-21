@@ -2,100 +2,76 @@ Return-Path: <SRS0=sv+a=JS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
-	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,
-	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA5FEC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 18:01:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 20C5CC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 19:05:45 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7A66A61427
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 18:01:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7A66A61427
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 8BD0661455
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 19:05:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8BD0661455
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBEAF169B;
-	Wed, 21 Apr 2021 20:01:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBEAF169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 409091607;
+	Wed, 21 Apr 2021 21:04:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 409091607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619028115;
-	bh=1KLZQqYPPe/hNaxV6I6wGshDRlDJ+TpYWGwHTAZ9DMU=;
+	s=default; t=1619031941;
+	bh=7GJ8cImrhwp/aVc1CvIyt2v/wm9ZxwmqrHc9zmrTxUA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s4aGvLAPW498wUeKrlfMGp9I+KwRwtx3RomZLnkegUeXq7MUxhqNugWvKE+9y2fQY
-	 Ep1Pn+mmeYPMfI/PtkNsLbL0ZSJeqkG0kym9xqtrF04CMpjtQe4Y4yUadbXlNht+eq
-	 0R1q4yvzqETBQN54ZauzxxLc4XTlFdzlFFkGaqms=
+	b=a7H2lO1oTKm21oPX3Nxr0suxbzFNY5s8zpGK8DVInYk7b10NUNPU6bUtWg1CIcZhF
+	 TGkXM+UCOo3V7qwnDYvY1srvZAktr3uuBKWUILW+FybHdsumVVyWOB+skhBxJOe8UB
+	 wXLsbAlOYRNH4v/WPR3586Fb57aAMHwAgyz7ip0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9275F80482;
-	Wed, 21 Apr 2021 19:59:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C0D5F8019B;
+	Wed, 21 Apr 2021 21:04:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00DCCF80256; Wed, 21 Apr 2021 19:59:36 +0200 (CEST)
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com
- [IPv6:2607:f8b0:4864:20::232])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4E435F8025A; Wed, 21 Apr 2021 21:04:48 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0FBC9F800E8
- for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 19:59:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FBC9F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 803F1F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 21:04:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 803F1F800AE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="AEys/8bS"
-Received: by mail-oi1-x232.google.com with SMTP id i81so43243007oif.6
- for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 10:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=GFCjFDnTKts+03sH7fTjJ2Hzlbk05WTqad5B7papnEE=;
- b=AEys/8bSEhTIx0oIJJSawACS89ej9X6f4uTuZD9dPR0dvpLadTnWJu39H5NIj68RCr
- 6mgYTETBPxwaE0PLYu6d9qSS1NCxKRqu9jVepPwiLhrroDo8Tiv/u1JIIWU3VCjTXiEG
- T00POD+kqBGpehCle4nCvuoqmvnVF8QZqc8lJjt+oAWrDY8uFZsZzdUG/nEYUtrhQuFi
- ozkaLTxzsMC1tA0MToqWQGnwhQV1Y1K7f89ef712WOKnkZRFG5N39jgtPAsds8YTkSGC
- 291ixJ6tMSZ10dvjlroxozebQOdflFHv9CaEF8FXzx6sd7+NDbWvrGlG0w5xJJKNTIRg
- nkkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=GFCjFDnTKts+03sH7fTjJ2Hzlbk05WTqad5B7papnEE=;
- b=jEz4o9cUYEfwXJVux86RSF/7j8sY/chMKs/msvcAs/T5AczXgiNRWm8XdWNXsR9W04
- JfR0twajQWKfF45nOra2+MwagH7QN782AskIpMho/VK9OHZz4ILEoOaBirOMzKiftetD
- vzQ0UJO+cgRpOPq3CKZ6HKELRIiBcahfkdQYmqcD5YR5dez6L5PK8jLL8TeHaxgQaWyE
- sJqMUVCjNKOuR7hz1hkzhb8pHrJQ9GAYxNmeAM2uMnZZXgaT0926o5S6h6NDVoKuAqF0
- B2Xo7RJdn3VCjRRwoo4QPjZLdMTMCe2bvocSq3hR+R7LHabHYAb7iJWaemTF7B7BfYwN
- Ps9g==
-X-Gm-Message-State: AOAM532LZxu/NbY6gj1MUePmgxsqFKHQ3R6eioOfXq9rKloTkQO+Jd5i
- Gn8OjdVOTnf2a2lxfaQqfPsEoKq3Rm8=
-X-Google-Smtp-Source: ABdhPJy35tGx7OnR7lXlEBK/EZatiYx9tb4/EQP6rMQD7CleDi/jo7CDKf6ooCozvtMeTF72U0JEhw==
-X-Received: by 2002:aca:b387:: with SMTP id c129mr7311825oif.30.1619027968983; 
- Wed, 21 Apr 2021 10:59:28 -0700 (PDT)
-Received: from wintermute.localdomain (cpe-76-183-134-35.tx.res.rr.com.
- [76.183.134.35])
- by smtp.gmail.com with ESMTPSA id l62sm13662oih.2.2021.04.21.10.59.27
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 21 Apr 2021 10:59:28 -0700 (PDT)
-From: Chris Morgan <macroalpha82@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: [v8 4/4] arm64: dts: rockchip: add rk817 codec to Odroid Go
-Date: Wed, 21 Apr 2021 12:59:06 -0500
-Message-Id: <20210421175906.31977-4-macroalpha82@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210421175906.31977-1-macroalpha82@gmail.com>
-References: <20210421175906.31977-1-macroalpha82@gmail.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="m6XEr+EZ"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 980D761453;
+ Wed, 21 Apr 2021 19:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1619031880;
+ bh=7GJ8cImrhwp/aVc1CvIyt2v/wm9ZxwmqrHc9zmrTxUA=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=m6XEr+EZVlhZlmYiaxTNaN8ELdU3q5cKMkqwbQnpmj6OC/+CNJlNObpreszM8bbLV
+ eomV2T9ZZWldmfYF6kGtbgfw2sTiFVmG7vCAZJH9sJ8pvlyTKgjFlRBOy9dysCS6kC
+ 2jExxl7CEELCKaGSt9LbHo6S5gG1+JH1e2OFPazlvJESQcbTfSN4qDIazFMM3Pnst6
+ 7YGnlEjH9erEDBaLJYsMuA0tSEXGVk2Z+TE/KTSjjtNv0E7gfN4Apd4C3lPHpyOnIw
+ hPOkP5cDCKw/DDHot9Ztn+BoTo7eBIPAyecY959EoA4FpdXXoOSzkc1ougYUz29PgA
+ QBcRNShZgABvw==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+	Sia Jee Heng <jee.heng.sia@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: KMB: Fix random noise at the HDMI output
+Date: Wed, 21 Apr 2021 20:03:36 +0100
+Message-Id: <161903027032.13397.5757063542180832008.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210421005546.7534-1-jee.heng.sia@intel.com>
+References: <20210421005546.7534-1-jee.heng.sia@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, heiko@sntech.de,
- devicetree@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org,
- lgirdwood@gmail.com, linux-rockchip@lists.infradead.org, broonie@kernel.org,
- Chris Morgan <macromorgan@hotmail.com>, jbx6244@gmail.com,
- lee.jones@linaro.org, maccraft123mc@gmail.com
+Cc: Mark Brown <broonie@kernel.org>, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,117 +87,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Chris Morgan <macromorgan@hotmail.com>
+On Wed, 21 Apr 2021 08:55:46 +0800, Sia Jee Heng wrote:
+> Random noise could be heard when playing audio to the HDMI output.
+> This is due to the IEC conversion is invoked in the external loop.
+> As a result, this additional loop takes up a lot of the processing
+> cycle.
+> 
+> hdmi_reformat_iec958() process the conversion using an internal loop,
+> it is safe to move it out from the external loop to avoid unnecessary
+> processing cycle been spent. Furthermore, ALSA IEC958 plugin works in
+> 32bit format only.
 
-Add the new rk817 codec driver to the Odroid Go Advance.
+Applied to
 
-Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
----
-Changes in v8:
- - Added additional documentation for missing properties of #sound-dai-cells,
-   interrupt-parent, and wakeup-source for mfd documentation.
- - Corrected order of elements descriptions in device tree documentation.
- - Changed name of "mic-in-differential" to "rockchip,mic-in-differential".
- - Changed name of sound card from "rockchip,rk817-codec" to "Analog".
- - Removed unused resets and reset-names from the i2s1_2ch node.
-Changes in v7:
- - Removed ifdef around register definitions for MFD.
- - Replaced codec documentation with updates to MFD documentation.
- - Reordered elements in example to comply with upstream rules.
- - Added binding update back for Odroid Go Advance as requested.
- - Submitting patches from gmail now.
-Changes in v6:
- - Included additional project maintainers for correct subsystems.
- - Removed unneeded compatible from DT documentation.
- - Removed binding update for Odroid Go Advance (will do in seperate series).
-Changes in v5:
- - Move register definitions from rk817_codec.h to main rk808.h register
-   definitions.
- - Add volatile register for codec bits.
- - Add default values for codec bits.
- - Removed of_compatible from mtd driver (not necessary).
- - Switched to using parent regmap instead of private regmap for codec.
-Changes in v4:
- - Created set_pll() call.
- - Created user visible gain control in mic.
- - Check for return value of clk_prepare_enable().
- - Removed duplicate clk_prepare_enable().
- - Split DT documentation to separate commit.
-Changes in v3:
- - Use DAPM macros to set audio path.
- - Updated devicetree binding (as every rk817 has this codec chip).
- - Changed documentation to yaml format.
- - Split MFD changes to separate commit.
-Changes in v2:
- - Fixed audio path registers to solve some bugs.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
- .../boot/dts/rockchip/rk3326-odroid-go2.dts   | 36 +++++++++++++++++--
- 1 file changed, 34 insertions(+), 2 deletions(-)
+Thanks!
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 97fb93e1cc00..e3ecd34f3028 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -161,6 +161,31 @@ blue_led: led-0 {
- 		};
- 	};
- 
-+	rk817-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "Analog";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,widgets =
-+			"Microphone", "Mic Jack",
-+			"Headphone", "Headphones",
-+			"Speaker", "Speaker";
-+		simple-audio-card,routing =
-+			"MICL", "Mic Jack",
-+			"Headphones", "HPOL",
-+			"Headphones", "HPOR",
-+			"Speaker", "SPKO";
-+		simple-audio-card,hp-det-gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s1_2ch>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&rk817>;
-+		};
-+	};
-+
- 	vccsys: vccsys {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc3v8_sys";
-@@ -265,11 +290,14 @@ rk817: pmic@20 {
- 		reg = <0x20>;
- 		interrupt-parent = <&gpio0>;
- 		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
-+		clock-output-names = "rk808-clkout1", "xin32k";
-+		clock-names = "mclk";
-+		clocks = <&cru SCLK_I2S1_OUT>;
- 		pinctrl-names = "default";
--		pinctrl-0 = <&pmic_int>;
-+		pinctrl-0 = <&pmic_int>, <&i2s1_2ch_mclk>;
- 		wakeup-source;
- 		#clock-cells = <1>;
--		clock-output-names = "rk808-clkout1", "xin32k";
-+		#sound-dai-cells = <0>;
- 
- 		vcc1-supply = <&vccsys>;
- 		vcc2-supply = <&vccsys>;
-@@ -428,6 +456,10 @@ regulator-state-mem {
- 				};
- 			};
- 		};
-+
-+		rk817_codec: codec {
-+			rockchip,mic-in-differential;
-+		};
- 	};
- };
- 
--- 
-2.25.1
+[1/1] ASoC: Intel: KMB: Fix random noise at the HDMI output
+      commit: 62bad12bceebd7d336ced4e44f408b702c151ba0
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
