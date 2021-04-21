@@ -2,71 +2,132 @@ Return-Path: <SRS0=sv+a=JS=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E42C6C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 09:00:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B45C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 09:15:36 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 7E20A61442
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 09:00:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 7E20A61442
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id A2ADE61448
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Apr 2021 09:15:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A2ADE61448
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37C5B1679;
-	Wed, 21 Apr 2021 11:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37C5B1679
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0768167D;
+	Wed, 21 Apr 2021 11:14:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0768167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1618995650;
-	bh=HE0D6JfFLzdPGxz5tRm1/fRcQXkpXWX5P/QOtvDzC1M=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lxB/kp7LToptY5iEiL9s6YU9XyIkWOc5e/MmaQV+r4XWzzshTG8sU3rP/2fKkOzmB
-	 SSP66XBnheqq4yukqs8YwYXjztfeOjFJSetwoBhiL0PGvy8KmsIFaeJtvNpEWYdXqi
-	 iMW6RIQtB60nyL/BrCFzQsho2EjqknQZCnanoIm4=
+	s=default; t=1618996532;
+	bh=kcudHs/nKo86SbCg4f+llrUeQngbjT9gzklWOjxYYL8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZCgPfUvJFoYL/dzW+os1U8SSy0Xl8mz4Fki0lvPvU2YLBlhGLUjwo/PP+yv/Mcvk+
+	 agvwriN4exgFwV9aHeHOnjqBYpGQhsRhMbQpxePCRnoIpiKWws2gGsQoXts+c2hSyQ
+	 E9gJdCzndB7qUI9hxKsVT6C/aQtU1Mr+eksRmXXg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92714F8019B;
-	Wed, 21 Apr 2021 10:59:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49BFFF800AE;
+	Wed, 21 Apr 2021 11:14:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D8C9F80227; Wed, 21 Apr 2021 10:59:57 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2CA38F80227; Wed, 21 Apr 2021 11:14:40 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AEDFF800E8
- for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 10:59:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AEDFF800E8
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id DEFDDB1E6;
- Wed, 21 Apr 2021 08:59:43 +0000 (UTC)
-Date: Wed, 21 Apr 2021 10:59:43 +0200
-Message-ID: <s5hlf9cau80.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Lucas <jaffa225man@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Apply implicit feedback mode for BOSS
- devices
-In-Reply-To: <CAOsVg8qs+UZ2+G_0Pq=Vm87E+75jYg4Fg4eAaNTJzs=wFE5WAw@mail.gmail.com>
-References: <20210414083255.9527-1-tiwai@suse.de>
- <CAHXb3beNczUn-KWfO9P1Pa5+3piR8fDYHvoH5G08GmcvgR4Lxw@mail.gmail.com>
- <5949663.lOV4Wx5bFT@kam-desktop>
- <CAOsVg8p=yikaRQ-=RWdO8nWdC70tnw4kQ17KM-smShQvujrRJg@mail.gmail.com>
- <CAOsVg8pY80Vgi1XhzzFmQ4bBxK+1boksw7RM7_avMd4hqE0ERQ@mail.gmail.com>
- <s5h7dkwdib8.wl-tiwai@suse.de>
- <CAOsVg8qs+UZ2+G_0Pq=Vm87E+75jYg4Fg4eAaNTJzs=wFE5WAw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80F94F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2021 11:14:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80F94F800AE
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13L9EGgC4014290,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (mapi.realtek.com[172.21.6.25])
+ by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13L9EGgC4014290
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 21 Apr 2021 17:14:16 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 21 Apr 2021 17:14:16 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 21 Apr 2021 17:14:15 +0800
+From: <shumingf@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH v2] ASoC: rt711-sdca: change capture switch controls
+Date: Wed, 21 Apr 2021 17:14:10 +0800
+Message-ID: <20210421091410.2300-1-shumingf@realtek.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, "Keith A. Milner" <maillist@superlative.org>
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzQvMjEgpFekyCAwNzowOTowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 08:50:58
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163258 [Apr 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: shumingf@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;
+ d41d8cd98f00b204e9800998ecf8427e.com:7.1.1; realtek.com:7.1.1
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/21/2021 08:54:00
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzQvMjEgpFekyCAwNzozODowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/21/2021 08:57:01
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163258 [Apr 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: shumingf@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;
+ 127.0.0.199:7.1.2; realtek.com:7.1.1
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 04/21/2021 08:59:00
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, libin.yang@intel.com, derek.fang@realtek.com,
+ Shuming Fan <shumingf@realtek.com>, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,208 +143,205 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Apr 2021 06:59:51 +0200,
-Lucas wrote:
-> 
-> First, thanks very much for trying to cover all devices through detection!  I
-> had hoped something like this could be done, but sadly, it has created a mixed
-> result:
-> 
-> Roland VG-99 Perfect!:
-> arecord -D hw:VG99 -f S24_3LE -r 44100 -c 2 ./file.wav
-> Recording WAVE './file.wav' : Signed 24 bit Little Endian in 3bytes, Rate
-> 44100 Hz, Stereo
-> ^CAborted by signal Interrupt...
-> 
-> aplay -D hw:VG99 -f S24_3LE -r 44100 -c 2 ./file.wav
-> Playing WAVE './file.wav' : Signed 24 bit Little Endian in 3bytes, Rate 44100
-> Hz, Stereo
-> 
-> Roland INTEGRA-7 doesn't capture, but plays perfectly (only 96 kHz mode
-> tested):
-> arecord -D hw:INTEGRA7 -f S32_LE -r 96000 -c 2 ./file.wav
-> Recording WAVE './file.wav' : Signed 32 bit Little Endian, Rate 96000 Hz,
-> Stereo
-> arecord: pcm_read:2153: read error: Input/output error
-> 
-> aplay -D hw:INTEGRA7 -f S32_LE -r 96000 -c 2 ./other-file.wav
-> Playing WAVE './other-file.wav' : Signed 32 bit Little Endian, Rate 96000 Hz,
-> Stereo
+From: Shuming Fan <shumingf@realtek.com>
 
-Hm, that's bad.  And INTEGRA7 did work before the patching?
-I saw that this has the right EP numbers (0x0d and 0x8e), so the
-static quirk entry was correct.
+The DAPM event and mixer control could mute/unmute the capture directly.
+That will be confused that capture still works if the user settings is unmute before the capture.
+Therefore, this patch uses the variables to record the capture switch status of DAPM and mixer.
 
-> 
-> Roland R-26 doesn't capture, but plays perfectly (only 96 kHz mode tested):
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
+---
+ sound/soc/codecs/rt711-sdca.c | 125 ++++++++++++++++++++++------------
+ sound/soc/codecs/rt711-sdca.h |   2 +
+ 2 files changed, 84 insertions(+), 43 deletions(-)
 
-R-26 seems also to be the one with both ASYNC and EP 0x0d/0x8e, so the
-same reason as INTEGRA7.
-
-> arecord -D hw:R26AUDIO -f S32_LE -r 96000 -c 2 ./file.wav
-> Recording WAVE './file.wav' : Signed 32 bit Little Endian, Rate 96000 Hz,
-> Stereo
-> arecord: pcm_read:2153: read error: Input/output error
-> 
-> aplay -D hw:R26AUDIO -f S32_LE -r 96000 -c 2 ./other-file.wav
-> Playing WAVE './other-file.wav' : Signed 32 bit Little Endian, Rate 96000 Hz,
-> Stereo
-> 
-> Roland Boutique D-05 doesn't capture, but plays perfectly:
-
-OK, this one looks slightly different.
-D-05 has two EPs in each interface, both are ASYNC and 0x0d/0x8e.
-So another adjustment might be needed here.
-
-> EDIROL UA-101 full-speed (USB 1.1) and high-speed (USB 2.0) not detected for
-> capture or playback (only 48 kHz mode tested):
-
-This is a different driver, so we can forget for now.
-
-> I'm guessing another look at "lsusb -v" would help, but don't know what to
-> look for and have run out of time tonight.
-
-Could you post the archive of your lsusb -v outputs?  Put in a tarball
-and post with attachment.
-
-Below is a revised patch.  Let me know if this works better.
-
-
-thanks,
-
-Takashi
-
-
---- a/sound/usb/implicit.c
-+++ b/sound/usb/implicit.c
-@@ -79,6 +79,7 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
- 
- /* Implicit feedback quirk table for capture: only FIXED type */
- static const struct snd_usb_implicit_fb_match capture_implicit_fb_quirks[] = {
-+#if 0
- 	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00a6, 0x0d, 0x01), /* Roland JUNO-G */
- 	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00a9, 0x0d, 0x01), /* Roland MC-808 */
- 	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00ad, 0x0d, 0x01), /* Roland SH-201 */
-@@ -146,6 +147,7 @@ static const struct snd_usb_implicit_fb_match capture_implicit_fb_quirks[] = {
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01fd, 0x0d, 0x01), /* Roland Boutique SH-01A */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01ff, 0x0d, 0x01), /* Roland Boutique D-05 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0203, 0x0d, 0x01), /* BOSS AD-10 */
-+#endif
- 
- 	{} /* terminator */
- };
-@@ -204,30 +206,70 @@ static int add_generic_uac2_implicit_fb(struct snd_usb_audio *chip,
- 				       ifnum, alts);
- }
- 
--/* Like the function above, but specific to Roland with vendor class and hack */
-+static bool roland_sanity_check_iface(struct usb_host_interface *alts)
-+{
-+	if (alts->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC ||
-+	    (alts->desc.bInterfaceSubClass != 2 &&
-+	     alts->desc.bInterfaceProtocol != 2) ||
-+	    alts->desc.bNumEndpoints < 1)
-+		return false;
-+	return true;
-+}
-+
-+/* Like the UAC2 case above, but specific to Roland with vendor class and hack */
- static int add_roland_implicit_fb(struct snd_usb_audio *chip,
- 				  struct audioformat *fmt,
--				  unsigned int ifnum,
--				  unsigned int altsetting)
-+				  struct usb_host_interface *alts)
- {
--	struct usb_host_interface *alts;
- 	struct usb_endpoint_descriptor *epd;
- 
--	alts = snd_usb_get_host_interface(chip, ifnum, altsetting);
--	if (!alts)
-+	if (!roland_sanity_check_iface(alts))
- 		return 0;
--	if (alts->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC ||
--	    (alts->desc.bInterfaceSubClass != 2 &&
--	     alts->desc.bInterfaceProtocol != 2) ||
--	    alts->desc.bNumEndpoints < 1)
-+	/* only when both streams are with ASYNC type */
-+	epd = get_endpoint(alts, 0);
-+	if (!usb_endpoint_is_isoc_out(epd) ||
-+	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
-+		return 0;
-+
-+	/* check capture EP */
-+	alts = snd_usb_get_host_interface(chip,
-+					  alts->desc.bInterfaceNumber + 1,
-+					  alts->desc.bAlternateSetting);
-+	if (!alts || !roland_sanity_check_iface(alts))
- 		return 0;
- 	epd = get_endpoint(alts, 0);
- 	if (!usb_endpoint_is_isoc_in(epd) ||
--	    (epd->bmAttributes & USB_ENDPOINT_USAGE_MASK) !=
--					USB_ENDPOINT_USAGE_IMPLICIT_FB)
-+	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
- 		return 0;
-+	chip->playback_first = 1;
- 	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 0,
--				       ifnum, alts);
-+				       alts->desc.bInterfaceNumber, alts);
-+}
-+
-+/* capture quirk for Roland device; always full-duplex */
-+static int add_roland_capture_quirk(struct snd_usb_audio *chip,
-+				    struct audioformat *fmt,
-+				    struct usb_host_interface *alts)
-+{
-+	struct usb_endpoint_descriptor *epd;
-+
-+	if (!roland_sanity_check_iface(alts))
-+		return 0;
-+	epd = get_endpoint(alts, 0);
-+	if (!usb_endpoint_is_isoc_in(epd) ||
-+	    (epd->bmAttributes & USB_ENDPOINT_SYNCTYPE) != USB_ENDPOINT_SYNC_ASYNC)
-+		return 0;
-+
-+	alts = snd_usb_get_host_interface(chip,
-+					  alts->desc.bInterfaceNumber - 1,
-+					  alts->desc.bAlternateSetting);
-+	if (!alts || !roland_sanity_check_iface(alts))
-+		return 0;
-+	epd = get_endpoint(alts, 0);
-+	if (!usb_endpoint_is_isoc_out(epd))
-+		return 0;
-+	return add_implicit_fb_sync_ep(chip, fmt, epd->bEndpointAddress, 0,
-+				       alts->desc.bInterfaceNumber, alts);
- }
- 
- /* Playback and capture EPs on Pioneer devices share the same iface/altset
-@@ -365,14 +407,8 @@ static int audioformat_implicit_fb_quirk(struct snd_usb_audio *chip,
- 	}
- 
- 	/* Roland/BOSS implicit feedback with vendor spec class */
--	if (attr == USB_ENDPOINT_SYNC_ASYNC &&
--	    alts->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
--	    alts->desc.bInterfaceProtocol == 2 &&
--	    alts->desc.bNumEndpoints == 1 &&
--	    USB_ID_VENDOR(chip->usb_id) == 0x0582 /* Roland */) {
--		if (add_roland_implicit_fb(chip, fmt,
--					   alts->desc.bInterfaceNumber + 1,
--					   alts->desc.bAlternateSetting))
-+	if (USB_ID_VENDOR(chip->usb_id) == 0x0582) {
-+		if (add_roland_implicit_fb(chip, fmt, alts) > 0)
- 			return 1;
- 	}
- 
-@@ -404,6 +440,13 @@ static int audioformat_capture_quirk(struct snd_usb_audio *chip,
- 	if (p && (p->type == IMPLICIT_FB_FIXED || p->type == IMPLICIT_FB_BOTH))
- 		return add_implicit_fb_sync_ep(chip, fmt, p->ep_num, 0,
- 					       p->iface, NULL);
-+
-+	/* Roland/BOSS need full-duplex streams */
-+	if (USB_ID_VENDOR(chip->usb_id) == 0x0582) {
-+		if (add_roland_capture_quirk(chip, fmt, alts) > 0)
-+			return 1;
-+	}
-+
- 	if (is_pioneer_implicit_fb(chip, alts))
- 		return 1; /* skip the quirk, also don't handle generic sync EP */
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index bfb7f1c8ec8f..95ca0d74bd10 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -642,6 +642,73 @@ static int rt711_sdca_set_gain_get(struct snd_kcontrol *kcontrol,
  	return 0;
+ }
+ 
++static void rt711_sdca_set_fu0f_capture_ctl(struct rt711_sdca_priv *rt711)
++{
++	if (rt711->fu0f_dapm_mute || rt711->fu0f_mixer_mute) {
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
++				RT711_SDCA_CTL_FU_MUTE, CH_L), 0x01);
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
++				RT711_SDCA_CTL_FU_MUTE, CH_R), 0x01);
++	} else {
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
++				RT711_SDCA_CTL_FU_MUTE, CH_L), 0x00);
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
++				RT711_SDCA_CTL_FU_MUTE, CH_R), 0x00);
++	}
++}
++
++static void rt711_sdca_set_fu1e_capture_ctl(struct rt711_sdca_priv *rt711)
++{
++	if (rt711->fu1e_dapm_mute || rt711->fu1e_mixer_mute) {
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU1E,
++				RT711_SDCA_CTL_FU_MUTE, CH_L), 0x01);
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU1E,
++				RT711_SDCA_CTL_FU_MUTE, CH_R), 0x01);
++	} else {
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU1E,
++				RT711_SDCA_CTL_FU_MUTE, CH_L), 0x00);
++		regmap_write(rt711->regmap,
++			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU1E,
++				RT711_SDCA_CTL_FU_MUTE, CH_R), 0x00);
++	}
++}
++
++static int rt711_sdca_capture_switch_get(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
++
++	if (strstr(ucontrol->id.name, "FU1E Capture Switch"))
++		ucontrol->value.integer.value[0] = !rt711->fu1e_mixer_mute;
++	else if (strstr(ucontrol->id.name, "FU0F Capture Switch"))
++		ucontrol->value.integer.value[0] = !rt711->fu0f_mixer_mute;
++	return 0;
++}
++
++static int rt711_sdca_capture_switch_put(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
++
++	if (strstr(ucontrol->id.name, "FU1E Capture Switch")) {
++		rt711->fu1e_mixer_mute = !ucontrol->value.integer.value[0];
++		rt711_sdca_set_fu1e_capture_ctl(rt711);
++	} else if (strstr(ucontrol->id.name, "FU0F Capture Switch")) {
++		rt711->fu0f_mixer_mute = !ucontrol->value.integer.value[0];
++		rt711_sdca_set_fu0f_capture_ctl(rt711);
++	}
++	return 0;
++}
++
+ static const DECLARE_TLV_DB_SCALE(out_vol_tlv, -6525, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(in_vol_tlv, -1725, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(mic_vol_tlv, 0, 1000, 0);
+@@ -652,14 +719,10 @@ static const struct snd_kcontrol_new rt711_sdca_snd_controls[] = {
+ 		SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU05, RT711_SDCA_CTL_FU_VOLUME, CH_R),
+ 		0x57, 0x57, 0,
+ 		rt711_sdca_set_gain_get, rt711_sdca_set_gain_put, out_vol_tlv),
+-	SOC_DOUBLE_R("FU1E Capture Switch",
+-		SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E, RT711_SDCA_CTL_FU_MUTE, CH_L),
+-		SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E, RT711_SDCA_CTL_FU_MUTE, CH_R),
+-		0, 1, 1),
+-	SOC_DOUBLE_R("FU0F Capture Switch",
+-		SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F, RT711_SDCA_CTL_FU_MUTE, CH_L),
+-		SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F, RT711_SDCA_CTL_FU_MUTE, CH_R),
+-		0, 1, 1),
++	SOC_SINGLE_EXT("FU1E Capture Switch", SND_SOC_NOPM, 0, 1, 0,
++		rt711_sdca_capture_switch_get, rt711_sdca_capture_switch_put),
++	SOC_SINGLE_EXT("FU0F Capture Switch", SND_SOC_NOPM, 0, 1, 0,
++		rt711_sdca_capture_switch_get, rt711_sdca_capture_switch_put),
+ 	SOC_DOUBLE_R_EXT_TLV("FU1E Capture Volume",
+ 		SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E, RT711_SDCA_CTL_FU_VOLUME, CH_L),
+ 		SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E, RT711_SDCA_CTL_FU_VOLUME, CH_R),
+@@ -809,28 +872,15 @@ static int rt711_sdca_fu0f_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *component =
+ 		snd_soc_dapm_to_component(w->dapm);
+ 	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
+-	unsigned char unmute = 0x0, mute = 0x1;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
+-				RT711_SDCA_CTL_FU_MUTE, CH_L),
+-				unmute);
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
+-				RT711_SDCA_CTL_FU_MUTE, CH_R),
+-				unmute);
++		rt711->fu0f_dapm_mute = false;
++		rt711_sdca_set_fu0f_capture_ctl(rt711);
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
+-				RT711_SDCA_CTL_FU_MUTE, CH_L),
+-				mute);
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU0F,
+-				RT711_SDCA_CTL_FU_MUTE, CH_R),
+-				mute);
++		rt711->fu0f_dapm_mute = true;
++		rt711_sdca_set_fu0f_capture_ctl(rt711);
+ 		break;
+ 	}
+ 	return 0;
+@@ -842,29 +892,16 @@ static int rt711_sdca_fu1e_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_component *component =
+ 		snd_soc_dapm_to_component(w->dapm);
+ 	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
+-	unsigned char unmute = 0x0, mute = 0x1;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E,
+-				RT711_SDCA_CTL_FU_MUTE, CH_L),
+-				unmute);
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E,
+-				RT711_SDCA_CTL_FU_MUTE, CH_R),
+-				unmute);
++		rt711->fu1e_dapm_mute = false;
++		rt711_sdca_set_fu1e_capture_ctl(rt711);
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E,
+-				RT711_SDCA_CTL_FU_MUTE, CH_L),
+-				mute);
+-		regmap_write(rt711->regmap,
+-			SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E,
+-				RT711_SDCA_CTL_FU_MUTE, CH_R),
+-				mute);
+-			break;
++		rt711->fu1e_dapm_mute = true;
++		rt711_sdca_set_fu1e_capture_ctl(rt711);
++		break;
+ 	}
+ 	return 0;
+ }
+@@ -1330,6 +1367,8 @@ int rt711_sdca_init(struct device *dev, struct regmap *regmap,
+ 	 */
+ 	rt711->hw_init = false;
+ 	rt711->first_hw_init = false;
++	rt711->fu0f_dapm_mute = rt711->fu0f_mixer_mute = true;
++	rt711->fu1e_dapm_mute = rt711->fu1e_mixer_mute = true;
+ 
+ 	/* JD source uses JD2 in default */
+ 	rt711->jd_src = RT711_JD2;
+diff --git a/sound/soc/codecs/rt711-sdca.h b/sound/soc/codecs/rt711-sdca.h
+index 98a022cec0bd..a3b3a95094c0 100644
+--- a/sound/soc/codecs/rt711-sdca.h
++++ b/sound/soc/codecs/rt711-sdca.h
+@@ -30,6 +30,8 @@ struct  rt711_sdca_priv {
+ 	int jack_type, jd_src;
+ 	unsigned int scp_sdca_stat1, scp_sdca_stat2;
+ 	int hw_ver;
++	bool fu0f_dapm_mute, fu0f_mixer_mute;
++	bool fu1e_dapm_mute, fu1e_mixer_mute;
+ };
+ 
+ struct sdw_stream_data {
+-- 
+2.29.0
+
