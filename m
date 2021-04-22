@@ -4,60 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D573DC433B4
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 12:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CA7AEC433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 13:03:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF3496140F
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 12:06:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF3496140F
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 3DF1561424
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 13:03:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3DF1561424
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=axis.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0ADF41680;
-	Thu, 22 Apr 2021 14:05:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ADF41680
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0F1D1661;
+	Thu, 22 Apr 2021 15:02:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0F1D1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619093177;
-	bh=gruiC3GHPUgr0BejPQifZe+shDiPxnEQidZEpmnb5ks=;
+	s=default; t=1619096626;
+	bh=cin9gJWpwT2vuoElSn2cCxbrF5yxaJWnYc0EpiIpWRI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=q8384ctY11OfTnPj+KgyaAEvhm65uLdNdkAmXxSG3fmp7XdxMA0i9HdppmsHsaUK6
-	 UJ7cL751ihrqjY6SwNcGposH+WjnpgeHIsubdMZ99MknDV3J0TQqYhhzikK6L3uBCJ
-	 VvhBMsyT9jdcvMwZgdqoyCorlHjS9f+azVru5dKY=
+	b=JdSnZrFF+VgAGG3FCEByhtiA6HNs2H5kIQLrBgTer9XkuF9q93WhD0ZGAVz/+0svP
+	 jTaBmwH9rHfRLWG5dsX9eOI4ql4uQ1Wskt+wzIs0L599Mf8qWdg597kzu5jmhUvePF
+	 swEd0hc5LpcfriNZxAMIKiR2qnJEub4zUoPg34Cg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8929BF80273;
-	Thu, 22 Apr 2021 14:04:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45910F80168;
+	Thu, 22 Apr 2021 15:02:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA046F80134; Thu, 22 Apr 2021 14:04:33 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B65CCF80253; Thu, 22 Apr 2021 15:02:51 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F09D2F80134
- for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 14:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F09D2F80134
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id B145BAECB;
- Thu, 22 Apr 2021 12:04:19 +0000 (UTC)
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] Revert "ALSA: usb-audio: Add support for many Roland
- devices..."
-Date: Thu, 22 Apr 2021 14:04:12 +0200
-Message-Id: <20210422120413.457-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9066BF80059
+ for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 15:02:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9066BF80059
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="lxmk/osZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1619096564;
+ x=1650632564;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=yepxJq/a08r2JfRzSHmXMki2GuQi2NGqbDta5ykYrPE=;
+ b=lxmk/osZ20Qdne6LNkFbn/aNukuy4+ywcLHlg7jC160W8Ir0JMdQurgR
+ ti6OTXw8QVpoy+6vHf9X2/yWSKGmHdJMGvEGMj4424mLvTrnkOEK+Fb4z
+ TnpA8AjtJ6Tj0qdZ+kgYMVe4AJ07FF40RzMyMv/CiixFOHKVqPYSXy20Q
+ NKKPf6bUxuy2RYmU2AT2prmjRUAWYgBKTYtcC1mvJC9/Sea3avg6ooJ8k
+ vypm/HFRCNANChjOL2fp/3DB5dFT1+7jfG7/FTXBmw/bSbL/pyRz/najz
+ l6iyUohRMz5MtsLQXLD+GSV8aki0qDJ3M3Ynu/p/nCQcBzFnqc2TAYp4r g==;
+From: Niklas Carlsson <Niklas.Carlsson@axis.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, =?UTF-8?q?Nuno=20S=C3=A1?=
+ <nuno.sa@analog.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>
+Subject: [PATCH] ASoC: adau17x1: Avoid overwriting CHPF
+Date: Thu, 22 Apr 2021 15:02:26 +0200
+Message-ID: <20210422130226.15201-1-Niklas.Carlsson@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Lucas Endres <jaffa225man@gmail.com>,
- "Keith A . Milner" <maillist@superlative.org>,
- Mike Oliphant <oliphant@nostatic.org>
+Content-Type: text/plain
+Cc: Niklas Carlsson <niklasc@axis.com>, alsa-devel@alsa-project.org,
+ kernel@axis.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,100 +86,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This reverts commit d86f43b17ed4 ("ALSA: usb-audio: Add support for
-many Roland devices' feedback quirks").
+From: Niklas Carlsson <niklasc@axis.com>
 
-It turned out that many quirk entries there don't contain the proper
-EP values and/or the quirk types, which lead to the broken
-operations.
+Configuring number of channels per LRCLK frame by using e.g.
+snd_soc_dai_set_tdm_slot before configuring DAI format was being
+overwritten by the latter due to a regmap_write which would write over
+the whole register.
 
-As we're going to cover all Roland/BOSS devices in a more generic way
-rather the explicit lists, let's revert the previous additions at
-first.
-
-Fixes: d86f43b17ed4 ("ALSA: usb-audio: Add support for many Roland devices' implicit feedback quirks")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Niklas Carlsson <niklasc@axis.com>
 ---
- sound/usb/implicit.c | 59 --------------------------------------------
- 1 file changed, 59 deletions(-)
+ sound/soc/codecs/adau17x1.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/implicit.c b/sound/usb/implicit.c
-index 77ffcea294dd..94acfaa7f2ef 100644
---- a/sound/usb/implicit.c
-+++ b/sound/usb/implicit.c
-@@ -79,72 +79,13 @@ static const struct snd_usb_implicit_fb_match playback_implicit_fb_quirks[] = {
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 546ee8178038..8aae7ab74091 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -553,6 +553,7 @@ static int adau17x1_set_dai_fmt(struct snd_soc_dai *dai,
+ {
+ 	struct adau *adau = snd_soc_component_get_drvdata(dai->component);
+ 	unsigned int ctrl0, ctrl1;
++	unsigned int ctrl0_mask;
+ 	int lrclk_pol;
  
- /* Implicit feedback quirk table for capture: only FIXED type */
- static const struct snd_usb_implicit_fb_match capture_implicit_fb_quirks[] = {
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00a6, 0x0d, 0x01), /* Roland JUNO-G */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00a9, 0x0d, 0x01), /* Roland MC-808 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00ad, 0x0d, 0x01), /* Roland SH-201 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00b2, 0x0d, 0x01), /* Roland VG-99 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00b3, 0x0d, 0x01), /* Roland VG-99 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00c2, 0x0d, 0x01), /* Roland SonicCell */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00c4, 0x0d, 0x01), /* Edirol M-16DX */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00c5, 0x0d, 0x01), /* Roland SP-555 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00c7, 0x0d, 0x01), /* Roland V-Synth GT */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00d1, 0x0d, 0x01), /* Roland Music Atelier */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00da, 0x0d, 0x01), /* BOSS GT-10 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00db, 0x0d, 0x01), /* BOSS GT-10 Guitar Effects Processor */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00dc, 0x0d, 0x01), /* BOSS GT-10B */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00de, 0x0d, 0x01), /* Roland Fantom-G */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00eb, 0x0d, 0x01), /* Roland VS-100 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00f8, 0x0d, 0x01), /* Roland JUNO Series */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00fc, 0x0d, 0x01), /* Roland VS-700C */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00fd, 0x0d, 0x01), /* Roland VS-700 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00fe, 0x0d, 0x01), /* Roland VS-700 M1 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x00ff, 0x0d, 0x01), /* Roland VS-700 M2 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0100, 0x0d, 0x01), /* Roland VS-700 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0101, 0x0d, 0x01), /* Roland VS-700 M2 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0102, 0x0d, 0x01), /* Roland VB-99 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0109, 0x0d, 0x01), /* BOSS eBand JS-8 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0111, 0x0d, 0x01), /* Roland GAIA SH-01 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0113, 0x0d, 0x01), /* BOSS ME-25 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0114, 0x0d, 0x01), /* Roland SD-50 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0117, 0x0d, 0x01), /* Roland VS-20 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0119, 0x0d, 0x01), /* Roland OCTAPAD SPD-30 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x011c, 0x0d, 0x01), /* Roland Lucina AX-09 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x011e, 0x0d, 0x01), /* BOSS BR-800 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0120, 0x0d, 0x01), /* Roland OCTA-CAPTURE */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0121, 0x0d, 0x01), /* Roland OCTA-CAPTURE */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0123, 0x0d, 0x01), /* Roland JUNO-Gi */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0124, 0x0d, 0x01), /* Roland M-300 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0127, 0x0d, 0x01), /* Roland GR-55 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x012b, 0x0d, 0x01), /* Roland DUO-CAPTURE */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x012f, 0x0d, 0x01), /* Roland QUAD-CAPTURE */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0130, 0x0d, 0x01), /* BOSS BR-80 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0132, 0x0d, 0x01), /* Roland TRI-CAPTURE */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0134, 0x0d, 0x01), /* Roland V-Mixer */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0137, 0x0d, 0x01), /* Roland DUO-CAPTURE Advanced Mode */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0138, 0x0d, 0x01), /* BOSS RC-300 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x013a, 0x0d, 0x01), /* Roland JUPITER-80 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x013e, 0x0d, 0x01), /* Roland R-26 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0145, 0x0d, 0x01), /* Roland SPD-SX */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x014b, 0x0d, 0x01), /* BOSS eBand JS-10 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x014d, 0x0d, 0x01), /* BOSS GT-100 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0150, 0x0d, 0x01), /* Roland TD-15 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0151, 0x0d, 0x01), /* Roland TD-11 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0154, 0x0d, 0x01), /* Roland JUPITER-50 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0158, 0x0d, 0x01), /* Roland TD-30 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x0159, 0x0d, 0x01), /* Roland DUO-CAPTURE EX */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x015b, 0x0d, 0x01), /* Roland INTEGRA-7 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x015d, 0x0d, 0x01), /* Roland R-88 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0171, 0x0d, 0x01), /* BOSS RC-505 */
--	IMPLICIT_FB_FIXED_DEV(0x0582, 0x017a, 0x0d, 0x01), /* Roland VT-3 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x017c, 0x0d, 0x01), /* Roland TR-8 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0185, 0x0d, 0x01), /* BOSS GP-10 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0189, 0x0d, 0x01), /* BOSS GT-100v2 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01b5, 0x0d, 0x01), /* Roland Boutique JP-08 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01d6, 0x0d, 0x01), /* BOSS GT-1 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01d8, 0x0d, 0x01), /* BOSS Katana */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01e5, 0x0d, 0x01), /* BOSS GT-001 */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01fd, 0x0d, 0x01), /* Roland Boutique SH-01A */
--	IMPLICIT_FB_BOTH_DEV(0x0582, 0x01ff, 0x0d, 0x01), /* Roland Boutique D-05 */
- 	IMPLICIT_FB_BOTH_DEV(0x0582, 0x0203, 0x0d, 0x01), /* BOSS AD-10 */
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -612,8 +613,16 @@ static int adau17x1_set_dai_fmt(struct snd_soc_dai *dai,
+ 	if (lrclk_pol)
+ 		ctrl0 |= ADAU17X1_SERIAL_PORT0_LRCLK_POL;
  
- 	{} /* terminator */
+-	regmap_write(adau->regmap, ADAU17X1_SERIAL_PORT0, ctrl0);
+-	regmap_write(adau->regmap, ADAU17X1_SERIAL_PORT1, ctrl1);
++	/* Set the mask to update all relevant bits in ADAU17X1_SERIAL_PORT0 */
++	ctrl0_mask = ADAU17X1_SERIAL_PORT0_MASTER |
++		     ADAU17X1_SERIAL_PORT0_LRCLK_POL |
++		     ADAU17X1_SERIAL_PORT0_BCLK_POL |
++		     ADAU17X1_SERIAL_PORT0_PULSE_MODE;
++
++	regmap_update_bits(adau->regmap, ADAU17X1_SERIAL_PORT0, ctrl0_mask,
++			   ctrl0);
++	regmap_update_bits(adau->regmap, ADAU17X1_SERIAL_PORT1,
++			   ADAU17X1_SERIAL_PORT1_DELAY_MASK, ctrl1);
+ 
+ 	adau->dai_fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
 -- 
-2.26.2
+2.20.1
 
