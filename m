@@ -2,94 +2,79 @@ Return-Path: <SRS0=RAD+=JT=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BC33C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 15:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 347F0C433ED
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 16:50:34 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 6C67C61450
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 15:33:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 6C67C61450
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 84AF261409
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 16:50:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 84AF261409
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7A491666;
-	Thu, 22 Apr 2021 17:32:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7A491666
+	by alsa0.perex.cz (Postfix) with ESMTPS id 503C39F6;
+	Thu, 22 Apr 2021 18:49:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 503C39F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619105594;
-	bh=22wL5b8rKuFiL1bcvb7+yb74U34obr0IfRBG2fRm958=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1619110230;
+	bh=ymvNTAzPs1hJfdICUfxeM0TUkETJ86MqJiCa/fX97No=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lo0mWBggJil6K8e1y92/MJJF7FnOFpvvSVfodTHd9SDaDG8bvGtl+BFBTu3+HIKd8
-	 dsyZ1Er1qoq/FTVf2lxjs9zgihfmpQu32w++i+gsMYZ86BJkW+toPMhysoEb+htMpC
-	 sbNQQ8AqpMCaccoeWzM/S39SEtpBRLUR18ByHh6s=
+	b=Rm3UX3f1ONcdr90aIJA+6QMhAmZfPkBa5I8cpytj+EjTxyIDp2KWGu96H5FP6OdBt
+	 TgnC+Sxz3bxLyvZMrQmSGc3yuZuLLRSoHNvA1bTbN5rHLMoi7eAjPGsfQlOucDGHgp
+	 Ch1v32Xld5EXCeXL5S0zl6dRPe2AZiDhKHXHB5rM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40BE0F80168;
-	Thu, 22 Apr 2021 17:32:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA1D1F80168;
+	Thu, 22 Apr 2021 18:49:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53681F80059; Thu, 22 Apr 2021 17:32:21 +0200 (CEST)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 41B12F80059; Thu, 22 Apr 2021 18:49:37 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0849F80059
- for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 17:32:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0849F80059
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE716F80059
+ for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 18:49:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE716F80059
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="B8okTUE1"
-Received: by mail-ej1-x634.google.com with SMTP id r20so19667551ejo.11
- for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 08:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=D3cR5qI11gyjNwBlLXlPk+oQNoEGZ/vDH6GERz9bWXA=;
- b=B8okTUE1VIuw9JaW/l6MedMLx+Zmx/BFFu6Z3QlsxqcpFTD0IWHzkZhX4lxbbKGouE
- uszc1txaXYfUVtMujLhSv5oIr883thupAuSJygodCw0NQgGf3Lk+Yj868pWTN+z3Gv86
- Nj8Dtq/uvO8cmbAp0Cv1/A3NF0Yprk1MeSj/Zk43qCYTynoo/YXNN2iLOeUxm2qOTAFD
- gY4udZtoAxYQlqzL2SWkJMwsYugajm/bhNpVIKPLl8YXp/0ZgD3hITY1JMQmaWowgbK8
- 7U/i+f5d7kTaDTQ8pgpAy2eax8WYOxchwMGtnqHuQyjaLD+XUnntTycptchGWVBAyBSc
- JhVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=D3cR5qI11gyjNwBlLXlPk+oQNoEGZ/vDH6GERz9bWXA=;
- b=uCDTrLDn6ce9D+8gCwU8xaHXMtZsSMjoapkXH42H31EdSfuRIP074Wa40pSBh0VYE+
- MHzNX1P8bV1nyjabObuu5ESX+wHa5CbPUQaOhQWsC1VRAmOoIpupppfqV+lJOCv4djl9
- q12mt60WA30lASrrrkzyHj9vl2PiqkhAWJXDa3AEv9EaLQhZWMPdzADqljOWbqHShL7a
- lMKq9MRJG4QU0wgiO6IGiIy1pmg/nI/hPB1ud4PF9h6Q8ZXk/sCQgoYQmXXreW3bc8Fu
- Mh1qEBJBjwsZ9griRsXaHAaSjiPbV4ayj846JNO8sNOg2QjoPXzDafvZTf98UdvAVtfo
- 4qhQ==
-X-Gm-Message-State: AOAM5333WTnFRplD0HVVO3Cvot0QtqxyC1aCOUBmoGTqLeAlpqWkJ/04
- 0SkQPAe3tOjIT5gdftEob3D5PUAX0WtheutcVK/vaa4TNas=
-X-Google-Smtp-Source: ABdhPJwkZndsmAqJxbpGmt7VaaqBpHIXe9hA0vYT1sR5v/IcI1/xJ9rgXBhwcjstKChvN2y5foxxYbUoOHfHXb1lNNE=
-X-Received: by 2002:a17:906:81d5:: with SMTP id
- e21mr4052727ejx.134.1619105527114; 
- Thu, 22 Apr 2021 08:32:07 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="JcVRN0HO"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6AA961421;
+ Thu, 22 Apr 2021 16:49:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1619110169;
+ bh=ymvNTAzPs1hJfdICUfxeM0TUkETJ86MqJiCa/fX97No=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=JcVRN0HOh/N7pfhQKYAfWAuDuB+A3C1DkW+QraKzS+7yuOVOghfzbwdEnsSKfsVA/
+ CJPKRdO25ZGIS5UMnTMTNq5x3aMJzvZII4QDrGubi05uD9VxmDAJaN2Xtqfnuyj8KB
+ sXI9ZW/xw6Z8rp26qkxcEpUAA3WHBNuqbelNuYE2GAyUH+CfXKfe53qUdo+wdLGwqr
+ DK3TtI/fJF9Dal0Hi2Q0fsKLPsVChd/A+kdgryHFCvLbzrd8hDmJNKO9xUcRo0CnWk
+ 6tlg/qAlf3J3XrpY3her/Ny13MAA7M9iUe5spvvn7RrKdWSZpLOk1M1o2tNJNuae2P
+ FSRKgEP+I2mNg==
+From: Mark Brown <broonie@kernel.org>
+To: Dmitry Osipenko <digetx@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: tegra: mark runtime-pm functions as __maybe_unused
+Date: Thu, 22 Apr 2021 17:48:48 +0100
+Message-Id: <161910991989.37460.309965109490904776.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210422133418.1757893-1-arnd@kernel.org>
+References: <20210422133418.1757893-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210414083255.9527-1-tiwai@suse.de>
- <5949663.lOV4Wx5bFT@kam-desktop>
- <CAOsVg8p=yikaRQ-=RWdO8nWdC70tnw4kQ17KM-smShQvujrRJg@mail.gmail.com>
- <12753665.uLZWGnKmhe@kam-desktop>
-In-Reply-To: <12753665.uLZWGnKmhe@kam-desktop>
-From: Lucas <jaffa225man@gmail.com>
-Date: Thu, 22 Apr 2021 10:31:55 -0500
-Message-ID: <CAOsVg8q_niB1EA7t8k=Nmtvq+=OeUBTqn=CrN8WyyQQKSr_0aQ@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Apply implicit feedback mode for BOSS
- devices
-To: "Keith A. Milner" <maillist@superlative.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
+ Qiushi Wu <wu000273@umn.edu>, linux-tegra@vger.kernel.org,
+ Jonathan Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,16 +90,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Does it help if you use this line in "static const struct
-snd_usb_implicit_fb_match capture_implicit_fb_quirks[] = {":
-        IMPLICIT_FB_BOTH_DEV(0x0582, 0x0109, 0x05, 0x01), /* BOSS eBand
-JS-8 */
+On Thu, 22 Apr 2021 15:34:00 +0200, Arnd Bergmann wrote:
+> A reorganization of the driver source led to two of them causing
+> a compile time warning in some configurations:
+> 
+> tegra/tegra20_spdif.c:36:12: error: 'tegra20_spdif_runtime_resume' defined but not used [-Werror=unused-function]
+>    36 | static int tegra20_spdif_runtime_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> tegra/tegra20_spdif.c:27:12: error: 'tegra20_spdif_runtime_suspend' defined but not used [-Werror=unused-function]
+>    27 | static int tegra20_spdif_runtime_suspend(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> tegra/tegra30_ahub.c:64:12: error: 'tegra30_ahub_runtime_resume' defined but not used [-Werror=unused-function]
+>    64 | static int tegra30_ahub_runtime_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> tegra/tegra30_ahub.c:43:12: error: 'tegra30_ahub_runtime_suspend' defined but not used [-Werror=unused-function]
+>    43 | static int tegra30_ahub_runtime_suspend(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> [...]
 
-For it, I attempted using your specific 0x05 ASYNC OUT endpoint address
-this time.
+Applied to
 
-I may be wrong, but I think Takashi's current patches are reading endpoint
-addresses directly from the hardware, and if so your BOSS eBand JS-8 would
-work if that line does.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Takashi would know best, though, so I'm bracing myself for any corrections.
+Thanks!
+
+[1/1] ASoC: tegra: mark runtime-pm functions as __maybe_unused
+      commit: ccd4cc3ed0692aef8a3b4566391c37eb168d8d32
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
