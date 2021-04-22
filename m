@@ -7,51 +7,51 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CEC6C433ED
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 01:56:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 448E1C433B4
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 01:57:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1910661445
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 01:56:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1910661445
+	by mail.kernel.org (Postfix) with ESMTPS id AA9046144D
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Apr 2021 01:57:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AA9046144D
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AADB8169A;
-	Thu, 22 Apr 2021 03:55:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AADB8169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41D531682;
+	Thu, 22 Apr 2021 03:56:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D531682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619056595;
-	bh=cQrE1WbzZ26fT28le2FBO0gE7j7G0hGAg0ecIln550s=;
+	s=default; t=1619056624;
+	bh=2dsA8mTsN2Ge2Bt3Nay42oO2Za4BAF/jmWGKv9KxE08=;
 	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EuTU2MZdyUSiEb0K8EyZbemO8zjdRdVkatq0DSS0JkfoSQ88uQg0B67j9KoGI48Ok
-	 KoiuHWHi1WCZn4gpJAWVyvkkv0yznZQwv2pTzAS5Ha7s0Ooi36uN5VPDBOatDjl59p
-	 xUtlOfKYVF3VneRnWCmAubJW0uuAu04b/7m+ux8A=
+	b=OVXi/IWMbDCaYbVobptPxji1bU+jLxo1yVvx0iYDtJ8CfVpThsnESpljAtcJRZi3b
+	 iXzPH81zE6ItoxBBmlFES/xibftP7DOelyVKktYUpr4wFwzPMTGL8NptCR8wfRUQde
+	 RyDqP8aDPR51KpbhZMSdHbccUmFqJy6pfaWlRwnk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F861F804AE;
-	Thu, 22 Apr 2021 03:54:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15F14F80424;
+	Thu, 22 Apr 2021 03:54:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A142F804AD; Thu, 22 Apr 2021 03:54:08 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 0CE6DF80424
- for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 03:54:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CE6DF80424
-Date: 22 Apr 2021 10:54:03 +0900
-X-IronPort-AV: E=Sophos;i="5.82,241,1613401200"; d="scan'208";a="78840262"
+ id BF385F804CF; Thu, 22 Apr 2021 03:54:12 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7F776F80424
+ for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2021 03:54:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F776F80424
+Date: 22 Apr 2021 10:54:08 +0900
+X-IronPort-AV: E=Sophos;i="5.82,241,1613401200"; d="scan'208";a="79059758"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 22 Apr 2021 10:54:03 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 22 Apr 2021 10:54:08 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id C12744012AFE;
- Thu, 22 Apr 2021 10:54:03 +0900 (JST)
-Message-ID: <87sg3jgk3o.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1E40B4008C52;
+ Thu, 22 Apr 2021 10:54:08 +0900 (JST)
+Message-ID: <87r1j3gk3j.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 6/7] ASoC: fsi: add .get_fmt support
+Subject: [PATCH 7/7] ASoC: hdmi-codec: add .get_fmt support
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <871rb3hypy.wl-kuninori.morimoto.gx@renesas.com>
@@ -77,43 +77,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-fsi supports .get_fmt by this patch
+hdmi-codec supports .get_fmt by this patch
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/sh/fsi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/codecs/hdmi-codec.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 3c574792231b..3a841f72ba5f 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1627,6 +1627,18 @@ static int fsi_set_fmt_spdif(struct fsi_priv *fsi)
- 	return 0;
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 1567ba196ab9..9d2ceed3778a 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -493,6 +493,24 @@ static int hdmi_codec_hw_params(struct snd_pcm_substream *substream,
+ 				       cf, &hp);
  }
  
-+static u64 fsi_dai_get_fmt(struct snd_soc_dai *dai)
++static u64 hdmi_codec_i2s_get_fmt(struct snd_soc_dai *dai)
 +{
-+	return	SND_SOC_POSSIBLE_DAIFMT_I2S	|
-+		SND_SOC_POSSIBLE_DAIFMT_LEFT_J	|
-+		SND_SOC_POSSIBLE_DAIFMT_CBP_CFP	|
++	return	SND_SOC_POSSIBLE_DAIFMT_CBP_CFP	|
++		SND_SOC_POSSIBLE_DAIFMT_CBC_CFP	|
++		SND_SOC_POSSIBLE_DAIFMT_CBP_CFC	|
 +		SND_SOC_POSSIBLE_DAIFMT_CBC_CFC	|
 +		SND_SOC_POSSIBLE_DAIFMT_NB_NF	|
 +		SND_SOC_POSSIBLE_DAIFMT_NB_IF	|
 +		SND_SOC_POSSIBLE_DAIFMT_IB_NF	|
-+		SND_SOC_POSSIBLE_DAIFMT_IB_IF;
++		SND_SOC_POSSIBLE_DAIFMT_IB_IF	|
++		SND_SOC_POSSIBLE_DAIFMT_I2S	|
++		SND_SOC_POSSIBLE_DAIFMT_DSP_A	|
++		SND_SOC_POSSIBLE_DAIFMT_DSP_B	|
++		SND_SOC_POSSIBLE_DAIFMT_RIGHT_J	|
++		SND_SOC_POSSIBLE_DAIFMT_LEFT_J	|
++		SND_SOC_POSSIBLE_DAIFMT_AC97;
 +}
 +
- static int fsi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static int hdmi_codec_i2s_set_fmt(struct snd_soc_dai *dai,
+ 				  unsigned int fmt)
  {
- 	struct fsi_priv *fsi = fsi_get_priv_frm_dai(dai);
-@@ -1698,6 +1710,7 @@ static const struct snd_soc_dai_ops fsi_dai_ops = {
- 	.startup	= fsi_dai_startup,
- 	.shutdown	= fsi_dai_shutdown,
- 	.trigger	= fsi_dai_trigger,
-+	.get_fmt	= fsi_dai_get_fmt,
- 	.set_fmt	= fsi_dai_set_fmt,
- 	.hw_params	= fsi_dai_hw_params,
+@@ -584,6 +602,7 @@ static const struct snd_soc_dai_ops hdmi_codec_i2s_dai_ops = {
+ 	.startup	= hdmi_codec_startup,
+ 	.shutdown	= hdmi_codec_shutdown,
+ 	.hw_params	= hdmi_codec_hw_params,
++	.get_fmt	= hdmi_codec_i2s_get_fmt,
+ 	.set_fmt	= hdmi_codec_i2s_set_fmt,
+ 	.mute_stream	= hdmi_codec_mute,
  };
 -- 
 2.25.1
