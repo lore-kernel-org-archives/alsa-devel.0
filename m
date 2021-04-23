@@ -7,65 +7,65 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 522D1C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AC39C433B4
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:28:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C35FF613CC
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:27:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C35FF613CC
+	by mail.kernel.org (Postfix) with ESMTPS id EA4DB613C8
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:28:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EA4DB613C8
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 595B8170C;
-	Fri, 23 Apr 2021 20:26:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 595B8170C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A30F171D;
+	Fri, 23 Apr 2021 20:27:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A30F171D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619202462;
-	bh=fVCDzoK6nKK/pLngLwZgMoY/CosPoYWPGKebZ6wdUTI=;
+	s=default; t=1619202483;
+	bh=QlF65tbkdapZHK1qr25I+mGXhmoeYojY5XioNhEH+u4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ChpilEYEwY8/dRgKmcuQp4naAD5JbDU/6dH1y2cIGRK4hB/App//IKXb1moFnJHaE
-	 2s2jQVcjt7xxutPKczm1nRBpV30x0x7QTBw5FZEGLwIJsmunZtdgOohfWZ2OHgsGeD
-	 jJU1Lyzsm+48yZIVYj/GAA3z78FXuN0fgpPJdXVo=
+	b=DtQbWVaC6nm5s41ZWqsQFevBNMMlQqQtMvnGKyuGBhU4v7iOJnNdmUyeCvinR8DxT
+	 jXDsOlZo3/L+nAZlADjR5Gh3ZdXNqzuwgbdWmvONt05/8Xm6M0QXd6dRYhuOyu2k6L
+	 Pg6IGYPsSEsaPEKTD5jVQIl+RMmIDDxhVx4ehom8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B58F5F8028B;
-	Fri, 23 Apr 2021 20:24:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6029AF804D1;
+	Fri, 23 Apr 2021 20:24:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C48D3F800AE; Fri, 23 Apr 2021 20:24:46 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id B7A8AF804AD; Fri, 23 Apr 2021 20:24:46 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 919B2F800AE
- for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 20:24:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 919B2F800AE
-IronPort-SDR: FwWOazLEQxSiLEGsSGTXYdAGH9RcnSStm8SrQP8zGRGoGr4UNP9072+SmaXaOcrPGrCda3RWwM
- V1DarrOb73Kg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="216800312"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="216800312"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BD1AF80274
+ for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 20:24:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BD1AF80274
+IronPort-SDR: vpMEZvpaul8WjCyaBWSWSlpFkMITmt7DwrTP5nFJA03SApKT9WWU2ETL0qBNKz1b4rUfLSiEnn
+ RUL++Eh8Im+w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="281441748"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="281441748"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  23 Apr 2021 11:24:29 -0700
-IronPort-SDR: PPMozkHLAIBdUAvX8jNtyk1sKmp6UfYQODVmNI0wMvS1Jwy8I7tyuEmC7NH3Prk8/dt6LgkJLq
- I4cgGPhwYKrg==
+IronPort-SDR: 1r4hx0fceWsBWHixekScdI8nwQg/+tTFYCPK6BTIhZMugd2qAIp3vMzHq2Etf2mZK9XoOHXMZG
+ XUZlX4PpvsbA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="392155981"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="428481590"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga007.fm.intel.com with ESMTP; 23 Apr 2021 11:24:27 -0700
+ by orsmga008.jf.intel.com with ESMTP; 23 Apr 2021 11:24:26 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 12EF81C8; Fri, 23 Apr 2021 21:24:45 +0300 (EEST)
+ id E677713C; Fri, 23 Apr 2021 21:24:44 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v2 04/14] spi: pxa2xx: Replace header inclusions by forward
- declarations
-Date: Fri, 23 Apr 2021 21:24:31 +0300
-Message-Id: <20210423182441.50272-5-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 02/14] spi: pxa2xx: Utilize MMIO and physical base from
+ struct ssp_device
+Date: Fri, 23 Apr 2021 21:24:29 +0300
+Message-Id: <20210423182441.50272-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
 References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
@@ -89,113 +89,96 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the data structure is only referred by pointer, compiler may not need
-to see the contents of the data type. Thus, we may replace header inclusions
-by respective forward declarations. Due to above add missed headers as well.
+We have a duplication of MMIO and physical base addresses in
+the struct driver_data, get rid of it and reuse members from
+struct ssp_device instead.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi-pxa2xx-dma.c   |  4 ++--
- drivers/spi/spi-pxa2xx-pci.c   |  1 +
- drivers/spi/spi-pxa2xx.c       |  2 ++
- drivers/spi/spi-pxa2xx.h       | 18 ++++++++++--------
- include/linux/spi/pxa2xx_spi.h |  2 ++
- 5 files changed, 17 insertions(+), 10 deletions(-)
+ drivers/spi/spi-pxa2xx-dma.c |  4 ++--
+ drivers/spi/spi-pxa2xx.c     |  4 +---
+ drivers/spi/spi-pxa2xx.h     | 14 ++++----------
+ 3 files changed, 7 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
-index 2e4a49567146..e00dbadd39ec 100644
+index 37567bc7a523..3b27f356a18f 100644
 --- a/drivers/spi/spi-pxa2xx-dma.c
 +++ b/drivers/spi/spi-pxa2xx-dma.c
-@@ -9,11 +9,11 @@
- #include <linux/device.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
--#include <linux/pxa2xx_ssp.h>
- #include <linux/scatterlist.h>
- #include <linux/sizes.h>
--#include <linux/spi/spi.h>
-+
- #include <linux/spi/pxa2xx_spi.h>
-+#include <linux/spi/spi.h>
+@@ -94,14 +94,14 @@ pxa2xx_spi_dma_prepare_one(struct driver_data *drv_data,
+ 	cfg.direction = dir;
  
- #include "spi-pxa2xx.h"
+ 	if (dir == DMA_MEM_TO_DEV) {
+-		cfg.dst_addr = drv_data->ssdr_physical;
++		cfg.dst_addr = drv_data->ssp->phys_base + SSDR;
+ 		cfg.dst_addr_width = width;
+ 		cfg.dst_maxburst = chip->dma_burst_size;
  
-diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index f60ed4c62000..5af0a3fbc1b0 100644
---- a/drivers/spi/spi-pxa2xx-pci.c
-+++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/platform_device.h>
-+
- #include <linux/spi/pxa2xx_spi.h>
+ 		sgt = &xfer->tx_sg;
+ 		chan = drv_data->controller->dma_tx;
+ 	} else {
+-		cfg.src_addr = drv_data->ssdr_physical;
++		cfg.src_addr = drv_data->ssp->phys_base + SSDR;
+ 		cfg.src_addr_width = width;
+ 		cfg.src_maxburst = chip->dma_burst_size;
  
- #include <linux/dmaengine.h>
 diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index e9dddcbd92f1..0296cbdee848 100644
+index 0ef22045b006..82df028c4a71 100644
 --- a/drivers/spi/spi-pxa2xx.c
 +++ b/drivers/spi/spi-pxa2xx.c
-@@ -9,6 +9,7 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/dmaengine.h>
- #include <linux/err.h>
- #include <linux/errno.h>
- #include <linux/gpio/consumer.h>
-@@ -25,6 +26,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
- #include <linux/slab.h>
-+
- #include <linux/spi/pxa2xx_spi.h>
- #include <linux/spi/spi.h>
+@@ -325,7 +325,7 @@ static void lpss_ssp_setup(struct driver_data *drv_data)
+ 	u32 value;
  
+ 	config = lpss_get_config(drv_data);
+-	drv_data->lpss_base = drv_data->ioaddr + config->offset;
++	drv_data->lpss_base = drv_data->ssp->mmio_base + config->offset;
+ 
+ 	/* Enable software chip select control */
+ 	value = __lpss_ssp_read_priv(drv_data, config->reg_cs_ctrl);
+@@ -1729,8 +1729,6 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
+ 
+ 	drv_data->ssp_type = ssp->type;
+ 
+-	drv_data->ioaddr = ssp->mmio_base;
+-	drv_data->ssdr_physical = ssp->phys_base + SSDR;
+ 	if (pxa25x_ssp_comp(drv_data)) {
+ 		switch (drv_data->ssp_type) {
+ 		case QUARK_X1000_SSP:
 diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
-index 6724d7e056ce..739e264feaa6 100644
+index 1400472bc986..ad9980ebefa6 100644
 --- a/drivers/spi/spi-pxa2xx.h
 +++ b/drivers/spi/spi-pxa2xx.h
-@@ -7,16 +7,18 @@
- #ifndef SPI_PXA2XX_H
- #define SPI_PXA2XX_H
+@@ -33,10 +33,6 @@ struct driver_data {
+ 	/* PXA hookup */
+ 	struct pxa2xx_spi_controller *controller_info;
  
--#include <linux/atomic.h>
--#include <linux/dmaengine.h>
--#include <linux/errno.h>
--#include <linux/io.h>
- #include <linux/interrupt.h>
--#include <linux/pxa2xx_ssp.h>
--#include <linux/scatterlist.h>
-+#include <linux/io.h>
-+#include <linux/types.h>
- #include <linux/sizes.h>
--#include <linux/spi/spi.h>
--#include <linux/spi/pxa2xx_spi.h>
-+
-+#include <linux/pxa2xx_ssp.h>
-+
-+struct gpio_desc;
-+struct pxa2xx_spi_controller;
-+struct spi_controller;
-+struct spi_device;
-+struct spi_transfer;
+-	/* SSP register addresses */
+-	void __iomem *ioaddr;
+-	phys_addr_t ssdr_physical;
+-
+ 	/* SSP masks*/
+ 	u32 dma_cr1;
+ 	u32 int_cr1;
+@@ -87,16 +83,14 @@ struct chip_data {
+ 	void (*cs_control)(u32 command);
+ };
  
- struct driver_data {
- 	/* SSP Info */
-diff --git a/include/linux/spi/pxa2xx_spi.h b/include/linux/spi/pxa2xx_spi.h
-index 31f00c7f4f59..1e0e2f136319 100644
---- a/include/linux/spi/pxa2xx_spi.h
-+++ b/include/linux/spi/pxa2xx_spi.h
-@@ -5,6 +5,8 @@
- #ifndef __linux_pxa2xx_spi_h
- #define __linux_pxa2xx_spi_h
+-static inline u32 pxa2xx_spi_read(const struct driver_data *drv_data,
+-				  unsigned reg)
++static inline u32 pxa2xx_spi_read(const struct driver_data *drv_data, u32 reg)
+ {
+-	return __raw_readl(drv_data->ioaddr + reg);
++	return pxa_ssp_read_reg(drv_data->ssp, reg);
+ }
  
-+#include <linux/types.h>
-+
- #include <linux/pxa2xx_ssp.h>
+-static  inline void pxa2xx_spi_write(const struct driver_data *drv_data,
+-				     unsigned reg, u32 val)
++static inline void pxa2xx_spi_write(const struct driver_data *drv_data, u32 reg, u32 val)
+ {
+-	__raw_writel(val, drv_data->ioaddr + reg);
++	pxa_ssp_write_reg(drv_data->ssp, reg, val);
+ }
  
- #define PXA2XX_CS_ASSERT (0x01)
+ #define DMA_ALIGNMENT		8
 -- 
 2.30.2
 
