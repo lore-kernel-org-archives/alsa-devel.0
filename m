@@ -2,82 +2,83 @@ Return-Path: <SRS0=7xvc=JU=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.5 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 747B5C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AB18C43461
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:47:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D1F71611CC
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:40:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D1F71611CC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 5C32E60FE6
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:47:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 5C32E60FE6
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63F9116EA;
-	Fri, 23 Apr 2021 18:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63F9116EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3255616CD;
+	Fri, 23 Apr 2021 18:46:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3255616CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619196048;
-	bh=Xucd72ZnFNMk2lrcIZZJLYeNMxY4fMH7yqn9TRgfxcI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1619196466;
+	bh=hrqrADAEzMFpkpMJhB8rj4N/o1LglX/44krbouGR8yg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RUZwcPQzqj4apx8z51bCVHEd3cT+gIU01GAUEcMYSTLejillFzf9DOKDpBKt767+o
-	 +CBvZkS9QqBJspm5+AQQNRiHdwmL9fgQ4NfXGg3lx5oyZhh2XR9QQRBfiaUK78djt5
-	 vhn7NxGHebsSPZGJVZ++9gYLJ61+7nykwIolEs24=
+	b=vr7/crZMQERvJSBiPsDh5UACRw5jMxWXLk3GwYq6QLCdXNbuOqkrStedjmj6t7Eup
+	 iNfErZQEwZVPB710t/LG7HiU4popJPHU8P8Q3bIhASqyXOE1+hU3xjuJdtDVjII3iE
+	 UFOUIlpw8fNhwJN18LRuQikj05RwN9TEyIo7T0IQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B68D4F804FF;
-	Fri, 23 Apr 2021 18:35:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95BC3F8019B;
+	Fri, 23 Apr 2021 18:46:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9601F804BD; Fri, 23 Apr 2021 18:35:14 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DC74BF80227; Fri, 23 Apr 2021 18:46:54 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7382FF804AE
- for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 18:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7382FF804AE
-IronPort-SDR: qSC5bo1eJy0K3oJcrf2py68Tp6uhHb3LLfazl7mJeFoEW6zxWgYnr3Mux63xIbBnVsSg5avwVk
- CUUlg0VwjWsA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="195652439"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="195652439"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Apr 2021 09:34:46 -0700
-IronPort-SDR: gyf9XYHm7lNsEiglF1XINncmS7UM4JdP1T/RzO1euKkIm/RwQWjbbEDDaV45hQC1H1ibmc1PK8
- /o9rWckOX3PQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="456284284"
-Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga002.fm.intel.com with ESMTP; 23 Apr 2021 09:34:42 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 4AF975D2; Fri, 23 Apr 2021 19:34:59 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-spi@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v1 12/14] spi: pxa2xx: Extract read_SSSR_bits() helper
-Date: Fri, 23 Apr 2021 19:34:35 +0300
-Message-Id: <20210423163437.89306-12-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
-References: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6735BF80117
+ for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 18:46:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6735BF80117
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="a+sdGTYK"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1783960FE6;
+ Fri, 23 Apr 2021 16:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1619196406;
+ bh=hrqrADAEzMFpkpMJhB8rj4N/o1LglX/44krbouGR8yg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=a+sdGTYK4aj9yDFncbICtCZWbqNeYXUw5nC+SdTJCCCyoZqQqXwfDB8l2K7bRr8UY
+ N9rPkMalrUus9Y9lNssS0lW+IZVFqANoT+wr7iCqbGRjpQTsvhjSEfUUYH2T8Dk+q/
+ Vc9DaR4qdj27qevhjdNdeuEUfyut+yz+SvHrfEp2ga+yla2IpizWu1S9lqpABvVYDw
+ rtvS06aBSxaVeqOsQI9W4SvsqhycdtxdsdWs8Jr03n7PAs/kQ5pPfKlS4pmJasKZW/
+ UVeXB9zBT81Rwoy/ANVYkarIIqSRRkjyrsORkgVSXFusR4QUf18npK86dcLJHMs+21
+ UoG0KPu8vhFDA==
+Date: Fri, 23 Apr 2021 17:46:17 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN
+ to dwc driver
+Message-ID: <20210423164617.GG5507@sirena.org.uk>
+References: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="PpAOPzA3dXsRhoo+"
+Content-Disposition: inline
+In-Reply-To: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
+X-Cookie: This is now.  Later is later.
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+ amistry@google.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Alexander.Deucher@amd.com,
+ =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
+ nartemiev@google.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,152 +94,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are few places that repeat the logic of "read some bits from SSSR".
-Extract read_SSSR_bits() helper to deduplicate that.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi-pxa2xx-dma.c |  9 +++------
- drivers/spi/spi-pxa2xx.c     | 26 +++++++++++---------------
- drivers/spi/spi-pxa2xx.h     |  7 ++++++-
- 3 files changed, 20 insertions(+), 22 deletions(-)
+--PpAOPzA3dXsRhoo+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
-index e581027e99f9..f022d82dcb1b 100644
---- a/drivers/spi/spi-pxa2xx-dma.c
-+++ b/drivers/spi/spi-pxa2xx-dma.c
-@@ -34,11 +34,8 @@ static void pxa2xx_spi_dma_transfer_complete(struct driver_data *drv_data,
- 		 * might not know about the error yet. So we re-check the
- 		 * ROR bit here before we clear the status register.
- 		 */
--		if (!error) {
--			u32 status = pxa2xx_spi_read(drv_data, SSSR)
--				     & drv_data->mask_sr;
--			error = status & SSSR_ROR;
--		}
-+		if (!error)
-+			error = read_SSSR_bits(drv_data, drv_data->mask_sr) & SSSR_ROR;
- 
- 		/* Clear status & disable interrupts */
- 		clear_SSCR1_bits(drv_data, drv_data->dma_cr1);
-@@ -119,7 +116,7 @@ irqreturn_t pxa2xx_spi_dma_transfer(struct driver_data *drv_data)
- {
- 	u32 status;
- 
--	status = pxa2xx_spi_read(drv_data, SSSR) & drv_data->mask_sr;
-+	status = read_SSSR_bits(drv_data, drv_data->mask_sr);
- 	if (status & SSSR_ROR) {
- 		dev_err(drv_data->ssp->dev, "FIFO overrun\n");
- 
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 58178ba704dc..5a4f808eefde 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -247,7 +247,7 @@ static bool pxa2xx_spi_txfifo_full(const struct driver_data *drv_data)
- 		break;
- 	}
- 
--	return (pxa2xx_spi_read(drv_data, SSSR) & mask) == mask;
-+	return read_SSSR_bits(drv_data, mask) == mask;
- }
- 
- static void pxa2xx_spi_clear_rx_thre(const struct driver_data *drv_data,
-@@ -488,7 +488,7 @@ int pxa2xx_spi_flush(struct driver_data *drv_data)
- 	unsigned long limit = loops_per_jiffy << 1;
- 
- 	do {
--		while (pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
-+		while (read_SSSR_bits(drv_data, SSSR_RNE))
- 			pxa2xx_spi_read(drv_data, SSDR);
- 	} while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_BSY) && --limit);
- 	write_SSSR_CS(drv_data, SSSR_ROR);
-@@ -523,8 +523,7 @@ static int null_reader(struct driver_data *drv_data)
- {
- 	u8 n_bytes = drv_data->n_bytes;
- 
--	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
--	       && (drv_data->rx < drv_data->rx_end)) {
-+	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
- 		pxa2xx_spi_read(drv_data, SSDR);
- 		drv_data->rx += n_bytes;
- 	}
-@@ -546,8 +545,7 @@ static int u8_writer(struct driver_data *drv_data)
- 
- static int u8_reader(struct driver_data *drv_data)
- {
--	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
--	       && (drv_data->rx < drv_data->rx_end)) {
-+	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
- 		*(u8 *)(drv_data->rx) = pxa2xx_spi_read(drv_data, SSDR);
- 		++drv_data->rx;
- 	}
-@@ -569,8 +567,7 @@ static int u16_writer(struct driver_data *drv_data)
- 
- static int u16_reader(struct driver_data *drv_data)
- {
--	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
--	       && (drv_data->rx < drv_data->rx_end)) {
-+	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
- 		*(u16 *)(drv_data->rx) = pxa2xx_spi_read(drv_data, SSDR);
- 		drv_data->rx += 2;
- 	}
-@@ -592,8 +589,7 @@ static int u32_writer(struct driver_data *drv_data)
- 
- static int u32_reader(struct driver_data *drv_data)
- {
--	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
--	       && (drv_data->rx < drv_data->rx_end)) {
-+	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
- 		*(u32 *)(drv_data->rx) = pxa2xx_spi_read(drv_data, SSDR);
- 		drv_data->rx += 4;
- 	}
-@@ -655,10 +651,11 @@ static void int_transfer_complete(struct driver_data *drv_data)
- 
- static irqreturn_t interrupt_transfer(struct driver_data *drv_data)
- {
--	u32 irq_mask = (pxa2xx_spi_read(drv_data, SSCR1) & SSCR1_TIE) ?
--		       drv_data->mask_sr : drv_data->mask_sr & ~SSSR_TFS;
-+	u32 irq_status;
- 
--	u32 irq_status = pxa2xx_spi_read(drv_data, SSSR) & irq_mask;
-+	irq_status = read_SSSR_bits(drv_data, drv_data->mask_sr);
-+	if (!(pxa2xx_spi_read(drv_data, SSCR1) & SSCR1_TIE))
-+		irq_status &= ~SSSR_TFS;
- 
- 	if (irq_status & SSSR_ROR) {
- 		int_error_stop(drv_data, "interrupt_transfer: fifo overrun", -EIO);
-@@ -1110,8 +1107,7 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 	pxa_ssp_enable(drv_data->ssp);
- 
- 	if (is_mmp2_ssp(drv_data)) {
--		u8 tx_level = (pxa2xx_spi_read(drv_data, SSSR)
--					& SSSR_TFL_MASK) >> 8;
-+		u8 tx_level = read_SSSR_bits(drv_data, SSSR_TFL_MASK) >> 8;
- 
- 		if (tx_level) {
- 			/* On MMP2, flipping SSE doesn't to empty TXFIFO. */
-diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
-index 398dbd680208..6d4273772b1f 100644
---- a/drivers/spi/spi-pxa2xx.h
-+++ b/drivers/spi/spi-pxa2xx.h
-@@ -110,11 +110,16 @@ static inline void clear_SSCR1_bits(const struct driver_data *drv_data, u32 bits
- 	pxa2xx_spi_write(drv_data, SSCR1, pxa2xx_spi_read(drv_data, SSCR1) & ~bits);
- }
- 
-+static inline u32 read_SSSR_bits(const struct driver_data *drv_data, u32 bits)
-+{
-+	return pxa2xx_spi_read(drv_data, SSSR) & bits;
-+}
-+
- static inline void write_SSSR_CS(struct driver_data *drv_data, u32 val)
- {
- 	if (drv_data->ssp_type == CE4100_SSP ||
- 	    drv_data->ssp_type == QUARK_X1000_SSP)
--		val |= pxa2xx_spi_read(drv_data, SSSR) & SSSR_ALT_FRM_MASK;
-+		val |= read_SSSR_bits(drv_data, SSSR_ALT_FRM_MASK);
- 
- 	pxa2xx_spi_write(drv_data, SSSR, val);
- }
--- 
-2.30.2
+On Fri, Apr 23, 2021 at 09:54:38PM +0530, Vijendar Mukunda wrote:
 
+> For CZ/StoneyRidge platforms, ACP DMA between ACP SRAM and
+> I2S FIFO should be stopped before stopping I2S Controller DMA.
+
+> When DMA is progressing and stop request received, while DMA transfer
+> ongoing between ACP SRAM and I2S FIFO, Stopping I2S DMA prior to ACP DMA
+> stop resulting DMA Channel stop failure.
+
+This again...  copying in Peter for the sequencing discussion.  If we
+need to do this I'm not convinced that bodging it in the driver is a
+good idea, and especially not deferring it outside of the trigger
+operation - for example on a suspend or pause we won't actually do a
+shutdown() so the trigger will end up not happening which seems like it
+may cause problems.  We'd probably be better off with the core knowing
+what's going on and being able to reorder the callbacks although
+designing an interface for that seems a bit annoying.
+
+> This issue can't be fixed in ACP DMA driver due to design constraint.
+
+What is the design constraint here - can't we fix the design?  Or is it
+a hardware design constraint (presumably broken signalling between the
+I2S and DMA blocks)?
+
+--PpAOPzA3dXsRhoo+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCC+dkACgkQJNaLcl1U
+h9BDTgf/e98lodiz8JAhBWlgb4e/N5kUc+JkS6Q8iz5kFGIG96PawL0jUcldx5Wx
+dml7h0vBjDgBrkgFQ09HQ3nzoyJdVHRa6zqdvCt3af4u2YcpkUb8u7ljoSJJLdDK
+yXQ4ROt1rC0MKrsVKzHqitiIMo8oSEl2F0Vs4aHLUUof6I3w7qhSSD1VVkGuh36U
+yJ8JTwaCeKtkXDbth333kbaW7a8biVgUFFprtMzrpoeVH9A9p4CCjH0i+uPwB6cl
+BX4HoHkoCdzHaisZsNob8MjjykSvoBGVtuKsquEpT+R5PkPRMuGcOYDW1FMJ5FrQ
+GKwU1bfjUALew8t7yMnnhDZA9SASKg==
+=025N
+-----END PGP SIGNATURE-----
+
+--PpAOPzA3dXsRhoo+--
