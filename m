@@ -7,67 +7,67 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9731C43460
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5418C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:40:27 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3027060BD3
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:40:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3027060BD3
+	by mail.kernel.org (Postfix) with ESMTPS id 3705261467
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 16:40:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3705261467
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6BD516CB;
-	Fri, 23 Apr 2021 18:39:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6BD516CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C304516E8;
+	Fri, 23 Apr 2021 18:39:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C304516E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619196008;
-	bh=hFaZM8jWOmk0ESBSdp083fT8mhtkhE3imfSQtPE9Q9I=;
+	s=default; t=1619196025;
+	bh=qf9KzRaAxWjzgoqkw5qmbjeNNL5t5b6nMeFYOyXgZtc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZRtDNvKqiECAu+CVWJADq1iOyUkJGvDZ4elebH0XFtSug7Hf1A3Ctr+sHcA3IdSLe
-	 15BxkZ2LYhXgPR1dRiA7eqqboTuD8nRBep+cxKCcDDi0jnKo2cltf0hJ9RmoGqC7Qs
-	 eDhKnc/W1NO6iM1hziffKfuGZbP2tTxoMYvTLrcU=
+	b=s7Labn0uCr5HDt5yP9Gjzh7Ou5E4iIzaWs2rPVSHquKysPXjFjAf2lc1bEHQQzsa7
+	 2nAUcr5UrrM899Mpla6+0n/87fIILVln/lu7jOjXzXmYpQzgFAEhfHgQvWL/KtfjjU
+	 ixqf6J+Ipejjkr/x6RHr327Yu9+YYwKA70r2pIKk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04911F804F1;
-	Fri, 23 Apr 2021 18:35:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0049FF804F2;
+	Fri, 23 Apr 2021 18:35:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1F9FF80482; Fri, 23 Apr 2021 18:35:08 +0200 (CEST)
+ id 40EBCF804C1; Fri, 23 Apr 2021 18:35:13 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D626CF80482
- for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 18:35:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D626CF80482
-IronPort-SDR: Rz7cGp6QSsRWUMSMKQkKdNYCjOHMj0T5dX0gFloLxZPKhJsog80uPsEjuW69X/9Zbw9PgP/6Kr
- yMbhhhcGrLPA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="195652423"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="195652423"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4FF8F804AC
+ for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 18:35:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4FF8F804AC
+IronPort-SDR: eDrdgG7+W+BnKIj4lSn1ePkxweSALRl3tH2/2epnbMjLu75MJ0w/lA6X5wQS6eY55kpZv6szKK
+ OHSgaXPGZJ2A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="195652455"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="195652455"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Apr 2021 09:34:43 -0700
-IronPort-SDR: gFOnInLtpr118H5FS9N61WsDF0pFMGItxr57URSWM2ZdEl/u0yzSayeCRAR1wweiowyb+EUYR4
- /VSga8nRzIOg==
+ 23 Apr 2021 09:34:48 -0700
+IronPort-SDR: ZfNVxrOLgu95YdAIHQN5YDKnzDgAu+eRebKmZAfdwpq0Q/vM9f60nBp2doWFT8LrSnx1HEGvl0
+ z3AAXHeuU0gw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="421810613"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="424290615"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga008.fm.intel.com with ESMTP; 23 Apr 2021 09:34:38 -0700
+ by orsmga007.jf.intel.com with ESMTP; 23 Apr 2021 09:34:44 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id C0B021C8; Fri, 23 Apr 2021 19:34:55 +0300 (EEST)
+ id 45F3717E; Fri, 23 Apr 2021 19:35:00 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Mark Brown <broonie@kernel.org>,
  Cezary Rojewski <cezary.rojewski@intel.com>, linux-input@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-spi@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v1 05/14] spi: pxa2xx: Consolidate related headers under
- include/linux/spi
-Date: Fri, 23 Apr 2021 19:34:28 +0300
-Message-Id: <20210423163437.89306-5-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 14/14] spi: pxa2xx: Introduce special type for Merrifield
+ SPIs
+Date: Fri, 23 Apr 2021 19:34:37 +0300
+Message-Id: <20210423163437.89306-14-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
 References: <20210423163437.89306-1-andriy.shevchenko@linux.intel.com>
@@ -94,161 +94,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have two headers split between include/linux and include/linux/spi.
-Consolidated them under SPI realm, i.e. in the latter folder.
+Intel Merrifield SPI is actually more closer to PXA3xx. It has extended FIFO
+(32 bytes) and additional registers to get or set FIFO thresholds.
 
-Update users accordingly.
+Introduce new type for Intel Merrifield SPI host controllers and handle bigger
+FIFO size.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/input/mouse/navpoint.c       | 3 ++-
- drivers/spi/spi-pxa2xx-dma.c         | 2 --
- drivers/spi/spi-pxa2xx-pci.c         | 1 +
- drivers/spi/spi-pxa2xx.h             | 2 +-
- include/linux/spi/pxa2xx_spi.h       | 9 +++++----
- include/linux/{ => spi}/pxa2xx_ssp.h | 6 +++---
- sound/soc/intel/catpt/dsp.c          | 4 +++-
- sound/soc/pxa/pxa-ssp.c              | 3 ++-
- 8 files changed, 17 insertions(+), 13 deletions(-)
- rename include/linux/{ => spi}/pxa2xx_ssp.h (99%)
+ drivers/spi/spi-pxa2xx-pci.c   |  2 +-
+ drivers/spi/spi-pxa2xx.c       | 32 +++++++++++++++++++++++++++++---
+ include/linux/spi/pxa2xx_ssp.h | 16 ++++++++++++++++
+ 3 files changed, 46 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/mouse/navpoint.c b/drivers/input/mouse/navpoint.c
-index 4d67575bb276..a0731cfbbafa 100644
---- a/drivers/input/mouse/navpoint.c
-+++ b/drivers/input/mouse/navpoint.c
-@@ -15,9 +15,10 @@
- #include <linux/input/navpoint.h>
- #include <linux/interrupt.h>
- #include <linux/mutex.h>
--#include <linux/pxa2xx_ssp.h>
- #include <linux/slab.h>
- 
-+#include <linux/spi/pxa2xx_ssp.h>
-+
- /*
-  * Synaptics Modular Embedded Protocol: Module Packet Format.
-  * Module header byte 2:0 = Length (# bytes that follow)
-diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
-index 32ab7391396d..e00dbadd39ec 100644
---- a/drivers/spi/spi-pxa2xx-dma.c
-+++ b/drivers/spi/spi-pxa2xx-dma.c
-@@ -15,8 +15,6 @@
- #include <linux/spi/pxa2xx_spi.h>
- #include <linux/spi/spi.h>
- 
--#include <linux/pxa2xx_ssp.h>
--
- #include "spi-pxa2xx.h"
- 
- static void pxa2xx_spi_dma_transfer_complete(struct driver_data *drv_data,
 diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index f60ed4c62000..5af0a3fbc1b0 100644
+index 5af0a3fbc1b0..5df6e11b345d 100644
 --- a/drivers/spi/spi-pxa2xx-pci.c
 +++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/platform_device.h>
+@@ -179,7 +179,7 @@ static struct pxa_spi_info spi_info_configs[] = {
+ 		.rx_param = &bsw2_rx_param,
+ 	},
+ 	[PORT_MRFLD] = {
+-		.type = PXA27x_SSP,
++		.type = MRFLD_SSP,
+ 		.max_clk_rate = 25000000,
+ 		.setup = mrfld_spi_setup,
+ 	},
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index 5a4f808eefde..313095bfa7dd 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -200,6 +200,11 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
+ 	return drv_data->ssp_type == MMP2_SSP;
+ }
+ 
++static bool is_mrfld_ssp(const struct driver_data *drv_data)
++{
++	return drv_data->ssp_type == MRFLD_SSP;
++}
 +
- #include <linux/spi/pxa2xx_spi.h>
+ static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
+ {
+ 	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
+@@ -1087,6 +1092,15 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
+ 	}
  
- #include <linux/dmaengine.h>
-diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
-index 739e264feaa6..b6dae0981b61 100644
---- a/drivers/spi/spi-pxa2xx.h
-+++ b/drivers/spi/spi-pxa2xx.h
-@@ -12,7 +12,7 @@
- #include <linux/types.h>
- #include <linux/sizes.h>
- 
--#include <linux/pxa2xx_ssp.h>
-+#include <linux/spi/pxa2xx_ssp.h>
- 
- struct gpio_desc;
- struct pxa2xx_spi_controller;
-diff --git a/include/linux/spi/pxa2xx_spi.h b/include/linux/spi/pxa2xx_spi.h
-index 1e0e2f136319..4baae475bd89 100644
---- a/include/linux/spi/pxa2xx_spi.h
-+++ b/include/linux/spi/pxa2xx_spi.h
-@@ -2,12 +2,12 @@
- /*
-  * Copyright (C) 2005 Stephen Street / StreetFire Sound Labs
-  */
--#ifndef __linux_pxa2xx_spi_h
--#define __linux_pxa2xx_spi_h
-+#ifndef __LINUX_PXA2XX_SPI_H
-+#define __LINUX_PXA2XX_SPI_H
- 
- #include <linux/types.h>
- 
--#include <linux/pxa2xx_ssp.h>
-+#include <linux/spi/pxa2xx_ssp.h>
- 
- #define PXA2XX_CS_ASSERT (0x01)
- #define PXA2XX_CS_DEASSERT (0x02)
-@@ -51,4 +51,5 @@ struct pxa2xx_spi_chip {
- extern void pxa2xx_set_spi_info(unsigned id, struct pxa2xx_spi_controller *info);
- 
- #endif
--#endif
++	if (is_mrfld_ssp(drv_data)) {
++		u32 thresh = 0;
 +
-+#endif	/* __LINUX_PXA2XX_SPI_H */
-diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/spi/pxa2xx_ssp.h
-similarity index 99%
-rename from include/linux/pxa2xx_ssp.h
-rename to include/linux/spi/pxa2xx_ssp.h
-index 7f73b26ed22e..14b049840faf 100644
---- a/include/linux/pxa2xx_ssp.h
++		thresh |= SFIFOTT_RxThresh(chip->lpss_rx_threshold);
++		thresh |= SFIFOTT_TxThresh(chip->lpss_tx_threshold);
++
++		pxa2xx_spi_update(drv_data, SFIFOTT, 0xffffffff, thresh);
++	}
++
+ 	if (is_quark_x1000_ssp(drv_data))
+ 		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
+ 
+@@ -1253,6 +1267,11 @@ static int setup(struct spi_device *spi)
+ 		tx_hi_thres = 0;
+ 		rx_thres = RX_THRESH_QUARK_X1000_DFLT;
+ 		break;
++	case MRFLD_SSP:
++		tx_thres = TX_THRESH_MRFLD_DFLT;
++		tx_hi_thres = 0;
++		rx_thres = RX_THRESH_MRFLD_DFLT;
++		break;
+ 	case CE4100_SSP:
+ 		tx_thres = TX_THRESH_CE4100_DFLT;
+ 		tx_hi_thres = 0;
+@@ -1328,9 +1347,16 @@ static int setup(struct spi_device *spi)
+ 		chip->cr1 |= SSCR1_SPH;
+ 	}
+ 
+-	chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
+-	chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres)
+-				| SSITF_TxHiThresh(tx_hi_thres);
++	if (is_lpss_ssp(drv_data)) {
++		chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
++		chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres) |
++					  SSITF_TxHiThresh(tx_hi_thres);
++	}
++
++	if (is_mrfld_ssp(drv_data)) {
++		chip->lpss_rx_threshold = rx_thres;
++		chip->lpss_tx_threshold = tx_thres;
++	}
+ 
+ 	/* set dma burst and threshold outside of chip_info path so that if
+ 	 * chip_info goes away after setting chip->enable_dma, the
+diff --git a/include/linux/spi/pxa2xx_ssp.h b/include/linux/spi/pxa2xx_ssp.h
+index fdfbe17e15f4..2b21bc1f3c73 100644
+--- a/include/linux/spi/pxa2xx_ssp.h
 +++ b/include/linux/spi/pxa2xx_ssp.h
-@@ -11,8 +11,8 @@
-  *       PXA3xx     SSP1, SSP2, SSP3, SSP4
-  */
+@@ -183,6 +183,21 @@ struct device_node;
+ #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
+ #define SSACD_SCDX8		BIT(7)		/* SYSCLK division ratio select */
  
--#ifndef __LINUX_SSP_H
--#define __LINUX_SSP_H
-+#ifndef __LINUX_PXA2XX_SSP_H
-+#define __LINUX_PXA2XX_SSP_H
- 
- #include <linux/bits.h>
- #include <linux/compiler_types.h>
-@@ -270,4 +270,4 @@ static inline struct ssp_device *pxa_ssp_request_of(const struct device_node *n,
- static inline void pxa_ssp_free(struct ssp_device *ssp) {}
- #endif
- 
--#endif
-+#endif	/* __LINUX_PXA2XX_SSP_H */
-diff --git a/sound/soc/intel/catpt/dsp.c b/sound/soc/intel/catpt/dsp.c
-index 9c5fd18f2600..08af8bab8704 100644
---- a/sound/soc/intel/catpt/dsp.c
-+++ b/sound/soc/intel/catpt/dsp.c
-@@ -9,7 +9,9 @@
- #include <linux/dma-mapping.h>
- #include <linux/firmware.h>
- #include <linux/pci.h>
--#include <linux/pxa2xx_ssp.h>
++/* Intel Merrifield SSP */
++#define SFIFOL			0x68		/* FIFO level */
++#define SFIFOTT			0x6c		/* FIFO trigger threshold */
 +
-+#include <linux/spi/pxa2xx_ssp.h>
++#define RX_THRESH_MRFLD_DFLT	16
++#define TX_THRESH_MRFLD_DFLT	16
 +
- #include "core.h"
- #include "messages.h"
- #include "registers.h"
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index b941adcbb8f9..710c8dbd18bc 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -16,10 +16,11 @@
- #include <linux/platform_device.h>
- #include <linux/clk.h>
- #include <linux/io.h>
--#include <linux/pxa2xx_ssp.h>
- #include <linux/of.h>
- #include <linux/dmaengine.h>
- 
-+#include <linux/spi/pxa2xx_ssp.h>
++#define SFIFOL_TFL_MASK		GENMASK(15, 0)	/* Transmit FIFO Level mask */
++#define SFIFOL_RFL_MASK		GENMASK(31, 16)	/* Receive FIFO Level mask */
 +
- #include <asm/irq.h>
- 
- #include <sound/core.h>
++#define SFIFOTT_TFT		GENMASK(15, 0)	/* Transmit FIFO Threshold (mask) */
++#define SFIFOTT_TxThresh(x)	(((x) - 1) << 0)	/* TX FIFO trigger threshold / level */
++#define SFIFOTT_RFT		GENMASK(31, 16)	/* Receive FIFO Threshold (mask) */
++#define SFIFOTT_RxThresh(x)	(((x) - 1) << 16)	/* RX FIFO trigger threshold / level */
++
+ /* LPSS SSP */
+ #define SSITF			0x44		/* TX FIFO trigger level */
+ #define SSITF_TxHiThresh(x)	(((x) - 1) << 0)
+@@ -205,6 +220,7 @@ enum pxa_ssp_type {
+ 	MMP2_SSP,
+ 	PXA910_SSP,
+ 	CE4100_SSP,
++	MRFLD_SSP,
+ 	QUARK_X1000_SSP,
+ 	LPSS_LPT_SSP, /* Keep LPSS types sorted with lpss_platforms[] */
+ 	LPSS_BYT_SSP,
 -- 
 2.30.2
 
