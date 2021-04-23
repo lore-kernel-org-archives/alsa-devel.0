@@ -7,65 +7,64 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 608FFC433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1389BC433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:29:43 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 974D5613CC
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:29:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 974D5613CC
+	by mail.kernel.org (Postfix) with ESMTPS id 672AA613CC
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Apr 2021 18:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 672AA613CC
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 155581713;
-	Fri, 23 Apr 2021 20:28:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 155581713
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3FAC1723;
+	Fri, 23 Apr 2021 20:28:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3FAC1723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619202545;
-	bh=YFdHhk0Jmblb5mbHiRINxd0gXwH3Q6z+nkBf7sN9Tf4=;
+	s=default; t=1619202580;
+	bh=vsrhFRLe2QN77wRb91P8L2mnZvoTzF07BNnKQmmn8ks=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bRq6QzvCldmYoYvUjnar1pVK11rg+r+Ht8SOfHEvXEkLiyqv7zFtiIB/khuvVcwED
-	 40jpwFTc8mdMEpUW4FKyKkyepTHnBdRx3ZDoTReYZlihlph+/2P5yVLTbFNY+pcgnv
-	 bkEj3UDYs7qm2P5rDAUoMA98Rh2kAa2Fdb36pn0A=
+	b=PMyRAeO8LuNoqRSJGc5kvx9EHEirJCb5v1kQQvZBLb/MdEg9+Jz+LvwZaxL7PniC4
+	 HAk+SOf1C0XoLBvoA6SriMmQG2PeYP75Mau+mAP4syYY0GDoGFOogBC+/kre2t+UOn
+	 osbHTHu/oS5s+AFO621vuzvJwo1SXDBqRKg1BUWA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9DADF804E3;
-	Fri, 23 Apr 2021 20:25:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 007E8F804F3;
+	Fri, 23 Apr 2021 20:25:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97B62F804C1; Fri, 23 Apr 2021 20:24:53 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id C3A5FF80276; Fri, 23 Apr 2021 20:24:53 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0ACFF80276
- for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 20:24:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0ACFF80276
-IronPort-SDR: 2Z2YMAEdwQhNWTFxyjU4UF0hRIKugrbE+pk1dVVJGejj6CJUBWv3jypn5hlYCtaLD8V2pMe1X8
- uo/TIa9ScOiQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="281441752"
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="281441752"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10773F8028B
+ for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2021 20:24:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10773F8028B
+IronPort-SDR: BCz6d5vGxcn/XhFcoajmgVdIjk1F3PQCcfxO5ZH9xtYss+hBHukijsncce5HdZuJhHEpLn0Aus
+ WBcwQptozrzg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="195669984"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="195669984"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  23 Apr 2021 11:24:33 -0700
-IronPort-SDR: ikThB6vvqANmfWpDuK7yX7nu5uoQO1fodbpA78AAAL6Nv73k3ir45sTswpkMRkA2pL2G9Kupbi
- zUG0Rf5ahsVw==
+IronPort-SDR: bOShECzQCE2HDp9AvEGmG9dJt4DIDDiihBtDga9pDEwztpszyZogF78Fgn9hFlLdL4hy3q4IN+
+ gta+QpulBc5w==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="385169389"
+X-IronPort-AV: E=Sophos;i="5.82,246,1613462400"; d="scan'208";a="603612181"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga003.jf.intel.com with ESMTP; 23 Apr 2021 11:24:30 -0700
+ by orsmga005.jf.intel.com with ESMTP; 23 Apr 2021 11:24:30 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 8A708C80; Fri, 23 Apr 2021 21:24:45 +0300 (EEST)
+ id 73384B4C; Fri, 23 Apr 2021 21:24:45 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v2 14/14] spi: pxa2xx: Introduce special type for Merrifield
- SPIs
-Date: Fri, 23 Apr 2021 21:24:41 +0300
-Message-Id: <20210423182441.50272-15-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 12/14] spi: pxa2xx: Extract read_SSSR_bits() helper
+Date: Fri, 23 Apr 2021 21:24:39 +0300
+Message-Id: <20210423182441.50272-13-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
 References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
@@ -89,130 +88,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Intel Merrifield SPI is actually more closer to PXA3xx. It has extended FIFO
-(32 bytes) and additional registers to get or set FIFO thresholds.
-
-Introduce new type for Intel Merrifield SPI host controllers and handle bigger
-FIFO size.
+There are few places that repeat the logic of "read some bits from SSSR".
+Extract read_SSSR_bits() helper to deduplicate that.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi-pxa2xx-pci.c |  2 +-
- drivers/spi/spi-pxa2xx.c     | 32 +++++++++++++++++++++++++++++---
- include/linux/pxa2xx_ssp.h   | 16 ++++++++++++++++
- 3 files changed, 46 insertions(+), 4 deletions(-)
+ drivers/spi/spi-pxa2xx-dma.c |  9 +++------
+ drivers/spi/spi-pxa2xx.c     | 26 +++++++++++---------------
+ drivers/spi/spi-pxa2xx.h     |  7 ++++++-
+ 3 files changed, 20 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/spi/spi-pxa2xx-pci.c b/drivers/spi/spi-pxa2xx-pci.c
-index 5af0a3fbc1b0..5df6e11b345d 100644
---- a/drivers/spi/spi-pxa2xx-pci.c
-+++ b/drivers/spi/spi-pxa2xx-pci.c
-@@ -179,7 +179,7 @@ static struct pxa_spi_info spi_info_configs[] = {
- 		.rx_param = &bsw2_rx_param,
- 	},
- 	[PORT_MRFLD] = {
--		.type = PXA27x_SSP,
-+		.type = MRFLD_SSP,
- 		.max_clk_rate = 25000000,
- 		.setup = mrfld_spi_setup,
- 	},
+diff --git a/drivers/spi/spi-pxa2xx-dma.c b/drivers/spi/spi-pxa2xx-dma.c
+index e581027e99f9..f022d82dcb1b 100644
+--- a/drivers/spi/spi-pxa2xx-dma.c
++++ b/drivers/spi/spi-pxa2xx-dma.c
+@@ -34,11 +34,8 @@ static void pxa2xx_spi_dma_transfer_complete(struct driver_data *drv_data,
+ 		 * might not know about the error yet. So we re-check the
+ 		 * ROR bit here before we clear the status register.
+ 		 */
+-		if (!error) {
+-			u32 status = pxa2xx_spi_read(drv_data, SSSR)
+-				     & drv_data->mask_sr;
+-			error = status & SSSR_ROR;
+-		}
++		if (!error)
++			error = read_SSSR_bits(drv_data, drv_data->mask_sr) & SSSR_ROR;
+ 
+ 		/* Clear status & disable interrupts */
+ 		clear_SSCR1_bits(drv_data, drv_data->dma_cr1);
+@@ -119,7 +116,7 @@ irqreturn_t pxa2xx_spi_dma_transfer(struct driver_data *drv_data)
+ {
+ 	u32 status;
+ 
+-	status = pxa2xx_spi_read(drv_data, SSSR) & drv_data->mask_sr;
++	status = read_SSSR_bits(drv_data, drv_data->mask_sr);
+ 	if (status & SSSR_ROR) {
+ 		dev_err(drv_data->ssp->dev, "FIFO overrun\n");
+ 
 diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 5a4f808eefde..313095bfa7dd 100644
+index 58178ba704dc..5a4f808eefde 100644
 --- a/drivers/spi/spi-pxa2xx.c
 +++ b/drivers/spi/spi-pxa2xx.c
-@@ -200,6 +200,11 @@ static bool is_mmp2_ssp(const struct driver_data *drv_data)
- 	return drv_data->ssp_type == MMP2_SSP;
+@@ -247,7 +247,7 @@ static bool pxa2xx_spi_txfifo_full(const struct driver_data *drv_data)
+ 		break;
+ 	}
+ 
+-	return (pxa2xx_spi_read(drv_data, SSSR) & mask) == mask;
++	return read_SSSR_bits(drv_data, mask) == mask;
  }
  
-+static bool is_mrfld_ssp(const struct driver_data *drv_data)
+ static void pxa2xx_spi_clear_rx_thre(const struct driver_data *drv_data,
+@@ -488,7 +488,7 @@ int pxa2xx_spi_flush(struct driver_data *drv_data)
+ 	unsigned long limit = loops_per_jiffy << 1;
+ 
+ 	do {
+-		while (pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
++		while (read_SSSR_bits(drv_data, SSSR_RNE))
+ 			pxa2xx_spi_read(drv_data, SSDR);
+ 	} while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_BSY) && --limit);
+ 	write_SSSR_CS(drv_data, SSSR_ROR);
+@@ -523,8 +523,7 @@ static int null_reader(struct driver_data *drv_data)
+ {
+ 	u8 n_bytes = drv_data->n_bytes;
+ 
+-	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
+-	       && (drv_data->rx < drv_data->rx_end)) {
++	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
+ 		pxa2xx_spi_read(drv_data, SSDR);
+ 		drv_data->rx += n_bytes;
+ 	}
+@@ -546,8 +545,7 @@ static int u8_writer(struct driver_data *drv_data)
+ 
+ static int u8_reader(struct driver_data *drv_data)
+ {
+-	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
+-	       && (drv_data->rx < drv_data->rx_end)) {
++	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
+ 		*(u8 *)(drv_data->rx) = pxa2xx_spi_read(drv_data, SSDR);
+ 		++drv_data->rx;
+ 	}
+@@ -569,8 +567,7 @@ static int u16_writer(struct driver_data *drv_data)
+ 
+ static int u16_reader(struct driver_data *drv_data)
+ {
+-	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
+-	       && (drv_data->rx < drv_data->rx_end)) {
++	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
+ 		*(u16 *)(drv_data->rx) = pxa2xx_spi_read(drv_data, SSDR);
+ 		drv_data->rx += 2;
+ 	}
+@@ -592,8 +589,7 @@ static int u32_writer(struct driver_data *drv_data)
+ 
+ static int u32_reader(struct driver_data *drv_data)
+ {
+-	while ((pxa2xx_spi_read(drv_data, SSSR) & SSSR_RNE)
+-	       && (drv_data->rx < drv_data->rx_end)) {
++	while (read_SSSR_bits(drv_data, SSSR_RNE) && drv_data->rx < drv_data->rx_end) {
+ 		*(u32 *)(drv_data->rx) = pxa2xx_spi_read(drv_data, SSDR);
+ 		drv_data->rx += 4;
+ 	}
+@@ -655,10 +651,11 @@ static void int_transfer_complete(struct driver_data *drv_data)
+ 
+ static irqreturn_t interrupt_transfer(struct driver_data *drv_data)
+ {
+-	u32 irq_mask = (pxa2xx_spi_read(drv_data, SSCR1) & SSCR1_TIE) ?
+-		       drv_data->mask_sr : drv_data->mask_sr & ~SSSR_TFS;
++	u32 irq_status;
+ 
+-	u32 irq_status = pxa2xx_spi_read(drv_data, SSSR) & irq_mask;
++	irq_status = read_SSSR_bits(drv_data, drv_data->mask_sr);
++	if (!(pxa2xx_spi_read(drv_data, SSCR1) & SSCR1_TIE))
++		irq_status &= ~SSSR_TFS;
+ 
+ 	if (irq_status & SSSR_ROR) {
+ 		int_error_stop(drv_data, "interrupt_transfer: fifo overrun", -EIO);
+@@ -1110,8 +1107,7 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
+ 	pxa_ssp_enable(drv_data->ssp);
+ 
+ 	if (is_mmp2_ssp(drv_data)) {
+-		u8 tx_level = (pxa2xx_spi_read(drv_data, SSSR)
+-					& SSSR_TFL_MASK) >> 8;
++		u8 tx_level = read_SSSR_bits(drv_data, SSSR_TFL_MASK) >> 8;
+ 
+ 		if (tx_level) {
+ 			/* On MMP2, flipping SSE doesn't to empty TXFIFO. */
+diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
+index ed63f7165cd8..d2cb40f97c4b 100644
+--- a/drivers/spi/spi-pxa2xx.h
++++ b/drivers/spi/spi-pxa2xx.h
+@@ -110,11 +110,16 @@ static inline void clear_SSCR1_bits(const struct driver_data *drv_data, u32 bits
+ 	pxa2xx_spi_write(drv_data, SSCR1, pxa2xx_spi_read(drv_data, SSCR1) & ~bits);
+ }
+ 
++static inline u32 read_SSSR_bits(const struct driver_data *drv_data, u32 bits)
 +{
-+	return drv_data->ssp_type == MRFLD_SSP;
++	return pxa2xx_spi_read(drv_data, SSSR) & bits;
 +}
 +
- static void pxa2xx_spi_update(const struct driver_data *drv_data, u32 reg, u32 mask, u32 value)
+ static inline void write_SSSR_CS(struct driver_data *drv_data, u32 val)
  {
- 	if ((pxa2xx_spi_read(drv_data, reg) & mask) != value)
-@@ -1087,6 +1092,15 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 		pxa2xx_spi_update(drv_data, SSITF, GENMASK(15, 0), chip->lpss_tx_threshold);
- 	}
+ 	if (drv_data->ssp_type == CE4100_SSP ||
+ 	    drv_data->ssp_type == QUARK_X1000_SSP)
+-		val |= pxa2xx_spi_read(drv_data, SSSR) & SSSR_ALT_FRM_MASK;
++		val |= read_SSSR_bits(drv_data, SSSR_ALT_FRM_MASK);
  
-+	if (is_mrfld_ssp(drv_data)) {
-+		u32 thresh = 0;
-+
-+		thresh |= SFIFOTT_RxThresh(chip->lpss_rx_threshold);
-+		thresh |= SFIFOTT_TxThresh(chip->lpss_tx_threshold);
-+
-+		pxa2xx_spi_update(drv_data, SFIFOTT, 0xffffffff, thresh);
-+	}
-+
- 	if (is_quark_x1000_ssp(drv_data))
- 		pxa2xx_spi_update(drv_data, DDS_RATE, GENMASK(23, 0), chip->dds_rate);
- 
-@@ -1253,6 +1267,11 @@ static int setup(struct spi_device *spi)
- 		tx_hi_thres = 0;
- 		rx_thres = RX_THRESH_QUARK_X1000_DFLT;
- 		break;
-+	case MRFLD_SSP:
-+		tx_thres = TX_THRESH_MRFLD_DFLT;
-+		tx_hi_thres = 0;
-+		rx_thres = RX_THRESH_MRFLD_DFLT;
-+		break;
- 	case CE4100_SSP:
- 		tx_thres = TX_THRESH_CE4100_DFLT;
- 		tx_hi_thres = 0;
-@@ -1328,9 +1347,16 @@ static int setup(struct spi_device *spi)
- 		chip->cr1 |= SSCR1_SPH;
- 	}
- 
--	chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
--	chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres)
--				| SSITF_TxHiThresh(tx_hi_thres);
-+	if (is_lpss_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
-+		chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres) |
-+					  SSITF_TxHiThresh(tx_hi_thres);
-+	}
-+
-+	if (is_mrfld_ssp(drv_data)) {
-+		chip->lpss_rx_threshold = rx_thres;
-+		chip->lpss_tx_threshold = tx_thres;
-+	}
- 
- 	/* set dma burst and threshold outside of chip_info path so that if
- 	 * chip_info goes away after setting chip->enable_dma, the
-diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
-index fdfbe17e15f4..2b21bc1f3c73 100644
---- a/include/linux/pxa2xx_ssp.h
-+++ b/include/linux/pxa2xx_ssp.h
-@@ -183,6 +183,21 @@ struct device_node;
- #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
- #define SSACD_SCDX8		BIT(7)		/* SYSCLK division ratio select */
- 
-+/* Intel Merrifield SSP */
-+#define SFIFOL			0x68		/* FIFO level */
-+#define SFIFOTT			0x6c		/* FIFO trigger threshold */
-+
-+#define RX_THRESH_MRFLD_DFLT	16
-+#define TX_THRESH_MRFLD_DFLT	16
-+
-+#define SFIFOL_TFL_MASK		GENMASK(15, 0)	/* Transmit FIFO Level mask */
-+#define SFIFOL_RFL_MASK		GENMASK(31, 16)	/* Receive FIFO Level mask */
-+
-+#define SFIFOTT_TFT		GENMASK(15, 0)	/* Transmit FIFO Threshold (mask) */
-+#define SFIFOTT_TxThresh(x)	(((x) - 1) << 0)	/* TX FIFO trigger threshold / level */
-+#define SFIFOTT_RFT		GENMASK(31, 16)	/* Receive FIFO Threshold (mask) */
-+#define SFIFOTT_RxThresh(x)	(((x) - 1) << 16)	/* RX FIFO trigger threshold / level */
-+
- /* LPSS SSP */
- #define SSITF			0x44		/* TX FIFO trigger level */
- #define SSITF_TxHiThresh(x)	(((x) - 1) << 0)
-@@ -205,6 +220,7 @@ enum pxa_ssp_type {
- 	MMP2_SSP,
- 	PXA910_SSP,
- 	CE4100_SSP,
-+	MRFLD_SSP,
- 	QUARK_X1000_SSP,
- 	LPSS_LPT_SSP, /* Keep LPSS types sorted with lpss_platforms[] */
- 	LPSS_BYT_SSP,
+ 	pxa2xx_spi_write(drv_data, SSSR, val);
+ }
 -- 
 2.30.2
 
