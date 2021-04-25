@@ -2,72 +2,64 @@ Return-Path: <SRS0=GIeY=JW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B64AEC433ED
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 09:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D982C433B4
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 10:13:48 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2B85F61029
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 09:17:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2B85F61029
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id C8545613AC
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 10:13:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8545613AC
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80E94850;
-	Sun, 25 Apr 2021 11:16:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80E94850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CAC61694;
+	Sun, 25 Apr 2021 12:12:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CAC61694
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619342231;
-	bh=FGMLLkpk+QCg5Y8V/Ae8eav7YhTOw/BEMe0CHnMIxD8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=sk0gmYzt3euT6fQUQhbvrat7OCpVvRcPrSLmAlegxnrNb7qTSsf4uASGEvTZHneqr
-	 sHDohIn9tuFgE+iQMBG3MHOdg7tHGnH08lNDtfAy4blPP3zkNABBoD1sK61BLVrCoj
-	 eWU4M876Ar8r82vCyHJtuX5kRZcwBfaVSnC0Ui7Y=
+	s=default; t=1619345624;
+	bh=24tAGv3l3j8eqIaQ9XAw9L1yiRdrP2HS/7JzTufwAx0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=p1QWyR4Lt0/fErKZqYQDkMllzNbBKkwqRajxwG+vwTwZYbXDFsUjb9CMn85Vcidie
+	 zE5N0VctqNQlJvpLPw4FRInt4EeDOlfUaYTTjB1t2zPFxoZMr8STW+pOOiqSBJXr50
+	 HVzKMr9wb9FURiRVYutlbYXf8LiSxfCeRtfDzAKY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC2BEF801D8;
-	Sun, 25 Apr 2021 11:16:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ECB59F801D8;
+	Sun, 25 Apr 2021 12:12:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6637AF801EC; Sun, 25 Apr 2021 11:16:19 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E4159F801EC; Sun, 25 Apr 2021 12:12:51 +0200 (CEST)
+Received: from out30-133.freemail.mail.aliyun.com
+ (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3EDE4F80117
- for <alsa-devel@alsa-project.org>; Sun, 25 Apr 2021 11:16:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EDE4F80117
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id C9BEEAF38;
- Sun, 25 Apr 2021 09:16:08 +0000 (UTC)
-Date: Sun, 25 Apr 2021 11:16:08 +0200
-Message-ID: <s5hlf964td3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Lucas <jaffa225man@gmail.com>
-Subject: Re: [PATCH 2/2] ALSA: usb-audio: Generic application of implicit fb
- to Roland/BOSS devices
-In-Reply-To: <CAOsVg8rPfh-scSmmJSVASPTw7o3vw_zZ05YzVZ_JYFJHbcOcyg@mail.gmail.com>
-References: <20210422120413.457-1-tiwai@suse.de>
- <20210422120413.457-2-tiwai@suse.de>
- <CAHXb3bcKvPSceMuvrq-X8dUyxdrH6iAHTHq_RgTXoAAiXygwUQ@mail.gmail.com>
- <CAOsVg8rAkwLgLP_LSj6CfYG+1R2oB5-sV4KQhLJMqCEqL2wDQA@mail.gmail.com>
- <s5hlf99788o.wl-tiwai@suse.de>
- <CAOsVg8rPfh-scSmmJSVASPTw7o3vw_zZ05YzVZ_JYFJHbcOcyg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, "Keith A . Milner" <maillist@superlative.org>,
- Mike Oliphant <oliphant@nostatic.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 500C2F800E3
+ for <alsa-devel@alsa-project.org>; Sun, 25 Apr 2021 12:12:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 500C2F800E3
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R431e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04400; MF=yang.lee@linux.alibaba.com;
+ NM=1; PH=DS; RN=12; SR=0; TI=SMTPD_---0UWg2GZT_1619345556; 
+Received: from
+ j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com
+ fp:SMTPD_---0UWg2GZT_1619345556) by smtp.aliyun-inc.com(127.0.0.1);
+ Sun, 25 Apr 2021 18:12:37 +0800
+From: Yang Li <yang.lee@linux.alibaba.com>
+To: perex@perex.cz
+Subject: [PATCH] ASoC: q6dsp: q6afe: remove unneeded dead-store initialization
+Date: Sun, 25 Apr 2021 18:12:33 +0800
+Message-Id: <1619345553-29781-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ linux-kernel@vger.kernel.org, ndesaulniers@google.com, lgirdwood@gmail.com,
+ tiwai@suse.com, nathan@kernel.org, clang-built-linux@googlegroups.com,
+ broonie@kernel.org, Yang Li <yang.lee@linux.alibaba.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,49 +75,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Apr 2021 20:04:38 +0200,
-Lucas wrote:
-> 
-> On Fri, Apr 23, 2021 at 2:47 AM Takashi Iwai <tiwai@suse.de> wrote:
-> 
->     Is this really with snd-usb-audio driver?  Please check the entry in
->     /proc/asound/modules (or traverse via sysfs).
-> 
-> No, I see it's not.  It's using the correct snd_ua101 module
+Variables 'wait' and 'port_id' are being initialized, however the
+values are never read and updated later on, hence the redundant
+initializations can be removed.
 
-Then it's expected, and it's been so.  I haven't touched snd-ua101
-driver code until now.
+Cleans up clang warnings:
+sound/soc/qcom/qdsp6/q6afe.c:933:21: warning: Value stored to 'wait'
+during its initialization is never read
+sound/soc/qcom/qdsp6/q6afe.c:1186:6: warning: Value stored to 'port_id'
+during its initialization is never read
 
->     This rather sounds like a generic problem of the implicit feedback.
->     Please give the kernel log with snd_usb_audio.dyndbg=+p boot option
->     with some notion which timestamp corresponding to which action
->     (e.g. starting playback, stopping recording, etc).
-> 
-> Okay, that's good news!  Thanks, and here's that:
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ sound/soc/qcom/qdsp6/q6afe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks.
-
-Could you try the patch below?
-
-
-Takashi
-
-
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1443,11 +1443,11 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
- 	if (snd_BUG_ON(!atomic_read(&ep->running)))
- 		return;
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index cad1cd1..442bf27 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -930,7 +930,7 @@ int q6afe_get_port_id(int index)
+ static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
+ 			    struct q6afe_port *port, uint32_t rsp_opcode)
+ {
+-	wait_queue_head_t *wait = &port->wait;
++	wait_queue_head_t *wait;
+ 	struct aprv2_ibasic_rsp_result_t *result;
+ 	int ret;
  
--	if (ep->sync_source)
--		WRITE_ONCE(ep->sync_source->sync_sink, NULL);
--
--	if (!atomic_dec_return(&ep->running))
-+	if (!atomic_dec_return(&ep->running)) {
-+		if (ep->sync_source)
-+			WRITE_ONCE(ep->sync_source->sync_sink, NULL);
- 		stop_urbs(ep, false);
-+	}
- }
- 
- /**
+@@ -1183,7 +1183,7 @@ int q6afe_port_stop(struct q6afe_port *port)
+ 	struct afe_port_cmd_device_stop *stop;
+ 	struct q6afe *afe = port->afe;
+ 	struct apr_pkt *pkt;
+-	int port_id = port->id;
++	int port_id;
+ 	int ret = 0;
+ 	int index, pkt_size;
+ 	void *p;
+-- 
+1.8.3.1
+
