@@ -2,64 +2,98 @@ Return-Path: <SRS0=GIeY=JW=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D982C433B4
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 10:13:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54969C433ED
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 18:14:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C8545613AC
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 10:13:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C8545613AC
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.alibaba.com
+	by mail.kernel.org (Postfix) with ESMTPS id 75BF86128A
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Apr 2021 18:14:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 75BF86128A
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CAC61694;
-	Sun, 25 Apr 2021 12:12:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CAC61694
+	by alsa0.perex.cz (Postfix) with ESMTPS id 817141682;
+	Sun, 25 Apr 2021 20:13:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 817141682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619345624;
-	bh=24tAGv3l3j8eqIaQ9XAw9L1yiRdrP2HS/7JzTufwAx0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=p1QWyR4Lt0/fErKZqYQDkMllzNbBKkwqRajxwG+vwTwZYbXDFsUjb9CMn85Vcidie
-	 zE5N0VctqNQlJvpLPw4FRInt4EeDOlfUaYTTjB1t2zPFxoZMr8STW+pOOiqSBJXr50
-	 HVzKMr9wb9FURiRVYutlbYXf8LiSxfCeRtfDzAKY=
+	s=default; t=1619374468;
+	bh=D6nX/0NmTZz28tDzM/OBRdt8SeJwymcnUiiKYel3Npk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YjQ6aioTvokCM8v2qcEyOPW9y0Fm7CkLILeJNctPS36C3KxH3nn+99YgJFg6o/vHJ
+	 oVzC3jx4ZWesph1gX6A/fE7o9v8LbRUqL021mAkBHpdFrkeY8LRg7gjQ0fUJGlMY4X
+	 DmTs2gf7LhszXJqSD5toPJFuUoaSFoOktI9EsldE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECB59F801D8;
-	Sun, 25 Apr 2021 12:12:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4F10F80086;
+	Sun, 25 Apr 2021 20:13:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E4159F801EC; Sun, 25 Apr 2021 12:12:51 +0200 (CEST)
-Received: from out30-133.freemail.mail.aliyun.com
- (out30-133.freemail.mail.aliyun.com [115.124.30.133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4CD2BF801EC; Sun, 25 Apr 2021 20:13:36 +0200 (CEST)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com
+ [IPv6:2607:f8b0:4864:20::52c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 500C2F800E3
- for <alsa-devel@alsa-project.org>; Sun, 25 Apr 2021 12:12:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 500C2F800E3
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R431e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=e01e04400; MF=yang.lee@linux.alibaba.com;
- NM=1; PH=DS; RN=12; SR=0; TI=SMTPD_---0UWg2GZT_1619345556; 
-Received: from
- j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com
- fp:SMTPD_---0UWg2GZT_1619345556) by smtp.aliyun-inc.com(127.0.0.1);
- Sun, 25 Apr 2021 18:12:37 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: perex@perex.cz
-Subject: [PATCH] ASoC: q6dsp: q6afe: remove unneeded dead-store initialization
-Date: Sun, 25 Apr 2021 18:12:33 +0800
-Message-Id: <1619345553-29781-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
- linux-kernel@vger.kernel.org, ndesaulniers@google.com, lgirdwood@gmail.com,
- tiwai@suse.com, nathan@kernel.org, clang-built-linux@googlegroups.com,
- broonie@kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7B82F80086
+ for <alsa-devel@alsa-project.org>; Sun, 25 Apr 2021 20:13:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7B82F80086
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="banDX807"
+Received: by mail-pg1-x52c.google.com with SMTP id m12so17893112pgr.9
+ for <alsa-devel@alsa-project.org>; Sun, 25 Apr 2021 11:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=D6nX/0NmTZz28tDzM/OBRdt8SeJwymcnUiiKYel3Npk=;
+ b=banDX807b70mr4fqodTv5K5UVWBxUAmlubrg69UF9VKVYEntoGLAzys2jozmVSKxSV
+ o2xJYaxY686X3KdVHXlnkgt3+l1YqsmQPuZtI55h0A7bn2HV8bh6gTTXICD/JFklyiBu
+ iRoG7QBFW1zrxILAedH8+Zr56jFIqL8guk3ApLIGjCMZG9t/6qH4RedwGQMJJIHkistl
+ NaDqMskhCODpixlVvnfYKFBrFUhEC1lUjkuJfDhKJoIPjSqLMAjOFnF+5LE9RgkisRmk
+ 0l8Ix4NyYC9jQgdb3qCT0wpDLYDUc+ZPAdD2T8NIRBfkJslOb8QZJjISSaefSAs4OSib
+ vlsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=D6nX/0NmTZz28tDzM/OBRdt8SeJwymcnUiiKYel3Npk=;
+ b=dmCc3kf6WSseL7S0T7Am0JJMkdyiYjfWgB26yFJfMPZEuLk7IeWBO3+dyrRk3ATdpQ
+ 37CZT1nGDrVhoLZQzeTxusSp3hyp6HlX4G7DglePq8N+Pgems2LN68Gi5gHn1fMPS2+s
+ XrJfihAx/yA+uRuem1Plvgirf3mUrAD3OjJKUI+4wKmNqxDskA0x7L2I08gkTtkpD+Tr
+ DCAnLssViZbr0syAVAFatcXyheZZs7mq/ytcXRF7v9AhVc6VSr4IlDg3jbuTYJBJFDrV
+ sctruNdxZkC4EkLtc4HW9XQXCxwcyprcFf/jRD6Izew+sypkGtY00xHuAvgnFYq0VQx7
+ xLBg==
+X-Gm-Message-State: AOAM532Eci68HIulQUjgs0O9Prsu0qKQQp4P40h630J9k0V5iFXBn4Iv
+ DRF6lV+r087ZT7xXM6kZsHc=
+X-Google-Smtp-Source: ABdhPJy7dGKH2m2YUnNgAjKkIpug6vaoumkV4jaY18C/n7kPVegQDEcv6G515xkhJQWCsOXxo5vh+Q==
+X-Received: by 2002:a62:1b88:0:b029:1fb:d3d0:343a with SMTP id
+ b130-20020a621b880000b02901fbd3d0343amr14205397pfb.76.1619374408778; 
+ Sun, 25 Apr 2021 11:13:28 -0700 (PDT)
+Received: from localhost.localdomain ([198.148.102.224])
+ by smtp.gmail.com with ESMTPSA id v18sm9623719pff.90.2021.04.25.11.13.24
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 25 Apr 2021 11:13:28 -0700 (PDT)
+From: youling257 <youling257@gmail.com>
+To: pierre-louis.bossart@linux.intel.com
+Subject: Re: [PATCH 05/14] ASoC: Intel: boards: byt/cht: set card and driver
+ name at run time
+Date: Mon, 26 Apr 2021 02:13:04 +0800
+Message-Id: <20210425181304.29280-1-youling257@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20201112223825.39765-6-pierre-louis.bossart@linux.intel.com>
+References: <20201112223825.39765-6-pierre-louis.bossart@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.de, ranjani.sridharan@linux.intel.com, hdegoede@redhat.com,
+ broonie@kernel.org, rander.wang@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,44 +109,4 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Variables 'wait' and 'port_id' are being initialized, however the
-values are never read and updated later on, hence the redundant
-initializations can be removed.
-
-Cleans up clang warnings:
-sound/soc/qcom/qdsp6/q6afe.c:933:21: warning: Value stored to 'wait'
-during its initialization is never read
-sound/soc/qcom/qdsp6/q6afe.c:1186:6: warning: Value stored to 'port_id'
-during its initialization is never read
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- sound/soc/qcom/qdsp6/q6afe.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index cad1cd1..442bf27 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -930,7 +930,7 @@ int q6afe_get_port_id(int index)
- static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
- 			    struct q6afe_port *port, uint32_t rsp_opcode)
- {
--	wait_queue_head_t *wait = &port->wait;
-+	wait_queue_head_t *wait;
- 	struct aprv2_ibasic_rsp_result_t *result;
- 	int ret;
- 
-@@ -1183,7 +1183,7 @@ int q6afe_port_stop(struct q6afe_port *port)
- 	struct afe_port_cmd_device_stop *stop;
- 	struct q6afe *afe = port->afe;
- 	struct apr_pkt *pkt;
--	int port_id = port->id;
-+	int port_id;
- 	int ret = 0;
- 	int index, pkt_size;
- 	void *p;
--- 
-1.8.3.1
-
+What`s the mean? how to use kernel parameter at run time?
