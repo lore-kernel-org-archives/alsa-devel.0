@@ -2,73 +2,70 @@ Return-Path: <SRS0=uf39=JX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2788BC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 21:50:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F1E2C433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 22:30:10 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8CC85611C1
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 21:50:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8CC85611C1
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id C9467613A9
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 22:30:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9467613A9
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CDDF170F;
-	Mon, 26 Apr 2021 23:49:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CDDF170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8BE216FA;
+	Tue, 27 Apr 2021 00:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8BE216FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619473800;
-	bh=SugEg0UHumQ2WhgN2v6Xigujv0lQs0ITAQ2ZwIGW61s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1619476206;
+	bh=fv7NLrwGDq/2yrxi9wK7pjPtcKeAhXdgD0aiM81NSH4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o2W0gwCauqKjl0kSalaGhJ46FAJfgLtj5FJeH6G8HZPIniyvDQYVoxcJp1k7lxtvD
-	 Rka26oeaFhPiBFyIk7JA/PA7MlvEURKpAZZ8Z2dmvlYf7LarznpXU6KaYEOWrJhQ03
-	 ofDgdAVvjTXY99xQ08OyNAZO4aXZcCNZj9hRuCPQ=
+	b=Zvux30xVw524JCrHrsTrVsO7kWSoLFRTlFQJ+GdECv7Aa0o9jrAYGmbfa9HnLJpCg
+	 B0VWrh2Ns+J0kceH40lJ9Jv1iPbvjXqwyzkLBAoTss9FaJo2dhr+yJ9OOwcqLC8zpl
+	 8oY8vEa1PYsLHSRMNiUdVnnMYnvmcLIC3DlG05Os=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20B84F80475;
-	Mon, 26 Apr 2021 23:47:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0490FF8012A;
+	Tue, 27 Apr 2021 00:29:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9ABCCF8032D; Mon, 26 Apr 2021 23:47:37 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7A4BF80171
- for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 23:47:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7A4BF80171
-IronPort-SDR: mGBZBi+Y0IzzDEosXi+i2+E/FW4BzhDqtKrite6FFgc8gGaaQWUZ1kaFeA5qcqE8xtSfH5iOgG
- ZWJi//sjNOyg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9966"; a="260363962"
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; d="scan'208";a="260363962"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2021 14:47:21 -0700
-IronPort-SDR: rC5dBULe7sBhXlgAzjzQ5nYVhVTnwvJrzm1rZBX9OmUFOlWplyM0bt3DBOcL4M9Wg4zCG8R3rx
- 81rnzHPXqfsA==
-X-IronPort-AV: E=Sophos;i="5.82,252,1613462400"; d="scan'208";a="422810285"
-Received: from bcochran-mobl1.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.24.80])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2021 14:47:21 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: fsl: imx-pcm-rpmsg: remove useless initialization
-Date: Mon, 26 Apr 2021 16:47:01 -0500
-Message-Id: <20210426214701.235106-5-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210426214701.235106-1-pierre-louis.bossart@linux.intel.com>
-References: <20210426214701.235106-1-pierre-louis.bossart@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ id 2EBB1F8016C; Tue, 27 Apr 2021 00:28:51 +0200 (CEST)
+Received: from relmlie6.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 84085F8012A
+ for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2021 00:28:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84085F8012A
+Date: 27 Apr 2021 07:28:34 +0900
+X-IronPort-AV: E=Sophos;i="5.82,252,1613401200"; d="scan'208";a="79335915"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie6.idc.renesas.com with ESMTP; 27 Apr 2021 07:28:34 +0900
+Received: from mercury.renesas.com (unknown [10.166.252.133])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8329F4005E2B;
+ Tue, 27 Apr 2021 07:28:34 +0900 (JST)
+Message-ID: <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: broonie-sound/for-next bisection:
+ baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
+In-Reply-To: <20210426144242.GF4590@sirena.org.uk>
+References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
+ <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+ <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426144242.GF4590@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Jon Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
+ Thierry Reding <treding@nvidia.com>, Stephan Gerhold <stephan@gerhold.net>,
+ kernelci-results@groups.io, Guillaume Tucker <guillaume.tucker@collabora.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,30 +81,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
 
-sound/soc/fsl/imx-pcm-rpmsg.c:547:18: style: Variable 'written_num' is
-assigned a value that is never used. [unreadVariable]
- int written_num = 0;
-                 ^
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Hi Guillaume, Mark
+
+> > If so, all sai1 - sai6 are using "fsl,vf610-sai",
+> > all saiX doesn't have .name. I think it should have different name.
+> > In your case, at least, sai5 / sai6 needs to have
+> 
+> You could send a patch along with re-adding the three patches I dropped?
+
+Thanks, I can do it.
+But I want to confirm above first.
+Let's keep Guillaume's happiness :)
+
+Thank you for your help !!
+
+Best regards
 ---
- sound/soc/fsl/imx-pcm-rpmsg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
-index 875c0d6df339..6d883a10efd1 100644
---- a/sound/soc/fsl/imx-pcm-rpmsg.c
-+++ b/sound/soc/fsl/imx-pcm-rpmsg.c
-@@ -544,7 +544,7 @@ static int imx_rpmsg_pcm_ack(struct snd_soc_component *component,
- 	struct rpmsg_msg *msg;
- 	unsigned long flags;
- 	int buffer_tail = 0;
--	int written_num = 0;
-+	int written_num;
- 
- 	if (!rpmsg->force_lpa)
- 		return 0;
--- 
-2.25.1
-
+Kuninori Morimoto
