@@ -6,66 +6,62 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F1E2C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 22:30:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8574C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 22:40:33 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C9467613A9
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 22:30:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C9467613A9
+	by mail.kernel.org (Postfix) with ESMTPS id 42C1C61168
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 22:40:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 42C1C61168
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8BE216FA;
-	Tue, 27 Apr 2021 00:29:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8BE216FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D7D816F5;
+	Tue, 27 Apr 2021 00:39:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D7D816F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619476206;
-	bh=fv7NLrwGDq/2yrxi9wK7pjPtcKeAhXdgD0aiM81NSH4=;
+	s=default; t=1619476830;
+	bh=W8lMNmVM2nXBxh4ydOIUqhJVoWe3PgmVMz2C+eMEJ2M=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Zvux30xVw524JCrHrsTrVsO7kWSoLFRTlFQJ+GdECv7Aa0o9jrAYGmbfa9HnLJpCg
-	 B0VWrh2Ns+J0kceH40lJ9Jv1iPbvjXqwyzkLBAoTss9FaJo2dhr+yJ9OOwcqLC8zpl
-	 8oY8vEa1PYsLHSRMNiUdVnnMYnvmcLIC3DlG05Os=
+	b=D6R5SAM2rVAZsKda59TsHXrxPTiCdkGXuWKL7fYng2NWuwiY4A1T+qFsnXUojtKKR
+	 gbRfyqUxWdxk7dHGTG2SHm5NIy8X+2x/shNkhiWwOxGHgaEIsFtpNeiRCXNHSZTwsT
+	 cb880AFoHaQRLSQJjDPNtT/2LOH9D/o4Z1FgiPu8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0490FF8012A;
-	Tue, 27 Apr 2021 00:29:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB69FF80165;
+	Tue, 27 Apr 2021 00:39:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2EBB1F8016C; Tue, 27 Apr 2021 00:28:51 +0200 (CEST)
+ id 1EE33F8016C; Tue, 27 Apr 2021 00:39:38 +0200 (CEST)
 Received: from relmlie6.idc.renesas.com (relmlor1.renesas.com
  [210.160.252.171])
- by alsa1.perex.cz (Postfix) with ESMTP id 84085F8012A
- for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2021 00:28:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84085F8012A
-Date: 27 Apr 2021 07:28:34 +0900
-X-IronPort-AV: E=Sophos;i="5.82,252,1613401200"; d="scan'208";a="79335915"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 27 Apr 2021 07:28:34 +0900
+ by alsa1.perex.cz (Postfix) with ESMTP id F1D65F800F0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2021 00:39:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1D65F800F0
+Date: 27 Apr 2021 07:39:28 +0900
+X-IronPort-AV: E=Sophos;i="5.82,252,1613401200"; d="scan'208";a="79336536"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+ by relmlie6.idc.renesas.com with ESMTP; 27 Apr 2021 07:39:28 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8329F4005E2B;
- Tue, 27 Apr 2021 07:28:34 +0900 (JST)
-Message-ID: <8735vc4r59.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir6.idc.renesas.com (Postfix) with ESMTP id DED344108B6F;
+ Tue, 27 Apr 2021 07:39:28 +0900 (JST)
+Message-ID: <871raw4qn3.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: broonie-sound/for-next bisection:
- baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
-In-Reply-To: <20210426144242.GF4590@sirena.org.uk>
-References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
- <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
- <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
- <20210426144242.GF4590@sirena.org.uk>
+Subject: Re: [PATCH 2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+In-Reply-To: <20210426130801.GD4590@sirena.org.uk>
+References: <871rb3hypy.wl-kuninori.morimoto.gx@renesas.com>
+ <87y2dbgk47.wl-kuninori.morimoto.gx@renesas.com>
+ <20210423183503.GK5507@sirena.org.uk>
+ <874kft4lp8.wl-kuninori.morimoto.gx@renesas.com>
+ <20210426130801.GD4590@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Jon Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
- Thierry Reding <treding@nvidia.com>, Stephan Gerhold <stephan@gerhold.net>,
- kernelci-results@groups.io, Guillaume Tucker <guillaume.tucker@collabora.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,17 +78,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Guillaume, Mark
+Hi Mark
 
-> > If so, all sai1 - sai6 are using "fsl,vf610-sai",
-> > all saiX doesn't have .name. I think it should have different name.
-> > In your case, at least, sai5 / sai6 needs to have
+> > I'm thinking the way that for example select "format" automatically,
+> > but specify others from Card, etc (= not all settings).
+> > Because as you are concerning, some driver might has complex limitations for some parts.
+> > We want to manually and directly select it from Card in such case.
 > 
-> You could send a patch along with re-adding the three patches I dropped?
+> > My idea was very simple, but indeed I could understand your concern.
+> > I have no good idea so far, but want to consider about it more.
+> 
+> Yeah, the only thing I can think of is big lists of configurations.
+> That's not the end of the world but it's potentially annoying, we should
+> be able to get helpers that make life easier I guess.
 
-Thanks, I can do it.
-But I want to confirm above first.
-Let's keep Guillaume's happiness :)
+Thanks.
+I think I need to explain above my idea in patch/comment.
+And I noticed that my previous patch had some issues.
+I will fixup these, and re-post it.
 
 Thank you for your help !!
 
