@@ -6,64 +6,60 @@ X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
 	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74A86C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 00:42:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A5B0C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 06:15:02 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id CA08C60FEE
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 00:42:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CA08C60FEE
+	by mail.kernel.org (Postfix) with ESMTPS id B377661104
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 06:15:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org B377661104
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=renesas.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 759CD167E;
-	Mon, 26 Apr 2021 02:41:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 759CD167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 663401657;
+	Mon, 26 Apr 2021 08:14:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 663401657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619397728;
-	bh=udZO6v9IaMdLjtbju4ImxSd10qSIGSXD9NmDcyAypuY=;
+	s=default; t=1619417698;
+	bh=b5Bi271bmhAKuW8J6C6NzNhVZN397xkhRtFMQfmqugM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u1kl6nsfgTy0zOKw77KGWA4jfaSkxRgky1HLIXDD5oqQqOD8faHl5S+mtPXUr/TCn
-	 kU++yJFp8N4+vw9rYXPe7He8OFIuPOuEvXcJgjXWy9yTHRTsVmBFIJoSfO0xKP/9jz
-	 avhzsyk4xJvjUOubjjM16m8HhuVyIFuwx9VXQf/A=
+	b=PVPTdUYNRKAuLEGGuajHlD29ziBtzS5zhpInY/7agv6AEa9MvT72xWJdssG6I8Q1y
+	 pmv/YM41MyaKyEFDbGB6vJMe5SvT5qvsU7mzhvYIVDPMK4YGIFsK2oLUWRWc8R0Dxt
+	 kk5XtCXF7XJyQtufdvjuW1hh7PW3t9zvzRQaabmc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1F3AF80086;
-	Mon, 26 Apr 2021 02:41:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B4B0BF80165;
+	Mon, 26 Apr 2021 08:14:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3F98F801EC; Mon, 26 Apr 2021 02:41:15 +0200 (CEST)
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com
- [210.160.252.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 7F549F80086
- for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 02:41:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F549F80086
-Date: 26 Apr 2021 09:41:02 +0900
-X-IronPort-AV: E=Sophos;i="5.82,251,1613401200"; d="scan'208";a="79220944"
+ id 4B83EF8016C; Mon, 26 Apr 2021 08:14:06 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id ECEA0F800E3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 08:13:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECEA0F800E3
+Date: 26 Apr 2021 15:13:55 +0900
+X-IronPort-AV: E=Sophos;i="5.82,251,1613401200"; d="scan'208";a="79475179"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
- by relmlie6.idc.renesas.com with ESMTP; 26 Apr 2021 09:41:02 +0900
+ by relmlie5.idc.renesas.com with ESMTP; 26 Apr 2021 15:13:55 +0900
 Received: from mercury.renesas.com (unknown [10.166.252.133])
- by relmlir5.idc.renesas.com (Postfix) with ESMTP id B95A7400A102;
- Mon, 26 Apr 2021 09:41:02 +0900 (JST)
-Message-ID: <877dkp5141.wl-kuninori.morimoto.gx@renesas.com>
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 59BB7400CA0E;
+ Mon, 26 Apr 2021 15:13:55 +0900 (JST)
+Message-ID: <874kft4lp8.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To: Guillaume Tucker <guillaume.tucker@collabora.com>
-Subject: Re: broonie-sound/for-next bisection:
- baseline.bootrr.asoc-simple-card-probed on kontron-sl28-var3-ads2
-In-Reply-To: <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
-References: <6080e82c.1c69fb81.cd60c.2a13@mx.google.com>
- <3ca62063-41b4-c25b-a7bc-8a8160e7b684@collabora.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/7] ASoC: soc-core: add snd_soc_runtime_get_dai_fmt()
+In-Reply-To: <20210423183503.GK5507@sirena.org.uk>
+References: <871rb3hypy.wl-kuninori.morimoto.gx@renesas.com>
+ <87y2dbgk47.wl-kuninori.morimoto.gx@renesas.com>
+ <20210423183503.GK5507@sirena.org.uk>
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: Jon Hunter <jonathanh@nvidia.com>, alsa-devel@alsa-project.org,
- Thierry Reding <treding@nvidia.com>, Stephan Gerhold <stephan@gerhold.net>,
- kernelci-results@groups.io, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,42 +76,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-Hi Guillaume
+Hi Mark
 
-Thank you for your reporting
+Thank you for your feedback
 
-> Please see the bisection report below about the asoc-simple-card
-> driver failing to probe on kontron-sl28-var3-ads2 in today's
-> broonie-sound tree.  I believe this has not reached linux-next
-> yet.
+> the other edge) but there are other examples.  This means we probably
+> want drivers to be able to list at least two levels of preferences for
+> formats separately then try to ideally use one they both like, but it
+> gets a little tricky.  We probably also want to have some priority list
+> in the kernel where we try to rank how likely formats are to have bugs
+> in the hardware to maximise the chances that things will work.
+(snip)
+> I'm not 100% sure I get why we have the separate _POSSIBLE_ macros here?
+> One thing we'll have to take account of is that there's some DAIs that
+> have some restrictions on what options they can combine - for example
+> only doing I2S with one format of clock but allowing clock inversion in
+> DSP mode.  It might be safer (if tedious for driver authors without some
+> help...) to just have arrays of fully specified daifmt values.
+(snip)
+> > +	/* use original dai_fmt if sound card specify */
+> > +	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK))
+> > +		mask |= SND_SOC_DAIFMT_FORMAT_MASK;
+> > +	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_CLOCK_MASK))
+> > +		mask |= SND_SOC_DAIFMT_CLOCK_MASK;
+> > +	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_INV_MASK))
+> > +		mask |= SND_SOC_DAIFMT_INV_MASK;
+> > +	if (!(dai_link->dai_fmt & SND_SOC_DAIFMT_MASTER_MASK))
+> > +		mask |= SND_SOC_DAIFMT_MASTER_MASK;
+> > +
+> > +	dai_link->dai_fmt =	dai_link->dai_fmt | (dai_fmt & mask);
 > 
-> Reports aren't automatically sent to the public while we're
-> trialing new bisection features on kernelci.org but this one
-> looks valid.
+> If the sound card specifies something why not just use it verbatim
+> instead of trying to merge?
 
-	20:22:15.060525  <4>[    9.948821] sysfs: cannot create duplicate filename '/devices/platform/sound/(null)-wm8904-hifi'
+I'm thinking the way that for example select "format" automatically,
+but specify others from Card, etc (= not all settings).
+Because as you are concerning, some driver might has complex limitations for some parts.
+We want to manually and directly select it from Card in such case.
 
-Hmm, I couldn't reproduce this.
-
-I'm not 100% sure about kontron-sl28-var3-ads2, but it seems
-below doesn't have .name, and I think no one add it to
-sai->cpu_dai_drv.
-
-	${LINUX}/sound/soc/fsl/fsl_sai.c :: fsl_sai_dai_template
-
-Maybe it is the reason of naming "(null)" ?
-
-And, if my understanding was correct, it is from fsl-ls1028a.dtsi,
-and fsl-ls1028a-kontron-sl28-var3-ads2.dts.
-
-If so, all sai1 - sai6 are using "fsl,vf610-sai",
-all saiX doesn't have .name. I think it should have different name.
-In your case, at least, sai5 / sai6 needs to have
-
-	...
-	sai5: .name = "sai5",
-	sai6: .name = "sai6",
-	...
+My idea was very simple, but indeed I could understand your concern.
+I have no good idea so far, but want to consider about it more.
 
 Thank you for your help !!
 
