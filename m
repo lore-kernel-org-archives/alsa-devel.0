@@ -2,60 +2,73 @@ Return-Path: <SRS0=uf39=JX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-3.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E21EC433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 06:35:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CD85C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 06:36:00 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id C6A5B61249
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 06:35:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org C6A5B61249
+	by mail.kernel.org (Postfix) with ESMTPS id 964EE61249
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 06:35:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 964EE61249
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 932D7167A;
-	Mon, 26 Apr 2021 08:34:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 932D7167A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92E501692;
+	Mon, 26 Apr 2021 08:35:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92E501692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619418902;
-	bh=eoqxIXJGnIxbhj6goBXqsxlETOu3TZw5S6gwiklZXNI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UP8ap1CIGPQypqWB4Cej+BIS1JRYD3eYh32+8MhXot8FR3ejEJGFp6tOjuUGFBy4U
-	 XzCBb9zM1TcemzXuOc2s2bpe6ZZbmvrzQFt7ukzr4mUGDHThUOfiQR44DV1whSvcjb
-	 ooPuqgdZz8sKEc+iHY1aEP4DKi2H104pkKZOTtsQ=
+	s=default; t=1619418955;
+	bh=afJYpYE46AbtlZdf5ZbJ0kSZ7DUqmgqwWMdcsMs3EZY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ndNaWoXXAgPA/Z2dctbiuRKwzjeCamUVKHp6Hf1BQHulsXNOteqpLBiT5t+/nFrmz
+	 vsoH3QVMqig8W7z0zEK3AxpVAqQVQdLlZ6jFx4r9CI1fHh1u1EqWK+AjEhMlfxUVOW
+	 O6AD3JiCZIyE4fq/E+EvGu+Pv5sdNLP7qf6ixhxk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F0A9F80165;
-	Mon, 26 Apr 2021 08:34:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2B2EF80423;
+	Mon, 26 Apr 2021 08:34:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5765CF8016C; Mon, 26 Apr 2021 08:34:09 +0200 (CEST)
+ id 5A686F80424; Mon, 26 Apr 2021 08:34:41 +0200 (CEST)
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15759F800F0
- for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 08:33:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15759F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA0A0F800E3
+ for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 08:34:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA0A0F800E3
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id 0C4B0AC36;
- Mon, 26 Apr 2021 06:33:53 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id AB9A3AC36;
+ Mon, 26 Apr 2021 06:34:36 +0000 (UTC)
+Date: Mon, 26 Apr 2021 08:34:36 +0200
+Message-ID: <s5him494kqr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: usb-audio: Fix implicit sync clearance at stopping
- stream
-Date: Mon, 26 Apr 2021 08:33:49 +0200
-Message-Id: <20210426063349.18601-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
+To: Lucas <jaffa225man@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: usb-audio: Generic application of implicit fb
+ to Roland/BOSS devices
+In-Reply-To: <CAOsVg8okhRKPSnSOOCjMMD4wBxFB=E1i7JaQQY0T+CfCa_Jz1g@mail.gmail.com>
+References: <20210422120413.457-1-tiwai@suse.de>
+ <20210422120413.457-2-tiwai@suse.de>
+ <CAHXb3bcKvPSceMuvrq-X8dUyxdrH6iAHTHq_RgTXoAAiXygwUQ@mail.gmail.com>
+ <CAOsVg8rAkwLgLP_LSj6CfYG+1R2oB5-sV4KQhLJMqCEqL2wDQA@mail.gmail.com>
+ <s5hlf99788o.wl-tiwai@suse.de>
+ <CAOsVg8rPfh-scSmmJSVASPTw7o3vw_zZ05YzVZ_JYFJHbcOcyg@mail.gmail.com>
+ <s5hlf964td3.wl-tiwai@suse.de>
+ <CAOsVg8okhRKPSnSOOCjMMD4wBxFB=E1i7JaQQY0T+CfCa_Jz1g@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Lucas Endres <jaffa225man@gmail.com>
+Cc: alsa-devel@alsa-project.org, "Keith A . Milner" <maillist@superlative.org>,
+ Mike Oliphant <oliphant@nostatic.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,45 +84,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent endpoint management change for implicit feedback mode added
-a clearance of ep->sync_sink (formerly ep->sync_slave) pointer at
-snd_usb_endpoint_stop() to assure no leftover for the feedback from
-the already stopped capture stream.  This turned out to cause a
-regression, however, when full-duplex streams were running and only a
-capture was stopped.  Because of the above clearance of ep->sync_sink
-pointer, no more feedback is done, hence the playback will stall.
+On Sun, 25 Apr 2021 21:23:31 +0200,
+Lucas wrote:
+> 
+> That patch worked perfectly for both devices I noticed the issue on (the
+> Roland INTEGRA-7 and R-26).
 
-This patch fixes the ep->sync_sink clearance to be done only after all
-endpoints are released, for addressing the regression.
+Great, I submitted the proper patch now.
 
-Reported-and-tested-by: Lucas Endres <jaffa225man@gmail.com>
-Fixes: bf6313a0ff76 ("ALSA: usb-audio: Refactor endpoint management")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/endpoint.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> Although unrelated, I think the other issue with the EIDROL UA-101 in full
+> speed mode (USB 1.1) is new since trying the 5.12.0-rc8-next-20210422 kernel
+> branch.  Prior to that, I'd been continually patching updates to the mainline
+> 5.11.9 source.
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index f4c3d2b38abb..014c43862826 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1443,11 +1443,11 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
- 	if (snd_BUG_ON(!atomic_read(&ep->running)))
- 		return;
- 
--	if (ep->sync_source)
--		WRITE_ONCE(ep->sync_source->sync_sink, NULL);
--
--	if (!atomic_dec_return(&ep->running))
-+	if (!atomic_dec_return(&ep->running)) {
-+		if (ep->sync_source)
-+			WRITE_ONCE(ep->sync_source->sync_sink, NULL);
- 		stop_urbs(ep, false);
-+	}
- }
- 
- /**
--- 
-2.26.2
+Hm, let me know if you find more details.
 
+
+thanks,
+
+Takashi
