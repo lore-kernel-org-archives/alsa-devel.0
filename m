@@ -2,65 +2,96 @@ Return-Path: <SRS0=uf39=JX=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C825C433B4
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 16:02:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1064DC433B4
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 16:39:04 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 09C1A6024A
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 16:02:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 09C1A6024A
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=suse.de
+	by mail.kernel.org (Postfix) with ESMTPS id 60328611CE
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Apr 2021 16:39:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 60328611CE
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=opensource.cirrus.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 972DF16C0;
-	Mon, 26 Apr 2021 18:01:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 972DF16C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0619E16BC;
+	Mon, 26 Apr 2021 18:38:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0619E16BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619452949;
-	bh=daRn+w5i12F9kafKMDReKZ/1Xi2C6SjEooxqq5z1MEA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=P2MMJWH6f8RVwW0wAjv7l/Fm7cicKoVf6lKI2S+lBOPRF0gn64Ynaqd5LLaG4JEcs
-	 lmjIt4lEfpIBJEV/D27xCqkODWGAH6XiQ9l+9yjbG2PxpA212AOugumH90VxClrPnP
-	 dZNkcHySNWkG/Kb8SHd6cRJY3/WCKSRiAOSeYQvc=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C865F80171;
-	Mon, 26 Apr 2021 18:01:39 +0200 (CEST)
+	s=default; t=1619455140;
+	bh=f4gR8UptoD+fcfBXNmAQ6g3lFliZzEmfb9PTcIfL94k=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HYzIXspJBSfzEgjLilFKVwMA8aSMKOjO0FU0CVzh6lUHZMp3IWrS6Vq7YQJdLDpot
+	 URHrsm2Oo5VWgAQL+IWNLP0vp59TEv4G/M2VQ9gJkWvbvUfjjB5TNY1tKGwblDruJG
+	 49k8Zs5DaH2lRNMM4VihCsHj9o9L8V6zHKiQeyGA=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E932F80165;
+	Mon, 26 Apr 2021 18:38:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4AEAF80218; Mon, 26 Apr 2021 18:01:37 +0200 (CEST)
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id DDF33F80218; Mon, 26 Apr 2021 18:38:02 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 336B9F80171
- for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 18:01:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 336B9F80171
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
- by mx2.suse.de (Postfix) with ESMTP id D1A07AC36;
- Mon, 26 Apr 2021 16:01:26 +0000 (UTC)
-Date: Mon, 26 Apr 2021 18:01:26 +0200
-Message-ID: <s5hzgxl11d5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: Re: [PATCH] sound/isa/ib: Fix two use after free in
- snd_sb_qsound_build
-In-Reply-To: <20210426145541.8070-1-lyl2019@mail.ustc.edu.cn>
-References: <20210426145541.8070-1-lyl2019@mail.ustc.edu.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 651C0F8012A
+ for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2021 18:37:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 651C0F8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="fDIWsjCl"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id
+ 13QGbpT6021529; Mon, 26 Apr 2021 11:37:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=eqJUMbnkhTrwDLjuT64AjqedgEqwqlStWMiEMC13D7U=;
+ b=fDIWsjClttMG+6rv/+e7Kz7CdqWlY/8kWmedbcqXAJnFvaLQWVuafJJtBCiUA9YT9ugf
+ WZSKGPvnPJdWODonXyVMg5ba2etb5FANP+zd973FnH1VKprDm8ZyqwQAXaSs1YyHK3+m
+ n/jbEJouGB1dBJDxKYuYycUKdw1HYibwuSkxSfob6Oxyoa9rFmpHiPdWZg8Am70Qlpv3
+ lnzsAfpDQmGTEkMXrslAA3Xqs1jnVTLC/XNmvawAeZyU6xBr4DtAao1Ub3yoj4LBZPqV
+ DHMyDplyaeLi+QmVepcOxaOpATQjVEKFGVVGpfEyEAdUrY911NVW4tDZ3VbMzpkvRcu1 TA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+ by mx0b-001ae601.pphosted.com with ESMTP id 385wdbrayb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 26 Apr 2021 11:37:51 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Apr
+ 2021 17:37:49 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Mon, 26 Apr 2021 17:37:49 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.203])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B219411D1;
+ Mon, 26 Apr 2021 16:37:49 +0000 (UTC)
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 0/2]  Fix couple of bugs reported by Canonical
+Date: Mon, 26 Apr 2021 17:37:47 +0100
+Message-ID: <20210426163749.196153-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: u_eH0bjPAC3fqQA8uy1G7KrSZYbLPP6u
+X-Proofpoint-GUID: u_eH0bjPAC3fqQA8uy1G7KrSZYbLPP6u
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0
+ mlxlogscore=911
+ clxscore=1015 mlxscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260127
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,25 +107,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Apr 2021 16:55:41 +0200,
-Lv Yunlong wrote:
-> 
-> In snd_sb_qsound_build, snd_ctl_add(..,p->qsound_switch...) and
-> snd_ctl_add(..,p->qsound_space..) are called. But the second
-> arguments of snd_ctl_add() could be freed via snd_ctl_add_replace()
-> ->snd_ctl_free_one(). After the error code is returned,
-> snd_sb_qsound_destroy(p) is called in __error branch.
-> 
-> But in snd_sb_qsound_destroy(), the freed p->qsound_switch and
-> p->qsound_space are still used by snd_ctl_remove().
-> 
-> My patch set p->qsound_switch and p->qsound_space to NULL if
-> snd_ctl_add() failed to avoid the uaf bugs. But these codes need
-> to further be improved with the code style.
-> 
-> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+CirrusLogic: Cracking noises appears in built-in speaker when output 
+volume is set >80%
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1923557i
 
-Thanks, applied now.
+CirrusLogic: The default input volume is "0%" 
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1924997
 
+In v2:
+- Add additional information in commit messages.
 
-Takashi
+Stefan Binding (2):
+  ALSA: hda/cirrus: Set Initial DMIC volume for Bullseye to -26 dB
+  ALSA: hda/cirrus: Use CS8409 filter to fix abnormal sounds on Bullseye
+
+ sound/pci/hda/patch_cirrus.c | 38 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
+-- 
+2.25.1
+
