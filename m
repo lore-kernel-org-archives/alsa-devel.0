@@ -2,70 +2,94 @@ Return-Path: <SRS0=XYKd=JY=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_SIGNED,DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA628C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Apr 2021 15:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39D02C433ED
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Apr 2021 18:52:07 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8D77E60FE3
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Apr 2021 15:34:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8D77E60FE3
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=tuxedocomputers.com
+	by mail.kernel.org (Postfix) with ESMTPS id E14B361139
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Apr 2021 18:52:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E14B361139
+Authentication-Results: mail.kernel.org; dmarc=fail (p=reject dis=none) header.from=google.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAC3316DE;
-	Tue, 27 Apr 2021 17:34:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAC3316DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75ED216E5;
+	Tue, 27 Apr 2021 20:51:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75ED216E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619537692;
-	bh=HoWeVBXjxeYzFTVOp/Fx2lx1MqSXjVVzODwW0Vwf5nc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=assShYl1aGBTa6sjGxyneuKSZWxAB1Wv/1SUqpM+SUQXO8iMYabrrWQdZCtvbMu32
-	 lQrrvFtxWIG5Tp5bflyz1IDfsTmbFHzp0qS6wdGZuGTML4g9JMKS4n/gTQx6x+QEDk
-	 T0Z8UNXmOWf9MwIQpwl0NZ8gjmZj9peU27OqAVa8=
+	s=default; t=1619549523;
+	bh=FV42CIjBZ3QHrwAlRAEmteDvc46DdSUPmNmqu4F5yAw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=p4ttQ2aqiYPZZUzIi4XCM2MzwpGn3JNQY96bsRE/BuzPg3KdmBsUXvp59oXtsimEb
+	 kbEjVE7VOYjfotnBsv+gVj746viG/8WoKb6ltaPoZ3N5LThHRmEv1DROXORC+PBhLd
+	 8755BYhL5I8G+X/XGnS+7Xne7eQtr2KGvTlt20IA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 591D9F801D8;
-	Tue, 27 Apr 2021 17:34:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0A12F801D8;
+	Tue, 27 Apr 2021 20:51:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE0F2F801EC; Tue, 27 Apr 2021 17:34:00 +0200 (CEST)
-Received: from srv6.fidu.org (srv6.fidu.org [159.69.62.71])
+ id E028AF800C0; Tue, 27 Apr 2021 20:51:10 +0200 (CEST)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D0C2F8012A
- for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2021 17:33:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D0C2F8012A
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by srv6.fidu.org (Postfix) with ESMTP id ED6C6C800D3;
- Tue, 27 Apr 2021 17:33:50 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
- by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
- with LMTP id S_8S2HnoTTiF; Tue, 27 Apr 2021 17:33:46 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box
- (p200300E37f39860059dF2f3DAEe82359.dip0.t-ipconnect.de
- [IPv6:2003:e3:7f39:8600:59df:2f3d:aee8:2359])
- (Authenticated sender: wse@tuxedocomputers.com)
- by srv6.fidu.org (Postfix) with ESMTPA id 11B88C800C4;
- Tue, 27 Apr 2021 17:33:46 +0200 (CEST)
-From: Werner Sembach <wse@tuxedocomputers.com>
-To: wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- alsa-devel@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel Clevo PCx0Dx
-Date: Tue, 27 Apr 2021 17:30:25 +0200
-Message-Id: <20210427153025.451118-1-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FEBDF800C0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2021 20:51:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FEBDF800C0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="TBvf0xKS"
+Received: by mail-lj1-x232.google.com with SMTP id l22so62031803ljc.9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2021 11:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20161025;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Gog+9Z3fXL22LIPFv7bH+SyHlsPgqAEYM+x0G4DVbUk=;
+ b=TBvf0xKSwntfNBf0ki5A6F9saMvDAtYZZ//h/FcOHpAKhLhUpTEAOvReK/Cbk24D4q
+ NWWhfSMe/wdjbcrKD2FBkm/Qms/xqia+kjBpuwsyhyjxGsxghMacVDusDEVpsXCXUlYw
+ adeYxpvYfc1bVbPoJhJwwWKxU6HZupYPUPcDEDdz6NlPw0z+CykZJtCZS8tg36fQZRJm
+ 9pQT5vnhbINDuNub+jC6HXwE6tY030Mu4031/lKOlmIB9kdbHrJXUz1Q+EjPPfcDoKkf
+ y7n2xIZn1urvoUh+y5c+F+zJkvkwBTs2dNF59WTkfJSzgHk1qI3mblHUn+JM7XfLXl8F
+ uE4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Gog+9Z3fXL22LIPFv7bH+SyHlsPgqAEYM+x0G4DVbUk=;
+ b=KWUDA2aAfH8jT2PPha5G7qwh8ZlKnkHQE2Mi3hqGU3EnytqJ73vKf+bLy14ArJV6D/
+ w6SCjtQ63rNoLJL7L+EuysQ2PCGzCtqjnQaVllSnnyTMiTw4ICadAWQEbMuv52Q6GsIS
+ zCxcaXU7b1Df0pNGUjwFnLg8MkA67mhuIZG8QypgFCWWsLjQspxp84fJXaTEj8A+9N+y
+ Qs9vSF7giYnFDPYiCckBnn4S+IsmES/9W116cETljUPS5/JPCpfv2lsN2WGLiteAy4Nz
+ xYws6k1FrAk+UZHMFkqPu/4n4n59bJuS9rfU1Yxt55+mRvWNLfdpRQvAfTvt7w31kaGt
+ UOng==
+X-Gm-Message-State: AOAM533RX+oGt352ui7NAZQRdR9X9zOOyDNCnK+cFW5OAT6Zgj9Zy7qw
+ xsjLXvWQsAeOePpKLn99rOSK4pVlzV4hbkCYUOlLpw==
+X-Google-Smtp-Source: ABdhPJwxKbevoemvyWBbaarG/ohvblLCHTsJTfbV7w0ScGJyTAY/d62rNZGVzSX4cFx25v8OxTCyeZHL45vTV5iZzcA=
+X-Received: by 2002:a2e:6c12:: with SMTP id h18mr12473028ljc.116.1619549465409; 
+ Tue, 27 Apr 2021 11:51:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Eckhart Mohr <e.mohr@tuxedocomputers.com>, stable@vger.kernel.org
+References: <1619345553-29781-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1619345553-29781-1-git-send-email-yang.lee@linux.alibaba.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Tue, 27 Apr 2021 11:50:53 -0700
+Message-ID: <CAKwvOdkXxyyLSTAaMsyeJ3jxCeAGY=9DxLZNX4DcvF=fmkx7mg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: q6dsp: q6afe: remove unneeded dead-store
+ initialization
+To: Yang Li <yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
+ LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nathan Chancellor <nathan@kernel.org>,
+ clang-built-linux <clang-built-linux@googlegroups.com>,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,41 +105,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+On Sun, Apr 25, 2021 at 3:12 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> Variables 'wait' and 'port_id' are being initialized, however the
+> values are never read and updated later on, hence the redundant
+> initializations can be removed.
+>
+> Cleans up clang warnings:
+> sound/soc/qcom/qdsp6/q6afe.c:933:21: warning: Value stored to 'wait'
+> during its initialization is never read
+> sound/soc/qcom/qdsp6/q6afe.c:1186:6: warning: Value stored to 'port_id'
+> during its initialization is never read
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-This applies a SND_PCI_QUIRK(...) to the Clevo PCx0Dx barebones. This
-fix enables audio output over the headset jack and ensures that a
-microphone connected via the headset combo jack is correctly recognized
-when pluged in.
+Thanks for the patch, but it looks like this has already been fixed in:
+https://lore.kernel.org/alsa-devel/20210218222916.89809-5-pierre-louis.bossart@linux.intel.com/
 
-Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
-Co-developed-by: Werner Sembach <wse@tuxedocomputers.com>
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-Cc: <stable@vger.kernel.org>
----
 
-From 7dee2aee3ab045c4dafa9793a4016929a559d9cd Mon Sep 17 00:00:00 2001
-From: Werner Sembach <wse@tuxedocomputers.com>
-Date: Tue, 13 Apr 2021 14:02:08 +0200
-Subject: [PATCH] Add SND_PCI_QUIRK for Clevo PCx0Dx
+> ---
+>  sound/soc/qcom/qdsp6/q6afe.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+> index cad1cd1..442bf27 100644
+> --- a/sound/soc/qcom/qdsp6/q6afe.c
+> +++ b/sound/soc/qcom/qdsp6/q6afe.c
+> @@ -930,7 +930,7 @@ int q6afe_get_port_id(int index)
+>  static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
+>                             struct q6afe_port *port, uint32_t rsp_opcode)
+>  {
+> -       wait_queue_head_t *wait = &port->wait;
+> +       wait_queue_head_t *wait;
+>         struct aprv2_ibasic_rsp_result_t *result;
+>         int ret;
+>
+> @@ -1183,7 +1183,7 @@ int q6afe_port_stop(struct q6afe_port *port)
+>         struct afe_port_cmd_device_stop *stop;
+>         struct q6afe *afe = port->afe;
+>         struct apr_pkt *pkt;
+> -       int port_id = port->id;
+> +       int port_id;
+>         int ret = 0;
+>         int index, pkt_size;
+>         void *p;
+> --
+> 1.8.3.1
+>
 
----
- sound/pci/hda/patch_realtek.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a7544b77d3f7..dba9fd27adec 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2555,6 +2555,8 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x65e5, "Clevo PC50D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
 -- 
-2.25.1
-
+Thanks,
+~Nick Desaulniers
