@@ -2,98 +2,91 @@ Return-Path: <SRS0=h5q8=J3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.7 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFD09C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 18:44:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A91E2C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 21:47:14 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 399966146D
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 18:44:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 399966146D
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+	by mail.kernel.org (Postfix) with ESMTPS id 20FB861462
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 21:47:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20FB861462
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDDF1168E;
-	Fri, 30 Apr 2021 20:43:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDDF1168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCA9E168E;
+	Fri, 30 Apr 2021 23:46:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCA9E168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619808273;
-	bh=ibwUhXLUski6xr9FsNBfn54+XNuaWOwhfrKc4OREyDQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1619819230;
+	bh=Tp3HQQw250bHLRTVyK9PRJhwknpMI8FUxlQ6qaEW7iI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TCF1Cm43+vVt4Uz91pESsAlGjZ6Lao9mKZjOqi/Vwu4wJyjkZFKu5s1nrttrDXHtk
-	 b0V9B97YwZ7IDjKvcMl2SwFCv0lcr6hAD6Y2Ajla5Y8M9HU+uJh3BXiSGzifS2wjc5
-	 XZwg1F/nZ27nj/9L1D+dq/ObWn/w6I++gsWDuxLw=
+	b=h/LfgmwXiLa8cbYwn4Ev1fEEAUkwO+/513k82cLklm6lZUrrhiko+SRKApEGAr7K+
+	 1yz+lx3y+Z8teHEvypQ2jY5vRq6AsYHKv7SSU9nqTtF7I4Hh+LgHGB3UaVlg00okbP
+	 uA/tlM0IZHXCz211gUP87rRY99f7slzwPwnKAtw0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43C63F80165;
-	Fri, 30 Apr 2021 20:43:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A4BCF80165;
+	Fri, 30 Apr 2021 23:46:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE256F8016C; Fri, 30 Apr 2021 20:43:41 +0200 (CEST)
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com
- [IPv6:2607:f8b0:4864:20::536])
+ id 1C92CF8016C; Fri, 30 Apr 2021 23:46:19 +0200 (CEST)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com
+ [209.85.161.44])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2076F8012B
- for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 20:43:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2076F8012B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="EEwXinkx"
-Received: by mail-pg1-x536.google.com with SMTP id p2so34555351pgh.4
- for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 11:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=KI/MnFrdCFvAVp9lLRYtA+YcapFgP0IRl08eerf2/To=;
- b=EEwXinkxNWph9iZIOreBSC7zDYIf1fW4nFLZ9aGiN3bwvDwrYmn92TWTRXOYPE/gU5
- IEIGfcPhyvzGDxWsCp6G85OV3aytU4vjAqd6ZTQlvDIpFe7NuH5J/hWS+Gho6z/LU2mC
- vLl7SnRb7g+jiDYNBc9VzyhHHyWENZN9vBOdNQvR+Bm3R0KQzdwO+3JCqXbeQWPUefDK
- OI40DFmZm+IlTquzUee+j/GdeGb7NBy16gQ2LMtwHEBwww+Jvho3lJTcxObBnafL4DOo
- vqFmzW5QtmyZEvQf5WvFN+wTpzJumIog+bKAvHkZYzRRkI9GMNMFPZgxf4h1YR8FHi2T
- 4wsg==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F6F5F8012B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 23:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F6F5F8012B
+Received: by mail-oo1-f44.google.com with SMTP id
+ i3-20020a4ad3830000b02901ef20f8cae8so8539825oos.11
+ for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 14:46:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=KI/MnFrdCFvAVp9lLRYtA+YcapFgP0IRl08eerf2/To=;
- b=IUlm/Z/UDSzCFG4JHitQ1h5pZeq4uSsBgDcIIMXGLAI5lOTYvFj9EBxYJ03+v0lKcq
- 70KnDlOVW/2EibS1/J/NLIU6wRVrexyBRW3H70DPXqpPT8RpGRHaKmfwyNa6c4qLi6BN
- j1bmxyjftjEQJxW9hyN2uMXTh/GKfWGRgEnxhbQzr4ETgDQT1zr0rXYOVycElhjjpg5O
- 8NGUgpIn1qhfeaVNK31nft5U/9BTlxgQEsbDBW4A3ev7y2aSk1mYfq0r7hqqG42SX2As
- 6qIhvmfbVKWHhE69N/Ef7ZfkyzX4T3dYpTYiVK6bEg9IThPuh74p31bLIykeWD9/+8CV
- 1CBQ==
-X-Gm-Message-State: AOAM532cmv9GLfddzF4BqQLmA6vVwllXGphDpeKPL3sLT35GvdYZUAYS
- 0lQPmyaUoBvrH2NAgsIB+zbIgb+gcNhQ8R6j4SQ=
-X-Google-Smtp-Source: ABdhPJxMPZpMkCGdC2AwEeUnojgwpbAa0yguUCDEQBxKd491/rtQyhV87+w7xmA2fqjNDpVJfvEvyYjKTUQmucHSixM=
-X-Received: by 2002:a63:a847:: with SMTP id i7mr5759407pgp.203.1619808215145; 
- Fri, 30 Apr 2021 11:43:35 -0700 (PDT)
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=lQ8vdEh4rJx00Ki7Tq3K8HSCeSzDZ++EPb2cKQeU+yo=;
+ b=TrNtCumbuyMsl6D/VSVWVBlosIyFGDsA7+PRTn/XQ++1JasMv1MVbO7b3Qs9x9A8Ao
+ AIQ0aQ0pWX9xgOjM7wF1hgP4eTJOT/jrOLAfPuyHlZRv0SrGLwxVEdbz4xIB6303HDw2
+ pFOX1cQZy7jfbC5CzOWSZFpQqVkPxR1N4e/lJRqo8dXWIMZGzZVivmJxdKSl8OYiHO/I
+ 5yk5BO4XGQCFTnZO2EZ7tKhFGTlZeGSVYQgA8DpIpAl7D6PNqYEC7aTSSbBbaOUrSxaW
+ ToKxKH5a+8go0ksNfjkaS9/z8+QEctwBk3ARpl87kNOTomxwPhwhsU5jHgolCfWcfdMk
+ O8SQ==
+X-Gm-Message-State: AOAM532x+ElidBnOyNtUzlEdJER8S+uPit2S6Ffxye+eQgsuI1GYScox
+ 7e4UnhlMdksnSowHEUwgwQ==
+X-Google-Smtp-Source: ABdhPJz6PdKIigOtZcVYOpEsFx+nvBVRc8Vx+MdzxKvkVayWWFkpXLA1s7S9yhZm38LZWhL24gYbaQ==
+X-Received: by 2002:a4a:1104:: with SMTP id 4mr6265762ooc.57.1619819171630;
+ Fri, 30 Apr 2021 14:46:11 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
+ [24.155.109.49])
+ by smtp.gmail.com with ESMTPSA id u1sm1055005otj.43.2021.04.30.14.46.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 30 Apr 2021 14:46:10 -0700 (PDT)
+Received: (nullmailer pid 3956163 invoked by uid 1000);
+ Fri, 30 Apr 2021 21:46:09 -0000
+Date: Fri, 30 Apr 2021 16:46:09 -0500
+From: Rob Herring <robh@kernel.org>
+To: Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v3 1/7] ASoC: dt-bindings: sun8i-codec: Increase
+ #sound-dai-cells
+Message-ID: <20210430214609.GA3955996@robh.at.kernel.org>
+References: <20210430035859.3487-1-samuel@sholland.org>
+ <20210430035859.3487-2-samuel@sholland.org>
 MIME-Version: 1.0
-References: <20210423182441.50272-1-andriy.shevchenko@linux.intel.com>
- <CAHp75VeiHsk15QoG3X-OV8V8jqzCNeKkif9V=cx4nvKVHaKbKA@mail.gmail.com>
- <20210427143457.GI4605@sirena.org.uk> <YIglWpz8lSidXmDd@smile.fi.intel.com>
- <CAHp75VfBSjHP1LJZJTdwXzGuE2YjxdW6r7Zf6ofHsquJBPMyWA@mail.gmail.com>
- <20210430180114.GF5981@sirena.org.uk>
-In-Reply-To: <20210430180114.GF5981@sirena.org.uk>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 30 Apr 2021 21:43:19 +0300
-Message-ID: <CAHp75Vd0MKSZJpw0=qKtORmHRijw0HZLGz+W=sG_cyhLr1JPoQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] spi: pxa2xx: Set of cleanups
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- linux-spi <linux-spi@vger.kernel.org>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430035859.3487-2-samuel@sholland.org>
+Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ alsa-devel@alsa-project.org, Maxime Ripard <mripard@kernel.org>,
+ linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+ Rob Herring <robh+dt@kernel.org>, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,22 +102,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Apr 30, 2021 at 9:01 PM Mark Brown <broonie@kernel.org> wrote:
-> On Fri, Apr 30, 2021 at 07:29:48PM +0300, Andy Shevchenko wrote:
->
-> > One item is still unclear to me. I noticed that you started already
-> > applying patches for-next release cycle (if I understood it
-> > correctly). Hence the question should or shouldn't I resend this
->
-> No I haven't, I'm only applying things to for-5.13.  I've not even
-> created for-5.14 yet, that will only get created once -rc1 is out and
-> nothing for it is fixed yet.  If I look at it and find an issue I will
-> tell you, if I've not said anything and I've got through my first batch
-> of v5.14 stuff it's gone AWOL and you should resend.
+On Thu, 29 Apr 2021 22:58:53 -0500, Samuel Holland wrote:
+> Increase sound-dai-cells to 1 to allow using the DAIs in the codec
+> corresponding to AIF2 and AIF3.
+> 
+> The generic ASoC OF code supports a #sound-dai-cells value of 0 or 1
+> with no impact to the driver, so this is a backward-compatible change.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../bindings/sound/allwinner,sun8i-a33-codec.yaml         | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
 
-Ah, okay, it means I misread the idea of applied patches.
-Thanks for clarifying this for me!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Rob Herring <robh@kernel.org>
