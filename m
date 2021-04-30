@@ -2,115 +2,111 @@ Return-Path: <SRS0=h5q8=J3=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.2 required=3.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+	DKIM_SIGNED,DKIM_VALID,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96434C433B4
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 04:03:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E038C433ED
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 05:43:09 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 451F5611AC
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 04:03:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 451F5611AC
-Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=sholland.org
+	by mail.kernel.org (Postfix) with ESMTPS id 4CB37613F2
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 05:43:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 4CB37613F2
+Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D359168F;
-	Fri, 30 Apr 2021 06:02:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D359168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2E01168A;
+	Fri, 30 Apr 2021 07:42:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2E01168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619755377;
-	bh=VBuqNMNTD8H/yNwK+YKOoNifgMpUiV7TT9QRoP5Sb6I=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1619761385;
+	bh=Hs8jzpr9VO2G8j/zmlHz7eBPfTq5w6iwH01XjQ+/20E=;
+	h=To:References:From:Subject:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KeN1LTbrYtX8j+bWo5KTbFcXFQuS52XK7oWCHO6Tai32y0TmFOsT91oHSU7JwPAcc
-	 /ekweTtYV2zhlWe3fNZ4sFmd9hOKQ7gKfvVWDxYdYHDVz56hgd3thSgW4G3JMWhKY9
-	 Vc+oqIbUK78OdmPOWpClNDtzhGyl2Lmnb8tX4lns=
+	b=hmE3jQ8nbu0Gk8PYs7/BEkSQLPQslboe3ahfMegXYgTFQlFKgdHurOZk4GZNOzJsz
+	 8xEmO/tzTJeDr6BuCHEyiKHlW08CCrnW6XIu+RDP0ufwB89433n7okX59UtgVONUCz
+	 z+OUjg++fjLC/bVw8Db/55/1xROWEOuk/kxqftMo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C84F6F804B2;
-	Fri, 30 Apr 2021 05:59:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23400F80165;
+	Fri, 30 Apr 2021 07:42:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A5CDF80218; Fri, 30 Apr 2021 05:59:17 +0200 (CEST)
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com
- [66.111.4.229])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 23F9EF8016C; Fri, 30 Apr 2021 07:42:13 +0200 (CEST)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6378F80165
- for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 05:59:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6378F80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6883F8012B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 07:42:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6883F8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="VPwR4moS"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="hYSzl8kl"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailnew.nyi.internal (Postfix) with ESMTP id D057A580990;
- Thu, 29 Apr 2021 23:59:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Thu, 29 Apr 2021 23:59:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
- from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding; s=fm2; bh=RUx5Bh9JwrJMb
- 9tpHuRajgEQACMYEpqxwh8iy6v4q6E=; b=VPwR4moS+55tLIU7rUu1eYMhHQUrB
- VhaXgIAPoivFrfefbVwS4G0BQhxWkNa/fHp9LHbdvkOxMFlWAWukS41SmkSiFgoR
- FiiltpafefMas09qEaOXfAvLcy9uwebDoHM1NkuDmsU5CNdW3eKCH7GSyiSVZe3v
- /gDZZPihoYDqs99gU3tMPfX43istLsOEj9MbAd6NKVZkptUxrwe1JxfTBl5QxcnD
- TWlyY3Sofs5IoMU5tGuhBwxxVomN1MGxdJeRSn/M1wE6lnriPUXbiIuGyqX3ZkKj
- oyvnmtyvi0FBYy1Vf3Em4oiIEagmtcrGvcVYSWr7yfd1gcysr0YysOmfg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:content-transfer-encoding:date:from
- :in-reply-to:message-id:mime-version:references:subject:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; bh=RUx5Bh9JwrJMb9tpHuRajgEQACMYEpqxwh8iy6v4q6E=; b=hYSzl8kl
- a28QWqUiWgt77I09KUIxuc9LpBbWHgRiW3ymSKVAWMJ0EI1WAjF1NEiZ+NaXd3Uf
- Yf0TC55Q4n+T7Kfcb7O5qlJGGItm4+LQm6pvjHSTLVfS4Rh7VB62/AASMHUedvnz
- i8yg1kU6xYrP1653b8OcP5n0sBE0PnNbk7goGzvsdEWZwgEA9Y/jBHTssmI+ShMS
- VBy87utB+E8uusIfMGCcwNxgBaIpys+KVjeezZiir2pe2rS78Zd8diB+PnvS66Vi
- REsUxgEiqNm0L4dPA0GMgd0q5hH1Kd06Mz8FX6upIBIRe3kwpw4cXcFURJxFP8Lc
- N52EyJZHCP5RrQ==
-X-ME-Sender: <xms:iICLYAelwpJBf8NV0P0jwh7exVjcYUHLigm78NmENxmT5ROarrWWmg>
- <xme:iICLYCOqjtl6GVBocJBMo9aqPjQcrm65xpCrfQPZUjKJlFXw81LXENEWC6PBUXhJ2
- YO7LeShPiVxp38A0Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvhedgjeejucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
- lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
- frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
- gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
- iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
- ugdrohhrgh
-X-ME-Proxy: <xmx:iICLYBg7PvjnSnjYP9cmlgTt1NvvsbNLZR05nkBOlp5eyaUJwDYY2g>
- <xmx:iICLYF8lmir8qwKk0ZMcEBD1sGyc11Gdlckk5Rr_tnYnyLBOCPYawA>
- <xmx:iICLYMsHDbORc5Aurjc8YMrGzAj2CWlZ3VamdS96C4Ook5huCaovTg>
- <xmx:iICLYOJbj7ExozQAMxPtosmlm6IJg-mWP4xWolJGOgTFt0rh_Z-xcA>
-Received: from titanium.stl.sholland.net
- (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
- by mail.messagingengine.com (Postfix) with ESMTPA;
- Thu, 29 Apr 2021 23:59:04 -0400 (EDT)
-From: Samuel Holland <samuel@sholland.org>
-To: Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@siol.net>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 3/7] arm64: dts: allwinner: a64: Allow using multiple codec
- DAIs
-Date: Thu, 29 Apr 2021 22:58:55 -0500
-Message-Id: <20210430035859.3487-4-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210430035859.3487-1-samuel@sholland.org>
-References: <20210430035859.3487-1-samuel@sholland.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="gCVkfB9+"
+Received: by mail-lj1-x232.google.com with SMTP id u20so79326131lja.13
+ for <alsa-devel@alsa-project.org>; Thu, 29 Apr 2021 22:42:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20161025;
+ h=to:cc:references:from:subject:message-id:date:user-agent
+ :mime-version:in-reply-to:content-language:content-transfer-encoding;
+ bh=L7GGiwWh49MO363Lhb3HdQ7RrxGIwg/d5+e48kUjCe4=;
+ b=gCVkfB9+8ir2h3bJ1VXaEAIEzArtMEvrpspjTYICjkCYcqhRnMUf80BnnkevOJw45s
+ sAtqDNYucTHuQbQZLB8iaHp6yXf1sjQXDuXzMDX/6XH5Y304YrDnAv63nHWYnT3Trwuz
+ YKvGMZHdh82Bh4KPtc5gURiRoeWjXsa56eJ7Svbs5ozsf5BFlyAXAFlj55goD2y0kz8j
+ Bnbi5lNmGeUessWqWHGrJE+dLkIWIE9dkMbne60wefwSyKr2zx5rKSPxq3Du2PNnXpda
+ xvMt5u01TgAELAwMWDTO+D+wR2mVzlmC185OSIekeyj2XxH34t1aAVXPoXr8/ZUovN/l
+ lvgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+ :user-agent:mime-version:in-reply-to:content-language
+ :content-transfer-encoding;
+ bh=L7GGiwWh49MO363Lhb3HdQ7RrxGIwg/d5+e48kUjCe4=;
+ b=bAdjXCnuQLKvnn4pwKf8zqdNroC50y/QaBJx14xZZWnaWCNe6f4ARDigkAflXxW/Dp
+ Pqzna4kZRWyeCBbsZvbcxk33KTMiQxoMUWahZjYFe2LOST6OdpJV6t1+FTuF13Y3lzX0
+ Y0+FieVy88Q7JySrbdB67k4qT6fs+Eu8Z8ezFEyjAtVdxRD+ckpxb1jmKeLgAlFixVOb
+ QVUhkZiS6VizCsHWNtbHxnug6AISoRWCpHKF7pQ9lF72uoTcEH30+Qlz0tH5faHaOoIU
+ H00Aw2+nRovsr7iUJukS/kVND6Q8M4nhBML/oVdm9PxnzIjZ9I5kjKObkRw3KI7772f7
+ pxIg==
+X-Gm-Message-State: AOAM530DrQ0ruREBG3E0Ym1mLF+widkf1B6usdNjYGmLz3wB5wU1MeKc
+ yRIWKUJ5PYT8h/i82BMIy+k=
+X-Google-Smtp-Source: ABdhPJxZdVs7siFgYf2c0en9sIjaulZGpthV94cGpcUX6lVmwKWzDps5zwfGb+qmR8HHldw5bXjJsA==
+X-Received: by 2002:a2e:9e56:: with SMTP id g22mr2408884ljk.113.1619761323714; 
+ Thu, 29 Apr 2021 22:42:03 -0700 (PDT)
+Received: from [10.0.0.40] (91-155-111-71.elisa-laajakaista.fi.
+ [91.155.111.71])
+ by smtp.gmail.com with ESMTPSA id y26sm110045lja.112.2021.04.29.22.42.02
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 29 Apr 2021 22:42:03 -0700 (PDT)
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>,
+ Mark Brown <broonie@kernel.org>
+References: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <20210423164617.GG5507@sirena.org.uk>
+ <e1268120-7a91-da49-0bb6-89d5cb4e2cce@gmail.com>
+ <b32fcc42-d67e-bfbd-ed83-7f7274fb2f79@amd.com>
+ <ac5244d1-643d-6577-80cd-bf6867e75ca2@gmail.com>
+ <b86ad586-9513-8fa9-54e3-a0b4a3a7fd92@amd.com>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN
+ to dwc driver
+Message-ID: <070b4e5b-b7bd-b8a6-beea-593a94ec3078@gmail.com>
+Date: Fri, 30 Apr 2021 08:42:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <b86ad586-9513-8fa9-54e3-a0b4a3a7fd92@amd.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Samuel Holland <samuel@sholland.org>, linux-kernel@vger.kernel.org,
- linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+ amistry@google.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Alexander.Deucher@amd.com, nartemiev@google.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -126,36 +122,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Increase #sound-dai-cells on the digital codec to allow using the other
-DAIs provided by the codec for AIF2 and AIF3.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 57786fc120c3..3061031780de 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -150,7 +150,7 @@ cpudai: simple-audio-card,cpu {
- 		};
- 
- 		link_codec: simple-audio-card,codec {
--			sound-dai = <&codec>;
-+			sound-dai = <&codec 0>;
- 		};
- 	};
- 
-@@ -878,7 +878,7 @@ dai: dai@1c22c00 {
- 		};
- 
- 		codec: codec@1c22e00 {
--			#sound-dai-cells = <0>;
-+			#sound-dai-cells = <1>;
- 			compatible = "allwinner,sun50i-a64-codec",
- 				     "allwinner,sun8i-a33-codec";
- 			reg = <0x01c22e00 0x600>;
+On 28.4.2021 18.35, Mukunda,Vijendar wrote:
+>> Thanks for the explanation.
+>> This is not upstream, right?
+> 
+> Driver is already upstreamed.
+> Stoneyridge platform based products already into market and working fine
+> with 4.14 kernel version.
+> Currently Kernel migration from v4.14 to v5.10 is in progress for
+> Stoneyridge platform and release got blocked due to Audio use cases
+> failures.
+> In v5.10 kernel base, re-ordering of stop trigger sequence is causing
+> DMA channel stop failure for both playback & capture use cases.
+
+The dai - pcm start/stop ordering has changed in v5.5, more than a year
+ago. If the support is upstream it should have been noticed by users.
+
+>> What is still not clear to me is which channel fails?
+>> A) the DMA between ACP FIFO and the I2S
+>> B) the DMA between ACP FIFO and system memory
+> 
+> There is difference for playback and Capture use cases.
+> 
+> Playback:
+> 
+> channel 1 : DMA transfer from System memory -> ACP memory
+> channel 2 : DMA transfer from ACP memory -> I2S memory
+> 
+> Capture:
+> 
+> channel 1: DMA transfer from I2S memory to ACP memory
+> channel 2: DMA transfer from ACP memory to System memory
+
+Yes, this is why I used A and B to refer to the DMA channels.
+
+> In case of playback, Channel 2 is failing where as in case of
+> capture channel 1 is failing.
+
+So channel A is failing.
+
+>> in acp-pcm-dma.c on stop you have a busy loop (10000 iterations) to
+>> check if the channel is in fact stopped in response to the cleared run,
+>> IOCEn bits and the set Rst bit.
+> 
+> DMA channel run bit is cleared and Ioc bit also cleared for channel 2 in
+> case of playback .
+> After that as part of DMA stop sequence, DMA channel reset is applied.
+> When DMA channel status is polled for stop, its failed to stop.
+>>
+>> Channel closer to the destination is stopped first which sounds
+>> reasonable, but on playback you ignore timeout from A, on capture you
+>> ignore the timeout from B.
+> 
+> Please refer above explanation.
+> 
+>> Still the issue sounds like exactly what I have described. One of the
+>> DMA is failing to drain because the IP is stopped?
+> 
+> As per our understanding, failing to stop the DMA by hardware is causing
+> the issue.
+>
+>>
+>>> Need find a right place to implement a work around only for AMD
+>>> stoneyridge platform.
+>>
+>> Is this really only affecting stoneyridge platform? Are there other
+>> platforms using drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c ?
+>>
+> This design is being used only in stoneyridge and Carrizo platforms.
+> But only stoneyridge platform is productized.
+> New design is implemented for later generations of APU series.
+
+Right.
+
+This version of ACP is only used with the designware I2S IP?
+
+I would try to find a way to force stop the DMA in case the DAI has been
+already stopped.
+
+If this is not possible than the only solution is to do this in core, imho.
+
+For that you would need a flag to say that the platform (DMA) needs the
+DAI to be active when stopping it.
+
+If the same ACP have problems with different DAIs, then it is a property
+of the platform driver.
+If the ACP only have problem against the designware I2S then it is a
+link property.
+If this ACP only used with the designware I2S then it is again, most
+likely the property of the platform driver.
+
+It is surely not a designware IP issue, trying to solve it there is wrong.
+
 -- 
-2.26.3
-
+Péter
