@@ -1,92 +1,95 @@
-Return-Path: <SRS0=h5q8=J3=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=XYos=J4=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A91E2C433ED
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 21:47:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C1A00C433B4
+	for <alsa-devel@archiver.kernel.org>; Sat,  1 May 2021 10:09:03 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 20FB861462
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Apr 2021 21:47:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 20FB861462
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	by mail.kernel.org (Postfix) with ESMTPS id AE4556108B
+	for <alsa-devel@archiver.kernel.org>; Sat,  1 May 2021 10:09:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org AE4556108B
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=loone.fi
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCA9E168E;
-	Fri, 30 Apr 2021 23:46:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCA9E168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B081716B8;
+	Sat,  1 May 2021 12:08:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B081716B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1619819230;
-	bh=Tp3HQQw250bHLRTVyK9PRJhwknpMI8FUxlQ6qaEW7iI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=h/LfgmwXiLa8cbYwn4Ev1fEEAUkwO+/513k82cLklm6lZUrrhiko+SRKApEGAr7K+
-	 1yz+lx3y+Z8teHEvypQ2jY5vRq6AsYHKv7SSU9nqTtF7I4Hh+LgHGB3UaVlg00okbP
-	 uA/tlM0IZHXCz211gUP87rRY99f7slzwPwnKAtw0=
+	s=default; t=1619863739;
+	bh=g1uUpuZyZRlPmf5El/UjH7X4R3Ql35/aDj5C0xCVJM8=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HQa/bTwBXqBZh1mR+0sZqPIo2dd46pljs4eK3KF8ixXzedoUzICXGQqEqlqbdRwBf
+	 oY1gB/gCLhHVu/ve3YEcyICIsaXwkg7Cl+w72TruUkZzmYk1+i/0vwjzi8+sXhqskS
+	 qhehtjiaiH03IC26R17mRSQIe+2g51bz7OY+KxwQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A4BCF80165;
-	Fri, 30 Apr 2021 23:46:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E6CBF800D3;
+	Sat,  1 May 2021 12:08:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C92CF8016C; Fri, 30 Apr 2021 23:46:19 +0200 (CEST)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com
- [209.85.161.44])
+ id 9DB2FF801EC; Sat,  1 May 2021 12:08:07 +0200 (CEST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F6F5F8012B
- for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 23:46:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F6F5F8012B
-Received: by mail-oo1-f44.google.com with SMTP id
- i3-20020a4ad3830000b02901ef20f8cae8so8539825oos.11
- for <alsa-devel@alsa-project.org>; Fri, 30 Apr 2021 14:46:13 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 749A4F800D3
+ for <alsa-devel@alsa-project.org>; Sat,  1 May 2021 12:07:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 749A4F800D3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=loone-fi.20150623.gappssmtp.com
+ header.i=@loone-fi.20150623.gappssmtp.com header.b="G3k8JQsF"
+Received: by mail-ed1-x52f.google.com with SMTP id y26so895671eds.4
+ for <alsa-devel@alsa-project.org>; Sat, 01 May 2021 03:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=loone-fi.20150623.gappssmtp.com; s=20150623;
+ h=date:from:to:subject:message-id:mime-version:content-disposition;
+ bh=4WQL7VODP4Nl10hD9qOgU+J2c4Wg0/b1TkUMZULzw9o=;
+ b=G3k8JQsFibUgdhs1UpSSRphey7hJoyIznL2fRuZ88QDroHwU5sttw2DXluuM8VMbQp
+ jxFFYXzn0b9m4SoENha+zz79kucxXtShFCRztSyOMWutR9+jOy0hCQqlMiciPpcjcCLb
+ Ch6oGM6K20U26dSFoJXQ+VcUQE4xVa1l05z0Vxr+LXEDZG+NlHYxMCRswmKGNyZ2RJnI
+ Jq9XXid8YEJyLbosaJYLFjDlJ4dZib00J+1SDmzesmwIEh9dBBX4lfbZ6WZ2ZIXMq1BK
+ 6STNsxLX2wpeccdIMGx7VpAZ6LDrMoIpBtdMgCZFoq/1GK5omxJG2I8eCiMZGZOaycer
+ IWLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=lQ8vdEh4rJx00Ki7Tq3K8HSCeSzDZ++EPb2cKQeU+yo=;
- b=TrNtCumbuyMsl6D/VSVWVBlosIyFGDsA7+PRTn/XQ++1JasMv1MVbO7b3Qs9x9A8Ao
- AIQ0aQ0pWX9xgOjM7wF1hgP4eTJOT/jrOLAfPuyHlZRv0SrGLwxVEdbz4xIB6303HDw2
- pFOX1cQZy7jfbC5CzOWSZFpQqVkPxR1N4e/lJRqo8dXWIMZGzZVivmJxdKSl8OYiHO/I
- 5yk5BO4XGQCFTnZO2EZ7tKhFGTlZeGSVYQgA8DpIpAl7D6PNqYEC7aTSSbBbaOUrSxaW
- ToKxKH5a+8go0ksNfjkaS9/z8+QEctwBk3ARpl87kNOTomxwPhwhsU5jHgolCfWcfdMk
- O8SQ==
-X-Gm-Message-State: AOAM532x+ElidBnOyNtUzlEdJER8S+uPit2S6Ffxye+eQgsuI1GYScox
- 7e4UnhlMdksnSowHEUwgwQ==
-X-Google-Smtp-Source: ABdhPJz6PdKIigOtZcVYOpEsFx+nvBVRc8Vx+MdzxKvkVayWWFkpXLA1s7S9yhZm38LZWhL24gYbaQ==
-X-Received: by 2002:a4a:1104:: with SMTP id 4mr6265762ooc.57.1619819171630;
- Fri, 30 Apr 2021 14:46:11 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net.
- [24.155.109.49])
- by smtp.gmail.com with ESMTPSA id u1sm1055005otj.43.2021.04.30.14.46.09
+ h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+ :content-disposition;
+ bh=4WQL7VODP4Nl10hD9qOgU+J2c4Wg0/b1TkUMZULzw9o=;
+ b=fZ17TPpz0mzsjFj1ejmRAP/z/lBYbMBObLtH0GOl83vwhv5yUKbjH/ABXZctzag5RS
+ n4PuC3hHNHuAxccOE8D8U1cvQ1uK8hj3mwNNGwE48+lNQJHJyUeYKgGAgis8bBED4Foe
+ sjsmCu1bp8F//45WvrFj3fO4OxQdJPcVg5dgqLXUCEfH0OdgJOX75DsVLhCQQlU6cdHz
+ f1TEBi85JvYDCp6s3ZD562EfzsNAFI3/7hA0GTDD99YwPCxYvrwrgAoUzOnvq8WHtYus
+ 8Igi9MRvUKtAauxneF6hPa9W1R18OORyPZ2pe3Ph1qY3m34xSGs4OIIe3ma4y6+DmBf1
+ dYbw==
+X-Gm-Message-State: AOAM533Wv7rJRatCv1xU3VmOf0N3dM0/5DH+9ZkBfztb/DNjxVZjUx/b
+ 3O7uIlPyht6jFt5026VshFJB80q5TqN/GA==
+X-Google-Smtp-Source: ABdhPJy5+e18Xtsgu4gYlDIpcvqImEiI6KZ4+WWx+gpORsSi3mqVD7SmKgzwIH285KwwZ19Hw4s5IQ==
+X-Received: by 2002:aa7:dc0b:: with SMTP id b11mr10850687edu.124.1619863675349; 
+ Sat, 01 May 2021 03:07:55 -0700 (PDT)
+Received: from yoga
+ (2001-1c03-5b17-8e00-b60e-deff-fe15-4d5c.cable.dynamic.v6.ziggo.nl.
+ [2001:1c03:5b17:8e00:b60e:deff:fe15:4d5c])
+ by smtp.gmail.com with ESMTPSA id o8sm4739718ejm.18.2021.05.01.03.07.54
+ for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 30 Apr 2021 14:46:10 -0700 (PDT)
-Received: (nullmailer pid 3956163 invoked by uid 1000);
- Fri, 30 Apr 2021 21:46:09 -0000
-Date: Fri, 30 Apr 2021 16:46:09 -0500
-From: Rob Herring <robh@kernel.org>
-To: Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v3 1/7] ASoC: dt-bindings: sun8i-codec: Increase
- #sound-dai-cells
-Message-ID: <20210430214609.GA3955996@robh.at.kernel.org>
-References: <20210430035859.3487-1-samuel@sholland.org>
- <20210430035859.3487-2-samuel@sholland.org>
+ Sat, 01 May 2021 03:07:54 -0700 (PDT)
+Date: Sat, 1 May 2021 12:07:53 +0200
+From: Sami Loone <sami@loone.fi>
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Subject: [PATCH] ALSA: hda/realtek: ALC285 Thinkpad jack pin quirk is
+ unreachable
+Message-ID: <YI0oefvTYn8URYDb@yoga>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430035859.3487-2-samuel@sholland.org>
-Cc: devicetree@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org, Maxime Ripard <mripard@kernel.org>,
- linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
- Rob Herring <robh+dt@kernel.org>, linux-sunxi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,17 +105,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Apr 2021 22:58:53 -0500, Samuel Holland wrote:
-> Increase sound-dai-cells to 1 to allow using the DAIs in the codec
-> corresponding to AIF2 and AIF3.
-> 
-> The generic ASoC OF code supports a #sound-dai-cells value of 0 or 1
-> with no impact to the driver, so this is a backward-compatible change.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../bindings/sound/allwinner,sun8i-a33-codec.yaml         | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
+In 07d9e69cf34a ("ALSA: hda/realtek: fix static noise on ALC285 Lenovo
+laptops") an existing Lenovo quirk was made more generic by removing a
+0x12 pin requirement from the entry. This made the second chance table
+Thinkpad jack entry unreachable as the pin configurations became
+identical.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Revert the 0x12 pin requirement removal and move Thinkpad jack pin quirk
+back to the primary pin table as they can co-exist when more specific
+configurations come first.
+
+Add a more targeted pin quirk for Lenovo devices that have 0x12 as
+0x40000000.
+
+Tested on Yoga 6 (AMD) laptop.
+
+Fixes: 07d9e69cf34a ("ALSA: hda/realtek: fix static noise on ALC285 Lenovo laptops")
+Signed-off-by: Sami Loone <sami@loone.fi>
+---
+ sound/pci/hda/patch_realtek.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index bd7bfd7c9ee7..a0fa99a31c23 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -8801,6 +8801,16 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x19, 0x03a11020},
+ 		{0x21, 0x0321101f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
++		{0x12, 0x90a60130},
++		{0x14, 0x90170110},
++		{0x19, 0x04a11040},
++		{0x21, 0x04211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_LENOVO_PC_BEEP_IN_NOISE,
++		{0x14, 0x90170110},
++		{0x19, 0x04a11040},
++		{0x1d, 0x40600001},
++		{0x21, 0x04211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
+ 		{0x14, 0x90170110},
+ 		{0x19, 0x04a11040},
+ 		{0x21, 0x04211020}),
+@@ -8971,10 +8981,6 @@ static const struct snd_hda_pin_quirk alc269_fallback_pin_fixup_tbl[] = {
+ 	SND_HDA_PIN_QUIRK(0x10ec0274, 0x1028, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB,
+ 		{0x19, 0x40000000},
+ 		{0x1a, 0x40000000}),
+-	SND_HDA_PIN_QUIRK(0x10ec0285, 0x17aa, "Lenovo", ALC285_FIXUP_THINKPAD_NO_BASS_SPK_HEADSET_JACK,
+-		{0x14, 0x90170110},
+-		{0x19, 0x04a11040},
+-		{0x21, 0x04211020}),
+ 	{}
+ };
+ 
+-- 
+2.31.1
+
