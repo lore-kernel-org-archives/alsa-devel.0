@@ -7,76 +7,80 @@ X-Spam-Status: No, score=-16.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AD14C433ED
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 May 2021 20:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02726C433ED
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 May 2021 20:55:57 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 00269611EE
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 May 2021 20:55:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 00269611EE
+	by mail.kernel.org (Postfix) with ESMTPS id F312761364
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 May 2021 20:55:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org F312761364
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D14816BD;
-	Mon,  3 May 2021 22:54:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D14816BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EF0816A9;
+	Mon,  3 May 2021 22:55:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EF0816A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620075325;
-	bh=R2VaQOuy4N14vz+cdjMolxU48t+gX3MqIn4/YL+p59E=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CyYKueBS9kQhqrvTVHCk/oyk0xEtYZlPrHJGHDcxZO397JvHAk8Xa55AMbhW9ONfF
-	 p8atd+n0FggoUMsP4foh23n+pZHrkKgIEQzKD/U7TRsIjKbfV6lrUoVNwnd+CMc+ny
-	 /rW3a8boOPl1+zCoCHGPrutqrHHCKZM6Ya5itd9w=
+	s=default; t=1620075354;
+	bh=SkO2kUkdspS8LMHlb1JIs8Aoi+JHNMn3ZTo9jObCTS0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=beu+n5OJfAN1fDK5LWhS4tkRIQbdiVUA29sRFDpBCffM+mWXFPleXIeDpPOAHOxpA
+	 ey4NT6k2pURyCiWt0vahf67icRtMZRo1lLdNUyFAm1Se0i7wGRJXQcvHrnL8DG85bU
+	 iAqxq6/bx3Z9WxNnSWbAA6cvi8RJZm/spEZtm5G0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6159EF804B0;
-	Mon,  3 May 2021 22:52:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 013D7F8025F;
+	Mon,  3 May 2021 22:54:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 367D9F80482; Mon,  3 May 2021 22:52:52 +0200 (CEST)
+ id 6096EF8042F; Mon,  3 May 2021 22:54:00 +0200 (CEST)
 Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (us-smtp-delivery-124.mimecast.com [216.205.24.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B321F8028D
- for <alsa-devel@alsa-project.org>; Mon,  3 May 2021 22:52:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B321F8028D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F579F8025F
+ for <alsa-devel@alsa-project.org>; Mon,  3 May 2021 22:52:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F579F8025F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="MzxygCP9"
+ header.b="B+uefpHu"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1620075168;
+ s=mimecast20190719; t=1620075161;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=kY0etXVODAE2BS/115eUDgj7fnG4ZE2zo/r9J/e9xoU=;
- b=MzxygCP9U1pEAH+euasKvkFWEAOSRjymYlwu0QS2NKhGOCI/pgyDd0W+oZWS+o2236S1l4
- itHoitVPGpIFhaannE1YkZM2+XHGzjvatsntAf1JUpGIoQ7jko9VmuQGLncs7f+3aM682R
- 4+oRbBX3ru9ZwkcrbqPfQi1QQeMhafw=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=0f3mmuBzUelgfzaRUh59gtvVHzuroudMEaeaBKG0JMw=;
+ b=B+uefpHu9ScpSSeALcwLbYz6mjKwJlTT9WVMW0sOkbBcyPS+gLyasIr9NxHyuj5vMr3Sp0
+ 9P3g3465AdaH+qZ2gzKfuS/c264P8B2160LTgG2Z9hAHxJGJ8vU6drMPszSLlJLa88fG0c
+ 6j4+EzJwDZblwObqR8wVEDsHaaSFJSM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-oDXrMvSsP4CwN693ZalvQg-1; Mon, 03 May 2021 16:52:46 -0400
-X-MC-Unique: oDXrMvSsP4CwN693ZalvQg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com
- [10.5.11.13])
+ us-mta-593-T12GfFWlMgugG0ArO4V9ig-1; Mon, 03 May 2021 16:52:40 -0400
+X-MC-Unique: T12GfFWlMgugG0ArO4V9ig-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com
+ [10.5.11.16])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C815D6972B;
- Mon,  3 May 2021 20:52:45 +0000 (UTC)
+ by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5765801106;
+ Mon,  3 May 2021 20:52:38 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-158.ams2.redhat.com [10.36.112.158])
- by smtp.corp.redhat.com (Postfix) with ESMTP id 0B7FF6061F;
- Mon,  3 May 2021 20:52:44 +0000 (UTC)
+ by smtp.corp.redhat.com (Postfix) with ESMTP id 2C6125C1C2;
+ Mon,  3 May 2021 20:52:38 +0000 (UTC)
 From: Hans de Goede <hdegoede@redhat.com>
 To: Jaroslav Kysela <perex@perex.cz>,
 	alsa-devel@alsa-project.org
-Subject: [PATCH alsa-lib] ucm: Fix sysw sequence command not working when
- requesting to ignore errors
-Date: Mon,  3 May 2021 22:52:44 +0200
-Message-Id: <20210503205244.167473-1-hdegoede@redhat.com>
+Subject: [PATCH alsa-lib 4/5] mixer: simple - Add exceptions for some
+ capture-vol-ctls which have a " Volume" suffix
+Date: Mon,  3 May 2021 22:52:30 +0200
+Message-Id: <20210503205231.167346-5-hdegoede@redhat.com>
+In-Reply-To: <20210503205231.167346-1-hdegoede@redhat.com>
+References: <20210503205231.167346-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Authentication-Results: relay.mimecast.com;
  auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
 X-Mimecast-Spam-Score: 0
@@ -99,31 +103,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the user requests to ignore sysfs write errors by prefixing
-the path with a '-' then we need to skip the '-' when building the
-actual path otherwise the write will never work.
+The following ASoC codec drivers:
+
+sound/soc/codecs/rt5659.c
+sound/soc/codecs/rt5660.c
+sound/soc/codecs/rt5665.c
+sound/soc/codecs/rt5668.c
+sound/soc/codecs/rt5670.c
+sound/soc/codecs/rt5682.c
+
+Use the following troublesome capture-volume-control names:
+"IN1 Boost Volume"
+"IN2 Boost Volume"
+"IN3 Boost Volume"
+"STO1 ADC Boost Gain Volume"
+"STO2 ADC Boost Gain Volume"
+"Mono ADC Boost Gain Volume"
+
+And sound/soc/codecs/es8316.c uses "ADC PGA Gain Volume".
+
+Note how these are suffixed with just " Volume" instead of
+"Capture Volume". Add these to the exceptions table,
+so that the type correctly gets set to CTL_CAPTURE_VOLUME instead
+of CTL_GLOBAL_VOLUME.
+
+This correctly makes snd_mixer_selem_has_capture_volume() return true for
+these (and makes snd_mixer_selem_has_common_volume() return false).
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/ucm/main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ src/mixer/simple_none.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 2b07cc95..3df9b62a 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -517,7 +517,10 @@ static int execute_sysw(const char *sysw)
- 	if (sysw == NULL || *sysw == '\0')
- 		return 0;
- 
--	ignore_error = sysw[0] == '-';
-+	if (sysw[0] == '-') {
-+		ignore_error = true;
-+		sysw++;
-+	}
- 
- 	if (sysw[0] == ':')
- 		return -EINVAL;
+diff --git a/src/mixer/simple_none.c b/src/mixer/simple_none.c
+index 8f964959..de81966f 100644
+--- a/src/mixer/simple_none.c
++++ b/src/mixer/simple_none.c
+@@ -920,8 +920,15 @@ static const struct excep {
+ 	 */
+ 	{"Input Source", 12, CTL_CAPTURE_ROUTE},
+ 	/* Avoid these Capture Volume/Switch controls getting seen as GLOBAL VOL/SW */
++	{"ADC PGA Gain Volume", 12, CTL_CAPTURE_VOLUME},
+ 	{"Capture Volume", 7, CTL_CAPTURE_VOLUME},
+ 	{"Capture Switch", 7, CTL_CAPTURE_SWITCH},
++	{"IN1 Boost Volume", 9, CTL_CAPTURE_VOLUME},
++	{"IN2 Boost Volume", 9, CTL_CAPTURE_VOLUME},
++	{"IN3 Boost Volume", 9, CTL_CAPTURE_VOLUME},
++	{"Mono ADC Boost Gain Volume", 19, CTL_CAPTURE_VOLUME},
++	{"STO1 ADC Boost Gain Volume", 19, CTL_CAPTURE_VOLUME},
++	{"STO2 ADC Boost Gain Volume", 19, CTL_CAPTURE_VOLUME},
+ 	/* Playback Volume/Switch controls without a " Playback ..." suffix */
+ 	{"3D Control - Depth", 18, CTL_PLAYBACK_VOLUME},
+ 	{"3D Control Sigmatel - Depth", 27, CTL_PLAYBACK_VOLUME},
 -- 
 2.31.1
 
