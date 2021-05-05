@@ -1,79 +1,56 @@
-Return-Path: <SRS0=dtPj=J7=alsa-project.org=alsa-devel-bounces@kernel.org>
+Return-Path: <SRS0=SRJ/=KA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 66CF0C433B4
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 May 2021 19:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0179C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 06:12:51 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 2DD78613C7
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 May 2021 19:44:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 2DD78613C7
-Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
+	by mail.kernel.org (Postfix) with ESMTPS id 465D4611CB
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 06:12:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 465D4611CB
+Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D231D1695;
-	Tue,  4 May 2021 21:43:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D231D1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id D30AE168C;
+	Wed,  5 May 2021 08:11:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D30AE168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620157443;
-	bh=GIYaL2mdsDVpPyXnTGjNHr3bdS4bdTxJiHvlq25WqZo=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1620195167;
+	bh=Xko3TqloqxS+ixNM80E/cLavMz1qRkg2FwUy7SnprCc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PNs+7EFMUOiJS1lIKTpV74uVHTHEFu5knxjvrfcayfJc3lX1nLCyAV/sIOk09DoZL
-	 hl1WzvvvFaRTI+w3hxLQ2n0PndGHwwJ2H0VnDBnJ0pwyR2vQI8HApAarKb6eP5HItl
-	 JkTbIxJX9LrR4mDvp1BAfNC9DwHJGKyEJMVJVm48=
+	b=szx58x4tVvKrXwdTAiRZkK9T9rdVuE6Lb1vV0CEBHECJP9b5lo5TteCtAdYvqLWyc
+	 n21ABhnlwFuCXsvO+LYNeydmVnjPPRwGWVtBOLzy/7ED12m3souFnyf01WOXn89BlG
+	 otVjTd+bNNqNpVmwK2LB0VbfY59iM3/HTEYGWMMU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57072F80114;
-	Tue,  4 May 2021 21:43:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B8F1F80108;
+	Wed,  5 May 2021 08:11:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FB2DF80162; Tue,  4 May 2021 21:43:11 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0277AF80162
- for <alsa-devel@alsa-project.org>; Tue,  4 May 2021 21:43:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0277AF80162
-IronPort-SDR: 8c16jx6apVfv1FCBPvnv+Hg7H8jNcIELbk2VwxFRuc4c7q3I508xviuFvlEwR/EP+Bss9G40Ki
- GsJPzKEmN7mQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="185197292"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; d="scan'208";a="185197292"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 May 2021 12:42:57 -0700
-IronPort-SDR: tV0ia70qga8TjG6sVo/8j5jku/jZ55LR+zPMJKy6riNcE5VCIPBwotMin6LCbaXwD07iz3MNur
- EOKi3X6UV3lA==
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; d="scan'208";a="390074247"
-Received: from lcoronad-mobl.amr.corp.intel.com (HELO [10.212.111.147])
- ([10.212.111.147])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 May 2021 12:42:56 -0700
-Subject: Re: [PATCH] ASoC: rt711-sdca: fix the function number of SDCA control
- for feature unit 0x1E
-To: shumingf@realtek.com, broonie@kernel.org, lgirdwood@gmail.com
-References: <20210504100424.8760-1-shumingf@realtek.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <064974e1-f792-9b2a-d28c-b8b9ad4a8993@linux.intel.com>
-Date: Tue, 4 May 2021 14:42:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ id 1AE6AF8025F; Wed,  5 May 2021 08:11:56 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 5D1A4F80108
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 08:11:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D1A4F80108
 MIME-Version: 1.0
-In-Reply-To: <20210504100424.8760-1-shumingf@realtek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, derek.fang@realtek.com, flove@realtek.com,
- pierre-louis.bossart@intel.com
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1620195107711627960-webhooks-bot@alsa-project.org>
+References: <1620195107711627960-webhooks-bot@alsa-project.org>
+Subject: [a52] Strange behavior with 5.1 surround on ALC1120
+Message-Id: <20210505061156.1AE6AF8025F@alsa1.perex.cz>
+Date: Wed,  5 May 2021 08:11:56 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,43 +66,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-plugins issue #21 was opened from davidebeatrici:
 
+I originally encountered the issue ~1 year ago, when I started using a motherboard with an ALC1120 on it.
 
-On 5/4/21 5:04 AM, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
-> 
-> The function number should be FUNC_NUM_MIC_ARRAY(0x2) for the feature unit 0x1E.
-> 
-> Signed-off-by: Shuming Fan <shumingf@realtek.com>
+The out-of-box experience was flawless: I simply connected the optical SPDIF cable to my amplifier/receiver and stereo sound immediately worked.
 
-This fixes the issue we saw, the test reports are fine with this patch. 
-Thanks Shuming!
+Once I switched to 5.1 surround, audio output became extremely fast; even videos were affected by it, to the point that they were being reproduced in seconds instead of minutes.
 
-BugLink: https://github.com/thesofproject/linux/issues/2877
-Fixes: ca5118c0c00f6 ('ASoC: rt711-sdca: change capture switch controls')
+After a few days of research and experiments I managed to workaround the issue by replacing the content of `60-a52-encoder.conf` with:
+```
+pcm.a52 {
+	@args [CARD]
+	@args.CARD {
+		type string
+        }
+	type rate
+	slave {
+		pcm {   
+			type a52
+			card $CARD
+		}
+		rate 48000
+	}
+}
+pcm.pulse {
+	type pulse
+}
+ctl.pulse {
+	type pulse
+}
+pcm.!default {
+	type pulse
+}
+ctl.!default {
+	type pulse
+}
+```
 
-> ---
->   sound/soc/codecs/rt711-sdca.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
-> index cc36739f7fcf..24a084e0b48a 100644
-> --- a/sound/soc/codecs/rt711-sdca.c
-> +++ b/sound/soc/codecs/rt711-sdca.c
-> @@ -683,13 +683,13 @@ static int rt711_sdca_set_fu1e_capture_ctl(struct rt711_sdca_priv *rt711)
->   	ch_r = (rt711->fu1e_dapm_mute || rt711->fu1e_mixer_r_mute) ? 0x01 : 0x00;
->   
->   	err = regmap_write(rt711->regmap,
-> -			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU1E,
-> +			SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E,
->   			RT711_SDCA_CTL_FU_MUTE, CH_L), ch_l);
->   	if (err < 0)
->   		return err;
->   
->   	err = regmap_write(rt711->regmap,
-> -			SDW_SDCA_CTL(FUNC_NUM_JACK_CODEC, RT711_SDCA_ENT_USER_FU1E,
-> +			SDW_SDCA_CTL(FUNC_NUM_MIC_ARRAY, RT711_SDCA_ENT_USER_FU1E,
->   			RT711_SDCA_CTL_FU_MUTE, CH_R), ch_r);
->   	if (err < 0)
->   		return err;
-> 
+Based on https://help.ubuntu.com/community/DigitalAC-3Pulseaudio#Configuring_asound.conf.
+
+After that, I wanted to investigate the cause and report my findings to either ALSA or PulseAudio (depending on the results).
+
+Unfortunately that never happened and I kinda forgot about it, as [libasound2-plugins](https://packages.debian.org/bullseye/libasound2-plugins) was updated a single time in the past year and thus I only had to replace the file's content once more.
+
+Fast-forward to today: I switch from PulseAudio to PipeWire and while troubleshooting https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1143 I decided to try to restore the original file.
+
+Interestingly, the behavior is different compared to PulseAudio: audio, instead of being fast, is crackling. It's basically as if a frame every two is being skipped.
+
+Unfortunately PipeWire reports no errors whatsoever.
+
+Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/21
+Repository URL: https://github.com/alsa-project/alsa-plugins
