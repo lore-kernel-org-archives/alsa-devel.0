@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5F2C3C43460
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CCBE9C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:39 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id BF33961C26
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org BF33961C26
+	by mail.kernel.org (Postfix) with ESMTPS id 3BC99613E6
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BC99613E6
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 432C616D9;
-	Wed,  5 May 2021 18:40:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 432C616D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89E3716B6;
+	Wed,  5 May 2021 18:40:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89E3716B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620232877;
-	bh=F+pne/Hjxiv7x9JXuhGkN38R9E5g7VxohpNgBfzPr/A=;
+	s=default; t=1620232897;
+	bh=G9rh/wjGe8KAlphEFiZxuD9BxwFSJwNa4pW7dZ3LJUE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HsrSO/z/N740o5H0I3s+CI9xSJ45Nw9oJGgOJaQeSBW/OBOkIYzAt+jhqt1xF3h11
-	 guI6GiP0FBZhGMy1DAk+f6f+6V+92rjFtRXntAfDVgg0tzGM5ZZ/JXC2vGGPSgJAUQ
-	 mi3xr5fr7axjxDh50J2IO4rEVM3moH3GlQp7ea8g=
+	b=khB2mnyf3l3r+c0MpQV2JiLLLEz0AAje4ax+ksxUZYZN8OOT9DJfi7qStnVgmDfCb
+	 ITo1FziRVMnWzR54XE1FbwlIOYdOueerdzd9nkJkRoI5VNDrA+XNqy0XgwD0VD8FWc
+	 rWQGaw/znxLvL9ts5oJZqMImULj5dKK6HjWYHD8c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD55DF80533;
-	Wed,  5 May 2021 18:34:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72282F804B4;
+	Wed,  5 May 2021 18:35:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FC82F8051B; Wed,  5 May 2021 18:34:52 +0200 (CEST)
+ id 5E593F804E0; Wed,  5 May 2021 18:35:07 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED2E5F8051B
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:34:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED2E5F8051B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B86FF804B4
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:35:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B86FF804B4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cG+8WBEw"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6723616E9;
- Wed,  5 May 2021 16:34:43 +0000 (UTC)
+ header.b="FdPQ+itk"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1B561622;
+ Wed,  5 May 2021 16:35:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232484;
- bh=F+pne/Hjxiv7x9JXuhGkN38R9E5g7VxohpNgBfzPr/A=;
+ s=k20201202; t=1620232502;
+ bh=G9rh/wjGe8KAlphEFiZxuD9BxwFSJwNa4pW7dZ3LJUE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cG+8WBEwLPmpaKPRnKWoD6yDod0o7RhRyUIl3VD6sVFXATGlGzfkEikgVyxJreZf3
- 5ZfSRyENmwOb7RqDiDuBkpiwEy2YtJXoqkxMqPzGNWX1drVzUafrJystc9GyKh7BRU
- GTtsx3OU/Q9ustrYSA5GkWfccJrUa48zfIyD0T/W0sn7Z954skF64SYTDX9RVFBOH3
- HvTMGjQfNEsZy6u1s/2OBbdeyFDpZej/i+BsZdUMWZt3RVzoAsyOhdUc3NDReFRxby
- VaYklgKFDSXuKxiKdwmhpm8Xlcoa2SsBRmlQMGFGfFiyEMx5hiA0kkZa8j+1jRVOcY
- XngqCHanebv5A==
+ b=FdPQ+itkPqNvpTKsC0jezs62tjEoxYe6jMDEIgTSLxbTYp8uWscBUUoQQPM39lqRa
+ 9JxUKFDuG5eQaYEbh96464p/eVKKjVIdzgguFV+sIZAJptBgMM9crbmAzjd8sfRWCK
+ a6ojABhJAfN/nmm6f80kbkQh9AM7krBVI4fqa5OAxi7p2mkU5jMHxAY4ZYXVbkNmUB
+ QTCaplQLH7QwAJEWVf9l3e0x2g7fWoluNMXatLtmQWyTDlsN1wlbifVr7UDSeFSXT5
+ GziHWUgac38W5sILj8aDb85ionVH2MzkCPfUb17zdGJJJLlyq+yaEFewwc+6R5Y+CN
+ +hP1ROtpII7hw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 022/104] ALSA: bebob: enable to deliver MIDI
- messages for multiple ports
-Date: Wed,  5 May 2021 12:32:51 -0400
-Message-Id: <20210505163413.3461611-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 034/104] ASoC: Intel: bytcr_rt5640: Add quirk for
+ the Chuwi Hi8 tablet
+Date: Wed,  5 May 2021 12:33:03 -0400
+Message-Id: <20210505163413.3461611-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -72,8 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,56 +89,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit d2b6f15bc18ac8fbce25398290774c21f5b2cd44 ]
+[ Upstream commit 875c40eadf6ac6644c0f71842a4f30dd9968d281 ]
 
-Current implementation of bebob driver doesn't correctly handle the case
-that the device has multiple MIDI ports. The cause is the number of MIDI
-conformant data channels is passed to AM824 data block processing layer.
+The Chuwi Hi8 tablet is using an analog mic on IN1 and has its
+jack-detect connected to JD2_IN4N, instead of using the default
+IN3 for its internal mic and JD1_IN4P for jack-detect.
 
-This commit fixes the bug.
+It also only has 1 speaker.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210321032831.340278-4-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Add a quirk applying the correct settings for this configuration.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210325221054.22714-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/firewire/bebob/bebob_stream.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/sound/firewire/bebob/bebob_stream.c b/sound/firewire/bebob/bebob_stream.c
-index bbae04793c50..c18017e0a3d9 100644
---- a/sound/firewire/bebob/bebob_stream.c
-+++ b/sound/firewire/bebob/bebob_stream.c
-@@ -517,20 +517,22 @@ int snd_bebob_stream_init_duplex(struct snd_bebob *bebob)
- static int keep_resources(struct snd_bebob *bebob, struct amdtp_stream *stream,
- 			  unsigned int rate, unsigned int index)
- {
--	struct snd_bebob_stream_formation *formation;
-+	unsigned int pcm_channels;
-+	unsigned int midi_ports;
- 	struct cmp_connection *conn;
- 	int err;
- 
- 	if (stream == &bebob->tx_stream) {
--		formation = bebob->tx_stream_formations + index;
-+		pcm_channels = bebob->tx_stream_formations[index].pcm;
-+		midi_ports = bebob->midi_input_ports;
- 		conn = &bebob->out_conn;
- 	} else {
--		formation = bebob->rx_stream_formations + index;
-+		pcm_channels = bebob->rx_stream_formations[index].pcm;
-+		midi_ports = bebob->midi_output_ports;
- 		conn = &bebob->in_conn;
- 	}
- 
--	err = amdtp_am824_set_parameters(stream, rate, formation->pcm,
--					 formation->midi, false);
-+	err = amdtp_am824_set_parameters(stream, rate, pcm_channels, midi_ports, false);
- 	if (err < 0)
- 		return err;
- 
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 07730ed7ab3c..d45f43290653 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -514,6 +514,23 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		/* Chuwi Hi8 (CWI509) */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
++			DMI_MATCH(DMI_BOARD_NAME, "BYT-PA03C"),
++			DMI_MATCH(DMI_SYS_VENDOR, "ilife"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "S806"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
 -- 
 2.30.2
 
