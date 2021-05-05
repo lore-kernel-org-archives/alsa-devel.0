@@ -7,63 +7,63 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC42CC433ED
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 17:03:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FD5BC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 17:04:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id D83DF610A1
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 17:03:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org D83DF610A1
+	by mail.kernel.org (Postfix) with ESMTPS id 06433610A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 17:04:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 06433610A1
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CB78176E;
-	Wed,  5 May 2021 19:03:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CB78176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88EDF1782;
+	Wed,  5 May 2021 19:03:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88EDF1782
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620234234;
-	bh=nTm8LRrpyUZP5X3dXoiOauWMZOqsahfD2+SgGSn6TW0=;
+	s=default; t=1620234253;
+	bh=ZRTrll+/9TeBCPtkuF809MAdV4Fzm/EVrDVnWwSVPwg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TTMVimUY9/NBXTtHakHXw0sHZ/1DS91mVfFP/zDK9d0Nd2SPKNSpDZ/lv134XOYLW
-	 iW+ZNunmm7BSTaleft5cy55GDu835g/jOcygUJvK9VIqC/Yjn1//CUyyXkcvxP6f5W
-	 rsJ0XDKfcQBjn09vJpK+rmwmGWmi1kifba9ODzN0=
+	b=SUSWFGK5v9P0qmSOgBZayl6Ndrug3m+HXtJhtSwltX88TpkqY+Jd7ZRXtCIS0AmLD
+	 nzdiXBqahc5LiRhav3tgc8ToeSm6oi4bMmAprQGeymLqPl6bGUMAr005828+GmE5SO
+	 bbSeESdkWfMZjtlLYqjNuZS7Y0whTros2gkDI0Cc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68C7BF804E2;
-	Wed,  5 May 2021 18:42:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F57CF80539;
+	Wed,  5 May 2021 18:42:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29AA7F8053B; Wed,  5 May 2021 18:42:17 +0200 (CEST)
+ id 79664F806FC; Wed,  5 May 2021 18:42:19 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB057F804DF
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:42:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB057F804DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id A922AF806FA
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:42:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A922AF806FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qKYaovWb"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A81861C2A;
- Wed,  5 May 2021 16:42:08 +0000 (UTC)
+ header.b="q4KpEeA0"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AB3361C26;
+ Wed,  5 May 2021 16:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232929;
- bh=nTm8LRrpyUZP5X3dXoiOauWMZOqsahfD2+SgGSn6TW0=;
+ s=k20201202; t=1620232931;
+ bh=ZRTrll+/9TeBCPtkuF809MAdV4Fzm/EVrDVnWwSVPwg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=qKYaovWbLr5R8sTUnIeIwD/zYK1z6TMmu6vAOhZGNNKtW4UPHhZI53HejE6lt+3zh
- GPkpWpa/sjXjzKg4hsKuoRfRm0I56Qdod1dKya4cOL8KqMgCbKR/eLhUi3lfz9m37B
- T6P0mp2xI3OMJN4MTawhQ7IeRphbexvg4M+vRP7oQ5E7Eirth/OSNobB3HwAcBGvX6
- EYg2fKId3Ihtb+6Uvvb9e+Hb1OkEythkqV4o0qKokaFfIBhdpW6d6voUVryHmo59Jy
- VUC5CfuGNmQn7ccOhCVbhrwDtGmVAI+d5coxKIku8zIh5/+TZFrbH/lWdgUxpgKhb4
- r2zAHdXeMi6dg==
+ b=q4KpEeA06eUKZSGbFLe6fEjadSR4mydYts6yt4ba2r3RAzo4BiX9syYdI8ZLWIGrh
+ ouMdtwpAwaLDF31gEuVBrQHM4By0LjF1MI+1KciURmcrqLpFrOVdd32Q3k9lwL288s
+ IkfIhPK8/cjv9HEVgDORgfdJNy/N1ZB3uo0uwZmu2oOQOf1J0yVXyaqKdM+x/pwt5j
+ IOG9EL4cDXGmvgNH+kJ64AjGgujrmTj7VokwN0rZO79i1rUGGFB6ru0uPWcKCy01Ts
+ 46hn4tQG1XLyMtMed2RolTayFwo6YDMyiAzRPq7rrP5PKOayLRxgkRSNEUt8cVChdl
+ OjclCUtJH2okg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 04/19] ALSA: hdsp: don't disable if not enabled
-Date: Wed,  5 May 2021 12:41:47 -0400
-Message-Id: <20210505164203.3464510-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 06/19] ALSA: rme9652: don't disable if not enabled
+Date: Wed,  5 May 2021 12:41:49 -0400
+Message-Id: <20210505164203.3464510-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505164203.3464510-1-sashal@kernel.org>
 References: <20210505164203.3464510-1-sashal@kernel.org>
@@ -90,42 +90,42 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 507cdb9adba006a7798c358456426e1aea3d9c4f ]
+[ Upstream commit f57a741874bb6995089020e97a1dcdf9b165dcbe ]
 
-hdsp wants to disable a not enabled pci device, which makes kernel
+rme9652 wants to disable a not enabled pci device, which makes kernel
 throw a warning. Make sure the device is enabled before calling disable.
 
-[    1.758292] snd_hdsp 0000:00:03.0: disabling already-disabled device
-[    1.758327] WARNING: CPU: 0 PID: 180 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.766985] Call Trace:
-[    1.767121]  snd_hdsp_card_free+0x94/0xf0 [snd_hdsp]
-[    1.767388]  release_card_device+0x4b/0x80 [snd]
-[    1.767639]  device_release+0x3b/0xa0
-[    1.767838]  kobject_put+0x94/0x1b0
-[    1.768027]  put_device+0x13/0x20
-[    1.768207]  snd_card_free+0x61/0x90 [snd]
-[    1.768430]  snd_hdsp_probe+0x524/0x5e0 [snd_hdsp]
+[    1.751595] snd_rme9652 0000:00:03.0: disabling already-disabled device
+[    1.751605] WARNING: CPU: 0 PID: 174 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.759968] Call Trace:
+[    1.760145]  snd_rme9652_card_free+0x76/0xa0 [snd_rme9652]
+[    1.760434]  release_card_device+0x4b/0x80 [snd]
+[    1.760679]  device_release+0x3b/0xa0
+[    1.760874]  kobject_put+0x94/0x1b0
+[    1.761059]  put_device+0x13/0x20
+[    1.761235]  snd_card_free+0x61/0x90 [snd]
+[    1.761454]  snd_rme9652_probe+0x3be/0x700 [snd_rme9652]
 
 Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210321153840.378226-2-ztong0001@gmail.com
+Link: https://lore.kernel.org/r/20210321153840.378226-4-ztong0001@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/rme9652/hdsp.c | 3 ++-
+ sound/pci/rme9652/rme9652.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index dd6c9e6a1d53..4128c04fbfde 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -5314,7 +5314,8 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 	if (hdsp->port)
- 		pci_release_regions(hdsp->pci);
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index c253bdf92e36..e5611ee9f2ae 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -1761,7 +1761,8 @@ static int snd_rme9652_free(struct snd_rme9652 *rme9652)
+ 	if (rme9652->port)
+ 		pci_release_regions(rme9652->pci);
  
--	pci_disable_device(hdsp->pci);
-+	if (pci_is_enabled(hdsp->pci))
-+		pci_disable_device(hdsp->pci);
+-	pci_disable_device(rme9652->pci);
++	if (pci_is_enabled(rme9652->pci))
++		pci_disable_device(rme9652->pci);
  	return 0;
  }
  
