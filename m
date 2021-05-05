@@ -7,71 +7,70 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 026C9C43462
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:49:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB1DBC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:50:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id E549C61430
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:49:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E549C61430
+	by mail.kernel.org (Postfix) with ESMTPS id 29FD461423
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:50:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 29FD461423
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 686931765;
-	Wed,  5 May 2021 18:49:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 686931765
+	by alsa0.perex.cz (Postfix) with ESMTPS id A194C1729;
+	Wed,  5 May 2021 18:49:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A194C1729
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620233393;
-	bh=DYCwvdfLD7LR2Dz4MH24dVpMBkMYt0XhPDPfZL94W7Q=;
+	s=default; t=1620233415;
+	bh=jNOzGzbmDYckzrfj/aidoKSY4WQTBCQegsncZ1cxYNQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hZFd90UnrFkpHSZ6SV9lx75r161mfKA6PbBT/+bQWXuzZrNK/ysauofQXnSQAG27+
-	 /S/U9rv0Eq+tF4y2Qq+DTiew2djGi3t7nbAkoeE698fbazUknLv/fVNj0RejRAi2pD
-	 TBhvfMjRoHYRfidZH+TZdJFCc5POWHD3oMDgZCGI=
+	b=cjgQHLuLVWDfSz5hTMb0vlbbtS/ND0XoBgT1rim6BNNbuF+0iJ6Ni0dv3ItiarO+R
+	 9ylaCkxmrwwypVVa1DLne623+Y0e2keb12PpkgKITwIM5nJcgY3N6AW6lIakj90yYY
+	 vT/cxKpZ6RcpY5c2Oq2cO69jbDZGg6O2W+mPUYUk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF1D2F80511;
-	Wed,  5 May 2021 18:37:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D374FF80516;
+	Wed,  5 May 2021 18:37:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1383F805AD; Wed,  5 May 2021 18:37:38 +0200 (CEST)
+ id 89644F805BB; Wed,  5 May 2021 18:37:39 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 249CFF805A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2532AF805B0
  for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 249CFF805A0
-IronPort-SDR: P7DWIglXvWDPotXLNfVbGrKQLQTxh+guj8y9+uHC9C/Gye2yoP3M5MXmnDcFq3/+nQLqPWdJZO
- dpvKSYb8lCUQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="196219199"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; d="scan'208";a="196219199"
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2532AF805B0
+IronPort-SDR: Jbh0qmnLS/NNjjW03Kiy2qJPmElW58+KjXHrG7TRviA/SS4+cbmdb1O6CqIvNCSsfKhvPiYEy9
+ qe8Po0C5cGeQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="196219201"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; d="scan'208";a="196219201"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2021 09:37:25 -0700
-IronPort-SDR: l5oPjxZ+ZsB/dLaQj2tasDdqSZWPARovrYQ8t1C9t9wCsFx6MoXWFA9DWklxKQrCYOxqX94cKC
- M58uFTPuhBQA==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; d="scan'208";a="458800046"
+ 05 May 2021 09:37:26 -0700
+IronPort-SDR: 8UrTlVpU0lGUO8g+TK8JW60CukkKmOMpevVkAvEN2TM63ygznYkncuUKXyqhdojUzbL0bFT4J2
+ CswMvR6VvxtA==
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; d="scan'208";a="458800048"
 Received: from rtsagpan-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.51.38])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 May 2021 09:37:24 -0700
+ 05 May 2021 09:37:25 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/13] ASoC: Intel: sof_rt5682: Enable Bluetooth offload on
- tgl and adl
-Date: Wed,  5 May 2021 11:37:01 -0500
-Message-Id: <20210505163705.305616-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/13] ASoC: Intel: sof_sdw: add SOF_RT715_DAI_ID_FIX for
+ AlderLake
+Date: Wed,  5 May 2021 11:37:02 -0500
+Message-Id: <20210505163705.305616-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210505163705.305616-1-pierre-louis.bossart@linux.intel.com>
 References: <20210505163705.305616-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jaska Uimonen <jaska.uimonen@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+Cc: tiwai@suse.de, Libin Yang <libin.yang@intel.com>, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Yong Zhi <yong.zhi@intel.com>
+ Bard Liao <bard.liao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,71 +86,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yong Zhi <yong.zhi@intel.com>
+From: Libin Yang <libin.yang@intel.com>
 
-Enable BT audio offload for TGL/ADL drivers with the following
-board configs specifically:
+AlderLake needs the flag SOF_RT715_DAI_ID_FIX if it is using the
+rt715 DMIC.
 
-SSP0 - Headsets
-SSP1 - Speaker amps
-SSP2 - Bluetooth audio
-
-Reviewed-by: Jaska Uimonen <jaska.uimonen@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Signed-off-by: Libin Yang <libin.yang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_rt5682.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 7eecfe1b4404..6be78a206242 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -949,7 +949,9 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_CODEC(0) |
- 					SOF_SPEAKER_AMP_PRESENT |
- 					SOF_RT5682_SSP_AMP(1) |
--					SOF_RT5682_NUM_HDMIDEV(4)),
-+					SOF_RT5682_NUM_HDMIDEV(4) |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 608ae3c93aae..0f1ad9e0a53b 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -198,6 +198,7 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(SOF_RT711_JD_SRC_JD1 |
+ 					SOF_SDW_TGL_HDMI |
++					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_PCH_DMIC),
  	},
- 	{
- 		.name = "jsl_rt5682_rt1015",
-@@ -967,7 +969,9 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_SPEAKER_AMP_PRESENT |
- 					SOF_MAX98373_SPEAKER_AMP_PRESENT |
- 					SOF_RT5682_SSP_AMP(1) |
--					SOF_RT5682_NUM_HDMIDEV(4)),
-+					SOF_RT5682_NUM_HDMIDEV(4) |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
- 	{
- 		.name = "jsl_rt5682_max98360a",
-@@ -995,7 +999,9 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_SPEAKER_AMP_PRESENT |
- 					SOF_RT1011_SPEAKER_AMP_PRESENT |
- 					SOF_RT5682_SSP_AMP(1) |
--					SOF_RT5682_NUM_HDMIDEV(4)),
-+					SOF_RT5682_NUM_HDMIDEV(4) |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
- 	{
- 		.name = "jsl_rt5682_rt1015p",
-@@ -1013,7 +1019,9 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_SPEAKER_AMP_PRESENT |
- 					SOF_MAX98373_SPEAKER_AMP_PRESENT |
- 					SOF_RT5682_SSP_AMP(1) |
--					SOF_RT5682_NUM_HDMIDEV(4)),
-+					SOF_RT5682_NUM_HDMIDEV(4) |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
- 	{
- 		.name = "adl_max98357a_rt5682",
+ 	{}
 -- 
 2.25.1
 
