@@ -8,88 +8,88 @@ X-Spam-Status: No, score=-13.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D68F9C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4216DC433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:28:49 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3466D613BA
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:28:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3466D613BA
+	by mail.kernel.org (Postfix) with ESMTPS id A1426613BC
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:28:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A1426613BC
 Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4AEB16CE;
-	Wed,  5 May 2021 09:27:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4AEB16CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDDC616CC;
+	Wed,  5 May 2021 09:27:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDDC616CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620199693;
+	s=default; t=1620199727;
 	bh=VyMlacarxlbYlXc3Bo2MmbDmjcjODpL3r5p3HEZBj6k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LEW8eByjNAkVF6DdlLCyT+Hfc5CnopkWrUvMW7jLj0E2QxrzQgvL3TaiL/0hx9D4p
-	 lF68KfmRV5epuR/9yajDdNU5xMHRNP4Citejsc0y6pCUX7W/8USA/QOqPsXTsCFqsI
-	 Rpw99yjuPOG8/+STVYZMqHAQ4mnzxRNqhT3cWKqU=
+	b=VjXeiG9mPmbaXmgj71ytCAwi6Et0zpfQDYBhyvx0h1HxagooxjBGfwrSkxd2B0k9Z
+	 d3LJFnDTpF2tGgC25I+1drIZsxPxty01yQ3TLQqehs2JgG1+qYnmXqDtj8heZyHm7b
+	 7Rin3d04eiOKXgiLZBawvsiJxj5fBLjmXJ81lVGs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0985F804A9;
-	Wed,  5 May 2021 09:26:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AC1DF804AD;
+	Wed,  5 May 2021 09:26:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2330F80431; Wed,  5 May 2021 09:26:26 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ id 7F71AF804AE; Wed,  5 May 2021 09:26:30 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65F96F80257
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 09:26:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65F96F80257
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96E7DF8025F
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 09:26:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96E7DF8025F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
- header.i=@baylibre-com.20150623.gappssmtp.com header.b="AOFwLbrj"
-Received: by mail-wm1-x332.google.com with SMTP id
- s5-20020a7bc0c50000b0290147d0c21c51so480951wmh.4
- for <alsa-devel@alsa-project.org>; Wed, 05 May 2021 00:26:15 -0700 (PDT)
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="mmaKgtab"
+Received: by mail-wr1-x42b.google.com with SMTP id l14so645034wrx.5
+ for <alsa-devel@alsa-project.org>; Wed, 05 May 2021 00:26:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20150623.gappssmtp.com; s=20150623;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
  bh=ryLo2gccvYnJFf6uz5T1OlY0Lzzgw8rSJB9vsnUHoqE=;
- b=AOFwLbrj3UIWYKYMglM59levWs0CwBGCnzJKEGYBCMCmOvaXco0gfVgtLRgLDombiC
- WJrCu+k6+ppreNXIyWyjmKwGpLmvBGtLHdbxnThZb4wItpi11kJ39FiSXpAf/i/jswfj
- V0ZruldhB7fqIOrnoxHToqmyeIE1UCWYt6R7bZG152zqzEqwxFc1AQjBI5nla808RSmT
- LbfGxht8gAg0PE+cndhUQRToHy0LgmpQgPkNqCFYgsa7Is8oRpj+UxgzycYC2OHpCt7y
- evoKP6qs5pj2aIrWdoqzmtllm5KIzf1m/U8yaLG2DiMrLVuzRQdYm2vQ1c7ZrGMXuYYG
- 7YhA==
+ b=mmaKgtabncuduXfLM9oT6YqrfkH0MJcr5ydzabdPW5tI3a2j/ZeavcxqROSnVPiP0y
+ QWC83sreSiHFxO6TXwAtHPQ8Q6g+HusDKd5Z1BcCyQgL6zYfl2c7noq52MVVRuCpxlFm
+ 2Iv862euEaJp2K/LkYrbbXQwrGyG2SLfNLLWzPOy5vCkVrBCH0k5iQjs3dF9wlPxC+bq
+ SXA5uRXkTzuQyo5dQY92rmHoDk0p4oZur5YxZUKjV7ZTa/tDvhvRJNdBaYSK1XsglXXF
+ pl3dIyhyyTMK7vxgcYh/ZEaKtTXIdzlUAMYj7F3ftlNFFYkIjY906L1bLxAzL0T9a7Sn
+ mQBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20161025;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
  bh=ryLo2gccvYnJFf6uz5T1OlY0Lzzgw8rSJB9vsnUHoqE=;
- b=Xhh+7IESEqQEGEEu0QgnT0uHDw6eh6pWQ02o5aH9c6AYJS+MS3geExUyeK1NyU//7X
- XHA6Ode6Mel5lkbtRj40+1K9fnJ2gbIBz7KeO2pBz7aHsdMGtiMssxq29kUD7NbUOVd0
- dfKb0B2cbD5NjEKw7pxy4yBzE9AB1VagvF8tnDXq7QEXZC6C7lhiGnC2K4Yc8Gc4RC7O
- yy0EXEddMSqs476tMykdeVEx2vrRBF/HR2fGDDm+2YRU/so5QAaL3Cjv9t2BzcasRCPj
- GWdo4xrThQz6LE44sfzdxNAlZ1fxWia4QPv1+rUnVRw1RJGeNru/Q4a03OmVj3Ywdhg/
- 37cA==
-X-Gm-Message-State: AOAM53310AHD1ToO3dfq9Gz7X9uYiuJQJMAy9UxkvxPF7wl41lRYMuxq
- uBxIj8J1UrCE+9K8bzjt+W8iSA==
-X-Google-Smtp-Source: ABdhPJzDCygRvwK/+nSocWqj6oDcXCUudZHXcgd967/zopD+CaCbwXcFQU6Bi/gkEZYx5oLhj/niig==
-X-Received: by 2002:a1c:c206:: with SMTP id s6mr8703239wmf.47.1620199574593;
- Wed, 05 May 2021 00:26:14 -0700 (PDT)
+ b=rs0CxSdeND06IYlIjyjhtshs0pAK84xv48e3Q8OPfeGYRWkbIfx3mS1z0HCE5vatTG
+ WzaXTSl84fWeLKDUEXTl0S9B/ZLqj3m6ZFd/TzGNs+34olz558y7tlKnBwx3IaaQXqcJ
+ WTxck6RvSyzy6tO+b43VB+XXzuFlHnwUDjIPyHvl8h8Zx1zF2JX9yLG9UScsiKS4kiKG
+ 4S75gxC81KFL98qytsDZLb8rVGNulmQhiJqoZtI1TLgMB7oJFWnf46Uro5j4UKHqZU6v
+ 3n1MYRxpcI/RQ50nhPbLNY6E4BcOZrcgFFjVwp4uWWeYgOTbsJ2GCu2YfnEfXTyZjURf
+ +rAw==
+X-Gm-Message-State: AOAM533PILWdQJNq7abnH0hFDyykEsNAc9tfFT2k6IL2oQew7hjZkOLt
+ U83lHNkIVN22MjrGyc6T+67a/A==
+X-Google-Smtp-Source: ABdhPJx4DVSUJy6saY70ep/mXUrM9nHCdK7Z61aVTL6XBZMMC5IECfrDceM1fmjbMmcp4AqPb3mduA==
+X-Received: by 2002:a05:6000:1152:: with SMTP id
+ d18mr17857048wrx.211.1620199575726; 
+ Wed, 05 May 2021 00:26:15 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:90c:e290:6eb3:66ab:cb1e:ef0])
  by smtp.gmail.com with ESMTPSA id
- f25sm19008991wrd.67.2021.05.05.00.26.13
+ f25sm19008991wrd.67.2021.05.05.00.26.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 05 May 2021 00:26:14 -0700 (PDT)
+ Wed, 05 May 2021 00:26:15 -0700 (PDT)
 From: Neil Armstrong <narmstrong@baylibre.com>
 To: jbrunet@baylibre.com,
 	broonie@kernel.org
-Subject: [PATCH v2 2/2] ASoC: meson: g12a-toacodec: add support for SM1
+Subject: [PATCH v2 2/2] sound: meson: g12a-toacodec: add support for SM1
  TOACODEC
-Date: Wed,  5 May 2021 09:26:06 +0200
-Message-Id: <20210505072607.3815442-3-narmstrong@baylibre.com>
+Date: Wed,  5 May 2021 09:26:07 +0200
+Message-Id: <20210505072607.3815442-4-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210505072607.3815442-1-narmstrong@baylibre.com>
 References: <20210505072607.3815442-1-narmstrong@baylibre.com>
