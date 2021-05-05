@@ -7,50 +7,50 @@ X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0179C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 06:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD961C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:02:05 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 465D4611CB
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 06:12:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 465D4611CB
+	by mail.kernel.org (Postfix) with ESMTPS id A7C41610E7
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:02:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org A7C41610E7
 Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D30AE168C;
-	Wed,  5 May 2021 08:11:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D30AE168C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A8161698;
+	Wed,  5 May 2021 09:01:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A8161698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620195167;
-	bh=Xko3TqloqxS+ixNM80E/cLavMz1qRkg2FwUy7SnprCc=;
+	s=default; t=1620198119;
+	bh=P4WNXfqucp5A1o5OrjeO1zpYcXWdkGojmXm/r//pDgQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=szx58x4tVvKrXwdTAiRZkK9T9rdVuE6Lb1vV0CEBHECJP9b5lo5TteCtAdYvqLWyc
-	 n21ABhnlwFuCXsvO+LYNeydmVnjPPRwGWVtBOLzy/7ED12m3souFnyf01WOXn89BlG
-	 otVjTd+bNNqNpVmwK2LB0VbfY59iM3/HTEYGWMMU=
+	b=g85cja9uWpLoF8ruyM3SoJojvxY6q0WFj6O9EcSX6XohYUQiwiLutLT9lpneFS29x
+	 5Nm33zn1IDD7hFwLWNuaZioyoHwBNsgZFFWSIFSkBCjsaASUtwn8o/9zxIV2lT/At6
+	 AaGQrQ+OJWcJ8rxTJe/3M7p+JQveLKBjO3ihBBHM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B8F1F80108;
-	Wed,  5 May 2021 08:11:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDBA2F80257;
+	Wed,  5 May 2021 09:01:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AE6AF8025F; Wed,  5 May 2021 08:11:56 +0200 (CEST)
+ id 37255F8025F; Wed,  5 May 2021 09:01:07 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5D1A4F80108
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 08:11:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D1A4F80108
+ by alsa1.perex.cz (Postfix) with ESMTP id 085FEF80108
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 09:00:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 085FEF80108
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1620195107711627960-webhooks-bot@alsa-project.org>
-References: <1620195107711627960-webhooks-bot@alsa-project.org>
-Subject: [a52] Strange behavior with 5.1 surround on ALC1120
-Message-Id: <20210505061156.1AE6AF8025F@alsa1.perex.cz>
-Date: Wed,  5 May 2021 08:11:56 +0200 (CEST)
+In-Reply-To: <1620198054870762110-webhooks-bot@alsa-project.org>
+References: <1620198054870762110-webhooks-bot@alsa-project.org>
+Subject: [a52] Strange behavior with 5.1 surround on ALC1220
+Message-Id: <20210505070107.37255F8025F@alsa1.perex.cz>
+Date: Wed,  5 May 2021 09:01:07 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,7 +66,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-plugins issue #21 was opened from davidebeatrici:
+alsa-project/alsa-plugins issue #21 was edited from davidebeatrici:
 
 I originally encountered the issue ~1 year ago, when I started using a motherboard with an ALC1120 on it.
 
