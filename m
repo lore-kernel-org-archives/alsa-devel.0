@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CCBE9C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70EC1C43460
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:59 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 3BC99613E6
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 3BC99613E6
+	by mail.kernel.org (Postfix) with ESMTPS id CAC8E61402
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:41:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org CAC8E61402
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89E3716B6;
-	Wed,  5 May 2021 18:40:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89E3716B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45F3F1718;
+	Wed,  5 May 2021 18:41:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F3F1718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620232897;
-	bh=G9rh/wjGe8KAlphEFiZxuD9BxwFSJwNa4pW7dZ3LJUE=;
+	s=default; t=1620232917;
+	bh=0+9Xdgeq1Rpqm/DtwPbsBg2XLXCA4ICNfobY8GCq/VY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=khB2mnyf3l3r+c0MpQV2JiLLLEz0AAje4ax+ksxUZYZN8OOT9DJfi7qStnVgmDfCb
-	 ITo1FziRVMnWzR54XE1FbwlIOYdOueerdzd9nkJkRoI5VNDrA+XNqy0XgwD0VD8FWc
-	 rWQGaw/znxLvL9ts5oJZqMImULj5dKK6HjWYHD8c=
+	b=p7g+q2QjYQG/2UpVizuTDhw1/psMnWUu8YOZtB5ADmMXgWOIH15jVWwDhiNTGrB+d
+	 cENl6gbYmabVY1FU29RnXOfQCWhdPSt06PrAzrho59yzCBJCZcJKmbw0XI0tYBJIRa
+	 Y9OKdXy/NTpbfR6yTCk/HDZOF6jKMmT6O1aSqLyY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72282F804B4;
-	Wed,  5 May 2021 18:35:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2530EF80536;
+	Wed,  5 May 2021 18:35:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E593F804E0; Wed,  5 May 2021 18:35:07 +0200 (CEST)
+ id CB7AAF8053B; Wed,  5 May 2021 18:35:17 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B86FF804B4
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B86FF804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FB7AF80431
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:35:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FB7AF80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FdPQ+itk"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E1B561622;
- Wed,  5 May 2021 16:35:01 +0000 (UTC)
+ header.b="aPGnwhnm"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA81A61923;
+ Wed,  5 May 2021 16:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232502;
- bh=G9rh/wjGe8KAlphEFiZxuD9BxwFSJwNa4pW7dZ3LJUE=;
+ s=k20201202; t=1620232509;
+ bh=0+9Xdgeq1Rpqm/DtwPbsBg2XLXCA4ICNfobY8GCq/VY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FdPQ+itkPqNvpTKsC0jezs62tjEoxYe6jMDEIgTSLxbTYp8uWscBUUoQQPM39lqRa
- 9JxUKFDuG5eQaYEbh96464p/eVKKjVIdzgguFV+sIZAJptBgMM9crbmAzjd8sfRWCK
- a6ojABhJAfN/nmm6f80kbkQh9AM7krBVI4fqa5OAxi7p2mkU5jMHxAY4ZYXVbkNmUB
- QTCaplQLH7QwAJEWVf9l3e0x2g7fWoluNMXatLtmQWyTDlsN1wlbifVr7UDSeFSXT5
- GziHWUgac38W5sILj8aDb85ionVH2MzkCPfUb17zdGJJJLlyq+yaEFewwc+6R5Y+CN
- +hP1ROtpII7hw==
+ b=aPGnwhnmNHg4qwEn34+XuQrKZToPvZqxlWgrg9NnfQDgkHZr2z6r/xx6GS1aoymHB
+ iG6X6mWtt0XGodIRIXDfeQsjgnK2I57RAyTJFknMIfgDhmcdEe5CyIQ/jwESCArMLk
+ ds4m09vFLCcuNF3a8SAe7GVWcWTRhS4Zi3VIxX7DFIh8JZC0hj0p3uiXI54YVCX6Pa
+ HYa2ZlEMAabnZgGXrMnLE/YDRd6tJnAFV0SOXnx78EGFkZR6eKLRefIqpza1z2RrS4
+ XE8ic6YJ2p++sLxxjY1TlFEH8SAPs+/jZWBCDIviI0ug7xeB1BP3heRk4N5wN4JMbn
+ bU5u5k7i4NolQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 034/104] ASoC: Intel: bytcr_rt5640: Add quirk for
- the Chuwi Hi8 tablet
-Date: Wed,  5 May 2021 12:33:03 -0400
-Message-Id: <20210505163413.3461611-34-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.11 039/104] ASoC: rt5670: Add a quirk for the Dell
+ Venue 10 Pro 5055
+Date: Wed,  5 May 2021 12:33:08 -0400
+Message-Id: <20210505163413.3461611-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -73,7 +73,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,52 +92,43 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 875c40eadf6ac6644c0f71842a4f30dd9968d281 ]
+[ Upstream commit 84cb0d5581b6a7bd5d96013f67e9f2eb0c7b4378 ]
 
-The Chuwi Hi8 tablet is using an analog mic on IN1 and has its
-jack-detect connected to JD2_IN4N, instead of using the default
-IN3 for its internal mic and JD1_IN4P for jack-detect.
-
-It also only has 1 speaker.
-
-Add a quirk applying the correct settings for this configuration.
+Add a quirk with the jack-detect and dmic settings necessary to make
+jack-detect and the builtin mic work on Dell Venue 10 Pro 5055 tablets.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210325221054.22714-1-hdegoede@redhat.com
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210402140747.174716-5-hdegoede@redhat.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/codecs/rt5670.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 07730ed7ab3c..d45f43290653 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -514,6 +514,23 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index a0c8f58d729b..47ce074289ca 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2908,6 +2908,18 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
+ 						 RT5670_GPIO1_IS_IRQ |
+ 						 RT5670_JD_MODE3),
  	},
 +	{
-+		/* Chuwi Hi8 (CWI509) */
++		.callback = rt5670_quirk_cb,
++		.ident = "Dell Venue 10 Pro 5055",
 +		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
-+			DMI_MATCH(DMI_BOARD_NAME, "BYT-PA03C"),
-+			DMI_MATCH(DMI_SYS_VENDOR, "ilife"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "S806"),
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 10 Pro 5055"),
 +		},
-+		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_DIFF_MIC |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC2_INR |
++						 RT5670_GPIO1_IS_IRQ |
++						 RT5670_JD_MODE1),
 +	},
  	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
+ 		.callback = rt5670_quirk_cb,
+ 		.ident = "Aegex 10 tablet (RU2)",
 -- 
 2.30.2
 
