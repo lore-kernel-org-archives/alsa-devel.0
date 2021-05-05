@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-22.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,UPPERCASE_50_75,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C83C43460
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:53:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85D99C433B4
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:54:15 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 8F125613B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:53:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 8F125613B4
+	by mail.kernel.org (Postfix) with ESMTPS id EB5FB613C9
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:54:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org EB5FB613C9
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15B1A1742;
-	Wed,  5 May 2021 18:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15B1A1742
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F3CC1715;
+	Wed,  5 May 2021 18:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F3CC1715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620233618;
-	bh=vczX39UgrVCACZmIWAjKsPnQfDqMwyvWLIynZTj+wmw=;
+	s=default; t=1620233653;
+	bh=l6UOsSfIwMVHstmtkJIX4n+JtKICvV4bJ/QTOVkiPiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pqvXH4dj02mMZ4PLtgRYHU0nCJp5DI6RsywNQ1SXN9kXgQKGGQm7bBU0NMTye3eck
-	 dsmeh06S1wOc45bQmDlamHnDdB06uTUJbDDHK/PKC4SnrQTYWJrksrJveOZRvfsXhf
-	 CmITspjXqJuCR/HUcxu0nVdGOcASxvtCaaRSSYME=
+	b=IpQZF2+ogN4c7i8syqO9YA8fZdrnQfxpgNtAu8rtbvQkebUiPzgUUY7ICoWAsNpAs
+	 WMnm0FGJ+Rq8YAuvraCrC5AWvmjVbKxohagoUvjrQxpZZthlCeFsX+o42y1G7tlRvy
+	 epzlPfurusmMYin+q9e7w4vPK9ETSBc6gjSwkEOM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05422F80611;
-	Wed,  5 May 2021 18:38:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66B90F80618;
+	Wed,  5 May 2021 18:38:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27B4BF80612; Wed,  5 May 2021 18:38:18 +0200 (CEST)
+ id E6F81F80618; Wed,  5 May 2021 18:38:20 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDF4CF805E8
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDF4CF805E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF73EF80603
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:38:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF73EF80603
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="R+J8+k9B"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF47561413;
- Wed,  5 May 2021 16:38:08 +0000 (UTC)
+ header.b="epFjPiUS"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFBFC61445;
+ Wed,  5 May 2021 16:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232689;
- bh=vczX39UgrVCACZmIWAjKsPnQfDqMwyvWLIynZTj+wmw=;
+ s=k20201202; t=1620232692;
+ bh=l6UOsSfIwMVHstmtkJIX4n+JtKICvV4bJ/QTOVkiPiM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=R+J8+k9B1fHVufv6s79Wz8dT0g72s5mEkrJMf7Ndivt8naVbOURAOwPSX9hluUtxo
- H3a2Q+e9WFhYk71gvLVBBMCuaZWs5k+ScZC+i3wC3x50+FHqb3DzpVqOqTB4T/5SLB
- c/E7Zo1XFAWEfFPrhkvBYkbmN41pivJ7mdAY/BM93SqdicRFOQbyxxMBh/ntOAUy2h
- Fg4wP0MmTmZpgEsauolDEsyeHXHCV9HutJrvRtpG9v/Hmz5/yCImRrWJTxJtSh2C5O
- OBKLpXBgy8TErGdI4JWdsPA1VEjof9r6Dni9SpE5bci2AWGaSogdq3xK51nzrVSq/t
- N68CmwJAl7nlw==
+ b=epFjPiUSGAZc5ZuNMyT69RIF0DxemogtE+f87wbjlNVPcbD6PFowl/G3cBrW38N1m
+ opj37OmZxobufndmQZdJGWnh215udYoO5cbELt1+ceSHSeqaYeUvSKyo1Y4pVEPGit
+ H+RJAUmwpajldc2gnbcBYnsi/4magKzqh7kSoiATnTQxVpeYa/Ff8gQdi6LU2FaBeC
+ j2G0zriPWugWUL+HhDeAh0CpJw7Z5FR+Wg+lwFYOBahHaeSwR6ZcVzjyk9I/TbYSHg
+ TUDIHcI6sbwkbtBhLAU3uOYsoQr7xRJqK0v7NNd///uEP0ybpZPif/ezV9l9Aq/pCz
+ OAnWVJfrVZ4lw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 55/85] ALSA: hda/realtek: Add quirk for Lenovo
- Ideapad S740
-Date: Wed,  5 May 2021 12:36:18 -0400
-Message-Id: <20210505163648.3462507-55-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 57/85] ALSA: hda/hdmi: fix race in handling acomp
+ ELD notification at resume
+Date: Wed,  5 May 2021 12:36:20 -0400
+Message-Id: <20210505163648.3462507-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163648.3462507-1-sashal@kernel.org>
 References: <20210505163648.3462507-1-sashal@kernel.org>
@@ -73,7 +73,7 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, Ryan Prescott <ryan@cousinscomputers.net>
+ alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,567 +89,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit 26928ca1f06aab4361eb5adbe7ef3b5c82f13cf2 ]
+[ Upstream commit 0c37e2eb6b83e375e8a654d01598292d5591fc65 ]
 
-Lenovo Ideapad S740 requires quite a few COEF setups to make its
-speakers working.  The verb table was provided from Ryan Prescott as
-the result of investigation via qemu:
-  https://github.com/ryanprescott/realtek-verb-tools/wiki/How-to-sniff-verbs-from-a-Windows-sound-driver
+When snd-hda-codec-hdmi is used with ASoC HDA controller like SOF (acomp
+used for ELD notifications), display connection change done during suspend,
+can be lost due to following sequence of events:
 
-BugLink: https://github.com/thesofproject/linux/issues/2748
-Tested-by: Ryan Prescott <ryan@cousinscomputers.net>
-Link: https://lore.kernel.org/r/20210416081211.20059-1-tiwai@suse.de
+  1. system in S3 suspend
+  2. DP/HDMI receiver connected
+  3. system resumed
+  4. HDA controller resumed, but card->deferred_resume_work not complete
+  5. acomp eld_notify callback
+  6. eld_notify ignored as power state is not CTL_POWER_D0
+  7. HDA resume deferred work completed, power state set to CTL_POWER_D0
+
+This results in losing the notification, and the jack state reported to
+user-space is not correct.
+
+The check on step 6 was added in commit 8ae743e82f0b ("ALSA: hda - Skip
+ELD notification during system suspend"). It would seem with the deferred
+resume logic in ASoC core, this check is not safe.
+
+Fix the issue by modifying the check to use "dev.power.power_state.event"
+instead of ALSA specific card power state variable.
+
+BugLink: https://github.com/thesofproject/linux/issues/2825
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210416131157.1881366-1-kai.vehmanen@linux.intel.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/ideapad_s740_helper.c | 492 ++++++++++++++++++++++++++++
- sound/pci/hda/patch_realtek.c       |  11 +
- 2 files changed, 503 insertions(+)
- create mode 100644 sound/pci/hda/ideapad_s740_helper.c
+ sound/pci/hda/patch_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/ideapad_s740_helper.c b/sound/pci/hda/ideapad_s740_helper.c
-new file mode 100644
-index 000000000000..564b9086e52d
---- /dev/null
-+++ b/sound/pci/hda/ideapad_s740_helper.c
-@@ -0,0 +1,492 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Fixes for Lenovo Ideapad S740, to be included from codec driver */
-+
-+static const struct hda_verb alc285_ideapad_s740_coefs[] = {
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x10 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0320 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0041 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0041 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x007f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x007f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x003c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0011 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x003c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0011 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0042 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0042 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0040 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0040 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0003 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0009 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0003 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0009 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x004c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x004c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001d },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x004e },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001d },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x004e },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001b },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001b },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0019 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0025 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0019 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0025 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0018 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0037 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0018 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0037 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0040 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0040 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0016 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0076 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0016 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0076 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0017 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0017 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0007 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0086 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0007 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0086 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0042 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x24 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0042 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x007f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x007f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x003c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0011 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x003c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0011 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x002a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x002a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0046 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x000f },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0046 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0044 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0044 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0003 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0009 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0003 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0009 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x004c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x004c },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001b },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001b },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0019 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0025 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0019 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0025 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0018 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0037 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0018 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0037 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0040 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x001a },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0040 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0016 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0076 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0016 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0076 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0017 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0017 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0010 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0015 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0007 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0086 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0007 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0086 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0001 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x29 },
-+{ 0x20, AC_VERB_SET_COEF_INDEX, 0x26 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0002 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0x0000 },
-+{ 0x20, AC_VERB_SET_PROC_COEF, 0xb020 },
-+{}
-+};
-+
-+static void alc285_fixup_ideapad_s740_coef(struct hda_codec *codec,
-+					   const struct hda_fixup *fix,
-+					   int action)
-+{
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_add_verbs(codec, alc285_ideapad_s740_coefs);
-+		break;
-+	}
-+}
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index a7544b77d3f7..68201bd05ee5 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6232,6 +6232,9 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-+/* for alc285_fixup_ideapad_s740_coef() */
-+#include "ideapad_s740_helper.c"
-+
- enum {
- 	ALC269_FIXUP_GPIO2,
- 	ALC269_FIXUP_SONY_VAIO,
-@@ -6427,6 +6430,7 @@ enum {
- 	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
- 	ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
- 	ALC256_FIXUP_ACER_HEADSET_MIC,
-+	ALC285_FIXUP_IDEAPAD_S740_COEF,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7901,6 +7905,12 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
- 	},
-+	[ALC285_FIXUP_IDEAPAD_S740_COEF] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc285_fixup_ideapad_s740_coef,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8244,6 +8254,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3176, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3178, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
-+	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 8c6f10cbced3..6d2a4dfcfe43 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2653,7 +2653,7 @@ static void generic_acomp_pin_eld_notify(void *audio_ptr, int port, int dev_id)
+ 	/* skip notification during system suspend (but not in runtime PM);
+ 	 * the state will be updated at resume
+ 	 */
+-	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
++	if (codec->core.dev.power.power_state.event == PM_EVENT_SUSPEND)
+ 		return;
+ 	/* ditto during suspend/resume process itself */
+ 	if (snd_hdac_is_in_pm(&codec->core))
+@@ -2839,7 +2839,7 @@ static void intel_pin_eld_notify(void *audio_ptr, int port, int pipe)
+ 	/* skip notification during system suspend (but not in runtime PM);
+ 	 * the state will be updated at resume
+ 	 */
+-	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
++	if (codec->core.dev.power.power_state.event == PM_EVENT_SUSPEND)
+ 		return;
+ 	/* ditto during suspend/resume process itself */
+ 	if (snd_hdac_is_in_pm(&codec->core))
 -- 
 2.30.2
 
