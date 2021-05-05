@@ -7,64 +7,64 @@ X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1FDCC43461
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:44:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7699FC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:45:06 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 1D1BC61423
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:44:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 1D1BC61423
+	by mail.kernel.org (Postfix) with ESMTPS id E5B966142F
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 16:45:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E5B966142F
 Authentication-Results: mail.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86BD916F2;
-	Wed,  5 May 2021 18:43:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86BD916F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 722FB173F;
+	Wed,  5 May 2021 18:44:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 722FB173F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620233083;
-	bh=yftM6nqAefA7ptEWgSruD+RvbnqgI2fSuJKH8OISk18=;
+	s=default; t=1620233104;
+	bh=BMgVRc07yMdSNpu4EtODLQluJHjs8aTrZ8NbIbKt+d4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i9FXL6sBrX9+GgJA+FI+Ruez1CAEEPPPw5Ah39OwfU9cOqdWSnufZ5iI2jEvJMFYA
-	 pWBFRz5pYJAI9/lXFYVXqMWy/6K89MDfGdp9pZ/9GbRPmEha834qWd5qZxyGces5Um
-	 8rhAprN95jL9hzbheiY2spRU4FYof59y/LlSHKmM=
+	b=aqg1O57Zbivc4OYFAXxOdbQ0Vv//dX0SXe20nrTFF27kCxKxHqRnVgSUieVeX6s4l
+	 A1+VgWSKiZnLY0u64FE5q8Hw2zHkevVOVG7/+T3X3pOIjaFAdDwoo2yjDuiGAkFvIV
+	 eqtaILJRBsWZBCDYONzq6NntRIuhWsRkD55EoPbw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD18DF80257;
-	Wed,  5 May 2021 18:37:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84B83F804EB;
+	Wed,  5 May 2021 18:37:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B85C7F804EB; Wed,  5 May 2021 18:37:07 +0200 (CEST)
+ id CD639F804ED; Wed,  5 May 2021 18:37:12 +0200 (CEST)
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48562F80257
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:37:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48562F80257
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46AE0F80268
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 18:37:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46AE0F80268
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kTycggZ2"
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88BA36194D;
- Wed,  5 May 2021 16:36:58 +0000 (UTC)
+ header.b="fd6IHdvX"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE1156194F;
+ Wed,  5 May 2021 16:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1620232619;
- bh=yftM6nqAefA7ptEWgSruD+RvbnqgI2fSuJKH8OISk18=;
+ s=k20201202; t=1620232623;
+ bh=BMgVRc07yMdSNpu4EtODLQluJHjs8aTrZ8NbIbKt+d4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kTycggZ2BNPAlOHO0YK80dOAyl+xFB0gORR05J4TpXdNguLKqRuJQt00NJMxMoy6t
- K1W6wI+yaFr3ashnRpTA+mHvyB0T+WLWkk9uDbE04bK712Y+nqJKpU14izKFFMGDCU
- 1A4T/hfMURETahWBuwMQ7uYAACt7njnrimmMdz3+BDlTfTeN5UPiUCsdrGoMGaUJ0G
- amZBYGdolTEpE1ao1r9ETcr5GPKzOnaZ0aV3X6B/mFsN840SB6YO6M6OP1VbtNaArS
- ii4b6oyX2eSZzrTIaLif/NIomCPCL221eDFotrh7z8iJsMm0wUvh/Ua7ZEoqYC2UJv
- ModV/73yxyz9Q==
+ b=fd6IHdvXkwJU3VAXb4ccjbRPHryReRXes2wZ6TgdBGHSyj48XYyG2DBZe+aQKlIAH
+ 3XdIAF2luPUPVZKPyq6SIvsJg/ty14eMaEUw8DbWpaRDA43frt8Vs2+KDzW1m0zERs
+ L7/QxjU9+mybbZQfpEeIUu8IxH3UiMxFmr+wmPPqydnXoOUt6N/zARahyK0FFQFy2p
+ KrqiQsxDOxZhMnzjrT7dvsqdT//mPlNFKbz0XPSslia4sZ1mAJe4PGx8UVAZKePRxa
+ LLtc/P7ltSGIU2Gz23H7C+im1I2zepp2mPHFYt9wKEara7HSWmOLv/4goDCjBAGJw7
+ bWnrJcaXDrJ4A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 07/85] ASoC: Intel: bytcr_rt5640: Enable
- jack-detect support on Asus T100TAF
-Date: Wed,  5 May 2021 12:35:30 -0400
-Message-Id: <20210505163648.3462507-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 10/85] ASoC: rsnd: core: Check convert rate in
+ rsnd_hw_params
+Date: Wed,  5 May 2021 12:35:33 -0400
+Message-Id: <20210505163648.3462507-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163648.3462507-1-sashal@kernel.org>
 References: <20210505163648.3462507-1-sashal@kernel.org>
@@ -72,9 +72,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Mikhail Durnev <mikhail_durnev@mentor.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,39 +89,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Mikhail Durnev <mikhail_durnev@mentor.com>
 
-[ Upstream commit b7c7203a1f751348f35fc4bcb157572d303f7573 ]
+[ Upstream commit 19c6a63ced5e07e40f3a5255cb1f0fe0d3be7b14 ]
 
-The Asus T100TAF uses the same jack-detect settings as the T100TA,
-this has been confirmed on actual hardware.
+snd_pcm_hw_params_set_rate_near can return incorrect sample rate in
+some cases, e.g. when the backend output rate is set to some value higher
+than 48000 Hz and the input rate is 8000 Hz. So passing the value returned
+by snd_pcm_hw_params_set_rate_near to snd_pcm_hw_params will result in
+"FSO/FSI ratio error" and playing no audio at all while the userland
+is not properly notified about the issue.
 
-Add these settings to the T100TAF quirks to enable jack-detect support
-on the T100TAF.
+If SRC is unable to convert the requested sample rate to the sample rate
+the backend is using, then the requested sample rate should be adjusted in
+rsnd_hw_params. The userland will be notified about that change in the
+returned hw_params structure.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210312114850.13832-1-hdegoede@redhat.com
+Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+Link: https://lore.kernel.org/r/1615870055-13954-1-git-send-email-mikhail_durnev@mentor.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sh/rcar/core.c | 69 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 68 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index d5812e73eb63..2d887406ca85 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -478,6 +478,9 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
- 		},
- 		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
- 					BYT_RT5640_MONO_SPEAKER |
- 					BYT_RT5640_DIFF_MIC |
- 					BYT_RT5640_SSP0_AIF2 |
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 6e670b3e92a0..289928d4c0c9 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1428,8 +1428,75 @@ static int rsnd_hw_params(struct snd_soc_component *component,
+ 		}
+ 		if (io->converted_chan)
+ 			dev_dbg(dev, "convert channels = %d\n", io->converted_chan);
+-		if (io->converted_rate)
++		if (io->converted_rate) {
++			/*
++			 * SRC supports convert rates from params_rate(hw_params)/k_down
++			 * to params_rate(hw_params)*k_up, where k_up is always 6, and
++			 * k_down depends on number of channels and SRC unit.
++			 * So all SRC units can upsample audio up to 6 times regardless
++			 * its number of channels. And all SRC units can downsample
++			 * 2 channel audio up to 6 times too.
++			 */
++			int k_up = 6;
++			int k_down = 6;
++			int channel;
++			struct rsnd_mod *src_mod = rsnd_io_to_mod_src(io);
++
+ 			dev_dbg(dev, "convert rate     = %d\n", io->converted_rate);
++
++			channel = io->converted_chan ? io->converted_chan :
++				  params_channels(hw_params);
++
++			switch (rsnd_mod_id(src_mod)) {
++			/*
++			 * SRC0 can downsample 4, 6 and 8 channel audio up to 4 times.
++			 * SRC1, SRC3 and SRC4 can downsample 4 channel audio
++			 * up to 4 times.
++			 * SRC1, SRC3 and SRC4 can downsample 6 and 8 channel audio
++			 * no more than twice.
++			 */
++			case 1:
++			case 3:
++			case 4:
++				if (channel > 4) {
++					k_down = 2;
++					break;
++				}
++				fallthrough;
++			case 0:
++				if (channel > 2)
++					k_down = 4;
++				break;
++
++			/* Other SRC units do not support more than 2 channels */
++			default:
++				if (channel > 2)
++					return -EINVAL;
++			}
++
++			if (params_rate(hw_params) > io->converted_rate * k_down) {
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
++					io->converted_rate * k_down;
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
++					io->converted_rate * k_down;
++				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
++			} else if (params_rate(hw_params) * k_up < io->converted_rate) {
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
++					(io->converted_rate + k_up - 1) / k_up;
++				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
++					(io->converted_rate + k_up - 1) / k_up;
++				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
++			}
++
++			/*
++			 * TBD: Max SRC input and output rates also depend on number
++			 * of channels and SRC unit:
++			 * SRC1, SRC3 and SRC4 do not support more than 128kHz
++			 * for 6 channel and 96kHz for 8 channel audio.
++			 * Perhaps this function should return EINVAL if the input or
++			 * the output rate exceeds the limitation.
++			 */
++		}
+ 	}
+ 
+ 	return rsnd_dai_call(hw_params, io, substream, hw_params);
 -- 
 2.30.2
 
