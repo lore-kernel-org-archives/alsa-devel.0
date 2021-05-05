@@ -2,55 +2,97 @@ Return-Path: <SRS0=SRJ/=KA=alsa-project.org=alsa-devel-bounces@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C644C433B4
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7560EC433ED
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:27:17 +0000 (UTC)
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.kernel.org (Postfix) with ESMTPS id 0B33D613C1
-	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:02:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org 0B33D613C1
-Authentication-Results: mail.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alsa-project.org
+	by mail.kernel.org (Postfix) with ESMTPS id E25EE6117A
+	for <alsa-devel@archiver.kernel.org>; Wed,  5 May 2021 07:27:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mail.kernel.org E25EE6117A
+Authentication-Results: mail.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: mail.kernel.org; spf=pass smtp.mailfrom=alsa-devel-bounces@alsa-project.org
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A7A716AC;
-	Wed,  5 May 2021 09:02:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A7A716AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D31BC16A5;
+	Wed,  5 May 2021 09:26:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D31BC16A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1620198170;
-	bh=mBb/tULqERvAAGeER0LDUcq28oXkBeInngs2cPRX2rc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uaev9iqcw5Eg7CkQRzPjathdvgrxRbN4qw8edXYTuiPchcUsoysL7r8Z8lki06Ira
-	 /0wGxTTs24fSPiLsgIp+9Qi2HGeyZXTinNidrWmhh+ehiEOXEq7eD7SE/qvtukecl2
-	 HFHGNYdvSKmwE/RfuLA/irevDw8z/ECeWLle+RYA=
+	s=default; t=1620199633;
+	bh=J4rP+0V7QFNCIHHF0uZBOk0UMDfPAWQ+DKfH4HxTOAk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RdAyFG/DWrajC03a42ggigdtHuzJLJ7jm7TKln3T3SgTkpCuDM1bjd0zi/PjW1Qr9
+	 6R+aATWDqCRI2TrzCsX9J1GoKCWKrbSbGxPQnhVULL6Sj1C/B1exMZRTuxL4NrZuF6
+	 EElV5ICRrn+9ByquG8Gme5Lnl/5JR9irqR0H6Fj0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0F70F8026A;
-	Wed,  5 May 2021 09:01:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34A6FF80163;
+	Wed,  5 May 2021 09:26:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5D50F8026D; Wed,  5 May 2021 09:01:13 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 87BF3F80108
- for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 09:01:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87BF3F80108
+ id 8D4EDF80268; Wed,  5 May 2021 09:26:20 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45D0FF80163
+ for <alsa-devel@alsa-project.org>; Wed,  5 May 2021 09:26:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45D0FF80163
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=baylibre-com.20150623.gappssmtp.com
+ header.i=@baylibre-com.20150623.gappssmtp.com header.b="tNBsreuC"
+Received: by mail-wr1-x42f.google.com with SMTP id l14so644830wrx.5
+ for <alsa-devel@alsa-project.org>; Wed, 05 May 2021 00:26:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=sSGB223I3PeBh3TG2RAuibwn3vbLRJONtkpynCow05g=;
+ b=tNBsreuCJZemMha64jCuI97TnHZ0gwzRwx0zYrIb/M9JCEXaMBrNLQ7RxmV/PmWrbY
+ HJoT2YoPVdEKNxcpCrk1VeJ0q5XVpBaRl0oNSqrmPy9aJajrmXRwxzcptYXNLBL22kg4
+ kCI9rkOnmAKzVCFy0DAPO33h3iH53CX7AB+litwzli2VPeHS5m1OcNMogGiPj6w022RA
+ E25OcZd9zZ4KiGk25bLrmRDXKvKPpwNFRI86GPn4Ff70sJHM29lmSjg7EFFDr/Ig830k
+ tsKRqgMl3nZz5hbO9EZE4zKIvHL7NXpVXpMHGPUE/vvVs2FNzPMtmZmn3ndH27pIZCXU
+ 81RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20161025;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=sSGB223I3PeBh3TG2RAuibwn3vbLRJONtkpynCow05g=;
+ b=dXtfmVZ8DxZVCLzenxz0ESswGhsorS0KwjPj39pRCHQ0OnzjBybkSmgvDMgADkJMdK
+ RF29z7/ikZbEQ1p5AyZYJRw2F2jia7+4wRSKM83gLN921ypOzCcEAfFGYcCY3hQ4oQAX
+ v/WtZTxc2c6mzdaMA5VftT/yexTH7apny4S8Rl2khsZHbHqIFtbGYNvvbB2yl+UoTBki
+ G9qyXNoLYZdwwHvZR+CcpegxawyKh7ZX7VwxCUjD2uaTbmrMtA8RepTxSHYXxLitJyIe
+ u5mWqTssmdJCyMlmvtEvi9bTQK5kdGtYd89wS/CMvc41ePik7IaEuIC9YspMlQoqps/v
+ AASg==
+X-Gm-Message-State: AOAM532IdTjAm6zNacVWT3zLY801G+bbzX8ZysuoeVu/frt0LZqIB415
+ EaPE+RWn5woNcrJux3n9ABXdPw==
+X-Google-Smtp-Source: ABdhPJyABkwemPMKwQp9GLUEV/VZsbakg+LdwJTV16+JOgDc0yiICSRNDSpsAxOBJf+N1wu1PvwxEA==
+X-Received: by 2002:a05:6000:508:: with SMTP id
+ a8mr18035799wrf.315.1620199572246; 
+ Wed, 05 May 2021 00:26:12 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:6eb3:66ab:cb1e:ef0])
+ by smtp.gmail.com with ESMTPSA id
+ f25sm19008991wrd.67.2021.05.05.00.26.11
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 05 May 2021 00:26:11 -0700 (PDT)
+From: Neil Armstrong <narmstrong@baylibre.com>
+To: jbrunet@baylibre.com,
+	broonie@kernel.org
+Subject: [PATCH v2 0/2] ASoC: meson: g12a-toacodec: add support for SM1
+Date: Wed,  5 May 2021 09:26:04 +0200
+Message-Id: <20210505072607.3815442-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1620198062166485071-webhooks-bot@alsa-project.org>
-References: <1620198062166485071-webhooks-bot@alsa-project.org>
-Subject: [a52] Strange behavior with 5.1 surround on ALC1220
-Message-Id: <20210505070113.A5D50F8026D@alsa1.perex.cz>
-Date: Wed,  5 May 2021 09:01:13 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Neil Armstrong <narmstrong@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,55 +108,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-plugins issue #21 was edited from davidebeatrici:
+This patchset adds Amlogic SM1 support on the TOACODEC driver, first by switching
+to regmap fields for some bit fields to avoid code duplication, and then by adding
+the corresponding bits & struct for the SM1 changed bits.
 
-I originally encountered the issue ~1 year ago, when I started using a motherboard with an ALC1220 on it.
+Changes since v1 at [1]:
+- switch to regmap field
 
-The out-of-box experience was flawless: I simply connected the optical SPDIF cable to my amplifier/receiver and stereo sound immediately worked.
+[1] https://lore.kernel.org/r/20210429170147.3615883-1-narmstrong@baylibre.com
 
-Once I switched to 5.1 surround, audio output became extremely fast; even videos were affected by it, to the point that they were being reproduced in seconds instead of minutes.
+Neil Armstrong (2):
+  ASoC: meson: g12a-toacodec: use regmap fields to prepare SM1 support
+  ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
 
-After a few days of research and experiments I managed to workaround the issue by replacing the content of `60-a52-encoder.conf` with:
-```
-pcm.a52 {
-	@args [CARD]
-	@args.CARD {
-		type string
-        }
-	type rate
-	slave {
-		pcm {   
-			type a52
-			card $CARD
-		}
-		rate 48000
-	}
-}
-pcm.pulse {
-	type pulse
-}
-ctl.pulse {
-	type pulse
-}
-pcm.!default {
-	type pulse
-}
-ctl.!default {
-	type pulse
-}
-```
+ sound/soc/meson/g12a-toacodec.c | 144 +++++++++++++++++++++++++++-----
+ 1 file changed, 125 insertions(+), 19 deletions(-)
 
-Based on https://help.ubuntu.com/community/DigitalAC-3Pulseaudio#Configuring_asound.conf.
+-- 
+2.25.1
 
-After that, I wanted to investigate the cause and report my findings to either ALSA or PulseAudio (depending on the results).
-
-Unfortunately that never happened and I kinda forgot about it, as [libasound2-plugins](https://packages.debian.org/bullseye/libasound2-plugins) was updated a single time in the past year and thus I only had to replace the file's content once more.
-
-Fast-forward to today: I switch from PulseAudio to PipeWire and while troubleshooting https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/1143 I decided to try to restore the original file.
-
-Interestingly, the behavior is different compared to PulseAudio: audio, instead of being fast, is crackling. It's basically as if a frame every two is being skipped.
-
-Unfortunately PipeWire reports no errors whatsoever.
-
-Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/21
-Repository URL: https://github.com/alsa-project/alsa-plugins
